@@ -82,9 +82,9 @@ public class PicsMenu {
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild("Employees", "ManageEmployees.action");
 					if (permissions.isRequiresCompetencyReview()) {
-						subMenu = menu.addChild("HSE Competencies");
-						subMenu.addChild("Job Roles", "ManageJobRoles.action");
-						subMenu.addChild("Employee Competencies", "EmployeeCompetencies.action");
+						subMenu = menu.addChild(getText("global.HSECompetencies"));
+						subMenu.addChild(getText("ManageJobRoles.title"), "ManageJobRoles.action");
+						subMenu.addChild(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action");
 					}
 					if (permissions.isRequiresOQ()) {
 						subMenu = menu.addChild("Operator Qualification");

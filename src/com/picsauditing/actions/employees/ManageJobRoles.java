@@ -5,17 +5,16 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
+import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -23,44 +22,139 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
-import com.picsauditing.jpa.entities.JobCompetencyStats;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageJobRoles extends AccountActionSupport implements Preparable {
+public class ManageJobRoles extends AccountActionSupport {
+	@Autowired
+	protected AccountDAO accountDAO;
+	@Autowired
+	protected EmployeeRoleDAO erDAO;
+	@Autowired
+	protected JobCompetencyDAO jobCompetencyDAO;
+	@Autowired
+	protected JobRoleDAO jobRoleDAO;
+	@Autowired
+	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
 	protected JobRole role;
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
-	protected List<JobCompetency> jobCompetencies = new ArrayList<JobCompetency>();
-	protected List<OperatorCompetency> otherCompetencies = new ArrayList<OperatorCompetency>();
 	private int competencyID = 0;
 	private int auditID;
 
-	@Autowired
-	protected JobRoleDAO jobRoleDAO;
-	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected OperatorCompetencyDAO competencyDAO;
-	@Autowired
-	protected EmployeeRoleDAO erDAO;
-
 	public ManageJobRoles() {
-		subHeading = "Manage Job Roles";
+		subHeading = getText(getScope() + ".title");
 	}
 
 	@Override
-	public void prepare() throws Exception {
-		int roleID = getParameter("role.id");
-		if (roleID > 0) {
-			role = jobRoleDAO.find(roleID);
+	public String execute() throws Exception {
+		startup();
+
+		return SUCCESS;
+	}
+
+	public String get() throws Exception {
+		startup();
+
+		if (role == null)
+			role = new JobRole();
+
+		return "role";
+	}
+
+	public String save() throws Exception {
+		startup();
+		if (role.getAccount() == null) {
+			role.setAccount(account);
 		}
 
-		if (role != null) {
+		if (Strings.isEmpty(role.getName())) {
+			addActionError("Name is required");
+			return SUCCESS;
+		}
+
+		jobRoleDAO.save(role);
+
+		return SUCCESS;
+	}
+
+	public String delete() throws Exception {
+		startup();
+		List<EmployeeRole> employeeRoles = erDAO.findWhere("e.jobRole.id = " + role.getId());
+
+		if (employeeRoles.size() > 0) {
+			role.setActive(false);
+			jobRoleDAO.save(role);
+		} else {
+			jobRoleDAO.remove(role);
+		}
+
+		return redirect("ManageJobRoles.action?id=" + account.getId());
+	}
+
+	public String addCompetency() throws Exception {
+		startup();
+
+		if (competencyID > 0) {
+			for (JobCompetency jc : role.getJobCompetencies()) {
+				if (jc.getCompetency().getId() == competencyID)
+					addActionError(getText(getScope() + ".message.CompetencyExistsForRole"));
+			}
+
+			if (getActionErrors().size() == 0) {
+				OperatorCompetency competency = operatorCompetencyDAO.find(competencyID);
+
+				JobCompetency jc = new JobCompetency();
+				jc.setJobRole(role);
+				jc.setCompetency(competency);
+				jc.setAuditColumns(permissions);
+				jobCompetencyDAO.save(jc);
+
+				role.getJobCompetencies().add(jc);
+				jobRoleDAO.save(role);
+			}
+		} else {
+			addActionError(getText(getScope() + ".message.MissingCompetency"));
+		}
+
+		return "competencies";
+	}
+
+	public String removeCompetency() throws Exception {
+		startup();
+
+		if (competencyID > 0) {
+			Iterator<JobCompetency> iterator = role.getJobCompetencies().iterator();
+			while (iterator.hasNext()) {
+				JobCompetency jc = iterator.next();
+
+				if (jc.getCompetency().getId() == competencyID) {
+					iterator.remove();
+					jobCompetencyDAO.remove(jc);
+				}
+			}
+		} else {
+			addActionError(getText(getScope() + ".message.MissingCompetency"));
+		}
+
+		return "competencies";
+	}
+
+	private void startup() throws Exception {
+		if (permissions.isContractor())
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		else {
+			permissions.tryPermission(OpPerms.DefineRoles);
+
+			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
+		}
+
+		if (role != null && role.getAccount() != null) {
 			account = role.getAccount();
 		} else {
 			int accountID = getParameter("id");
@@ -74,18 +168,6 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 
 		if (account == null && permissions.isContractor())
 			throw new RecordNotFoundException("account");
-	}
-
-	@Override
-	public String execute() throws Exception {
-		if (permissions.isContractor())
-			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else {
-			permissions.tryPermission(OpPerms.DefineRoles);
-
-			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
-		}
 
 		// Get auditID
 		if (auditID > 0) {
@@ -99,93 +181,6 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		}
-
-		if ("Add".equals(button)) {
-			role = new JobRole();
-
-			return SUCCESS;
-		}
-
-		if ("Save".equals(button)) {
-			if (role.getAccount() == null) {
-				role.setAccount(account);
-			}
-
-			if (Strings.isEmpty(role.getName())) {
-				addActionError("Name is required");
-				return SUCCESS;
-			}
-
-			jobRoleDAO.save(role);
-		}
-
-		if ("Delete".equals(button)) {
-			List<EmployeeRole> employeeRoles = erDAO.findWhere("e.jobRole.id = " + role.getId());
-
-			if (employeeRoles.size() > 0) {
-				role.setActive(false);
-				jobRoleDAO.save(role);
-			} else {
-				jobRoleDAO.remove(role);
-				role = null;
-			}
-
-			return redirect("ManageJobRoles.action?id=" + account.getId());
-		}
-
-		if (role != null) {
-			jobCompetencies = jobRoleDAO.getCompetenciesByRole(role);
-			List<OperatorCompetency> competencies = competencyDAO.findAll();
-			if (competencyID > 0) {
-				if ("removeCompetency".equals(button)) {
-					Iterator<JobCompetency> iterator = jobCompetencies.iterator();
-					while (iterator.hasNext()) {
-						JobCompetency current = iterator.next();
-						if (current.getCompetency().getId() == competencyID) {
-							iterator.remove();
-							competencyDAO.remove(current);
-						}
-					}
-				}
-				if ("addCompetency".equals(button)) {
-					for (OperatorCompetency operatorCompetency : competencies) {
-						if (operatorCompetency.getId() == competencyID) {
-							if (!roleContainsCompetency(operatorCompetency)) {
-								JobCompetency jc = new JobCompetency();
-								jc.setJobRole(role);
-								jc.setCompetency(operatorCompetency);
-								jc.setAuditColumns(permissions);
-								competencyDAO.save(jc);
-								jobCompetencies.add(jc);
-							}
-						}
-					}
-				}
-				jobRoleDAO.save(role);
-			}
-
-			otherCompetencies.clear();
-
-			Map<OperatorCompetency, JobCompetencyStats> jobCompetencyStats = competencyDAO.getJobCompetencyStats(role
-					.getName());
-
-			for (OperatorCompetency operatorCompetency : competencies) {
-				if (!roleContainsCompetency(operatorCompetency)) {
-					operatorCompetency.setJobCompentencyStats(jobCompetencyStats.get(operatorCompetency));
-					otherCompetencies.add(operatorCompetency);
-				}
-			}
-		}
-
-		return SUCCESS;
-	}
-
-	private boolean roleContainsCompetency(OperatorCompetency operatorCompetency) {
-		for (JobCompetency jc : jobCompetencies) {
-			if (jc.getCompetency().equals(operatorCompetency))
-				return true;
-		}
-		return false;
 	}
 
 	public JobRole getRole() {
@@ -218,13 +213,33 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
 	}
 
-	public List<JobCompetency> getJobCompetencies() {
-		return jobCompetencies;
-	}
-
 	public List<OperatorCompetency> getOtherCompetencies() {
-		Collections.sort(otherCompetencies, new ByPercent());
-		return otherCompetencies;
+		if (role != null) {
+			List<OperatorCompetency> others = operatorCompetencyDAO.findAll();
+
+			List<OperatorCompetency> exists = new ArrayList<OperatorCompetency>();
+			for (JobCompetency jc : role.getJobCompetencies()) {
+				exists.add(jc.getCompetency());
+			}
+
+			others.removeAll(exists);
+			Collections.sort(others, new Comparator<OperatorCompetency>() {
+				@Override
+				public int compare(OperatorCompetency o1, OperatorCompetency o2) {
+					if (o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
+						return 0;
+					if (o1.getJobCompentencyStats() == null)
+						return 1;
+					if (o2.getJobCompentencyStats() == null)
+						return -1;
+					return -o1.getJobCompentencyStats().getPercent()
+							.compareTo(o2.getJobCompentencyStats().getPercent());
+				}
+			});
+			return others;
+		}
+
+		return null;
 	}
 
 	public void setCompetencyID(int competencyID) {
@@ -252,18 +267,5 @@ public class ManageJobRoles extends AccountActionSupport implements Preparable {
 		}
 
 		return shellOps;
-	}
-
-	private class ByPercent implements Comparator<OperatorCompetency> {
-		@Override
-		public int compare(OperatorCompetency o1, OperatorCompetency o2) {
-			if (o1.getJobCompentencyStats() == null && o2.getJobCompentencyStats() == null)
-				return 0;
-			if (o1.getJobCompentencyStats() == null)
-				return 1;
-			if (o2.getJobCompentencyStats() == null)
-				return -1;
-			return -o1.getJobCompentencyStats().getPercent().compareTo(o2.getJobCompentencyStats().getPercent());
-		}
 	}
 }

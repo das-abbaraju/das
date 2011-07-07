@@ -1,6 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
 <title><s:property value="subHeading" escape="false" /></title>
@@ -8,6 +7,10 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
+#roleForm {
+	clear: right;
+}
+
 #rolesTable td {
 	vertical-align: top;
 }
@@ -25,14 +28,20 @@ fieldset.form label {
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
-function removeCompetency(competencyID) {
+var accountID = '<s:property value="account.id" />';
+
+function removeCompetency(competencyID, roleID) {
 	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'removeCompetency', 'role.id': <s:if test="role == null">0</s:if><s:else><s:property value="role.id" /></s:else>, competencyID: competencyID});
+	$('#jobCompetencyList').load('ManageJobRoles!removeCompetency.action', {role: roleID, competencyID: competencyID});
 }
 
-function addCompetency(competencyID) {
+function addCompetency(competencyID, roleID) {
 	$("a.compEditor").hide();
-	$('#jobCompetencyList').load('ManageJobRolesAjax.action', {button: 'addCompetency', 'role.id': <s:if test="role == null">0</s:if><s:else><s:property value="role.id" /></s:else>, competencyID: competencyID});
+	$('#jobCompetencyList').load('ManageJobRoles!addCompetency.action', {role: roleID, competencyID: competencyID});
+}
+
+function getRole(roleID) {
+	$('#roleCell').load('ManageJobRoles!get.action', { role: roleID, id: accountID });
 }
 
 $(function() {
@@ -42,6 +51,39 @@ $(function() {
 			return data[1];
 		}
 	});
+	
+	$('#roleCell').delegate('.removeCompetency', 'click', function(e) {
+		e.preventDefault();
+		var competencyID = $(this).closest('tr').attr('id');
+		var roleID = $(this).closest('table').attr('id');
+		removeCompetency(competencyID, roleID);
+	});
+	
+	$('#roleCell').delegate('.addCompetency', 'click', function(e) {
+		e.preventDefault();
+		var competencyID = $(this).closest('tr').attr('id');
+		var roleID = $(this).closest('table').attr('id');
+		addCompetency(competencyID, roleID);
+	});
+	
+	$('#addLink').click(function(e) {
+		e.preventDefault();
+		$('#roleCell').load('ManageJobRoles!get.action', { role: 0 });
+	});
+	
+	$('#cancelButton').click(function(e) {
+		e.preventDefault();
+		$('#roleCell').empty();
+	});
+	
+	$('#deleteButton').click(function() {
+		return confirm('<s:text name="%{scope}.confirm.RemoveJobRole" />');
+	});
+	
+	$(window).bind('hashchange', function() {
+		startThinking({div: 'roleCell', message: '<s:text name="%{scope}.message.LoadingJobRole" />'});
+		getRole(location.hash.substring(1));
+	});
 });
 </script>
 </head>
@@ -49,12 +91,15 @@ $(function() {
 
 <s:if test="auditID > 0">
 	<div class="info">
-		Use this page to enter all Job Roles and competencies your company performs at
-		<s:iterator value="shellOps" status="stat">
-			<s:property value="name" /><s:if test="#stat.count < (shellOps.size - 1)">,</s:if><s:if test="#stat.count == (shellOps.size - 1)"> and</s:if>
-		</s:iterator>
+		<s:text name="%{scope}.message.AuditHelp">
+			<s:param>
+				<s:iterator value="shellOps" status="stat">
+					<s:property value="name" /><s:if test="#stat.count < (shellOps.size - 1)">,</s:if><s:if test="#stat.count == (shellOps.size - 1)"> <s:text name="global.And" /></s:if>
+				</s:iterator>
+			</s:param>
+		</s:text>
 		<br />
-		<a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a>
+		<a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a>
 	</div>
 </s:if>
 
@@ -69,49 +114,25 @@ $(function() {
 				<table class="report">
 					<thead>
 						<tr>
-							<th>Job Role</th>
-							<th>Active</th>
+							<th><s:text name="%{scope}.label.JobRole" /></th>
+							<th><s:text name="%{scope}.label.Active" /></th>
 						</tr>
 					</thead>
 					<tbody>
 						<s:iterator value="jobRoles">
 							<tr>
-								<td><a href="?id=<s:property value="account.id" />&role.id=<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
-								<td class="center"><s:if test="active">Y</s:if><s:else>N</s:else></td>
+								<td><a href="#<s:property value="id" />" <s:if test="!active">class="inactive"</s:if>><s:property value="name" /></a></td>
+								<td class="center"><s:if test="active"><s:text name="YesNo.Yes" /></s:if><s:else><s:text name="YesNo.No" /></s:else></td>
 							</tr>
 						</s:iterator>
 					</tbody>
 				</table>
 			</s:if>
-			<a href="?id=<s:property value="account.id" />&button=Add" class="add">Add New Job Role</a>
+			<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewJobRole" /></a>
 		</td>
-		<s:if test="role != null">
-			<td style="vertical-align: top" id="roleCell"><s:form>
-				<s:hidden name="id" />
-				<s:hidden name="role.id" />
-				<fieldset class="form">
-				<h2 class="formLegend">Define Role</h2>
-				<ol>
-					<li><label>Role:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
-					<li><label>Active:</label> <s:checkbox name="role.active" value="role.active" /> </li>
-				</ol>
-				</fieldset>
-				<fieldset class="form submit">
-					<input type="submit" value="Save" class="picsbutton positive" name="button" />
-					<input type="button" onclick="$('#roleCell').empty(); return false;" class="picsbutton" value="Cancel"/>
-					<s:if test="role.id != 0">
-						<input type="submit" name="button" value="Delete" class="picsbutton negative"
-							onclick="return confirm('Press ok to remove this job role. This action cannot be undone.');" />
-					</s:if>
-				</fieldset>
-			</s:form>
-			<div id="jobCompetencyList">
-				<s:if test="role.id != 0">
-					<s:include value="manage_roles_competencies.jsp"></s:include>
-				</s:if>
-			</div>
-			</td>
-		</s:if>
+		<td style="vertical-align: top">
+			<div id="roleCell"></div>
+		</td>
 	</tr>
 </table>
 

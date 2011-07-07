@@ -1,24 +1,28 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<a href="resources/HSECompetencyReview.pdf" title="<s:text name="%{scope}.help.QuestionReviewPDF" />"><s:text name="%{scope}.link.QuestionReviewPDF" /></a>
 <table>
 	<tr>
-		<s:if test="jobCompetencies.size > 0">
+		<s:if test="role.jobCompetencies.size > 0">
 			<td>
-				<table class="report">
+				<table class="report" id="<s:property value="role.id" />">
 					<thead>
 						<tr>
-							<td colspan="3">Required HSE Competencies</td>
+							<td colspan="3"><s:text name="%{scope}.label.RequiredHSECompetencies" /></td>
 						</tr>
 					</thead>
 					<tbody>
-						<s:iterator value="jobCompetencies">
-							<tr>
+						<s:iterator value="role.jobCompetencies">
+							<tr id="<s:property value="competency.id"/>">
 								<td>
 									<span><s:property value="competency.label"/></span>
 								</td>
-								<td>
+								<td class="center">
 									<img src="images/help.gif" alt="<s:property value="competency.label" />" title="<s:property value="competency.category" />: <s:property value="competency.description" />" />
 								</td>
-								<td><a href="#" class="compEditor" onclick="removeCompetency(<s:property value="competency.id"/>); return false;"><img alt="Delete" src="images/icon-16-remove.png" border="0"></a></td>
+								<td class="center">
+									<a href="#" class="compEditor removeCompetency"><img alt="Delete" src="images/icon-16-remove.png" border="0"></a>
+								</td>
 							</tr>
 						</s:iterator>
 					</tbody>
@@ -27,30 +31,32 @@
 			<td>&nbsp;</td>
 		</s:if>
 		<td>
-			<s:if test="jobCompetencies.size == 0">
+			<s:if test="role.jobCompetencies.size == 0">
 				<div class="alert">
-					Use the table below to select competencies required for the <s:property value="role.name" /> role.
-					<br />
-					<a href="resources/HSECompetencyReview.pdf" title="Click on this link to review questions that may be applicable to your HSE Competency Review audit.">Preview HSE Competency Review questions</a>
+					<s:text name="%{scope}.message.SelectCompetencies">
+						<s:param value="%{role.name}" />
+					</s:text>
 				</div>
 			</s:if>
-			<table class="report">
+			<table class="report" id="<s:property value="role.id" />">
 				<thead>
 					<tr>
-						<td colspan="2">Potential HSE Competencies</td>
+						<td colspan="2"><s:text name="%{scope}.label.PotentialHSECompetencies" /></td>
 						<td></td>
 					</tr>
 				</thead>
 				<tbody>
 					<s:iterator value="otherCompetencies">
-					<tr>
+					<tr id="<s:property value="id" />">
 						<td>
 							<span><s:property value="label"/></span>
 						</td>
-						<td>
+						<td class="center">
 							<img src="images/help.gif" alt="<s:property value="label" />" title="<s:property value="category" />: <s:property value="description" />" />
 						</td>
-						<td><a href="#" class="compEditor" onclick="addCompetency(<s:property value="id"/>); return false;"><img alt="Add" src="images/plus.png" border="0"></a></td>
+						<td class="center">
+							<a href="#" class="compEditor add addCompetency"></a>
+						</td>
 					</tr>
 					</s:iterator>
 				</tbody>
