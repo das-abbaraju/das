@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.BaseDecisionTreeRule;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -35,6 +36,12 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	public List<AuditTypeRule> findAuditTypeRules() {
 		Query query = em
 				.createQuery("FROM AuditTypeRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
+		return query.getResultList();
+	}
+
+	public List<? extends BaseDecisionTreeRule> findAll(Class clazz) {
+		Query query = em.createQuery("FROM " + clazz.getName()
+				+ " WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
 		return query.getResultList();
 	}
 
