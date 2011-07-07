@@ -255,7 +255,7 @@ table.report tr.hurdle td {
 					</s:if>
 					<s:if test="co != null">
 						<p><s:text name="%{scope}.ContractorDashboard.WaitingOn" />:
-							<s:property value="co.waitingOn"/>
+							<s:text name="%{co.waitingOn.i18nKey}"/>
 						</p>
 					</s:if>
 					<p><s:text name="%{scope}.ContractorDashboard.LastLogin" />:
@@ -528,12 +528,12 @@ table.report tr.hurdle td {
 						</a>
 						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
 							<s:if test="permissions.admin">
-								title="<s:property value="operatorAccount.name" />: Waiting On '<s:property value="waitingOn"/>'"
+								title="<s:property value="operatorAccount.name" />: <s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
 								rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
 								class="operatorQuick"
 							</s:if>
 							<s:else>
-								title="Waiting On '<s:property value="waitingOn"/>'"
+								title="<s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
 							</s:else>
 							>
 							<s:property value="operatorAccount.name" />

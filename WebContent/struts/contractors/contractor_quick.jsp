@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
@@ -110,8 +111,8 @@ $(document).ready(function() {
 			<thead>
 			<tr>
 				<th></th>
-				<th>Operator</th>
-				<th>Waiting On</th>
+				<th><s:text name="global.Operator"/></th>
+				<th><s:text name="global.WaitingOn"/></th>
 				<pics:permission perm="ContractorApproval">
 					<th>Work Status</th>
 				</pics:permission>
@@ -121,7 +122,7 @@ $(document).ready(function() {
 			<tr>
 				<td><s:property value="flagColor.smallIcon" escape="false" /></td>
 				<td><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"><s:property value="operatorAccount.name" /></a></td>
-				<td><s:property value="waitingOn"/></td>
+				<td><s:text name="%{waitingOn.i18nKey}"/></td>
 				<pics:permission perm="ContractorApproval">
 					<td><s:property value="workStatus"/></td>
 				</pics:permission>

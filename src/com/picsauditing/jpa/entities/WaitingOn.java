@@ -3,10 +3,12 @@ package com.picsauditing.jpa.entities;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Transient;
+
 /*
  * Contractor Waiting On 
  */
-public enum WaitingOn {
+public enum WaitingOn implements Translatable {
 	None,
 	Contractor,
 	PICS,
@@ -36,10 +38,14 @@ public enum WaitingOn {
 		return this.equals(None);
 	}
 
+	@Transient
 	@Override
-	public String toString() {
-		if (this.equals(WaitingOn.None))
-			return "";
-		return super.toString();
+	public String getI18nKey() {
+		return getClass().getSimpleName() + "." + toString();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

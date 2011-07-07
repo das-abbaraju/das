@@ -79,9 +79,9 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th>Flag</th>
-			<th>Operator Name</th>
-			<th>Waiting On</th>
+			<th><s:text name="global.Flag"/></th>
+			<th><s:text name="global.Operator"/></th>
+			<th><s:text name="global.WaitingOn"/></th>
 			<pics:permission perm="RemoveContractors">
 				<th>Remove<br />
 				Operator</th>
@@ -109,12 +109,12 @@
 						</s:url>
 						<s:a href="%{opUrl}"><s:property value="operatorAccount.name" /></s:a>
 					</td>
-					<td><s:property value="waitingOn.name()" /></td>
+					<td><s:text name="%{waitingOn.i18nKey}"/></td>
 				</s:if>
 				<s:else>
 					<td>N/A</td>
 					<td><s:property value="operatorAccount.name"/></td>
-					<td>Contractor</td>
+					<td><s:text name="global.Contractor"/></td>
 				</s:else>
 
 				<pics:permission perm="RemoveContractors">
