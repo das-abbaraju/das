@@ -35,7 +35,6 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected int showPage;
 	protected ColorAlternater color = new ColorAlternater();
 	protected String reportName = null;
-	protected String messageText = null;
 
 	protected boolean download = false;
 	protected boolean mailMerge = false;
@@ -165,14 +164,6 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	public void setReportName(String reportName) {
 		this.reportName = reportName;
-	}
-
-	public String getMessageText() {
-		return messageText;
-	}
-
-	public void setMessageText(String messageText) {
-		this.messageText = messageText;
 	}
 
 	private void logFilter() {
