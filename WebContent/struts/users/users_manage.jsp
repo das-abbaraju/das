@@ -16,7 +16,7 @@
 <script type="text/javascript" src="js/user_manage.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
-var accountID = <s:property value="account.id"/>;
+var accountID = '<s:property value="account.id" />';
 var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
 
@@ -199,7 +199,6 @@ div.autocomplete ul li {
 		<s:hidden name="isGroup" />
 		<s:hidden name="isActive" />
 		<s:hidden name="userIsGroup" />
-		<s:hidden name="userIsActive" />
 		<fieldset class="form">
 		<h2 class="formLegend"><s:if test="user.group">Group</s:if><s:else>User</s:else> Details</h2>
 		<ol>

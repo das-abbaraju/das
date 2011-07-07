@@ -65,7 +65,6 @@ public class UsersManage extends PicsActionSupport {
 	protected String isGroup = "";
 	protected String isActive = "Yes";
 	protected YesNo userIsGroup;
-	protected YesNo userIsActive;
 
 	protected boolean hasAllOperators = false;
 
@@ -114,7 +113,6 @@ public class UsersManage extends PicsActionSupport {
 		user.setAccount(account);
 		user.setIsGroup(userIsGroup);
 		user.setActive(true);
-		userIsActive = YesNo.Yes;
 
 		return SUCCESS;
 	}
@@ -123,7 +121,6 @@ public class UsersManage extends PicsActionSupport {
 		startup();
 
 		user.setIsGroup(userIsGroup);
-		user.setIsActive(userIsActive);
 
 		// Lazy init fix for isOk method
 		user.getGroups().size();
@@ -436,7 +433,9 @@ public class UsersManage extends PicsActionSupport {
 		if (user != null) {
 			if (user.getAccount() != null)
 				account = user.getAccount();
-			
+			if (user.getId() > 0)
+				userIsGroup = user.getIsGroup();
+
 			for (UserAccess ua : user.getOwnedPermissions()) {
 				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
 					conAdmin = true;
@@ -527,14 +526,6 @@ public class UsersManage extends PicsActionSupport {
 
 	public void setUserIsGroup(YesNo userIsGroup) {
 		this.userIsGroup = userIsGroup;
-	}
-
-	public YesNo getUserIsActive() {
-		return userIsActive;
-	}
-
-	public void setUserIsActive(YesNo userIsActive) {
-		this.userIsActive = userIsActive;
 	}
 
 	public User getUser() {
