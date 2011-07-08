@@ -56,7 +56,7 @@ function showExcelUpload() {
 </head>
 <body>
 	<s:if test="auditID > 0">
-		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="%{scope}.message.ReturnTo" /> <s:text name="AuditType.99.name" /></a></div>
+		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a></div>
 	</s:if>
 	<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 	<s:include value="../actionMessages.jsp"/>
