@@ -29,11 +29,14 @@
 				class="com.picsauditing.interceptors.SecurityInterceptor" />
 			<interceptor name="checkbox"
 				class="com.picsauditing.strutsutil.CheckboxInterceptor" />
+			<interceptor name="cachecontrol"
+				class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
 				<interceptor-ref name="alias" /> <!-- maybe we can kill this -->
 				<interceptor-ref name="servletConfig" />
+				<interceptor-ref name="cachecontrol" />
 				<interceptor-ref name="security" />
 				<interceptor-ref name="prepare" />
 				<interceptor-ref name="i18n" />
