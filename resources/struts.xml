@@ -1088,7 +1088,13 @@
 
 		<action name="ReportCsrContractorCount"
 			class="com.picsauditing.actions.report.ReportCsrContractorCount">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportCsrContractorCount</param>
 			<result>struts/reports/csr_contractor_count.jsp</result>
+		</action>
+		<action name="ReportCsrContractorCountAjax"
+			class="com.picsauditing.actions.report.ReportCsrContractorCount">
+			<result>struts/reports/csr_contractor_count_data.jsp</result>
 		</action>
 
 		<!-- Audits View/Edit/Verify/Copy -->
