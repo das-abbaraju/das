@@ -18,8 +18,10 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.actions.AccountActionSupport;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -29,47 +31,45 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
-public class JobCompetencyMatrix extends AccountActionSupport {
-	@Autowired
-	protected JobRoleDAO jobRoleDAO;
+public class JobCompetencyMatrix extends PicsActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	private OperatorCompetencyDAO competencyDAO;
-
-	private int auditID;
+	protected ContractorAuditDAO contractorAuditDAO;
+	@Autowired
+	protected JobRoleDAO jobRoleDAO;
+	@Autowired
+	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
 	private List<JobRole> roles;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
+	
+	private int auditID;
 
-	public JobCompetencyMatrix() {
-		subHeading = "HSE Competency Matrix";
-	}
-
-	@Override
-	public String execute() throws Exception {
-		if (permissions.isContractor())
-			id = permissions.getAccountId();
+	@Before
+	public void startup() throws Exception {
+		if (account == null) {
+			if (permissions.isContractor())
+				account = accountDAO.find(permissions.getAccountId());
+		}
 		
-		if (id == 0 && auditID == 0)
-			throw new Exception("Missing id");
-
 		// Get auditID
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
-			
+
 			if (permissions.isAdmin()) {
-				ContractorAudit audit = (ContractorAudit) jobRoleDAO.find(ContractorAudit.class, auditID);
-				id = audit.getContractorAccount().getId();
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
+				account = audit.getContractorAccount();
 			}
 		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		}
-		
-		account = accountDAO.find(id);
-		roles = jobRoleDAO.findMostUsed(id, true);
+
+		roles = jobRoleDAO.findMostUsed(account.getId(), true);
+		competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);
+		map = jobRoleDAO.findJobCompetencies(account.getId(), true);
 
 		List<JobRole> jobRoles = account.getJobRoles();
 		Collections.sort(jobRoles, new Comparator<JobRole>() {
@@ -82,25 +82,20 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 			if (!roles.contains(jr) && jr.isActive())
 				roles.add(jr);
 		}
+	}
+	
+	public String download() throws Exception {
+		String filename = "HSECompetencyMatrix";
+		HSSFWorkbook wb = buildWorkbook(filename);
+		filename += ".xls";
 
-		competencies = competencyDAO.findMostUsed(id, true);
-		map = jobRoleDAO.findJobCompetencies(id, true);
-
-		if (button != null && "Download".equals(button)) {
-			String filename = "HSECompetencyMatrix";
-			HSSFWorkbook wb = buildWorkbook(filename);
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
-
-		return SUCCESS;
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		return null;
 	}
 
 	public int getAuditID() {
