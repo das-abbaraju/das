@@ -135,8 +135,8 @@ public class AuditRuleCache<R extends AuditRule> {
 		@Override
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
-			for (LowMedHigh risk : contractor.productRisks) {
-				Trades trades = data.get(risk);
+			for (Boolean sole : contractor.soleProprietors) {
+				Trades trades = data.get(sole);
 				if (trades != null)
 					rules.addAll(trades.next(contractor));
 			}
