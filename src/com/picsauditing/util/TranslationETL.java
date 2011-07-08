@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,15 +15,21 @@ import java.util.Set;
 import javax.servlet.ServletOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
 import com.picsauditing.PICS.DateBean;
@@ -123,6 +130,7 @@ public class TranslationETL extends PicsActionSupport {
 		if (file != null && file.length() > 0) {
 			importXML(FileUtils.getBytesFromFile(file));
 			importTranslations = true;
+			
 			File newFile = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
 			file.renameTo(newFile);
 		} else if (file == null || file.length() == 0) {
@@ -137,44 +145,11 @@ public class TranslationETL extends PicsActionSupport {
 		if (startDate == null)
 			addActionError("Missing date");
 		else {
-			db = new Database();
-			sql = new SelectSQL("app_translation t");
-			
-			String sqlDate = DateBean.toDBFormat(startDate);
-			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
-					+ "') AND t.msgValue != 'Translation missing'";
-			setupSQL(where);
-
-			List<BasicDynaBean> data = db.select(sql.toString(), true);
+			List<BasicDynaBean> data = getData();
 			foundRows = db.getAllRows();
 
 			if (foundRows <= 2000) {
-				StringBuilder str = new StringBuilder();
-				str.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-				str.append("<translations>\n");
-				for (BasicDynaBean d : data) {
-					str.append("\t<translation>\n");
-					str.append("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>\n");
-					str.append("\t\t<locale>" + d.get("locale").toString() + "</locale>\n");
-					str.append("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
-							+ "</msgValue>\n");
-
-					if (d.get("createdBy") != null)
-						str.append("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>\n");
-					if (d.get("creationDate") != null)
-						str.append("\t\t<creationDate>" + d.get("creationDate").toString() + "</creationDate>\n");
-					if (d.get("updatedBy") != null)
-						str.append("\t\t<updatedBy>" + d.get("updatedBy").toString() + "</updatedBy>\n");
-					if (d.get("updateDate") != null)
-						str.append("\t\t<updateDate>" + d.get("updateDate").toString() + "</updateDate>\n");
-					if (d.get("lastUsed") != null)
-						str.append("\t\t<lastUsed>" + d.get("lastUsed").toString() + "</lastUsed>\n");
-
-					str.append("\t</translation>\n");
-				}
-
-				str.append("</translations>\n");
-				translations = str.toString().trim();
+				translations = buildXML(data);
 			} else
 				download = true;
 		}
@@ -187,65 +162,14 @@ public class TranslationETL extends PicsActionSupport {
 		if (startDate == null)
 			addActionError("Missing date");
 		else {
-			db = new Database();
-			sql = new SelectSQL("app_translation t");
-			
-			String sqlDate = DateBean.toDBFormat(startDate);
-			String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
-					+ "') AND t.msgValue != 'Translation missing'";
-			
-			setupSQL(where);
-			List<BasicDynaBean> data = db.select(sql.toString(), true);
-			foundRows = db.getAllRows();
-
 			ServletActionContext.getResponse().setContentType("application/xml");
 			ServletActionContext.getResponse()
-					.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
+			.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+
 			OutputStreamWriter outstreamWriter = new OutputStreamWriter(outstream);
 			BufferedWriter writer = new BufferedWriter(outstreamWriter);
-			writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
-			writer.newLine();
-			writer.write("<translations>");
-			writer.newLine();
-
-			for (BasicDynaBean d : data) {
-				writer.write("\t<translation>");
-				writer.newLine();
-				writer.write("\t\t<msgKey>" + d.get("msgKey").toString() + "</msgKey>");
-				writer.newLine();
-				writer.write("\t\t<locale>" + d.get("locale").toString() + "</locale>");
-				writer.newLine();
-				writer.write("\t\t<msgValue>" + StringEscapeUtils.escapeXml(d.get("msgValue").toString())
-						+ "</msgValue>");
-				writer.newLine();
-
-				if (d.get("createdBy") != null) {
-					writer.write("\t\t<createdBy>" + d.get("createdBy").toString() + "</createdBy>");
-					writer.newLine();
-				}
-				if (d.get("creationDate") != null) {
-					writer.write("\t\t<creationDate>" + d.get("creationDate").toString() + "</creationDate>");
-					writer.newLine();
-				}
-				if (d.get("updatedBy") != null) {
-					writer.write("\t\t<updatedBy>" + d.get("updatedBy").toString() + "</updatedBy>");
-					writer.newLine();
-				}
-				if (d.get("updateDate") != null) {
-					writer.write("\t\t<updateDate>" + d.get("updateDate").toString() + "</updateDate>");
-					writer.newLine();
-				}
-				if (d.get("lastUsed") != null) {
-					writer.write("\t\t<lastUsed>" + d.get("lastUsed").toString() + "</lastUsed>");
-					writer.newLine();
-				}
-
-				writer.write("\t</translation>");
-				writer.newLine();
-			}
-
-			writer.write("\t</translations>");
+			writer.write(buildXML(getData()));
 			writer.close();
 			ServletActionContext.getResponse().flushBuffer();
 
@@ -253,6 +177,58 @@ public class TranslationETL extends PicsActionSupport {
 		}
 
 		return "data";
+	}
+	
+	private List<BasicDynaBean> getData() throws Exception {
+		db = new Database();
+		sql = new SelectSQL("app_translation t");
+
+		String sqlDate = DateBean.toDBFormat(startDate);
+		String where = "(t.creationDate > '" + sqlDate + "' OR t.updateDate > '" + sqlDate
+				+ "') AND t.msgValue != 'Translation missing'";
+
+		setupSQL(where);
+		return db.select(sql.toString(), true);
+	}
+	
+	private String buildXML(List<BasicDynaBean> data) throws Exception {
+		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = builderFactory.newDocumentBuilder();
+		Document document = builder.newDocument();
+
+		Element translationsElement = document.createElement("translations");
+		document.appendChild(translationsElement);
+
+		for (BasicDynaBean d : data) {
+			Element translation = document.createElement("translation");
+			translationsElement.appendChild(translation);
+
+			Element element = document.createElement("msgKey");
+			translation.appendChild(element);
+			Text elementText = document.createTextNode(d.get("msgKey").toString());
+			element.appendChild(elementText);
+
+			element = document.createElement("locale");
+			translation.appendChild(element);
+			elementText = document.createTextNode(d.get("locale").toString());
+			element.appendChild(elementText);
+
+			element = document.createElement("msgValue");
+			translation.appendChild(element);
+			elementText = document.createTextNode(d.get("msgValue").toString());
+			element.appendChild(elementText);
+		}
+
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+		StringWriter stringWriter = new StringWriter();
+		StreamResult result = new StreamResult(stringWriter);
+		DOMSource domSource = new DOMSource(document);
+		transformer.transform(domSource, result);
+		return stringWriter.toString();
 	}
 
 	private void importXML(byte[] byteArray) throws Exception {
@@ -294,7 +270,7 @@ public class TranslationETL extends PicsActionSupport {
 			}
 		}
 
-		setupSQL("t.msgKey IN ('" + Strings.implode(allKeys, "', '") + "')");
+		setupSQL("t.msgKey IN ('" + Strings.implode(allKeysSet, "', '") + "')");
 		List<BasicDynaBean> data = db.select(sql.toString(), false);
 
 		for (BasicDynaBean d : data) {
