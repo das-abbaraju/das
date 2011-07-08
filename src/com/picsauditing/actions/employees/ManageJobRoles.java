@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
@@ -30,6 +31,8 @@ import com.picsauditing.util.Strings;
 public class ManageJobRoles extends PicsActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
+	@Autowired
+	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
 	protected EmployeeRoleDAO employeeRoleDAO;
 	@Autowired
@@ -67,7 +70,7 @@ public class ManageJobRoles extends PicsActionSupport {
 			ActionContext.getContext().getSession().put("auditID", auditID);
 
 			if (permissions.isAdmin()) {
-				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				account = audit.getContractorAccount();
 			}
 		} else {
