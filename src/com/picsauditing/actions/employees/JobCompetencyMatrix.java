@@ -24,6 +24,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
@@ -41,10 +42,12 @@ public class JobCompetencyMatrix extends PicsActionSupport {
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
+	protected Account account;
+
 	private List<JobRole> roles;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
-	
+
 	private int auditID;
 
 	@Before
@@ -53,7 +56,7 @@ public class JobCompetencyMatrix extends PicsActionSupport {
 			if (permissions.isContractor())
 				account = accountDAO.find(permissions.getAccountId());
 		}
-		
+
 		// Get auditID
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
@@ -83,7 +86,7 @@ public class JobCompetencyMatrix extends PicsActionSupport {
 				roles.add(jr);
 		}
 	}
-	
+
 	public String download() throws Exception {
 		String filename = "HSECompetencyMatrix";
 		HSSFWorkbook wb = buildWorkbook(filename);
@@ -96,6 +99,14 @@ public class JobCompetencyMatrix extends PicsActionSupport {
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 		return null;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
 	public int getAuditID() {

@@ -7,7 +7,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterEmployee;
@@ -19,7 +18,6 @@ public class ReportEmployee extends ReportActionSupport {
 	protected SelectSQL sql = new SelectSQL("employee e");
 	protected ReportFilterEmployee filter = new ReportFilterEmployee();
 	protected String filename;
-	protected boolean hse = false;
 
 	public ReportEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
@@ -52,33 +50,9 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addWhere(String.format("a.status IN (%s)", accountStatus));
 		// TODO make sure we need to default this
 		sql.addWhere("e.active = 1");
-		if (hse)
-			sql.addWhere("a.requiresCompetencyReview = 1");
 
 		if (permissions.isContractor())
 			sql.addWhere(String.format("a.id = %d", permissions.getAccountId()));
-
-		if (permissions.isOperatorCorporate()) {
-			SelectSQL sql2 = new SelectSQL("generalcontractors gc");
-
-			if (permissions.isOperator()) {
-				if (hse) {
-					sql2.addJoin("JOIN facilities f ON f.opID = gc.genID");
-					sql2.addJoin(String.format("JOIN facilities c ON c.corporateID = f.corporateID "
-							+ "AND c.opID = %d AND c.corporateID NOT IN (%s)", permissions.getAccountId(),
-							Strings.implode(Account.PICS_CORPORATE)));
-				} else {
-					sql2.addWhere(String.format("gc.genID = %d", permissions.getAccountId()));
-				}
-			}
-
-			if (permissions.isCorporate()) {
-				sql.addWhere(String.format("a.id IN (SELECT gc.subID FROM generalcontractors gc "
-						+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = %1$d) OR a.id = %1$d "
-						+ "OR a.id IN (SELECT opID FROM facilities WHERE corporateID = %1$d)",
-						permissions.getAccountId()));
-			}
-		}
 
 		addFilterToSQL();
 	}
@@ -122,10 +96,10 @@ public class ReportEmployee extends ReportActionSupport {
 		excelSheet.setData(data);
 
 		if (permissions.isOperatorCorporate())
-			excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
+			excelSheet.addColumn(new ExcelColumn("name", getText("global.CompanyName")));
 
-		excelSheet.addColumn(new ExcelColumn("firstName", "Employee First Name"));
-		excelSheet.addColumn(new ExcelColumn("lastName", "Employee Last Name"));
+		excelSheet.addColumn(new ExcelColumn("firstName", getText("Employee.firstName")));
+		excelSheet.addColumn(new ExcelColumn("lastName", getText("Employee.lastName")));
 	}
 
 	public ReportFilterEmployee getFilter() {

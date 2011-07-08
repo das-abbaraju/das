@@ -1,15 +1,16 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportEmployee {
 	public ReportCompetencyByAccount() {
 		orderByDefault = "name";
-		hse = true;
 	}
 
 	@Override
@@ -19,12 +20,29 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.active = 1");
 		sql.addJoin(buildAuditJoin(AuditType.HSE_COMPETENCY));
 		sql.addJoin(buildAuditJoin(AuditType.SHELL_COMPETENCY_REVIEW));
+		
+		if (permissions.isOperator()) {
+			String accountStatus = "'Active'";
+			if (permissions.getAccountStatus().isDemo())
+				accountStatus += ", 'Demo'";
+
+			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND (gc.genID IN "
+					+ "(SELECT f.opID FROM facilities f JOIN facilities c ON c.corporateID = f.corporateID "
+					+ "AND c.corporateID NOT IN (%s) AND c.opID = %d) OR gc.genID = %2$d)",
+					Strings.implode(Account.PICS_CORPORATE), permissions.getAccountId()));
+			sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
+			sql.addJoin(String.format(
+					"LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",
+					permissions.getAccountId()));
+			sql.addField("ISNULL(gcw.subID) notWorksFor");
+		}
 
 		sql.addField("COUNT(distinct e.id) eCount");
 		sql.addField("COUNT(distinct jr.id) jCount");
 		sql.addField(buildAuditField(AuditType.HSE_COMPETENCY));
 		sql.addField(buildAuditField(AuditType.SHELL_COMPETENCY_REVIEW));
 
+		sql.addWhere("a.requiresCompetencyReview = 1");
 		if (permissions.isCorporate()) {
 			PermissionQueryBuilderEmployee permQuery = new PermissionQueryBuilderEmployee(permissions);
 			sql.addWhere("1 " + permQuery.toString());
@@ -42,11 +60,11 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	@Override
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
-		excelSheet.addColumn(new ExcelColumn("name", "Company Name"));
-		excelSheet.addColumn(new ExcelColumn("eCount", "# of Employees"));
-		excelSheet.addColumn(new ExcelColumn("jCount", "# of Job Roles"));
-		excelSheet.addColumn(new ExcelColumn("ca99status", "Job Role Self Assessment"));
-		excelSheet.addColumn(new ExcelColumn("ca100status", "HSE Competency Review"));
+		excelSheet.addColumn(new ExcelColumn("name", getText("global.Company")));
+		excelSheet.addColumn(new ExcelColumn("eCount", getText(getScope() + ".label.NumberOfEmployees")));
+		excelSheet.addColumn(new ExcelColumn("jCount", getText(getScope() + ".label.NumberOfJobRoles")));
+		excelSheet.addColumn(new ExcelColumn("ca99status", getText("AuditType.99.name")));
+		excelSheet.addColumn(new ExcelColumn("ca100status", getText("AuditType.100.name")));
 	}
 
 	private String buildAuditJoin(int auditTypeID) {

@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>HSE Competency By Account Report</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
 <script type="text/javascript">
@@ -13,32 +13,38 @@ $(function() {
 </script>
 </head>
 <body>
-<h1>HSE Competency By Account Report</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 <s:include value="filters_employee.jsp" />
 <s:if test="data.size > 0">
 <div class="right">
-	<a class="excel" <s:if test="data.size > 500">onclick="return confirm('Are you sure you want to download all
-		<s:property value="data.size" /> rows? This may take a while.');"</s:if> 
+	<a class="excel" <s:if test="data.size > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{data.size}" /></s:text>');"</s:if> 
 		href="javascript: download('ReportCompetencyByAccount');"
-		title="Download all <s:property value="data.size"/> results to a CSV file">Download</a>
+		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{data.size}" /></s:text>"><s:text name="global.Download" /></a>
 </div>
 
 <table class="report">
 	<thead>
 		<tr>
-			<th><a href="?orderBy=name">Company</a></th>
-			<th># of Employees</th>
-			<th># of Job Roles</th>
-			<th><a href="?orderBy=ca99date">Job Role Self Assessment</a></th>
-			<th><a href="?orderBy=ca100date">HSE Competency Review</a></th>
+			<th><a href="?orderBy=name"><s:text name="global.Company" /></a></th>
+			<th><s:text name="%{scope}.label.NumberOfEmployees" /></th>
+			<th><s:text name="%{scope}.label.NumberOfJobRoles" /></th>
+			<th><a href="?orderBy=ca99date"><s:text name="AuditType.99.name" /></a></th>
+			<th><a href="?orderBy=ca100date"><s:text name="AuditType.100.name" /></a></th>
 		</tr>
 	</thead>
 	<tbody>
 		<s:iterator value="data" status="stat" id="d">
 			<tr>
-				<td><a href="ContractorView.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('name')" /></a></td>
+				<td>
+					<s:if test="#d.get('notWorksFor') == 0">
+						<a href="ContractorView.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('name')" /></a>
+					</s:if>
+					<s:else>
+						<s:property value="#d.get('name')" />
+					</s:else>
+				</td>
 				<td class="right"><a href="ReportCompetencyByEmployee.action?filter.accountName=<s:property value="@java.net.URLEncoder@encode(#d.get('name'))" />"><s:property value="#d.get('eCount')" /></a></td>
-				<td class="right"><a href="JobCompetencyMatrix.action?id=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('jCount')"/></a></td>
+				<td class="right"><a href="JobCompetencyMatrix.action?account=<s:property value="#d.get('accountID')"/>"><s:property value="#d.get('jCount')"/></a></td>
 				<td>
 					<s:if test="#d.get('ca99status').toString().length() > 0">
 						<a href="Audit.action?auditID=<s:property value="#d.get('ca99ID')" />">
@@ -67,7 +73,7 @@ $(function() {
 </s:if>
 <s:else>
 	<div class="info">
-		No Records Found.
+		<s:text name="Report.message.NoRowsFound" />
 	</div>
 </s:else>
 </body>
