@@ -359,7 +359,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				}
 			}
 
-			if (type.getClassType().isAudit()) {
+			if (type.getClassType().isAudit() && !type.isAnnualAddendum()) {
 				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 					canEdit = false;
 			}
