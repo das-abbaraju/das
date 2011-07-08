@@ -88,7 +88,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 			<tr>
 				<td><a href="QBSyncList.action?type=I&id=<s:property value="id" />" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
-				<td><s:property value="account.name" /></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="InvoiceDetail.action?invoice.id=<s:property value="id" />"><s:property
 					value="id" /></a></td>
 				<td class="right">$<s:property value="totalAmount" /></td>
@@ -119,7 +119,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 			<tr>
 				<td><a href="QBSyncList.action?type=I&id=<s:property value="id" />" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
-				<td><s:property value="account.name" /></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="InvoiceDetail.action?invoice.id=<s:property value="id" />"><s:property
 					value="id" /></a></td>
 				<td class="right">$<s:property value="totalAmount" /></td>
@@ -150,7 +150,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 			<tr>
 				<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
-				<td><s:property value="account.name" /></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property
 					value="id" /></a></td>
 				<td class="right">$<s:property value="totalAmount" /></td>
@@ -181,7 +181,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 			<tr>
 				<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
-				<td><s:property value="account.name" /></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property
 					value="id" /></a></td>
 				<td class="right">$<s:property value="totalAmount" /></td>
