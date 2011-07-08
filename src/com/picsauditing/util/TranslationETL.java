@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,14 +18,11 @@ import java.util.TreeMap;
 import javax.servlet.ServletOutputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -164,8 +162,7 @@ public class TranslationETL extends PicsActionSupport {
 			addActionError("Missing date");
 		else {
 			ServletActionContext.getResponse().setContentType("application/xml");
-			ServletActionContext.getResponse()
-					.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=Translations.xml");
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 
 			OutputStreamWriter outstreamWriter = new OutputStreamWriter(outstream);
@@ -264,16 +261,15 @@ public class TranslationETL extends PicsActionSupport {
 			}
 		}
 
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		OutputFormat format = new OutputFormat(document);
+		format.setLineWidth(65);
+		format.setIndenting(true);
+		format.setIndent(2);
+		Writer out = new StringWriter();
+		XMLSerializer serializer = new XMLSerializer(out, format);
+		serializer.serialize(document);
 
-		StringWriter stringWriter = new StringWriter();
-		StreamResult result = new StreamResult(stringWriter);
-		DOMSource domSource = new DOMSource(document);
-		transformer.transform(domSource, result);
-		return stringWriter.toString();
+		return out.toString();
 	}
 
 	private void importXML(byte[] byteArray) throws Exception {
