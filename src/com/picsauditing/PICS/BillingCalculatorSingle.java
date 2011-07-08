@@ -276,7 +276,6 @@ public class BillingCalculatorSingle {
 
 			if (!upgrades.isEmpty()) {
 				BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2);
-				String description = "";
 
 				// Actual prorated Upgrade
 				Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor
@@ -287,6 +286,7 @@ public class BillingCalculatorSingle {
 
 				BigDecimal upgradeTotal = BigDecimal.ZERO.setScale(2);
 				for (ContractorFee upgrade : upgrades) {
+					String description = "";
 					BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
 					if (contractor.getAccountLevel().isFull()) {
 						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
