@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
@@ -24,6 +25,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.SecurityAware;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -43,6 +45,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected static final String JSONP = "jsonp";
 	protected static final String CHART_XML = "chartXML";
 
+	@Autowired
+	protected BasicDAO dao;
 	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;

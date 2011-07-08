@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,7 +25,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,7 +38,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -45,8 +45,6 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {
-	@Autowired
-	private AuditTypeDAO dao;
 	// Lookup
 	private SelectSQL sql;
 	private Database db;
@@ -66,6 +64,9 @@ public class TranslationETL extends PicsActionSupport {
 	protected String fileContentType = null;
 	protected String fileFileName = null;
 	protected String fileName = null;
+
+	private Map<String, Integer> pageCount = new TreeMap<String, Integer>();
+	private List<String> pagesToInclude = new ArrayList<String>();
 
 	@RequiredPermission(value = OpPerms.Translator)
 	public String execute() throws Exception {
@@ -130,7 +131,7 @@ public class TranslationETL extends PicsActionSupport {
 		if (file != null && file.length() > 0) {
 			importXML(FileUtils.getBytesFromFile(file));
 			importTranslations = true;
-			
+
 			File newFile = new File(getFtpDir() + "/" + permissions.getUserId() + "-Translations.xml");
 			file.renameTo(newFile);
 		} else if (file == null || file.length() == 0) {
@@ -164,7 +165,7 @@ public class TranslationETL extends PicsActionSupport {
 		else {
 			ServletActionContext.getResponse().setContentType("application/xml");
 			ServletActionContext.getResponse()
-			.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
+					.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 
 			OutputStreamWriter outstreamWriter = new OutputStreamWriter(outstream);
@@ -178,7 +179,7 @@ public class TranslationETL extends PicsActionSupport {
 
 		return "data";
 	}
-	
+
 	private List<BasicDynaBean> getData() throws Exception {
 		db = new Database();
 		sql = new SelectSQL("app_translation t");
@@ -190,7 +191,7 @@ public class TranslationETL extends PicsActionSupport {
 		setupSQL(where);
 		return db.select(sql.toString(), true);
 	}
-	
+
 	private String buildXML(List<BasicDynaBean> data) throws Exception {
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
@@ -200,57 +201,66 @@ public class TranslationETL extends PicsActionSupport {
 		document.appendChild(translationsElement);
 
 		for (BasicDynaBean d : data) {
-			Element translation = document.createElement("translation");
-			translationsElement.appendChild(translation);
+			String msgKey = d.get("msgKey").toString();
+			String msgKeyRoot = msgKey.split("\\.")[0];
+			if (pageCount.containsKey(msgKeyRoot))
+				pageCount.put(msgKeyRoot, pageCount.get(msgKeyRoot) + 1);
+			else
+				pageCount.put(msgKeyRoot, 1);
 
-			Element element = document.createElement("msgKey");
-			translation.appendChild(element);
-			Text elementText = document.createTextNode(d.get("msgKey").toString());
-			element.appendChild(elementText);
+			if (pagesToInclude.isEmpty() || pagesToInclude.contains(msgKeyRoot)) {
+				Element translation = document.createElement("translation");
+				translationsElement.appendChild(translation);
 
-			element = document.createElement("locale");
-			translation.appendChild(element);
-			elementText = document.createTextNode(d.get("locale").toString());
-			element.appendChild(elementText);
+				Element element = document.createElement("msgKey");
+				translation.appendChild(element);
+				Text elementText = document.createTextNode(d.get("msgKey").toString());
+				element.appendChild(elementText);
 
-			element = document.createElement("msgValue");
-			translation.appendChild(element);
-			elementText = document.createTextNode(d.get("msgValue").toString());
-			element.appendChild(elementText);
-			
-			if (d.get("createdBy") != null) {
-				element = document.createElement("createdBy");
+				element = document.createElement("locale");
 				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("createdBy").toString());
+				elementText = document.createTextNode(d.get("locale").toString());
 				element.appendChild(elementText);
-			}
 
-			if (d.get("updatedBy") != null) {
-				element = document.createElement("updatedBy");
+				element = document.createElement("msgValue");
 				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("updatedBy").toString());
+				elementText = document.createTextNode(d.get("msgValue").toString());
 				element.appendChild(elementText);
-			}
-			
-			if (d.get("creationDate") != null) {
-				element = document.createElement("creationDate");
-				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("creationDate").toString());
-				element.appendChild(elementText);
-			}
-			
-			if (d.get("updateDate") != null) {
-				element = document.createElement("updateDate");
-				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("updateDate").toString());
-				element.appendChild(elementText);
-			}
-			
-			if (d.get("lastUsed") != null) {
-				element = document.createElement("lastUsed");
-				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("lastUsed").toString());
-				element.appendChild(elementText);
+
+				if (d.get("createdBy") != null) {
+					element = document.createElement("createdBy");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("createdBy").toString());
+					element.appendChild(elementText);
+				}
+
+				if (d.get("updatedBy") != null) {
+					element = document.createElement("updatedBy");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("updatedBy").toString());
+					element.appendChild(elementText);
+				}
+
+				if (d.get("creationDate") != null) {
+					element = document.createElement("creationDate");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("creationDate").toString());
+					element.appendChild(elementText);
+				}
+
+				if (d.get("updateDate") != null) {
+					element = document.createElement("updateDate");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("updateDate").toString());
+					element.appendChild(elementText);
+				}
+
+				if (d.get("lastUsed") != null) {
+					element = document.createElement("lastUsed");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("lastUsed").toString());
+					element.appendChild(elementText);
+				}
 			}
 		}
 
@@ -269,7 +279,7 @@ public class TranslationETL extends PicsActionSupport {
 	private void importXML(byte[] byteArray) throws Exception {
 		db = new Database();
 		sql = new SelectSQL("app_translation t");
-		
+
 		importedTranslations = new DoubleMap<String, String, List<AppTranslation>>();
 		Set<String> allKeysSet = new HashSet<String>();
 		Set<String> allLocalesSet = new HashSet<String>();
@@ -436,5 +446,17 @@ public class TranslationETL extends PicsActionSupport {
 
 	public void setFile(File file) {
 		this.file = file;
+	}
+
+	public List<String> getPagesToInclude() {
+		return pagesToInclude;
+	}
+
+	public void setPagesToInclude(List<String> pagesToInclude) {
+		this.pagesToInclude = pagesToInclude;
+	}
+
+	public Map<String, Integer> getPageCount() {
+		return pageCount;
 	}
 }

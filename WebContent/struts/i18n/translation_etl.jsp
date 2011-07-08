@@ -45,8 +45,11 @@ function importTranslations() {
 
 function exportTranslations() {
 	$('#translationETL').html('<img src="images/ajax_process.gif" />');
+	var params = $('#etlForm').serializeArray();
+	
+	params.push({name: "importTranslations", value: false});
 	$('#translationETL').load('TranslationETL!exportTranslationAjax.action', 
-		{ startDate: $('#translationDate').val(), importTranslations: false },
+		params,
 		function(){
 			$('#translationETL').show();
 			$('#exportDiv').show();
@@ -103,7 +106,7 @@ $(function() {
 </head>
 <body>
 	<s:include value="../actionMessages.jsp" />
-	<s:form enctype="multipart/form-data" method="post">
+	<s:form enctype="multipart/form-data" method="post" id="etlForm">
 		<input type="button" class="picsbutton" value="Import..." id="importButton" />
 		<input type="button" class="picsbutton" value="Export..." id="exportButton" />
 		<div id="exportDiv" style="display: none; clear: both;">

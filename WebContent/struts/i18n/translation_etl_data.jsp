@@ -15,6 +15,8 @@
 	}
 	</style>
 	<div id="exportOptions">
+	Page Count:<br />
+	<s:select name="pagesToInclude" list="pageCount" listKey="key" listValue="%{key + ' (' + value + ')'}" multiple="true"></s:select> 
 		<s:if test="download">
 			<div class="info">
 				Found <s:property value="foundRows" /> rows. A download is provided instead of printing to screen.<br />
