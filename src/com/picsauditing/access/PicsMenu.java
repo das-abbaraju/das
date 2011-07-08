@@ -431,7 +431,7 @@ public class PicsMenu {
 
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
-			subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
+			//subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 
 		if (permissions.isRequiresOQ()) {
