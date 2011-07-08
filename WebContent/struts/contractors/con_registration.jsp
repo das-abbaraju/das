@@ -30,7 +30,7 @@
 <script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 function checkUsername(username) {
-	var msg = '<s:text name="Progress.Username" />';
+	var msg = translate('JS.Progress.Username');
 	$('#username_status').text(msg);
 	var data = {userID: 0, username: username};
 	$('#username_status').load('user_ajax.jsp', data);

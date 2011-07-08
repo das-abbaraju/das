@@ -61,6 +61,7 @@
 <script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
 <script type="text/javascript" src="js/chrome.js"></script>
 <script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
+<script type="text/javascript" src="TranslateJS.action"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 <script type="text/javascript">

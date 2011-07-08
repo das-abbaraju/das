@@ -2185,5 +2185,8 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
+			<result>struts/i18n/translate_js.jsp</result>
+		</action>
 	</package>
 </struts>
