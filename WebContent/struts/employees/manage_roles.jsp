@@ -11,7 +11,7 @@
 	clear: right;
 }
 
-#rolesTable td {
+#rolesTable td.leftCell, #rolesTable td.rightCell {
 	vertical-align: top;
 }
 
@@ -23,6 +23,14 @@
 fieldset.form label {
 	width: 5em;
 	margin-right: 0px;
+}
+
+td.leftCell {
+	width: 50%;
+}
+
+td.rightCell {
+	padding-left: 10px;
 }
 </style>
 <s:include value="../jquery.jsp" />
@@ -92,12 +100,9 @@ $(function() {
 
 <h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 <s:include value="../actionMessages.jsp" />
-<div class="right">
-	<a href="resources/HSECompetencyReview.pdf" title="<s:text name="%{scope}.help.QuestionReviewPDF" />"><s:text name="%{scope}.link.QuestionReviewPDF" /></a>
-</div>
 <table id="rolesTable">
 	<tr>
-		<td style="vertical-align: top; padding-right: 10px;">
+		<td class="leftCell">
 			<s:if test="jobRoles.size > 0">
 				<table class="report">
 					<thead>
@@ -116,9 +121,14 @@ $(function() {
 					</tbody>
 				</table>
 			</s:if>
-			<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewJobRole" /></a>
+			<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewJobRole" /></a><br />
+			<div class="info">
+				<a href="resources/HSECompetencyReview.pdf"><s:text name="%{scope}.link.QuestionReviewPDF" /></a>
+				<br />
+				<s:text name="%{scope}.help.QuestionReviewPDF" />
+			</div>
 		</td>
-		<td style="vertical-align: top">
+		<td class="rightCell">
 			<div id="roleCell"></div>
 		</td>
 	</tr>
