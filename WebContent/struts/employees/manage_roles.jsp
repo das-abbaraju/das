@@ -84,13 +84,7 @@ $(function() {
 
 <s:if test="auditID > 0">
 	<div class="info">
-		<s:text name="%{scope}.message.AuditHelp">
-			<s:param>
-				<s:iterator value="shellOps" status="stat">
-					<s:property value="name" /><s:if test="#stat.count < (shellOps.size - 1)">,</s:if><s:if test="#stat.count == (shellOps.size - 1)"> <s:text name="global.And" /></s:if>
-				</s:iterator>
-			</s:param>
-		</s:text>
+		<s:text name="%{scope}.message.AuditHelp"></s:text>
 		<br />
 		<a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a>
 	</div>
