@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletOutputStream;
-
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -15,7 +13,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -87,26 +84,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addGroupBy("e.id");
 		run(sql);
 		buildMap();
-
-		if (download || "download".equals(button)) {
-			if (Strings.isEmpty(filename)) {
-				String className = this.getClass().getName();
-				filename = className.substring(className.lastIndexOf("."));
-			}
-
-			HSSFWorkbook wb = buildWorkbook(filename);
-
-			excelSheet.setName(filename);
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-			return null;
-		}
+		
+		if (download || "download".equals(button))
+			return getDownload();
 
 		return SUCCESS;
 	}
@@ -136,8 +116,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 				addActionMessage(getText(getScope() + ".message.AddedTo", new Object[] { ec.getCompetency().getLabel(),
 						ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
 			} else {
-				addActionMessage(getText(getScope() + ".message.RemovedFrom", new Object[] { ec.getCompetency().getLabel(),
-					ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+				addActionMessage(getText(getScope() + ".message.RemovedFrom",
+						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
+								ec.getEmployee().getFirstName() }));
 			}
 		} else
 			addActionError(getText(getScope() + ".message.MissingEmployeeCompetency"));

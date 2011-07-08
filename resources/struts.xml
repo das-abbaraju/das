@@ -2120,11 +2120,6 @@
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
 
-		<action name="EmployeeCompetenciesAjax"
-			class="com.picsauditing.actions.employees.EmployeeCompetencies">
-			<result>/struts/employees/employee_competencies_data.jsp</result>
-		</action>
-
 		<action name="EmployeeCompetenciesCSV"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<param name="download">true</param>
