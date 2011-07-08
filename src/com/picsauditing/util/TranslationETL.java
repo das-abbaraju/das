@@ -54,8 +54,9 @@ public class TranslationETL extends PicsActionSupport {
 	private boolean download = false;
 	private Date startDate;
 	private String translations;
-	private Map<String, List<AppTranslation>> importedTranslations;
+	private DoubleMap<String, String, List<AppTranslation>> importedTranslations;
 	private List<String> allKeys;
+	private List<String> allLocales;
 	// Import
 	private File file;
 	protected String fileContentType = null;
@@ -82,20 +83,22 @@ public class TranslationETL extends PicsActionSupport {
 
 		List<AppTranslation> translations = new ArrayList<AppTranslation>();
 		for (String key : allKeys) {
-			if (importedTranslations.get(key) != null) {
-				AppTranslation t = importedTranslations.get(key).get(0);
+			for (String locale : allLocales) {
+				if (importedTranslations.get(key, locale) != null) {
+					AppTranslation t = importedTranslations.get(key, locale).get(0);
 
-				if (importedTranslations.get(key).size() > 1) {
-					AppTranslation t2 = importedTranslations.get(key).get(1);
+					if (importedTranslations.get(key, locale).size() > 1) {
+						AppTranslation t2 = importedTranslations.get(key, locale).get(1);
 
-					if (t2 != null && t2.getId() > 0)
-						t.setId(t2.getId());
-				}
+						if (t2 != null && t2.getId() > 0)
+							t.setId(t2.getId());
+					}
 
-				translations.add(t);
-				if (translations.size() == 100) {
-					saveTranslations(translations);
-					translations.clear();
+					translations.add(t);
+					if (translations.size() == 100) {
+						saveTranslations(translations);
+						translations.clear();
+					}
 				}
 			}
 		}
@@ -159,7 +162,8 @@ public class TranslationETL extends PicsActionSupport {
 			addActionError("Missing date");
 		else {
 			ServletActionContext.getResponse().setContentType("application/xml");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=Translations.xml");
+			ServletActionContext.getResponse()
+					.setHeader("Content-Disposition", "attachment; filename=Translations.xml");
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 
 			OutputStreamWriter outstreamWriter = new OutputStreamWriter(outstream);
@@ -273,8 +277,9 @@ public class TranslationETL extends PicsActionSupport {
 		db = new Database();
 		sql = new SelectSQL("app_translation t");
 
-		importedTranslations = new TreeMap<String, List<AppTranslation>>();
+		importedTranslations = new DoubleMap<String, String, List<AppTranslation>>();
 		Set<String> allKeysSet = new HashSet<String>();
+		Set<String> allLocalesSet = new HashSet<String>();
 
 		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		sdf2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -296,12 +301,13 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, children.item(j).getNodeName(), children.item(j).getTextContent());
 
 				allKeysSet.add(t.getKey());
+				allLocalesSet.add(t.getLocale());
 
-				if (t.getKey() != null) {
-					if (importedTranslations.get(t.getKey()) == null)
-						importedTranslations.put(t.getKey(), new ArrayList<AppTranslation>());
+				if (t.getKey() != null && t.getLocale() != null) {
+					if (importedTranslations.get(t.getKey(), t.getLocale()) == null)
+						importedTranslations.put(t.getKey(), t.getLocale(), new ArrayList<AppTranslation>());
 
-					importedTranslations.get(t.getKey()).add(t);
+					importedTranslations.get(t.getKey(), t.getLocale()).add(t);
 				}
 			}
 		}
@@ -314,9 +320,9 @@ public class TranslationETL extends PicsActionSupport {
 			String locale = d.get("locale").toString();
 			String msgValue = d.get("msgValue").toString();
 
-			if (importedTranslations.get(msgKey) != null) {
+			if (importedTranslations.get(msgKey, locale) != null) {
 				// Check if the locale and msgKey are the same
-				AppTranslation first = importedTranslations.get(msgKey).get(0);
+				AppTranslation first = importedTranslations.get(msgKey, locale).get(0);
 				if (msgValue.equals(first.getValue()) && locale.equals(first.getLocale()))
 					allKeysSet.remove(msgKey);
 				else {
@@ -331,12 +337,13 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
 
-					importedTranslations.get(t.getKey()).add(t);
+					importedTranslations.get(t.getKey(), locale).add(t);
 				}
 			}
 		}
 
 		allKeys = new ArrayList<String>(allKeysSet);
+		allLocales = new ArrayList<String>(allLocalesSet);
 	}
 
 	private void setupSQL(String where) {
@@ -420,12 +427,16 @@ public class TranslationETL extends PicsActionSupport {
 		return foundRows;
 	}
 
-	public Map<String, List<AppTranslation>> getImportedTranslations() {
+	public DoubleMap<String, String, List<AppTranslation>> getImportedTranslations() {
 		return importedTranslations;
 	}
 
 	public List<String> getAllKeys() {
 		return allKeys;
+	}
+
+	public List<String> getAllLocales() {
+		return allLocales;
 	}
 
 	public File getFile() {

@@ -12,12 +12,16 @@
 	</thead>
 	<tbody>
 		<s:iterator value="allKeys" id="key">
-			<tr>
-				<td><s:property value="importedTranslations.get(#key).get(0).key" /></td>
-				<td><s:property value="importedTranslations.get(#key).get(0).locale" /></td>
-				<td><s:property value="importedTranslations.get(#key).get(0).value" /></td>
-				<td><s:property value="importedTranslations.get(#key).get(1).value" /></td>
-			</tr>
+			<s:iterator value="allLocales" id="locale">
+				<s:if test="importedTranslations.get(#key, #locale) != null">
+					<tr>
+						<td><s:property value="#key" /></td>
+						<td><s:property value="#locale" /></td>
+						<td><s:property value="importedTranslations.get(#key, #locale).get(0).value" /></td>
+						<td><s:property value="importedTranslations.get(#key, #locale).get(1).value" /></td>
+					</tr>
+				</s:if>
+			</s:iterator>
 		</s:iterator>
 		<s:if test="allKeys.size > 250">
 			<tr>
