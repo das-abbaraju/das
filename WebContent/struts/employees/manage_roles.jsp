@@ -84,7 +84,7 @@ $(function() {
 
 <s:if test="auditID > 0">
 	<div class="info">
-		<s:text name="%{scope}.message.AuditHelp"></s:text>
+		<s:text name="%{scope}.message.AuditHelp" />
 		<br />
 		<a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a>
 	</div>

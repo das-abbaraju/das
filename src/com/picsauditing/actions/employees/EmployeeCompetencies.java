@@ -22,9 +22,9 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
@@ -39,81 +39,46 @@ public class EmployeeCompetencies extends ReportEmployee {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
-	protected EmployeeCompetencyDAO ecDAO;
-	@Autowired
-	protected OperatorCompetencyDAO ocDAO;
+	protected EmployeeCompetencyDAO employeeCompetencyDAO;
 
-	protected int id;
-	protected int auditID;
-	protected int employeeID;
-	protected int competencyID;
+	protected Account account;
+	protected Employee employee;
+	protected OperatorCompetency competency;
 	protected boolean skilled;
+	private int auditID;
 
 	private List<Employee> employees;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public String execute() throws Exception {
-		if (permissions.isContractor())
-			id = permissions.getAccountId();
-		
+		if (account == null && permissions.isContractor())
+			account = accountDAO.find(permissions.getAccountId());
+
 		// Get auditID
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
-			
+
 			if (permissions.isAdmin()) {
-				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
-				id = audit.getContractorAccount().getId();
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
+				account = audit.getContractorAccount();
 			}
 		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		}
 
-		if (id > 0)
-			account = accountDAO.find(id);
-		else
-			throw new RecordNotFoundException("Missing account ID");
-		
+		if (account == null)
+			throw new RecordNotFoundException(getText(getScope() + ".message.MissingAccount"));
+
 		getFilter().setPermissions(permissions);
 		getFilter().setAccountID(account.getId());
 
 		getFilter().setShowJobRoles(true);
 		getFilter().setShowCompetencies(true);
 		getFilter().setShowSsn(false);
-
-		if (button != null) {
-			if ("ChangeCompetency".equals(button)) {
-				if (employeeID > 0 && competencyID > 0) {
-					EmployeeCompetency ec = null;
-					try {
-						ec = ecDAO.find(employeeID, competencyID);
-					} catch (Exception e) {
-						// Do nothing
-					}
-
-					if (ec == null) {
-						ec = new EmployeeCompetency();
-						ec.setSkilled(false);
-						ec.setEmployee(employeeDAO.find(employeeID));
-						ec.setCompetency(ocDAO.find(competencyID));
-						ec.setAuditColumns(permissions);
-					}
-
-					ec.setSkilled(!ec.isSkilled());
-					ecDAO.save(ec);
-
-					addActionMessage("Successfully" + (ec.isSkilled() ? " added " : " removed ")
-							+ ec.getCompetency().getLabel() + (ec.isSkilled() ? " to " : " from ")
-							+ ec.getEmployee().getLastName() + ", " + ec.getEmployee().getFirstName());
-				} else
-					addActionError("Missing employee and/or competency");
-				
-				return BLANK;
-			}
-		}
 
 		if (permissions.isContractor())
 			getFilter().setShowAccountName(false);
@@ -146,6 +111,40 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return SUCCESS;
 	}
 
+	public String changeCompetency() throws Exception {
+		if (employee != null && competency != null) {
+			EmployeeCompetency ec = null;
+			for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+				if (employeeCompetency.getCompetency().equals(competency)) {
+					ec = employeeCompetency;
+					break;
+				}
+			}
+
+			if (ec == null) {
+				ec = new EmployeeCompetency();
+				ec.setSkilled(false);
+				ec.setEmployee(employee);
+				ec.setCompetency(competency);
+				ec.setAuditColumns(permissions);
+			}
+
+			ec.setSkilled(!ec.isSkilled());
+			employeeCompetencyDAO.save(ec);
+
+			if (ec.isSkilled()) {
+				addActionMessage(getText(getScope() + ".message.AddedTo", new Object[] { ec.getCompetency().getLabel(),
+						ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+			} else {
+				addActionMessage(getText(getScope() + ".message.RemovedFrom", new Object[] { ec.getCompetency().getLabel(),
+					ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+			}
+		} else
+			addActionError(getText(getScope() + ".message.MissingEmployeeCompetency"));
+
+		return BLANK;
+	}
+
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
@@ -156,7 +155,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addJoin("JOIN operator_competency oc ON oc.id = jc.competencyID");
 
 		sql.addWhere("a.id = " + account.getId());
-		
+
 		sql.addOrderBy(getOrderBy());
 	}
 
@@ -248,7 +247,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		HSSFFont redFont = wb.createFont();
 		redFont.setColor(HSSFColor.RED.index);
-		
+
 		HSSFCellStyle red = wb.createCellStyle();
 		red.setAlignment(HSSFCellStyle.ALIGN_CENTER);
 		red.setFont(redFont);
@@ -299,36 +298,28 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return wb;
 	}
 
-	public int getId() {
-		return id;
+	public Account getAccount() {
+		return account;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setAccount(Account account) {
+		this.account = account;
 	}
 
-	public int getAuditID() {
-		return auditID;
+	public Employee getEmployee() {
+		return employee;
 	}
 
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
-	public int getEmployeeID() {
-		return employeeID;
+	public OperatorCompetency getCompetency() {
+		return competency;
 	}
 
-	public void setEmployeeID(int employeeID) {
-		this.employeeID = employeeID;
-	}
-
-	public int getCompetencyID() {
-		return competencyID;
-	}
-
-	public void setCompetencyID(int competencyID) {
-		this.competencyID = competencyID;
+	public void setCompetency(OperatorCompetency competency) {
+		this.competency = competency;
 	}
 
 	public boolean isSkilled() {
@@ -337,6 +328,14 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 	public void setSkilled(boolean skilled) {
 		this.skilled = skilled;
+	}
+
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 
 	public List<Employee> getEmployees() {

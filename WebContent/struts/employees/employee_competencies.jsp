@@ -2,9 +2,12 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Employee HSE Competencies</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="../reports/reportHeader.jsp" />
 <style type="text/css">
+.box {
+	background-color: #F9F9F9;
+}
 .red, .green {
 	text-align: center;
 }
@@ -32,13 +35,12 @@ div.box {
 function changeCompetency(employeeID, competencyID, checkbox) {
 	var checked = $(checkbox).is(":checked");
 	var data = {
-		employeeID: employeeID,
-		competencyID: competencyID,
-		skilled: checked,
-		button: "ChangeCompetency"
+		employee: employeeID,
+		competency: competencyID,
+		skilled: checked
 	};
 
-	$("#messages").load('EmployeeCompetenciesAjax.action?' + $('#form1').serialize(), data, function(r, status, xhr) {
+	$("#messages").load('EmployeeCompetencies!changeCompetency.action?' + $('#form1').serialize(), data, function(r, status, xhr) {
 		if (status == "success" && r.indexOf("Success") > 0)
 			$(checkbox).parent().removeClass('green').removeClass('red').addClass(checked ? 'green' : 'red');
 		else
@@ -48,30 +50,31 @@ function changeCompetency(employeeID, competencyID, checkbox) {
 </script>
 </head>
 <body>
+
 <s:if test="auditID > 0">
-	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />">Return to Job Roles Self Assessment</a></div>
+	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a></div>
 </s:if>
-<h1><s:property value="account.name" /><span class="sub">Employee HSE Competencies</span></h1>
+<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 
 <s:include value="../reports/filters_employee.jsp" />
-<div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-	href="javascript: download('EmployeeCompetencies');" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+<div class="right"><a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+	href="javascript: download('EmployeeCompetencies');" title="<s:text name="javascript.DownloadAllRows"><s:param value="report.allRows" /></s:text>"><s:text name="global.Download" /></a></div>
 
 <table class="legend">
 	<tr>
 		<td><div class="box green"></div></td>
-		<td>If checked, this employee is SKILLED in the given competency.</td>
+		<td><s:text name="%{scope}.help.Green" /></td>
 	</tr>
 	<tr>
 		<td><div class="box red"></div></td>
-		<td>If unchecked, this employee is not yet verified as SKILLED in the given competency.</td>
+		<td><s:text name="%{scope}.help.Red" /></td>
 	</tr>
 	<tr>
-		<td><div class="box" style="background-color: #F9F9F9"></div></td>
+		<td><div class="box"></div></td>
 		<td>
-			If blank, this employee does not require the given competency.
+			<s:text name="%{scope}.help.Blank" />
 			<s:if test="permissions.contractor">
-				Change this by either updating the <a href="ManageEmployees.action">employee's job roles</a> or by editing the <a href="ManageJobRoles.action">required competencies for this company's job roles</a>.
+				<s:text name="%{scope}.help.ContractorLinks" />
 			</s:if>
 		</td>
 	</tr>

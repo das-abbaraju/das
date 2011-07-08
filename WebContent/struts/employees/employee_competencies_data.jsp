@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 <div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
@@ -11,7 +11,7 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th><a href="?orderBy=e.lastName,e.firstName<s:if test="!permissions.contractor">&id=<s:property value="id" /></s:if>">Employees</a></th>
+			<th><a href="?orderBy=e.lastName,e.firstName<s:if test="!permissions.contractor">&id=<s:property value="id" /></s:if>"><s:text name="global.Employees" /></a></th>
 			<s:iterator value="competencies">
 				<th>
 					<s:property value="label" />
