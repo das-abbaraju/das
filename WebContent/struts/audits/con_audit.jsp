@@ -39,7 +39,7 @@
 		</s:if>
 		<s:else>
 			$('a.operatorViewable').live('click', function() {
-				window.location.href = $(this).attr('href') + "?id=" + conID;
+				window.location.href = $(this).attr('href') + "?account=" + conID;
 				return false;
 			});
 		</s:else>
