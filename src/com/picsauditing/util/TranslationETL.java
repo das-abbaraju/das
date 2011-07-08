@@ -146,7 +146,7 @@ public class TranslationETL extends PicsActionSupport {
 			addActionError("Missing date");
 		else {
 			List<BasicDynaBean> data = getData();
-			foundRows = db.getAllRows();
+			foundRows = data.size();
 
 			if (foundRows <= 2000) {
 				translations = buildXML(data);
@@ -217,6 +217,41 @@ public class TranslationETL extends PicsActionSupport {
 			translation.appendChild(element);
 			elementText = document.createTextNode(d.get("msgValue").toString());
 			element.appendChild(elementText);
+			
+			if (d.get("createdBy") != null) {
+				element = document.createElement("createdBy");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("createdBy").toString());
+				element.appendChild(elementText);
+			}
+
+			if (d.get("updatedBy") != null) {
+				element = document.createElement("updatedBy");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("updatedBy").toString());
+				element.appendChild(elementText);
+			}
+			
+			if (d.get("creationDate") != null) {
+				element = document.createElement("creationDate");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("creationDate").toString());
+				element.appendChild(elementText);
+			}
+			
+			if (d.get("updateDate") != null) {
+				element = document.createElement("updateDate");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("updateDate").toString());
+				element.appendChild(elementText);
+			}
+			
+			if (d.get("lastUsed") != null) {
+				element = document.createElement("lastUsed");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("lastUsed").toString());
+				element.appendChild(elementText);
+			}
 		}
 
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
