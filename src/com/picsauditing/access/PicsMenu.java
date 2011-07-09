@@ -87,10 +87,10 @@ public class PicsMenu {
 						subMenu.addChild(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action");
 					}
 					if (permissions.isRequiresOQ()) {
-						subMenu = menu.addChild("Operator Qualification");
-						subMenu.addChild("OQ by Employee", "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
-						subMenu.addChild("Recent OQ Changes", "ReportOQChanges.action");
-						subMenu.addChild("Manage/Find New Projects", "ReportNewProjects.action");
+						subMenu = menu.addChild(getText("global.OperatorQualification"));
+						subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
+						subMenu.addChild(getText("ReportOQChanges.title"), "ReportOQChanges.action");
+						subMenu.addChild(getText("ReportNewProjects.title"), "ReportNewProjects.action");
 					}
 				}
 
@@ -435,19 +435,19 @@ public class PicsMenu {
 		}
 
 		if (permissions.isRequiresOQ()) {
-			subMenu = menu.addChild("Operator Qualification");
+			subMenu = menu.addChild(getText("global.OperatorQualification"));
 
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild("Job Tasks", "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild("Projects", "ManageProjects.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("ManageProjects.title"), "ManageProjects.action?id=" + permissions.getAccountId());
 
-			subMenu.addChild("OQ by Company/Site", "ReportOQ.action");
-			subMenu.addChild("OQ by Employee", "ReportOQEmployees.action");
+			subMenu.addChild(getText("ReportOQ.title"), "ReportOQ.action");
+			subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action");
 		}
 
 		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
-			subMenu.addChild("Assessment Tests", "ReportAssessmentTests.action");
+			subMenu.addChild(getText("ReportAssessmentTests.title"), "ReportAssessmentTests.action");
 
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
