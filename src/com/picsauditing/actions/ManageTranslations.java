@@ -13,7 +13,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportActionSupport;
-import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
@@ -30,12 +29,6 @@ public class ManageTranslations extends ReportActionSupport {
 	private List<Translation> list;
 	private AppTranslation translation;
 	private ReportFilter filter;
-
-	private AuditTypeDAO dao;
-
-	public ManageTranslations(AuditTypeDAO dao) {
-		this.dao = dao;
-	}
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {

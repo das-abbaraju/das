@@ -1,6 +1,7 @@
 package com.picsauditing.interceptors;
 
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
@@ -8,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.util.LocalizedTextUtil;
 import com.picsauditing.access.Permissions;
 
 @SuppressWarnings("serial")
@@ -21,6 +23,8 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 		String result;
 
 		Permissions permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+
+		Locale paramLocale = getLocaleFromParams(invocation);
 		Locale cookieLocale = getLocaleFromCookie();
 		if (permissions != null && permissions.isLoggedIn()) {
 			Locale locale = permissions.getLocale();
@@ -28,6 +32,11 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 			result = invocation.invoke();
 			if (!locale.equals(cookieLocale))
 				setLocaleToCookie(locale);
+		} else if (paramLocale != null) {
+			saveLocale(invocation, paramLocale);
+			result = invocation.invoke();
+			if (!paramLocale.equals(cookieLocale))
+				setLocaleToCookie(paramLocale);
 		} else if (cookieLocale != null) {
 			saveLocale(invocation, cookieLocale);
 			result = invocation.invoke();
@@ -38,21 +47,26 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 		return result;
 	}
 
+	private Locale getLocaleFromParams(ActionInvocation invocation) {
+		Map<String, Object> params = invocation.getInvocationContext().getParameters();
+		Object requested_locale = params.remove(parameterName);
+		if (requested_locale == null)
+			return null;
+		if (requested_locale.getClass().isArray()) {
+			requested_locale = ((Object[]) requested_locale)[0];
+		}
+
+		return LocalizedTextUtil.localeFromString(requested_locale.toString(), Locale.ENGLISH);
+	}
+
 	private Locale getLocaleFromCookie() {
 		Cookie[] cookies = ServletActionContext.getRequest().getCookies();
 		if (cookies == null)
 			return null;
 
 		for (Cookie cookie : cookies) {
-			if (cookie.getName().equals(COOKIE_NAME)) {
-				String[] values = cookie.getValue().split("_");
-				if (values.length == 1)
-					return new Locale(values[0]);
-				else if (values.length == 2)
-					return new Locale(values[0], values[1]);
-				else
-					return new Locale(values[0], values[1], values[2]);
-			}
+			if (cookie.getName().equals(COOKIE_NAME))
+				return LocalizedTextUtil.localeFromString(cookie.getValue(), null);
 		}
 		return null;
 	}
