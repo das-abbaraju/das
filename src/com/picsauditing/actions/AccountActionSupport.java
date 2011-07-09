@@ -112,24 +112,24 @@ public class AccountActionSupport extends PicsActionSupport {
 		return getNotes(" AND noteCategory IN ('" + noteCategory.toString() + "','General')", 0, 5);
 	}
 
-	protected void addNote(Account account, String newNote) {
-		addNote(account, newNote, noteCategory);
+	protected Note addNote(Account account, String newNote) {
+		return addNote(account, newNote, noteCategory);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory noteCategory) {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null, null);
+	protected Note addNote(Account account, String newNote, NoteCategory noteCategory) {
+		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, null, null);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null, null);
+	protected Note addNote(Account account, String newNote, NoteCategory noteCategory, int viewableBy) {
+		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, null, null);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
+	protected Note addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user) {
-		addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
+		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
 	}
 
-	protected void addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+	protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
 			boolean canContractorView, int viewableBy, User user, Employee employee) {
 		Note note = new Note();
 		note.setAccount(account);
@@ -141,7 +141,8 @@ public class AccountActionSupport extends PicsActionSupport {
 		note.setCanContractorView(canContractorView);
 		note.setStatus(NoteStatus.Closed);
 		note.setEmployee(employee);
-		getNoteDao().save(note);
+		dao.save(note);
+		return note;
 	}
 
 	public int getViewableByAccount(Account account) {

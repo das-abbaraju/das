@@ -30,15 +30,13 @@
 <script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 function checkUsername(username) {
-	var msg = translate('JS.Progress.Username');
-	$('#username_status').text(msg);
+	$('#username_status').text(translate('JS.Registration.CheckingUsername'));
 	var data = {userID: 0, username: username};
 	$('#username_status').load('user_ajax.jsp', data);
 }
 
 function checkTaxId(taxId) {
-	var msg = '<s:text name="Progress.TaxId" />';
-	startThinking({div:'taxId_status', message: msg});
+	startThinking({div:'taxId_status', message: translate('JS.Registration.CheckingTaxID')});
 	var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
 	$('#taxId_status').load('ContractorValidateAjax.action', data);
 }
@@ -50,8 +48,7 @@ function checkName(name) {
 		$('#contractorPhone').val('949-387-1940');
 		return;
 	}
-	var msg = '<s:text name="Progress.Name" />';
-	startThinking({div:'name_status', message: msg});
+	startThinking({div:'name_status', message: translate('JS.Registration.CheckingName')});
 	var data = {companyName: name, button: 'name'};
 	$('#name_status').load('ContractorValidateAjax.action', data);
 }
@@ -119,13 +116,12 @@ $(function(){
 </script>
 </head>
 <body>
-<s:if test="debugging">
 <div id="locales">
 <a href="?request_locale=en">English</a>
 <a href="?request_locale=fr">Français</a>
 <a href="?request_locale=es">Español</a>
 </div>
-</s:if>
+<s:if test="debugging"><!-- We can remove this once we've release i18n --> </s:if>
 
 <s:include value="registrationHeader.jsp"></s:include>
 
@@ -263,13 +259,13 @@ $(function(){
 				<s:password name="confirmPassword" theme="formhelp" label="global.ConfirmPassword"/>
 			</li>
 			<li>
-				<b><s:text name="%{scope}.TermsAndConditions" /></b>
+				<b><s:text name="ContractorRegistration.TermsAndConditions" /></b>
 			</li>
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
 		<div>
-			<input type="submit" class="picsbutton positive" name="button" value="Create Account"/>
+			<s:submit action="createAccount" value="%{getText('ContractorRegistration.button.CreateAccount')}" cssClass="picsbutton positive"></s:submit>
 		</div>
 	</fieldset>
 </s:form>

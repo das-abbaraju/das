@@ -19,7 +19,7 @@ public class Home extends ContractorActionSupport {
 	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
 
 	@Autowired
-	private WidgetUserDAO dao;
+	private WidgetUserDAO wdao;
 
 	public String execute() throws Exception {
 		if (!forceLogin())
@@ -39,7 +39,7 @@ public class Home extends ContractorActionSupport {
 			permissions.tryPermission(OpPerms.Dashboard);
 		}
 
-		List<WidgetUser> widgetsToShowForUser = dao.findByUser(permissions);
+		List<WidgetUser> widgetsToShowForUser = wdao.findByUser(permissions);
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();

@@ -3,6 +3,8 @@ package com.picsauditing.PICS;
 import java.util.Date;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -11,13 +13,10 @@ import com.picsauditing.util.Strings;
 
 public class ContractorValidator {
 	public final int MIN_PASSWORD_LENGTH = 5;
+	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	protected UserDAO userDAO;
-
-	public ContractorValidator(ContractorAccountDAO contractorAccountDAO, UserDAO userDAO) {
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.userDAO = userDAO;
-	}
 
 	public Vector<String> validateContractor(ContractorAccount contractor) {
 		Vector<String> errorMessages = new Vector<String>();

@@ -4,8 +4,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,7 +31,6 @@ import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.AuditData;
@@ -70,7 +67,6 @@ public class ContractorCron extends PicsActionSupport {
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
-	private PicsDAO dao;
 	private ContractorAccountDAO contractorDAO;
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private AuditDataDAO auditDataDAO;
@@ -96,7 +92,6 @@ public class ContractorCron extends PicsActionSupport {
 			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL,
 			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
 			UserAssignmentDAO userAssignmentDAO, ContractorAuditDAO conAuditDAO) {
-		this.dao = contractorDAO;
 		this.contractorDAO = contractorDAO;
 		this.auditDataDAO = auditDataDAO;
 		this.subscriptionDAO = subscriptionDAO;
