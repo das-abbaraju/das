@@ -27,7 +27,7 @@ function showLists() {
 	$('#back_to_step1').hide();
 	$('#target_recipients').show('normal');
 	$('#filter_recipients').fadeOut('normal');
-	$('#report_data').hide('normal');
+	$('#report_data').empty();
 	$('#selectedListType').hide();
 
 	$.ajax({
