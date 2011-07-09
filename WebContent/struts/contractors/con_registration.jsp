@@ -265,7 +265,7 @@ $(function(){
 	</fieldset>
 	<fieldset class="form submit">
 		<div>
-			<s:submit action="createAccount" value="%{getText('ContractorRegistration.button.CreateAccount')}" cssClass="picsbutton positive"></s:submit>
+			<s:submit method="createAccount" value="%{getText('ContractorRegistration.button.CreateAccount')}" cssClass="picsbutton positive"></s:submit>
 		</div>
 	</fieldset>
 </s:form>
