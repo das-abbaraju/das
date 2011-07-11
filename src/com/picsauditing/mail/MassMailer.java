@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +34,7 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 /**
- * Mass emailing tool that can send emails to a list of contractors based on
- * contractorID or auditID
+ * Mass emailing tool that can send emails to a list of contractors based on contractorID or auditID
  * 
  * @author Trevor
  * 
@@ -100,14 +100,6 @@ public class MassMailer extends PicsActionSupport {
 			templateID = BLANK_EMAIL;
 		}
 
-		if ("start".equals(button)) {
-			// Reset the templateID to this new passed in one
-			wizardSession.setTemplateID(templateID);
-		}
-
-		if (wizardSession.getTemplateID() > 0 && templateID <= 0)
-			templateID = wizardSession.getTemplateID();
-
 		if ("MailEditorAjax".equals(button)) {
 			if (templateID > 0) {
 				EmailTemplate template = emailTemplateDAO.find(templateID);
@@ -122,6 +114,14 @@ public class MassMailer extends PicsActionSupport {
 			wizardSession.setTemplateID(templateID);
 			return SUCCESS;
 		}
+
+		if ("start".equals(button)) {
+			// Reset the templateID to this new passed in one
+			wizardSession.setTemplateID(templateID);
+		}
+
+		if (wizardSession.getTemplateID() > 0 && templateID <= 0)
+			templateID = wizardSession.getTemplateID();
 
 		if ("MailPreviewAjax".equals(button)) {
 			if (previewID == 0) {
@@ -178,7 +178,7 @@ public class MassMailer extends PicsActionSupport {
 						// weren't
 						if (templateID < 0)
 							email.setEmailTemplate(null);
-						
+
 						email.setViewableById(permissions.getTopAccountID());
 						emailQueueDAO.save(email);
 					} catch (EmailException e) {
@@ -317,7 +317,7 @@ public class MassMailer extends PicsActionSupport {
 
 	public List<Token> getPicsTags() {
 		if (type == null)
-			return null;
+			return Collections.emptyList();
 		if (picsTags == null)
 			picsTags = tokenDAO.findByType(type);
 		return picsTags;

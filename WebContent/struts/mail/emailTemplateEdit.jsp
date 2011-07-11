@@ -11,11 +11,9 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript">
-var type;
 $(function(){
 	<s:if test="type==null">
-		changeType('Audit');
-		type = $('#changeType').val();
+		changeType('Audit'); 
 	</s:if>
 	$(window).bind('hashchange', function() {
 		var state = $.bbq.getState();
@@ -27,7 +25,7 @@ $(function(){
 			var data = {
 				button: 'MailEditorAjax',
 				templateID: state.template == 'blank' ? -1 : state.template,
-				type: type,
+				type: $('#changeType').val(),
 				editTemplate: true
 			};
 
@@ -38,7 +36,7 @@ $(function(){
 });
 function changeType(type){	
 	$('#tempTitle').text('Editing '+type+' Templates');
-	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
+	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: $('#changeType').val()});
 }
 </script>
 <style type="text/css">
@@ -93,7 +91,7 @@ function changeType(type){
 <div id="messages">
 	<s:include value="../actionMessages.jsp" />
 </div>
-Template Type: <s:select id="changeType" list="{'Audit', 'Contractor', 'User'}" onchange="changeType($(this).val()); return false;" />
+Template Type: <s:select id="changeType" name="type" list="{'Audit', 'Contractor', 'User'}" onchange="changeType($(this).val()); return false;" />
 <table id="emailTemplateTable">	
 	<s:include value="editTemplateList.jsp" />
 </table>
