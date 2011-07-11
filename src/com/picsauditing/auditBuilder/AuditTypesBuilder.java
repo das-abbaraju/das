@@ -1,5 +1,6 @@
 package com.picsauditing.auditBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -72,7 +73,12 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		}
 
 		// Get the operator list once
-		List<OperatorAccount> operatorAccounts = contractor.getOperatorAccounts();
+		List<OperatorAccount> operatorAccounts = new ArrayList<OperatorAccount>();
+		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+			if (operator.isOperator() && !operator.getStatus().isDeactivated() && !operator.getStatus().isDeleted()) {
+				operatorAccounts.add(operator);
+			}
+		}
 		for (AuditType auditType : allCandidateAuditTypes) {
 			AuditTypeDetail detail = new AuditTypeDetail();
 			for (Trade trade : trades) {

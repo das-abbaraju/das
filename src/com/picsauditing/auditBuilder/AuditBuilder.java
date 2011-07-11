@@ -254,10 +254,12 @@ public class AuditBuilder {
 			}
 		}
 
+		boolean hasPendingCaos = auditHasPendingCaos(conAudit);
+		
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				if (hasAnyCaoStatusAfterIncomplete(conAudit)) {
-					/*
+				if (!hasPendingCaos || auditCatData.isOverride()) {
+					/* Lock the audit category down...keeping it as it was
 					 * this is to ensure that we don't add new categories or remove the existing ones except the
 					 * override categories for an audit after is it being submitted
 					 */
@@ -265,13 +267,6 @@ public class AuditBuilder {
 						categoriesNeeded.add(auditCatData.getCategory());
 					else
 						categoriesNeeded.remove(auditCatData.getCategory());
-				} else {
-					if (auditCatData.isOverride()) {
-						if (auditCatData.isApplies())
-							categoriesNeeded.add(auditCatData.getCategory());
-						else
-							categoriesNeeded.remove(auditCatData.getCategory());
-					}
 				}
 			}
 		}
@@ -305,10 +300,20 @@ public class AuditBuilder {
         }
 	}
 
-	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
+	/**
+	 * @param conAudit
+	 * @return true if a visible cao exists that is Pending, Incomplete or Resubmit status
+	 */
+	private boolean auditHasPendingCaos(ContractorAudit conAudit) {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Incomplete))
-				return true;
+			if (cao.isVisible()) {
+				if (cao.getStatus().isPending())
+					return true;
+				if (cao.getStatus().isIncomplete())
+					return true;
+				if (cao.getStatus().isResubmit())
+					return true;
+			}
 		}
 		return false;
 	}
