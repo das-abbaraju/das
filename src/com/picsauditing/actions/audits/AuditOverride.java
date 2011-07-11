@@ -35,9 +35,9 @@ public class AuditOverride extends ContractorDocuments {
 			return LOGIN;
 
 		this.findContractor();
-		
+
 		auditTypeRuleCache.initialize(auditRuleDAO);
-		
+
 		if (!isManuallyAddAudit()) {
 			throw new NoRightsException("Cannot Manually Add Audits");
 		}
@@ -54,8 +54,12 @@ public class AuditOverride extends ContractorDocuments {
 			}
 
 			if (selectedOperator == null || selectedOperator == 0) {
-				addActionError("You must select an operator.");
-				return SUCCESS;
+				if (permissions.isOperator())
+					selectedOperator = permissions.getAccountId();
+				else {
+					addActionError("You must select an operator.");
+					return SUCCESS;
+				}
 			}
 			conAudit.setRequestingOpAccount(new OperatorAccount());
 			conAudit.getRequestingOpAccount().setId(selectedOperator);
@@ -79,8 +83,8 @@ public class AuditOverride extends ContractorDocuments {
 
 			auditDao.save(conAudit);
 
-			addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString() + " manually",
-					NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+			addNote(conAudit.getContractorAccount(), "Added " + conAudit.getAuditType().getName().toString()
+					+ " manually", NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 
 			if ("Create".equals(button)) {
 				this.redirect("ContractorCron.action?conID=" + id
