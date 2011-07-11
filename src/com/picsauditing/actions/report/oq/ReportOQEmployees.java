@@ -46,11 +46,9 @@ public class ReportOQEmployees extends ReportEmployee {
 
 	@Override
 	public String execute() throws Exception {
-		loadPermissions();
-		
 		if (!permissions.isRequiresOQ())
 			throw new NoRightsException("Operator Qualification");
-		
+
 		getFilter().setShowSsn(false);
 		getFilter().setShowLimitEmployees(true);
 		getFilter().setShowProjects(true);
@@ -97,15 +95,21 @@ public class ReportOQEmployees extends ReportEmployee {
 	protected void buildQuery() {
 		super.buildQuery();
 
+		if (permissions.isOperatorCorporate()) {
+			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = %d",
+					permissions.getAccountId()));
+		}
+
 		sql.addJoin("LEFT JOIN employee_site es ON es.employeeID = e.id"
 				+ dateRange("es.effectiveDate", "es.expirationDate", true));
-		sql.addJoin("LEFT JOIN job_site js ON js.id = es.jobSiteID" + dateRange("js.projectStart", "js.projectStop", true));
+		sql.addJoin("LEFT JOIN job_site js ON js.id = es.jobSiteID"
+				+ dateRange("js.projectStart", "js.projectStop", true));
 
 		sql.addField("es.jobSiteID");
 		sql.addField("a.type");
 
-		sql.addWhere("e.active = 1");
-		
+		sql.addWhere("a.requiresOQ = 1");
+
 		sql.addGroupBy("e.id");
 
 		if (filterOn(getFilter().getProjects()))
@@ -155,7 +159,7 @@ public class ReportOQEmployees extends ReportEmployee {
 		if (filterOn(getFilter().getProjects()))
 			sql2.addWhere("js.id IN (" + Strings.implode(getFilter().getProjects()) + ")");
 
-		sql2.addOrderBy("js.name, jt.displayOrder");
+		sql2.addOrderBy("js.name, jt.displayOrder, jt.name");
 		List<BasicDynaBean> data2 = db.select(sql2.toString(), false);
 
 		for (BasicDynaBean d : data2) {
@@ -382,12 +386,12 @@ public class ReportOQEmployees extends ReportEmployee {
 			cell = row.createCell(2 + prevSize);
 			cell.setCellStyle(headerStyle);
 			cell.setCellValue(new HSSFRichTextString(site.getOperator().getName() + ": " + site.getLabel()));
-			
+
 			if (getJobSiteTasks().get(site).size() > 0) {
 				sheet.addMergedRegion(new CellRangeAddress(0, 0, 2 + prevSize, 1 + prevSize
 						+ getJobSiteTasks().get(site).size()));
 			}
-			
+
 			prevSize += (getJobSiteTasks().get(site).size() == 0 ? 1 : getJobSiteTasks().get(site).size());
 		}
 
@@ -409,7 +413,7 @@ public class ReportOQEmployees extends ReportEmployee {
 						cell = row.createCell(cellCount);
 						cell.setCellStyle(centerStyle);
 						cellCount++;
-	
+
 						if (map.get(e, jst) != null && map.get(e, jst) == true)
 							cell.setCellValue(h.createRichTextString("X"));
 					}
@@ -434,12 +438,12 @@ public class ReportOQEmployees extends ReportEmployee {
 			cell = row.createCell(totalColumns);
 			if (jst != null) {
 				int spanOfControl = 0;
-	
+
 				for (Employee e : getEmployees()) {
 					if (map.get(e, jst) != null && map.get(e, jst) == true)
 						spanOfControl++;
 				}
-	
+
 				int total = jst.getMinimumQualified(getEmployees().size());
 				cell.setCellValue(h.createRichTextString(spanOfControl + " of " + total));
 				cell.setCellStyle((spanOfControl < total) ? redStyle : centerStyle);

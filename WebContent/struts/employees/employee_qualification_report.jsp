@@ -1,7 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>OQ by Employee</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="../reports/reportHeader.jsp" />
 <style type="text/css">
 .red {
@@ -18,27 +19,27 @@ function orderBy(orderBy) {
 </script>
 </head>
 <body>
-<h1>OQ by Employee</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <s:include value="../reports/filters_employee.jsp" />
 
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 	<div class="right">
-		<a href="#" onclick="download('ReportOQEmployees'); return false;" target="_blank" class="excel">Download</a>
+		<a href="#" onclick="download('ReportOQEmployees'); return false;" target="_blank" class="excel"><s:text name="global.Download" /></a>
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<s:if test="jobSiteTasks.keySet().size == 0">
-		<div class="alert">You are currently not associated with any projects. Please <a href="ReportNewProjects.action">click here</a> to find new OQ projects.</div>
+		<div class="alert"><s:text name="%{scope}.help.FindNewProjects" /></div>
 	</s:if>
 	<table class="report">
 		<thead>
 			<tr>
-				<th rowspan="2"><a href="javascript: orderBy('e.lastName,e.firstName')">Employee</a></th>
+				<th rowspan="2"><a href="javascript: orderBy('e.lastName,e.firstName')"><s:text name="global.Employee" /></a></th>
 				<s:if test="!permissions.contractor">
-					<th rowspan="2"><a href="javascript: orderBy('a.name,e.lastName')">Company</a></th>
+					<th rowspan="2"><a href="javascript: orderBy('a.name,e.lastName')"><s:text name="global.Company" /></a></th>
 				</s:if>
 				<s:iterator value="jobSiteTasks.keySet()" var="js">
 					<th colspan="<s:property value="jobSiteTasks.get(#js).size" />">
@@ -50,13 +51,13 @@ function orderBy(orderBy) {
 				<s:iterator value="jobSiteTasks.keySet()" var="js">
 					<s:if test="jobSiteTasks.get(#js).size > 0">
 						<s:iterator value="jobSiteTasks.get(#js)" var="jst">
-							<th title="<s:property value="#jst.task.name" />
-Span of Control = <s:property value="#jst.controlSpan" />">
+							<th title="<s:property value="#jst.task.name" />, 
+<s:text name="%{scope}.label.SpanOfControl" /> = <s:property value="#jst.controlSpan" />">
 								<s:property value="#jst.task.label" /></th>
 						</s:iterator>
 					</s:if>
 					<s:else>
-						<th><span title="There are no job tasks or companies associated with this project">N/A</span></th>
+						<th><span title="<s:text name="%{scope}.help.NoJobTaskOrCompanies" />"><s:text name="global.NA" /></span></th>
 					</s:else>
 				</s:iterator>
 			</tr>
@@ -118,7 +119,7 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 		</tbody>
 		<tfoot>
 			<tr>
-				<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right">Total</th>
+				<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right"><s:text name="%{scope}.label.Total" /></th>
 				<s:iterator value="jobSiteTasks.keySet()" id="key">
 					<s:if test="jobSiteTasks.get(#key).size > 0">
 						<s:iterator value="jobSiteTasks.get(#key)" id="jst">
@@ -129,7 +130,10 @@ Span of Control = <s:property value="#jst.controlSpan" />">
 								</s:if>
 							</s:iterator>
 							<th <s:if test="#jstTotal < getMinimumQualified(employees.size())">class="red"</s:if>>
-								<s:property value="#jstTotal" /> of <s:property value="getMinimumQualified(employees.size())" />
+								<s:text name="%{scope}.label.SpanOfControlNumbers">
+									<s:param value="%{#jstTotal}" />
+									<s:param value="%{getMinimumQualified(employees.size())}" />
+								</s:text>
 							</th>
 						</s:iterator>
 					</s:if>
