@@ -2047,11 +2047,7 @@
 		<action name="ReportNewProjects"
 			class="com.picsauditing.actions.report.oq.ReportNewJobSite">
 			<result>/struts/reports/oq/report_new_job_site.jsp</result>
-		</action>
-
-		<action name="ReportNewProjectsAjax"
-			class="com.picsauditing.actions.report.oq.ReportNewJobSite">
-			<result>/struts/reports/oq/report_new_job_site_employees.jsp</result>
+			<result name="employees">/struts/reports/oq/report_new_job_site_employees.jsp</result>
 		</action>
 
 		<!-- Assessment Center/Assessment Management -->

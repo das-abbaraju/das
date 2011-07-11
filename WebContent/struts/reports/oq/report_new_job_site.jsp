@@ -1,57 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Manage/Find New Projects</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../reportHeader.jsp"/>
 <script type="text/javascript">
 function getEmployees(jobSiteID) {
-	var data = {
-		button: "employees",
-		jobSiteID: jobSiteID
-	};
-
-	startThinking({div: "currentEmployees", message: "Loading employees" });
-	$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
-
-	return false;
-}
-
-function removeEmployee(jobSiteID, employeeID) {
-	var del = confirm("Are you sure you want to remove this employee from the project?");
-
-	if (del) {
-		var data = {
-			button: "removeEmployee",
-			jobSiteID: jobSiteID,
-			employeeID: employeeID
-		};
-	
-		startThinking({div: "currentEmployees", message: "Removing employee" });
-		$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
-	}
+	startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.LoadingEmployees" />' });
+	$('#currentEmployees').load("ReportNewProjects!employees.action", { jobSite: jobSiteID });
 
 	return false;
 }
 
 function addEmployee(jobSiteID, employeeID) {
-	var data = {
-		button: "addEmployee",
-		jobSiteID: jobSiteID,
-		employeeID: employeeID
-	};
-
-	startThinking({div: "currentEmployees", message: "Adding employee" });
-	$('#currentEmployees').load("ReportNewProjectsAjax.action", data);
+	startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.AddingEmployee" />' });
+	$('#currentEmployees').load("ReportNewProjects!addEmployee.action", { jobSite: jobSiteID, employee: employeeID });
 
 	return false;
 }
+
+function removeEmployee(jobSiteID, employeeID) {
+	var del = confirm('<s:text name="%{scope}.confirm.RemoveEmployeeFromProject" />');
+
+	if (del) {
+		startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.RemovingEmployee" />' });
+		$('#currentEmployees').load("ReportNewProjects!removeEmployee.action", { jobSite: jobSiteID, employee: employeeID });
+	}
+
+	return false;
+}
+
+$(function() {
+	$('#existingProjects a.remove').live('click', function() {
+		return confirm('<s:text name="%{scope}.confirm.RemoveProject" />');
+	});
+	
+	$('#existingProjects a.preview').live('click', function(e) {
+		e.preventDefault();
+		var siteID = $(this).closest('tr').attr('id').split('_');
+		getEmployees(siteID[1]);
+	});
+	
+	$('#selectEmployee').live('change', function() {
+		var employeeID = $(this).val();
+		var jobSiteID = $(this).closest('table').attr('id').split('_');
+		
+		addEmployee(jobSiteID[1], employeeID);
+	});
+});
 </script>
 </head>
 <body>
-	<h1><s:property value="account.name" /><span class="sub">Manage/Find New Projects</span></h1>
+	<h1><s:property value="contractor.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
 	<div id="search">
 		<s:form id="form1" action="%{filter.destinationAction}">
 			<s:hidden name="filter.ajax" />
@@ -124,15 +127,15 @@ function addEmployee(jobSiteID, employeeID) {
 		
 		<div class="clear"></div>
 	</div>
-	<div class="info">If you are not associated with an added project's operator, the operator will automatically be added to your facilities.</div>
+	<div class="info"><s:text name="%{scope}.help.OperatorAddedAutomatically" /></div>
 	<table class="report">
 		<thead>
 			<tr>
-				<th>Operator</th>
-				<th>Project Name</th>
-				<th>Start</th>
-				<th>Location</th>
-				<th>Add</th>
+				<th><s:text name="global.Operator" /></th>
+				<th><s:text name="%{scope}.label.ProjectName" /></th>
+				<th><s:text name="%{scope}.label.Start" /></th>
+				<th><s:text name="%{scope}.label.Location" /></th>
+				<th><s:text name="button.Add" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -144,13 +147,13 @@ function addEmployee(jobSiteID, employeeID) {
 						<td><s:date name="#d.get('projectStart')" format="M/d/yyyy" /></td>
 						<td><s:property value="getAddress(#d)" /></td>
 						<td class="center">
-							<a href="?id=<s:property value="id" />&button=Add&jobSiteID=<s:property value="#d.get('id')" />" class="add"></a>
+							<a href="<s:property value="scope" />!add.action?id=<s:property value="contractor.id" />&jobSite=<s:property value="#d.get('id')" />" class="add"></a>
 						</td>
 					</tr>
 				</s:iterator>
 			</s:if>
 			<s:else>
-				<tr><td colspan="5">No projects found.</td></tr>
+				<tr><td colspan="5"><s:text name="Report.message.NoRowsFound" /></td></tr>
 			</s:else>
 		</tbody>
 	</table>
@@ -159,27 +162,27 @@ function addEmployee(jobSiteID, employeeID) {
 		<table>
 			<tr>
 				<td>
-					<h3>Manage Projects</h3>
-					<table class="report">
+					<h3><s:text name="%{scope}.label.ManageProjects" /></h3>
+					<table class="report" id="existingProjects">
 						<thead>
 							<tr>
-								<th>Operator</th>
-								<th>Project Name</th>
-								<th>Start</th>
-								<th>Location</th>
-								<th>Employees</th>
-								<th>Remove</th>
+								<th><s:text name="global.Operator" /></th>
+								<th><s:text name="%{scope}.label.ProjectName" /></th>
+								<th><s:text name="%{scope}.label.Start" /></th>
+								<th><s:text name="%{scope}.label.Location" /></th>
+								<th><s:text name="global.Employees" /></th>
+								<th><s:text name="button.Remove" /></th>
 							</tr>
 						</thead>
 						<tbody>
 							<s:iterator value="current">
-								<tr>
+								<tr id="jobSite_<s:property value="id" />">
 									<td><s:property value="operator.name" /></td>
 									<td><s:property value="name" /></td>
 									<td><s:date name="projectStart" format="M/d/yyyy" /></td>
 									<td><s:property value="location" /></td>
-									<td class="center"><a href="#" onclick="return getEmployees(<s:property value="id" />);">View</a></td>
-									<td class="center"><a href="?button=Remove&jobSiteID=<s:property value="id" />" onclick="return confirm('Are you sure you want to remove this project?');" class="remove"></a></td>
+									<td class="center"><a href="#" class="preview"></a></td>
+									<td class="center"><a href="<s:property value="scope" />!remove.action?jobSite=<s:property value="id" />" class="remove"></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>

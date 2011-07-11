@@ -76,7 +76,8 @@ public class EmployeeSiteDAO extends PicsDAO {
 	public List<Employee> findEmployeesBySite(int jobSiteID, int conID) {
 		Query q = em.createQuery("SELECT DISTINCT es.employee FROM EmployeeSite es "
 				+ "WHERE es.jobSite.id = :jobSiteID AND es.employee.account.id = :conID "
-				+ "AND es.expirationDate > :date AND es.jobSite.projectStop > :date "
+				+ "AND (es.expirationDate > :date OR es.expirationDate IS NULL) "
+				+ "AND (es.jobSite.projectStop > :date OR es.jobSite.projectStop IS NULL) "
 				+ "ORDER BY es.employee.lastName, es.employee.firstName");
 		q.setParameter("jobSiteID", jobSiteID);
 		q.setParameter("conID", conID);

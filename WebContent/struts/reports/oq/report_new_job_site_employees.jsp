@@ -1,14 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../../actionMessages.jsp" />
 
-<h3><s:property value="jobSite.name" /> Employees</h3>
-<table class="report">
+<h3><s:property value="jobSite.name" /> <s:text name="global.Employees" /></h3>
+<table class="report" id="jobSiteEmployees_<s:property value="jobSite.id" />">
 	<thead>
 		<tr>
 			<td></td>
-			<td>Name</td>
-			<td>Remove</td>
+			<td><s:text name="global.Name" /></td>
+			<td><s:text name="button.Remove" /></td>
 		</tr>
 	</thead>
 	<tbody>
@@ -22,28 +23,28 @@
 			</s:iterator>
 		</s:if>
 		<s:else>
-			<tr><td colspan="3"><h5>There are no employees at this site.</h5></td></tr>
+			<tr><td colspan="3"><h5><s:text name="%{scope}.message.NoEmployeesAtSite" /></h5></td></tr>
 		</s:else>
 		<s:if test="newEmployees.size > 0">
 			<tr>
 				<td colspan="3">
-					<s:select list="newEmployees" listKey="id" listValue="%{lastName + ', ' + firstName}" headerKey="0" headerValue="- Add New Employee -" onchange="addEmployee(%{jobSiteID}, this.value);" />
+					<s:select id="selectEmployee" list="newEmployees" listKey="id" listValue="%{lastName + ', ' + firstName}" headerKey="0" headerValue="- %{getText(scope + '.label.AddNewEmployee')} -" />
 				</td>
 			</tr>
 		</s:if>
 		<s:else>
-			<tr><td colspan="3"><h5>All employees have been assigned to this site.</h5></td></tr>
+			<tr><td colspan="3"><h5><s:text name="%{scope}.message.AllEmployeesAssigned" /></h5></td></tr>
 		</s:else>
 	</tbody>
 </table>
 <s:if test="prevEmployees.size > 0">
-	<h3>Previous Employees</h3>
+	<h3><s:text name="%{scope}.label.PreviousEmployees" /></h3>
 	<table class="report">
 		<thead>
 			<tr>
 				<td></td>
-				<td>Name</td>
-				<td>Expiration</td>
+				<td><s:text name="global.Name" /></td>
+				<td><s:text name="%{scope}.label.Expiration" /></td>
 			</tr>
 		</thead>
 		<tbody>
