@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -127,8 +126,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void prepare() throws Exception {
 		getPermissions();
 
-
+		newContractor.setPermissions(permissions);
+		
 		requestID = getParameter("requestID");
+
 		if (requestID > 0)
 			newContractor = crrDAO.find(requestID);
 		else {
@@ -139,7 +140,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				newContractor.setRequestedByUser(userDAO.find(permissions.getUserId()));
 			}
 		}
-		
+
 		// initialize tags
 		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
 			StringTokenizer st = new StringTokenizer(newContractor.getOperatorTags(), ", ");
@@ -159,10 +160,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 			state = stateDAO.find(stateIsos[0]);
-		
+
 		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + permissions.getPicsPhone() + "\n"
-		+ "Fax: " + permissions.getPicsCustomerServiceFax() + "\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
-		+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
+				+ "Fax: " + permissions.getPicsCustomerServiceFax()
+				+ "\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+				+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
 
 	}
 
@@ -186,7 +188,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if ("C".equalsIgnoreCase(type))
 					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
 				else if ("U".equalsIgnoreCase(type))
-					query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+					query
+							.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
 				for (BasicDynaBean bdb : matches) {
 					int id = Integer.parseInt(bdb.get("foreignKey").toString());
 					ids.add(id);
@@ -273,9 +276,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			addActionError("Please fill in a Valid Email Address");
 		if (newContractor.getDeadline() == null)
 			addActionError("Please select a Registration Deadline date");
+		if (Strings.isEmpty(newContractor.getRegistrationReason()))
+			addActionError("Please enter a Registration Reason");
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
-			return SUCCESS;;
+			return SUCCESS;
+
 		if (country != null && !country.equals(newContractor.getCountry()))
 			newContractor.setCountry(country);
 		if (state != null && !state.equals(newContractor.getState()))
@@ -336,7 +342,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setMatchCount(potentialMatches.size());
 
 		newContractor.setAuditColumns(permissions);
-		
+
 		StringBuffer tagIds = new StringBuffer("");
 		for (OperatorTag tag : requestedTags) {
 			if (tagIds.length() > 0)
@@ -471,9 +477,15 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			addToNotes = null;
 		}
 
-		newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
-		newContractor.setOpen(false);
-		newContractor.setAuditColumns(permissions);
+		if (newContractor.getResult().equals("Unsuccessful") && Strings.isEmpty(newContractor.getReasonDeclined()))
+			addActionError("Please fill out why the contractor declined the request.");
+
+		if (getActionErrors().size() > 0)
+			return SUCCESS;
+
+		// newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
+		// newContractor.setOpen(false);
+		// newContractor.setAuditColumns(permissions);
 		newContractor = crrDAO.save(newContractor);
 
 		return "backToReport";
@@ -904,10 +916,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			System.out.println("Unable to open file: /forms/" + filename);
 		}
 	}
-	
+
 	private void loadOperatorTags() {
-		List<OperatorTag> list= operatorTagDAO.findByOperator(permissions.getAccountId(), true);
-		
+		List<OperatorTag> list = operatorTagDAO.findByOperator(permissions.getAccountId(), true);
+
 		// add only tags not in request
 		for (OperatorTag tag : list) {
 			if (!requestedTags.contains(tag))

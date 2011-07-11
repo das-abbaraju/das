@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,6 +14,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.picsauditing.access.Permissions;
 
 @SuppressWarnings("serial")
 @Entity
@@ -34,13 +37,19 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private State state;
 	private String zip;
 	private Country country;
+	private String registrationReason;
+	private String pastFuture;
+	private String result;
+	private String reasonDeclined;
 	private Date deadline;
+	private Date holdDate;
 	private User lastContactedBy;
 	private Date lastContactDate;
 	private int contactCount;
 	private int matchCount;
 	private String notes;
 	private ContractorAccount contractor;
+	private static Permissions permissions;
 	// Assuming most operators want to watch their contractor after they
 	// register
 	private boolean watch = true;
@@ -185,6 +194,68 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.deadline = deadline;
 	}
 
+	@Transient
+	public Date getHoldDate() {
+		// return holdDate;
+		return Calendar.getInstance().getTime();
+	}
+
+	public void setHoldDate(Date holdDate) {
+		// An operator should not be able to edit this field. If they manage to, just fail silently.
+		if (!permissions.isAdmin())
+			return;
+
+		this.holdDate = holdDate;
+	}
+
+	@Transient
+	public String getRegistrationReason() {
+		// return registrationReason;
+		return "Registration Reason";
+	}
+
+	@Transient
+	public String getPastFuture() {
+		// return pastFuture;
+		return "Past";
+	}
+
+	@Transient
+	public String getResult() {
+		// return result;
+		return "Unsuccessful";
+	}
+
+	public void setResult(String result) {
+		// An operator should not be able to edit this field. If they manage to, just fail silently.
+		if (!permissions.isAdmin())
+			return;
+
+		this.result = result;
+	}
+
+	@Transient
+	public String getReasonDeclined() {
+		return "Reason Declined";
+		// return reasonDeclined;
+	}
+
+	public void setReasonDeclined(String reasonDeclined) {
+		// An operator should not be able to edit this field. If they manage to, just fail silently.
+		if (!permissions.isAdmin())
+			return;
+
+		this.reasonDeclined = reasonDeclined;
+	}
+
+	public void setPastFuture(String pastFuture) {
+		this.pastFuture = pastFuture;
+	}
+
+	public void setRegistrationReason(String registrationReason) {
+		this.registrationReason = registrationReason;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "lastContactedBy")
 	public User getLastContactedBy() {
@@ -244,7 +315,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setWatch(boolean watch) {
 		this.watch = watch;
 	}
-	
+
 	public String getOperatorTags() {
 		return operatorTags;
 	}
@@ -252,12 +323,16 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setOperatorTags(String operatorTags) {
 		this.operatorTags = operatorTags;
 	}
-	
+
 	@Transient
 	public String getRequestedByUserString() {
 		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
 	}
-	
+
+	public void setPermissions(Permissions permissions) {
+		ContractorRegistrationRequest.permissions = permissions;
+	}
+
 	@Transient
 	public void contact() {
 		contactCount = contactCount + 1;
