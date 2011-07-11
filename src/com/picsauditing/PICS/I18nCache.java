@@ -65,8 +65,13 @@ public class I18nCache implements Serializable {
 		if (hasKey(key, locale)) {
 			if (args == null || args.length == 0)
 				return getText(key, locale);
-			else
-				return MessageFormat.format(fixFormatCharacters(getText(key, locale)), args);
+			else {
+				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)), Strings
+						.parseLocale(locale));
+				StringBuffer buffer = new StringBuffer();
+				message.format(args, buffer, null);
+				return buffer.toString();
+			}
 		}
 
 		return null;
@@ -78,7 +83,7 @@ public class I18nCache implements Serializable {
 
 	/**
 	 * Fix characters that cause problems with MessageFormat, such as "'"
-	 *
+	 * 
 	 * @param text
 	 *            the text to be formatted
 	 * @return text formatted to be used in MessageFormat.format
@@ -95,8 +100,8 @@ public class I18nCache implements Serializable {
 				Database db = new Database();
 				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
-							String.valueOf(message.get("msgValue")));
+					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")), String
+							.valueOf(message.get("msgValue")));
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
