@@ -199,9 +199,10 @@ function loadStatus(caoID){
 <h1><s:property value="contractor.name" />
 <span class="sub">
 <s:if test="auditID > 0">
-	<s:property value="conAudit.auditType.name"/>
-	<s:if test="conAudit.auditFor != null && conAudit.auditFor.length() > 0">for <s:property value="conAudit.auditFor"/></s:if>
-	<s:elseif test="!conAudit.auditType.pqf">- <s:date name="conAudit.effectiveDateLabel" format="MMM yyyy" /></s:elseif>
+	<s:text name="Audit.auditFor" >		<s:param value="%{conAudit.auditType.name}" />
+		<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
+		<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
+	</s:text>
 </s:if>
 <s:else>
 	<s:property value="subHeading" escape="false" />
@@ -344,67 +345,66 @@ function loadStatus(caoID){
 <ul>
 	<s:if test="!permissions.insuranceOnlyContractorUser">
 		<li><a href="ContractorView.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span>Account Summary</span></a></li>
+			<s:if test="requestURI.contains('con_dashboard')">class="current"</s:if>><span><s:text name="ContractorView.title" /></span></a></li>
 	</s:if>
 	<s:if test="permissions.operator">
 		<li><a href="ContractorFlag.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('flag')">class="current"</s:if>>Flag
-		Status</a></li>
+			<s:if test="requestURI.contains('flag')">class="current"</s:if>><s:text name="global.FlagStatus" /></a></li>
 	</s:if>
 	<s:if test="permissions.admin || permissions.hasPermission('ContractorWatch')">
 		<li><a href="ReportActivityWatch.action?conID=<s:property value="id" />"
-			<s:if test="requestURI.contains('report_activity_watch')">class="current"</s:if>><span>Activity</span></a></li>
+			<s:if test="requestURI.contains('report_activity_watch')">class="current"</s:if>><span><s:text name="ReportActivityWatch.title" /></span></a></li>
 	</s:if>
 	<li><a href="ContractorNotes.action?id=<s:property value="id" />"
-		<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span>Contractor Notes</span></a></li>
+		<s:if test="requestURI.contains('con_notes')">class="current"</s:if>><span><s:text name="global.Notes" /></span></a></li>
 	<pics:permission perm="DefineCompetencies">
-		<li><a href="JobCompetencyMatrix.action?id=<s:property value="id" />"><span>HSE Competency Matrix</span></a></li>
+		<li><a href="JobCompetencyMatrix.action?id=<s:property value="id" />"><span><s:text name="global.HSECompetencyMatrix" /></span></a></li>
 	</pics:permission>
 	<s:if test="permissions.admin">
 		<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
-			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+			<s:if test="requestURI.contains('edit')">class="current"</s:if>><span><s:text name="FacilitiesEdit.title" /></span></a></li>
 		<pics:permission perm="AuditVerification">
-			<li><a href="VerifyView.action?id=<s:property value="id" />"><span>PQF Verification</span></a></li>
+			<li><a href="VerifyView.action?id=<s:property value="id" />"><span><s:text name="global.PQFVerification" /></span></a></li>
 		</pics:permission>
-		<li><a href="UsersManage.action?account=<s:property value="id"/>">Users</a></li>
-		<li><a href="ManageEmployees.action?id=<s:property value="id"/>">Employees</a></li>
+		<li><a href="UsersManage.action?account=<s:property value="id"/>"><s:text name="global.Users" /></a></li>
+		<li><a href="ManageEmployees.action?id=<s:property value="id"/>"><s:text name="global.Employees" /></a></li>
 		<pics:permission perm="DefineRoles">
-			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>">Job Roles</a></li>
+			<li><a href="ManageJobRoles.action?id=<s:property value="id"/>"><s:text name="ManageEmployees.header.JobRoles" /></a></li>
 		</pics:permission>
 		<s:if test="!contractor.status.demo">
 			<li><a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
+				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span><s:text name="BillingDetail.title" /></span></a></li>
 			<li><a href="ContractorPaymentOptions.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
+				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span><s:text name="ContractorPaymentOptions.header" /></span></a></li>
 		</s:if>
 		<pics:permission perm="DevelopmentEnvironment">
-			<li><a href="ContractorCron.action?conID=<s:property value="id" />">Contractor Cron</a></li>
-			<li><a href="AuditBuilder.action?id=<s:property value="id" />">Audit Builder</a></li>
+			<li><a href="ContractorCron.action?conID=<s:property value="id" />"><s:text name="ContractorCron.header" /></a></li>
+			<li><a href="AuditBuilder.action?id=<s:property value="id" />"><s:text name="AuditBuilder.header" /></a></li>
 		</pics:permission>
 	</s:if>
 	<s:elseif test="permissions.contractor">
 		<pics:permission perm="ContractorAdmin">
 			<li><a id="edit_contractor" href="ContractorEdit.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('edit')">class="current"</s:if>><span>Edit Account</span></a></li>
+				<s:if test="requestURI.contains('edit')">class="current"</s:if>><span><s:text name="ContractorEdit.heading" /></span></a></li>
 		</pics:permission>
 			<li><a id="profileEditLink" href="ProfileEdit.action"
-		<s:if test="requestURI.contains('profile')">class="current"</s:if>><span>Edit My Profile</span></a></li>
+		<s:if test="requestURI.contains('profile')">class="current"</s:if>><span><s:text name="ProfileEdit.title" /></span></a></li>
 		<pics:permission perm="ContractorAdmin">
-			<li><a href="UsersManage.action">Users</a></li>
-			<li><a href="ManageEmployees.action">Employees</a></li>
+			<li><a href="UsersManage.action"><s:text name="global.Users" /></a></li>
+			<li><a href="ManageEmployees.action"><s:text name="global.Employees" /></a></li>
 			<s:if test="permissions.requiresCompetencyReview">
-				<li><a href="ManageJobRoles.action">Job Roles</a></li>
+				<li><a href="ManageJobRoles.action"><s:text name="ManageEmployees.header.JobRoles" /></a></li>
 			</s:if>
 		</pics:permission>
 		<pics:permission perm="ContractorBilling">
 			<li><a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span>Billing Details</span></a></li>
+				<s:if test="requestURI.contains('billing_detail')">class="current"</s:if>><span><s:text name="BillingDetail.title" /></span></a></li>
 			<li><a href="ContractorPaymentOptions.action?id=<s:property value="id" />"
-				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span>Payment Options</span></a></li>
+				<s:if test="requestURI.contains('payment_options')">class="current"</s:if>><span><s:text name="ContractorPaymentOptions.header" /></span></a></li>
 		</pics:permission>
 	</s:elseif>
 	<pics:permission perm="DevelopmentEnvironment">
-		<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>">Assessment Results</a></li>
+		<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>"><s:text name="EmployeeAssessmentResults.title" /></a></li>
 	</pics:permission>
 </ul>
 </div>
