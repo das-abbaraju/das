@@ -12,7 +12,6 @@
 		<pattern>/ContractorPricing.action</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/pricing_matrix.jsp</pattern>
-		<pattern>/contractors/con_new_registration_close.jsp</pattern>
 	</decorator>
 	<decorator name="ignoreMe">
 		<pattern>/*Ajax.action</pattern>

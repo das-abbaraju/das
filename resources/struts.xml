@@ -2115,11 +2115,6 @@
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
 
-		<action name="EmployeeCompetenciesAjax"
-			class="com.picsauditing.actions.employees.EmployeeCompetencies">
-			<result>/struts/employees/employee_competencies_data.jsp</result>
-		</action>
-
 		<action name="EmployeeCompetenciesCSV"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<param name="download">true</param>
@@ -2185,5 +2180,8 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
+			<result>struts/i18n/translate_js.jsp</result>
+		</action>
 	</package>
 </struts>
