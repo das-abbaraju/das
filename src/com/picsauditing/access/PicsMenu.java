@@ -88,7 +88,8 @@ public class PicsMenu {
 					}
 					if (permissions.isRequiresOQ()) {
 						subMenu = menu.addChild(getText("global.OperatorQualification"));
-						subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
+						subMenu.addChild(getText("ReportOQEmployees.title"),
+								"ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
 						subMenu.addChild(getText("ReportOQChanges.title"), "ReportOQChanges.action");
 						subMenu.addChild(getText("ReportNewProjects.title"), "ReportNewProjects.action");
 					}
@@ -163,8 +164,7 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("global.AuditGUARD"));
 		if (permissions.isAuditor()) {
-			subMenu.addChild("My Audits",
-					"AuditListAuditor.action?filter.auditStatus=Pending");
+			subMenu.addChild("My Audits", "AuditListAuditor.action?filter.auditStatus=Pending");
 			subMenu.addChild("My Audit History", "MyAuditHistory.action");
 		}
 
@@ -267,6 +267,9 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			addChildAction(subMenu, "EmailWizard");
+		}
+		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
+			addChildAction(subMenu, "ReportEmailWebinar");
 		}
 		if (permissions.hasPermission(OpPerms.EmailQueue)) {
 			subMenu.addChild(getTitle("EmailQueueList"), "EmailQueueList.action?filter.status=Pending");
@@ -431,16 +434,18 @@ public class PicsMenu {
 
 			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
 			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
-			//subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
+			// subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 
 		if (permissions.isRequiresOQ()) {
 			subMenu = menu.addChild(getText("global.OperatorQualification"));
 
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action?id="
+						+ permissions.getAccountId());
 			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild(getText("ManageProjects.title"), "ManageProjects.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("ManageProjects.title"),
+						"ManageProjects.action?id=" + permissions.getAccountId());
 
 			subMenu.addChild(getText("ReportOQ.title"), "ReportOQ.action");
 			subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action");

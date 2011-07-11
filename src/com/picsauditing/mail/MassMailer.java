@@ -107,6 +107,7 @@ public class MassMailer extends PicsActionSupport {
 				templateBody = template.getBody();
 				templateName = template.getTemplateName();
 				templateAllowsVelocity = template.isAllowsVelocity();
+				type = template.getListType();
 			} else {
 				templateSubject = "";
 				templateBody = "";

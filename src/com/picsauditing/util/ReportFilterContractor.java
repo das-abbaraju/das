@@ -9,11 +9,13 @@ import java.util.Map;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -34,6 +36,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			"Bid Only Account" };
 
 	// /////// Filter Visibility /////////////
+	protected boolean showContractor = false;
 	protected boolean showOperator = true;
 	protected boolean showOperatorSingle = false;
 	protected boolean showAnyOperator = false;
@@ -75,6 +78,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
 	protected int[] trade;
+	protected int[] contractor;
 	protected int[] operator;
 	protected int operatorSingle;
 	protected int[] stateLicensedIn;
@@ -131,6 +135,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	// // setting the filter
+	public boolean isShowContractor() {
+		return showContractor;
+	}
+
+	public void setShowContractor(boolean showContractor) {
+		this.showContractor = showContractor;
+	}
+
 	public boolean isShowOperator() {
 		return showOperator;
 	}
@@ -435,6 +447,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.trade = trade;
 	}
 
+	public int[] getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(int[] contractor) {
+		this.contractor = contractor;
+	}
+
 	public int[] getOperator() {
 		return operator;
 	}
@@ -571,6 +591,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public String[] getTradePerformedByList() {
 		String[] list = { DEFAULT_PERFORMED_BY, "Self Performed", "Sub Contracted" };
 		return list;
+	}
+
+	public List<ContractorAccount> getContractorList() throws Exception {
+		if (permissions == null)
+			return null;
+		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		return dao.findWhere("", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

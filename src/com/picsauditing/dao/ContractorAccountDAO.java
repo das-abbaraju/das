@@ -76,6 +76,35 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	/**
+	 * Return a list of Contractors 
+	 * 
+	 * @param where
+	 * @param permissions
+	 * @return
+	 */
+	public List<ContractorAccount> findWhere(String where, Permissions permissions) {
+		// Now get the contractor list
+		if (where == null)
+			where = "";
+
+		if (where.length() > 0)
+			where += " AND ";
+
+		where += "a.status IN ('Active'";
+		if (permissions.isAdmin())
+			where += ",'Pending'";
+		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
+			where += ",'Demo'";
+		where += ") ";
+
+		where += "AND (a.id = " + permissions.getAccountId() + " )";
+
+		List<ContractorAccount> contractorList = findWhere(where);
+
+		return contractorList;
+	}
+
+	/**
 	 * Alias a
 	 * 
 	 * @param includeCorporate

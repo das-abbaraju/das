@@ -269,6 +269,17 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showContractor">
+		<div class="filterOption">
+			<a href="#" class="filterBox">Contractor</a> =
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select">
+				<s:textfield rel="Contractors" name="filter.contractor" cssClass="tokenAuto" />
+				<a class="clearLink" href="#">Clear</a>
+			</span>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showOperator">
 		<div class="filterOption">
 			<s:if test="filter.showOperatorSingle">

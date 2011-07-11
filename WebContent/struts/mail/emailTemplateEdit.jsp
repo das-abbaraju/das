@@ -13,7 +13,7 @@
 <script type="text/javascript">
 $(function(){
 	<s:if test="type==null">
-		changeType('Audit'); 
+		changeType(); 
 	</s:if>
 	$(window).bind('hashchange', function() {
 		var state = $.bbq.getState();
@@ -25,7 +25,7 @@ $(function(){
 			var data = {
 				button: 'MailEditorAjax',
 				templateID: state.template == 'blank' ? -1 : state.template,
-				type: $('#changeType').val(),
+				type: type,
 				editTemplate: true
 			};
 
@@ -34,9 +34,10 @@ $(function(){
 		}
 	});
 });
-function changeType(type){	
+function changeType(){	
+	type = $('#changeType').val();
 	$('#tempTitle').text('Editing '+type+' Templates');
-	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: $('#changeType').val()});
+	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
 }
 </script>
 <style type="text/css">
@@ -91,7 +92,7 @@ function changeType(type){
 <div id="messages">
 	<s:include value="../actionMessages.jsp" />
 </div>
-Template Type: <s:select id="changeType" name="type" list="{'Audit', 'Contractor', 'User'}" onchange="changeType($(this).val()); return false;" />
+Template Type: <s:select id="changeType" name="type" list="{'Audit', 'Contractor', 'User'}" onchange="changeType(); return false;" />
 <table id="emailTemplateTable">	
 	<s:include value="editTemplateList.jsp" />
 </table>

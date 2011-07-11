@@ -1535,6 +1535,15 @@
 			<result>struts/mail/mail_wizard.jsp</result>
 		</action>
 
+		<action name="ReportEmailWebinar" class="com.picsauditing.mail.ReportEmailWebinar">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportEmailWebinar</param>
+			<result>struts/mail/email_webinar.jsp</result>
+		</action>
+		<action name="ReportEmailWebinarAjax" class="com.picsauditing.mail.ReportEmailWebinar">
+			<result>struts/mail/email_webinar_data.jsp</result>
+		</action>
+
 		<action name="ReportEmailSubscription"
 			class="com.picsauditing.actions.report.ReportEmailSubscription">
 			<result>struts/reports/report_email_user.jsp</result>
