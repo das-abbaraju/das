@@ -11,9 +11,9 @@ import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -38,11 +38,8 @@ public class FlagChangesSubscription extends SubscriptionBuilder {
 			if(!o.isCorporate())
 				operators.add(o.getId());
 			// Adding child facilities and switch tos
-			for(OperatorAccount oa : o.getOperatorChildren())
-				operators.add(oa.getId());
-//			for (UserSwitch user : getUser().getSwitchTos())
-//				if (user.getUser().getAccount().isOperator())
-//					operators.add(user.getUser().getAccount().getId());
+			for(Facility f : o.getOperatorFacilities())
+				operators.add(f.getOperator().getId());
 			
 			SelectSQL sql = new SelectSQL();
 
