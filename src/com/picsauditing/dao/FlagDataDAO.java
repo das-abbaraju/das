@@ -25,7 +25,7 @@ public class FlagDataDAO extends PicsDAO {
 		else {
 			/*
 			 * Demo Contractors should be able to see Demo Operators' flags, but Active Contractors should only see
-			 * Active operators flags
+			 * Active operators flags.
 			 */
 			q += "AND (operator.status = contractor.status OR operator.status = 'Active')";
 		}
@@ -59,7 +59,7 @@ public class FlagDataDAO extends PicsDAO {
 		else {
 			/*
 			 * Demo Contractors should be able to see Demo Operators' flags, but Active Contractors should only see
-			 * Active operators flags
+			 * Active operators flags.
 			 */
 			q += "AND (co.operatorAccount.status = co.contractorAccount.status OR co.operatorAccount.status = 'Active') ";
 		}
