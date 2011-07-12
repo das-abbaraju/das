@@ -271,7 +271,7 @@ table.report tr.hurdle td {
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
 					<s:if test="activeOperators.size() > 1">
-						<p><a href="#all">Locations</a>:
+						<p><a href="#all"><s:text name="global.Locations" /></a>:
 							<s:property value="activeOperators.size()"/>
 							<s:if test="flagCounts.size() > 0">
 								(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
@@ -281,19 +281,19 @@ table.report tr.hurdle td {
 					<pics:permission perm="ContractorWatch" type="Edit">
 						<p id="contractorWatch">
 							<s:if test="watched">
-								You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>
+								<s:text name="ContractorView.WatchingContractor" /> <a href="#" onclick="stopWatch(); return false;"><s:text name="ContractorView.StopWatching" /></a>
 							</s:if>
 							<s:else>
-								<a class="watch" href="#" onclick="startWatch(); return false;">Watch This Contractor</a>
+								<a class="watch" href="#" onclick="startWatch(); return false;"><s:text name="ContractorView.WatchContractor" /></a>
 							</s:else>
 						</p>
 					</pics:permission>
 				</div>
 				<s:if test="activeOperators.size() > 1">
 				<div class="co_select nobr">
-					Select Operator:
+					<s:text name="global.SelectOperator" />:
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
-						headerKey="" headerValue=" - Operator - "
+						headerKey="" headerValue="- %{getText('global.Operator')} -"
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
 				</div>
 				</s:if>
@@ -313,7 +313,7 @@ table.report tr.hurdle td {
 				<ul>
 					<pics:permission perm="ContractorDetails">
 					<s:if test="key == 'DocuGUARD'">
-						<li><strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>">Download PQF &amp; Annual Updates</a></strong></li></s:if>
+						<li><strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>"><s:text name="ContractorView.DownloadPQF" /></a></strong></li></s:if>
 					</pics:permission>
 				<s:iterator value="value">
 					<li>
@@ -340,10 +340,10 @@ table.report tr.hurdle td {
 		<div class="panel">
 			<div class="panel_header">
 				<span style="float: right;">
-					<a href="#" id="hurdleLinkShow" onclick="$('tr.hurdle').show(); $('#hurdleLinkShow').hide(); $('#hurdleLinkHide').show(); return false;">Show Hurdle Rates</a>
-					<a href="#" id="hurdleLinkHide" onclick="$('tr.hurdle').hide(); $('#hurdleLinkHide').hide(); $('#hurdleLinkShow').show(); return false;" style="display: none">Hide Hurdle Rates</a>
+					<a href="#" id="hurdleLinkShow" onclick="$('tr.hurdle').show(); $('#hurdleLinkShow').hide(); $('#hurdleLinkHide').show(); return false;"><s:text name="ContractorView.ShowHurdleRates" /></a>
+					<a href="#" id="hurdleLinkHide" onclick="$('tr.hurdle').hide(); $('#hurdleLinkHide').hide(); $('#hurdleLinkShow').show(); return false;" style="display: none"><s:text name="ContractorView.HideHurdleRates" /></a>
 				</span>
-				Statistics
+				<s:text name="global.Statistics" />
 			</div>
 			<div class="panel_content">
 				<table class="report">
@@ -416,16 +416,16 @@ table.report tr.hurdle td {
 			<div class="panel_content">
 				<h4><s:property value="contractor.name" />
 					<s:if test="contractor.dbaName.length() > 0">
-						<br/>DBA <s:property value="contractor.dbaName" />
+						<br/><s:text name="ContractorAccount.dbaName.short" /> <s:property value="contractor.dbaName" />
 					</s:if>
 				</h4>
-				<p>PICS Contractor ID:
+				<p><s:text name="ContractorAccount.id" />:
 					<strong>
 						<s:property value="contractor.id" />
 					</strong>
 				</p>
 				<pics:permission perm="PicsScore">
-				<p>Score:
+				<p><s:text name="ContractorAccount.score" />:
 					<strong>
 						<s:property value="contractor.score" />
 					</strong>
@@ -436,8 +436,8 @@ table.report tr.hurdle td {
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
 				</p>
-				<p>PICS CSR:
-					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong> Fax: <s:property value="contractor.auditor.fax" /> / 
+				<p><s:text name="global.CSR" />:
+					<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong> <s:text name="ProfileEdit.u.fax" />: <s:property value="contractor.auditor.fax" /> / 
 					<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
 				</p>
 				<p><s:text name="global.SafetyRisk" />:
@@ -455,7 +455,7 @@ table.report tr.hurdle td {
 				</s:if>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
-						<div><span>Operator Tag Names: </span>
+						<div><span><s:text name="OperatorTags.title" />: </span>
 							<div id="conoperator_tags">
 							<s:include value="contractorOperator_tags.jsp" />
 							</div>
@@ -483,13 +483,13 @@ table.report tr.hurdle td {
 				</p>
 				<div class="telecommunications">
 					<p class="tel"><s:text name="ContractorView.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
-					<s:if test="!isStringEmpty(contractor.fax)"><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
-					<s:if test="contractor.webUrl.length() > 0"><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
+					<s:if test="!isStringEmpty(contractor.fax)"><p class="tel"><s:text name="ContractorEdit.PrimaryAddress.CompanyFaxMain" />: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
+					<s:if test="contractor.webUrl.length() > 0"><p class="url"><s:text name="ContractorAccount.webUrl" />: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
 					<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
-					<p class="contact"><s:if test="contractor.primaryContact.id == id">Primary </s:if>Contact: <span class="value"><s:property value="name" /></span></p>
-					<p class="tel">&nbsp;&nbsp;Email: <a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
-						<s:if test="phone.length() > 0"> / Phone: <s:property value="phone" /></s:if>
-						<s:if test="fax.length() > 0"> / Fax: <s:property value="fax" /></s:if>
+					<p class="contact"><s:if test="contractor.primaryContact.id == id"><s:text name="global.ContactPrimary" /></s:if><s:else><s:text name="global.Contact" /></s:else>: <span class="value"><s:property value="name" /></span></p>
+					<p class="tel">&nbsp;&nbsp;<s:text name="User.email" />: <a href="mailto:<s:property value="email" />" class="email"><s:property value="email" /></a>
+						<s:if test="phone.length() > 0"> / <s:text name="User.phone" />: <s:property value="phone" /></s:if>
+						<s:if test="fax.length() > 0"> / <s:text name="User.fax" />: <s:property value="fax" /></s:if>
 					</p>
 					</s:iterator>
 				</div>
@@ -510,7 +510,7 @@ table.report tr.hurdle td {
 				<span id="description"><s:property value="contractor.descriptionHTML" /></span>
 				<s:if test="@com.picsauditing.util.Strings@isEmpty(contractor.brochureFile) == false">
 					<p class="web"><strong>
-						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK">Company Brochure</a>
+						<a href="DownloadContractorFile.action?id=<s:property value="id" />" target="_BLANK"><s:text name="ContractorEdit.CompanyIdentification.CompanyBrochure" /></a>
 					</strong></p>
 				</s:if>
 				<s:if test="contractor.trades.size() > 0">
@@ -561,7 +561,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Open Tasks
+				<s:text name="Widget.6.caption"/>
 			</div>
 			<div class="panel_content" id="con_tasks">
 				<div class="inprogress"></div>
@@ -578,7 +578,7 @@ table.report tr.hurdle td {
 		<div class="panel">
 			<div class="panel_header">
 				<s:text name="ContractorView.SynchronizeContractor" /> <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
-				<div id="cluetip_sync">Click this button to update the PQF, audits, flags, and other requirements for this contractor. You need to click this button only when requirements have changed and you want to see the results immediately.</div>
+				<div id="cluetip_sync"><s:text name="ContractorView.SynchronizeContractorMessage" /></div>
 			</div>
 			<div class="panel_content" style="text-align: center;">
 				<s:form id="form_sync">
@@ -587,7 +587,7 @@ table.report tr.hurdle td {
 					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();"
 						style="margin: 5px auto;" value="Synchronize" />
 					<s:if test="contractor.lastRecalculation != null">
-						<br />Last synchronized <s:date name="contractor.lastRecalculation" nice="true" />
+						<br /><s:text name="ContractorView.LastSync"><s:param value="%{contractor.lastRecalculation}" /></s:text>
 					</s:if>
 				</s:form>
 			</div>
