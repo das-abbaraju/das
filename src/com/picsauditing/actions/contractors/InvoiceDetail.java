@@ -215,7 +215,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				message = "Cancelled Invoice";
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
-						+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount().toString();
+						+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
 			}
 			if (button.equals("pay")) {
@@ -253,7 +253,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount(), getUser());
+									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(), getUser());
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 

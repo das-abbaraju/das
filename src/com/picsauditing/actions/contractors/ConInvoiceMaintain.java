@@ -88,7 +88,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 						items.remove();
 						invoiceItemDAO.remove(item);
 						addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
-								+ "</strong> for " + contractor.getCurrencyCode().getIcon() + item.getAmount());
+								+ "</strong> for " + contractor.getCurrencyCode().getSymbol() + item.getAmount());
 					}
 				}
 

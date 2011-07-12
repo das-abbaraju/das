@@ -27,13 +27,13 @@
 			<tr><td colspan="4"><label>Annual Membership</label></td></tr>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
 				<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
-					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.fees.get(#feeClass).newAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 				</s:if>
 			</s:iterator>
 			<tr><td class="left"><s:if test="contractor.accountLevel.full">
 				<a onclick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a>
 				</s:if></td>
-				<td>Total:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.newMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+				<td>Total:</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>
 	</s:if>
 	<s:elseif test="!contractor.hasFreeMembership">
@@ -41,13 +41,13 @@
 			<tr><td colspan="4"><label>Annual Membership</label></td></tr>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
 				<s:if test="!contractor.fees.get(#feeClass).currentLevel.free && #feeClass.membership">
-					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 				</s:if>
 			</s:iterator>
 			<tr><td class="left"><s:if test="contractor.accountLevel.full">
 				<a onclick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window">View Pricing</a>
 				</s:if></td>
-				<td>Total:</td><td class="right"><s:property value="contractor.currencyCode.icon" /><s:property value="contractor.currentMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+				<td>Total:</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.currentMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>
 	</s:elseif>
 </s:if>

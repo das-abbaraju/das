@@ -143,7 +143,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ contractor.getCurrencyCode().getIcon() + invoice.getTotalAmount());
+									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -223,8 +223,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						if (contractor.hasReducedActivation(activation)) {
 							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-									+ contractor.getCurrencyCode().getIcon() + activation.getAmount()
-									+ " to " + contractor.getCurrencyCode().getIcon()
+									+ contractor.getCurrencyCode().getSymbol() + activation.getAmount()
+									+ " to " + contractor.getCurrencyCode().getSymbol()
 									+ reducedOperator.getActivationFee() + ". ";
 							invoice.setNotes(notes);
 						}
@@ -238,7 +238,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote("Created invoice for " + contractor.getCurrencyCode().getIcon()
+						this.addNote("Created invoice for " + contractor.getCurrencyCode().getSymbol()
 								+ invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 
@@ -269,7 +269,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						}
 						contractor.syncBalance();
 
-						this.addNote("Modified current invoice, changed to "+contractor.getCurrencyCode().getIcon()  + invoice.getTotalAmount(),
+						this.addNote("Modified current invoice, changed to "+contractor.getCurrencyCode().getSymbol()  + invoice.getTotalAmount(),
 								NoteCategory.Billing);
 					}
 				}

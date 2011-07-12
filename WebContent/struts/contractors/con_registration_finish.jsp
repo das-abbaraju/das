@@ -39,7 +39,7 @@
 		<s:if test="contractor.paymentMethod.check">
 			<div class="alert">
 				Your payment method is currently set to Check. Your account will be activated as soon as we receive a check from you for
-				<strong><s:property value="invoice.currency.icon" /><s:property value="invoice.totalAmount"/></strong>. If you would like to activate your account now,
+				<strong><s:property value="invoice.currency.symbol" /><s:property value="invoice.totalAmount"/></strong>. If you would like to activate your account now,
 				<a href="ContractorPaymentOptions.action">Click Here to Add a Credit Card</a>.
 			</div>
 		</s:if>
@@ -114,7 +114,7 @@
 							<s:if test="contractor.paymentMethod.creditCard">
 								<s:if test="contractor.mustPayB">
 									<div class="info">
-										Please click the button only once. Your card will be charged <s:property value="invoice.currency.icon" /><s:property value="invoice.totalAmount" /> immediately and a receipt will be e-mailed to you.
+										Please click the button only once. Your card will be charged <s:property value="invoice.currency.symbol" /><s:property value="invoice.totalAmount" /> immediately and a receipt will be e-mailed to you.
 									</div>
 								</s:if>
 								<s:else>

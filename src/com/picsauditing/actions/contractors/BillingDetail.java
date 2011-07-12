@@ -97,8 +97,8 @@ public class BillingDetail extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-							+ contractor.getCurrencyCode().getIcon() + activation.getAmount() + " to "
-							+ contractor.getCurrencyCode().getIcon() + reducedOperator.getActivationFee() + ". ";
+							+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
+							+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee() + ". ";
 				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
@@ -154,7 +154,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 				this.addNote(contractor,
-						"Created invoice for " + contractor.getCurrencyCode().getIcon() + invoiceTotal,
+						"Created invoice for " + contractor.getCurrencyCode().getSymbol() + invoiceTotal,
 						NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());

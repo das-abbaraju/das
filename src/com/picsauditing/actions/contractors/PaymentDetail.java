@@ -141,7 +141,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						payment.setCcNumber(creditCard.getCardNumber());
 
 						addNote("Credit Card transaction completed and emailed the receipt for "
-								+ contractor.getCurrencyCode().getIcon() + payment.getTotalAmount());
+								+ contractor.getCurrencyCode().getSymbol() + payment.getTotalAmount());
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 

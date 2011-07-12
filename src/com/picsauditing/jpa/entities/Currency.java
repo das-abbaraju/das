@@ -4,11 +4,11 @@ public enum Currency {
 	USD("USD","$"), CAD("CAD","$"), GBP("GBP","\u00a3");
 
 	private String display;
-	private String icon;
+	private String symbol;
 
 	private Currency(String display, String icon) {
 		this.display = display;
-		this.icon = icon;
+		this.symbol = icon;
 	}
 
 	public String getDisplay() {
@@ -32,11 +32,11 @@ public enum Currency {
 		return this.equals(USD);
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
-	public String getIcon() {
-		return icon;
+	public String getSymbol() {
+		return symbol;
 	}
 }

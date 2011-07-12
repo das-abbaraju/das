@@ -297,8 +297,8 @@ public class BillingCalculatorSingle {
 
 					if (upgradeAmount.floatValue() > 0) {
 						upgradeTotal = upgradeTotal.add(upgradeAmount);
-						description = "Upgrading from " + contractor.getCurrencyCode().getIcon()
-								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getIcon()
+						description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
+								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getSymbol()
 								+ upgradeAmount;
 					} else
 						upgradeAmount = BigDecimal.ZERO.setScale(2);
