@@ -3,25 +3,23 @@ package com.picsauditing.actions.operators;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 public class OperatorActionSupport extends AccountActionSupport {
 	private static final long serialVersionUID = 8967320010000259378L;
+	@Autowired
 	protected OperatorAccountDAO operatorDao;
 	protected OperatorAccount operator;
 	private List<OperatorAccount> inheritsFlagCriteria = null;
 	private List<OperatorAccount> inheritsInsuranceCriteria = null;
 	private List<OperatorAccount> inheritsAudits = null;
 	private List<OperatorAccount> inheritsInsurance = null;
-
-	public OperatorActionSupport(OperatorAccountDAO operatorDao) {
-		this.operatorDao = operatorDao;
-	}
 
 	public String execute() throws Exception {
 		findOperator();
@@ -55,6 +53,10 @@ public class OperatorActionSupport extends AccountActionSupport {
 
 	public OperatorAccount getOperator() {
 		return operator;
+	}
+	
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
 	}
 
 	public List<OperatorAccount> getInheritsFlagCriteria() {

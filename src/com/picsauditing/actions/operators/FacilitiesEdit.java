@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -23,7 +24,6 @@ import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
@@ -41,6 +41,19 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport implements Preparable {
+	@Autowired
+	protected FacilitiesDAO facilitiesDAO;
+	@Autowired
+	protected OperatorFormDAO formDAO;
+	@Autowired
+	protected AccountUserDAO accountUserDAO;
+	@Autowired
+	protected UserDAO userDAO;
+	@Autowired
+	protected UserSwitchDAO userSwitchDAO;
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	
 	protected String type = "Operator";
 	protected List<Integer> facilities;
 	protected Set<OperatorAccount> relatedFacilities = null;
@@ -49,30 +62,12 @@ public class FacilitiesEdit extends OperatorActionSupport implements Preparable 
 	protected Map<String, Integer> foreignKeys = new HashMap<String, Integer>();
 	protected Map<UserAccountRole, List<AccountUser>> managers;
 
-	protected FacilitiesDAO facilitiesDAO;
-	protected OperatorFormDAO formDAO;
-	protected AccountUserDAO accountUserDAO;
-	protected UserDAO userDAO;
 	protected int accountUserId;
 	protected AccountUser salesRep = null;
 	protected AccountUser accountRep = null;
 	protected Country country;
 	protected State state;
 	protected int contactID;
-	protected UserSwitchDAO userSwitchDAO;
-	private InvoiceFeeDAO invoiceFeeDAO;
-
-	public FacilitiesEdit(OperatorAccountDAO operatorAccountDAO, FacilitiesDAO facilitiesDAO, OperatorFormDAO formDAO,
-			AccountUserDAO accountUserDAO, UserDAO userDAO, UserSwitchDAO userSwitchDAO,
-			InvoiceFeeDAO invoiceFeeDAO) {
-		super(operatorAccountDAO);
-		this.facilitiesDAO = facilitiesDAO;
-		this.formDAO = formDAO;
-		this.accountUserDAO = accountUserDAO;
-		this.userDAO = userDAO;
-		this.userSwitchDAO = userSwitchDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-	}
 
 	public void prepare() throws Exception {
 		id = getParameter("id");

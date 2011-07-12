@@ -2,12 +2,13 @@ package com.picsauditing.actions.operators;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorTagDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.ContractorTag;
@@ -16,8 +17,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorTags extends OperatorActionSupport implements Preparable {
+	@Autowired
 	private OperatorTagDAO operatorTagDAO;
+	@Autowired
 	private ContractorTagDAO conTagDAO;
+	@Autowired
 	private AuditDecisionTableDAO ruleDAO;
 
 	private List<OperatorTag> tags;
@@ -27,13 +31,8 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	private int ruleID;
 	private String ruleType;
 
-	public OperatorTags(OperatorAccountDAO operatorDao, OperatorTagDAO operatorTagDAO, ContractorTagDAO conTagDAO,
-			AuditDecisionTableDAO ruleDAO) {
-		super(operatorDao);
-		this.operatorTagDAO = operatorTagDAO;
+	public OperatorTags() {
 		this.subHeading = "Contractor Tags";
-		this.conTagDAO = conTagDAO;
-		this.ruleDAO = ruleDAO;
 	}
 
 	@Override

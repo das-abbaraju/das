@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.operators.OperatorActionSupport;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.util.ReportFilterNote;
@@ -17,8 +16,7 @@ public class OperatorNotes extends OperatorActionSupport {
 	private String returnType = SUCCESS;
 	private ReportFilterNote filter = new ReportFilterNote();
 
-	public OperatorNotes(OperatorAccountDAO operatorDao) {
-		super(operatorDao);
+	public OperatorNotes() {
 		this.subHeading = "Notes";
 	}
 

@@ -23,7 +23,6 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -69,8 +68,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	private static final String QUESTION1 = "Upload a Certificate of Insurance or other supporting documentation for this policy.";
 	private static final String QUESTION2 = "This insurance policy complies with all additional ";
 
-	public OperatorConfiguration(OperatorAccountDAO operatorDao) {
-		super(operatorDao);
+	public OperatorConfiguration() {
 		subHeading = "Operator Configuration";
 	}
 

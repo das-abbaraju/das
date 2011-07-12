@@ -16,7 +16,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
@@ -33,7 +32,6 @@ import com.picsauditing.util.Strings;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
-
 	@Autowired
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	@Autowired
@@ -53,8 +51,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private List<FlagColor> addableFlags = new ArrayList<FlagColor>();
 	private List<OperatorTag> tags;
 
-	public ManageFlagCriteriaOperator(OperatorAccountDAO operatorDao) {
-		super(operatorDao);
+	public ManageFlagCriteriaOperator() {
 		noteCategory = NoteCategory.Flags;
 	}
 

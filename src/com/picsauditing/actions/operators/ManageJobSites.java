@@ -21,7 +21,6 @@ import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
 import com.picsauditing.dao.JobTaskDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -78,9 +77,7 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	protected Map<Account, List<Employee>> siteCompanies;
 	private List<JobSite> allSites;
 
-	public ManageJobSites(OperatorAccountDAO operatorDao) {
-		super(operatorDao);
-
+	public ManageJobSites() {
 		subHeading = "Manage Projects";
 		noteCategory = NoteCategory.OperatorQualification;
 	}

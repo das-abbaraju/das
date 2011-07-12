@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
@@ -14,7 +15,9 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 
 @SuppressWarnings("serial")
 public class DefineCompetencies extends OperatorActionSupport implements Preparable {
+	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorDao;
 
 	protected String category;
@@ -37,17 +40,8 @@ public class DefineCompetencies extends OperatorActionSupport implements Prepara
 			competency = operatorCompetencyDAO.find(cID);
 	}
 
-	public DefineCompetencies(OperatorAccountDAO operatorDao, OperatorCompetencyDAO operatorCompetencyDAO) {
-		super(operatorDao);
-		this.operatorCompetencyDAO = operatorCompetencyDAO;
-		this.operatorDao = operatorDao;
-	}
-
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		findOperator();
 		tryPermissions(OpPerms.DefineCompetencies);
 
