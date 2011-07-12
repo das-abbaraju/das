@@ -17,6 +17,7 @@
 	src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="js/jquery/fancybox/jquery.fancybox-1.3.1.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />	
 <style type="text/css">
 #operatorForms {
 	overflow: auto;
@@ -100,6 +101,7 @@ pre {
 <s:include value="../jquery.jsp" />
 <script type="text/javascript"
 	src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>	
 
 <script type="text/javascript">
 var show=false;
@@ -113,6 +115,12 @@ var chooseADate = '<s:text name="javascript.ChooseADate" />';
 
 $(function() {
 	$('#notesHere').hide();
+
+	$('#phone').click(function() { 
+        $.blockUI({ message: $('#phoneSubmit') }); 
+ 
+        $('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
+    }); 
 	
 	<s:if test="newContractor.notes.length() > 0">
 		show = true;
@@ -384,8 +392,7 @@ function enableDisableReasonDeclined() {
 		<li><s:textfield cssClass="checkReq" name="newContractor.phone"
 			size="20" theme="formhelp" /> <s:if
 			test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-			<s:submit value="%{getText(scope + '.button.ContactedByPhone')}"
-				action="RequestNewContractor!phone" cssClass="picsbutton" />
+			<input type="button" class="picsbutton" value="Contacted by Phone" id = "phone"/>
 		</s:if>
 		<div id="think_phone"></div>
 		<div id="match_phone"></div>
@@ -527,11 +534,17 @@ function enableDisableReasonDeclined() {
 					name="%{scope}.message.MissingWatchPermission" /></div>
 			</s:if></li>
 		</s:if>
+		<s:if test="newContractor.id > 0">
+			<li>
+				<label><s:text name="ContractorRegistrationRequest.label.status:" /></label>
+				<s:property value="newContractor.status" />
+			</li>
+		</s:if>
 		<li><s:textfield id="regDate" name="newContractor.deadline"
 			cssClass="datepicker" size="10" onchange="checkDate()"
 			theme="formhelp" /></li>
 		<li><label><s:text name="%{scope}.label.pastFuture" />:</label>
-		<s:radio list="#{'Future':'Future','Past':'Past'}"
+		<s:radio list="#{'Past':'Past', 'Future':'Future'}"
 			name="newContractor.pastFuture" theme="pics" /></li>
 		<li><s:textarea id="registrationReason"
 			name="newContractor.registrationReason" theme="formhelp" /></li>
@@ -661,7 +674,6 @@ function enableDisableReasonDeclined() {
 		<s:submit value="%{getText(scope + '.button.ReturnToOperator')}"
 			method="returnToOperator" cssClass="picsbutton" />
 	</s:elseif></fieldset>
-	
 </s:form>
 
 <div style="display: none" id="load"></div>
@@ -691,6 +703,21 @@ function enableDisableReasonDeclined() {
 	</div>
 	</div>
 </s:if>
+<div class="blockMsg" id="phoneSubmit" style="display: none">
+	<s:form>
+		<h3><s:text name = "%{scope}.button.ContactedByPhone" /></h3>
+		<br />
+		<s:hidden name="requestID"/>
+		<label>Add additional notes:</label>
+		<p>
+			<s:textarea name="addToNotes" cols="30" rows="3"/>
+		</p>
+		<p>
+			<s:submit value="Submit" method="phone" cssClass="picsbutton positive" />
+		</p>
+	</s:form>
+</div>
+
 
 </body>
 </html>

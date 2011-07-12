@@ -217,7 +217,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Transient
 	public String getPastFuture() {
 		// return pastFuture;
-		return "Past";
+		return "Future";
 	}
 
 	@Transient
@@ -337,4 +337,16 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void contact() {
 		contactCount = contactCount + 1;
 	}
+
+	@Transient
+	public String getStatus() {
+		if (isOpen())
+			if (getHoldDate() != null)
+				return "Hold";
+			else
+				return "Active";
+		else
+			return "Closed " + getResult();
+	}
+
 }

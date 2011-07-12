@@ -127,7 +127,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		getPermissions();
 
 		newContractor.setPermissions(permissions);
-		
+
 		requestID = getParameter("requestID");
 
 		if (requestID > 0)
@@ -382,7 +382,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public String phone() throws Exception {
-		return contact("Contacted by phone.");
+		System.out.println("made it here");
+		//reset addToNotes.
+		String addToNotes = this.addToNotes;
+		this.addToNotes = null;
+		return contact("Contacted by phone: " + addToNotes);
 	}
 
 	public String email() throws Exception {
@@ -483,9 +487,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
 
-		// newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
-		// newContractor.setOpen(false);
-		// newContractor.setAuditColumns(permissions);
+		newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
+		newContractor.setOpen(false);
+		newContractor.setAuditColumns(permissions);
 		newContractor = crrDAO.save(newContractor);
 
 		return "backToReport";
