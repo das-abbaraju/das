@@ -1,15 +1,20 @@
 package com.picsauditing.actions.operators;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.dao.JobTaskCriteriaDAO;
 import com.picsauditing.dao.JobTaskDAO;
@@ -17,137 +22,142 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AssessmentTest;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.jpa.entities.JobTaskCriteria;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
-public class ManageJobTaskCriteria extends OperatorActionSupport {
-	protected JobTaskDAO jobTaskDAO;
-	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
+public class ManageJobTaskCriteria extends PicsActionSupport {
+	@Autowired
 	protected AssessmentTestDAO assessmentTestDAO;
+	@Autowired
+	protected JobTaskDAO jobTaskDAO;
+	@Autowired
+	protected JobTaskCriteriaDAO jobTaskCriteriaDAO;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
 
-	protected int jobTaskID;
-	protected int jobTaskCriteriaID;
-	protected int assessmentTestID;
-	protected int groupNumber;
-	protected boolean canEdit = false;
-
-	protected List<String> history;
-	protected Date date = new Date();
-	protected JobTaskCriteria newJobTaskCriteria = new JobTaskCriteria();
-	protected JobTask jobTask;
 	protected AssessmentTest assessmentTest;
-
-	public ManageJobTaskCriteria(OperatorAccountDAO operatorDao, JobTaskCriteriaDAO jobTaskCriteriaDAO,
-			AssessmentTestDAO assessmentTestDAO, JobTaskDAO jobTaskDAO) {
-		super(operatorDao);
-		this.jobTaskCriteriaDAO = jobTaskCriteriaDAO;
-		this.assessmentTestDAO = assessmentTestDAO;
-		this.jobTaskDAO = jobTaskDAO;
-	}
-
+	protected JobTask jobTask;
+	protected OperatorAccount operator;
+	protected int groupNumber;
+	protected int jobTaskCriteriaID;
+	
+	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		findOperator();
-		
-		if (jobTask == null && jobTaskID > 0) {
-			jobTask = jobTaskDAO.find(jobTaskID);
-			subHeading = jobTask.getLabel() + " " + jobTask.getName();
-		}
-
-		if (button != null) {
-			tryPermissions(OpPerms.ManageJobTasks, OpType.Edit);
-			
-			if ("Save".equalsIgnoreCase(button)) {
-				setupNewJobTaskCriteria();
-				newJobTaskCriteria.setGroupNumber(groupNumber);
-				jobTaskCriteriaDAO.save(newJobTaskCriteria);
-				
-				addActionMessage("Successfully added "+assessmentTest.getName()+" to group "+groupNumber);
-			}
-			
-			if ("Create".equalsIgnoreCase(button)) {
-				setupNewJobTaskCriteria();
-				int highestGroupNumber = 0;
-				for(int group : jobTask.getJobTaskCriteriaMap().keySet())
-					if(group > highestGroupNumber)
-						highestGroupNumber = group;
-				
-				newJobTaskCriteria.setGroupNumber(highestGroupNumber+1);
-				jobTaskCriteriaDAO.save(newJobTaskCriteria);
-				jobTask.getJobTaskCriteria().add(newJobTaskCriteria);
-				
-				addActionMessage("Successfully added "+assessmentTest.getName()+" to New Group");
-			}
-
-			if ("Remove".equalsIgnoreCase(button)) {
-				newJobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
-				assessmentTest = newJobTaskCriteria.getAssessmentTest();
-				
-				// If deleting something created today, just remove
-				if (DateBean.format(newJobTaskCriteria.getCreationDate(), "yyyy-MM-dd")
-						.equals(DateBean.format(new Date(), "yyyy-MM-dd")))
-					jobTaskCriteriaDAO.remove(newJobTaskCriteria);
-				else {
-					newJobTaskCriteria.expire();
-					jobTaskCriteriaDAO.save(newJobTaskCriteria);
-				}
-				
-				addActionMessage("Successfully removed "+assessmentTest.getName()+" from group "+groupNumber);
-			}
-
-			return redirect("ManageJobTaskCriteria.action?id=" + operator.getId() + "&jobTaskID=" + jobTaskID);
+		if (ActionContext.getContext().getSession().get("actionErrors") != null) {
+			setActionErrors((Collection<String>) ActionContext.getContext().getSession().get("actionErrors"));
+			ActionContext.getContext().getSession().remove("actionErrors");
 		}
 		
 		return SUCCESS;
 	}
 
-	public int getGroupNumber() {
-		return groupNumber;
+	@RequiredPermission(value = OpPerms.ManageJobTasks, type = OpType.Edit)
+	public String create() throws Exception {
+		JobTaskCriteria jobTaskCriteria = setupNewJobTaskCriteria();
+
+		int highestGroupNumber = 0;
+		for (int group : jobTask.getJobTaskCriteriaMap().keySet())
+			if (group > highestGroupNumber)
+				highestGroupNumber = group;
+
+		jobTaskCriteria.setGroupNumber(highestGroupNumber + 1);
+		jobTaskCriteriaDAO.save(jobTaskCriteria);
+		jobTask.getJobTaskCriteria().add(jobTaskCriteria);
+
+		return getRedirect(getText(String.format("%s.message.AddedNewGroup", getScope()),
+				new Object[] { assessmentTest.getName() }));
 	}
 
-	public void setGroupNumber(int groupNumber) {
-		this.groupNumber = groupNumber;
+	@RequiredPermission(value = OpPerms.ManageJobTasks, type = OpType.Edit)
+	public String save() throws Exception {
+		JobTaskCriteria jobTaskCriteria = setupNewJobTaskCriteria();
+		jobTaskCriteria.setGroupNumber(groupNumber);
+		jobTaskCriteriaDAO.save(jobTaskCriteria);
+
+		return getRedirect(getText(String.format("%s.message.AddedToGroup", getScope()),
+				new Object[] { assessmentTest.getName(), (Integer) groupNumber }));
 	}
 
-	public int getJobTaskID() {
-		return jobTaskID;
+	@RequiredPermission(value = OpPerms.ManageJobTasks, type = OpType.Delete)
+	public String remove() throws Exception {
+		JobTaskCriteria jobTaskCriteria = jobTaskCriteriaDAO.find(jobTaskCriteriaID);
+		assessmentTest = jobTaskCriteria.getAssessmentTest();
+
+		// If deleting something created today, just remove
+		if (DateBean.format(jobTaskCriteria.getCreationDate(), "yyyy-MM-dd").equals(
+				DateBean.format(new Date(), "yyyy-MM-dd")))
+			jobTaskCriteriaDAO.remove(jobTaskCriteria);
+		else {
+			jobTaskCriteria.expire();
+			jobTaskCriteriaDAO.save(jobTaskCriteria);
+		}
+
+		return getRedirect(getText(String.format("%s.message.RemovedFromGroup", getScope()), new Object[] {
+				assessmentTest.getName(), groupNumber }));
 	}
 
-	public void setJobTaskID(int jobTaskID) {
-		this.jobTaskID = jobTaskID;
+	private String getRedirect(String actionMessage) throws Exception {
+		addActionMessage(actionMessage);
+		ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
+		return redirect("ManageJobTaskCriteria.action?operator=" + operator.getId() + "&jobTask=" + jobTask.getId());
 	}
 
-	public int getJobTaskCriteriaID() {
-		return jobTaskCriteriaID;
+	public String getSubHeading() {
+		if (jobTask != null) {
+			return String.format("%s: %s", jobTask.getLabel(), jobTask.getName());
+		}
+
+		return null;
 	}
 
-	public void setJobTaskCriteriaID(int jobTaskCriteriaID) {
-		this.jobTaskCriteriaID = jobTaskCriteriaID;
-	}
-	
-	public Date getDate() {
-		return date;
-	}
-	
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
-	public JobTaskCriteria getNewJobTaskCriteria() {
-		return newJobTaskCriteria;
+	public boolean isCanEdit() {
+		Date date = new Date();
+		if (permissions.hasPermission(OpPerms.ManageJobTasks, OpType.Edit)
+				&& (date == null || maskDateFormat(date).equals(maskDateFormat(new Date()))))
+			return true;
+
+		return false;
 	}
 
-	public void setNewJobTaskCriteria(JobTaskCriteria newJobTaskCriteria) {
-		this.newJobTaskCriteria = newJobTaskCriteria;
+	public Set<AssessmentTest> getAllAssessments() {
+		return new HashSet<AssessmentTest>(assessmentTestDAO.findAll());
 	}
 
-	public int getAssessmentTestID() {
-		return assessmentTestID;
+	public Set<AssessmentTest> getUsedAssessmentsByGroup(int groupNumber) {
+		List<AssessmentTest> remainingAssessments = assessmentTestDAO.findAll();
+		for (JobTaskCriteria criteria : jobTask.getJobTaskCriteriaMap().get(groupNumber))
+			if (remainingAssessments.contains(criteria.getAssessmentTest()))
+				remainingAssessments.remove(criteria.getAssessmentTest());
+
+		return new HashSet<AssessmentTest>(remainingAssessments);
 	}
 
-	public void setAssessmentTestID(int assessmentTestID) {
-		this.assessmentTestID = assessmentTestID;
+	public Map<Integer, Set<JobTaskCriteria>> getCriteriaMap() {
+		Date date = new Date();
+		if (date == null || date.equals(maskDateFormat(new Date())))
+			return jobTask.getJobTaskCriteriaMap();
+		else
+			return jobTask.getJobTaskCriteriaMap(date);
+	}
+
+	private JobTaskCriteria setupNewJobTaskCriteria() throws Exception {
+		JobTaskCriteria jobTaskCriteria = new JobTaskCriteria();
+		jobTaskCriteria.setAssessmentTest(assessmentTest);
+		jobTaskCriteria.setTask(jobTask);
+		jobTaskCriteria.setAuditColumns(permissions);
+		jobTaskCriteria.defaultDates();
+		jobTaskCriteria.setEffectiveDate(new Date());
+		jobTaskCriteria.setExpirationDate(DateBean.getEndOfTime());
+
+		return jobTaskCriteria;
+	}
+
+	public AssessmentTest getAssessmentTest() {
+		return assessmentTest;
+	}
+
+	public void setAssessmentTest(AssessmentTest assessmentTest) {
+		this.assessmentTest = assessmentTest;
 	}
 
 	public JobTask getJobTask() {
@@ -158,89 +168,27 @@ public class ManageJobTaskCriteria extends OperatorActionSupport {
 		this.jobTask = jobTask;
 	}
 
-	public AssessmentTest getAssessmentTest() {
-		return assessmentTest;
+	public OperatorAccount getOperator() {
+		return operator;
 	}
 
-	public void setAssessmentTest(AssessmentTest assessmentTest) {
-		this.assessmentTest = assessmentTest;
-	}
-	
-	public boolean isCanEdit() {
-		if (permissions.hasPermission(OpPerms.ManageJobTasks, OpType.Edit) 
-				&& (date == null || maskDateFormat(date).equals(maskDateFormat(new Date()))))
-			canEdit = true;
-		
-		return canEdit;
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
 	}
 
-	public List<JobTaskCriteria> getCriterias() {
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-		
-		return jobTask.getJobTaskCriteria();
+	public int getGroupNumber() {
+		return groupNumber;
 	}
 
-	public Set<AssessmentTest> getAllAssessments() {
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-		
-		return new HashSet<AssessmentTest>(assessmentTestDAO.findAll());
+	public void setGroupNumber(int groupNumber) {
+		this.groupNumber = groupNumber;
 	}
-	
-	public List<String> getHistory() {
-		if (history == null) {
-			List<Date> dates = jobTaskCriteriaDAO.findHistoryByTask(jobTaskID);
-			history = new ArrayList<String>();
 
-			if (!maskDateFormat(dates.get(0)).equals(maskDateFormat(new Date())))
-				history.add(maskDateFormat(new Date()));
-			
-			for (Date date : dates) {
-				history.add(maskDateFormat(date));
-			}
-		}
-		
-		if (history.size() > 1)
-			return history;
-		
-		return null;
+	public int getJobTaskCriteriaID() {
+		return jobTaskCriteriaID;
 	}
-	
-	public Set<AssessmentTest> getUsedAssessmentsByGroup(int groupNumber) {
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-		
-		List<AssessmentTest> remainingAssessments = assessmentTestDAO.findAll();
-		for(JobTaskCriteria criteria : jobTask.getJobTaskCriteriaMap().get(groupNumber))
-			if(remainingAssessments.contains(criteria.getAssessmentTest()))
-				remainingAssessments.remove(criteria.getAssessmentTest());
-		
-		return new HashSet<AssessmentTest>(remainingAssessments);
-	}
-	
-	public Map<Integer, Set<JobTaskCriteria>> getCriteriaMap() {
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-		
-		if (date == null || date.equals(maskDateFormat(new Date())))
-			return jobTask.getJobTaskCriteriaMap();
-		else
-			return jobTask.getJobTaskCriteriaMap(date);
-	}
-	
-	private void setupNewJobTaskCriteria() throws Exception {
-		if (assessmentTest == null)
-			assessmentTest = assessmentTestDAO.find(assessmentTestID);
-		
-		if (jobTask == null)
-			jobTask = jobTaskDAO.find(jobTaskID);
-		
-		newJobTaskCriteria.setAssessmentTest(assessmentTest);
-		newJobTaskCriteria.setTask(jobTask);
-		newJobTaskCriteria.setAuditColumns(permissions);
-		newJobTaskCriteria.defaultDates();
-		newJobTaskCriteria.setEffectiveDate(new Date());
-		newJobTaskCriteria.setExpirationDate(DateBean.getEndOfTime());
+
+	public void setJobTaskCriteriaID(int jobTaskCriteriaID) {
+		this.jobTaskCriteriaID = jobTaskCriteriaID;
 	}
 }

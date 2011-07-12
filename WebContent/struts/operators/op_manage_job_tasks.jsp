@@ -139,7 +139,7 @@ $(function() {
 					<td class="center active">
 						<span class="oldValue">
 							<s:if test="get('activeLabel') == 'Active'"><span style="color: #309"><s:text name="JobTask.active" /></span></s:if>
-							<s:else><span style="color: #930"><s:text name="%{scope}.label.Inactive" /></span></s:else>
+							<s:else><span style="color: #930"><s:text name="JobTask.inactive" /></span></s:else>
 						</span>
 						<span class="newValue">
 							<s:checkbox name="taskActive" value="%{get('activeLabel') == 'Active'}" />
@@ -152,7 +152,7 @@ $(function() {
 						</span>
 					</td>
 					<td class="center">
-						<a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="get('id')" />"
+						<a href="ManageJobTaskCriteria.action?operator=<s:property value="operator.id" />&jobTask=<s:property value="get('id')" />"
 							name="<s:text name="%{scope}.help.ManageTaskCriteria" />" class="preview"></a>
 					</td>
 					<pics:permission perm="ManageJobTasks" type="Edit">
