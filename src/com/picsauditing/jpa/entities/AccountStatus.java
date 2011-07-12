@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
-public enum AccountStatus {
+import javax.persistence.Transient;
+
+public enum AccountStatus implements Translatable {
 	Active, Pending, Demo, Deleted, Deactivated;
 
 	public boolean isActive() {
@@ -29,5 +31,17 @@ public enum AccountStatus {
 
 	public boolean isActiveDemo() {
 		return this.equals(Active) || this.equals(Demo);
+	}
+	
+	@Transient
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+	
+	@Transient
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

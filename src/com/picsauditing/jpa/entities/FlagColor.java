@@ -9,7 +9,7 @@ public enum FlagColor implements Translatable {
 	Green("#339900", "Approve"),
 	Amber("#FFCC33", "Review"),
 	Red("#CC0000", "Reject"),
-	Clear("#FFFFFF", " ");
+	Clear("#FFFFFF", "Not Applicable");
 
 	private String hex;
 	private String insuranceStatus;

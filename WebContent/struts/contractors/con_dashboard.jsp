@@ -61,17 +61,17 @@
 	}
 
 	function startWatch() {
-		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Adding Contractor watch...');
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" /><s:text name="ContractorView.AddWatch" />');
 		$.get('ContractorViewAjax.action', {button: 'Start Watch', id: <s:property value="contractor.id" />}, function (output) {
-			$('#contractorWatch').html('You are watching this contractor. <a href="#" onclick="stopWatch(); return false;">Stop Watching</a>')
+			$('#contractorWatch').html('<s:text name="ContractorView.WatchingContractor" /> <a href="#" onclick="stopWatch(); return false;"><s:text name="ContractorView.StopWatching" /></a>')
 				.effect('highlight', {color: '#FFFF11'}, 1000);
 		});
 	}
 
 	function stopWatch() {
-		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />Removing Contractor Watch...');
+		$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" /><s:text name="ContractorView.RemoveWatch" />');
 		$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
-			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch">Watch This Contractor</a>')
+			$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch"><s:text name="ContractorView.WatchContractor" /></a>')
 				.effect('highlight', {color: '#FFFF11'}, 1000);
 		});
 	}
@@ -160,11 +160,11 @@ table.report tr.hurdle td {
 <body>
 <s:include value="conHeader.jsp"/>
 <s:if test="permissions.contractor">
-	<div class="info"><s:text name="%{scope}.ContractorDashboard.Description" /></div>
+	<div class="info"><s:text name="ContractorView.Description" /></div>
 </s:if>
 <s:if test="permissions.admin">
 	<s:if test="contractor.hasPastDueInvoice()">
-		<div class="alert"><s:text name="%{scope}.ContractorDashboard.HasPastDueInvoice" /></div>
+		<div class="alert"><s:text name="ContractorView.HasPastDueInvoice" /></div>
 	</s:if>
 </s:if>
 
@@ -175,75 +175,84 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.ContractorStatus">
-					<s:param><s:if test="co != null"> at <s:property value="co.operatorAccount.name"/></s:if></s:param>
+				<s:text name="ContractorView.ContractorStatus">
+					<s:param value="%{co == null ? 0 : 1}" />
+					<s:param value="%{co.operatorAccount.name}" />
 				</s:text>
 			</div>
 			<div class="panel_content">
 				<s:if test="contractor.status.pending">
-					<div class="alert"><s:text name="%{scope}.ContractorDashboard.StatusPending" /></div>
+					<div class="alert"><s:text name="ContractorView.StatusPending" /></div>
 				</s:if>
 				<s:if test="contractor.soleProprietor">
-					<div class="alert"><s:text name="%{scope}.ContractorDashboard.SoleProprietor" />
+					<div class="alert"><s:text name="ContractorView.SoleProprietor" />
 					<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sole_sync" title="Sole Proprietor"></a>
-						<div style="display: none;" id="cluetip_sole_sync"><s:text name="%{scope}.ContractorDashboard.SoleProprietor.fieldhelp" /></div>
+						<div style="display: none;" id="cluetip_sole_sync"><s:text name="ContractorView.SoleProprietor.fieldhelp" /></div>
 					</div>
 				</s:if>
 				<s:if test="contractor.status.deleted">
-					<div class="alert">This contractor was deleted<s:if test="contractor.reason.length > 0">
-							because of the following reason: <s:property value="contractor.reason"/></s:if>.
-						<s:if test="contractor.lastPayment != null">They last paid on <s:property value="contractor.lastPayment"/>.</s:if>
+					<div class="alert">
+						<s:text name="ContractorView.ContractorDeleted">
+							<s:param value="%{contractor.reason.length() > 0 ? 1 : 0}" />
+							<s:param value="%{contractor.reason}" />
+						</s:text>
+						<s:if test="contractor.lastPayment != null">
+							<s:text name="ContractorView.ContractorDeletedLastPaid">
+								<s:param value="%{contractor.lastPayment}" />
+							</s:text>
+						</s:if>
 					</div>
 				</s:if>
 				<s:if test="contractor.acceptsBids">
 					<s:if test="canUpgrade">
-						<div class="info">This is a Bid Only Account. You will have to upgrade to a Full Membership if you intend to work at any of your selected facilities.<br/>
+						<div class="info"><s:text name="ContractorView.BidOnlyUpgrade" /><br/>
 						<div style="margin-top: 7px;"><a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a></div></div>
 					</s:if>
 					<s:else>
-						<div class="alert">This is a Bid Only Contractor Account.</div>
+						<div class="alert"><s:text name="ContractorView.BidOnlyUpgradeAlert" /></div>
 					</s:else>
 				</s:if>
 				<s:if test="permissions.admin && !contractor.mustPayB && contractor.status.active">
-					<div class="alert">This account has a lifetime free membership</div>
+					<div class="alert"><s:text name="ContractorView.LifetimeFree" /></div>
 				</s:if>
 
 				<s:if test="co != null">
 					<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 						<s:if test="co.workStatusPending">
-							<div class="alert">The operator has not approved this contractor yet.</div>
+							<div class="alert"><s:text name="ContractorView.NotApprovedYet" /></div>
 						</s:if>
 						<s:elseif test="co.workStatusRejected">
-							<div class="alert">The operator did not approve this contractor.</div>
+							<div class="alert"><s:text name="ContractorView.NotApproved" /></div>
 						</s:elseif>
 					</s:if>
 
 					<div class="co_flag">
 						<s:if test="permissions.corporate && opID == permissions.accountId">
 							<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
-							<p><s:if test="co.flagColor.clear">Not Applicable</s:if>
-								<s:else><s:property value="co.flagColor"/></s:else></p>
+							<p><s:text name="%{co.flagColor.i18nKey}"/></p>
 						</s:if>
 						<s:else>
 							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
 							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
-							<s:if test="co.flagColor.clear">Not Applicable</s:if>
-								<s:else><s:property value="co.flagColor"/></s:else></a></p>
+							<s:text name="%{co.flagColor.i18nKey}"/></a></p>
 						</s:else>
 					<s:if test="co.forcedFlag">
 						<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
-							Manual Force Flag <s:property value="co.forceFlag.smallIcon" escape="false" /> until <s:date name="co.forceEnd" format="MMM d, yyyy" />
+							<s:text name="ContractorView.ManualForceFlag">
+								<s:param><s:property value="co.forceFlag.smallIcon" escape="false" /></s:param>
+								<s:param value="%{co.forceEnd}" />
+							</s:text>
 						</div>
 					</s:if>
 					</div>
 				</s:if>
 				<div class="co_problems">
 					<s:if test="permissions.admin">
-						<p>Account Status: <strong><s:property value="contractor.status"/></strong></p>
-						<s:if test="contractor.accountLevel.full && contractor.balance > 0"><p>Balance: $<s:property value="format(contractor.balance)"/></p></s:if>
+						<p><s:text name="global.AccountStatus"/>: <strong><s:text name="%{contractor.status.i18nKey}"/></strong></p>
+						<s:if test="contractor.accountLevel.full && contractor.balance > 0"><p><s:text name="BillingDetail.Invoicing.CurrentBalance"/>: <s:property value="format(contractor.balance)"/></p></s:if>
 					</s:if>
 					<s:if test="problems.categories.size() > 0">
-						<p><s:text name="%{scope}.ContractorDashboard.Problems" />:
+						<p><s:text name="ContractorView.Problems" />:
 							<ul style="margin-left: 10px;">
 								<s:iterator value="problems.categories" id="probcat">
 									<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
@@ -254,11 +263,11 @@ table.report tr.hurdle td {
 						</p>
 					</s:if>
 					<s:if test="co != null">
-						<p><s:text name="%{scope}.ContractorDashboard.WaitingOn" />:
+						<p><s:text name="ContractorView.WaitingOn" />:
 							<s:text name="%{co.waitingOn.i18nKey}"/>
 						</p>
 					</s:if>
-					<p><s:text name="%{scope}.ContractorDashboard.LastLogin" />:
+					<p><s:text name="ContractorView.LastLogin" />:
 						<s:property value="getFuzzyDate(contractor.lastLogin)"/>
 					</p>
 					<s:if test="activeOperators.size() > 1">
@@ -372,7 +381,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.FlaggableData" />
+				<s:text name="ContractorView.FlaggableData" />
 			</div>
 			<div class="panel_content">
 				<div class="clear" style="height: 0px; overflow: hidden"></div>
@@ -402,7 +411,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.ContractorInfo" />
+				<s:text name="ContractorView.ContractorInfo" />
 			</div>
 			<div class="panel_content">
 				<h4><s:property value="contractor.name" />
@@ -422,7 +431,7 @@ table.report tr.hurdle td {
 					</strong>
 				</p>
 				</pics:permission>
-				<p><s:text name="%{scope}.ContractorDashboard.MemberSince" />:
+				<p><s:text name="ContractorView.MemberSince" />:
 					<strong>
 						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
 					</strong>
@@ -461,19 +470,19 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.ContactInfo" />
+				<s:text name="ContractorView.ContactInfo" />
 			</div>
 			<div class="panel_content">
-				<p><s:text name="%{scope}.ContractorDashboard.Address" />: [<a
+				<p><s:text name="ContractorView.Address" />: [<a
 					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
-					target="_blank"><s:text name="%{scope}.ContractorDashboard.ShowMap" /></a>]<br/>
+					target="_blank"><s:text name="ContractorView.ShowMap" /></a>]<br/>
 					<span class="street-address"><s:property value="contractor.address" /></span><br />
 					<span class="locality"><s:property value="contractor.city" /></span>,
 					<span class="region"><s:property value="contractor.state.isoCode" /></span>
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
 				</p>
 				<div class="telecommunications">
-					<p class="tel"><s:text name="%{scope}.ContractorDashboard.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
+					<p class="tel"><s:text name="ContractorView.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
 					<s:if test="!isStringEmpty(contractor.fax)"><p class="tel">Main Fax: <span class="value"><s:property value="contractor.fax" /></span></p></s:if>
 					<s:if test="contractor.webUrl.length() > 0"><p class="url">Web site: <strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong></p></s:if>
 					<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">
@@ -492,7 +501,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.DescriptionHeader" />
+				<s:text name="ContractorView.DescriptionHeader" />
 			</div>
 			<div class="panel_content">
 				<s:if test="showLogo">
@@ -515,7 +524,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel" id="all">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.AllLocations" />
+				<s:text name="ContractorView.AllLocations" />
 			</div>
 			<div class="panel_content">
 				<s:iterator value="activeOperatorsMap">
@@ -568,7 +577,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="%{scope}.ContractorDashboard.SynchronizeContractor" /> <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
+				<s:text name="ContractorView.SynchronizeContractor" /> <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sync" title="Synchronize Contractor"></a></span>
 				<div id="cluetip_sync">Click this button to update the PQF, audits, flags, and other requirements for this contractor. You need to click this button only when requirements have changed and you want to see the results immediately.</div>
 			</div>
 			<div class="panel_content" style="text-align: center;">
