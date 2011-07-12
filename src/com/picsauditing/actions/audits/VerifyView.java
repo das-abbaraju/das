@@ -61,7 +61,7 @@ public class VerifyView extends ContractorActionSupport {
 
 		permissions.tryPermission(OpPerms.AuditVerification);
 		this.findContractor();
-		subHeading = getText(getScope() + ".title");
+		subHeading = getText(String.format("%s.title", getScope()));
 
 		boolean needsOsha = false;
 		boolean needsEmr = false;

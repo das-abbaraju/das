@@ -227,12 +227,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		availabilitySelected = auditorAvailabilityDAO.find(availabilitySelectedID);
 
 		if (availabilitySelected == null) {
-			addActionError(getText(getScope() + ".message.TimeSlotNotAvailable"));
+			addActionError(getText(String.format("%s.message.TimeSlotNotAvailable", getScope())));
 			return "select";
 		}
 
 		if (!confirmed) {
-			addActionError(getText(getScope() + ".message.AgreeToTerms"));
+			addActionError(getText(String.format("%s.message.AgreeToTerms", getScope())));
 			return "confirm";
 		}
 
@@ -252,11 +252,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		sendConfirmationEmail(getText(conAudit.getAuditType().getI18nKey("name")) + " Scheduled for "
 				+ shortScheduleDate);
 
-		addActionMessage(getText(getScope() + ".message.AuditNowScheduled"));
+		addActionMessage(getText(String.format("%s.message.AuditNowScheduled", getScope())));
 
 		if (needsExpediteFee) {
-			String notes = getText(conAudit.getAuditType().getI18nKey("name"))
-					+ " was scheduled within 10 business days, requiring an expedite fee.";
+			String notes = String.format("%s was scheduled within 10 business days, requiring an expedite fee.",
+					getText(conAudit.getAuditType().getI18nKey("name")));
 
 			createInvoice(expedite, notes);
 

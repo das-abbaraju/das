@@ -51,7 +51,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFee gstFee;
 	private InvoiceFee importFee;
 	private InvoiceFee suncorDiscount = new InvoiceFee();
-	
+
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
 	private boolean braintreeCommunicationError = false;
@@ -59,7 +59,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private AppPropertyDAO appPropDao;
 
 	public ContractorPaymentOptions() {
-		this.subHeading = getText(getScope() + ".title");
+		this.subHeading = getText(String.format("%s.title", getScope()));
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
@@ -135,14 +135,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						contractor.getPayingFacilities());
 		}
 
-		
 		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
-		for(InvoiceItem discount : discounts){
-			if(discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)){
+		for (InvoiceItem discount : discounts) {
+			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)) {
 				suncorDiscount.setAmount(discount.getAmount());
 			}
 		}
-		
+
 		if (contractor.getCurrencyCode().isCanada()) {
 			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
 			BigDecimal total = BigDecimal.ZERO.setScale(2);
@@ -458,11 +457,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public InvoiceFee getSuncorDiscount() {
 		return suncorDiscount;
 	}
-	
-	public boolean isEligibleForSuncorDiscount(){
+
+	public boolean isEligibleForSuncorDiscount() {
 		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
-		for(InvoiceItem discount : discounts){
-			if(discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount))
+		for (InvoiceItem discount : discounts) {
+			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount))
 				return true;
 		}
 		return false;
