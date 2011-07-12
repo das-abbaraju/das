@@ -15,6 +15,7 @@ public class ReportFilter implements Serializable {
 	protected boolean ajax = false;
 	protected boolean allowCollapsed = true;
 	protected boolean allowMailMerge = false;
+	protected boolean allowMailReport = false;
 	protected String customAPI;
 
 	public boolean isAllowMailMerge() {
@@ -23,6 +24,14 @@ public class ReportFilter implements Serializable {
 
 	public void setAllowMailMerge(boolean allowMailMerge) {
 		this.allowMailMerge = allowMailMerge;
+	}
+
+	public boolean isAllowMailReport() {
+		return allowMailReport;
+	}
+
+	public void setAllowMailReport(boolean allowMailReport) {
+		this.allowMailReport = allowMailReport;
 	}
 
 	public boolean isAllowCollapsed() {

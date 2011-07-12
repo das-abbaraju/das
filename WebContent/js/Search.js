@@ -38,6 +38,8 @@ function clickSearch( formid ) {
 	runSearch(search);
 	if (search.find('[name="filter.allowMailMerge"]').val() == "true")
 		$('#write_email_button').show();
+	if (search.find('[name="filter.allowMailReport"]').val() == "true")
+		$('#send_report_button').show();
 	return false;
 }
 

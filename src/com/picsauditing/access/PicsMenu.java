@@ -183,6 +183,8 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Sched. &amp; Assign",
 					"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17");
+		if (permissions.isAdmin())
+			subMenu.addChild("Obsolete Sched. Audits", "ObsoleteScheduledAudits.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))

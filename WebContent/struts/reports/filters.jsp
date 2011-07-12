@@ -18,6 +18,7 @@
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="filter.allowMailMerge" />
+	<s:hidden name="filter.allowMailReport" />
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
@@ -29,9 +30,18 @@
 			<button type="button" id="find_recipients" name="button" value="Find Recipients" class="picsbutton">Find Recipients</button>
 		</s:if>
 		<s:else>
-			<button id="searchfilter" type="submit" name="button" value="Search"
-			onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
-			class="picsbutton positive">Search</button>
+			<s:if test="filter.allowMailReport">
+				<button type="submit" id="send_report_button" name="button"
+				value="Email Report" class="picsbutton positive" style="display: none">Email Report</button>
+				<button id="search" type="submit" name="button" value="Search"
+				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+				class="picsbutton positive">Search</button>
+			</s:if>
+			<s:else>
+				<button id="searchfilter" type="submit" name="button" value="Search"
+				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
+				class="picsbutton positive">Search</button>
+			</s:else>
 		</s:else>
 	</div>
 

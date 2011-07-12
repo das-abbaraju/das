@@ -40,6 +40,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected boolean skipPermissions = false;
 	protected Boolean showContactInfo = null;
 	protected Boolean showTradeInfo = null;
+	protected String reportAddresses = null;
 
 	// ?? may need to move to Filters
 	protected List<Integer> ids = new ArrayList<Integer>();
@@ -150,6 +151,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			// This condition only occurs when sending results to the mail merge
 			// tool
 			this.mailMerge = true;
+		}
+
+		else if (button != null && button.contains("Email Report")) {
+			this.mailReport = true;
 		}
 
 		checkPermissions();
@@ -521,5 +526,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (showTradeInfo == null)
 			showTradeInfo = getFilter().isTradeInformation();
 		return showTradeInfo;
+	}
+
+	public String getReportAddresses() {
+		return reportAddresses;
+	}
+
+	public void setReportAddresses(String reportAddresses) {
+		this.reportAddresses = reportAddresses;
 	}
 }

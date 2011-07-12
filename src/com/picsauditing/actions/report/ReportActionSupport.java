@@ -38,16 +38,12 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	protected boolean download = false;
 	protected boolean mailMerge = false;
+	protected boolean mailReport = false;
 	private Boolean filtered = null;
 	protected boolean filteredDefault = false;
 
 	public void run(SelectSQL sql) throws SQLException, IOException {
-		if (download) {
-			this.report.setLimit(100000);
-			showPage = 1;
-		}
-
-		if (mailMerge) {
+		if (download || mailMerge || mailReport) {
 			this.report.setLimit(100000);
 			showPage = 1;
 		}

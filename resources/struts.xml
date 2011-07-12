@@ -1208,6 +1208,18 @@
 			<result>struts/audits/addRemoveCategoryData.jsp</result>
 		</action>
 
+		<action name="ObsoleteScheduledAudits"
+			class="com.picsauditing.actions.report.ReportObsoleteScheduledAudits">
+			<param name="filter.allowMailReport">true</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ObsoleteScheduledAudits</param>
+			<result>struts/reports/obsolete_scheduled_audits.jsp</result>
+		</action>
+		<action name="ObsoleteScheduledAuditsAjax"
+			class="com.picsauditing.actions.report.ReportObsoleteScheduledAudits">
+			<result>struts/reports/obsolete_scheduled_audits_data.jsp</result>
+		</action>
+
 		<!-- Track Auditor Payments -->
 
 		<action name="CreateAuditorInvoices"
