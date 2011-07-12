@@ -3,10 +3,12 @@ package com.picsauditing.PICS;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
@@ -29,6 +31,7 @@ public class I18nCache implements Serializable {
 	private static I18nCache INSTANCE;
 
 	private Table<String, String, String> cache;
+	private Set<String> cacheUsed = new HashSet<String>();
 
 	private I18nCache() {
 	}
@@ -54,6 +57,7 @@ public class I18nCache implements Serializable {
 	}
 
 	private String getText(String key, String locale) {
+		cacheUsed.add(key);
 		return getCache().get(key, locale);
 	}
 
@@ -98,7 +102,7 @@ public class I18nCache implements Serializable {
 				long startTime = System.currentTimeMillis();
 				cache = TreeBasedTable.create();
 				Database db = new Database();
-				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue FROM app_translation", false);
+				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue, lastUsed FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
 					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")), String
 							.valueOf(message.get("msgValue")));
@@ -114,7 +118,16 @@ public class I18nCache implements Serializable {
 	}
 
 	public void clear() {
+		Database db = new Database();
+		String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey IN (" + Strings.implodeForDB(cacheUsed, ",") +
+				")";
+		try {
+			db.execute(sql);
+		} catch (SQLException doNothing) {
+			throw new RuntimeException("Failed to update app_translation lastUsed on clear.");
+		}
 		cache = null;
+		cacheUsed.clear();
 	}
 
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
