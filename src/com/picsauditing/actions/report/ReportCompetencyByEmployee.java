@@ -75,9 +75,12 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("title", getText("Employee.title")));
-		excelSheet.addColumn(new ExcelColumn("roles", getText(getScope() + ".label.JobRoles")));
-		excelSheet.addColumn(new ExcelColumn("skilled", getText(getScope() + ".label.Competency"), ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("required", getText(getScope() + ".label.Required"), ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("percent", getText(getScope() + ".label.Competency") + " %", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("roles", getText(String.format("%s.label.JobRoles", getScope()))));
+		excelSheet.addColumn(new ExcelColumn("skilled", getText(String.format(".label.Competency", getScope())),
+				ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("required", getText(String.format(".label.Required", getScope())),
+				ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("percent", getText(String.format(".label.Competency", getScope())) + " %",
+				ExcelCellType.Integer));
 	}
 }

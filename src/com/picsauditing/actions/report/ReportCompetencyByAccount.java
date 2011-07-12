@@ -20,7 +20,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.active = 1");
 		sql.addJoin(buildAuditJoin(AuditType.HSE_COMPETENCY));
 		sql.addJoin(buildAuditJoin(AuditType.SHELL_COMPETENCY_REVIEW));
-		
+
 		if (permissions.isOperator()) {
 			String accountStatus = "'Active'";
 			if (permissions.getAccountStatus().isDemo())
@@ -61,8 +61,9 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("name", getText("global.Company")));
-		excelSheet.addColumn(new ExcelColumn("eCount", getText(getScope() + ".label.NumberOfEmployees")));
-		excelSheet.addColumn(new ExcelColumn("jCount", getText(getScope() + ".label.NumberOfJobRoles")));
+		excelSheet
+				.addColumn(new ExcelColumn("eCount", getText(String.format("%s.label.NumberOfEmployees", getScope()))));
+		excelSheet.addColumn(new ExcelColumn("jCount", getText(String.format(".label.NumberOfJobRoles", getScope()))));
 		excelSheet.addColumn(new ExcelColumn("ca99status", getText("AuditType.99.name")));
 		excelSheet.addColumn(new ExcelColumn("ca100status", getText("AuditType.100.name")));
 	}

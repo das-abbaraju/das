@@ -68,7 +68,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		}
 
 		if (account == null)
-			throw new RecordNotFoundException(getText(getScope() + ".message.MissingAccount"));
+			throw new RecordNotFoundException(getText(String.format("%s.message.MissingAccount", getScope())));
 
 		getFilter().setPermissions(permissions);
 		getFilter().setAccountID(account.getId());
@@ -84,7 +84,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		sql.addGroupBy("e.id");
 		run(sql);
 		buildMap();
-		
+
 		if (download || "download".equals(button))
 			return getDownload();
 
@@ -113,15 +113,16 @@ public class EmployeeCompetencies extends ReportEmployee {
 			employeeCompetencyDAO.save(ec);
 
 			if (ec.isSkilled()) {
-				addActionMessage(getText(getScope() + ".message.AddedTo", new Object[] { ec.getCompetency().getLabel(),
-						ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+				addActionMessage(getText(String.format("%s.message.AddedTo", getScope()),
+						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
+								ec.getEmployee().getFirstName() }));
 			} else {
-				addActionMessage(getText(getScope() + ".message.RemovedFrom",
+				addActionMessage(getText(String.format("%s.message.RemovedFrom", getScope()),
 						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
 								ec.getEmployee().getFirstName() }));
 			}
 		} else
-			addActionError(getText(getScope() + ".message.MissingEmployeeCompetency"));
+			addActionError(getText(String.format("%s.message.MissingEmployeeCompetency", getScope())));
 
 		return BLANK;
 	}

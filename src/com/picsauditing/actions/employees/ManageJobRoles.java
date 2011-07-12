@@ -117,7 +117,7 @@ public class ManageJobRoles extends PicsActionSupport {
 		if (competency != null) {
 			for (JobCompetency jc : role.getJobCompetencies()) {
 				if (competency.equals(jc.getCompetency()))
-					addActionError(getText(getScope() + ".message.CompetencyExistsForRole"));
+					addActionError(getText(String.format("%s.message.CompetencyExistsForRole", getScope())));
 			}
 
 			if (getActionErrors().size() == 0) {
@@ -131,7 +131,7 @@ public class ManageJobRoles extends PicsActionSupport {
 				jobRoleDAO.save(role);
 			}
 		} else {
-			addActionError(getText(getScope() + ".message.MissingCompetency"));
+			addActionError(getText(String.format("%s.message.MissingCompetency", getScope())));
 		}
 
 		return "competencies";
@@ -149,7 +149,7 @@ public class ManageJobRoles extends PicsActionSupport {
 				}
 			}
 		} else {
-			addActionError(getText(getScope() + ".message.MissingCompetency"));
+			addActionError(getText(String.format("%s.message.MissingCompetency", getScope())));
 		}
 
 		return "competencies";

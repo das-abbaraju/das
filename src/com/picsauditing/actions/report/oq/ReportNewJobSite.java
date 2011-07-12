@@ -80,7 +80,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 			if (permissions.isContractor())
 				contractor = contractorAccountDAO.find(permissions.getAccountId());
 			else
-				throw new RecordNotFoundException(getText(getScope() + ".message.ContractorMissing"));
+				throw new RecordNotFoundException(getText(String.format(".message.ContractorMissing", getScope())));
 		}
 
 		filter.setPermissions(permissions);
@@ -134,7 +134,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 			jc.setAuditColumns(permissions);
 			jsDAO.save(jc);
 		} else {
-			addActionError(getText(getScope() + ".message.AlreadyAssignedToSite"));
+			addActionError(getText(String.format(".message.AlreadyAssignedToSite", getScope())));
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 		}
 
@@ -153,7 +153,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		}
 
 		if (found) {
-			addActionError(getText(getScope() + ".message.ProjectHasEmployees")
+			addActionError(getText(String.format("%s.message.ProjectHasEmployees", getScope()))
 					+ "This project was not removed because employees are or were assigned to this project.");
 			ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 		} else {
@@ -167,7 +167,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 	public String employees() throws Exception {
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
-		
+
 		employees = esDAO.findEmployeesBySite(jobSite.getId(), permissions.getAccountId());
 		getNewEmployees();
 
@@ -183,7 +183,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		}
 
 		if (eSites.size() > 0) {
-			addActionError(getText(getScope() + ".message.EmployeeAlreadyAssignedToSite"));
+			addActionError(getText(String.format("%s.message.EmployeeAlreadyAssignedToSite", getScope())));
 			return "employees";
 		} else {
 			EmployeeSite es = new EmployeeSite();

@@ -427,13 +427,14 @@ public class PicsMenu {
 		}
 
 		if (permissions.isRequiresCompetencyReview()) {
-			subMenu = menu.addChild("HSE Competencies");
+			subMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
-				subMenu.addChild("HSE Competencies", "DefineCompetencies.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("DefineCompetencies.title"),
+						"DefineCompetencies.action?id=" + permissions.getAccountId());
 
-			subMenu.addChild("Competency by Account", "ReportCompetencyByAccount.action");
-			subMenu.addChild("Competency by Employee", "ReportCompetencyByEmployee.action");
+			subMenu.addChild(getText("ReportCompetencyByAccount.title"), "ReportCompetencyByAccount.action");
+			subMenu.addChild(getText("ReportCompetencyByEmployee.title"), "ReportCompetencyByEmployee.action");
 			// subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 
@@ -441,11 +442,10 @@ public class PicsMenu {
 			subMenu = menu.addChild(getText("global.OperatorQualification"));
 
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action?id="
-						+ permissions.getAccountId());
+				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action");
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild(getText("ManageProjects.title"),
-						"ManageProjects.action?id=" + permissions.getAccountId());
+						"ManageProjects.action");
 
 			subMenu.addChild(getText("ReportOQ.title"), "ReportOQ.action");
 			subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action");

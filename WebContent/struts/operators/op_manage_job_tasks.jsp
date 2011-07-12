@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Manage Job Tasks</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -29,12 +29,36 @@ function editTask(jobTaskID) {
 	}
 }
 
-function saveEdit(jobTaskID) {
-	var url = 'ManageJobTasksOperator.action?id=' + <s:property value="operator.id" /> + '&button=Edit&jobTaskID='
-		+ jobTaskID + '&' + $('tr#'+jobTaskID+' .newValue input, tr#'+jobTaskID+' .newValue select').serialize();
+$(function() {
+	$('#newJobTask .cancelButton').live('click', function(e) {
+		e.preventDefault();
+		$('#addLink').show();
+		$('#addJobTask').hide();
+	});
 	
-	self.location = url;
-}
+	$('.editActions .save').live('click', function(e) {
+		e.preventDefault();
+		
+		var row = $(this).closest('tr');
+		var taskID = parseInt($(row).attr('id'));
+		var name = escape($(row).find('td.name input').val());
+		var label = escape($(row).find('td.label input').val());
+		var type = $(row).find('td.type select').val().replace("/", "%2F");
+		var active = $(row).find('td.active input[type=checkbox]').is(':checked');
+		
+		var url = '<s:property value="scope" />!edit.action?operator=<s:property value="operator.id" />&jobTask=' + taskID 
+				+ '&label=' + (typeof(label) == 'undefined' ? null : label) 
+				+ '&name=' + (typeof(name) == 'undefined' ? null : name) 
+				+ '&taskType=' + (typeof(type) == 'undefined' ? null : type)
+				+ '&active=' + (typeof(active) == 'undefined' ? null : active); 
+		
+		self.location = url;
+	});
+	
+	$('.editActions .remove').live('click', function(e) {
+		return confirm('<s:text name="%{scope}.confirm.RemoveTask" />');
+	});
+});
 </script>
 </head>
 <body>
@@ -50,19 +74,19 @@ function saveEdit(jobTaskID) {
 	
 	<div>
 		<button id="searchfilter" type="submit" name="button" value="Search"
-			onclick="return clickSearch('form1');" class="picsbutton positive">Search</button>
+			onclick="return clickSearch('form1');" class="picsbutton positive"><s:text name="button.Search" /></button>
 	</div>
 	<div class="filterOption">
-		Label: <s:textfield name="filter.label" size="5" onclick="clearText(this)" />
+		<s:text name="JobTask.label" />: <s:textfield name="filter.label" size="5" onclick="clearText(this)" />
 	</div>
 	<div class="filterOption">
-		Task Name: <s:textfield name="filter.name" />
+		<s:text name="JobTask.name" />: <s:textfield name="filter.name" />
 	</div>
 	<div class="filterOption">
-		<label><s:checkbox name="filter.active" /> Show Active</label>
+		<label><s:checkbox name="filter.active" /> <s:text name="%{scope}.label.ShowActive" /></label>
 	</div>
 	<div class="filterOption">
-		<a href="#" onclick="toggleBox('form1_taskType'); return false;">Task Type</a> =
+		<a href="#" onclick="toggleBox('form1_taskType'); return false;"><s:text name="JobTask.taskType" /></a> =
 		<span id="form1_taskType_query">ALL</span>
 		<br />
 		<span id="form1_taskType_select" style="display: none" class="clearLink">
@@ -79,23 +103,23 @@ function saveEdit(jobTaskID) {
 </div>
 
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 	<div class="right">
-		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-			href="#" onclick="download('ManageJobTasksOperator'); return false;" title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a></div>
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="#" onclick="download('ManageJobTasksOperator'); return false;" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"><s:text name="global.Download" /></a></div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">
 		<thead>
 			<tr>
-				<th><a href="?orderBy=displayOrder">Label</a></th>
-				<th><a href="?orderBy=name">Task Name</a></th>
-				<th>Active</th>
-				<th><a href="?orderBy=taskType,displayOrder">Task Type</a></th>
-				<th>Task Criteria</th>
+				<th><a href="?orderBy=displayOrder"><s:text name="JobTask.label" /></a></th>
+				<th><a href="?orderBy=name"><s:text name="JobTask.name" /></a></th>
+				<th><s:text name="JobTask.active" /></th>
+				<th><a href="?orderBy=taskType,displayOrder"><s:text name="JobTask.taskType" /></a></th>
+				<th><s:text name="JobTask.jobTaskCriteria" /></th>
 				<pics:permission perm="ManageJobTasks" type="Edit">
-					<th>Edit</th>
+					<th><s:text name="button.Edit" /></th>
 				</pics:permission>
 			</tr>
 		</thead>
@@ -105,39 +129,41 @@ function saveEdit(jobTaskID) {
 					<td class="label">
 						<span class="oldValue"><s:property value="get('label')" /></span>
 						<span class="newValue">
-							<input type="text" value="<s:property value="get('label')" />" name="jobTaskLabel" size="10" /><br />
+							<input type="text" value="<s:property value="get('label')" />" size="10" /><br />
 						</span>
 					</td>
 					<td class="name">
 						<span class="oldValue"><s:property value="get('name')" /></span>
-						<span class="newValue"><input type="text" value="<s:property value="get('name')" />" name="jobTaskName" size="40" /></span>
+						<span class="newValue"><input type="text" value="<s:property value="get('name')" />" size="40" /></span>
 					</td>
 					<td class="center active">
 						<span class="oldValue">
-							<s:if test="get('activeLabel') == 'Active'"><span style="color: #309">Active</span></s:if>
-							<s:else><span style="color: #930">Inactive</span></s:else>
+							<s:if test="get('activeLabel') == 'Active'"><span style="color: #309"><s:text name="JobTask.active" /></span></s:if>
+							<s:else><span style="color: #930"><s:text name="%{scope}.label.Inactive" /></span></s:else>
 						</span>
 						<span class="newValue">
-							<s:checkbox name="taskActive" value="%{get('activeLabel') == 'Active'}"></s:checkbox>
+							<s:checkbox name="taskActive" value="%{get('activeLabel') == 'Active'}" />
 						</span>
 					</td>
 					<td class="center type">
 						<span class="oldValue"><s:property value="get('taskType')" /></span>
 						<span class="newValue">
-							<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="taskType"></s:select>
+							<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" value="%{get('taskType')}" />
 						</span>
 					</td>
-					<td class="center"><a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="get('id')" />"
-							name="Manage Task Criteria">Manage</a></td>
+					<td class="center">
+						<a href="ManageJobTaskCriteria.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="get('id')" />"
+							name="<s:text name="%{scope}.help.ManageTaskCriteria" />" class="preview"></a>
+					</td>
 					<pics:permission perm="ManageJobTasks" type="Edit">
-						<td class="center">
-							<nobr><a href="#" onclick="editTask(<s:property value="get('id')" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /><span class="newValue">Close</span></a>
+						<td class="center editActions">
+							<nobr><a href="#" onclick="editTask(<s:property value="get('id')" />); return false;"><img src="images/edit_pencil.png" alt="Edit Task" /><span class="newValue"><s:text name="button.Close" /></span></a>
 							<span class="newValue">
 								<br />
-								<a href="#" onclick="saveEdit(<s:property value="get('id')" />); return false;" title="Save Edit" class="save">Save</a>
+								<a href="#" class="save"><s:text name="button.Save" /></a>
 								<br />
-								<a href="ManageJobTasksOperator.action?id=<s:property value="operator.id" />&jobTaskID=<s:property value="get('id')" />&button=Remove" 
-									onclick="return confirm('Are you sure you want to remove this task?');" title="Remove Task" class="remove">Remove</a>
+								<a href="<s:property value="scope" />!remove.action?operator=<s:property value="operator.id" />&jobTask=<s:property value="get('id')" />" 
+									class="remove"><s:text name="button.Remove" /></a>
 							</span></nobr>
 						</td>
 					</pics:permission>
@@ -149,32 +175,26 @@ function saveEdit(jobTaskID) {
 </s:else>
 
 <pics:permission perm="ManageJobTasks" type="Edit">
-	<a onclick="$('#addJobTask').show(); $('#addLink').hide(); return false;"
-		href="#" id="addLink" class="add">Add New Job Task</a>
+	<a onclick="$('#addJobTask').show(); $('#addLink').hide(); return false;" href="#" id="addLink" class="add"><s:text name="%{scope}.label.AddNewJobTask" /></a>
 	<div id="addJobTask" style="display: none; clear: both;">
 		<s:form id="newJobTask" method="POST" enctype="multipart/form-data">
 			<s:hidden name="id" />
 			<fieldset class="form" >
-				<h2 class="formLegend">Add New Job Task</h2>
+				<h2 class="formLegend"><s:text name="%{scope}.label.AddNewJobTask" /></h2>
 				<ol>
-					<li><label>Label:</label>
-						<s:textfield name="newTask.label" size="10" />
+					<li><s:textfield name="jobTask.label" size="10" theme="formhelp" /></li>
+					<li><s:textfield name="jobTask.name" size="40" theme="formhelp" /></li>
+					<li><label><s:text name="JobTask.active" />:</label>
+						<s:checkbox name="jobTask.active" />
 					</li>
-					<li><label>Name:</label>
-						<s:textfield name="newTask.name" size="40" />
-					</li>
-					<li><label>Active:</label>
-						<s:checkbox name="newTask.active"></s:checkbox>
-					</li>
-					<li><label>Task Type:</label>
-						<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="newTask.taskType"></s:select>
+					<li><label><s:text name="JobTask.taskType" />:</label>
+						<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="jobTask.taskType"></s:select>
 					</li>
 				</ol>
 			</fieldset>
 			<fieldset class="form submit">
-				<input type="submit" value="Save" class="picsbutton positive" name="button" />
-				<button onclick="$('#addLink').show(); $('#addJobTask').hide(); return false;"
-					class="picsbutton negative">Cancel</button>
+				<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
+				<input type="button" value="<s:text name="button.Cancel" />" class="picsbutton cancelButton" />
 			</fieldset>
 		</s:form>
 	</div>
