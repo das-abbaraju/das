@@ -183,6 +183,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 		user.setLastLogin(new Date());
 		userDAO.save(user);
 
+		// Login the User
+		Permissions permissions = new Permissions();
+		permissions.login(user);
+		ActionContext.getContext().getSession().put("permissions", permissions);
+		
 		// adding this user to the login log
 		String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
 
@@ -225,11 +230,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		emailQueue.setViewableById(Account.EVERYONE);
 		EmailSender.send(emailQueue);
 		addNote(contractor, "Welcome Email Sent");
-
-		// Login the User
-		Permissions permissions = new Permissions();
-		permissions.login(user);
-		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		// Update the Registration Request
 		if (requestID > 0) {
