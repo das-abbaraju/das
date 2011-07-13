@@ -17,6 +17,7 @@ public class ReportFilter implements Serializable {
 	protected boolean allowMailMerge = false;
 	protected boolean allowMailReport = false;
 	protected String customAPI;
+	protected boolean showAnyOperator = false;
 
 	public boolean isAllowMailMerge() {
 		return allowMailMerge;
@@ -63,9 +64,10 @@ public class ReportFilter implements Serializable {
 	public void setPermissions(Permissions permissions) {
 
 	}
-	public Map<String, String> getYearList(){
+
+	public Map<String, String> getYearList() {
 		Map<String, String> map = new LinkedHashMap<String, String>();
-		for(int i=DateBean.getCurrentYear(); i>=2001; i--){
+		for (int i = DateBean.getCurrentYear(); i >= 2001; i--) {
 			map.put(String.valueOf(i), String.valueOf(i));
 		}
 		return map;
@@ -79,4 +81,11 @@ public class ReportFilter implements Serializable {
 		this.customAPI = customAPI;
 	}
 
+	public boolean isShowAnyOperator() {
+		return showAnyOperator;
+	}
+
+	public void setShowAnyOperator(boolean showAnyOperator) {
+		this.showAnyOperator = showAnyOperator;
+	}
 }

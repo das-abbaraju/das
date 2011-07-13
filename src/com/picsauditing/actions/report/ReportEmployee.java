@@ -1,12 +1,19 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterEmployee;
@@ -15,6 +22,10 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportEmployee extends ReportActionSupport {
+
+	@Autowired
+	protected AccountDAO accountDAO;
+
 	protected SelectSQL sql = new SelectSQL("employee e");
 	protected ReportFilterEmployee filter = new ReportFilterEmployee();
 	protected String filename;
@@ -87,8 +98,30 @@ public class ReportEmployee extends ReportActionSupport {
 			sql.addWhere("a.id = " + permissions.getAccountId());
 
 		if (filterOn(f.getOperators())) {
-			sql.addWhere(String.format("e.id IN (SELECT es.employeeID FROM employee_site es WHERE es.opID IN (%s))",
-					Strings.implode(f.getOperators())));
+			List<Integer> allChildren = new ArrayList<Integer>();
+			// combine all operators and their children into 1 list
+			for (int corpOpID : f.getOperators()) {
+				List<Integer> children = new ArrayList<Integer>();
+				OperatorAccount op = (OperatorAccount) accountDAO.find(corpOpID);
+
+				children.add(op.getId());
+				for (Facility facil : op.getOperatorFacilities())
+					children.add(facil.getOperator().getId());
+
+				if (f.isShowAnyOperator()) {
+					allChildren.addAll(children);
+				} else {
+					sql.addWhere(String.format(
+							"e.id IN (SELECT es.employeeID FROM employee_site es WHERE es.opID IN (%s))",
+							Strings.implode(children)));
+				}
+			}
+
+			if (f.isShowAnyOperator()) {
+				sql.addWhere(String.format(
+						"e.id IN (SELECT es.employeeID FROM employee_site es WHERE es.opID IN (%s))",
+						Strings.implode(allChildren)));
+			}
 		}
 	}
 
