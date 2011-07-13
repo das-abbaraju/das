@@ -1,27 +1,29 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<h3><s:property value="newSite.name" /></h3>
-<h4>Tasks</h4>
-<s:if test="getTasks(siteID).size() > 0">
+
+<h3><s:property value="jobSite.name" /></h3>
+<h4><s:text name="%{scope}.label.Tasks" /></h4>
+<s:if test="jobSite.tasks.size > 0">
 	<table class="report">
 		<thead>
 			<tr>
-				<th>Label</th>
-				<th>Name</th>
-				<th>Span of Control</th>
+				<th><s:text name="JobTask.label" /></th>
+				<th><s:text name="JobTask.name" /></th>
+				<th><s:text name="JobSiteTask.controlSpan" /></th>
 				<pics:permission perm="ManageProjects" type="Edit">
-					<th>Remove</th>
+					<th><s:text name="button.Remove" /></th>
 				</pics:permission>
 			</tr>
 		</thead>
 		<tbody>
-			<s:iterator value="getTasks(siteID)" id="siteTask">
+			<s:iterator value="jobSite.tasks" id="siteTask">
 				<tr>
 					<td><s:property value="#siteTask.task.label" /></td>
 					<td><s:property value="#siteTask.task.name" /></td>
-					<td class="center">1 of <s:property value="#siteTask.controlSpan" /></td>
+					<td class="center"><s:text name="%{scope}.text.ControlSpan"><s:param value="%{#siteTask.controlSpan}" /></s:text></td>
 					<pics:permission perm="ManageProjects" type="Edit">
-						<td class="center"><a href="#" onclick="return removeTask(<s:property value="siteID" />, <s:property value="#siteTask.id" />);" class="remove"></a></td>
+						<td class="center"><a href="#" id="remove_<s:property value="jobSite.id" />_<s:property value="#siteTask.id" />" class="remove removeTask"></a></td>
 					</pics:permission>
 				</tr>
 			</s:iterator>
@@ -29,19 +31,19 @@
 	</table>
 </s:if>
 <s:else>
-	No tasks associated with this site.<br />
+	<s:text name="%{scope}.message.NoTasksAssociated" /><br />
 </s:else>
 
-<a id="addTaskLink" href="#" onclick="getNewSiteTasks(<s:property value="siteID" />); $('#addSiteTasks:hidden').slideDown(); return false;" class="add">Add New Task</a>
-<a id="closeTasks" href="#" onclick="$('#jobSiteTasks:visible').slideUp(); $('#addSiteTasks:visible').slideUp(); return false;" class="remove">Close Tasks</a>
+<a id="task_<s:property value="jobSite.id" />" href="#" class="add addTaskLink"><s:text name="%{scope}.link.AddNewTask" /></a>
+<a id="closeTasks" href="#" class="remove"><s:text name="%{scope}.link.CloseTasks" /></a>
 
-<h4>Companies</h4>
-<table class="report">
+<h4><s:text name="global.Companies" /></h4>
+<table class="report" id="companies_<s:property value="jobSite.id" />">
 	<thead>
 		<tr>
 			<th></th>
-			<th>Company Name</th>
-			<th># of Employees</th>
+			<th><s:text name="global.CompanyName" /></th>
+			<th><s:text name="%{scope}.label.NumberOfEmployees" /></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -59,12 +61,12 @@
 			</s:iterator>
 		</s:if>
 		<s:else>
-			<tr><td colspan="3">No companies associated with this project.</td></tr>
+			<tr><td colspan="3"><s:text name="%{scope}.message.NoCompaniesAssociated" /></td></tr>
 		</s:else>
 		<s:if test="newContractors.size > 0">
 			<tr>
 				<td colspan="3">
-					<s:select list="newContractors" headerKey="0" headerValue="- Add New Company -" listKey="id" listValue="name" onchange="addCompany(this.value, %{siteID});" />
+					<s:select list="newContractors" id="addCompany" headerKey="0" headerValue="- %{getText(scope + '.select.AddNewCompany')} -" listKey="id" listValue="name" />
 				</td>
 			</tr>
 		</s:if>

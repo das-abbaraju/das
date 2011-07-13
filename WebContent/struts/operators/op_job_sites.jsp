@@ -1,9 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
+
 <html>
 <head>
-<title>Manage Projects</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -12,19 +13,19 @@
 .newValue {
 	display: none;
 }
+
+#closeAssignTasks {
+	clear: both;
+}
 </style>
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 function getTasks(siteID) {
 	$('#jobSiteTasks:hidden').slideDown();
 	$('#editProject:visible').slideUp();
-	var data = {
-		siteID: siteID,
-		id: <s:property value="operator.id" />
-	};
 
-	startThinking({div: 'jobSiteTasks', message: 'Loading tasks', type: 'large'});
-	$('#jobSiteTasks').load('ManageProjects!getTasks.action', data,
+	startThinking({div: 'jobSiteTasks', message: translate('JS.<s:property value="scope" />.loading.LoadingTasks'), type: 'large'});
+	$('#jobSiteTasks').load('ManageProjects!getTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> },
 		function() {
 			$('#addSiteTasks').empty();
 			$('#jobSiteTasks').slideDown();
@@ -33,23 +34,18 @@ function getTasks(siteID) {
 }
 
 function getNewSiteTasks(siteID) {
-	var data = {
-		siteID: siteID,
-		id: <s:property value="operator.id" />
-	};
-
 	$('#addTaskLink').fadeOut();
-	startThinking({div: 'addSiteTasks', message: 'Loading new tasks', type: 'large'});
-	$('#addSiteTasks').load('ManageProjects!newTasks.action', data);
+	startThinking({div: 'addSiteTasks', message: translate('JS.<s:property value="scope" />.loading.LoadingNewTasks'), type: 'large'});
+	$('#addSiteTasks').load('ManageProjects!newTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> });
 }
 
 function addTask(siteID, taskID) {
 	var controlSpan = $('tr#' + taskID).find('input[name="controlSpan"]').val();
 	var data = {
-		siteID: siteID,
-		taskID: taskID,
+		jobSite: siteID,
+		jobTask: taskID,
 		controlSpan: controlSpan,
-		id: <s:property value="operator.id" />
+		operator: <s:property value="operator.id" />
 	};
 
 	$('#jobSiteTasks').load('ManageProjects!addTask.action', data,
@@ -60,13 +56,13 @@ function addTask(siteID, taskID) {
 }
 
 function removeTask(siteID, siteTaskID) {
-	var remove = confirm('Are you sure you want to remove this task?');
+	var remove = confirm(translate('JS.<s:property value="scope" />.confirm.RemoveTask'));
 
 	if (remove) {
 		var data = {
-			siteID: siteID,
-			siteTaskID: siteTaskID,
-			id: <s:property value="operator.id" />
+			jobSite: siteID,
+			jobSiteTask: siteTaskID,
+			operator: <s:property value="operator.id" />
 		};
 	
 		$('#jobSiteTasks').load('ManageProjects!removeTask.action', data,
@@ -83,20 +79,24 @@ function editSite(siteID) {
 	$('#addJobSite:visible').slideUp();
 	$('#addLink:hidden').fadeIn();
 	$('#editProject:hidden').slideDown();
-	startThinking({div: 'editProject', message: 'Loading project'});
+	startThinking({div: 'editProject', message: translate('JS.<s:property value="scope" />.loading.LoadingProject')});
 	$('#editProject').load('ManageProjects!editSite.action',
-			{ siteID: siteID, id: <s:property value="operator.id" /> });
+		{ jobSite: siteID, operator: <s:property value="operator.id" /> },
+		function () {
+			$('.datepicker').datepicker();
+		}
+	);
 }
 
 function getStates(country) {
-	$('.loadStates').load('StateListAjax.action',{countryString: country, stateString: '<s:property value="newSite.state.english"/>'});
+	$('.loadStates').load('StateListAjax.action',{countryString: country, stateString: '<s:property value="jobSite.state.english"/>'});
 }
 
 function addCompany(conID, siteID) {
 	var data = {
-		id: <s:property value="operator.id" />,
-		conID: conID,
-		siteID: siteID
+		operator: <s:property value="operator.id" />,
+		contractor: conID,
+		jobSite: siteID
 	};
 
 	$('#jobSiteTasks').load('ManageProjects!addCompany.action', data);
@@ -107,13 +107,13 @@ $(function() {
 	
 	$('#sitesTable').delegate('a.edit', 'click', function(e) {
 		e.preventDefault();
-		var id = $(this).closest('tr').attr('id');
+		var id = $(this).closest('tr').attr('id').split('_')[1];
 		editSite(id);
 	});
 	
 	$('#sitesTable').delegate('a.preview', 'click', function(e) {
 		e.preventDefault();
-		var id = $(this).closest('tr').attr('id');
+		var id = $(this).closest('tr').attr('id').split('_')[1];
 		getTasks(id);
 	});
 	
@@ -123,49 +123,88 @@ $(function() {
 		$('#addJobSite').hide();
 		$('#editJobSite').hide();
 	});
+	
+	$('#addLink').live('click', function(e) {
+		e.preventDefault();
+		$('#editProject:visible').hide();
+		$('#addJobSite').show();
+		$('#addLink').hide();
+	});
+	
+	$('#jobSiteTasks').delegate('.addTaskLink', 'click', function(e) {
+		e.preventDefault();
+		var siteID = $(this).attr('id').split('_')[1];
+		getNewSiteTasks(siteID);
+		$('#addSiteTasks:hidden').slideDown();
+	});
+	
+	$('#jobSiteTasks').delegate('.removeTask', 'click', function(e) {
+		e.preventDefault();
+		var ids = $(this).attr('id').split('_');
+		removeTask(ids[1], ids[2]);
+	});
+	
+	$('#jobSiteTasks').delegate('#closeTasks', 'click', function(e) {
+		e.preventDefault();
+		$('#jobSiteTasks:visible').slideUp();
+		$('#addSiteTasks:visible').slideUp();
+	});
+	
+	$('#jobSiteTasks').delegate('#addCompany', 'change', function(e) {
+		var siteID = $(this).closest('table').attr('id').split('_')[1];
+		addCompany($(this).val(), siteID);
+	});
+	
+	$('#addSiteTasks').delegate('.add', 'click', function(e) {
+		e.preventDefault();
+		var ids = $(this).attr('id').split('_');
+		addTask(ids[1], ids[2]);
+	});
+	
+	$('#addSiteTasks').delegate('#closeAssignTasks', 'click', function(e) {
+		e.preventDefault();
+		$('#addSiteTasks:visible').slideUp();
+		$('#addTaskLink:hidden').fadeIn();
+	});
+	
+	$('#editProject').delegate('#removeSiteButton', 'click', function(e) {
+		return confirm(translate('JS.<s:property value="scope" />.confirm.RemoveProject'));
+	});
 });
 </script>
 </head>
 <body>
 <s:include value="opHeader.jsp"></s:include>
-<s:if test="history != null">
-	<s:form id="historyForm">
-		<s:hidden name="id"></s:hidden>
-		<div style="display: none">
-			View history: <s:select list="history" name="date" value="%{maskDateFormat(date)}" onchange="$('#historyForm').submit();" />
-			<br />
-		</div>
-	</s:form>
-</s:if>
+
 <table id="sitesTable">
 	<tr>
 		<td style="padding-right: 10px;">
-			<h3>Projects</h3>
-			<h4>Active</h4>
+			<h3><s:text name="%{scope}.label.Projects" /></h3>
+			<h4><s:text name="%{scope}.label.Active" /></h4>
 			<table class="report">
 				<thead>
 					<tr><th></th>
-						<th>Short Label</th>
-						<th>Description</th>
+						<th><s:text name="JobSite.label" /></th>
+						<th><s:text name="JobSite.name" /></th>
 						<s:if test="canEdit">
-							<th>Edit</th>
-							<th>Tasks and Companies</th>
-							<th>Start Date</th>
-							<th>End Date</th>
+							<th><s:text name="button.Edit" /></th>
+							<th><s:text name="%{scope}.label.TasksAndCompanies" /></th>
+							<th><s:text name="JobSite.projectStart" /></th>
+							<th><s:text name="JobSite.projectStop" /></th>
 						</s:if>
 						<s:else>
-							<th>City</th>
-							<th>State</th>
-							<th><s:text name="global.Country" /></th>
-							<th>Start Date</th>
-							<th>End Date</th>
+							<th><s:text name="global.City" /></th>
+							<th><s:text name="State" /></th>
+							<th><s:text name="Country" /></th>
+							<th><s:text name="JobSite.projectStart" /></th>
+							<th><s:text name="JobSite.projectStop" /></th>
 						</s:else>
 					</tr>
 				</thead>
 				<tbody>
 					<s:if test="activeSites.size() > 0">
 						<s:iterator value="activeSites" status="stat" id="site">
-							<tr id="<s:property value="#site.id" />">
+							<tr id="edit_<s:property value="#site.id" />">
 								<td><s:property value="#stat.count" /></td>
 								<td>
 									<s:property value="#site.label" />
@@ -175,20 +214,20 @@ $(function() {
 								</td>
 								<s:if test="canEdit">
 									<td class="center">
-										<a href="#" class="edit" title="Edit Project"></a>
+										<a href="#" class="edit" title="<s:text name="%{scope}.help.EditProject" />"></a>
 									</td>
 									<td class="center">
 										<a href="#" class="preview" title="View"></a>
 									</td>
-									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStart" /></td>
+									<td><s:date name="#site.projectStop" /></td>
 								</s:if>
 								<s:else>
 									<td><s:property value="#site.city" /></td>
 									<td><s:property value="#site.state.english" /></td>
 									<td><s:property value="#site.country.isoCode" /></td>
-									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStart" /></td>
+									<td><s:date name="#site.projectStop" /></td>
 								</s:else>
 							</tr>
 						</s:iterator>
@@ -211,65 +250,64 @@ $(function() {
 									<td class="center">
 										<a href="#" class="preview" title="View"></a>
 									</td>
-									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStart" /></td>
+									<td><s:date name="#site.projectStop" /></td>
 								</s:if>
 								<s:else>
 									<td><s:property value="#site.city" /></td>
 									<td><s:property value="#site.state.english" /></td>
 									<td><s:property value="#site.country.isoCode" /></td>
-									<td><s:date name="#site.projectStart" format="MM/dd/yyyy" /></td>
-									<td><s:date name="#site.projectStop" format="MM/dd/yyyy" /></td>
+									<td><s:date name="#site.projectStart" /></td>
+									<td><s:date name="#site.projectStop" /></td>
 								</s:else>
 							</tr>
 						</s:iterator>
 					</s:if>
 					<s:if test="(activeSites.size + futureSites.size) == 0">
 						<tr>
-							<td colspan="<s:property value="canEdit ? 7 : 8" />">No Sites</td>
+							<td colspan="<s:property value="canEdit ? 7 : 8" />"><s:text name="%{scope}.message.NoSites" /></td>
 						</tr>
 					</s:if>
 				</tbody>
 			</table>
 			<s:if test="canEdit">
 				<div id="editProject"></div>
-				<a onclick="$('#editProject:visible').hide(); $('#addJobSite').show(); $('#addLink').hide(); return false;"
-					href="#" id="addLink" class="add">Add New Project</a>
+				<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewProject" /></a>
 				<div id="addJobSite" style="display: none; clear: both;">
 					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
-						<s:hidden name="id" />
+						<s:hidden name="operator" />
 						<fieldset class="form">
-							<h2 class="formLegend">Add New Project</h2>
+							<h2 class="formLegend"><s:text name="%{scope}.link.AddNewProject" /></h2>
 							<ol>
-								<li><label>Short Label<span class="redMain">*</span>:</label>
+								<li><label><s:text name="JobSite.label" /><span class="redMain">*</span>:</label>
 									<s:textfield name="siteLabel" size="20" maxlength="15" />
 								</li>
-								<li><label>Description<span class="redMain">*</span>:</label>
+								<li><label><s:text name="JobSite.name" /><span class="redMain">*</span>:</label>
 									<s:textfield name="siteName" size="20" maxlength="255" />
 								</li>
-								<li><label>City:</label>
+								<li><label><s:text name="global.City" />:</label>
 									<s:textfield name="siteCity" size="20" maxlength="30" />
 								</li>
-								<li><label><s:text name="global.Country" />:</label>
+								<li><label><s:text name="Country" />:</label>
 									<s:select list="countryList" name="siteCountry.isoCode" listKey="isoCode"
 										headerValue="- Country -" headerKey="" listValue="name"
 										onchange="getStates(this.value);"></s:select>
 								</li>
-								<li class="loadStates"><label>State:</label>
+								<li class="loadStates"><label><s:text name="State" />:</label>
 									<s:select list="getStateList('US')" id="state_sel" name="state.isoCode" 
 										headerKey="" headerValue="- State -" listKey="isoCode" listValue="name" value="stateString"/>
 								</li>
-								<li><label>Start Date:</label>
+								<li><label><s:text name="JobSite.projectStart" />:</label>
 									<s:textfield name="siteStart" size="20" cssClass="datepicker" />
 								</li>
-								<li><label>End Date:</label>
+								<li><label><s:text name="JobSite.projectStop" />:</label>
 									<s:textfield name="siteEnd" size="20" cssClass="datepicker" />
 								</li>
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">
 							<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
-							<input type="button" class="picsbutton negative cancelButton" value="<s:text name="button.Cancel" />" />
+							<input type="button" class="picsbutton cancelButton" value="<s:text name="button.Cancel" />" />
 						</fieldset>
 					</s:form>
 				</div>
@@ -285,19 +323,19 @@ $(function() {
 </table>
 <s:if test="inactiveSites.size() > 0">
 	<div>
-		<h4>Past Projects</h4>
+		<h4><s:text name="%{scope}.label.PastProjects" /></h4>
 		<table class="report">
 			<thead>
 				<tr><th></th>
-					<th>Short Label</th>
-					<th>Description</th>
-					<th>City</th>
-					<th>State</th>
-					<th>Country</th>
-					<th>Start Date</th>
-					<th>End Date</th>
+					<th><s:text name="JobSite.label" /></th>
+					<th><s:text name="JobSite.name" /></th>
+					<th><s:text name="global.City" /></th>
+					<th><s:text name="State" /></th>
+					<th><s:text name="Country" /></th>
+					<th><s:text name="JobSite.projectStart" /></th>
+					<th><s:text name="JobSite.projectStop" /></th>
 					<s:if test="canEdit">
-						<th>Reactivate</th>
+						<th><s:text name="%{scope}.label.Reactivate" /></th>
 					</s:if>
 				</tr>
 			</thead>
@@ -314,8 +352,7 @@ $(function() {
 						<td class="center"><s:property value="maskDateFormat(#site.projectStop)" /></td>
 						<s:if test="canEdit">
 							<td class="center">
-								<a href="ManageProjects.action?id=<s:property value="operator.id" />&button=Reactivate&siteID=<s:property value="#site.id" />"
-									class="add"></a>
+								<a href="<s:property value="scope" />!reactivate.action?operator=<s:property value="operator.id" />&jobSite=<s:property value="#site.id" />" class="add"></a>
 							</td>
 						</s:if>
 					</tr>

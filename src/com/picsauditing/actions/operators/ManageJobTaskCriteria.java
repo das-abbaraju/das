@@ -14,7 +14,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AssessmentTestDAO;
 import com.picsauditing.dao.JobTaskCriteriaDAO;
 import com.picsauditing.dao.JobTaskDAO;
@@ -25,7 +24,7 @@ import com.picsauditing.jpa.entities.JobTaskCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 @SuppressWarnings("serial")
-public class ManageJobTaskCriteria extends PicsActionSupport {
+public class ManageJobTaskCriteria extends OperatorActionSupport {
 	@Autowired
 	protected AssessmentTestDAO assessmentTestDAO;
 	@Autowired
@@ -43,6 +42,8 @@ public class ManageJobTaskCriteria extends PicsActionSupport {
 	
 	@Override
 	public String execute() throws Exception {
+		subHeading = String.format("%s: %s", jobTask.getLabel(), jobTask.getName());
+		
 		if (ActionContext.getContext().getSession().get("actionErrors") != null) {
 			setActionErrors((Collection<String>) ActionContext.getContext().getSession().get("actionErrors"));
 			ActionContext.getContext().getSession().remove("actionErrors");
@@ -100,14 +101,6 @@ public class ManageJobTaskCriteria extends PicsActionSupport {
 		addActionMessage(actionMessage);
 		ActionContext.getContext().getSession().put("actionErrors", getActionErrors());
 		return redirect("ManageJobTaskCriteria.action?operator=" + operator.getId() + "&jobTask=" + jobTask.getId());
-	}
-
-	public String getSubHeading() {
-		if (jobTask != null) {
-			return String.format("%s: %s", jobTask.getLabel(), jobTask.getName());
-		}
-
-		return null;
 	}
 
 	public boolean isCanEdit() {

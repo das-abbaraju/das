@@ -11,12 +11,10 @@ import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
 import com.picsauditing.dao.JobSiteDAO;
 import com.picsauditing.dao.JobSiteTaskDAO;
@@ -36,109 +34,75 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageJobSites extends OperatorActionSupport implements Preparable {
-	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO;
+public class ManageJobSites extends OperatorActionSupport {
 	@Autowired
 	protected EmployeeSiteDAO employeeSiteDAO;
 	@Autowired
-	protected JobSiteDAO siteDAO;
+	protected JobSiteDAO jobSiteDAO;
 	@Autowired
-	protected JobSiteTaskDAO siteTaskDAO;
+	protected JobSiteTaskDAO jobSiteTaskDAO;
 	@Autowired
-	protected JobTaskDAO taskDAO;
+	protected JobTaskDAO jobTaskDAO;
 
-	protected int siteID;
-	protected int siteTaskID;
-	protected int taskID;
-	protected int controlSpan;
-	protected int conID;
-	protected String siteName;
+	protected ContractorAccount contractor;
+	protected JobSite jobSite;
+	protected JobTask jobTask;
+	protected JobSiteTask jobSiteTask;
 	protected String siteLabel;
+	protected String siteName;
 	protected String siteCity;
-	protected String noteSummary;
-
-	protected State state;
 	protected Country siteCountry;
+	protected State siteState;
 	protected Date siteStart;
 	protected Date siteEnd;
 	protected Date date = new Date();
-	protected JobSite newSite = new JobSite();
-	protected JobSiteTask siteTask = new JobSiteTask();
-	protected JobTask newTask = new JobTask();
+	protected int controlSpan;
 
-	protected List<String> history;
-	protected List<JobTask> addable = new ArrayList<JobTask>();
+	protected String noteSummary = "%s project with label: %s and name: %s";
+
+	protected List<JobTask> addable;
 	protected List<JobSite> activeSites;
 	protected List<JobSite> inactiveSites;
 	protected List<JobSite> futureSites;
 	protected List<JobSiteTask> tasks;
 	protected List<ContractorAccount> newContractors;
 	protected Map<Account, List<Employee>> siteCompanies;
-	private List<JobSite> allSites;
 
 	public ManageJobSites() {
-		subHeading = "Manage Projects";
 		noteCategory = NoteCategory.OperatorQualification;
-	}
-
-	@Override
-	public void prepare() throws Exception {
-		findOperator();
-		allSites = siteDAO.findByOperator(operator.getId());
-		siteID = this.getParameter("siteID");
-
-		if (siteID > 0) {
-			newSite = siteDAO.find(siteID);
-			noteSummary = " project with label: " + newSite.getLabel() + " and site name: " + newSite.getName();
-		}
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects)
 	public String execute() throws Exception {
-		if ("Reactivate".equals(button)) {
-			if (siteID > 0) {
-				newSite.setProjectStart(new Date());
-
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(newSite.getProjectStart());
-				cal.add(Calendar.YEAR, 3);
-				newSite.setProjectStop(cal.getTime());
-
-				addNote(operator, "Reactivated");
-			} else {
-				addActionError("Missing project");
-			}
-			
-			return getRedirect();
+		if (operator == null && permissions.isOperatorCorporate()) {
+			operator = operatorDao.find(permissions.getAccountId());
 		}
+		
+		subHeading = getText(String.format("%s.title", getScope()));
 
 		return SUCCESS;
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
 	public String save() throws Exception {
+		jobSite = new JobSite();
 		// Labels are required
 		if (!Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName)) {
 			// Operators are required, but if one isn't set,
 			// this operator should be added by default
-			if (newSite.getOperator() == null && operator != null)
-				newSite.setOperator(operator);
+			if (jobSite.getOperator() == null && operator != null)
+				jobSite.setOperator(operator);
 
-			newSite.setLabel(siteLabel);
-			newSite.setName(siteName);
-			newSite.setProjectStart(siteStart);
-			newSite.setProjectStop(siteEnd);
+			jobSite.setLabel(siteLabel);
+			jobSite.setName(siteName);
+			jobSite.setProjectStart(siteStart);
+			jobSite.setProjectStop(siteEnd);
+			jobSite.setCity(siteCity);
+			jobSite.setCountry(siteCountry);
+			jobSite.setState(siteState);
 
-			if (!Strings.isEmpty(siteCity))
-				newSite.setCity(siteCity);
-			if (siteCountry != null && !Strings.isEmpty(siteCountry.getIsoCode()))
-				newSite.setCountry(null);
-			if (state != null && !Strings.isEmpty(state.getIsoCode()))
-				newSite.setState(null);
-
-			siteDAO.save(newSite);
-			addNote(operator, "Added new" + noteSummary);
+			jobSiteDAO.save(jobSite);
+			addNote(operator, String.format(noteSummary, "Added new", jobSite.getLabel(), jobSite.getName()));
 		} else {
 			addActionError("Please add both label and name to this project.");
 		}
@@ -148,23 +112,20 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
 	public String update() throws Exception {
-		if (siteID > 0 && !Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName)) {
-			newSite.setLabel(siteLabel);
-			newSite.setName(siteName);
-			newSite.setProjectStart(siteStart);
-			newSite.setProjectStop(siteEnd);
+		if (jobSite != null && !Strings.isEmpty(siteLabel) && !Strings.isEmpty(siteName)) {
+			jobSite.setLabel(siteLabel);
+			jobSite.setName(siteName);
+			jobSite.setProjectStart(siteStart);
+			jobSite.setProjectStop(siteEnd);
+			jobSite.setCity(siteCity);
+			
+			if (!Strings.isEmpty(siteCountry.getIsoCode()))
+				jobSite.setCountry(siteCountry);
+			
+			jobSite.setState(siteState);
 
-			if (!Strings.isEmpty(siteCity))
-				newSite.setCity(siteCity);
-			if (!siteCountry.getIsoCode().equals("")) {
-				newSite.setCountry(siteCountry);
-
-				if (siteCountry.getIsoCode().equals("US") || siteCountry.getIsoCode().equals("CA"))
-					newSite.setState(state);
-			}
-
-			siteDAO.save(newSite);
-			addNote(operator, "Updated" + noteSummary);
+			jobSiteDAO.save(jobSite);
+			addNote(operator, String.format(noteSummary, "Updated", jobSite.getLabel(), jobSite.getName()));
 		} else {
 			addActionError("Please add both label and name to this project.");
 		}
@@ -173,35 +134,52 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	}
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
+	public String reactivate() throws Exception {
+		if (jobSite != null) {
+			jobSite.setProjectStart(new Date());
+
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(jobSite.getProjectStart());
+			cal.add(Calendar.YEAR, 3);
+			jobSite.setProjectStop(cal.getTime());
+
+			addNote(operator, String.format(noteSummary, "Reactivated", jobSite.getLabel(), jobSite.getName()));
+		} else {
+			addActionError("Missing project");
+		}
+
+		return getRedirect();
+	}
+
+	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Delete)
 	public String remove() throws Exception {
-		if (siteID == 0) {
+		if (jobSite == null) {
 			addActionError("Missing project");
 		} else {
 			addNote(operator, "Expired" + noteSummary);
-			newSite.setProjectStop(new Date());
-			siteDAO.save(newSite);
+			jobSite.setProjectStop(new Date());
+			jobSiteDAO.save(jobSite);
 		}
 
 		return getRedirect();
 	}
 
 	public String getTasks() throws Exception {
-		if (siteID == 0) {
+		if (jobSite == null)
 			addActionError("Missing project");
-		}
 
 		return "getTasks";
 	}
 
 	public String editSite() throws Exception {
-		if (newSite == null)
+		if (jobSite == null)
 			addActionError("Missing project");
 
 		return "editSite";
 	}
 
 	public String newTasks() throws Exception {
-		if (newSite == null)
+		if (jobSite == null)
 			addActionError("Missing project");
 
 		return "newTasks";
@@ -209,17 +187,19 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
 	public String addTask() throws Exception {
-		if (siteID > 0 && taskID > 0) {
-			newTask = taskDAO.find(taskID);
-			siteTask.setTask(newTask);
-			siteTask.setJob(newSite);
-			siteTask.setControlSpan(controlSpan);
-			siteTask.setAuditColumns(permissions);
-			siteTask.setEffectiveDate(new Date());
-			siteTask.setExpirationDate(DateBean.getEndOfTime());
-			siteTaskDAO.save(siteTask);
+		if (jobSite != null && jobTask != null) {
+			JobSiteTask jobSiteTask = new JobSiteTask();
+			jobSiteTask.setJob(jobSite);
+			jobSiteTask.setTask(jobTask);
+			jobSiteTask.setControlSpan(controlSpan);
+			jobSiteTask.setAuditColumns(permissions);
+			jobSiteTask.setEffectiveDate(new Date());
+			jobSiteTask.setExpirationDate(DateBean.getEndOfTime());
+			jobSiteTaskDAO.save(jobSiteTask);
 
-			addNote(operator, "Added new task: " + siteTask.getTask().getLabel() + " to project: " + newSite.getLabel());
+			addNote(operator,
+					String.format("Added new task: %s to project: %s", jobSiteTask.getTask().getLabel(),
+							jobSite.getLabel()));
 		} else {
 			addActionError("Missing either project or new task");
 		}
@@ -229,11 +209,12 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 
 	@RequiredPermission(value = OpPerms.ManageProjects, type = OpType.Edit)
 	public String removeTask() throws Exception {
-		if (siteID > 0 && siteTaskID > 0) {
-			siteTask = siteTaskDAO.find(siteTaskID);
-			siteTaskDAO.remove(siteTask);
+		if (jobSite != null && jobSiteTask != null) {
+			jobSiteTaskDAO.remove(jobSiteTask);
 
-			addNote(operator, "Removed task: " + siteTask.getTask().getLabel() + " from project: " + newSite.getLabel());
+			addNote(operator,
+					String.format("Removed task: %s from project: %s", jobSiteTask.getTask().getLabel(),
+							jobSite.getLabel()));
 		} else {
 			addActionError("Missing either project or project task");
 		}
@@ -242,11 +223,11 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 	}
 
 	public String addCompany() throws Exception {
-		if (conID > 0 && siteID > 0) {
+		if (contractor != null && jobSite != null) {
 			JobContractor jc = new JobContractor();
-			jc.setContractor(contractorAccountDAO.find(conID));
-			jc.setJob(siteDAO.find(siteID));
-			siteDAO.save(jc);
+			jc.setContractor(contractor);
+			jc.setJob(jobSite);
+			jobSiteDAO.save(jc);
 
 			addNote(operator, String.format("Added contractor '%s' to job site: %s", jc.getContractor().getName(), jc
 					.getJob().getLabel()));
@@ -265,44 +246,159 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 		return false;
 	}
 
-	public int getSiteID() {
-		return siteID;
+	public List<JobSite> getActiveSites() {
+		if (activeSites == null) {
+			activeSites = new ArrayList<JobSite>();
+			for (JobSite site : operator.getJobSites()) {
+				if (site.isActive(date))
+					activeSites.add(site);
+			}
+		}
+
+		return activeSites;
 	}
 
-	public void setSiteID(int siteID) {
-		this.siteID = siteID;
+	public List<JobSite> getInactiveSites() {
+		if (inactiveSites == null) {
+			inactiveSites = new ArrayList<JobSite>();
+			for (JobSite site : operator.getJobSites()) {
+				if (!site.isActive(date)) {
+					if (site.getProjectStart() != null && site.getProjectStart().before(date))
+						inactiveSites.add(site);
+					else if (site.getProjectStart() == null && site.getProjectStop() != null
+							&& site.getProjectStop().equals(date))
+						inactiveSites.add(site);
+				}
+			}
+		}
+
+		return inactiveSites;
 	}
 
-	public int getSiteTaskID() {
-		return siteTaskID;
+	public List<JobSite> getFutureSites() {
+		if (futureSites == null) {
+			futureSites = new ArrayList<JobSite>();
+			for (JobSite site : operator.getJobSites()) {
+				if (site.getProjectStart() != null && site.getProjectStart().after(date))
+					futureSites.add(site);
+			}
+		}
+		return futureSites;
 	}
 
-	public void setSiteTaskID(int siteTaskID) {
-		this.siteTaskID = siteTaskID;
+	public Map<Account, List<Employee>> getSiteCompanies() {
+		if (siteCompanies == null) {
+			siteCompanies = new TreeMap<Account, List<Employee>>();
+
+			for (JobContractor jc : jobSite.getContractors()) {
+				siteCompanies.put(jc.getContractor(), new ArrayList<Employee>());
+			}
+
+			List<EmployeeSite> esites = employeeSiteDAO.findWhere("e.jobSite.operator.id = " + operator.getId()
+					+ " AND e.jobSite.id = " + jobSite.getId());
+
+			for (EmployeeSite es : esites) {
+				if (es.isCurrent() && es.getJobSite().isActive(new Date())) {
+					Account a = es.getEmployee().getAccount();
+					if (siteCompanies.get(a) == null)
+						siteCompanies.put(a, new ArrayList<Employee>());
+
+					siteCompanies.get(a).add(es.getEmployee());
+				}
+			}
+		}
+
+		return siteCompanies;
 	}
 
-	public int getTaskID() {
-		return taskID;
+	public List<ContractorAccount> getNewContractors() {
+		if (newContractors == null) {
+			Set<Account> working = new HashSet<Account>();
+			newContractors = new ArrayList<ContractorAccount>();
+
+			if (jobSite != null) {
+				for (JobContractor jobContractor : jobSite.getContractors())
+					working.add(jobContractor.getContractor());
+			}
+
+			working.addAll(getSiteCompanies().keySet());
+
+			for (ContractorOperator co : operator.getContractorOperators()) {
+				if (co.getContractorAccount().isRequiresOQ() && !working.contains(co.getContractorAccount()))
+					newContractors.add(co.getContractorAccount());
+			}
+		}
+
+		return newContractors;
 	}
 
-	public void setTaskID(int taskID) {
-		this.taskID = taskID;
+	public List<JobTask> getAddableTasks() {
+		if (addable == null) {
+			addable = new ArrayList<JobTask>();
+			// Skip tasks that have all ready been associated with this site
+			List<Integer> skip = new ArrayList<Integer>();
+
+			for (JobSiteTask jst : jobSite.getTasks()) {
+				skip.add(jst.getTask().getId());
+			}
+
+			String ids = "";
+			if (skip.size() > 0)
+				ids = String.format(" AND id NOT IN (%s)", Strings.implodeForDB(skip, ","));
+
+			addable = jobTaskDAO.findWhere(String.format("opID = %d %s ORDER BY label", operator.getId(), ids));
+		}
+
+		return addable;
 	}
 
-	public int getControlSpan() {
-		return controlSpan;
+	public String getCompanyLink(Account a) {
+		if (a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
+			return "<a href=\"ContractorView.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
+		if (a.isOperator()
+				&& (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
+			return "<a href=\"FacilitiesEdit.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
+
+		return a.getName();
 	}
 
-	public void setControlSpan(int controlSpan) {
-		this.controlSpan = controlSpan;
+	private String getRedirect() throws Exception {
+		if (permissions.isOperator())
+			return redirect("ManageProjects.action");
+		else
+			return redirect("ManageProjects.action?id=" + operator.getId());
 	}
 
-	public int getConID() {
-		return conID;
+	public ContractorAccount getContractor() {
+		return contractor;
 	}
 
-	public void setConID(int conID) {
-		this.conID = conID;
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
+	public JobSite getJobSite() {
+		return jobSite;
+	}
+
+	public void setJobSite(JobSite jobSite) {
+		this.jobSite = jobSite;
+	}
+
+	public JobTask getJobTask() {
+		return jobTask;
+	}
+
+	public void setJobTask(JobTask jobTask) {
+		this.jobTask = jobTask;
+	}
+
+	public JobSiteTask getJobSiteTask() {
+		return jobSiteTask;
+	}
+
+	public void setJobSiteTask(JobSiteTask jobSiteTask) {
+		this.jobSiteTask = jobSiteTask;
 	}
 
 	public String getSiteLabel() {
@@ -329,20 +425,20 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 		this.siteCity = siteCity;
 	}
 
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
 	public Country getSiteCountry() {
 		return siteCountry;
 	}
 
 	public void setSiteCountry(Country siteCountry) {
 		this.siteCountry = siteCountry;
+	}
+
+	public State getSiteState() {
+		return siteState;
+	}
+
+	public void setSiteState(State siteState) {
+		this.siteState = siteState;
 	}
 
 	public Date getSiteStart() {
@@ -369,168 +465,11 @@ public class ManageJobSites extends OperatorActionSupport implements Preparable 
 		this.date = date;
 	}
 
-	public void setDate(String date) {
-		this.date = parseDate(date);
+	public int getControlSpan() {
+		return controlSpan;
 	}
 
-	public JobSite getNewSite() {
-		return newSite;
-	}
-
-	public void setNewSite(JobSite newSite) {
-		this.newSite = newSite;
-	}
-
-	public JobSiteTask getSiteTask() {
-		return siteTask;
-	}
-
-	public List<JobSite> getActiveSites() {
-		if (activeSites == null) {
-			activeSites = new ArrayList<JobSite>();
-			for (JobSite site : allSites) {
-				if (site.isActive(date))
-					activeSites.add(site);
-			}
-		}
-
-		return activeSites;
-	}
-
-	public List<JobSite> getInactiveSites() {
-		if (inactiveSites == null) {
-			inactiveSites = new ArrayList<JobSite>();
-			for (JobSite site : allSites) {
-				if (!site.isActive(date)) {
-					if (site.getProjectStart() != null && site.getProjectStart().before(date))
-						inactiveSites.add(site);
-					else if (site.getProjectStart() == null && site.getProjectStop() != null
-							&& site.getProjectStop().equals(date))
-						inactiveSites.add(site);
-				}
-			}
-		}
-
-		return inactiveSites;
-	}
-
-	public List<JobSite> getFutureSites() {
-		if (futureSites == null) {
-			futureSites = new ArrayList<JobSite>();
-			for (JobSite site : allSites) {
-				if (site.getProjectStart() != null && site.getProjectStart().after(date))
-					futureSites.add(site);
-			}
-		}
-		return futureSites;
-	}
-
-	public List<JobSiteTask> getTasks(int job) {
-		if (tasks == null)
-			tasks = siteTaskDAO.findByJob(job);
-
-		return tasks;
-	}
-
-	public Map<Account, List<Employee>> getSiteCompanies() {
-		if (siteCompanies == null) {
-			siteCompanies = new TreeMap<Account, List<Employee>>();
-
-			for (JobContractor jc : newSite.getContractors()) {
-				siteCompanies.put(jc.getContractor(), new ArrayList<Employee>());
-			}
-
-			List<EmployeeSite> esites = employeeSiteDAO.findWhere("e.jobSite.operator.id = " + operator.getId()
-					+ " AND e.jobSite.id = " + siteID);
-
-			for (EmployeeSite es : esites) {
-				if (es.isCurrent() && es.getJobSite().isActive(new Date())) {
-					Account a = es.getEmployee().getAccount();
-					if (siteCompanies.get(a) == null)
-						siteCompanies.put(a, new ArrayList<Employee>());
-
-					siteCompanies.get(a).add(es.getEmployee());
-				}
-			}
-		}
-
-		return siteCompanies;
-	}
-
-	public List<ContractorAccount> getNewContractors() {
-		if (newContractors == null) {
-			Set<Account> working = new HashSet<Account>();
-			newContractors = new ArrayList<ContractorAccount>();
-
-			if (newSite != null) {
-				for (JobContractor jobContractor : newSite.getContractors()) {
-					working.add(jobContractor.getContractor());
-				}
-			}
-
-			working.addAll(getSiteCompanies().keySet());
-
-			for (ContractorOperator co : operator.getContractorOperators()) {
-				if (co.getContractorAccount().isRequiresOQ() && !working.contains(co.getContractorAccount()))
-					newContractors.add(co.getContractorAccount());
-			}
-		}
-
-		return newContractors;
-	}
-
-	public List<JobTask> getAddableTasks() {
-		if (addable.size() == 0) {
-			List<JobSiteTask> siteTasks = getTasks(siteID);
-			// Skip tasks that have all ready been associated with this site
-			List<Integer> skip = new ArrayList<Integer>();
-
-			for (JobSiteTask jst : siteTasks) {
-				skip.add(jst.getTask().getId());
-			}
-
-			String ids = "";
-			if (skip.size() > 0)
-				ids = " AND id NOT IN (" + Strings.implodeForDB(skip, ",") + ")";
-
-			addable = taskDAO.findWhere("opID = " + operator.getId() + ids + " ORDER BY label");
-		}
-
-		return addable;
-	}
-
-	public List<String> getHistory() {
-		if (history == null) {
-			List<Date> dates = siteDAO.findHistory("opID = " + operator.getId() + " AND projectStart IS NOT NULL");
-			history = new ArrayList<String>();
-
-			if (!maskDateFormat(dates.get(0)).equals(maskDateFormat(new Date())))
-				history.add(maskDateFormat(new Date()));
-
-			for (Date d : dates)
-				history.add(maskDateFormat(d));
-		}
-
-		if (history.size() > 1)
-			return history;
-
-		return null;
-	}
-
-	public String getCompanyLink(Account a) {
-		if (a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
-			return "<a href=\"ContractorView.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
-		if (a.isOperator()
-				&& (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
-			return "<a href=\"FacilitiesEdit.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
-
-		return a.getName();
-	}
-
-	private String getRedirect() throws Exception {
-		if (permissions.isOperator())
-			return redirect("ManageProjects.action");
-		else
-			return redirect("ManageProjects.action?id=" + operator.getId());
+	public void setControlSpan(int controlSpan) {
+		this.controlSpan = controlSpan;
 	}
 }
