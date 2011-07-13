@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.FlagDataDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -35,6 +34,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
@@ -60,20 +60,13 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	private boolean override = false;
 
 	private List<FlagAndOverride> affected = new ArrayList<FlagAndOverride>();
-
-	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
-	private OperatorAccountDAO opDAO;
-
 	@Autowired
-	private FlagDataDAO flagDataDAO;
+	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
+	@Autowired
+	private OperatorAccountDAO opDAO;
 
 	private FlagCriteriaOperator flagCriteriaOperator;
 	private OperatorAccount operator;
-
-	public OperatorFlagsCalculator(FlagCriteriaOperatorDAO flagCriteriaOperatorDAO, OperatorAccountDAO opDAO) {
-		this.flagCriteriaOperatorDAO = flagCriteriaOperatorDAO;
-		this.opDAO = opDAO;
-	}
 
 	@Override
 	public String execute() throws Exception {
@@ -88,6 +81,46 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 		List<BasicDynaBean> results = getResults(flagCriteriaOperator, operator, db);
 
+		List<Integer> opIDs = new ArrayList<Integer>();
+		if (operator.isCorporate()) {
+			for (Facility f : operator.getOperatorFacilities()) {
+				opIDs.add(f.getId());
+			}
+		}
+
+		opIDs.add(operator.getId());
+
+		List<Integer> conIDs = new ArrayList<Integer>();
+		for (BasicDynaBean d : results) {
+			conIDs.add((Integer) d.get("conID"));
+		}
+
+		SelectSQL sql = new SelectSQL("flag_data f");
+		sql.addWhere(String.format("f.opID IN (%s)", Strings.implode(opIDs)));
+		sql.addWhere(String.format("f.conID IN (%s)", Strings.implode(conIDs)));
+		sql.addWhere(String.format("f.criteriaID = %d", flagCriteriaOperator.getCriteria().getId()));
+
+		sql.addField("f.conID");
+		sql.addField("f.opID");
+		sql.addField("f.flag");
+
+		List<BasicDynaBean> flags = db.select(sql.toString(), false);
+		Map<Integer, List<FlagData>> conFlags = new HashMap<Integer, List<FlagData>>();
+
+		for (BasicDynaBean f : flags) {
+			if (conFlags.get((Integer) f.get("conID")) == null)
+				conFlags.put((Integer) f.get("conID"), new ArrayList<FlagData>());
+
+			FlagData d = new FlagData();
+			d.setContractor(new ContractorAccount());
+			d.getContractor().setId((Integer) f.get("conID"));
+			d.setOperator(new OperatorAccount());
+			d.getOperator().setId((Integer) f.get("opID"));
+			d.setFlag(FlagColor.valueOf(f.get("flag").toString()));
+
+			conFlags.get((Integer) f.get("conID")).add(d);
+		}
+
 		if (results.size() > 0) {
 			Map<Integer, List<ContractorAudit>> auditMap = buildAuditMap(results, flagCriteriaOperator, operator,
 					permissions, db);
@@ -95,6 +128,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			for (BasicDynaBean row : results) {
 				ContractorAccount contractor = new ContractorAccount(Database.toInt(row, "conID"));
 				contractor.setName(row.get("contractor_name").toString());
+
 				contractor.setAcceptsBids(Database.toBoolean(row, "acceptsBids"));
 				contractor.setAudits(auditMap.get(contractor.getId()));
 				contractor.setNaics(new Naics());
@@ -112,31 +146,20 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 					ct.setTag(tag);
 					contractor.getOperatorTags().add(ct);
 				}
-				
-				int[] opIds = new int[1];
-				if (operator.isCorporate()) {
-					opIds = new int[operator.getOperatorFacilities().size()];
-					int index = 0;
-					for (Facility opFacility : operator.getOperatorFacilities()) {
-						opIds[index++] = opFacility.getOperator().getId();
-					}operator.getCorporateFacilities();
-				} else {
-					opIds[0] = opID;
-				}
 
-				List<FlagData> conResults = flagDataDAO.findByContractorAndOperatorAndCriteria(contractor.getId(), 
-						opIds, 
-						flagCriteriaOperator.getCriteria().getId());
-				for (FlagData flagData : conResults) {
-					if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {
-						FlagAndOverride flagAndOverride = new FlagAndOverride(flagData);
+				if (conFlags.get(contractor.getId()) != null) {
+					for (FlagData flagData : conFlags.get(contractor.getId())) {
+						if (flagCriteriaOperator.getFlag().equals(flagData.getFlag())) {
+							flagData.setContractor(contractor);
+							FlagAndOverride flagAndOverride = new FlagAndOverride(flagData);
 
-						if (row.get("forceFlag") != null) {
-							flagAndOverride.setForcedFlag(row.get("forceFlag").toString());
-							override = true;
+							if (row.get("forceFlag") != null) {
+								flagAndOverride.setForcedFlag(row.get("forceFlag").toString());
+								override = true;
+							}
+
+							affected.add(flagAndOverride);
 						}
-
-						affected.add(flagAndOverride);
 					}
 				}
 			}
