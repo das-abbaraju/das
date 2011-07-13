@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>HSE Competencies</title>
+<title><s:text name="%{scope}.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -15,16 +15,14 @@ fieldset.bottom {
 #item input[type=text], #item textarea {
 	font-size: normal;
 }
+#item {
+	display: none;
+}
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
-
 <script type="text/javscript" src="js/jquery/jquery.bgiframe.min.js"></script>
-
 <script type="text/javascript">
 	var dialog;
 	var dtable;
@@ -45,8 +43,8 @@ fieldset.bottom {
 
 	function show(id) {
 		if (id !== undefined) {
-			$.post('DefineCompetenciesAjax.action', 
-					{'competency.id': id, 'id': '<s:property value="operator.id"/>', button: 'load'}, 
+			$.post('DefineCompetencies!load.action', 
+					{competency: id, operator: '<s:property value="operator.id"/>'}, 
 					function(data, result) {
 						if (data.result == 'success') {
 							loadDialog(data.competency);
@@ -62,46 +60,25 @@ fieldset.bottom {
 			);
 		} else {
 			$('form#itemform :input').val('');
-			$('form#itemform input[name="id"]').val('<s:property value="operator.id"/>');
-			$('form#itemform input[name="competency.id"]').val(0);
+			$('form#itemform input[name="operator"]').val('<s:property value="operator.id"/>');
+			$('form#itemform input[name="competency"]').val(0);
 			$('form#itemform :checked').removeAttr('checked');
 			newItem = true;
 			dialog.dialog('open');
 		}
 	}
 
-	// function remove(id) {
-		// var del = confirm('Are you sure you want to remove this HSE Competency?');
-	
-		// if (del) {
-			// $.post('DefineCompetenciesAjax.action',
-				// {'competency.id': id, 'id': '<s:property value="operator.id"/>', button: 'delete'}, 
-				// function(data, result) {
-					// if (data.gritter)
-						// $.gritter.add(data.gritter);
-	
-					// if (data.result == 'success') {
-						// dtable.fnDeleteRow($('#competency_'+id)[0]);
-					// }
-				// },
-				// 'json'
-			// );
-		// }
-	// }
-	
-
 	$(function() {
 		dialog = $('#item').dialog({
-			title: 'Edit Competency',
+			title: translate('JS.<s:property value="scope" />.label.EditCompetency'),
 			width: '50%',
 			modal: true,
 			autoOpen: false,
 			buttons: {
-				'Save': function() {
+				'<s:text name="button.Save" />': function() {
 					var pars = $('form#itemform :input[name]').serialize();
-					pars += '&button=save';
 					var competency_dialog = $(this);
-					$.post('DefineCompetenciesAjax.action',
+					$.post('DefineCompetencies!save.action',
 							pars,
 							function(data, result) {
 								if (data.gritter)
@@ -120,7 +97,7 @@ fieldset.bottom {
 							'json'
 					);
 				},
-				'Cancel': function() {
+				'<s:text name="button.Cancel" />': function() {
 					$(this).dialog('close');
 				}
 			}
@@ -129,7 +106,6 @@ fieldset.bottom {
 		$('#category_autocomplete').autocomplete('CategorySuggestAjax.action', {minChars: 1});
 
 		dtable = $('#comptable').dataTable({
-				aaData: <s:property value="dtable" escape="false"/>,
 				aaSorting: [[1, 'asc']],
 				aoColumns: [
 			            {bVisible: false},
@@ -152,46 +128,62 @@ fieldset.bottom {
 		$('delay').show("fast");
 
 		$('#comptable_filter').css({'float':'none', 'clear':'both', 'width':'auto'});
-		$('#comptable_filter').after('<a onclick="show()" href="#" id="addCompetencyLink" class="add">Add HSE Competency</a>');
+		
+		$('#addCompetencyLink').live('click', function(e) {
+			e.preventDefault();
+			show();
+		});
+		
+		$('a.edit').live('click', function(e) {
+			e.preventDefault();
+			var id = $(this).closest('tr').attr('id').split('_')[1];
+			show(id);
+		});
 	});
 </script>
 </head>
 <body>
-	<h1>Define HSE Competencies</h1>
-		<table class="report" id="comptable">
+	<h1><s:text name="%{scope}.title" /></h1>
+	<a href="#" id="addCompetencyLink" class="add"><s:text name="%{scope}.link.AddHSECompetency" /></a>
+	<table class="report" id="comptable">
 		<thead>
 			<tr>
 				<th>ID</th>
-				<th>Category</th>
-				<th>Label</th>
-				<th>Description</th>
-				<th>Edit</th>
+				<th><s:text name="OperatorCompetency.category" /></th>
+				<th><s:text name="OperatorCompetency.label" /></th>
+				<th><s:text name="OperatorCompetency.description" /></th>
+				<th><s:text name="button.Edit" /></th>
 			</tr>
 		</thead>
+		<tbody>
+			<s:iterator value="operator.competencies">
+				<tr id="comp_<s:property value="id" />">
+					<td><s:property value="id" /></td>
+					<td><s:property value="category" /></td>
+					<td><s:property value="label" /></td>
+					<td><s:property value="description" /></td>
+					<td class="center"><a href="#" class="edit"></a></td>
+				</tr>
+			</s:iterator>
+		</tbody>
 	</table>
 	
-	<div id="item" style="display:none;">
+	<div id="item">
 		<form id="itemform">
+			<s:hidden name="operator" />
+			<s:hidden name="competency" />
 			<fieldset class="form" style="border: none">
-		<s:hidden name="id"/>
-			<s:hidden name="competency.id"/>
 				<ol>
 					<li>
-						<label>Category:</label>
+						<label><s:text name="OperatorCompetency.category" />:</label>
 						<s:textfield maxlength="50" id="category_autocomplete" name="competency.category" />
 					</li>
 					<li>
-						<label>Label:</label>
+						<label><s:text name="OperatorCompetency.label" />:</label>
 						<s:textfield name="competency.label" maxlength="15" size="15"/>
 					</li>
-					<!-- 
 					<li>
-						<label>Help Page:</label>
-						<s:textfield maxlength="100" size="50" name="competency.helpPage" />
-					</li>
-					 -->
-					<li>
-						<label>Description:</label>
+						<label><s:text name="OperatorCompetency.description" />:</label>
 						<s:textarea name="competency.description" cols="40" rows="5" />
 					</li>
 				</ol>

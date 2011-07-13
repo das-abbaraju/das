@@ -62,6 +62,7 @@ public class OperatorAccount extends Account {
 	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
 	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
+	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Set<Integer> visibleAuditTypes = null;
 
 	public OperatorAccount() {
@@ -407,6 +408,15 @@ public class OperatorAccount extends Account {
 
 	public void setJobSites(List<JobSite> jobSites) {
 		this.jobSites = jobSites;
+	}
+
+	@OneToMany(mappedBy = "operator")
+	public List<OperatorCompetency> getCompetencies() {
+		return competencies;
+	}
+
+	public void setCompetencies(List<OperatorCompetency> competencies) {
+		this.competencies = competencies;
 	}
 
 	@Transient

@@ -21,7 +21,6 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 	private String label;
 	private String description;
 	private OperatorAccount operator;
-	//private String helpPage;
 	private JobCompetencyStats jobCompentencyStats;
 
 	public String getCategory() {
@@ -58,25 +57,6 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.operator = operator;
 	}
 
-	/*
-	public String getHelpPage() {
-		return helpPage;
-	}
-
-	public void setHelpPage(String helpPage) {
-		this.helpPage = helpPage;
-	}
-
-	@Transient
-	public String getHelpPageLink() {
-		try {
-			return "<a href=\"" + URLEncoder.encode(helpPage, "UTF-8") + "\">" + helpPage + "</a>";
-		} catch (UnsupportedEncodingException e) {
-			return helpPage; // just giving back the unlinked text
-		}
-	}
-	 */
-
 	@Transient
 	public JobCompetencyStats getJobCompentencyStats() {
 		return jobCompentencyStats;
@@ -86,18 +66,6 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		this.jobCompentencyStats = jobCompentencyStats;
 	}
 
-	@Transient
-	public String getEditLink() {
-		return "<a href=\"#\" onclick=\"show(" + id + "); return false;\" class=\"edit\"></a>";
-	}
-
-	/*
-	@Transient
-	public String getDeleteLink() {
-		return "<a href=\"#\" onclick=\"remove(" + id + "); return false;\" class=\"remove\"></a>";
-	}
-	 */
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {
@@ -106,10 +74,6 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 		json.put("category", category);
 		json.put("label", label);
 		json.put("description", description);
-		//json.put("helpPage", helpPage);
-		//json.put("helpPageLink", getHelpPageLink());
-		json.put("editLink", getEditLink());
-		//json.put("deleteLink", getDeleteLink());
 
 		return json;
 	}
@@ -123,9 +87,6 @@ public class OperatorCompetency extends BaseTable implements Comparable<Operator
 				add(category);
 				add(label);
 				add(description);
-				//add(getHelpPageLink());
-				add(getEditLink());
-				//add(getDeleteLink());
 			}
 		};
 	}
