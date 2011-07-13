@@ -24,7 +24,6 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Workflow;
-import com.picsauditing.util.AuditTypeCache;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -65,7 +64,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				if (save()) {
 					addActionMessage("Successfully saved"); // default message
-					new AuditTypeCache();
 					this.redirect(getRedirectURL());
 					return BLANK;
 				}
@@ -74,7 +72,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Delete);
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
-					new AuditTypeCache();
 
 					this.redirect(getDeletedRedirectURL());
 
@@ -98,7 +95,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 				if (move()) {
 					addActionMessage("Successfully moved.");
-					new AuditTypeCache();
 					return redirect(getCopyMoveURL());
 				}
 			}
@@ -107,7 +103,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 				if (copy()) {
 					addActionMessage("Successfully copied.");
-					new AuditTypeCache();
 					return redirect(getCopyMoveURL());
 				}
 			}

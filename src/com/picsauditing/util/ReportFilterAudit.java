@@ -1,6 +1,8 @@
 package com.picsauditing.util;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.OshaType;
 
 @SuppressWarnings("serial")
@@ -310,18 +313,35 @@ public class ReportFilterAudit extends ReportFilterContractor {
 
 	// Getting all the Lists
 	public List<AuditType> getAuditTypeList() {
-		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		return new AuditTypeCache(auditDAO).getAuditTypes(permissions);
+		AuditTypeDAO auditTypeDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : auditTypeDAO.findAll()) {
+			if (!aType.isAnnualAddendum() && (aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		Collections.sort(list, null);
+		
+		return list;
 	}
 
 	public List<AuditType> getPQFTypeList() {
-		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		return new AuditTypeCache(auditDAO).getPqfTypes(permissions);
+		AuditTypeDAO auditTypeDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : auditTypeDAO.findAll()) {
+			if ((aType.getClassType().equals(AuditTypeClass.PQF) || aType.isAnnualAddendum()) && permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
 	}
 
 	public List<AuditType> getPolicyTypeList() {
-		AuditTypeDAO auditDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
-		return new AuditTypeCache(auditDAO).getPolicyTypes(permissions);
+		AuditTypeDAO auditTypeDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
+		List<AuditType> list = new ArrayList<AuditType>();
+		for (AuditType aType : auditTypeDAO.findAll()) {
+			if (aType.getClassType().isPolicy() && permissions.canSeeAudit(aType))
+				list.add(aType);
+		}
+		return list;
 	}
 
 	public AuditStatus[] getAuditStatusList() {
