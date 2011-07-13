@@ -11,8 +11,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportOQ extends ReportEmployee {
 	@Override
 	public String execute() throws Exception {
-		loadPermissions();
-
 		if (!permissions.isRequiresOQ())
 			throw new NoRightsException("Operator Qualification");
 

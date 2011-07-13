@@ -1,27 +1,38 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>OQ by Company/Site</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
+<script type="text/javascript">
+$(function() {
+	$('a.excel').live('click', function(e) {
+		e.preventDefault();
+		download('ReportOQ');
+	});
+});
+</script>
 </head>
 <body>
-<h1>OQ by Company/Site</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 <s:include value="filters_employee.jsp" />
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 <div class="right">
-	<a class="excel" href="#" onclick="download('ReportOQ'); return false;" target="_blank" title="Download <s:property value="data.size" /> results to a CSV file">Download</a>
+	<a class="excel" href="#" target="_blank" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{data.size}" /></s:text>">
+		<s:text name="global.Download" />
+	</a>
 </div>
 <div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report">
 	<thead>
 		<tr>
-			<th>Company</th>
-			<th>Project</th>
-			<th>Qualified Employees</th>
-			<th>Total Employees</th>
+			<th><s:text name="global.Company" /></th>
+			<th><s:text name="%{scope}.label.Project" /></th>
+			<th><s:text name="%{scope}.label.QualifiedEmployees" /></th>
+			<th><s:text name="%{scope}.label.TotalEmployees" /></th>
 		</tr>
 	</thead>
 	<tbody>
