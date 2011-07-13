@@ -13,6 +13,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SmartFacilitySuggest {
+	// TODO: Change String operators to permissions and use permissions to filter the returned list.
 	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, String operators) throws Exception, SQLException {
 		Calendar changedSince = Calendar.getInstance();
 		changedSince.add(Calendar.MONTH, -2);

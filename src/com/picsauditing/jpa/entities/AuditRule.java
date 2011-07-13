@@ -102,14 +102,15 @@ public class AuditRule extends BaseDecisionTreeRule {
 	/**
 	 * Does this rule apply to the given operator?
 	 * 
-	 * @param operator Should always be an operator, never a corporate.
+	 * @param operator
+	 *            Should always be an operator, never a corporate.
 	 * @return
 	 */
 	@Transient
 	public boolean isApplies(OperatorAccount operator) {
 		if (this.operatorAccount == null)
 			return true;
-		
+
 		// operatorAccount could be a corporate or an operator
 		if (this.operatorAccount.isCorporate()) {
 			for (Facility facility : operator.getCorporateFacilities()) {
@@ -369,11 +370,12 @@ public class AuditRule extends BaseDecisionTreeRule {
 
 			return questionComparator.equals(QuestionComparator.Empty);
 		}
-		
-		Date auditEffectiveDate = (data.getAudit().getEffectiveDate() != null) ? data.getAudit().getEffectiveDate():new Date();
-		if (auditEffectiveDate.before(data.getQuestion().getEffectiveDate())) 
+
+		Date auditEffectiveDate = (data.getAudit().getEffectiveDate() != null) ? data.getAudit().getEffectiveDate()
+				: new Date();
+		if (auditEffectiveDate.before(data.getQuestion().getEffectiveDate()))
 			return false;
-		if (!auditEffectiveDate.before(data.getQuestion().getExpirationDate())) 
+		if (!auditEffectiveDate.before(data.getQuestion().getExpirationDate()))
 			return false;
 
 		if (questionComparator == null)

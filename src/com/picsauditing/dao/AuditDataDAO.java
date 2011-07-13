@@ -165,6 +165,7 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
+	//TODO: Ask Kyle why we are doing this instead of using findAnswerByConQuestions() line 229
 	public AnswerMap findCurrentAnswers(int conId, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new AnswerMap(Collections.<AuditData>emptyList());
