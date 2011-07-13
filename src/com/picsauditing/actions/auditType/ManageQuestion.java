@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
 			if (question.getEffectiveDate() == null) {
 				Calendar cal = Calendar.getInstance();
-				cal.set(2000, Calendar.JANUARY, 1);
+				cal.setTime(new Date());
 				question.setEffectiveDate(cal.getTime());
 			}
 			if (question.getExpirationDate() == null)
