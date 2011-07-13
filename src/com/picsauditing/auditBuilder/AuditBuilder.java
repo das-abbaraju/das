@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
@@ -190,10 +191,27 @@ public class AuditBuilder {
 	 *            Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		// 6/9/2011 Trevor We don't need this because of nightly Cron calling
-		// contractorAuditOperatorDAO.activateAuditsWithReqs();
-		// if (conAudit.getAuditType().isDesktop() && conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
-		// return;
+		if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()) {
+			// 6/9/2011 Trevor We don't need this because of nightly Cron calling
+			// contractorAuditOperatorDAO.activateAuditsWithReqs();
+			AuditStatus maxStatus = null;
+			if (conAudit.hasCaoStatus(AuditStatus.Submitted))
+				maxStatus = AuditStatus.Submitted;
+			if (conAudit.hasCaoStatus(AuditStatus.Complete))
+				maxStatus = AuditStatus.Complete;
+			
+			if (maxStatus != null) {
+				// Make sure all statuses are at least maxStatus
+				for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					if (cao.getStatus().ordinal() < maxStatus.ordinal()) {
+						// Bump this status up to maxStatus
+						ContractorAuditOperatorWorkflow caow = cao.changeStatus(maxStatus, null);
+						cao.getCaoWorkflow().add(caow);
+						contractorAuditOperatorDAO.save(cao);
+					}
+				}
+			}
+		}
 
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();

@@ -77,21 +77,29 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 	}
 
 	@Transient
-	public void changeStatus(AuditStatus auditStatus, Permissions permissions) {
+	public ContractorAuditOperatorWorkflow changeStatus(AuditStatus auditStatus, Permissions permissions) {
 		if (auditStatus.equals(status))
-			return;
+			return null;
+		ContractorAuditOperatorWorkflow caow = new ContractorAuditOperatorWorkflow();
+		caow.setCao(this);
+		caow.setPreviousStatus(status);
+		caow.setStatus(auditStatus);
+		caow.setAuditColumns(permissions);
+
 		setAuditColumns(permissions);
 		setStatusChangedDate(new Date());
 		this.status = auditStatus;
 
 		if (audit.getAuditType().isPqf() || audit.getAuditType().isAnnualAddendum())
-			return;
+			return caow;
 
 		if (auditStatus.isPending())
-			return;
+			return caow;
 
 		if (audit.getEffectiveDate() == null)
 			audit.setEffectiveDate(new Date());
+		
+		return caow;
 	}
 
 	@Transient
