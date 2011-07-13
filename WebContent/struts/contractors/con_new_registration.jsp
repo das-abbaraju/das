@@ -329,9 +329,9 @@ function getMatches(requestID) {
 }
 function enableDisableReasonDeclined() {
 	if ($('#result :selected').text() == "Unsuccessful")
-		$('#reasonDeclined').removeAttr("disabled");
+		$('#reasonForDecline').removeAttr("disabled");
 	else
-		$('#reasonDeclined').attr("disabled","disabled");
+		$('#reasonForDecline').attr("disabled","disabled");
 }
 </script>
 </head>
@@ -541,10 +541,10 @@ function enableDisableReasonDeclined() {
 			cssClass="datepicker" size="10" onchange="checkDate()"
 			theme="formhelp" /></li>
 		<li><label><s:text name="%{scope}.label.pastFuture" />:</label>
-		<s:radio list="#{'Past':'Past', 'Future':'Future'}"
-			name="newContractor.pastFuture" theme="pics" /></li>
-		<li><s:textarea id="registrationReason"
-			name="newContractor.registrationReason" theme="formhelp" /></li>
+		<s:radio list="#{'false':'Past', 'true':'Future'}"
+			name="newContractor.future" theme="pics" /></li>
+		<li><s:textarea id="reasonForRegistration"
+			name="newContractor.reasonForRegistration" theme="formhelp" /></li>
 		<li><s:if test="newContractor.id > 0">
 			<s:if test="permissions.admin">
 				<s:textfield id="holdDate" name="newContractor.holdDate"
@@ -643,7 +643,7 @@ function enableDisableReasonDeclined() {
 			<label><s:text name="ContractorRegistrationRequest.label.CloseRequest" />:</label>
 			<s:if test="permissions.admin">	
 				<s:select list="#{'Successful':'Successful','Unsuccessful':'Unsuccessful'}"	name="newContractor.result" id = "result" onchange="enableDisableReasonDeclined()"/>
-				<p><s:textarea name="newContractor.reasonDeclined" id="reasonDeclined" /></p>
+				<p><s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" /></p>
 			</s:if>
 			<s:else>
 				<p><s:property value="newContractor.result" /></p>
@@ -658,16 +658,18 @@ function enableDisableReasonDeclined() {
 		
 	</fieldset>
 	</s:if>
-	<fieldset class="form submit"><s:submit
-		value="%{getText('button.Save')}" method="save"
-		cssClass="picsbutton positive" /> <s:if
-		test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-		<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
-	</s:if> <s:elseif
-		test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-		<s:submit value="%{getText(scope + '.button.ReturnToOperator')}"
-			method="returnToOperator" cssClass="picsbutton" />
-	</s:elseif></fieldset>
+	<s:if test="newContractor.status == 'Active' ||newContractor.status == 'Hold'">
+		<fieldset class="form submit"><s:submit
+			value="%{getText('button.Save')}" method="save"
+			cssClass="picsbutton positive" /> <s:if
+			test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
+			<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
+		</s:if> <s:elseif
+			test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
+			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}"
+				method="returnToOperator" cssClass="picsbutton" />
+		</s:elseif></fieldset>
+	</s:if>
 </s:form>
 
 <div style="display: none" id="load"></div>

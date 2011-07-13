@@ -274,7 +274,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			addActionError("Please fill in a Valid Email Address");
 		if (newContractor.getDeadline() == null)
 			addActionError("Please select a Registration Deadline date");
-		if (Strings.isEmpty(newContractor.getRegistrationReason()))
+		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
 			addActionError("Please enter a Registration Reason");
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
@@ -479,7 +479,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			addToNotes = null;
 		}
 
-		if (newContractor.getResult().equals("Unsuccessful") && Strings.isEmpty(newContractor.getReasonDeclined()))
+		if (newContractor.getResult().equals("Unsuccessful") && Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError("Please fill out why the contractor declined the request.");
 
 		if (getActionErrors().size() > 0)

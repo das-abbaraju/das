@@ -1,6 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -35,10 +34,10 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private State state;
 	private String zip;
 	private Country country;
-	private String registrationReason;
-	private String pastFuture;
+	private String reasonForRegistration;
+	private boolean future;
 	private String result;
-	private String reasonDeclined;
+	private String reasonForDecline;
 	private Date deadline;
 	private Date holdDate;
 	private User lastContactedBy;
@@ -191,31 +190,26 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.deadline = deadline;
 	}
 
-	@Transient
-	public Date getHoldDate() {
-		// return holdDate;
-		return Calendar.getInstance().getTime();
+	public String getReasonForRegistration() {
+		return reasonForRegistration;
 	}
 
-	public void setHoldDate(Date holdDate) {
-		this.holdDate = holdDate;
+	public void setReasonForRegistration(String reasonForRegistration) {
+		this.reasonForRegistration = reasonForRegistration;
 	}
 
-	@Transient
-	public String getRegistrationReason() {
-		// return registrationReason;
-		return "Registration Reason";
+	public boolean isFuture() {
+		return future;
 	}
 
-	@Transient
-	public String getPastFuture() {
-		// return pastFuture;
-		return "Future";
+	public void setFuture(boolean future) {
+		this.future = future;
 	}
 
 	@Transient
 	public String getResult() {
-		// return result;
+		if (contractor != null)
+			return "Successful";
 		return "Unsuccessful";
 	}
 
@@ -223,22 +217,20 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.result = result;
 	}
 
-	@Transient
-	public String getReasonDeclined() {
-		return "Reason Declined";
-		// return reasonDeclined;
+	public String getReasonForDecline() {
+		return reasonForDecline;
 	}
 
-	public void setReasonDeclined(String reasonDeclined) {
-		this.reasonDeclined = reasonDeclined;
+	public void setReasonForDecline(String reasonForDecline) {
+		this.reasonForDecline = reasonForDecline;
 	}
 
-	public void setPastFuture(String pastFuture) {
-		this.pastFuture = pastFuture;
+	public Date getHoldDate() {
+		return holdDate;
 	}
 
-	public void setRegistrationReason(String registrationReason) {
-		this.registrationReason = registrationReason;
+	public void setHoldDate(Date holdDate) {
+		this.holdDate = holdDate;
 	}
 
 	@ManyToOne
