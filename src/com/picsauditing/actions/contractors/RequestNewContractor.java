@@ -126,8 +126,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public void prepare() throws Exception {
 		getPermissions();
 
-		newContractor.setPermissions(permissions);
-
 		requestID = getParameter("requestID");
 
 		if (requestID > 0)

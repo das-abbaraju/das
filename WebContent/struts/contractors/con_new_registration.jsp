@@ -115,7 +115,7 @@ var chooseADate = '<s:text name="javascript.ChooseADate" />';
 
 $(function() {
 	$('#notesHere').hide();
-
+	enableDisableReasonDeclined();
 	$('#phone').click(function() { 
         $.blockUI({ message: $('#phoneSubmit') }); 
  
@@ -328,10 +328,7 @@ function getMatches(requestID) {
 	$('#potentialMatches').load('RequestNewContractorAjax.action', data);
 }
 function enableDisableReasonDeclined() {
-	var dropdown = document.getElementById("result");
-	var value = dropdown.options[dropdown.selectedIndex].text;
-
-	if (value == "Unsuccessful")
+	if ($('#result :selected').text() == "Unsuccessful")
 		$('#reasonDeclined').removeAttr("disabled");
 	else
 		$('#reasonDeclined').attr("disabled","disabled");
@@ -392,7 +389,7 @@ function enableDisableReasonDeclined() {
 		<li><s:textfield cssClass="checkReq" name="newContractor.phone"
 			size="20" theme="formhelp" /> <s:if
 			test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-			<input type="button" class="picsbutton" value="Contacted by Phone" id = "phone"/>
+			<input type="button" class="picsbutton" value="<s:text name="%{scope}.button.ContactedByPhone" />" id = "phone"/>
 		</s:if>
 		<div id="think_phone"></div>
 		<div id="match_phone"></div>
@@ -536,7 +533,7 @@ function enableDisableReasonDeclined() {
 		</s:if>
 		<s:if test="newContractor.id > 0">
 			<li>
-				<label><s:text name="ContractorRegistrationRequest.label.status:" /></label>
+				<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
 				<s:property value="newContractor.status" />
 			</li>
 		</s:if>
@@ -555,8 +552,8 @@ function enableDisableReasonDeclined() {
 					theme="formhelp" />
 			</s:if>
 			<s:else>
-				<s:textfield id="holdDate" name="newContractor.holdDate" size="10"
-					theme="formhelp" disabled="true" />
+				<label><s:text name="ContractorRegistrationRequest.holdDate" />:</label>
+				<s:property value="newContractor.holdDate" />
 			</s:else>
 		</s:if></li>
 	</ol>
@@ -647,13 +644,10 @@ function enableDisableReasonDeclined() {
 			<s:if test="permissions.admin">	
 				<s:select list="#{'Successful':'Successful','Unsuccessful':'Unsuccessful'}"	name="newContractor.result" id = "result" onchange="enableDisableReasonDeclined()"/>
 				<p><s:textarea name="newContractor.reasonDeclined" id="reasonDeclined" /></p>
-				<script type="text/javascript">
-					enableDisableReasonDeclined();
-				</script>
 			</s:if>
 			<s:else>
-				<s:select list="#{'Successful':'Successful','Unsuccessful':'Unsuccessful'}"	name="newContractor.result" id = "result" disabled="true"/>
-				<p><s:textarea disabled="true" name="newContractor.reasonDeclined" id="reasonDeclined" /></p>
+				<p><s:property value="newContractor.result" /></p>
+				<p><s:property value="newContractor.reasonDeclined" /></p>
 			</s:else>
 			<div class = "fieldhelp">
 				<h3><s:text name="ContractorRegistrationRequest.label.CloseRequest" /></h3>	

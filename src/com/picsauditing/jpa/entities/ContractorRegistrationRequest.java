@@ -15,8 +15,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.picsauditing.access.Permissions;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_registration_request")
@@ -49,7 +47,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int matchCount;
 	private String notes;
 	private ContractorAccount contractor;
-	private static Permissions permissions;
 	// Assuming most operators want to watch their contractor after they
 	// register
 	private boolean watch = true;
@@ -201,10 +198,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	public void setHoldDate(Date holdDate) {
-		// An operator should not be able to edit this field. If they manage to, just fail silently.
-		if (!permissions.isAdmin())
-			return;
-
 		this.holdDate = holdDate;
 	}
 
@@ -227,10 +220,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	public void setResult(String result) {
-		// An operator should not be able to edit this field. If they manage to, just fail silently.
-		if (!permissions.isAdmin())
-			return;
-
 		this.result = result;
 	}
 
@@ -241,10 +230,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	public void setReasonDeclined(String reasonDeclined) {
-		// An operator should not be able to edit this field. If they manage to, just fail silently.
-		if (!permissions.isAdmin())
-			return;
-
 		this.reasonDeclined = reasonDeclined;
 	}
 
@@ -327,10 +312,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	@Transient
 	public String getRequestedByUserString() {
 		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
-	}
-
-	public void setPermissions(Permissions permissions) {
-		ContractorRegistrationRequest.permissions = permissions;
 	}
 
 	@Transient
