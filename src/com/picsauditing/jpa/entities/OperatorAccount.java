@@ -34,6 +34,7 @@ import com.picsauditing.util.SpringUtils;
 public class OperatorAccount extends Account {
 
 	public static final int PicsConsortium = 4;
+	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
 
 	private OperatorAccount parent;
