@@ -26,7 +26,7 @@
 	</s:if>
 	<pics:permission perm="ManageProjects">
 		<s:if test="operator.requiresOQ">
-			<li><a href="ManageProjects.action?id=<s:property value="operator.id"/>"
+			<li><a href="ManageProjects.action?operator=<s:property value="operator.id"/>"
 				<s:if test="requestURI.contains('op_job_sites')">class="current"</s:if>>Projects</a></li>
 		</s:if>
 	</pics:permission>
