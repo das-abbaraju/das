@@ -3,15 +3,25 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <%
-	// usage: translate('ContractorAccount.name')
+	// usage: translate('ContractorAccount.name', [params (optional)])
 %>
 
-var translate = (function() {
+var translate = (function(window, document, undefined) {
 	var translations = <s:property value="translations" escape="false" />;
-	return function(key) {
-		if (translations[key])
-			return translations[key];
-		else
+	return function(key, args) {
+		if (translations[key]) {
+			if (args !== undefined && args.length > 0) {
+				var t = translations[key];
+				t = t.replace(/\{(\d+)\}/g, function(match, index) {
+					return args[index];
+				});
+				return t;
+			} else {
+				return translations[key];
+			}
+		}
+		else {
 			return "Translation Missing";
+		}
 	}
-})();
+})(window, document);
