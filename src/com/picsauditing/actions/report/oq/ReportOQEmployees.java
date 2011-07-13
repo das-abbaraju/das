@@ -311,7 +311,7 @@ public class ReportOQEmployees extends ReportEmployee {
 	protected HSSFWorkbook buildWorkbook(String filename) throws Exception {
 		// Create spreadsheet here
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet("Report OQ Employees");
+		HSSFSheet sheet = wb.createSheet(getText(getScope() + ".title"));
 		CreationHelper h = wb.getCreationHelper();
 
 		// Set header font and style

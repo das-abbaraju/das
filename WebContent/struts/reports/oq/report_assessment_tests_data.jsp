@@ -3,22 +3,22 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 	<div class="right">
-		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-			href="#" title="Download all <s:property value="report.allRows"/> results to a CSV file" onclick="download('ReportAssessmentTests'); return false;">Download</a></div>
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="#" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"><s:text name="global.Download" /></a></div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">
 		<thead>
 		<tr>
 			<th></th>
-			<th><a href="javascript:changeOrderBy('a.name,e.lastName,e.firstName');">Company</a></th>
-			<th><a href="javascript:changeOrderBy('e.lastName,e.firstName,a.name');">Employee</a></th>
-			<th><a href="javascript:changeOrderBy('centerName,test');">Assessment Center</a></th>
-			<th><a href="javascript:changeOrderBy('test,a.name,e.lastName,e.firstName');">Assessment Test</a></th>
-			<th>In Effect</th>
+			<th><a href="javascript:changeOrderBy('a.name,e.lastName,e.firstName');"><s:text name="global.Company" /></a></th>
+			<th><a href="javascript:changeOrderBy('e.lastName,e.firstName,a.name');"><s:text name="global.Employee" /></a></th>
+			<th><a href="javascript:changeOrderBy('centerName,test');"><s:text name="global.AssessmentCenter" /></a></th>
+			<th><a href="javascript:changeOrderBy('test,a.name,e.lastName,e.firstName');"><s:text name="AssessmentTest" /></a></th>
+			<th><s:text name="%{scope}.label.InEffect" /></th>
 		</tr>
 		</thead>
 		<tbody>

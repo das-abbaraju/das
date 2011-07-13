@@ -7,8 +7,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAssessmentTest extends ReportEmployee {
-	private String subHeading = "Assessment Test Report";
-	
 	@Override
 	public String execute() throws Exception {
 		loadPermissions();
@@ -26,6 +24,12 @@ public class ReportAssessmentTest extends ReportEmployee {
 		getFilter().setDestinationAction("ReportAssessmentTests");
 		
 		return super.execute();
+	}
+	
+	public String data() throws Exception {
+		execute();
+		
+		return "data";
 	}
 	
 	protected void buildQuery() {
@@ -52,12 +56,8 @@ public class ReportAssessmentTest extends ReportEmployee {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		
-		excelSheet.addColumn(new ExcelColumn("centerName", "Assessment Center"));
-		excelSheet.addColumn(new ExcelColumn("test", "Assessment Test"));
+		excelSheet.addColumn(new ExcelColumn("centerName", getText("global.AssessmentCenter")));
+		excelSheet.addColumn(new ExcelColumn("test", getText("AssessmentTest")));
 		excelSheet.addColumn(new ExcelColumn("inEffect", "In Effect"));
-	}
-	
-	public String getSubHeading() {
-		return subHeading;
 	}
 }

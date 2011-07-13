@@ -16,6 +16,13 @@ function orderBy(orderBy) {
 	$('#form1').submit();
 	return false;
 }
+
+$(function() {
+	$('a.excel').live('click', function(e) {
+		e.preventDefault;
+		download('ReportOQEmployees');
+	});
+});
 </script>
 </head>
 <body>
@@ -28,7 +35,7 @@ function orderBy(orderBy) {
 </s:if>
 <s:else>
 	<div class="right">
-		<a href="#" onclick="download('ReportOQEmployees'); return false;" target="_blank" class="excel"><s:text name="global.Download" /></a>
+		<a href="#" target="_blank" class="excel"><s:text name="global.Download" /></a>
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<s:if test="jobSiteTasks.keySet().size == 0">

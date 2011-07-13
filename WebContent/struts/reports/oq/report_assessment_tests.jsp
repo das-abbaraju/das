@@ -3,19 +3,26 @@
 <%@page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="subHeading" /></title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="../reportHeader.jsp" />
 <script type="text/javascript">
 function changeOrderBy(orderBy) {
 	$('#form1 input[name="orderBy"]').val(orderBy);
 	startThinking({ div: "report_data", type: "large" });
-	$('#report_data').load('ReportAssessmentTestsAjax.action?' + $('#form1').serialize());
+	$('#report_data').load('ReportAssessmentTests!data.action?' + $('#form1').serialize());
 }
+
+$(function() {
+	$('#report_data').delegate('a.excel', 'click', function(e) {
+		e.preventDefault();
+		download('ReportAssessmentTests');
+	});
+});
 </script>
 </head>
 <body>
 
-<h1><s:property value="subHeading" /></h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <s:include value="../filters_employee.jsp" />
 
