@@ -206,6 +206,7 @@ public class AuditBuilder {
 					if (cao.getStatus().ordinal() < maxStatus.ordinal()) {
 						// Bump this status up to maxStatus
 						ContractorAuditOperatorWorkflow caow = cao.changeStatus(maxStatus, null);
+						caow.setAuditColumns(new User(User.SYSTEM));
 						cao.getCaoWorkflow().add(caow);
 						contractorAuditOperatorDAO.save(cao);
 					}
