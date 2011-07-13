@@ -291,7 +291,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		if (otherCorporates == null) {
 			otherCorporates = operatorDao.findWhere(true,
 					"a.id NOT IN (" + Strings.implode(operator.getOperatorHeirarchy())
-							+ ") AND a.type = 'Corporate' AND a.id >= 14");
+							+ ") AND a.type = 'Corporate' AND a.id >= 8");
 		}
 
 		return otherCorporates;
