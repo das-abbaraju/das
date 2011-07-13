@@ -108,17 +108,20 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		Map<Integer, List<FlagData>> conFlags = new HashMap<Integer, List<FlagData>>();
 
 		for (BasicDynaBean f : flags) {
-			if (conFlags.get((Integer) f.get("conID")) == null)
-				conFlags.put((Integer) f.get("conID"), new ArrayList<FlagData>());
+			int conID = (Integer) f.get("conID");
+			
+			if (conFlags.get(conID) == null)
+				conFlags.put(conID, new ArrayList<FlagData>());
 
 			FlagData d = new FlagData();
 			d.setContractor(new ContractorAccount());
-			d.getContractor().setId((Integer) f.get("conID"));
+			d.getContractor().setId(conID);
 			d.setOperator(new OperatorAccount());
 			d.getOperator().setId((Integer) f.get("opID"));
 			d.setFlag(FlagColor.valueOf(f.get("flag").toString()));
+			d.setCriteria(flagCriteriaOperator.getCriteria());
 
-			conFlags.get((Integer) f.get("conID")).add(d);
+			conFlags.get(conID).add(d);
 		}
 
 		if (results.size() > 0) {

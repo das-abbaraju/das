@@ -5,7 +5,7 @@
 <table class="report" style="margin-left: 20px;">
 	<thead>
 		<tr>
-			<th colspan="<s:property value="affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2" />"><s:property value="flagCriteriaOperator.replaceHurdle"/></th>
+			<th colspan="<s:property value="2 + (affected.get(0).flagData.criteria.allowCustomValue ? 1 : 0)" />"><s:property value="flagCriteriaOperator.replaceHurdle"/></th>
 			<s:if test="override">
 				<th><s:text name="ManageFlagCriteriaOperator.header.ForcedFlag" /></th>
 			</s:if>
@@ -13,7 +13,7 @@
 	</thead>
 	<tbody>
 		<s:if test="affected.size() == 0">
-			<tr><td <s:property value="(affected.get(0).flagData.criteria.allowCustomValue ? 3 : 2) + (override ? 1 : 0)" />" class="center"><s:text name="ManageFlagCriteriaOperator.message.NoContractorsAffected" /></td></tr>
+			<tr><td colspan="<s:property value="2 + (affected.get(0).flagData.criteria.allowCustomValue ? 1 : 0) + (override ? 1 : 0)" />" class="center"><s:text name="ManageFlagCriteriaOperator.message.NoContractorsAffected" /></td></tr>
 		</s:if>
 		<s:else>
 			<s:iterator value="affected" status="stat" id="fdo">
