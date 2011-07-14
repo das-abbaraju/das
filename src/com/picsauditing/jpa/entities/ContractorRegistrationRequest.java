@@ -35,7 +35,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
-	private boolean future;
+	private Boolean future;
 	private String result;
 	private String reasonForDecline;
 	private Date deadline;
@@ -97,11 +97,11 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.handledBy = handledBy;
 	}
 
-	public boolean isOpen() {
+	public Boolean isOpen() {
 		return open;
 	}
 
-	public void setOpen(boolean open) {
+	public void setOpen(Boolean open) {
 		this.open = open;
 	}
 
