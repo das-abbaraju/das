@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -78,6 +79,7 @@ public class BillingCalculatorSingle {
 		boolean oq = false;
 		boolean hseCompetency = false;
 		boolean cor = false;
+		boolean importPQF = false;
 
 		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils
 				.getBean("AuditTypeRuleCache");
@@ -100,6 +102,13 @@ public class BillingCalculatorSingle {
 				hseCompetency = true;
 			if (auditType.getId() == AuditType.COR)
 				cor = true;
+		}
+
+		for (ContractorAudit ca : contractor.getAudits()) {
+			if (ca.getAuditType().getId() == AuditType.IMPORT_PQF && !ca.isExpired()) {
+				importPQF = true;
+				break;
+			}
 		}
 
 		for (ContractorOperator co : contractor.getOperators()) {
@@ -180,6 +189,15 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.BidOnly, feeDAO);
 			// Turn off ListOnly fee
 			contractor.clearNewFee(FeeClass.ListOnly, feeDAO);
+		}
+
+		if(contractor.getFees().containsKey(FeeClass.ImportFee)){
+			if (importPQF) {
+				InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, payingFacilities);
+				contractor.setNewFee(newLevel, newLevel.getAmount());
+			} else {
+				contractor.clearNewFee(FeeClass.ImportFee, feeDAO);
+			}
 		}
 
 	}

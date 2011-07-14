@@ -20,10 +20,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -76,6 +78,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
+	@Autowired
+	protected CountryDAO countryDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected Country country;
@@ -111,20 +117,20 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
-				country = getCountryDAO().find(countryIsos[0]);
+				country = countryDAO.find(countryIsos[0]);
 			
 			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get("billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
-				billingCountry = getCountryDAO().find(billingCountryIsos[0]);
+				billingCountry = countryDAO.find(billingCountryIsos[0]);
 
 			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
-				state = getStateDAO().find(stateIsos[0]);
+				state = stateDAO.find(stateIsos[0]);
 
 			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
 					"billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
-				billingState = getStateDAO().find(billingStateIsos[0]);
+				billingState = stateDAO.find(billingStateIsos[0]);
 		}
 	}
 
@@ -406,9 +412,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		if (hasFee)
-			addActionError("Contractor was all ready charged for the Import PQF");
+			addActionError("Contractor was aleady charged for the Import PQF");
 		if (hasAudit)
-			addActionError("Contractor was all ready has the Import PQF");
+			addActionError("Contractor was already has the Import PQF");
 
 		return SUCCESS;
 	}
