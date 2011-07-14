@@ -1,4 +1,3 @@
-// EmployeeID, Translation and JSON variables are set in manage_employees.jsp
 function startup() {
 	$('#employees').dataTable({
 		aoColumns: [
@@ -55,7 +54,7 @@ function startup() {
 	
 	$('#employeeFormDiv').delegate('#deleteEmployee', 'click', function(e) {
 		e.preventDefault();
-		return confirm(translation_confirmDelete);
+		return confirm(translate('JS.ManageEmployees.confirm.DeleteEmployee'));
 	});
 	
 	$('body').delegate('#addExcel', 'click', function(e) {
@@ -89,7 +88,7 @@ function setupDatepicker() {
 		showOn : 'button',
 		buttonImage : 'images/icon_calendar.gif',
 		buttonImageOnly : true,
-		buttonText : translation_chooseADate,
+		buttonText : translate('JS.ChooseADate'),
 		constrainInput : true,
 		showAnim : 'fadeIn'
 	});
@@ -107,7 +106,7 @@ function loadEmployee(id) {
 function addJobRole(id) {
 	startThinking({
 		div : 'thinking_roles',
-		message : translation_ajaxLoad
+		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	});
 	$('#employee_role').load('ManageEmployees!addRoleAjax.action', {
 		'employee' : employeeID,
@@ -122,7 +121,7 @@ function addJobSite(selection) {
 
 	startThinking({
 		div : 'employee_site',
-		message : translation_ajaxLoad
+		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	});
 	$('#employee_site').load('ManageEmployees!addSiteAjax.action', {
 		'employee' : employeeID,
@@ -134,12 +133,12 @@ function addJobSite(selection) {
 }
 
 function removeJobRole(id) {
-	var remove = confirm(translation_removeRole);
+	var remove = confirm(translate('JS.ManageEmployees.confirm.RemoveRole'));
 
 	if (remove) {
 		startThinking({
 			div : 'thinking_roles',
-			message : translation_ajaxLoad
+			message : translate('JS.ManageEmployees.message.AjaxLoad')
 		})
 		$('#employee_role').load('ManageEmployees!removeRoleAjax.action', {
 			'employee' : employeeID,
@@ -151,12 +150,12 @@ function removeJobRole(id) {
 }
 
 function removeJobSite(id) {
-	var remove = confirm(translation_removeProject);
+	var remove = confirm(translate('JS.ManageEmployees.confirm.RemoveProject'));
 
 	if (remove) {
 		startThinking({
 			div : 'thinking_sites',
-			message : translation_ajaxLoad
+			message : translate('JS.ManageEmployees.message.AjaxLoad')
 		});
 		$('#employee_site').load('ManageEmployees!removeSiteAjax.action', {
 			'employee' : employeeID,
@@ -173,7 +172,7 @@ function removeJobSite(id) {
 function newJobSite() {
 	startThinking({
 		div : 'thinking_sites',
-		message : translation_ajaxLoad
+		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	})
 	$('#employee_site').load('ManageEmployees!newSiteAjax.action?' + $('#newJobSiteForm input').serialize(), {
 		'employee' : employeeID
@@ -183,7 +182,7 @@ function newJobSite() {
 function editAssignedSites(id) {
 	startThinking({
 		div : 'thinking_sites',
-		message : translation_ajaxLoad
+		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	})
 	$('#employee_site').load(
 			'ManageEmployees!editSiteAjax.action?'
@@ -197,7 +196,7 @@ function editAssignedSites(id) {
 }
 function showUpload() {
 	url = 'EmployeePhotoUploadAjax.action?employeeID=' + employeeID;
-	title = translation_uploadPhoto;
+	title = translate('JS.ManageEmployees.message.UploadPhoto');
 	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
 	photoUpload = window.open(url, title, pars);
 	photoUpload.focus();
@@ -221,7 +220,7 @@ function getEmployeeIDFromHash() {
 
 function showNCCERUpload() {
 	url = 'EmployeeNCCERUpload.action?employee=' + employeeID;
-	title = translation_uploadEmployees;
+	title = translate('JS.ManageEmployees.message.UploadEmployees');
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=500,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url, title, pars);
 	fileUpload.focus();

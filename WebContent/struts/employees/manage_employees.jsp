@@ -33,14 +33,6 @@ var employeeID = <s:property value="employee == null ? 0 : employee.id"/>;
 var json_previousLocations = '<s:property value="previousLocationsJSON" escape="false"/>';
 var json_previousTitles = '<s:property value="previousTitlesJSON" escape="false"/>';
 
-var translation_ajaxLoad = '<s:text name="%{scope}.message.AjaxLoad" />';
-var translation_chooseADate = '<s:text name="javascript.ChooseADate" />';
-var translation_removeRole = '<s:text name="%{scope}.confirm.RemoveRole" />';
-var translation_removeProject = '<s:text name="%{scope}.confirm.RemoveProject" />';
-var translation_uploadPhoto = '<s:text name="%{scope}.message.UploadPhoto" />';
-var translation_uploadEmployees = '<s:text name="%{scope}.message.UploadEmployees" />';
-var translation_confirmDelete = '<s:text name="%{scope}.confirm.DeleteEmployee" />';
-
 $(function() {
 	startup();
 });
