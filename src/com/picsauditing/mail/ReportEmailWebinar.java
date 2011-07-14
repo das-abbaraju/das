@@ -8,9 +8,17 @@ public class ReportEmailWebinar extends ReportAccount {
 	public void prepare() throws Exception {
 		super.prepare();
 
-		getFilter().setShowContractor(true);
 		getFilter().setShowRegistrationDate(true);
 		getFilter().setAllowMailMerge(true);
+		
+		getFilter().setShowLicensedIn(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowTrade(false);
+		getFilter().setShowRiskLevel(false);
+		getFilter().setShowProductRiskLevel(false);
+		getFilter().setShowService(false);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowSoleProprietership(false);
 	}
 
 	public void buildQuery() {
