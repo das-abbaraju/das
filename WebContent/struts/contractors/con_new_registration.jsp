@@ -115,17 +115,12 @@ var chooseADate = '<s:text name="javascript.ChooseADate" />';
 
 $(function() {
 	$('#notesHere').hide();
-	
+	enableDisableReasonDeclined();
 	$('#phone').click(function() { 
         $.blockUI({ message: $('#phoneSubmit') }); 
  
-    	$('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
+        $('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
     }); 
-	$('#closeButton').click(function() { 
-       $.blockUI({ message: $('#closeRequest') }); 
- 
-		$('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
-    });
 	
 	<s:if test="newContractor.notes.length() > 0">
 		show = true;
@@ -331,6 +326,12 @@ function getMatches(requestID) {
 	$('#potentialMatches').show();
 	$('#potentialMatches').append('<img src="images/ajax_process.gif" style="border: none;" />');
 	$('#potentialMatches').load('RequestNewContractorAjax.action', data);
+}
+function enableDisableReasonDeclined() {
+	if ($('#result :selected').text() == "Unsuccessful")
+		$('#reasonForDecline').removeAttr("disabled");
+	else
+		$('#reasonForDecline').attr("disabled","disabled");
 }
 </script>
 </head>
@@ -634,34 +635,41 @@ function getMatches(requestID) {
 		</s:if>
 	</ol>
 	</fieldset>
-	<s:if test="newContractor.open">
+	<s:if test="newContractor.id > 0">
+	<fieldset class="form">
+		<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.header.CloseRequest" /></h2>
+		<ol>
+		<li>
+			<label><s:text name="ContractorRegistrationRequest.label.CloseRequest" />:</label>
+			<s:if test="permissions.admin">	
+				<s:select list="#{'Successful':'Successful','Unsuccessful':'Unsuccessful'}"	name="newContractor.result" id = "result" onchange="enableDisableReasonDeclined()"/>
+				<p><s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" /></p>
+			</s:if>
+			<s:else>
+				<p><s:property value="newContractor.result" /></p>
+				<p><s:property value="newContractor.reasonDeclined" /></p>
+			</s:else>
+			<div class = "fieldhelp">
+				<h3><s:text name="ContractorRegistrationRequest.label.CloseRequest" /></h3>	
+				<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
+			</div>	
+		</li>
+		</ol>
+		
+	</fieldset>
+	</s:if>
+	<s:if test="newContractor.status == 'Active' ||newContractor.status == 'Hold'">
 		<fieldset class="form submit"><s:submit
 			value="%{getText('button.Save')}" method="save"
 			cssClass="picsbutton positive" /> <s:if
 			test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-			<!-- <s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />-->
-			<input type="button" class="picsbutton negative" value="<s:text name="%{scope}.button.CloseRequest" />" id = "closeButton"/>
+			<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
 		</s:if> <s:elseif
 			test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
 			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}"
 				method="returnToOperator" cssClass="picsbutton" />
 		</s:elseif></fieldset>
 	</s:if>
-	<s:else>
-		<fieldset class="form">
-		<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.header.CloseRequest" /></h2>
-		<ol>
-		<li>
-			<label><s:text name="%{scope}.label.Result" />:</label>
-			<p><s:property value="newContractor.result" /></p>
-			<s:if test="newContractor.result == 'Unsuccessful'">
-				<label><s:text name="%{scope}.label.reasonForDecline" />:</label>
-				<p><s:property value="newContractor.reasonForDecline" /></p>
-			</s:if>
-		</li>
-		</ol>
-	</fieldset>
-	</s:else>
 </s:form>
 
 <div style="display: none" id="load"></div>
@@ -691,7 +699,6 @@ function getMatches(requestID) {
 	</div>
 	</div>
 </s:if>
-<s:if test="newContractor.id > 1">
 <div class="blockMsg" id="phoneSubmit" style="display: none">
 	<s:form>
 		<h3><s:text name = "%{scope}.button.ContactedByPhone" /></h3>
@@ -707,29 +714,6 @@ function getMatches(requestID) {
 	</s:form>
 </div>
 
-<div id="closeRequest" style="display: none">
-	<s:form>
-	<fieldset class="form">
-		<h2><s:text name="ContractorRegistrationRequest.header.CloseRequest" /></h2>
-		<ol>
-		<li>
-			<s:hidden name="requestID"/>	
-		</li>	
-		<li>
-			<label><s:text name = "%{scope}.label.reasonForDecline" /></label>
-			<s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" />
-			<div class = "fieldhelp">
-				<h3><s:text name="ContractorRegistrationRequest.label.CloseRequest" /></h3>	
-				<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
-			</div>
-		</li>	
-		<li>
-			<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
-		</li>
-		</ol>
-	</fieldset>
-	</s:form>
-</div>
-</s:if>
+
 </body>
 </html>
