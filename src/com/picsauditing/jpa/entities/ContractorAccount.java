@@ -268,7 +268,7 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setBillingState(State billingState) {
 		this.billingState = billingState;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "billingCountry")
 	public Country getBillingCountry() {
@@ -796,6 +796,7 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean foundAuditGUARDMembership = false;
 		boolean foundInsureGUARDMembership = false;
 		boolean foundEmployeeGUARDMembership = false;
+		boolean foundImportPQFFee = false;
 		/**
 		 * TRUE if we found the most recent membership activation/reactivation or renewal. We're not looking for
 		 * upgrades here.
@@ -892,6 +893,13 @@ public class ContractorAccount extends Account implements JSONable {
 							membershipDate = invoice.getCreationDate();
 						foundMembershipDate = true;
 					}
+					// Checking for ImportPQF fee and potentially others
+					if (!foundImportPQFFee && invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)
+							&& getFees().containsKey(FeeClass.ImportFee)) {
+						InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
+						foundImportPQFFee = true;
+						setCurrentFee(fee);
+					}
 				}
 
 				if (foundPaymentExpires) {
@@ -912,6 +920,8 @@ public class ContractorAccount extends Account implements JSONable {
 			clearCurrentFee(FeeClass.InsureGUARD, feeDAO);
 		if (!foundEmployeeGUARDMembership)
 			clearCurrentFee(FeeClass.EmployeeGUARD, feeDAO);
+		if (getFees().containsKey(FeeClass.ImportFee) && !foundImportPQFFee)
+			clearCurrentFee(FeeClass.ImportFee, feeDAO);
 		if (!foundPaymentExpires)
 			paymentExpires = creationDate;
 		if (!foundMembershipDate)

@@ -121,6 +121,7 @@ public class FacilityChanger {
 		setListOnly();
 
 		contractor.syncBalance();
+		BillingCalculatorSingle.calculateAnnualFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -169,6 +170,7 @@ public class FacilityChanger {
 					setListOnly();
 
 					contractor.syncBalance();
+					BillingCalculatorSingle.calculateAnnualFees(contractor);
 					contractorAccountDAO.save(contractor);
 					return true;
 				}
