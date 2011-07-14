@@ -71,20 +71,22 @@ public class TradeDAO extends PicsDAO {
 		if (terms.isEmpty())
 			return Tree.createTreeFromOrderedList(Collections.<Trade> emptyList());
 
-		String searchJoins = buildSearchJoins(terms);
+		StringBuilder joins = new StringBuilder().append(buildSearchJoins(terms, true));
+		StringBuilder wrapper = new StringBuilder().append("SELECT rt2.*, IF(rt2.id = t").append(terms.size())
+		.append(".id, 'true', 'false') matching FROM (").append(joins.toString()).append(") t")
+		.append(terms.size()).append(" JOIN ref_trade rt2 ON t").append(terms.size())
+		.append(".indexStart >= rt2.indexStart AND t").append(terms.size()).append(".indexEnd <= rt2.indexEnd")
+		.append(" GROUP BY rt2.id").append(" ORDER BY rt2.indexStart");
 
+
+		// core query
 		SelectSQL sql = new SelectSQL("app_index i0");
-		sql.addField("t2.*");
-		sql.addField("IF(t2.id = t1.id, 'true', 'false') matching");
-		sql.addJoin("JOIN ref_trade t1 ON t1.id = i0.foreignKey");
-		sql.addJoin("JOIN ref_trade t2 ON t1.indexStart >= t2.indexStart AND t1.indexEnd <= t2.indexEnd");
-		if (!searchJoins.isEmpty())
-			sql.addJoin(searchJoins);
-		sql.addWhere("i0.indexType = 'T' AND i0.value LIKE :0");
-		sql.addGroupBy("t2.id");
-		sql.addOrderBy("t2.indexStart");
+		sql.addField("t0.*");
+		sql.addJoin("JOIN ref_trade t0 ON t0.id = i0.foreignKey AND i0.indexType = 'T' AND i0.value LIKE :0");
 
-		Query query = em.createNativeQuery(sql.toString(), "matchingTradeResults");
+		// wrap core query with joins
+		String sqlString = wrapper.toString().replace("***APPEND***", sql.toString());
+		Query query = em.createNativeQuery(sqlString, "matchingTradeResults");
 
 		for (int i = 0; i < terms.size(); i++) {
 			query.setParameter("" + i, terms.get(i) + "%");
@@ -107,22 +109,23 @@ public class TradeDAO extends PicsDAO {
 		if (terms.isEmpty())
 			return Collections.<Trade> emptyList();
 
-		String searchJoins = buildSearchJoins(terms);
+		StringBuilder wrapper = new StringBuilder().append(buildSearchJoins(terms, false));
 
-		SelectSQL sql = new SelectSQL("ref_trade t1");
-		sql.addField("t1.*");
-		sql.addJoin("JOIN app_index i0 ON t1.id = i0.foreignKey");
-		if (!searchJoins.isEmpty())
-			sql.addJoin(searchJoins);
-		sql.addWhere("i0.indexType = 'T' AND i0.value LIKE :0");
-		String orderBy = "i0.weight";
+		// core query
+		SelectSQL sql = new SelectSQL("ref_trade t0");
+		sql.addField("i0.weight as i0weight, t0.*");
+		sql.addJoin("JOIN app_index i0 ON i0.indexType = 'T' and t0.id = i0.foreignKey AND i0.value LIKE :0");
+
+		String orderBy = "i0weight";
 		for (int i = 1; i < terms.size(); i++) {
-			orderBy += " + i" + i + ".weight";
+			orderBy += " + i" + i + "weight";
 		}
-		sql.addOrderBy(orderBy + " DESC");
-		sql.addOrderBy("t1.contractorCount DESC");
+		wrapper.append(" ORDER BY ").append(orderBy).append(" DESC").append(", contractorCount DESC");
 
-		Query query = em.createNativeQuery(sql.toString(), Trade.class);
+		// Merge core query into wrapper
+		String sqlString = wrapper.toString().replace("***APPEND***", sql.toString());
+
+		Query query = em.createNativeQuery(sqlString, Trade.class);
 
 		for (int i = 0; i < terms.size(); i++) {
 			query.setParameter("" + i, terms.get(i) + "%");
@@ -150,18 +153,31 @@ public class TradeDAO extends PicsDAO {
 
 	/**
 	 * Builds a String containing all the Joins for the app_index search
-	 *
+	 * 
 	 * @param terms
 	 * @return JOIN String to use in a query
 	 */
-	private String buildSearchJoins(List<String> terms) {
-		StringBuilder sb = new StringBuilder();
+	private String buildSearchJoins(List<String> terms, boolean hierarchical) {
+		StringBuilder sbSelects = new StringBuilder();
+		StringBuilder sbJoins = new StringBuilder();
 		for (int i = 1; i < terms.size(); i++) {
-			String alias = "i" + i;
-			sb.append("JOIN app_index ").append(alias).append(" ON i1.indexType = 'T' AND i0.foreignKey = ")
-					.append(alias).append(".foreignKey AND ").append(alias).append(".value LIKE :").append(i)
-					.append(" ");
+
+			String tableAlias = "t" + i;
+			String indexAlias = "i" + i;
+			sbJoins.append(") t").append(i).append(" JOIN app_index ").append(indexAlias).append(" ON ")
+					.append(indexAlias).append(".indexType = 'T' AND ").append(tableAlias).append(".id = ")
+					.append(indexAlias).append(".foreignKey AND ").append(indexAlias).append(".value LIKE :").append(i);
+			if (i != terms.size() || !hierarchical) {
+				String startString = sbSelects.toString();
+				sbSelects = new StringBuilder().append("SELECT ").append(tableAlias).append(".*");
+				if (!hierarchical) {
+					sbSelects.append(", ").append(indexAlias).append(".weight AS ").append(indexAlias)
+							.append("weight ");
+				}
+				sbSelects.append(" FROM (").append(startString);
+			}
 		}
-		return sb.toString();
+
+		return sbSelects.toString() + " ***APPEND*** " + sbJoins.toString();
 	}
 }
