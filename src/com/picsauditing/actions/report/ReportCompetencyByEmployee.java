@@ -1,7 +1,6 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
@@ -9,7 +8,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByEmployee extends ReportEmployee {
-
 	public ReportCompetencyByEmployee() {
 		orderByDefault = "a.name, e.lastName, e.firstName";
 	}
@@ -18,21 +16,17 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		SelectSQL sql2 = new SelectSQL("employee_competency ec");
-		sql2.addJoin("JOIN employee_role er ON er.employeeID = ec.employeeID AND ec.skilled = 1");
-		sql2.addJoin("JOIN job_role jr ON jr.id = er.jobRoleID AND jr.active = 1");
-		sql2.addField("ec.employeeID");
-		sql2.addField("ec.competencyID");
-
-		SelectSQL sql3 = new SelectSQL(String.format("(%s) c", sql2.toString()));
-		sql3.addField("c.employeeID");
-		sql3.addField("COUNT(*) skilled");
-		sql3.addGroupBy("c.employeeID");
-
-		sql.addJoin(String.format("LEFT JOIN (%s) ec ON ec.employeeID = e.id", sql3.toString()));
-		sql.addJoin("LEFT JOIN employee_role er ON er.employeeID = e.id");
-		sql.addJoin("LEFT JOIN job_role jr ON jr.accountID = a.id AND jr.id = er.jobRoleID AND jr.active = 1");
-		sql.addJoin("LEFT JOIN job_competency jc ON jc.jobRoleID = jr.id");
+		sql.addJoin("LEFT JOIN (SELECT er.employeeID, GROUP_CONCAT(jr.name ORDER BY jr.name SEPARATOR ', ') names "
+				+ "FROM employee_role er JOIN job_role jr ON jr.id = er.jobRoleID "
+				+ "GROUP BY er.employeeID) roles ON roles.employeeID = e.id");
+		sql.addJoin("LEFT JOIN (SELECT er.employeeID, COUNT(DISTINCT jc.competencyID) counts "
+				+ "FROM employee_role er JOIN job_competency jc ON jc.jobRoleID = er.jobRoleID "
+				+ "GROUP BY er.employeeID) required ON required.employeeID = e.id");
+		sql.addJoin("LEFT JOIN (SELECT ec.employeeID, COUNT(DISTINCT ec.competencyID) counts "
+				+ "FROM employee_competency ec JOIN employee_role er ON er.employeeID = ec.employeeID "
+				+ "JOIN job_competency jc ON jc.competencyID = ec.competencyID AND jc.jobRoleID = er.jobRoleID "
+				+ "JOIN job_role jr on jr.id = jc.jobRoleID AND er.jobRoleID and jr.active = 1 "
+				+ "GROUP BY ec.employeeID) skilled ON skilled.employeeID = e.id");
 
 		if (permissions.isOperator()) {
 			String accountStatus = "'Active'";
@@ -49,11 +43,11 @@ public class ReportCompetencyByEmployee extends ReportEmployee {
 					permissions.getAccountId()));
 			sql.addField("ISNULL(gcw.subID) notWorksFor");
 		}
-
-		sql.addField("GROUP_CONCAT(DISTINCT jr.name ORDER BY jr.name SEPARATOR ', ') roles");
-		sql.addField("IFNULL(ec.skilled, 0) skilled");
-		sql.addField("COUNT(DISTINCT jc.competencyID) required");
-		sql.addField("IFNULL(FLOOR((IFNULL(ec.skilled, 0)/COUNT(DISTINCT jc.competencyID)) * 100), 0) percent");
+		
+		sql.addField("roles.names roles");
+		sql.addField("IFNULL(skilled.counts, 0) skilled");
+		sql.addField("IFNULL(required.counts, 0) required");
+		sql.addField("ROUND((IFNULL(skilled.counts, 0) / IFNULL(required.counts, 1)) * 100) percent");
 
 		sql.addWhere("a.requiresCompetencyReview = 1");
 		if (permissions.isCorporate()) {
