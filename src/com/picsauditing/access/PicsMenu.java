@@ -432,8 +432,7 @@ public class PicsMenu {
 			subMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
-				subMenu.addChild(getText("DefineCompetencies.title"),
-						"DefineCompetencies.action?id=" + permissions.getAccountId());
+				subMenu.addChild(getText("DefineCompetencies.title"), "DefineCompetencies.action");
 
 			subMenu.addChild(getText("ReportCompetencyByAccount.title"), "ReportCompetencyByAccount.action");
 			subMenu.addChild(getText("ReportCompetencyByEmployee.title"), "ReportCompetencyByEmployee.action");
@@ -446,8 +445,7 @@ public class PicsMenu {
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
 				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action");
 			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild(getText("ManageProjects.title"),
-						"ManageProjects.action");
+				subMenu.addChild(getText("ManageProjects.title"), "ManageProjects.action");
 
 			subMenu.addChild(getText("ReportOQ.title"), "ReportOQ.action");
 			subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action");
