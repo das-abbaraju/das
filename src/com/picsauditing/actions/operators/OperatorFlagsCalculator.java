@@ -81,50 +81,50 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 		List<BasicDynaBean> results = getResults(flagCriteriaOperator, operator, db);
 
-		List<Integer> opIDs = new ArrayList<Integer>();
-		if (operator.isCorporate()) {
-			for (Facility f : operator.getOperatorFacilities()) {
-				opIDs.add(f.getId());
-			}
-		}
-
-		opIDs.add(operator.getId());
-
-		List<Integer> conIDs = new ArrayList<Integer>();
-		for (BasicDynaBean d : results) {
-			conIDs.add((Integer) d.get("conID"));
-		}
-
-		SelectSQL sql = new SelectSQL("flag_data f");
-		sql.addWhere(String.format("f.opID IN (%s)", Strings.implode(opIDs)));
-		sql.addWhere(String.format("f.conID IN (%s)", Strings.implode(conIDs)));
-		sql.addWhere(String.format("f.criteriaID = %d", flagCriteriaOperator.getCriteria().getId()));
-
-		sql.addField("f.conID");
-		sql.addField("f.opID");
-		sql.addField("f.flag");
-
-		List<BasicDynaBean> flags = db.select(sql.toString(), false);
-		Map<Integer, List<FlagData>> conFlags = new HashMap<Integer, List<FlagData>>();
-
-		for (BasicDynaBean f : flags) {
-			int conID = (Integer) f.get("conID");
-			
-			if (conFlags.get(conID) == null)
-				conFlags.put(conID, new ArrayList<FlagData>());
-
-			FlagData d = new FlagData();
-			d.setContractor(new ContractorAccount());
-			d.getContractor().setId(conID);
-			d.setOperator(new OperatorAccount());
-			d.getOperator().setId((Integer) f.get("opID"));
-			d.setFlag(FlagColor.valueOf(f.get("flag").toString()));
-			d.setCriteria(flagCriteriaOperator.getCriteria());
-
-			conFlags.get(conID).add(d);
-		}
-
 		if (results.size() > 0) {
+			List<Integer> opIDs = new ArrayList<Integer>();
+			if (operator.isCorporate()) {
+				for (Facility f : operator.getOperatorFacilities()) {
+					opIDs.add(f.getId());
+				}
+			}
+
+			opIDs.add(operator.getId());
+
+			List<Integer> conIDs = new ArrayList<Integer>();
+			for (BasicDynaBean d : results) {
+				conIDs.add((Integer) d.get("conID"));
+			}
+
+			SelectSQL sql = new SelectSQL("flag_data f");
+			sql.addWhere(String.format("f.opID IN (%s)", Strings.implode(opIDs)));
+			sql.addWhere(String.format("f.conID IN (%s)", Strings.implode(conIDs)));
+			sql.addWhere(String.format("f.criteriaID = %d", flagCriteriaOperator.getCriteria().getId()));
+
+			sql.addField("f.conID");
+			sql.addField("f.opID");
+			sql.addField("f.flag");
+
+			List<BasicDynaBean> flags = db.select(sql.toString(), false);
+			Map<Integer, List<FlagData>> conFlags = new HashMap<Integer, List<FlagData>>();
+
+			for (BasicDynaBean f : flags) {
+				int conID = (Integer) f.get("conID");
+
+				if (conFlags.get(conID) == null)
+					conFlags.put(conID, new ArrayList<FlagData>());
+
+				FlagData d = new FlagData();
+				d.setContractor(new ContractorAccount());
+				d.getContractor().setId(conID);
+				d.setOperator(new OperatorAccount());
+				d.getOperator().setId((Integer) f.get("opID"));
+				d.setFlag(FlagColor.valueOf(f.get("flag").toString()));
+				d.setCriteria(flagCriteriaOperator.getCriteria());
+
+				conFlags.get(conID).add(d);
+			}
+			
 			Map<Integer, List<ContractorAudit>> auditMap = buildAuditMap(results, flagCriteriaOperator, operator,
 					permissions, db);
 
