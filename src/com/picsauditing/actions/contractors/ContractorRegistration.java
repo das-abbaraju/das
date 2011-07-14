@@ -236,7 +236,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			ContractorRegistrationRequest crr = requestDAO.find(requestID);
 			crr.setContractor(contractor);
 			crr.setMatchCount(1);
-			crr.setOpen(false);
 			crr.setAuditColumns();
 			crr.setHandledBy(WaitingOn.Operator);
 			crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
