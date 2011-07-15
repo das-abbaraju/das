@@ -222,10 +222,11 @@
 				headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
 		</div>
 	</s:if>
-
+	
 	<s:if test="filter.showWaitingOn">
 		<div class="filterOption">
-			<s:select list="filter.waitingOnList" headerKey="" headerValue="- Waiting On -" cssClass="forms" name="filter.waitingOn" />
+			<s:select list="filter.waitingOnList" headerKey="" headerValue="- %{getText('global.WaitingOn')} -" cssClass="forms" 
+				name="filter.waitingOn" />
 		</div>
 	</s:if>
 
@@ -558,11 +559,11 @@
 				headerValue="- %{getText('Filters.header.OSHAType')} -" />
 		</div>
 	</s:if>
-
+	
 	<s:if test="filter.showShaLocation">
 		<div class="filterOption">
 			<s:select list="#{'Corporate':getText('global.Corporate'), 'Division':getText('Filters.status.Division'),'Region':getText('Filters.status.Region'),'Site':getText('Filters.status.Site')}"
-				headerKey="" headerValue="- Osha Location -" cssClass="forms" name="filter.shaLocation" />
+				headerKey="" headerValue="- %{getText('Filters.header.OshaLocation')} -" cssClass="forms" name="filter.shaLocation" />
 		</div>
 	</s:if>
 
@@ -603,7 +604,7 @@
 	<s:if test="filter.showScoreRange">
 		<br clear="all" />
 		<div class="filterOption">
-			<a href="#" class="filterbox">Score</a> =
+			<a href="#" class="filterbox"><s:text name="Audit.message.Score" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield name="filter.scoreMin" cssClass="forms" size="12"  />
@@ -662,7 +663,7 @@
 	<s:if test="filter.showEmailTemplate">
 		<br clear="all" />
 		<div class="filterOption">
-			<s:select list="filter.emailTemplateList" headerKey="0" headerValue="-Email Template-" cssClass="forms"
+			<s:select list="filter.emailTemplateList" headerKey="0" headerValue="- %{getText('EmailTemplate')} -" cssClass="forms"
 				name="filter.emailTemplate" listKey="id" listValue="templateName" />
 		</div>
 		<div class="filterOption">
@@ -701,7 +702,8 @@
 			<a href="#" class="filterBox"><s:text name="Filters.label.FollowUpDate" /></a>
 			<span class="q_status">= <s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
-				<s:text name="Filters.label.Before" />: <s:textfield cssClass="forms datepicker" size="10" name="filter.followUpDate" />
+				<s:text name="Filters.label.Before" />: <s:textfield cssClass="forms datepicker" size="10" 
+					name="filter.followUpDate" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -713,7 +715,8 @@
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate1" name="filter.creationDate1" />
-				<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate2" name="filter.creationDate2" />
+				<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" 
+					id="form1_creationDate2" name="filter.creationDate2" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
