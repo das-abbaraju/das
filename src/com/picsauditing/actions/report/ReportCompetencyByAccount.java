@@ -1,7 +1,29 @@
 package com.picsauditing.actions.report;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.picsauditing.PICS.FacilityChanger;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.Strings;
@@ -9,8 +31,80 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportEmployee {
+	@Autowired
+	protected AuditBuilder auditBuilder;
+	@Autowired
+	protected AuditDataDAO auditDataDAO;
+	@Autowired
+	protected AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	protected FacilityChanger facilityChanger;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
+
+	protected OperatorAccount operator;
+	protected ContractorAccount contractor;
+
 	public ReportCompetencyByAccount() {
 		orderByDefault = "name";
+	}
+
+	@RequiredPermission(value = OpPerms.AddContractors)
+	public String add() throws Exception {
+		try {
+			facilityChanger.setPermissions(permissions);
+			facilityChanger.setContractor(contractor);
+			facilityChanger.setOperator(operator);
+			facilityChanger.add();
+			addActionMessage(getText(String.format("%s.message.SuccessfullyAddedContractor", getScope()), new Object[] {
+					(Integer) contractor.getId(), contractor.getName() }));
+
+			if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
+				contractor.setAcceptsBids(false);
+				contractor.setRenew(true);
+
+				auditBuilder.buildAudits(contractor);
+
+				for (ContractorAudit cAudit : contractor.getAudits()) {
+					if (cAudit.getAuditType().isPqf()) {
+						for (ContractorAuditOperator cao : cAudit.getOperators()) {
+							if (cao.getStatus().after(AuditStatus.Pending)) {
+								cao.changeStatus(AuditStatus.Pending, permissions);
+								auditDataDAO.save(cao);
+							}
+						}
+
+						auditBuilder.recalculateCategories(cAudit);
+						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+						auditPercentCalculator.percentCalculateComplete(cAudit);
+						auditDataDAO.save(cAudit);
+					}
+				}
+
+				contractor.incrementRecalculation();
+				contractor.setAuditColumns(permissions);
+				contractorAccountDAO.save(contractor);
+
+				// Sending a Email to the contractor for upgrade
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setTemplate(73); // Trial Contractor
+				// Account Approval
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+				emailBuilder.addToken("permissions", permissions);
+				EmailQueue emailQueue = emailBuilder.build();
+				emailQueue.setPriority(60);
+				emailQueue.setFromAddress("billing@picsauditing.com");
+				emailQueue.setViewableById(Account.PicsID);
+				EmailSender.send(emailQueue);
+			}
+		} catch (Exception e) {
+			addActionError(e.getMessage());
+		}
+
+		return redirect("ReportCompetencyByAccount.action");
 	}
 
 	@Override
@@ -26,15 +120,23 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			if (permissions.getAccountStatus().isDemo())
 				accountStatus += ", 'Demo'";
 
-			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND (gc.genID IN "
-					+ "(SELECT f.opID FROM facilities f JOIN facilities c ON c.corporateID = f.corporateID "
-					+ "AND c.corporateID NOT IN (%s) AND c.opID = %d) OR gc.genID = %2$d)",
-					Strings.implode(Account.PICS_CORPORATE), permissions.getAccountId()));
+			if (operator == null)
+				operator = operatorAccountDAO.find(permissions.getAccountId());
+
+			Set<Integer> opIDs = new HashSet<Integer>();
+			opIDs.add(operator.getId());
+
+			for (Facility f : operator.getParent().getOperatorFacilities()) {
+				opIDs.add(f.getOperator().getId());
+			}
+
+			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)",
+					Strings.implode(opIDs)));
 			sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
 			sql.addJoin(String.format(
 					"LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",
 					permissions.getAccountId()));
-			sql.addField("ISNULL(gcw.subID) notWorksFor");
+			sql.addField("CASE ISNULL(gcw.subID) WHEN 0 THEN 1 ELSE 0 END worksFor");
 		}
 
 		sql.addField("COUNT(distinct e.id) eCount");
@@ -69,11 +171,24 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	}
 
 	private String buildAuditJoin(int auditTypeID) {
+		Set<Integer> opIDs = new HashSet<Integer>();
+		opIDs.add(permissions.getAccountId());
+		if (permissions.isOperator()) {
+			if (operator == null)
+				operator = operatorAccountDAO.find(permissions.getAccountId());
+
+			for (Facility f : operator.getParent().getOperatorFacilities()) {
+				opIDs.add(f.getOperator().getId());
+			}
+		}
+
 		SelectSQL sql2 = new SelectSQL("contractor_audit ca");
 		String dateFormat = "DATE_FORMAT(cao.statusChangedDate, '%c/%e/%Y')";
 		// Joins
 		sql2.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
-		sql2.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id");
+		// TODO Assuming here that the CAO operator is always PICS Global
+		sql2.addJoin(String.format("JOIN contractor_audit_operator_permission caop "
+				+ "ON caop.caoID = cao.id AND caop.opID IN (%s)", Strings.implode(opIDs)));
 		// Fields
 		sql2.addField("ca.id");
 		sql2.addField("ca.conID");
@@ -86,12 +201,27 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		// Order bys
 		sql2.addOrderBy("ca.creationDate DESC");
 
-		return String.format("LEFT JOIN (%1$s) ca%2$d ON ca%2$d.conID = a.id AND ca%2$d.opID = %3$d", sql2.toString(),
-				auditTypeID, permissions.getAccountId());
+		return String.format("LEFT JOIN (%1$s) ca%2$d ON ca%2$d.conID = a.id", sql2.toString(), auditTypeID);
 	}
 
 	private String buildAuditField(int auditTypeID) {
 		return String.format("ca%1$d.id ca%1$dID, ca%1$d.status ca%1$dstatus, ca%1$d.changedDate ca%1$ddate",
 				auditTypeID);
+	}
+
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
 	}
 }
