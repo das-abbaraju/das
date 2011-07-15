@@ -38,9 +38,9 @@ function updateExpDate() {
 </script>
 </head>
 <body>
-<s:include value="conRegistrationHeader.jsp"></s:include>
+<s:include value="conRegistrationHeader.jsp" />
+<s:include value="../actionMessages.jsp" />
 <%-- All criteria are satisfied after contractor has entered CC info --%>
-
 <s:if test="contractor.operators.size == 0">
 	<div class="alert">
 		You have not selected any facilities. No operators will be able to view your account until you do. 
@@ -76,6 +76,7 @@ function updateExpDate() {
 	<s:hidden name="id" />
 <fieldset class="form">
 <h2 class="formLegend">Membership Details</h2>
+<div id="name_status"></div>
 <ol>
 <s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
 	<li>
@@ -89,7 +90,8 @@ function updateExpDate() {
 			<div id="watchtip">
 				<s:text name="%{scope}.ConsortiumMember.cluetip" />
 			</div>
-			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" />
+			<s:hidden name="button" value="Import my Data" />
+			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" onclick="$(this).attr('disabled', true); $('#save').submit();	startThinking({div:'thinking', message: translate('JS.ContractorPaymentOptions.ImportingPQF')});"/><span id="thinking"></span>
 		</div>
 	</li>
 </s:if>
@@ -152,15 +154,18 @@ function updateExpDate() {
 			<s:if test="contractor.accountLevel.full">
 				<li><label><s:property value="activationFee.fee"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
+			<s:if test="importFee.amount > 0">
+				<li><label><s:property value="importFee.fee"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="importFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+			</s:if>
 			<s:if test="eligibleForSuncorDiscount">
 				<li><label>Suncor Early Registration Discount:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
 			<s:if test="contractor.currencyCode.canada">
 				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 		</s:else>
 	</s:else>

@@ -28,6 +28,9 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport {
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+
 	private String response_code = null;
 	private String orderid = "";
 	private String amount = "";
@@ -44,12 +47,11 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private String key_id;
 	private String company;
 	private CreditCard cc;
-	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
+	private boolean newRegistration = false;
 
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
-	private InvoiceFee importFee;
+	private InvoiceFee importFee = new InvoiceFee();
 	private InvoiceFee suncorDiscount = new InvoiceFee();
 
 	// Any time we do a get w/o an exception we set the communication status.
@@ -80,9 +82,17 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-		if (permissions.isContractor() && contractor.getCompetitorMembership() != null
-				&& contractor.getCompetitorMembership()) {
-			importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+
+		if (newRegistration) {
+			addActionMessage("ImportPQF created.\nAfter completing registration please look under the PQF tab on "
+					+ "your dashboard and find the ImportPQF Audit.\nIn the ImportPQF you can upload a PDF of "
+					+ "your competitor audit. If you need help with this process please contact one of our "
+					+ "customer support professionals at (800) 506-PICS.");
+		}
+
+		if (contractor.getFees().containsKey(FeeClass.ImportFee)
+				&& contractor.getFees().get(FeeClass.ImportFee).isUpgrade()) {
+			importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 		}
 
 		// The payment method has changed.
@@ -131,8 +141,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
 				}
 			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-						contractor.getPayingFacilities());
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
+						.getPayingFacilities());
 		}
 
 		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
@@ -419,6 +429,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public CreditCard getCc() {
 		return cc;
+	}
+
+	public void setNewRegistration(boolean newRegistration) {
+		this.newRegistration = newRegistration;
+	}
+
+	public boolean isNewRegistration() {
+		return newRegistration;
 	}
 
 	public InvoiceFee getActivationFee() {

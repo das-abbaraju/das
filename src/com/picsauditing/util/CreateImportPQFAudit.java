@@ -174,7 +174,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			}
 		}
 
-		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url);
+		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url+"?newRegistration=true");
 		return BLANK;
 	}
 
