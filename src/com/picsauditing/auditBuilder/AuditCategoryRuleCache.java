@@ -39,7 +39,7 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 	public void initialize(AuditDecisionTableDAO dao) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(dao.findCategoryRules());
+			initialize(dao.findAllRules(AuditCategoryRule.class));
 			long endTime = System.currentTimeMillis();
 			System.out.println("Filled AuditCategoryRuleCache in " + (endTime - startTime) + "ms");
 		}

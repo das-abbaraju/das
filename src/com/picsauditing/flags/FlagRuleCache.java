@@ -98,7 +98,7 @@ public class FlagRuleCache {
 	public void initialize(AuditDecisionTableDAO dao) {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(dao.findAll(FlagCriteriaRule.class));
+			initialize(dao.findAllRules(FlagCriteriaRule.class));
 			long endTime = System.currentTimeMillis();
 			System.out.println("Filled FlagRuleCache in " + (endTime - startTime) + "ms");
 		}

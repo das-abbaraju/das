@@ -1,5 +1,7 @@
 package com.picsauditing.actions.flags;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -9,21 +11,17 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")
 public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
+	@Autowired
+	private ContractorOperatorDAO contractorOperatorDao;
+	@Autowired
+	private UserDAO userDao;
+	@Autowired
+	private ContractorAccountDAO contractorAccountDao;
 
 	private int id = 0;
 	private int priority;
 	private String eta;
-	private ContractorOperatorDAO contractorOperatorDao;
-	private UserDAO userDao;
-	private ContractorAccountDAO contractorAccountDao;
 	private ContractorOperator co;
-
-	public ContractorFlagChangesAddDetails(UserDAO userDao, ContractorOperatorDAO contractorOperatorDao,
-			ContractorAccountDAO contractorAccountDao) {
-		this.contractorOperatorDao = contractorOperatorDao;
-		this.userDao = userDao;
-		this.contractorAccountDao = contractorAccountDao;
-	}
 
 	@Override
 	public String execute() throws Exception {
@@ -42,7 +40,7 @@ public class ContractorFlagChangesAddDetails extends ContractorActionSupport {
 			long lastRunTime = lastRun.getLastRecalculation().getTime();
 			long oldestRunTime = oldestRun.getLastRecalculation().getTime();
 
-			double time = (lastRunTime - oldestRunTime) / 3600000;
+			double time = (lastRunTime - oldestRunTime) / 60 * 60 * 1000;
 
 			eta = time + " hours";
 		} else

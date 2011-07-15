@@ -27,19 +27,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AuditDecisionTableDAO extends PicsDAO {
 
-	public List<AuditCategoryRule> findCategoryRules() {
-		Query query = em
-				.createQuery("FROM AuditCategoryRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
-		return query.getResultList();
-	}
-
-	public List<AuditTypeRule> findAuditTypeRules() {
-		Query query = em
-				.createQuery("FROM AuditTypeRule WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
-		return query.getResultList();
-	}
-
-	public List<? extends BaseDecisionTreeRule> findAll(Class clazz) {
+	public <T extends BaseDecisionTreeRule> List<T> findAllRules(Class<T> clazz) {
 		Query query = em.createQuery("FROM " + clazz.getName()
 				+ " WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
 		return query.getResultList();

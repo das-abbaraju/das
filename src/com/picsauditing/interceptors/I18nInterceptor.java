@@ -22,7 +22,7 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 
 		String result;
 
-		Permissions permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		Permissions permissions = (Permissions) invocation.getInvocationContext().getSession().get("permissions");
 
 		Locale paramLocale = getLocaleFromParams(invocation);
 		Locale cookieLocale = getLocaleFromCookie();

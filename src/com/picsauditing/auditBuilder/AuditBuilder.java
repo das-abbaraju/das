@@ -48,7 +48,7 @@ public class AuditBuilder {
 	private AuditCategoryRuleCache categoryRuleCache;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-	
+
 	private User systemUser = new User(User.SYSTEM);
 
 	public void buildAudits(ContractorAccount contractor) {
@@ -199,11 +199,11 @@ public class AuditBuilder {
 				maxStatus = AuditStatus.Submitted;
 			if (conAudit.hasCaoStatus(AuditStatus.Complete))
 				maxStatus = AuditStatus.Complete;
-			
+
 			if (maxStatus != null) {
 				// Make sure all statuses are at least maxStatus
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getStatus().ordinal() < maxStatus.ordinal()) {
+					if (cao.getStatus().before(maxStatus)) {
 						// Bump this status up to maxStatus
 						ContractorAuditOperatorWorkflow caow = cao.changeStatus(maxStatus, null);
 						caow.setAuditColumns(new User(User.SYSTEM));
@@ -274,13 +274,14 @@ public class AuditBuilder {
 		}
 
 		boolean hasPendingCaos = auditHasPendingCaos(conAudit);
-		
+
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
 				if (!hasPendingCaos || auditCatData.isOverride()) {
-					/* Lock the audit category down...keeping it as it was
-					 * this is to ensure that we don't add new categories or remove the existing ones except the
-					 * override categories for an audit after is it being submitted
+					/*
+					 * Lock the audit category down...keeping it as it was this is to ensure that we don't add new
+					 * categories or remove the existing ones except the override categories for an audit after is it
+					 * being submitted
 					 */
 					if (auditCatData.isApplies())
 						categoriesNeeded.add(auditCatData.getCategory());
@@ -314,9 +315,9 @@ public class AuditBuilder {
 		}
 
 		// do for audits updated with last minute for "new" audits
-        if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
-    		auditPercentCalculator.percentCalculateComplete(conAudit, true);        	
-        }
+		if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
+			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+		}
 	}
 
 	/**
