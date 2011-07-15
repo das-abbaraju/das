@@ -43,6 +43,9 @@ function loadFiltersCallback() {
 }
 
 $(function() {
+	$('#search').delegate('#showSearch', 'click', function(e) {
+		showSearch();
+	})
 	
 	loadFiltersCallback();
 	
@@ -88,7 +91,7 @@ $(function() {
 			status_text += $(this).text();
 		});
 		if(status_text=='')
-			status_text = 'ALL';
+			status_text = translate('JS.Filters.status.All');
 
 		$(this).closest('.filterOption').find('.q_status').text(status_text);
 	});
@@ -109,7 +112,7 @@ $(function() {
 			queryText = 'before '+ text2.val();
 		}
 		if(status_text=='')
-			status_text = 'ALL';
+			status_text = translate('JS.Filters.status.All');
 
 		$(this).closest('.filterOption').find('.q_status').text(status_text);
 	});

@@ -122,7 +122,7 @@ function updateQuery(name) {
 	});
 	
 	if (queryText == '') {
-		queryText = 'ALL';
+		queryText = translate('JS.Filters.status.All');
 	}
 	result.text(queryText);
 }
@@ -145,7 +145,7 @@ function textQuery(name) {
 	}
 	
 	if (queryText == '') {
-		queryText = '= ALL';
+		queryText = '= ' + translate('JS.Filters.status.All');
 	}
 	result.html(queryText);
 }
