@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportContractorAuditOperator {
@@ -38,8 +39,8 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 
 			sql.addJoin("LEFT JOIN (SELECT d.auditID, d.answer FROM pqfdata d "
 					+ "JOIN audit_question aq ON aq.id = d.questionID AND aq.questionType = 'FileCertificate' "
-					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID = "
-					+ permissions.getAccountId()
+					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID IN "
+					+ "(" + Strings.implode(permissions.getVisibleAccounts()) + ")"
 					+ " JOIN audit_type atype ON atype.id = acr.auditTypeID AND atype.classType = 'Policy'"
 					+ ") d ON d.auditID = ca.id");
 		}
