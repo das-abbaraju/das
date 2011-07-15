@@ -112,7 +112,7 @@ public class PicsMenu {
 			}
 			return menu;
 		}
-
+		
 		if (permissions.isAssessment()) {
 			subMenu = menu.addChild("Management");
 			subMenu.addChild("Imported Data", "ManageImportData.action");
@@ -128,6 +128,11 @@ public class PicsMenu {
 
 			addSupportLink(menu);
 			return menu;
+		}
+		
+		if (permissions.hasPermission(OpPerms.ImportPQF)) {
+			subMenu = menu.addChild(getTitle("ReportImportPQFs"));
+			subMenu.addChild(getTitle("ReportImportPQFs"), "ReportImportPQFs.action");
 		}
 
 		subMenu = menu.addChild(getText("global.Contractors"));

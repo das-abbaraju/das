@@ -43,7 +43,7 @@ public class PermissionToViewContractor {
 			return permissions.getAccountId() == this.id;
 		}
 
-		if (limitedView)
+		if (limitedView || permissions.hasPermission(OpPerms.ImportPQF))
 			// Basically, if all we're doing is searching for contractors
 			// and looking at their summary page, then it's OK
 			return true;

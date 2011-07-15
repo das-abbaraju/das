@@ -1104,6 +1104,11 @@
 			class="com.picsauditing.actions.report.ReportCsrContractorCount">
 			<result>struts/reports/csr_contractor_count_data.jsp</result>
 		</action>
+		
+		<action name="ReportImportPQFs"
+			class="com.picsauditing.actions.report.ReportImportPQFs">
+			<result>struts/reports/report_import_pqf.jsp</result>
+		</action>
 
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
