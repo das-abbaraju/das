@@ -80,9 +80,8 @@ public class FlagDataCalculator {
 						data.setAuditColumns(new User(User.SYSTEM));
 
 						/*
-						 * This logic is intended, if the critera is an AU then
-						 * we only add if the account is full and not a sole
-						 * proprietor
+						 * This logic is intended, if the critera is an AU then we only add if the account is full and
+						 * not a sole proprietor
 						 */
 						if (data.getCriteria().getAuditType() != null
 								&& !data.getCriteria().getAuditType().isAnnualAddendum()
@@ -153,34 +152,39 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : con.getAudits()) {
-					boolean hasFlaggedAudit = false;
 					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
 						hasAnnualUpdate = true;
+						boolean auditIsGood = false;
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							if (!hasFlaggedAudit && cao.hasCaop(getOperator().getId())) {
-								if (!cao.getStatus().before(criteria.getRequiredStatus())
-										|| cao.getStatus().isResubmit())
-									hasFlaggedAudit = true;
-								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
-									hasFlaggedAudit = true;
+							if (!auditIsGood && cao.hasCaop(getOperator().getId())) {
+								if (!cao.getStatus().before(criteria.getRequiredStatus()))
+									auditIsGood = true;
+								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
+									/*
+									 * I don't think Bid-only contractors are going to get AUs anymore So this may not
+									 * be needed in the future See above, this line will never get run. When we do our
+									 * rewrite, let's remove this section
+									 */
+									auditIsGood = true;
+								}
 							}
 						}
 						if (!worksForOperator) {
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete))
-								hasFlaggedAudit = true;
+								auditIsGood = true;
 						}
 
-						if (hasFlaggedAudit)
+						if (auditIsGood)
 							count++;
 					}
 				}
 
-				// Return true if they have less than 3 only if they have an
-				// annual update
-				boolean result = false;
-				if (count < 3)
-					result = hasAnnualUpdate;
-				return result;
+				if (!hasAnnualUpdate)
+					// There aren't any AUs, so it must not be required
+					return null;
+
+				// Return true if they are missing one of their AUs
+				return (count < 3);
 			} else if ("number".equals(criteria.getDataType()) && criteria.getAuditType().isScoreable()) {
 				// Check for Audits with scoring
 				ContractorAudit scoredAudit = null;
@@ -224,12 +228,8 @@ public class FlagDataCalculator {
 								return false;
 						}
 						for (ContractorAuditOperator cao : ca.getOperators()) {
-							// TODO Make sure we identify the right operator
-							// or corporate here
 							if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
-								if (cao.getStatus().isResubmit())
-									return false;
-								else if (!cao.getStatus().before(criteria.getRequiredStatus()))
+								if (!cao.getStatus().before(criteria.getRequiredStatus()))
 									return false;
 								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
 									return false;

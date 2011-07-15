@@ -126,8 +126,6 @@ public enum AuditStatus implements Translatable {
 	public boolean isResubmit() {
 		if(this.equals(Resubmit))
 			return true;
-		if(this.equals(Resubmitted))
-			return true;
 		return false;
 	}
 	
