@@ -40,9 +40,6 @@ insert into invoice_fee
 	41
 	);
 
--- PICS-2858
-update invoice_fee f set f.fee = 'Goods & Services Tax (GST#84887 4913)' where f.id = 200;
-	
 -- PICS-2287
 insert into app_translation 
 	(msgKey, 
