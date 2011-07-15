@@ -344,7 +344,6 @@ public class BillingCalculatorSingle {
 			InvoiceItem invoiceItem = new InvoiceItem();
 			invoiceItem.setInvoiceFee(gst);
 			invoiceItem.setAmount(gst.getGSTSurchage(total));
-			invoiceItem.setDescription("5% Goods & Services Tax");
 			items.add(invoiceItem);
 		}
 
