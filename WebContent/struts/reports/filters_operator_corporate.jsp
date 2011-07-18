@@ -14,7 +14,7 @@
 		<div>
 			<button id="searchfilter" type="submit" name="button" value="Search"
 				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
-				class="picsbutton positive">Search</button>
+				class="picsbutton positive"><s:text name="button.Search" /></button>
 		</div>
 		
 		<s:if test="filter.showAccountName">
@@ -24,42 +24,42 @@
 	
 		<s:if test="filter.showStatus">
 			<div class="filterOption"><a href="#"
-				onclick="toggleBox('form1_status'); return false;">Status</a> = <span
-				id="form1_status_query">ALL</span><br /><span id="form1_status_select"
+				onclick="toggleBox('form1_status'); return false;"><s:text name="global.Status" /></a> = <span
+				id="form1_status_query"><s:text name="JS.Filters.status.All" /></span><br /><span id="form1_status_select"
 				style="display: none" class="clearLink"><s:select
 				list="filter.statusList" multiple="true" cssClass="forms"
 				name="filter.status" id="form1_status" /><br />
 			<script type="text/javascript">updateQuery('form1_status');</script> <a
 				class="clearLink" href="#"
-				onclick="clearSelected('form1_status'); return false;">Clear</a> </span></div>
+				onclick="clearSelected('form1_status'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>
 		</s:if>
 		
 		<s:if test="filter.showType">
 			<div class="filterOption"><a href="#"
-				onclick="toggleBox('form1_type'); return false;">Type</a> = <span
-				id="form1_type_query">ALL</span><br /><span id="form1_type_select"
+				onclick="toggleBox('form1_type'); return false;"><s:text name="global.Type" /></a> = <span
+				id="form1_type_query"><s:text name="JS.Filters.status.All" /></span><br /><span id="form1_type_select"
 				style="display: none" class="clearLink"><s:select
 				list="filter.typeList" multiple="true" cssClass="forms"
 				name="filter.type" id="form1_type" /><br />
 			<script type="text/javascript">updateQuery('form1_type');</script> <a
 				class="clearLink" href="#"
-				onclick="clearSelected('form1_type'); return false;">Clear</a> </span></div>
+				onclick="clearSelected('form1_type'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>
 		</s:if>
 		
 		<s:if test="filter.showAddress">
 			<div class="filterOption">
 			<table>
 				<tr>
-					<td rowspan="2" style="vertical-align: top">Address: <s:textfield name="filter.city"
+					<td rowspan="2" style="vertical-align: top"><s:text name="global.Address" />: <s:textfield name="filter.city"
 						cssClass="forms" size="15" onfocus="clearText(this)" /> <s:textfield
 						name="filter.zip" cssClass="forms" size="5"
 						onfocus="clearText(this)" /></td>
 					<td style="padding-left: 1ex;"><a href="#"
-						onclick="toggleBox('form1_state'); return false;">State</a> = <span
-						id="form1_state_query">ALL</span></td>
+						onclick="toggleBox('form1_state'); return false;"><s:text name="State" /></a> = <span
+						id="form1_state_query"><s:text name="JS.Filters.status.All" /></span></td>
 					<td style="padding-left: 1ex;"><a href="#"
 						onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> = <span
-						id="form1_country_query">ALL</span></td>
+						id="form1_country_query"><s:text name="JS.Filters.status.All" /></span></td>
 				</tr>
 				<tr>
 					<td style="padding-left: 1ex;"><span id="form1_state_select"
@@ -69,7 +69,7 @@
 						size="15" onclick="clearSelected('form1_country');" /><br />
 					<script type="text/javascript">updateQuery('form1_state');</script>
 					<a class="clearLink" href="#"
-						onclick="clearSelected('form1_state'); return false;">Clear</a> </span></td>
+						onclick="clearSelected('form1_state'); return false;"><s:text name="Filters.status.Clear" /></a> </span></td>
 					<td style="padding-left: 1ex; vertical-align: top"><span
 						id="form1_country_select" style="display: none" class="clearLink"><s:select
 						id="form1_country" name="filter.country" list="filter.countryList"
@@ -77,7 +77,7 @@
 						size="15" /><br />
 					<script type="text/javascript">updateQuery('form1_country');</script>
 					<a class="clearLink" href="#"
-						onclick="clearSelected('form1_country'); return false;">Clear</a> </span>
+						onclick="clearSelected('form1_country'); return false;"><s:text name="Filters.status.Clear" /></a> </span>
 					</td>
 				</tr>
 			</table>
@@ -87,8 +87,8 @@
 		<s:if test="filter.showIndustry">
 			<br clear="all" />
 			<div class="filterOption"><a href="#"
-				onclick="toggleBox('form1_industry'); return false;">Industry</a> = <span
-				id="form1_industry_query">ALL</span><br />
+				onclick="toggleBox('form1_industry'); return false;"><s:text name="Filters.label.Industry" /></a> = <span
+				id="form1_industry_query"><s:text name="JS.Filters.status.All" /></span><br />
 			<span id="form1_industry_select" style="display: none"
 				class="clearLink"> <s:select id="form1_industry"
 				name="filter.industry" list="filter.industryList"
@@ -96,21 +96,21 @@
 			<script type="text/javascript">updateQuery('form1_industry');</script>
 			<br />
 			<a class="clearLink" href="#"
-				onclick="clearSelected('form1_industry'); return false;">Clear</a> </span></div>
+				onclick="clearSelected('form1_industry'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>
 		</s:if>
 		
 		<s:if test="filter.showPrimaryInformation">
 			<div class="filterOption"><label><s:checkbox
-				name="filter.primaryInformation" /> Show Contact Info</label></div>
+				name="filter.primaryInformation" /> <s:text name="Filters.label.ShowContactInfo" /></label></div>
 		</s:if>
 	
 		<s:if test="filter.showTradeInformation">
 			<div class="filterOption"><label><s:checkbox
-				name="filter.tradeInformation" /> Show Trade Info</label></div>
+				name="filter.tradeInformation" /> <s:text name="Filters.label.ShowTradeInfo" /></label></div>
 		</s:if>
 	
 		<pics:permission perm="DevelopmentEnvironment">
-			<div class="filterOption"><label>Query API</label> <s:textfield
+			<div class="filterOption"><label><s:text name="Filters.label.QueryAPI" /></label> <s:textfield
 				name="filter.customAPI" /></div>
 		</pics:permission>
 		

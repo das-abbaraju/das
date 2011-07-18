@@ -51,7 +51,7 @@
 
 	<s:if test="filter.showStatus">
 		<div class="filterOption" id="status">
-			<a href="#" class="filterBox"><s:text name="Filters.label.Status" /></a> =
+			<a href="#" class="filterBox"><s:text name="global.Status" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:select list="filter.statusList" listValue="%{getText(i18nKey)}" multiple="true" cssClass="forms" name="filter.status" /><br />
@@ -62,7 +62,7 @@
 
 	<s:if test="filter.showType">
 		<div class="filterOption" id="type">
-			<a href="#" class="filterBox"><s:text name="Filters.label.Type" /></a> =
+			<a href="#" class="filterBox"><s:text name="global.Type" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:select list="filter.typeList" multiple="true" cssClass="forms" name="filter.type"/><br />
@@ -73,7 +73,7 @@
 
 	<s:if test="filter.showOpen">
 		<div class="filterOption">
-			<span><s:text name="Filters.label.Status" /> =</span>
+			<span><s:text name="global.Status" /> =</span>
 			<s:select cssClass="forms" list="#{1:getText('Filters.status.Open'),0:getText('Filters.status.Closed')}" name="filter.open" />
 		</div>
 	</s:if>
@@ -394,7 +394,7 @@
 
 	<s:if test="filter.showAuditStatus">
 		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Filters.label.Status" /></a> =
+			<a href="#" class="filterBox"><s:text name="global.Status" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:select id="form1_auditStatus" list="filter.auditStatusList" cssClass="forms" 
