@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.ibm.icu.util.Calendar;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.search.Database;
@@ -13,14 +14,17 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SmartFacilitySuggest {
-	// TODO: Change String operators to permissions and use permissions to filter the returned list.
-	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, String operators) throws Exception, SQLException {
+	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, Permissions permissions) throws Exception, SQLException {
 		Calendar changedSince = Calendar.getInstance();
 		changedSince.add(Calendar.MONTH, -2);
 
 		int count = 0;
 		Database db = new Database();
 		int zipLength = contractor.getZip().length() + 1;
+		
+		String operators = null;
+		if (permissions.isCorporate()) 
+			operators = Strings.implode(permissions.getOperatorChildren());
 
 		while (count < 50 && zipLength > 0) {
 			// Determine Accuracy
