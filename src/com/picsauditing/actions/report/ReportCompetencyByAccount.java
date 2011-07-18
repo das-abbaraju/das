@@ -126,8 +126,10 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			Set<Integer> opIDs = new HashSet<Integer>();
 			opIDs.add(operator.getId());
 
-			for (Facility f : operator.getParent().getOperatorFacilities()) {
-				opIDs.add(f.getOperator().getId());
+			if (operator.getParent() != null) {
+				for (Facility f : operator.getParent().getOperatorFacilities()) {
+					opIDs.add(f.getOperator().getId());
+				}
 			}
 
 			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)",
@@ -177,8 +179,10 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			if (operator == null)
 				operator = operatorAccountDAO.find(permissions.getAccountId());
 
-			for (Facility f : operator.getParent().getOperatorFacilities()) {
-				opIDs.add(f.getOperator().getId());
+			if (operator.getParent() != null) {
+				for (Facility f : operator.getParent().getOperatorFacilities()) {
+					opIDs.add(f.getOperator().getId());
+				}
 			}
 		}
 
