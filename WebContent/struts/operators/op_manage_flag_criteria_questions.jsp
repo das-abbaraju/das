@@ -10,7 +10,7 @@
 			<s:if test="!insurance">
 				<th><s:text name="ManageFlagCriteriaOperator.header.Category" /></th>
 			</s:if>
-			<th><s:text name="ManageFlagCriteriaOperator.header.Type" /></th>
+			<th><s:text name="global.Type" /></th>
 			<th><s:text name="global.Description" /></th>
 			<th><s:text name="ManageFlagCriteriaOperator.header.Tag" /></th>
 		</tr>

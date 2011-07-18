@@ -10,7 +10,7 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th><s:text name="%{scope}.label.Type" /></th>
+			<th><s:text name="global.Type" /></th>
 			<th><s:text name="%{scope}.label.Task" /></th>
 			<th><s:text name="%{scope}.label.Criteria" /></th>
 			<th><s:text name="%{scope}.label.Action" /></th>
@@ -34,7 +34,7 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th><s:text name="%{scope}.label.Type" /></th>
+			<th><s:text name="global.Type" /></th>
 			<th><s:text name="%{scope}.label.Task" /></th>
 			<th><s:text name="%{scope}.label.Site" /></th>
 			<th><s:text name="%{scope}.label.Action" /></th>
