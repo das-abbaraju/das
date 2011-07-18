@@ -84,8 +84,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		if (newRegistration) {
-			addActionMessage("ImportPQF created.\nAfter completing registration please look under the PQF tab on "
-					+ "your dashboard and find the ImportPQF Audit.\nIn the ImportPQF you can upload a PDF of "
+			addActionMessage("ImportPQF created.<br/>After completing registration please look under the PQF tab on "
+					+ "your dashboard and find the ImportPQF Audit.<br/>In the ImportPQF you can upload a PDF of "
 					+ "your competitor audit. If you need help with this process please contact one of our "
 					+ "customer support professionals at (800) 506-PICS.");
 		}
@@ -483,5 +483,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				return true;
 		}
 		return false;
+	}
+	
+	public InvoiceFee getImportFeeForTranslation() {
+		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 	}
 }
