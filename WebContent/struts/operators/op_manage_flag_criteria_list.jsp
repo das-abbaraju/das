@@ -20,7 +20,7 @@ function recalculateAll() {
 			<s:if test="!insurance">
 				<th><s:text name="ManageFlagCriteriaOperator.header.Category" /></th>
 			</s:if>
-			<th><s:text name="ManageFlagCriteriaOperator.header.Description" /></th>
+			<th><s:text name="global.Description" /></th>
 			<th><s:text name="ManageFlagCriteriaOperator.header.Tag" /></th>
 			<th><s:text name="ManageFlagCriteriaOperator.header.Flag" /></th>
 			<th><nobr><s:text name="ManageFlagCriteriaOperator.header.NumberAffected" /></nobr></th>
