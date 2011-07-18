@@ -8,9 +8,11 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.util.LinkBuilder;
 
-public class Report {
+@SuppressWarnings("serial")
+public class Report extends TranslationActionSupport {
 	private SelectSQL sql;
 	private int limit = 100;
 	private int currentPage = 1;
@@ -55,7 +57,7 @@ public class Report {
 	public int getFirstRowNumber() {
 		return ((currentPage - 1) * limit) + 1;
 	}
-	
+
 	public void setPageByResult(String page) {
 		String showPage = page;
 		if (showPage != null) {
@@ -129,13 +131,15 @@ public class Report {
 			additionalParams = "";
 		additionalParams += filterParams;
 
-		String html = "<ul class=\"paging\">Starts with: ";
-		html += "<li><a href=\"?" + additionalParams
-				+ "\" title=\"Show All\">*</a></li>";
+		StringBuilder searchAZ = new StringBuilder("");
 		for (char c = 'A'; c <= 'Z'; c++)
-			html += "<li><a href=?startsWith=" + c + additionalParams
-					+ " class=blueMain>" + c + "</a></li>";
-		html += " </ul>";
+			searchAZ.append(String.format("<li><a href=\"?startsWith=%1$c%2$s\" class=blueMain>%1$c</a></li>", c,
+					additionalParams));
+
+		String html = String.format("<ul class=\"paging\">%s: <li><a href=\"?%s\" title=\"%s\">*</a></li>%s</ul>",
+				getText("Filters.paging.StartsWith"), additionalParams, getText("Filters.paging.ShowAll"),
+				searchAZ.toString());
+
 		return html;
 	}
 
@@ -151,49 +155,46 @@ public class Report {
 		String filterParams = getFilterParams();
 		additionalParams += filterParams;
 
-		String temp = "<ul class=\"paging\">";
-		temp += "Found <b>" + this.allRows + "</b> results";
+		StringBuilder temp = new StringBuilder(String.format("<ul class=\"paging\">%s",
+				getText("Filters.paging.FoundResults", new Object[] { (Integer) this.allRows })));
 		if (this.returnedRows == this.allRows) {
 			// We're showing all the results, just return
-			temp += "</ul>";
-			return temp;
+			temp.append("</ul>");
+			return temp.toString();
 		}
-		temp += ": Page ";
+		temp.append(String.format(": %s ", getText("Filters.paging.Page")));
 
 		int SHOW_PAGES = 2;
 		// If all Rows = 1000 and limit = 100, then lastPage = 999/101
 
 		// if currentPage = 10, print 1...
 		if (this.currentPage - SHOW_PAGES > 1) {
-			temp += addPageLink(1, additionalParams);
+			temp.append(addPageLink(1, additionalParams));
 			if (this.currentPage - SHOW_PAGES > 2) {
-				temp += " ... ";
+				temp.append(" ... ");
 			}
 		}
 
 		// if currentPage = 5, and SHOW_PAGES=2, print pages 3 4 5 6 7
-		for (int i = (this.currentPage - SHOW_PAGES); i <= this.currentPage
-				+ SHOW_PAGES; i++) {
-			temp += addPageLink(i, additionalParams);
+		for (int i = (this.currentPage - SHOW_PAGES); i <= this.currentPage + SHOW_PAGES; i++) {
+			temp.append(addPageLink(i, additionalParams));
 		}
 
 		// if currentPage = 10 and pageCount = 19, print ...19
 		if ((this.currentPage + SHOW_PAGES) < this.getPages()) {
 			if ((this.currentPage + SHOW_PAGES) < (this.getPages() - 1)) {
-				temp += " ... ";
+				temp.append(" ... ");
 			}
-			temp += addPageLink(this.getPages(), additionalParams);
+			temp.append(addPageLink(this.getPages(), additionalParams));
 		}
 
-		temp += "</ul>";
-		return temp;
+		temp.append("</ul>");
+		return temp.toString();
 	}
 
 	public String getPageLinksWithDynamicForm() {
-		return LinkBuilder.getPageNOfXLinks(this.allRows, this.limit,
-				this.limit * (this.currentPage - 1) + 1, (this.limit)
-						* (this.currentPage) > this.allRows ? this.allRows
-						: (this.limit) * (this.currentPage),
+		return LinkBuilder.getPageNOfXLinks(this.allRows, this.limit, this.limit * (this.currentPage - 1) + 1,
+				(this.limit) * (this.currentPage) > this.allRows ? this.allRows : (this.limit) * (this.currentPage),
 				this.currentPage);
 	}
 
@@ -205,15 +206,13 @@ public class Report {
 
 		String orderBy = this.sql.getOrderBy();
 		if (orderBy.length() > 0)
-			orderBy = "orderBy=" + orderBy + "&";
+			orderBy = String.format("orderBy=%s&", orderBy);
 
-		return "<li><a href=\"?" + orderBy + "showPage=" + page + additionalParams
-				+ "\">" + page + "</a></li>";
+		return String.format("<li><a href=\"?%1$sshowPage=%2$s%3$s\">%2$s</a></li>", orderBy, page, additionalParams);
 	}
 
 	public int getAllRows() {
 		return allRows;
 	}
 
-	
 }

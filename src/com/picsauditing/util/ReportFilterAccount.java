@@ -16,10 +16,6 @@ import com.picsauditing.jpa.entities.State;
 
 @SuppressWarnings("serial")
 public class ReportFilterAccount extends ReportFilter {
-	public static final String DEFAULT_NAME = "- Company Name - ";
-	public static final String DEFAULT_ZIP = "- Zip -";
-	public static final String DEFAULT_CITY = "- City -";
-
 	// /////// Filter Visibility /////////////
 	protected boolean showAccountName = true;
 	protected boolean showIndustry = true;
@@ -31,11 +27,11 @@ public class ReportFilterAccount extends ReportFilter {
 
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
-	protected String accountName = DEFAULT_NAME;
-	protected String city = DEFAULT_CITY;
+	protected String accountName;
+	protected String city;
 	protected String[] state;
 	protected String[] country;
-	protected String zip = DEFAULT_ZIP;
+	protected String zip;
 	protected String[] type;
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
@@ -51,7 +47,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String[] getTypeList() {
-		return new String[] { "Assessment", "Corporate", "Operator" };
+		return new String[] { cache.getText("global.AssessmentCenter", getLocaleStatic()),
+				cache.getText("global.Corporate", getLocaleStatic()),
+				cache.getText("global.Operator", getLocaleStatic()) };
 	}
 
 	public ArrayList<String> getFlagStatusList() throws Exception {
@@ -73,9 +71,9 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public Multimap<Country, State> getStateMap() {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
-		
+
 		Multimap<Country, State> stateMap = stateDAO.getStateMap(permissions.getCountry());
-		
+
 		return stateMap;
 	}
 
@@ -141,6 +139,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getAccountName() {
+		if (Strings.isEmpty(accountName))
+			accountName = getDefaultName();
+
 		return accountName;
 	}
 
@@ -149,6 +150,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getCity() {
+		if (Strings.isEmpty(city))
+			city = getDefaultCity();
+
 		return city;
 	}
 
@@ -173,6 +177,9 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getZip() {
+		if (Strings.isEmpty(zip))
+			zip = getDefaultZip();
+
 		return zip;
 	}
 
@@ -218,5 +225,17 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public Permissions getPermissions() {
 		return permissions;
+	}
+
+	public static String getDefaultName() {
+		return String.format("- %s -", cache.getText("global.CompanyName", getLocaleStatic()));
+	}
+
+	public static String getDefaultCity() {
+		return String.format("- %s -", cache.getText("global.City", getLocaleStatic()));
+	}
+
+	public static String getDefaultZip() {
+		return String.format("- %s -", cache.getText("global.ZipPostalCode", getLocaleStatic()));
 	}
 }

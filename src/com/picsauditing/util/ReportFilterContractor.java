@@ -25,12 +25,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
-
-	public static final String DEFAULT_AMOUNT = "- Enter Amount -";
-	public static final String DEFAULT_TAX_ID = "- Tax ID -";
-	public static final String DEFAULT_CERTS = "- Ins. Certs -";
-	public static final String DEFAULT_PERFORMED_BY = "- No Preference -";
-	public static final String DEFAULT_SELECT_PERFORMED_BY = "Self Performed";
 	public static final String[] DEACTIVATION_REASON = { "ChargeBack", "Did not Complete PICS process",
 			"Does not work for operator", "Duplicate/Merged Account", "Operator Exemption", "Payments not Current",
 			"Bid Only Account" };
@@ -82,7 +76,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int operatorSingle;
 	protected int[] stateLicensedIn;
 	protected int[] worksIn;
-	protected String taxID = DEFAULT_TAX_ID;
+	protected String taxID;
 	protected String[] flagStatus;
 	protected int[] officeIn;
 	protected int[] conAuditorId;
@@ -107,11 +101,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String deactivationReason;
 	protected int minorityQuestion = 0;
 	protected String workStatus;
-	protected String glEachOccurrence = DEFAULT_AMOUNT;
-	protected String glGeneralAggregate = DEFAULT_AMOUNT;
-	protected String alCombinedSingle = DEFAULT_AMOUNT;
-	protected String wcEachAccident = DEFAULT_AMOUNT;
-	protected String exEachOccurrence = DEFAULT_AMOUNT;
+	protected String glEachOccurrence;
+	protected String glGeneralAggregate;
+	protected String alCombinedSingle;
+	protected String wcEachAccident;
+	protected String exEachOccurrence;
 	protected boolean oq = false;
 	protected boolean hse = false;
 	protected boolean auditStatusFlagChanges = false;
@@ -479,6 +473,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getTaxID() {
+		if (Strings.isEmpty(taxID))
+			taxID = getDefaultTaxID();
+
 		return taxID;
 	}
 
@@ -580,7 +577,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String[] getTradePerformedByList() {
-		String[] list = { DEFAULT_PERFORMED_BY, "Self Performed", "Sub Contracted" };
+		String[] list = { getDefaultPerformedBy(), "Self Performed", "Sub Contracted" };
 		return list;
 	}
 
@@ -775,6 +772,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getGlEachOccurrence() {
+		if (Strings.isEmpty(glEachOccurrence))
+			glEachOccurrence = getDefaultAmount();
+
 		return glEachOccurrence;
 	}
 
@@ -783,6 +783,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getGlGeneralAggregate() {
+		if (Strings.isEmpty(glGeneralAggregate))
+			glGeneralAggregate = getDefaultAmount();
+
 		return glGeneralAggregate;
 	}
 
@@ -791,6 +794,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getAlCombinedSingle() {
+		if (Strings.isEmpty(alCombinedSingle))
+			alCombinedSingle = getDefaultAmount();
+
 		return alCombinedSingle;
 	}
 
@@ -799,6 +805,9 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getWcEachAccident() {
+		if (Strings.isEmpty(wcEachAccident))
+			wcEachAccident = getDefaultAmount();
+
 		return wcEachAccident;
 	}
 
@@ -807,15 +816,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getExEachOccurrence() {
+		if (Strings.isEmpty(exEachOccurrence))
+			exEachOccurrence = getDefaultAmount();
+
 		return exEachOccurrence;
 	}
 
 	public void setExEachOccurrence(String exEachOccurence) {
 		this.exEachOccurrence = exEachOccurence.replaceAll("[^0-9]", "");
-	}
-
-	public static String getDefaultSelectPerformedBy() {
-		return DEFAULT_SELECT_PERFORMED_BY;
 	}
 
 	public boolean isOq() {
@@ -884,5 +892,21 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowState(boolean showState) {
 		this.showState = showState;
+	}
+
+	public static String getDefaultAmount() {
+		return cache.getText("JS.Filters.label.EnterAmount", getLocaleStatic());
+	}
+
+	public static String getDefaultTaxID() {
+		return cache.getText("Filters.label.TaxID", getLocaleStatic());
+	}
+
+	public static String getDefaultPerformedBy() {
+		return cache.getText("Filters.label.NoPreference", getLocaleStatic());
+	}
+
+	public static String getDefaultSelectPerformedBy() {
+		return cache.getText("Filters.label.SelfPerformed", getLocaleStatic());
 	}
 }

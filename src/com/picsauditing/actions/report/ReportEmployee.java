@@ -16,6 +16,7 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterEmployee;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -71,7 +72,7 @@ public class ReportEmployee extends ReportActionSupport {
 	protected void addFilterToSQL() {
 		ReportFilterEmployee f = getFilter();
 
-		if (filterOn(f.getAccountName(), ReportFilterEmployee.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = Utilities.escapeQuotes(f.getAccountName().trim());
 			report.addFilter(new SelectFilter("name", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)

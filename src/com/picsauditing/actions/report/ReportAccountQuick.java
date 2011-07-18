@@ -22,7 +22,7 @@ public class ReportAccountQuick extends ReportAccount {
 		orderByDefault = "a.type, a.name";
 
 		ReportFilterContractor f = getFilter();
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
 			int id = Strings.extractAccountID(accountName);
 			if (id > 0) {

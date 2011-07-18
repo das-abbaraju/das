@@ -9,7 +9,6 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 
 @SuppressWarnings("serial")
 public class ReportFilterEmail extends ReportFilter {
-	public static final String DEFAULT_TO_ADDRESS = "- To Address -";
 	// Filter visibility
 	protected boolean showStatus = true;
 	protected boolean showTemplateName = true;
@@ -20,10 +19,10 @@ public class ReportFilterEmail extends ReportFilter {
 	// Filter values
 	protected String[] status;
 	protected String[] templateName;
-	protected String accountName = ReportFilterAccount.DEFAULT_NAME;
+	protected String accountName;
 	protected Date sentDateStart;
 	protected Date sentDateEnd;
-	protected String toAddress = DEFAULT_TO_ADDRESS;
+	protected String toAddress;
 	
 	// Lists
 	protected List<EmailTemplate> templates;
@@ -90,6 +89,9 @@ public class ReportFilterEmail extends ReportFilter {
 	}
 
 	public String getAccountName() {
+		if (Strings.isEmpty(accountName))
+			accountName = ReportFilterAccount.getDefaultName();
+		
 		return accountName;
 	}
 	
@@ -114,6 +116,9 @@ public class ReportFilterEmail extends ReportFilter {
 	}
 
 	public String getToAddress() {
+		if (Strings.isEmpty(toAddress))
+			toAddress = getDefaultToAddress();
+		
 		return toAddress;
 	}
 
@@ -143,5 +148,9 @@ public class ReportFilterEmail extends ReportFilter {
 		}
 		
 		return templates;
+	}
+	
+	public static String getDefaultToAddress() {
+		return cache.getText("Filters.label.ToAddress", getLocaleStatic());
 	}
 }

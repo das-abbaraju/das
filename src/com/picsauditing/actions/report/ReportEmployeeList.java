@@ -63,7 +63,7 @@ public class ReportEmployeeList extends ReportAccount {
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", f.getStartsWith()));
 
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)
@@ -83,7 +83,7 @@ public class ReportEmployeeList extends ReportAccount {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID)) {
+		if (filterOn(f.getTaxID(), ReportFilterContractor.getDefaultTaxID())) {
 			if (!f.getTaxID().equals("- Employee Name -"))
 				report.addFilter(new SelectFilter("taxID", "CONCAT(e.firstName, ' ', e.lastName) LIKE '%?%'", f
 						.getTaxID()));

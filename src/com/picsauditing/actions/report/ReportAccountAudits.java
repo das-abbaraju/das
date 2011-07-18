@@ -8,14 +8,14 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAccountAudits extends ReportAccount {
-
 	@Override
 	public void prepare() throws Exception {
 		super.prepare();
-		
+
 		if (permissions.isPicsEmployee() || (permissions.isOperatorCorporate() && permissions.isRequiresOQ()))
 			getFilter().setShowOQ(true);
-		if (permissions.isPicsEmployee() || (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview()))
+		if (permissions.isPicsEmployee()
+				|| (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview()))
 			getFilter().setShowHSE(true);
 
 		getFilter().setShowInsuranceLimits(true);
@@ -78,15 +78,12 @@ public class ReportAccountAudits extends ReportAccount {
 		// Getting the certificate info per contractor is too difficult!
 		/*
 		 * String certTable =
-		 * "SELECT contractor_id, count(*) certificateCount FROM certificates WHERE status = 'Approved'"
-		 * ; if (permissions.isOperator()) certTable += " AND operator_id = " +
-		 * permissions.getAccountId(); if (permissions.isCorporate()) certTable
-		 * +=
-		 * " AND operator_id IN (SELECT facilityID FROM facilities WHERE corporateID = "
-		 * + permissions.getAccountId() + ")"; certTable +=
-		 * " GROUP BY contractor_id"; sql.addJoin("LEFT JOIN (" + certTable +
-		 * ") certs ON certs.contractor_id = a.id");
-		 * sql.addField("certs.certificateCount");
+		 * "SELECT contractor_id, count(*) certificateCount FROM certificates WHERE status = 'Approved'" ; if
+		 * (permissions.isOperator()) certTable += " AND operator_id = " + permissions.getAccountId(); if
+		 * (permissions.isCorporate()) certTable +=
+		 * " AND operator_id IN (SELECT facilityID FROM facilities WHERE corporateID = " + permissions.getAccountId() +
+		 * ")"; certTable += " GROUP BY contractor_id"; sql.addJoin("LEFT JOIN (" + certTable +
+		 * ") certs ON certs.contractor_id = a.id"); sql.addField("certs.certificateCount");
 		 */
 	}
 
@@ -100,9 +97,9 @@ public class ReportAccountAudits extends ReportAccount {
 
 		if (permissions.isOperatorCorporate())
 			excelSheet.addColumn(new ExcelColumn("tag", "Contractor Tag"));
-		if(permissions.isOperator())
+		if (permissions.isOperator())
 			excelSheet.addColumn(new ExcelColumn("waitingOn", "Waiting On", ExcelCellType.Enum), 405);
-		
+
 		excelSheet.addColumn(new ExcelColumn("2340answer", "Small Business"));
 		excelSheet.addColumn(new ExcelColumn("2354answer", "Minority-Owned"));
 		excelSheet.addColumn(new ExcelColumn("2373answer", "Women-Owned"));

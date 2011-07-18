@@ -99,7 +99,7 @@ public class EmailQueueList extends ReportActionSupport {
 			setFiltered(true);
 		}
 		
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			sql.addWhere("a.name LIKE '%" + f.getAccountName() + "%'");
 			setFiltered(true);
 		}
@@ -116,7 +116,7 @@ public class EmailQueueList extends ReportActionSupport {
 			setFiltered(true);
 		}
 		
-		if (filterOn(f.getToAddress(), ReportFilterEmail.DEFAULT_TO_ADDRESS)) {
+		if (filterOn(f.getToAddress(), ReportFilterEmail.getDefaultToAddress())) {
 			sql.addWhere("q.toAddresses LIKE '%" + f.getToAddress() + "%'");
 			setFiltered(true);
 		}

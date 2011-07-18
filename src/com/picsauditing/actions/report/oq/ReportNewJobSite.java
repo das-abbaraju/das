@@ -246,7 +246,7 @@ public class ReportNewJobSite extends ReportActionSupport {
 		if (filterOn(f.getOperator()))
 			sql.addWhere("o.id IN (" + Strings.implode(f.getOperator()) + ")");
 
-		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
+		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "js.city LIKE '%?%'", f.getCity()));
 
 		String stateList = Strings.implodeForDB(f.getState(), ",");

@@ -56,7 +56,7 @@ function runSearch(search) {
 		$(search).submit();
 	} else {
 		// if this is an ajax call, then get the form elements and then post them through ajax and return the results to a div
-		startThinking({div:'report_data', type: 'large', message: 'finding search results'});
+		startThinking({div:'report_data', type: 'large', message: translate('JS.Filters.loading.FindingSearchResults')});
 		var destinationAction = $(search).find('[name="filter.destinationAction"]').val();
 		var accountType = "";
 		
@@ -135,13 +135,13 @@ function textQuery(name) {
 	
 	if (startField.val() != undefined) {
 		if(startField.val() != '' && endField.val() != '')
-			queryText = 'between '+startField.val()+' and '+ endField.val();
+			queryText = translate('JS.Filters.label.Between', new Array(startField.val(), endField.val()));
 		if(startField.val() != '' && endField.val() == '')
-			queryText = 'after '+ startField.val();
+			queryText = translate('JS.Filters.label.After', new Array(startField.val()));
 		if(startField.val() == '' && endField.val() != '')
-			queryText = 'before '+ endField.val();
+			queryText = translate('JS.Filters.label.Before', new Array(endField.val()));
 	} else if (endField.val() != '') {
-		queryText = 'before '+ endField.val();
+		queryText = translate('JS.Filters.label.Before', new Array(endField.val()));
 	}
 	
 	if (queryText == '') {
@@ -159,25 +159,25 @@ function insuranceLimitsTextQuery(name) {
 	var result = $("#"+name+'_query');
 	var queryText = '';
 		
-	if (field1.val() !== undefined && field1.val() != '' && field1.val() != '- Enter Amount -'){
+	if (field1.val() !== undefined && field1.val() != '' && field1.val() != translate('JS.Filters.label.EnterAmount')){
 		queryText += 'GL-EO: $' + field1.val(); 
 	}
-	if (field2.val() !== undefined && field2.val() != '' && field2.val() != '- Enter Amount -'){
+	if (field2.val() !== undefined && field2.val() != '' && field2.val() != translate('JS.Filters.label.EnterAmount')){
 		if(queryText != '')
 			queryText += ', ';
 		queryText += 'GL-GA: $' + field2.val(); 
 	}
-	if (field3.val() !== undefined && field3.val() != '' && field3.val() != '- Enter Amount -'){
+	if (field3.val() !== undefined && field3.val() != '' && field3.val() != translate('JS.Filters.label.EnterAmount')){
 		if(queryText != '')
 			queryText += ', ';
 		queryText += 'AL-CS: $' + field3.val(); 
 	}
-	if (field4.val() !== undefined && field4.val() != '' && field4.val() != '- Enter Amount -'){
+	if (field4.val() !== undefined && field4.val() != '' && field4.val() != translate('JS.Filters.label.EnterAmount')){
 		if(queryText != '')
 			queryText += ', ';
 		queryText += 'WC-EA: $' + field4.val(); 
 	}
-	if (field5.val() !== undefined && field5.val() != '' && field5.val() != '- Enter Amount -'){
+	if (field5.val() !== undefined && field5.val() != '' && field5.val() != translate('JS.Filters.label.EnterAmount')){
 		if(queryText != '')
 			queryText += ', ';
 		queryText += 'EX-EO: $' + field5.val(); 
@@ -195,23 +195,23 @@ function clearTextField(name) {
 
 function clearInsuranceText(thefield)
 {
-	if(thefield.value == '- Enter Amount -')
+	if(thefield.value == translate('JS.Filters.label.EnterAmount'))
 		thefield.value = '';
 }
 
 function resetEmptyField(thefield)
 {
 	if(thefield.value == '' || thefield.value === undefined)
-		thefield.value = '- Enter Amount -';
+		thefield.value = translate('JS.Filters.label.EnterAmount');
 }
 
 function clearInsuranceTextFields(name) {
 	var box = $("#"+name);
-	var field1 = $("#"+name+'1').val('- Enter Amount -');
-	var field2 = $("#"+name+'2').val('- Enter Amount -');
-	var field3 = $("#"+name+'3').val('- Enter Amount -');
-	var field4 = $("#"+name+'4').val('- Enter Amount -');
-	var field5 = $("#"+name+'5').val('- Enter Amount -');
+	var field1 = $("#"+name+'1').val(translate('JS.Filters.label.EnterAmount'));
+	var field2 = $("#"+name+'2').val(translate('JS.Filters.label.EnterAmount'));
+	var field3 = $("#"+name+'3').val(translate('JS.Filters.label.EnterAmount'));
+	var field4 = $("#"+name+'4').val(translate('JS.Filters.label.EnterAmount'));
+	var field5 = $("#"+name+'5').val(translate('JS.Filters.label.EnterAmount'));
 	insuranceLimitsTextQuery(name);
 }
 
@@ -266,7 +266,7 @@ function isNumber(field,position){
 	var value = $(field).val();
 	
 	if(value != undefined && value != '' && !numberRegex.test(value))
-		$('#error'+position).text('* Please enter only numbers');
+		$('#error'+position).text(translate('JS.Filters.label.EnterOnlyNumbers'));
 	else
 		$('#error'+position).text('');
 }

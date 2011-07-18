@@ -21,8 +21,6 @@ public class ReportFilterEmployee extends ReportFilter {
 	private int accountID;
 	private Permissions permissions;
 
-	public static final String DEFAULT_NAME = "- Company Name -";
-
 	protected boolean showAccountName = true;
 	protected boolean showFirstName = true;
 	protected boolean showLastName = true;
@@ -35,7 +33,7 @@ public class ReportFilterEmployee extends ReportFilter {
 	protected boolean showCompetencies = false;
 	protected boolean showOperators = false;
 
-	protected String accountName = DEFAULT_NAME;
+	protected String accountName;
 	protected String firstName;
 	protected String lastName;
 	protected String email;
@@ -147,6 +145,9 @@ public class ReportFilterEmployee extends ReportFilter {
 
 	// Fields
 	public String getAccountName() {
+		if (Strings.isEmpty(accountName))
+			accountName = ReportFilterAccount.getDefaultName();
+			
 		return accountName;
 	}
 

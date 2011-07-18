@@ -9,24 +9,24 @@
 <s:include value="../reportHeader.jsp"/>
 <script type="text/javascript">
 function getEmployees(jobSiteID) {
-	startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.LoadingEmployees" />' });
+	startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.LoadingEmployees') });
 	$('#currentEmployees').load("ReportNewProjects!employees.action", { jobSite: jobSiteID });
 
 	return false;
 }
 
 function addEmployee(jobSiteID, employeeID) {
-	startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.AddingEmployee" />' });
+	startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.AddingEmployee') });
 	$('#currentEmployees').load("ReportNewProjects!addEmployee.action", { jobSite: jobSiteID, employee: employeeID });
 
 	return false;
 }
 
 function removeEmployee(jobSiteID, employeeID) {
-	var del = confirm('<s:text name="%{scope}.confirm.RemoveEmployeeFromProject" />');
+	var del = confirm(translate('JS.<s:property value="scope" />.confirm.RemoveEmployeeFromProject'));
 
 	if (del) {
-		startThinking({div: "currentEmployees", message: '<s:text name="%{scope}.javascript.RemovingEmployee" />' });
+		startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.RemovingEmployee') });
 		$('#currentEmployees').load("ReportNewProjects!removeEmployee.action", { jobSite: jobSiteID, employee: employeeID });
 	}
 
@@ -35,7 +35,7 @@ function removeEmployee(jobSiteID, employeeID) {
 
 $(function() {
 	$('#existingProjects a.remove').live('click', function() {
-		return confirm('<s:text name="%{scope}.confirm.RemoveProject" />');
+		return confirm(translate('JS.<s:property value="scope" />.confirm.RemoveProject'));
 	});
 	
 	$('#existingProjects a.preview').live('click', function(e) {
@@ -65,54 +65,60 @@ $(function() {
 			<div>
 				<button id="searchfilter" type="submit" name="button" value="Search"
 					onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
-					class="picsbutton positive">Search</button>
+					class="picsbutton positive"><s:text name="button.Search" /></button>
 			</div>
 		
 			<div class="filterOption">
-				Name: <s:textfield name="filter.name" cssClass="forms" size="18" onfocus="clearText(this)" />
+				<s:text name="global.CompanyName" />: <s:textfield name="filter.name" cssClass="forms" size="18" onfocus="clearText(this)" />
 			</div>
 			
 			<div class="filterOption">
-				City: <s:textfield name="filter.city" cssClass="forms" size="18" onfocus="clearText(this)" />
+				<s:text name="global.City" />: <s:textfield name="filter.city" cssClass="forms" size="18" onfocus="clearText(this)" />
 			</div>
 		
 			<div class="filterOption">
-				<a href="#" onclick="toggleBox('form1_state'); return false;">State</a> = 
-				<span id="form1_state_query">ALL</span><br />
+				<a href="#" onclick="toggleBox('form1_state'); return false;"><s:text name="State" /></a> = 
+				<span id="form1_state_query"><s:text name="JS.Filters.status.All" /></span><br />
 				<span id="form1_state_select" style="display: none" class="clearLink">
 					<s:select id="form1_state" name="filter.state" list="filter.stateList" listKey="isoCode" 
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
 					<script type="text/javascript">updateQuery('form1_state');</script>
-					<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">Clear</a>
+					<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">
+						<s:text name="Filters.status.Clear" />
+					</a>
 				</span>
 			</div>
 		
 			<div class="filterOption">
 				<a href="#" onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> =
-				<span id="form1_country_query">ALL</span><br />
+				<span id="form1_country_query"><s:text name="JS.Filters.status.All" /></span><br />
 				<span id="form1_country_select" style="display: none" class="clearLink">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
 					<script type="text/javascript">updateQuery('form1_country');</script>
-					<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">Clear</a>
+					<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">
+						<s:text name="Filters.status.Clear" />
+					</a>
 				</span>
 			</div>
 			
 			<div class="filterOption">
-				<a href="#" onclick="toggleBox('form1_start'); return false;">Start</a> =
-				<span id="form1_start_query">ALL</span><br />
+				<a href="#" onclick="toggleBox('form1_start'); return false;"><s:text name="Filters.label.Start" /></a> =
+				<span id="form1_start_query"><s:text name="JS.Filters.status.All" /></span><br />
 				<span id="form1_start_select" style="display: none" class="clearLink">
 					<s:textfield cssClass="forms datepicker" size="10" id="form1_start" 
 						name="filter.start" />
 					<script type="text/javascript">updateQuery('form1_start');</script>
 					<br />
-					<a class="clearLink" href="#" onclick="clearTextField('form1_start'); return false;">Clear</a>
+					<a class="clearLink" href="#" onclick="clearTextField('form1_start'); return false;">
+						<s:text name="Filters.status.Clear" />
+					</a>
 				</span>
 			</div>
 		
 			<div class="filterOption">
-				<a href="#" onclick="toggleBox('form1_operator'); return false;">Operators</a> =
-				<span id="form1_operator_query">ALL</span>
+				<a href="#" onclick="toggleBox('form1_operator'); return false;"><s:text name="global.Operators" /></a> =
+				<span id="form1_operator_query"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span id="form1_operator_select" style="display: none" class="clearLink">
 					<s:select id="form1_operator" list="filter.operatorList" cssClass="forms"
@@ -120,7 +126,9 @@ $(function() {
 						size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
 					<script type="text/javascript">updateQuery('form1_operator');</script>
 					<br />
-					<a class="clearLink" href="#" onclick="clearSelected('form1_operator'); return false;">Clear</a>
+					<a class="clearLink" href="#" onclick="clearSelected('form1_operator'); return false;">
+						<s:text name="Filters.status.Clear" />
+					</a>
 				</span>
 			</div>
 		</s:form>

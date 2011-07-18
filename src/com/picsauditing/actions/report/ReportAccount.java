@@ -35,7 +35,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAccount extends ReportActionSupport implements Preparable {
-
 	protected boolean runReport = true;
 	protected boolean skipPermissions = false;
 	protected Boolean showContactInfo = null;
@@ -141,9 +140,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * @see returnResult()
 	 */
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		// Figure out if this is mailmerge call or not
 		// This is not very robust, we should refactor this eventually
 		// if (!filter.isAjax() && filter.isAllowMailMerge()) {
@@ -213,7 +209,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", f.getStartsWith()));
 
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)
@@ -227,7 +223,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
+		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
 		String stateList = Strings.implodeForDB(f.getState(), ",");
@@ -242,7 +238,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
+		if (filterOn(f.getZip(), ReportFilterAccount.getDefaultZip()))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
 		if (f.isPrimaryInformation()) {
@@ -317,7 +313,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer = 'YesWithOffice'");
 		}
 
-		if (filterOn(f.getTaxID(), ReportFilterContractor.DEFAULT_TAX_ID))
+		if (filterOn(f.getTaxID(), ReportFilterContractor.getDefaultTaxID()))
 			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
 
 		if (filterOn(f.getFlagStatus())) {
@@ -434,23 +430,23 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (getFilter().isShowInsuranceLimits()) {
-			if (filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.DEFAULT_AMOUNT)) {
+			if (filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
 				sql.addAuditQuestion(2074, 13, true);
 				sql.addWhere("REPLACE(q2074.answer,',','') >= " + getFilter().getGlEachOccurrence());
 			}
-			if (filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.DEFAULT_AMOUNT)) {
+			if (filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.getDefaultAmount())) {
 				sql.addAuditQuestion(2079, 13, true);
 				sql.addWhere("REPLACE(q2079.answer,',','') >= " + getFilter().getGlGeneralAggregate());
 			}
-			if (filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.DEFAULT_AMOUNT)) {
+			if (filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.getDefaultAmount())) {
 				sql.addAuditQuestion(2155, 15, true);
 				sql.addWhere("REPLACE(q2155.answer,',','') >= " + getFilter().getAlCombinedSingle());
 			}
-			if (filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.DEFAULT_AMOUNT)) {
+			if (filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.getDefaultAmount())) {
 				sql.addAuditQuestion(2149, 14, true);
 				sql.addWhere("REPLACE(q2149.answer,',','') >= " + getFilter().getWcEachAccident());
 			}
-			if (filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.DEFAULT_AMOUNT)) {
+			if (filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
 				sql.addAuditQuestion(2161, 16, true);
 				sql.addWhere("REPLACE(q2161.answer,',','') >= " + getFilter().getExEachOccurrence());
 			}

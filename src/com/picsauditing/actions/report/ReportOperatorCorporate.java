@@ -66,9 +66,6 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 	}
 	
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		
 		if (!permissions.hasPermission(OpPerms.ManageOperators) 
 				&& !permissions.hasPermission(OpPerms.ManageCorporate)
 				&& !permissions.hasPermission(OpPerms.ManageAssessment))
@@ -145,7 +142,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		if (filterOn(f.getStartsWith()))
 			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", f.getStartsWith()));
 
-		if (filterOn(f.getAccountName(), ReportFilterAccount.DEFAULT_NAME)) {
+		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
 			String accountName = f.getAccountName().trim();
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName) + "%' OR a.id = '" + 
@@ -159,7 +156,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getCity(), ReportFilterAccount.DEFAULT_CITY))
+		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
 		String stateList = Strings.implodeForDB(f.getState(), ",");
@@ -174,7 +171,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getZip(), ReportFilterAccount.DEFAULT_ZIP))
+		if (filterOn(f.getZip(), ReportFilterAccount.getDefaultZip()))
 			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
 
 		if (f.isPrimaryInformation()) {

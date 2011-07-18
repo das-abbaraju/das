@@ -54,7 +54,7 @@
 			<a href="#" class="filterBox"><s:text name="Filters.label.Status" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
-				<s:select list="filter.statusList" multiple="true" cssClass="forms" name="filter.status" /><br />
+				<s:select list="filter.statusList" listValue="%{getText(i18nKey)}" multiple="true" cssClass="forms" name="filter.status" /><br />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -199,7 +199,7 @@
 	<s:if test="filter.showMinorityOwned">
 		<div class="filterOption">
 			<s:select cssClass="forms" list="filter.minorityQuestions"
-				name="filter.minorityQuestion" headerKey="0" headerValue="- Supplier Diversity -" />
+				name="filter.minorityQuestion" headerKey="0" headerValue="- %{getText('Filters.label.SupplierDiversity')} -" />
 		</div>
 	</s:if>
 
@@ -225,7 +225,7 @@
 	
 	<s:if test="filter.showWaitingOn">
 		<div class="filterOption">
-			<s:select list="filter.waitingOnList" headerKey="" headerValue="- %{getText('global.WaitingOn')} -" cssClass="forms" 
+			<s:select list="filter.waitingOnList" listValue="%{getText(value.i18nKey)}" headerKey="" headerValue="- %{getText('global.WaitingOn')} -" cssClass="forms" 
 				name="filter.waitingOn" />
 		</div>
 	</s:if>
@@ -409,8 +409,8 @@
 			<a href="#" class="filterBox"><s:text name="Filters.label.StatusWorkflow" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
-				<s:select id="form1_caowStatus" list="filter.auditStatusList" cssClass="forms" name="filter.caowStatus"
-					multiple="true" size="5" />
+				<s:select id="form1_caowStatus" list="filter.auditStatusList" listValue="%{getText(i18nKey)}" cssClass="forms" 
+					name="filter.caowStatus" multiple="true" size="5" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -479,7 +479,7 @@
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield cssClass="forms datepicker" size="10" name="filter.createdDate1" />
-				<s:text name="Filters.status.To" />:<s:textfield cssClass="forms datepicker" size="10" name="filter.createdDate2" />
+				<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" name="filter.createdDate2" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -491,7 +491,7 @@
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield name="filter.percentComplete1" cssClass="forms" size="12"  />
-				<s:text name="Filters.status.To" />: <s:textfield name="filter.percentComplete2" cssClass="forms" size="12"  />
+				<s:text name="Filters.label.To" />: <s:textfield name="filter.percentComplete2" cssClass="forms" size="12"  />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -608,7 +608,7 @@
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield name="filter.scoreMin" cssClass="forms" size="12"  />
-				<s:text name="Filters.status.To" />: <s:textfield name="filter.scoreMax" cssClass="forms" size="12"  />
+				<s:text name="Filters.label.To" />: <s:textfield name="filter.scoreMax" cssClass="forms" size="12"  />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -765,7 +765,7 @@
 			<span class="q_status">= <s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield cssClass="forms datepicker" size="10" name="filter.caowUpdateDate1" />
-				<s:text name="Filters.status.To" />:<s:textfield cssClass="forms datepicker" size="10" name="filter.caowUpdateDate2" />
+				<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" name="filter.caowUpdateDate2" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>

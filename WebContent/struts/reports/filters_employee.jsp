@@ -4,10 +4,10 @@
 <div id="search">
 <s:if test="allowCollapsed">
 	<div id="showSearch" onclick="showSearch()"<s:if test="filtered"> style="display: none"</s:if>>
-		<a href="#">Show Filter Options</a>
+		<a href="#"><s:text name="Filters.button.ShowFilterOptions" /></a>
 	</div>
 	<div id="hideSearch"<s:if test="!filtered"> style="display: none"</s:if>>
-		<a href="#" onclick="hideSearch()">Hide Filter Options</a>
+		<a href="#" onclick="hideSearch()"><s:text name="Filters.button.HideFilterOptions" /></a>
 	</div>
 </s:if>
 <s:form id="form1" action="%{filter.destinationAction}">
@@ -19,12 +19,12 @@
 	<div>
 		<button id="searchfilter" type="submit" name="button" value="Search"
 				onclick="return clickSearch('form1');"
-				class="picsbutton positive">Search</button>
+				class="picsbutton positive"><s:text name="button.Search" /></button>
 	</div>
 	
 	<s:if test="filter.showAccountName">
 		<div class="filterOption">
-			Company Name: <s:textfield name="filter.accountName" size="35" onclick="clearText(this)" />
+			<s:text name="global.CompanyName" />: <s:textfield name="filter.accountName" size="35" onclick="clearText(this)" />
 		</div>
 	</s:if>
 	
@@ -32,22 +32,22 @@
 	
 	<s:if test="filter.showFirstName">
 		<div class="filterOption">
-			First Name: <s:textfield name="filter.firstName" />
+			<s:text name="Employee.firstName" />: <s:textfield name="filter.firstName" />
 		</div>
 	</s:if>
 	<s:if test="filter.showLastName">
 		<div class="filterOption">
-			Last Name: <s:textfield name="filter.lastName" />
+			<s:text name="Employee.lastName" />: <s:textfield name="filter.lastName" />
 		</div>
 	</s:if>
 	<s:if test="filter.showEmail">
 		<div class="filterOption">
-			Email: <s:textfield name="filter.email" />
+			<s:text name="Employee.email" />: <s:textfield name="filter.email" />
 		</div>
 	</s:if>
 	<s:if test="filter.showSsn">
 		<div class="filterOption">
-			SSN: <s:textfield name="filter.ssn" cssClass="ssn"/>
+			<s:text name="Employee.ssn" />: <s:textfield name="filter.ssn" cssClass="ssn"/>
 		</div>
 	</s:if>
 	
@@ -55,69 +55,69 @@
 	
 	<s:if test="filter.showOperators">
 		<div class="filterOption">
-			<a href="#" class="filterBox">Operators</a> =
-			<span class="q_status">ALL</span><br />
+			<a href="#" class="filterBox"><s:text name="global.Operators" /></a> =
+			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:textfield rel="Operator" name="filter.operators" cssClass="tokenAuto" />
-				<a class="clearLink" href="#">Clear</a>
-				<s:radio list="#{'false':'All','true':'Any'}" name="filter.showAnyOperator"/>
+				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				<s:radio list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" name="filter.showAnyOperator"/>
 			</span>
 		</div>
 	</s:if>
 	
 	<s:if test="filter.showProjects">
 		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_projects'); return false;">Projects</a> =
-			<span id="form1_projects_query">ALL</span>
+			<a href="#" onclick="toggleBox('form1_projects'); return false;"><s:text name="Filters.label.Projects" /></a> =
+			<span id="form1_projects_query"><s:text name="JS.Filters.status.All" /></span>
 			<br />
 			<span id="form1_projects_select" style="display: none" class="clearLink">
 				<s:select list="filter.projectList" multiple="true" cssClass="forms"
 					name="filter.projects" id="form1_projects" listKey="id" listValue="%{operator.name + ': ' + name}" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_projects');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_projects'); return false;">Clear</a>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_projects'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
 	</s:if>
 	<s:if test="filter.showAssessmentCenter">
 		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_assessmentCenters'); return false;">Assessment Center</a> =
-			<span id="form1_assessmentCenters_query">ALL</span>
+			<a href="#" onclick="toggleBox('form1_assessmentCenters'); return false;"><s:text name="global.AssessmentCenter" /></a> =
+			<span id="form1_assessmentCenters_query"><s:text name="JS.Filters.status.All" /></span>
 			<br />
 			<span id="form1_assessmentCenters_select" style="display: none" class="clearLink">
 				<s:select list="filter.assessmentCenterList" multiple="true" cssClass="forms"
 					name="filter.assessmentCenters" id="form1_assessmentCenters" listKey="id" listValue="name" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_assessmentCenters');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_assessmentCenters'); return false;">Clear</a>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_assessmentCenters'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
 	</s:if>
 	<s:if test="filter.showJobRoles">
 		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_jobRoles'); return false;">Job Roles</a> =
-			<span id="form1_jobRoles_query">ALL</span>
+			<a href="#" onclick="toggleBox('form1_jobRoles'); return false;"><s:text name="Filters.label.JobRoles" /></a> =
+			<span id="form1_jobRoles_query"><s:text name="JS.Filters.status.All" /></span>
 			<br />
 			<span id="form1_jobRoles_select" style="display: none" class="clearLink">
 				<s:select list="filter.jobRoleList" multiple="true" cssClass="forms"
 					name="filter.jobRoles" id="form1_jobRoles" listKey="id" listValue="name" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_jobRoles');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_jobRoles'); return false;">Clear</a>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_jobRoles'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
 	</s:if>
 	<s:if test="filter.showCompetencies">
 		<div class="filterOption">
-			<a href="#" onclick="toggleBox('form1_competencies'); return false;">Competencies</a> =
-			<span id="form1_competencies_query">ALL</span>
+			<a href="#" onclick="toggleBox('form1_competencies'); return false;"><s:text name="global.HSECompetencies" /></a> =
+			<span id="form1_competencies_query"><s:text name="JS.Filters.status.All" /></span>
 			<br />
 			<span id="form1_competencies_select" style="display: none" class="clearLink">
 				<s:select list="filter.competencyList" multiple="true" cssClass="forms"
 					name="filter.competencies" id="form1_competencies" listKey="id" listValue="label" />
 				<br />
 				<script type="text/javascript">updateQuery('form1_competencies');</script>
-				<a class="clearLink" href="#" onclick="clearSelected('form1_competencies'); return false;">Clear</a>
+				<a class="clearLink" href="#" onclick="clearSelected('form1_competencies'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
 	</s:if>
@@ -126,7 +126,7 @@
 	
 	<s:if test="filter.showLimitEmployees && permissions.operatorCorporate">
 		<div class="filterOption">
-			<s:checkbox name="filter.limitEmployees" /> Show Only My Employees
+			<s:checkbox name="filter.limitEmployees" /> <s:text name="Filters.label.ShowOnlyMyEmployees" />
 		</div>
 	</s:if>
 </s:form>
