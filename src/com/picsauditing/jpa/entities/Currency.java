@@ -1,7 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Transient;
+
 public enum Currency {
-	USD("USD","$"), CAD("CAD","$"), GBP("GBP","\u00a3");
+	USD("USD", "$"), CAD("CAD", "$"), GBP("GBP", "\u00a3");
 
 	private String display;
 	private String symbol;
@@ -38,5 +40,21 @@ public enum Currency {
 
 	public String getSymbol() {
 		return symbol;
+	}
+
+	@Transient
+	public boolean isTaxable() {
+		return isCanada();
+	}
+
+	@Transient
+	public InvoiceFee getTaxFee() {
+		if (isCanada()) {
+			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
+			gst.setFeeClass(FeeClass.GST);
+			gst.setFee("Goods & Services Tax (GST#84887 4913)");
+			return gst;
+		} else
+			return null;
 	}
 }

@@ -19,6 +19,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class InvoiceFee extends BaseTable {
 	public final static int LATEFEE = 336;
 	public final static int OLDLATEFEE = 55;
+	public final static int GST = 200;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
@@ -115,7 +116,7 @@ public class InvoiceFee extends BaseTable {
 	public boolean isBidonly() {
 		return this.getFeeClass() == FeeClass.BidOnly;
 	}
-	
+
 	@Transient
 	public boolean isListonly() {
 		return this.getFeeClass() == FeeClass.ListOnly;
@@ -128,9 +129,9 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isMembership() {
-		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.BidOnly || this.getFeeClass() == FeeClass.DocuGUARD
-				|| this.getFeeClass() == FeeClass.AuditGUARD || this.getFeeClass() == FeeClass.InsureGUARD
-				|| this.getFeeClass() == FeeClass.EmployeeGUARD;
+		return this.getFeeClass() == FeeClass.ListOnly || this.getFeeClass() == FeeClass.BidOnly
+				|| this.getFeeClass() == FeeClass.DocuGUARD || this.getFeeClass() == FeeClass.AuditGUARD
+				|| this.getFeeClass() == FeeClass.InsureGUARD || this.getFeeClass() == FeeClass.EmployeeGUARD;
 	}
 
 	@Transient
@@ -149,8 +150,11 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Transient
-	public BigDecimal getGSTSurchage(BigDecimal total) {
-		return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
+	public BigDecimal getTax(BigDecimal total) {
+		if (isGST())
+			return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
+		else
+			return BigDecimal.ZERO;
 	}
 
 	@Transient

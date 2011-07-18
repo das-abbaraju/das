@@ -163,7 +163,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			if (activationFee != null)
 				total = total.add(activationFee.getAmount());
 			total = total.add(suncorDiscount.getAmount());
-			gstFee.setAmount(gstFee.getGSTSurchage(total));
+			gstFee.setAmount(gstFee.getTax(total));
 		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())

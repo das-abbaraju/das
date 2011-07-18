@@ -9,6 +9,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -96,6 +98,38 @@ public class Invoice extends Transaction {
 
 	public void setPayments(List<PaymentAppliedToInvoice> payments) {
 		this.payments = payments;
+	}
+
+	@PreUpdate
+	@PrePersist
+	public void preSave() {
+		if (getCurrency().isTaxable()) {
+			InvoiceItem taxItem = null;
+			InvoiceFee taxFee = getCurrency().getTaxFee();
+
+			BigDecimal invoiceTotal = BigDecimal.ZERO;
+			invoiceTotal.setScale(2);
+			for (InvoiceItem item : getItems()) {
+				if (item.getInvoiceFee().equals(taxFee)) {
+					taxItem = item;
+				} else {
+					invoiceTotal = invoiceTotal.add(item.getAmount());
+				}
+			}
+
+			// if no tax item found, create tax item
+			if (taxItem == null) {
+				taxItem = new InvoiceItem(taxFee, taxFee.getTax(invoiceTotal), null);
+				taxItem.setInvoice(this);
+				taxItem.setAuditColumns(new User(User.SYSTEM));
+				getItems().add(taxItem);
+				// else validate tax amount
+			} else if (!taxItem.getAmount().equals(taxFee.getTax(invoiceTotal))) {
+				taxItem.setAmount(taxFee.getTax(invoiceTotal));
+			}
+
+			updateAmount();
+		}
 	}
 
 	@Transient

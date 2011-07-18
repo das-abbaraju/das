@@ -333,20 +333,6 @@ public class BillingCalculatorSingle {
 		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, feeDAO);
 		items.addAll(discounts);
 
-		// Taxes come last
-		// Need to change Canadian contractors a GST for all invoices
-		if (contractor.getCurrencyCode().isCanada()) {
-			BigDecimal total = BigDecimal.ZERO.setScale(2);
-			for (InvoiceItem ii : items)
-				total = total.add(ii.getAmount());
-
-			InvoiceFee gst = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			InvoiceItem invoiceItem = new InvoiceItem();
-			invoiceItem.setInvoiceFee(gst);
-			invoiceItem.setAmount(gst.getGSTSurchage(total));
-			items.add(invoiceItem);
-		}
-
 		return items;
 	}
 
