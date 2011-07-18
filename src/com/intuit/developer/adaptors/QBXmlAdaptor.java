@@ -58,6 +58,7 @@ public class QBXmlAdaptor {
 
 		Marshaller createMarshaller = jc.createMarshaller();
 		createMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		createMarshaller.setProperty(Marshaller.JAXB_ENCODING, "US-ASCII");
 		return createMarshaller;
 	}
 
