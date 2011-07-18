@@ -38,7 +38,7 @@ public class TranslateJS extends PicsActionSupport {
 
 		sql.addWhere("locale IN (" + Strings.implodeForDB(locales, ",") + ")");
 		// Order in this way fr_CA_Suncor, fr_CA, fr, en
-		sql.addOrderBy("CASE locale WHEN 'EN' THEN 0 ELSE 1 END, locale DESC");
+		sql.addOrderBy("CASE locale WHEN 'EN' THEN 1 ELSE 0 END, locale DESC");
 
 		List<BasicDynaBean> messages = db.select(sql.toString(), false);
 		for (BasicDynaBean message : messages) {
