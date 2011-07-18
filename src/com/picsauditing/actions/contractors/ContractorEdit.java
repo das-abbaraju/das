@@ -412,7 +412,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		if (hasFee)
-			addActionError("Contractor was aleady charged for the Import PQF");
+			addActionError("Contractor was already charged for the Import PQF");
 		if (hasAudit)
 			addActionError("Contractor was already has the Import PQF");
 
