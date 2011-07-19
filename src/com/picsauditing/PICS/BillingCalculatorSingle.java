@@ -14,6 +14,7 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -191,7 +192,7 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.ListOnly, feeDAO);
 		}
 
-		if(contractor.getFees().containsKey(FeeClass.ImportFee)){
+		if (contractor.getFees().containsKey(FeeClass.ImportFee)) {
 			if (importPQF) {
 				InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, payingFacilities);
 				contractor.setNewFee(newLevel, newLevel.getAmount());
@@ -365,6 +366,22 @@ public class BillingCalculatorSingle {
 		Collections.sort(operatorsString);
 
 		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
+	}
+
+	/**
+	 * Assigning ImportPQF after fee is paid
+	 */
+	public static void assignImportPQF(ContractorAccount contractor, Invoice invoice, UserAssignmentDAO uaDAO) {
+		for (InvoiceItem item : invoice.getItems()) {
+			if (item.getInvoiceFee().getId() == InvoiceFee.IMPORTFEE && invoice.getStatus().isPaid()) {
+				for (ContractorAudit ca : contractor.getAudits()) {
+					if (ca.getAuditType().getId() == AuditType.IMPORT_PQF && ca.getAuditor() == null) {
+						ca.setAuditor(uaDAO.findByContractor(contractor).getUser());
+						ca.setAssignedDate(new Date());
+					}
+				}
+			}
+		}
 	}
 
 	public static List<InvoiceItem> getDiscountItems(ContractorAccount contractor, InvoiceFeeDAO invoiceFeeDAO) {

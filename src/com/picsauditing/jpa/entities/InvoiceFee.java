@@ -20,6 +20,7 @@ public class InvoiceFee extends BaseTable {
 	public final static int LATEFEE = 336;
 	public final static int OLDLATEFEE = 55;
 	public final static int GST = 200;
+	public final static int IMPORTFEE = 340;
 	private String fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;

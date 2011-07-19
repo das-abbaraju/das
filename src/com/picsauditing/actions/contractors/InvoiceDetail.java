@@ -21,7 +21,9 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -56,6 +58,10 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private PaymentDAO paymentDAO;
 	@Autowired
 	private AppPropertyDAO appPropDao;
+	@Autowired
+	private UserAssignmentDAO uaDAO;
+	@Autowired
+	private NoteDAO noteDAO;
 
 	private boolean edit = false;
 	private int newFeeId;
@@ -204,7 +210,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					note.setNoteCategory(NoteCategory.Billing);
 					note.setCanContractorView(true);
 					note.setViewableById(Account.PicsID);
-					getNoteDao().save(note);
+					noteDAO.save(note);
 				}
 
 				BillingCalculatorSingle.calculateAnnualFees(contractor);
@@ -254,6 +260,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(), getUser());
+
+							BillingCalculatorSingle.assignImportPQF(contractor, invoice, uaDAO);
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
@@ -339,7 +347,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
-		getNoteDao().save(note);
+		noteDAO.save(note);
 	}
 
 	private void addNote(String subject, String body, User u) {
@@ -348,7 +356,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
-		getNoteDao().save(note);
+		noteDAO.save(note);
 	}
 
 	private void addInvoiceItem(int feeId) {

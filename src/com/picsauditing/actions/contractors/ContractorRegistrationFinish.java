@@ -24,6 +24,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorFee;
@@ -65,6 +66,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
+	@Autowired
+	private UserAssignmentDAO uaDAO;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
@@ -144,6 +147,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
+							
+							BillingCalculatorSingle.assignImportPQF(contractor, invoice, uaDAO);
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -234,7 +239,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							item.setAuditColumns(new User(User.SYSTEM));
 						}
 
-						if (contractor.isAcceptsBids())
+						if (contractor.getAccountLevel().isBidOnly())
 							contractor.setRenew(true);
 
 						updateTotals();
@@ -351,7 +356,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		note.setViewableById(Account.PicsID);
 		note.setCanContractorView(false);
 		note.setStatus(NoteStatus.Closed);
-		getNoteDao().save(note);
+		noteDAO.save(note);
 	}
 
 	public Invoice getInvoice() {
