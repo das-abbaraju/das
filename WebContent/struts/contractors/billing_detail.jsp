@@ -27,7 +27,7 @@
 		<fieldset class="form">
 		<h2 class="formLegend"><s:text name="%{scope}.Info.heading" /></h2>
 		<ol>
-			<li><label><s:text name="%{scope}.Info.Active" />:</label> <s:property value="contractor.status"/></li>
+			<li><label><s:text name="global.Active" />:</label> <s:property value="contractor.status"/></li>
 			<li><label title="The Date the Account was Created."><s:text name="%{scope}.Info.RegistrationDate" />:</label> <s:date
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
 			<li><label title="The Date the Activation/Reactivation Fee was Paid."><s:text name="%{scope}.Info.ActivationDate" />:</label> <s:date

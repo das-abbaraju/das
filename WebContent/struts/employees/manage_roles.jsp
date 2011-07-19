@@ -108,7 +108,7 @@ $(function() {
 					<thead>
 						<tr>
 							<th><s:text name="%{scope}.label.JobRole" /></th>
-							<th><s:text name="%{scope}.label.Active" /></th>
+							<th><s:text name="global.Active" /></th>
 						</tr>
 					</thead>
 					<tbody>

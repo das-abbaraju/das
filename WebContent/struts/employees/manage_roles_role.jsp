@@ -7,7 +7,7 @@
 	<h2 class="formLegend"><s:text name="%{scope}.label.DefineRole" /></h2>
 	<ol>
 		<li><label><s:text name="%{scope}.label.JobRole" />:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
-		<li><label><s:text name="%{scope}.label.Active" />:</label> <s:checkbox name="role.active" value="role.active" /> </li>
+		<li><label><s:text name="global.Active" />:</label> <s:checkbox name="role.active" value="role.active" /> </li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">

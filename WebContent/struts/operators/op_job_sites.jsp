@@ -180,7 +180,7 @@ $(function() {
 	<tr>
 		<td style="padding-right: 10px;">
 			<h3><s:text name="%{scope}.label.Projects" /></h3>
-			<h4><s:text name="%{scope}.label.Active" /></h4>
+			<h4><s:text name="global.Active" /></h4>
 			<table class="report">
 				<thead>
 					<tr><th></th>
