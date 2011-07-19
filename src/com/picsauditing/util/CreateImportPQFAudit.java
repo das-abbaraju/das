@@ -52,6 +52,23 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 
 		// Does the contractor have a competitor membership?
 		if (contractor.getCompetitorMembership() == null || contractor.getCompetitorMembership() == true) {
+			// if contractor doesn't have a fee, create it
+			if (!contractor.getFees().containsKey(fee.getFeeClass())) {
+				ContractorFee newConFee = new ContractorFee();
+				newConFee.setAuditColumns(permissions);
+				newConFee.setContractor(contractor);
+				newConFee.setCurrentAmount(initialFee.getAmount());
+				newConFee.setNewAmount(fee.getAmount());
+				newConFee.setCurrentLevel(initialFee);
+				newConFee.setNewLevel(fee);
+				newConFee.setFeeClass(fee.getFeeClass());
+				invoiceFeeDAO.save(newConFee);
+
+				contractor.getFees().put(fee.getFeeClass(), newConFee);
+
+				contractor.syncBalance();
+			}
+
 			// Did the contractor already pay the ImportPQF fee?
 			// Safety check if they make multiple requests
 			boolean hasImportInvoice = false;
@@ -65,61 +82,46 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				}
 			}
 
-			if (!contractor.getFees().containsKey(fee.getFeeClass()) && !hasImportInvoice) {
-				if (newRegistration) {
-					ContractorFee newConFee = new ContractorFee();
-					newConFee.setAuditColumns(permissions);
-					newConFee.setContractor(contractor);
-					newConFee.setCurrentAmount(initialFee.getAmount());
-					newConFee.setNewAmount(fee.getAmount());
-					newConFee.setCurrentLevel(initialFee);
-					newConFee.setNewLevel(fee);
-					newConFee.setFeeClass(fee.getFeeClass());
-					invoiceFeeDAO.save(newConFee);
+			// New registration invoices are handled during the registration process
+			if (!hasImportInvoice && !newRegistration) {
+				Invoice invoice = new Invoice();
+				invoice.setAccount(contractor);
+				invoice.setCurrency(contractor.getCurrency());
+				invoice.setDueDate(new Date());
+				invoice.setTotalAmount(fee.getAmount());
+				invoice.setNotes("Thank you for doing business with PICS!");
+				invoice.setAuditColumns(permissions);
+				invoice.setQbSync(true);
+				invoiceDAO.save(invoice);
 
-					contractor.getFees().put(fee.getFeeClass(), newConFee);
-				} else {
-					Invoice invoice = new Invoice();
-					invoice.setAccount(contractor);
-					invoice.setCurrency(contractor.getCurrency());
-					invoice.setDueDate(new Date());
-					invoice.setTotalAmount(fee.getAmount());
-					invoice.setNotes("Thank you for doing business with PICS!");
-					invoice.setAuditColumns(permissions);
-					invoice.setQbSync(true);
-					invoiceDAO.save(invoice);
+				InvoiceItem item = new InvoiceItem(fee);
+				item.setInvoice(invoice);
+				item.setAuditColumns(permissions);
+				invoiceFeeDAO.save(item);
+				invoice.getItems().add(item);
 
-					InvoiceItem item = new InvoiceItem(fee);
-					item.setInvoice(invoice);
-					item.setAuditColumns(permissions);
-					invoiceFeeDAO.save(item);
-					invoice.getItems().add(item);
+				contractor.getInvoices().add(invoice);
 
-					contractor.getInvoices().add(invoice);
+				// Emailing Invoice to Contractor
+				try {
+					EmailQueue email = EventSubscriptionBuilder
+							.contractorInvoiceEvent(contractor, invoice, permissions);
 
-					// Emailing Invoice to Contractor
-					try {
-						EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice,
-								permissions);
-
-						String inote = "ImportPQF Invoice emailed to " + email.getToAddresses();
-						if (!Strings.isEmpty(email.getCcAddresses()))
-							inote += " and cc'd " + email.getCcAddresses();
-						Note note = new Note(invoice.getAccount(), getUser(), inote);
-						note.setNoteCategory(NoteCategory.Billing);
-						note.setCanContractorView(true);
-						note.setViewableById(Account.PicsID);
-						noteDAO.save(note);
-					} catch (Exception e) {
-						Note note = new Note(invoice.getAccount(), getUser(), "Failed to send ImportPQF Invoice Email");
-						note.setNoteCategory(NoteCategory.Billing);
-						note.setCanContractorView(true);
-						note.setViewableById(Account.PicsID);
-						noteDAO.save(note);
-					}
+					String inote = "ImportPQF Invoice emailed to " + email.getToAddresses();
+					if (!Strings.isEmpty(email.getCcAddresses()))
+						inote += " and cc'd " + email.getCcAddresses();
+					Note note = new Note(invoice.getAccount(), getUser(), inote);
+					note.setNoteCategory(NoteCategory.Billing);
+					note.setCanContractorView(true);
+					note.setViewableById(Account.PicsID);
+					noteDAO.save(note);
+				} catch (Exception e) {
+					Note note = new Note(invoice.getAccount(), getUser(), "Failed to send ImportPQF Invoice Email");
+					note.setNoteCategory(NoteCategory.Billing);
+					note.setCanContractorView(true);
+					note.setViewableById(Account.PicsID);
+					noteDAO.save(note);
 				}
-
-				contractor.syncBalance();
 			}
 
 			// Does the contractor already have this audit?
@@ -133,6 +135,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				}
 			}
 
+			// creating import PQF
 			if (!hasImportPQFAudit) {
 				ContractorAudit importAudit = new ContractorAudit();
 				importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
@@ -140,17 +143,6 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				importAudit.setAuditColumns(permissions);
 				importAudit.setContractorAccount(contractor);
 				contractor.getAudits().add(importAudit);
-				// auditDao.save(importAudit);
-
-				// I don't think we need this. Audit Builder handles CAOPs and CAO localization
-				// ContractorAuditOperator cao = new ContractorAuditOperator();
-				// cao.setAudit(importAudit);
-				// cao.setOperator(new OperatorAccount());
-				// cao.getOperator().setId(4);
-				// contractorAuditOperatorDAO.save(cao);
-				// ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-				// caop.setCao(cao);
-				// caop.setOperator(cao.getOperator());
 
 				auditBuilder.buildAudits(contractor);
 				auditPercentCalculator.percentCalculateComplete(importAudit);
@@ -174,7 +166,8 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			}
 		}
 
-		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url+"?newRegistration=true");
+		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url
+				+ "?newRegistration=true");
 		return BLANK;
 	}
 
