@@ -16,4 +16,4 @@ update app_properties set value = 'ccprocessora' where property = 'brainTree.pro
 update app_properties set value = 'ccprocessorb' where property = 'brainTree.processor_id.canada';
 
 /* Update the date loaded for this database */
-UPDATE app_properties SET VALUE = NOW() WHERE property = 'PICS.db.dateLoaded';
+UPDATE app_properties SET value = NOW() WHERE property = 'PICS.db.dateLoaded';
