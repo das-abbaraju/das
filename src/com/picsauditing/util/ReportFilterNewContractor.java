@@ -133,8 +133,8 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	}
 
 	// Lists
-	public String[] getHandledByList() throws Exception {
-		return new String[] { WaitingOn.PICS.name(), WaitingOn.Operator.name() };
+	public WaitingOn[] getHandledByList() throws Exception {
+		return new WaitingOn[] { WaitingOn.PICS, WaitingOn.Operator };
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

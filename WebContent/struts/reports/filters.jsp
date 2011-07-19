@@ -274,7 +274,7 @@
 
 	<s:if test="filter.showHandledBy">
 		<div class="filterOption">
-			<s:select list="filter.handledByList" headerKey="" headerValue="- %{getText('Filters.header.FollowUpBy')} -"
+			<s:select list="filter.handledByList" listValue="%{getText(i18nKey)}" headerKey="" headerValue="- %{getText('Filters.header.FollowUpBy')} -"
 				cssClass="forms" name="filter.handledBy" />
 		</div>
 	</s:if>
