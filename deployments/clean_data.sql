@@ -14,3 +14,6 @@ update app_properties set value = 'picstest' where property = 'brainTree.usernam
 update app_properties set value = 'password1' where property = 'brainTree.password';
 update app_properties set value = 'ccprocessora' where property = 'brainTree.processor_id.us';
 update app_properties set value = 'ccprocessorb' where property = 'brainTree.processor_id.canada';
+
+/* Update the date loaded for this database */
+UPDATE app_properties SET VALUE = NOW() WHERE property = 'PICS.db.dateLoaded';
