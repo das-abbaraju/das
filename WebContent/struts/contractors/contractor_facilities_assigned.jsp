@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<s:if test="contractor.needsToIndicateCompetitor">
+<s:if test="permissions.contractor && contractor.needsToIndicateCompetitor">
 	<div class="info"><p><strong>Are you a member of CanQual or ComplyWorks?</strong></p>
 		<span>
 			<a href="#" class="picsbutton positive"
