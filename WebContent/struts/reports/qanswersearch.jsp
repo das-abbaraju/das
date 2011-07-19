@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Question Answer Search</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
@@ -20,8 +20,8 @@ function getQuestionList() {
 		});
 }
 
-function autoGetQuestion(ele) {
-	if (ele.value.length > 3) {
+function autoGetQuestion(value) {
+	if (value.length > 3) {
 		if (myTimer != null)
 			clearTimeout(myTimer);
 		myTimer = setTimeout("getQuestionList()",500);
@@ -32,10 +32,30 @@ function setId(Id) {
 	$('#removeQuestionId').val(Id);
 	return true;
 }
+
+$(function() {
+	$('#searchButton').live('click', function() {
+		getQuestionList();
+	});
+	
+	$('.filterOption.negative').live('click', function() {
+		var id = $(this).attr('id').split('_')[1];
+		return setId(id);
+	});
+	
+	$('#questionSelect').live('keyup', function() {
+		autoGetQuestion($(this).val());
+	});
+	
+	$('#orderByName').live('click', function(e) {
+		e.preventDefault();
+		changeOrderBy('form1','a.name');
+	})
+});
 </script>
 </head>
 <body>
-<h1>Question Answer Search</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <div id="search">
 <s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch($('#form1'))">
@@ -46,6 +66,8 @@ function setId(Id) {
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
 	<input type="hidden" value="" id="removeQuestionId" name="removeQuestionId">
+	
+	<input type="button" id="searchButton" class="picsbutton positive" value="<s:text name="button.Search" />"/><span id="thinking"></span><br/>
 
 	<s:iterator value="questions" status="stat">
 		<div class="filterOption">
@@ -54,15 +76,14 @@ function setId(Id) {
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
 				<s:if test="columnHeader != null && columnHeader.size() > 0"><s:property value="columnHeader"/>: </s:if><s:property value="expandedNumber"/>: <s:property value="name"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
-				<button type="submit" class="picsbutton negative" name="button" value="Remove" onclick="javascript : return setId(<s:property value="id"/>);">Remove</button>
+				<button type="submit" class="picsbutton negative" name="button" value="Remove" id="<s:property value="id"/>"><s:text name="button.Remove" /></button>
 			</div>
 		</div>
 	</s:iterator>
 	<br clear="all"/>
 	<div class="filterOption">
-		Select a Question
-		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" onkeyup="autoGetQuestion(this)" /> 
-		<input type="button" value="Search" onclick="getQuestionList()"/> <span id="thinking"></span><br/>
+		<s:text name="%{scope}.label.SelectAQuestion" />
+		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" /> 
 		<div id="selected_question">&nbsp;</div>
 	</div>
 
@@ -75,12 +96,13 @@ function setId(Id) {
 
 <s:if test="data.size > 0">
 	<pics:permission perm="ContractorDetails">
-		<div class="right"><a 
-		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
-		href="javascript: download('QuestionAnswerSearch');" 
-		title="Download all <s:property value="report.allRows"/> results to a CSV file"
-		>Download</a></div>
+		<div class="right">
+			<a class="excel" 
+				<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+				href="javascript: download('QuestionAnswerSearch');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+				<s:text name="global.Download" />
+			</a>
+		</div>
 	</pics:permission>
 </s:if>
 
@@ -90,7 +112,7 @@ function setId(Id) {
 	<thead>
 	<tr>
 		<td></td>
-		<td colspan="2"><a href="javascript: changeOrderBy('form1','a.name');" >Contractor Name</a></td>
+		<td colspan="2"><a id="orderByName" href="#"><s:text name="global.CompanyName" /></a></td>
 		<s:iterator value="questions">
 			<td><s:property value="columnHeaderOrQuestion"/></td>
 		</s:iterator>

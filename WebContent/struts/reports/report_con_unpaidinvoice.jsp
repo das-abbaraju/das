@@ -30,21 +30,21 @@ $(function() {
 		<s:hidden name="orderBy" />
 	
 		<div class="filterOption">
-			Select a Contractor :
+			<s:text name="%{scope}.label.SelectAContractor" />:
 			<s:textfield id="selected_contractor" cssClass="forms" name="filter.accountName" size="60" onfocus="clearText(this)"/> 
 		</div>
 
 		<br clear="all"/>
 		<div class="filterOption">
-			Invoice ID :
+			<s:text name="%{scope}.label.InvoiceID" />:
 			<s:textfield cssClass="forms" name="invoiceID" size="15" onfocus="clearText(this)"/> 
 		</div>
 
 		<div class="filterOption">
-			<s:radio list="#{'All':'All','Paid':'Paid','Unpaid':'Unpaid','Void':'Void'}" name="transactionStatus" cssClass="forms" theme="pics"/> 
+			<s:radio list="#{'All':getText(scope+'.status.All'),'Paid':getText(scope+'.status.Paid'),'Unpaid':getText(scope+'.status.Unpaid'),'Void':getText(scope+'.status.Void')}" name="transactionStatus" cssClass="forms" theme="pics"/> 
 		</div>
 		<div>
-			<input type="submit" class="picsbutton positive" name="button" value="Search"/>
+			<input type="submit" class="picsbutton positive" name="button" value="<s:text name="button.Search" />"/>
 		</div>
 		<br clear="all" />
 </s:form>
@@ -58,13 +58,13 @@ $(function() {
 	<thead>
 	<tr>
 		<td></td>
-	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <th>Address</th>
-		<th><a href="javascript: changeOrderBy('form1','i.id');">Invoice #</a></th>
-		<th><a href="javascript: changeOrderBy('form1','totalAmount DESC');">Invoice Total</a></th>
-		<th>Balance</th>
-		<th><a href="javascript: changeOrderBy('form1','dueDate');">Due Date</a></th>
-		<th>Status</th>
+	    <th><a href="javascript: changeOrderBy('form1','a.name');" ><s:text name="global.Contractor" /></a></th>
+	    <th><s:text name="global.Address" /></th>
+		<th><a href="javascript: changeOrderBy('form1','i.id');"><s:text name="%{scope}.label.InvoiceNumber" /></a></th>
+		<th><a href="javascript: changeOrderBy('form1','totalAmount DESC');"><s:text name="%{scope}.label.InvoiceTotal" /></a></th>
+		<th><s:text name="%{scope}.label.Balance" /></th>
+		<th><a href="javascript: changeOrderBy('form1','dueDate');"><s:text name="%{scope}.label.DueDate" /></a></th>
+		<th><s:text name="global.Status" /></th>
 	</tr>
 	</thead>
 	<tbody>
