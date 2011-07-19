@@ -32,12 +32,6 @@ $(function() {
 </head>
 <body>
 
-<div id="locales">
-<a href="?request_locale=en">English</a>
-<a href="?request_locale=fr">Français</a>
-<a href="?request_locale=es">Español</a>
-</div>
-
 <s:include value="login_form.jsp"/>
 
 </body>

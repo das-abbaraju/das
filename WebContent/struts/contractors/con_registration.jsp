@@ -116,11 +116,6 @@ $(function(){
 </script>
 </head>
 <body>
-<div id="locales">
-<a href="?request_locale=en">English</a>
-<a href="?request_locale=fr">Français</a>
-<a href="?request_locale=es">Español</a>
-</div>
 <s:if test="debugging"><!-- We can remove this once we've release i18n --> </s:if>
 
 <s:include value="registrationHeader.jsp"></s:include>
