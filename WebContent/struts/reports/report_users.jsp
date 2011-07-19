@@ -1,11 +1,12 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>User Search</title>
+<title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>User Search</h1>
+<h1><s:text name="%{scope}.title" /></h1>
 
 <s:include value="userfilters.jsp" />
 

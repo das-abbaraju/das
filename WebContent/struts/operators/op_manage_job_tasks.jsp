@@ -87,14 +87,14 @@ $(function() {
 	</div>
 	<div class="filterOption">
 		<a href="#" onclick="toggleBox('form1_taskType'); return false;"><s:text name="JobTask.taskType" /></a> =
-		<span id="form1_taskType_query">ALL</span>
+		<span id="form1_taskType_query"><s:text name="JS.Filters.status.All" /></span>
 		<br />
 		<span id="form1_taskType_select" style="display: none" class="clearLink">
 			<s:select list="filter.taskTypeList" multiple="true" cssClass="forms"
 				name="filter.taskType" id="form1_taskType" />
 			<br />
 			<script type="text/javascript">updateQuery('form1_taskType');</script>
-			<a class="clearLink" href="#" onclick="clearSelected('form1_taskType'); return false;">Clear</a>
+			<a class="clearLink" href="#" onclick="clearSelected('form1_taskType'); return false;"><s:text name="Filters.status.Clear" /></a>
 		</span>
 	</div>
 </s:form>
