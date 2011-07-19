@@ -313,7 +313,7 @@ public class ContractorAudit extends BaseTable {
 		} else if (auditType.getId() == AuditType.COR) {
 			return daysToExpiration <= 45;
 		} else {
-			return daysToExpiration <= 60;
+			return daysToExpiration <= 90;
 		}
 	}
 
