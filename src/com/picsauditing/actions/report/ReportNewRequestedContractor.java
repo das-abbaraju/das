@@ -48,6 +48,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		getFilter().setShowProductRiskLevel(false);
 		getFilter().setShowTrade(false);
 		getFilter().setPermissions(permissions);
+		getFilter().setShowOpen(false);
 
 		buildQuery();
 		addFilterToSQL();
@@ -177,11 +178,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getOpen())) {
-			sql.addWhere("cr.open = " + f.getOpen());
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getHandledBy())) {
 			sql.addWhere("cr.handledBy = '" + f.getHandledBy() + "'");
 			setFiltered(true);
@@ -213,12 +209,32 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
 			sql.addWhere(f.getCustomAPI());
+		
+		if (filterOn(f.getRequestStatus())){
+			String status = f.getRequestStatus();
+			if ("Active".equals(status)){
+				sql.addWhere("cr.open = true");
+				sql.addWhere("ISNULL(cr.holdDate)");
+			}
+			else if ("Hold".equals(status)){
+				sql.addWhere("cr.open = true");
+				sql.addWhere("!ISNULL(cr.holdDate)");
+			}
+			else if ("Closed Unsuccessful".equals(status)){
+				sql.addWhere("cr.open = false");
+				sql.addWhere("ISNULL(cr.conID)");
+			}
+			else if ("Closed Successful".equals(status)){
+				sql.addWhere("cr.open = false");
+				sql.addWhere("!ISNULL(cr.conID)");
+			}
+		}
 	}
 
 	public ReportFilterNewContractor getFilter() {
 		return filter;
 	}
-
+	
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 

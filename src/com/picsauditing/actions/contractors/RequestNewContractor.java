@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +31,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
+import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
@@ -54,9 +56,11 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -100,6 +104,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected State state;
 	protected EmailTemplate template;
 	protected List<ContractorAccount> potentialMatches;
+	protected String status;
 
 	protected String term;
 	protected String type;
@@ -115,7 +120,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail",
 			"RequestedByOperator", "RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress",
 			"ContractorCity", "ContractorState", "ContractorZip", "ContractorCountry", "CSRName", "CSREmail",
-			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature", };
+			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature", "RegistrationReason"};
 
 	private String[] noteReason = new String[] { "The Contractor doesn't want to register",
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
@@ -163,7 +168,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				+ "Fax: " + permissions.getPicsCustomerServiceFax()
 				+ "\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
 				+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
-
+		status = newContractor.getStatus();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -276,10 +281,41 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			addActionError("Please select a Registration Deadline date");
 		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
 			addActionError("Please enter a Registration Reason");
+
+		if (increaseContactCount)
+			newContractor.contact();
+
+		if (!status.equals("Hold")) {
+			newContractor.setHoldDate(null);
+		} else {
+			if (newContractor.getHoldDate() == null) {
+				addActionError("Please enter a Hold Date");
+			}
+
+			else if ("Active".equals(newContractor.getStatus())) {
+				addToNotes = "Request set to hold until " + maskDateFormat(newContractor.getHoldDate());
+				String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
+					+ "request&requestID=" + newContractor.getId();
+				
+				sendHoldEmail(requestLink);
+			}
+		}
+
+		if (!status.equals("Closed Unsuccessful"))
+			newContractor.setReasonForDecline(null);
+		else if (Strings.isEmpty(newContractor.getReasonForDecline()))
+			addActionError("Please enter a Reason Declined");
+
+		if (status.equals("Active") || status.equals("Hold"))
+			newContractor.setOpen(true);
+		else
+			newContractor.setOpen(false);
+
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
 
+		newContractor.setStatus(status);
 		if (country != null && !country.equals(newContractor.getCountry()))
 			newContractor.setCountry(country);
 		if (state != null && !state.equals(newContractor.getState()))
@@ -371,20 +407,44 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				return SUCCESS;
 		}
 
-		if (increaseContactCount)
-			newContractor.contact();
-
 		newContractor = crrDAO.save(newContractor);
 
 		return SUCCESS;
 	}
 
+	private void sendHoldEmail(String requestLink) throws IOException {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(163);
+		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+
+		emailBuilder.setToAddresses(newContractor.getEmail());
+		emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+		emailBuilder.addToken("con", newContractor);
+		emailBuilder.addToken("op", newContractor.getRequestedBy());
+		emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
+		emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
+		emailBuilder.addToken("holdDate", maskDateFormat(newContractor.getHoldDate()));
+		emailBuilder.addToken("link", requestLink);
+		
+		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+		EmailQueue email = emailBuilder.build();
+		email.setPriority(30);
+		email.setViewableById(Account.PicsID);
+		emailQueueDAO.save(email);
+	}
+
 	public String phone() throws Exception {
-		System.out.println("made it here");
-		//reset addToNotes.
+
+		if (Strings.isEmpty(addToNotes))
+			addActionError("Please enter additional notes");
+
+		// Temporarily save add to notes and reset the instance field.
 		String addToNotes = this.addToNotes;
 		this.addToNotes = null;
-		return contact("Contacted by phone: " + addToNotes);
+
+		if (getActionErrors().size() == 0)
+			return contact("Contacted by phone: " + addToNotes);
+		return SUCCESS;
 	}
 
 	public String email() throws Exception {
@@ -397,9 +457,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		if (getActionErrors().size() == 0)
-			return contact("Contacted by email.");
-		else
-			return SUCCESS;
+			newContractor.setNotes(prepend("Contacted by email", newContractor.getNotes()));
+		return SUCCESS;
 	}
 
 	private String contact(String notes) {
@@ -414,55 +473,33 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public String returnToOperator() {
-		// TODO email operator
 		if (newContractor.getRequestedByUser() != null || Strings.isValidEmail(newContractor.getRequestedByUserOther())) {
-			User am = null;
-			for (AccountUser au : newContractor.getRequestedBy().getAccountUsers()) {
-				if (au.isCurrent() && au.getRole().equals(UserAccountRole.PICSAccountRep))
-					am = au.getUser();
-			}
-
-			String subject = "Unsuccessful in having " + newContractor.getName() + " register at PICS";
-
-			String body = "<html><head><title>" + subject + "</title></head><body>";
-			body += "<table style=\"border-bottom: 1px solid rgb(123, 160, 205);\" width=\"900px\" cellpadding=\"5\" cellspacing=\"0\">"
-					+ "<tr><td style=\"border: 1px solid rgb(93, 155, 206); background-color: rgb(93, 155, 206); "
-					+ "color: rgb(255, 255, 255); width: 900px; text-align: left; padding-left:1em\" colspan=\"2\">"
-					+ "<b>" + subject + "</b></td></tr>";
-			body += "<tr><td style=\"border-left: 1px solid rgb(93, 155, 206); "
-					+ "border-right: 1px solid rgb(93, 155, 206); width: 900px; text-align: left; "
-					+ "vertical-align: top; padding-left: 1em; padding-right: 1em;\" colspan=\"2\">"
-					+ "<p><img height=\"90\" width=\"205\" alt=\"logo-pics\" "
-					+ "src=\"http://www.picsauditing.com/wp-content/themes/PICS/style/images/logo-pics.jpg\">";
-			body += "<br/>Hello " + newContractor.getRequestedByUserString() + ",<br/><br/>";
-			body += getAssignedCSR().getName() + " at PICS was unsuccessful in having " + newContractor.getName()
-					+ " to register for your prequalification program. ";
-			body += "If you would still like to utilize the services of " + newContractor.getName()
-					+ " at your site, we request you to intervene and encourage the contractor to "
-					+ "register with PICS.<br /><br />";
-			if (am != null)
-				body += "If you have further questions, please feel free to contact your PICS Account Manager "
-						+ am.getName() + ".<br /><br />";
-			body += "Thank you and have a great day!<br />PICS Customer Service Team<br />"
-					+ permissions.getPicsCustomerServicePhone() + "</p></td></tr></table></body></html>";
-
-			String email = newContractor.getRequestedByUser() != null ? newContractor.getRequestedByUser().getEmail()
-					: newContractor.getRequestedByUserOther();
-
-			EmailQueue emailQueue = new EmailQueue();
-			emailQueue.setSubject(subject);
-			emailQueue.setBody(body);
-			emailQueue.setToAddresses(email);
-			emailQueue.setFromAddress(getAssignedCSR().getName() + " at PICS <" + getAssignedCSR().getEmail() + ">");
-			emailQueue.setHtml(true);
-			emailQueue.setViewableBy(newContractor.getRequestedBy());
-
+			
+			String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
+				+ "request&requestID=" + newContractor.getId();
+			
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(165);
+			emailBuilder.setToAddresses(newContractor.getEmail());
+			emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+			emailBuilder.addToken("con", newContractor);
+			emailBuilder.addToken("op", newContractor.getRequestedBy());
+			emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
+			emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
+			emailBuilder.addToken("link", requestLink);
+			
 			try {
-				EmailSender.send(emailQueue);
+				EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(30);
+				email.setViewableById(Account.PicsID);
+				emailQueueDAO.save(email);
 			} catch (Exception e) {
 				addActionError("Unable to send email notification to operator");
 				return SUCCESS;
 			}
+
 		}
 
 		newContractor.setHandledBy(WaitingOn.Operator);
@@ -472,21 +509,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return "backToReport";
 	}
 
-	public String close() {
-		// Last minute notes?
-		if (!Strings.isEmpty(addToNotes)) {
-			newContractor.setNotes(prepend(addToNotes, newContractor.getNotes()));
-			addToNotes = null;
-		}
-
-		if (newContractor.getResult().equals("Unsuccessful") && Strings.isEmpty(newContractor.getReasonForDecline()))
-			addActionError("Please fill out why the contractor declined the request.");
-
-		if (getActionErrors().size() > 0)
-			return SUCCESS;
-
-		newContractor.setNotes(prepend("Closed the request.", newContractor.getNotes()));
-		newContractor.setOpen(false);
+	public String returnToPICS() {
+		newContractor.setHandledBy(WaitingOn.PICS);
 		newContractor.setAuditColumns(permissions);
 		newContractor = crrDAO.save(newContractor);
 
@@ -858,7 +882,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				newContractor.getState() == null ? null : newContractor.getState().getEnglish(),
 				newContractor.getZip(), newContractor.getCountry().getEnglish(), csr != null ? csr.getName() : null,
 				csr != null ? csr.getEmail() : null, csr != null ? csr.getPhone() : null,
-				maskDateFormat(newContractor.getDeadline()), requestLink, picsSignature };
+				maskDateFormat(newContractor.getDeadline()), requestLink, picsSignature,
+				newContractor.getReasonForRegistration()};
 
 		if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
 			// Operator Request for Registration
@@ -878,8 +903,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setPriority(80);
 		emailQueue.setHtml(template.isHtml());
 
-		emailQueue.setFromAddress(csr == null ? "PICS Auditing <info@picsauditing.com>" : csr.getName() + " <"
-				+ csr.getEmail() + ">");
+		emailQueue.setFromAddress("PICS Auditing <info@picsauditing.com>");
 		emailQueue.setToAddresses(newContractor.getContact() + " <" + newContractor.getEmail() + ">");
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
@@ -959,5 +983,13 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

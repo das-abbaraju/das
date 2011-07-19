@@ -31,6 +31,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -44,6 +45,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -56,6 +58,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.SpringUtils;
@@ -79,6 +82,8 @@ public class Cron extends PicsActionSupport {
 	@Autowired
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO = null;
 	@Autowired
+	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO = null;
+	@Autowired
 	protected NoteDAO noteDAO = null;
 	@Autowired
 	protected InvoiceDAO invoiceDAO = null;
@@ -98,6 +103,8 @@ public class Cron extends PicsActionSupport {
 
 	protected boolean flagsOnly = false;
 
+	private Database db = new Database();
+	
 	@Anonymous
 	public String execute() throws Exception {
 
@@ -260,6 +267,13 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nSending Report Email to Auditors about Obsolete Scheduled Audits...");
 			sendObsoleteScheduleAuditEmail();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		try {
+			startTask("\nSending Report Emails to Registration Reqeusts Which Have Moved from Hold to Active");
+			checkRegistratoinRequestHoldDate();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -577,4 +591,22 @@ public class Cron extends PicsActionSupport {
 		rosa.execute();
 	}
 
+	public void checkRegistratoinRequestHoldDate() throws Exception {
+
+		SelectSQL selectCons = new SelectSQL("contractor_registration_request rr");
+		selectCons.addField("rr.id");
+
+		selectCons.addWhere("rr.holdDate <= CURRENT_TIMESTAMP");
+		selectCons.addWhere("rr.open = true");
+		
+		List<BasicDynaBean> cons = db.select(selectCons.toString(), false);
+		for (BasicDynaBean c : cons) {
+
+			ContractorRegistrationRequest conReq = contractorRegistrationRequestDAO.find((Integer) c.get("id"));			
+			
+			conReq.setNotes("\n" + maskDateFormat(conReq.getHoldDate())
+					+ " - System - Request status changed from Hold to Active." + "\n" + "\n" + conReq.getNotes());
+			conReq.setHoldDate(null);
+		}
+	}
 }

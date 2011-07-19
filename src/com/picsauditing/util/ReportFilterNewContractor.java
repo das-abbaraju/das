@@ -21,6 +21,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
 	protected boolean showCreationDate = true;
+	protected boolean showRequestStatus = true;
 
 	protected int open = 1;
 	protected String handledBy;
@@ -28,6 +29,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean viewAll = false;
 	protected Date creationDate1;
 	protected Date creationDate2;
+	protected String requestStatus = "Active";
 
 	@Override
 	public void setPermissions(Permissions permissions) {
@@ -82,6 +84,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	public void setShowCreationDate(boolean showCreationDate) {
 		this.showCreationDate = showCreationDate;
 	}
+	
+	public boolean isShowRequestStatus() {
+		return showRequestStatus;
+	}
+
+	public void setShowRequestStatus(boolean showRequestStatus) {
+		this.showRequestStatus = showRequestStatus;
+	}
 
 	// Parameters
 	public int getOpen() {
@@ -130,6 +140,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setCreationDate2(Date creationDate2) {
 		this.creationDate2 = creationDate2;
+	}
+
+	public String getRequestStatus() {
+		return requestStatus;
+	}
+
+	public void setRequestStatus(String requestStatus) {
+		this.requestStatus = requestStatus;
 	}
 
 	// Lists

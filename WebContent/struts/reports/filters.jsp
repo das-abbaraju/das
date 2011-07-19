@@ -78,6 +78,13 @@
 		</div>
 	</s:if>
 	
+	<s:if test="filter.showRequestStatus">
+		<div class="filterOption">
+			<span><s:text name="Filters.label.Status" /> =</span>
+			<s:select cssClass="forms" list="#{'All':'All', 'Active':'Active', 'Hold':'Hold','Closed Successful':'Closed Successful','Closed Unsuccessful':'Closed Unsuccessful'}" name="filter.requestStatus" />
+		</div>
+	</s:if>
+	
 	<s:if test="filter.showOfficeIn">
 		<div class="filterOption">
 			<a href="#"class="filterBox"><s:text name="Filters.label.OfficeInStateProvince" /></a> =

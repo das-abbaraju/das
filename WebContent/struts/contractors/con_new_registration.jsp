@@ -115,7 +115,9 @@ var chooseADate = '<s:text name="javascript.ChooseADate" />';
 
 $(function() {
 	$('#notesHere').hide();
-	enableDisableReasonDeclined();
+
+	hideShow();
+	
 	$('#phone').click(function() { 
         $.blockUI({ message: $('#phoneSubmit') }); 
  
@@ -283,16 +285,16 @@ function checkUserOther() {
 		$("#requestedOther").hide();
 }
 
-function checkDate(){
-	var date = $('.datepicker').val();
+function checkDate(input){
+	var date = $(input).val();
 	date = new Date(date);
 	if(date==null){
 		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
-		$('.datepicker').val(newDate);
+		$(input).val(newDate);
 	}
 	if(date < new Date()){
 		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
-		$('.datepicker').val(newDate);
+		$(input).val(newDate);
 	}
 }
 
@@ -327,11 +329,20 @@ function getMatches(requestID) {
 	$('#potentialMatches').append('<img src="images/ajax_process.gif" style="border: none;" />');
 	$('#potentialMatches').load('RequestNewContractorAjax.action', data);
 }
-function enableDisableReasonDeclined() {
-	if ($('#result :selected').text() == "Unsuccessful")
-		$('#reasonForDecline').removeAttr("disabled");
-	else
-		$('#reasonForDecline').attr("disabled","disabled");
+function hideShow(){
+	if ($('#status :selected').text() == "Hold") {
+		$('#reasonDeclinedLi').hide();
+		$('#holdDateLi').show();
+	}
+	else if ($('#status :selected').text() == "Closed Unsuccessful"){
+		$('#holdDateLi').hide();
+		$('#reasonDeclinedLi').show();
+	}
+	else {
+		$('#reasonDeclinedLi').hide();
+		$('#holdDateLi').hide();
+	}
+	
 }
 </script>
 </head>
@@ -358,12 +369,6 @@ function enableDisableReasonDeclined() {
 			</s:param>
 		</s:text>
 	</s:if> <s:if test="newContractor.open">
-		<s:form>
-			<s:hidden name="requestID" />
-			<s:submit action="RequestNewContractor!close"
-				value="%{getText(scope + '.button.CloseRequest')}"
-				cssClass="picsbutton positive" />
-		</s:form>
 	</s:if> <s:else>
 		<s:text name="%{scope}.message.RequestClosed" />
 	</s:else></div>
@@ -511,6 +516,15 @@ function enableDisableReasonDeclined() {
 			test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
 			<script type="text/javascript">updateUsersList();</script>
 		</s:if></li>
+		<!--
+		 <li>
+			<label><s:text name="%{scope}.label.emailFromOperator" />:</label>
+			<s:checkbox name="newContractor.emailFromOperator" />
+			<div class="fieldhelp">
+				<h3><s:text name="%{scope}.label.emailFromOperator" /></h3>
+				<p><s:text name="%{scope}.help.emailFromOperator" /></p>
+			</div>
+		</li> -->
 		<s:if
 			test="newContractor.requestedByUser != null && newContractor.id > 0">
 			<li><label><s:text name="%{scope}.label.AddToWatchlist" />:</label>
@@ -531,31 +545,11 @@ function enableDisableReasonDeclined() {
 					name="%{scope}.message.MissingWatchPermission" /></div>
 			</s:if></li>
 		</s:if>
-		<s:if test="newContractor.id > 0">
-			<li>
-				<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-				<s:property value="newContractor.status" />
-			</li>
-		</s:if>
 		<li><s:textfield id="regDate" name="newContractor.deadline"
-			cssClass="datepicker" size="10" onchange="checkDate()"
+			cssClass="datepicker" size="10" onchange="checkDate(this)"
 			theme="formhelp" /></li>
-		<li><label><s:text name="%{scope}.label.pastFuture" />:</label>
-		<s:radio list="#{'false':'Past', 'true':'Future'}"
-			name="newContractor.future" theme="pics" /></li>
 		<li><s:textarea id="reasonForRegistration"
 			name="newContractor.reasonForRegistration" theme="formhelp" /></li>
-		<li><s:if test="newContractor.id > 0">
-			<s:if test="permissions.admin">
-				<s:textfield id="holdDate" name="newContractor.holdDate"
-					cssClass="datepicker" size="10" onchange="checkDate()"
-					theme="formhelp" />
-			</s:if>
-			<s:else>
-				<label><s:text name="ContractorRegistrationRequest.holdDate" />:</label>
-				<s:property value="newContractor.holdDate" />
-			</s:else>
-		</s:if></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form">
@@ -601,8 +595,7 @@ function enableDisableReasonDeclined() {
 				<p><s:text name="%{scope}.help.ReturnToOperator" /></p>
 				</div>
 			</s:if> <s:if test="newContractor.contractor != null">
-				<a
-					href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
+				<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
 				<s:property value="newContractor.contractor.name" /></a>
 			</s:if></li>
 		</s:if>
@@ -637,39 +630,58 @@ function enableDisableReasonDeclined() {
 	</fieldset>
 	<s:if test="newContractor.id > 0">
 	<fieldset class="form">
-		<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.header.CloseRequest" /></h2>
+		<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.label.status" /></h2>
 		<ol>
+		<s:if test="permissions.admin">
 		<li>
-			<label><s:text name="ContractorRegistrationRequest.label.CloseRequest" />:</label>
-			<s:if test="permissions.admin">	
-				<s:select list="#{'Successful':'Successful','Unsuccessful':'Unsuccessful'}"	name="newContractor.result" id = "result" onchange="enableDisableReasonDeclined()"/>
-				<p><s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" /></p>
-			</s:if>
-			<s:else>
-				<p><s:property value="newContractor.result" /></p>
-				<p><s:property value="newContractor.reasonDeclined" /></p>
-			</s:else>
-			<div class = "fieldhelp">
-				<h3><s:text name="ContractorRegistrationRequest.label.CloseRequest" /></h3>	
-				<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
-			</div>	
+			<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
+			<s:select id="status" list="#{'Active':'Active', 'Hold':'Hold','Closed Successful':'Closed Successful','Closed Unsuccessful':'Closed Unsuccessful'}" name="status" onchange="hideShow()"/>
 		</li>
-		</ol>
 		
+		<li id = "holdDateLi">
+			<s:textfield id = "holdDate" name="newContractor.holdDate"	cssClass="datepicker" size="10" onchange="checkDate(this)"	theme="formhelp" />
+		</li>
+		<li id = "reasonDeclinedLi">
+			<label><s:text name="%{scope}.label.reasonForDecline" />:</label>
+			<p><s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" /></p>
+			<div class = "fieldhelp">
+				<h3><s:text name="%{scope}.label.reasonForDecline" /></h3>	
+				<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
+			</div>
+		</li>
+		</s:if>
+		<s:else>
+		<li>
+			<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
+			<s:property value="newContractor.status" />
+		</li>
+		<s:if test="newContractor.status=='Hold'">
+		<li>
+			<label><s:text name="ContractorRegistrationRequest.label.holdDate" />:</label>
+			<s:property value="newContractor.holdDate" />
+		</li>
+		</s:if>
+		<s:if test="newContractor.status=='Closed Unsuccessful'">
+		<li>
+			<label><s:text name="%{scope}.label.reasonForDecline" />:</label>
+			<s:property value="newContractor.reasonForDecline" />
+		</li>
+		</s:if>
+		</s:else>
+		</ol>
 	</fieldset>
 	</s:if>
-	<s:if test="newContractor.status == 'Active' ||newContractor.status == 'Hold'">
-		<fieldset class="form submit"><s:submit
-			value="%{getText('button.Save')}" method="save"
-			cssClass="picsbutton positive" /> <s:if
-			test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-			<s:submit value="%{getText(scope + '.button.CloseRequest')}" method="close" cssClass="picsbutton negative" />
-		</s:if> <s:elseif
-			test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}"
-				method="returnToOperator" cssClass="picsbutton" />
-		</s:elseif></fieldset>
-	</s:if>
+	<fieldset class="form submit">
+		<s:submit value="%{getText('button.Save')}" method="save" cssClass="picsbutton positive" />
+		<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
+		</s:if>
+		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
+			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
+		</s:elseif>
+		<s:if test="permissions.operatorCorporate && newContractor.id > 0 && newContractor.handledBy.toString() == 'Operator'">
+			<s:submit value="%{getText(scope + '.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
+		</s:if>
+	</fieldset>
 </s:form>
 
 <div style="display: none" id="load"></div>
@@ -713,7 +725,6 @@ function enableDisableReasonDeclined() {
 		</p>
 	</s:form>
 </div>
-
 
 </body>
 </html>

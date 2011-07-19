@@ -35,8 +35,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
-	private Boolean future;
-	private String result;
+	private boolean emailFromOperator = false;
+	private String status;
 	private String reasonForDecline;
 	private Date deadline;
 	private Date holdDate;
@@ -45,6 +45,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private int contactCount;
 	private int matchCount;
 	private String notes;
+
 	private ContractorAccount contractor;
 	// Assuming most operators want to watch their contractor after they
 	// register
@@ -198,23 +199,28 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.reasonForRegistration = reasonForRegistration;
 	}
 
-	public boolean isFuture() {
-		return future;
+	@Column(name = "future")
+	public boolean isEmailFromOperator() {
+		return emailFromOperator;
 	}
 
-	public void setFuture(boolean future) {
-		this.future = future;
+	public void setEmailFromOperator(boolean emailFromOperator) {
+		this.emailFromOperator = emailFromOperator;
 	}
 
 	@Transient
-	public String getResult() {
-		if (contractor != null)
-			return "Successful";
-		return "Unsuccessful";
-	}
-
-	public void setResult(String result) {
-		this.result = result;
+	public String getStatus() {
+		if (this.status == null)
+			if (isOpen())
+				if (getHoldDate() != null)
+					status = "Hold";
+				else
+					status = "Active";
+			else if (contractor != null)
+				status = "Closed Successful";
+			else
+				status = "Closed Unsuccessful";
+		return status;
 	}
 
 	public String getReasonForDecline() {
@@ -311,15 +317,8 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		contactCount = contactCount + 1;
 	}
 
-	@Transient
-	public String getStatus() {
-		if (isOpen())
-			if (getHoldDate() != null)
-				return "Hold";
-			else
-				return "Active";
-		else
-			return "Closed " + getResult();
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
