@@ -78,20 +78,20 @@ public class PicsMenu {
 					subMenu = menu.addChild("Edit");
 					subMenu.addChild("Company Account", "ContractorEdit.action");
 					subMenu.addChild("Users", "UsersManage.action");
-					subMenu.addChild(getText("ContractorTrades.title"), "ContractorTrades.action");
+					subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action");
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild("Employees", "ManageEmployees.action");
 					if (permissions.isRequiresCompetencyReview()) {
 						subMenu = menu.addChild(getText("global.HSECompetencies"));
-						subMenu.addChild(getText("ManageJobRoles.title"), "ManageJobRoles.action");
-						subMenu.addChild(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action");
+						subMenu.addChild(getTitle("ManageJobRoles"), "ManageJobRoles.action");
+						subMenu.addChild(getTitle("EmployeeCompetencies"), "EmployeeCompetencies.action");
 					}
 					if (permissions.isRequiresOQ()) {
 						subMenu = menu.addChild(getText("global.OperatorQualification"));
-						subMenu.addChild(getText("ReportOQEmployees.title"),
+						subMenu.addChild(getTitle("ReportOQEmployees"),
 								"ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
-						subMenu.addChild(getText("ReportOQChanges.title"), "ReportOQChanges.action");
-						subMenu.addChild(getText("ReportNewProjects.title"), "ReportNewProjects.action");
+						subMenu.addChild(getTitle("ReportOQChanges"), "ReportOQChanges.action");
+						subMenu.addChild(getTitle("ReportNewProjects"), "ReportNewProjects.action");
 					}
 				}
 
@@ -437,10 +437,10 @@ public class PicsMenu {
 			subMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
-				subMenu.addChild(getText("DefineCompetencies.title"), "DefineCompetencies.action");
+				subMenu.addChild(getTitle("DefineCompetencies"), "DefineCompetencies.action");
 
-			subMenu.addChild(getText("ReportCompetencyByAccount.title"), "ReportCompetencyByAccount.action");
-			subMenu.addChild(getText("ReportCompetencyByEmployee.title"), "ReportCompetencyByEmployee.action");
+			subMenu.addChild(getTitle("ReportCompetencyByAccount"), "ReportCompetencyByAccount.action");
+			subMenu.addChild(getTitle("ReportCompetencyByEmployee"), "ReportCompetencyByEmployee.action");
 			// subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
 		}
 
@@ -448,16 +448,16 @@ public class PicsMenu {
 			subMenu = menu.addChild(getText("global.OperatorQualification"));
 
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
-				subMenu.addChild(getText("ManageJobTasksOperator.title"), "ManageJobTasksOperator.action");
+				subMenu.addChild(getTitle("ManageJobTasksOperator"), "ManageJobTasksOperator.action");
 			if (permissions.hasPermission(OpPerms.ManageProjects))
-				subMenu.addChild(getText("ManageProjects.title"), "ManageProjects.action");
+				subMenu.addChild(getTitle("ManageProjects"), "ManageProjects.action");
 
-			subMenu.addChild(getText("ReportOQ.title"), "ReportOQ.action");
-			subMenu.addChild(getText("ReportOQEmployees.title"), "ReportOQEmployees.action");
+			subMenu.addChild(getTitle("ReportOQe"), "ReportOQ.action");
+			subMenu.addChild(getTitle("ReportOQEmployees"), "ReportOQEmployees.action");
 		}
 
 		if ((permissions.isOperatorCorporate() && permissions.isRequiresOQ()) || permissions.isAdmin())
-			subMenu.addChild(getText("ReportAssessmentTests.title"), "ReportAssessmentTests.action");
+			subMenu.addChild(getTitle("ReportAssessmentTests"), "ReportAssessmentTests.action");
 
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
