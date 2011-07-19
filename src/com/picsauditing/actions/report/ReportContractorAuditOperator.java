@@ -9,6 +9,7 @@ import java.util.Vector;
 import org.apache.commons.beanutils.DynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -21,6 +22,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
@@ -216,4 +219,30 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		return "N/A";
 	}
 
+	@Override
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+
+		excelSheet.removeColumn("scheduledDate");
+		excelSheet.removeColumn("statusChangedDate");
+
+		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
+		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+
+		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("atype.name", "Audit Name", ExcelCellType.Translated));
+		
+		excelSheet.addColumn(new ExcelColumn("caoAccountName", "Scope"));
+
+
+		if (permissions.isOperator() || permissions.isAdmin()) {
+
+			excelSheet.addColumn(new ExcelColumn("auditStatus", "Status"));
+		}
+		
+		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("expiresDate", "Date Expires", ExcelCellType.Date));
+
+		excelSheet.addColumn(new ExcelColumn("auditor_name", "Safety Professional"));
+	}
 }
