@@ -24,7 +24,7 @@ function getTasks(siteID) {
 	$('#jobSiteTasks:hidden').slideDown();
 	$('#editProject:visible').slideUp();
 
-	startThinking({div: 'jobSiteTasks', message: translate('JS.<s:property value="scope" />.loading.LoadingTasks'), type: 'large'});
+	startThinking({div: 'jobSiteTasks', message: translate('JS.ManageProjects.loading.LoadingTasks'), type: 'large'});
 	$('#jobSiteTasks').load('ManageProjects!getTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> },
 		function() {
 			$('#addSiteTasks').empty();
@@ -35,7 +35,7 @@ function getTasks(siteID) {
 
 function getNewSiteTasks(siteID) {
 	$('#addTaskLink').fadeOut();
-	startThinking({div: 'addSiteTasks', message: translate('JS.<s:property value="scope" />.loading.LoadingNewTasks'), type: 'large'});
+	startThinking({div: 'addSiteTasks', message: translate('JS.ManageProjects.loading.LoadingNewTasks'), type: 'large'});
 	$('#addSiteTasks').load('ManageProjects!newTasks.action', { jobSite: siteID, operator: <s:property value="operator.id" /> });
 }
 
@@ -56,7 +56,7 @@ function addTask(siteID, taskID) {
 }
 
 function removeTask(siteID, siteTaskID) {
-	var remove = confirm(translate('JS.<s:property value="scope" />.confirm.RemoveTask'));
+	var remove = confirm(translate('JS.ManageProjects.confirm.RemoveTask'));
 
 	if (remove) {
 		var data = {
@@ -79,7 +79,7 @@ function editSite(siteID) {
 	$('#addJobSite:visible').slideUp();
 	$('#addLink:hidden').fadeIn();
 	$('#editProject:hidden').slideDown();
-	startThinking({div: 'editProject', message: translate('JS.<s:property value="scope" />.loading.LoadingProject')});
+	startThinking({div: 'editProject', message: translate('JS.ManageProjects.loading.LoadingProject')});
 	$('#editProject').load('ManageProjects!editSite.action',
 		{ jobSite: siteID, operator: <s:property value="operator.id" /> },
 		function () {
@@ -168,7 +168,7 @@ $(function() {
 	});
 	
 	$('#editProject').delegate('#removeSiteButton', 'click', function(e) {
-		return confirm(translate('JS.<s:property value="scope" />.confirm.RemoveProject'));
+		return confirm(translate('JS.ManageProjects.confirm.RemoveProject'));
 	});
 });
 </script>
@@ -352,7 +352,7 @@ $(function() {
 						<td class="center"><s:property value="maskDateFormat(#site.projectStop)" /></td>
 						<s:if test="canEdit">
 							<td class="center">
-								<a href="<s:property value="scope" />!reactivate.action?operator=<s:property value="operator.id" />&jobSite=<s:property value="#site.id" />" class="add"></a>
+								<a href="ManageProjects!reactivate.action?operator=<s:property value="operator.id" />&jobSite=<s:property value="#site.id" />" class="add"></a>
 							</td>
 						</s:if>
 					</tr>

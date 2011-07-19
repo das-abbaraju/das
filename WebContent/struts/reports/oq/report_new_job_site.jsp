@@ -9,24 +9,24 @@
 <s:include value="../reportHeader.jsp"/>
 <script type="text/javascript">
 function getEmployees(jobSiteID) {
-	startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.LoadingEmployees') });
+	startThinking({div: "currentEmployees", message: translate('JS.ReportNewProjects.message.LoadingEmployees') });
 	$('#currentEmployees').load("ReportNewProjects!employees.action", { jobSite: jobSiteID });
 
 	return false;
 }
 
 function addEmployee(jobSiteID, employeeID) {
-	startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.AddingEmployee') });
+	startThinking({div: "currentEmployees", message: translate('JS.ReportNewProjects.message.AddingEmployee') });
 	$('#currentEmployees').load("ReportNewProjects!addEmployee.action", { jobSite: jobSiteID, employee: employeeID });
 
 	return false;
 }
 
 function removeEmployee(jobSiteID, employeeID) {
-	var del = confirm(translate('JS.<s:property value="scope" />.confirm.RemoveEmployeeFromProject'));
+	var del = confirm(translate('JS.ReportNewProjects.confirm.RemoveEmployeeFromProject'));
 
 	if (del) {
-		startThinking({div: "currentEmployees", message: translate('JS.<s:property value="scope" />.message.RemovingEmployee') });
+		startThinking({div: "currentEmployees", message: translate('JS.ReportNewProjects.message.RemovingEmployee') });
 		$('#currentEmployees').load("ReportNewProjects!removeEmployee.action", { jobSite: jobSiteID, employee: employeeID });
 	}
 
@@ -35,7 +35,7 @@ function removeEmployee(jobSiteID, employeeID) {
 
 $(function() {
 	$('#existingProjects a.remove').live('click', function() {
-		return confirm(translate('JS.<s:property value="scope" />.confirm.RemoveProject'));
+		return confirm(translate('JS.ReportNewProjects.confirm.RemoveProject'));
 	});
 	
 	$('#existingProjects a.preview').live('click', function(e) {
@@ -155,7 +155,7 @@ $(function() {
 						<td><s:date name="#d.get('projectStart')" format="M/d/yyyy" /></td>
 						<td><s:property value="getAddress(#d)" /></td>
 						<td class="center">
-							<a href="<s:property value="scope" />!add.action?id=<s:property value="contractor.id" />&jobSite=<s:property value="#d.get('id')" />" class="add"></a>
+							<a href="ReportNewProjects!add.action?id=<s:property value="contractor.id" />&jobSite=<s:property value="#d.get('id')" />" class="add"></a>
 						</td>
 					</tr>
 				</s:iterator>
@@ -190,7 +190,7 @@ $(function() {
 									<td><s:date name="projectStart" format="M/d/yyyy" /></td>
 									<td><s:property value="location" /></td>
 									<td class="center"><a href="#" class="preview"></a></td>
-									<td class="center"><a href="<s:property value="scope" />!remove.action?jobSite=<s:property value="id" />" class="remove"></a></td>
+									<td class="center"><a href="ReportNewProjects!remove.action?jobSite=<s:property value="id" />" class="remove"></a></td>
 								</tr>
 							</s:iterator>
 						</tbody>

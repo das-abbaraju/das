@@ -57,7 +57,7 @@ $(function() {
 	});
 	
 	$('a.remove').live('click', function() {
-		return confirm(translate('JS.<s:property value="scope" />.confirm.RemoveContractor'));
+		return confirm(translate('JS.ReportActivityWatch.confirm.RemoveContractor'));
 	});
 });
 </script>

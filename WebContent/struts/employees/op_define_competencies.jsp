@@ -70,7 +70,7 @@ fieldset.bottom {
 
 	$(function() {
 		dialog = $('#item').dialog({
-			title: translate('JS.<s:property value="scope" />.label.EditCompetency'),
+			title: translate('JS.DefineCompetencies.label.EditCompetency'),
 			width: '50%',
 			modal: true,
 			autoOpen: false,
