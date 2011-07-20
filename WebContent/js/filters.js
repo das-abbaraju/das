@@ -45,7 +45,7 @@ function loadFiltersCallback() {
 $(function() {
 	$('#search').delegate('#showSearch', 'click', function(e) {
 		showSearch();
-	})
+	});
 	
 	$('body').delegate('.filterOption a.filterBox', 'click', function(e) {
 		e.preventDefault();
@@ -126,11 +126,5 @@ $(function() {
 	$('body').delegate('#find_recipients','click',function() {
 		clickSearch('form1');
 	});
-
-	// -Auto Opens Fields that Have values.  Not sure if we want this.
-	//$(':input:not([value]):not(hidden)').each(function() {
-	//	$(this).closest('.filterOption').find('.filterBox').click();
-	//});
-
 	loadFiltersCallback();
 });

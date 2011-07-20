@@ -26,7 +26,6 @@
 			<span id="form1_status_select" style="display: none" class="clearLink">
 				<s:select list="filter.statusList" multiple="true" cssClass="forms"
 					name="filter.status" id="form1_status" /><br />
-				<script type="text/javascript">updateQuery('form1_status');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_status'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -39,7 +38,6 @@
 			<span id="form1_template_select" style="display: none" class="clearLink">
 				<s:select list="filter.templateList" multiple="true" cssClass="forms" listKey="templateName"
 					listValue="templateName" name="filter.templateName" id="form1_template" /><br />
-				<script type="text/javascript">updateQuery('form1_template');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_template'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -54,7 +52,6 @@
 					name="filter.sentDateStart" />
 				<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" id="form1_sentDate2"
 					name="filter.sentDateEnd" />
-				<script type="text/javascript">textQuery('form1_sentDate');</script>
 				<br />
 				<a class="clearLink" href="#" onclick="clearTextField('form1_sentDate'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>

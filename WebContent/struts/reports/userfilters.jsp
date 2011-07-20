@@ -65,7 +65,6 @@
 			<span id="form1_company_status_select" style="display: none" class="clearLink">
 				<s:select list="filter.companyStatusList" listValue="%{getText(i18nKey)}" multiple="true" cssClass="forms" 
 					name="filter.companyStatus" id="form1_company_status" /><br />
-				<script type="text/javascript">updateQuery('form1_company_status');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_company_status'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -78,7 +77,6 @@
 			<span id="form1_company_type_select" style="display: none" class="clearLink">
 				<s:select list="#{'Contractor':getText('global.Contractor'),'Operator':getText('global.Operator'),'Corporate':getText('global.Corporate')}" multiple="true" 
 					cssClass="forms" name="filter.companyType" id="form1_company_type" /><br />
-				<script type="text/javascript">updateQuery('form1_company_type');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_company_type'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>

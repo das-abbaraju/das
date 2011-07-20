@@ -93,7 +93,6 @@ $(function() {
 			<s:select list="filter.taskTypeList" multiple="true" cssClass="forms"
 				name="filter.taskType" id="form1_taskType" />
 			<br />
-			<script type="text/javascript">updateQuery('form1_taskType');</script>
 			<a class="clearLink" href="#" onclick="clearSelected('form1_taskType'); return false;"><s:text name="Filters.status.Clear" /></a>
 		</span>
 	</div>

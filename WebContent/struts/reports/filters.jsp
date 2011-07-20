@@ -80,8 +80,8 @@
 	
 	<s:if test="filter.showRequestStatus">
 		<div class="filterOption">
-			<span><s:text name="Filters.label.Status" /> =</span>
-			<s:select cssClass="forms" list="#{'All':'All', 'Active':'Active', 'Hold':'Hold','Closed Successful':'Closed Successful','Closed Unsuccessful':'Closed Unsuccessful'}" name="filter.requestStatus" />
+			<span><s:text name="global.Status" /> =</span>
+			<s:select cssClass="forms" list="#{'All':getText('JS.Filters.status.All'), 'Active':getText('global.Active'), 'Hold':getText('Filters.status.Hold'),'Closed Successful':getText('Filters.status.ClosedSuccessful'),'Closed Unsuccessful':getText('Filters.status.ClosedUnsuccessful')}" name="filter.requestStatus" />
 		</div>
 	</s:if>
 	
@@ -369,7 +369,7 @@
 			<span class="clearLink q_box select">
 				<s:select list="filter.pQFTypeList" cssClass="forms" name="filter.pqfTypeID" listKey="id" 
 					listValue="name" multiple="true" size="5" />
-				<script type="text/javascript">updateQuery('form1_pqfAuditTypeID');</script><br />
+				<br />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>

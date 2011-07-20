@@ -79,7 +79,6 @@ $(function() {
 		<span id="form1_auditStatus_select" style="display: none" class="clearLink">
 			<s:select id="form1_auditStatus" list="filter.auditStatusList" cssClass="forms"
 				name="filter.auditStatus" multiple="true" size="5" />
-			<script type="text/javascript">updateQuery('form1_auditStatus');</script>
 			<br />
 			<a class="clearLink" href="#" onclick="clearSelected('form1_auditStatus'); return false;"><s:text name="Filters.status.Clear" /></a>
 		</span>

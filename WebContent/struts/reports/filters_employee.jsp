@@ -74,7 +74,6 @@
 				<s:select list="filter.projectList" multiple="true" cssClass="forms"
 					name="filter.projects" id="form1_projects" listKey="id" listValue="%{operator.name + ': ' + name}" />
 				<br />
-				<script type="text/javascript">updateQuery('form1_projects');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_projects'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -88,7 +87,6 @@
 				<s:select list="filter.assessmentCenterList" multiple="true" cssClass="forms"
 					name="filter.assessmentCenters" id="form1_assessmentCenters" listKey="id" listValue="name" />
 				<br />
-				<script type="text/javascript">updateQuery('form1_assessmentCenters');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_assessmentCenters'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -102,7 +100,6 @@
 				<s:select list="filter.jobRoleList" multiple="true" cssClass="forms"
 					name="filter.jobRoles" id="form1_jobRoles" listKey="id" listValue="name" />
 				<br />
-				<script type="text/javascript">updateQuery('form1_jobRoles');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_jobRoles'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -116,7 +113,6 @@
 				<s:select list="filter.competencyList" multiple="true" cssClass="forms"
 					name="filter.competencies" id="form1_competencies" listKey="id" listValue="label" />
 				<br />
-				<script type="text/javascript">updateQuery('form1_competencies');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_competencies'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>

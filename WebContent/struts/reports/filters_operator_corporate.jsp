@@ -29,8 +29,7 @@
 				style="display: none" class="clearLink"><s:select
 				list="filter.statusList" multiple="true" cssClass="forms"
 				name="filter.status" id="form1_status" /><br />
-			<script type="text/javascript">updateQuery('form1_status');</script> <a
-				class="clearLink" href="#"
+			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_status'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>
 		</s:if>
 		
@@ -41,8 +40,7 @@
 				style="display: none" class="clearLink"><s:select
 				list="filter.typeList" multiple="true" cssClass="forms"
 				name="filter.type" id="form1_type" /><br />
-			<script type="text/javascript">updateQuery('form1_type');</script> <a
-				class="clearLink" href="#"
+			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_type'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>
 		</s:if>
 		
@@ -67,7 +65,6 @@
 						id="form1_state" name="filter.state" list="filter.stateList"
 						listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
 						size="15" onclick="clearSelected('form1_country');" /><br />
-					<script type="text/javascript">updateQuery('form1_state');</script>
 					<a class="clearLink" href="#"
 						onclick="clearSelected('form1_state'); return false;"><s:text name="Filters.status.Clear" /></a> </span></td>
 					<td style="padding-left: 1ex; vertical-align: top"><span
@@ -75,7 +72,6 @@
 						id="form1_country" name="filter.country" list="filter.countryList"
 						listKey="isoCode" listValue="name" cssClass="forms" multiple="true"
 						size="15" /><br />
-					<script type="text/javascript">updateQuery('form1_country');</script>
 					<a class="clearLink" href="#"
 						onclick="clearSelected('form1_country'); return false;"><s:text name="Filters.status.Clear" /></a> </span>
 					</td>
@@ -93,7 +89,6 @@
 				class="clearLink"> <s:select id="form1_industry"
 				name="filter.industry" list="filter.industryList"
 				listValue="description" cssClass="forms" multiple="true" size="5" />
-			<script type="text/javascript">updateQuery('form1_industry');</script>
 			<br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_industry'); return false;"><s:text name="Filters.status.Clear" /></a> </span></div>

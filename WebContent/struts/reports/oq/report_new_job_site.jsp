@@ -82,7 +82,6 @@ $(function() {
 				<span id="form1_state_select" style="display: none" class="clearLink">
 					<s:select id="form1_state" name="filter.state" list="filter.stateList" listKey="isoCode" 
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-					<script type="text/javascript">updateQuery('form1_state');</script>
 					<a class="clearLink" href="#" onclick="clearSelected('form1_state'); return false;">
 						<s:text name="Filters.status.Clear" />
 					</a>
@@ -95,7 +94,6 @@ $(function() {
 				<span id="form1_country_select" style="display: none" class="clearLink">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
 						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-					<script type="text/javascript">updateQuery('form1_country');</script>
 					<a class="clearLink" href="#" onclick="clearSelected('form1_country'); return false;">
 						<s:text name="Filters.status.Clear" />
 					</a>
@@ -108,7 +106,6 @@ $(function() {
 				<span id="form1_start_select" style="display: none" class="clearLink">
 					<s:textfield cssClass="forms datepicker" size="10" id="form1_start" 
 						name="filter.start" />
-					<script type="text/javascript">updateQuery('form1_start');</script>
 					<br />
 					<a class="clearLink" href="#" onclick="clearTextField('form1_start'); return false;">
 						<s:text name="Filters.status.Clear" />
@@ -124,7 +121,6 @@ $(function() {
 					<s:select id="form1_operator" list="filter.operatorList" cssClass="forms"
 						name="filter.operator" listKey="id" listValue="name" multiple="true"
 						size="%{filter.operatorList.size() < 25 ? filter.operatorList.size() : 25}" />
-					<script type="text/javascript">updateQuery('form1_operator');</script>
 					<br />
 					<a class="clearLink" href="#" onclick="clearSelected('form1_operator'); return false;">
 						<s:text name="Filters.status.Clear" />

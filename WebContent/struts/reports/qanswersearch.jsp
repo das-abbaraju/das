@@ -14,7 +14,7 @@ function getQuestionList() {
 		var data = {
 			questionName: $('[name="questionSelect"]').val()
 		};
-		startThinking({div: 'thinking',message:'Finding matching questions...'});
+		startThinking({div: 'thinking',message:translate('JS.QuestionAnswerSearch.message.FindingMatchingQuestions')});
 		$('#selected_question').load('QuestionSelectAjax.action', data, function() {
 			stopThinking({div: 'thinking'});
 		});
@@ -38,8 +38,8 @@ $(function() {
 		getQuestionList();
 	});
 	
-	$('.filterOption.negative').live('click', function() {
-		var id = $(this).attr('id').split('_')[1];
+	$('.filterOption .negative').live('click', function() {
+		var id = $(this).attr('id').split('_')[0];
 		return setId(id);
 	});
 	
@@ -51,6 +51,10 @@ $(function() {
 		e.preventDefault();
 		changeOrderBy('form1','a.name');
 	})
+	
+	$('#form1').live('submit', function() {
+		runSearch($(this));
+	});
 });
 </script>
 </head>
@@ -58,7 +62,7 @@ $(function() {
 <h1><s:text name="%{scope}.title" /></h1>
 
 <div id="search">
-<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;" onsubmit="runSearch($('#form1'))">
+<s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;">
 	<s:hidden name="filter.ajax" />
 	<s:hidden name="filter.destinationAction" />
 	<s:hidden name="filter.allowMailMerge" />
@@ -82,7 +86,7 @@ $(function() {
 	</s:iterator>
 	<br clear="all"/>
 	<div class="filterOption">
-		<s:text name="%{scope}.label.SelectAQuestion" />
+		<s:text name="QuestionAnswerSearch.label.SelectAQuestion" />
 		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" /> 
 		<div id="selected_question">&nbsp;</div>
 	</div>

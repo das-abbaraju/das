@@ -38,7 +38,6 @@
 				<s:select list="#{'Corporate':getText('global.Corporate'),'Operator':getText('global.Operator'),'Contractor':getText('global.Contractor')}" 
 				multiple="true" cssClass="forms" name="filter.type" id="form1_type" />
 				<br />
-				<script type="text/javascript">updateQuery('form1_type');</script>
 				<a class="clearLink" href="#" onclick="clearSelected('form1_type'); return false;">
 					<s:text name="Filters.status.Clear" />
 				</a>
@@ -65,8 +64,8 @@
 			<span id="form1_operator_select" style="display: none"
 				class="clearLink"> <s:select id="form1_operator"
 				list="filter.operatorList" cssClass="forms" name="filter.operator"
-				listKey="id" listValue="name" multiple="true" size="10" /> <script
-				type="text/javascript">updateQuery('form1_operator');</script> <br />
+				listKey="id" listValue="name" multiple="true" size="10" />
+				<br />
 			<a class="clearLink" href="#"
 				onclick="clearSelected('form1_operator'); return false;"><s:text name="Filters.status.Clear" /></a> </span>
 		</s:else></div>
