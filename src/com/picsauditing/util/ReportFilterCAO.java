@@ -11,6 +11,7 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected boolean showAuditorType = false;
 	protected boolean showAuditStatus = true;
 	protected boolean showPercentComplete = true;
+	protected boolean showPercentVerified = true;
 	protected boolean showCaoStatusChangedDate = true;
 	protected boolean showCaoOperator = true;
 	protected boolean showNotRenewingContractors = false;
@@ -19,6 +20,8 @@ public class ReportFilterCAO extends ReportFilterAudit {
 	protected AuditStatus[] auditStatus;
 	protected String percentComplete1;
 	protected String percentComplete2;
+	protected String percentVerified1;
+	protected String percentVerified2;
 	protected int[] caoOperator;
 	protected boolean auditorType = true;
 	protected boolean notRenewingContractors = false;
@@ -38,6 +41,14 @@ public class ReportFilterCAO extends ReportFilterAudit {
 
 	public void setShowPercentComplete(boolean showPercentComplete) {
 		this.showPercentComplete = showPercentComplete;
+	}
+
+	public boolean isShowPercentVerified() {
+		return showPercentVerified;
+	}
+
+	public void setShowPercentVerified(boolean showPercentVerified) {
+		this.showPercentVerified = showPercentVerified;
 	}
 
 	public AuditStatus[] getAuditStatus() {
@@ -62,6 +73,22 @@ public class ReportFilterCAO extends ReportFilterAudit {
 
 	public void setPercentComplete2(String percentComplete2) {
 		this.percentComplete2 = percentComplete2;
+	}
+
+	public String getPercentVerified1() {
+		return percentVerified1;
+	}
+
+	public void setPercentVerified1(String percentVerified1) {
+		this.percentVerified1 = percentVerified1;
+	}
+
+	public String getPercentVerified2() {
+		return percentVerified2;
+	}
+
+	public void setPercentVerified2(String percentVerified2) {
+		this.percentVerified2 = percentVerified2;
 	}
 
 	public boolean isShowCaoStatusChangedDate() {

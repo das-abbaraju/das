@@ -504,6 +504,18 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showPercentVerified">
+		<div class="filterOption"><a href="#" class="filterBox"><s:text
+			name="Filters.label.PercentVerified" /></a> = <span class="q_status"><s:text
+			name="JS.Filters.status.All" /></span><br />
+		<span class="clearLink q_box textfield"> <s:textfield
+			name="filter.percentVerified1" cssClass="forms" size="12" /> <s:text
+			name="Filters.label.To" />: <s:textfield
+			name="filter.percentVerified2" cssClass="forms" size="12" /> <a
+			class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+		</span></div>
+	</s:if>
+
 	<s:if test="filter.showUnConfirmedAudits">
 		<br clear="all" />
 		<div class="filterOption">

@@ -39,6 +39,7 @@ public class ReportContractorScore extends ReportAccount {
 		getFilter().setShowCaoStatusChangedDate(true);
 		getFilter().setShowAuditStatus(true);
 		getFilter().setShowPercentComplete(true);
+		getFilter().setShowPercentVerified(true);
 
 		// TODO make these constants in AuditType?
 		addAuditFields(195); // Suncor Quality Management

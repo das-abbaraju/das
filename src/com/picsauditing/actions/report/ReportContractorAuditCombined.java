@@ -9,7 +9,6 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
-import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.ReportFilterCAOW;
 import com.picsauditing.util.Strings;
 
@@ -140,7 +139,15 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 			}
 	
 			if (filterOn(f.getPercentComplete2())) {
-				report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f.getPercentComplete2()));
+				report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete <= '?'", f.getPercentComplete2()));
+			}
+	
+			if (filterOn(f.getPercentVerified1())) {
+				report.addFilter(new SelectFilter("percentVerified1", "cao.percentVerified > '?'", f.getPercentVerified1()));
+			}
+	
+			if (filterOn(f.getPercentVerified2())) {
+				report.addFilter(new SelectFilter("percentVerified2", "cao.percentVerified < '?'", f.getPercentVerified2()));
 			}
 	
 			if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {

@@ -9,7 +9,6 @@ import java.util.Vector;
 import org.apache.commons.beanutils.DynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
@@ -17,6 +16,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectFilter;
@@ -24,7 +24,6 @@ import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
-import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
 public class ReportContractorAuditOperator extends ReportContractorAudits {
@@ -102,6 +101,14 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 		if (filterOn(f.getPercentComplete2())) {
 			report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f.getPercentComplete2()));
+		}
+
+		if (filterOn(f.getPercentVerified1())) {
+			report.addFilter(new SelectFilter("percentVerified1", "cao.percentVerified >= '?'", f.getPercentVerified1()));
+		}
+
+		if (filterOn(f.getPercentVerified2())) {
+			report.addFilter(new SelectFilter("percentVerified2", "cao.percentVerified < '?'", f.getPercentVerified2()));
 		}
 
 		if (getFilter().getAmBestRating() > 0 || getFilter().getAmBestClass() > 0) {
