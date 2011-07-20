@@ -86,7 +86,7 @@
 				<th>Remove<br />
 				Operator</th>
 			</pics:permission>
-			<s:if test="permissions.contractor && contractor.status.pendingDeactivated">
+			<s:if test="permissions.contractor && contractor.status.pending">
 				<th>Remove<br />
 				Operator</th>
 			</s:if>
@@ -121,7 +121,7 @@
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</pics:permission>
-				<s:if test="permissions.contractor && contractor.status.pendingDeactivated">
+				<s:if test="permissions.contractor && contractor.status.pending">
 					<td><a id="facility_<s:property value="operatorAccount.id"/>" href="#" class="remove"
 						onclick="javascript: return removeOperator( <s:property value="contractor.id"/>, <s:property value="operatorAccount.id"/> );">Remove</a></td>
 				</s:if>
