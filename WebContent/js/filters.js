@@ -47,8 +47,6 @@ $(function() {
 		showSearch();
 	})
 	
-	loadFiltersCallback();
-	
 	$('body').delegate('.filterOption a.filterBox', 'click', function(e) {
 		e.preventDefault();
 		var box = $(this).closest('.filterOption').find('.q_box');
@@ -134,4 +132,5 @@ $(function() {
 	//	$(this).closest('.filterOption').find('.filterBox').click();
 	//});
 
+	loadFiltersCallback();
 });
