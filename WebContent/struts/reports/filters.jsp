@@ -213,7 +213,7 @@
 	<s:if test="filter.showFlagStatus">
 		<br clear="all" />
 		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Filters.label.FlagStatus" /></a> =
+			<a href="#" class="filterBox"><s:text name="global.FlagStatus" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:select list="filter.flagStatusList" cssClass="forms" name="filter.flagStatus" multiple="true" size="3" />
@@ -611,7 +611,7 @@
 	<s:if test="filter.showScoreRange">
 		<br clear="all" />
 		<div class="filterOption">
-			<a href="#" class="filterbox"><s:text name="Audit.message.Score" /></a> =
+			<a href="#" class="filterbox"><s:text name="ContractorAccount.score" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield name="filter.scoreMin" cssClass="forms" size="12"  />
@@ -661,7 +661,7 @@
 	<s:if test="filter.showBillingState">
 		<div class="filterOption">
 			<span><s:text name="ContractorAccount.billingState" />:
-				<s:radio list="{getText('Filters.status.Activations'), getText('Filters.status.Renewals'), getText('Filters.status.Upgrades'), getText('Filters.status.All')}"
+				<s:radio list="#{'Activations':getText('Filters.status.Activations'),'Renewals':getText('Filters.status.Renewals'),'Upgrades':getText('Filters.status.Upgrades'),'All':getText('JS.Filters.status.All')}"
 					name="filter.billingState" />
 			</span>
 		</div>
