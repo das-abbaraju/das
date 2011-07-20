@@ -34,7 +34,7 @@ public class SubmittedImportPQFAudits extends PicsActionSupport {
 		sql.addJoin("JOIN invoice_fee fee ON fee.id = ii.feeID AND fee.feeClass = 'ImportFee'");
 
 		sql.addWhere("ca.auditTypeID = 232 AND ca.auditorID = " + permissions.getUserId());
-		sql.addOrderBy("ca.creationDate DESC");
+		sql.addOrderBy("ca.creationDate");
 		sql.addGroupBy("a.id, ca.id");
 
 		sql.setLimit(10);
