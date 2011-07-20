@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.UserDAO;
@@ -15,41 +16,35 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportCsrActivity extends ReportActionSupport {
+	@Autowired
+	protected UserDAO userDAO;
+	
 	Database db = new Database();
 	private List<BasicDynaBean> data;
 	protected List<User> csrs = null;
-	protected UserDAO userDAO = null;
 	protected int[] csrIds;
 	protected String year = "";
 	protected Date filterDate1;
 	protected Date filterDate2;
 
-	public ReportCsrActivity(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		
-		if(!filterOn(csrIds)) {
-			if(permissions.hasGroup(User.GROUP_MANAGER)) {
+		if (!filterOn(csrIds)) {
+			if (permissions.hasGroup(User.GROUP_MANAGER)) {
 				csrIds = new int[getCsrs().size()];
 				int i = 0;
-				for(User u : getCsrs()) {
+				for (User u : getCsrs()) {
 					csrIds[i] = u.getId();
 					i++;
 				}
-			}
-			else {
+			} else {
 				csrIds = new int[1];
 				csrIds[0] = permissions.getUserId();
 			}
 		}
-		
-		if(Strings.isEmpty(year)) 
+
+		if (Strings.isEmpty(year))
 			year = Integer.toString(DateBean.getCurrentYear());
-		
+
 		CsrActivitySQL aUVerified = new CsrActivitySQL("count(*)", "0", "0", "0", "0");
 		aUVerified
 				.addWhere("(n.summary like '%verified% Annual% Update%' or n.summary like '%Annual Update% to Complete%' "
@@ -61,12 +56,17 @@ public class ReportCsrActivity extends ReportActionSupport {
 						+ " or summary like '%rejected% PQF%' or summary like '%PQF% to InComplete%')");
 
 		CsrActivitySQL policyVerified = new CsrActivitySQL("0", "0", "count(*)", "0", "0");
-		policyVerified.addJoin("join audit_type at on n.summary like concat('%',at.auditname,'%')");
+		policyVerified
+				.addJoin("JOIN app_translation t ON t.msgKey LIKE 'AuditType.%' AND n.summary LIKE CONCAT('%', t.msgValue, '%')");
+		policyVerified.addJoin("JOIN audit_type at ON t.msgKey = CONCAT('AuditType.', at.id, '.name')");
+
 		policyVerified.addWhere("(n.summary like '%Verified%' or n.summary like '%Complete%')");
 		policyVerified.addWhere("at.classType = 'Policy'");
 
 		CsrActivitySQL policyRejected = new CsrActivitySQL("0", "0", "0", "count(*)", "0");
-		policyRejected.addJoin("join audit_type at on n.summary like concat('%',at.auditname,'%')");
+		policyRejected
+				.addJoin("JOIN app_translation t ON t.msgKey LIKE 'AuditType.%' AND n.summary LIKE CONCAT('%', t.msgValue, '%')");
+		policyRejected.addJoin("JOIN audit_type at ON t.msgKey = CONCAT('AuditType.', at.id, '.name')");
 		policyRejected.addWhere("(n.summary like '%rejected%' or n.summary like '%InComplete%')");
 		policyRejected.addWhere("at.classType = 'Policy'");
 
@@ -80,10 +80,11 @@ public class ReportCsrActivity extends ReportActionSupport {
 				+ policyVerified
 				+ " UNION "
 				+ policyRejected
-				+ " UNION " + notesCreated + ") t " +
-						" JOIN users u on u.id = t.createdBy" +
-				" Group By t.month_name,t.createdBy " +
-				" Order By u.name, t.month_number" ;
+				+ " UNION "
+				+ notesCreated
+				+ ") t "
+				+ " JOIN users u on u.id = t.createdBy"
+				+ " Group By t.month_name,t.createdBy " + " Order By u.name, t.month_number";
 
 		Database db = new Database();
 		data = db.select(sql, true);
@@ -103,11 +104,11 @@ public class ReportCsrActivity extends ReportActionSupport {
 			addWhere("n.createdBy IN (" + list + ")");
 			addWhere("n.status = 2");
 			addWhere("year(n.creationDate) = " + year);
-			if(filterOn(filterDate1)) 
+			if (filterOn(filterDate1))
 				addWhere("n.creationDate >= '" + DateBean.format(filterDate1, "yyyy-M-d") + "'");
-			if(filterOn(filterDate2)) 
+			if (filterOn(filterDate2))
 				addWhere("n.creationDate < '" + DateBean.format(filterDate2, "yyyy-M-d") + "'");
-			
+
 			addGroupBy("month(n.creationDate), n.createdBy");
 			addField(AUVerified + " as AUVerified");
 			addField(AURejected + " as AURejected");
@@ -121,22 +122,25 @@ public class ReportCsrActivity extends ReportActionSupport {
 	}
 
 	public List<User> getCsrs() {
-		if(csrs == null) {
+		if (csrs == null) {
 			csrs = new ArrayList<User>();
 			csrs = userDAO.findByGroup(User.GROUP_CSR);
 		}
 		return csrs;
 	}
+
 	public int[] getCsrIds() {
 		return csrIds;
 	}
+
 	public void setCsrIds(int[] csrIds) {
 		this.csrIds = csrIds;
 	}
+
 	public List<String> getYearsList() {
 		List<String> yearsList = new ArrayList<String>();
 		int lastYear = DateBean.getCurrentYear();
-		for(int i = lastYear; i > 2000; i--) {
+		for (int i = lastYear; i > 2000; i--) {
 			yearsList.add(Integer.toString(i));
 		}
 		return yearsList;

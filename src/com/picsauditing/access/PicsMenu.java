@@ -374,7 +374,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER))
-			subMenu.addChild("CSR Tracking", "ReportCsrActivity.action");
+			subMenu.addChild(getTitle("ReportCsrActivity"), "ReportCsrActivity.action");
 		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER))
 			subMenu.addChild("CSR Contractor Count", "ReportCsrContractorCount.action");
 

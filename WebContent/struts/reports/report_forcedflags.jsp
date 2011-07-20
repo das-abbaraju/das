@@ -20,10 +20,10 @@
 </s:form>
 <pics:permission perm="ForcedFlagsReport">
 	<div class="right"><a class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all <s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
+		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
 		href="javascript: download('ReportConForcedFlags');" 
-		title="Download all <s:property value="report.allRows"/> results to a CSV file"
-		>Download</a></div>
+		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
+		><s:text name="global.Download" /></a></div>
 </pics:permission>
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>

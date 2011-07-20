@@ -127,7 +127,7 @@
 <s:if test="type.toString().equals('OSHA')">
 	<tr>
 		<th class="label">Uploaded Log Files</th>
-		<th colspan="2"><s:if test="fileUploaded"><a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK">Download</a></s:if></th>
+		<th colspan="2"><s:if test="fileUploaded"><a href="DownloadOsha.action?id=<s:property value="id"/>" target="_BLANK"><s:text name="global.Download" /></a></s:if></th>
 		<s:if test="type.toString().equals('OSHA') && corporate"><th colspan="2" class="label">&nbsp;</th></s:if>
 	</tr>
 </s:if>

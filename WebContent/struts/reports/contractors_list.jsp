@@ -2,12 +2,16 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Contractor List</title>
+<title><s:text name="ContractorList.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Contractor List</h1>
-<div>You have <strong><s:property value="contractorCount" /></strong> contractors in your database.</div>
+<h1><s:text name="ContractorList.title" /></h1>
+<div>
+	<s:text name="ContractorList.message.ContractorsInYourDatabase">
+		<s:param value="%{contractorCount}" />
+	</s:text>
+</div>
 
 <s:include value="filters.jsp" />
 

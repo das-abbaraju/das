@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria. Please try again.</div>
+	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
 </s:if>
 <s:else>
 

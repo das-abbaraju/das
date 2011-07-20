@@ -20,7 +20,7 @@ $('input.ssn').mask('SSS-SS-SSSS');
 	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('Are you sure you want to download all
 		<s:property value="report.allRows"/> rows? This may take a while.');"</s:if> 
 		href="javascript: download('ReportCompetencyDetail');"
-		title="Download all <s:property value="report.allRows"/> results to a CSV file">Download</a>
+		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"><s:text name="global.Download" /></a>
 </div>
 
 <div>
