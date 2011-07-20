@@ -102,7 +102,9 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 
 			getFilter().setShowOperator(false);
 			getFilter().setShowTrade(false);
+			getFilter().setShowOfficeIn(false);
 			getFilter().setShowWorksIn(false);
+			getFilter().setShowLicensedIn(false);
 			getFilter().setShowTaxID(false);
 			getFilter().setShowWaitingOn(true);
 
