@@ -102,9 +102,7 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 
 			getFilter().setShowOperator(false);
 			getFilter().setShowTrade(false);
-			getFilter().setShowLicensedIn(false);
 			getFilter().setShowWorksIn(false);
-			getFilter().setShowOfficeIn(false);
 			getFilter().setShowTaxID(false);
 			getFilter().setShowWaitingOn(true);
 
@@ -139,11 +137,11 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 			}
 	
 			if (filterOn(f.getPercentComplete2())) {
-				report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete <= '?'", f.getPercentComplete2()));
+				report.addFilter(new SelectFilter("percentComplete2", "cao.percentComplete < '?'", f.getPercentComplete2()));
 			}
 	
 			if (filterOn(f.getPercentVerified1())) {
-				report.addFilter(new SelectFilter("percentVerified1", "cao.percentVerified > '?'", f.getPercentVerified1()));
+				report.addFilter(new SelectFilter("percentVerified1", "cao.percentVerified >= '?'", f.getPercentVerified1()));
 			}
 	
 			if (filterOn(f.getPercentVerified2())) {
