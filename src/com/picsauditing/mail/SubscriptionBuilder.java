@@ -18,7 +18,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public abstract class SubscriptionBuilder {
-
+	
 	private User user;
 	private Account account;
 
@@ -35,7 +35,7 @@ public abstract class SubscriptionBuilder {
 	private List<EmailSubscription> subscriptions;
 
 	protected SelectSQL sql;
-
+	
 	protected I18nCache i18nCache = I18nCache.getInstance();
 
 	public SubscriptionBuilder(Subscription subscription, SubscriptionTimePeriod timePeriod,
@@ -122,18 +122,12 @@ public abstract class SubscriptionBuilder {
 			// http://localhost:8080/picsWeb2/SubscriptionCron.action?userID=941&accountID=16&timePeriod=Monthly&subs=ContractorRegistration
 			if (account == null)
 				account = user.getAccount();
-
-			// Send the account object to the sub-classes
-			setup(account); 
 			
-			// only should prevent flag changes
-			if (!(isTokensEmpty() && this instanceof FlagChangesSubscription))
-			{
-				EmailQueue emailToSend = buildEmail(user, serverName);
+			setup(account); // Send the account object to the sub-classes
+			EmailQueue emailToSend = buildEmail(user, serverName);
 
-				if (emailToSend != null) {
-					EmailSender.send(emailToSend);
-				}
+			if (emailToSend != null) {
+				EmailSender.send(emailToSend);
 			}
 			return;
 		}
@@ -141,7 +135,7 @@ public abstract class SubscriptionBuilder {
 		for (Map.Entry<Account, Set<EmailSubscription>> entry : accountMap.entrySet()) {
 			setup(entry.getKey()); // Send the account object to the sub-classes
 
-			// get the recipients
+			// get the recipients 
 			Set<User> recipients = getRecipients(entry.getValue());
 			for (User user : recipients) {
 				EmailQueue emailToSend = buildEmail(user, serverName);
@@ -155,10 +149,6 @@ public abstract class SubscriptionBuilder {
 		}
 	}
 
-	public boolean isTokensEmpty() {
-		return (tokens.size() == 0);
-	}
-
 	public String getServerName() {
 		return serverName;
 	}
@@ -166,11 +156,11 @@ public abstract class SubscriptionBuilder {
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
-
+	
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-
+	
 	public void setUser(User user) {
 		this.user = user;
 	}
