@@ -21,6 +21,10 @@ public enum Subscription {
 			"This email notifies you when a contractor linked to your facility has completed the PICS process.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event }, 
 			true, false, false), 
+	ForcedFlags(
+			"Forced Flags",
+			"This email shows contractors whose flags have been forced, as well as who forced them. You can choose to receive this daily, weekly or monthly.",
+			true, false, false), 
 	FlagChanges(
 			"Contractor Flag Changes",
 			"This email shows contractors who have recently had a flag colors upgraded or downgraded. You can choose to receive this daily, weekly or monthly.",
