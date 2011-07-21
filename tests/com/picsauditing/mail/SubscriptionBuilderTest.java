@@ -34,6 +34,13 @@ public class SubscriptionBuilderTest extends TestCase {
 	ContractorAccountDAO conDAO;
 
 	@Test
+	public void testForcedFlags() throws Exception {
+		SubscriptionBuilder builder = new ForcedFlagsSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO);
+
+		builder.process();
+	}
+
+	@Test
 	public void testFlagChanges() throws Exception {
 		SubscriptionBuilder builder = new FlagChangesSubscription(SubscriptionTimePeriod.Weekly, subscriptionDAO);
 
