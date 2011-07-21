@@ -121,7 +121,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			con.setProductRisk(productRisk);
 		}
 
-		Note note = new Note(con, getUser(), noteMessage);
+		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
 
@@ -151,7 +151,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
 		}
 
-		Note note = new Note(con, getUser(), noteMessage);
+		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
 
