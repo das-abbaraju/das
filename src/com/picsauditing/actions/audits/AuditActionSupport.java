@@ -204,10 +204,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 			// Even though Resubmit is a valid Status for Flags, an audit in
 			// Resubmit still needs to be completed and verified,
 			// so we still need to show the % complete
-			if (cao.getStatus() != AuditStatus.Resubmit && cao.getStatus().after(AuditStatus.Incomplete)) {
-				showVerified = true;
+			showVerified = true;
+			if (cao.getStatus() == AuditStatus.Resubmit || cao.getStatus().before(AuditStatus.Complete)) {
+				showVerified = false;
 				break;
 			}
+			
 		}
 		return viewableCaos;
 	}
