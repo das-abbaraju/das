@@ -6,17 +6,16 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
@@ -31,30 +30,30 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Transaction;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class BillingDetail extends ContractorActionSupport {
-	private InvoiceFee activationFee = null;
-	private InvoiceDAO invoiceDAO = new InvoiceDAO();
-	private TransactionDAO transactionDAO = null;
+	@Autowired
+	private BillingCalculatorSingle billingService;
+	@Autowired
+	private AccountDAO accountDao;
+	@Autowired
+	private OperatorAccountDAO opAccountDao;
+	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private TransactionDAO transactionDAO;
+	@Autowired
 	private NoteDAO noteDAO;
+
+	private InvoiceFee activationFee = null;
 	private BigDecimal invoiceTotal;
-
 	private List<InvoiceItem> invoiceItems;
-
 	private OperatorAccount requestedBy = null;
 
-	AppPropertyDAO appPropDao;
-
-	public BillingDetail(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceFeeDAO invoiceFeeDAO, AppPropertyDAO appPropDao, TransactionDAO transactionDAO, NoteDAO noteDAO) {
-		this.invoiceDAO = invoiceDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.appPropDao = appPropDao;
-		this.transactionDAO = transactionDAO;
-		this.noteDAO = noteDAO;
+	public BillingDetail() {
 		this.noteCategory = NoteCategory.Billing;
 	}
 
@@ -63,9 +62,9 @@ public class BillingDetail extends ContractorActionSupport {
 			return LOGIN;
 
 		this.findContractor();
-		BillingCalculatorSingle.calculateAnnualFees(contractor);
+		billingService.calculateAnnualFees(contractor);
 
-		invoiceItems = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
+		invoiceItems = billingService.createInvoiceItems(contractor);
 
 		invoiceTotal = BigDecimal.ZERO.setScale(2);
 		for (InvoiceItem item : invoiceItems)
@@ -136,7 +135,7 @@ public class BillingDetail extends ContractorActionSupport {
 					hasMembership = true;
 			}
 			if (hasMembership) {
-				notes += BillingCalculatorSingle.getOperatorsString(contractor);
+				notes += billingService.getOperatorsString(contractor);
 			}
 			invoice.setNotes(notes);
 
@@ -153,9 +152,8 @@ public class BillingDetail extends ContractorActionSupport {
 			accountDao.save(contractor);
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-				this.addNote(contractor,
-						"Created invoice for " + contractor.getCurrencyCode().getSymbol() + invoiceTotal,
-						NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
+				this.addNote(contractor, "Created invoice for " + contractor.getCurrencyCode().getSymbol()
+						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());
 			return BLANK;
@@ -192,10 +190,8 @@ public class BillingDetail extends ContractorActionSupport {
 	}
 
 	public OperatorAccount getRequestedBy() {
-		AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
-
 		if (contractor.getRequestedBy() != null)
-			requestedBy = (OperatorAccount) dao.find(contractor.getRequestedBy().getId());
+			requestedBy = opAccountDao.find(contractor.getRequestedBy().getId());
 
 		return requestedBy;
 	}

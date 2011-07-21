@@ -1145,7 +1145,7 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean upgrade = false;
 		boolean currentListOrBidOnly = false;
 		for (FeeClass feeClass : getFees().keySet()) {
-			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && feeClass.isMembership()
+			if (!upgrade && this.getFees().get(feeClass).isUpgrade()
 					&& !feeClass.equals(FeeClass.BidOnly) && !feeClass.equals(FeeClass.ListOnly))
 				upgrade = true;
 			if ((this.getFees().get(feeClass).getCurrentLevel().isBidonly() || this.getFees().get(feeClass)

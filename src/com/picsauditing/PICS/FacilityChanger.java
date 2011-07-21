@@ -46,6 +46,8 @@ public class FacilityChanger {
 	private NoteDAO noteDAO;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -121,7 +123,7 @@ public class FacilityChanger {
 		setListOnly();
 
 		contractor.syncBalance();
-		BillingCalculatorSingle.calculateAnnualFees(contractor);
+		billingService.calculateAnnualFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
 
@@ -170,7 +172,7 @@ public class FacilityChanger {
 					setListOnly();
 
 					contractor.syncBalance();
-					BillingCalculatorSingle.calculateAnnualFees(contractor);
+					billingService.calculateAnnualFees(contractor);
 					contractorAccountDAO.save(contractor);
 					return true;
 				}

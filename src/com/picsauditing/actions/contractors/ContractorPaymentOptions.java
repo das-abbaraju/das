@@ -30,6 +30,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorPaymentOptions extends ContractorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -127,7 +129,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		if ("Import my Data".equals(button) && !isHasPQFImportAudit()) {
 			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
-					+ "&url=ContractorPaymentOptions.action&newRegistration=true");
+					+ "&url=ContractorPaymentOptions.action");
 		}
 
 		accountDao.save(contractor);
@@ -145,7 +147,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						.getPayingFacilities());
 		}
 
-		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
+		List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
 		for (InvoiceItem discount : discounts) {
 			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)) {
 				suncorDiscount.setAmount(discount.getAmount());
@@ -477,14 +479,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	public boolean isEligibleForSuncorDiscount() {
-		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, invoiceFeeDAO);
+		List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
 		for (InvoiceItem discount : discounts) {
 			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount))
 				return true;
 		}
 		return false;
 	}
-	
+
 	public InvoiceFee getImportFeeForTranslation() {
 		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 	}

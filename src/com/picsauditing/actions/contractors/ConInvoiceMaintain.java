@@ -5,20 +5,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.TransactionStatus;
 
 /**
  * Class used to edit a Invoice and Invoice Item record with virtually no restrictions
@@ -28,6 +29,15 @@ import com.picsauditing.jpa.entities.User;
  */
 @SuppressWarnings("serial")
 public class ConInvoiceMaintain extends ContractorActionSupport implements Preparable {
+	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private InvoiceItemDAO invoiceItemDAO;
+	@Autowired
+	private BillingCalculatorSingle billingService;
+
 	public int invoiceId;
 	public Invoice invoice;
 	public List<InvoiceFee> feeList = null;
@@ -36,20 +46,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 
 	private int itemID = 0;
 
-	private InvoiceDAO invoiceDAO;
-	private InvoiceFeeDAO invoiceFeeDAO;
-	private InvoiceItemDAO invoiceItemDAO;
-
-	public ConInvoiceMaintain(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, InvoiceDAO invoiceDAO,
-			InvoiceFeeDAO invoiceFeeDAO, InvoiceItemDAO invoiceItemDAO) {
-		this.invoiceDAO = invoiceDAO;
-		this.invoiceFeeDAO = invoiceFeeDAO;
-		this.invoiceItemDAO = invoiceItemDAO;
-	}
-
 	public void prepare() throws Exception {
-		if (!forceLogin())
-			return;
 		id = getParameter("id");
 		findContractor();
 		invoiceId = getParameter("invoiceId");
@@ -60,15 +57,18 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		permissions.tryPermission(OpPerms.InvoiceEdit);
-
 		if ("Save".equals(button)) {
-			invoice.setAuditColumns(new User(User.SYSTEM));
+			invoice.setAuditColumns(permissions);
+
+			String message = "Successfully saved data";
 
 			for (InvoiceItem item : invoice.getItems()) {
+				if (invoice.getStatus().isVoid() && item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
+					boolean removed = billingService.removeImportPQF(contractor);
+					if (removed)
+						message += " and removed <strong>ImportPQF Audit</strong>";
+				}
+
 				int feeID = feeMap.get(item.getId());
 				if (item.getInvoiceFee().getId() != feeID)
 					item.setInvoiceFee(invoiceFeeDAO.find(feeID));
@@ -77,7 +77,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 			invoice.updateAmount();
 			invoice.setQbSync(true);
 			invoiceDAO.save(invoice);
-			addActionMessage("Successfully saved data");
+			addActionMessage(message);
 		}
 
 		if ("Remove".equals(button)) {
@@ -85,10 +85,18 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 				for (Iterator<InvoiceItem> items = invoice.getItems().iterator(); items.hasNext();) {
 					InvoiceItem item = items.next();
 					if (itemID == item.getId()) {
+						String message = "Removed line item <strong>" + item.getInvoiceFee().getFee()
+								+ "</strong> for " + contractor.getCurrencyCode().getSymbol() + item.getAmount();
+
+						if (item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
+							boolean removed = billingService.removeImportPQF(contractor);
+							if (removed)
+								message += " and removed <strong>ImportPQF Audit</strong>";
+						}
+
 						items.remove();
 						invoiceItemDAO.remove(item);
-						addActionMessage("Removed line item <strong>" + item.getInvoiceFee().getFee()
-								+ "</strong> for " + contractor.getCurrencyCode().getSymbol() + item.getAmount());
+						addActionMessage(message);
 					}
 				}
 
@@ -99,6 +107,8 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 		}
 
 		if ("Delete".equals(button)) {
+			// If we are deleting an Invoice, we should perform all the void actions that need to be done.
+			billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
 			addNote(contractor, "Removed Invoice #" + invoiceId + " for " + invoice.getTotalAmount(),
 					NoteCategory.Billing, LowMedHigh.Low, false, Account.PicsID, this.getUser());
 			invoiceDAO.remove(invoiceId);

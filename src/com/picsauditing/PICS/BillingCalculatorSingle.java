@@ -8,11 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -28,16 +31,28 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
+	@Autowired
+	private InvoiceFeeDAO feeDAO;
+	@Autowired
+	private ContractorAccountDAO accountDao;
+	@Autowired
+	private ContractorAuditDAO conAuditDao;
+	@Autowired
+	private UserAssignmentDAO uaDAO;
+	@Autowired
+	private AuditTypeRuleCache ruleCache;
+	@Autowired
+	private AuditDecisionTableDAO auditDAO;
 
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
 	public static final Date SUNCOR_DISCOUNT_EXPIRATION = DateBean.parseDate("2011-12-01");
 
-	static public void setPayingFacilities(ContractorAccount contractor) {
-
+	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
@@ -56,10 +71,8 @@ public class BillingCalculatorSingle {
 		contractor.setPayingFacilities(payingOperators.size());
 	}
 
-	static public void calculateAnnualFees(ContractorAccount contractor) {
+	public void calculateAnnualFees(ContractorAccount contractor) {
 		setPayingFacilities(contractor);
-
-		InvoiceFeeDAO feeDAO = (InvoiceFeeDAO) com.picsauditing.util.SpringUtils.getBean("InvoiceFeeDAO");
 
 		int payingFacilities = contractor.getPayingFacilities();
 
@@ -82,10 +95,6 @@ public class BillingCalculatorSingle {
 		boolean cor = false;
 		boolean importPQF = false;
 
-		AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) com.picsauditing.util.SpringUtils
-				.getBean("AuditTypeRuleCache");
-		AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) com.picsauditing.util.SpringUtils
-				.getBean("AuditDecisionTableDAO");
 		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
@@ -216,7 +225,7 @@ public class BillingCalculatorSingle {
 	 * @return
 	 */
 
-	static public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, InvoiceFeeDAO feeDAO) {
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 		String billingStatus = contractor.getBillingStatus();
@@ -331,14 +340,13 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		List<InvoiceItem> discounts = BillingCalculatorSingle.getDiscountItems(contractor, feeDAO);
+		List<InvoiceItem> discounts = getDiscountItems(contractor);
 		items.addAll(discounts);
 
 		return items;
 	}
 
-	static public boolean activateContractor(ContractorAccount contractor, Invoice invoice,
-			ContractorAccountDAO accountDao) {
+	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
 				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isBidonly()
@@ -353,7 +361,7 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
-	public static String getOperatorsString(ContractorAccount contractor) {
+	public String getOperatorsString(ContractorAccount contractor) {
 		List<String> operatorsString = new ArrayList<String>();
 
 		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
@@ -368,23 +376,7 @@ public class BillingCalculatorSingle {
 		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
 	}
 
-	/**
-	 * Assigning ImportPQF after fee is paid
-	 */
-	public static void assignImportPQF(ContractorAccount contractor, Invoice invoice, UserAssignmentDAO uaDAO) {
-		for (InvoiceItem item : invoice.getItems()) {
-			if (item.getInvoiceFee().getId() == InvoiceFee.IMPORTFEE && invoice.getStatus().isPaid()) {
-				for (ContractorAudit ca : contractor.getAudits()) {
-					if (ca.getAuditType().getId() == AuditType.IMPORT_PQF && ca.getAuditor() == null) {
-						ca.setAuditor(uaDAO.findByContractor(contractor).getUser());
-						ca.setAssignedDate(new Date());
-					}
-				}
-			}
-		}
-	}
-
-	public static List<InvoiceItem> getDiscountItems(ContractorAccount contractor, InvoiceFeeDAO invoiceFeeDAO) {
+	public List<InvoiceItem> getDiscountItems(ContractorAccount contractor) {
 		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
 
 		// Suncor First Year Registration
@@ -394,8 +386,8 @@ public class BillingCalculatorSingle {
 				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
 			// Safety check to make sure discount hasn't already been applied
 
-			InvoiceFee suncorDiscount = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount,
-					contractor.getPayingFacilities());
+			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
+					.getPayingFacilities());
 			if (!isHasDiscountBeenApplied(contractor, suncorDiscount)) {
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(suncorDiscount);
@@ -437,7 +429,7 @@ public class BillingCalculatorSingle {
 		return discounts;
 	}
 
-	private static boolean isHasDiscountBeenApplied(ContractorAccount contractor, InvoiceFee discount) {
+	private boolean isHasDiscountBeenApplied(ContractorAccount contractor, InvoiceFee discount) {
 		for (Invoice i : contractor.getInvoices()) {
 			if (!i.getStatus().isVoid()) {
 				for (InvoiceItem ii : i.getItems()) {
@@ -450,4 +442,34 @@ public class BillingCalculatorSingle {
 		return false;
 	}
 
+	public void performInvoiceStatusChangeActions(Invoice invoice, TransactionStatus newStatus) {
+		ContractorAccount contractor = (ContractorAccount) invoice.getAccount();
+		if (newStatus.isVoid()) {
+			removeImportPQF(contractor);
+		} else if (newStatus.isPaid()) {
+			// assign Auditor to ImportPQF
+			for (InvoiceItem item : invoice.getItems()) {
+				if (item.getInvoiceFee().getId() == InvoiceFee.IMPORTFEE && invoice.getStatus().isPaid()) {
+					for (ContractorAudit ca : contractor.getAudits()) {
+						if (ca.getAuditType().getId() == AuditType.IMPORT_PQF && ca.getAuditor() == null) {
+							ca.setAuditor(uaDAO.findByContractor(contractor).getUser());
+							ca.setAssignedDate(new Date());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public boolean removeImportPQF(ContractorAccount contractor) {
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+				audit.setExpiresDate(new Date());
+				conAuditDao.save(audit);
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

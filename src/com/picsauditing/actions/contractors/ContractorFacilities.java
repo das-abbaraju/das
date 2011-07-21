@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import javax.naming.NoPermissionException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -15,7 +16,6 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -39,9 +39,16 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
+	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
-	private OperatorAccountDAO operatorDao = null;
-	private FacilityChanger facilityChanger = null;
+	@Autowired
+	private OperatorAccountDAO operatorDao;
+	@Autowired
+	private ContractorAccountDAO accountDao;
+	@Autowired
+	private FacilityChanger facilityChanger;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	private String state = null;
 
@@ -55,11 +62,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	private ContractorType type = null;
 	public Boolean competitorAnswer;
 
-	public ContractorFacilities(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			OperatorAccountDAO operatorDao, FacilityChanger facilityChanger, ContractorOperatorDAO contractorOperatorDAO) {
-		this.operatorDao = operatorDao;
-		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.facilityChanger = facilityChanger;
+	public ContractorFacilities() {
 		this.subHeading = "Facilities";
 		this.noteCategory = NoteCategory.OperatorChanges;
 		this.currentStep = ContractorRegistrationStep.Facilities;
@@ -111,7 +114,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				}
 			}
 
-			BillingCalculatorSingle.calculateAnnualFees(contractor);
+			billingService.calculateAnnualFees(contractor);
 			contractor.syncBalance();
 
 			accountDao.save(contractor);
@@ -132,7 +135,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (button != null) {
 			boolean recalculate = false;
 
-			if(button.equals("setCompetitorAnswer")){
+			if (button.equals("setCompetitorAnswer")) {
 				contractor.setHasCanadianCompetitor(competitorAnswer);
 				accountDao.save(contractor);
 			}
@@ -176,7 +179,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					searchResults = new ArrayList<OperatorAccount>();
 					if (contractor.getCountry().getIsoCode().equals("US")
 							|| contractor.getCountry().getIsoCode().equals("CA")) {
-						
+
 						List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor, permissions);
 
 						for (BasicDynaBean d : data) {
@@ -329,7 +332,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					if (contractor.getAccountLevel().isBidOnly() && !contractor.getRequestedBy().isAcceptsBids()) {
 						contractor.setAccountLevel(AccountLevel.BidOnly);
 						contractor.setRenew(true);
-						BillingCalculatorSingle.calculateAnnualFees(contractor);
+						billingService.calculateAnnualFees(contractor);
 						contractor.syncBalance();
 					}
 					accountDao.save(contractor);
@@ -341,7 +344,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			if (button.equals("SwitchToTrialAccount")) {
 				contractor.setAccountLevel(AccountLevel.BidOnly);
 				contractor.setRenew(false);
-				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				accountDao.save(contractor);
 				return SUCCESS;
@@ -368,9 +371,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 					facilityChanger.setType(type);
 					contractor.setRenew(true);
 					facilityChanger.add();
-					if(contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
+					if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 						contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
-					BillingCalculatorSingle.calculateAnnualFees(contractor);
+					billingService.calculateAnnualFees(contractor);
 					contractor.syncBalance();
 					recalculate = true;
 				} else {
@@ -385,7 +388,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				facilityChanger.remove();
 				if (contractor.getNonCorporateOperators().size() == 0 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(null);
-				else if(contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
+				else if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 				recalculate = true;
 				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
@@ -394,7 +397,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 			if (recalculate) {
 				findContractor();
-				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				accountDao.save(contractor);
 			}

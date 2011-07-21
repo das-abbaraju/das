@@ -1,131 +1,45 @@
 package com.picsauditing.util;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EventSubscriptionBuilder;
 
 @SuppressWarnings("serial")
 public class CreateImportPQFAudit extends ContractorActionSupport {
-	@Autowired
-	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
-	private NoteDAO noteDAO;
-	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
-	private boolean newRegistration = false;
+	private boolean createInvoice = false;
 	private String url;
 
 	public String execute() throws Exception {
 		this.findContractor();
 
-		InvoiceFee initialFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
-		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-
 		// Does the contractor have a competitor membership?
 		if (contractor.getCompetitorMembership() == null || contractor.getCompetitorMembership() == true) {
-			// if contractor doesn't have a fee, create it
-			if (!contractor.getFees().containsKey(fee.getFeeClass())) {
-				ContractorFee newConFee = new ContractorFee();
-				newConFee.setAuditColumns(permissions);
-				newConFee.setContractor(contractor);
-				newConFee.setCurrentAmount(initialFee.getAmount());
-				newConFee.setNewAmount(fee.getAmount());
-				newConFee.setCurrentLevel(initialFee);
-				newConFee.setNewLevel(fee);
-				newConFee.setFeeClass(fee.getFeeClass());
-				invoiceFeeDAO.save(newConFee);
-
-				contractor.getFees().put(fee.getFeeClass(), newConFee);
-
-				contractor.syncBalance();
-			}
-
-			// Did the contractor already pay the ImportPQF fee?
-			// Safety check if they make multiple requests
-			boolean hasImportInvoice = false;
-
-			for (Invoice invoice : contractor.getInvoices()) {
-				for (InvoiceItem item : invoice.getItems()) {
-					if (item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
-						hasImportInvoice = true;
-						break;
-					}
-				}
-			}
-
-			// New registration invoices are handled during the registration process
-			if (!hasImportInvoice && !newRegistration) {
-				Invoice invoice = new Invoice();
-				invoice.setAccount(contractor);
-				invoice.setCurrency(contractor.getCurrency());
-				invoice.setDueDate(new Date());
-				invoice.setTotalAmount(fee.getAmount());
-				invoice.setNotes("Thank you for doing business with PICS!");
-				invoice.setAuditColumns(permissions);
-				invoice.setQbSync(true);
-				invoiceDAO.save(invoice);
-
-				InvoiceItem item = new InvoiceItem(fee);
-				item.setInvoice(invoice);
-				item.setAuditColumns(permissions);
-				invoiceFeeDAO.save(item);
-				invoice.getItems().add(item);
-
-				contractor.getInvoices().add(invoice);
-
-				// Emailing Invoice to Contractor
-				try {
-					EmailQueue email = EventSubscriptionBuilder
-							.contractorInvoiceEvent(contractor, invoice, permissions);
-
-					String inote = "ImportPQF Invoice emailed to " + email.getToAddresses();
-					if (!Strings.isEmpty(email.getCcAddresses()))
-						inote += " and cc'd " + email.getCcAddresses();
-					Note note = new Note(invoice.getAccount(), getUser(), inote);
-					note.setNoteCategory(NoteCategory.Billing);
-					note.setCanContractorView(true);
-					note.setViewableById(Account.PicsID);
-					noteDAO.save(note);
-				} catch (Exception e) {
-					Note note = new Note(invoice.getAccount(), getUser(), "Failed to send ImportPQF Invoice Email");
-					note.setNoteCategory(NoteCategory.Billing);
-					note.setCanContractorView(true);
-					note.setViewableById(Account.PicsID);
-					noteDAO.save(note);
-				}
-			}
-
 			// Does the contractor already have this audit?
-			// Another safety check
 			boolean hasImportPQFAudit = false;
 
 			for (ContractorAudit audit : contractor.getAudits()) {
@@ -151,6 +65,27 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 						Account.EVERYONE, new User(permissions.getUserId()));
 			}
 
+			InvoiceFee initialFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+			InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
+
+			// if contractor doesn't have a fee, create it
+			if (!contractor.getFees().containsKey(fee.getFeeClass())) {
+				ContractorFee newConFee = new ContractorFee();
+				newConFee.setAuditColumns(permissions);
+				newConFee.setContractor(contractor);
+				newConFee.setCurrentAmount(initialFee.getAmount());
+				newConFee.setNewAmount(fee.getAmount());
+				newConFee.setCurrentLevel(initialFee);
+				newConFee.setNewLevel(fee);
+				newConFee.setFeeClass(fee.getFeeClass());
+				invoiceFeeDAO.save(newConFee);
+
+				contractor.getFees().put(fee.getFeeClass(), newConFee);
+
+				contractor.syncBalance();
+				billingService.calculateAnnualFees(contractor);
+			}
+
 			contractor.setCompetitorMembership(true);
 			accountDao.save(contractor);
 		}
@@ -166,17 +101,14 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			}
 		}
 
-		this.redirect(Strings.isEmpty(url) ? String.format("Audit.action?auditID=%d", importAuditID) : url
-				+ "?newRegistration=true");
+		if (Strings.isEmpty(url))
+			this.redirect(String.format("Audit.action?auditID=%d", importAuditID));
+		else if (url.contains("ContractorPaymentOptions"))
+			this.redirect(url + "?newRegistration=true");
+		else
+			this.redirect(url);
+
 		return BLANK;
-	}
-
-	public boolean isNewRegistration() {
-		return newRegistration;
-	}
-
-	public void setNewRegistration(boolean newRegistration) {
-		this.newRegistration = newRegistration;
 	}
 
 	public String getUrl() {
@@ -185,5 +117,13 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public void setCreateInvoice(boolean createInvoice) {
+		this.createInvoice = createInvoice;
+	}
+
+	public boolean isCreateInvoice() {
+		return createInvoice;
 	}
 }

@@ -23,7 +23,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -59,9 +58,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private AppPropertyDAO appPropDao;
 	@Autowired
-	private UserAssignmentDAO uaDAO;
-	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	private boolean edit = false;
 	private int newFeeId;
@@ -159,7 +158,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				message = "Changed Membership Level";
 
 				String notes = "Thank you for doing business with PICS!";
-				notes += BillingCalculatorSingle.getOperatorsString(contractor);
+				notes += billingService.getOperatorsString(contractor);
 
 				invoice.setNotes(notes);
 				contractor.syncBalance();
@@ -192,6 +191,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, this.getUser());
 				}
 				invoice.setStatus(TransactionStatus.Void);
+				billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
 				invoice.setAuditColumns(permissions);
 				invoice.setQbSync(true);
 				invoice.setNotes("Cancelled Invoice");
@@ -213,7 +213,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					noteDAO.save(note);
 				}
 
-				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
@@ -251,17 +251,17 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
+							billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
 							invoice.updateAmountApplied();
 							contractor.syncBalance();
 
 							// Activate the contractor
-							BillingCalculatorSingle.activateContractor(contractor, invoice, accountDao);
+							billingService.activateContractor(contractor, invoice);
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(), getUser());
 
-							BillingCalculatorSingle.assignImportPQF(contractor, invoice, uaDAO);
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
 
@@ -325,7 +325,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		updateTotals();
 		invoiceDAO.save(invoice);
 
-		BillingCalculatorSingle.calculateAnnualFees(contractor);
+		billingService.calculateAnnualFees(contractor);
 		contractor.syncBalance();
 
 		contractor.setAuditColumns(permissions);

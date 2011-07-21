@@ -15,6 +15,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -24,13 +25,11 @@ import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.AuditData;
@@ -64,21 +63,30 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
+	@Autowired
+	private ContractorAccountDAO contractorDAO;
+	@Autowired
+	private AuditDataDAO auditDataDAO;
+	@Autowired
+	private EmailSubscriptionDAO subscriptionDAO;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private AuditBuilder auditBuilder;
+	@Autowired
+	private ContractorFlagETL contractorFlagETL;
+	@Autowired
+	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
+	private UserAssignmentDAO userAssignmentDAO;
+	@Autowired
+	private ContractorAuditDAO conAuditDAO;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
-	private ContractorAccountDAO contractorDAO;
-	private ContractorOperatorDAO contractorOperatorDAO;
-	private AuditDataDAO auditDataDAO;
-	private EmailSubscriptionDAO subscriptionDAO;
-
-	private AuditPercentCalculator auditPercentCalculator;
-	private AuditBuilder auditBuilder;
-	private ContractorFlagETL contractorFlagETL;
 	private FlagDataCalculator flagDataCalculator;
-	private UserAssignmentDAO userAssignmentDAO;
-	private ContractorAuditDAO conAuditDAO;
-
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
@@ -86,22 +94,6 @@ public class ContractorCron extends PicsActionSupport {
 	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
-
-	public ContractorCron(ContractorAccountDAO contractorDAO, AuditDataDAO auditDataDAO, NoteDAO noteDAO,
-			EmailSubscriptionDAO subscriptionDAO, AuditPercentCalculator auditPercentCalculator,
-			AuditBuilder auditBuilder, ContractorFlagETL contractorFlagETL,
-			ContractorOperatorDAO contractorOperatorDAO, AppPropertyDAO appPropertyDAO,
-			UserAssignmentDAO userAssignmentDAO, ContractorAuditDAO conAuditDAO) {
-		this.contractorDAO = contractorDAO;
-		this.auditDataDAO = auditDataDAO;
-		this.subscriptionDAO = subscriptionDAO;
-		this.auditPercentCalculator = auditPercentCalculator;
-		this.auditBuilder = auditBuilder;
-		this.contractorFlagETL = contractorFlagETL;
-		this.contractorOperatorDAO = contractorOperatorDAO;
-		this.userAssignmentDAO = userAssignmentDAO;
-		this.conAuditDAO = conAuditDAO;
-	}
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -248,7 +240,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void runBilling(ContractorAccount contractor) {
 		if (!runStep(ContractorCronStep.Billing))
 			return;
-		BillingCalculatorSingle.calculateAnnualFees(contractor);
+		billingService.calculateAnnualFees(contractor);
 		contractor.syncBalance();
 	}
 
@@ -371,7 +363,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
-		if (co.getContractorAccount().getAccountLevel().isBidOnly() || co.getContractorAccount().getStatus().isPending()
+		if (co.getContractorAccount().getAccountLevel().isBidOnly()
+				|| co.getContractorAccount().getStatus().isPending()
 				|| co.getContractorAccount().getStatus().isDeleted())
 			overallColor = FlagColor.Clear;
 
@@ -486,8 +479,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
-										co.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}

@@ -24,7 +24,6 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorFee;
@@ -67,7 +66,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private UserAssignmentDAO uaDAO;
+	private BillingCalculatorSingle billingService;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
@@ -139,16 +138,15 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 
 							paymentDAO.save(payment);
 							invoice.updateAmountApplied();
+							billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
 							contractor.syncBalance();
 
 							// Activate the contractor
-							BillingCalculatorSingle.activateContractor(contractor, invoice, accountDao);
+							billingService.activateContractor(contractor, invoice);
 							accountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
-							
-							BillingCalculatorSingle.assignImportPQF(contractor, invoice, uaDAO);
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -205,14 +203,14 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			complete = true;
 
 		} else if (contractor.getStatus().isPendingDeactivated()) {
-			BillingCalculatorSingle.calculateAnnualFees(contractor);
+			billingService.calculateAnnualFees(contractor);
 
 			if (!contractor.isHasFreeMembership()) {
 				String notes = "";
 				// There are no unpaid invoices - we should create a new one
 				// (could be a re-activation)
 				if (invoice == null) {
-					List<InvoiceItem> items = BillingCalculatorSingle.createInvoiceItems(contractor, invoiceFeeDAO);
+					List<InvoiceItem> items = billingService.createInvoiceItems(contractor);
 					if (items.size() > 0) {
 						invoice = new Invoice();
 						invoice.setStatus(TransactionStatus.Unpaid);
@@ -285,7 +283,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						invoice.setQbSync(true);
 
 					notes += "Thank you for doing business with PICS!";
-					notes += BillingCalculatorSingle.getOperatorsString(contractor);
+					notes += billingService.getOperatorsString(contractor);
 					// AppProperty prop = appPropDAO.find("invoice_comment");
 					// if (prop != null) {
 					// notes = prop.getValue();

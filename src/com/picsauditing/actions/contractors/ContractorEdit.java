@@ -39,7 +39,6 @@ import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -82,6 +81,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected CountryDAO countryDAO;
 	@Autowired
 	protected StateDAO stateDAO;
+	@Autowired
+	protected BillingCalculatorSingle billingService;
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected Country country;
@@ -108,7 +109,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (conID > 0) {
 				contractor = accountDao.find(conID);
 
-				BillingCalculatorSingle.calculateAnnualFees(contractor);
+				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				for (ContractorOperator conOperator : contractor.getNonCorporateOperators()) {
 					operatorIds.add(conOperator.getOperatorAccount().getId());
@@ -118,8 +119,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
 				country = countryDAO.find(countryIsos[0]);
-			
-			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get("billingCountry.isoCode");
+
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				billingCountry = countryDAO.find(billingCountryIsos[0]);
 
@@ -167,9 +169,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (country != null && !country.equals(contractor.getCountry())) {
 				contractor.setCountry(country);
 			}
-			
-			if (billingCountry != null && !"".equals(billingCountry.getIsoCode()) && 
-					!billingCountry.equals(contractor.getBillingCountry())) {
+
+			if (billingCountry != null && !"".equals(billingCountry.getIsoCode())
+					&& !billingCountry.equals(contractor.getBillingCountry())) {
 				contractor.setBillingCountry(billingCountry);
 			}
 
@@ -381,51 +383,22 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		contractor.setReason("");
 		accountDao.save(contractor);
-		this.addNote(contractor, "Reactivated account");
-		this.addActionMessage("Successfully reactivated this contractor account. "
-				+ "<a href='BillingDetail.action?id=" + id + "'>Click to Create their invoice</a>");
+		addNote(contractor, "Reactivated account");
+		addActionMessage("Successfully reactivated this contractor account. " + "<a href='BillingDetail.action?id="
+				+ id + "'>Click to Create their invoice</a>");
 		return SUCCESS;
 	}
 
 	public String createImportPQF() throws Exception {
-		boolean hasFee = false;
-		for (FeeClass feeClass : contractor.getFees().keySet()) {
-			if (feeClass.equals(FeeClass.ImportFee)) {
-				hasFee = true;
-				break;
-			}
-		}
-
-		// Now check for the audit itself
-		boolean hasAudit = false;
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
-				hasAudit = true;
-				break;
-			}
-		}
-
-		if (!hasFee || !hasAudit) {
-			// Need to charge them OR create the audit if either is missing
-			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
-					+ contractor.getId());
-		}
-
-		if (hasFee)
-			addActionError("Contractor was already charged for the Import PQF");
-		if (hasAudit)
-			addActionError("Contractor was already has the Import PQF");
+		redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
+				+ contractor.getId());
 
 		return SUCCESS;
 	}
 
 	public String expireImportPQF() {
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
-				audit.setExpiresDate(new Date());
-				auditDao.save(audit);
-			}
-		}
+		billingService.removeImportPQF(contractor);
+		addActionMessage("Removed ImportPQF Audit");
 
 		return SUCCESS;
 	}
@@ -487,11 +460,11 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public Country getBillingCountry() {
 		return billingCountry;
 	}
-	
+
 	public void setBillingCountry(Country billingCountry) {
 		this.billingCountry = billingCountry;
 	}
-	
+
 	public List<Invoice> getUnpaidInvoices() {
 		List<Invoice> unpaidInvoices = new ArrayList<Invoice>();
 		if (!contractor.isRenew()) {
