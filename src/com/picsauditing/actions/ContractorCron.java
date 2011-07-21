@@ -661,15 +661,17 @@ public class ContractorCron extends PicsActionSupport {
 							audit.setAssignedDate(new Date());
 						}
 					}
-					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
-							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
-						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
-					}
 					break;
 				case (AuditType.WELCOME):
 					audit.setAuditor(contractor.getAuditor());
 					break;
 				}
+			}
+			if (audit.getAuditType().getId() == AuditType.DESKTOP 
+					&& audit.getClosingAuditor() == null 
+					&& audit.getAuditor() != null
+					&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+				audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
 			}
 		}
 	}
