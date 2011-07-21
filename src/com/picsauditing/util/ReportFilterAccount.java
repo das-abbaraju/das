@@ -1,6 +1,5 @@
 package com.picsauditing.util;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,8 +51,8 @@ public class ReportFilterAccount extends ReportFilter {
 				cache.getText("global.Operator", getLocaleStatic()) };
 	}
 
-	public ArrayList<String> getFlagStatusList() throws Exception {
-		return FlagColor.getValuesWithDefault();
+	public FlagColor[] getFlagStatusList() throws Exception {
+		return FlagColor.values();
 	}
 
 	public List<State> getStateList() {

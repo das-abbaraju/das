@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -25,10 +27,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterContractor extends ReportFilterAccount {
-	public static final String[] DEACTIVATION_REASON = { "ChargeBack", "Did not Complete PICS process",
-			"Does not work for operator", "Duplicate/Merged Account", "Operator Exemption", "Payments not Current",
-			"Bid Only Account" };
-
 	// /////// Filter Visibility /////////////
 	protected boolean showContractor = false;
 	protected boolean showOperator = true;
@@ -113,19 +111,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditQuestionFlagChanges = false;
 	protected boolean soleProprietership = false;
 	protected String[] accountLevel;
-
-	protected final Map<Integer, String> MINORITY_QUESTIONS;
-	{
-		Map<Integer, String> temp = new HashMap<Integer, String>();
-		temp.put(2340, "Small Business");
-		temp.put(2373, "Women-Owned");
-		temp.put(3543, "Disabled Veteran Owned");
-		temp.put(66, "Union Personnel");
-		temp.put(77, "Non-union Personnel");
-		temp.put(3283, "Aboriginal Owned");
-		temp.put(3, "All the Above");
-		MINORITY_QUESTIONS = Collections.unmodifiableMap(temp);
-	}
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -621,8 +606,25 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		return dao.findByOperator(permissions.getAccountId(), true);
 	}
 
-	public String[] getDeactivationReasons() {
-		return ReportFilterContractor.DEACTIVATION_REASON;
+	public static Map<String, String> getDeactivationReasons() {
+		I18nCache cache = I18nCache.getInstance();
+		Locale locale = getLocaleStatic();
+
+		Map<String, String> deactivationReasons = new HashMap<String, String>();
+		deactivationReasons.put("ChargeBack", cache.getText("Filters.status.Deactivation.ChargeBack", locale));
+		deactivationReasons.put("Did not Complete PICS process",
+				cache.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
+		deactivationReasons.put("Does not work for operator",
+				cache.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
+		deactivationReasons.put("Duplicate/Merged Account",
+				cache.getText("Filters.status.Deactivation.DuplicateMerged", locale));
+		deactivationReasons.put("Operator Exemption",
+				cache.getText("Filters.status.Deactivation.OperatorExemption", locale));
+		deactivationReasons.put("Payments not Current",
+				cache.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
+		deactivationReasons
+				.put("Bid Only Account", cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
+		return Collections.unmodifiableMap(deactivationReasons);
 	}
 
 	public boolean isShowAssignedCon() {
@@ -875,7 +877,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public Map<Integer, String> getMinorityQuestions() {
-		return MINORITY_QUESTIONS;
+		Map<Integer, String> temp = new HashMap<Integer, String>();
+		temp.put(2340, getText("Filters.status.SmallBusiness"));
+		temp.put(2373, getText("Filters.status.WomenOwned"));
+		temp.put(3543, getText("Filters.status.DisabledVeteranOwned"));
+		temp.put(66, getText("Filters.status.UnionPersonnel"));
+		temp.put(77, getText("Filters.status.NonUnionPersonnel"));
+		temp.put(3283, getText("Filters.status.AboriginalOwned"));
+		temp.put(3, getText("Filters.status.AllTheAbove"));
+		return Collections.unmodifiableMap(temp);
 	}
 
 	public String[] getAccountLevel() {

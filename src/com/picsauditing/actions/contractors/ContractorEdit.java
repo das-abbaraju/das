@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -478,8 +479,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		return unpaidInvoices;
 	}
 
-	public String[] getDeactivationReasons() {
-		return ReportFilterContractor.DEACTIVATION_REASON;
+	public Map<String, String> getDeactivationReasons() {
+		return ReportFilterContractor.getDeactivationReasons();
 	}
 
 	public List<User> getUserList() {

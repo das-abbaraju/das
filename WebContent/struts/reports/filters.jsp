@@ -216,7 +216,7 @@
 			<a href="#" class="filterBox"><s:text name="global.FlagStatus" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
-				<s:select list="filter.flagStatusList" cssClass="forms" name="filter.flagStatus" multiple="true" size="3" />
+				<s:select list="filter.flagStatusList" listValue="%{getText(i18nKey)}" cssClass="forms" name="filter.flagStatus" multiple="true" size="3" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>
@@ -793,7 +793,7 @@
 	<s:if test="filter.showDeactivationReason">
 		<div class="filterOption">
 			<s:select list="filter.deactivationReasons" headerKey=" " headerValue="- %{getText('Filters.header.DeactivationReason')} -"
-				cssClass="forms" name="filter.deactivationReason" />
+				listKey="key" listValue="value" cssClass="forms" name="filter.deactivationReason" />
 		</div>
 	</s:if>
 	
