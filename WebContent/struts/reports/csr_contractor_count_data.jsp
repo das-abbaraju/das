@@ -13,7 +13,7 @@
 	<thead>
 		<tr>
 			<td><a href="?orderBy=u.name ASC">CSR Name</a></td>
-			<td><a href="?orderBy=a.state, u.name ASC">State</a></td>
+			<td><a href="?orderBy=a.state, u.name ASC"><s:text name="State" /></a></td>
 			<td><a href="?orderBy=cnt, u.name, a.state ASC">Contractor Count</a></td>
 		</tr>
 	</thead>

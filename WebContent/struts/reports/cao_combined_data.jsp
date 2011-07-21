@@ -33,10 +33,10 @@
 		    <td><a href="#" onclick="changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
 	    </s:if>
 		<s:if test="permissions.accountName.startsWith('Roseburg')">
-			<td>Score</td>
+			<td><s:text name="ContractorAccount.score" /></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Trade</td>
+			<td><s:text name="Trade" /></td>
 		</s:if>
 	</tr>
 	</thead>

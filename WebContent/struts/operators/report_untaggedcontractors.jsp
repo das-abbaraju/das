@@ -24,7 +24,7 @@
 <table class="report">
 	<thead>
 	<tr>
-		<th colspan="2">Contractor Name</th>
+		<th colspan="2"><s:text name="global.ContractorName" /></th>
 		<th></th>
 	</tr>
 	</thead>

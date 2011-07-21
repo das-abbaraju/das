@@ -16,13 +16,13 @@
 <pics:permission perm="ContractorAdmin">
 	<a href="ContractorEdit.action" class="edit right"><s:text name="ContractorStats.link.EditAccountInfo" /></a>
 </pics:permission>
-<p><label><s:text name="global.Account.name" />:</label> <s:property value="contractor.name" /></p>
-<p><label><s:text name="global.Account.address" />:</label> <s:property value="contractor.address" /><br />
+<p><label><s:text name="ContractorAccount.name" />:</label> <s:property value="contractor.name" /></p>
+<p><label><s:text name="ContractorAccount.address" />:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" /> <s:property value="contractor.zip" /></p>
-<p><label><s:text name="global.Account.created" />:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
-<p><label><s:text name="global.Account.primaryContact.name" />:</label> <s:property value="contractor.primaryContact.name" /></p>
-<p><label><s:text name="global.Account.primaryContact.phone" />:</label> <s:property value="contractor.primaryContact.phone" /></p>
-<p><label><s:text name="global.Account.primaryContact.email" />:</label> <s:property value="contractor.primaryContact.email" /></p>
+<p><label><s:text name="ContractorAccount.created" />:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
+<p><label><s:text name="global.ContactPrimary" />:</label> <s:property value="contractor.primaryContact.name" /></p>
+<p><label><s:text name="User.phone" />:</label> <s:property value="contractor.primaryContact.phone" /></p>
+<p><label><s:text name="User.email" />:</label> <s:property value="contractor.primaryContact.email" /></p>
 <s:if test="contractor.auditor.name != null">
 	<p><label><s:text name="ContractorStats.auditor.name" />:</label> <s:property value="contractor.auditor.name" /></p>
 	<p><label><s:text name="ContractorStats.auditor.email" />:</label> <s:property value="contractor.auditor.email" /></p>

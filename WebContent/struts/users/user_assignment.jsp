@@ -109,8 +109,8 @@ tr.dirty a.save { display: inline; }
 	<thead>
 		<tr>
 			<th>User</th>
-			<th><s:text name="global.Country" /></th>
-			<th>State</th>
+			<th><s:text name="Country" /></th>
+			<th><s:text name="State" /></th>
 			<th>Zip Start</th>
 			<th>Zip End</th>
 			<th>Contractor</th>

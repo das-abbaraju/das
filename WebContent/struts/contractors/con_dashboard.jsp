@@ -473,7 +473,7 @@ table.report tr.hurdle td {
 				<s:text name="ContractorView.ContactInfo" />
 			</div>
 			<div class="panel_content">
-				<p><s:text name="ContractorView.Address" />: [<a
+				<p><s:text name="global.Address" />: [<a
 					href="http://www.mapquest.com/maps/map.adp?city=<s:property value="contractor.city" />&state=<s:property value="contractor.state" />&address=<s:property value="contractor.address" />&zip=<s:property value="contractor.zip" />&zoom=5"
 					target="_blank"><s:text name="ContractorView.ShowMap" /></a>]<br/>
 					<span class="street-address"><s:property value="contractor.address" /></span><br />
@@ -501,7 +501,7 @@ table.report tr.hurdle td {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				<s:text name="ContractorView.DescriptionHeader" />
+				<s:text name="global.Description" />
 			</div>
 			<div class="panel_content">
 				<s:if test="showLogo">

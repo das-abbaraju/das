@@ -126,7 +126,7 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 									<th><s:text name="ManageFlagCriteriaOperator.header.InheritsFrom">
 										<s:param>
 											<s:if test="insurance"><s:text name="ManageInsuranceCriteriaOperator.header.Insurance" /></s:if>
-											<s:else><s:text name="ManageFlagCriteriaOperator.header.Flag" /></s:else>
+											<s:else><s:text name="global.Flag" /></s:else>
 										</s:param>
 									</s:text></th>
 								</tr>
@@ -161,7 +161,7 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 									<s:text name="ManageInsuranceCriteriaOperator.header.Insurance" />
 								</s:if>
 								<s:else>
-									<s:text name="ManageFlagCriteriaOperator.header.Flag" />
+									<s:text name="global.Flag" />
 								</s:else>
 							</s:param>
 						</s:text>

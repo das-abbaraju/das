@@ -35,8 +35,8 @@
 	<tr>
 		<td>Type</td>
 		<td>Name</td>
-		<td>City</td>
-		<td>State</td>
+		<td><s:text name="global.City" /></td>
+		<td><s:text name="State" /></td>
 	</tr>
 	</thead>
 	<s:iterator value="data">

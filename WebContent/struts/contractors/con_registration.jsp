@@ -166,7 +166,7 @@ $(function(){
 			<li class="required">
 				<s:textfield name="contractor.city" theme="formhelp" size="35" />
 			</li>
-			<li><label><s:text name="global.Country" />:</label>
+			<li><label><s:text name="Country" />:</label>
 				<input type="text" disabled="disabled" id="country_display"/>
 			</li>
 			<s:if test="contractor == null || contractor.state == null"><li id="state_li"></li></s:if>

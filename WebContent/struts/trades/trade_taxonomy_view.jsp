@@ -10,7 +10,7 @@
 		<s:hidden name="trade.parent" />
 	</s:if>
 	<fieldset>
-	<h2>Trade</h2>
+	<h2><s:text name="Trade" /></h2>
 		<s:if test="!isStringEmpty(trade.imageLocationI)">
 			<img src="TradeTaxonomy!tradeLogo.action?trade=<s:property value="trade.id"/>" class="trade"/>
 		</s:if>

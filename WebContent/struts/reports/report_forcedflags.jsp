@@ -30,11 +30,11 @@
 <table class="report">
 	<thead>
 		<tr>
-			<td colspan="2"><a href="?orderBy=a.name" >Contractor Name</a></td>
+			<td colspan="2"><a href="?orderBy=a.name" ><s:text name="global.ContractorName" /></a></td>
 			<s:if test="!permissions.operator">
 				<td><a href="?orderBy=o.name" >Operator Name</a></td>
 			</s:if>
-			<td><a href="?orderBy=flag" >Flag</a></td>
+			<td><a href="?orderBy=flag" ><s:text name="global.Flag" /></a></td>
 			<td><a href="?orderBy=fLabel" >Flag Issue</a></td>
 			<td><a href="?orderBy=u.name" >ForcedBy</a></td>
 			<td><a href="?orderBy=ff.forceBegin" >Start Date</a></td>

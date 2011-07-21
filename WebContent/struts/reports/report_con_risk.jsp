@@ -38,7 +38,7 @@ $(function() {
 		<thead>
 			<tr>
 				<td></td>
-				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
+				<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.ContractorName" /></a></td>
 				<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Registration Date</a></td>
 				<td>Type</td>
 				<td>Calculated Risk</td>

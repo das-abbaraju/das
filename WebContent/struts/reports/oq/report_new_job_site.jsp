@@ -89,7 +89,7 @@ $(function() {
 			</div>
 		
 			<div class="filterOption">
-				<a href="#" onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> =
+				<a href="#" onclick="toggleBox('form1_country'); return false;"><s:text name="Country" /></a> =
 				<span id="form1_country_query"><s:text name="JS.Filters.status.All" /></span><br />
 				<span id="form1_country_select" style="display: none" class="clearLink">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"

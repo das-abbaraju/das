@@ -110,7 +110,7 @@ function hideCat(id) {
 <s:if test="operator.operator">
 	<h2 class="formLegend">Parent Accounts</h2>
 	<ol>
-		<li><label><s:text name="global.Country" />:</label>
+		<li><label><s:text name="Country" />:</label>
 			<s:property value="operator.country.name"/>
 		</li>
 		<s:if test="allParents.size > 0">
@@ -126,7 +126,7 @@ function hideCat(id) {
 										<s:property value="#corp.name" /></a>
 									</td>
 									<s:if test="permissions.isCanAddRuleForOperator(#globalOperator)">
-										<td><a href="?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove">Remove</a></td>
+										<td><a href="?id=<s:property value="#opID" />&button=Remove&corpID=<s:property value="#corp.id" />" class="remove"><s:text name="button.Remove" /></a></td>
 									</s:if>
 								</tr>
 							</s:iterator>

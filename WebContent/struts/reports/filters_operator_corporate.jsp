@@ -56,7 +56,7 @@
 						onclick="toggleBox('form1_state'); return false;"><s:text name="State" /></a> = <span
 						id="form1_state_query"><s:text name="JS.Filters.status.All" /></span></td>
 					<td style="padding-left: 1ex;"><a href="#"
-						onclick="toggleBox('form1_country'); return false;"><s:text name="global.Country" /></a> = <span
+						onclick="toggleBox('form1_country'); return false;"><s:text name="Country" /></a> = <span
 						id="form1_country_query"><s:text name="JS.Filters.status.All" /></span></td>
 				</tr>
 				<tr>

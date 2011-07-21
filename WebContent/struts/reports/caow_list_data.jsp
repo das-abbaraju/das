@@ -33,20 +33,20 @@
 		    <td><a href="#" onclick="changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
 	    </s:if>
 		<s:if test="permissions.accountName.startsWith('Roseburg')">
-			<td>Score</td>
+			<td><s:text name="ContractorAccount.score" /></td>
 		</s:if>
 		<s:if test="showContact">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
-			<td>Office Address</td>
-			<td><a href="#" onclick="changeOrderBy('form1','a.city,a.name');">City</a></td>
-			<td><a href="#" onclick="changeOrderBy('form1','a.state,a.name');">State</a></td>
-			<td>Zip</td>
-			<td>Web_URL</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
+			<td><s:text name="global.OfficeAddress" /></td>
+			<td><a href="#" onclick="changeOrderBy('form1','a.city,a.name');"><s:text name="global.City" /></a></td>
+			<td><a href="#" onclick="changeOrderBy('form1','a.state,a.name');"><s:text name="State" /></a></td>
+			<td><s:text name="global.ZipPostalCode" /></td>
+			<td><s:text name="ContractorAccount.webUrl" /></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Trade</td>
+			<td><s:text name="Trade" /></td>
 		</s:if>
 	</tr>
 	</thead>

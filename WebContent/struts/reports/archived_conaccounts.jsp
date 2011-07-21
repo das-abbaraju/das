@@ -3,10 +3,10 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Archived Contractor Accounts</title>
+<title><s:text name="ArchivedContractorAccounts.title" /></title>
 <s:include value="reportHeader.jsp" /></head>
 <body>
-<h1>Archived Contractor Accounts</h1>
+<h1><s:text name="ArchivedContractorAccounts.title" /></h1>
 
 <s:include value="filters.jsp" />
 <pics:permission perm="ContractorDetails">
@@ -24,38 +24,37 @@
 </div>
 
 <div class="info">
-These contractors have allowed their PICS membership to lapse, or they have decided to discontinue their PICS membership.<br>If you expect to do additional work
-with any of these contractors, please encourage them to renew their membership by contacting PICS.
+	<s:text name="ArchivedContractorAccounts.message.PicsMembershipLapsed" />
 </div>
 
 <table class="report" style="clear : none;">
 	<thead>
 	<tr>
-		<td colspan="2">Contractor Name</td>
+		<td colspan="2"><s:text name="global.ContractorName" /></td>
 		<s:if test="permissions.admin">
 			<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Created On</a></td>
 			<td><a href="javascript: changeOrderBy('form1','c.paymentExpires');">Expired</a></td>
 			<td>Reason</td>
-			<td>Safety Assessment</td>
-			<td>Product Assessment</td>
+			<td><s:text name="global.SafetyRisk" /></td>
+			<td><s:text name="global.ProductRisk" /></td>
 			<td># of Employees</td>
 		</s:if>
 		<s:if test="showContact">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
-			<td>Office Address</td>
-			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');">City</a></td>
-			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');">State</a></td>
-			<td>Zip</td>
-			<td>Web_URL</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
+			<td><s:text name="global.OfficeAddress" /></td>
+			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');"><s:text name="global.City" /></a></td>
+			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');"><s:text name="State" /></a></td>
+			<td><s:text name="global.ZipPostalCode" /></td>
+			<td><s:text name="ContractorAccount.webUrl" /></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Trade</td>
+			<td><s:text name="Trade" /></td>
 		</s:if>
 		<pics:permission perm="RemoveContractors">
 		<s:if test="permissions.operator">
-			<td>Remove</td>
+			<td><s:text name="button.Remove" /></td>
 		</s:if>
 		</pics:permission>
 	</tr>

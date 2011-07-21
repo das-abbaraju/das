@@ -22,7 +22,7 @@
 			<thead>
 				<tr>
 					<th></th>
-					<th>Contractor Name</th>
+					<th><s:text name="global.ContractorName" /></th>
 					<th>Parent Trade</th>
 					<th>Child Trade</th>
 					<th>View</th>

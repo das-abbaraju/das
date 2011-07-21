@@ -20,44 +20,44 @@
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2"><a href="?orderBy=name ASC">Contractor Name</a></td>
+		<td colspan="2"><a href="?orderBy=name ASC"><s:text name="global.ContractorName" /></a></td>
 		<pics:permission perm="AllContractors">
 			<td></td>
 		</pics:permission>
 		<pics:permission perm="ContractorDetails">
 			<td></td>
 			<s:if test="pqfVisible">
-				<td>PQF</td>
+				<td><s:text name="AuditType.1.name" /></td>
 			</s:if>
 		</pics:permission>
 		<s:if test="permissions.operatorCorporate">
-			<td><a href="?orderBy=flag DESC">Flag</a></td>
+			<td><a href="?orderBy=flag DESC"><s:text name="global.Flag" /></a></td>
 			<s:if test="permissions.operator">
-				<td>Waiting On</td>
+				<td><s:text name="WaitingOn" /></td>
 			</s:if>
 			<s:if test="operatorAccount.approvesRelationships.isTrue()">
 				<pics:permission perm="ViewUnApproved">
-					<td><nobr>Approved</nobr></td>
+					<td><s:text name="AuditStatus.Approved" /></td>
 				</pics:permission>
 			</s:if>
 		</s:if>
 		<pics:permission perm="PicsScore">
-			<td>Score</td>
+			<td><s:text name="ContractorAccount.score" /></td>
 		</pics:permission>
 		<s:if test="showContact">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
-			<td>Office Address</td>
-			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');">City</a></td>
-			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');">State</a></td>
-			<td>Zip</td>
-			<td>Web_URL</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
+			<td><s:text name="ContractorList.label.OfficeAddress" /></td>
+			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');"><s:text name="global.City" /></a></td>
+			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');"><s:text name="State" /></a></td>
+			<td><s:text name="global.ZipPostalCode" /></td>
+			<td><s:text name="ContractorAccount.webUrl" /></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Trade</td>
-			<td>Self Performed</td>
-			<td>Sub Contracted</td>			
+			<td><s:text name="Trade" /></td>
+			<td><s:text name="ContractorList.label.SelfPerformed" /></td>
+			<td><s:text name="ContractorList.label.SubContracted" /></td>			
 		</s:if>
 	</tr>
 	</thead>
@@ -75,11 +75,11 @@
 						</s:if>
 			</td>
 			<pics:permission perm="AllContractors">
-				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>">Edit</a></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>"><s:text name="button.Edit" /></a></td>
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
 				<td><a
-					href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Audits</a></td>
+					href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ContractorList.label.Audits" /></a></td>
 					<s:if test="pqfVisible">
 						<td class="icon center">
 								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon"><img
@@ -98,15 +98,13 @@
 						<pics:permission perm="ContractorDetails">
 							<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" >
 						</pics:permission>
-						<s:property value="@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn'))"/>
+						<s:text name="%{@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn')).i18nKey}" />
 						<pics:permission perm="ContractorDetails"></a></pics:permission>
 					</td>
 				</s:if>
 				<s:if test="operatorAccount.approvesRelationships.isTrue()">
 					<pics:permission perm="ViewUnApproved">
-						<td align="center">&nbsp;&nbsp;&nbsp;&nbsp;<s:property
-							value="get('workStatus')" />
-						</td>
+						<td class="center"><s:property value="get('workStatus')" /></td>
 					</pics:permission>
 				</s:if>
 			</s:if>

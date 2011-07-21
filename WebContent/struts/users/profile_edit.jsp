@@ -60,7 +60,7 @@
 <h1><s:text name="%{scope}.title" /></h1>
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;">Edit</a></li>
+	<li><a id="link_tab_profile" href="#" class="current" onclick="showTab('tab_profile'); return false;"><s:text name="button.Edit" /></a></li>
 	<s:if test="switchTos.size > 0">
 		<li><a id="link_tab_switch" href="#" onclick="showTab('tab_switch'); return false;">Switch Accounts</a></li>
 	</s:if>
@@ -218,7 +218,7 @@
 				<tr>
 					<th>Permission Name</th>
 					<th>View</th>
-					<th>Edit</th>
+					<th><s:text name="button.Edit" /></th>
 					<th>Delete</th>
 				</tr>
 			</thead>
@@ -227,7 +227,7 @@
 				<tr>
 					<td title="<s:property value="opPerm.helpText" />"><s:property value="opPerm.description" /></td>
 					<td><s:if test="viewFlag">View</s:if></td>
-					<td><s:if test="editFlag">Edit</s:if></td>
+					<td><s:if test="editFlag"><s:text name="button.Edit" /></s:if></td>
 					<td><s:if test="deleteFlag">Delete</s:if></td>
 				</tr>
 			</s:iterator>

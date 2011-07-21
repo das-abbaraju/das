@@ -117,7 +117,7 @@ $(function() {
 							<thead>
 								<tr>
 									<th>Contractor</th>
-									<th>Remove</th>
+									<th><s:text name="button.Remove" /></th>
 								</tr>
 							</thead>
 							<tbody>

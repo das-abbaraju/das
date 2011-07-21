@@ -148,7 +148,7 @@
 				</span>
 			</span>
 			<span class="filterOption">
-				<a href="#" class="filterBox"><s:text name="global.Country" /></a> =
+				<a href="#" class="filterBox"><s:text name="Country" /></a> =
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<span id="form1_country_select" class="clearLink q_box select">
 					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
@@ -176,7 +176,7 @@
 
 	<s:if test="filter.showCountry">
 		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="global.Country" /></a> =
+			<a href="#" class="filterBox"><s:text name="Country" /></a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box select">
 				<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"

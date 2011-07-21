@@ -89,9 +89,9 @@ $(function() {
 			<th></th>
 			<th><a href="#" onclick="sortTable('user,contractor'); return false;">User</a></th>
 			<th><a href="#" onclick="sortTable('contractor,user'); return false;">Contractor</a></th>
-			<th>Flag</a></th>
+			<th><s:text name="global.Flag" /></a></th>
 			<pics:permission perm="WatchListManager" type="Delete">
-				<th>Remove</th>
+				<th><s:text name="button.Remove" /></th>
 			</pics:permission>
 		</tr>
 	</thead>

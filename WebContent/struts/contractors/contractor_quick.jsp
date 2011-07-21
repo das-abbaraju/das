@@ -45,15 +45,15 @@ $(document).ready(function() {
 			</s:if>
 		-->
 		<pics:permission perm="PicsScore">
-		<label>Score:</label>
+		<label><s:text name="ContractorAccount.score" />:</label>
 		<s:property value="contractor.score" />
 		<br />
 		</pics:permission>
-		<label>Safety Critical:</label>
+		<label><s:text name="global.SafetyRisk" />:</label>
 		<s:text name="%{contractor.safetyRisk.i18nKey}" />
 		<br />
 		<s:if test="contractor.materialSupplier && contractor.productRisk != null">
-			<label>Product Critical:</label>
+			<label><s:text name="global.ProductRisk" />:</label>
 			<s:text name="%{contractor.productRisk.i18nKey}" />
 			<br />
 		</s:if>
@@ -80,7 +80,7 @@ $(document).ready(function() {
 		</s:if>
 		<a href="ContractorNotes.action?id=<s:property value="contractor.id" />">Notes</a>
 		<s:if test="permissions.admin || permissions.contractor">
-			| <a href="ContractorEdit.action?id=<s:property value="contractor.id" />">Edit</a>
+			| <a href="ContractorEdit.action?id=<s:property value="contractor.id" />"><s:text name="button.Edit" /></a>
 		</s:if>
 		<pics:permission perm="SwitchUser">
 			<s:iterator value="contractor.users">
@@ -89,16 +89,16 @@ $(document).ready(function() {
 		</pics:permission>
 	</div>
 	<div id="tabs-contact">
-		<label>Primary Contact:</label>
+		<label><s:text name="global.ContactPrimary" />:</label>
 		<s:property value="contractor.primaryContact.name"/>
 		<br />
-		<label>Phone:</label>
+		<label><s:text name="User.phone" />:</label>
 		<s:property value="contractor.primaryContact.phone"/>
 		<br />	
-		<label>Fax:</label>
+		<label><s:text name="User.fax" />:</label>
 		<s:property value="contractor.primaryContact.fax"/>
 		<br />	
-		<label>Email:</label>
+		<label><s:text name="User.email" />:</label>
 		<s:property value="contractor.primaryContact.email"/>
 		<br />	
 	</div>
@@ -138,7 +138,7 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 					<th>Document</th>
-					<th>Status</th>
+					<th><s:text name="global.Status" /></th>
 				</tr>
 			</thead>
 			<s:iterator value="activeAudits">

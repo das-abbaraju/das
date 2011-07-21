@@ -22,7 +22,7 @@ function recalculateAll() {
 			</s:if>
 			<th><s:text name="global.Description" /></th>
 			<th><s:text name="ManageFlagCriteriaOperator.header.Tag" /></th>
-			<th><s:text name="ManageFlagCriteriaOperator.header.Flag" /></th>
+			<th><s:text name="global.Flag" /></th>
 			<th><nobr><s:text name="ManageFlagCriteriaOperator.header.NumberAffected" /></nobr></th>
 			<s:if test="canEdit">
 				<th><s:text name="ManageFlagCriteriaOperator.header.Updated" /></th>
@@ -121,5 +121,5 @@ function recalculateAll() {
 </div>
 </s:if>
 <s:else>
-<div class="alert">This operator doesn't have any <s:if test="insurance">insurance</s:if><s:else>flag</s:else> criteria.</div>
+<div class="alert">This operator doesn't have any <s:if test="insurance">insurance</s:if><s:else><s:text name="global.Flag" /></s:else> criteria.</div>
 </s:else>

@@ -20,7 +20,7 @@
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2"><a href="?orderBy=name ASC">Contractor Name</a></td>
+		<td colspan="2"><a href="?orderBy=name ASC"><s:text name="global.ContractorName" /></a></td>
 		<pics:permission perm="AllContractors">
 			<td></td>
 		</pics:permission>
@@ -31,7 +31,7 @@
 			</s:if>
 		</pics:permission>
 		<s:if test="permissions.operatorCorporate">
-			<td><a href="?orderBy=flag DESC">Flag</a></td>
+			<td><a href="?orderBy=flag DESC"><s:text name="global.Flag" /></a></td>
 			<s:if test="permissions.operator">
 				<td>Waiting On</td>
 			</s:if>
@@ -42,20 +42,20 @@
 			</s:if>
 		</s:if>
 		<pics:permission perm="PicsScore">
-			<td>Score</td>
+			<td><s:text name="ContractorAccount.score" /></td>
 		</pics:permission>
 		<s:if test="showContact">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
-			<td>Office Address</td>
-			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');">City</a></td>
-			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');">State</a></td>
-			<td>Zip</td>
-			<td>Web_URL</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
+			<td><s:text name="global.OfficeAddress" /></td>
+			<td><a href="javascript: changeOrderBy('form1','a.city,a.name');"><s:text name="global.City" /></a></td>
+			<td><a href="javascript: changeOrderBy('form1','a.state,a.name');"><s:text name="State" /></a></td>
+			<td><s:text name="global.ZipPostalCode" /></td>
+			<td><s:text name="ContractorAccount.webUrl" /></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Trade</td>
+			<td><s:text name="Trade" /></td>
 			<td>Self Performed</td>
 			<td>Sub Contracted</td>			
 		</s:if>
@@ -75,7 +75,7 @@
 						</s:if>
 			</td>
 			<pics:permission perm="AllContractors">
-				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>">Edit</a></td>
+				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>"><s:text name="button.Edit" /></a></td>
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
 				<td><a

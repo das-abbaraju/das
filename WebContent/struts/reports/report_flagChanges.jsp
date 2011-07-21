@@ -136,7 +136,7 @@ function addDetailsClueTips(gcID){
 <table class="report">
 	<thead>
 		<tr>
-			<th>Flag</th>
+			<th><s:text name="global.Flag" /></th>
 			<th>Approve</th>
 			<th>Flag Differences</th>
 			<!-- <th></th> -->

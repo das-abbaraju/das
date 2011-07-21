@@ -51,17 +51,17 @@ $(document).ready(function() {
 				</div>
 			</th>
 			<s:if test="filter.primaryInformation">
-				<th>Primary Contact</th>
-				<th>Phone</th>
-				<th>Email</th>
+				<th><s:text name="global.ContactPrimary" /></th>
+				<th><s:text name="User.phone" /></th>
+				<th><s:text name="User.email" /></th>
 				<th>Address</th>
-				<th>City</th>
-				<th>State</th>
-				<th><s:text name="global.Country" /></th>
-				<th>Zip</th>
+				<th><s:text name="global.City" /></th>
+				<th><s:text name="State" /></th>
+				<th><s:text name="Country" /></th>
+				<th><s:text name="global.ZipPostalCode" /></th>
 			</s:if>
 			<s:if test="canDeleteOp || canDeleteCorp">
-				<th>Remove</th>
+				<th><s:text name="button.Remove" /></th>
 			</s:if>
 		</tr>
 	</thead>

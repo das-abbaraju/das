@@ -458,12 +458,12 @@ function hideShow(){
 	<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
 	<ol>
 		<li><label for="newContractorCountry"><s:text
-			name="global.Country" />:</label> <s:select list="countryList"
+			name="Country" />:</label> <s:select list="countryList"
 			name="country.isoCode" id="newContractorCountry" listKey="isoCode"
 			listValue="name" value="%{newContractor.country.isoCode}"
 			onchange="countryChanged(this.value)" />
 		<div class="fieldhelp">
-		<h3><s:text name="global.Country" /></h3>
+		<h3><s:text name="Country" /></h3>
 		<s:text name="ContractorRegistrationRequest.country.fieldhelp" /></div>
 		</li>
 		<li id="state_li"></li>

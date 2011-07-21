@@ -6,7 +6,7 @@
 	<thead>
 		<tr>
 			<th><s:text name="button.Add" /></th>
-			<th><s:text name="ManageFlagCriteriaOperator.header.Flag" /></th>
+			<th><s:text name="global.Flag" /></th>
 			<s:if test="!insurance">
 				<th><s:text name="ManageFlagCriteriaOperator.header.Category" /></th>
 			</s:if>

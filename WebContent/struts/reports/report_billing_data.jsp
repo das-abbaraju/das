@@ -8,10 +8,10 @@
 	<tr>
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <th>Edit</th>
+	    <th><s:text name="button.Edit" /></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','oldAmount');">Old Level</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','newAmount');">New Level</a></th>
-		<th class="right"><a href="javascript: changeOrderBy('form1','billingStatus');">State</a></th>
+		<th class="right"><a href="javascript: changeOrderBy('form1','billingStatus');"><s:text name="State" /></a></th>
 		<th class="center"><a href="javascript: changeOrderBy('form1','ccOnFile DESC');">CC</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','creationDate');">Registered</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','lastUpgradeDate');">Upgraded</a></th>	    

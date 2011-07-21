@@ -34,7 +34,7 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 	<thead>
 	<tr>
 		<td>#</td>
-		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor Name</a></td>
+		<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.ContractorName" /></a></td>
 		<s:if test="permissions.operator">
 			<td style="white-space: nowrap">
 				<a href="#" class="cluetip help" title="Preflag" rel="#watchtip"></a> PreFlag
@@ -49,13 +49,13 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 			</s:if>
 		</s:if>
 		<pics:permission perm="PicsScore">
-			<td>Score</td>
+			<td><s:text name="ContractorAccount.score" /></td>
 		</pics:permission>
 		<td>Action</td>
 		<s:if test="showContact">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
 			<td>Primary Address</td>
 			<td><a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');">City, State</a></td>
 		</s:if>
@@ -96,10 +96,10 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>">View</a>
 						<pics:permission perm="RemoveContractors">
 							<s:if test="permissions.corporate">
-								<a class="remove" href="ContractorFacilities.action?id=<s:property value="get('id')"/>">Remove</a>
+								<a class="remove" href="ContractorFacilities.action?id=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
 							</s:if>
 							<s:else>
-								<a class="remove" href="?button=remove&id=<s:property value="get('id')"/>">Remove</a>
+								<a class="remove" href="?button=remove&id=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
 							</s:else>
 						</pics:permission>
 					</s:if>

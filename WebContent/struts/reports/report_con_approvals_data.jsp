@@ -13,7 +13,7 @@
 	<thead>
 	<tr>
 		<td></td>
-		<td><a href="javascript: changeOrderBy('form1','a.name DESC');">Contractor Name</a></td>
+		<td><a href="javascript: changeOrderBy('form1','a.name DESC');"><s:text name="global.ContractorName" /></a></td>
 		<s:if test="permissions.operator">
 			<td><a href="javascript: changeOrderBy('form1','dateAdded');">Date Added</a></td>
 			<td>Work Status</td>

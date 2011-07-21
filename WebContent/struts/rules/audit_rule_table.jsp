@@ -51,7 +51,7 @@ function deleteRule(element,ruleID) {
 					<th>Tag</th>
 				</s:if>
 				<s:if test="columnMap.get('trade')">
-					<th>Trade</th>
+					<th><s:text name="Trade" /></th>
 				</s:if>
 				<s:if test="columnMap.get('accountLevel')">
 					<th title="Bid Only, List Only, or Full Account">List</th>
