@@ -14,9 +14,7 @@
 
 
 	function toggle(source) {
-		  checkboxes = document.getElementsByName('sendMail');
-		  for(var i in checkboxes)
-		    checkboxes[i].checked = source.checked;
+		  $("[name='sendMail']").prop("checked",source.checked);
 		}
 </SCRIPT>
 </head>
