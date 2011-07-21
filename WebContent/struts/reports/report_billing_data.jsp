@@ -15,7 +15,8 @@
 		<th class="center"><a href="javascript: changeOrderBy('form1','ccOnFile DESC');">CC</a></th>
 		<th class="right"><a href="javascript: changeOrderBy('form1','creationDate');">Registered</a></th>	    
 		<th class="right"><a href="javascript: changeOrderBy('form1','lastUpgradeDate');">Upgraded</a></th>	    
-		<th class="right"><a href="javascript: changeOrderBy('form1','paymentExpires');">Renews</a></th>	    
+		<th class="right"><a href="javascript: changeOrderBy('form1','paymentExpires');">Renews</a></th>
+		<th><a href="javascript: changeOrderBy('form1','fees');">New Fee(s)</a></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -41,6 +42,7 @@
 			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
 			<td class="right"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
+			<td><s:property value="get('fees')"/></td>
 		</tr>
 	</s:iterator>
 	</tbody>
