@@ -20,6 +20,7 @@ public class ContractorAuditOperatorPermission implements Serializable {
 	private int id;
 	private ContractorAuditOperator cao;
 	private OperatorAccount operator;
+	private OperatorAccount previousOperator;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -50,5 +51,15 @@ public class ContractorAuditOperatorPermission implements Serializable {
 
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "previousCaoID")
+	public OperatorAccount getPreviousOperator() {
+		return previousOperator;
+	}
+
+	public void setPreviousOperator(OperatorAccount previousOperator) {
+		this.previousOperator = previousOperator;
 	}
 }

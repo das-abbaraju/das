@@ -220,6 +220,8 @@ public class AuditBuilder {
 			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
 			cao.setVisible(caoShouldBeVisible);
 		}
+		
+		boolean changedCaop = false;
 
 		// Add CAOs that don't yet exist
 		for (OperatorAccount governingBody : caosToCreate) {
@@ -246,7 +248,16 @@ public class AuditBuilder {
 				cao.changeStatus(AuditStatus.Expired, null);
 			}
 
-			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
+			changedCaop |= fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
+		}
+		
+		// Change the status of any complete pqf to resubmit if there was a caop change
+		if (changedCaop && conAudit.getAuditType().isPqf()) {
+			for (ContractorAuditOperator operator : conAudit.getOperators()) {
+				if (operator.getStatus().isComplete()) {
+					operator.changeStatus(AuditStatus.Resubmit, null);
+				}
+			}
 		}
 	}
 
@@ -338,7 +349,7 @@ public class AuditBuilder {
 		return false;
 	}
 
-	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
+	private boolean fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null) {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
@@ -365,6 +376,8 @@ public class AuditBuilder {
 		// caopOperators.clear();
 		if (!cao.isVisible())
 			caopOperators.clear();
+		
+		OperatorAccount previousOperator = null;
 
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
@@ -375,6 +388,7 @@ public class AuditBuilder {
 			} else {
 				// Delete the caop and remove from cao.getCaoPermissions()
 				caopIter.remove();
+				previousOperator = caop.getOperator();
 				this.contractorAuditOperatorDAO.remove(caop);
 			}
 		}
@@ -383,8 +397,13 @@ public class AuditBuilder {
 			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 			caop.setCao(cao);
 			caop.setOperator(operator);
+			if (previousOperator != null) {
+				caop.setPreviousOperator(previousOperator);
+			}
 			cao.getCaoPermissions().add(caop);
 		}
+		
+		return previousOperator != null; // signal caop change
 	}
 
 	/**
