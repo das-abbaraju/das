@@ -11,10 +11,13 @@ import java.util.Set;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -43,46 +46,33 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class ReportNewContractorSearch extends ReportAccount {
-
-	protected int id;
+	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
-	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-
+	@Autowired
+	private AuditDataDAO auditDataDAO;
+	@Autowired
 	private FacilityChanger facilityChanger;
+
 	private List<FlagCriteriaOperator> opCriteria;
-	private OperatorAccount operator = null;
+	private OperatorAccount operator;
+	private ContractorAccount contractor;
 	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
-	public ReportNewContractorSearch(ContractorAccountDAO contractorAccountDAO, FacilityChanger facilityChanger,
-			OperatorAccountDAO operatorAccountDAO, AuditDataDAO auditDataDAO) {
+	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
-		this.facilityChanger = facilityChanger;
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.auditDataDAO = auditDataDAO;
 	}
 
-	@Override
-	public void prepare() throws Exception {
-		super.prepare();
-
-		getFilter().setShowMinorityOwned(true);
-
-		if (permissions.getCorporateParent().size() > 0)
-			getFilter().setShowInParentCorporation(true);
-
-		getFilter().setShowInsuranceLimits(true);
-		getFilter().setShowWaitingOn(false);
-		getFilter().setShowOpertorTagName(false);
-		getFilter().setShowRegistrationDate(false);
-
-		operator = operatorAccountDAO.find(permissions.getAccountId());
+	@Before
+	public void startup() throws Exception {
+		if (operator == null)
+			operator = operatorAccountDAO.find(permissions.getAccountId());
 
 		if (operator != null && operator.getFlagCriteriaInherited() != null)
 			opCriteria = operator.getFlagCriteriaInherited();
@@ -101,6 +91,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
+
+		getFilter().setShowInsuranceLimits(true);
+		getFilter().setShowWaitingOn(false);
+		getFilter().setShowOpertorTagName(false);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowMinorityOwned(true);
+		getFilter().setPermissions(permissions);
+
+		if (permissions.getCorporateParent().size() > 0)
+			getFilter().setShowInParentCorporation(true);
 
 		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
@@ -175,89 +175,106 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	@Override
 	public String execute() throws Exception {
+		if (ActionContext.getContext().getSession().get("actionMessage") != null) {
+			addActionMessage(ActionContext.getContext().getSession().get("actionMessage").toString());
+			ActionContext.getContext().getSession().remove("actionMessage");
+		}
 
 		if (button == null) {
 			runReport = false;
 			return super.execute();
 		}
 
-		if (id > 0) {
-			try {
-				ContractorAccount contractor = contractorAccountDAO.find(id);
-				facilityChanger.setPermissions(permissions);
-				facilityChanger.setContractor(id);
-				facilityChanger.setOperator(permissions.getAccountId());
-				if (button.equals("remove")) {
-					permissions.tryPermission(OpPerms.RemoveContractors);
-					facilityChanger.remove();
-					addActionMessage("Successfully removed " + contractor.getName());
-				}
-				if (button.equals("add")) {
-					permissions.tryPermission(OpPerms.AddContractors);
-					facilityChanger.add();
-					addActionMessage("Successfully added <a href='ContractorView.action?id=" + id + "'>"
-							+ contractor.getName() + "</a>");
-
-					// Automatically upgrading Contractor per discussion
-					// 2/15/2011
-					if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
-						// See also ReportBiddingContractors/ContractorDashboard
-						// Upgrade
-						contractor.setAcceptsBids(false);
-						contractor.setRenew(true);
-
-						auditBuilder.buildAudits(contractor);
-
-						for (ContractorAudit cAudit : contractor.getAudits()) {
-							if (cAudit.getAuditType().isPqf()) {
-								for (ContractorAuditOperator cao : cAudit.getOperators()) {
-									if (cao.getStatus().after(AuditStatus.Pending)) {
-										cao.changeStatus(AuditStatus.Pending, permissions);
-										auditDataDAO.save(cao);
-									}
-								}
-
-								auditBuilder.recalculateCategories(cAudit);
-								auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-								auditPercentCalculator.percentCalculateComplete(cAudit);
-								auditDataDAO.save(cAudit);
-							}
-						}
-
-						contractor.incrementRecalculation();
-						contractor.setAuditColumns(permissions);
-						contractorAccountDAO.save(contractor);
-
-						// Sending a Email to the contractor for upgrade
-						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(73); // Trial Contractor
-						// Account Approval
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-						emailBuilder.addToken("permissions", permissions);
-						EmailQueue emailQueue = emailBuilder.build();
-						emailQueue.setPriority(60);
-						emailQueue.setFromAddress("billing@picsauditing.com");
-						emailQueue.setViewableById(Account.PicsID);
-						EmailSender.send(emailQueue);
-					}
-				}
-			} catch (Exception e) {
-				addActionError(e.getMessage());
-			}
-			return SUCCESS;
-		}
-
 		String accountName = getFilter().getAccountName();
 		if ((accountName == null || ReportFilterAccount.getDefaultName().equals(accountName) || accountName.length() < 3)
 				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
-			this.addActionError("Please select a trade or enter a contractor name with at least 3 characters");
+			this.addActionError(getText("NewContractorSearch.error.SelectTradeOrContractorName"));
 			return SUCCESS;
 		}
 
 		buildQuery();
 		run(sql);
 		return returnResult();
+	}
+
+	@RequiredPermission(value = OpPerms.AddContractors)
+	public String add() throws Exception {
+		facilityChanger.setPermissions(permissions);
+		facilityChanger.setContractor(contractor);
+		facilityChanger.setOperator(operator);
+		facilityChanger.add();
+
+		ActionContext
+				.getContext()
+				.getSession()
+				.put("actionMessage",
+						getText("NewContractorSearch.message.SuccessfullyAdded",
+								new Object[] { (Integer) contractor.getId(), contractor.getName() }));
+
+		// Automatically upgrading Contractor per discussion
+		// 2/15/2011
+		if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
+			// See also ReportBiddingContractors/ContractorDashboard
+			// Upgrade
+			contractor.setAcceptsBids(false);
+			contractor.setRenew(true);
+
+			auditBuilder.buildAudits(contractor);
+
+			for (ContractorAudit cAudit : contractor.getAudits()) {
+				if (cAudit.getAuditType().isPqf()) {
+					for (ContractorAuditOperator cao : cAudit.getOperators()) {
+						if (cao.getStatus().after(AuditStatus.Pending)) {
+							cao.changeStatus(AuditStatus.Pending, permissions);
+							auditDataDAO.save(cao);
+						}
+					}
+
+					auditBuilder.recalculateCategories(cAudit);
+					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+					auditPercentCalculator.percentCalculateComplete(cAudit);
+					auditDataDAO.save(cAudit);
+				}
+			}
+
+			contractor.incrementRecalculation();
+			contractor.setAuditColumns(permissions);
+			contractorAccountDAO.save(contractor);
+
+			// Sending a Email to the contractor for upgrade
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(73); // Trial Contractor
+			// Account Approval
+			emailBuilder.setPermissions(permissions);
+			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+			emailBuilder.addToken("permissions", permissions);
+			EmailQueue emailQueue = emailBuilder.build();
+			emailQueue.setPriority(60);
+			emailQueue.setFromAddress("billing@picsauditing.com");
+			emailQueue.setViewableById(Account.PicsID);
+			EmailSender.send(emailQueue);
+		}
+
+		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
+				+ "&filter.tradeInformation=true");
+	}
+
+	@RequiredPermission(value = OpPerms.RemoveContractors)
+	public String remove() throws Exception {
+		facilityChanger.setPermissions(permissions);
+		facilityChanger.setContractor(contractor);
+		facilityChanger.setOperator(operator);
+		facilityChanger.remove();
+
+		ActionContext
+				.getContext()
+				.getSession()
+				.put("actionMessage",
+						getText("NewContractorSearch.message.SuccessfullyRemoved",
+								new Object[] { contractor.getName() }));
+
+		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
+				+ "&filter.tradeInformation=true");
 	}
 
 	@Override
@@ -278,14 +295,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 
 		super.addExcelColumns();
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	private void calculateOverallFlags() {
@@ -366,4 +375,19 @@ public class ReportNewContractorSearch extends ReportAccount {
 		return false;
 	}
 
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
 }

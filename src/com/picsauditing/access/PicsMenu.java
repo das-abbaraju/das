@@ -452,7 +452,7 @@ public class PicsMenu {
 			if (permissions.hasPermission(OpPerms.ManageProjects))
 				subMenu.addChild(getTitle("ManageProjects"), "ManageProjects.action");
 
-			subMenu.addChild(getTitle("ReportOQe"), "ReportOQ.action");
+			subMenu.addChild(getTitle("ReportOQ"), "ReportOQ.action");
 			subMenu.addChild(getTitle("ReportOQEmployees"), "ReportOQEmployees.action");
 		}
 

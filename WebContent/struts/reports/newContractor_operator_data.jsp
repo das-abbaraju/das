@@ -6,12 +6,9 @@
 	<s:include value="../actionMessages.jsp" />
 </s:if>
 <s:elseif test="report.allRows == 0">
-	<div class="alert">Sorry, no companies found matching your search criteria.
-Try broadening your search criteria or submit a <a href="RequestNewContractor.action">new Registration Request</a> and PICS will contact that company for you.</div>
+	<div class="alert"><s:text name="NewContractorSearch.message.NoCompaniesFound" /></div>
 	<pics:permission perm="RequestNewContractor" type="Edit">
-		<div class="info">
-			Can't find the company you need? Submit a <a href="RequestNewContractor.action">New Contractor Request</a> and PICS will help that company register.
-		</div>
+		<div class="info"><s:text name="NewContractorSearch.message.SubmitNewContractorRequest" /></div>
 	</pics:permission>
 </s:elseif>
 <s:else>
@@ -37,32 +34,30 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 		<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.ContractorName" /></a></td>
 		<s:if test="permissions.operator">
 			<td style="white-space: nowrap">
-				<a href="#" class="cluetip help" title="Preflag" rel="#watchtip"></a> PreFlag
-				<div id="watchtip">
-					The PreFlag represents the evaluation using minimum requirements that the Contractor has already completed. Factors such as PQF, safety stats, and insurance limits are included if applicable. Custom criteria such as site-specific audits are not included in the pre-flag calculation.
-				</div>
+				<a href="#" class="cluetip help" title="<s:text name="NewContractorSearch.label.Preflag" />" rel="#watchtip"></a> <s:text name="NewContractorSearch.label.Preflag" />
+				<div id="watchtip"><s:text name="NewContractorSearch.label.Preflag.cluetip" /></div>
 			</td>
 			<s:if test="operatorAccount.approvesRelationships">
 				<pics:permission perm="ViewUnApproved">
-					<td>Status</td>
+					<td><s:text name="global.Status" /></td>
 				</pics:permission>
 			</s:if>
 		</s:if>
 		<pics:permission perm="PicsScore">
 			<td><s:text name="ContractorAccount.score" /></td>
 		</pics:permission>
-		<td>Action</td>
+		<td><s:text name="NewContractorSearch.label.Action" /></td>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>
 			<td><s:text name="User.phone" /></td>
 			<td><s:text name="User.email" /></td>
-			<td>Primary Address</td>
-			<td><a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');">City, State</a></td>
+			<td><s:text name="global.PrimaryAddress" /></td>
+			<td><a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');"><s:text name="NewContractorSearch.label.CityState" /></a></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td>Primary Trade</td>
+			<td><s:text name="NewContractorSearch.label.PrimaryTrade" /></td>
 		</s:if>
-		<td>Insurance</td>
+		<td><s:text name="global.Insurance" /></td>
 	</tr>
 	</thead>
 	<tbody>
@@ -70,7 +65,7 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 			<tr>
 				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 				<td><s:property value="get('name')" />
-					<s:if test="get('dbaName') > '' && get('name') != get('dbaName')"><br />DBA: <s:property value="get('dbaName')" /></s:if>
+					<s:if test="get('dbaName') > '' && get('name') != get('dbaName')"><br /><s:text name="ContractorAccount.dbaName.short" />: <s:property value="get('dbaName')" /></s:if>
 				</td>
 				<s:if test="permissions.operator">
 					<td class="center">
@@ -84,7 +79,7 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 					</td>
 					<s:if test="operatorAccount.approvesRelationships">
 						<pics:permission perm="ViewUnApproved">
-							<td><s:property value="get('workStatus')"/></td>
+							<td class="center"><s:property value="get('workStatus')"/></td>
 						</pics:permission>
 					</s:if>
 				</s:if>
@@ -93,23 +88,24 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 				</pics:permission>
 				<td class="center">
 					<s:if test="get('genID') > 0">
-						<a href="ContractorView.action?id=<s:property value="get('id')"/>">View</a>
+						<a href="ContractorView.action?id=<s:property value="get('id')"/>" class="preview"><s:text name="button.View" /></a>
 						<pics:permission perm="RemoveContractors">
+							<br />
 							<s:if test="permissions.corporate">
 								<a class="remove" href="ContractorFacilities.action?id=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
 							</s:if>
 							<s:else>
-								<a class="remove" href="?button=remove&id=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
+								<a class="remove" href="NewContractorSearch!remove.action?contractor=<s:property value="get('id')"/>"><s:text name="button.Remove" /></a>
 							</s:else>
 						</pics:permission>
 					</s:if>
 					<s:else>
 						<pics:permission perm="AddContractors">
 							<s:if test="permissions.corporate">
-								<a class="add" href="ContractorFacilities.action?id=<s:property value="get('id')"/>">Add</a>
+								<a class="add" href="ContractorFacilities.action?id=<s:property value="get('id')"/>"><s:text name="button.Add" /></a>
 							</s:if>
 							<s:else>
-								<a class="add" href="?button=add&id=<s:property value="get('id')"/>">Add</a>
+								<a class="add" href="NewContractorSearch!add.action?contractor=<s:property value="get('id')"/>"><s:text name="button.Add" /></a>
 							</s:else>
 						</pics:permission>
 					</s:else>
@@ -154,7 +150,5 @@ Try broadening your search criteria or submit a <a href="RequestNewContractor.ac
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
-<div class="info">
-	Is the company you need not listed? Submit a <a href="RequestNewContractor.action">New Registration Request</a> and PICS will contact that company for you.
-</div>
+<div class="info"><s:text name="NewContractorSearch.message.CompanyNotListed" /></div>
 </s:else>

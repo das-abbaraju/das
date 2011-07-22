@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Search for New Contractors</title>
+<title><s:text name="NewContractorSearch.title" /></title>
 <s:include value="reportHeader.jsp" />
 <style type="text/css">
 table.report thead a.cluetip {
@@ -16,12 +16,12 @@ table.report thead a.cluetip {
 </style>
 </head>
 <body>
-<h1>Search for New Contractors</h1>
+<h1><s:text name="NewContractorSearch.title" /></h1>
 <s:include value="filters.jsp" />
 
 <div id="report_data">
 	<div class="info">
-	Search for new companies to add to your database by either company name or trade.
+		<s:text name="NewContractorSearch.message.SearchByNameOrTrade" />
 	</div>
 </div>
 
