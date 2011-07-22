@@ -4,19 +4,18 @@
 
 <html>
 <head>
-<title>Operator Flag Matrix</title>
+<title><s:text name="OperatorFlagMatrix.title" /></title>
 <s:include value="reportHeader.jsp"/>
 </head>
 <body>
 <h1><s:property value="reportName"/></h1>
-<s:text name="operatorFlagMatrix.messageText" />
-
-<a class="excel" href="OperatorFlagMatrixCSV.action" target="_BLANK">Download Report</a>
-
+<s:text name="OperatorFlagMatrix.messageText" />
+<br />
+<a class="excel" href="OperatorFlagMatrixCSV.action" target="_BLANK"><s:text name="OperatorFlagMatrix.label.DownloadReport" /></a>
 <table class="report">
 	<thead>
 		<tr>
-			<th>Contractor</th>
+			<th><s:text name="global.Contractor" /></th>
 			<s:iterator value="tableDisplay.columns" id="column">
 				<th><s:property value="#column"/></th>
 			</s:iterator>

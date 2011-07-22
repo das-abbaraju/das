@@ -1,13 +1,24 @@
 package com.picsauditing.actions.report;
 
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.ReportFilterContractor;
 
 @SuppressWarnings("serial")
 public class ArchivedAccounts extends ReportAccount {
-	protected int conID;
+	@Autowired
+	protected FacilityChanger facilityChanger;
+	
+	protected ContractorAccount contractor;
+	protected OperatorAccount operator;
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -49,26 +60,33 @@ public class ArchivedAccounts extends ReportAccount {
 			getFilter().setShowDeactivationReason(true);
 	}
 
-	@Override
-	public String execute() throws Exception {
-		loadPermissions();
-		if ("Remove".equals(button)) {
-			permissions.tryPermission(OpPerms.RemoveContractors);
-			FacilityChanger facilityChanger = (FacilityChanger) SpringUtils.getBean("FacilityChanger");
-			facilityChanger.setOperator(permissions.getAccountId());
-			facilityChanger.setContractor(conID);
-			facilityChanger.setPermissions(permissions);
-			facilityChanger.remove();
-		}
-
+	@RequiredPermission(value=OpPerms.RemoveContractors)
+	public String remove() throws Exception {
+		facilityChanger.setOperator(operator);
+		facilityChanger.setContractor(contractor);
+		facilityChanger.setPermissions(permissions);
+		facilityChanger.remove();
+		
 		return super.execute();
 	}
 
-	public int getConID() {
-		return conID;
+	public ContractorAccount getContractor() {
+		return contractor;
 	}
 
-	public void setConID(int conID) {
-		this.conID = conID;
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+	
+	public Map<String, String> getReasons() {
+		return ReportFilterContractor.getDeactivationReasons();
 	}
 }

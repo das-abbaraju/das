@@ -48,14 +48,13 @@ public class OperatorFlagMatrix extends ReportAccount {
 	}
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
-		setReportName("Contractor Operator Flag Matrix");
 		this.listType = ListType.Operator;
 		this.orderByDefault = "fc.displayOrder, fc.label";
 	}
 
 	@Override
 	protected void buildQuery() {
-
+		setReportName(getText("OperatorFlagMatrix.title"));
 		sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);
 		sql.addJoin("JOIN flag_data fd ON fd.conID = a.id");

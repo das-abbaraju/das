@@ -82,15 +82,15 @@ $(function() {
 		<tr>
 			<td style="vertical-align: top; width: 50%;">
 				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.Details.heading"/></h2>
+				<h2 class="formLegend"><s:text name="ContractorEdit.Details.heading"/></h2>
 				<ol>
-					<li><label><s:text name="%{scope}.Details.Name"/>:</label>
+					<li><label><s:text name="ContractorEdit.Details.Name"/>:</label>
 						<s:textfield name="contractor.name" size="35" />
 					</li>
-					<li><label><s:text name="%{scope}.Details.DBAName"/>: </label>
+					<li><label><s:text name="ContractorEdit.Details.DBAName"/>: </label>
 						<s:textfield name="contractor.dbaName" size="35" />
 					</li>
-					<li><label><s:text name="%{scope}.Details.DateCreated"/>:</label>
+					<li><label><s:text name="ContractorEdit.Details.DateCreated"/>:</label>
 						<s:date name="contractor.creationDate" format="MMM d, yyyy" />
 					</li>
 				</ol>
@@ -98,14 +98,14 @@ $(function() {
 				<fieldset class="form">
 				<h2 class="formLegend"><s:text name="global.primaryAddress"/></h2>
 				<ol>
-					<li><label><s:text name="%{scope}.PrimaryAddress.Address"/>:</label>
+					<li><label><s:text name="global.Address"/>:</label>
 						<s:textfield name="contractor.address" size="35" /><br />
 						<s:textfield name="contractor.address2" size="35" />
 					</li>
-					<li><label><s:text name="%{scope}.PrimaryAddress.City"/>:</label>
+					<li><label><s:text name="ContractorEdit.PrimaryAddress.City"/>:</label>
 						<s:textfield name="contractor.city" size="20" />
 					</li>
-					<li><label><s:text name="global.Country" />:</label>
+					<li><label><s:text name="Country" />:</label>
 						<s:select list="countryList"
 						name="country.isoCode" id="contractorCountry"
 						listKey="isoCode" listValue="name"
@@ -114,7 +114,7 @@ $(function() {
 						/></li>
 					<li id="state_li"></li>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="zip_li"><label><s:text name="%{scope}.PrimaryAddress.Zip"/>:</label>
+						<li id="zip_li"><label><s:text name="ContractorEdit.PrimaryAddress.Zip"/>:</label>
 							<s:textfield name="contractor.zip" size="7" />
 						</li>
 					</s:if>
@@ -123,15 +123,15 @@ $(function() {
 							list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 					</li>
 					<s:if test="contractor.demo">
-					<li><label><s:text name="%{scope}.PrimaryAddress.DefaultLanguage"/>:</label>
+					<li><label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
 						<s:select name="contractor.locale" listValue="displayName"
 							list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 					</li>
 					</s:if>
-					<li><label><s:text name="%{scope}.PrimaryAddress.CompanyPhone"/>:</label><s:textfield name="contractor.phone" /></li>
-					<li><label><s:text name="%{scope}.PrimaryAddress.CompanyFax"/>:</label><s:textfield name="contractor.fax" /></li>
+					<li><label><s:text name="ContractorEdit.PrimaryAddress.CompanyPhone"/>:</label><s:textfield name="contractor.phone" /></li>
+					<li><label><s:text name="ContractorEdit.PrimaryAddress.CompanyFax"/>:</label><s:textfield name="contractor.fax" /></li>
 					
-					<li><label><s:text name="%{scope}.PrimaryAddress.PrimaryContact"/>:</label> <s:select
+					<li><label><s:text name="ContractorEdit.PrimaryAddress.PrimaryContact"/>:</label> <s:select
 						list="userList"
 						name="contactID"
 						listKey="id"
@@ -172,17 +172,17 @@ $(function() {
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.IndustryDetails.heading"/></h2>
+				<h2 class="formLegend"><s:text name="ContractorEdit.IndustryDetails.heading"/></h2>
 				<ol>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="tax_li"><label><s:text name="%{scope}.IndustryDetails.TaxID"/>:</label>
+						<li id="tax_li"><label><s:text name="ContractorEdit.IndustryDetails.TaxID"/>:</label>
 							<s:property value="contractor.taxId"/>
 						</li>
 					</s:if>
-					<li><label><s:text name="%{scope}.IndustryDetails.NAICSPrimary"/>:</label>
+					<li><label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
-					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
+					<li><label><s:text name="ContractorEdit.SoleProprietor.heading"/></label>
 						<s:if test="contractor.soleProprietor">
 							<s:text name="ContractorAccount.soleProprietor" />
 						</s:if>
@@ -201,29 +201,29 @@ $(function() {
 							<s:text name="%{contractor.productRisk.i18nKey}"/>
 						</li>
 					</s:if>
-					<li><label><s:text name="%{scope}.IndustryDetails.RequestedBy"/>:</label>
+					<li><label><s:text name="ContractorEdit.IndustryDetails.RequestedBy"/>:</label>
 						<s:property value="contractor.requestedBy.name"/>
 					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">
-				<h2 class="formLegend"><s:text name="%{scope}.CompanyIdentification.heading"/></h2>
+				<h2 class="formLegend"><s:text name="ContractorEdit.CompanyIdentification.heading"/></h2>
 				<ol>
-					<li><label><s:text name="%{scope}.CompanyIdentification.WebURL"/>:</label> 
+					<li><label><s:text name="ContractorEdit.CompanyIdentification.WebURL"/>:</label> 
 						<s:textfield name="contractor.webUrl" size="35" /></li>
-					<li><label><s:text name="%{scope}.CompanyIdentification.CompanyLogo"/>:</label>
+					<li><label><s:text name="ContractorEdit.CompanyIdentification.CompanyLogo"/>:</label>
 						<s:file name="logo" size="35" />
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: jpg, gif, png)
 					</li>
-					<li><label><s:text name="%{scope}.CompanyIdentification.CompanyBrochure"/>:</label>
+					<li><label><s:text name="ContractorEdit.CompanyIdentification.CompanyBrochure"/>:</label>
 						<s:file name="brochure" size="35" />
 					</li>
 					<li><label>&nbsp</label>
 						(Allowed formats: pdf, doc, jpg, gif, png)
 					</li>
-					<li><label><s:text name="%{scope}.CompanyIdentification.Description"/>:</label>
+					<li><label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
 						<s:textarea name="contractor.description" cols="40"	rows="15" />
 					</li>	
 				</ol>
@@ -260,13 +260,14 @@ $(function() {
 							No - <s:submit method="reactivate" value="Reactivate" /> 
 						</s:else>
 					</li>
-					<li><label><s:text name="%{scope}.SoleProprietor.heading"/></label>
+					<li><label><s:text name="ContractorEdit.SoleProprietor.heading"/></label>
 						<s:checkbox name="contractor.soleProprietor" />
 					</li>
 					<li><label>Account Level:</label>
 						<s:select list="@com.picsauditing.jpa.entities.AccountLevel@values()" name="contractor.accountLevel"/></li>	
 					<li><label>Reason:</label>
-						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- Deactivation Reason -"/>
+						<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- %{getText('Filters.header.DeactivationReason')} -"
+							listKey="key" listValue="value" />
 					</li>
 					<s:if test="canEditRiskLevel">
 						<li><label>Risk Levels:</label>

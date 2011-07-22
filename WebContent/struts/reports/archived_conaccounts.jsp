@@ -26,18 +26,18 @@
 <div class="info">
 	<s:text name="ArchivedContractorAccounts.message.PicsMembershipLapsed" />
 </div>
-
+<s:if test="data.size > 0">
 <table class="report" style="clear : none;">
 	<thead>
 	<tr>
 		<td colspan="2"><s:text name="global.ContractorName" /></td>
 		<s:if test="permissions.admin">
-			<td><a href="javascript: changeOrderBy('form1','a.creationDate');">Created On</a></td>
-			<td><a href="javascript: changeOrderBy('form1','c.paymentExpires');">Expired</a></td>
-			<td>Reason</td>
+			<td><a href="javascript: changeOrderBy('form1','a.creationDate');"><s:text name="ArchivedContractorAccounts.label.CreatedOn" /></a></td>
+			<td><a href="javascript: changeOrderBy('form1','c.paymentExpires');"><s:text name="AuditStatus.Expired" /></a></td>
+			<td><s:text name="Filters.header.DeactivationReason" /></td>
 			<td><s:text name="global.SafetyRisk" /></td>
 			<td><s:text name="global.ProductRisk" /></td>
-			<td># of Employees</td>
+			<td><s:text name="ArchivedContractorAccounts.label.NumberOfEmployees" /></td>
 		</s:if>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>
@@ -74,7 +74,7 @@
 			<s:if test="permissions.admin">
 				<td><s:date name="get('creationDate')" format="M/d/yy"/></td>
 				<td><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
-				<td><s:property value="get('reason')" /></td>
+				<td><s:property value="reasons.get(get('reason'))" /></td>
 				<td>
 					<s:if test="get('safetyRisk') != null">
 						<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('safetyRisk'))" />
@@ -104,8 +104,9 @@
 				<s:if test="permissions.operator">
 				<td>
 				<s:form action="ArchivedContractorAccounts" method="POST">
-					<s:submit value="Remove" name="button"/>
-					<s:hidden value="%{get('id')}" name="conID"/>
+					<s:hidden value="%{get('id')}" name="contractor" />
+					<s:hidden value="%{permissions.accountId}" name="operator" />
+					<s:submit value="%{getText('button.Remove')}" method="remove" cssClass="picsbutton negative" />
 				</s:form>
 				</td>
 				</s:if>
@@ -116,6 +117,7 @@
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+</s:if>
 
 </body>
 </html>
