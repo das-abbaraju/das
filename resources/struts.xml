@@ -892,8 +892,7 @@
 
 		<action name="ReportContractorOperatorFlagMatrix"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlagMatrix">
-			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp
-			</result>
+			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp</result>
 		</action>
 
 		<action name="ReportContractorOperatorFlagMatrixCSV"
