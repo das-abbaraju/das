@@ -220,7 +220,7 @@ public class AuditBuilder {
 			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
 			cao.setVisible(caoShouldBeVisible);
 		}
-		
+
 		boolean changedCaop = false;
 
 		// Add CAOs that don't yet exist
@@ -250,7 +250,7 @@ public class AuditBuilder {
 
 			changedCaop |= fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
-		
+
 		// Change the status of any complete pqf to resubmit if there was a caop change
 		if (changedCaop && conAudit.getAuditType().isPqf()) {
 			for (ContractorAuditOperator operator : conAudit.getOperators()) {
@@ -288,16 +288,32 @@ public class AuditBuilder {
 
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				if (!hasPendingCaos || auditCatData.isOverride()) {
-					/*
-					 * Lock the audit category down...keeping it as it was this is to ensure that we don't add new
-					 * categories or remove the existing ones except the override categories for an audit after is it
-					 * being submitted
-					 */
-					if (auditCatData.isApplies())
-						categoriesNeeded.add(auditCatData.getCategory());
-					else
-						categoriesNeeded.remove(auditCatData.getCategory());
+				/*
+				 * per Mina (PICS-2902) only change this to Manual and Implementation Audits
+				 * changes logic from 'does not have any pending CAOs' to
+				 * to 'has at least one submitted or greater cao'
+				 */
+				if (conAudit.getAuditType().equals(AuditType.DESKTOP)
+						|| conAudit.getAuditType().equals(AuditType.OFFICE)) {
+					if (hasAnyCaoStatusAfterIncomplete(conAudit) || auditCatData.isOverride()) {
+						if (auditCatData.isApplies())
+							categoriesNeeded.add(auditCatData.getCategory());
+						else
+							categoriesNeeded.remove(auditCatData.getCategory());
+					}
+				} else {
+					//TODO combine or change logic for all other audits to match Manual/Implementation 
+					if (!hasPendingCaos || auditCatData.isOverride()) {
+						/*
+						 * Lock the audit category down...keeping it as it was this is to ensure that we don't add new
+						 * categories or remove the existing ones except the override categories for an audit after is
+						 * it being submitted
+						 */
+						if (auditCatData.isApplies())
+							categoriesNeeded.add(auditCatData.getCategory());
+						else
+							categoriesNeeded.remove(auditCatData.getCategory());
+					}
 				}
 			}
 		}
@@ -349,6 +365,14 @@ public class AuditBuilder {
 		return false;
 	}
 
+	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Incomplete))
+				return true;
+		}
+		return false;
+	}
+
 	private boolean fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null) {
 			// Warning, this only works for operator sites, not corporate accounts
@@ -376,7 +400,7 @@ public class AuditBuilder {
 		// caopOperators.clear();
 		if (!cao.isVisible())
 			caopOperators.clear();
-		
+
 		OperatorAccount previousOperator = null;
 
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
@@ -402,7 +426,7 @@ public class AuditBuilder {
 			}
 			cao.getCaoPermissions().add(caop);
 		}
-		
+
 		return previousOperator != null; // signal caop change
 	}
 
@@ -488,8 +512,8 @@ public class AuditBuilder {
 
 	public void recalculateCategories(ContractorAudit conAudit) {
 		categoryRuleCache.initialize(auditDecisionTableDAO);
-		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
-				conAudit.getContractorAccount());
+		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, conAudit
+				.getContractorAccount());
 
 		/*
 		 * I really don't like this. We should probably have the list of operators somewhere else, but I couldn't find
