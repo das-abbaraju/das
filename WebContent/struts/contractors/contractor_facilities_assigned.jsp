@@ -52,7 +52,7 @@
 	</s:elseif>
 </s:if>
 
-<s:if test="currentOperators.size() > 1 && contractor.status.pendingDeactivated">
+<s:if test="currentOperators.size() > 1 && contractor.status.pending">
 	<div class="alert" style="width:80%">
 		You have selected more than one operator. Please indicate which operator initially requested your company to register with PICS. <br/>
 		<label>Requested By:</label> 
