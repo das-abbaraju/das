@@ -1,18 +1,23 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")
 public class ConPendingApprovalWidget extends PicsActionSupport {
-	ContractorOperatorDAO contractorOperatorDAO;
 
-	public ConPendingApprovalWidget(ContractorOperatorDAO contractorOperatorDAO) {
-		this.contractorOperatorDAO = contractorOperatorDAO;
-	}
+	@Autowired
+	ContractorOperatorDAO contractorOperatorDAO;
 
 	public String execute() throws Exception {
 		loadPermissions();
@@ -22,7 +27,17 @@ public class ConPendingApprovalWidget extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public List<ContractorOperator> getPendingApprovalContractors() {
-		return contractorOperatorDAO.findPendingApprovalContractors(permissions.getAccountId(), false, permissions.isCorporate());
+	public Map<ContractorAccount, Date> getPendingApprovalContractors() {
+		List<ContractorOperator> coList = contractorOperatorDAO.findPendingApprovalContractors(
+				permissions.getAccountId(), false, permissions.isCorporate());
+
+		Map<ContractorAccount, Date> contractorPendingApproval = new TreeMap<ContractorAccount, Date>();
+		ListIterator<ContractorOperator> coIterator = coList.listIterator(); 
+		while (coIterator.hasNext() && contractorPendingApproval.size() < 10) {
+			ContractorOperator co = coIterator.next();
+			contractorPendingApproval.put(co.getContractorAccount(), co.getCreationDate());
+		}
+
+		return contractorPendingApproval;
 	}
 }

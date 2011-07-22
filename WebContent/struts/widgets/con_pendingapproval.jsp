@@ -7,10 +7,10 @@
 			<th>Date</th>
 		</tr>
 	</thead>
-	<s:iterator value="pendingApprovalContractors">
+	<s:iterator value="pendingApprovalContractors.keySet()" id="contractor">
 		<tr>
-			<td><a href="ContractorView.action?id=<s:property value="contractorAccount.id"/>"><s:property value="contractorAccount.name" /></a></td>
-			<td class="center"><s:date name="creationDate" format="MMM d HH:mm" /></td>
+			<td><a href="ContractorView.action?id=<s:property value="#contractor.id"/>"><s:property value="#contractor.name" /></a></td>
+			<td class="center"><s:date name="pendingApprovalContractors.get(#contractor)" format="MMM d HH:mm" /></td>
 		</tr>
 	</s:iterator>
 </table>

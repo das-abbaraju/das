@@ -94,7 +94,6 @@ public class ContractorOperatorDAO extends PicsDAO {
 		if(!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
 		Query query = em.createQuery(where);
-		query.setMaxResults(10);
 		return query.getResultList();
 	}
 }
