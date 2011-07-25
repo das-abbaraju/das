@@ -197,7 +197,7 @@ function addDetailsClueTips(gcID){
 			<!-- <td><s:date name="get('membershipDate')" nice="true" /></td> -->
 			<td>
 				<a class="file" target="_BLANK" title="Opens in new window"
-					href="ReportActivityWatch.action?conID=<s:property value="get('id')"/>">Activity</a>
+					href="ReportActivityWatch.action?contractor=<s:property value="get('id')"/>">Activity</a>
 				<a class="file" target="_BLANK" title="Opens in new window"
 					href="ContractorCron.action?conID=<s:property value="get('id')"/>&steps=All&button=Run">Recalc</a>
 			</td>

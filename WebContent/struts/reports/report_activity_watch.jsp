@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ReportActivityWatch.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
@@ -44,13 +44,13 @@ $(function() {
 		$('input#findConID').val(data[1]);
 	});
 	
-	$('#addClick').live('click', function(e) {
+	$('#addLink').live('click', function(e) {
 		e.preventDefault();
 		$(this).hide();
 		$('#addWatch').show();
 	});
 	
-	$('.picsbutton.cancelButton').live('click', function(e) {
+	$('.picsbutton .cancelButton').live('click', function(e) {
 		e.preventDefault();
 		$('#addWatch').hide();
 		$('#addLink').show();
@@ -63,12 +63,12 @@ $(function() {
 </script>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="ReportActivityWatch.title" /></h1>
 <s:include value="../actionMessages.jsp"></s:include>
 <div id="search"><s:form>
 	<s:hidden name="conID" />
 	<div>
-		<button id="searchfilter" type="submit" name="button" value="Search" class="picsbutton positive"><s:text name="button.Search" /></button>
+		<input id="searchfilter" type="submit" value="<s:text name="button.Search" />" class="picsbutton positive" />
 	</div>
 	<div class="filterOption">
 		<s:textfield name="filter.accountName" cssClass="forms" size="17" onfocus="clearText(this)" />
@@ -80,29 +80,31 @@ $(function() {
 			<s:select id="form1_auditStatus" list="filter.auditStatusList" cssClass="forms"
 				name="filter.auditStatus" multiple="true" size="5" />
 			<br />
-			<a class="clearLink" href="#" onclick="clearSelected('form1_auditStatus'); return false;"><s:text name="Filters.status.Clear" /></a>
+			<a class="clearLink" href="#" onclick="clearSelected('form1_auditStatus'); return false;">
+				<s:text name="Filters.status.Clear" />
+			</a>
 		</span>
 	</div>
 	<br clear="all" />
 	<div class="filterOption">
 		<s:checkbox value="audits" name="audits" id="audits"></s:checkbox>
-		<label for="audits"><s:text name="%{scope}.label.PQFAudits" /></label>
+		<label for="audits"><s:text name="ReportActivityWatch.label.PQFAudits" /></label>
 	</div>
 	<div class="filterOption">
 		<s:checkbox value="flagColorChange" name="flagColorChange" id="flagColorChange"></s:checkbox>
-		<label for="flagColorChange"><s:text name="%{scope}.label.FlagChanges" /></label>
+		<label for="flagColorChange"><s:text name="ReportActivityWatch.label.FlagChanges" /></label>
 	</div>
 	<div class="filterOption">
 		<s:checkbox value="login" name="login" id="login"></s:checkbox>
-		<label for="login"><s:text name="%{scope}.label.UserLogins" /></label>
+		<label for="login"><s:text name="ReportActivityWatch.label.UserLogins" /></label>
 	</div>
 	<div class="filterOption">
 		<s:checkbox value="notesAndEmail" name="notesAndEmail" id="notesAndEmail"></s:checkbox>
-		<label for="notesAndEmail"><s:text name="%{scope}.label.NotesAndEmails" /></label>
+		<label for="notesAndEmail"><s:text name="ReportActivityWatch.label.NotesAndEmails" /></label>
 	</div>
 	<div class="filterOption">
 		<s:checkbox value="flagCriteria" name="flagCriteria" id="flagCriteria"></s:checkbox>
-		<label for="flagCriteria"><s:text name="%{scope}.label.FlagCriteria" /></label>
+		<label for="flagCriteria"><s:text name="ReportActivityWatch.label.FlagCriteria" /></label>
 	</div>
 	<br clear="all" />
 </s:form></div>
@@ -110,13 +112,13 @@ $(function() {
 <table>
 	<tr>
 		<s:if test="!permissions.admin">
-			<s:if test="conID <= 0">
+			<s:if test="contractor == null">
 				<td class="leftSide">
 					<s:if test="watched.size() > 0">
 						<table class="report">
 							<thead>
 								<tr>
-									<th>Contractor</th>
+									<th><s:text name="global.Contractor" /></th>
 									<th><s:text name="button.Remove" /></th>
 								</tr>
 							</thead>
@@ -124,30 +126,30 @@ $(function() {
 								<s:iterator value="watched" id="watch">
 									<tr>
 										<td><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-										<td class="center"><a href="?button=Remove&watchID=<s:property value="#watch.id" />" class="remove"></a></td>
+										<td class="center"><a href="ReportActivityWatch!remove.action?contractorWatch=<s:property value="#watch.id" />" class="remove"></a></td>
 									</tr>
 								</s:iterator>
 							</tbody>
 						</table>
 					</s:if>
 					<s:else>
-						<div class="info"><s:text name="%{scope}.help.AddNewContractor" /></div>
+						<div class="info"><s:text name="ReportActivityWatch.help.AddNewContractor" /></div>
 					</s:else>
-					<a href="#" id="addLink" class="add">Add New Contractor</a>
+					<a href="#" id="addLink" class="add"><s:text name="ReportActivityWatch.link.AddNewContractor" /></a>
 					<s:form id="addWatch">
-						<input type="hidden" id="findConID" name="conID" value="0" />
+						<input type="hidden" id="findConID" name="contractor" value="0" />
 						<fieldset class="form">
-							<h2 class="formLegend">Add New Contractor</h2>
+							<h2 class="formLegend"><s:text name="ReportActivityWatch.link.AddNewContractor" /></h2>
 							<ol>
 								<li>
-									<label>Contractor Name:</label>
+									<label><s:text name="global.ContractorName" />:</label>
 									<s:textfield id="newContractor" />
 								</li>
 							</ol>
 						</fieldset>
 						<fieldset class="form submit">
-							<input type="submit" value="Add" name="button" class="picsbutton positive" />
-							<input type="button" value="Cancel" class="picsbutton negative cancelButton" />
+							<s:submit method="add" value="%{getText('button.Add')}" cssClass="picsbutton positive" />
+							<input type="button" value="<s:text name="button.Cancel" />" class="picsbutton negative cancelButton" />
 						</fieldset>
 					</s:form>
 				</td>
@@ -158,9 +160,9 @@ $(function() {
 				<table class="report">
 					<thead>
 						<tr>
-							<th>Contractor</th>
-							<th>Activity Details</th>
-							<th>Activity Date</th>
+							<th><s:text name="global.Contractor" /></th>
+							<th><s:text name="ReportActivityWatch.label.ActivityDetails" /></th>
+							<th><s:text name="ReportActivityWatch.label.ActivityDate" /></th>
 						</tr>
 					</thead>
 					<tbody>
