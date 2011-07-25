@@ -181,13 +181,20 @@ $(function() {
 			<fieldset class="form" >
 				<h2 class="formLegend"><s:text name="%{scope}.label.AddNewJobTask" /></h2>
 				<ol>
-					<li><s:textfield name="jobTask.label" size="10" theme="formhelp" /></li>
-					<li><s:textfield name="jobTask.name" size="40" theme="formhelp" /></li>
-					<li><label><s:text name="JobTask.active" />:</label>
-						<s:checkbox name="jobTask.active" />
+					<li>
+						<label><s:text name="JobTask.label" />:</label>
+						<s:textfield name="label" size="10" />
+					</li>
+					<li>
+						<label><s:text name="JobTask.name" />:</label>
+						<s:textfield name="name" size="40" />
+					</li>
+					<li>
+						<label><s:text name="JobTask.active" />:</label>
+						<s:checkbox name="active" />
 					</li>
 					<li><label><s:text name="JobTask.taskType" />:</label>
-						<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="jobTask.taskType"></s:select>
+						<s:select list="#{'L/G':'L/G','L':'L','G':'G'}" name="taskType"></s:select>
 					</li>
 				</ol>
 			</fieldset>

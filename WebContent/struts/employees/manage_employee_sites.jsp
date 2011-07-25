@@ -12,7 +12,7 @@
 							<th><s:text name="global.Operator" /></th>
 							<th>Since</th>
 							<th>Orientation</th>
-							<th>Edit</th>
+							<th><s:text name="button.Edit" /></th>
 						</tr>
 					</thead>
 					<s:iterator value="employee.employeeSites" id="site" status="stat">
@@ -60,7 +60,7 @@
 							<th>Operator</th>
 							<th>Project</th>
 							<th>Since</th>
-							<th>Edit</th>
+							<th><s:text name="button.Edit" /></th>
 							<th>Tasks</th>
 						</tr>
 					</thead>
