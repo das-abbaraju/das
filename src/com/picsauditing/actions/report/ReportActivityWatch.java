@@ -208,7 +208,7 @@ public class ReportActivityWatch extends ReportAccount {
 			joins.add("JOIN accounts o ON o.id = fco.opID"
 					+ (permissions.isOperatorCorporate() ? " AND o.id = " + permissions.getAccountId() : ""));
 			joins.add("JOIN flag_data fd ON fd.opID = fco.opID AND fd.criteriaID = fc.id");
-			SelectSQL sql2 = buildWatch("FlagCriteriaOperator", "flag_criteria fc", "fd.conID", "fco.updateDate",
+			SelectSQL sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fco.updateDate",
 					"o.name", "fc.label", "''", "''", "''", joins);
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();
