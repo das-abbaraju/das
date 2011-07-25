@@ -11,7 +11,7 @@
 		</s:else>
 	</label>
 	<s:select list="getStateList(countryString)" id="state_sel" name="%{statePrefix}.isoCode"  
-		listKey="isoCode" listValue="name" value="stateString"/>
+		listKey="isoCode" listValue="name" value="stateString" headerKey="" headerValue="- %{getText('ContractorAccount.state')} -"/>
 		<s:if test="stateString.length() < 1">
 			<span class="redMain" id="state_req">*</span>
 		</s:if>

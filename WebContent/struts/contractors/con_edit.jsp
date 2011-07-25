@@ -14,8 +14,10 @@ function changeState(country) {
 }
 
 function changeBillingState(country) {
-	$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorBillingCountry').val(), prefix: 'billingState', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+	$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'billingState', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+	$('#country_display').val($('#contractorCountry option:selected').text());
 }
+
 function countryChanged(country) {
 	// hide taxID and zip code
 	if (country == 'AE') {
@@ -26,15 +28,6 @@ function countryChanged(country) {
 		$('#zip_li').show();
 	}
 	changeState(country);
-}
-
-function billingCountryChanged(country) {
-	// hide taxID and zip code
-	if (country == 'AE') {
-		$('#billing_zip_li').hide();
-	} else {
-		$('#billing_zip_li').show();
-	}
 	changeBillingState(country);
 }
 
@@ -159,16 +152,12 @@ $(function() {
 						<s:textfield name="contractor.billingCity" size="20" />
 					</li>
 					<li><label><s:text name="ContractorEdit.billingCountry" />:</label>
-						<s:select list="countryList"
-						name="billingCountry.isoCode" id="contractorBillingCountry"
-						listKey="isoCode" listValue="name"
-						value="contractor.billingCountry.isoCode"
-						onchange="billingCountryChanged(this.value)"
-						/></li>
+						<input type="text" disabled="disabled" id="country_display"/>
+					</li>
 					<li id="billing_state_li"></li>
-						<li id="billing_zip_li"><label><s:text name="ContractorEdit.billingZip"/>:</label>
-							<s:textfield name="contractor.billingZip" size="7" />
-						</li>
+					<li id="billing_zip_li"><label><s:text name="ContractorEdit.billingZip"/>:</label>
+						<s:textfield name="contractor.billingZip" size="7" />
+					</li>
 				</ol>
 				</fieldset>
 				<fieldset class="form">

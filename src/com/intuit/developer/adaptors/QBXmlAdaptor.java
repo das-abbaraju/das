@@ -143,7 +143,16 @@ public class QBXmlAdaptor {
 	}
 
 	static public BillAddress updateBillAddress(ContractorAccount contractor, BillAddress billAddress) {
-		if (Strings.isEmpty(contractor.getAddress())) {
+		if (!Strings.isEmpty(contractor.getBillingAddress()) && !Strings.isEmpty(contractor.getBillingCity())) {
+			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
+			billAddress.setAddr2("c/o "
+					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
+			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
+			billAddress.setCity(contractor.getBillingCity());
+			if (contractor.getBillingState() != null)
+				billAddress.setState(contractor.getBillingState().getIsoCode());
+			billAddress.setPostalCode(contractor.getBillingZip());
+		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
@@ -151,15 +160,6 @@ public class QBXmlAdaptor {
 			if (contractor.getState() != null)
 				billAddress.setState(contractor.getState().getIsoCode());
 			billAddress.setPostalCode(contractor.getZip());
-		} else {
-			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-			billAddress.setAddr2("c/o "
-					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 37));
-			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
-			billAddress.setCity(contractor.getBillingCity());
-			if (contractor.getBillingState() != null)
-				billAddress.setState(contractor.getBillingState().getIsoCode());
-			billAddress.setPostalCode(contractor.getBillingZip());
 		}
 		billAddress.setCountry(contractor.getCountry().getName());
 		return billAddress;
