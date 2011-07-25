@@ -58,7 +58,7 @@ public class ContractorDocuments extends ContractorActionSupport {
 			return LOGIN;
 
 		findContractor();
-		
+
 		auditTypeRuleCache.initialize(auditRuleDAO);
 
 		Map<String, List<ContractorAudit>> allIMAudits = new TreeMap<String, List<ContractorAudit>>();
@@ -205,8 +205,9 @@ public class ContractorDocuments extends ContractorActionSupport {
 							manuallyAddAudits.add(auditTypeRule.getAuditType());
 						else if (permissions.isOperator()) {
 							if (auditTypeRule.getOperatorAccount() != null
-									&& permissions.getCorporateParent().contains(
-											auditTypeRule.getOperatorAccount().getId())) {
+									&& (permissions.getCorporateParent().contains(
+											auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
+											.getOperatorAccount().getId())) {
 								manuallyAddAudits.add(auditTypeRule.getAuditType());
 							}
 						} else if (permissions.isCorporate()) {
