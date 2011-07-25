@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Watch List Manager</title>
+<title><s:text name="WatchListManager.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
@@ -75,11 +75,37 @@ $(function() {
 		if ($('#addContractor').val() == '')
 			$('input#conID').val(0);
 	});
+	
+	$('a.remove').live('click', function(e) {
+		return confirm(translate('JS.WatchListManager.confirm.RemoveContractorWatch'));
+	});
+	
+	$('#addNewLink').live('click', function(e) {
+		e.preventDefault();
+		$('#addNewForm').show();
+		$(this).hide();
+	});
+	
+	$('.cancelButton').live('click', function(e) {
+		e.preventDefault();
+		$('#addNewForm').hide();
+		$('#addNewLink').show();
+	});
+	
+	$('#sortUser').live('click', function(e) {
+		e.preventDefault();
+		sortTable('user,contractor');
+	});
+	
+	$('#sortContractor').live('click', function(e) {
+		e.preventDefault();
+		sortTable('contractor,user');
+	});
 });
 </script>
 </head>
 <body>
-<h1>Watch List Manager</h1>
+<h1><s:text name="WatchListManager.title" /></h1>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
@@ -87,8 +113,8 @@ $(function() {
 	<thead>
 		<tr>
 			<th></th>
-			<th><a href="#" onclick="sortTable('user,contractor'); return false;">User</a></th>
-			<th><a href="#" onclick="sortTable('contractor,user'); return false;">Contractor</a></th>
+			<th><a href="#" id="sortUser"><s:text name="User" /></a></th>
+			<th><a href="#" id="sortContractor"><s:text name="global.Contractor" /></a></th>
 			<th><s:text name="global.Flag" /></a></th>
 			<pics:permission perm="WatchListManager" type="Delete">
 				<th><s:text name="button.Remove" /></th>
@@ -102,17 +128,21 @@ $(function() {
 					<td class="id"><s:property value="#stat.count" /></td>
 					<td class="user"><a href="UsersManage.action?account=<s:property value="user.account.id" />&user=<s:property value="user.id" />"><s:property value="user.name" /></a></td>
 					<td class="contractor"><a href="ContractorView.action?id=<s:property value="contractor.id" />"><s:property value="contractor.name" /></a></td>
-					<td class="flagColor"><a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="user.account.id" />"><s:property value="%{getCoFlag(contractor.id,user.account.id).smallIcon}" escape="false"/></a></td>
+					<td class="flagColor center">
+						<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="user.account.id" />">
+							<s:property value="%{getCoFlag(contractor.id,user.account.id).smallIcon}" escape="false"/>
+						</a>
+					</td>
 					<pics:permission perm="WatchListManager" type="Delete">
-						<td class="center"><a href="?button=Remove&userID=<s:property value="user.id" />&conID=<s:property value="contractor.id" />" onclick="return confirm('Are you sure you want to remove this contractor watch for this user?');" class="remove"></a></td>
+						<td class="center"><a href="WatchListManager!remove.action?user=<s:property value="user.id" />&contractor=<s:property value="contractor.id" />" class="remove"></a></td>
 					</pics:permission>
 				</tr>
 			</s:iterator>
 		</s:if>
 		<s:else>
-			<tr><td colspan="<pics:permission perm="WatchListManager" type="Delete">4</pics:permission>
-				<pics:permission perm="WatchListManager" type="Delete" negativeCheck="true">3</pics:permission>">
-				No users currently using the activity watch.
+			<tr>
+				<td colspan="<pics:permission perm="WatchListManager" type="Delete">4</pics:permission><pics:permission perm="WatchListManager" type="Delete" negativeCheck="true">3</pics:permission>">
+					<s:text name="WatchListManager.message.NoActivityWatchUsers" />
 				</td>
 			</tr>
 		</s:else>
@@ -120,26 +150,26 @@ $(function() {
 </table>
 
 <pics:permission perm="WatchListManager" type="Edit">
-	<a href="#" id="addNewLink" onclick="$('#addNewForm').show(); $(this).hide(); return false;" class="add">Add New Contractor Watch</a>
+	<a href="#" id="addNewLink" class="add"><s:text name="WatchListManager.link.AddNewContractorWatch" /></a>
 	<s:form id="addNewForm">
-		<s:hidden name="userID" id="userID" />
-		<s:hidden name="conID" id="conID" />
+		<s:hidden name="user" id="userID" />
+		<s:hidden name="contractor" id="conID" />
 		<fieldset class="form">
-			<h2 class="formLegend">Add New Contractor Watch</h2>
+			<h2 class="formLegend"><s:text name="WatchListManager.link.AddNewContractorWatch" /></h2>
 			<ol>
 				<li>
-					<label>User:</label>
+					<label><s:text name="User" />:</label>
 					<input type="text" id="addUser" />
 				</li>
 				<li>
-					<label>Contractor:</label>
+					<label><s:text name="global.Contractor" />:</label>
 					<input type="text" id="addContractor" />
 				</li>
 			</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<input type="submit" value="Save" name="button" class="picsbutton positive" />
-			<input type="button" value="Cancel" onclick="$('#addNewForm').hide(); $('#addNewLink').show();" class="picsbutton" />
+			<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
+			<input type="button" value="<s:text name="button.Cancel" />" class="picsbutton cancelButton" />
 		</fieldset>
 	</s:form>
 </pics:permission>
