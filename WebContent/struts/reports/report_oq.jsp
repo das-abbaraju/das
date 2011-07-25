@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ReportOQ.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
 $(function() {
@@ -14,7 +14,7 @@ $(function() {
 </script>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="ReportOQ.title" /></h1>
 <s:include value="filters_employee.jsp" />
 <s:if test="report.allRows == 0">
 	<div class="alert"><s:text name="Report.message.NoRowsFound" /></div>
@@ -30,9 +30,9 @@ $(function() {
 	<thead>
 		<tr>
 			<th><s:text name="global.Company" /></th>
-			<th><s:text name="%{scope}.label.Project" /></th>
-			<th><s:text name="%{scope}.label.QualifiedEmployees" /></th>
-			<th><s:text name="%{scope}.label.TotalEmployees" /></th>
+			<th><s:text name="ReportOQ.label.Project" /></th>
+			<th><s:text name="ReportOQ.label.QualifiedEmployees" /></th>
+			<th><s:text name="ReportOQ.label.TotalEmployees" /></th>
 		</tr>
 	</thead>
 	<tbody>

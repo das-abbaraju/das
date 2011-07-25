@@ -96,7 +96,8 @@ public class ReportOQEmployees extends ReportEmployee {
 		super.buildQuery();
 
 		if (permissions.isOperatorCorporate()) {
-			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = %d",
+			sql.addWhere(String.format(
+					"a.id IN (SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = %1$d) OR a.id = %1$d",
 					permissions.getAccountId()));
 		}
 

@@ -59,7 +59,7 @@ public class ManageJobTasksOperator extends ReportActionSupport {
 			addExcelColumns();
 			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
-			String filename = this.getClass().getName().substring(this.getClass().getName().lastIndexOf("."));
+			String filename = this.getClass().getSimpleName();
 
 			excelSheet.setName(filename);
 			filename += ".xls";

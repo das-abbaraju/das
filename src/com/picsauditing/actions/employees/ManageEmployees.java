@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
@@ -67,7 +68,6 @@ public class ManageEmployees extends AccountActionSupport {
 	protected Employee employee;
 	protected String ssn;
 
-	protected int id;
 	protected int auditID;
 	protected int childID;
 	protected boolean selectRolesSites = false;
@@ -84,10 +84,37 @@ public class ManageEmployees extends AccountActionSupport {
 		noteCategory = NoteCategory.Employee;
 	}
 
+	@Before
+	public void startup() throws Exception {
+		if (permissions.isContractor()) {
+			permissions.tryPermission(OpPerms.ContractorAdmin);
+		} else {
+			if (permissions.isOperatorCorporate()) {
+				id = permissions.getAccountId();
+
+				if (employee != null && employee.getAccount() != null
+						&& permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
+					id = employee.getAccount().getId();
+			} else {
+				permissions.tryPermission(OpPerms.ManageEmployees);
+
+				if (account != null && permissions.getAccountId() != account.getId())
+					permissions.tryPermission(OpPerms.AllOperators);
+			}
+		}
+
+		if (id > 0)
+			account = accountDAO.find(id);
+
+		if (employee != null && employee.getId() > 0)
+			account = employee.getAccount();
+
+		if (account == null)
+			account = accountDAO.find(permissions.getAccountId());
+	}
+
 	@Override
 	public String execute() throws Exception {
-		checkPermissionsLoadAccount();
-
 		// Get auditID
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
@@ -127,15 +154,11 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String add() throws Exception {
-		checkPermissionsLoadAccount();
-
 		employee = new Employee();
 		return SUCCESS;
 	}
 
 	public String save() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (employee.getAccount() == null) {
 			employee.setAccount(account);
 		}
@@ -159,8 +182,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String delete() throws Exception {
-		checkPermissionsLoadAccount();
-
 		employeeDAO.refresh(employee);
 		employeeDAO.remove(employee);
 		addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
@@ -175,8 +196,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String addRoleAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		JobRole jobRole = roleDAO.find(childID);
 		if (employee != null && jobRole != null) {
 			EmployeeRole e = new EmployeeRole();
@@ -196,8 +215,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String removeRoleAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (employee != null && childID > 0) {
 			EmployeeRole e = employeeRoleDAO.find(childID);
 
@@ -212,8 +229,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String addSiteAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (employee != null && op.getId() != 0) {
 			EmployeeSite es = new EmployeeSite();
 			es.setEmployee(employee);
@@ -238,8 +253,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String removeSiteAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (employee != null && childID > 0) {
 			EmployeeSite es = employeeSiteDAO.find(childID);
 
@@ -265,8 +278,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String newSiteAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (!Strings.isEmpty(jobSite.getLabel()) && !Strings.isEmpty(jobSite.getName())) {
 			jobSite.setAuditColumns(permissions);
 			jobSite.setOperator(op);
@@ -284,8 +295,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String editSiteAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (employee != null && childID != 0) {
 			List<String> notes = new ArrayList<String>();
 
@@ -326,8 +335,6 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String getSiteAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		if (childID != 0)
 			esSite = employeeSiteDAO.find(childID);
 
@@ -335,36 +342,7 @@ public class ManageEmployees extends AccountActionSupport {
 	}
 
 	public String loadAjax() throws Exception {
-		checkPermissionsLoadAccount();
-
 		return "employees";
-	}
-
-	private void checkPermissionsLoadAccount() throws Exception {
-		if (permissions.isContractor()) {
-			permissions.tryPermission(OpPerms.ContractorAdmin);
-		} else {
-			if (permissions.isOperatorCorporate()) {
-				id = permissions.getAccountId();
-
-				if (employee != null && permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
-					id = employee.getAccount().getId();
-			} else {
-				permissions.tryPermission(OpPerms.ManageEmployees);
-
-				if (account != null && permissions.getAccountId() != account.getId())
-					permissions.tryPermission(OpPerms.AllOperators);
-			}
-		}
-
-		if (id > 0)
-			account = accountDAO.find(id);
-
-		if (employee != null && employee.getId() > 0)
-			account = employee.getAccount();
-
-		if (account == null)
-			account = accountDAO.find(permissions.getAccountId());
 	}
 
 	public String getFileName(int eID) {
@@ -387,14 +365,6 @@ public class ManageEmployees extends AccountActionSupport {
 		ssn = ssn.replaceAll("[^X0-9]", "");
 		if (ssn.length() <= 9)
 			this.ssn = ssn;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public int getAuditID() {
@@ -478,7 +448,7 @@ public class ManageEmployees extends AccountActionSupport {
 		oqOperators = new ArrayList<OperatorSite>();
 		hseOperators = new ArrayList<OperatorSite>();
 
-		if (employee.getAccount() instanceof ContractorAccount) {
+		if (employee.getAccount().isContractor()) {
 			// if contractor employee, return site list of non-corporate sites
 			ContractorAccount contractor = (ContractorAccount) employee.getAccount();
 
@@ -493,7 +463,7 @@ public class ManageEmployees extends AccountActionSupport {
 				returnList.add(new OperatorSite(jc.getJob()));
 			}
 
-		} else if (employee.getAccount() instanceof OperatorAccount) {
+		} else if (employee.getAccount().isOperatorCorporate()) {
 			// if operator employee return list of self, and if corporate, child
 			// facilities
 			OperatorAccount operator = (OperatorAccount) employee.getAccount();
@@ -572,7 +542,7 @@ public class ManageEmployees extends AccountActionSupport {
 				returnList.add(new OperatorSite(operator));
 		} else {
 			for (JobSite site : operator.getJobSites()) {
-				if (!site.getProjectStop().before(new Date())) {
+				if (site.getProjectStop() == null || site.getProjectStop().after(new Date())) {
 					boolean found = false;
 					for (OperatorSite os : returnList) {
 						if (os.getSite() != null && os.getSite().equals(site))
@@ -660,7 +630,8 @@ public class ManageEmployees extends AccountActionSupport {
 			while (iterator.hasNext()) {
 				AssessmentResult result = iterator.next();
 
-				if (!result.isCurrent() || result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
+				if (!result.isCurrent()
+						|| result.getAssessmentTest().getAssessmentCenter().getId() != Account.ASSESSMENT_NCCER
 						|| result.getAssessmentTest().getQualificationMethod().contains("-old"))
 					iterator.remove();
 			}
@@ -681,7 +652,6 @@ public class ManageEmployees extends AccountActionSupport {
 
 	// Classes
 	public class OperatorSite implements Comparable<OperatorSite> {
-
 		private OperatorAccount operator;
 		private JobSite site;
 
