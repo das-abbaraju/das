@@ -54,7 +54,7 @@ public class AuditOverride extends ContractorDocuments {
 			}
 
 			if (selectedOperator == null || selectedOperator == 0) {
-				if (permissions.isOperator())
+				if (permissions.isOperatorCorporate())
 					selectedOperator = permissions.getAccountId();
 				else {
 					addActionError("You must select an operator.");
