@@ -9,10 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -22,23 +24,20 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class QuestionSelect extends PicsActionSupport {
+	@Autowired
+	protected AuditDecisionTableDAO auditDecisionTableDAO;
+	@Autowired
+	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
+	protected AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	protected AuditTypeRuleCache auditTypeRuleCache;
 
 	private String questionName;
 	Set<AuditQuestion> questions;
-	protected AuditQuestionDAO auditQuestionDAO = null;
 	protected Set<AuditCategory> auditCategories = null;
-	protected AuditDecisionTableDAO auditDecisionTableDAO;
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
-	protected AuditTypeRuleCache auditTypeRuleCache;
-
-	public QuestionSelect(AuditQuestionDAO auditQuestionDAO, AuditDecisionTableDAO auditDecisionTableDAO,
-			AuditCategoryRuleCache auditCategoryRuleCache, AuditTypeRuleCache auditTypeRuleCache) {
-		this.auditQuestionDAO = auditQuestionDAO;
-		this.auditDecisionTableDAO = auditDecisionTableDAO;
-	}
 
 	public String execute() throws Exception {
-		loadPermissions();
 		questions = new LinkedHashSet<AuditQuestion>();
 
 		String where = "t.effectiveDate < NOW() AND t.expirationDate > NOW()";

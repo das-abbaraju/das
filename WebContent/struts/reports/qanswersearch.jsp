@@ -14,7 +14,7 @@ function getQuestionList() {
 		var data = {
 			questionName: $('[name="questionSelect"]').val()
 		};
-		startThinking({div: 'thinking',message:translate('JS.QuestionAnswerSearch.message.FindingMatchingQuestions')});
+		startThinking({div: 'thinking', message: translate('JS.QuestionAnswerSearch.message.FindingMatchingQuestions')});
 		$('#selected_question').load('QuestionSelectAjax.action', data, function() {
 			stopThinking({div: 'thinking'});
 		});
@@ -69,7 +69,7 @@ $(function() {
 	<s:hidden name="showPage" value="1" />
 	<s:hidden name="filter.startsWith" />
 	<s:hidden name="orderBy" />
-	<input type="hidden" value="" id="removeQuestionId" name="removeQuestionId">
+	<input type="hidden" value="0" id="removeQuestionId" name="removeQuestionId">
 	
 	<input type="button" id="searchButton" class="picsbutton positive" value="<s:text name="button.Search" />"/><span id="thinking"></span><br/>
 
@@ -90,10 +90,8 @@ $(function() {
 		<s:textfield id="questionSelect" cssClass="forms" name="questionSelect" size="35" /> 
 		<div id="selected_question">&nbsp;</div>
 	</div>
-
-	<br clear="all" />
-	<div class="alphapaging"><s:property
-		value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
+	<div class="clear"></div>
+	<div class="alphapaging"><s:property value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form>
 </div>
 <div id="caldiv2" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
@@ -110,8 +108,7 @@ $(function() {
 	</pics:permission>
 </s:if>
 
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report" style="clear : none;">
 	<thead>
 	<tr>

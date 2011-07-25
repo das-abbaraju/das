@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:if test="questions.size > 0">
 	<s:select name="questions[99].id" list="{}" cssClass="forms">
@@ -6,14 +7,25 @@
 		</s:iterator>
 	</s:select>
 	<br clear="all" />
-	Criteria
-		<s:select name="questions[99].criteria" value="" list="#{'':'No Criteria','=':'Equal To','!=':'Not Equal To','>':'Greater Than','>=':'Greater Or Equal Than','<':'Less Than','<=':'Less Or Equal Than','Contains':'Contains','Begins With':'Begins With','Ends With':'Ends With'}" cssClass="forms"/>
-	Answer
-		<s:textfield cssClass="forms" id="answer" name="questions[99].criteriaAnswer" size="25" value=""  />
+	<s:text name="QuestionAnswerSearch.label.Criteria" />
+	<s:select name="questions[99].criteria" value="" 
+		list="#{'':getText('QuestionAnswerSearch.status.NoCriteria'),
+			'=':getText('QuestionAnswerSearch.status.EqualTo'),
+			'!=':getText('QuestionAnswerSearch.status.NotEqualTo'),
+			'>':getText('QuestionAnswerSearch.status.GreaterThan'),
+			'>=':getText('QuestionAnswerSearch.status.GreaterOrEqualThan'),
+			'<':getText('QuestionAnswerSearch.status.LessThan'),
+			'<=':getText('QuestionAnswerSearch.status.LessOrEqualThan'),
+			'Contains':getText('QuestionAnswerSearch.status.Contains'),
+			'Begins With':getText('QuestionAnswerSearch.status.BeginsWith'),
+			'Ends With':getText('QuestionAnswerSearch.status.EndsWith')}"
+		cssClass="forms" />
+	<s:text name="Filters.label.Answer" />
+	<s:textfield cssClass="forms" id="answer" name="questions[99].criteriaAnswer" size="25" value=""  />
 	<div>
-		<button class="picsbutton positive" type="submit" name="button" value="Add">Add</button>
+		<input class="picsbutton positive" type="submit" value="<s:text name="button.Add" />" />
 	</div>
 </s:if>
 <s:else>
-No questions matching this text
+	<s:text name="QuestionAnswerSearch.message.NoQuestionsMatching" />
 </s:else>

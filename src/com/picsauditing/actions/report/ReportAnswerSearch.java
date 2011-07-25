@@ -5,23 +5,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportAnswerSearch extends ReportAccount {
-	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
-	protected String removeQuestionId;
-
-	public ReportAnswerSearch(AuditQuestionDAO auditQuestionDAO) {
-		this.auditQuestionDAO = auditQuestionDAO;
-	}
 	
+	protected List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	protected int removeQuestionId;
+
 	@Override
 	public void checkPermissions() throws Exception {
 		permissions.tryPermission(OpPerms.ContractorDetails);
@@ -32,15 +31,8 @@ public class ReportAnswerSearch extends ReportAccount {
 		super.buildQuery();
 
 		List<AuditQuestion> newQuestions = new ArrayList<AuditQuestion>();
-		int removeQuestion = -1;
-		try {
-			if(!Strings.isEmpty(removeQuestionId))
-				removeQuestion = Integer.parseInt(removeQuestionId);
-		} catch (Exception e) {
-		}
-
 		for (AuditQuestion question : questions) {
-			if (question != null && removeQuestion != question.getId()) {
+			if (question != null && removeQuestionId != question.getId()) {
 				AuditQuestion tempQuestion = auditQuestionDAO.find(question.getId());
 				tempQuestion.setCriteria(question.getCriteria());
 				tempQuestion.setCriteriaAnswer(question.getCriteriaAnswer());
@@ -85,10 +77,6 @@ public class ReportAnswerSearch extends ReportAccount {
 		}
 	}
 
-	public void setQuestionSelect(String value) {
-		// Do nothing
-	}
-
 	public List<AuditQuestion> getQuestions() {
 		return questions;
 	}
@@ -97,11 +85,11 @@ public class ReportAnswerSearch extends ReportAccount {
 		this.questions = questions;
 	}
 
-	public String getRemoveQuestionId() {
+	public int getRemoveQuestionId() {
 		return removeQuestionId;
 	}
 
-	public void setRemoveQuestionId(String removeQuestionId) {
+	public void setRemoveQuestionId(int removeQuestionId) {
 		this.removeQuestionId = removeQuestionId;
 	}
 
