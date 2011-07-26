@@ -8,15 +8,19 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
@@ -40,17 +44,17 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected Database db = new Database();
 	protected SearchEngine searchEngine = null;
 
+	@Autowired
 	private AccountDAO accountDAO;
+	@Autowired
 	private UserDAO userDAO;
+	@Autowired
 	private EmployeeDAO empDAO;
+	@Autowired
+	private ContractorOperatorDAO coDAO;
+
 	private final int PAGEBREAK = 50;
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
-
-	public MainSearch(AccountDAO accountDAO, UserDAO userDAO, EmployeeDAO empDAO) {
-		this.accountDAO = accountDAO;
-		this.userDAO = userDAO;
-		this.empDAO = empDAO;
-	}
 
 	@Override
 	public void prepare() throws Exception {
@@ -84,7 +88,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			}
 			// if corporate then build list of contractors in their system
 			ht = searchEngine.getConIds(permissions);
-			String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", startIndex, 50, false, true);
+			String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", startIndex, 50, false,
+					true);
 			List<BasicDynaBean> queryList = db.select(query, true);
 			totalRows = db.getAllRows();
 
@@ -131,7 +136,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			return BLANK;
 		}
 	}
-	
+
 	public boolean isLoggedIn(boolean anonymous) {
 		if (!anonymous) {
 			if (ServletActionContext.getRequest().getRequestURI().endsWith("Ajax.action")) {
@@ -150,7 +155,17 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		if (records.size() == 1) {
 			Indexable viewThis = records.get(0);
 			String viewAction = viewThis.getViewLink();
-			redirect(viewAction);
+
+			if (viewThis instanceof ContractorAccount) {
+				// if this is a contractor, we only want to redirect it to its viewAction if the operator can view it
+				// otherwise we want to send them to the SearchForNew page.
+				ContractorOperator co = coDAO.find(viewThis.getId(), permissions.getAccountId());
+				if (co != null) {
+					redirect(viewAction);
+				}
+			} else
+				redirect(viewAction);
+
 		}
 		return records;
 	}
@@ -189,8 +204,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			}
 		}
 		for (Class key : indexableMap.keySet()) {
-			List<Indexable> list = accountDAO.findWhere(key.getName(), "t.id IN ("
-					+ Strings.implode(indexableMap.get(key)) + ")", 0);
+			List<Indexable> list = accountDAO.findWhere(key.getName(),
+					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
 				for (Indexable indexEntry : list) {
 					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
