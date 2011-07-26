@@ -479,7 +479,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				+ "request&requestID=" + newContractor.getId();
 			
 			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(165);
+			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
 			emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
 			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
