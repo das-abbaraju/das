@@ -51,7 +51,14 @@
 			<s:iterator value="siteCompanies.keySet()" var="a" status="stat">
 				<tr>
 					<td><s:property value="#stat.count" /></td>
-					<td><s:property value="getCompanyLink(#a)" escape="false" /></td>
+					<td>
+						<s:if test="isLinkable(#a)">
+							<a href="ContractorView.action?id=<s:property value="#a.id" />"><s:property value="#a.name" /></a>
+						</s:if>
+						<s:else>
+							<s:property value="#a.name" />
+						</s:else>
+					</td>
 					<td class="right">
 						<a href="ReportOQEmployees.action?filter.accountName=<s:property value="#a.id" />&filter.projects=<s:property value="siteID" />">
 							<s:property value="siteCompanies.get(#a).size" />

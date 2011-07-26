@@ -77,8 +77,8 @@ public class ManageJobSites extends OperatorActionSupport {
 		if (operator == null && permissions.isOperatorCorporate()) {
 			operator = operatorDao.find(permissions.getAccountId());
 		}
-		
-		subHeading = getText(String.format("%s.title", getScope()));
+
+		subHeading = getText("ManageProjects.title");
 
 		return SUCCESS;
 	}
@@ -118,10 +118,10 @@ public class ManageJobSites extends OperatorActionSupport {
 			jobSite.setProjectStart(siteStart);
 			jobSite.setProjectStop(siteEnd);
 			jobSite.setCity(siteCity);
-			
+
 			if (!Strings.isEmpty(siteCountry.getIsoCode()))
 				jobSite.setCountry(siteCountry);
-			
+
 			jobSite.setState(siteState);
 
 			jobSiteDAO.save(jobSite);
@@ -352,14 +352,21 @@ public class ManageJobSites extends OperatorActionSupport {
 		return addable;
 	}
 
-	public String getCompanyLink(Account a) {
-		if (a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
-			return "<a href=\"ContractorView.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
-		if (a.isOperator()
-				&& (permissions.hasPermission(OpPerms.ManageOperators) || permissions.getAccountId() == a.getId()))
-			return "<a href=\"FacilitiesEdit.action?id=" + a.getId() + "\">" + a.getName() + "</a>";
+	public boolean isLinkable(Account a) {
+		if (permissions.isOperatorCorporate()) {
+			if (operator == null)
+				operator = operatorDao.find(permissions.getAccountId());
 
-		return a.getName();
+			for (ContractorOperator co : operator.getContractorOperators()) {
+				if (co.getContractorAccount().getId() == a.getId())
+					return true;
+			}
+		}
+
+		if (permissions.isAdmin() && a.isContractor() && permissions.hasPermission(OpPerms.ContractorDetails))
+			return true;
+
+		return false;
 	}
 
 	private String getRedirect() throws Exception {
