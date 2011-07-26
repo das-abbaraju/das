@@ -2,8 +2,9 @@ function startup() {
 	$('#employees').dataTable({
 		aoColumns: [
 	            {bVisible: false},
-	            {sType: "html"},
-	            {sType: "html"},
+	            null,
+	            null,
+	            null,
 	            null,
 	            null,
 	            null
@@ -30,11 +31,6 @@ function startup() {
 		loadEmployee(getEmployeeIDFromHash());
 	});
 
-	$('#addExcel').click(function(e) {
-		e.preventDefault();
-		showExcelUpload();
-	});
-
 	$('a.loadEmployee').click(function() {
 		$('#employees tr.highlight').removeClass('highlight');
 		// Put highlight class on the clicked row
@@ -57,9 +53,58 @@ function startup() {
 		return confirm(translate('JS.ManageEmployees.confirm.DeleteEmployee'));
 	});
 	
-	$('body').delegate('#addExcel', 'click', function(e) {
+	$('#content').delegate('#addExcel', 'click', function(e) {
 		e.preventDefault();
 		showExcelUpload();
+	});
+	
+	$('#employeeFormDiv').delegate('.removeJobRole', 'click', function() {
+		var id = $(this).attr('id').split('_')[1];
+		return removeJobRole(id);
+	});
+	
+	$('#employeeFormDiv').delegate('#employeeActive', 'click', function() {
+		$('#termDate').toggle();
+	});
+	
+	$('#employeeFormDiv').delegate('#employee_site .getSite', 'click', function(e) {
+		e.preventDefault();
+		var id = $(this).attr('id').split('_')[1];
+		getSite(id);
+	});
+	
+	$('#employeeFormDiv').delegate('#employee_site #hseOperator, #employee_site #oqOperator', 'change', function() {
+		addJobSite($(this));
+	});
+	
+	$('#employeeFormDiv').delegate('#employee_site .qualifiedTasks', 'click', function(e) {
+		e.preventDefault();
+		var statCount = $(this).attr('id').split('_')[1];
+		
+		$('#'+statCount+'_tasks').show();
+	});
+	
+	$('#employeeFormDiv').delegate('#employee_site .closeSiteTasks', 'click', function(e) {
+		e.preventDefault();
+		var statCount = $(this).attr('id').split('_')[1];
+		$('#'+statCount+'_tasks').hide();
+	});
+	
+	$('#employeeFormDiv').delegate('#newJobSiteLink', 'click', function(e) {
+		e.preventDefault();
+		$('#newJobSiteForm').show();
+		$(this).hide();
+	});
+	
+	$('#employeeFormDiv').delegate('#newJobSiteForm .positive', 'click', function(e) {
+		e.preventDefault();
+		newJobSite();
+	});
+	
+	$('#employeeFormDiv').delegate('#newJobSiteForm .cancelButton', 'click', function(e) {
+		e.preventDefault();
+		$('#newJobSiteForm').hide();
+		$('#newJobSiteLink').show();
 	});
 }
 
@@ -96,7 +141,7 @@ function setupDatepicker() {
 
 function loadEmployee(id) {
 	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', {
-		'employee' : id
+		employee : id
 	}, function() {
 		setupEmployee();
 	});
@@ -109,7 +154,7 @@ function addJobRole(id) {
 		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	});
 	$('#employee_role').load('ManageEmployees!addRoleAjax.action', {
-		'employee' : employeeID,
+		employee : employeeID,
 		childID : id
 	});
 }
@@ -124,7 +169,7 @@ function addJobSite(selection) {
 		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	});
 	$('#employee_site').load('ManageEmployees!addSiteAjax.action', {
-		'employee' : employeeID,
+		employee : employeeID,
 		'op.id' : id,
 		'op.name' : name[0]
 	}, function() {
@@ -141,7 +186,7 @@ function removeJobRole(id) {
 			message : translate('JS.ManageEmployees.message.AjaxLoad')
 		})
 		$('#employee_role').load('ManageEmployees!removeRoleAjax.action', {
-			'employee' : employeeID,
+			employee : employeeID,
 			childID : id
 		});
 	}
@@ -158,7 +203,7 @@ function removeJobSite(id) {
 			message : translate('JS.ManageEmployees.message.AjaxLoad')
 		});
 		$('#employee_site').load('ManageEmployees!removeSiteAjax.action', {
-			'employee' : employeeID,
+			employee : employeeID,
 			childID : id
 		}, function() {
 			setupDatepicker();
@@ -175,7 +220,7 @@ function newJobSite() {
 		message : translate('JS.ManageEmployees.message.AjaxLoad')
 	})
 	$('#employee_site').load('ManageEmployees!newSiteAjax.action?' + $('#newJobSiteForm input').serialize(), {
-		'employee' : employeeID
+		employee : employeeID
 	});
 }
 
@@ -187,7 +232,7 @@ function editAssignedSites(id) {
 	$('#employee_site').load(
 			'ManageEmployees!editSiteAjax.action?'
 					+ $('#siteForm_' + id).serialize(), {
-				'employee' : employeeID,
+				employee : employeeID,
 				childID : id
 			});
 
@@ -204,7 +249,7 @@ function showUpload() {
 
 function getSite(id) {
 	$('#siteEditBox').load('ManageEmployees!getSiteAjax.action', {
-		'employee' : employeeID,
+		employee : employeeID,
 		childID : id
 	}, function() {
 		setupDatepicker();

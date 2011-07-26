@@ -3,12 +3,16 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="siteTasks.size() > 0">
-	<h3><span title="<s:property value="employeeSite.jobSite.name" />"><s:property value="employeeSite.jobSite.label" /></span> Tasks</h3>
+	<h3><span title="<s:property value="employeeSite.jobSite.name" />">
+		<s:text name="ManageEmployees.header.JobSiteTasks">
+			<s:param value="%{employeeSite.jobSite.label}" />
+		</s:text>
+	</h3>
 	<table class="report">
 		<thead>
 			<tr>
-				<th>Task</th>
-				<th>Assign</th>
+				<th><s:text name="ManageEmployees.label.Task" /></th>
+				<th><s:text name="ManageEmployees.label.Assign" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -27,50 +31,6 @@
 		</tbody>
 	</table>
 </s:if>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <s:iterator value="employeeSiteTasks.keySet()" id="key">
 	<h3><span title="<s:property value="#key.jobSite.name" />"><s:property value="#key.jobSite.label" /></span> Tasks</h3>

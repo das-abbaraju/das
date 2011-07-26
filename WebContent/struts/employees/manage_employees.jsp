@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ManageEmployees.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
@@ -23,12 +23,13 @@
 div.dataTables_filter { width: 65%; }
 div.dataTables_length { width: 35%; }
 .newJobSite { display: none; }
+#newJobSiteForm { display: none; clear: both; }
 <s:if test="employee.id == 0 || employee.active">
 	#termDate { display: none; }
 </s:if>
 </style>
 <script type="text/javascript">
-var employeeID = <s:property value="employee == null ? 0 : employee.id"/>;
+var employeeID = '<s:property value="employee == null ? 0 : employee.id"/>';
 
 var json_previousLocations = '<s:property value="previousLocationsJSON" escape="false"/>';
 var json_previousTitles = '<s:property value="previousTitlesJSON" escape="false"/>';
@@ -39,7 +40,7 @@ $(function() {
 
 function showExcelUpload() {
 	url = 'ManageEmployeesUpload.action?account=<s:property value="account.id" />';
-	title = translation_uploadEmployees;
+	title = translate('JS.ManageEmployees.message.UploadEmployee');
 	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
 	fileUpload = window.open(url, title, pars);
 	fileUpload.focus();
@@ -50,19 +51,19 @@ function showExcelUpload() {
 	<s:if test="auditID > 0">
 		<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a></div>
 	</s:if>
-	<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
+	<h1><s:property value="account.name" /><span class="sub"><s:text name="ManageEmployees.title" /></span></h1>
 	<s:include value="../actionMessages.jsp"/>
 
 	<s:if test="account.employees.size() == 0 && employee == null">
 		<div class="info">
-			<s:text name="%{scope}.message.NoEmployees">
-				<s:param><s:text name="%{scope}.link.Add" /></s:param>
+			<s:text name="ManageEmployees.message.NoEmployees">
+				<s:param><s:text name="ManageEmployees.link.Add" /></s:param>
 			</s:text>
 		</div>
 	</s:if>
 
-	<a href="ManageEmployees!add.action?id=<s:property value="account.id" />" class="add"><s:text name="%{scope}.link.Add" /></a><br />
-	<a href="#" class="add" id="addExcel"><s:text name="%{scope}.link.Import" /></a>
+	<a href="ManageEmployees!add.action?id=<s:property value="account.id" />" class="add"><s:text name="ManageEmployees.link.Add" /></a><br />
+	<a href="#" class="add" id="addExcel"><s:text name="ManageEmployees.link.Import" /></a>
 	<table>
 		<tr>
 			<s:if test="account.employees.size() > 0">
@@ -75,18 +76,24 @@ function showExcelUpload() {
 								<th><s:text name="Employee.firstName" /></th>
 								<th><s:text name="Employee.title" /></th>
 								<th><s:text name="Employee.classification" /></th>
-								<th><s:text name="%{scope}.message.Profile" /></th>
+								<th><s:text name="button.Edit" /></th>
+								<th><s:text name="ManageEmployees.message.Profile" /></th>
 							</tr>
 						</thead>
 						<tbody>
 							<s:iterator value="account.employees" id="e">
 								<tr>
-									<td><s:property value="#e.id"/></td>
-									<td><a href="#employee=<s:property value="#e.id" />" class="loadEmployee"><s:property value="#e.lastName"/></a></td>
-									<td><a href="#employee=<s:property value="#e.id" />" class="loadEmployee"><s:property value="#e.firstName"/></a></td>
-									<td><s:property value="#e.title"/></td>
-									<td><s:property value="#e.classification"/></td>
-									<td class="center"><a href="EmployeeDetail.action?employee=<s:property value="#e.id" />"><s:text name="%{scope}.link.View" /></a></td>
+									<td><s:property value="#e.id" /></td>
+									<td><s:property value="#e.lastName" /></td>
+									<td><s:property value="#e.firstName" /></td>
+									<td><s:property value="#e.title" /></td>
+									<td><s:property value="#e.classification" /></td>
+									<td class="center">
+										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee edit"></a>
+									</td>
+									<td class="center">
+										<a href="EmployeeDetail.action?employee=<s:property value="#e.id" />" class="preview"></a>
+									</td>
 								</tr>
 							</s:iterator>
 						</tbody>

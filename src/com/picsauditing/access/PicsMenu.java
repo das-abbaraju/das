@@ -80,7 +80,7 @@ public class PicsMenu {
 					subMenu.addChild("Users", "UsersManage.action");
 					subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action");
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
-						subMenu.addChild("Employees", "ManageEmployees.action");
+						subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action");
 					if (permissions.isRequiresCompetencyReview()) {
 						subMenu = menu.addChild(getText("global.HSECompetencies"));
 						subMenu.addChild(getTitle("ManageJobRoles"), "ManageJobRoles.action");
