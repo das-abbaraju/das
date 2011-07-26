@@ -381,13 +381,14 @@ public class BillingCalculatorSingle {
 
 		// Suncor First Year Registration
 		if (!contractor.getFees().get(FeeClass.AuditGUARD).getNewLevel().isFree()
+				&& contractor.getRequestedBy() != null
 				&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
 				&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
 				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
 			// Safety check to make sure discount hasn't already been applied
 
-			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
-					.getPayingFacilities());
+			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount,
+					contractor.getPayingFacilities());
 			if (!isHasDiscountBeenApplied(contractor, suncorDiscount)) {
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(suncorDiscount);
