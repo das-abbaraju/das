@@ -206,7 +206,7 @@ table.report tr.hurdle td {
 				<s:if test="contractor.acceptsBids">
 					<s:if test="canUpgrade">
 						<div class="info"><s:text name="ContractorView.BidOnlyUpgrade" /><br/>
-						<div style="margin-top: 7px;"><a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm('Are you sure you want to upgrade this account to a full membership? As a result a invoice will be generated for the upgrade and the flag color also will be affected based on the operator requirements.');">Upgrade to Full Membership</a></div></div>
+						<div style="margin-top: 7px;"><a href="ContractorView.action?id=<s:property value="id" />&button=Upgrade to Full Membership" class="picsbutton positive" onclick="return confirm(<s:text name="ContractorView.BidOnlyUpgradeConfirm" />);"><s:text name="ContractorView.button.BidOnlyUpgrade" /></a></div></div>
 					</s:if>
 					<s:else>
 						<div class="alert"><s:text name="ContractorView.BidOnlyUpgradeAlert" /></div>
