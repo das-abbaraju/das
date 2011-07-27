@@ -22,7 +22,7 @@ public class ReportObsoleteScheduledAudits extends ReportContractorAudits {
 		getFilter().setAllowMailReport(true);
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
-		setReportAddresses("auditors@picsauditing.com");
+		setReportAddresses("mmina@picsauditing.com, sjones@picsauditing.com");
 	}
 
 	public void buildQuery() {
