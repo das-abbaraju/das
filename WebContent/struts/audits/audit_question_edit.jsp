@@ -15,6 +15,20 @@ $(function() {
 		showTitle: false,
 		closeText: "<img src='images/cross.png' width='16' height='16'>"
 	});
+	$("[name='qTranslations']").cluetip({
+		sticky : true,
+		hoverClass : 'cluetip',
+		mouseOutClose : true,
+		clickThrough : true,
+		ajaxCache : true,
+		closeText : "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent : {
+			interval : 300
+		},
+		arrows : true,
+		dropShadow : false,
+		cluetipClass : 'jtip',
+	});	
 });
 </script>
 
@@ -56,6 +70,11 @@ $(function() {
 		</s:if>
 	</span>
 	<s:property value="#q.name.toString()" escape="false"/>
+	<s:if test="permissions.admin">
+		<a name="qTranslations" class="cluetip" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
+			<img src="images/preview.gif">
+		</a>
+	</s:if>
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>

@@ -1429,6 +1429,11 @@
 			class="com.picsauditing.actions.rules.AuditCategoryRuleTableBuilder">
 			<result>struts/rules/audit_rule_table.jsp</result>
 		</action>
+		
+		<action name="QuestionTranslationsAjax"
+			class="com.picsauditing.actions.audits.QuestionTranslationsAjax">
+			<result>struts/audits/audit_question_translations.jsp</result>
+		</action>
 
 		<action name="AuditTypeRuleEditor"
 			class="com.picsauditing.actions.rules.AuditTypeRuleEditor">
