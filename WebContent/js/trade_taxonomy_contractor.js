@@ -14,13 +14,7 @@ function loadTradeCallback() {
 		$('#activityPercent').addClass('hide');
 		$('#tradeOptions').addClass('hide');
 	}
-	
-	/*
-	if ($('#reviewTrades').length > 0) {
-		$("#addButton").attr("disabled", "disabled");
-	}
-	*/
-	
+
 	setupCluetip();
 }
 
@@ -56,12 +50,6 @@ $(function() {
 	$('#search-list').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
 		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
-	});
-
-	$('#trade-view').delegate('a.trade', 'click', function(e) {
-		e.preventDefault();
-		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
-		
 	});
 
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {

@@ -120,7 +120,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		}
 
-		return "trade";
+		return "edit";
 	}
 
 	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Delete)
@@ -130,7 +130,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 				trade = null;
 		}
 
-		return "trade";
+		return "edit";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -146,11 +146,16 @@ public class TradeTaxonomy extends PicsActionSupport {
 		return JSON;
 	}
 
-	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
+	@RequiredPermission(value = OpPerms.ManageTrades)
 	public String tradeAjax() {
-		if (trade == null)
+		if (trade == null) {
 			trade = new Trade();
-		return "trade";
+		}
+
+		if (permissions.hasPermission(OpPerms.ManageTrades, OpType.Edit))
+			return "edit";
+		else
+			return "view";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -206,7 +211,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 			tradeDAO.save(trade);
 		}
 
-		return "trade";
+		return "edit";
 	}
 
 	public Result tradeLogo() {
@@ -362,5 +367,5 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		return list;
 	}
-	
+
 }

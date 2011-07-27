@@ -70,10 +70,10 @@
 			<result name="Exception">/exception_handler.jsp</result>
 			<result name="NoRightsException">
 				/no_rights_exception.jsp
-      </result>
+			</result>
 			<result name="RecordNotFoundException">
 				/record_not_found_exception.jsp
-      </result>
+			</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="login-redirect" type="redirectAction">
@@ -132,7 +132,7 @@
 		</action>
 
 		<!-- <action name="error404" class="com.picsauditing.actions.Error404"> 
-			<result>struts/errors/404error.jsp</result> </action>-->
+			<result>struts/errors/404error.jsp</result> </action> -->
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
@@ -329,7 +329,7 @@
 			class="com.picsauditing.actions.flags.ContractorFlagChanges">
 			<result>struts/contractors/contractor_flag_changes.jsp</result>
 		</action>
-		
+
 		<action name="ContractorFlagChangesAjaxAddDetails"
 			class="com.picsauditing.actions.flags.ContractorFlagChangesAddDetails">
 			<result>struts/contractors/contractor_flag_changes_add_details.jsp</result>
@@ -434,11 +434,11 @@
 				<param name="id">${contractor.id}</param>
 			</result>
 		</action>
-		
+
 		<action name="ContractorPricing"
 			class="com.picsauditing.actions.contractors.ContractorPricing">
 			<result>con_pricing.jsp</result>
-		</action>		
+		</action>
 
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
@@ -717,11 +717,11 @@
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
-    
-    <action name="ReportCAOCombined"
-    	class="com.picsauditing.actions.report.ReportContractorAuditCombined">
-    	<result>/struts/reports/cao_combined.jsp</result>
-    </action>
+
+		<action name="ReportCAOCombined"
+			class="com.picsauditing.actions.report.ReportContractorAuditCombined">
+			<result>/struts/reports/cao_combined.jsp</result>
+		</action>
 
 		<action name="ReportWashingtonStateAudit"
 			class="com.picsauditing.actions.report.ReportWashingtonStateAudit">
@@ -1103,9 +1103,8 @@
 			class="com.picsauditing.actions.report.ReportCsrContractorCount">
 			<result>struts/reports/csr_contractor_count_data.jsp</result>
 		</action>
-		
-		<action name="ReportImportPQFs"
-			class="com.picsauditing.actions.report.ReportImportPQFs">
+
+		<action name="ReportImportPQFs" class="com.picsauditing.actions.report.ReportImportPQFs">
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
 
@@ -1308,7 +1307,7 @@
 			<result>struts/audits/manage_audit_type.jsp</result>
 			<result name="top">
 				struts/audits/audit_selectType.jsp
-      </result>
+			</result>
 		</action>
 
 		<action name="ManageAuditTypeAjax"
@@ -1332,7 +1331,7 @@
 			<result>struts/audits/manage_category.jsp</result>
 			<result name="top">
 				struts/audits/audit_selectType.jsp
-      </result>
+			</result>
 		</action>
 
 		<action name="ManageCategoryMoveAjax"
@@ -1346,10 +1345,10 @@
 			<result>struts/audits/manage_question.jsp</result>
 			<result name="top">
 				struts/audits/audit_selectType.jsp
-      </result>
+			</result>
 		</action>
 		<!-- TODO: find a way to consolidate these - is there an "insensitive" 
-			flag on wildcards?-->
+			flag on wildcards? -->
 		<action name="ManageOptionGroup"
 			class="com.picsauditing.actions.auditType.ManageOptionGroup">
 			<result>struts/audits/manage_option_group.jsp</result>
@@ -1500,10 +1499,10 @@
 			<result>struts/users/user_save_groups.jsp</result>
 			<result name="member">
 				struts/users/user_save_members.jsp
-      </result>
+			</result>
 			<result name="userswitch">
 				struts/users/user_save_userswitch.jsp
-      </result>
+			</result>
 		</action>
 
 		<action name="ManageUserPermissions"
@@ -1668,15 +1667,16 @@
 		<!-- Taxonomy -->
 		<action name="TradeTaxonomy" class="com.picsauditing.actions.trades.TradeTaxonomy">
 			<result>struts/trades/trade_taxonomy.jsp</result>
-			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
+			<result name="edit">struts/trades/trade_taxonomy_edit.jsp</result>
+			<result name="view">struts/trades/trade_taxonomy_view.jsp</result>
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
 
 		<!-- TODO: Added this to get around sitemesh decorating multipart forms. 
-			Look into this later.-->
+			Look into this later. -->
 		<action name="TradeTaxonomyAjax" class="com.picsauditing.actions.trades.TradeTaxonomy">
 			<result>struts/trades/trade_taxonomy.jsp</result>
-			<result name="trade">struts/trades/trade_taxonomy_view.jsp</result>
+			<result name="trade">struts/trades/trade_taxonomy_edit.jsp</result>
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
 
@@ -1714,7 +1714,7 @@
 			<result>struts/reports/filters.jsp</result>
 			<result name="userfilters">
 				struts/reports/userfilters.jsp
-      </result>
+			</result>
 		</action>
 
 		<action name="AmBestSuggestAjax" class="com.picsauditing.actions.AmBestAction">
@@ -1945,7 +1945,7 @@
 			<result>struts/employees/import_employees.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="EmployeeNCCERUpload"
 			class="com.picsauditing.actions.employees.EmployeeNCCERUpload">
 			<result>struts/employees/employee_nccer_upload.jsp</result>

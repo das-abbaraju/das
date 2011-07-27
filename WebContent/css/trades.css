@@ -190,6 +190,12 @@ li.trade-child {
 	margin-top: 1em;
 	border: 2px solid #4686BF;
 	padding: 1em;
+	min-height: 140px;
+	height: (this.height > 140) ? 140px : this.height;
+}
+
+#trade-view #trade-view-single {
+	margin-top: 0;
 }
 
 #trade-view-single.current {

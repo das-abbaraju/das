@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Trade Taxonomy</title>
+<title><s:text name="TradeTaxonomy.title"/></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
@@ -18,24 +18,21 @@
 <script>
 </script>
 <style>
-img.trade {
-	margin: 10px;
-}
 </style>
 </head>
 <body>
-<h1>Manage Trades</h1>
+<h1><s:text name="TradeTaxonomy.title"/></h1>
 
 <s:include value="../actionMessages.jsp"></s:include>
 
 <div class="clearfix">
-	<a href="#" class="add trade">Add Top Level Trade</a>
+	<a href="#" class="add trade"><s:text name="TradeTaxonomy.AddTopLevelTrade"/></a>
 </div>
 
 <s:include value="trade_search.jsp"/>
 
 <div id="trade-view">
-	<div class="info">Search or Browse for a trade on the left</div>
+	<div class="info"><s:text name="TradeTaxonomy.SearchOrBrowse"/></div>
 </div>
 
 </body>

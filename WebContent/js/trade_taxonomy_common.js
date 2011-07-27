@@ -8,7 +8,7 @@ function placeholder() {
 }
 
 $(function() {
-	var ROOT_NODE = 5;
+	var ROOT_NODE = 5; /* Trade.TOP_ID */
 	var oldform = $('#trade-view').html();
 
 	if (typeof(setupTree) == 'function') {
@@ -16,6 +16,11 @@ $(function() {
 	}
 
 	$('#trade-nav').tabs();
+	
+	$('#trade-view').delegate('a.trade', 'click', function(e) {
+		e.preventDefault();
+		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
+	});
 
 	$.extend(true, $.jstree.defaults, {
 		"themes": {
@@ -42,7 +47,8 @@ $(function() {
 					}
 				}
 			}
-		},"ui": {
+		},
+		"ui": {
 			"select_limit": -1,
 			"select_multiple_modifier": "ctrl"
 		},
@@ -95,7 +101,7 @@ $(function() {
 	$('#search-tab').delegate('input.searchType', 'click', function(e) {
 		var parent = $(this).closest('#search-tab');
 		parent.removeClass(function (index, css) {
-		    return (css.match (/\bsearchType-\S+/g) || []).join(' ');
+		    return (css.match(/\bsearchType-\S+/g) || []).join(' ');
 		});
 
 		parent.addClass('searchType-' + $(this).val());
@@ -135,7 +141,7 @@ $(function() {
 						});
 						$('#search-list').html(ul);
 					} else {
-						$('#search-list').msg('alert', 'There are no trades matching these terms.', true);
+						$('#search-list').msg('alert', translate('JS.TradeTaxonomy.NoMatch'), true);
 					}
 				}
 			}, 'json')

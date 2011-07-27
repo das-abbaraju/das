@@ -2,7 +2,6 @@ package com.picsauditing.access;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -112,7 +111,7 @@ public class PicsMenu {
 			}
 			return menu;
 		}
-		
+
 		if (permissions.isAssessment()) {
 			subMenu = menu.addChild("Management");
 			subMenu.addChild("Imported Data", "ManageImportData.action");
@@ -129,7 +128,7 @@ public class PicsMenu {
 			addSupportLink(menu);
 			return menu;
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.ImportPQF)) {
 			subMenu = menu.addChild(getTitle("ReportImportPQFs"));
 			subMenu.addChild(getTitle("ReportImportPQFs"), "ReportImportPQFs.action");
@@ -337,12 +336,7 @@ public class PicsMenu {
 
 		// add to menu in sorted order
 		ArrayList<String> keys = new ArrayList<String>(menuItems.keySet());
-		Collections.sort(keys, new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
-			}
-		});
+		Collections.sort(keys);
 		for (String key : keys) {
 			subMenu.addChild(key, menuItems.get(key));
 		}
