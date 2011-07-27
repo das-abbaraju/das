@@ -100,7 +100,13 @@ tr.dirty a.save { display: inline; }
 </style>
 </head>
 <body>
-<h1><s:property value="type"/> Assignment Matrix</h1>
+<h1><s:property value="type"/> Assignment</h1>
+
+<div id="report_data">
+<s:include value="user_assignment_data.jsp"></s:include>
+</div>
+
+<h3><s:property value="type"/> Assignment Matrix</h3>
 
 <div id="kyle"></div>
 

@@ -3,12 +3,15 @@ package com.picsauditing.actions.users;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
@@ -21,26 +24,23 @@ import com.picsauditing.jpa.entities.UserAssignmentType;
 
 @SuppressWarnings("serial")
 public class UserAssignmentMatrix extends PicsActionSupport implements Preparable {
-
+	@Autowired
 	private UserAssignmentDAO assignmentDAO;
+	@Autowired
 	private UserDAO userDAO;
+	@Autowired
 	private CountryDAO countryDAO;
+	@Autowired
 	private StateDAO stateDAO;
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	private ContractorAuditDAO contractorAuditDAO;
 
 	private UserAssignment assignment;
 	private UserAssignmentType type = UserAssignmentType.CSR;
 	private List<User> users = new ArrayList<User>();
 	private int auditTypeID;
-
-	public UserAssignmentMatrix(UserAssignmentDAO assignmentDAO, UserDAO userDAO, CountryDAO countryDAO,
-			StateDAO stateDAO, AuditTypeDAO auditTypeDAO) {
-		this.assignmentDAO = assignmentDAO;
-		this.userDAO = userDAO;
-		this.countryDAO = countryDAO;
-		this.stateDAO = stateDAO;
-		this.auditTypeDAO = auditTypeDAO;
-	}
 
 	@Override
 	public void prepare() throws Exception {
@@ -70,10 +70,10 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 				return JSON;
 			}
 			final boolean newAssignment = assignment.getId() == 0;
-			
+
 			if (auditTypeID > 0)
 				assignment.setAuditType(auditTypeDAO.find(auditTypeID));
-			
+
 			assignment.setAssignmentType(type);
 			assignment.setAuditColumns(permissions);
 			assignmentDAO.save(assignment);
@@ -123,6 +123,12 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 				users = userDAO.findAuditors();
 		}
 		return users;
+	}
+
+	public List<BasicDynaBean> getAuditedByState() {
+		List<BasicDynaBean> list = contractorAuditDAO.findAuditedContractorsByStateCount();
+		
+		return list;	
 	}
 
 	public List<Country> getCountries() {

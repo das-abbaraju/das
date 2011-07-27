@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import javax.persistence.Query;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -95,12 +97,11 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findByAuditType(int conID, AuditTypeClass classType) {
-		Query query = em.createQuery("SELECT t FROM ContractorAudit t " 
-				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'"
-				+ "ORDER BY auditTypeID");
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
+				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'" + "ORDER BY auditTypeID");
 		query.setParameter(1, conID);
 		query.setParameter(2, classType.toString());
 		return query.getResultList();
@@ -159,8 +160,9 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	/**
-	 * Returns a list of policies that will expire 14 days from now or today or expired 7 days ago, 
-	 * where a new pending policy of that type is ready.
+	 * Returns a list of policies that will expire 14 days from now or today or expired 7 days ago, where a new pending
+	 * policy of that type is ready.
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -282,4 +284,33 @@ public class ContractorAuditDAO extends PicsDAO {
 		q.setParameter("startDate", startDate);
 		return q.getResultList();
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<BasicDynaBean> findAuditedContractorsByStateCount() {
+		List<BasicDynaBean> data = null;
+
+		try {
+			Report report = new Report();
+			SelectSQL sql = new SelectSQL("contractor_audit ca");
+			sql.addField("a.country");
+			sql.addField("a.state");
+			sql.addField("COUNT(DISTINCT ca.conID) AS cnt");
+			sql.addJoin("JOIN users u ON ca.auditorID = u.id");
+			sql.addJoin("JOIN accounts a ON ca.conID = a.id AND a.status = 'Active'");
+			sql.addJoin("JOIN contractor_audit_operator cao ON ca.id = cao.auditID AND cao.visible = 1");
+			sql.addWhere("ca.auditorID IS NOT NULL");
+			sql.addWhere("ca.auditTypeID IN (2,3)");
+			sql.addWhere("cao.status NOT IN ('NotApplicable', 'Expired')");
+			sql.addGroupBy("a.country, a.state");
+			sql.addOrderBy("a.country, a.state");
+			report.setSql(sql);
+
+			data = report.getPage();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return data;
+	}
+
 }
