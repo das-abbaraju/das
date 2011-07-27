@@ -22,7 +22,7 @@
 <style>
 div.dataTables_filter { width: 65%; }
 div.dataTables_length { width: 35%; }
-.newJobSite { display: none; }
+.newJobSite, #siteEditBox { display: none; }
 #newJobSiteForm { display: none; clear: both; }
 <s:if test="employee.id == 0 || employee.active">
 	#termDate { display: none; }
@@ -111,6 +111,6 @@ function showExcelUpload() {
 			</td>
 		</tr>
 	</table>
-	<div id="siteEditBox" style="display: none;"></div>
+	<div id="siteEditBox"></div>
 </body>
 </html>

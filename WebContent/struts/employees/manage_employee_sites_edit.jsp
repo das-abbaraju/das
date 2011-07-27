@@ -32,9 +32,9 @@
 				</li>
 			</s:if>
 			<div style="clear: both; font-size: smaller; text-align: center">
-				<input type="submit" value="Save Site" id="saveSite" onclick="editAssignedSites(<s:property value="esSite.id" />); return false;" class="picsbutton positive"/>
-				<input type="submit" value="Remove Site" id="removeSite" onclick="return removeJobSite(<s:property value="esSite.id" />);" class="picsbutton negative" />
-				<input type="button" value="Close" id="closeEdit" onclick="$.unblockUI(); return false;" class="picsbutton" />
+				<input type="button" value="<s:text name="button.Save" />" id="saveSite" class="picsbutton positive"/>
+				<input type="button" value="<s:text name="button.Remove" />" id="removeSite" class="picsbutton negative" />
+				<input type="button" value="<s:text name="button.Close" />" id="closeEdit" class="picsbutton" />
 			</div>
 		</ol>
 	</fieldset>

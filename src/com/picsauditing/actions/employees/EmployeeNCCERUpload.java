@@ -41,15 +41,15 @@ public class EmployeeNCCERUpload extends PicsActionSupport {
 				String extension = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
 				if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
 					upload = null;
-					addActionError("Must be an Excel file");
+					addActionError(getText("EmployeeNCCERUpload.message.MustBeExcelFile"));
 					return SUCCESS;
 				}
 
 				importData(upload);
 			} else if (upload == null || upload.length() == 0)
-				addActionError("No file was selected");
+				addActionError(getText("EmployeeNCCERUpload.message.NoFileSelected"));
 		} else
-			addActionError("Missing account id");
+			addActionError(getText("EmployeeNCCERUpload.message.MissingAccount"));
 
 		return SUCCESS;
 	}
@@ -119,9 +119,14 @@ public class EmployeeNCCERUpload extends PicsActionSupport {
 			}
 
 			saveResults(results);
-			addActionMessage(String.format("Successfully saved %d assessment results.", results.size()));
+
+			if (results.size() == 1)
+				addActionMessage(getText("EmployeeNCCERUpload.message.SuccessfullySavedOne"));
+			if (results.size() > 1)
+				addActionMessage(getText("EmployeeNCCERUpload.message.SuccessfullySavedMany",
+						new Object[] { (Integer) results.size() }));
 		} catch (Exception e) {
-			addActionError("Error reading in excel file, please check the format");
+			addActionError(getText("EmployeeNCCERUpload.message.ErrorReadingFile"));
 		}
 	}
 

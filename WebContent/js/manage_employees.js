@@ -106,6 +106,22 @@ function startup() {
 		$('#newJobSiteForm').hide();
 		$('#newJobSiteLink').show();
 	});
+	
+	$('#siteEditBox').delegate('#saveSite', 'click', function(e) {
+		e.preventDefault();
+		var id = $(this).closest('form').attr('id').split('_')[1];
+		editAssignedSites(id);
+	});
+	
+	$('#siteEditBox').delegate('#removeSite', 'click', function() {
+		var id = $(this).closest('form').attr('id').split('_')[1];
+		return removeJobSite(id);
+	});
+	
+	$('#siteEditBox').delegate('#closeEdit', 'click', function(e) {
+		e.preventDefault();
+		$.unblockUI();
+	});
 }
 
 function setupEmployee() {
