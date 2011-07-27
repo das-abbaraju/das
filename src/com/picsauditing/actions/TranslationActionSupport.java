@@ -35,7 +35,7 @@ public class TranslationActionSupport extends ActionSupport {
 		}
 	}
 
-	public String getTranslationName(String property) throws SecurityException, NoSuchFieldException {
+	public String getTranslationName(String property) throws SecurityException {
 
 		Map<String, Class<?>> typeMap = mapNameToType(property);
 		Class<?> type = null;
@@ -63,7 +63,7 @@ public class TranslationActionSupport extends ActionSupport {
 		return "";
 	}
 
-	public String getDefaultValueFromType(String property) throws SecurityException, NoSuchFieldException {
+	public String getDefaultValueFromType(String property) throws SecurityException {
 		Map<String, Class<?>> typeMap = mapNameToType(property);
 
 		Class<?> clazz = typeMap.values().toArray(new Class<?>[0])[typeMap.size() - 1];
@@ -74,7 +74,7 @@ public class TranslationActionSupport extends ActionSupport {
 		return "";
 	}
 
-	public Map<String, Class<?>> mapNameToType(String property) throws SecurityException, NoSuchFieldException {
+	public Map<String, Class<?>> mapNameToType(String property) throws SecurityException {
 		Map<String, Class<?>> result = new LinkedHashMap<String, Class<?>>();
 		String[] hierarchy = property.split("\\.");
 		Class<?> type = getTypeFromInheritedClasses(this.getClass(), hierarchy[0]);
@@ -88,8 +88,7 @@ public class TranslationActionSupport extends ActionSupport {
 		return result;
 	}
 
-	public Class<?> getTypeFromInheritedClasses(Class<?> type, String field) throws SecurityException,
-			NoSuchFieldException {
+	public Class<?> getTypeFromInheritedClasses(Class<?> type, String field) throws SecurityException {
 
 		Class<?> result = null;
 		do {
