@@ -404,7 +404,7 @@ function loadStatus(caoID){
 		</pics:permission>
 	</s:elseif>
 	<pics:permission perm="DevelopmentEnvironment">
-		<li><a href="EmployeeAssessmentResults.action?id=<s:property value="id"/>"><s:text name="EmployeeAssessmentResults.title" /></a></li>
+		<li><a href="EmployeeAssessmentResults.action?account=<s:property value="id"/>"><s:text name="EmployeeAssessmentResults.title" /></a></li>
 	</pics:permission>
 </ul>
 </div>

@@ -1,19 +1,14 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Assessments</title>
+<title><s:text name="EmployeeAssessmentResults.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
 
 <script type="text/javascript">
-function getCenter(id) {
-	self.location = "?id=" + <s:property value="account.id" /> + "&employeeID="
-		+ <s:property value="employeeID" /> + "&centerID=" + id;
-}
-
 function sortTable(sortBys, tableName) {
 	if (tableName == null)
 		tableName = "table.report";
@@ -56,108 +51,147 @@ function sort(a, b, sortBy) {
 
 	return a1 > b1 ? 1 : a1 < b1 ? -1 : 0;
 }
+
+$(function() {
+	$('#effective').delegate('.sortColumn', 'click', function(e) {
+		e.preventDefault();
+		var ordering = $(this).attr('rel');
+		var table = $(this).closest('table').attr('id');
+		sortTable(ordering, table);
+	});
+});
 </script>
 </head>
 <body>
 
-<h1><s:property value="account.name" /><span class="sub">
-<s:if test="subHeading.length() > 0">
-	<s:property value="subHeading" escape="false" />
-</s:if>
-</span></h1>
+<h1><s:property value="account.name" /><span class="sub"><s:property value="subHeading" escape="false" /></span></h1>
 
-<div style="margin: 10px 0px;">
-	Assessment Center:
-	<s:select list="allAssessmentCenters" name="centerID" listKey="id" listValue="name" value="centerID" 
-		headerKey="0" headerValue="- Assessment Center -" onchange="getCenter(this.value);"></s:select>
-</div>
-
-<s:if test="effective.size() > 0">
-	<table class="report" id="effective"><thead>
-		<tr>
-			<th></th>
-			<th><a href="#" onclick="sortTable('result,description,employee', 'effective'); return false;">Assessment Results</a></th>
-			<th><a href="#" onclick="sortTable('description,result,employee', 'effective'); return false;">Test Description</a></th>
-			<s:if test="employee == null">
-				<th><a href="#" onclick="sortTable('employee,result,description', 'effective'); return false;">Employee</a></th>
-			</s:if>
-			<s:if test="canEdit">
-				<th>Remove</th>
-			</s:if>
-		</tr>
-	</thead><tbody>
-		<s:iterator value="effective" id="result" status="stat">
+<s:if test="effective.size > 0">
+	<table class="report" id="effective">
+		<thead>
 			<tr>
-				<td class="id"><s:property value="#stat.count" /></td>
-				<td class="result">
-					<s:property value="#result.assessmentTest.assessmentCenter.name" />:
-					<s:property value="#result.assessmentTest.qualificationType" /> -
-					<s:property value="#result.assessmentTest.qualificationMethod" />
-				</td>
-				<td class="description"><s:property value="#result.assessmentTest.description" /></td>
-				<s:if test="employeeID == 0">
+				<th></th>
+				<th>
+					<a href="#" class="sortColumn" rel="assessmentCenter,employee,result">
+						<s:text name="global.AssessmentCenter" />
+					</a>
+				</th>
+				<th>
+					<a href="#" class="sortColumn" rel="result,description,employee">
+						<s:text name="EmployeeAssessmentResults.header.AssessmentResults" />
+					</a>
+				</th>
+				<th>
+					<a href="#" class="sortColumn" rel="description,result,employee">
+						<s:text name="EmployeeAssessmentResults.header.TestDescription" />
+					</a>
+				</th>
+				<th>
+					<a href="#" class="sortColumn" rel="employee,result,description">
+						<s:text name="global.Employee" />
+					</a>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<s:iterator value="effective" id="result" status="stat">
+				<tr>
+					<td class="id"><s:property value="#stat.count" /></td>
+					<td class="assessmentCenter">
+						<a href="?account=<s:property value="account.id" />&assessmentCenter=<s:property value="#result.assessmentTest.assessmentCenter.id" />">
+							<s:property value="#result.assessmentTest.assessmentCenter.name" />
+						</a>
+					</td>
+					<td class="result">
+						<s:property value="#result.assessmentTest.qualificationType" /> -
+						<s:property value="#result.assessmentTest.qualificationMethod" />
+					</td>
+					<td class="description"><s:property value="#result.assessmentTest.description" /></td>
 					<td class="employee">
-						<a href="?id=<s:property value="account.id" />&employeeID=<s:property value="#result.employee.id" />&centerID=<s:property value="centerID" />">
+						<a href="?account=<s:property value="account.id" />&employee=<s:property value="#result.employee.id" />">
 							<s:property value="#result.employee.displayName" />
 						</a>
 					</td>
-				</s:if>
-				<s:if test="canEdit">
-					<td class="center">
-						<a href="?id=<s:property value="account.id" />&button=Remove&resultID=<s:property value="#result.id" />"
-							onclick="return confirm('Are you sure you want to expire this assessment result?');"
-							class="remove"></a>
-					</td>
-				</s:if>
-			</tr>
-		</s:iterator>
-	</tbody></table>
+				</tr>
+			</s:iterator>
+		</tbody>
+	</table>
 	<br />
 </s:if>
 <s:else>
-	<s:if test="employeeID > 0">
-		<div class="info">This employee has no assessments associated or in effect<s:if test="centerID > 0"> with <s:property value="assessmentCenter.name" /></s:if>.</div>
+	<s:if test="employee != null">
+		<div class="info">
+			<s:text name="EmployeeAssessmentResults.message.EmployeeHasNoAssessments">
+				<s:param value="%{assessmentCenter != null ? 1 : 0}" />
+				<s:param value="%{assessmentCenter.name}" />
+			</s:text>
+		</div>
 	</s:if>
-	<s:elseif test="centerID > 0">
-		<div class="info">There are no employees with assessment results from <s:property value="assessmentCenter.name" />.</div>
+	<s:elseif test="assessmentCenter != null">
+		<div class="info">
+			<s:text name="EmployeeAssessmentResults.message.NoResultsFromAssessmentCenter">
+				<s:param value="%{assessmentCenter.name}" />
+			</s:text>
+		</div>
 	</s:elseif>
 </s:else>
 
-<s:if test="expired.size() > 0">
-	<h3>Expired</h3>
+<s:if test="expired.size > 0">
+	<h3><s:text name="AuditStatus.Expired" /></h3>
 	<table class="report" id="expired"><thead>
 		<tr>
-			<th><a href="#" onclick="sortTable('results,description,employee,%date', 'expired'); return false;">Assessment Results</a></th>
-			<th><a href="#" onclick="sortTable('description,results,employee,%date', 'expired'); return false;">Test Description</a></th>
-			<s:if test="employeeID == 0">
-				<th><a href="#" onclick="sortTable('employee,results,description,%date', 'expired'); return false;">Employee</a></th>
-			</s:if>
-			<th><a href="#" onclick="sortTable('%date,results,description,employee', 'expired'); return false;">Expiration Date</a></th>
+			<th>
+				<a href="#" class="sortColumn" rel="assessmentCenter,employee,%date">
+					<s:text name="global.AssessmentCenter" />
+				</a>
+			</th>
+			<th>
+				<a href="#" class="sortColumn" rel="results,description,employee,%date">
+					<s:text name="EmployeeAssessmentResults.header.AssessmentResults" />
+				</a>
+			</th>
+			<th>
+				<a href="#" class="sortColumn" rel="description,results,employee,%date">
+					<s:text name="EmployeeAssessmentResults.header.TestDescription" />
+				</a>
+			</th>
+			<th>
+				<a href="#" class="sortColumn" rel="employee,results,description,%date">
+					<s:text name="global.Employee" />
+				</a>
+			</th>
+			<th>
+				<a href="#" class="sortColumn" rel="%date,results,description,employee">
+					<s:text name="AssessmentResult.expirationDate" />
+				</a>
+			</th>
 		</tr>
 	</thead><tbody>
 		<s:iterator value="expired" id="result" status="stat">
 			<tr>
+				<td class="assessmentCenter">
+					<a href="?account=<s:property value="account.id" />&assessmentCenter=<s:property value="#result.assessmentTest.assessmentCenter.id" />">
+						<s:property value="#result.assessmentTest.assessmentCenter.name" />
+					</a>
+				</td>
 				<td class="results">
-					<s:property value="#result.assessmentTest.assessmentCenter.name" />:
 					<s:property value="#result.assessmentTest.qualificationType" /> -
 					<s:property value="#result.assessmentTest.qualificationMethod" />
 				</td>
 				<td class="description"><s:property value="#result.assessmentTest.description" /></td>
-				<s:if test="employeeID == 0">
-					<td class="employee">
-						<a href="?id=<s:property value="account.id" />&employeeID=<s:property value="#result.employee.id" />&centerID=<s:property value="centerID" />">
-							<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
-						</a>
-					</td>
-				</s:if>
+				<td class="employee">
+					<a href="?account=<s:property value="account.id" />&employee=<s:property value="#result.employee.id" />">
+						<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
+					</a>
+				</td>
 				<td class="center date"><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
 			</tr>
 		</s:iterator>
 	</tbody></table>
 </s:if>
 
-<s:if test="employeeID > 0 || centerID > 0">
-	<a href="?id=<s:property value="account.id" />">View All Employees and Centers</a>
+<s:if test="employee != null || assessmentCenter != null">
+	<a href="?account=<s:property value="account.id" />" class="preview"><s:text name="EmployeeAssessmentResults.link.ViewAll" /></a>
 </s:if>
 
 </body>
