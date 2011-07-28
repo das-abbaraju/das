@@ -13,7 +13,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -210,6 +209,11 @@ public class EmailBuilder {
 
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
+	}
+	
+	public void setFromAddress(User u) {
+		this.fromAddress = "\"" + u.getName()
+		+ "\"<" + u.getEmail() + ">";
 	}
 
 	public String getToAddresses() {
