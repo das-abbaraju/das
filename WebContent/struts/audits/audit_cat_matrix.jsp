@@ -5,10 +5,6 @@
 <head>
 <title>Audit Category Matrix</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
 function getCategories(id) {
 	$('#tableLoad').empty();

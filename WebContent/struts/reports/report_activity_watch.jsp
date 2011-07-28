@@ -6,7 +6,6 @@
 <title><s:text name="ReportActivityWatch.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
 #search {
 	margin-bottom: 10px;
@@ -31,7 +30,6 @@ fieldset.form ol li label {
 	width: 400px;
 }
 </style>
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
 	$('#newContractor').autocomplete('ContractorSelectAjax.action', 

@@ -14,9 +14,6 @@
 <script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
 
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 <style>
@@ -31,8 +28,8 @@ div.dataTables_length { width: 35%; }
 <script type="text/javascript">
 var employeeID = '<s:property value="employee == null ? 0 : employee.id"/>';
 
-var json_previousLocations = '<s:property value="previousLocationsJSON" escape="false"/>';
-var json_previousTitles = '<s:property value="previousTitlesJSON" escape="false"/>';
+var json_previousLocations = <s:property value="previousLocationsJSON" escape="false"/>;
+var json_previousTitles = <s:property value="previousTitlesJSON" escape="false"/>;
 
 $(function() {
 	startup();

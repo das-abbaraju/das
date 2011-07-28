@@ -6,16 +6,14 @@
 <title><s:property value="subHeading" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <s:include value="../reportHeader.jsp" />
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 function add() {	
 	$('#assessmentResult').show();
 	
 	var data = {
 		button: 'Load',
-		id: <s:property value="center.id" />,
+		id: '<s:property value="center.id" />',
 		resultID: 0,
 		companyID: 0
 	};
@@ -27,7 +25,7 @@ function add() {
 function edit(resultID, companyID) {	
 	var data = {
 		button: 'Load',
-		id: <s:property value="center.id" />,
+		id: '<s:property value="center.id" />',
 		resultID: resultID,
 		companyID: companyID
 	};
@@ -59,7 +57,7 @@ function edit(resultID, companyID) {
 function getEmployee(div, companyID, resultID) {
 	var data = {
 		button: 'Employee',
-		id: <s:property value="center.id" />,
+		id: '<s:property value="center.id" />',
 		resultID: resultID,
 		companyID: companyID
 	};

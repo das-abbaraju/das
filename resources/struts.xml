@@ -2185,8 +2185,6 @@
 			<result>struts/reports/report_employee_turnover.jsp</result>
 		</action>
 
-		<!-- Python Contractor Cron -->
-
 		<!-- Development struts mappings -->
 		<action name="CertCleanUp" class="com.picsauditing.actions.contractors.CertCleanUp">
 			<result>/struts/blank.jsp</result>

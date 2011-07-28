@@ -8,8 +8,6 @@
 <link rel="stylesheet" href="css/forms.css"/>
 <s:include value="../jquery.jsp"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 $(function() {
 	startThinking({div:'moreRelated', message: "Loading"});

@@ -6,7 +6,6 @@
 <title><s:text name="WatchListManager.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
 #addNewForm {
 	display: none;
@@ -16,7 +15,6 @@ fieldset.form {
 }
 </style>
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 function sortTable(sortBy) {
 	var tbody = $('table.report').find('tbody');

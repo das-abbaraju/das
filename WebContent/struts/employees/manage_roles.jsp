@@ -5,7 +5,6 @@
 <title><s:property value="subHeading" escape="false" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <style type="text/css">
 #roleForm {
 	clear: right;
@@ -34,7 +33,6 @@ td.rightCell {
 }
 </style>
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript">
 var accountID = '<s:property value="account.id" />';
 
