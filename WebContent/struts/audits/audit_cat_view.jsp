@@ -19,14 +19,16 @@
 	<div class="audit_category" id="audit_cat_<s:property value="#category.id"/>">
 		<h2 id="cathead_<s:property value="#category.id"/>">
 			<s:property value="#category.name"/>
+			<span class="debug">
 			<pics:permission perm="ManageAudits" type="Edit">
 				<a href="ManageCategory.action?id=<s:property value="#category.id"/>" class="edit"></a>
 			</pics:permission>
 			<pics:permission perm="ManageCategoryRules">
-				<a class="filter debug" 
+				<a class="filter" 
 					href="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />" 
 					rel="CategoryRuleTableAjax.action?comparisonRule.auditCategory.id=<s:property value="#category.id" />"></a>
 			</pics:permission>
+			</span>
 			<span class="categoryNumber"><s:property value="#category.fullNumber"/></span>
 		</h2>
 		<pics:permission perm="DevelopmentEnvironment">
@@ -46,7 +48,7 @@
 		</s:if>
 		<s:else>
 			<s:if test="#category.helpText.length() > 0">
-				<div class="helpbox" style="margin-top: -8px"><s:property value="#category.helpText" escape="false"/></div>
+				<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 			</s:if>
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:set name="mode" value="mode"/>

@@ -7,7 +7,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 <script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js"></script>
 <script type="text/javascript">
 $(function() {

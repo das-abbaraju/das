@@ -42,6 +42,14 @@
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
 	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
+	
+	boolean debugMode = false;
+	for (Cookie cookie: request.getCookies()) {
+		if ("debugging".equals(cookie.getName())) {
+			debugMode = Boolean.valueOf(cookie.getValue());
+			break;
+		}
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -64,6 +72,7 @@
 <script type="text/javascript" src="TranslateJS.action"></script>
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/jquery/jquery.form.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 <script type="text/javascript">
 $(function() {
 	$(document).ajaxError(function(e, xhr, originalSettings, exception) {
@@ -92,6 +101,12 @@ $(function() {
 				});
 			});
 		}
+	});
+
+	$('#debug-menu').live('click', function(e) {
+		e.preventDefault();
+		$('body').toggleClass('debugging');
+		$.cookie('debugging', $('body').is('.debugging'), { expires: 20 });
 	});
 });
 </script>
@@ -196,7 +211,7 @@ function buildAction(type, id){
 }
 </script>
 </head>
-<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />">
+<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
 <div id="bodywrap">
 <% if (showMessage) { %>
 	<div id="systemMessage">
@@ -317,7 +332,7 @@ function buildAction(type, id){
 						target='chat90511184'
 						onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 			<% } else { %>
-				<a <%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>><span><%=item.getName()%></span></a>
+				<a <%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %> id="<%= item.getHtmlId() %>"><span><%=item.getName()%></span></a>
 				<% } %>
 		</li><%
 			}

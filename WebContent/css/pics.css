@@ -792,6 +792,7 @@ div.helpbox {
 	background: #FBF2C9 url('../images/help-question.png') no-repeat 15px
 		15px;
 	width: auto;
+	margin-top: -8px;
 }
 
 td.money,th.money {
@@ -1196,4 +1197,18 @@ div.blockDialog {
 	text-align: left;
 	padding: 15px 10px;
 	overflow-y: auto;
+}
+
+/***************** Debugging *******************/
+
+.debug {
+	display: none;
+}
+
+.debugging .debug {
+	display: inline-block;
+}
+
+.debugging #debug-menu span:after {
+	content: " ON";
 }

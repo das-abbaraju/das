@@ -357,6 +357,10 @@ public class PicsMenu {
 			subMenu.addChild("CSS Style Guide", "css.jsp");
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 			subMenu.addChild("Exception Log", "ReportExceptions.action");
+			if (permissions.hasPermission(OpPerms.Debug)) {
+				MenuComponent debug = subMenu.addChild("Debug", "#");
+				debug.setHtmlId("debug-menu");
+			}
 		}
 
 		subMenu = menu.addChild(getText("menu.Reports"));

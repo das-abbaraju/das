@@ -6,6 +6,7 @@ import java.util.List;
 public enum OpPerms {
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
+	Debug("Debug", "Allows PICS users to see debugging information", false, false, true, false, false),
 
 	// Default User Permissions
 	EditProfile("Edit Profile", "Allow users to Edit their own Profile.", true, false, true, true, true),
