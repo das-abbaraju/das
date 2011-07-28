@@ -349,8 +349,8 @@ public class BillingCalculatorSingle {
 	public boolean activateContractor(ContractorAccount contractor, Invoice invoice) {
 		if (contractor.getStatus().isPendingDeactivated() && invoice.getStatus().isPaid()) {
 			for (InvoiceItem item : invoice.getItems()) {
-				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isBidonly()
-						|| item.getInvoiceFee().isListonly()) {
+				if (item.getInvoiceFee().isActivation() || item.getInvoiceFee().isReactivation()
+						|| item.getInvoiceFee().isBidonly() || item.getInvoiceFee().isListonly()) {
 					contractor.setStatus(AccountStatus.Active);
 					contractor.setAuditColumns(new User(User.SYSTEM));
 					accountDao.save(contractor);
@@ -387,8 +387,8 @@ public class BillingCalculatorSingle {
 				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
 			// Safety check to make sure discount hasn't already been applied
 
-			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount,
-					contractor.getPayingFacilities());
+			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
+					.getPayingFacilities());
 			if (!isHasDiscountBeenApplied(contractor, suncorDiscount)) {
 				InvoiceItem invoiceItem = new InvoiceItem();
 				invoiceItem.setInvoiceFee(suncorDiscount);
