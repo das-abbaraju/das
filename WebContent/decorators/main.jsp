@@ -44,10 +44,12 @@
 	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
 	
 	boolean debugMode = false;
-	for (Cookie cookie: request.getCookies()) {
-		if ("debugging".equals(cookie.getName())) {
-			debugMode = Boolean.valueOf(cookie.getValue());
-			break;
+	if (request != null && request.getCookies() != null) {
+		for (Cookie cookie: request.getCookies()) {
+			if ("debugging".equals(cookie.getName())) {
+				debugMode = Boolean.valueOf(cookie.getValue());
+				break;
+			}
 		}
 	}
 %>
@@ -134,7 +136,7 @@ $(function() {
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
-<script>
+<script type="text/javascript">
 var autoSearch;
 var SEARCH_DELAY = 200;
 $(function(){
