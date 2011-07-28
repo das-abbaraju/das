@@ -262,7 +262,7 @@ table.report tr.hurdle td {
 							</ul>
 						</p>
 					</s:if>
-					<s:if test="co != null">
+					<s:if test="opID > 0 && opID != permissions.accountId">
 						<p><s:text name="ContractorView.WaitingOn" />:
 							<s:text name="%{co.waitingOn.i18nKey}"/>
 						</p>
@@ -293,7 +293,7 @@ table.report tr.hurdle td {
 				<div class="co_select nobr">
 					<s:text name="global.SelectOperator" />:
 					<s:select list="activeOperators" listKey="operatorAccount.id" listValue="operatorAccount.name" name="opID"
-						headerKey="" headerValue="- %{getText('global.Operator')} -"
+						headerKey="0" headerValue="- %{getText('global.Operator')} -"
 							onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"/>
 				</div>
 				</s:if>
@@ -588,7 +588,7 @@ table.report tr.hurdle td {
 						style="margin: 5px auto;" value="Synchronize" />
 					<s:if test="contractor.lastRecalculation != null">
 						<br /><s:text name="ContractorView.LastSync"><s:param value="%{contractor.lastRecalculation}" /></s:text>
-					</s:if>
+					</s:if><s:property value="key"/>
 				</s:form>
 			</div>
 		</div>
