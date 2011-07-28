@@ -3,6 +3,7 @@ package com.picsauditing.auditBuilder;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -214,14 +215,20 @@ public class AuditBuilder {
 			}
 		}
 
+		HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator> previousCaoMap = 
+			new HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator>();
+		
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
 			cao.setVisible(caoShouldBeVisible);
+			
+			// add to map for comparison later
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				previousCaoMap.put(caop, cao);
+			}
 		}
-
-		boolean changedCaop = false;
 
 		// Add CAOs that don't yet exist
 		for (OperatorAccount governingBody : caosToCreate) {
@@ -247,12 +254,25 @@ public class AuditBuilder {
 			if (conAudit.isExpired()) {
 				cao.changeStatus(AuditStatus.Expired, null);
 			}
+			
+			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
+		}
 
-			changedCaop |= fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
+		boolean changedCao = false;
+
+		// set previous coa on coap
+		for (ContractorAuditOperator cao : conAudit.getOperators())	{
+			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				ContractorAuditOperator prevCao = previousCaoMap.get(caop);
+				if (prevCao != null && cao.getId() != prevCao.getId()) {
+					changedCao = true;
+					caop.setPreviousCao(prevCao);
+				}
+			}
 		}
 
 		// Change the status of any complete pqf to resubmit if there was a caop change
-		if (changedCaop && conAudit.getAuditType().isPqf()) {
+		if (changedCao && conAudit.getAuditType().isPqf()) {
 			for (ContractorAuditOperator operator : conAudit.getOperators()) {
 				if (operator.getStatus().isComplete()) {
 					operator.changeStatus(AuditStatus.Resubmit, null);
@@ -293,8 +313,8 @@ public class AuditBuilder {
 				 * changes logic from 'does not have any pending CAOs' to
 				 * to 'has at least one submitted or greater cao'
 				 */
-				if (conAudit.getAuditType().equals(AuditType.DESKTOP)
-						|| conAudit.getAuditType().equals(AuditType.OFFICE)) {
+				if (conAudit.getAuditType().isDesktop()
+						|| conAudit.getAuditType().isImplementation()) {
 					if (hasAnyCaoStatusAfterIncomplete(conAudit) || auditCatData.isOverride()) {
 						if (auditCatData.isApplies())
 							categoriesNeeded.add(auditCatData.getCategory());
@@ -373,7 +393,7 @@ public class AuditBuilder {
 		return false;
 	}
 
-	private boolean fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
+	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null) {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
@@ -401,8 +421,6 @@ public class AuditBuilder {
 		if (!cao.isVisible())
 			caopOperators.clear();
 
-		OperatorAccount previousOperator = null;
-
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
 			ContractorAuditOperatorPermission caop = caopIter.next();
@@ -412,7 +430,6 @@ public class AuditBuilder {
 			} else {
 				// Delete the caop and remove from cao.getCaoPermissions()
 				caopIter.remove();
-				previousOperator = caop.getOperator();
 				this.contractorAuditOperatorDAO.remove(caop);
 			}
 		}
@@ -421,13 +438,8 @@ public class AuditBuilder {
 			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 			caop.setCao(cao);
 			caop.setOperator(operator);
-			if (previousOperator != null) {
-				caop.setPreviousOperator(previousOperator);
-			}
 			cao.getCaoPermissions().add(caop);
 		}
-
-		return previousOperator != null; // signal caop change
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -20,7 +21,7 @@ public class ContractorAuditOperatorPermission implements Serializable {
 	private int id;
 	private ContractorAuditOperator cao;
 	private OperatorAccount operator;
-	private OperatorAccount previousOperator;
+	private ContractorAuditOperator previousCao;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -53,13 +54,13 @@ public class ContractorAuditOperatorPermission implements Serializable {
 		this.operator = operator;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "previousCaoID")
-	public OperatorAccount getPreviousOperator() {
-		return previousOperator;
+	public ContractorAuditOperator getPreviousCao() {
+		return previousCao;
 	}
 
-	public void setPreviousOperator(OperatorAccount previousOperator) {
-		this.previousOperator = previousOperator;
+	public void setPreviousCao(ContractorAuditOperator previousCao) {
+		this.previousCao = previousCao;
 	}
 }
