@@ -150,6 +150,7 @@ public class AccountRecovery extends PicsActionSupport {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setBccAddresses("\"PICS Marketing\"<marketing@picsauditing.com>");
 			emailBuilder.addToken("user", user);
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
