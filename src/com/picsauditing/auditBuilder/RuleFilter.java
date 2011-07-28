@@ -41,8 +41,16 @@ public class RuleFilter {
 		accountLevels.add(contractor.getAccountLevel());
 
 		trades.add(null);
+		HashSet<Trade> allTrades = new HashSet<Trade>();
 		for (ContractorTrade ct : contractor.getTrades()) {
-			trades.add(ct.getTrade());
+			Trade trade = ct.getTrade();
+			while (trade != null) {
+				allTrades.add(trade);
+				trade = trade.getParent();
+			}
+		}
+		for (Trade trade : allTrades) {
+			trades.add(trade);
 		}
 
 		operators.add(null);
