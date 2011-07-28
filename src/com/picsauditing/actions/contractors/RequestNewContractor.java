@@ -166,7 +166,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + permissions.getPicsPhone() + "\n"
 				+ "Fax: " + permissions.getPicsCustomerServiceFax()
-				+ "\nhttp://www.picsauditing.com\nemail: info@picsauditing.com "
+				+ "\nhttp://www.picsauditing.com\nemail: marketing@picsauditing.com "
 				+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
 		status = newContractor.getStatus();
 	}
@@ -415,7 +415,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private void sendHoldEmail(String requestLink) throws IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(163);
-		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+		emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
 
 		emailBuilder.setToAddresses(newContractor.getEmail());
 		emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
@@ -481,7 +481,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
-			emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+			emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
 			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
 			emailBuilder.addToken("con", newContractor);
 			emailBuilder.addToken("op", newContractor.getRequestedBy());
@@ -903,7 +903,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setPriority(80);
 		emailQueue.setHtml(template.isHtml());
 
-		emailQueue.setFromAddress("PICS Auditing <info@picsauditing.com>");
+		emailQueue.setFromAddress("PICS Auditing <marketing@picsauditing.com>");
 		emailQueue.setToAddresses(newContractor.getContact() + " <" + newContractor.getEmail() + ">");
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
