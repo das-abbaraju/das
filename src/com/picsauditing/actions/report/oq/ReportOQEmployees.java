@@ -91,6 +91,16 @@ public class ReportOQEmployees extends ReportEmployee {
 		return results;
 	}
 
+	public int getTotalQualified(JobSiteTask jobSiteTask) {
+		int total = 0;
+		for (Employee e : getEmployees()) {
+			if (getMap().get(e, jobSiteTask) != null && map.get(e, jobSiteTask) == true)
+				total++;
+		}
+
+		return total;
+	}
+
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
@@ -304,8 +314,8 @@ public class ReportOQEmployees extends ReportEmployee {
 	}
 
 	private String dateRange(String start, String end, boolean prefix) {
-		return (prefix ? " AND " : "") + "(" + start + " IS NULL OR " + start + " < NOW()) AND (" + end
-				+ " IS NULL OR " + end + " > NOW())";
+		return (prefix ? " AND " : "")
+				+ String.format("(%1$s IS NULL OR %1$s < NOW()) AND (%2$s IS NULL OR %2$s > NOW())", start, end);
 	}
 
 	@Override
@@ -344,11 +354,11 @@ public class ReportOQEmployees extends ReportEmployee {
 		HSSFRow row = sheet.createRow(0);
 		HSSFRow row2 = sheet.createRow(1);
 		HSSFCell cell = row.createCell(0);
-		cell.setCellValue(h.createRichTextString("Employee"));
+		cell.setCellValue(h.createRichTextString(getText("global.Employee")));
 		cell.setCellStyle(headerStyle);
 		sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, 0));
 		cell = row.createCell(1);
-		cell.setCellValue(h.createRichTextString("Company"));
+		cell.setCellValue(h.createRichTextString(getText("global.Company")));
 		cell.setCellStyle(headerStyle);
 		sheet.addMergedRegion(new CellRangeAddress(0, 1, 1, 1));
 
@@ -367,8 +377,11 @@ public class ReportOQEmployees extends ReportEmployee {
 					cell = row2.createCell(2 + prevSize + count);
 					sheet.setColumnWidth(cell.getColumnIndex(), 256 * (jst.getTask().getLabel().length() + 10));
 					cell.setCellStyle(headerStyle);
-					cell.setCellValue(new HSSFRichTextString(jst.getTask().getLabel() + " (1 of "
-							+ jst.getControlSpan() + ")"));
+					cell.setCellValue(new HSSFRichTextString(String
+							.format("%s %s",
+									jst.getTask().getLabel(),
+									getText("ManageProjects.text.ControlSpan",
+											new Object[] { (Integer) jst.getControlSpan() }))));
 
 					count++;
 					totalColumns++;
@@ -376,9 +389,9 @@ public class ReportOQEmployees extends ReportEmployee {
 			} else {
 				orderedJST.add(null);
 				cell = row2.createCell(2 + prevSize + count);
-				sheet.setColumnWidth(cell.getColumnIndex(), 256 * ("N/A".length() + 10));
+				sheet.setColumnWidth(cell.getColumnIndex(), 256 * (getText("global.NA").length() + 10));
 				cell.setCellStyle(headerStyle);
-				cell.setCellValue(new HSSFRichTextString("N/A"));
+				cell.setCellValue(new HSSFRichTextString(getText("global.NA")));
 
 				count++;
 				totalColumns++;
@@ -430,7 +443,7 @@ public class ReportOQEmployees extends ReportEmployee {
 		row = sheet.createRow(rowNum);
 		rowNum++;
 		cell = row.createCell(0);
-		cell.setCellValue(h.createRichTextString("Total Qualified"));
+		cell.setCellValue(h.createRichTextString(getText("ReportOQEmployees.header.TotalQualified")));
 		cell.setCellStyle(headerRightStyle);
 		sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 0, 1));
 
@@ -446,7 +459,8 @@ public class ReportOQEmployees extends ReportEmployee {
 				}
 
 				int total = jst.getMinimumQualified(getEmployees().size());
-				cell.setCellValue(h.createRichTextString(spanOfControl + " of " + total));
+				cell.setCellValue(h.createRichTextString(getText("ReportOQEmployees.label.SpanOfControlNumbers",
+						new Object[] { (Integer) spanOfControl, (Integer) total })));
 				cell.setCellStyle((spanOfControl < total) ? redStyle : centerStyle);
 			}
 

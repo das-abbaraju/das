@@ -6,7 +6,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.opensymphony.xwork2.Preparable;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -17,13 +19,12 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ImageUtil;
 
 @SuppressWarnings("serial")
-public class UploadEmployeePhoto extends AccountActionSupport implements Preparable {
-
+public class UploadEmployeePhoto extends AccountActionSupport {
+	@Autowired
 	private EmployeeDAO employeeDAO;
 
 	protected Employee employee;
 
-	private int employeeID;
 	private File file;
 	private String fileContentType = null;
 	private String fileFileName = null;
@@ -35,35 +36,30 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 	private final int XSIZE = 150, YSIZE = 150;
 	private final int XRESIZE = 800, YRESIZE = 800;
 
-	public UploadEmployeePhoto(EmployeeDAO employeeDAO) {
-		this.employeeDAO = employeeDAO;
-	}
+	@Before
+	public void startup() {
+		if (employee == null)
+			addActionError(getText("EmployeePhotoUpload.message.InvalidEmployee"));
 
-	@Override
-	public void prepare() throws Exception {
-		int eID = getParameter("employeeID");
-		if (eID > 0)
-			employee = employeeDAO.find(eID);
+		if (!permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit)
+				&& !(permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorAdmin))) {
+			// can't edit photos
+			addActionError(getText("EmployeePhotoUpload.message.MissingPermissions"));
+		}
 	}
 
 	public String execute() {
-		if (!forceLogin())
-			return LOGIN;
-		
-		if (!permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit) && !(permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorAdmin))) {
-			// can't edit photos
-			addActionError("You do not have permissions to Edit Employee Photos");
-			return BLANK;
-		}
-		
-		if (employeeID > 0) {
-			employee = employeeDAO.find(employeeID);
+		if (employee != null) {
 			if (!permissions.isPicsEmployee() && (permissions.getAccountId() != employee.getAccount().getId())) {
 				// not same contractor
-				addActionError("You can not edit Photos for " + employee.getAccount().getName());
+				addActionError(getText("EmployeePhotoUpload.message.CannotEdit", new Object[] { employee.getAccount()
+						.getName() }));
 				return BLANK;
 			}
 		}
+
+		if (hasActionErrors())
+			return SUCCESS;
 
 		if (step == 0) {
 			if (showSavePhoto()) { // set to step 2, crop
@@ -72,126 +68,110 @@ public class UploadEmployeePhoto extends AccountActionSupport implements Prepara
 				step = 1;
 		}
 
-		if ("Upload".equals(button)) {
-			if (employee == null) {
-				addActionError("Invalid Employee");
-				return BLANK;
-			}
-			String[] validImgExt = { "jpg", "gif", "png" };
-			if (file == null) {
-				addActionError("No Photo Selected");
-				return SUCCESS;
-			}
-			extension = FileUtils.getExtension(fileFileName);
-			if (!FileUtils.checkFileExtension(extension, validImgExt)) {
-				file = null;
-				addActionError("Bad File Extension");
-				return SUCCESS;
-			}
-			if (file != null && file.length() > 0) {
-				BufferedImage bImg = null;
-				bImg = ImageUtil.createBufferedImage(file);
+		return SUCCESS;
+	}
 
-				if (bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE)
-					bImg = ImageUtil.resize(bImg, XRESIZE, YRESIZE, true);
+	public String upload() {
+		String[] validImgExt = { "jpg", "gif", "png" };
+		if (file == null)
+			addActionError(getText("EmployeePhotoUpload.message.NoPhotoSelected"));
 
-				File imgFile = ImageUtil.writeImageWithQuality(bImg, "jpg", .75f);
-
-				try {
-					FileUtils.moveFile(imgFile, getFtpDir(), "files/" + FileUtils.thousandize(employee.getId()),
-							getFileName(employee.getId()), "jpg", true);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.out.println("Error moving " + imgFile);
-				}
-				if (hasActionErrors()) {
-					return SUCCESS;
-				}
-				if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
-					employee.setPhoto(extension);
-					// Finished!
-					step = 2;
-					addActionMessage("Photo for" + employee.getDisplayName() + " has been saved and is now in use!");
-				} else {
-					employee.setPhoto(null);
-					// Move to crop step
-					step = 2;
-					// addActionMessage();
-					addAlertMessage("Your Photo has been Uploaded!  Please click on the photo below and drag to crop your image."
-							+ "When you are happy with your selection click the 'Crop Photo' Button below to crop and save this photo for the profile page");
-				}
-				employeeDAO.save(employee);
-			}
+		extension = FileUtils.getExtension(fileFileName);
+		if (!FileUtils.checkFileExtension(extension, validImgExt)) {
+			file = null;
+			addActionError(getText("EmployeePhotoUpload.message.BadFileExtension"));
 		}
 
-		if ("Save".equals(button)) {
-			if (employee == null) {
-				addActionError("Invalid Employee");
-				return BLANK;
-			}
-			if (width < XSIZE || height < YSIZE) {
-				addActionError("Invalid Selection");
-				return SUCCESS;
+		if (hasActionErrors())
+			return SUCCESS;
 
-			}
-			// do img manipulation
-			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employeeID) + getFileName(employeeID)
-					+ ".jpg");
-			if (f != null) {
-				BufferedImage bImg = null;
-				try {
-					bImg = ImageUtil.createBufferedImage(f);
-					if (!(bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE)) {
-						bImg = ImageUtil.cropResize(bImg, x1, y1, width, height, XSIZE, YSIZE);
-					}
-					ImageIO.write(bImg, "jpg", f);
-					employee.setPhoto(FileUtils.getExtension(f.getName()));
-					employeeDAO.save(employee);
-				} catch (IOException e) {
-					System.out.println("Could not crop image");
-					addActionError("Error with cropping image");
-				} finally {
-					bImg.flush();
-				}
-			}
-			// move to finish stage
-			step = 2;
-			addActionMessage("The profile photo for this employee has been successfully cropped and uploaded! ");
-		}
+		if (file != null && file.length() > 0) {
+			BufferedImage bImg = null;
+			bImg = ImageUtil.createBufferedImage(file);
 
-		if ("Delete".equals(button)) {
-			if (employee == null) {
-				addActionError("Invalid Employee");
-				return BLANK;
+			if (bImg.getHeight() > XRESIZE || bImg.getWidth() > YRESIZE)
+				bImg = ImageUtil.resize(bImg, XRESIZE, YRESIZE, true);
+
+			File imgFile = ImageUtil.writeImageWithQuality(bImg, "jpg", .75f);
+
+			try {
+				FileUtils.moveFile(imgFile, getFtpDir(), "files/" + FileUtils.thousandize(employee.getId()),
+						getFileName(employee.getId()), "jpg", true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println(getText("EmployeePhotoUpload.message.ErrorMoving", new Object[] { imgFile }));
 			}
 
-			File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employeeID) + getFileName(employeeID)
-					+ ".jpg");
-			if (f != null) {
-				if (f.delete()) {
-					addActionMessage("Photo deleted successfully");
-					employee.setPhoto(null);
-					employeeDAO.save(employee);
-					step = 1;
-					return SUCCESS;
-				} else {
-					addActionError("Error deleting photo");
-					return SUCCESS;
-				}
+			if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
+				employee.setPhoto(extension);
+				// Finished!
+				step = 2;
+				addActionMessage(getText("EmployeePhotoUpload.message.PhotoSaved",
+						new Object[] { employee.getDisplayName() }));
+			} else {
+				employee.setPhoto(null);
+				// Move to crop step
+				step = 2;
+				// addActionMessage();
+				addAlertMessage(getText("EmployeePhotoUpload.message.PhotoUploaded"));
 			}
-
+			employeeDAO.save(employee);
 		}
 
 		return SUCCESS;
-
 	}
 
-	public int getEmployeeID() {
-		return employeeID;
+	public String save() {
+		if (width < XSIZE || height < YSIZE)
+			addActionError(getText("EmployeePhotoUpload.message.InvalidSelection"));
+
+		if (hasActionErrors())
+			return SUCCESS;
+		// do img manipulation
+		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId())
+				+ getFileName(employee.getId()) + ".jpg");
+		if (f != null) {
+			BufferedImage bImg = null;
+			try {
+				bImg = ImageUtil.createBufferedImage(f);
+				if (!(bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE)) {
+					bImg = ImageUtil.cropResize(bImg, x1, y1, width, height, XSIZE, YSIZE);
+				}
+				ImageIO.write(bImg, "jpg", f);
+				employee.setPhoto(FileUtils.getExtension(f.getName()));
+				employeeDAO.save(employee);
+			} catch (IOException e) {
+				System.out.println("Could not crop image");
+				addActionError("Error with cropping image");
+			} finally {
+				bImg.flush();
+			}
+		}
+		// move to finish stage
+		step = 2;
+		addActionMessage(getText("EmployeePhotoUpload.message.SuccessfullyCroppedUploaded"));
+
+		return SUCCESS;
 	}
 
-	public void setEmployeeID(int eID) {
-		this.employeeID = eID;
+	public String delete() {
+		if (hasActionErrors())
+			return SUCCESS;
+
+		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId())
+				+ getFileName(employee.getId()) + ".jpg");
+		if (f != null) {
+			if (f.delete()) {
+				addActionMessage("Photo deleted successfully");
+				employee.setPhoto(null);
+				employeeDAO.save(employee);
+				step = 1;
+			} else {
+				addActionError("Error deleting photo");
+			}
+		}
+
+		return SUCCESS;
 	}
 
 	public File getFile() {

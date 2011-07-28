@@ -255,13 +255,6 @@ function editAssignedSites(id) {
 	$.unblockUI();
 	return false;
 }
-function showUpload() {
-	url = 'EmployeePhotoUploadAjax.action?employeeID=' + employeeID;
-	title = translate('JS.ManageEmployees.message.UploadPhoto');
-	pars = 'scrollbars=yes,resizable=yes,width=900,height=700,toolbar=0,directories=0,menubar=0';
-	photoUpload = window.open(url, title, pars);
-	photoUpload.focus();
-}
 
 function getSite(id) {
 	$('#siteEditBox').load('ManageEmployees!getSiteAjax.action', {

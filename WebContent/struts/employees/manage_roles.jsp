@@ -72,7 +72,7 @@ $(function() {
 	});
 	
 	$('#roleCell').delegate('.deleteButton', 'click', function(e) {
-		return confirm('<s:text name="%{scope}.confirm.RemoveJobRole" />');
+		return confirm(translate('JS.ManageJobRoles.confirm.RemoveJobRole'));
 	});
 	
 	$('#addLink').live('click', function(e) {
@@ -82,7 +82,7 @@ $(function() {
 	
 	$('.roleLink').live('click', function(e) {
 		e.preventDefault();
-		startThinking({div: 'roleCell', message: '<s:text name="%{scope}.message.LoadingJobRole" />'});
+		startThinking({div: 'roleCell', message: translate('JS.ManageJobRoles.message.LoadingJobRole')});
 		$('#roleCell').load('ManageJobRoles!get.action', { role: $(this).attr('id'), id: accountID });
 	});
 });
@@ -92,13 +92,13 @@ $(function() {
 
 <s:if test="auditID > 0">
 	<div class="info">
-		<s:text name="%{scope}.message.AuditHelp" />
+		<s:text name="ManageJobRoles.message.AuditHelp" />
 		<br />
 		<a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a>
 	</div>
 </s:if>
 
-<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
+<h1><s:property value="account.name" /><span class="sub"><s:text name="ManageJobRoles.title" /></span></h1>
 <s:include value="../actionMessages.jsp" />
 <table id="rolesTable">
 	<tr>
@@ -107,7 +107,7 @@ $(function() {
 				<table class="report">
 					<thead>
 						<tr>
-							<th><s:text name="%{scope}.label.JobRole" /></th>
+							<th><s:text name="ManageJobRoles.label.JobRole" /></th>
 							<th><s:text name="global.Active" /></th>
 						</tr>
 					</thead>
@@ -121,11 +121,11 @@ $(function() {
 					</tbody>
 				</table>
 			</s:if>
-			<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewJobRole" /></a><br />
+			<a href="#" id="addLink" class="add"><s:text name="ManageJobRoles.link.AddNewJobRole" /></a><br />
 			<div class="info">
-				<a href="resources/HSECompetencyReview.pdf"><s:text name="%{scope}.link.QuestionReviewPDF" /></a>
+				<a href="resources/HSECompetencyReview.pdf"><s:text name="ManageJobRoles.link.QuestionReviewPDF" /></a>
 				<br />
-				<s:text name="%{scope}.help.QuestionReviewPDF" />
+				<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
 			</div>
 		</td>
 		<td class="rightCell">

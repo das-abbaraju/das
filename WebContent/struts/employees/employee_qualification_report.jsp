@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ReportOQEmployees.title" /></title>
 <s:include value="../reports/reportHeader.jsp" />
 <style type="text/css">
 .red {
@@ -26,7 +26,7 @@ $(function() {
 </script>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="ReportOQEmployees.title" /></h1>
 
 <s:include value="../reports/filters_employee.jsp" />
 
@@ -39,7 +39,7 @@ $(function() {
 	</div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<s:if test="jobSiteTasks.keySet().size == 0">
-		<div class="alert"><s:text name="%{scope}.help.FindNewProjects" /></div>
+		<div class="alert"><s:text name="ReportOQEmployees.help.FindNewProjects" /></div>
 	</s:if>
 	<table class="report">
 		<thead>
@@ -59,12 +59,12 @@ $(function() {
 					<s:if test="jobSiteTasks.get(#js).size > 0">
 						<s:iterator value="jobSiteTasks.get(#js)" var="jst">
 							<th title="<s:property value="#jst.task.name" />, 
-<s:text name="%{scope}.label.SpanOfControl" /> = <s:property value="#jst.controlSpan" />">
+<s:text name="ReportOQEmployees.label.SpanOfControl" /> = <s:property value="#jst.controlSpan" />">
 								<s:property value="#jst.task.label" /></th>
 						</s:iterator>
 					</s:if>
 					<s:else>
-						<th><span title="<s:text name="%{scope}.help.NoJobTaskOrCompanies" />"><s:text name="global.NA" /></span></th>
+						<th><span title="<s:text name="ReportOQEmployees.help.NoJobTaskOrCompanies" />"><s:text name="global.NA" /></span></th>
 					</s:else>
 				</s:iterator>
 			</tr>
@@ -126,19 +126,13 @@ $(function() {
 		</tbody>
 		<tfoot>
 			<tr>
-				<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right"><s:text name="%{scope}.label.Total" /></th>
+				<th <s:if test="!permissions.contractor">colspan="2" </s:if>class="right"><s:text name="ReportOQEmployees.label.Total" /></th>
 				<s:iterator value="jobSiteTasks.keySet()" id="key">
 					<s:if test="jobSiteTasks.get(#key).size > 0">
 						<s:iterator value="jobSiteTasks.get(#key)" id="jst">
-							<s:set name="jstTotal" value="0" />
-							<s:iterator value="employees" id="e">
-								<s:if test="map.get(#e, #jst) != null && map.get(#e, #jst) == true">
-									<s:set name="jstTotal" value="1 + #jstTotal" />
-								</s:if>
-							</s:iterator>
-							<th <s:if test="#jstTotal < getMinimumQualified(employees.size())">class="red"</s:if>>
-								<s:text name="%{scope}.label.SpanOfControlNumbers">
-									<s:param value="%{#jstTotal}" />
+							<th <s:if test="getTotalQualified(#jst) < getMinimumQualified(employees.size())">class="red"</s:if>>
+								<s:text name="ReportOQEmployees.label.SpanOfControlNumbers">
+									<s:param value="%{getTotalQualified(#jst)}" />
 									<s:param value="%{getMinimumQualified(employees.size())}" />
 								</s:text>
 							</th>

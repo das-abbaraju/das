@@ -4,9 +4,9 @@
 	<s:hidden name="id" value="%{account.id}" />
 	<s:hidden name="role" />
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="%{scope}.label.DefineRole" /></h2>
+	<h2 class="formLegend"><s:text name="ManageJobRoles.label.DefineRole" /></h2>
 	<ol>
-		<li><label><s:text name="%{scope}.label.JobRole" />:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
+		<li><label><s:text name="ManageJobRoles.label.JobRole" />:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
 		<li><label><s:text name="global.Active" />:</label> <s:checkbox name="role.active" value="role.active" /> </li>
 	</ol>
 	</fieldset>

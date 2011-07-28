@@ -4,109 +4,115 @@
 <head>
 <script type="text/javascript" src="js/jquery/jcrop/js/jquery.Jcrop.min.js"></script>
 <link rel="stylesheet" type="text/css" href="js/jquery/jcrop/css/jquery.Jcrop.css" media="screen" />
-
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript">
 var api;
-function closePage() {
-	window.opener.location.reload();
-	self.close();
-}
-jQuery(document).ready(function(){
+
+$(function() {
 	api = jQuery('#cropPhoto').Jcrop({
 		onChange: showCoords,
 		onSelect: showCoords,
 		aspectRatio: 1,
 		minSize: [150,150]
 	});
-	stepID =<s:property value="step"/> ;
+	stepID = '<s:property value="step" />';
 	setStep(stepID);
 	
+	$('#navlist').delegate('.setStep', 'click', function(e) {
+		e.preventDefault();
+		var stepID = $(this).attr('id').split('_')[1];
+		setStep(stepID);
+	});
+	
+	$('form').delegate('.uploadStep', 'click', function(e) {
+		checkPhoto();
+	});
+	
+	$('form').delegate('.negative', 'click', function(e) {
+		return confirm(translate('JS.EmployeePhotoUpload.confirm.DeletePhoto'));
+	});
 });
-function showCoords(c)
-{
-	jQuery('#x1').val(c.x);
-	jQuery('#y1').val(c.y);
-	jQuery('#x2').val(c.x2);
-	jQuery('#y2').val(c.y2);
-	jQuery('#width').val(c.w);
-	jQuery('#height').val(c.h);
+
+function showCoords(c) {
+	$('#x1').val(c.x);
+	$('#y1').val(c.y);
+	$('#x2').val(c.x2);
+	$('#y2').val(c.y2);
+	$('#width').val(c.w);
+	$('#height').val(c.h);
 }
-function checkPhoto(){
+
+function checkPhoto() {
 	var d = $('#file').val();
-	if(d==null){
-		$('#photoError').html("You must upload a valid file");
+	if (d == null){
+		$('#photoError').html(translate("JS.EmployeePhotoUpload.message.UploadValidFile"));
 		return false;
-	}	
+	}
 }
-function setStep(id){
-	for(i=1; i<=3; i++){
-		$('#step'+i).removeClass('current');
+
+function setStep(id) {
+	for (i=1; i<=3; i++) {
+		$('#step_'+i).removeClass('current');
 	}
 	
-	$('#step'+id).addClass('current');
-	if(id==2){
+	$('#step_'+id).addClass('current');
+	if (id == 2) {
 		$('.uploadStep').fadeOut();
 		$('.cropStep').show();
-	} else if(id==1){
+	} else if (id == 1) {
 		$('.uploadStep').show();
 		$('.cropStep').fadeOut();
-	} else{
+	} else {
 		$('.uploadStep').fadeOut();
 		$('.cropStep').fadeOut();	
 	}
 }
-
 </script>
-
 </head>
 <body>
 <br />
-<h1>Upload Photo
+<h1><s:text name="EmployeePhotoUpload.title" />
 <span class="sub"><s:property value="employee.displayName"/></span>
 </h1>
 <div id="internalnavcontainer">
 	<ul id="navlist">
-		<li><a id="step1" <s:if test="step>=1">href="#"onclick="setStep(1); return false;"</s:if>>Step 1: Upload</a></li>
-		<li><a id="step2"<s:if test="step==1">class="inactive"</s:if> <s:if test="step>=2">href="#" onclick="setStep(2); return false;"</s:if>>Step 2: Finish</a></li>
+		<li><a id="step_1" href="#" class="<s:if test="step >= 1">setStep</s:if>"><s:text name="EmployeePhotoUpload.list.Step1" /></a></li>
+		<li><a id="step_2" href="#" class="<s:if test="step == 1">inactive</s:if><s:if test="step >= 2"> setStep</s:if>"><s:text name="EmployeePhotoUpload.list.Step2" /></a></li>
 	</ul>
 </div>
-<a class="picsbutton" href="ManageEmployees.action?employee=<s:property value="employee.id"/>">&lt;&lt; Back to Manage Employee</a>
+<a class="picsbutton" href="ManageEmployees.action?employee=<s:property value="employee.id"/>"><s:text name="EmployeePhotoUpload.link.BackToManageEmployees" /></a>
 <s:include value="../actionMessages.jsp" />
 <br />
 <s:if test="showSavePhoto()">
-	
-	<span style="margin-top: 10px;"><img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employeeID"/>" /></span>
+	<span style="margin-top: 10px;"><img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" /></span>
 </s:if>
 <s:form enctype="multipart/form-data" method="POST">
-		<input type="hidden" name="step" value="<s:property value="step"/>" />
-		<input type="hidden" id="x1" name="x1" value="0" />
-		<input type="hidden" id="y1" name="y1" value="0" />
-		<input type="hidden" id="x2" name="x2" value="0" />
-		<input type="hidden" id="y2" name="y2" value="0" />
-		<input type="hidden" id="width" name="width" value="0" />
-		<input type="hidden" id="height" name="height" value="0" />
-		
-		<div class="uploadStep" style="margin-top: 10px;" >
-			<label>Photo:</label>
-			<input type="hidden" name="employeeID" value="<s:property value="employeeID"/>"/>
-			<s:file id="file" name="file" value="%{file}" size="50"></s:file>
-		</div>
-		<br /><br />
-		
-		<fieldset class="form submit">
-			<button class="picsbutton positive uploadStep" onclick="checkPhoto();" name="button" value="Upload" type="submit">Upload Photo</button>
-			<s:if test="showSavePhoto()">
-				<s:if test="employee.photo ==null">
-					<button class="picsbutton positive cropStep" name="button" type="submit" value="Save">Crop Photo</button>
-				</s:if>
-				<button class="picsbutton negative cropStep" name="button" type="submit" value="Delete"
-					onclick="return confirm('Are you sure you want to delete this photo? This action cannot be undone.');">Delete Photo</button>
+	<s:hidden name="employee" value="%{employee.id}" />
+	<s:hidden name="step" />
+	<input type="hidden" id="x1" name="x1" value="0" />
+	<input type="hidden" id="y1" name="y1" value="0" />
+	<input type="hidden" id="x2" name="x2" value="0" />
+	<input type="hidden" id="y2" name="y2" value="0" />
+	<input type="hidden" id="width" name="width" value="0" />
+	<input type="hidden" id="height" name="height" value="0" />
+	
+	<div class="uploadStep" style="margin-top: 10px;" >
+		<label><s:text name="EmployeePhotoUpload.label.Photo" />:</label>
+		<s:file id="file" name="file" value="%{file}" size="50"></s:file>
+	</div>
+	<br /><br />
+	
+	<fieldset class="form submit">
+		<s:submit value="%{getText('button.Upload')}" method="upload" cssClass="picsbutton positive uploadStep" />
+		<s:if test="showSavePhoto()">
+			<s:if test="employee.photo == null">
+				<s:submit value="%{getText('EmployeePhotoUpload.button.CropPhoto')}" method="save" cssClass="picsbutton positive cropStep" />
 			</s:if>
-		</fieldset>
+			<s:submit value="%{getText('EmployeePhotoUpload.button.DeletePhoto')}" method="delete" cssClass="picsbutton negative cropStep" />
+		</s:if>
+	</fieldset>
 </s:form>
 </body>
 </html>

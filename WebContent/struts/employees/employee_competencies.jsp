@@ -33,21 +33,27 @@ div.box {
 }
 </style>
 <script type="text/javascript">
-function changeCompetency(employeeID, competencyID, checkbox) {
-	var checked = $(checkbox).is(":checked");
-	var data = {
-		employee: employeeID,
-		competency: competencyID,
-		skilled: checked
-	};
+$(function() {
+	$('#report_data').delegate('input[type=checkbox]', 'click', function(e) {
+		var checkbox = $(this);
+		var checked = checkbox.is(":checked");
+		var ids = $(this).attr('id').split('_');
+		
+		var data = {
+			employee: ids[0],
+			competency: ids[1],
+			skilled: checked
+		};
+		
 
-	$("#messages").load('EmployeeCompetencies!changeCompetency.action?' + $('#form1').serialize(), data, function(r, status, xhr) {
-		if (status == "success" && r.indexOf("Success") > 0)
-			$(checkbox).parent().removeClass('green').removeClass('red').addClass(checked ? 'green' : 'red');
-		else
-			$(checkbox).attr('checked', !checked);
+		$("#messages").load('EmployeeCompetencies!changeCompetency.action', data, function(r, status, xhr) {
+			if (status == "success")
+				checkbox.closest("td").removeClass('green').removeClass('red').addClass(checked ? 'green' : 'red');
+			else
+				checkbox.attr('checked', !checked);
+		});
 	});
-}
+});
 </script>
 </head>
 <body>

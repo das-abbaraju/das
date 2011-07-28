@@ -163,7 +163,7 @@ public class EmployeeDetail extends AccountActionSupport {
 		if (worksAt == null) {
 			worksAt = new ArrayList<EmployeeSite>();
 			for (EmployeeSite site : employee.getEmployeeSites()) {
-				if (site.isCurrent() && site.getJobSite().isActive(new Date()))
+				if (site.getJobSite() == null || site.getJobSite().isActive(new Date()))
 					worksAt.add(site);
 			}
 		}
@@ -175,7 +175,7 @@ public class EmployeeDetail extends AccountActionSupport {
 		if (qualification == null) {
 			qualification = new TreeMap<JobTask, List<AssessmentResult>>();
 			List<JobTask> tasks = taskDAO.findByEmployee(employee.getId());
-			
+
 			for (JobTask task : tasks) {
 				qualification.put(task, task.getQualifiedResults(employee.getAssessmentResults()));
 			}

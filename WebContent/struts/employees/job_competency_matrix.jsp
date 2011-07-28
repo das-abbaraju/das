@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="JobCompetencyMatrix.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -42,7 +42,7 @@ div.box {
 <s:if test="auditID > 0">
 	<div class="info"><a href="Audit.action?auditID=<s:property value="auditID" />"><s:text name="Audit.link.ReturnToHSESAAudit" /></a></div>
 </s:if>
-<h1><s:property value="account.name" /><span class="sub"><s:text name="%{scope}.title" /></span></h1>
+<h1><s:property value="account.name" /><span class="sub"><s:text name="JobCompetencyMatrix.title" /></span></h1>
 <div class="right">
 	<a class="excel" href="JobCompetencyMatrix!download.action?account=<s:property value="account.id" />" target="_BLANK" 
 		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{competencies.size}" /></s:text>"><s:text name="global.Download" /></a>
@@ -54,7 +54,7 @@ div.box {
 <table class="report">
 	<thead>
 		<tr>
-			<th colspan="2"><s:text name="%{scope}.header.HSECompetency" /></th>
+			<th colspan="2"><s:text name="JobCompetencyMatrix.header.HSECompetency" /></th>
 			<s:iterator value="roles">
 				<th><s:property value="name" /></th>
 			</s:iterator>
@@ -83,7 +83,7 @@ div.box {
 <table class="legend">
 	<tr>
 		<td><div class="box selected"><img alt="X" src="images/checkBoxTrue.gif"></div></td>
-		<td><s:text name="%{scope}.help.CompetencyRequired" /></td>
+		<td><s:text name="JobCompetencyMatrix.help.CompetencyRequired" /></td>
 	</tr>
 </table>
 </body>

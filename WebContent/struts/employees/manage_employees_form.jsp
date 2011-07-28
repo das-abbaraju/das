@@ -60,14 +60,15 @@ $(function() {
 				<s:if test="employee.id > 0">
 					<s:if test="employee.photo.length() > 0">
 						<li><label><s:text name="Employee.photo" />:</label>
-							<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="edit"><img 
-								id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" 
-								style="width: 25px; height: 25px; vertical-align: bottom;" /></a>
+							<a href="EmployeePhotoUpload.action?employee=<s:property value="employee.id"/>" class="edit">
+								<img id="cropPhoto" src="EmployeePhotoStream.action?employeeID=<s:property value="employee.id"/>" 
+								style="width: 25px; height: 25px; vertical-align: bottom;" />
+							</a>
 						</li>
 					</s:if>
 					<s:else>
 						<li><label><s:text name="ManageEmployees.label.UploadPhoto" />:</label>
-							<a href="EmployeePhotoUpload.action?employeeID=<s:property value="employee.id"/>" class="add">
+							<a href="EmployeePhotoUpload.action?employee=<s:property value="employee.id"/>" class="add">
 								<s:text name="button.Add" />
 							</a>
 						</li>

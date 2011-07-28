@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="DefineCompetencies.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -143,8 +143,8 @@ fieldset.bottom {
 </script>
 </head>
 <body>
-	<h1><s:text name="%{scope}.title" /></h1>
-	<a href="#" id="addCompetencyLink" class="add"><s:text name="%{scope}.link.AddHSECompetency" /></a>
+	<h1><s:text name="DefineCompetencies.title" /></h1>
+	<a href="#" id="addCompetencyLink" class="add"><s:text name="DefineCompetencies.link.AddHSECompetency" /></a>
 	<table class="report" id="comptable">
 		<thead>
 			<tr>

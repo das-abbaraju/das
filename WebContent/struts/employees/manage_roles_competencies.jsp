@@ -7,7 +7,7 @@
 				<table class="report" id="<s:property value="role.id" />">
 					<thead>
 						<tr>
-							<td colspan="3"><s:text name="%{scope}.label.RequiredHSECompetencies" /></td>
+							<td colspan="3"><s:text name="ManageJobRoles.label.RequiredHSECompetencies" /></td>
 						</tr>
 					</thead>
 					<tbody>
@@ -32,7 +32,7 @@
 		<td>
 			<s:if test="role.jobCompetencies.size == 0">
 				<div class="alert">
-					<s:text name="%{scope}.message.SelectCompetencies">
+					<s:text name="ManageJobRoles.message.SelectCompetencies">
 						<s:param value="%{role.name}" />
 					</s:text>
 				</div>
@@ -40,7 +40,7 @@
 			<table class="report" id="<s:property value="role.id" />">
 				<thead>
 					<tr>
-						<td colspan="2"><s:text name="%{scope}.label.PotentialHSECompetencies" /></td>
+						<td colspan="2"><s:text name="ManageJobRoles.label.PotentialHSECompetencies" /></td>
 						<td></td>
 					</tr>
 				</thead>

@@ -68,7 +68,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		}
 
 		if (account == null)
-			throw new RecordNotFoundException(getText(String.format("%s.message.MissingAccount", getScope())));
+			throw new RecordNotFoundException(getText("EmployeeCompetencies.message.MissingAccount"));
 
 		getFilter().setPermissions(permissions);
 		getFilter().setAccountID(account.getId());
@@ -113,16 +113,16 @@ public class EmployeeCompetencies extends ReportEmployee {
 			employeeCompetencyDAO.save(ec);
 
 			if (ec.isSkilled()) {
-				addActionMessage(getText(String.format("%s.message.AddedTo", getScope()),
+				addActionMessage(getText("EmployeeCompetencies.message.AddedTo",
 						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
 								ec.getEmployee().getFirstName() }));
 			} else {
-				addActionMessage(getText(String.format("%s.message.RemovedFrom", getScope()),
+				addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom",
 						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
 								ec.getEmployee().getFirstName() }));
 			}
 		} else
-			addActionError(getText(String.format("%s.message.MissingEmployeeCompetency", getScope())));
+			addActionError(getText("EmployeeCompetencies.message.MissingEmployeeCompetency"));
 
 		return BLANK;
 	}
@@ -237,7 +237,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		HSSFRow row = sheet.createRow(0);
 		HSSFCell cell = row.createCell(0);
 		cell.setCellStyle(headerStyle);
-		cell.setCellValue(new HSSFRichTextString("Employees"));
+		cell.setCellValue(new HSSFRichTextString(getText("global.Employees")));
 
 		int cellCount = 1;
 		for (OperatorCompetency oc : getCompetencies()) {
@@ -263,7 +263,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 						cell.setCellValue(new HSSFRichTextString("X"));
 					} else {
 						cell.setCellStyle(red);
-						cell.setCellValue(new HSSFRichTextString("Missing"));
+						cell.setCellValue(new HSSFRichTextString(getText("EmployeeCompetencies.status.Missing")));
 					}
 				}
 
