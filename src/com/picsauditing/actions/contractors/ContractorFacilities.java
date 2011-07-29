@@ -34,13 +34,14 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorFacilities extends ContractorActionSupport {
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
+	private ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDao;
 	@Autowired
@@ -74,6 +75,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
+		if (contractor.getStatus().isPending()
+				&& ContractorRegistrationStep.Risk.equals(ContractorRegistrationStep.getStep(contractor)))
+			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl(contractor.getId()));
+
 		// Get request off of the session
 		Object request = ActionContext.getContext().getSession().get("requestID");
 
@@ -84,10 +89,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (requestID > 0) {
 			// Clear session variable
 			ActionContext.getContext().getSession().remove("requestID");
-
-			ContractorRegistrationRequestDAO crrDAO = (ContractorRegistrationRequestDAO) SpringUtils
-					.getBean("ContractorRegistrationRequestDAO");
-			ContractorRegistrationRequest crr = crrDAO.find(requestID);
+			ContractorRegistrationRequest crr = contractorRegistrationRequestDAO.find(requestID);
 			contractor.setRequestedBy(crr.getRequestedBy());
 
 			facilityChanger.setContractor(contractor);

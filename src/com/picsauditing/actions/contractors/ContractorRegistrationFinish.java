@@ -86,8 +86,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		if ("Complete My Registration".equals(button)) {
 			// enforcing workflow steps before completing registration
 			String url = "";
-			// TODO add productRiskLevel ?
-			if (contractor.getSafetyRisk() == null && !contractor.isMaterialSupplierOnly()) {
+			if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
+					|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
 						+ "&msg=Please select the services you perform.";
 			} else if (contractor.getNonCorporateOperators().size() == 0) {
@@ -132,8 +132,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
-									.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
+									payment.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -242,8 +242,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote("Created invoice for " + contractor.getCurrencyCode().getSymbol()
-								+ invoice.getTotalAmount(), NoteCategory.Billing);
+						this.addNote(
+								"Created invoice for " + contractor.getCurrencyCode().getSymbol()
+										+ invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 
 				} else {

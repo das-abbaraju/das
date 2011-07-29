@@ -70,6 +70,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String execute() throws Exception {
 		this.findContractor();
 
+		if (contractor.getStatus().isPending()
+				&& ContractorRegistrationStep.Risk.equals(ContractorRegistrationStep.getStep(contractor)))
+			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl(contractor.getId()));
+
 		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
 			if (contractor.getNonCorporateOperators().size() == 1) {
@@ -143,8 +147,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
 				}
 			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
-						.getPayingFacilities());
+				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
+						contractor.getPayingFacilities());
 		}
 
 		List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);

@@ -72,8 +72,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices())
 			categoryIds.add(AuditCategory.RISK_ASSESSMENT);
 		if (contractor.isMaterialSupplier()) {
-			categoryIds.add(1682);
-			categoryIds.add(1683);
+			categoryIds.add(AuditCategory.PRODUCT_CRITICAL);
+			categoryIds.add(AuditCategory.PRODUCT_SAFETY_CRITICAL);
 		}
 
 		Set<Integer> questionIds = new HashSet<Integer>();
@@ -250,7 +250,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	}
 
 	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
-		if (auditData != null && !auditData.getAnswer().equals(riskLevel)) {
+		if (auditData != null && !auditData.getAnswer().equals(riskLevel.toString())) {
 			switch (auditData.getQuestion().getId()) {
 			case 2442:
 			case 2445:

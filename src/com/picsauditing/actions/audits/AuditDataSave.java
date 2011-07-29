@@ -69,9 +69,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 		AuditCatData catData;
 		try {
-			if (!forceLogin())
-				return LOGIN;
-
 			getUser();
 			AuditData newCopy = null;
 			if (auditData.getId() > 0) {
