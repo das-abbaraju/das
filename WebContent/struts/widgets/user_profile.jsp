@@ -11,6 +11,7 @@
 		<label><s:text name="global.AccountCurrent" />:</label> 
 		<s:property value="permissions.accountName" />
 	</p>
+
 	<p>
 		<label><s:text name="global.AccountPrimary" />:</label> 
 		<s:property	value="u.account.name" />
@@ -41,15 +42,17 @@
 		<s:property value="u.fax" />
 	</s:if>
 </p>
+
 <p>
 	<label><s:text name="ProfileEdit.u.timezone" />:</label>
 	<s:if test="u.timezone != null">
 		<s:text name="%{@com.picsauditing.util.TimeZoneUtil@TIME_ZONES.get(u.timezone.iD)}" />
 	</s:if>
 </p>
-<a href="ProfileEdit.action" class="edit">
-	<s:text name="ProfileEdit.Profile.heading" />
-</a>
+
+<p>
+	<a href="ProfileEdit.action" class="edit"><s:text name="ProfileEdit.Profile.heading" /></a>
+</p>
 
 <s:if test="eList.size > 0">
 	<p>
