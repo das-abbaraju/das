@@ -69,7 +69,7 @@ public class ReportOQEmployees extends ReportEmployee {
 
 		if (download) {
 			filename = "ReportOQByEmployee";
-			getDownload();
+			download();
 		}
 
 		return SUCCESS;

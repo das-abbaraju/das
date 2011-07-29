@@ -86,7 +86,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 		buildMap();
 
 		if (download || "download".equals(button))
-			return getDownload();
+			return download();
 
 		return SUCCESS;
 	}

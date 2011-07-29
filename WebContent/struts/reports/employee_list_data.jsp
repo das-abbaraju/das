@@ -13,13 +13,13 @@
 	<thead>
 	<tr>
 		<th></th>
-		<th><a href="?orderBy=firstName,lastName">Employee</a></th>
-		<th><a href="?orderBy=name">Account Name</a></th>
-		<s:if test="permissions.admin || permissions.corporate">	
-			<th>Account Type</th>
+		<th><a href="?orderBy=firstName,lastName"><s:text name="global.Employee" /></a></th>
+		<s:if test="permissions.admin || permissions.operatorCorporate">
+			<th><a href="?orderBy=name"><s:text name="global.CompanyName" /></a></th>
+			<th><s:text name="global.Type" /></th>
 		</s:if>
-		<th>Title</th>
-		<th>Location</th>
+		<th><s:text name="Employee.title" /></th>
+		<th><s:text name="Employee.location" /></th>
 	</tr>
 	</thead>
 	<tbody>
@@ -28,22 +28,19 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="EmployeeDetail.action?employee=<s:property value="get('employeeID')" />">
 				<s:property value="get('firstName')" /> <s:property value="get('lastName')" /></a></td>
-			<td>
-				<s:if test="get('type') == 'Contractor' && (permissions.admin || canViewContractor(get('id')))">
-					<a href="ContractorView.action?id=<s:property value="get('id')" />">
-						<s:property value="get('name')" /></a>
-				</s:if>
-				<s:elseif test="get('type') == 'Operator' && (permissions.corporate || permissions.admin || permissions.accountIdString == get('id'))">
-					<a href="FacilitiesEdit.action?id=<s:property value="get('id')" />">
-						<s:property value="get('name')" /></a>
-				</s:elseif>
-				<s:else>
-					<s:property value="get('name')" />
-				</s:else>
-				<s:if test="get('dbaName').length() > 0"><br />DBA Name: <s:property value="get('dbaName')" /></s:if>
-			</td>
-			<s:if test="permissions.admin || permissions.corporate">
-				<td><s:property value="get('type')" /></td>
+			<s:if test="permissions.admin || permissions.operatorCorporate">
+				<td>
+					<s:if test="get('accountType') == 'Contractor' && (permissions.admin || isCanViewContractor(get('accountID')))">
+						<a href="ContractorView.action?id=<s:property value="get('accountID')" />">
+							<s:property value="get('name')" />
+						</a>
+					</s:if>
+					<s:else>
+						<s:property value="get('name')" />
+					</s:else>
+					<s:if test="get('dbaName').length() > 0"><br /><s:text name="ContractorAccount.dbaName.short" />: <s:property value="get('dbaName')" /></s:if>
+				</td>
+				<td><s:text name="global.%{get('accountType')}" /></td>
 			</s:if>
 			<td><s:property value="get('title')" /></td>
 			<td><s:property value="get('location')" /></td>

@@ -41,7 +41,7 @@ public class ReportEmployee extends ReportActionSupport {
 		run(sql);
 
 		if (download || "download".equals(button))
-			return getDownload();
+			return download();
 
 		return SUCCESS;
 	}
@@ -55,6 +55,14 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
 		sql.addField("e.title");
+		sql.addField("e.birthDate");
+		sql.addField("CONCAT('EmployeeClassification.', e.classification, '.description') classification");
+		sql.addField("e.hireDate");
+		sql.addField("e.email");
+		sql.addField("e.phone");
+		sql.addField("e.twicExpiration");
+		sql.addField("e.ssn");
+		sql.addField("e.location");
 
 		String accountStatus = "'Active'";
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())
@@ -140,7 +148,12 @@ public class ReportEmployee extends ReportActionSupport {
 		return filter;
 	}
 
-	protected String getDownload() throws Exception {
+	public String download() throws Exception {
+		if (data == null || data.isEmpty()) {
+			buildQuery();
+			run(sql);
+		}
+		
 		addExcelColumns();
 
 		if (Strings.isEmpty(filename)) {

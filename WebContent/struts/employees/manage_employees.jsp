@@ -72,7 +72,7 @@ function showExcelUpload() {
 								<th><s:text name="Employee.lastName" /></th>
 								<th><s:text name="Employee.firstName" /></th>
 								<th><s:text name="Employee.title" /></th>
-								<th><s:text name="Employee.classification" /></th>
+								<th><s:text name="EmployeeClassification" /></th>
 								<th><s:text name="button.Edit" /></th>
 								<th><s:text name="ManageEmployees.message.Profile" /></th>
 							</tr>
@@ -95,8 +95,8 @@ function showExcelUpload() {
 							</s:iterator>
 						</tbody>
 					</table>
+					<a href="EmployeeList!download.action?filter.accountName=<s:property value="account.id" />" class="excel"><s:text name="global.Download" /></a>
 				</td>
-				
 				<td style="width: 20px;"></td>
 			</s:if>
 			<td style="vertical-align:top;">
