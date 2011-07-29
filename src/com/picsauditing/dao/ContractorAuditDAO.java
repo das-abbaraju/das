@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -182,16 +182,16 @@ public class ContractorAuditDAO extends PicsDAO {
 		query.setMaxResults(100);
 
 		// today's date
-		Calendar calendar1 = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
-		Calendar calendar2 = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
+		Calendar calendar1 = Calendar.getInstance();
+		Calendar calendar2 = Calendar.getInstance();
 
 		// 2 weeks before
-		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
-
+		calendar1.add(Calendar.WEEK_OF_YEAR, 2);
 		// 1 week after
-		calendar2.add(Calendar.WEEK_OF_YEAR, -4);
-		query.setParameter("Before14", calendar1.getTime());
-		query.setParameter("After7", calendar2.getTime());
+		calendar2.add(Calendar.WEEK_OF_YEAR, -1);
+
+		query.setParameter("Before14", calendar1.getTime(), TemporalType.DATE);
+		query.setParameter("After7", calendar2.getTime(), TemporalType.DATE);
 		return query.getResultList();
 	}
 
