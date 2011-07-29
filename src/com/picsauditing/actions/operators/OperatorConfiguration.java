@@ -104,7 +104,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				if (auditTypeID > 0) {
 					boolean addLink = true;
 					for (AuditCategory cat : auditCategoryDAO.findByAuditTypeID(auditTypeID)) {
-						if (cat.getName().equals(operator.getName())) {
+						if (cat.getName().toString().equals(operator.getName())) {
 							addLink = false;
 							break;
 						}
