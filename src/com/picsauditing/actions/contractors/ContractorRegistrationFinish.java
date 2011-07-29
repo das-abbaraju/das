@@ -177,7 +177,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at " + permissions.getPicsBillingPhone() + ".");
+							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
+									+ permissions.getPicsBillingPhone() + ".");
 
 							// Assuming paid status per Aaron so that he can
 							// refund or void manually.
@@ -226,9 +227,9 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						if (contractor.hasReducedActivation(activation)) {
 							OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 							notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-									+ contractor.getCurrencyCode().getSymbol() + activation.getAmount()
-									+ " to " + contractor.getCurrencyCode().getSymbol()
-									+ reducedOperator.getActivationFee() + ". ";
+									+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
+									+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee()
+									+ ". ";
 							invoice.setNotes(notes);
 						}
 
@@ -259,21 +260,23 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 									}
 								}
 
-								InvoiceItem newInvoiceItem = new InvoiceItem();
-								newInvoiceItem.setInvoiceFee(cf.getNewLevel());
-								newInvoiceItem.setAmount(cf.getNewAmount());
-								newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
+								if (!cf.getNewLevel().isFree()) {
+									InvoiceItem newInvoiceItem = new InvoiceItem();
+									newInvoiceItem.setInvoiceFee(cf.getNewLevel());
+									newInvoiceItem.setAmount(cf.getNewAmount());
+									newInvoiceItem.setAuditColumns(new User(User.SYSTEM));
 
-								newInvoiceItem.setInvoice(invoice);
-								invoice.getItems().add(newInvoiceItem);
+									newInvoiceItem.setInvoice(invoice);
+									invoice.getItems().add(newInvoiceItem);
+								}
 
 								updateTotals();
 							}
 						}
 						contractor.syncBalance();
 
-						this.addNote("Modified current invoice, changed to "+contractor.getCurrencyCode().getSymbol()  + invoice.getTotalAmount(),
-								NoteCategory.Billing);
+						this.addNote("Modified current invoice, changed to " + contractor.getCurrencyCode().getSymbol()
+								+ invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 				}
 
