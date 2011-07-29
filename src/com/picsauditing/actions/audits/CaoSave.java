@@ -114,7 +114,7 @@ public class CaoSave extends AuditActionSupport {
 				noteMessage += getText("Audit.message.ExplainStatusChange",
 						new Object[] { getText(status.getI18nKey()) });
 
-			if (status.isIncomplete() && Strings.isEmpty(note)) {
+			if (status.isIncomplete() && Strings.isEmpty(note) && conAudit != null) {
 				if (conAudit.getAuditType().isPqf()) {
 					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
 					for (AuditData ad : temp) {
