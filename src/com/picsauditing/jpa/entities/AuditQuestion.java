@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,8 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -89,6 +92,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> functions;
 	private List<AuditQuestionFunctionWatcher> functionWatchers;
+	
+	private AuditExtractOption extractOption;
+	private List<AuditTransformOption> transformOptions;
 
 	public AuditQuestion() {
 
@@ -546,6 +552,24 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		if (getName() == null)
 			return "";
 		return getName().toString();
+	}
+
+	@OneToOne(mappedBy = "question")
+	public AuditExtractOption getExtractOption() {
+		return extractOption;
+	}
+	
+	public void setExtractOption(AuditExtractOption extractOption) {
+		this.extractOption = extractOption;
+	}
+
+	@OneToMany(mappedBy = "sourceQuestion")
+	public List<AuditTransformOption> getTransformOptions() {
+		return transformOptions;
+	}
+
+	public void setTransformOptions(List<AuditTransformOption> transformOptions) {
+		this.transformOptions = transformOptions;
 	}
 
 	@Override

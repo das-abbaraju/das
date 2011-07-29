@@ -9,16 +9,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.importpqf.ImportPqf;
+import com.picsauditing.importpqf.ImportPqfCanQual;
+import com.picsauditing.importpqf.ImportPqfIsn;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
 public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2438788697676816034L;
+
+	@Autowired
+	private AuditTypeDAO auditTypeDAO;
 
 	private String divId;
 	private AuditData auditData;
@@ -29,6 +41,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	protected AuditQuestionDAO questionDAO;
+	@Autowired
+	protected AuditBuilder auditBuilder = null;
 
 	private int copyDataID = 0;
 
@@ -167,6 +181,13 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID),
 							getFileName(dataID), extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+					
+					ImportPqf importer = getImportPqf();
+					if (importer != null) {
+						ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
+						File[] files = getFiles(dataID);
+						importer.calculate(pqfAudit, files[0]);
+					}
 				}
 			}
 		}
@@ -189,6 +210,50 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 
 		return SUCCESS;
+	}
+	
+	private ContractorAudit getPqfAudit(ContractorAccount contractor, int auditId) {
+		ContractorAudit audit = null;
+		
+		for (ContractorAudit conAudit : contractor.getAudits()) {
+			if (conAudit.getAuditType().getId() == auditId) {
+				audit = conAudit;
+				break;
+			}
+		}
+		
+		if (audit == null) {
+			AuditType auditType = auditTypeDAO.find(auditId);
+			audit = new ContractorAudit();
+			audit.setContractorAccount(contractor);
+			audit.setAuditType(auditType);
+			audit.setManuallyAdded(true);
+			conAudit.setManuallyAdded(true);
+			audit.setAuditColumns(new User(User.SYSTEM));
+			contractor.getAudits().add(audit);
+			auditDao.save(conAudit);
+			accountDao.save(contractor);
+		}
+		
+		auditBuilder.buildAudits(contractor);
+		
+		return audit;
+	}
+	
+	private ImportPqf getImportPqf() {
+		ImportPqf importPqf = null;
+		
+//		AuditData data = auditDataDao.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
+//		
+//		if (data != null && data.isAnswered()) {
+//			if (data.getAnswer().equals("518")) // ISN Canada
+//				importPqf = new ImportPqfIsn();
+//			else if (data.getAnswer().equals("514")) // CanQual
+//				importPqf = new ImportPqfCanQual();
+//			
+//		}
+		
+		return importPqf;
 	}
 
 	private String getFileName(int dataID) {

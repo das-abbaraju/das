@@ -16,23 +16,24 @@ import javax.servlet.ServletOutputStream;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.lowagie.text.Anchor;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Anchor;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.audits.AuditActionSupport;
@@ -60,13 +61,13 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private Map<String, File> attachments = new TreeMap<String, File>();
 
-	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new Color(0xa8, 0x4d, 0x10));
-	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0x01, 0x21, 0x42));
-	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new Color(0xa8, 0x4d, 0x10));
-	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new Color(0xa8, 0x4d, 0x10));
-	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new Color(0xa8, 0x4d, 0x10));
-	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, Color.BLACK);
-	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, Color.BLUE);
+	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new BaseColor(0xa8, 0x4d, 0x10));
+	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0x01, 0x21, 0x42));
+	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0xa8, 0x4d, 0x10));
+	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new BaseColor(0xa8, 0x4d, 0x10));
+	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new BaseColor(0xa8, 0x4d, 0x10));
+	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLUE);
 
 	@Override
 	public String execute() throws Exception {
@@ -242,7 +243,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 								cells.add(new PdfPCell(new Phrase("See Attached", questionFont)));
 							} else {
 								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
-										Font.UNDERLINE, new Color(0, 0, 255)));
+										Font.UNDERLINE, new BaseColor(0, 0, 255)));
 								anchor.setReference("http://www.picsorganizer.com/DownloadOsha.action?id="
 										+ oshaAudit.getId());
 								anchor.setName("View File");
@@ -256,7 +257,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 				}
 
 				for (PdfPCell c : cells) {
-					c.setBorderColor(new Color(0xa8, 0x4d, 0x10));
+					c.setBorderColor(new BaseColor(0xa8, 0x4d, 0x10));
 					c.setPadding(5);
 					oshaTable.addCell(c);
 				}
@@ -313,7 +314,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 				if (auditQuestion.getQuestionType().startsWith("File")) {
 					if (auditData.getAnswer().length() > 0) {
 						Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
-								Font.UNDERLINE, new Color(0, 0, 255)));
+								Font.UNDERLINE, new BaseColor(0, 0, 255)));
 						anchor.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
 								+ auditData.getAudit().getId() + "&auditData.question.id="
 								+ auditData.getQuestion().getId());

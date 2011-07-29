@@ -11,10 +11,12 @@
 		<class>com.picsauditing.jpa.entities.AuditCategory</class>
 		<class>com.picsauditing.jpa.entities.AuditCategoryRule</class>
 		<class>com.picsauditing.jpa.entities.AuditData</class>
+		<class>com.picsauditing.jpa.entities.AuditExtractOption</class>
 		<class>com.picsauditing.jpa.entities.AuditQuestion</class>
 		<class>com.picsauditing.jpa.entities.AuditOptionGroup</class>
 		<class>com.picsauditing.jpa.entities.AuditOptionValue</class>
 		<class>com.picsauditing.jpa.entities.AuditStatus</class>
+		<class>com.picsauditing.jpa.entities.AuditTransformOption</class>
 		<class>com.picsauditing.jpa.entities.AuditType</class>
 		<class>com.picsauditing.jpa.entities.AuditTypeClass</class>
 		<class>com.picsauditing.jpa.entities.AuditTypeRule</class>
