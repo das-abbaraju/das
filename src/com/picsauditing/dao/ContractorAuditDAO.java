@@ -10,6 +10,7 @@ import java.util.Vector;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -174,16 +175,23 @@ public class ContractorAuditDAO extends PicsDAO {
 		sql.addWhere("aty.classType = 'Policy'");
 		sql.addWhere("(cao.status = 'Pending' AND cao.visible = 1)");
 		sql.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
-				+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, NOW(), :After7))");
+				+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, CURDATE(), :After7))");
 		sql.addOrderBy("ca.id");
 
 		Query query = em.createNativeQuery(sql.toString(), ContractorAudit.class);
 		query.setMaxResults(100);
-		Calendar calendar1 = Calendar.getInstance();
-		calendar1.add(Calendar.WEEK_OF_YEAR, 2);
+
+		// today's date
+		Calendar calendar1 = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
+		Calendar calendar2 = DateUtils.truncate(Calendar.getInstance(), Calendar.DATE);
+
+		// 2 weeks before
+		calendar1.add(Calendar.WEEK_OF_YEAR, -1);
+
+		// 1 week after
+		calendar2.add(Calendar.WEEK_OF_YEAR, -4);
 		query.setParameter("Before14", calendar1.getTime());
-		calendar1.add(Calendar.DATE, -21);
-		query.setParameter("After7", calendar1.getTime());
+		query.setParameter("After7", calendar2.getTime());
 		return query.getResultList();
 	}
 
