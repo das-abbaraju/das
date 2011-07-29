@@ -81,12 +81,20 @@ function showExcelUpload() {
 							<s:iterator value="account.employees" id="e">
 								<tr>
 									<td><s:property value="#e.id" /></td>
-									<td><s:property value="#e.lastName" /></td>
-									<td><s:property value="#e.firstName" /></td>
+									<td>
+										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee" title="<s:text name="ManageEmployees.title.EditProfile" />">
+											<s:property value="#e.lastName" />
+										</a>
+									</td>
+									<td>
+										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee" title="<s:text name="ManageEmployees.title.EditProfile" />">
+											<s:property value="#e.firstName" />
+										</a>
+									</td>
 									<td><s:property value="#e.title" /></td>
 									<td><s:property value="#e.classification" /></td>
 									<td class="center">
-										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee edit"></a>
+										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee edit" title="<s:text name="ManageEmployees.title.EditProfile" />"></a>
 									</td>
 									<td class="center">
 										<a href="EmployeeDetail.action?employee=<s:property value="#e.id" />" class="preview"></a>

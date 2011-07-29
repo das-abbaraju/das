@@ -2,8 +2,8 @@ function startup() {
 	$('#employees').dataTable({
 		aoColumns: [
 	            {bVisible: false},
-	            null,
-	            null,
+	            {sType: "html"},
+	            {sType: "html"},
 	            null,
 	            null,
 	            null,
