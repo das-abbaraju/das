@@ -14,7 +14,7 @@ import com.picsauditing.util.Strings;
 @Transactional
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
-	
+
 	public void remove(int id) {
 		ContractorOperator row = find(id);
 		remove(row);
@@ -35,12 +35,17 @@ public class ContractorOperatorDAO extends PicsDAO {
 			return null;
 		}
 	}
-	
-	public List<ContractorOperator> findNewContractorOperators(int opID, int limit){
-		if(limit < 0)
+
+	public List<ContractorOperator> findNewContractorOperators(int opID, int limit) {
+		if (limit < 0)
 			limit = 1;
-		Query query = em.createQuery("FROM ContractorOperator WHERE genID = " + opID + " AND contractorAccount.status LIKE 'Active' ORDER BY creationDate DESC");
+		/*
+		 * This will show demo accounts if the operator is a Demo account, otherwise it will only show Active accounts.
+		 */
+		Query query = em.createQuery("FROM ContractorOperator WHERE operatorAccount.id = :opID "
+				+ "AND contractorAccount.status IN ('Active', operatorAccount.status) ORDER BY creationDate DESC");
 		query.setMaxResults(limit);
+		query.setParameter("opID", opID);
 		return query.getResultList();
 	}
 
@@ -76,12 +81,11 @@ public class ContractorOperatorDAO extends PicsDAO {
 	}
 
 	public List<ContractorOperator> findPendingApprovalContractors(int opID, boolean includeBidding, boolean isCorporate) {
-		String where = "SELECT co FROM ContractorOperator co WHERE "; 
-		if(isCorporate) {
-			where += "co.operatorAccount IN "
-			+ "(SELECT f.operator FROM Facility f WHERE f.corporate.id = " + opID+ ")";
-		}
-		else {
+		String where = "SELECT co FROM ContractorOperator co WHERE ";
+		if (isCorporate) {
+			where += "co.operatorAccount IN " + "(SELECT f.operator FROM Facility f WHERE f.corporate.id = " + opID
+					+ ")";
+		} else {
 			where += "co.operatorAccount.id = " + opID;
 		}
 		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active','Demo')";
@@ -91,7 +95,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 		} else {
 			where += " AND co.contractorAccount.accountLevel = 'Full'";
 		}
-		if(!isCorporate)
+		if (!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
 		Query query = em.createQuery(where);
 		return query.getResultList();
