@@ -151,6 +151,7 @@ public class ReportEmployee extends ReportActionSupport {
 	public String download() throws Exception {
 		if (data == null || data.isEmpty()) {
 			buildQuery();
+			download = true;
 			run(sql);
 		}
 		
