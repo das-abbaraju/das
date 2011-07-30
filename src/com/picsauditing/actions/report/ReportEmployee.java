@@ -137,7 +137,7 @@ public class ReportEmployee extends ReportActionSupport {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 
-		if (permissions.isOperatorCorporate())
+		if (!permissions.isContractor())
 			excelSheet.addColumn(new ExcelColumn("name", getText("global.CompanyName")));
 
 		excelSheet.addColumn(new ExcelColumn("firstName", getText("Employee.firstName")));
