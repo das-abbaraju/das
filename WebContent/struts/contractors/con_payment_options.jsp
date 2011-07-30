@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:property value="contractor.name" /> - Payment Method</title>
+<title><s:text name="ContractorPaymentOptions.PaymentMethod"><s:param value="%{contractor.name}" /></s:text></title>
 <meta name="help" content="User_Manual_for_Contractors">
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/invoice.css?v=<s:property value="version"/>" />
@@ -32,7 +32,7 @@ function updateExpDate() {
 		$('#ccexp').val($('#expMonth').val() + $('#expYear').val());
 		return true;
 	}
-	$('#ccexpError').text("* Please enter your card's expiration date").show();
+	$('#ccexpError').text(translate('JS.ContractorPaymentOptions.CCExpError')).show();
 	return false;
 }
 </script>
@@ -43,31 +43,32 @@ function updateExpDate() {
 <%-- All criteria are satisfied after contractor has entered CC info --%>
 <s:if test="contractor.operators.size == 0">
 	<div class="alert">
-		You have not selected any facilities. No operators will be able to view your account until you do. 
-		<a href="ContractorFacilities.action?id=<s:property value="contractor.id"/>">Click to update your operator listings.</a>
+		<s:text name="ContractorPaymentOptions.NoFacilitiesSelected"><s:param value="%{contractor.id}" /></s:text>
 	</div>
 </s:if>
-<s:elseif test="contractor.newMembership.size == 0">
+<s:elseif test="contractor.hasFreeMembership">
 	<div class="alert">
-		You are currently at the free level and do not owe any membership dues.  
-		However, a valid credit card is required to maintain an account with PICS.  
-		Only if you upgrade your account will your card be charged, and only after PICS notifies you at 
-		least 7 days before the charge.
+		<s:text name="ContractorPaymentOptions.HasFreeMembership" />
 	</div>
 </s:elseif>
 <s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid && contractor.mustPayB">
 	<div class="info">
-		As an improvement, you may now pay by credit card.  Even though you are providing your credit card information at this time, your card will not be charged until the next billing date.  PICS will email you 7 days prior to renewal before any charges are applied.  If you have questions, contact PICS Accounting any time at <s:property value="permissions.picsBillingPhone" />.
+		<s:text name="ContractorPaymentOptions.EnterCreditCard" ><s:param value="%{permissions.picsBillingPhone}" /></s:text>
 	</div>
 </s:elseif>
 <s:if test="!contractor.paymentMethod.creditCard && contractor.mustPayB">
-	<div class="info">PICS will email each invoice. Please make sure your contact information is updated.</div>
+	<div class="info"><s:text name="ContractorPaymentOptions.InvoiceEmail" /></div>
 </s:if>
 <s:if test="contractor.balance > 0">
 	<div class="alert">
 		<s:iterator value="contractor.invoices">
 			<s:if test="status.unpaid">
-			You have an <a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>">unpaid invoice</a> for <s:property value="contractor.currencyCode.symbol"/><s:property value="balance"/> due <s:property value="@com.picsauditing.PICS.DateBean@toShowFormat(dueDate)"/><br/> 	
+				<s:text name="ContractorPaymentOptions.UnpaidInvoice">
+					<s:param value="%{id}" />
+					<s:param value="%{contractor.currencyCode.symbol}" />
+					<s:param value="%{balance}" />
+					<s:param value="%{dueDate}" />
+				</s:text>
 			</s:if>
 		</s:iterator>
 	</div>
@@ -75,41 +76,40 @@ function updateExpDate() {
 <s:form id="save" method="POST">
 	<s:hidden name="id" />
 <fieldset class="form">
-<h2 class="formLegend">Membership Details</h2>
+<h2 class="formLegend"><s:text name="ContractorPaymentOptions.MembershipDetails" /></h2>
 <div id="name_status"></div>
 <ol>
 <s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
 	<li>
 		<div class="alert">
-			<s:text name="%{scope}.ConsortiumMember">
+			<s:text name="ContractorPaymentOptions.ConsortiumMember">
 				<s:param value="%{contractor.currencyCode.symbol}" />
 				<s:param value="%{importFeeForTranslation.amount.intValue()}" />
 				<s:param value="'watchtip'" />
 			</s:text>
 			<br />
 			<div id="watchtip">
-				<s:text name="%{scope}.ConsortiumMember.cluetip" />
+				<s:text name="ContractorPaymentOptions.ConsortiumMember.cluetip" />
 			</div>
-			<s:hidden name="button" value="Import my Data" />
-			<input type="submit" name="button" class="picsbutton positive" value="Import my Data" onclick="$(this).attr('disabled', true); $('#save').submit();	startThinking({div:'thinking', message: translate('JS.ContractorPaymentOptions.ImportingPQF')});"/><span id="thinking"></span>
+			<s:submit cssClass="picsbutton positive" method="importPQF" value="%{getText('button.ImportMyData')}" />
 		</div>
 	</li>
 </s:if>
 <s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
-	<li><div class="info">Your credit card will be kept on file and used for any upgrades or renewals. We will notify the primary user via email 30 days before any charges occur for renewals and 7 days before any charge occurs for upgrades. If you choose to deactivate your account, please call us at <s:property value="permissions.picsPhone" />.</div></li>
+	<li><div class="info"><s:text name="ContractorPaymentOptions.CCOnFile"><s:param value="%{permissions.picsPhone}" /></s:text></div></li>
 </s:if>
 <s:if test="contractor.newMembershipAmount > 0">
 	<li>
 		<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
-			<i>Please Note: Credit Card payment is required for memberships under <s:property value="contractor.currencyCode.symbol" />500.</i>
+			<i><s:text name="ContractorPaymentOptions.CCRequired"><s:param value="%{contractor.currencyCode.symbol}" /></s:text></i>
 		</s:if>
 	</li>
 
 	<s:if test="contractor.status.activeDemo">
-		<li><label>Next Billing Date:</label> <s:date
+		<li><label><s:text name="ContractorPaymentOptions.NextBillingDate"/>:</label> <s:date
 			name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-		<li><label>Next Billing Amount: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
-				href="#" title="opens in new window">Click here to view pricing</a>)</s:if></label>
+		<li><label><s:text name="ContractorPaymentOptions.NextBillingAmount"/>: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
+				href="#" title="<s:text name="global.NewWindow"/>"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)</s:if></label>
 			<table>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
 				<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
@@ -117,15 +117,15 @@ function updateExpDate() {
 				</s:if>
 			</s:iterator>
 			</table>
-			<s:if test="eligibleForSuncorDiscount">
-				<li><label>Suncor Early Registration Discount:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
+			<s:if test="suncorDiscount.amount != 0">
+				<li><label><s:text name="ContractorPaymentOptions.SuncorDiscount"/>:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
 			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label><s:text name="ContractorPaymentOptions.GST"/>:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label><s:text name="ContractorPaymentOptions.Total"/>:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label><s:text name="ContractorPaymentOptions.Total"/>:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount+suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 			</li>
 	</s:if>
@@ -141,8 +141,8 @@ function updateExpDate() {
 			</li>
 		</s:if>
 		<s:else>
-			<li><label>Annual Membership: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
-					href="#" title="opens in new window">Click here to view pricing</a>)</s:if></label>
+			<li><label><s:text name="ContractorPaymentOptions.AnnualMembership" />: <s:if test="contractor.accountLevel.full">(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;"
+					href="#" title="<s:text name="global.NewWindow"/>"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)</s:if></label>
 				<table>
 				<s:iterator value="contractor.fees.keySet()" var="feeClass">
 					<s:if test="!contractor.fees.get(#feeClass).newLevel.free && #feeClass.membership">
@@ -157,68 +157,72 @@ function updateExpDate() {
 			<s:if test="importFee.amount > 0">
 				<li><label><s:property value="importFee.fee"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="importFee.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
-			<s:if test="eligibleForSuncorDiscount">
-				<li><label>Suncor Early Registration Discount:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
+			<s:if test="suncorDiscount.amount != 0">
+				<li><label><s:text name="ContractorPaymentOptions.SuncorDiscount"/>:</label> <s:property value="contractor.currencyCode.symbol" /><s:property value="suncorDiscount.amount"/> <s:property value="contractor.currencyCode" /></li>
 			</s:if>
 			<s:if test="contractor.currencyCode.canada">
-				<li><label>Goods & Services Tax:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label><s:text name="ContractorPaymentOptions.GST"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="gstFee.amount"/> <s:property value="contractor.currencyCode" /></li>
+				<li><label><s:text name="ContractorPaymentOptions.Total"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:if>
 			<s:else>
-				<li><label>Total:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
+				<li><label><s:text name="ContractorPaymentOptions.Total"/>:</label> <s:property value="contractor.currencyCode.symbol"/><s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount+importFee.amount"/> <s:property value="contractor.currencyCode" /> </li>
 			</s:else>
 		</s:else>
 	</s:else>
 </s:if>
 <s:else>
-	<li><label>Status:</label>no payment required</li>
+	<li><label><s:text name="global.Status" />:</label><s:property value="ContractorPaymentOptions.NoPaymentRequired"/></li>
 </s:else>
-<li><label>Payment Method:</label>
+<li><label><s:text name="BillingDetail.Info.PaymentMethod" />:</label>
 	<s:property value="contractor.paymentMethod.description"/><br/>
 </li>
 <s:if test="contractor.status.active || permissions.admin">
 	<li><label>
-			Contractor Agreement:
+			<s:text name="ContractorPaymentOptions.ContractorAgreement" />:
 		</label><s:checkbox name="contractor.agreed" disabled="true" />
 			<s:if test="contractor.agreementDate != null">
-			On <s:date name="contractor.agreementDate" format="MM/dd/yy" />, <s:property value="contractor.agreedBy.name" /> agreed to the terms of the PICS Contractor Agreement.
+			<s:text name="ContractorPaymentOptions.AgreementDate" >
+				<s:param value="%{contractor.agreementDate}" />
+				<s:param value="%{contractor.agreedBy.name}" />
+			</s:text>
 		</s:if>
 	</li>
 	<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
-		<li><label>&nbsp;</label>
-			<span style="color:grey;">We periodically update our Contractor User Agreement. Please review the <a title="Click here to view the latest PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">latest terms</a> 
-			and 
-			<s:if test="!permissions.admin &&
-						(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
-							|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
-				<form>
-					click <input type="submit" name="button" class="picsbutton positive" value="I Agree" />
-				</form>
-			</s:if>
-			<s:else>
-				have one of the account administrators login
-			</s:else>
-			to accept.</span>
+		<li><span style="color:grey;">
+				<s:if test="!permissions.admin &&
+							(permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorBilling) 
+								|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)
+								|| permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorSafety)) ">
+					<s:text name="ContractorPaymentOptions.AcceptAgreement" >
+						<s:param value="%{contractor.id}" />
+					</s:text>
+					<s:submit cssClass="picsbutton" method="acceptContractorAgreement" value="%{getText('button.IAgree')}" />
+				</s:if>
+				<s:else>
+					<s:text name="ContractorPaymentOptions.AdminLoginToAcceptAgreement" >
+						<s:param value="%{contractor.id}" />
+					</s:text>
+				</s:else>
+			</span>
 		</li>
 	</s:if>
 </s:if>
 <li><label>&nbsp;</label>
 	<a onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
-		 href="#" class="ext">Privacy Policy</a> |
+		 href="#" class="ext"><s:text name="Footer.Privacy" /></a> |
 	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
-		 href="#" class="ext">Refund Policy</a> |
-	<a title="Click here to view the PICS Contractor Agreement" href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
-	Contractor Agreement </a>
+		 href="#" class="ext"><s:text name="ContractorPaymentOptions.RefundPolicy" /></a> |
+	<a href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
+	<s:text name="ContractorPaymentOptions.ContractorAgreement" /></a>
 </li>
 <s:if test="contractor.newMembershipAmount > 500 || permissions.admin">
 	<li>
 		<div>
 			<s:if test="contractor.paymentMethod.creditCard">
-				<input type="submit" class="picsbutton" name="button" value="Change Payment Method to Check"/>
+				<s:submit cssClass="picsbutton" method="changePaymentToCheck" value="%{getText('button.ChangePaymentToCheck')}" />
 			</s:if>
 			<s:else>
-				<input type="submit" class="picsbutton" name="button" value="Change Payment Method to Credit Card"/>
+				<s:submit cssClass="picsbutton" method="changePaymentToCC" value="%{getText('button.ChangePaymentToCC')}" />
 			</s:else>
 		</div>
 		
@@ -228,13 +232,13 @@ function updateExpDate() {
 <pics:permission perm="Billing">
 	<s:if test="contractor.ccOnFile">	
 		<li><div>
-				<input type="submit" class="picsbutton negative" name="button" value="Mark this Credit Card Invalid"/>
+				<s:submit cssClass="picsbutton negative" method="markCCInvalid" value="%{getText('button.MarkCCInvalid')}" />
 			</div>
 		</li>
 	</s:if>
 	<s:elseif test="!contractor.ccOnFile && contractor.ccExpiration != null">
 		<li><div>
-				<input type="submit" class="picsbutton positive" name="button" value="Mark this Credit Card Valid"/>
+				<s:submit cssClass="picsbutton positive" method="markCCValid" value="%{getText('button.MarkCCValid')}" />
 			</div>
 		</li>
 	</s:elseif>
@@ -262,42 +266,48 @@ function updateExpDate() {
 	
 		<s:if test="cc != null">
 		<fieldset class="form">
-		<h2 class="formLegend">Existing Card</h2>
+		<h2 class="formLegend"><s:text name="global.CreditCard" /></h2>
 		<ol>
-			<li><label>Type:</label>
-				<s:property value="cc.cardType"/><s:if test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >&nbsp;&nbsp;( Invalid )</span></s:if>
+			<li><label><s:text name="CreditCard.Type" />:</label>
+				<s:property value="cc.cardType"/><s:if test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >&nbsp;&nbsp;( <s:text name="ContractorPaymentOptions.CCInvalid" /> )</span></s:if>
 			</li>
-			<li><label>Number:</label>
+			<li><label><s:text name="CreditCard.Number" />:</label>
 				<s:property value="cc.cardNumber"/>
 			</li>
-			<li><label>Expires:</label>
+			<li><label><s:text name="CreditCard.Expiration" />:</label>
 				<s:property value="cc.expirationDateFormatted"/>
 			</li>
-			<li><a href="?id=<s:property value="id"/>&button=delete" class="remove">Remove Card</a></li>
+			<li><a href="?id=<s:property value="id"/>&button=delete" class="remove"><s:text name="button.RemoveCreditCard" /></a></li>
 		</ol>
 		</fieldset>
 		</s:if>
 	
 		<fieldset class="form">
-		<h2 class="formLegend"><span><s:if test="cc == null">Add</s:if><s:else>Replace</s:else>
-		 Credit Card</span></h2>
+		<h2 class="formLegend"><span>
+			<s:if test="cc == null">
+				<s:text name="button.AddCreditCard" />
+			</s:if>
+			<s:else>
+				<s:text name="button.ReplaceCreditCard" />
+			</s:else>
+		</span></h2>
 		<ol>
-			<li><label>Type:</label>
+			<li><label><s:text name="CreditCard.Type" />:</label>
 				<s:radio theme="pics" list="creditCardTypes" name="ccName"/>
 			</li>
-			<li><label>Card Number:</label>
+			<li><label><s:text name="CreditCard.Number" />:</label>
 				<s:textfield name="ccnumber" size="20" />
 			</li>
-			<li><label>Expiration Date:</label>
-				<s:select id="expMonth" list="#{'01':'Jan','02':'Feb','03':'Mar','04':'Apr','05':'May','06':'Jun','07':'Jul','08':'Aug','09':'Sep','10':'Oct','11':'Nov','12':'Dec'}" headerKey="" headerValue="- Month -"></s:select>
-				<s:select id="expYear" list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}" headerKey="" headerValue="- Year -"></s:select>
+			<li><label><s:text name="CreditCard.Expiration" />:</label>
+				<s:select id="expMonth" listKey="number" listValue="%{getText(i18nKey)}" list="@com.picsauditing.jpa.entities.Month@values()" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Month')} -" />
+				<s:select id="expYear" list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Year')} -"></s:select>
 				<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 				<span id="ccexpError" class="Red" style="display:none"> </span>
 			</li>
 		</ol>
 		</fieldset>
 		<fieldset class="form submit">
-			<input type="submit" class="picsbutton positive" name="commit" value="<s:if test="cc == null">Add</s:if><s:else>Replace</s:else> Credit Card"/>
+			<input type="submit" class="picsbutton positive" name="commit" value="<s:if test="cc == null"><s:text name="button.AddCreditCard" /></s:if><s:else><s:text name="button.ReplaceCreditCard" /></s:else>"/>
 			<br clear="all">
 		</fieldset>
 	</form>

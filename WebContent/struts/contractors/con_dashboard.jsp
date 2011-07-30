@@ -249,7 +249,12 @@ table.report tr.hurdle td {
 				<div class="co_problems">
 					<s:if test="permissions.admin">
 						<p><s:text name="global.AccountStatus"/>: <strong><s:text name="%{contractor.status.i18nKey}"/></strong></p>
-						<s:if test="contractor.accountLevel.full && contractor.balance > 0"><p><s:text name="BillingDetail.Invoicing.CurrentBalance"/>: <s:property value="format(contractor.balance)"/></p></s:if>
+						<s:if test="contractor.accountLevel.full && contractor.balance > 0">
+							<p><s:text name="ContractorView.CurrentBalance">
+								<s:param value="%{contractor.currency.symbol}" />
+								<s:param value="%{contractor.balance}" />
+							</s:text></p>
+						</s:if>
 					</s:if>
 					<s:if test="problems.categories.size() > 0">
 						<p><s:text name="ContractorView.Problems" />:

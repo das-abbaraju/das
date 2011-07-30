@@ -53,8 +53,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
-	private InvoiceFee importFee = new InvoiceFee();
-	private InvoiceFee suncorDiscount = new InvoiceFee();
+	private InvoiceFee importFee;
+	private InvoiceFee suncorDiscount;
 
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
@@ -70,10 +70,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String execute() throws Exception {
 		this.findContractor();
 
-		if (contractor.getStatus().isPending()
-				&& ContractorRegistrationStep.Risk.equals(ContractorRegistrationStep.getStep(contractor)))
-			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl(contractor.getId()));
-
 		// Only during registration - redirect if no requestedBy operator is set
 		if (permissions.isContractor() && contractor.getStatus().isPending() && contractor.getRequestedBy() == null) {
 			if (contractor.getNonCorporateOperators().size() == 1) {
@@ -81,96 +77,23 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			} else {
 				String msg;
 				if (contractor.getNonCorporateOperators().size() == 0)
-					msg = "Please select the facilities that you work or will work at.";
+					msg = getText("ContractorPaymentOptions.PleaseSelectFacilities");
 				else
-					msg = "Please select the operator that referred you to PICS before continuing.";
+					msg = getText("ContractorPaymentOptions.SelectRequestedByOperator");
 				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + msg);
 				return BLANK;
 			}
 		}
 
 		if (newRegistration) {
-			addActionMessage("ImportPQF created.<br/>After completing registration please look under the PQF tab on "
-					+ "your dashboard and find the ImportPQF Audit.<br/>In the ImportPQF you can upload a PDF of "
-					+ "your competitor audit. If you need help with this process please contact one of our "
-					+ "customer support professionals at (800) 506-PICS.");
+			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", permissions.getPicsTollFreePhone()));
 		}
 
-		if (contractor.getFees().containsKey(FeeClass.ImportFee)
-				&& contractor.getFees().get(FeeClass.ImportFee).isUpgrade()) {
-			importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-		}
-
-		// The payment method has changed.
-		if ("Change Payment Method to Check".equalsIgnoreCase(button)) {
-			contractor.setPaymentMethod(PaymentMethod.Check);
-		}
-		if ("Change Payment Method to Credit Card".equalsIgnoreCase(button)) {
-			contractor.setPaymentMethod(PaymentMethod.CreditCard);
-		}
 		if ("copyBillingEmail".equals(button)) {
 			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		}
-		if ("Mark this Credit Card Invalid".equals(button)) {
-			contractor.setCcOnFile(false);
-		}
-		if ("Mark this Credit Card Valid".equals(button)) {
-			contractor.setCcOnFile(true);
-		}
-
-		if ("I Agree".equals(button)) {
-			if (!permissions.isAdmin()
-					&& (permissions.hasPermission(OpPerms.ContractorAdmin)
-							|| permissions.hasPermission(OpPerms.ContractorBilling) || permissions
-							.hasPermission(OpPerms.ContractorSafety))) {
-				contractor.setAgreementDate(new Date());
-				contractor.setAgreedBy(getUser());
-				accountDao.save(contractor);
-			} else {
-				addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
-			}
-		}
-
-		if ("Import my Data".equals(button) && !isHasPQFImportAudit()) {
-			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
-					+ "&url=ContractorPaymentOptions.action");
-		}
 
 		accountDao.save(contractor);
-		activationFee = new InvoiceFee();
-		if (contractor.getStatus().isPendingDeactivated() && contractor.getAccountLevel().isFull()) {
-			if (contractor.getMembershipDate() == null) {
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-				if (contractor.hasReducedActivation(activationFee)) {
-					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
-					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
-					activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
-				}
-			} else
-				activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-						contractor.getPayingFacilities());
-		}
-
-		List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
-		for (InvoiceItem discount : discounts) {
-			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)) {
-				suncorDiscount.setAmount(discount.getAmount());
-			}
-		}
-
-		if (contractor.getCurrencyCode().isCanada()) {
-			gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
-			BigDecimal total = BigDecimal.ZERO.setScale(2);
-			for (FeeClass feeClass : contractor.getFees().keySet()) {
-				if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
-					total = total.add(contractor.getFees().get(feeClass).getNewAmount());
-			}
-
-			if (activationFee != null)
-				total = total.add(activationFee.getAmount());
-			total = total.add(suncorDiscount.getAmount());
-			gstFee.setAmount(gstFee.getTax(total));
-		}
 
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
@@ -217,7 +140,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
 				accountDao.save(contractor);
-				addActionMessage("Successfully added Credit Card");
+				addActionMessage(getText("ContractorPaymentOptions.SuccessfullyAddedCC"));
 			}
 		}
 
@@ -255,10 +178,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError("An network error has occured while communicating"
-					+ " with our credit processing gateway. Please wait for twenty"
-					+ " seconds and try refreshing this page. If you continue to see this "
-					+ "message, or believe there is an error please contact PICS support.");
+			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", permissions
+					.getPicsTollFreePhone()));
 			braintreeCommunicationError = true;
 			return SUCCESS;
 		}
@@ -292,6 +213,60 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			return ContractorRegistrationStep.Confirmation;
 
 		return null;
+	}
+
+	/** ******** DMI ******** */
+	public String importPQF() throws Exception {
+		if (!isHasPQFImportAudit()) {
+			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
+					+ "&url=ContractorPaymentOptions.action");
+		}
+
+		return SUCCESS;
+	}
+
+	public String changePaymentToCheck() throws Exception {
+		findContractor();
+		contractor.setPaymentMethod(PaymentMethod.Check);
+
+		return SUCCESS;
+	}
+
+	public String changePaymentToCC() throws Exception {
+		findContractor();
+		contractor.setPaymentMethod(PaymentMethod.CreditCard);
+
+		return SUCCESS;
+	}
+
+	public String markCCInvalid() throws Exception {
+		findContractor();
+		contractor.setCcOnFile(false);
+
+		return SUCCESS;
+	}
+
+	public String markCCValid() throws Exception {
+		findContractor();
+		contractor.setCcOnFile(true);
+
+		return SUCCESS;
+	}
+
+	public String acceptContractorAgreement() throws Exception {
+		findContractor();
+		if (!permissions.isAdmin()
+				&& (permissions.hasPermission(OpPerms.ContractorAdmin)
+						|| permissions.hasPermission(OpPerms.ContractorBilling) || permissions
+						.hasPermission(OpPerms.ContractorSafety))) {
+			contractor.setAgreementDate(new Date());
+			contractor.setAgreedBy(getUser());
+			accountDao.save(contractor);
+		} else {
+			addActionError(getText("ContractorPaymentOptions.ContractorAgreementError"));
+		}
+
+		return SUCCESS;
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -446,6 +421,23 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	public InvoiceFee getActivationFee() {
+		if (activationFee == null) {
+			activationFee = new InvoiceFee();
+
+			if (contractor.getStatus().isPendingDeactivated() && contractor.getAccountLevel().isFull()) {
+				if (contractor.getMembershipDate() == null) {
+					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
+					if (contractor.hasReducedActivation(activationFee)) {
+						OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
+						activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
+						activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
+					}
+				} else
+					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
+							.getPayingFacilities());
+			}
+		}
+
 		return activationFee;
 	}
 
@@ -467,6 +459,23 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	public InvoiceFee getGstFee() {
+		if (gstFee == null) {
+			gstFee = new InvoiceFee();
+
+			if (contractor.getCurrencyCode().isCanada()) {
+				gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
+				BigDecimal total = BigDecimal.ZERO.setScale(2);
+				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+						total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+				}
+
+				total = total.add(getActivationFee().getAmount());
+				total = total.add(getSuncorDiscount().getAmount());
+				gstFee.setAmount(gstFee.getTax(total));
+			}
+		}
+
 		return gstFee;
 	}
 
@@ -475,20 +484,32 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	}
 
 	public InvoiceFee getImportFee() {
+		if (importFee == null) {
+			importFee = new InvoiceFee();
+
+			if (contractor.getFees().containsKey(FeeClass.ImportFee)
+					&& contractor.getFees().get(FeeClass.ImportFee).isUpgrade()) {
+				importFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
+			}
+		}
+
 		return importFee;
 	}
 
 	public InvoiceFee getSuncorDiscount() {
-		return suncorDiscount;
-	}
+		if (suncorDiscount == null) {
+			suncorDiscount = new InvoiceFee();
 
-	public boolean isEligibleForSuncorDiscount() {
-		List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
-		for (InvoiceItem discount : discounts) {
-			if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount))
-				return true;
+			List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
+			for (InvoiceItem discount : discounts) {
+				if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)) {
+					suncorDiscount = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, 1);
+					suncorDiscount.setAmount(discount.getAmount());
+				}
+			}
 		}
-		return false;
+
+		return suncorDiscount;
 	}
 
 	public InvoiceFee getImportFeeForTranslation() {
