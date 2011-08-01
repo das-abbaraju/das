@@ -20,6 +20,7 @@ public class ReportAccountAudits extends ReportAccount {
 
 		getFilter().setShowInsuranceLimits(true);
 		getFilter().setShowState(true);
+		getFilter().setShowAddress(true);
 	}
 
 	@Override
