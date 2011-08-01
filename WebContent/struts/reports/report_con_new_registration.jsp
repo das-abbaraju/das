@@ -5,7 +5,7 @@
 <title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
-var downloadAll = '<s:text name="javascript.ConfirmDownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>'
+var downloadAll = '<s:text name="JS.ConfirmDownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>'
 function download() {
 	newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
 	popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');

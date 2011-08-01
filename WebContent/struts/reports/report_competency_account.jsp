@@ -23,7 +23,7 @@ $(function() {
 <s:include value="filters_employee.jsp" />
 <s:if test="data.size > 0">
 	<div class="right">
-		<a class="excel" <s:if test="data.size > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{data.size}" /></s:text>');"</s:if> 
+		<a class="excel" <s:if test="data.size > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{data.size}" /></s:text>');"</s:if> 
 			href="javascript: download('ReportCompetencyByAccount');"
 			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{data.size}" /></s:text>"><s:text name="global.Download" /></a>
 	</div>

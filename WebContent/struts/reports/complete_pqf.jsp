@@ -34,7 +34,7 @@
 		<thead>
 			<tr>
 				<td></td>
-				<td>Email</td>
+				<td><s:text name="User.email" /></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td><a>Audit</a></td>
 				<td align="center"><a

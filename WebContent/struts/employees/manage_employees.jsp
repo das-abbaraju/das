@@ -103,6 +103,7 @@ function showExcelUpload() {
 							</s:iterator>
 						</tbody>
 					</table>
+					<br clear="both" />
 					<a href="EmployeeList!download.action?filter.accountName=<s:property value="account.id" />" class="excel"><s:text name="global.Download" /></a>
 				</td>
 				<td style="width: 20px;"></td>

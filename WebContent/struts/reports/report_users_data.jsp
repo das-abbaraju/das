@@ -8,7 +8,7 @@
 
 <div class="right"><a 
 		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
 		href="javascript: download('UserList');" 
 		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
 		><s:text name="global.Download" /></a></div>
@@ -21,8 +21,8 @@
 	<tr>
 		<td colspan="2">Account Name</td>
 		<td>Contact Name</td>
-		<td>Phone</td>
-		<td>Email</td>
+		<td><s:text name="User.phone" /></td>
+		<td><s:text name="User.email" /></td>
 		<td>Created</td>
 		<td>Last Login</td>
 		<td>Active</td>

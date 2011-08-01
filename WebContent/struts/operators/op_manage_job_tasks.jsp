@@ -106,7 +106,7 @@ $(function() {
 </s:if>
 <s:else>
 	<div class="right">
-		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
 			href="#" onclick="download('ManageJobTasksOperator'); return false;" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"><s:text name="global.Download" /></a></div>
 	<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 	<table class="report">

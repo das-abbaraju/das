@@ -11,7 +11,7 @@
 <s:include value="filters.jsp" />
 
 <div class="right">
-	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="javascript.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+	<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
 		href="javascript: download('ReportContractorLicenses');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"><s:text name="global.Download" /></a>
 </div>
 
@@ -21,15 +21,15 @@
 <table class="report">
 	<thead>
 	<tr>
-		<td colspan="2">Contractor Name</td>
+		<td colspan="2"><s:text name="global.ContractorName" /></td>
 		<td>PQF</td>
 		<s:if test="filter.primaryInformation">
-			<td>Primary Contact</td>
-			<td>Phone</td>
-			<td>Email</td>
+			<td><s:text name="global.ContactPrimary" /></td>
+			<td><s:text name="User.phone" /></td>
+			<td><s:text name="User.email" /></td>
 		</s:if>
 		<s:if test="permissions.operator">
-			<td>Flag</td>
+			<td><s:text name="global.Flag" /></td>
 		</s:if>
 		<td colspan="2">CA License</td>
 		<td>License Comments</td>
