@@ -25,7 +25,6 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
@@ -39,7 +38,6 @@ import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -254,7 +252,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				}
 			}
 		}
-
+		conID = (newContractor.getContractor() == null)?0:newContractor.getContractor().getId();
+			
 		return SUCCESS;
 	}
 
@@ -315,7 +314,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
 
-		newContractor.setStatus(status);
 		if (country != null && !country.equals(newContractor.getCountry()))
 			newContractor.setCountry(country);
 		if (state != null && !state.equals(newContractor.getState()))
