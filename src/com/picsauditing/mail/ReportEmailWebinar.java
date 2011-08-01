@@ -27,7 +27,6 @@ public class ReportEmailWebinar extends ReportAccount {
 
 		sql.addField("c.score");
 		sql.addField("a.dbaName");
-		sql.addWhere("a.status = 'Active'");
 
 		filteredDefault = true;
 	}
