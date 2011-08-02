@@ -73,11 +73,10 @@ public class TradeDAO extends PicsDAO {
 
 		StringBuilder joins = new StringBuilder().append(buildSearchJoins(terms, true));
 		StringBuilder wrapper = new StringBuilder().append("SELECT rt2.*, IF(rt2.id = t").append(terms.size())
-		.append(".id, 'true', 'false') matching FROM (").append(joins.toString()).append(") t")
-		.append(terms.size()).append(" JOIN ref_trade rt2 ON t").append(terms.size())
-		.append(".indexStart >= rt2.indexStart AND t").append(terms.size()).append(".indexEnd <= rt2.indexEnd")
-		.append(" GROUP BY rt2.id").append(" ORDER BY rt2.indexStart");
-
+				.append(".id, 'true', 'false') matching FROM (").append(joins.toString()).append(") t")
+				.append(terms.size()).append(" JOIN ref_trade rt2 ON t").append(terms.size())
+				.append(".indexStart >= rt2.indexStart AND t").append(terms.size()).append(".indexEnd <= rt2.indexEnd")
+				.append(" GROUP BY rt2.id").append(" ORDER BY rt2.indexStart");
 
 		// core query
 		SelectSQL sql = new SelectSQL("app_index i0");
@@ -117,9 +116,15 @@ public class TradeDAO extends PicsDAO {
 		sql.addJoin("JOIN app_index i0 ON i0.indexType = 'T' and t0.id = i0.foreignKey AND i0.value LIKE :0");
 
 		String orderBy = "i0weight";
+		String groupBy = "";
 		for (int i = 1; i < terms.size(); i++) {
+			groupBy = "t" + i + ".id";
 			orderBy += " + i" + i + "weight";
 		}
+		if (groupBy.isEmpty())
+			groupBy = "t0.id";
+
+		wrapper.append(" GROUP BY ").append(groupBy);
 		wrapper.append(" ORDER BY ").append(orderBy).append(" DESC").append(", contractorCount DESC");
 
 		// Merge core query into wrapper
