@@ -306,6 +306,7 @@ img.trade {
 
 .service,.product,.product-service {
 	background-repeat: no-repeat;
+	background-position: left center;
 	padding-left: 16px;
 	padding-right: 4px;
 }
