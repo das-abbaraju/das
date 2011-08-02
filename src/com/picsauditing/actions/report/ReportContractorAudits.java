@@ -87,6 +87,8 @@ public class ReportContractorAudits extends ReportAccount {
 		sql.addField("contact.phone AS contactphone");
 		sql.addField("contact.email AS contactemail");
 
+		sql.setDistinct(true);
+		
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
 				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");

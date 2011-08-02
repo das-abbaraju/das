@@ -15,6 +15,7 @@ public class SelectSQL {
 	protected int startRow = 0;
 	protected int limit = -1;
 	protected boolean SQL_CALC_FOUND_ROWS = false;
+	protected boolean distinct = false;
 
 	/**
 	 * fullClause allows developers to use the SQLBuilder class as a sql string
@@ -39,6 +40,9 @@ public class SelectSQL {
 		sql.append("SELECT ");
 		if (this.SQL_CALC_FOUND_ROWS) {
 			sql.append("SQL_CALC_FOUND_ROWS ");
+		}
+		if (this.distinct) {
+			sql.append("DISTINCT ");
 		}
 		if (fields.size() > 0)
 			sql.append(combineArray(fields));
@@ -184,5 +188,13 @@ public class SelectSQL {
 
 	public void setSQL_CALC_FOUND_ROWS(boolean sql_calc_found_rows) {
 		SQL_CALC_FOUND_ROWS = sql_calc_found_rows;
+	}
+
+	public boolean isDistinct() {
+		return distinct;
+	}
+
+	public void setDistinct(boolean distinct) {
+		this.distinct = distinct;
 	}
 }
