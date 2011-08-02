@@ -217,6 +217,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	/** ******** DMI ******** */
 	public String importPQF() throws Exception {
+		findContractor();
+		
 		if (!isHasPQFImportAudit()) {
 			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=ContractorPaymentOptions.action");
