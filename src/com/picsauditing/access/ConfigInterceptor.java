@@ -48,7 +48,7 @@ public class ConfigInterceptor extends AbstractInterceptor {
 	}
 
 	private boolean isConfigurationEnvironment() {
-		return System.getProperty("pics.config").equals("1");
+		return "1".equals(System.getProperty("pics.config"));
 	}
 
 }
