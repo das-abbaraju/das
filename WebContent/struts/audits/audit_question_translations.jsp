@@ -12,12 +12,14 @@
 		<s:iterator value="values">
 			<tr>
 				<td>
-					<s:property value="get('locale')" />
+					<s:property value="getLocale()" />
 				</td>
 				<td>
-					<s:property value="get('msgValue')" />
+					<s:property value="getValue()" />
 				</td>
 			</tr>
 		</s:iterator>
 	</tbody>
 </table>
+
+<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="id"/>" target="_BLANK">Manage Translations</a>

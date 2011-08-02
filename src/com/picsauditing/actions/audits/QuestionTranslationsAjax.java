@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
@@ -13,21 +14,13 @@ public class QuestionTranslationsAjax extends PicsActionSupport {
 
 	private int id;
 
-	private Database db = new Database();
+	private List<AppTranslation> values;
 
-	private List<BasicDynaBean> values;
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
-
-		// SELECT locale, msgValue FROM app_translation WHERE msgKey = "AuditQuestion.37.name";
-
-		SelectSQL selectTranslation = new SelectSQL("app_translation a");
-		selectTranslation.addField("a.locale, a.msgValue");
-
-		selectTranslation.addWhere("a.msgKey = 'AuditQuestion." + id + ".name'");
-
-		values = db.select(selectTranslation.toString(), false);
+		values = (List<AppTranslation>) dao.findWhere(AppTranslation.class,
+				"key = 'AuditQuestion." + id + ".name'", 0, "locale");
 
 		return SUCCESS;
 
@@ -41,11 +34,11 @@ public class QuestionTranslationsAjax extends PicsActionSupport {
 		this.id = id;
 	}
 
-	public List<BasicDynaBean> getValues() {
+	public List<AppTranslation> getValues() {
 		return values;
 	}
 
-	public void setValues(List<BasicDynaBean> values) {
+	public void setValues(List<AppTranslation> values) {
 		this.values = values;
 	}
 
