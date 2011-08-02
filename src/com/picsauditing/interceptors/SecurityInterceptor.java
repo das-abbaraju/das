@@ -1,5 +1,7 @@
 package com.picsauditing.interceptors;
 
+import java.lang.reflect.Method;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -19,8 +21,9 @@ public class SecurityInterceptor extends AbstractInterceptor {
 
 		if (invocation.getAction() instanceof SecurityAware) {
 			SecurityAware action = (SecurityAware) invocation.getAction();
-			boolean anonymous = action.getClass().getMethod(invocation.getProxy().getMethod())
-					.isAnnotationPresent(Anonymous.class);
+			Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
+
+			boolean anonymous = method.isAnnotationPresent(Anonymous.class);
 			if (!action.isLoggedIn(anonymous)) {
 
 				if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
@@ -30,13 +33,13 @@ public class SecurityInterceptor extends AbstractInterceptor {
 				}
 			}
 
-			boolean requiresPermissions = action.getClass().getMethod(invocation.getProxy().getMethod())
-					.isAnnotationPresent(RequiredPermission.class);
+			boolean requiresPermissions = method.isAnnotationPresent(RequiredPermission.class);
 			if (requiresPermissions) {
 				RequiredPermission requiredPermission = action.getClass().getMethod(invocation.getProxy().getMethod())
 						.getAnnotation(RequiredPermission.class);
 				action.tryPermissions(requiredPermission.value(), requiredPermission.type());
 			}
+
 		}
 
 		return invocation.invoke();
