@@ -766,7 +766,7 @@
 
 	<s:if test="filter.showCaoStatusChangedDate">
 		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Filters.label.InvoiceDueDate" /> </a> =
+			<a href="#" class="filterBox"><s:text name="Filters.label.StatusChangedDate" /> </a> =
 			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 			<span class="clearLink q_box textfield">
 				<s:textfield cssClass="forms datepicker" size="10" name="filter.statusChangedDate1" />
