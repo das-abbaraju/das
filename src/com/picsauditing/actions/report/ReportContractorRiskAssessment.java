@@ -20,7 +20,8 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.search.SelectSQL;
+import com.picsauditing.search.SelectAccount;
+import com.picsauditing.search.SelectAccount.Type;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -49,14 +50,13 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	public void buildQuery() {
-		skipPermissions = true;
 		super.buildQuery();
 
 		String safetyRisk = getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
-		String productRisk = getRiskSQL("Product",
-				"GROUP_CONCAT(CONCAT(CASE d.questionID WHEN 7678 THEN 'Business Interruption' "
-						+ "ELSE 'Product Safety' END, ': ', d.answer) SEPARATOR '<br />') answer", new int[] {
-						AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT, AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
+		String productRisk = getRiskSQL("Product", "GROUP_CONCAT(CONCAT(CASE d.questionID "
+				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
+				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
+				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
 
 		sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
 
@@ -71,7 +71,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 		if (type.equals("Safety")) {
 			LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
-			
 			LowMedHigh currentSafetyRisk = con.getSafetyRisk();
 
 			noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
@@ -95,16 +94,12 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 					emailQueue.setViewableById(Account.PicsID);
 					EmailSender.send(emailQueue);
 				} catch (Exception e) {
-					PicsLogger
-							.log("Cannot send email to  "
-									+ con.getName()
-									+ " ("
-									+ con.getId()
-									+ ")");
+					PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
 				}
 
 			}
 			con.setSafetyRisk(newSafetyRisk);
+			con.setSafetyRiskVerified(new Date());
 		} else {
 			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
 			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
@@ -119,6 +114,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				con.setLastUpgradeDate(new Date());
 
 			con.setProductRisk(productRisk);
+			con.setProductRiskVerified(new Date());
 		}
 
 		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
@@ -141,6 +137,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
 
 			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
+			con.setSafetyRiskVerified(new Date());
 		} else {
 			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
 			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
@@ -149,8 +146,10 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				productRisk = businessRisk;
 
 			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
+			con.setProductRiskVerified(new Date());
 		}
 
+		contractorAccountDAO.save(con);
 		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
@@ -167,29 +166,30 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		else
 			questionString = String.format("IN (%s)", Strings.implode(questionIDs));
 
-		SelectSQL sql2 = new SelectSQL("accounts a");
-		sql2.addJoin("JOIN contractor_info c ON c.id = a.id");
+		SelectAccount sql2 = new SelectAccount();
+		sql2.setType(Type.Contractor);
 		sql2.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = 1");
 		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString
 				+ " AND d.dateVerified IS NULL");
 
-		String where = "(d.answer = 'Low' AND c." + type.toLowerCase() + "Risk > 1) OR (d.answer = 'Medium' AND c."
-				+ type.toLowerCase() + "Risk > 2)";
+		String where = String
+				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)",
+						type.toLowerCase());
 
 		if (type.equals("Product")) {
 			sql2.addWhere("a.materialSupplier = 1");
-
-			String affectedContractors = sql2.toString().replace("*", "DISTINCT a.id") + "\n AND " + where;
-			sql2.addWhere("a.id IN (" + affectedContractors + ")");
 			sql2.addGroupBy("a.id");
 		} else {
-			sql2.addWhere(where);
+			sql2.addWhere("a.onsiteServices = 1 OR a.offsiteServices = 1");
 		}
 
-		sql2.addField("a.id");
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
 		sql2.addField(answer);
+
+		sql2.addWhere("a.status = 'Active'");
+		sql2.addWhere("c." + type.toLowerCase() + "RiskVerified IS NULL");
+		sql2.addWhere(where);
 
 		return sql2.toString();
 	}

@@ -60,7 +60,6 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAccount extends Account implements JSONable {
-
 	private String taxId;
 	private String logoFile;
 	private String brochureFile;
@@ -76,7 +75,9 @@ public class ContractorAccount extends Account implements JSONable {
 	private int payingFacilities;
 	private User auditor;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
+	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
+	private Date productRiskVerified;
 	private Date viewedFacilities;
 	private Float emrAverage;
 	private Float trirAverage;
@@ -306,6 +307,15 @@ public class ContractorAccount extends Account implements JSONable {
 		this.safetyRisk = safetyRisk;
 	}
 
+	@Temporal(TemporalType.DATE)
+	public Date getSafetyRiskVerified() {
+		return safetyRiskVerified;
+	}
+
+	public void setSafetyRiskVerified(Date safetyRiskVerified) {
+		this.safetyRiskVerified = safetyRiskVerified;
+	}
+
 	@Column(nullable = false)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
@@ -313,6 +323,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setProductRisk(LowMedHigh productRisk) {
 		this.productRisk = productRisk;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getProductRiskVerified() {
+		return productRiskVerified;
+	}
+
+	public void setProductRiskVerified(Date productRiskVerified) {
+		this.productRiskVerified = productRiskVerified;
 	}
 
 	@Column(name = "emrAverage")
@@ -837,8 +856,8 @@ public class ContractorAccount extends Account implements JSONable {
 								// same, set fee level based on current
 								// number of paying facilities if contractor
 								// paid legacy DocuGUARD fee.
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
-										.getPayingFacilities());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
+										this.getPayingFacilities());
 								setCurrentFee(fee);
 							} else {
 								setCurrentFee(invoiceItem.getInvoiceFee());
@@ -1145,8 +1164,8 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean upgrade = false;
 		boolean currentListOrBidOnly = false;
 		for (FeeClass feeClass : getFees().keySet()) {
-			if (!upgrade && this.getFees().get(feeClass).isUpgrade()
-					&& !feeClass.equals(FeeClass.BidOnly) && !feeClass.equals(FeeClass.ListOnly))
+			if (!upgrade && this.getFees().get(feeClass).isUpgrade() && !feeClass.equals(FeeClass.BidOnly)
+					&& !feeClass.equals(FeeClass.ListOnly))
 				upgrade = true;
 			if ((this.getFees().get(feeClass).getCurrentLevel().isBidonly() || this.getFees().get(feeClass)
 					.getCurrentLevel().isListonly())
