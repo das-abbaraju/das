@@ -43,6 +43,7 @@ $(function() {
 				<td>Type</td>
 				<td>Calculated Risk</td>
 				<td>Contractor Risk</td>
+				<td>Last Assessment Date</td>
 				<td>Notes</td>
 				<td></td>
 				<td></td>
@@ -56,10 +57,11 @@ $(function() {
 						rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" class="contractorQuick"
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</td>
-				<td><s:date name="get('creationDate')" format="M/d/yy" /></td>
+				<td><s:date name="get('creationDate')" /></td>
 				<td><s:property value="get('riskType')" /></td>
 				<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" /></td>
 				<td><s:property value="get('answer')" escape="false" /></td>
+				<td><s:date name="get('lastVerifiedDate')" /></td>
 				<s:form action="ReportContractorRiskLevel" method="POST">
 					<s:hidden value="%{get('id')}" name="conID" />
 					<s:hidden value="%{get('riskType')}" name="type" />

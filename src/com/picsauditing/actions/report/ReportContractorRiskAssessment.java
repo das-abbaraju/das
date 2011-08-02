@@ -63,6 +63,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql.addField("r.riskType");
 		sql.addField("r.risk");
 		sql.addField("r.answer");
+		sql.addField("r.lastVerifiedDate");
 	}
 
 	@RequiredPermission(value = OpPerms.RiskRank)
@@ -150,7 +151,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		}
 
 		contractorAccountDAO.save(con);
-		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
+		Note note = new Note(con, getUser(), noteMessage + (!Strings.isEmpty(auditorNotes) ? " - " + auditorNotes : ""));
 		note.setNoteCategory(NoteCategory.RiskRanking);
 		noteDAO.save(note);
 
@@ -169,8 +170,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		SelectAccount sql2 = new SelectAccount();
 		sql2.setType(Type.Contractor);
 		sql2.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = 1");
-		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString
-				+ " AND d.dateVerified IS NULL");
+		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString);
 
 		String where = String
 				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)",
@@ -186,6 +186,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
 		sql2.addField(answer);
+		sql2.addField("c." + type.toLowerCase() + "RiskVerified lastVerifiedDate");
 
 		sql2.addWhere("a.status = 'Active'");
 		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL "
