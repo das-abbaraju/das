@@ -25,19 +25,22 @@ public final class ReflectUtil {
 	 * 
 	 * This does not look at interfaces.
 	 * 
-	 * @param cls
+	 * @param inClass
 	 * @param annotation
 	 * @return
 	 */
-	public static <T extends Annotation> T getApplicableClassLevelAnnotation(Class<?> cls, Class<T> annotation) {
-		if (cls != null) {
-			if (cls.isAnnotationPresent(annotation))
-				return cls.getAnnotation(annotation);
-
-			return getApplicableClassLevelAnnotation(cls.getSuperclass(), annotation);
+	public static <T extends Annotation> T getApplicableClassLevelAnnotation(Class<?> inClass, Class<T> annotation) {
+		T returnAnnotation = null;
+		Class<?> cls = inClass;
+		while (cls != null) {
+			if (cls.isAnnotationPresent(annotation)) {
+				returnAnnotation = cls.getAnnotation(annotation);
+				break;
+			}
+			cls = cls.getSuperclass();
 		}
 
-		return null;
+		return returnAnnotation;
 	}
 
 	/**
@@ -59,10 +62,12 @@ public final class ReflectUtil {
 					returnAnnotation = method.getAnnotation(annotation);
 					break;
 				}
-				cls = cls.getSuperclass();
+
 			} catch (SecurityException e) {
 			} catch (NoSuchMethodException e) {
 			}
+
+			cls = cls.getSuperclass();
 		}
 
 		return returnAnnotation;
