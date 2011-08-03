@@ -229,7 +229,7 @@ function buildAction(type, id){
 </td>
 <% if (permissions.isActive() && !permissions.isContractor()) { %>
 	<td id="headersearch">
-		<form action=Search.action method="get">
+		<form action="Search.action" method="get">
 			<input type="hidden" value="search" name="button" />
 			<input name="searchTerm" type="text" id="search_box" onfocus="clearText(this)" tabindex="1"/>
 			<input type="submit" value="<%=i18nCache.getText("Header.Search", locale)%>" id="search_button" onclick="getResult(null)" />
