@@ -20,7 +20,6 @@ import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
@@ -156,16 +155,18 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			Indexable viewThis = records.get(0);
 			String viewAction = viewThis.getViewLink();
 
-			if (viewThis instanceof ContractorAccount) {
-				// if this is a contractor, we only want to redirect it to its viewAction if the operator can view it
-				// otherwise we want to send them to the SearchForNew page.
-				ContractorOperator co = coDAO.find(viewThis.getId(), permissions.getAccountId());
-				if (co != null) {
-					redirect(viewAction);
+			if (permissions.isOperatorCorporate()) {
+				if (viewThis instanceof ContractorAccount) {
+					/*
+					 * if this is a contractor, we only want to redirect it to its viewAction if the operator can view
+					 * it otherwise we want to send them to the SearchForNew page.
+					 */
+					if (checkCon(viewThis.getId())) {
+						redirect(viewAction);
+					}
 				}
 			} else
 				redirect(viewAction);
-
 		}
 		return records;
 	}
