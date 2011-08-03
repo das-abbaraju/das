@@ -297,7 +297,7 @@ function showOption() {
 			<s:textfield name="question.okAnswer" />
 		</li>
 		<li><label>Requirement</label>
-			<s:textfield name="question.requirement" />
+			<s:textarea name="question.requirement" />
 		</li>
 		<li><label>Flaggable:</label>
 			<s:checkbox name="question.flaggable"/>

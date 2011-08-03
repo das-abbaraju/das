@@ -20,6 +20,7 @@
 		onclick="toggleBox('auditorId'); return false;"><s:text name="global.SafetyProfessionals" /></a> = <span
 		id="auditorId_query"><s:text name="JS.Filters.status.All" /></span><br />
 	<span id="auditorId_select" style="display: none" class="clearLink">
+	<!-- TODO replace AuditorsGet with a User Autocompleter or a basic drop down -->
 	<s:action name="AuditorsGet" executeResult="true">
 		<s:param name="controlName" value="%{'auditorId'}" />
 		<s:param name="presetValue" value="auditorId" />
