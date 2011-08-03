@@ -45,10 +45,4 @@ public class DateBeanTest extends TestCase {
 		assertEquals(sourceDate.getHours() - 3, destDate.getHours());
 	}
 	
-	@Test
-	public void testPrettyDate() throws Exception {
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		assertEquals("", DateBean.prettyDate(cal.getTime()));
-	}
 }
