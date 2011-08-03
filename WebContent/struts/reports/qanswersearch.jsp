@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="QuestionAnswerSearch.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
@@ -59,7 +59,7 @@ $(function() {
 </script>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="QuestionAnswerSearch.title" /></h1>
 
 <div id="search">
 <s:form id="form1" method="post" cssStyle="background-color: #F4F4F4;">

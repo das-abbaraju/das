@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import javax.persistence.Transient;
 
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.TranslationActionSupport;
+
 public enum FlagColor implements Translatable {
 
 	Green("#339900", "Approve"),
@@ -35,17 +38,19 @@ public enum FlagColor implements Translatable {
 	}
 
 	public String getBigIcon() {
-		String title = this.toString();
+		I18nCache cache = I18nCache.getInstance();
+		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
 		if (this == FlagColor.Clear)
-			title = "Not Applicable";
+			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "FlagBig.gif\" width=\"32\" height=\"32\" border=\"0\" title=\"" + title + "\" />";
 	}
 
 	public String getSmallIcon() {
-		String title = this.toString();
+		I18nCache cache = I18nCache.getInstance();
+		String title = cache.getText(getI18nKey(), TranslationActionSupport.getLocaleStatic());
 		if (this == FlagColor.Clear)
-			title = "N/A";
+			title = cache.getText(getI18nKey("insuranceStatus"), TranslationActionSupport.getLocaleStatic());
 		return "<img src=\"images/icon_" + this.toString().toLowerCase()
 				+ "Flag.gif\" width=\"10\" height=\"12\" border=\"0\" title=\"" + title + "\" />";
 	}
@@ -97,13 +102,13 @@ public enum FlagColor implements Translatable {
 
 		return false;
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.name();
 	}
-	
+
 	@Transient
 	@Override
 	public String getI18nKey(String property) {

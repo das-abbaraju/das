@@ -238,36 +238,36 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 
-		excelSheet.addColumn(new ExcelColumn("name", "Account Name"));
-		excelSheet.addColumn(new ExcelColumn("Contact", "Contact Name"));
-		excelSheet.addColumn(new ExcelColumn("Phone", "Phone Number"));
-		excelSheet.addColumn(new ExcelColumn("Email", "Email Address"));
-		excelSheet.addColumn(new ExcelColumn("TaxID", "Tax ID"));
-		excelSheet.addColumn(new ExcelColumn("Address", "Address"));
-		excelSheet.addColumn(new ExcelColumn("City", "City"));
-		excelSheet.addColumn(new ExcelColumn("State", "State"));
-		excelSheet.addColumn(new ExcelColumn("Zip", "Zip", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("Country", "Country"));
+		excelSheet.addColumn(new ExcelColumn("name", getText("global.CompanyName")));
+		excelSheet.addColumn(new ExcelColumn("Contact", getText("ContractorRegistrationRequest.contact")));
+		excelSheet.addColumn(new ExcelColumn("Phone", getText("ContractorRegistrationRequest.phone")));
+		excelSheet.addColumn(new ExcelColumn("Email", getText("ContractorRegistrationRequest.email")));
+		excelSheet.addColumn(new ExcelColumn("TaxID", getText("ContractorRegistrationRequest.taxID")));
+		excelSheet.addColumn(new ExcelColumn("Address", getText("ContractorRegistrationRequest.address")));
+		excelSheet.addColumn(new ExcelColumn("City", getText("ContractorRegistrationRequest.city")));
+		excelSheet.addColumn(new ExcelColumn("State", getText("ContractorRegistrationRequest.state")));
+		excelSheet.addColumn(new ExcelColumn("Zip", getText("ContractorRegistrationRequest.zip")));
+		excelSheet.addColumn(new ExcelColumn("Country", getText("ContractorRegistrationRequest.country")));
 
 		if (!permissions.isOperatorCorporate()) {
-			excelSheet.addColumn(new ExcelColumn("RequestedByID", "Requested By", ExcelCellType.Integer));
-			excelSheet.addColumn(new ExcelColumn("RequestedUserID", "Requested By User", ExcelCellType.Integer));
-			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther", "Requested By User (Other)"));
+			excelSheet.addColumn(new ExcelColumn("RequestedByID", getText("ContractorRegistrationRequest.requestedBy"), ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("RequestedUser", getText("ContractorRegistrationRequest.requestedByUser")));
+			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther", getText("ContractorRegistrationRequest.requestedByUserOther")));
 		}
 
-		excelSheet.addColumn(new ExcelColumn("deadline", "Deadline Date", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("deadline", getText("ContractorRegistrationRequest.deadline"), ExcelCellType.Date));
 
 		if (permissions.isOperatorCorporate())
-			excelSheet.addColumn(new ExcelColumn("ContactedBy", "Contacted By"));
+			excelSheet.addColumn(new ExcelColumn("ContactedBy", getText("ContractorRegistrationRequest.lastContactedBy")));
 		else
-			excelSheet.addColumn(new ExcelColumn("ContactedByID", "Contacted By"));
+			excelSheet.addColumn(new ExcelColumn("ContactedByID", getText("ContractorRegistrationRequest.lastContactedBy")));
 
-		excelSheet.addColumn(new ExcelColumn("lastContactDate", "On", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("contactCount", "Attempts", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("matchCount", "Matches", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("conID", "PICS ID", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("contractorName", "Contractor Name"));
-		excelSheet.addColumn(new ExcelColumn("Notes", "Notes"));
+		excelSheet.addColumn(new ExcelColumn("lastContactDate", getText("ContractorRegistrationRequest.lastContactedDate"), ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("contactCount", getText("ContractorRegistrationRequest.contactCount"), ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("matchCount", getText("ContractorRegistrationRequest.matchCount"), ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("conID", getText("ContractorRegistrationRequest.contractor"), ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("contractorName", getText("global.ContractorName")));
+		excelSheet.addColumn(new ExcelColumn("Notes", getText("global.Notes")));
 	}
 
 	public boolean isAmSales() {
