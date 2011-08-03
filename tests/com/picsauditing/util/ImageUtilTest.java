@@ -5,39 +5,40 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 public class ImageUtilTest extends TestCase {
-	
-	public void testCreateBufferedImage(){
+	@Test
+	public void testCreateBufferedImage() {
 		BufferedImage image;
-		String ftpDir = "C:/temp";
-		image = ImageUtil.createBufferedImage(ftpDir, "/files/", "img1", "jpg");
-		assertTrue(image!=null);
+		image = ImageUtil.createBufferedImage(new File("WebContent/images/buttons.png"));
+		assertNotNull(image);
 	}
-	
-	public void testResize(){
+
+	@Test
+	public void testResize() {
 		BufferedImage image, img;
-		String ftpDir = "C:/temp";
-		image = ImageUtil.createBufferedImage(ftpDir, "/files/", "img2", "jpg");
+		image = ImageUtil.createBufferedImage(new File("WebContent/images/buttons.png"));
 		img = ImageUtil.resize(image, 400, 400, false);
-		assertTrue(img.getWidth()==400 && img.getHeight()==400);
+		assertTrue(img.getWidth() == 400 && img.getHeight() == 400);
 	}
-	
-	public void testWriteImageWithQuality(){
+
+	@Test
+	public void testWriteImageWithQuality() {
 		File test1 = null, test2 = null;
 		BufferedImage image;
-		String ftpDir = "C:/temp";
-		test1 = new File(ftpDir + "/files/img3.jpg");
-		image = ImageUtil.createBufferedImage(ftpDir, "/files/", "img3", "jpg");
+		test1 = new File("WebContent/images/buttons.png");
+		image = ImageUtil.createBufferedImage(test1);
 		String size1 = FileUtils.size(test1);
 		test2 = ImageUtil.writeImageWithQuality(image, "jpg", .75f);
 		assertFalse(size1.equals(FileUtils.size(test2)));
 	}
-	
-	public void testCrop(){
+
+	@Test
+	public void testCrop() {
 		BufferedImage image;
-		String ftpDir = "C:/temp";
-		image = ImageUtil.createBufferedImage(ftpDir, "/files/", "img4", "jpg");
-		image = ImageUtil.crop(image, 100, 100, 100, 100);
-		assertTrue(image.getWidth()==100 && image.getHeight()==100);		
+		image = ImageUtil.createBufferedImage(new File("WebContent/images/buttons.png"));
+		image = ImageUtil.crop(image, 5, 5, 100, 100);
+		assertTrue(image.getWidth() == 100 && image.getHeight() == 100);
 	}
 }

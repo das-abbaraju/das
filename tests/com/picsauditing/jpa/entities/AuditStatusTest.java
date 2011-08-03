@@ -9,7 +9,7 @@ public class AuditStatusTest extends TestCase {
 	public void testStatusArray() {
 		AuditStatus[] statuses = AuditStatus.valuesWithoutPendingExpired();
 		assertEquals(6, statuses.length);
-		assertEquals(AuditStatus.Resubmitted, statuses[2]);
+		assertEquals(AuditStatus.Resubmitted, statuses[3]);
 	}
 
 }

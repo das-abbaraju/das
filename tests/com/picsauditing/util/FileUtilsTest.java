@@ -7,11 +7,8 @@ import junit.framework.TestCase;
 public class FileUtilsTest extends TestCase {
 	public void testGetSimilarFiles() {
 		try {
-			File folder = new File("WebContent/images");
-			File[] files = FileUtils.getSimilarFiles(folder, "button_continue");
-			for (File file : files) {
-				System.out.println(file.getAbsoluteFile());
-			}
+			File folder = new File("tests");
+			File[] files = FileUtils.getSimilarFiles(folder, "test_notes");
 			assertTrue(files.length == 2);
 		} catch (Exception e) {
 			fail(e.getMessage());
