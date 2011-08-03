@@ -1,137 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:aop="http://www.springframework.org/schema/aop"
-    xmlns:tx="http://www.springframework.org/schema/tx"
-    xsi:schemaLocation="
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
-    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd" default-autowire="autodetect">
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+	default-autowire="autodetect">
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
 
-	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
-	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
-	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
-	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
-	<bean id="AssessmentResultDAO" class="com.picsauditing.dao.AssessmentResultDAO"/>
-	<bean id="AssessmentTestDAO" class="com.picsauditing.dao.AssessmentTestDAO"/>
-	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO"/>
-	<bean id="AuditDecisionTableDAO" class="com.picsauditing.dao.AuditDecisionTableDAO"/>
-	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO"/>
-	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO"/>
-	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO"/>
-	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO"/>
-	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO"/>
-	<bean id="AuditCategoryMatrixDAO" class="com.picsauditing.dao.AuditCategoryMatrixDAO"/>
-	<bean id="AuditOptionValueDAO" class="com.picsauditing.dao.AuditOptionValueDAO"/>
-	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO"/>
-	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
-	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
-	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
-	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO"/>
-	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO"/>
-	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
-	<bean id="ContractorAuditOperatorWorkflowDAO" class="com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO"/>
-	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
-	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO"/>
-	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
-	<bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO"/>
-	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
-	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
-	<bean id="EbixLoader" class="com.picsauditing.util.EbixLoader"/>
-	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO"/>
-	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
-	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
-	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO"/>
-	<bean id="EmployeeDAO" class="com.picsauditing.dao.EmployeeDAO"/>
-	<bean id="EmployeeCompetencyDAO" class="com.picsauditing.dao.EmployeeCompetencyDAO"/>
-	<bean id="EmployeeQualificationDAO" class="com.picsauditing.dao.EmployeeQualificationDAO"/>
-	<bean id="EmployeeRoleDAO" class="com.picsauditing.dao.EmployeeRoleDAO"/>
-	<bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO"/>
-	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO"/>
-	<bean id="FileDAO" class="com.picsauditing.dao.FileDAO"/>
-	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO"/>
-	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO"/>
-	<bean id="FlagCriteriaOperatorDAO" class="com.picsauditing.dao.FlagCriteriaOperatorDAO"/>
-	<bean id="FlagDataDAO" class="com.picsauditing.dao.FlagDataDAO"/>
-	<bean id="FlagDataOverrideDAO" class="com.picsauditing.dao.FlagDataOverrideDAO"/>
+	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" />
+	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO" />
+	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO" />
+	<bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO" />
+	<bean id="AssessmentResultDAO" class="com.picsauditing.dao.AssessmentResultDAO" />
+	<bean id="AssessmentTestDAO" class="com.picsauditing.dao.AssessmentTestDAO" />
+	<bean id="AuditDataDAO" class="com.picsauditing.dao.AuditDataDAO" />
+	<bean id="AuditDecisionTableDAO" class="com.picsauditing.dao.AuditDecisionTableDAO" />
+	<bean id="AuditorAvailabilityDAO" class="com.picsauditing.dao.AuditorAvailabilityDAO" />
+	<bean id="AuditorScheduleDAO" class="com.picsauditing.dao.AuditorScheduleDAO" />
+	<bean id="AuditorVacationDAO" class="com.picsauditing.dao.AuditorVacationDAO" />
+	<bean id="AuditCategoryDAO" class="com.picsauditing.dao.AuditCategoryDAO" />
+	<bean id="AuditCategoryDataDAO" class="com.picsauditing.dao.AuditCategoryDataDAO" />
+	<bean id="AuditCategoryMatrixDAO" class="com.picsauditing.dao.AuditCategoryMatrixDAO" />
+	<bean id="AuditOptionValueDAO" class="com.picsauditing.dao.AuditOptionValueDAO" />
+	<bean id="AuditQuestionDAO" class="com.picsauditing.dao.AuditQuestionDAO" />
+	<bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO" />
+	<bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO" />
+	<bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO" />
+	<bean id="ContractorAuditDAO" class="com.picsauditing.dao.ContractorAuditDAO" />
+	<bean id="ContractorAuditFileDAO" class="com.picsauditing.dao.ContractorAuditFileDAO" />
+	<bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO" />
+	<bean id="ContractorAuditOperatorWorkflowDAO" class="com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO" />
+	<bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO" />
+	<bean id="ContractorNoteDAO" class="com.picsauditing.dao.ContractorNoteDAO" />
+	<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO" />
+	<bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO" />
+	<bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO" />
+	<bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO" />
+	<bean id="EbixLoader" class="com.picsauditing.util.EbixLoader" />
+	<bean id="EmailAttachmentDAO" class="com.picsauditing.dao.EmailAttachmentDAO" />
+	<bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO" />
+	<bean id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO" />
+	<bean id="EmailTemplateDAO" class="com.picsauditing.dao.EmailTemplateDAO" />
+	<bean id="EmployeeDAO" class="com.picsauditing.dao.EmployeeDAO" />
+	<bean id="EmployeeCompetencyDAO" class="com.picsauditing.dao.EmployeeCompetencyDAO" />
+	<bean id="EmployeeQualificationDAO" class="com.picsauditing.dao.EmployeeQualificationDAO" />
+	<bean id="EmployeeRoleDAO" class="com.picsauditing.dao.EmployeeRoleDAO" />
+	<bean id="EmployeeSiteDAO" class="com.picsauditing.dao.EmployeeSiteDAO" />
+	<bean id="FacilitiesDAO" class="com.picsauditing.dao.FacilitiesDAO" />
+	<bean id="FileDAO" class="com.picsauditing.dao.FileDAO" />
+	<bean id="FlagCriteriaDAO" class="com.picsauditing.dao.FlagCriteriaDAO" />
+	<bean id="FlagCriteriaContractorDAO" class="com.picsauditing.dao.FlagCriteriaContractorDAO" />
+	<bean id="FlagCriteriaOperatorDAO" class="com.picsauditing.dao.FlagCriteriaOperatorDAO" />
+	<bean id="FlagDataDAO" class="com.picsauditing.dao.FlagDataDAO" />
+	<bean id="FlagDataOverrideDAO" class="com.picsauditing.dao.FlagDataOverrideDAO" />
 	<bean id="IndexableDAO" class="com.picsauditing.dao.IndexableDAO" />
-	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO"/>
-	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO"/>
-	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO"/>
-	<bean id="JobCompetencyDAO" class="com.picsauditing.dao.JobCompetencyDAO"/>
-	<bean id="JobRoleDAO" class="com.picsauditing.dao.JobRoleDAO"/>
-	<bean id="JobSiteDAO" class="com.picsauditing.dao.JobSiteDAO"/>
-	<bean id="JobSiteTaskDAO" class="com.picsauditing.dao.JobSiteTaskDAO"/>
-	<bean id="JobTaskDAO" class="com.picsauditing.dao.JobTaskDAO"/>
-	<bean id="JobTaskCriteriaDAO" class="com.picsauditing.dao.JobTaskCriteriaDAO"/>
-	<bean id="NaicsDAO" class="com.picsauditing.dao.NaicsDAO"/>
-	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
-	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
-	<bean id="OperatorCompetencyDAO" class="com.picsauditing.dao.OperatorCompetencyDAO"/>
-	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO"/>
-	<bean id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO"/>
-	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO"/>
-	<bean id="TradeDAO" class="com.picsauditing.dao.TradeDAO"/>
-	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO"/>
-	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO"/>
-	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO"/>
-	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO"/>
-	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO"/>
-	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO"/>
-	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO"/>
-	<bean id="UserAssignmentDAO" class="com.picsauditing.dao.UserAssignmentDAO"/>
-	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO"/>
-	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO"/>
-	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO"/>
-	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO"/>
-	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO"/>
-	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
-	<bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
+	<bean id="InvoiceDAO" class="com.picsauditing.dao.InvoiceDAO" />
+	<bean id="InvoiceItemDAO" class="com.picsauditing.dao.InvoiceItemDAO" />
+	<bean id="InvoiceFeeDAO" class="com.picsauditing.dao.InvoiceFeeDAO" />
+	<bean id="JobCompetencyDAO" class="com.picsauditing.dao.JobCompetencyDAO" />
+	<bean id="JobRoleDAO" class="com.picsauditing.dao.JobRoleDAO" />
+	<bean id="JobSiteDAO" class="com.picsauditing.dao.JobSiteDAO" />
+	<bean id="JobSiteTaskDAO" class="com.picsauditing.dao.JobSiteTaskDAO" />
+	<bean id="JobTaskDAO" class="com.picsauditing.dao.JobTaskDAO" />
+	<bean id="JobTaskCriteriaDAO" class="com.picsauditing.dao.JobTaskCriteriaDAO" />
+	<bean id="NaicsDAO" class="com.picsauditing.dao.NaicsDAO" />
+	<bean id="NoteDAO" class="com.picsauditing.dao.NoteDAO" />
+	<bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO" />
+	<bean id="OperatorCompetencyDAO" class="com.picsauditing.dao.OperatorCompetencyDAO" />
+	<bean id="OperatorFormDAO" class="com.picsauditing.dao.OperatorFormDAO" />
+	<bean id="OperatorTagDAO" class="com.picsauditing.dao.OperatorTagDAO" />
+	<bean id="OshaAuditDAO" class="com.picsauditing.dao.OshaAuditDAO" />
+	<bean id="TradeDAO" class="com.picsauditing.dao.TradeDAO" />
+	<bean id="TradeAlternateDAO" class="com.picsauditing.dao.TradeAlternateDAO" />
+	<bean id="PaymentDAO" class="com.picsauditing.dao.PaymentDAO" />
+	<bean id="RefundDAO" class="com.picsauditing.dao.RefundDAO" />
+	<bean id="StateDAO" class="com.picsauditing.dao.StateDAO" />
+	<bean id="TokenDAO" class="com.picsauditing.dao.TokenDAO" />
+	<bean id="TransactionDAO" class="com.picsauditing.dao.TransactionDAO" />
+	<bean id="UserAccessDAO" class="com.picsauditing.dao.UserAccessDAO" />
+	<bean id="UserAssignmentDAO" class="com.picsauditing.dao.UserAssignmentDAO" />
+	<bean id="UserDAO" class="com.picsauditing.dao.UserDAO" />
+	<bean id="UserGroupDAO" class="com.picsauditing.dao.UserGroupDAO" />
+	<bean id="UserLoginLogDAO" class="com.picsauditing.dao.UserLoginLogDAO" />
+	<bean id="UserSwitchDAO" class="com.picsauditing.dao.UserSwitchDAO" />
+	<bean id="WebcamDAO" class="com.picsauditing.dao.WebcamDAO" />
+	<bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO" />
+	<bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO" />
 
-	<bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder" scope="prototype"/>
-	<bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator" scope="prototype"/>
-	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
-	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
+	<bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"
+		scope="prototype" />
+	<bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"
+		scope="prototype" />
+	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache" />
+	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache" />
 
-	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
-	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" scope="prototype"/>
-	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL" scope="prototype"/>
-	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
-	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
-	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
-	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
+	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder"
+		scope="prototype" />
+	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"
+		scope="prototype" />
+	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL"
+		scope="prototype" />
+	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator"
+		scope="prototype" />
+	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder"
+		scope="prototype" />
+	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger"
+		scope="prototype" />
+	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine"
+		scope="prototype" />
 
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+	<bean
+		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
-	<!--  JPA implementation -->
-    <bean id="entityManagerFactory"
-        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="dataSource" ref="dataSource" />
-        <property name="persistenceUnitName" value="punit"/>
-        <property name="jpaVendorAdapter">
-            <bean
-                class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-                 <property name="showSql" value="true" />
-                <property name="database" value="MYSQL" />
-            </bean>
-        </property>
-    </bean>
+	<!-- JPA implementation -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="persistenceUnitName" value="punit" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false" />
+				<property name="database" value="MYSQL" />
+			</bean>
+		</property>
+	</bean>
 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
+		<property name="username" value="pics" />
+		<property name="password" value="M0ckingj@y" />
+	</bean>
 
-  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-    <property name="url" value="jdbc:mysql://192.168.20.56:3306/pics_alpha1" />
-    <property name="username" value="pics" />
-    <property name="password" value="@Irvine1" />
-  </bean>
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
 
-    <bean id="transactionManager"
-        class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory" />
-    </bean>
-
-    <tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
 
 </beans>
