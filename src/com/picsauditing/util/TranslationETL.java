@@ -24,6 +24,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -222,8 +223,8 @@ public class TranslationETL extends PicsActionSupport {
 
 				element = document.createElement("msgValue");
 				translation.appendChild(element);
-				elementText = document.createTextNode(d.get("msgValue").toString());
-				element.appendChild(elementText);
+				CDATASection text = document.createCDATASection(d.get("msgValue").toString());
+				element.appendChild(text);
 
 				if (d.get("createdBy") != null) {
 					element = document.createElement("createdBy");
