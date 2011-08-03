@@ -144,13 +144,14 @@ public class EntityFactory {
 	 * 
 	 * @param conAudit
 	 */
-	static public void addCao(ContractorAudit conAudit, OperatorAccount operator) {
+	static public ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
 		ContractorAuditOperator cao = new ContractorAuditOperator();
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
 		cao.changeStatus(AuditStatus.Approved, null);
 		cao.setFlag(FlagColor.Green);
 		conAudit.getOperators().add(cao);
+		return cao;
 	}
 
 	static public AuditQuestion makeAuditQuestion() {
