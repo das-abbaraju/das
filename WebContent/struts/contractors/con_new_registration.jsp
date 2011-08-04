@@ -625,10 +625,10 @@ function hideShow(){
 		<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
 		</s:if>
 		<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-			<s:submit value="%{getText(scope + '.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
+			<s:submit value="%{getText('RequestNewContractor.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
 		</s:elseif>
 		<s:if test="permissions.operatorCorporate && newContractor.id > 0 && newContractor.handledBy.toString() == 'Operator'">
-			<s:submit value="%{getText(scope + '.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
+			<s:submit value="%{getText('RequestNewContractor.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
 		</s:if>
 	</fieldset>
 </s:form>
@@ -665,7 +665,7 @@ function hideShow(){
 		<h3><s:text name = "RequestNewContractor.button.ContactedByPhone" /></h3>
 		<br />
 		<s:hidden name="requestID"/>
-		<label>Add additional notes:</label>
+		<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
 		<p>
 			<s:textarea name="addToNotes" cols="30" rows="3"/>
 		</p>

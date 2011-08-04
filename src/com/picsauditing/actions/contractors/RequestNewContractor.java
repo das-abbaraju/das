@@ -58,7 +58,6 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -85,6 +84,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
 
 	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
 	protected boolean redirect = false;
@@ -118,7 +119,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private String[] names = new String[] { "ContractorName", "ContractorPhone", "ContractorEmail",
 			"RequestedByOperator", "RequestedByUser", "ContractorContactName", "ContractorTaxID", "ContractorAddress",
 			"ContractorCity", "ContractorState", "ContractorZip", "ContractorCountry", "CSRName", "CSREmail",
-			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature", "RegistrationReason"};
+			"CSRPhone", "Deadline", "RegistrationLink", "PICSSignature", "RegistrationReason" };
 
 	private String[] noteReason = new String[] { "The Contractor doesn't want to register",
 			"The contractor wants to register but keeps delaying", "The company is no longer in business",
@@ -189,8 +190,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if ("C".equalsIgnoreCase(type))
 					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
 				else if ("U".equalsIgnoreCase(type))
-					query
-							.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+					query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
 				for (BasicDynaBean bdb : matches) {
 					int id = Integer.parseInt(bdb.get("foreignKey").toString());
 					ids.add(id);
@@ -247,39 +247,39 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 					return "matches";
 				} else {
-					addActionError("Requested contractor not found.");
+					addActionError(getText("RequestNewContractor.error.RequestedContractorNotFound"));
 					return BLANK;
 				}
 			}
 		}
-		conID = (newContractor.getContractor() == null)?0:newContractor.getContractor().getId();
-			
+		conID = (newContractor.getContractor() == null) ? 0 : newContractor.getContractor().getId();
+
 		return SUCCESS;
 	}
 
 	public String save() throws Exception {
 		if (Strings.isEmpty(newContractor.getName()))
-			addActionError("Please fill the contractor Name");
+			addActionError(getText("RequestNewContractor.error.FillContractorName"));
 		if (Strings.isEmpty(newContractor.getContact()))
-			addActionError("Please fill the Contact Name");
+			addActionError(getText("RequestNewContractor.error.FillContactName"));
 		if (requestedOperator == 0)
-			addActionError("Please select the Requested By Account");
+			addActionError(getText("RequestNewContractor.error.SelectRequestedByAccount"));
 		if (requestedUser == 0 && Strings.isEmpty(newContractor.getRequestedByUserOther()))
-			addActionError("Please select the Requested User for the Account");
+			addActionError(getText("RequestNewContractor.error.SelectRequestedUser"));
 		if (country == null)
-			addActionError("Please select a Country");
+			addActionError(getText("RequestNewContractor.error.SelectCountry"));
 		else if (country.getIsoCode().equals("US") || country.getIsoCode().equals("CA")) {
 			if (state == null || Strings.isEmpty(state.getIsoCode()))
-				addActionError("Please select a State");
+				addActionError(getText("RequestNewContractor.error.SelectState"));
 		}
 		if (Strings.isEmpty(newContractor.getPhone()))
-			addActionError("Please fill in the Phone Number");
+			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
 		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
-			addActionError("Please fill in a Valid Email Address");
+			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
 		if (newContractor.getDeadline() == null)
-			addActionError("Please select a Registration Deadline date");
+			addActionError(getText("RequestNewContractor.error.SelectDeadline"));
 		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
-			addActionError("Please enter a Registration Reason");
+			addActionError(getText("RequestNewContractor.error.EnterRegistrationReason"));
 
 		if (increaseContactCount)
 			newContractor.contact();
@@ -288,14 +288,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setHoldDate(null);
 		} else {
 			if (newContractor.getHoldDate() == null) {
-				addActionError("Please enter a Hold Date");
+				addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
 			}
 
 			else if ("Active".equals(newContractor.getStatus())) {
 				addToNotes = "Request set to hold until " + maskDateFormat(newContractor.getHoldDate());
 				String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
-					+ "request&requestID=" + newContractor.getId();
-				
+						+ "request&requestID=" + newContractor.getId();
+
 				sendHoldEmail(requestLink);
 			}
 		}
@@ -303,7 +303,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (!status.equals("Closed Unsuccessful"))
 			newContractor.setReasonForDecline(null);
 		else if (Strings.isEmpty(newContractor.getReasonForDecline()))
-			addActionError("Please enter a Reason Declined");
+			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 
 		if (status.equals("Active") || status.equals("Hold"))
 			newContractor.setOpen(true);
@@ -359,7 +359,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 					}
 				}
 			} else
-				addActionError("PICS Contractor not found");
+				addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		} else if (conID == 0)
 			newContractor.setContractor(null);
 
@@ -423,8 +423,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
 		emailBuilder.addToken("holdDate", maskDateFormat(newContractor.getHoldDate()));
 		emailBuilder.addToken("link", requestLink);
-		
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+
 		EmailQueue email = emailBuilder.build();
 		email.setPriority(30);
 		email.setViewableById(Account.PicsID);
@@ -432,9 +431,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public String phone() throws Exception {
-
 		if (Strings.isEmpty(addToNotes))
-			addActionError("Please enter additional notes");
+			addActionError(getText("RequestNewContractor.error.EnterAdditionalNotes"));
 
 		// Temporarily save add to notes and reset the instance field.
 		String addToNotes = this.addToNotes;
@@ -472,10 +470,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	public String returnToOperator() {
 		if (newContractor.getRequestedByUser() != null || Strings.isValidEmail(newContractor.getRequestedByUserOther())) {
-			
+
 			String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
-				+ "request&requestID=" + newContractor.getId();
-			
+					+ "request&requestID=" + newContractor.getId();
+
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
@@ -486,9 +484,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
 			emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
 			emailBuilder.addToken("link", requestLink);
-			
+
 			try {
-				EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 				EmailQueue email = emailBuilder.build();
 				email.setPriority(30);
 				email.setViewableById(Account.PicsID);
@@ -881,7 +878,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				newContractor.getZip(), newContractor.getCountry().getEnglish(), csr != null ? csr.getName() : null,
 				csr != null ? csr.getEmail() : null, csr != null ? csr.getPhone() : null,
 				maskDateFormat(newContractor.getDeadline()), requestLink, picsSignature,
-				newContractor.getReasonForRegistration()};
+				newContractor.getReasonForRegistration() };
 
 		if (Strings.isEmpty(emailBody) || Strings.isEmpty(emailSubject)) {
 			// Operator Request for Registration
