@@ -243,15 +243,12 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private ImportPqf getImportPqf() {
 		ImportPqf importPqf = null;
 		
-//		AuditData data = auditDataDao.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
-//		
-//		if (data != null && data.isAnswered()) {
-//			if (data.getAnswer().equals("518")) // ISN Canada
-//				importPqf = new ImportPqfIsn();
-//			else if (data.getAnswer().equals("514")) // CanQual
-//				importPqf = new ImportPqfCanQual();
-//			
-//		}
+		AuditData data = auditDataDao.findAnswerByConQuestion(getConAudit().getContractorAccount().getId(), 7727);
+		
+		if (data != null && data.isAnswered()) {
+			if (data.getAnswer().equals("514")) // CanQual
+				importPqf = new ImportPqfCanQual();			
+		}
 		
 		return importPqf;
 	}

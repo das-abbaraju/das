@@ -54,7 +54,8 @@ public abstract class ImportPqf {
 		List<AuditQuestion> questions = getQuestions(conAudit);
 		
 		extractAnswers(questions, lines);
-//		saveAnswers(conAudit, questions);
+		saveAnswers(conAudit, questions);
+//		dumpQuestions(questions);
 	}
 	
 	/**
@@ -85,17 +86,12 @@ public abstract class ImportPqf {
 		for (AuditQuestion question : questions) {
 			questionCount++;
 			
-			if (question.getTransformOptions().size() == 0) {
-				log.append("\n* Question " + question.getId() + " has no transform defined (" + question.getName().toString() + ")");
-			}
-			
 			// loop through transforms
 			for (AuditTransformOption option:question.getTransformOptions()) {
 				transformCount++;
 				
 				AuditData data = auditAnswers.get(question.getId());
 				if (data != null) {
-					processedCount++;
 					String answer = null;
 
 					if (option.getComparisonIds().size() == 0) {
@@ -116,49 +112,62 @@ public abstract class ImportPqf {
 						if (Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
 							answer = "Yes";
 						} else {
-							answer = "No";
 							for (Integer id : option.getComparisonIds()) {
-								if (Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
+								String otherResponse = auditAnswers.get(id.intValue()).getAnswer();
+								if (Strings.isEqualNullSafe(otherResponse, "Yes")) {
 									answer = "Yes";
 									break;
 								}
 							}
 						}
 					}
-
-//					if (answer != null) {
-//						AuditData pqfData = pqfAnswers.get(option.getDestinationQuestion().getId());
-//						if (pqfData == null) {
-//							pqfData = new AuditData();
-//							pqfData.setAudit(pqfAudit);
-//							pqfData.setQuestion(option.getDestinationQuestion());
-//							auditDataDAO.save(pqfData);
-//							pqfAnswers.add(pqfData);
-//						}
-//						
-//						if (!option.isCommentResponse()) {
-//							pqfData.setAnswer(answer);
-//						} else {
-//							pqfData.setComment(answer);
-//						}
-//					}
-//					if (option.isCommentResponse()) {
-//						System.out.println(question.getName().toString() + " (* Setting comment for " + option.getDestinationQuestion().getId()+ ")>" + answer + "<");
-//					} else {
-//						System.out.println(question.getName().toString() + " (for " + option.getDestinationQuestion().getId()+ ")>" + answer + "<");
-//					}
+					
+					answer = processAnswer(option, answer, auditAnswers);
+					
+					if (answer != null) {
+						processedCount++;
+						AuditData pqfData = pqfAnswers.get(option.getDestinationQuestion().getId());
+						if (pqfData == null) {
+							pqfData = new AuditData();
+							pqfData.setAudit(pqfAudit);
+							pqfData.setQuestion(option.getDestinationQuestion());
+							auditDataDAO.save(pqfData);
+							pqfAnswers.add(pqfData);
+						}
+						
+						if (!option.isCommentResponse()) {
+							pqfData.setAnswer(answer);
+						} else {
+							pqfData.setComment(answer);
+						}
+					} else {
+						log.append("\n* Question " + question.getId() + " had no response (" + question.getName().toString() + ")");
+					}
 				}
 			}
 		}
 		
-		log.append("\n" + questionCount + " questions transformed into " + transformCount + " PQF questions, " + processedCount + " processed");
+		int percent = 0;
+		
+		if (transformCount == 0) {
+			log.append("\n* NO TRANSFORMS FOUND");
+		} else {
+			percent = (int) (processedCount * 100 / transformCount);
+			log.append("\n" + percent + "% success populating PQF (" + processedCount + "/" + transformCount + ")");
+		}
 	}
 
+	/**
+	 * Opens pdf file and returns the lines of text
+	 * @param pdfFile
+	 * @return
+	 */
 	public List<String> getFileContents(File pdfFile) {
 		FileInputStream inputStream = null;
 		PdfReader reader = null;
 		
 		StringBuilder sb = new StringBuilder();
+		ArrayList<String> lines = new ArrayList<String>();
 
 		try {
 		    inputStream = new FileInputStream(pdfFile);
@@ -168,7 +177,11 @@ public abstract class ImportPqf {
 				sb.append(preprocessPage(page, parser.processContent(page, new SimpleTextExtractionStrategy())
 						.getResultantText())).append("\n");
 			}
-		
+			for (String line : sb.toString().split("[\n\t\r]")) {
+				line = line.trim();
+				if (line.length() > 0)
+					lines.add(line);
+			}
 		} catch (Exception x) {
 			log.append(x);
 		} finally {
@@ -185,16 +198,10 @@ public abstract class ImportPqf {
 			}
 		}
 		
-		ArrayList<String> lines = new ArrayList<String>();
-		for (String line : sb.toString().split("[\n\t\r]")) {
-			line = line.trim();
-			if (line.length() > 0)
-				lines.add(line);
-		}
 		return lines;
 	}
 	
-	public List<AuditQuestion> getQuestions(ContractorAudit conAudit) {
+	private List<AuditQuestion> getQuestions(ContractorAudit conAudit) {
 		List<AuditQuestion> list = new ArrayList<AuditQuestion>();
 		
 		ArrayList<AuditCategory> catList = new ArrayList<AuditCategory>();
@@ -246,7 +253,7 @@ public abstract class ImportPqf {
 	 * @param questions
 	 * @return
 	 */
-	public int saveAnswers(ContractorAudit conAudit, List<AuditQuestion> questions) {
+	private int saveAnswers(ContractorAudit conAudit, List<AuditQuestion> questions) {
 		Collection<Integer> questionIds = new ArrayList<Integer>();
 		for (AuditQuestion question : questions) {
 			questionIds.add(question.getId());
@@ -334,8 +341,8 @@ public abstract class ImportPqf {
 				}
 
 				if (question.equals(match)) { // exact match, answer on following line
-					match = "";
 					option.setQuestionFound(true);
+					match = "";
 				} else if (match.startsWith(question)) { // match, answer on line
 					option.setQuestionFound(true);
 					match = match.substring(question.length()).trim();
@@ -363,6 +370,14 @@ public abstract class ImportPqf {
 						break;
 					}
 
+					if (option.getStopAt().isStopAtSameLine()) {
+						if (match.length() > 0 && isValidResponse(option, match)) {
+							processAnswer(option, match.trim());
+						}
+						match = "";	
+						break;
+					}
+					
 					String nextPart = lines.get(lineIndex).trim();
 
 					if (nextPart.length() == 0) { // next is blank line
@@ -404,11 +419,11 @@ public abstract class ImportPqf {
 
 					match += nextPart;
 					
-					if (option.isStopAtNextLine()) {
+					if (option.getStopAt().isStopAtNextLine()) {
 						if (match.length() > 0 && isValidResponse(option, match)) {
 							processAnswer(option, match.trim());
 						}
-						match = "";						
+						match = "";	
 					}
 
 					lineIndex++;
@@ -436,7 +451,7 @@ public abstract class ImportPqf {
 			return 0;
 		} else {
 			percent = (int) (answered * 100 / totalFound);
-			log.append("\n" + percent + "% extraction success (" + answered + " answers extracted out of " + totalFound + " from " + questions.size() + " questions)");
+			log.append("\n" + percent + "% success extracting 3rd party responses (" + answered + "/" + totalFound + ")");
 		}
 		
 		return percent;
@@ -461,6 +476,17 @@ public abstract class ImportPqf {
 	
 	public String getLog() {
 		return log.toString();
+	}
+	
+	/**
+	 * Method for "last-chance" processing of answer.  Used for hard-coding some question processing
+	 * @param option
+	 * @param response
+	 * @param auditAnswers
+	 * @return
+	 */
+	protected String processAnswer(AuditTransformOption option, String response, AnswerMap auditAnswers) {
+		return response;
 	}
 
 	/**

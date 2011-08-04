@@ -1,15 +1,17 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.picsauditing.importpqf.ImportStopAt;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -20,7 +22,7 @@ public class AuditExtractOption extends BaseTable implements java.io.Serializabl
 
 	// Extraction attributes
 	private boolean startAtBeginning = false;
-	private boolean stopAtNextLine = false;
+	private ImportStopAt stopAt = ImportStopAt.None;
 	private String startingPoint;
 	private String stoppingPoint;
 	private boolean collectAsLines = false;
@@ -38,13 +40,14 @@ public class AuditExtractOption extends BaseTable implements java.io.Serializabl
 	public void setStartAtBeginning(boolean startAtBeginning) {
 		this.startAtBeginning = startAtBeginning;
 	}
-
-	public boolean isStopAtNextLine() {
-		return stopAtNextLine;
+	
+	@Enumerated(EnumType.STRING)
+	public ImportStopAt getStopAt() {
+		return stopAt;
 	}
 
-	public void setStopAtNextLine(boolean stopAtNextLine) {
-		this.stopAtNextLine = stopAtNextLine;
+	public void setStopAt(ImportStopAt stopAt) {
+		this.stopAt = stopAt;
 	}
 
 	public String getStartingPoint() {

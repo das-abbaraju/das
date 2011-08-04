@@ -50,7 +50,7 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 	private String searchValue;
 	private boolean commentResponse = false;
 	ImportComparison comparison = ImportComparison.None;
-	AuditQuestion comparisonQuestion;
+	private String comparisonQuestions;
 	
 	// Load attributes
 	AuditQuestion sourceQuestion;
@@ -188,14 +188,12 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 		this.level = level;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "comparisonQuestionID")
-	public AuditQuestion getComparisonQuestion() {
-		return comparisonQuestion;
+	public String getComparisonQuestions() {
+		return comparisonQuestions;
 	}
 
-	public void setComparisonQuestion(AuditQuestion comparisonQuestion) {
-		this.comparisonQuestion = comparisonQuestion;
+	public void setComparisonQuestions(String comparisonQuestions) {
+		this.comparisonQuestions = comparisonQuestions;
 	}
 
 	@Enumerated(EnumType.STRING)
@@ -211,8 +209,13 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 	public List<Integer> getComparisonIds() {
 		List<Integer> list = new ArrayList<Integer>();
 		
-		if (comparisonQuestion != null) {
-			list.add(comparisonQuestion.getId());
+		if (comparisonQuestions != null) {
+			String[] values = comparisonQuestions.split("[^0-9]");
+			for (String value:values) {
+				if (value.length() > 0 && Integer.parseInt(value) != 0) {
+					list.add(Integer.parseInt(value));
+				}
+			}
 		}
 		return list;
 	}
