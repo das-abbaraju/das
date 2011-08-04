@@ -105,10 +105,30 @@ public class UsersManage extends PicsActionSupport {
 		if ("Suggest".equalsIgnoreCase(button))
 			return "suggest";
 
+		if (user.getAccount() != null)
+			account = user.getAccount();
+		if (user.getId() > 0)
+			userIsGroup = user.getIsGroup();
+
+		for (UserAccess ua : user.getOwnedPermissions()) {
+			if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
+				conAdmin = true;
+			}
+			if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
+				conBilling = true;
+			}
+			if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
+				conSafety = true;
+			}
+			if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
+				conInsurance = true;
+			}
+		}
+
 		return SUCCESS;
 	}
 
-	public String add() throws Exception {
+	public String add() {
 		user = new User();
 		user.setAccount(account);
 		user.setIsGroup(userIsGroup);
@@ -124,6 +144,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// Lazy init fix for isOk method
 		user.getGroups().size();
+		user.getOwnedPermissions().size();
 		if (!isOK()) {
 			userDAO.refresh(user); // Clear out ALL changes?
 			return SUCCESS;
@@ -429,28 +450,6 @@ public class UsersManage extends PicsActionSupport {
 		// Make sure we can edit users in this account
 		if (permissions.getAccountId() != account.getId())
 			permissions.tryPermission(OpPerms.AllOperators);
-
-		if (user != null) {
-			if (user.getAccount() != null)
-				account = user.getAccount();
-			if (user.getId() > 0)
-				userIsGroup = user.getIsGroup();
-
-			for (UserAccess ua : user.getOwnedPermissions()) {
-				if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
-					conAdmin = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorBilling)) {
-					conBilling = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorSafety)) {
-					conSafety = true;
-				}
-				if (ua.getOpPerm().equals(OpPerms.ContractorInsurance)) {
-					conInsurance = true;
-				}
-			}
-		}
 
 		// checking to see if primary account user is set
 		if (account != null && account.getPrimaryContact() == null)
