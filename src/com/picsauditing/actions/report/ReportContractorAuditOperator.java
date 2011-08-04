@@ -223,7 +223,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		}
 		if (!Strings.isEmpty(value))
 			return value;
-		return "N/A";
+		return getText("global.NA");
 	}
 
 	@Override
@@ -234,22 +234,22 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		excelSheet.removeColumn("statusChangedDate");
 
 		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
-		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+		excelSheet.addColumn(new ExcelColumn("name", getText("global.Contractor")));
 
-		excelSheet.addColumn(new ExcelColumn("auditID", "Audit ID", ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("atype.name", "Audit Name", ExcelCellType.Translated));
+		excelSheet.addColumn(new ExcelColumn("auditID", getText("ReportCAOList.header.AuditID"), ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("atype.name", getText("AuditType"), ExcelCellType.Translated));
 		
-		excelSheet.addColumn(new ExcelColumn("caoAccountName", "Scope"));
+		excelSheet.addColumn(new ExcelColumn("caoAccountName", getText("Audit.header.OperatorScope")));
 
 
 		if (permissions.isOperator() || permissions.isAdmin()) {
 
-			excelSheet.addColumn(new ExcelColumn("auditStatus", "Status"));
+			excelSheet.addColumn(new ExcelColumn("auditStatus", getText("global.Status")));
 		}
 		
-		excelSheet.addColumn(new ExcelColumn("createdDate", "Creation Date", ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("expiresDate", "Date Expires", ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("createdDate", getText("global.CreationDate"), ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("expiresDate", getText("ReportCAOList.header.ExpiredDate"), ExcelCellType.Date));
 
-		excelSheet.addColumn(new ExcelColumn("auditor_name", "Safety Professional"));
+		excelSheet.addColumn(new ExcelColumn("auditor_name", getText("global.SafetyProfessional")));
 	}
 }

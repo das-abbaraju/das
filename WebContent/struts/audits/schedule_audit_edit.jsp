@@ -154,7 +154,7 @@ function showChooseDate(override) {
 		<li><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" /></li>
 		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" /></li>
 		<li class="calculatedAddress"><label><s:text name="global.City" />:</label> <s:textfield id="conAudit_city" name="conAudit.city" /></li>
-		<li class="calculatedAddress"><label><s:text name="global.State" />:</label> <s:select id="conAudit_state"
+		<li class="calculatedAddress"><label><s:text name="State" />:</label> <s:select id="conAudit_state"
 			name="conAudit.state" list="stateList" listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/></li>
 		<li><label><s:text name="global.ZipPostalCode" />:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" /></li>
 		<li class="calculatedAddress"><label><s:text name="global.Country" />:</label> <s:select id="conAudit_country" name="conAudit.country"

@@ -6,21 +6,19 @@
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 <div class="helpOnRight">
-These contractors will be deactivated from the PICS system in the next few days. If you expect to do 
-work with any of these contractors, please encourage them to renew their 
-membership by contacting PICS.
+	<s:text name="DelinquentContractorAccounts.help.DeactivatedInNextFewDays" />
 </div>
 
 <table class="report" style="clear : none;">
 	<thead>
 	<tr>
 		<td colspan="2"><s:text name="global.ContractorName" /></td>
-		<td>Due Date</td>
+		<td><s:text name="DelinquentContractorAccounts.label.DueDate" /></td>
 		<s:if test="permissions.admin">
-			<td>Amount</td>
-			<td>Facility Count</td>
+			<td><s:text name="DelinquentContractorAccounts.label.Amount" /></td>
+			<td><s:text name="DelinquentContractorAccounts.label.FacilityCount" /></td>
 		</s:if>
-		<td>Days Left</td>
+		<td><s:text name="DelinquentContractorAccounts.label.DaysLeft" /></td>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>
 			<td><s:text name="User.phone" /></td>
@@ -43,7 +41,7 @@ membership by contacting PICS.
 				<a href="ContractorView.action?id=<s:property value="[0].get('id')"/>">
 				<s:property value="[0].get('name')" /></a>
 			</td>
-			<td class="center"><s:date name="[0].get('dueDate')" format="M/d/yy" /></td>
+			<td class="center"><s:date name="[0].get('dueDate')" /></td>
 			<s:if test="permissions.admin">
 				<td><s:property value="get('invoiceAmount')"/></td>
 				<td><s:property value="get('facilityCount')"/></td>

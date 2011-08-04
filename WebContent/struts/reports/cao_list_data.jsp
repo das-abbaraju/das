@@ -7,12 +7,12 @@
 </s:if>
 <s:else>
 <pics:permission perm="ContractorDetails">
-	<div class="right"><a 
-		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-		href="javascript: download('ReportCAOList');" 
-		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+	<div class="right">
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="javascript: download('ReportCAOList');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			<s:text name="global.Download" />
+		</a>
+	</div>
 </pics:permission>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
@@ -21,16 +21,16 @@
 	<thead>
 	<tr>
 		<td></td>
-	    <th><a href="javascript: changeOrderBy('form1','a.name');" >Contractor</a></th>
-	    <td><a>Document Type</a></td>
+	    <th><a href="javascript: changeOrderBy('form1','a.name');" ><s:text name="global.Contractor" /></a></th>
+	    <td><s:text name="ReportCAOList.header.DocumentType" /></td>
 	    <pics:permission perm="AllOperators">
-		    <td><a href="javascript: changeOrderBy('form1','caoAccount.name');" >Scope</a></td>
+		    <td><a href="javascript: changeOrderBy('form1','caoAccount.name');"><s:text name="Audit.header.OperatorScope" /></a></td>
 	    </pics:permission>
-	    <td><a href="javascript: changeOrderBy('form1','cao.status');" >Status</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');" >Date</a></td>
-	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" >Expired Date</a></td>
+	    <td><a href="javascript: changeOrderBy('form1','cao.status');" ><s:text name="global.Status" /></a></td>
+	    <td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');"><s:text name="global.Date" /></a></td>
+	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" ><s:text name="ReportCAOList.header.ExpiredDate" /></a></td>
 	    <s:if test="permissions.picsEmployee">
-		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" >Safety Pro</a></td>
+		    <td><a href="javascript: changeOrderBy('form1','auditor.name');" ><s:text name="global.SafetyProfessional" /></a></td>
 	    </s:if>
 		<s:if test="permissions.accountName.startsWith('Roseburg')">
 			<td><s:text name="ContractorAccount.score" /></td>
@@ -65,7 +65,7 @@
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>
 		<s:if test="permissions.accountName.startsWith('Roseburg')">
-			<td><s:if test="get('scoreable') == 1"><s:property value="get('auditScore')"/></s:if><s:else>N/A</s:else></td>
+			<td><s:if test="get('scoreable') == 1"><s:property value="get('auditScore')"/></s:if><s:else><s:text name="global.NA" /></s:else></td>
 		</s:if>
 		<s:if test="showContact">
 			<td><s:property value="get('contactname')"/></td>

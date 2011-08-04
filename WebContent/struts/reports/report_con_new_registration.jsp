@@ -2,37 +2,54 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ReportNewRequestedContractor.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
-var downloadAll = '<s:text name="JS.ConfirmDownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>'
-function download() {
-	newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
-	popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
-}
-function showExcelUpload() {
-	url = 'ReportNewReqConImport.action';
-	title = 'Upload';
-	pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
-	fileUpload = window.open(url,title,pars);
-	fileUpload.focus();
-}
+$(function() {
+	$('#content').delegate('a.excel', 'click', function(e) {
+		e.preventDefault();
+		var num = $(this).attr('rel');
+		
+		var confirmed = false;
+		if (num > 500)
+			confirmed = confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));
+		else
+			confirmed = true;
+		
+		if (confirmed) {
+			newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
+			popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
+		}
+	});
+	
+	$('#test').delegate('.excelUpload', 'click', function(e) {
+		e.preventDefault();
+		
+		var url = 'ReportNewReqConImport.action';
+		var title = 'Upload';
+		var pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+		fileUpload = window.open(url,title,pars);
+		fileUpload.focus();
+	});
+});
 </script>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="ReportNewRequestedContractor.title" /></h1>
 <s:include value="filters.jsp" />
-<div class="right"><a class="excel" 
-	<s:if test="report.allRows > 500">onclick="return confirm(downloadAll);"</s:if> 
-		href="javascript: download();"
-		title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>"><s:text name="global.Download" /></a>
+<div class="right">
+	<a class="excel" rel="<s:property value="report.allRows" />" href="#"
+		title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>">
+		<s:text name="global.Download" />
+	</a>
 </div>
 <form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 	<div style="padding: 5px;">
-	<a href="RequestNewContractor.action" class="add"><s:text name="%{scope}.link.AddRegistrationRequest" /></a>
+	<a href="RequestNewContractor.action" class="add"><s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" /></a>
 	<s:if test="amSales">
-		<a class="add" onclick="showExcelUpload(); return false;" href="#"
-			title="<s:text name="javascript.OpensInNewWindow" />"><s:text name="%{scope}.link.ImportRegistrationRequests" /></a>
+		<a class="add excelUpload" href="#" title="<s:text name="javascript.OpensInNewWindow" />">
+			<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
+		</a>
 	</s:if>
 	</div>
 </form>
@@ -46,16 +63,16 @@ function showExcelUpload() {
 		<td><s:text name="ContractorRegistrationRequest.requestedBy" /></td>
 		<td><a href="javascript: changeOrderBy('form1','cr.creationDate');"><s:text name="global.CreationDate" /></a></td>
 		<td><a href="javascript: changeOrderBy('form1','cr.deadline');"><s:text name="ContractorRegistrationRequest.deadline" /></a></td>
-		<td><s:text name="%{scope}.label.FollowUp" /></td>
-		<td><s:text name="%{scope}.label.ContactedBy" /></td>
+		<td><s:text name="ReportNewRequestedContractor.label.FollowUp" /></td>
+		<td><s:text name="ReportNewRequestedContractor.label.ContactedBy" /></td>
 		<td>
-			<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');"><s:text name="%{scope}.label.On" /></a>
+			<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');"><s:text name="ReportNewRequestedContractor.label.On" /></a>
 		</td>
-		<td><s:text name="%{scope}.label.Attempts" /></td>
-		<td title="<s:text name="%{scope}.label.PotentialMatches" />"><s:text name="%{scope}.label.Matches" /></td>
-		<td><s:text name="%{scope}.label.InPics" /></td>
+		<td><s:text name="ReportNewRequestedContractor.label.Attempts" /></td>
+		<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />"><s:text name="ReportNewRequestedContractor.label.Matches" /></td>
+		<td><s:text name="ReportNewRequestedContractor.label.InPics" /></td>
 		<s:if test="filter.open == 0">
-			<td><s:text name="%{scope}.label.ClosedDate" /></td>
+			<td><s:text name="ReportNewRequestedContractor.label.ClosedDate" /></td>
 		</s:if>
 	</tr>
 	</thead>

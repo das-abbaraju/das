@@ -3,11 +3,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Delinquent Contractor Accounts</title>
+<title><s:text name="DelinquentContractorAccounts.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Delinquent Contractor Accounts</h1>
+<h1><s:text name="DelinquentContractorAccounts.title" /></h1>
 
 <s:include value="filters.jsp" />
 <div id="report_data">
