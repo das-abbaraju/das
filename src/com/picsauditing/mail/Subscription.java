@@ -83,7 +83,12 @@ public enum Subscription {
 			true, true, true),
 	OpenTasks("Contractor Open Tasks","Contractor open tasks long description",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Monthly},
-			false, true, false);
+			false, true, false),
+	RegistrationRequests(
+			"Registration Requests",
+			"This email notifies users of changes to the registration requests they have submitted  You can choose Event to receive these emails.",
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,
+					SubscriptionTimePeriod.Event }, true, false, false);
 
 	private String description;
 	private String longDescription;

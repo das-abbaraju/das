@@ -45,6 +45,7 @@ import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -56,6 +57,8 @@ import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.util.Strings;
@@ -416,7 +419,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
 
 		emailBuilder.setToAddresses(newContractor.getEmail());
-		emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+		
+		EmailSubscription sub = newContractor.getRequestedByUser()
+				.getEmailSubscription(Subscription.RegistrationRequests);
+		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+		
 		emailBuilder.addToken("con", newContractor);
 		emailBuilder.addToken("op", newContractor.getRequestedBy());
 		emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
@@ -478,7 +486,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
 			emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
-			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+			
+			EmailSubscription sub = newContractor.getRequestedByUser()
+					.getEmailSubscription(Subscription.RegistrationRequests);
+			if (sub == null	|| sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+				emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+
 			emailBuilder.addToken("con", newContractor);
 			emailBuilder.addToken("op", newContractor.getRequestedBy());
 			emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
@@ -902,7 +915,10 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setToAddresses(newContractor.getContact() + " <" + newContractor.getEmail() + ">");
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
-		emailQueue.setCcAddresses(cc);
+
+		EmailSubscription sub = newContractor.getRequestedByUser().getEmailSubscription(Subscription.RegistrationRequests);
+		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+			emailQueue.setCcAddresses(cc);
 
 		return emailQueue;
 	}

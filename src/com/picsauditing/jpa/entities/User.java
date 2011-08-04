@@ -30,6 +30,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.mail.Subscription;
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
@@ -420,6 +421,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setSubscriptions(List<EmailSubscription> subscriptions) {
 		this.subscriptions = subscriptions;
+	}
+
+	@Transient
+	public EmailSubscription getEmailSubscription(Subscription subscription) {
+		for (EmailSubscription emailSub : subscriptions) {
+			if (emailSub.getSubscription() == subscription)
+				return emailSub;
+		}
+		return null;
 	}
 
 	// TODO: change this to a Set from a List
