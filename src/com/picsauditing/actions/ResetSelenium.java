@@ -7,12 +7,15 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ResetSelenium extends PicsActionSupport {
+
+	@Anonymous
 	public String execute() throws Exception {
 		Database db = new Database();
 
