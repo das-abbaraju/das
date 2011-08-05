@@ -131,6 +131,10 @@
 			<result>struts/misc/expiration_date_synchronizer.jsp</result>
 		</action>
 
+		<action name="ResetSelenium" class="com.picsauditing.actions.ResetSelenium">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<!-- <action name="error404" class="com.picsauditing.actions.Error404"> 
 			<result>struts/errors/404error.jsp</result> </action> -->
 
