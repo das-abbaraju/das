@@ -86,7 +86,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		if (newRegistration) {
-			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", permissions.getPicsTollFreePhone()));
+			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", new Object[] { permissions
+					.getPicsTollFreePhone() }));
 		}
 
 		if ("copyBillingEmail".equals(button)) {
@@ -178,8 +179,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", permissions
-					.getPicsTollFreePhone()));
+			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { permissions
+					.getPicsTollFreePhone() }));
 			braintreeCommunicationError = true;
 			return SUCCESS;
 		}
@@ -218,7 +219,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	/** ******** DMI ******** */
 	public String importPQF() throws Exception {
 		findContractor();
-		
+
 		if (!isHasPQFImportAudit()) {
 			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=ContractorPaymentOptions.action");
