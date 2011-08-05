@@ -365,7 +365,8 @@ public class ContractorCron extends PicsActionSupport {
 		FlagColor overallColor = FlagColor.Green;
 		if (co.getContractorAccount().getAccountLevel().isBidOnly()
 				|| co.getContractorAccount().getStatus().isPending()
-				|| co.getContractorAccount().getStatus().isDeleted())
+				|| co.getContractorAccount().getStatus().isDeleted()
+				|| co.getContractorAccount().getStatus().isDeactivated())
 			overallColor = FlagColor.Clear;
 
 		for (FlagData change : changes) {
@@ -479,8 +480,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
-										.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
+										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -654,17 +655,15 @@ public class ContractorCron extends PicsActionSupport {
 							audit.setAssignedDate(new Date());
 						}
 					}
+					if (audit.getClosingAuditor() == null && audit.getAuditor() != null
+							&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
+						audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
+					}
 					break;
 				case (AuditType.WELCOME):
 					audit.setAuditor(contractor.getAuditor());
 					break;
 				}
-			}
-			if (audit.getAuditType().getId() == AuditType.DESKTOP 
-					&& audit.getClosingAuditor() == null 
-					&& audit.getAuditor() != null
-					&& audit.hasCaoStatusAfter(AuditStatus.Pending)) {
-				audit.setClosingAuditor(new User(audit.getIndependentClosingAuditor(audit.getAuditor())));
 			}
 		}
 	}
