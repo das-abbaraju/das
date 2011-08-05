@@ -148,7 +148,7 @@ public class TranslationETL extends PicsActionSupport {
 			List<BasicDynaBean> data = getData();
 			foundRows = data.size();
 
-			if (foundRows <= 2000) {
+			if (foundRows <= 5000) {
 				translations = buildXML(data);
 			} else
 				download = true;
