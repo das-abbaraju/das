@@ -123,9 +123,11 @@ public class Invoice extends Transaction {
 				taxItem.setInvoice(this);
 				taxItem.setAuditColumns(new User(User.SYSTEM));
 				getItems().add(taxItem);
+				setQbSync(true);
 				// else validate tax amount
 			} else if (!taxItem.getAmount().equals(taxFee.getTax(invoiceTotal))) {
 				taxItem.setAmount(taxFee.getTax(invoiceTotal));
+				setQbSync(true);
 			}
 
 			updateAmount();
