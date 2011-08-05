@@ -167,12 +167,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 					contractor.setProductRisk(product);
 
 				contractor.setAuditColumns(permissions);
-
-				if (LowMedHigh.None.equals(contractor.getSafetyRisk())
-						|| LowMedHigh.None.equals(contractor.getProductRisk()))
-					System.out.println(String.format("Contractor (%s %d) missing safety or product risk levels",
-							contractor.getName(), contractor.getId()));
-
 				accountDao.save(contractor);
 
 				if (!isSafetyOK || !isProductOK) {
