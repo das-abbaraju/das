@@ -62,7 +62,7 @@ $(function() {
 		<li class="calculatedAddress"><label><s:text name="State" />:</label> <s:textfield id="conAudit_state"
 			name="conAudit.state" size="6" value="%{conAudit.contractorAccount.state}" /></li>
 		<li><label><s:text name="global.ZipPostalCode" />:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
-		<li class="calculatedAddress"><label><s:text name="global.Country" />:</label> <s:select id="conAudit_country" name="conAudit.country"
+		<li class="calculatedAddress"><label><s:text name="Country" />:</label> <s:select id="conAudit_country" name="conAudit.country"
 			value="locale.country" list="countryList" listKey="isoCode" listValue="name"/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
 			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="%{scope}.message.AddressIsCorrect" /></li>

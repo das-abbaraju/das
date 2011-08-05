@@ -94,7 +94,7 @@ function changeState(state) {
 				<li><label>Address2:</label><s:textfield name="audit.address2"/></li>
 				<li><label>City:</label><s:textfield name="audit.city"/></li>
 				<li>
-					<label><s:text name="global.Country" />:</label>
+					<label><s:text name="Country" />:</label>
 					<s:select list="countryList" name="audit.country"
 							headerKey="" headerValue="- Country -"
 							listKey="isoCode" listValue="name"

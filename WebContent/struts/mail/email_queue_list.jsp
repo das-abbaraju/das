@@ -1,9 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Email Queue List</title>
+<title><s:text name="EmailQueueList.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../reports/reportHeader.jsp"/>
 <script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
@@ -31,8 +32,13 @@ $(function() {
 </script>
 </head>
 <body>
-<h1>Email Queue List</h1>
-<div class="alert">There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue. After we send those, we will start sending your email(s).</div>
+<h1><s:text name="EmailQueueList.title" /></h1>
+<div class="alert">
+	<s:text name="EmailQueueList.alert.EmailsInQueue">
+		<s:param value="%{emailsInQueue.size}" />
+	</s:text>
+	There are <b><s:property value="emailsInQueue.size()" /></b> emails before yours in the queue. After we send those, we will start sending your email(s).
+</div>
 
 <s:include value="../reports/filters_email.jsp" />
 <br />

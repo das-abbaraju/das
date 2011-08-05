@@ -211,7 +211,7 @@ function checkFee(activationFee, oldValue) {
 			size="20" />
 			<pics:fieldhelp>The city will display for PICS employees on the operator popup and also to contractors on the facility search.</pics:fieldhelp>
 		</li>
-		<li><label><s:text name="global.Country" />:</label> <s:select 
+		<li><label><s:text name="Country" />:</label> <s:select 
 			list="countryList"
 			id="opCountry"
 			name="country.isoCode" 

@@ -54,7 +54,7 @@ $(function() {
 			<li><label>Address:</label> <s:textfield name="center.address" size="35" /></li>
 			<li><label>City:</label> <s:textfield name="center.city"
 				size="20" /></li>
-			<li><label><s:text name="global.Country" />:</label>
+			<li><label><s:text name="Country" />:</label>
 				<s:select list="countryList" id="centerCountry" name="country.isoCode" 
 				listKey="isoCode" listValue="name" headerKey="" headerValue="- Country -"
 				value="center.country.isoCode" onchange="countryChanged(this.value)" /></li>

@@ -1,9 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title><s:property value="operator.name" /> Tags</title>
+<title><s:text name="OperatorTags.title.WithOperator"><s:param value="%{operator.name}" /></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
@@ -15,20 +16,22 @@ $(function() {
  	});
 	showAuditTypeRules();
 	showCategoryRules();
- });
-
-function checkRemove(id){
-	jQuery.get('ContractorTagsAjax.action',{tagID: id, button: 'removeNum'}, function(data){
-		jQuery.facebox(data);
+	
+	$('#operatorTagForm').delegate('.checkRemove', 'click', function(e) {
+		var id = $(this).attr('rel');
+		
+		$.get('ContractorTagsAjax.action', {tagID: id, button: 'removeNum'} , function(data) {
+			$.facebox(data);
+		});
 	});
-}
+ });
 
 function showAuditTypeRules() {
 	var data = {
 			'comparisonRule.operatorAccount.id': <s:property value="id"/>,
 			button: 'tags'
 	};
-	$('#auditrules').think({message: "Loading Related Audit Rules..." }).load('AuditTypeRuleTableAjax.action', data);
+	$('#auditrules').think({message: translate('JS.OperatorTags.message.LoadingRelatedRules', ['<s:text name="AuditType" />']) }).load('AuditTypeRuleTableAjax.action', data);
 }
 
 function showCategoryRules() {
@@ -36,33 +39,38 @@ function showCategoryRules() {
 			'comparisonRule.operatorAccount.id': <s:property value="id"/>,
 			button: 'tags'
 	};
-	$('#categoryrules').think({message: "Loading Related Category Rules..." }).load('CategoryRuleTableAjax.action', data);
+	$('#categoryrules').think({message: translate('JS.OperatorTags.message.LoadingRelatedRules', ['<s:text name="AuditCategory" />']) }).load('CategoryRuleTableAjax.action', data);
 }
 </script>
 </head>
 <body>
+
+<s:include value="../actionMessages.jsp" />
+
 <s:if test="permissions.admin">
 	<s:include value="opHeader.jsp"></s:include>
 </s:if>
 <s:else>
-	<h1>Define Contractor Tags</h1>
+	<h1><s:text name="OperatorTags.title.DefineContractorTags" /></h1>
 </s:else>
 
-<a href="OperatorTags.action?id=<s:property value="id" />">Refresh</a>
+<a href="OperatorTags.action?id=<s:property value="id" />"><s:text name="button.Refresh" /></a>
 <div id="warnConfirm"></div>
-<s:form>
+<s:form id="operatorTagForm">
 	<s:hidden name="id" />
 	<table class="report">
 		<thead>
 			<tr>
-				<th>Tag ID</th>
-				<th>Tag Name</th>
-				<th>Visible to <br /><s:property value="operator.name" /></th>
-				<th>Visible to <br />Contractors</th>
+				<th><s:text name="OperatorTags.header.TagID" /></th>
+				<th><s:text name="OperatorTags.header.TagName" /></th>
+				<th><s:text name="OperatorTags.header.VisibleTo"><s:param value="%{operator.name}" /></s:text></th>
+				<th><s:text name="OperatorTags.header.VisibleTo"><s:param value="%{getText('global.Contractors')}" /></s:text></th>
 				<s:if test="operator.corporate">
-					<th>Usable by<br />Sites</th>
+					<th><s:text name="OperatorTags.header.UsableBySites" /></th>
 				</s:if>
-				<pics:permission perm="ContractorTags" type="Delete"><th>Remove</th></pics:permission>
+				<pics:permission perm="ContractorTags" type="Delete">
+					<th><s:text name="button.Remove" /></th>
+				</pics:permission>
 			</tr>
 		</thead>
 		<s:set var="globalOperator" value="operator" />
@@ -82,8 +90,14 @@ function showCategoryRules() {
 				</pics:permission>
 				<s:else>
 					<td><s:property value="tag"/></td>
-					<td class="center"><s:if test="active">Yes</s:if><s:else>No</s:else></td>
-					<td class="center"><s:if test="visibleToContractor">Yes</s:if><s:else>No</s:else></td>
+					<td class="center">
+						<s:if test="active"><s:text name="YesNo.Yes" /></s:if>
+						<s:else><s:text name="YesNo.No" /></s:else>
+					</td>
+					<td class="center">
+						<s:if test="visibleToContractor"><s:text name="YesNo.Yes" /></s:if>
+						<s:else><s:text name="YesNo.No" /></s:else>
+					</td>
 				</s:else>
 				<pics:permission perm="ContractorTags" type="Delete">
 					<s:if test="#globalOperator.corporate && operator.id != permissions.accountId">
@@ -94,50 +108,52 @@ function showCategoryRules() {
 							<td><s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" /></td>
 						</s:else>
 					</s:if>
-					<s:if test="operator.id != permissions.accountId"><td>Can Not Remove</td></s:if>
-					<s:else><td><a href="#" onclick="checkRemove(<s:property value="id" />);">Remove</a></td></s:else>
+					<s:if test="operator.id != permissions.accountId"><td><s:text name="OperatorTags.message.CannotRemove" /></td></s:if>
+					<s:else><td><a href="#" class="checkRemove" rel="<s:property value="id" />"><s:text name="button.Remove" /></a></td></s:else>
 				</pics:permission>
 			</tr>
 		</s:iterator>
 		<s:if test="permissions.operatorCorporate">
 		<pics:permission perm="ContractorTags" type="Edit">
 			<tr>
-				<td>NEW</td>
+				<td><s:text name="OperatorTags.label.New" /></td>
 				<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
-					<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">Add New Tag</td>
+					<td colspan="<s:property value="operator.corporate ? 4 : 3"/>"><s:text name="OperatorTags.label.AddNewTag" /></td>
 			</tr>
 		</pics:permission>
 		</s:if>
 		<s:else>
 			<tr>
-				<td>NEW</td>
+				<td><s:text name="OperatorTags.label.New" /></td>
 				<td><s:textfield name="tags[%{tags.size}].tag" value="%{tag}" /></td>
-					<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">Add New Tag</td>
+				<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">
+					<s:text name="OperatorTags.label.AddNewTag" />
+				</td>
 			</tr>
 		</s:else>
 	</table>
 
 	<div>
-	<button type="submit" name="button" value="Save" class="picsbutton positive">Save</button>
+		<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
 	</div>
 </s:form>
 
 <pics:permission perm="ManageAuditTypeRules">
 	<br/>
-	<h3>Related Audit Type Rules</h3>
+	<h3><s:text name="OperatorTags.label.RelatedRules"><s:param value="%{getText('AuditType')}" /></s:text></h3>
 	<div id="auditrules"></div>
 	<s:if test="permissions.isCanAddRuleForOperator(operator)">
-		<a href="AuditTypeRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Audit Type Rule</a>
+		<a href="AuditTypeRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add"><s:text name="OperatorTags.link.AddRule"><s:param value="%{getText('AuditType')}" /></s:text></a>
 	</s:if>
 </pics:permission>
 
 <pics:permission perm="ManageCategoryRules">
 	<br/>
 	<br/>
-	<h3>Related Category Rules</h3>
+	<h3><s:text name="OperatorTags.label.RelatedRules"><s:param value="%{getText('AuditCategory')}" /></s:text></h3>
 	<div id="categoryrules"></div>
 	<s:if test="permissions.isCanAddRuleForOperator(operator)">
-		<a href="CategoryRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add">Add New Category Rule</a>
+		<a href="CategoryRuleEditor.action?button=New&ruleOperatorAccountId=<s:property value="operator.id" />" class="add"><s:text name="OperatorTags.link.AddRule"><s:param value="%{getText('AuditCategory')}" /></s:text></a>
 	</s:if>
 </pics:permission>
 

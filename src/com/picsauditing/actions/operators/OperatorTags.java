@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.OperatorTagDAO;
@@ -31,51 +32,17 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	private int ruleID;
 	private String ruleType;
 
-	public OperatorTags() {
-		this.subHeading = "Contractor Tags";
-	}
-
 	@Override
 	public void prepare() throws Exception {
-		loadPermissions();
 		findOperator();
 		tags = operatorTagDAO.findByOperator(id, false);
 	}
 
 	@Override
+	@RequiredPermission(value = OpPerms.ContractorTags)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		this.subHeading = getText("OperatorTags.title");
 
-		permissions.tryPermission(OpPerms.ContractorTags);
-
-		if ("save".equalsIgnoreCase(button)) {
-			permissions.tryPermission(OpPerms.ContractorTags, OpType.Edit);
-			for (OperatorTag tag : tags) {
-				if (tag != null) {
-					if (tag.getId() == 0) {
-						if (!Strings.isEmpty(tag.getTag())) {
-							// Add a new tag
-							tag.setActive(true);
-							tag.setOperator(operator);
-							tag.setAuditColumns(permissions);
-							operatorTagDAO.save(tag);
-						}
-					} else {
-						if (Strings.isEmpty(tag.getTag())) {
-							addActionError("Tag names cannot be blank");
-						} else {
-							// Update existing tag
-							tag.setAuditColumns(permissions);
-							operatorTagDAO.save(tag);
-						}
-					}
-				}
-			}
-			if (getActionErrors().size() == 0)
-				addActionMessage("Successfully saved tag" + (tags.size() > 1 ? "s" : ""));
-			tags = operatorTagDAO.findByOperator(id, false);
-		}
 		if ("removeNum".equalsIgnoreCase(button)) {
 			result = conTagDAO.numberInUse(tagID);
 		}
@@ -96,6 +63,38 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 			redirect("OperatorTags.action");
 		}
+
+		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Edit)
+	public String save() {
+		for (OperatorTag tag : tags) {
+			if (tag != null) {
+				if (tag.getId() == 0) {
+					if (!Strings.isEmpty(tag.getTag())) {
+						// Add a new tag
+						tag.setActive(true);
+						tag.setOperator(operator);
+						tag.setAuditColumns(permissions);
+						operatorTagDAO.save(tag);
+					}
+				} else {
+					if (Strings.isEmpty(tag.getTag())) {
+						addActionError(getText("OperatorTags.error.TagsCannotBeBlank"));
+					} else {
+						// Update existing tag
+						tag.setAuditColumns(permissions);
+						operatorTagDAO.save(tag);
+					}
+				}
+			}
+		}
+
+		if (getActionErrors().size() == 0)
+			addActionMessage(getText("OperatorTags.message.SuccessfullySaved", new Object[] { (Integer) tags.size() }));
+
+		tags = operatorTagDAO.findByOperator(id, false);
 
 		return SUCCESS;
 	}
