@@ -20,65 +20,92 @@ public class ResetSelenium extends PicsActionSupport {
 	public String execute() throws Exception {
 		Database db = new Database();
 
-		SelectSQL accounts = new SelectSQL("accounts");
-		accounts.addField("id");
-		accounts.addWhere("name LIKE 'Selenium Test%'");
-		List<BasicDynaBean> select = db.select(accounts.toString(), false);
+		SelectSQL accountSQL = new SelectSQL("accounts");
+		accountSQL.addField("id");
+		accountSQL.addField("type");
+		accountSQL.addField("name");
+		accountSQL.addWhere("name LIKE 'Selenium Test%'");
+		List<BasicDynaBean> select = db.select(accountSQL.toString(), false);
 
-		Set<Integer> contractors = new HashSet<Integer>();
+		Set<Integer> accounts = new HashSet<Integer>();
 		for (BasicDynaBean row : select) {
-			contractors.add(Integer.parseInt(row.get("id").toString()));
+			accounts.add(Integer.parseInt(row.get("id").toString()));
+			addActionMessage("Deleting " + row.get("type") + " - " + row.get("name"));
 		}
 
-		if (contractors.size() > 0) {
-			{
-				Delete t = new Delete("contractor_audit_operator_permission");
-				t.addJoin("JOIN contractor_audit_operator cao ON cao.id = t.caoID");
-				t.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
-				t.addJoin("WHERE ca.conID IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-				t.table = "contractor_audit_operator_workflow";
-				t.delete(db);
-			}
-			{
-				Delete t = new Delete("audit_cat_data");
-				t.addJoin("JOIN contractor_audit ca ON ca.id = t.auditID");
-				t.addJoin("WHERE ca.conID IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-				t.table = "contractor_audit_operator";
-				t.delete(db);
-				t.table = "pqfdata";
-				t.delete(db);
-			}
-			{
-				Delete t = new Delete("contractor_audit");
-				t.addJoin("WHERE t.conID IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-				t.table = "contractor_fee";
-				t.delete(db);
-				t.table = "contractor_trade";
-				t.delete(db);
-			}
-			{
-				Delete t = new Delete("invoice_item");
-				t.addJoin("JOIN invoice i ON i.id = t.invoiceID");
-				t.addJoin("WHERE i.accountID IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-			}
-			{
-				Delete t = new Delete("invoice");
-				t.addJoin("WHERE t.accountID IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-				t.table = "users";
-				t.delete(db);
-			}
-			{
-				Delete t = new Delete("contractor_info");
-				t.addJoin("WHERE t.id IN (" + Strings.implodeForDB(contractors, ",") + ")");
-				t.delete(db);
-				t.table = "accounts";
-				t.delete(db);
-			}
+		if (accounts.size() == 0) {
+			addActionMessage("Found 0 Selenium test accounts");
+			return SUCCESS;
+		}
+		String accountIDs = Strings.implodeForDB(accounts, ",");
+		{
+			Delete t = new Delete("contractor_audit_operator_permission");
+			t.addJoin("JOIN contractor_audit_operator cao ON cao.id = t.caoID");
+			t.addJoin("JOIN contractor_audit ca ON ca.id = cao.auditID");
+			t.addJoin("WHERE ca.conID IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "contractor_audit_operator_workflow";
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("audit_cat_data");
+			t.addJoin("JOIN contractor_audit ca ON ca.id = t.auditID");
+			t.addJoin("WHERE ca.conID IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "contractor_audit_operator";
+			t.delete(db);
+			t.table = "pqfdata";
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("contractor_audit");
+			t.addJoin("WHERE t.conID IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "contractor_fee";
+			t.delete(db);
+			t.table = "contractor_trade";
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("generalcontractors");
+			t.addJoin("WHERE t.genID IN (" + accountIDs + ") OR t.subID IN (" + accountIDs + ")");
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("facilities");
+			t.addJoin("WHERE t.corporateID IN (" + accountIDs + ") OR t.opID IN (" + accountIDs + ")");
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("invoice_item");
+			t.addJoin("JOIN invoice i ON i.id = t.invoiceID");
+			t.addJoin("WHERE i.accountID IN (" + accountIDs + ")");
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("invoice");
+			t.addJoin("WHERE t.accountID IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "users";
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("accounts");
+			t.addJoin("WHERE t.id IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "operators";
+			t.delete(db);
+			t.table = "contractor_info";
+			t.delete(db);
+		}
+		{
+			Delete t = new Delete("accounts");
+			t.addJoin("WHERE t.id IN (" + accountIDs + ")");
+			t.delete(db);
+			t.table = "operators";
+			t.delete(db);
+			t.table = "contractor_info";
+			t.delete(db);
 		}
 
 		return SUCCESS;
@@ -107,10 +134,9 @@ public class ResetSelenium extends PicsActionSupport {
 			return sql;
 		}
 
-		public int delete(Database db) throws SQLException {
-			System.out.println(toString() + ";");
-			// return 1;
-			return db.executeUpdate(toString());
+		public void delete(Database db) throws SQLException {
+			int changes = db.executeUpdate(toString());
+			addActionMessage(changes + " from " + table);
 		}
 	}
 }
