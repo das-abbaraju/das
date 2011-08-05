@@ -11,7 +11,7 @@ public enum ContractorRegistrationStep {
 
 		if (contractor.getTrades().size() == 0)
 			return Trades;
-		if (contractor.getSafetyRisk().equals(LowMedHigh.None))
+		if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly())
 			return Risk;
 		if (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))
 			return Risk;
@@ -19,7 +19,7 @@ public enum ContractorRegistrationStep {
 			return Facilities;
 		if (!contractor.isHasFreeMembership() && !contractor.isPaymentMethodStatusValid())
 			return Payment;
-		
+
 		if (contractor.getStatus().isActive())
 			return Done;
 		if (contractor.getStatus().isDemo())
@@ -27,16 +27,16 @@ public enum ContractorRegistrationStep {
 
 		return Confirmation;
 	}
-	
+
 	static private boolean containsOperator(List<ContractorOperator> cos) {
 		if (cos == null)
 			return false;
-		
+
 		for (ContractorOperator co : cos) {
 			if (co.getOperatorAccount().isOperator())
 				return true;
 		}
-		
+
 		return false;
 	}
 
@@ -67,7 +67,7 @@ public enum ContractorRegistrationStep {
 	public boolean isDone() {
 		return this == Done;
 	}
-	
+
 	public boolean isHasNext() {
 		return this.ordinal() < Confirmation.ordinal();
 	}
@@ -75,11 +75,11 @@ public enum ContractorRegistrationStep {
 	public boolean isHasPrevious() {
 		return this.ordinal() > EditAccount.ordinal();
 	}
-	
+
 	public boolean isShowTop() {
 		return Trades == this || EditAccount == this || Facilities == this || Payment == this;
 	}
-	
+
 	public boolean isShowBottom() {
 		return Risk == this;
 	}
