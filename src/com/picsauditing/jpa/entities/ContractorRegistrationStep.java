@@ -8,6 +8,9 @@ public enum ContractorRegistrationStep {
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
 		if (contractor == null || contractor.getId() == 0)
 			return Register;
+		
+		if (contractor.getStatus().isDemo())
+			return Done;
 
 		if (contractor.getTrades().size() == 0)
 			return Trades;
@@ -21,8 +24,6 @@ public enum ContractorRegistrationStep {
 			return Payment;
 
 		if (contractor.getStatus().isActive())
-			return Done;
-		if (contractor.getStatus().isDemo())
 			return Done;
 
 		return Confirmation;
