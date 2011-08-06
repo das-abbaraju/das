@@ -90,7 +90,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	// PicsActionSupport file?
 	public static final String getVersion() {
 		// Released 2011-07-05
-		return "6.3";
+		return "6.3.1";
 	}
 
 	public boolean isLoggedIn(boolean anonymous) {
