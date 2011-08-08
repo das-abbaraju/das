@@ -30,7 +30,7 @@ import com.picsauditing.util.Strings;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditTransformOption  extends BaseTable implements java.io.Serializable {
 	private String extractPattern;
-	private int extractIndex = -1;
+	private int extractIndex = 0;
 
 	private String dateFromPattern;
 	private String dateToPattern;
@@ -55,6 +55,28 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 	// Load attributes
 	AuditQuestion sourceQuestion;
 	AuditQuestion destinationQuestion;
+	
+	public void copy(AuditTransformOption source) {
+		if (this.id == 0) this.id = source.id;
+		this.alternateAnswerOkay = source.alternateAnswerOkay;
+		this.answerMapOptions = source.answerMapOptions;
+		this.commentResponse = source.commentResponse;
+		this.comparison = source.comparison;
+		this.comparisonQuestions = source.comparisonQuestions;
+		this.dateFromPattern = source.dateFromPattern;
+		this.dateToPattern = source.dateToPattern;
+		this.decimalPlaces = source.decimalPlaces;
+		this.destinationQuestion = source.destinationQuestion;
+		this.extractIndex = source.extractIndex;
+		this.extractPattern = source.extractPattern;
+		this.level = source.level;
+		this.multiplier = source.multiplier;
+		this.reformatFromPattern = source.reformatFromPattern;
+		this.reformatToPattern = source.reformatToPattern;
+		this.searchValue = source.searchValue;
+		this.somethingOrNothing = source.somethingOrNothing;
+		this.sourceQuestion = source.sourceQuestion;
+	}
 	
 	public String getExtractPattern() {
 		return extractPattern;
@@ -314,5 +336,26 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 		}
 		
 		return workingAnswer;
+	}
+	
+	@Transient
+	public String getDescription() {
+		String description = "";
+		if (!comparison.isComparison()) {
+			if (somethingOrNothing) description += "Any Response=Yes ";
+			if (searchValue != null) description +="Search for \"" + searchValue + "\" ";
+			if (extractPattern != null) description +="Extract item " + extractIndex + " from \"" + extractPattern + "\" ";
+			if (dateToPattern != null) description +="Format date to \"" + dateToPattern + "\" ";
+			if (decimalPlaces >= 0) description +="Format as a number ";
+			if (reformatToPattern != null) description +="Reformat to \"" + reformatToPattern + "\" ";
+			if (answerMapOptions != null) description +="Map to \"" + answerMapOptions + "\" ";
+			if (description.length() == 0) description = "Take text without change ";
+		} else {
+			description = "Do a " + comparison + " comparison with responses " + comparisonQuestions + " ";
+		}
+		
+		if (isCommentResponse()) description += "and place in answer comment";
+
+		return description;
 	}
 }

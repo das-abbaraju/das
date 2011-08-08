@@ -563,7 +563,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.extractOption = extractOption;
 	}
 
-	@OneToMany(mappedBy = "sourceQuestion")
+	@OneToMany(mappedBy = "sourceQuestion", cascade={CascadeType.REMOVE})
 	public List<AuditTransformOption> getTransformOptions() {
 		return transformOptions;
 	}

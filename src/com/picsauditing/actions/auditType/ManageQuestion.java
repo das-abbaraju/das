@@ -1,5 +1,6 @@
 package com.picsauditing.actions.auditType;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,12 +10,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditExtractOptionDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
+import com.picsauditing.dao.AuditTransformOptionDAO;
+import com.picsauditing.importpqf.ImportComparison;
+import com.picsauditing.importpqf.ImportStopAt;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditExtractOption;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditTransformOption;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.util.Strings;
 
@@ -24,11 +31,21 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
+	@Autowired
+	protected AuditExtractOptionDAO auditExtractOptionDAO;
+	@Autowired
+	protected AuditTransformOptionDAO auditTransformOptionDAO;
 	
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 	private List<AuditOptionGroup> optionTypes;
 	private int groupID;
+	private boolean extractOptionDefined;
+	private boolean startAtBeginning;
+	private String startingPoint = "";
+	private boolean collectAsLines;
+	private String stoppingPoint = "";
+	private String stopAt = ImportStopAt.None.toString();
 
 	@Override
 	protected void load(int id) {
@@ -48,6 +65,18 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			requiredQuestionID = question.getRequiredQuestion().getId();
 		if (question.getVisibleQuestion() != null)
 			visibleQuestionID = question.getVisibleQuestion().getId();
+		extractOptionDefined = (question.getExtractOption() != null);
+		if (extractOptionDefined) {
+			stopAt = question.getExtractOption().getStopAt().toString();
+			startAtBeginning = question.getExtractOption().isStartAtBeginning();
+			startingPoint = question.getExtractOption().getStartingPoint();
+			collectAsLines = question.getExtractOption().isCollectAsLines();
+			stoppingPoint  = question.getExtractOption().getStoppingPoint();
+			if (startingPoint == null)
+				startingPoint = "";
+			if (stoppingPoint == null)
+				stoppingPoint = "";
+		}
 		load(question.getCategory());
 	}
 
@@ -109,6 +138,36 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
 			if (question.getScoreWeight() > 0)
 				question.setRequired(true);
+			
+			if (extractOptionDefined) {
+				AuditExtractOption option = question.getExtractOption();
+				if (option == null) {
+					option = new AuditExtractOption();
+					option.setQuestion(question);
+					auditExtractOptionDAO.save(option);
+				}
+				option.setCollectAsLines(collectAsLines);
+				option.setStopAt(ImportStopAt.valueOf(stopAt));
+				option.setStartAtBeginning(startAtBeginning);
+				startingPoint = startingPoint.trim();
+				if (startingPoint.length() == 0)
+					option.setStartingPoint(null);
+				else
+					option.setStartingPoint(startingPoint);
+				stoppingPoint = stoppingPoint.trim();
+				if (stoppingPoint.length() == 0)
+					option.setStoppingPoint(null);
+				else
+					option.setStoppingPoint(stoppingPoint);
+				question.setExtractOption(option);
+			} else {
+				AuditExtractOption option = question.getExtractOption();
+				if (option != null) {
+					option.setQuestion(null);
+					auditExtractOptionDAO.remove(option.getId());
+				}
+			question.setExtractOption(null);
+			}
 
 			question = auditQuestionDAO.save(question);
 			id = question.getCategory().getId();
@@ -130,6 +189,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			id = question.getCategory().getId();
 			auditQuestionDAO.deleteData(AuditCategoryRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.deleteData(AuditTypeRule.class, "question.id = " + question.getId());
+			if (question.getExtractOption() != null) {
+				auditExtractOptionDAO.remove(question.getExtractOption().getId());
+			}
 			auditQuestionDAO.remove(question.getId());
 
 			recalculateCategory();
@@ -255,5 +317,67 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
 	public void setGroupID(int groupID) {
 		this.groupID = groupID;
+	}
+	
+	public boolean isExtractable() {
+		if (question != null && question.getId() != 0 && question.getAuditType().isExtractable())
+			return true;
+		return false;
+	}
+
+	public boolean isExtractOptionDefined() {
+		return extractOptionDefined;
+	}
+
+	public void setExtractOptionDefined(boolean extractOptionDefined) {
+		this.extractOptionDefined = extractOptionDefined;
+	}
+
+	public boolean isStartAtBeginning() {
+		return startAtBeginning;
+	}
+
+	public void setStartAtBeginning(boolean startAtBeginning) {
+		this.startAtBeginning = startAtBeginning;
+	}
+
+	public String getStartingPoint() {
+		return startingPoint;
+	}
+
+	public void setStartingPoint(String startingPoint) {
+		this.startingPoint = startingPoint;
+	}
+
+	public boolean isCollectAsLines() {
+		return collectAsLines;
+	}
+
+	public void setCollectAsLines(boolean collectAsLines) {
+		this.collectAsLines = collectAsLines;
+	}
+
+	public String getStoppingPoint() {
+		return stoppingPoint;
+	}
+
+	public void setStoppingPoint(String stoppingPoint) {
+		this.stoppingPoint = stoppingPoint;
+	}
+
+	public String getStopAt() {
+		return stopAt.toString();
+	}
+
+	public void setStopAt(String stopAt) {
+		this.stopAt = stopAt;
+	}
+
+	public ImportStopAt[] getStopAtOptions() {
+		return ImportStopAt.values();
+	}
+	
+	public List<AuditTransformOption> getTransformOptions() {
+		return question.getTransformOptions();
 	}
 }

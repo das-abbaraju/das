@@ -286,6 +286,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public boolean isAnnualAddendum() {
 		return (id == ANNUALADDENDUM);
 	}
+	
+	@Transient
+	public boolean isExtractable() {
+		return (id == CAN_QUAL_PQF);
+	}
 
 	@Override
 	public int compareTo(AuditType o) {

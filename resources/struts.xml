@@ -1351,6 +1351,12 @@
 				struts/audits/audit_selectType.jsp
 			</result>
 		</action>
+
+		<action name="ManageTransformOption"
+			class="com.picsauditing.actions.auditType.ManageTransformOption">
+			<result>struts/audits/manage_transform_option.jsp</result>
+		</action>
+
 		<!-- TODO: find a way to consolidate these - is there an "insensitive" 
 			flag on wildcards? -->
 		<action name="ManageOptionGroup"

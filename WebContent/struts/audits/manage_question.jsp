@@ -362,6 +362,59 @@ function showOption() {
 		</li>
 	</ol>
 	</fieldset>
+	<s:if test="extractable">
+		<fieldset class="form">
+		<h2 class="formLegend">Extract Options</h2>
+		<ol>
+			<li><label>Define Extract Options:</label>
+				<s:checkbox name="extractOptionDefined" value="extractOptionDefined"/>
+			</li>
+			<li><label>Start Search at Beginning:</label>
+				<s:checkbox name="startAtBeginning" value="startAtBeginning"/>
+			</li>
+			<li><label>Start Searching For Question After:</label>
+				<s:textfield name="startingPoint" />
+			</li>
+			<li><label>Collect Response As Lines:</label>
+				<s:checkbox name="collectAsLines" value="collectAsLines"/>
+			</li>
+			<li><label>Stop Collecting Response At:</label>
+				<s:select name="stopAt" list="stopAtOptions" value="stopAt"></s:select>
+			</li>
+			<li><label>Stop Processing Question At This Text:</label>
+				<s:textfield name="stoppingPoint" />
+			</li>
+		</ol>
+		</fieldset>
+		<fieldset class="form">
+		<h2 class="formLegend">Transforms</h2>
+		<ol>
+		<s:if test="transformOptions.size > 0">
+			<li>
+				<table class="report">
+				<thead>
+				<tr>
+					<th>Description</th>
+					<th>Dest. Question</th>
+					<th></th>
+				</tr>
+				</thead>
+				<s:iterator value="transformOptions" var="t">
+					<tr>
+						<td><s:property value="#t.description.length()>70 ? #t.description.substring(0,67) + '...' : #t.description"/></td>
+						<td><a href="ManageQuestion.action?id=<s:property value="#t.destinationQuestion.id"/>"><s:property value="#t.destinationQuestion.name.toString().length()>70 ? #t.destinationQuestion.name.toString().substring(0,67) + '...' : #t.destinationQuestion.name"/></a></td>
+						<td><a href="ManageTransformOption.action?id=<s:property value="question.id"/>&transformId=<s:property value="#t.id"/>">Edit</a></td>
+					</tr>
+				</s:iterator>
+				</table>
+			</li>
+		</s:if>
+		<li>
+			<a href="ManageTransformOption.action?id=<s:property value="id"/>" class="add">Add Transform</a>
+		</li>
+		</ol>
+		</fieldset>
+	</s:if>
 	<fieldset class="form submit">
 		<div>
 			<button class="picsbutton positive" name="button" type="submit" value="save">Save</button>
