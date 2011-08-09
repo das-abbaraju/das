@@ -31,6 +31,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
 	public static final int OFFICE = 3;
+	public static final int FIELD = 5;
 	public static final int DA = 6;
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;

@@ -1,5 +1,6 @@
 package com.picsauditing.auditBuilder;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -139,7 +140,16 @@ public class AuditBuilder {
 				 */
 				// TODO testing updating categories and caos for a manually added audit
 			} else {
-				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
+				Set<AuditCategory> categories = null;
+				if (conAudit.getAuditType().getId() == AuditType.FIELD) {
+					ArrayList<OperatorAccount> list = new ArrayList<OperatorAccount>();
+					for (ContractorAuditOperator cao:conAudit.getOperators()) {
+						list.add(cao.getOperator());
+					}
+					categories = categoriesBuilder.calculate(conAudit, list);
+				} else {
+					categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
+				}
 				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 					// Import PQF does not have an audit type detail because it is manually added, and the audit is an
 					// exception in that the only CAO is PICS Global. The audit_cat_data need to be generated here. We
