@@ -68,11 +68,13 @@
 									<!-- <td><s:property value="#cao.status" /></td> -->
 									<td><span class="<s:property value="#stat" /> <s:property value="#cao.status" />"><s:property value="#cao.status" /></span></td>
 									<td class="center">
-										<a title="<s:property value="caoCert.get(#cao).description"/>"
-											href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
-											target="_BLANK">
-											<img src="images/icon_insurance.gif"/>
-										</a>
+										<s:if test="caoCert.get(#cao).id">
+											<a title="<s:property value="caoCert.get(#cao).description"/>"
+												href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
+												target="_BLANK">
+												<img src="images/icon_insurance.gif"/>
+											</a>
+										</s:if>
 									</td>
 								</tr>
 								</s:iterator>

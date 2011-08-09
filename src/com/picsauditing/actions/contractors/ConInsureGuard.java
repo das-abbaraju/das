@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -51,8 +52,18 @@ public class ConInsureGuard extends ContractorActionSupport {
 		for (ContractorAudit ca : contractor.getAudits()) {
 			if (ca.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
 				for (ContractorAuditOperator cao : ca.getOperatorsVisible()) {
-					if (permissions.canSeeAudit(ca.getAuditType()))
-						policiesMap.get(cao.getStatus()).put(ca, ca.getOperatorsVisible());
+					if (permissions.canSeeAudit(ca.getAuditType())) {
+						List<ContractorAuditOperator> list = new ArrayList<ContractorAuditOperator>();
+						for (ContractorAuditOperator cao2 : ca.getOperatorsVisible()) {
+							if (permissions.isOperatorCorporate()) {
+								if (cao2.isVisibleTo(permissions)) 
+									list.add(cao2);
+							} else {
+								list.add(cao2);
+							}
+						}
+						policiesMap.get(cao.getStatus()).put(ca, list);
+					}
 				}
 			}
 		}
