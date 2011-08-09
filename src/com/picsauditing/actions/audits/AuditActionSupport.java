@@ -352,7 +352,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (permissions.isContractor()) {
 			boolean canEdit = type.isCanContractorEdit();
 			if (conAudit.getAuditType().getWorkFlow().getId() == 5
-					|| conAudit.getAuditType().getWorkFlow().getId() == 3) {
+					|| conAudit.getAuditType().getWorkFlow().getId() == 3
+					|| conAudit.getAuditType().getId() == AuditType.PQF_SUNCOR) {
 				if (canEdit) {
 					canEdit = false;
 					for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
