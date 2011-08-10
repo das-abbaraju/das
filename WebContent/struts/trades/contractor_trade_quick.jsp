@@ -1,9 +1,4 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<html>
-<head>
-<title></title>
-</head>
-<body>
 <s:if test="trade != null">
 <div id="trade-view-single" 
 	<s:if test="trade.id > 0">class="current"</s:if>>
@@ -80,4 +75,3 @@
 </s:form>
 </div>
 </s:if>
-</body>
