@@ -16,7 +16,7 @@ import com.picsauditing.util.Strings;
 public class ManageOptionValue extends ManageOptionComponent {
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
-	
+
 	private AuditOptionValue value;
 
 	@Override
@@ -35,8 +35,10 @@ public class ManageOptionValue extends ManageOptionComponent {
 			addActionError("Missing answer");
 
 		if (getActionErrors().size() == 0) {
-			if (Strings.isEmpty(value.getUniqueCode()))
-				value.setUniqueCode(null);
+			if (!Strings.isEmpty(value.getUniqueCode()) && value.getUniqueCode().contains(" ")) {
+				value.setUniqueCode(value.getUniqueCode().replaceAll(" ", ""));
+				addActionMessage("Spaces were removed from the unique code");
+			}
 
 			value.setGroup(group);
 			value.setAuditColumns(permissions);
@@ -59,7 +61,7 @@ public class ManageOptionValue extends ManageOptionComponent {
 			group.getValues().remove(value);
 			auditOptionValueDAO.remove(value);
 			addActionMessage("Option value " + valueName + " successfully deleted.");
-			
+
 			// Renumber the remaining
 			int count = 1;
 			for (AuditOptionValue v : group.getValues()) {
@@ -93,14 +95,14 @@ public class ManageOptionValue extends ManageOptionComponent {
 	public void setValue(AuditOptionValue value) {
 		this.value = value;
 	}
-	
+
 	public int getNextNumber() {
 		int number = 0;
 		for (AuditOptionValue value : group.getValues()) {
 			if (number < value.getNumber())
 				number = value.getNumber();
 		}
-		
+
 		return number + 1;
 	}
 }

@@ -6,6 +6,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ManageOptionGroup extends ManageOptionComponent {
@@ -16,6 +17,11 @@ public class ManageOptionGroup extends ManageOptionComponent {
 	public String save() throws Exception {
 		if (group.getName() == null || group.getName().toString().isEmpty())
 			addActionError("Missing name");
+
+		if (!Strings.isEmpty(group.getUniqueCode()) && group.getUniqueCode().contains(" ")) {
+			group.setUniqueCode(group.getUniqueCode().replaceAll(" ", ""));
+			addActionMessage("Spaces were removed in the unique code");
+		}
 
 		if (getActionErrors().size() == 0) {
 			group.setAuditColumns(permissions);
