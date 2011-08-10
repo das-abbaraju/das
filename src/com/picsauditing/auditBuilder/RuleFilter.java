@@ -41,6 +41,7 @@ public class RuleFilter {
 		accountLevels.add(contractor.getAccountLevel());
 
 		trades.add(null);
+		// TODO Undo this and try to debug AuditRuleCache.Trades.getData() line 152 instead
 		HashSet<Trade> allTrades = new HashSet<Trade>();
 		for (ContractorTrade ct : contractor.getTrades()) {
 			Trade trade = ct.getTrade();
