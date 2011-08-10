@@ -398,6 +398,11 @@ public class UsersManage extends PicsActionSupport {
 		String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
+			if (user.equals(user.getAccount().getPrimaryContact())) {
+				addActionError("Cannot remove the primary user for " + user.getAccount().getName()
+						+ ". Please switch the primary user of this account and then attempt to delete them.");
+				return SUCCESS;
+			}
 			if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
 				addActionError(message);
 				return SUCCESS;
@@ -416,14 +421,6 @@ public class UsersManage extends PicsActionSupport {
 			}
 			if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
 				addActionError(message);
-				return SUCCESS;
-			}
-			if (user.getAccount().getPrimaryContact() != null
-					&& user.getId() == user.getAccount().getPrimaryContact().getId()) {
-				// Putting primary user check last so that primary users
-				// aren't switched that can't be deleted
-				addActionError("Cannot remove the primary user for " + user.getAccount().getName()
-						+ ". Please switch the primary user of this account and then attempt to delete them.");
 				return SUCCESS;
 			}
 		}
