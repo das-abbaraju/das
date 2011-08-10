@@ -593,7 +593,7 @@ table.report tr.hurdle td {
 						style="margin: 5px auto;" value="Synchronize" />
 					<s:if test="contractor.lastRecalculation != null">
 						<br /><s:text name="ContractorView.LastSync"><s:param value="%{contractor.lastRecalculation}" /></s:text>
-					</s:if><s:property value="key"/>
+					</s:if>
 				</s:form>
 			</div>
 		</div>
