@@ -104,7 +104,7 @@ public class Cron extends PicsActionSupport {
 	protected boolean flagsOnly = false;
 
 	private Database db = new Database();
-	
+
 	@Anonymous
 	public String execute() throws Exception {
 
@@ -457,7 +457,8 @@ public class Cron extends PicsActionSupport {
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
+						((ContractorAccount) i.getAccount()).getPayingFacilities());
 				InvoiceItem lateFeeItem = new InvoiceItem(fee);
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
@@ -574,14 +575,16 @@ public class Cron extends PicsActionSupport {
 			}
 		}
 
-		// Sending list of global changes to managers@picsauditing.com
-		emailBuilder.clear();
-		emailBuilder.addToken("changes", data);
-		emailBuilder.setToAddresses("managers@picsauditing.com");
-		EmailQueue email = emailBuilder.build();
-		email.setPriority(30);
-		email.setViewableById(Account.PicsID);
-		emailQueueDAO.save(email);
+		if (!data.isEmpty()) {
+			// Sending list of global changes to managers@picsauditing.com
+			emailBuilder.clear();
+			emailBuilder.addToken("changes", data);
+			emailBuilder.setToAddresses("managers@picsauditing.com");
+			EmailQueue email = emailBuilder.build();
+			email.setPriority(30);
+			email.setViewableById(Account.PicsID);
+			emailQueueDAO.save(email);
+		}
 	}
 
 	public void sendObsoleteScheduleAuditEmail() throws Exception {
@@ -598,12 +601,12 @@ public class Cron extends PicsActionSupport {
 
 		selectCons.addWhere("rr.holdDate <= CURRENT_TIMESTAMP");
 		selectCons.addWhere("rr.open = true");
-		
+
 		List<BasicDynaBean> cons = db.select(selectCons.toString(), false);
 		for (BasicDynaBean c : cons) {
 
-			ContractorRegistrationRequest conReq = contractorRegistrationRequestDAO.find((Integer) c.get("id"));			
-			
+			ContractorRegistrationRequest conReq = contractorRegistrationRequestDAO.find((Integer) c.get("id"));
+
 			conReq.setNotes("\n" + maskDateFormat(conReq.getHoldDate())
 					+ " - System - Request status changed from Hold to Active." + "\n" + "\n" + conReq.getNotes());
 			conReq.setHoldDate(null);
