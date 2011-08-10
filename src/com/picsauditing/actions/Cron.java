@@ -549,6 +549,9 @@ public class Cron extends PicsActionSupport {
 		Database db = new Database();
 		List<BasicDynaBean> data = db.select(query.toString(), true);
 
+		if (data.isEmpty())
+			return;
+		
 		// Sorting results into buckets by AM to add as tokens into the email
 		Map<String, List<DynaBean>> amMap = new HashMap<String, List<DynaBean>>();
 		for (DynaBean bean : data) {
@@ -575,16 +578,14 @@ public class Cron extends PicsActionSupport {
 			}
 		}
 
-		if (!data.isEmpty()) {
-			// Sending list of global changes to managers@picsauditing.com
-			emailBuilder.clear();
-			emailBuilder.addToken("changes", data);
-			emailBuilder.setToAddresses("managers@picsauditing.com");
-			EmailQueue email = emailBuilder.build();
-			email.setPriority(30);
-			email.setViewableById(Account.PicsID);
-			emailQueueDAO.save(email);
-		}
+		// Sending list of global changes to managers@picsauditing.com
+		emailBuilder.clear();
+		emailBuilder.addToken("changes", data);
+		emailBuilder.setToAddresses("managers@picsauditing.com");
+		EmailQueue email = emailBuilder.build();
+		email.setPriority(30);
+		email.setViewableById(Account.PicsID);
+		emailQueueDAO.save(email);
 	}
 
 	public void sendObsoleteScheduleAuditEmail() throws Exception {
