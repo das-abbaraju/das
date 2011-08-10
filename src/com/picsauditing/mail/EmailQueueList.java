@@ -3,9 +3,12 @@ package com.picsauditing.mail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -17,21 +20,19 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmailQueueList extends ReportActionSupport {
+	@Autowired
+	protected EmailQueueDAO emailQueueDAO;
+	
 	protected List<EmailQueue> emails = null;
 	protected List<EmailQueue> emailsInQueue = new ArrayList<EmailQueue>();
 	protected EmailQueue preview;
 	protected int id;
-	protected EmailQueueDAO emailQueueDAO;
 	
 	protected SelectSQL sql = new SelectSQL("email_queue q");
 	protected ReportFilterEmail filter = new ReportFilterEmail();
 
-	public EmailQueueList(EmailQueueDAO emailQueueDAO) {
-		this.emailQueueDAO = emailQueueDAO;
-		orderByDefault = "q.priority DESC, q.emailID";
-	}
-	
 	protected void buildQuery() {
+		orderByDefault = "q.priority DESC, q.emailID";
 		sql.addJoin("LEFT JOIN accounts a ON a.id = q.conID");
 		sql.addJoin("LEFT JOIN email_template t ON t.id = q.templateID");
 		
@@ -55,23 +56,8 @@ public class EmailQueueList extends ReportActionSupport {
 		addFilterToSQL();
 	}
 
+	@RequiredPermission(value=OpPerms.EmailQueue)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		
-		permissions.tryPermission(OpPerms.EmailQueue);
-		
-		if ("delete".equals(button)) {
-			permissions.tryPermission(OpPerms.EmailQueue, OpType.Delete);
-			emailQueueDAO.remove(id);
-			return BLANK;
-		}
-		if ("preview".equals(button)) {
-			permissions.tryPermission(OpPerms.EmailQueue);
-			preview = emailQueueDAO.find(id);
-			return "preview";
-		}
-		
 		report.setLimit(50);
 		getFilter().setPermissions(permissions);
 		buildQuery();
@@ -82,6 +68,18 @@ public class EmailQueueList extends ReportActionSupport {
 					+ " OR (t.priority = " + data.get(0).get("priority") + " AND t.id < "
 					+ data.get(0).get("emailID") + "))", 50);
 		return SUCCESS;
+	}
+	
+	@RequiredPermission(value=OpPerms.EmailQueue)
+	public String previewAjax() {
+		preview = emailQueueDAO.find(id);
+		return "preview";
+	}
+	
+	@RequiredPermission(value=OpPerms.EmailQueue, type=OpType.Delete)
+	public String delete() {
+		emailQueueDAO.remove(id);
+		return BLANK;
 	}
 	
 	public void addFilterToSQL() {
