@@ -18,12 +18,6 @@ function loadTradeCallback() {
 	setupCluetip();
 }
 
-function setupTree() {
-	$.extend(true, $.jstree.defaults, {
-		"plugins": ["themes", "types", "json_data", "ui", "sort"]
-	});
-}
-
 function setupCluetip() {
 	$('a.CTInstructions').cluetip( {
 		local: true,
@@ -51,7 +45,7 @@ $(function() {
 		e.preventDefault();
 		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
-
+	
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
 		e.preventDefault();
 	}).delegate('#trade-form .save', 'click', function(e) {

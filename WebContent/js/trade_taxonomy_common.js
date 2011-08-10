@@ -10,14 +10,32 @@ function placeholder() {
 $(function() {
 	var ROOT_NODE = 5; /* Trade.TOP_ID */
 	var oldform = $('#trade-view').html();
+	
+	if (typeof(loadTradeCallback) === undefined) {
+		loadTradeCallback = function() { }
+	}
 
 	if (typeof(setupTree) == 'function') {
 		setupTree();
+	} else {
+		$.extend(true, $.jstree.defaults, {
+			"plugins": ["themes", "types", "json_data", "ui", "sort"]
+		});
 	}
 
 	$('#trade-nav').tabs();
 	
 	$('#trade-view').delegate('a.trade', 'click', function(e) {
+		e.preventDefault();
+		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
+	});
+	
+	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
+		e.preventDefault();
+		$('#trade-view').load(ajaxUrl + $(this).parent().attr('id'), loadTradeCallback);
+	});
+
+	$('#search-list').delegate('a.trade', 'click', function(e) {
 		e.preventDefault();
 		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
@@ -70,7 +88,7 @@ $(function() {
 			}
 		}
 	});
-
+	
 	search_tree = $('#search-tree').jstree({
 			"json_data": {
 				"ajax": {

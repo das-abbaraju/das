@@ -4,18 +4,20 @@
 <html>
 <head>
 <title><s:text name="TradeTaxonomy.title"/></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/reports.css?v=%{version}" />" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/trades.css?v=%{version}" />" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/rules.css?v=%{version}" />" />
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="<s:url value="/js/jquery/jsTree/jquery.jstree.js?v=%{version}" />"></script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
-<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-<script type="text/javascript" src="js/trade_taxonomy_admin.js?v=<s:property value="version"/>"></script>
-<script type="text/javascript" src="js/trade_taxonomy_common.js?v=<s:property value="version"/>"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/js/jquery/blockui/blockui.css" />" />
+<script type="text/javascript" src="<s:url value="/js/jquery/blockui/jquery.blockui.js" />"></script>
+<pics:permission perm="ManageTrades" type="Edit">
+	<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_admin.js?v=%{version}" />"></script>
+</pics:permission>
+<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_common.js?v=%{version}" />"></script>
 <script>
+var ajaxUrl = 'TradeTaxonomy!tradeAjax.action?trade=';
 </script>
 <style>
 </style>
@@ -25,9 +27,11 @@
 
 <s:include value="../actionMessages.jsp"></s:include>
 
+<pics:permission perm="ManageTrades" type="Edit">
 <div class="clearfix">
 	<a href="#" class="add trade"><s:text name="TradeTaxonomy.AddTopLevelTrade"/></a>
 </div>
+</pics:permission>
 
 <s:include value="trade_search.jsp"/>
 

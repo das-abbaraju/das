@@ -1,7 +1,5 @@
 var search_tree, browse_tree;
 
-var ajaxUrl = 'TradeTaxonomy!tradeAjax.action?trade=';
-
 function loadTradeCallback() {
 	$('#saveTrade').ajaxForm({
 		target: '#trade-view',
@@ -81,7 +79,7 @@ $(function() {
 					data.inst.deselect_all();
 					data.inst.select_node(data.rslt.o);
 				} else {
-					alert("Error moving trades. Please try again later");
+					alert("Error moving trades. Please try again later.");
 					$.jstree.rollback(data.rlbk);
 				}
 			},
@@ -112,17 +110,6 @@ $(function() {
 	}).bind('refresh.jstree', function(e, data) {
 		$('#tree-wrapper').unblock();
 		$('body').removeClass('busy')
-	});
-
-	$('#trade-nav').delegate('.jstree a', 'click', function(e) {
-		e.preventDefault();
-		var data = { trade: $(this).parent().attr('id') };
-		$('#trade-view').load('TradeTaxonomy!tradeAjax.action', data, loadTradeCallback);
-	});
-
-	$('#search-list').delegate('a.trade', 'click', function(e) {
-		e.preventDefault();
-		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
 	});
 
 	$('a.add.trade').live('click', function(e) {
