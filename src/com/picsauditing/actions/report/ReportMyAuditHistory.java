@@ -11,7 +11,6 @@ public class ReportMyAuditHistory extends ReportContractorAudits {
 		sql.addWhere("(ca.auditorID=" + permissions.getUserId() + " OR ca.closingAuditorID=" + permissions.getUserId()
 				+ ")");
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator cao where status IN ('Complete','Approved') )");
-		orderByDefault = "ca.closedDate DESC";
 
 		getFilter().setShowAuditor(false);
 		getFilter().setShowStatus(false);
