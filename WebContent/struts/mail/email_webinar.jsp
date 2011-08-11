@@ -2,11 +2,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Max Value Webinar</title>
+<title><s:text name="ReportEmailWebinar.subheading" /></title>
 <s:include value="../reports/reportHeader.jsp"/>
 </head>
 <body>
-<h1>Max Value Webinar</h1>
+<h1><s:text name="ReportEmailWebinar.subheading" /></h1>
 
 <s:include value="../reports/filters.jsp" />
 

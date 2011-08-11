@@ -58,7 +58,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			facilityChanger.setContractor(contractor);
 			facilityChanger.setOperator(operator);
 			facilityChanger.add();
-			addActionMessage(getText(String.format("%s.message.SuccessfullyAddedContractor", getScope()), new Object[] {
+			addActionMessage(getText("ReportCompetencyByAccount.message.SuccessfullyAddedContractor", new Object[] {
 					(Integer) contractor.getId(), contractor.getName() }));
 
 			if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
@@ -165,9 +165,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 		excelSheet.addColumn(new ExcelColumn("name", getText("global.Company")));
-		excelSheet
-				.addColumn(new ExcelColumn("eCount", getText(String.format("%s.label.NumberOfEmployees", getScope()))));
-		excelSheet.addColumn(new ExcelColumn("jCount", getText(String.format("%s.label.NumberOfJobRoles", getScope()))));
+		excelSheet.addColumn(new ExcelColumn("eCount", getText("ReportCompetencyByAccount.label.NumberOfEmployees")));
+		excelSheet.addColumn(new ExcelColumn("jCount", getText("ReportCompetencyByAccount.label.NumberOfJobRoles")));
 		excelSheet.addColumn(new ExcelColumn("ca99status", getText("AuditType.99.name")));
 		excelSheet.addColumn(new ExcelColumn("ca100status", getText("AuditType.100.name")));
 	}

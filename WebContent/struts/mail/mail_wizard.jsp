@@ -47,7 +47,6 @@ $(function() {
 <body>
 
 <h1>Email Wizard</h1>
-<div id="caldiv2"><!-- This is here so we don't get a JS error when clicking on the body --></div>
 
 <s:if test="listSize > 0">
 	<div class="alert">You already have <s:property value="listSize"/> records in your mailing list. 

@@ -7,12 +7,13 @@
 </s:if>
 <s:else>
 <pics:permission perm="ContractorDetails">
-	<div class="right"><a 
-		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-		href="javascript: download('EmailWebinar');" 
-		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+	<div class="right">
+		<a class="excel" href="javascript: download('EmailWebinar');" 
+			<s:if test="report.allRows > 500">onclick="return confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));"</s:if>
+			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			<s:text name="global.Download" />
+		</a>
+	</div>
 </pics:permission>
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
@@ -27,17 +28,17 @@
 		<pics:permission perm="ContractorDetails">
 			<td></td>
 			<s:if test="pqfVisible">
-				<td>PQF</td>
+				<td><s:text name="AuditType.1.name" /></td>
 			</s:if>
 		</pics:permission>
 		<s:if test="permissions.operatorCorporate">
 			<td><a href="?orderBy=flag DESC"><s:text name="global.Flag" /></a></td>
 			<s:if test="permissions.operator">
-				<td>Waiting On</td>
+				<td><s:text name="WaitingOn" /></td>
 			</s:if>
 			<s:if test="operatorAccount.approvesRelationships.isTrue()">
 				<pics:permission perm="ViewUnApproved">
-					<td><nobr>Approved</nobr></td>
+					<td><nobr><s:text name="AuditStatus.Approved" /></nobr></td>
 				</pics:permission>
 			</s:if>
 		</s:if>
@@ -56,8 +57,8 @@
 		</s:if>
 		<s:if test="showTrade">
 			<td><s:text name="Trade" /></td>
-			<td>Self Performed</td>
-			<td>Sub Contracted</td>			
+			<td><s:text name="ReportEmailWebinar.header.SelfPerformed" /></td>
+			<td><s:text name="ReportEmailWebinar.header.SubContracted" /></td>			
 		</s:if>
 	</tr>
 	</thead>
@@ -78,8 +79,7 @@
 				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>"><s:text name="button.Edit" /></a></td>
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
-				<td><a
-					href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Audits</a></td>
+				<td><a href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Audits</a></td>
 					<s:if test="pqfVisible">
 						<td class="icon center">
 								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon"><img

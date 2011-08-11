@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ReportUserPermissionMatrix.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
@@ -112,19 +112,19 @@ div.filterOption input {
 </head>
 <body>
 
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="ReportUserPermissionMatrix.title" /></h1>
 
 <div id="search">
 	<div class="clear"></div>
 	<s:form id="form1" method="get" cssStyle="width: 800px;">
 			<fieldset class="form">
 			<div class="filterOption">
-				<h4>Search by user/group:</h4>
+				<h4><s:text name="ReportUserPermissionMatrix.label.SearchByUserGroup" />:</h4>
 					<s:hidden name="users" value=""/>
 					<s:textfield size="50" cssClass="users"/>
 				</div>
 			<div class="filterOption">
-				<h4>Search by permission:</h4>
+				<h4><s:text name="ReportUserPermissionMatrix.label.SearchByPermission" />:</h4>
 					<s:hidden name="perms" value=""/>
 					<s:textfield size="50" cssClass="permissions"/>
 					</div>
@@ -142,7 +142,7 @@ div.filterOption input {
 	<div class="clear"></div>
 </div>
 <div class="right">
-	<a class="excel" title="Download all Permissions to a CSV file"
+	<a class="excel" title="<s:text name="ReportUserPermissionMatrix.title.DownloadAllPermissions" />"
 		href="?button=download&accountId=<s:property value="accountId"/>"><s:text name="global.Download" /></a>
 </div>
 <div style="height:22px;">
@@ -152,7 +152,7 @@ div.filterOption input {
 <table class="report" id="matrix">
 	<thead>
 	<tr>
-		<th>User/Group</th>
+		<th><s:text name="UserGroup" /></th>
 		<s:iterator value="tableDisplay.cols">
 			<th class="<s:property/> permdata"><s:property value="description" /></th>
 		</s:iterator>

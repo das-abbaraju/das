@@ -85,4 +85,3 @@
 	<br clear="all" />
 	<div class="alphapaging"><s:property value="report.startsWithLinksWithDynamicForm" escape="false" /></div>
 </s:form></div>
-<div id="caldiv2" style="position: absolute; visibility: hidden; background-color: white; layer-background-color: white;"></div>
