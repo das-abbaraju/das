@@ -173,7 +173,7 @@ function loadStatus(caoID){
 	width: 20px;
 }
 
-#caoTable td.hover a.edit {
+#caoTable a.edit {
 	display: inline;
 }
 
