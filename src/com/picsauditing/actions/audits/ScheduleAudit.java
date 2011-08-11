@@ -331,6 +331,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				if (rank > maxRank) {
 					maxRank = rank;
 					availabilitySelected = timeslot;
+					availabilitySelected.setTimezone(permissions.getTimezone());
 					availabilitySelectedID = availabilitySelected.getId();
 				}
 			}

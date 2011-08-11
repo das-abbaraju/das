@@ -59,11 +59,13 @@ $(function() {
 		<li class="calculatedAddress"><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> <s:text name="%{scope}.message.NoPOBoxes" /></li>
 		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> <s:text name="%{scope}.message.SuiteApartment" /></li>
 		<li class="calculatedAddress"><label><s:text name="global.City" />:</label> <s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" /></li>
-		<li class="calculatedAddress"><label><s:text name="State" />:</label> <s:textfield id="conAudit_state"
-			name="conAudit.state" size="6" value="%{conAudit.contractorAccount.state}" /></li>
+		<li class="calculatedAddress"><label><s:text name="State" />:</label> <s:select id="conAudit_state" name="conAudit.state"
+			value="%{conAudit.contractorAccount.state}" list="stateList"
+			listKey="isoCode" listValue="name" headerKey="" headerValue=" - State/Province - "/></li>
 		<li><label><s:text name="global.ZipPostalCode" />:</label> <s:textfield id="conAudit_zip" name="conAudit.zip" size="10" value="%{conAudit.contractorAccount.zip}"/></li>
 		<li class="calculatedAddress"><label><s:text name="Country" />:</label> <s:select id="conAudit_country" name="conAudit.country"
-			value="locale.country" list="countryList" listKey="isoCode" listValue="name"/></li>
+			value="%{conAudit.contractorAccount.country.isoCode}" list="countryList"
+			listKey="isoCode" listValue="name"  headerKey="" headerValue=" - Country - "/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
 			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="%{scope}.message.AddressIsCorrect" /></li>
 	</ol>

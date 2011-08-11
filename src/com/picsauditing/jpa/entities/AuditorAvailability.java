@@ -1,9 +1,12 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,6 +30,7 @@ public class AuditorAvailability extends BaseTable {
 
 	private User user;
 	private Date startDate;
+	private TimeZone timezone;
 	private int duration;
 
 	private float latitude = 0;
@@ -55,6 +59,22 @@ public class AuditorAvailability extends BaseTable {
 
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
+	}
+
+	@Transient
+	public TimeZone getTimezone() {
+		return timezone;
+	}
+
+	public void setTimezone(TimeZone timezone) {
+		this.timezone = timezone;
+	}
+
+	@Transient
+	public String getTimeZoneDate(String format) {
+		DateFormat formatter = new SimpleDateFormat(format);
+		formatter.setTimeZone(timezone);
+		return formatter.format(startDate);
 	}
 
 	/**

@@ -24,8 +24,8 @@
 	<h2 class="formLegend"><s:text name="%{scope}.label.AuditConfirmation" /></h2>
 	<ol>
 		<li><s:text name="%{scope}.message.ConfirmInformation" />:</li>
-		<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:date name="availabilitySelected.startDate" format="EEEE, MMM d, yyyy" /></li>
-		<li><label><s:text name="%{scope}.label.AuditTime" />:</label> <s:date name="availabilitySelected.startDate" format="h:mm a z" /></li>
+ 		<li><label><s:text name="%{scope}.label.AuditDate" />:</label> <s:property value="availabilitySelected.getTimeZoneDate('EEEE, MMM d, yyyy')" /></li>
+ 		<li><label><s:text name="%{scope}.label.AuditTime" />:</label> <s:property value="availabilitySelected.getTimeZoneDate('h:mm a z')" /></li>
 
 		<s:if test="conAudit.conductedOnsite">
 			<li><label><s:text name="%{scope}.label.Location" />:</label> <s:property value="conAudit.fullAddress" /> <a
