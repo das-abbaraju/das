@@ -15,7 +15,7 @@ import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.importpqf.ImportPqf;
 import com.picsauditing.importpqf.ImportPqfCanQual;
-import com.picsauditing.importpqf.ImportPqfIsn;
+import com.picsauditing.importpqf.ImportPqfComplyWorks;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -45,7 +45,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	protected AuditBuilder auditBuilder = null;
 
 	private int copyDataID = 0;
-
+	private String debugLog = null;
+	
 	@Override
 	public void prepare() throws Exception {
 		auditID = this.getParameter("auditData.audit.id");
@@ -58,6 +59,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			addActionError("No question supplied for upload");
 			return SUCCESS;
 		}
+		
+		debugLog = null;
 
 		int dataID = auditData.getId();
 		int questionID = 0;
@@ -182,11 +185,15 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 							getFileName(dataID), extension, true);
 					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
 					
-					ImportPqf importer = getImportPqf();
-					if (importer != null) {
-						ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
-						File[] files = getFiles(dataID);
-						importer.calculate(pqfAudit, files[0]);
+					if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF && extension.toLowerCase().equals("pdf")) {
+						ImportPqf importer = getImportPqf();
+						if (importer != null) {
+							ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(),
+									importer.getAuditType());
+							File[] files = getFiles(dataID);
+							importer.calculate(pqfAudit, files[0]);
+							debugLog = importer.getLog();
+						}
 					}
 				}
 			}
@@ -248,6 +255,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		if (data != null && data.isAnswered()) {
 			if (data.getAnswer().equals("514")) // CanQual
 				importPqf = new ImportPqfCanQual();			
+			if (data.getAnswer().equals("515")) // ComplyWorks
+				importPqf = new ImportPqfComplyWorks();			
 		}
 		
 		return importPqf;
@@ -312,6 +321,14 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 	public void setCopyDataID(int copyDataID) {
 		this.copyDataID = copyDataID;
+	}
+
+	public String getDebugLog() {
+		return debugLog;
+	}
+
+	public void setDebugLog(String debugLog) {
+		this.debugLog = debugLog;
 	}
 
 }
