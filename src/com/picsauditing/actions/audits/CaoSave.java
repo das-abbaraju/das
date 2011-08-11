@@ -206,6 +206,7 @@ public class CaoSave extends AuditActionSupport {
 
 		caoDAO.save(cao);
 		setCaoUpdatedNote(prevStatus, cao, note);
+		autoExpireOldManualAudits(cao.getAudit(), newStatus);
 	}
 
 	private void setup() throws RecordNotFoundException, NoRightsException {

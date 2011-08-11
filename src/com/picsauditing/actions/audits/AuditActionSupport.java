@@ -26,6 +26,7 @@ import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.CertificateDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -67,6 +68,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
+	@Autowired
+	private ContractorAuditDAO conAuditDAO;
 
 	protected int auditID = 0;
 	protected int categoryID = 0;
@@ -478,6 +481,34 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().isScheduled() && (permissions.isContractor() || permissions.isAdmin()))
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
+	}
+	
+	public void autoExpireOldManualAudits(ContractorAudit conAudit, AuditStatus status) {
+		if (!conAudit.getAuditType().isDesktop() || !status.isSubmitted())
+			return;
+		
+		for (ContractorAudit ca: conAudit.getContractorAccount().getAudits()) {
+			if (!ca.getAuditType().isDesktop() || ca.getId() == conAudit.getId() || ca.isExpired())
+				continue;
+			if (ca.getEffectiveDate().before(conAudit.getEffectiveDate())) {
+				boolean submitted = false;
+				boolean completed = false;
+				for (ContractorAuditOperator cao:ca.getOperators()) {
+					if (cao.getStatus().isComplete()) {
+						completed = true;
+						break;
+					}
+					if (cao.getStatus().isSubmitted()) {
+						submitted = true;
+					}
+				}
+				
+				if (submitted && !completed) {
+					ca.setExpiresDate(new Date());
+					conAuditDAO.save(ca);
+				}
+			}
+		}
 	}
 
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {

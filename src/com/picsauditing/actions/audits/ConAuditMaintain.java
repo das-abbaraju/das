@@ -9,6 +9,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
@@ -69,6 +70,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							setCaoUpdatedNote(prevStatus, toSave);
 
 							caoDAO.save(toSave);
+							autoExpireOldManualAudits(conAudit, newStatus);
 						}
 					}
 				}
