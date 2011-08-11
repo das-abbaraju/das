@@ -255,7 +255,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							if (cf.isHasChanged()) {
 								for (Iterator<InvoiceItem> iterator = invoice.getItems().iterator(); iterator.hasNext();) {
 									InvoiceItem item = iterator.next();
-									if (item.getInvoiceFee().getId() == cf.getCurrentLevel().getId()) {
+									if (cf.getFeeClass().equals(item.getInvoiceFee().getFeeClass())) {
 										iterator.remove();
 										invoiceItemDAO.remove(item);
 									}
