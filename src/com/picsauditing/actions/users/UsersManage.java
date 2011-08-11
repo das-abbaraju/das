@@ -340,7 +340,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
-			this.redirect("NewUserManage.action?account=" + account.getId() + "&user=" + user.getId());
+			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;

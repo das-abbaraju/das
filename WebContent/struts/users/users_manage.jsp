@@ -71,7 +71,7 @@ div.autocomplete ul li {
 	<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.admin">PICS</s:if>
-&gt; <a href="?account=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
+&gt; <a href="UsersManage.action?account=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
 <s:if test="user.id > 0">&gt; <a href="?user=<s:property value="user.id"/>"><s:property value="user.name" /></a>
 </s:if>
 <s:if test="user.id == 0">&gt; NEW USER</s:if>

@@ -15,6 +15,9 @@ var currentUserID = 0;
 </s:if>
 <s:if test="account.admin">PICS</s:if>
 &gt; <a href="UsersManage.action?account=<s:property value="account.id"/>">Manage User Accounts</a>
+<s:if test="user.id > 0">
+&gt; <a href=""><s:property value="user.name" /></a>
+</s:if>
 <br/>
 <s:if test="user.ownedPermissions.size() == 0 && user.groups.size() == 0">
 	<div class="alert">Please add permission to this user</div>
