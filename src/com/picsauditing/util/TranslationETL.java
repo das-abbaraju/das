@@ -113,6 +113,7 @@ public class TranslationETL extends PicsActionSupport {
 			FileUtils.deleteFile(file);
 
 		I18nCache.getInstance().clear();
+		flagClearCache();
 
 		return SUCCESS;
 	}

@@ -3,15 +3,15 @@ package com.picsauditing.actions;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 
 @SuppressWarnings("serial")
 public class ClearCacheAction extends PicsActionSupport {
+	public static String CLEAR_CACHE_PROPERTY = "PICS.clear_cache";
 
 	AuditTypeRuleCache auditTypeRuleCache;
 	AuditCategoryRuleCache auditCategoryRuleCache;
@@ -28,9 +28,8 @@ public class ClearCacheAction extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		String[] cacheNames = CacheManager.getInstance().getCacheNames();
-		AppProperty appProp = appPropertyDAO.find("clear_cache");
-		appProp.setValue("false");
-		appPropertyDAO.save(appProp);
+
+		appPropertyDAO.setProperty(CLEAR_CACHE_PROPERTY, "0");
 
 		for (String cacheName : cacheNames) {
 			System.out.println(cacheName);
@@ -49,8 +48,19 @@ public class ClearCacheAction extends PicsActionSupport {
 		auditTypeRuleCache.clear();
 		auditCategoryRuleCache.clear();
 
+		// Clear the translations from the cache
 		I18nCache.getInstance().clear();
 
 		return SUCCESS;
+	}
+
+	public String monitor() {
+		String property = appPropertyDAO.getProperty(CLEAR_CACHE_PROPERTY);
+		if ("1".equals(property)) {
+			output = "CLEAR";
+		} else {
+			output = "OK";
+		}
+		return PLAIN_TEXT;
 	}
 }

@@ -105,7 +105,9 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	@Override
 	protected void clear() {
 		auditTypeRuleCache.clear();
-		clearAppProperties();
+		flagClearCache();
+
+		addActionMessage("Clearing Cache...");
 	}
 
 	@Override

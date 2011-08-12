@@ -174,15 +174,6 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 	}
 
 	abstract protected void clear();
-	
-	protected void clearAppProperties() {
-		AppProperty appProp = appPropertyDAO.find("clear_cache");
-		if (appProp != null) {
-			appProp.setValue("true");
-			appPropertyDAO.save(appProp);
-		}
-		addActionMessage("Clearing Cache...");
-	}
 
 	protected void saveFields() {
 		rule.setInclude(ruleInclude);

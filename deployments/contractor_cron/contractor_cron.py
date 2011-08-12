@@ -188,7 +188,7 @@ class CacheMonitor(CronThread):
 	def __init__(self, server_g):
 		super(CacheMonitor, self).__init__()
 		self.server_g = server_g
-		self.url = SERVER + 'clearcache.jsp'
+		self.url = SERVER + 'ClearCache!monitor.action'
 		self.sleeptime = 60
 		self.logger = logging.getLogger('cache')
 	def run(self):

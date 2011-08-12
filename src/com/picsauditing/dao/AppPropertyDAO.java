@@ -41,4 +41,14 @@ public class AppPropertyDAO extends PicsDAO {
 
 		return p.getValue();
 	}
+
+	public AppProperty setProperty(String property, String value) {
+		AppProperty p = find(property);
+		if (p == null) {
+			p = new AppProperty();
+			p.setProperty(property);
+		}
+		p.setValue(value);
+		return save(p);
+	}
 }

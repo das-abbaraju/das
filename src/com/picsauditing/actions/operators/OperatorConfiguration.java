@@ -16,6 +16,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.ClearCacheAction;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -82,11 +83,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	public String execute() throws Exception {
 		if (button != null) {
 			if ("Clear".equals(button)) {
-				AppProperty appProp = appPropDAO.find("clear_cache");
-				if (appProp != null) {
-					appProp.setValue("true");
-					appPropDAO.save(appProp);
-				}
+				flagClearCache();
 				addActionMessage("Clearing Category and Audit Type Cache...");
 				return SUCCESS;
 			}
@@ -194,11 +191,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				acr.calculatePriority();
 				typeDAO.save(acr);
 				auditCategoryRuleCache.clear();
-				AppProperty appProp = appPropDAO.find("clear_cache");
-				if (appProp != null) {
-					appProp.setValue("true");
-					appPropDAO.save(appProp);
-				}
+				flagClearCache();
 
 				this.redirect("ManageCategory.action?id=" + cat.getId());
 				return SUCCESS;
@@ -237,11 +230,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 
 			// Clearing the Cache on all 3 servers
 			if (auditTypeID > 0 || catID > 0) {
-				AppProperty appProp = appPropDAO.find("clear_cache");
-				if (appProp != null) {
-					appProp.setValue("true");
-					appPropDAO.save(appProp);
-				}
+				flagClearCache();
 			}
 
 			return redirect("OperatorConfiguration.action?id=" + operator.getId());
@@ -291,7 +280,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 		if (otherCorporates == null) {
 			otherCorporates = operatorDao.findWhere(true,
 					"a.id NOT IN (" + Strings.implode(operator.getOperatorHeirarchy())
-							+ ") AND a.type = 'Corporate' AND (a.id >= 14 OR a.id = "+OperatorAccount.PICSPSM+")");
+							+ ") AND a.type = 'Corporate' AND (a.id >= 14 OR a.id = " + OperatorAccount.PICSPSM + ")");
 		}
 
 		return otherCorporates;

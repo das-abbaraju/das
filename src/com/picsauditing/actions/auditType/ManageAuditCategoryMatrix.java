@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.actions.ClearCacheAction;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -19,7 +20,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryMatrixCompetencies;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -81,11 +81,7 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 				AuditCategory ac = auditCategoryDAO.find(categoryID);
 				AuditQuestion aq = auditQuestionDAO.find(itemID);
 				auditCategoryRuleCache.clear();
-				AppProperty appProp = appPropertyDAO.find("clear_cache");
-				if (appProp != null) {
-					appProp.setValue("true");
-					appPropertyDAO.save(appProp);
-				}
+				flagClearCache();
 				List<AuditCategoryRule> rules = auditDecisionTableDAO.findCategoryRulesByQuestion(itemID);
 				AuditCategoryRule r = null;
 

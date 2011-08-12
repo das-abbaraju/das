@@ -25,6 +25,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.SecurityAware;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -47,6 +48,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	@Autowired
 	protected BasicDAO dao;
+	@Autowired
+	protected AppPropertyDAO propertyDAO;
+
 	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;
@@ -55,9 +59,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 *
+	 * 
 	 * This is also used for plain-text type results.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -66,14 +70,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 *
+	 * 
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
@@ -91,6 +95,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String getVersion() {
 		// Released 2011-07-05
 		return "6.3.1";
+	}
+
+	/**
+	 * This method is used to set the clear_cache flag in the AppProperty table to allow the contractor daemon to reset
+	 * caches on all 3 servers.
+	 * 
+	 */
+	protected void flagClearCache() {
+		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
 	}
 
 	public boolean isLoggedIn(boolean anonymous) {
@@ -306,7 +319,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Get the directory to store file uploads Use the System property or the Init parameter or C:/temp/ To set the
 	 * System property add -Dpics.ftpDir=folder_location to your startup command
-	 *
+	 * 
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -365,7 +378,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the value is an empty string ("") then we will
 	 * replace that value with a null
-	 *
+	 * 
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */

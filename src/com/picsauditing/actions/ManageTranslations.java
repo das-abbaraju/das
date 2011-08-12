@@ -40,7 +40,7 @@ public class ManageTranslations extends ReportActionSupport {
 		if (localeTo == null) {
 			localeTo = permissions.getLocale();
 		}
-		
+
 		if (button != null) {
 			if (button.startsWith("tracing")) {
 				Map<String, Object> session = ActionContext.getContext().getSession();
@@ -70,6 +70,7 @@ public class ManageTranslations extends ReportActionSupport {
 						out.put("id", translation.getId());
 					}
 					I18nCache.getInstance().clear();
+					flagClearCache();
 
 					out.put("success", true);
 				} catch (Exception e) {
@@ -134,9 +135,9 @@ public class ManageTranslations extends ReportActionSupport {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 				return SUCCESS;
 			}
-		} else if(permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
-			//addAlertMessage("Turn On Tracing to Use this report");
-			//return SUCCESS;
+		} else if (permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
+			// addAlertMessage("Turn On Tracing to Use this report");
+			// return SUCCESS;
 		}
 
 		run(sql);
