@@ -59,6 +59,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOQ = false;
 	protected boolean showHSE = false;
 	protected boolean showAccountManager = false;
+	protected boolean showCaoChangesFlagChanges = false;
 	protected boolean showAuditStatusFlagChanges = false;
 	protected boolean showAuditCreationFlagChanges = false;
 	protected boolean showAuditQuestionFlagChanges = false;
@@ -106,6 +107,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String exEachOccurrence;
 	protected boolean oq = false;
 	protected boolean hse = false;
+	protected boolean caoChangesFlagChanges = false;
 	protected boolean auditStatusFlagChanges = false;
 	protected boolean auditCreationFlagChanges = false;
 	protected boolean auditQuestionFlagChanges = false;
@@ -351,6 +353,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowAccountManager(boolean showAccountManager) {
 		this.showAccountManager = showAccountManager;
+	}
+
+	public boolean isShowCaoChangesFlagChanges() {
+		return showCaoChangesFlagChanges;
+	}
+
+	public void setShowCaoChangesFlagChanges(boolean showCaoChangesFlagChanges) {
+		this.showCaoChangesFlagChanges = showCaoChangesFlagChanges;
 	}
 
 	public boolean isShowAuditStatusFlagChanges() {
@@ -842,6 +852,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setHse(boolean hse) {
 		this.hse = hse;
+	}
+
+	public boolean isCaoChangesFlagChanges() {
+		return caoChangesFlagChanges;
+	}
+
+	public void setCaoChangesFlagChanges(boolean caoChangesFlagChanges) {
+		this.caoChangesFlagChanges = caoChangesFlagChanges;
 	}
 
 	public boolean isAuditStatusFlagChanges() {

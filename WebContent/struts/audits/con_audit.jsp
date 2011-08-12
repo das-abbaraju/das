@@ -83,7 +83,7 @@
 			<tbody>
 				<s:iterator value="problems" var="pro">
 					<tr>
-						<td><s:property value="getViewableCaops(#pro.key).iterator.next.name"/></td>
+						<td><s:property value="getViewableCaops(#pro.key).iterator.next.operator.name"/></td>
 						<td> <s:property value="#pro.value"/></td>
 					</tr>
 				</s:iterator>	

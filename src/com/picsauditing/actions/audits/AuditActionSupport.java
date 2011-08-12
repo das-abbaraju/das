@@ -217,18 +217,18 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return viewableCaos;
 	}
 
-	public Set<OperatorAccount> getViewableCaops(ContractorAuditOperator cao) {
-		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+	public Set<ContractorAuditOperatorPermission> getViewableCaops(ContractorAuditOperator cao) {
+		Set<ContractorAuditOperatorPermission> caops = new HashSet<ContractorAuditOperatorPermission>();
 
 		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 			if (permissions.isOperatorCorporate()) {
 				if (permissions.getVisibleAccounts().contains(caop.getOperator().getId()))
-					operators.add(caop.getOperator());
+					caops.add(caop);
 			} else {
-				operators.add(caop.getOperator());
+				caops.add(caop);
 			}
 		}
-		return operators;
+		return caops;
 	}
 
 	public void getValidSteps() {

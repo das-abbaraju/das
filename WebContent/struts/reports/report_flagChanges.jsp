@@ -118,12 +118,31 @@ function addDetailsClueTips(gcID){
 		cluetipClass : 'jtip',
 	});	
 }
+function caoDetailsClueTips(caoID){
+	$("#cao_changes_" + caoID + " a").cluetip({
+		sticky : true,
+		hoverClass : 'cluetip',
+		mouseOutClose : true,
+		clickThrough : true,
+		ajaxCache : true,
+		closeText : "<img src='images/cross.png' width='16' height='16'>",
+		hoverIntent : {
+			interval : 300
+		},
+		arrows : true,
+		dropShadow : false,
+		width : 600,
+		cluetipClass : 'jtip',
+	});	
+}
+
 </script>
 </head>
 <body>
 <h1><s:property value="reportName" /></h1>
 
 <s:include value="filters.jsp" />
+<s:include value="../actionMessages.jsp"></s:include>
 
 <s:if test="report.allRows == 0">
 	<div class="info">No flag changes to report</div>
@@ -146,12 +165,16 @@ function addDetailsClueTips(gcID){
 			</pics:permission>
 			<th>Last Calc</th>
 			<!-- <th>Member Since</th> -->
+			<s:if test="filter.caoChangesFlagChanges">
+				<th>CAO Details</th>
+			</s:if>
 			<th>Useful Links</th>
 		</tr>
 	</thead>
 	<tbody>
 	<s:iterator value="data" status="stat">
 		<s:set name="gcID" value="get('gcID')"></s:set>
+		<s:set name="caoID" value="get('caoID')"></s:set>
 		<tr id="row<s:property value="#gcID"/>">
 			<td class="nobr"><a title="<s:property value="get(\'name\')" escape="true" /> (Last Calculated: <s:date name="get('lastRecalculation')" format="MM/dd/yyyy" />)"
 					rel="ContractorFlagAjax.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>" class="contractorQuick"
@@ -195,6 +218,27 @@ function addDetailsClueTips(gcID){
 				</script>
 			</td>
 			<!-- <td><s:date name="get('membershipDate')" nice="true" /></td> -->
+			<s:if test="filter.caoChangesFlagChanges">
+				<s:if test="get('previousCaoID') != null">
+					<td id="cao_changes_<s:property value="get('caoID')"/>">
+						<a title="CAO Details" rel="ContractorFlagChangesAjaxCaoDetails.action?id=<s:property value="get('caoID')"/>&previousID=<s:property value="get('previousCaoID')"/>">
+							Details
+						</a>
+						<script type="text/javascript">
+							caoDetailsClueTips(
+								'<s:property value="#caoID"/>'
+							);
+						</script>
+					</td>
+				</s:if>
+				<s:else>
+					<td id="cao_changes_<s:property value="get('caoID')"/>">
+						<a title="CAO Details">
+							No Details
+						</a>
+					</td>
+				</s:else>
+			</s:if>
 			<td>
 				<a class="file" target="_BLANK" title="Opens in new window"
 					href="ReportActivityWatch.action?contractor=<s:property value="get('id')"/>">Activity</a>

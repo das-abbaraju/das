@@ -954,6 +954,15 @@
 		</div>
 	</s:if>
 
+	<s:if test="filter.showCaoChangesFlagChanges">
+		<br clear="all" />
+		<div class="filterOption">
+			<label>
+				<s:checkbox name="filter.caoChangesFlagChanges" /> <s:text name="Filters.label.showCaoDetails" />
+			</label>
+		</div>
+	</s:if>
+
 	<s:if test="filter.showAuditStatusFlagChanges">
 		<br clear="all" />
 		<div class="filterOption">

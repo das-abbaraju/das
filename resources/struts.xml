@@ -339,6 +339,11 @@
 			<result>struts/contractors/contractor_flag_changes_add_details.jsp</result>
 		</action>
 
+		<action name="ContractorFlagChangesAjaxCaoDetails"
+			class="com.picsauditing.actions.flags.ContractorFlagChangesCaoDetails">
+			<result>struts/contractors/contractor_flag_changes_cao_details.jsp</result>
+		</action>
+
 		<action name="OperatorFlagsCalculatorAjax"
 			class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
 			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>

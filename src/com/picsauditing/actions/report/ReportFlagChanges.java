@@ -62,6 +62,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowLicensedIn(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
+		getFilter().setShowCaoChangesFlagChanges(true);
 		getFilter().setShowAuditCreationFlagChanges(true);
 		getFilter().setShowAuditStatusFlagChanges(true);
 		getFilter().setShowAuditQuestionFlagChanges(true);
@@ -85,7 +86,19 @@ public class ReportFlagChanges extends ReportAccount {
 
 		sql.addJoin("JOIN accounts operator ON operator.id = gc_flag.genid AND operator.id NOT IN (10403,2723)");
 
-		if (getFilter().isAuditStatusFlagChanges() || getFilter().isAuditCreationFlagChanges()
+		if (getFilter().isCaoChangesFlagChanges()) {
+			sql.addJoin("JOIN flag_data fd ON fd.conID = gc_flag.subID "
+					+ "AND fd.opID = gc_flag.genID AND fd.baselineFlag != fd.flag");
+			sql.addJoin("JOIN flag_criteria fc ON fd.criteriaID = fc.id");
+			sql.addJoin("JOIN contractor_audit ca ON ca.conID = gc_flag.subID "
+					+ "AND ca.auditTypeID = fc.auditTypeID AND ca.expiresDate >= NOW()");
+			sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1");
+			sql.addJoin("JOIN contractor_audit_operator_permission caop ON cao.id = caop.caoID "
+					+ "AND caop.opID = gc_flag.genID");
+
+			sql.addField("caop.caoID");
+			sql.addField("caop.previousCaoID as previousCaoID");
+		} else if (getFilter().isAuditStatusFlagChanges() || getFilter().isAuditCreationFlagChanges()
 				|| getFilter().isAuditQuestionFlagChanges()) {
 			sql.addJoin("LEFT JOIN flag_data fd ON fd.conID = gc_flag.subID "
 					+ "AND fd.opID = gc_flag.genID AND fd.baselineFlag != fd.flag");
@@ -114,7 +127,7 @@ public class ReportFlagChanges extends ReportAccount {
 				expectedChanges.add("(fc.oshaRateType IS NOT NULL AND fc.oshaType IS NOT NULL"
 						+ " AND fc.multiYearScope IS NOT NULL)");
 			}
-			sql.addWhere(Strings.implode(expectedChanges," OR "));
+			sql.addWhere(Strings.implode(expectedChanges, " OR "));
 			sql.addWhere("caow2.id IS NULL");
 		}
 

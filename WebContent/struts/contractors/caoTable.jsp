@@ -39,7 +39,7 @@
 							</td>
 						</s:if>
 						<!-- Operator Scope -->
-						<td <s:if test="conAudit.auditType.classType.policy && #currentCao.status.incomplete">class="problemCao"</s:if> title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="name"/>
+						<td <s:if test="conAudit.auditType.classType.policy && #currentCao.status.incomplete">class="problemCao"</s:if> title="<s:iterator value="getViewableCaops(#currentCao)"><s:property value="operator.name"/>
 </s:iterator>">
 							<s:if test="systemEdit">
 								<s:hidden name="caosSave[%{#rowStatus.index}].id" value="%{#currentCao.id}" />
@@ -47,7 +47,7 @@
 							</s:if>
 							<s:elseif test="getViewableCaops(#currentCao).size() == 1">
 								<s:iterator value="getViewableCaops(#currentCao)">
-									<s:property value="name" />
+									<s:property value="operator.name" /> <span class="debug"><s:if test="previousCao != null">(previousCao: <s:property value="previousCao.operator.name" />)</s:if></span>
 								</s:iterator>
 							</s:elseif>
 							<s:elseif test="operator.id > 10">
@@ -58,6 +58,9 @@
 									<s:param><s:property value="operator.name.substring(4)" /></s:param>
 									<s:param><s:property value="getViewableCaops(#currentCao).size()" /></s:param>
 								</s:text>
+								<s:iterator value="getViewableCaops(#currentCao)">
+									<span class="debug"><s:if test="previousCao != null">(<s:property value="operator.name" /> previousCao: <s:property value="previousCao.operator.name" />)</s:if></span>
+								</s:iterator>
 							</s:else>
 						</td>
 						<!-- Progress -->
