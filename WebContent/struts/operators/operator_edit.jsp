@@ -199,7 +199,7 @@ function checkFee(activationFee, oldValue) {
 				<a href="UsersManage.action?account=<s:property value="operator.id"/>&user=<s:property value="operator.primaryContact.id"/>">View</a>
 			</s:if>
 			<s:else>
-				<a class="add" href="UsersManage.action?button=newUser&account=<s:property value="operator.id"/>&user.isGroup=No&user.isActive=Yes">Add User</a>
+				<a class="add" href="UsersManage!add.action?account=<s:property value="operator.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
 			</s:else>
 		</li>
 		</s:if>
