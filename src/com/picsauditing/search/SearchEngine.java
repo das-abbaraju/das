@@ -76,8 +76,7 @@ public class SearchEngine {
 	 * @param ignore
 	 *            (Optional) List of terms to explicitly ignore
 	 * @param total
-	 *            count of the term is divided by this to see if it's included
-	 *            in this query
+	 *            count of the term is divided by this to see if it's included in this query
 	 * @return A String containing the search query
 	 */
 	public String buildCommonTermQuery(List<String> terms, String ignore, int total) {
@@ -118,8 +117,7 @@ public class SearchEngine {
 	 * @param limit
 	 *            Limit for Search
 	 * @param buildCommon
-	 *            If True then skip over total rows and various other parts of
-	 *            query
+	 *            If True then skip over total rows and various other parts of query
 	 * @param fullSearch
 	 *            True for full search, false for 10 result ajax search
 	 * @return A string that is the query to run using db.select
@@ -156,73 +154,67 @@ public class SearchEngine {
 			String iTerm = "i" + (i + 1);
 			sb.append("JOIN ").append(indexTable).append(" ").append(iTerm).append(" ON i1.indexType = ").append(iTerm)
 					.append(".indexType");
-			sb.append(" AND i1.foreignKey = ").append(iTerm).append(".foreignKey AND ").append(iTerm).append(
-					".value LIKE '").append(terms.get(i)).append("%'\n");
-			sb.append("JOIN ").append(indexStats).append(" ").append(vTerm).append(" ON ").append(vTerm).append(
-					".indexType IS NULL ");
+			sb.append(" AND i1.foreignKey = ").append(iTerm).append(".foreignKey AND ").append(iTerm)
+					.append(".value LIKE '").append(terms.get(i)).append("%'\n");
+			sb.append("JOIN ").append(indexStats).append(" ").append(vTerm).append(" ON ").append(vTerm)
+					.append(".indexType IS NULL ");
 			sb.append(" AND ").append(iTerm).append(".value = ").append(vTerm).append(".value");
 			sql.addJoin(sb.toString());
 		}
 		sb.setLength(0);
 		if (currPerm != null) {
 			if (currPerm.isCorporate()) {
-				sb.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n").append(
-						"((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =").append(
-						currPerm.getAccountId()).append(')');
-				sb
-						.append("\nUNION\n")
-						.append(
-								"(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
-						.append(currPerm.getAccountId()).append(")) AS acc on a.id = acc.id\n)\n");
+				sb.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
+						.append("((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =")
+						.append(currPerm.getAccountId()).append(')');
+				sb.append("\nUNION\n")
+						.append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
+						.append(currPerm.getAccountId()).append(")) AS acc on a.id = acc.id AND a.status IN ('Active','Pending')\n)\n");
 				if (fullSearch) {
 					sb.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor')\n");
 				} else {
-					sb
-							.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
-							.append(
-									"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
-							.append(currPerm.getAccountId()).append(
-									" GROUP BY id) AS acc on a.id = acc.id WHERE a.status != 'Deactivated')\n"); // here
+					sb.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
+							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append(currPerm.getAccountId())
+							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN ('Active','Pending'))\n");
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sb.append(
 							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n"
-									+ "((select f.opID id FROM facilities f WHERE f.corporateID =").append(
-							currPerm.getAccountId()).append(
-							")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =").append(
-							currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
+									+ "((select f.opID id FROM facilities f WHERE f.corporateID =")
+							.append(currPerm.getAccountId())
+							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
+							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
-					sb
-							.append(
-									"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
-											+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
+					sb.append(
+							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
+									+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
 							.append(currPerm.getAccountId())
 							.append(")\n")
-							.append(
-									"UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId()).append(")\n) AS rE on e.accountID = rE.id)\n");
 				}
 				sb.append(") AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 				sql.addJoin(sb.toString());
 				sb.setLength(0);
 			} else if (currPerm.isOperator()) {
-				sb.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n").append(
-						"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(
-						currPerm.getAccountId()).append(") AS acc ON a.id = acc.id WHERE a.status != 'Deactivated'  )");
+				sb.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n")
+						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =")
+						.append(currPerm.getAccountId())
+						.append(") AS acc ON a.id = acc.id WHERE a.status IN ('Active','Pending') )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
-					sb
-							.append(
-									"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
+					sb.append(
+							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
 							.append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sb.append(
 							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN "
-									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =").append(
-							currPerm.getAccountId()).append(")");
+									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
+							.append(currPerm.getAccountId()).append(")");
 				}
 				sb.append("\n) AS r1\nON i1.foreignKey = r1.id AND i1.indexType = r1.rType");
 				sql.addJoin(sb.toString());
@@ -253,6 +245,9 @@ public class SearchEngine {
 		sql.addField("a.id foreignKey, a.name, case a.type when 'Contractor'"
 				+ " then 'C' when 'Corporate' then 'CO' when 'Operator' then 'O'"
 				+ "when 'Assessment' then 'AS' end indexType");
+		if (currPerm != null && !currPerm.isAdmin()) {
+			sql.addWhere("a.status IN ('Active','Pending')");
+		}
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
 			sb.append("(a.name LIKE '").append(searchTerm).append("%' OR a.nameIndex LIKE '").append(searchTerm)
@@ -288,7 +283,7 @@ public class SearchEngine {
 	 * @return An array of search terms, sorted from least to most common
 	 */
 	public List<String> buildTerm(String check, boolean sort, boolean removeDups) {
-		if(Strings.isEmpty(check))
+		if (Strings.isEmpty(check))
 			return Collections.emptyList();
 		String[] terms = check.toUpperCase().split("\\W|_");
 		Collection<String> stringCollection;
@@ -297,11 +292,11 @@ public class SearchEngine {
 		else
 			stringCollection = new ArrayList<String>();
 		for (int i = 0; i < terms.length; i++) {
-			stringCollection.add(terms[i].replaceAll("^(HTTP)|^(W{3})", "").replaceAll(
-					"[^a-zA-Z0-9\\s]", ""));
+			stringCollection.add(terms[i].replaceAll("^(HTTP)|^(W{3})", "").replaceAll("[^a-zA-Z0-9\\s]", ""));
 		}
 		// remove empty strings
-		while(stringCollection.remove(""));
+		while (stringCollection.remove(""))
+			;
 		List<String> s = new ArrayList<String>();
 		s.addAll(stringCollection);
 		if (sort)
@@ -332,8 +327,8 @@ public class SearchEngine {
 		fullQuery.append("(SELECT '").append(0).append(commonSql).append(terms.get(0)).append("%'").append(commonEnd);
 		for (int i = 1; i < terms.size(); i++) {
 			fullQuery.append("\nUnion\n");
-			fullQuery.append("(SELECT '").append(i).append(commonSql).append(terms.get(i)).append("%'").append(
-					commonEnd);
+			fullQuery.append("(SELECT '").append(i).append(commonSql).append(terms.get(i)).append("%'")
+					.append(commonEnd);
 		}
 		fullQuery.append(" ORDER BY t");
 		if (onlyValid)
