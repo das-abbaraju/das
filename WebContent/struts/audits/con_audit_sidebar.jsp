@@ -68,19 +68,22 @@
 							<img src="images/add_remove.png" />
 						</s:if>
 					</s:if>
-					<s:if test="showVerified">
-						<s:if test="#catNode.percentVerified < 100">
-							<s:if test="!conAudit.auditType.annualAddendum">
-								<img src="images/icon_text_alert.png"/>
+
+					<s:if test="!isEveryCAOCompleteOrHigher()">					
+						<s:if test="showVerified">
+							<s:if test="#catNode.percentVerified < 100">
+								<s:if test="!conAudit.auditType.annualAddendum">
+									<img src="images/icon_text_alert.png"/>
+								</s:if>
 							</s:if>
+							<s:else>						
+								<img src="images/okCheck.gif" />
+							</s:else>
 						</s:if>
-						<s:else>						
-							<img src="images/okCheck.gif" />
-						</s:else>
+						<s:else>
+							<s:property value="#catNode.percentComplete" />%
+						</s:else> 
 					</s:if>
-					<s:else>
-						<s:property value="#catNode.percentComplete" />%
-					</s:else> 
 				</span>
 				</a> 
 				<s:set name="subcatNode" value="%{#catNode}" /> 

@@ -704,4 +704,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
 		this.caowDAO = caowDAO;
 	}
+	
+	public boolean isEveryCAOCompleteOrHigher() {
+		boolean allComplete = true;
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (!cao.getStatus().after(AuditStatus.Resubmitted))
+				allComplete = false;
+		}
+		
+		return allComplete;
+	}
 }
