@@ -149,8 +149,8 @@ public class AuditRuleCache<R extends AuditRule> {
 		public Operators getData(Trade value) {
 			Operators operator = new Operators();
 			for (Trade trade : data.keySet()) {
-				if (value != null && trade != null && (value.childOf(trade) || trade.childOf(value))) {
-					System.out.println("         related to " + trade);
+				if (value != null && trade != null && (value.childOf(trade))) {
+//					System.out.println(value + " related to " + trade);
 					operator.add(data.get(trade));
 				}
 			}
@@ -171,7 +171,7 @@ public class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (Trade trade : contractor.trades) {
-				Operators operators = data.get(trade);
+				Operators operators = getData(trade); // indirect call to take care of hierarchy of rules
 				if (operators != null)
 					rules.addAll(operators.next(contractor));
 			}
