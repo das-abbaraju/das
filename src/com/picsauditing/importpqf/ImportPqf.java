@@ -109,12 +109,12 @@ public abstract class ImportPqf {
 						if (allSame)
 							answer = option.transformResponse(response);
 					} else if (option.getComparison().isOrComparison()) {
-						if (Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
+						if (containsNullSafe(data.getAnswer(), "Yes")) {
 							answer = "Yes";
 						} else {
 							for (Integer id : option.getComparisonIds()) {
 								String otherResponse = auditAnswers.get(id.intValue()).getAnswer();
-								if (Strings.isEqualNullSafe(otherResponse, "Yes")) {
+								if (containsNullSafe(otherResponse, "Yes")) {
 									answer = "Yes";
 									break;
 								}
@@ -330,6 +330,10 @@ public abstract class ImportPqf {
 					lineIndex++;
 				}
 			}
+			
+			if (lineIndex >= lines.size()) {
+				lineIndex = 0;
+			}
 
 			// search for question
 			while (lineIndex < lines.size() && !option.isQuestionFound()) {
@@ -476,6 +480,12 @@ public abstract class ImportPqf {
 	
 	public String getLog() {
 		return log.toString();
+	}
+	
+	private boolean containsNullSafe(String source, String search) {
+		if (source == null || search == null)
+			return false;
+		return (source.indexOf(search) >= 0);
 	}
 	
 	/**

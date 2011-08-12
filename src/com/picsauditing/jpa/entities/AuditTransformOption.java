@@ -258,7 +258,7 @@ public class AuditTransformOption  extends BaseTable implements java.io.Serializ
 		if (searchValue != null) {
 			if (Strings.isEmpty(workingAnswer)) {
 				workingAnswer = "No";
-			} else if (workingAnswer.indexOf(searchValue) > 0) {
+			} else if (workingAnswer.indexOf(searchValue) >= 0) {
 				workingAnswer = "Yes";
 			} else {
 				workingAnswer = "No";

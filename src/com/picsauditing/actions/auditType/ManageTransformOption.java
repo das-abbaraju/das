@@ -172,7 +172,7 @@ public class ManageTransformOption extends ManageQuestion {
 		
 		option.setAnswerMapOptions(sanitizedMapping);
 		
-		return false;
+		return true;
 	}
 	
 	private boolean validateComparisonOption() {
