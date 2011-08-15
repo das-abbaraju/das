@@ -8,11 +8,26 @@
 
 var status = 0;
 
-$(document).ready(function() {
+$(function() {
 	if (isVerified()) {
 		$(".calculatedAddress").show("slow");
 		$("#submitButton").show();
 	}
+	
+	$('#show_next').live('click', function(e) {
+		$(this).attr('disabled', true);
+		$.ajax({
+			 url:'ScheduleAudit!viewMoreTimes.action',
+			 data:{availabilityStartDate:startDate,auditID:auditID},
+			 success: function(text, textStatus) {
+			   $('#li_availability').append(text);
+			 }
+		});
+	});
+	
+	$('#verifyButton').live('click', function() {
+		verifyAddress();
+	});
 });
 
 function isVerified() {
@@ -35,7 +50,7 @@ function verifyAddress() {
 	if (GBrowserIsCompatible()) {
 		var geocoder = new GClientGeocoder();
 		if (geocoder) {
-			startThinking({message: "Validating Address"});
+			startThinking({message: translate('JS.ScheduleAudit.message.ValidatingAddress')});
 			var address = $("#conAudit_address").val() + ", " + $("#conAudit_city").val() + ", " + $("#conAudit_state").val() + ", " + $("#conAudit_zip").val();
 			geocoder.getLocations(
 				address,
@@ -43,7 +58,7 @@ function verifyAddress() {
 					try {
 						// $.gritter.removeAll();
 						if (matches.Placemark.length == 0) {
-							throw("Address (" + address + ") could not be found");
+							throw(translate('JS.ScheduleAudit.error.AddressNotFound', [ address ]));
 						}
 						
 						var detail = matches.Placemark[0].AddressDetails;
@@ -70,7 +85,7 @@ function verifyAddress() {
 						$("#submitButton").show();
 					} catch(err) {
 						unVerify();
-						$.gritter.add({title: 'Address Verification', text: err});
+						$.gritter.add({title: translate('JS.ScheduleAudit.title.AddressVerification'), text: err});
 					}
 					$(".calculatedAddress").show("slow");
 					stopThinking();
@@ -92,15 +107,4 @@ function submitForm() {
 		return false;
 	}
 	return true;
-}
-
-function showNextAvailable() {
-	$('#show_next').attr("disabled","disabled");
-	$.ajax({
-		 url:'ScheduleAuditPickerAjax!viewMoreTimes.action',
-		 data:{button:'address',availabilityStartDate:startDate,auditID:auditID},
-		 success: function(text, textStatus) {
-		   $('#li_availability').append(text);
-		 }
-		})
 }

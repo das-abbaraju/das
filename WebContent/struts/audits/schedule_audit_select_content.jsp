@@ -5,10 +5,10 @@
 		<h4><s:date name="key" format="EEEE, MMM d" /></h4>
 		<div class="cal_times">
 		<s:iterator value="value">
-			<a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>&button=select&timeSelected=<s:date 
+			<a href="ScheduleAudit!selectTime.action?auditID=<s:property value="conAudit.id"/>&timeSelected=<s:date 
 				name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if>>
 				
-				<s:property value="formatDate(startDate, 'h:mm a')" /> to <s:property value="formatDate(endDate, 'h:mm a z')" />
+				<s:text name="ScheduleAudit.link.DateSelector"><s:param value="%{startDate}" /><s:param value="%{endDate}" /></s:text>
 			</a>
 			 <br/>
 		</s:iterator>
@@ -16,11 +16,11 @@
 	</div>
 </s:iterator>
 <s:if test="availableSet.days.size() == 0">
-<div class="info"><s:text name="%{scope}.message.NoTimeslotsLeft" /></div>
+<div class="info"><s:text name="ScheduleAudit.message.NoTimeslotsLeft" /></div>
 </s:if>
 <s:if test="availableSet.latest != null">
 <script type="text/javascript">
-startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
+startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}" />';
 <s:if test="availableSet.days.size() > 0">
 $('#show_next').removeAttr("disabled");
 </s:if>

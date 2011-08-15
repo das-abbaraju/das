@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ScheduleAudit.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -36,16 +36,16 @@ $(function() {
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<div class="info" style="clear:left"><s:text name="%{scope}.message.EnterPrimaryRepresentative" /></div>
+<div class="info" style="clear:left"><s:text name="ScheduleAudit.message.EnterPrimaryRepresentative" /></div>
 
 <s:form onsubmit="return submitForm();">
 	<s:hidden name="auditID" />
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="%{scope}.label.ContactPerson" /></h2>
+	<h2 class="formLegend"><s:text name="ScheduleAudit.label.ContactPerson" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
 			<li>
-				<s:submit method="edit" cssClass="picsbutton" value="%{getText(scope + '.button.EditScheduleManually')}" /> 
+				<s:submit method="edit" cssClass="picsbutton" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" /> 
 			</li>
 		</s:if>
 		<li><label><s:text name="User.name" />:</label> <s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" /></li>
@@ -54,10 +54,10 @@ $(function() {
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="%{scope}.label.EnterAuditLocation" /></h2>
+	<h2 class="formLegend"><s:text name="ScheduleAudit.label.EnterAuditLocation" /></h2>
 	<ol>
-		<li class="calculatedAddress"><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> <s:text name="%{scope}.message.NoPOBoxes" /></li>
-		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> <s:text name="%{scope}.message.SuiteApartment" /></li>
+		<li class="calculatedAddress"><label><s:text name="global.Address" />:</label> <s:textfield id="conAudit_address" name="conAudit.address" size="50" value="%{conAudit.contractorAccount.address}"/> <s:text name="ScheduleAudit.message.NoPOBoxes" /></li>
+		<li><label><s:text name="global.Address" /> 2:</label> <s:textfield id="conAudit_address2" name="conAudit.address2" value="%{conAudit.contractorAccount.address2}"/> <s:text name="ScheduleAudit.message.SuiteApartment" /></li>
 		<li class="calculatedAddress"><label><s:text name="global.City" />:</label> <s:textfield id="conAudit_city" name="conAudit.city" value="%{conAudit.contractorAccount.city}" /></li>
 		<li class="calculatedAddress"><label><s:text name="State" />:</label> <s:select id="conAudit_state" name="conAudit.state"
 			value="%{conAudit.contractorAccount.state}" list="stateList"
@@ -67,13 +67,13 @@ $(function() {
 			value="%{conAudit.contractorAccount.country.isoCode}" list="countryList"
 			listKey="isoCode" listValue="name"  headerKey="" headerValue=" - Country - "/></li>
 		<li id="unverifiedLI" style="display: none;"><s:checkbox id="unverifiedCheckbox"
-			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="%{scope}.message.AddressIsCorrect" /></li>
+			onchange="$('#submitButton').toggle()" name="unverifiedCheckbox"></s:checkbox> <s:text name="ScheduleAudit.message.AddressIsCorrect" /></li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">
 	<div id="mainThinkingDiv"></div>
 	<div>
-	<button id="verifyButton" class="picsbutton" type="button"><s:text name="%{scope}.button.VerifyAddress" /></button>
+	<button id="verifyButton" class="picsbutton" type="button"><s:text name="ScheduleAudit.button.VerifyAddress" /></button>
 	<s:submit id="submitButton" cssStyle="display: none;" cssClass="picsbutton positive" method="address" value="%{getText('button.Next') + ' >>'}" />
 	</div>
 	</fieldset>

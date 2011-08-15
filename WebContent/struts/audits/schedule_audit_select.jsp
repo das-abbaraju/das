@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ScheduleAudit.title" /></title>
 <meta name="help" content="Scheduling_Audits">
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
@@ -12,9 +12,9 @@
 var auditID = <s:property value="conAudit.id"/>;
 var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
 
-$(document).ready(function() {
+$(function() {
 	$('a.expedite').click(function() {
-		return confirm("<s:text name="%{scope}.confirm.RushAudit"><s:param><s:property value="expedite.amount" /></s:param></s:text>");
+		return confirm(translate('JS.ScheduleAudit.confirm.RushAudit'));
 	});
 });
 
@@ -69,20 +69,20 @@ li#li_availability a:hover {
 
 <s:form>
 	<fieldset class="form bottom">
-	<h2 class="formLegend"><s:text name="%{scope}.label.ChooseAuditTime" /></h2>
+	<h2 class="formLegend"><s:text name="ScheduleAudit.label.ChooseAuditTime" /></h2>
 	<ol>
 		<s:if test="permissions.admin">
 			<li>
 				<s:hidden name="auditID" />
-				<s:submit cssClass="picsbutton" method="edit" value="%{getText(scope + '.button.EditScheduleManually')}" />
+				<s:submit cssClass="picsbutton" method="edit" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" />
 			</li>
 		</s:if>
-		<li><s:text name="%{scope}.message.ChooseAvailableTime" /></li>
+		<li><s:text name="ScheduleAudit.message.ChooseAvailableTime" /></li>
 		<li id="li_availability">
 			<s:include value="schedule_audit_select_content.jsp"/>
 		</li>
 		<li>
-			<input type="button" id="show_next" class="picsbutton" value="<s:text name="%{scope}.button.ShowMoreTimeslots" />" onclick="showNextAvailable()"/>
+			<input type="button" id="show_next" class="picsbutton" value="<s:text name="ScheduleAudit.button.ShowMoreTimeslots" />" />
 		</li>
 	</ol>
 	</fieldset>
