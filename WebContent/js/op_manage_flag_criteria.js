@@ -1,111 +1,163 @@
-function checkSubmit(criteriaID) {
-	var checked = confirm(confirmRemoveCriteria);
-	var insurance = $("#form1_insurance").val();
-
-	if (checked == true) {
-		var data = {
-				button: 'delete',
-				id: $('#form1_id').val(),
-				criteriaID: criteriaID
-			};
-		$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data);
-	}
-}
-function addCriteria(criteriaID) {
-	var fcOptions = $('#addCriteria tr#' + criteriaID).find('input,select').serialize();
+$(function() {
+	$('.datepicker').datepicker();
 	
-	var insurance = $("#form1_insurance").val();
-	startThinking({div:'thinking', message:addingCriteria});
-	
-	var data = {
-		button: 'add',
-		id: $('#form1_id').val(),
-		criteriaID: criteriaID
-	};
-	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance + 
-			(fcOptions.length > 0 ? "&" + fcOptions : ""), data, 
-		function() {
-			$('#addCriteria').hide('slow');
-			stopThinking({div:'thinking'});
+	$('.newCriteria').live('click', function(e) {
+		e.preventDefault();
+		var insurance = $("#form1_insurance").val();
+		
+		if ($('#addCriteria').is(':empty')) {
+			startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.LoadingCriteria')});
+			$('#addCriteria').load('ManageFlagCriteriaOperator!questions.action?insurance='+insurance, 
+					{ operator: $('#form1_id').val() }, function() {
+					stopThinking({div:'thinking'});
+					$(this).slideDown();
+				}
+			);
+		} else {
+			$('#addCriteria').slideToggle();
 		}
-	);
-}
+	});
+	
+	$('.childCriteria').live('click', function(e) {
+		e.preventDefault();
+		
+		var opID = $(this).data('facid');
+		var opName = $(this).data('facname');
+		
+		if (opID == $('#form1_id').val()) {
+			$('#childCriteria').empty();
+			$('#emptyChildCriteria').hide();
+		} else {
+			var insurance = $("#form1_insurance").val();
+			
+			startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.LoadingLinked')});
+			$('#childCriteria').load('ManageFlagCriteriaOperator!childOperator.action?insurance='+insurance, { childID: opID }, 
+				function() {
+					stopThinking({div:'thinking'});
+					$('#emptyChildCriteria').text(opName).show();
+				}
+			);
+		}
+	});
+	
+	$('#emptyChildCriteria').live('click', function(e) {
+		e.preventDefault();
+		$('#childCriteria').empty();
+		$(this).hide();
+	});
+	
+	$('#criteriaDiv').delegate('.needsRecalc', 'load', function() {
+		var fcoID = $(this).attr('id');
+		
+		updateAffected(fcoID, accountID);
+	}).delegate('#recalculateAll', 'click', function(e) {
+		e.preventDefault();
+		
+		$('#criteriaDiv table.report tbody tr').each(function() {
+			var fcoID = $(this).attr('id');
+			updateAffected(fcoID, accountID);
+		});
+	}).delegate('a.getImpact', 'click', function(e) {
+		e.preventDefault();
+		
+		var fcoID = $(this).closest('tr').attr('id');
+		
+		startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.ImpactedContractors')});
+		$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', { fcoID: fcoID, opID: accountID }, 
+			function() {
+				$(this).show('slow');
+				stopThinking({div:'thinking'});
+			}
+		);
+	}).delegate('.edit', 'click', function(e) {
+		e.preventDefault();
+		
+		var id = $(this).data('id');
+		
+		$(".editable").hide();
+		$(".hurdle").show();
+		
+		if ($("#"+id).find(".viewable").is(":visible")) {
+			$(".viewable").show();
+			$("#"+id).find(".viewable").hide();
+			$("#"+id).find(".editable").show();
+			$("#"+id).find(".hurdle").hide();
+		} else {
+			$("#"+id).find("input[type!=button]").val($("#"+id).find(".hurdle").text());
+			$("#"+id).find(".viewable").show();
+		}
+		
+		$("#"+id).find("span.newImpact").empty();
+	}).delegate('.remove', 'click', function(e) {
+		e.preventDefault();
+		
+		if (confirm(translate('JS.ManageFlagCriteriaOperator.message.ConfirmRemoveCriteria'))) {
+			var id = $(this).data('id');
+			var insurance = $("#form1_insurance").val();
+			var data = {
+				operator: $('#form1_id').val(),
+				flagCriteriaOperator: id
+			};
+			
+			$('#criteriaDiv').load('ManageFlagCriteriaOperator!delete.action?insurance='+insurance, data, function() {
+				$('#criteriaDiv .datepicker').datepicker();
+			});
+		}
+	}).delegate('.editHurdle', 'click', function(e) {
+		e.preventDefault();
+		var id = $(this).data('id');
+		submitHurdle(id);
+	});
+	
+	$('#impactDiv').delegate('a.excel', 'click', function(e) {
+		e.preventDefault();
+		
+		var fcoID = $(this).data('fco');
+		var opID = $(this).data('op');
+		
+		newurl = "OperatorFlagsCalculatorCSV.action?button=download&fcoID=" + fcoID + "&opID=" + opID;
+		popupWin = window.open(newurl, 'OperatorFlagsCalculator', '');
+	});
+	
+	$('#addCriteria').delegate('.add', 'click', function(e) {
+		e.preventDefault();
+		startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.AddingCriteria')});
+		
+		var fcOptions = $(this).closest('tr').find('input,select').serialize();
+		var insurance = $("#form1_insurance").val();
+		var data = {
+			operator: $('#form1_id').val(),
+			flagCriteria: $(this).data('id')
+		};
+		
+		$('#criteriaDiv').load('ManageFlagCriteriaOperator!add.action?insurance='+insurance + 
+				(fcOptions.length > 0 ? "&" + fcOptions : ""), data,
+			function() {
+				$('#addCriteria').slideUp('slow', function() { $(this).empty(); });
+				stopThinking({div:'thinking'});
+				$('#criteriaDiv .datepicker').datepicker();
+			}
+		);
+	});
+});
 
 function submitHurdle(id) {
-	var criteriaID = id;
 	var insurance = $("#form1_insurance").val();
 	var fcoOptions = $("#criteriaDiv tr#" + id).find("input, select").serialize();
 	
-	startThinking({div:'thinking', message:savingChanges});
+	startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.SavingChanges')});
 	
 	var data = {
-		button: 'save',
-		id: $('#form1_id').val(),
-		criteriaID: criteriaID
+		operator: $('#form1_id').val(),
+		flagCriteriaOperator: id
 	};
 	
-	$('#criteriaDiv').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance + 
-			(fcoOptions.length > 0 ? "&" + fcoOptions : ""), data,
-		function() { stopThinking({div:'thinking'}); }
-	);
-}
-function getAddQuestions() {
-	var insurance = $("#form1_insurance").val();
-	
-	if ($('#addCriteria').is(':hidden')) {
-		var data= {
-			button: 'questions',
-			id: $('#form1_id').val()
-		};
-		startThinking({div:'thinking', message:loadingCriteria});
-		$('#addCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
-			function() {
-				stopThinking({div:'thinking'});
-				$(this).slideDown();
-			}
-		);
-	} else {
-		$('#addCriteria').slideUp();
-	}
-}
-
-function editCriteria(id) {
-	$(".editable").hide();
-	$(".hurdle").show();
-	
-	if ($("#"+id).find(".viewable").is(":visible")) {
-		$(".viewable").show();
-		$("#"+id).find(".viewable").hide();
-		$("#"+id).find(".editable").show();
-		$("#"+id).find(".hurdle").hide();
-	} else {
-		$("#"+id).find("input[type!=button]").val($("#"+id).find(".hurdle").text());
-		$("#"+id).find(".viewable").show();
-	}
-	
-	$("#"+id).find("span.newImpact").empty();
-}
-
-function getImpact(fcoID, opID) {
-	var data = {
-		fcoID: fcoID,
-		opID: opID
-	};
-	
-	$('#impactDiv').empty();
-	startThinking({div:'thinking', message:impactedContractors});
-	$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', data, 
-		function() {
-			$(this).show('slow');
+	$('#criteriaDiv').load('ManageFlagCriteriaOperator!save.action?insurance='+insurance + 
+			(fcoOptions.length > 0 ? "&" + fcoOptions : ""), data, function() {
 			stopThinking({div:'thinking'});
+			$('#criteriaDiv .datepicker').datepicker();
 		}
 	);
-}
-
-function downloadImpact(fcoID, opID) {
-	newurl = "OperatorFlagsCalculatorCSV.action?button=download&fcoID=" + fcoID + "&opID=" + opID;
-	popupWin = window.open(newurl, 'OperatorFlagsCalculator', '');
 }
 
 function calculateImpact(fcoID, opID, newHurdle) {
@@ -116,7 +168,7 @@ function calculateImpact(fcoID, opID, newHurdle) {
 		opID: opID
 	};
 	
-	startThinking({div:'thinking', message:loadingAffected});
+	startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.LoadingAffected')});
 	$('#'+fcoID).find('span.newImpact').load('OperatorFlagsCalculatorAjax.action', data,
 		function() {
 			stopThinking({div:'thinking'});
@@ -144,29 +196,6 @@ function updateAffected(fcoID, opID) {
 				$('#'+fcoID).find('a.oldImpact').replaceWith('<a href="#" class="oldImpact" onclick="window.location.reload();">Reload</a>');
 		}
 	});
-}
-
-function getChildCriteria(opID, opName) {
-	if (opID == $('#form1_id').val())
-		$('#childCriteria').empty();
-	else {
-		var insurance = $("#form1_insurance").val();
-		var data = {
-			button: 'childOperator',
-			id: $('#form1_id').val(),
-			childID: opID,
-			insurance: insurance
-		};
-		
-		startThinking({div:'thinking', message:loadingLinked});
-		$('#childCriteria').load('ManageFlagCriteriaOperatorAjax.action?insurance='+insurance, data, 
-			function() {
-				stopThinking({div:'thinking'});
-				$('#childCriteria').prepend('<a href="#" onclick="$(\'#childCriteria\').empty(); return false;" class="remove">'
-						+ opName + '</a>');
-			}
-		);
-	}
 }
 
 var wait = function(){
