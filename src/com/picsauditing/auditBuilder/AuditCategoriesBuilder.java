@@ -13,6 +13,8 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditRule;
+
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -36,6 +38,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	// TODO: the operator in both these maps are the same. Maybe we should consider creating an OperatorDetail object to
 	// contain the rule and the Set
 	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerOperator = new HashMap<OperatorAccount, Set<AuditCategory>>();
+	
+	private AuditType auditType = null;
 
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
@@ -69,8 +73,15 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		if (auditOperators.size() == 0)
 			return categories;
 
-		for (OperatorAccount operator : auditOperators) {
-			operators.put(operator, null);
+		if (conAudit.getAuditType().getId() == AuditType.FIELD) { 
+			// field audits will only have caos that are manually specified (not by rules)
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				operators.put(cao.getOperator(), null);
+			}
+		} else {
+			for (OperatorAccount operator : auditOperators) {
+				operators.put(operator, null);
+			}
 		}
 
 		List<AuditCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
@@ -157,7 +168,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				// This operator doesn't require any categories, so I'm just going to ignore it for now
 			} else {
 				OperatorAccount governingBody = rule.getOperatorAccount();
-				if (governingBody == null)
+				if (governingBody == null || 
+						(auditType != null && (auditType.isDesktop() || auditType.isImplementation())))
 					governingBody = picsGlobal;
 				if (!caos.containsKey(governingBody))
 					caos.put(governingBody, new HashSet<OperatorAccount>());

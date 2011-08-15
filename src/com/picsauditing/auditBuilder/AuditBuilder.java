@@ -1,6 +1,5 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +28,6 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
@@ -140,16 +138,7 @@ public class AuditBuilder {
 				 */
 				// TODO testing updating categories and caos for a manually added audit
 			} else {
-				Set<AuditCategory> categories = null;
-				if (conAudit.getAuditType().getId() == AuditType.FIELD) {
-					ArrayList<OperatorAccount> list = new ArrayList<OperatorAccount>();
-					for (ContractorAuditOperator cao:conAudit.getOperators()) {
-						list.add(cao.getOperator());
-					}
-					categories = categoriesBuilder.calculate(conAudit, list);
-				} else {
-					categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
-				}
+				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 					// Import PQF does not have an audit type detail because it is manually added, and the audit is an
 					// exception in that the only CAO is PICS Global. The audit_cat_data need to be generated here. We
@@ -202,29 +191,6 @@ public class AuditBuilder {
 	 *            Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()) {
-			// 6/9/2011 Trevor We don't need this because of nightly Cron calling
-			// contractorAuditOperatorDAO.activateAuditsWithReqs();
-			AuditStatus maxStatus = null;
-			if (conAudit.hasCaoStatus(AuditStatus.Submitted))
-				maxStatus = AuditStatus.Submitted;
-			if (conAudit.hasCaoStatus(AuditStatus.Complete))
-				maxStatus = AuditStatus.Complete;
-
-			if (maxStatus != null) {
-				// Make sure all statuses are at least maxStatus
-				for (ContractorAuditOperator cao : conAudit.getOperators()) {
-					if (cao.getStatus().before(maxStatus)) {
-						// Bump this status up to maxStatus
-						ContractorAuditOperatorWorkflow caow = cao.changeStatus(maxStatus, null);
-						caow.setAuditColumns(new User(User.SYSTEM));
-						cao.getCaoWorkflow().add(caow);
-						contractorAuditOperatorDAO.save(cao);
-					}
-				}
-			}
-		}
-
 		HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator> previousCaoMap = 
 			new HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator>();
 		
