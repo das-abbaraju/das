@@ -23,9 +23,7 @@
 		<td></td>
 	    <th><a href="javascript: changeOrderBy('form1','a.name');" ><s:text name="global.Contractor" /></a></th>
 	    <td><s:text name="ReportCAOList.header.DocumentType" /></td>
-	    <pics:permission perm="AllOperators">
-		    <td><a href="javascript: changeOrderBy('form1','caoAccount.name');"><s:text name="Audit.header.OperatorScope" /></a></td>
-	    </pics:permission>
+	    <td><a href="javascript: changeOrderBy('form1','caoAccount.name');"><s:text name="Audit.header.OperatorScope" /></a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.status');" ><s:text name="global.Status" /></a></td>
 	    <td><a href="javascript: changeOrderBy('form1','cao.statusChangedDate DESC');"><s:text name="global.Date" /></a></td>
 	    <td><a href="javascript: changeOrderBy('form1','ca.expiresDate DESC');" ><s:text name="ReportCAOList.header.ExpiredDate" /></a></td>
@@ -55,9 +53,7 @@
 		<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
-	    <pics:permission perm="AllOperators">
-			<td><s:property value="get('caoAccountName')" /></td>
-		</pics:permission>
+		<td><s:property value="get('caoAccountName')" /></td>
 		<td><s:property value="get('auditStatus')"/></td>
 		<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
 		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
