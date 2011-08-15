@@ -420,10 +420,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		emailBuilder.setToAddresses(newContractor.getEmail());
 		
-		EmailSubscription sub = newContractor.getRequestedByUser()
-				.getEmailSubscription(Subscription.RegistrationRequests);
-		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+		if (hasEmailSubscription()){
 			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
+		}
 		
 		emailBuilder.addToken("con", newContractor);
 		emailBuilder.addToken("op", newContractor.getRequestedBy());
@@ -487,9 +486,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			emailBuilder.setToAddresses(newContractor.getEmail());
 			emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
 			
-			EmailSubscription sub = newContractor.getRequestedByUser()
-					.getEmailSubscription(Subscription.RegistrationRequests);
-			if (sub == null	|| sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+			if (hasEmailSubscription())
 				emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
 
 			emailBuilder.addToken("con", newContractor);
@@ -916,8 +913,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
 
-		EmailSubscription sub = newContractor.getRequestedByUser().getEmailSubscription(Subscription.RegistrationRequests);
-		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+		if (hasEmailSubscription())
 			emailQueue.setCcAddresses(cc);
 
 		return emailQueue;
@@ -962,6 +958,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			if (!requestedTags.contains(tag))
 				operatorTags.add(tag);
 		}
+	}
+	private boolean hasEmailSubscription() {
+		if (newContractor.getRequestedByUser() == null)
+			return false;
+		EmailSubscription sub = newContractor.getRequestedByUser().getEmailSubscription(Subscription.RegistrationRequests);
+		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
+			return true;
+		return false;
 	}
 
 	public List<OperatorTag> getRequestedTags() {
