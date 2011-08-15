@@ -97,6 +97,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			}
 
 			SelectSQL sql = new SelectSQL("flag_data f");
+			sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.criteriaID = f.criteriaID AND fcc.conID = f.conID");
 			sql.addWhere(String.format("f.opID IN (%s)", Strings.implode(opIDs)));
 			sql.addWhere(String.format("f.conID IN (%s)", Strings.implode(conIDs)));
 			sql.addWhere(String.format("f.criteriaID = %d", flagCriteriaOperator.getCriteria().getId()));
@@ -104,6 +105,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			sql.addField("f.conID");
 			sql.addField("f.opID");
 			sql.addField("f.flag");
+			sql.addField("fcc.answer");
+			sql.addField("fcc.answer2");
 
 			List<BasicDynaBean> flags = db.select(sql.toString(), false);
 			Map<Integer, List<FlagData>> conFlags = new HashMap<Integer, List<FlagData>>();
@@ -122,9 +125,17 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				d.setFlag(FlagColor.valueOf(f.get("flag").toString()));
 				d.setCriteria(flagCriteriaOperator.getCriteria());
 
+				FlagCriteriaContractor fcc = new FlagCriteriaContractor();
+				fcc.setAnswer(f.get("answer").toString());
+				
+				if (f.get("answer2") != null)
+					fcc.setAnswer2(f.get("answer2").toString());
+
+				d.setCriteriaContractor(fcc);
+
 				conFlags.get(conID).add(d);
 			}
-			
+
 			Map<Integer, List<ContractorAudit>> auditMap = buildAuditMap(results, flagCriteriaOperator, operator,
 					permissions, db);
 

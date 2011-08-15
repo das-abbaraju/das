@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ManageFlagCriteriaOperator.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -33,7 +33,7 @@ table.report a {
 	float: right;
 }
 
-.editable {
+.editable, #emptyChildCriteria {
 	display: none;
 }
 
@@ -51,22 +51,16 @@ function getFlag(selectObject) {
 	var flagColor = $(selectObject).find("option:selected").val();
 
 	if (flagColor == "Red")
-		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Red.smallIcon" escape="false" />';
+		flagColor = '<s:text name="FlagColor.Red.smallIcon" />';
 	else if (flagColor == "Amber")
-		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Amber.smallIcon" escape="false" />';
+		flagColor = '<s:text name="FlagColor.Amber.smallIcon" />';
 	else
-		flagColor = '<s:property value="@com.picsauditing.jpa.entities.FlagColor@Green.smallIcon" escape="false" />';
+		flagColor = '<s:text name="FlagColor.Green.smallIcon" />';
 	
 	var flagImage = $(selectObject.parentNode).find("span.flagImage img").replaceWith(flagColor);
 }
 
-var confirmRemoveCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.ConfirmRemoveCriteria" />";
-var addingCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.AddingCriteria" />";
-var savingChanges = "<s:text name="ManageFlagCriteriaOperator.javascript.SavingChanges" />";
-var loadingCriteria = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingCriteria" />";
-var impactedContractors = "<s:text name="ManageFlagCriteriaOperator.javascript.ImpactedContractors" />";
-var loadingAffected = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingAffected" />";
-var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.LoadingLinked" />";
+var accountID = '<s:property value="account.id" />';
 </script>
 <script type="text/javascript" src="js/op_manage_flag_criteria.js"></script>
 </head>
@@ -77,10 +71,10 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 		<s:text name="ManageFlagCriteriaOperator.message.InheritedFrom">
 			<s:param>
 				<s:if test="insurance">
-					<s:text name="%{scope}.header.Insurance" />
+					<s:text name="ManageFlagCriteriaOperator.header.Insurance" />
 				</s:if>
 				<s:else>
-					<s:text name="%{scope}.header.Flag" />
+					<s:text name="ManageFlagCriteriaOperator.header.Flag" />
 				</s:else>
 			</s:param>
 			<s:param>
@@ -105,19 +99,20 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 				<div id="criteriaDiv">
 					<s:include value="op_manage_flag_criteria_list.jsp" />
 				</div>
-					<s:if test="canEdit">
-						<nobr>
-							<pics:permission perm="ManageAudits">
-								<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
-							</pics:permission>
-							<a href="#" onclick="getAddQuestions(); return false;" class="add"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
-						</nobr>
-						<div id="addCriteria" style="display:none;"></div>
-					</s:if>
+				<s:if test="canEdit">
+					<nobr>
+						<pics:permission perm="ManageAudits">
+							<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
+						</pics:permission>
+						<a href="#" class="add newCriteria"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
+					</nobr>
+					<div id="addCriteria"></div>
+				</s:if>
 				<span id="thinking"></span>
 				<s:if test="(permissions.corporate || permissions.admin) && operator.operatorFacilities.size() > 0">
 					<div id="corporateList">
 						<div class="info"><s:text name="ManageFlagCriteriaOperator.message.LinkedAccounts" /></div>
+						<a href="#" class="remove" id="emptyChildCriteria"></a>
 						<div id="childCriteria"></div>
 						<table class="report">
 							<thead>
@@ -139,12 +134,16 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 									<td><s:property value="#facility.name" /></td>
 									<td>
 										<s:if test="insurance">
-											<a href="#" onclick="getChildCriteria(<s:property value="#facility.inheritInsuranceCriteria.id" />, '<s:property value="#facility.inheritInsuranceCriteria.name" />'); return false;">
-											<s:property value="#facility.inheritInsuranceCriteria.name" /></a>
+											<a href="#" class="childCriteria" data-facid="<s:property value="#facility.inheritInsuranceCriteria.id" />"
+												data-facname="<s:property value="#facility.inheritInsuranceCriteria.name" />">
+												<s:property value="#facility.inheritInsuranceCriteria.name" />
+											</a>
 										</s:if>
 										<s:else>
-											<a href="#" onclick="getChildCriteria(<s:property value="#facility.inheritFlagCriteria.id" />, '<s:property value="#facility.inheritFlagCriteria.name" />'); return false;">
-												<s:property value="#facility.inheritFlagCriteria.name" /></a>
+											<a href="#" class="childCriteria" data-facid="<s:property value="#facility.inheritFlagCriteria.id" />"
+												data-facname="<s:property value="#facility.inheritFlagCriteria.name" />">
+												<s:property value="#facility.inheritFlagCriteria.name" />
+											</a>
 										</s:else>
 									</td>
 								</tr>
@@ -181,8 +180,6 @@ var loadingLinked = "<s:text name="ManageFlagCriteriaOperator.javascript.Loading
 			</td>
 		</tr>
 	</table>
-	
-	
 </s:form>
 </div>
 

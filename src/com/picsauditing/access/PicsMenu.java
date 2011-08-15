@@ -326,9 +326,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
 			menuItems.put("Manage Workflow", "ManageAuditWorkFlow.action");
 		if (permissions.hasPermission(OpPerms.EditFlagCriteria) && permissions.isOperatorCorporate()) {
-			menuItems.put("Flag Criteria", "ManageFlagCriteriaOperator.action");
+			menuItems.put(getTitle("ManageFlagCriteriaOperator"), "ManageFlagCriteriaOperator.action");
 			if (permissions.isCanSeeInsurance())
-				menuItems.put("Insurance Criteria", "ManageInsuranceCriteriaOperator.action");
+				menuItems.put(getTitle("ManageInsuranceCriteriaOperator"), "ManageInsuranceCriteriaOperator.action");
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			menuItems.put(getTitle("EditEmailTemplate"), "EditEmailTemplate.action");

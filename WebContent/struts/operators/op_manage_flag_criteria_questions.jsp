@@ -19,17 +19,12 @@
 	<s:iterator value="addableCriterias">
 		<tr id="<s:property value="id" />">
 			<td class="center">
-				<a href="#" onclick="addCriteria(<s:property value="id" />); return false;" class="add"></a>
+				<a href="#" data-id="<s:property value="id" />" class="add"></a>
 			</td>
 			<td><nobr>
-				<s:if test="getAddableFlags(id).size() == 1">
-					<span class="flagImage"><s:property value="getAddableFlags(id).get(0).smallIcon" escape="false" /></span>
-					<input type="hidden" name="newFlag" value="<s:property value="getAddableFlags(id).get(0)" />" />
-				</s:if>
-				<s:else>
-					<span class="flagImage"><s:property value="getAddableFlags(id).get(0).smallIcon" escape="false" /></span>
-					<s:select list="getAddableFlags(id)" name="newFlag" onchange="getFlag(this)" />
-				</s:else>
+				<span class="flagImage"><s:text name="FlagColor.Red.smallIcon" /></span>
+				<s:select list="#{'Red':getText('FlagColor.Red'),'Amber':getText('FlagColor.Amber')}"
+					name="newFlag" onchange="getFlag(this)" />
 			</nobr></td>
 			<s:if test="!insurance">
 				<td><s:property value="category" /></td>
@@ -48,7 +43,7 @@
 				<s:if test="allowCustomValue">
 					<s:property value="descriptionBeforeHurdle" />
 					<s:if test="dataType == 'boolean'">
-						<s:select name="newHurdle" list="#{'true':'True','false':'False'}" value="defaultValue"></s:select>
+						<s:select name="newHurdle" list="#{'true':getText('global.True'),'false':getText('global.False')}" value="defaultValue"></s:select>
 					</s:if>
 					<s:elseif test="dataType == 'number'">
 						<s:if test="question.questionType == 'AMBest'">
@@ -77,7 +72,10 @@
 					<s:property value="description" />
 				</s:else>
 			</td>
-			<td><s:select list="tags" name="tagID" listKey="id" listValue="tag" headerKey="0" headerValue="- Operator Tag -" /></td>
+			<td>
+				<s:select list="operator.tags" name="operatorTag" listKey="id" listValue="tag" headerKey="0" 
+					headerValue="- %{getText('OperatorTag')} -" />
+			</td>
 		</tr>
 	</s:iterator>
 </table>

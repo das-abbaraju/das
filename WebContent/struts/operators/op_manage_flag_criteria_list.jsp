@@ -2,17 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../actionMessages.jsp" />
-<script type="text/javascript">
-$(document).ready(function() {
-	$('.datepicker').datepicker();
-});
-
-function recalculateAll() {
-	<s:iterator value="criteriaList">
-	updateAffected(<s:property value="id" />, <s:property value="account.id" />);
-	</s:iterator>
-}
-</script>
 <s:if test="criteriaList.size() > 0">
 <table class="report">
 	<thead>
@@ -34,15 +23,18 @@ function recalculateAll() {
 	</thead>
 	<tbody>
 		<s:iterator value="criteriaList">
-			<tr id="<s:property value="id" />" <s:if test="needsRecalc">class="recalc"</s:if>>
+			<tr id="<s:property value="id" />" <s:if test="needsRecalc || (operator.id != account.id)">class="recalc"</s:if>>
 				<s:if test="!insurance">
 					<td><s:property value="criteria.category" /></td>
 				</s:if>
 				<td>
 					<s:if test="canEdit">
 						<span class="editable">
-							<input type="button" onclick="submitHurdle(<s:property value="id" />); return false;" class="picsbutton" value="Save" />
-							<s:select list="getAddableFlags(0)" name="newFlag" value="flag"></s:select> flag on
+							<input type="button" data-id="<s:property value="id" />" class="picsbutton editHurdle" 
+								value="<s:text name="button.Save" />" />
+							<s:select list="#{'Red':getText('FlagColor.Red'),'Amber':getText('FlagColor.Amber')}"
+								name="newFlag" value="flag" />
+							<s:text name="ManageFlagCriteriaOperator.text.FlagOn" />
 						</span>
 						<s:property value="criteria.descriptionBeforeHurdle" />
 						<s:if test="criteria.dataType != 'boolean' && criteria.allowCustomValue">
@@ -67,7 +59,7 @@ function recalculateAll() {
 								</s:if>
 								<s:elseif test="criteria.dataType == 'string'">
 									<span class="editable">
-										<s:radio list="#{'Yes':'Yes','No':'No'}" value="criteriaValue()" 
+										<s:radio list="#{'Yes':getText('YesNo.Yes'),'No':getText('YesNo.No')}" value="criteriaValue()" 
 											onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"></s:radio>
 									</span>
 								</s:elseif>
@@ -79,47 +71,50 @@ function recalculateAll() {
 						<s:property value="replaceHurdle" />
 					</s:else>
 					<s:if test="flag.toString() == 'Green'">
-						<div class="alert">Warning: Green flagged criteria will be ignored in flagging contractors. Please remove this criteria.</div>
+						<div class="alert"><s:text name="ManageFlagCriteria.alert.GreenFlagCriteria" /></div>
 					</s:if>
 				</td>
 				<td class="center">
 					<span class="viewable"><s:property value="tag.tag" /></span>
 					<span class="editable">
-						<s:select list="tags" name="tagID" headerKey="0" headerValue="- Operator Tag -" listKey="id" listValue="tag" value="tag.id" />
+						<s:select list="operator.tags" name="operatorTag" headerKey="0" headerValue="- %{getText('OperatorTag')} -" 
+							listKey="id" listValue="tag" value="tag.id" />
 					</span>
 				</td>
-				<td class="center"><span class="viewable"><s:property value="flag.smallIcon" escape="false" /></span></td>
+				<td class="center"><span class="viewable"><s:text name="%{flag.getI18nKey('smallIcon')}" /></span></td>
 				<td class="center">
-					<a href="#" onclick="getImpact(<s:property value="id" />, <s:property value="account.id" />); return false;" title="Click to see a list of contractors impacted."
-						class="viewable oldImpact"><s:property value="affected" /></a>
+					<a href="#" title="<s:text name="ManageFlagCriteriaOperator.title.ClickToSeeList" />"
+						class="viewable oldImpact getImpact"><s:property value="affected" /></a>
 					<span class="newImpact"></span>
-					<s:if test="needsRecalc || (operator.id != account.id)">
-						<script type="text/javascript">updateAffected(<s:property value="id" />, <s:property value="account.id" />);</script>
-					</s:if>
 				</td>
 				<s:if test="canEdit">
 					<td class="nobr">
-						<s:property value="updatedBy.name" /> on <br />
-						<s:date name="updateDate" format="MMM dd, yyyy"/>
+						<s:text name="ManageFlagCriteriaOperator.text.UpdatedByOn">
+							<s:param value="%{updatedBy.name}" />
+							<s:param value="%{updateDate}" />
+						</s:text>
 					</td>
 					<td class="center">
 						<a href="ManageFlagCriteria!edit.action?criteria=<s:property value="criteria.id"/>" class="preview"></a>
 					</td>
 					<td class="center">
-						<a href="#" onclick="editCriteria(<s:property value="id" />); return false;" class="edit"></a>
+						<a href="#" data-id="<s:property value="id" />" class="edit"></a>
 					</td>
 					<td class="center">
-						<a href="#" onclick="checkSubmit(<s:property value="id" />); return false;" class="remove"></a>
+						<a href="#" data-id="<s:property value="id" />" class="remove"></a>
 					</td>
 				</s:if>
-			
+			</tr>
 		</s:iterator>
 	</tbody>
 </table>
 <div style="text-align: right;">
-	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" onclick="recalculateAll(); return false;" />
+	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" id="recalculateAll" />
 </div>
 </s:if>
 <s:else>
-<div class="alert">This operator doesn't have any <s:if test="insurance">insurance</s:if><s:else><s:text name="global.Flag" /></s:else> criteria.</div>
+<div class="alert">
+	<s:if test="insurance"><s:text name="ManageFlagCriteriaOperator.alert.OperatorHasNoInsuranceCriteria" /></s:if>
+	<s:else><s:text name="ManageFlagCriteriaOperator.alert.OperatorHasNoFlagCriteria" /></s:else>
+</div>
 </s:else>

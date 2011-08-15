@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -36,172 +36,180 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	@Autowired
 	private FlagCriteriaDAO flagCriteriaDAO;
-	@Autowired
-	private OperatorTagDAO tagDAO;
 
-	private boolean canEdit = false;
+	private FlagCriteria flagCriteria;
+	private FlagCriteriaOperator flagCriteriaOperator;
+	private OperatorTag operatorTag;
+
 	private boolean insurance = false;
 	private int childID;
-	private int criteriaID;
-	private int tagID;
 	private FlagColor newFlag;
 	private String newHurdle;
 	private String newComparison;
 
 	private List<FlagColor> addableFlags = new ArrayList<FlagColor>();
-	private List<OperatorTag> tags;
 
 	public ManageFlagCriteriaOperator() {
 		noteCategory = NoteCategory.Flags;
 	}
 
+	@RequiredPermission(value = OpPerms.EditFlagCriteria)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		tryPermissions(OpPerms.EditFlagCriteria);
 		findOperator();
 
-		canEdit = operator.equals(insurance ? operator.getInheritInsuranceCriteria() : operator
-				.getInheritFlagCriteria()) && permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
-		subHeading = "Manage " + (insurance ? "Insurance" : "Flag") + " Criteria";
-
-		if (button != null) {
-			if (button.equals("questions"))
-				return button;
-
-			if (button.equals("childOperator")) {
-				operator = operatorDao.find(childID);
-				canEdit = permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit)
-						&& getParameter("id") == childID;
-				// Skip the tryPermissions so we don't get exceptions
-				return SUCCESS;
-			}
-
-			if (button.equals("calculateSingle")) {
-				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-				if (!Strings.isEmpty(newHurdle)) {
-					tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
-					fco.setHurdle(newHurdle);
-				}
-				int size = calculateAffectedList(fco).size();
-				output = Integer.toString(size);
-				if (Strings.isEmpty(newHurdle)) {
-					fco.setAffected(size);
-					fco.setLastCalculated(new Date());
-					flagCriteriaOperatorDAO.save(fco);
-				}
-				return BLANK;
-			}
-			// The rest of these button actions all require Edit
-			tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
-			if (button.equals("delete")) {
-				FlagCriteriaOperator remove = flagCriteriaOperatorDAO.find(criteriaID);
-
-				if (remove != null) {
-					if (remove.getOperator() != null && remove.getOperator().equals(operator))
-						flagCriteriaOperatorDAO.remove(remove);
-
-					FlagCriteria fc = remove.getCriteria();
-					String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription()
-							+ ", " + remove.getFlag().toString() + " flagged";
-					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
-				}
-			}
-
-			if (button.equals("add") && criteriaID > 0) {
-				FlagCriteria fc = flagCriteriaDAO.find(criteriaID);
-				FlagCriteriaOperator fco = new FlagCriteriaOperator();
-				fco.setAuditColumns(permissions);
-				fco.setCriteria(fc);
-				fco.setFlag(newFlag);
-
-				if (tagID > 0) {
-					for (OperatorTag tag : getTags()) {
-						if (tag.getId() == tagID)
-							fco.setTag(tag);
-					}
-				}
-
-				if (fc.isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
-					if (fc.getDataType().equals("number"))
-						// Custom values can only be set on number datatypes
-						fco.setHurdle(Strings.formatNumber(newHurdle));
-				}
-
-				if (!checkExists(fco)) {
-					fco.setOperator(operator);
-					fco.setAffected(calculateAffectedList(fco).size());
-					flagCriteriaOperatorDAO.save(fco);
-					operator.getFlagCriteria().add(fco);
-
-					String newNote = "Flag Criteria has been added: " + fc.getCategory() + ", "
-							+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
-					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
-				} else {
-					addActionError("Flag Criteria '" + fco.getCriteria().getLabel() + "' with flag color "
-							+ fco.getFlag() + (fco.getTag() != null ? " and tag id " + fco.getTag().getId() : "")
-							+ " already exists.");
-				}
-			}
-
-			if (button.equals("save") && criteriaID > 0) {
-				FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-				// The fco here and the fco in operator.getInheritedFlagCriteria
-				// end up being the same in memory so the check always returns
-				// true.
-				FlagCriteriaOperator fco1 = new FlagCriteriaOperator();
-				fco1.setUpdateDate(new Date());
-				fco1.setUpdatedBy(getUser());
-				fco1.setFlag(newFlag);
-				fco1.setCriteria(fco.getCriteria());
-				fco1.setTag(fco.getTag());
-
-				if (tagID > 0) {
-					for (OperatorTag tag : getTags()) {
-						if (tag.getId() == tagID)
-							fco1.setTag(tag);
-					}
-				} else
-					fco1.setTag(null);
-
-				if (fco.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle)
-						&& !newHurdle.equals("undefined")) {
-					if (fco.getCriteria().getDataType().equals("number"))
-						fco1.setHurdle(Strings.formatNumber(newHurdle));
-				}
-
-				if (!checkExists(fco1, true)) {
-					fco.setLastCalculated(null);
-					fco.setUpdateDate(fco1.getUpdateDate());
-					fco.setUpdatedBy(fco1.getUpdatedBy());
-					fco.setFlag(fco1.getFlag());
-					fco.setHurdle(fco1.getHurdle());
-					fco.setTag(fco1.getTag());
-
-					flagCriteriaOperatorDAO.save(fco);
-
-					FlagCriteria fc = fco.getCriteria();
-					String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
-							+ fco.getReplaceHurdle() + ", " + fco.getFlag().toString() + " flagged";
-					addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
-				} else {
-					addActionError("Could not update " + (insurance ? "Insurance" : "Flag") + " Criteria \""
-							+ fco.getCriteria().getDescription() + "\" with flag " + newFlag
-							+ (tagID > 0 ? " and tag ID " + tagID : "") + ", criteria already exists.");
-				}
-			}
-		}
+		subHeading = (insurance ? getText("ManageInsuranceCriteriaOperator.title")
+				: getText("ManageFlagCriteriaOperator.title"));
 
 		return SUCCESS;
 	}
 
-	public boolean isCanEdit() {
-		return canEdit;
+	@RequiredPermission(value = OpPerms.EditFlagCriteria, type = OpType.Edit)
+	public String save() {
+		// The fco here and the fco in operator.getInheritedFlagCriteria end up being the same in memory so the check
+		// always returns true.
+		FlagCriteriaOperator fco1 = new FlagCriteriaOperator();
+		fco1.setUpdateDate(new Date());
+		fco1.setUpdatedBy(getUser());
+		fco1.setFlag(newFlag);
+		fco1.setCriteria(flagCriteriaOperator.getCriteria());
+		fco1.setTag(operatorTag);
+
+		if (flagCriteriaOperator.getCriteria().isAllowCustomValue() && !Strings.isEmpty(newHurdle)
+				&& !newHurdle.equals("undefined")) {
+			if (flagCriteriaOperator.getCriteria().getDataType().equals("number"))
+				fco1.setHurdle(Strings.formatNumber(newHurdle));
+		}
+
+		if (!checkExists(fco1, true)) {
+			flagCriteriaOperator.setLastCalculated(null);
+			flagCriteriaOperator.setUpdateDate(fco1.getUpdateDate());
+			flagCriteriaOperator.setUpdatedBy(fco1.getUpdatedBy());
+			flagCriteriaOperator.setFlag(fco1.getFlag());
+			flagCriteriaOperator.setHurdle(fco1.getHurdle());
+			flagCriteriaOperator.setTag(fco1.getTag());
+
+			flagCriteriaOperatorDAO.save(flagCriteriaOperator);
+
+			FlagCriteria fc = flagCriteriaOperator.getCriteria();
+			String newNote = "Flag Criteria has been updated: " + fc.getCategory() + ", "
+					+ flagCriteriaOperator.getReplaceHurdle() + ", " + flagCriteriaOperator.getFlag().toString()
+					+ " flagged";
+			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
+		} else {
+			addActionError("Could not update " + (insurance ? "Insurance" : "Flag") + " Criteria \""
+					+ flagCriteriaOperator.getCriteria().getDescription() + "\" with flag " + newFlag
+					+ (operatorTag != null ? " and tag " + operatorTag.getTag() : "") + ", criteria already exists.");
+		}
+
+		return "list";
 	}
 
-	public void setCanEdit(boolean canEdit) {
-		this.canEdit = canEdit;
+	@RequiredPermission(value = OpPerms.EditFlagCriteria, type = OpType.Edit)
+	public String delete() {
+		if (flagCriteriaOperator != null) {
+			if (flagCriteriaOperator.getOperator() != null && flagCriteriaOperator.getOperator().equals(operator))
+				flagCriteriaOperatorDAO.remove(flagCriteriaOperator);
+
+			FlagCriteria fc = flagCriteriaOperator.getCriteria();
+			String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription() + ", "
+					+ flagCriteriaOperator.getFlag().toString() + " flagged";
+			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
+		}
+
+		return "list";
+	}
+
+	@RequiredPermission(value = OpPerms.EditFlagCriteria, type = OpType.Edit)
+	public String add() throws Exception {
+		FlagCriteriaOperator fco = new FlagCriteriaOperator();
+		fco.setAuditColumns(permissions);
+		fco.setCriteria(flagCriteria);
+		fco.setFlag(newFlag);
+		fco.setTag(operatorTag);
+
+		if (flagCriteria.isAllowCustomValue() && !Strings.isEmpty(newHurdle) && !newHurdle.equals("undefined")) {
+			if (flagCriteria.getDataType().equals("number"))
+				// Custom values can only be set on number datatypes
+				fco.setHurdle(Strings.formatNumber(newHurdle));
+		}
+
+		if (!checkExists(fco)) {
+			fco.setOperator(operator);
+			fco.setAffected(calculateAffectedList(fco).size());
+			flagCriteriaOperatorDAO.save(fco);
+			operator.getFlagCriteria().add(fco);
+
+			String newNote = "Flag Criteria has been added: " + flagCriteria.getCategory() + ", "
+					+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
+			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
+		} else {
+			addActionError("Flag Criteria '" + fco.getCriteria().getLabel() + "' with flag color " + fco.getFlag()
+					+ (fco.getTag() != null ? " and tag id " + fco.getTag().getId() : "") + " already exists.");
+		}
+
+		return "list";
+	}
+
+	@RequiredPermission(value = OpPerms.EditFlagCriteria)
+	public String questions() {
+		return "questions";
+	}
+
+	@RequiredPermission(value = OpPerms.EditFlagCriteria)
+	public String childOperator() {
+		operator = operatorDao.find(childID);
+		return "list";
+	}
+
+	@RequiredPermission(value = OpPerms.EditFlagCriteria)
+	public String calculateSingle() throws Exception {
+		if (!Strings.isEmpty(newHurdle)) {
+			tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
+			flagCriteriaOperator.setHurdle(newHurdle);
+		}
+
+		int size = calculateAffectedList(flagCriteriaOperator).size();
+		output = Integer.toString(size);
+
+		if (Strings.isEmpty(newHurdle)) {
+			flagCriteriaOperator.setAffected(size);
+			flagCriteriaOperator.setLastCalculated(new Date());
+			flagCriteriaOperatorDAO.save(flagCriteriaOperator);
+		}
+
+		return BLANK;
+	}
+
+	public FlagCriteria getFlagCriteria() {
+		return flagCriteria;
+	}
+
+	public void setFlagCriteria(FlagCriteria flagCriteria) {
+		this.flagCriteria = flagCriteria;
+	}
+
+	public FlagCriteriaOperator getFlagCriteriaOperator() {
+		return flagCriteriaOperator;
+	}
+
+	public void setFlagCriteriaOperator(FlagCriteriaOperator flagCriteriaOperator) {
+		this.flagCriteriaOperator = flagCriteriaOperator;
+	}
+
+	public OperatorTag getOperatorTag() {
+		return operatorTag;
+	}
+
+	public void setOperatorTag(OperatorTag operatorTag) {
+		this.operatorTag = operatorTag;
+	}
+
+	public boolean isCanEdit() {
+		if (childID > 0)
+			return permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit) && getParameter("id") == childID;
+
+		return operator.equals(insurance ? operator.getInheritInsuranceCriteria() : operator.getInheritFlagCriteria())
+				&& permissions.hasPermission(OpPerms.EditFlagCriteria, OpType.Edit);
 	}
 
 	public boolean isInsurance() {
@@ -218,22 +226,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 	public void setChildID(int childID) {
 		this.childID = childID;
-	}
-
-	public int getCriteriaID() {
-		return criteriaID;
-	}
-
-	public void setCriteriaID(int criteriaID) {
-		this.criteriaID = criteriaID;
-	}
-
-	public int getTagID() {
-		return tagID;
-	}
-
-	public void setTagID(int tagID) {
-		this.tagID = tagID;
 	}
 
 	public FlagColor getNewFlag() {
@@ -263,24 +255,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public int getIntValue(String value) {
 		return (int) Float.parseFloat(value);
 	}
-
-	public List<FlagColor> getAddableFlags(int criteriaId) {
-		if (addableFlags.size() == 0) {
-			addableFlags.add(FlagColor.Red);
-			addableFlags.add(FlagColor.Amber);
-		}
-
-		return addableFlags;
-	}
-
-	public List<OperatorTag> getTags() {
-		// Find tags for this operator
-		if (tags == null)
-			tags = tagDAO.findByOperator(operator.getId(), true);
-
-		return tags;
-	}
-
+	
 	public List<FlagCriteria> getAddableCriterias() {
 		List<FlagCriteriaOperator> opCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteria> addableCriteria = new ArrayList<FlagCriteria>();
@@ -350,7 +325,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			// not InsureGUARD audits
 			if (insurance && criteria.isInsurance())
 				valid.add(inherited);
-			else if(!insurance) {
+			else if (!insurance) {
 				// The criteria OSHA type should match up with the operator's
 				// OSHA type
 				if (!criteria.isInsurance()
@@ -363,9 +338,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
 	public List<FlagCriteriaContractor> calculateAffectedList() throws Exception {
-		FlagCriteriaOperator fco = flagCriteriaOperatorDAO.find(criteriaID);
-
-		return calculateAffectedList(fco);
+		return calculateAffectedList(flagCriteriaOperator);
 	}
 
 	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) throws Exception {
@@ -410,7 +383,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private boolean checkExists(FlagCriteriaOperator fco) {
 		return checkExists(fco, false);
 	}
-	
+
 	private boolean checkExists(FlagCriteriaOperator fco, boolean edit) {
 		// Check here if this FCO all ready exists -- check color and tagID
 		List<FlagCriteriaOperator> existing = operator.getFlagCriteriaInherited();
