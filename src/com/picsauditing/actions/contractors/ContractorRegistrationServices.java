@@ -252,7 +252,8 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	}
 
 	public LowMedHigh getRiskLevel(AuditData auditData, LowMedHigh riskLevel) {
-		if (auditData != null && !auditData.getAnswer().equals(riskLevel.toString())) {
+		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())
+				&& !auditData.getAnswer().equals(riskLevel.toString())) {
 			switch (auditData.getQuestion().getId()) {
 			case 2442:
 			case 2445:
