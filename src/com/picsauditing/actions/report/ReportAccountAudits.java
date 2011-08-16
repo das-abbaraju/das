@@ -19,8 +19,10 @@ public class ReportAccountAudits extends ReportAccount {
 			getFilter().setShowHSE(true);
 
 		getFilter().setShowInsuranceLimits(true);
-		getFilter().setShowState(true);
-		getFilter().setShowAddress(true);
+		getFilter().setShowLocation(true);
+
+		if (permissions.isPicsEmployee())
+			getFilter().setShowAddress(true);
 	}
 
 	@Override
