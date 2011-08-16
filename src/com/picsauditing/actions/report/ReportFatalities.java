@@ -37,8 +37,10 @@ public class ReportFatalities extends ReportAnnualAddendum {
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		excelSheet.addColumn(new ExcelColumn("auditFor", "Year", ExcelCellType.Integer), 30);
-		excelSheet.addColumn(new ExcelColumn("SHAType", "SHAType"));
-		excelSheet.addColumn(new ExcelColumn("fatalities", "Fatalities", ExcelCellType.Integer));
+		excelSheet.addColumn(
+				new ExcelColumn("auditFor", getText("ReportFatalities.header.Year"), ExcelCellType.Integer), 30);
+		excelSheet.addColumn(new ExcelColumn("SHAType", getText("ReportFatalities.header.SHAType")));
+		excelSheet.addColumn(new ExcelColumn("fatalities", getText("ReportFatalities.header.Fatalities"),
+				ExcelCellType.Integer));
 	}
 }

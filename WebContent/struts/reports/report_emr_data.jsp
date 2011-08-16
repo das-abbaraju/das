@@ -4,12 +4,13 @@
 
 <pics:permission perm="ContractorDetails">
 <s:if test="!filter.allowMailMerge">
-	<div class="right"><a 
-		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-		href="javascript: download('ReportEmrRates');" 
-		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+	<div class="right">
+		<a class="excel" 
+			<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="javascript: download('ReportEmrRates');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			<s:text name="global.Download" />
+		</a>
+	</div>
 </s:if>
 </pics:permission>
 
@@ -20,11 +21,11 @@
 	<thead>
 	<tr>
 	    <th></th>
-	    <th><a href="?orderBy=a.name" >Contractor</a></th>
-	    <th>Year</th>
-	    <th><a href="javascript: changeOrderBy('form1','d.answer');">Rate</a></th>
-	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');">Average</a></th>
-	    <td>Verified</td>
+	    <th><a href="?orderBy=a.name" ><s:text name="global.Contractor" /></a></th>
+	    <th><s:text name="ReportEmrRates.header.Year" /></th>
+	    <th><a href="javascript: changeOrderBy('form1','d.answer');"><s:text name="ReportEmrRates.header.Rate" /></a></th>
+	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');"><s:text name="ReportEmrRates.header.Average" /></a></th>
+	    <td><s:text name="ReportEmrRates.header.Verified" /></td>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>
 			<td><s:text name="User.phone" /></td>

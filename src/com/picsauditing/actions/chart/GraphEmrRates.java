@@ -3,6 +3,8 @@ package com.picsauditing.actions.chart;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -32,16 +34,16 @@ public class GraphEmrRates extends ChartMSAction {
 			return LOGIN;
 		permissions.tryPermission(OpPerms.EMRReport);
 		super.execute();
-		flashChart = FusionChart.createChart("charts/" + chartType.toString() + ".swf", "", output, chartType
-				.toString(), 600, 500, false, false);
+		flashChart = FusionChart.createChart("charts/" + chartType.toString() + ".swf", "", output,
+				chartType.toString(), 600, 500, false, false);
 		return SUCCESS;
 	}
 
 	@Override
 	public ChartMultiSeries buildChart() throws Exception {
-		chart.setCaption("EMR Rates");
-		chart.setXAxisName("EMR Rate");
-		chart.setYAxisName("Contractors");
+		chart.setCaption(getEscapedText("GraphEmrRates.title"));
+		chart.setXAxisName(getEscapedText("GraphEmrRates.label.EmrRate")); // "EMR Rate"
+		chart.setYAxisName(getEscapedText("global.Contractors"));
 
 		SelectSQL sql = new SelectSQL("accounts a");
 
@@ -165,5 +167,9 @@ public class GraphEmrRates extends ChartMSAction {
 			yearsList.add(Integer.toString(i));
 		}
 		return yearsList;
+	}
+
+	private String getEscapedText(String i18nKey) {
+		return StringEscapeUtils.escapeXml(getText(i18nKey));
 	}
 }

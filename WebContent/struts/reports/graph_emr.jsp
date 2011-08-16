@@ -2,22 +2,23 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>EMR Rates</title>
+<title><s:text name="GraphEmrRates.title" /></title>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 </head>
 <body>
-<h1>EMR Rates</h1>
+<h1><s:text name="GraphEmrRates.title" /></h1>
 
 <div id="search">
 <s:form>
-<s:submit value="Refresh" />
+<s:submit value="Refresh" cssClass="picsbutton positive" />
 <br/>
-Year: <s:select list="yearsList"
-	cssClass="forms" name="years" multiple="true" size="5"/>
-Chart Type: <s:select list="chartTypeList" name="chartType" />
-Show Average EMR:  <s:checkbox name="showAvg"/>
+<s:text name="Filters.label.ForYear" />:
+<s:select list="yearsList" cssClass="forms" name="years" multiple="true" size="5" />
+<s:text name="Filters.label.ChartType" />: <s:select list="chartTypeList" name="chartType" />
+<s:text name="Filters.label.ShowAverageEMR" />:  <s:checkbox name="showAvg"/>
 <s:if test="permissions.admin || permissions.corporate">
-	<s:select list="OperatorsList" cssClass="forms" name="operatorIDs" multiple="true" listKey="id" listValue="name" headerKey="0" headerValue="- Operator -" size="10"/>
+	<s:select list="OperatorsList" cssClass="forms" name="operatorIDs" multiple="true" listKey="id" listValue="name" 
+		headerKey="0" headerValue="- %{getText('global.Operator')} -" size="10"/>
 </s:if>
 </s:form>
 </div>

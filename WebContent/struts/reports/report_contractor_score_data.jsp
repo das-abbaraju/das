@@ -24,7 +24,7 @@
 	    <th><a href="javascript: changeOrderBy('form1','regYear');"><s:text name="ReportContractorScore.header.RegistrationYear" /></a></th>
 	    <th><s:text name="ReportContractorScore.header.AuditStatus"><s:param><s:text name="AuditType.195.name" /></s:param></s:text></th>
 	    <th><a href="javascript: changeOrderBy('form1','195Score');"><s:text name="ReportContractorScore.header.Score" /></a></th>
-	    <th><a href="javascript: changeOrderBy('form1','195Updated');">QM <s:text name="ReportContractorScore.header.StatusUpdated" /></a></th>
+	    <th><a href="javascript: changeOrderBy('form1','195Updated');"><s:text name="ReportContractorScore.header.StatusUpdated" /></a></th>
 	    <th><s:text name="ReportContractorScore.header.AuditStatus"><s:param><s:text name="AuditType.196.name" /></s:param></s:text></th>
 	    <th><a href="javascript: changeOrderBy('form1','196Updated');"><s:text name="ReportContractorScore.header.StatusUpdated" /></a></th>
 		<s:if test="showContact">
@@ -47,10 +47,18 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 			<td><s:property value="get('regYear')"/></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('195ID')" />"><s:property value="get('195Status')"/></a></td>
+			<td>
+				<a href="Audit.action?auditID=<s:property value="get('195ID')" />">
+					<s:text name="AuditStatus.%{get('195Status')}" />
+				</a>
+			</td>
 			<td class="right"><s:property value="get('195Score')" /></td>
 			<td><s:date name="parseDate(get('195Updated'))" /></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('196ID')" />"><s:property value="get('196Status')"/></a></td>
+			<td>
+				<a href="Audit.action?auditID=<s:property value="get('196ID')" />">
+					<s:text name="AuditStatus.%{get('196Status')}"/>
+				</a>
+			</td>
 			<td><s:date name="parseDate(get('196Updated'))" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>

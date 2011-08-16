@@ -2,12 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>EMR Report</title>
+<title><s:text name="ReportEmrRates.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 </head>
 <body>
-<h1>EMR Report</h1>
+<h1><s:text name="ReportEmrRates.title" /></h1>
 
 <s:include value="filters.jsp" />
 

@@ -2,12 +2,12 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Fatalities</title>
+<title><s:text name="ReportFatalities.title" /></title>
 <s:include value="reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 </head>
 <body>
-<h1>Fatalities Report</h1>
+<h1><s:text name="ReportFatalities.title" /></h1>
 <s:include value="filters.jsp" />
 
 <div id="report_data">

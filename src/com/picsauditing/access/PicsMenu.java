@@ -385,7 +385,7 @@ public class PicsMenu {
 			subMenu.addChild("Contractor Risk Level", "ReportContractorRiskLevel.action");
 		if (permissions.isAdmin()
 				|| (permissions.isOperatorCorporate() && permissions.getCorporateParent().contains(10566)))
-			subMenu.addChild("Contractor Score", "ReportContractorScore.action");
+			subMenu.addChild(getTitle("ReportContractorScore.title"), "ReportContractorScore.action");
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010");
 			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010");

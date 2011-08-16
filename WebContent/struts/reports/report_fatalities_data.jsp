@@ -12,20 +12,19 @@
 </s:if>
 </pics:permission>
 
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <table class="report">
 	<thead>
 		<tr>
 			<td></td>
-			<th><a href="?orderBy=a.name">Contractor</a></th>
+			<th><a href="?orderBy=a.name"><s:text name="global.Contractor" /></a></th>
 			<s:if test="permissions.operator">
 				<td><a href="?orderBy=flag DESC"><s:text name="global.Flag" /></a></td>
 			</s:if>
-			<td><a href="?orderBy=ca.auditFor DESC">For</a></td>
-			<td><a href="?orderBy=os.SHAType DESC">SHAType</a></td>
-			<td>Fatalities</td>
-			<td>Verified</td>
+			<td><a href="?orderBy=ca.auditFor DESC"><s:text name="ReportFatalities.header.For" /></a></td>
+			<td><a href="?orderBy=os.SHAType DESC"><s:text name="ReportFatalities.header.SHAType" /></a></td>
+			<td><s:text name="ReportFatalities.header.Fatalities" /></td>
+			<td><s:text name="ReportFatalities.header.Verified" /></td>
 			<s:if test="showContact">
 				<td><s:text name="global.ContactPrimary" /></td>
 				<td><s:text name="User.phone" /></td>
@@ -45,20 +44,23 @@
 		<tr>
 			<td class="right"><s:property
 				value="#stat.index + report.firstRowNumber" /></td>
-			<td><a
-				href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property
-				value="[0].get('name')" /></a></td>
+			<td>
+				<a href="ContractorView.action?id=<s:property value="get('id')"/>">
+					<s:property value="[0].get('name')" />
+				</a>
+			</td>
 			<s:if test="permissions.operator">
-				<td class="center"><a
-					href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>"
-					title="<s:property value="[0].get('flag')"/> - Click to view details"><img
-					src="images/icon_<s:property value="[0].get('lflag')"/>Flag.gif"
-					width="12" height="15" border="0"></a></td>
+				<td class="center">
+					<a href="ContractorFlag.action?id=<s:property value="[0].get('id')"/>" 
+						title="<s:text name="ReportFatalities.title.ClickToViewDetails"><s:param><s:text name="FlagColor.%{[0].get('flag')}" /></s:param></s:text>">
+						<img src="images/icon_<s:property value="[0].get('flag').toLowerCase()" />Flag.gif" />
+					</a>
+				</td>
 			</s:if>
 			<td class="center"><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('SHAType')"/></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
-			<td><s:if test="get('verifiedDate') != null">
+			<td class="center"><s:if test="get('verifiedDate') != null">
 		    	<span class="verified" style="font-size: 16px;"></span></s:if>
 		    </td>
 			<s:if test="showContact">
@@ -78,5 +80,4 @@
 	</s:iterator>
 </table>
 <br>
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
