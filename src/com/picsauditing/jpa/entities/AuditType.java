@@ -290,7 +290,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	
 	@Transient
 	public boolean isExtractable() {
-		return (id == CAN_QUAL_PQF);
+		return (id == CAN_QUAL_PQF || id == COMPLYWORKS_PQF || id == ISN_CAN_QUAL_PQF);
 	}
 
 	@Override

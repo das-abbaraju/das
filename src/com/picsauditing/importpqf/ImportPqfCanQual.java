@@ -8,6 +8,7 @@ import com.picsauditing.util.AnswerMap;
 
 public class ImportPqfCanQual extends ImportPqf {
 
+	@Override
 	public int getAuditType() {
 		return AuditType.CAN_QUAL_PQF;
 	}
@@ -31,6 +32,7 @@ public class ImportPqfCanQual extends ImportPqf {
 		return text;
 	}
 
+	@Override
 	protected boolean isValidResponse(AuditExtractOption option, String response) {
 		if (response == null || response.length() == 0)
 			return false;
@@ -41,6 +43,7 @@ public class ImportPqfCanQual extends ImportPqf {
 		return true;
 	}
 
+	@Override
 	protected String processAnswer(AuditTransformOption option, String response, AnswerMap auditAnswers) {
 		if (option.getSourceQuestion().getId() == 8397 && option.getDestinationQuestion().getId() == 72) {
 			AuditData data = auditAnswers.get(option.getSourceQuestion().getId());

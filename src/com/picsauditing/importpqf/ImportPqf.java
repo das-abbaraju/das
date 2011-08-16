@@ -352,7 +352,9 @@ public abstract class ImportPqf {
 					match = match.substring(question.length()).trim();
 				} else if (isMatchPQFSpecific(question, match)) {
 					option.setQuestionFound(true);
-					match = match.substring(match.indexOf(question) + question.length()).trim();
+					match = match.substring(0, match.indexOf(question)).trim() + 
+						" " + match.substring(match.indexOf(question) + question.length());
+					match = match.trim();
 				} else if (isPartialMatchPQFSpecific(question, match)) {
 					match += " ";
 				} else if (match.length() == 0) { // blank line

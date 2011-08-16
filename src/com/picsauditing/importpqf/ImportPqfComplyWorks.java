@@ -10,6 +10,7 @@ public class ImportPqfComplyWorks extends ImportPqf {
 		return AuditType.COMPLYWORKS_PQF;
 	}
 
+	@Override
 	protected String preprocessPage(int page, String text) {
 		text = text.replace('', '\''); // replace special quote characters
 		text = text.replace('', '\'');
@@ -30,6 +31,12 @@ public class ImportPqfComplyWorks extends ImportPqf {
 		return text.substring(startIndex, endIndex);
 	}
 
+	@Override
+	protected boolean isMatchPQFSpecific(String question, String match) {
+		return (match.indexOf(question) >= 0);
+	}
+	
+	@Override
 	protected boolean isValidResponse(AuditExtractOption option, String response) {
 		if (response == null || response.length() == 0)
 			return false;
@@ -42,6 +49,7 @@ public class ImportPqfComplyWorks extends ImportPqf {
 		return true;
 	}
 
+	@Override
 	protected void processAnswer(AuditExtractOption option, String response) {
 		int index = response.indexOf("comment: ");
 		if (index >= 0) {

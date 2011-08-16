@@ -6,6 +6,8 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 
 public class ImportPqfIsn extends ImportPqf {
+
+	@Override
 	public int getAuditType() {
 		return AuditType.ISN_CAN_QUAL_PQF;
 	}
@@ -28,12 +30,14 @@ public class ImportPqfIsn extends ImportPqf {
 		return text.substring(startIndex);
 	}
 
+	@Override
 	protected boolean isPartialMatchPQFSpecific(String question, String match) {
 		int index = match.indexOf(" ");
 		if (index > 0 && question.startsWith(match.substring(index + 1).trim())) return true;
 		return false;
 	}
 	
+	@Override
 	protected boolean isMatchPQFSpecific(String question, String match) {
 		int index = match.indexOf(" ");
 		if (index > 0 && question.equals(match.substring(index + 1).trim())) {
@@ -45,6 +49,7 @@ public class ImportPqfIsn extends ImportPqf {
 		return false;
 	}
 	
+	@Override
 	protected String processMatchPQFSpecific(String question, String match) {
 		int index = match.indexOf(question);
 		if (index > -1) {
@@ -53,12 +58,14 @@ public class ImportPqfIsn extends ImportPqf {
 		return match;
 	}
 	
+	@Override
 	protected String filterQuestionLine(String match) {
 		match = super.filterQuestionLine(match);
 		if (match != null && match.equals("No. Question. Response.")) return "";
 		return match;
 	}
 	
+	@Override
 	protected boolean isNextQuestionPQFSpecific(List<AuditQuestion> questions, int curIndex, String match) {
 		int spaceIndex = match.indexOf(" ");
 		int colonIndex = match.indexOf(":");

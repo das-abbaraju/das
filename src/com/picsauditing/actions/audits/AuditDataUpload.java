@@ -255,8 +255,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		if (data != null && data.isAnswered()) {
 			if (data.getAnswer().equals("514")) // CanQual
 				importPqf = new ImportPqfCanQual();			
-			if (data.getAnswer().equals("515")) // ComplyWorks
-				importPqf = new ImportPqfComplyWorks();			
 		}
 		
 		return importPqf;
