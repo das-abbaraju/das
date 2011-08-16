@@ -32,7 +32,7 @@ public class ContractorsWidget extends PicsActionSupport {
 
 	public List<? extends BaseTable> getNewContractors() {
 		if(permissions.isAdmin()){
-			return accountDao.findNewContractors(permissions, 10);
+			return accountDao.findNewContractors(permissions, 20);
 		} else if(permissions.isOperatorCorporate()){
 			return contractorOperatorDAO.findNewContractorOperators(permissions.getAccountId(), 10);
 		}
