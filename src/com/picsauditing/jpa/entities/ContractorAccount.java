@@ -117,6 +117,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<Certificate> certificates = new ArrayList<Certificate>();
 	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
 	protected Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
+	protected List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -567,6 +568,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setTrades(Set<ContractorTrade> trades) {
 		this.trades = trades;
+	}
+
+	@OneToMany(mappedBy = "picsAccount")
+	public List<AssessmentResultStage> getAssessmentResultStages() {
+		return assessmentResultStages;
+	}
+
+	public void setAssessmentResultStages(List<AssessmentResultStage> assessmentResultStages) {
+		this.assessmentResultStages = assessmentResultStages;
 	}
 
 	/**

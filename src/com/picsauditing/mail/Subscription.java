@@ -79,9 +79,9 @@ public enum Subscription {
 			"This email notifies the contractors with recent OQ changes.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event},
 			false, true, false),
-	Webinar("Webinar","Webinar Long Description",
+	Webinar("Webinar","This email notifies the contractor of upcoming Webinars",
 			true, true, true),
-	OpenTasks("Contractor Open Tasks","Contractor open tasks long description",
+	OpenTasks("Contractor Open Tasks","This email notifies the user of Open Tasks pending for their Account which require Action.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Monthly},
 			false, true, false),
 	RegistrationRequests(
@@ -140,6 +140,18 @@ public enum Subscription {
 		this.requiredForOperator = requiredForOperator;
 		this.requiredForContractor = requiredForContractor;
 		this.requiredForAdmin = requiredForAdmin;
+	}
+	
+	Subscription(String description, String longDescription,
+			SubscriptionTimePeriod[] supportedTimePeriods,
+			boolean requiredForOperator, boolean requiredForContractor, boolean requiredForAdmin, OpPerms requiredPerms) {
+		this.description = description;
+		this.longDescription = longDescription;
+		this.supportedTimePeriods = supportedTimePeriods;
+		this.requiredForOperator = requiredForOperator;
+		this.requiredForContractor = requiredForContractor;
+		this.requiredForAdmin = requiredForAdmin;
+		this.requiredPerms = requiredPerms;
 	}
 
 	public String getDescription() {
