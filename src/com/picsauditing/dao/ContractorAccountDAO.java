@@ -184,8 +184,8 @@ public class ContractorAccountDAO extends PicsDAO {
 			taxId = "";
 		try {
 			Query query = em
-					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId = :taxId AND country.isoCode = :country");
-			query.setParameter("taxId", taxId);
+					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId LIKE :taxId AND country.isoCode = :country");
+			query.setParameter("taxId", taxId+"%");
 			query.setParameter("country", country);
 			query.setMaxResults(1);
 			return (ContractorAccount) query.getSingleResult();

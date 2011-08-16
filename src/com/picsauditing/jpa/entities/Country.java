@@ -115,11 +115,7 @@ public class Country implements Serializable, IsoCode {
 
 	@Transient
 	public boolean isHasStates() {
-		if (isoCode.equals("US"))
-			return true;
-		if (isoCode.equals("CA"))
-			return true;
-		return false;
+		return isUS() || isCanada();
 	}
 
 	@Override
@@ -130,5 +126,20 @@ public class Country implements Serializable, IsoCode {
 	@Override
 	public String toString() {
 		return english;
+	}
+
+	@Transient
+	public boolean isUS() {
+		return "US".equals(isoCode);
+	}
+
+	@Transient
+	public boolean isCanada() {
+		return "CA".equals(isoCode);
+	}
+	
+	@Transient
+	public boolean isUAE() {
+		return "AE".equals(isoCode);
 	}
 }

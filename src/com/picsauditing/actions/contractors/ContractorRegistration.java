@@ -118,10 +118,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		if (Strings.isEmpty(user.getPassword()))
 			errors.add("Please fill in the Password field.");
 
-		if (!contractor.getCountry().getIsoCode().equals("AE") && !contractorValidator.verifyTaxID(contractor)) {
-			errors.add("The tax ID <b>" + contractor.getTaxId()
-					+ "</b> already exists.  Please contact a PICS representative.");
-		}
+		errors.addAll(contractorValidator.verifyTaxID(contractor));
 
 		if (!contractorValidator.verifyName(contractor)) {
 			errors.add("The name <b>" + contractor.getName()
@@ -187,7 +184,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		Permissions permissions = new Permissions();
 		permissions.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
-		
+
 		// adding this user to the login log
 		String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
 

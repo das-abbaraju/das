@@ -37,7 +37,7 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the City field.");
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement("Please select a Country");
-		if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
+		if (contractor.getCountry().isHasStates()) {
 			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
 				errorMessages.addElement("Please select a State");
 			}
@@ -46,17 +46,20 @@ public class ContractorValidator {
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
 
-		boolean uae = false;
-		if (contractor.getCountry() != null && contractor.getCountry().getIsoCode().equals("AE"))
-			uae = true;
-
-		if (!uae && Strings.isEmpty(contractor.getZip()))
+		if (!contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
-		if (!Strings.isEmpty(contractor.getTaxId())) {
-			if (!uae && !java.util.regex.Pattern.matches("\\d{9}", contractor.getTaxId()))
-				errorMessages.addElement("Please enter your 9 digit tax ID with only digits 0-9, no dashes.");
-		} else if (!uae)
+		if (contractor.getCountry().isUS()
+				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\d{9}", contractor
+						.getTaxId()))) {
+			errorMessages.addElement("Please enter your 9 digit Tax ID with only the digits 0-9, no dashes.");
+		} else if (contractor.getCountry().isCanada()
+				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\w{15}", contractor
+						.getTaxId()))) {
+			errorMessages
+					.addElement("Please enter your 15 character Business Number with only letters and the digits 0-9.");
+		} else if (Strings.isEmpty(contractor.getTaxId())) {
 			errorMessages.addElement("Please fill in the Tax ID field");
+		}
 
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
@@ -117,13 +120,34 @@ public class ContractorValidator {
 		return false;
 	}
 
-	public boolean verifyTaxID(ContractorAccount contractorAccount) {
-		ContractorAccount cAccount = contractorAccountDAO.findTaxID(contractorAccount.getTaxId(), contractorAccount
-				.getCountry().getIsoCode());
-		if (cAccount == null || cAccount.equals(contractorAccount))
-			return true;
+	public Vector<String> verifyTaxID(ContractorAccount contractorAccount) {
+		Vector<String> errorMessages = new Vector<String>();
 
-		return false;
+		String taxId = contractorAccount.getTaxId();
+		String country = contractorAccount.getCountry().getIsoCode();
+
+		if ("AE".equals(country))
+			return errorMessages;
+
+		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
+			if ("CA".equals(country) && taxId.length() != 15) {
+				errorMessages.add("Your Business Number must be 15 characters in length.");
+				return errorMessages;
+			} else if (!"CA".equals(country) && taxId.length() != 9) {
+				errorMessages.add("Your Tax ID must be 9 characters in length.");
+				return errorMessages;
+			}
+
+			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
+			if (con != null) {
+				if (con.getCountry().isUS())
+					errorMessages
+							.add("The Tax ID which was entered already exists in the United States. Please contact"
+									+ " a PICS representative at 800-506-7427");
+			}
+		}
+
+		return errorMessages;
 	}
 
 	public boolean verifyName(ContractorAccount contractorAccount) {

@@ -29,6 +29,12 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
+$(function() {
+	$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
+	$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
+	$('#contractorTaxId').attr('maxlength', '9');
+});
+
 function checkUsername(username) {
 	$('#username_status').text(translate('JS.Registration.CheckingUsername'));
 	var data = {userID: 0, username: username};
@@ -55,14 +61,34 @@ function checkName(name) {
 
 function changeCountry(country) {
 	if (country == 'AE') {
+		$('#contractorTaxId').val('');
 		$('#taxIdItem').hide();
+		$('#ContractorRegistration_contractor_zip').val('');
 		$('#zipItem').hide();
 	} else {
-		checkTaxId($('#contractorTaxId').val());
 		if($('#taxIdItem').is(':hidden'))
 			$('#taxIdItem').show();
 		if($('#zipItem').is(':hidden'))
 			$('#zipItem').show();
+
+		if (country == 'US'){
+			$('#contractorTaxId').val('');
+			$('#contractorTaxId').attr('maxlength', '9');
+			$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
+		} else if (country == 'CA') {
+			$('#contractorTaxId').val('');
+			$('#contractorTaxId').attr('maxlength', '15');
+			$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
+		} else {
+			$('#contractorTaxId').val('');
+			$('#contractorTaxId').attr('maxlength', '9');
+			$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
+		}
+		
+		checkTaxId($('#contractorTaxId').val());
 	}
 	
 	changeState(country);
@@ -71,13 +97,7 @@ function changeCountry(country) {
 function changeState(country) {
 	$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.'});
 	$('#country_display').val($('#contractorCountry option:selected').text());
-	if (country == 'US')
-		$('#taxIdLabel').text('Tax ID:');
-	else if (country == 'CA')
-		$('#taxIdLabel').text('Business Number:');
-	else
-		$('#taxIdLabel').text('Tax Number:');
-		
+
 }
 
 // Probably a better way to do this
@@ -146,9 +166,10 @@ $(function(){
 					onchange="changeCountry(this.value);"
 					listKey="isoCode" listValue="name" />
 			</li>
-			<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>>
+			<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label><s:div id="taxIdLabel" /></label>
 				<s:textfield name="contractor.taxId" id="contractorTaxId"
-					theme="formhelp" size="9" maxLength="9" onchange="checkTaxId(this.value);" />
+					size="15" maxLength="15" onchange="checkTaxId(this.value);" />
+				<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 				<div id="taxId_status"></div>
 			</li>
 			<li>

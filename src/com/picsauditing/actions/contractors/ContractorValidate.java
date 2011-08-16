@@ -37,16 +37,29 @@ public class ContractorValidate extends ContractorActionSupport {
 			List<ContractorAccount> matches = accountDao.findWhere("nameIndex = ?", nameIndex);
 
 			if (matches.size() > 0)
-				addActionError(getText("Status.CompanyInUse", new Object[] {companyName}));
+				addActionError(getText("Status.CompanyInUse", new Object[] { companyName }));
 
 			return BLANK;
 		}
 
 		if ("taxId".equals(button)) {
 			if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
-				ContractorAccount con = accountDao.findTaxID(taxId, country);
+				
+				if("CA".equals(country) && taxId.length() != 15){
+					addActionError(getText("Status.TaxIdLength.CA"));
+					return BLANK;
+				} else if(!"CA".equals(country) && taxId.length() != 9){
+					addActionError(getText("Status.TaxIdLength.US"));
+					return BLANK;
+				}
+				
+				ContractorAccount con = accountDao.findTaxID(taxId.substring(0, 9), country);
 				if (con != null) {
-					addActionError(getText("Status.TaxIdInUse", new Object[] {taxId, con.getCountry().getName()}));
+					if (con.getCountry().isCanada())
+						addActionError(getText("Status.TaxIdInUse.Canada", new Object[] { taxId, con.getTaxId(),
+								Strings.getPicsTollFreePhone(con.getCountry().getIsoCode()) }));
+					else
+						addActionError(getText("Status.TaxIdInUse", new Object[] { taxId, con.getCountry().getName() }));
 				}
 			}
 
