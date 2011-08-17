@@ -198,10 +198,12 @@ function updateAffected(fcoID, opID) {
 	});
 }
 
-var wait = function(){
-    var timer = 0;
-    return function(fcoID, opID, newHurdle, ms){
-        clearTimeout(timer);
-        timer = setTimeout('calculateImpact('+fcoID+','+opID+','+newHurdle+')', ms);
-    }  
-}();
+var wait = (function() {
+	var timer = 0;
+	return function(fcoID, opID, newHurdle, ms) {
+		clearTimeout(timer);
+		timer = setTimeout(function() {
+			calculateImpact(fcoID, opID, newHurdle);
+		}, ms);
+	}
+})();
