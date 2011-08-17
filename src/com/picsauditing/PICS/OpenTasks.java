@@ -56,8 +56,8 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 
 			if (contractor.getAccountLevel().isBidOnly()) {
-				openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade", new Object[] {
-						contractor.getPaymentExpires(), contractor.getId() }));
+				openTasks.add(getText("ContractorWidget.message.BidOnlyUpdgrade",
+						new Object[] { contractor.getPaymentExpires(), contractor.getId() }));
 			}
 		}
 
@@ -71,8 +71,8 @@ public class OpenTasks extends TranslationActionSupport {
 			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 				for (Invoice invoice : contractor.getInvoices()) {
 					if (invoice.getStatus().isUnpaid()) {
-						openTasks.add(getText("ContractorWidget.message.OpenInvoiceReminder", new Object[] {
-								invoice.getId(), invoice.getBalance(), invoice.getDueDate() }));
+						openTasks.add(getText("ContractorWidget.message.OpenInvoiceReminder",
+								new Object[] { invoice.getId(), invoice.getBalance(), invoice.getDueDate() }));
 					}
 				}
 			}
@@ -134,13 +134,14 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 					} else if (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire()) {
 						if (user.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
-							openTasks.add(getText("ContractorWidget.message.ResubmitPolicy", new Object[] {
-									conAudit.getId(), auditName, showAuditFor, auditFor }));
+							openTasks.add(getText("ContractorWidget.message.ResubmitPolicy",
+									new Object[] { conAudit.getId(), auditName, showAuditFor, auditFor }));
 						}
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()
 							&& (conAudit.getAuditType().getId() != AuditType.WA_STATE_VERIFICATION || (conAudit
 									.getAuditType().getId() == AuditType.WA_STATE_VERIFICATION && conAudit
-									.hasCaoStatusAfter(AuditStatus.Pending)))) {
+									.hasCaoStatusAfter(AuditStatus.Pending)))
+							&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
 						if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 							// Submitted
 							if (user.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
@@ -165,7 +166,8 @@ public class OpenTasks extends TranslationActionSupport {
 									Integer showScheduledDate = (conAudit.getScheduledDate() != null) ? 1 : 0;
 									Integer showAuditor = (conAudit.getAuditor() != null) ? 1 : 0;
 									if (conAudit.getAuditType().getId() == AuditType.DESKTOP) {
-										text = getText("ContractorWidget.message.UpcomingAuditConductedBy",
+										text = getText(
+												"ContractorWidget.message.UpcomingAuditConductedBy",
 												new Object[] {
 														conAudit.getId(),
 														auditName,
