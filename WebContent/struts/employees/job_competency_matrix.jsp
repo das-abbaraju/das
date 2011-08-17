@@ -48,7 +48,15 @@ div.box {
 		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{competencies.size}" /></s:text>"><s:text name="global.Download" /></a>
 </div>
 <s:if test="permissions.contractor || permissions.admin">
-	<a href="ManageJobRoles.action?id=<s:property value="account.id" />"><s:text name="ManageJobRoles.title" /></a><br />
+	<a href="ManageJobRoles.action?id=<s:property value="account.id" />">
+		<s:if test="permissions.contractor">
+			<s:text name="JobCompetencyMatrix.ReturnToEditJobRoles" />
+		</s:if>
+		<s:else>
+			<s:text name="ManageJobRoles.title" />
+		</s:else>
+	</a>
+	<br />
 </s:if>
 
 <table class="report">
