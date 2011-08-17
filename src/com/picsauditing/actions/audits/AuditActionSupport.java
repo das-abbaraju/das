@@ -164,8 +164,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(
-				conAudit.getContractorAccount().getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
+				.getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -212,7 +212,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				showVerified = false;
 				break;
 			}
-			
+
 		}
 		return viewableCaos;
 	}
@@ -245,7 +245,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		if (!actionStatus.isEmpty()) {
-			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en.hasNext();) {
+			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
+					.hasNext();) {
 				if (!(en.next().getValue().size() > 1))
 					en.remove();
 			}
@@ -345,7 +346,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (type.isHasAuditor() && !type.isCanContractorEdit() && conAudit.getAuditor() != null
 				&& permissions.getUserId() == conAudit.getAuditor().getId())
 			return true;
-		
+
 		if (permissions.hasPermission(OpPerms.ImportPQF) && type.isPqf())
 			return true;
 
@@ -372,7 +373,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 				if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete))
 					canEdit = false;
 			}
-			
+
 			return canEdit;
 		}
 
@@ -482,18 +483,19 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
-	
-	public void autoExpireOldManualAudits(ContractorAudit conAudit, AuditStatus status) {
+
+	public void autoExpireOldAudits(ContractorAudit conAudit, AuditStatus status) {
 		if (!conAudit.getAuditType().isDesktop() || !status.isSubmitted())
 			return;
-		
-		for (ContractorAudit ca: conAudit.getContractorAccount().getAudits()) {
-			if (!ca.getAuditType().isDesktop() || ca.getId() == conAudit.getId() || ca.isExpired())
+
+		for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
+			if ((!ca.getAuditType().isDesktop() && !ca.getAuditType().isImplementation())
+					|| ca.getId() == conAudit.getId() || ca.isExpired())
 				continue;
 			if (ca.getEffectiveDate().before(conAudit.getEffectiveDate())) {
 				boolean submitted = false;
 				boolean completed = false;
-				for (ContractorAuditOperator cao:ca.getOperators()) {
+				for (ContractorAuditOperator cao : ca.getOperators()) {
 					if (cao.getStatus().isComplete()) {
 						completed = true;
 						break;
@@ -502,7 +504,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 						submitted = true;
 					}
 				}
-				
+
 				if (submitted && !completed) {
 					ca.setExpiresDate(new Date());
 					conAuditDAO.save(ca);
@@ -704,14 +706,14 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public void setCaowDAO(ContractorAuditOperatorWorkflowDAO caowDAO) {
 		this.caowDAO = caowDAO;
 	}
-	
+
 	public boolean isEveryCAOCompleteOrHigher() {
 		boolean allComplete = true;
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			if (!cao.getStatus().after(AuditStatus.Resubmitted))
 				allComplete = false;
 		}
-		
+
 		return allComplete;
 	}
 }
