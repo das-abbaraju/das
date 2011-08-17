@@ -24,6 +24,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -248,7 +249,8 @@ public class AuditDataSave extends AuditActionSupport {
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
-						if (cao.getStatus().equals(AuditStatus.Complete)) {
+						if (cao.getStatus().equals(AuditStatus.Complete) && 
+								cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
 							cao.changeStatus(AuditStatus.Resubmitted, permissions);
 							updateAudit = true;
 							break;
