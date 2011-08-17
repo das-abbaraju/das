@@ -146,3 +146,6 @@ DELETE
 from audit_cat_data
 where categoryID in (28,422,423,424,1196,1197,1796,1797,1824,1828,1835);
 -- END
+
+INSERT INTO useraccess (userID, accessType, grantFlag, lastUpdate, grantedByID)
+select 33885, 'Debug', 1, NOW(), 941;
