@@ -88,4 +88,14 @@ join contractor_audit ca on ci.id = ca.conID and ca.auditTypeID = 2
 join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1 and cao.opID = 4 and cao.creationDate > curdate()
 set ci.needsRecalculation = ci.needsRecalculation + 2, ci.lastRecalculation = null
 where a.type = 'Contractor' and a.status = 'Active'
+
+-- Lucas
+-- Find all the deleted audit categories with orphaned child data in audit category data
+select distinct acd.categoryID from audit_cat_data acd
+left join audit_category ac on acd.categoryID = ac.id
+where ac.id is null;
+-- Delete them, found 122156 on alpha
+DELETE
+from audit_cat_data
+where categoryID in (28,422,423,424,1196,1197,1796,1797,1824,1828,1835);
 -- END
