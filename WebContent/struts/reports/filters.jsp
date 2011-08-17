@@ -588,7 +588,7 @@
 
 	<s:if test="filter.showVerifiedAnnualUpdates">
 		<div class="filterOption">
-			<s:select list="#{'1':getText('Filters.status.Verified'),'2':getText('Filters.status.Unverified')}" 
+			<s:select list="#{'1':getText('global.Verified'),'2':getText('Filters.status.Unverified')}" 
 				headerKey="0" headerValue="- %{getText('Filters.header.VerifiedStats')} -" cssClass="forms" 
 				name="filter.verifiedAnnualUpdate" />
 		</div>

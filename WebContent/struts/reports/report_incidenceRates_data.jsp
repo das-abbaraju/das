@@ -1,14 +1,15 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <pics:permission perm="ContractorDetails">
 <s:if test="!filter.allowMailMerge">
-	<div class="right"><a 
-		class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-		href="javascript: download('ReportIncidenceRate');" 
-		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+	<div class="right">
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="javascript: download('ReportIncidenceRate');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			<s:text name="global.Download" />
+		</a>
+	</div>
 </s:if>
 </pics:permission>
 
@@ -19,18 +20,18 @@
 	<thead>
 		<tr>
 			<td></td>
-			<th><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></th>
-			<td>Location</td>
-			<td>Type</td>
-			<td>Rate</td>
+			<th><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></th>
+			<td><s:text name="ReportIncidenceRate.Location" /></td>
+			<td><s:text name="global.Type" /></td>
+			<td><s:text name="ReportIncidenceRate.Rate" /></td>
 			<s:if test="filter.shaType.toString().equals('COHS')">
-				<td>Cad7</td>
-				<td>Neer</td>
+				<td><s:text name="Filters.label.Cad7" /></td>
+				<td><s:text name="Filters.label.Neer" /></td>
 			</s:if>
-			<td>Year</td>
-		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');">Average</a></th>
-			<td>Verified</td>
-			<td>TRIR Industry Average</td>
+			<td><s:text name="Filters.label.ForYear" /></td>
+		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');"><s:text name="Filters.label.Average" /></a></th>
+			<td><s:text name="global.Verified" /></td>
+			<td><s:text name="ReportIncidenceRate.TrirIndustryAverage" /></td>
 			<s:if test="showContact">
 				<td><s:text name="global.ContactPrimary" /></td>
 				<td><s:text name="User.phone" /></td>
@@ -93,6 +94,4 @@
 	</s:iterator>
 </table>
 
-
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
