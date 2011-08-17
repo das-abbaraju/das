@@ -2,17 +2,17 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Incidence Rates (Graph)</title>
+<title><s:text name="GraphTrirRates.title" /></title>
 <script src="js/FusionCharts.js" type="text/javascript"></script>
 </head>
 <body>
-<h1>Incidence Rates (Graph)</h1>
+<h1><s:text name="GraphTrirRates.title" /></h1>
 
 <div id="search">
 <s:form>
-<s:select list="shaTypes" cssClass="forms" name="shaType" multiple="true" />
-<s:select list="allYears" cssClass="forms" name="years" multiple="true" />
-<s:select list="chartTypeList" name="chartType" />
+<s:text name="Filters.label.SHAType" />: <s:select list="shaTypes" cssClass="forms" name="shaType" multiple="true" />
+<s:text name="Filters.label.ForYear" />: <s:select list="allYears" cssClass="forms" name="years" multiple="true" />
+<s:text name="Filters.label.ChartType" />: <s:select list="chartTypeList" name="chartType" />
 <s:submit value="Refresh" />
 </s:form>
 </div>

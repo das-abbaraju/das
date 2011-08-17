@@ -3,11 +3,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Forced Flags</title>
+<title><s:text name="ReportContractorsWithForcedFlags.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Forced Flags</h1>
+<h1><s:text name="ReportContractorsWithForcedFlags.title" /></h1>
 
 <s:include value="filters.jsp" />
 
@@ -19,11 +19,13 @@
 	<s:hidden name="orderBy" />
 </s:form>
 <pics:permission perm="ForcedFlagsReport">
-	<div class="right"><a class="excel" 
-		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-		href="javascript: download('ReportConForcedFlags');" 
-		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+	<div class="right">
+		<a class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if>
+			href="javascript: download('ReportConForcedFlags');"
+			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			<s:text name="global.Download" />
+		</a>
+	</div>
 </pics:permission>
 <div><s:property value="report.pageLinksWithDynamicForm"
 	escape="false" /></div>
@@ -32,14 +34,14 @@
 		<tr>
 			<td colspan="2"><a href="?orderBy=a.name" ><s:text name="global.ContractorName" /></a></td>
 			<s:if test="!permissions.operator">
-				<td><a href="?orderBy=o.name" >Operator Name</a></td>
+				<td><a href="?orderBy=o.name" ><s:text name="ReportContractorsWithForcedFlags.header.OperatorName" /></a></td>
 			</s:if>
 			<td><a href="?orderBy=flag" ><s:text name="global.Flag" /></a></td>
-			<td><a href="?orderBy=fLabel" >Flag Issue</a></td>
-			<td><a href="?orderBy=u.name" >ForcedBy</a></td>
-			<td><a href="?orderBy=ff.forceBegin" >Start Date</a></td>
-			<td><a href="?orderBy=ff.forceend" >End Date</a></td>
-			<td><a href="?orderBy=u.id" >Notes</a></td>
+			<td><a href="?orderBy=fLabel" ><s:text name="ReportContractorsWithForcedFlags.header.FlagIssue" /></a></td>
+			<td><a href="?orderBy=u.name" ><s:text name="ReportContractorsWithForcedFlags.header.ForcedBy" /></a></td>
+			<td><a href="?orderBy=ff.forceBegin" ><s:text name="FlagDataOverride.creationDate" /></a></td>
+			<td><a href="?orderBy=ff.forceend" ><s:text name="FlagDataOverride.forceEnd" /></a></td>
+			<td><a href="?orderBy=u.id" ><s:text name="global.Notes" /></a></td>
 		</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -54,15 +56,13 @@
 			</s:if>
 			<td class="center">
 				<s:if test="get('opType').toString() == 'Operator'">
-				<a
-				href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>"
-				title="Click to view Flag Color details"> <img
-				src="images/icon_<s:property value="get('flag')"/>Flag.gif"
-				width="12" height="15" border="0"></a>
+					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>"
+						title="Click to view Flag Color details">
+						<img src="images/icon_<s:property value="get('flag')"/>Flag.gif" width="12" height="15" border="0">
+					</a>
 				</s:if>
 				<s:else>
-					<img src="images/icon_<s:property value="get('flag')"/>Flag.gif"
-					width="12" height="15" border="0">
+					<img src="images/icon_<s:property value="get('flag')"/>Flag.gif" width="12" height="15" border="0">
 				</s:else>
 			</td>
 			<td class="center"><s:property value="get('fLabel')" /></td>
@@ -71,7 +71,9 @@
 			<td><s:date name="get('forceend')" format="MMM d, yyyy" /></td>
 			<td>
 				<s:if test="get('forcedById') != null">
-					<a href="ContractorNotes.action?id=<s:property value="get('id')"/>&filter.userID=<s:property value="get('forcedById')"/>&filter.category=Flags&filter.keyword=Forced">Notes</a>
+					<a href="ContractorNotes.action?id=<s:property value="get('id')"/>&filter.userID=<s:property value="get('forcedById')"/>&filter.category=Flags&filter.keyword=Forced">
+						<s:text name="global.Notes" />
+					</a>
 				</s:if>
 			</td>
 		</tr>

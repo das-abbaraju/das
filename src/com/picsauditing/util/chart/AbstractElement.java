@@ -1,24 +1,28 @@
 package com.picsauditing.util.chart;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 abstract public class AbstractElement {
-	
+
 	/**
 	 * Append ( name="value") to the xml StringBuilder
+	 * 
 	 * @param xml
 	 * @param name
 	 * @param value
 	 */
 	protected static void append(StringBuilder xml, String name, String value) {
 		if (value != null) {
-			value = value.replaceAll("&", "&amp;");
-			value = value.replaceAll("'", "&apos;");
-			
+			value = StringEscapeUtils.escapeXml(value);
+			value = value.replaceAll("&", "%26");
+
 			xml.append(" ").append(name).append("='").append(value).append("'");
 		}
 	}
 
 	/**
 	 * Append ( name="value") to the xml StringBuilder
+	 * 
 	 * @param xml
 	 * @param name
 	 * @param value
@@ -30,6 +34,7 @@ abstract public class AbstractElement {
 
 	/**
 	 * Append ( name="value") to the xml StringBuilder
+	 * 
 	 * @param xml
 	 * @param name
 	 * @param value
@@ -41,6 +46,7 @@ abstract public class AbstractElement {
 
 	/**
 	 * Append ( name="value") to the xml StringBuilder
+	 * 
 	 * @param xml
 	 * @param name
 	 * @param value

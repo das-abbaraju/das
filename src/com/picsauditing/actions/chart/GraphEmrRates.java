@@ -3,17 +3,17 @@ package com.picsauditing.actions.chart;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.chart.ChartMultiSeries;
 import com.picsauditing.util.chart.ChartType;
@@ -23,16 +23,17 @@ import com.picsauditing.util.chart.MultiSeriesConverterHistogram;
 
 @SuppressWarnings("serial")
 public class GraphEmrRates extends ChartMSAction {
+	@Autowired
+	private OperatorAccountDAO operatorAccountDAO;
+	
 	private ChartType chartType = ChartType.MSLine;
 	private String flashChart;
 	private String[] years = { "2008", "2009" };
 	private boolean showAvg = false;
 	private int[] operatorIDs;
 
+	@RequiredPermission(value=OpPerms.EMRReport)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		permissions.tryPermission(OpPerms.EMRReport);
 		super.execute();
 		flashChart = FusionChart.createChart("charts/" + chartType.toString() + ".swf", "", output,
 				chartType.toString(), 600, 500, false, false);
@@ -41,9 +42,9 @@ public class GraphEmrRates extends ChartMSAction {
 
 	@Override
 	public ChartMultiSeries buildChart() throws Exception {
-		chart.setCaption(getEscapedText("GraphEmrRates.title"));
-		chart.setXAxisName(getEscapedText("GraphEmrRates.label.EmrRate")); // "EMR Rate"
-		chart.setYAxisName(getEscapedText("global.Contractors"));
+		chart.setCaption(getText("GraphEmrRates.title"));
+		chart.setXAxisName(getText("GraphEmrRates.label.EmrRate"));
+		chart.setYAxisName(getText("global.Contractors"));
 
 		SelectSQL sql = new SelectSQL("accounts a");
 
@@ -148,7 +149,7 @@ public class GraphEmrRates extends ChartMSAction {
 	public List<OperatorAccount> getOperatorsList() {
 		if (permissions == null)
 			return null;
-		OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		
 		return operatorAccountDAO.findWhere(false, "", permissions);
 	}
 
@@ -167,9 +168,5 @@ public class GraphEmrRates extends ChartMSAction {
 			yearsList.add(Integer.toString(i));
 		}
 		return yearsList;
-	}
-
-	private String getEscapedText(String i18nKey) {
-		return StringEscapeUtils.escapeXml(getText(i18nKey));
 	}
 }

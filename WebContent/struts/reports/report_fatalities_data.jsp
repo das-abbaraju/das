@@ -21,8 +21,8 @@
 			<s:if test="permissions.operator">
 				<td><a href="?orderBy=flag DESC"><s:text name="global.Flag" /></a></td>
 			</s:if>
-			<td><a href="?orderBy=ca.auditFor DESC"><s:text name="ReportFatalities.header.For" /></a></td>
-			<td><a href="?orderBy=os.SHAType DESC"><s:text name="ReportFatalities.header.SHAType" /></a></td>
+			<td><a href="?orderBy=ca.auditFor DESC"><s:text name="Filters.label.ForYear" /></a></td>
+			<td><a href="?orderBy=os.SHAType DESC"><s:text name="Filters.label.SHAType" /></a></td>
 			<td><s:text name="ReportFatalities.header.Fatalities" /></td>
 			<td><s:text name="ReportFatalities.header.Verified" /></td>
 			<s:if test="showContact">
