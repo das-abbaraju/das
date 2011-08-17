@@ -312,8 +312,18 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 											.get(txnID));
 
 									// Email Receipt to Contractor
-									if (collected)
-										EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn, permissions);
+									try {
+										if (collected)
+											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn,
+													permissions);
+									} catch (Exception e) {
+										/**
+										 * The above can throw an exception if a user doesn't have an email address
+										 * defined. If this happens, then a payment will be processed online without a
+										 * record being saved on PICS. We should still create the Payment in PICS even
+										 * if the email sending failed.
+										 */
+									}
 								}
 							}
 							for (Refund txn : contractor.getRefunds()) {
