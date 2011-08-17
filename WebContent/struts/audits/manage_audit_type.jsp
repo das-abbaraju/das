@@ -43,7 +43,7 @@ $(function(){
 
 function showFlags() {
 	var data = {
-			auditTypeID: <s:property value="id"/>
+			auditTypeID: '<s:property value="id"/>'
 	};
 	startThinking({ div: "flags", message: "Loading Related Flag Criteria" });
 	$('#flags').load('FlagCriteriaListAjax.action', data);
@@ -51,7 +51,7 @@ function showFlags() {
 
 function showRules() {
 	var data = {
-			'comparisonRule.auditType.id': <s:property value="id"/>
+			'comparisonRule.auditType.id': '<s:property value="id"/>'
 	};
 	startThinking({ div: "rules", message: "Loading Related Rules" });
 	$('#rules').load('AuditTypeRuleTableAjax.action', data);
