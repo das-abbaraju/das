@@ -316,7 +316,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 			MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
 					+ id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
-			int count = 0;
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().isPqf()) {
@@ -324,7 +323,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
-						count++;
 
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
