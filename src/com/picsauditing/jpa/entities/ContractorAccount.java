@@ -303,6 +303,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		if (getAccountLevel().isListOnly() && !isListOnlyEligible())
+			setAccountLevel(AccountLevel.Full);
 		this.safetyRisk = safetyRisk;
 	}
 
@@ -321,6 +323,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	public void setProductRisk(LowMedHigh productRisk) {
+		if (getAccountLevel().isListOnly() && !isListOnlyEligible())
+			setAccountLevel(AccountLevel.Full);
 		this.productRisk = productRisk;
 	}
 
@@ -864,8 +868,8 @@ public class ContractorAccount extends Account implements JSONable {
 								// same, set fee level based on current
 								// number of paying facilities if contractor
 								// paid legacy DocuGUARD fee.
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
-										this.getPayingFacilities());
+								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
+										.getPayingFacilities());
 								setCurrentFee(fee);
 							} else {
 								setCurrentFee(invoiceItem.getInvoiceFee());
@@ -1422,5 +1426,20 @@ public class ContractorAccount extends Account implements JSONable {
 		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
 				&& (getCompetitorMembership() == null || getCompetitorMembership().booleanValue() == true)
 				&& getHasCanadianCompetitor() == null;
+	}
+
+	@Transient
+	public boolean isListOnlyEligible() {
+		// Low Risk Material Supplier Only
+		if (isMaterialSupplierOnly() && getProductRisk().equals(LowMedHigh.Low))
+			return true;
+		// Low Safety Risk Offsite Services
+		else if (isOffsiteServices() && !isOnsiteServices() && getSafetyRisk().equals(LowMedHigh.Low))
+			return true;
+		// Sole Proprietors which are Offsite or Material Supplier
+		else if (getSoleProprietor() && !isOnsiteServices() && (isOffsiteServices() || isMaterialSupplier()))
+			return true;
+
+		return false;
 	}
 }

@@ -59,14 +59,22 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		LowMedHigh oldProduct = contractor.getProductRisk();
 		boolean needsUpgrades = false;
 
-		if (contractor.getAccountLevel().isListOnly() && productRisk != null && !productRisk.equals(LowMedHigh.Low)) {
-			addActionError("You cannot change a List Only contractor's Product Risk to " + productRisk.toString()
-					+ ". Please change this contractor's Account Level to a Full Account "
-					+ "and then change the Product Risk.");
-			return SUCCESS;
+		if (contractor.getAccountLevel().isListOnly()) {
+			if (!isListOnlyEligibleForNewProductRisk(productRisk)) {
+				addActionError("You cannot change a List Only contractor's Product Risk to " + productRisk.toString()
+						+ ". Please change this contractor's Account Level to a Full Account "
+						+ "and then change the Product Risk.");
+				return SUCCESS;
+			}
+			if (!isListOnlyEligibleForNewSafetyRisk(safetyRisk)) {
+				addActionError("You cannot change a List Only contractor's Safety Risk to " + productRisk.toString()
+						+ ". Please change this contractor's Account Level to a Full Account "
+						+ "and then change the Safety Risk.");
+				return SUCCESS;
+			}
 		}
 
-		if (contractor.getSafetyRisk() != null && safetyRisk != null && !contractor.getSafetyRisk().equals(safetyRisk)) {
+		if (safetyRisk != null && !contractor.getSafetyRisk().equals(safetyRisk)) {
 			noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
 					+ safetyRisk.toString());
 			contractor.setSafetyRisk(safetyRisk);
@@ -75,8 +83,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 				needsUpgrades = true;
 		}
 
-		if (contractor.getProductRisk() != null && productRisk != null
-				&& !contractor.getProductRisk().equals(productRisk)) {
+		if (productRisk != null && !contractor.getProductRisk().equals(productRisk)) {
 			noteSummary.add("changed the product risk level from " + oldProduct.toString() + " to "
 					+ productRisk.toString());
 			contractor.setProductRisk(productRisk);
@@ -127,5 +134,19 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 	public void setProductRisk(LowMedHigh productRisk) {
 		this.productRisk = productRisk;
+	}
+
+	private boolean isListOnlyEligibleForNewProductRisk(LowMedHigh newProductRisk) {
+		// Low Risk Material Supplier Only
+		if (contractor.isMaterialSupplierOnly() && newProductRisk.equals(LowMedHigh.Low))
+			return true;
+		return false;
+	}
+
+	private boolean isListOnlyEligibleForNewSafetyRisk(LowMedHigh newSafetyRisk) {
+		// Low Safety Risk Offsite Services
+		if (contractor.isOffsiteServices() && !contractor.isOnsiteServices() && newSafetyRisk.equals(LowMedHigh.Low))
+			return true;
+		return false;
 	}
 }

@@ -22,7 +22,6 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -267,8 +266,8 @@ public class FacilityChanger {
 	}
 
 	private void setListOnly() {
-		if (contractor.isMaterialSupplierOnly() && contractor.getProductRisk().equals(LowMedHigh.Low)
-				&& contractor.getStatus().isPending() && contractor.getAccountLevel().isFull()) {
+		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
+				&& contractor.getAccountLevel().isFull()) {
 			boolean canBeListed = true;
 			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
 				if (!conOp.getOperatorAccount().isAcceptsList())

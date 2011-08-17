@@ -189,10 +189,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
 				// Now check if they have a product risk level
-				if (!contractor.isMaterialSupplierOnly()
-						|| (contractor.getProductRisk() != null && !contractor.getProductRisk().equals(LowMedHigh.Low))) {
-					errors.addElement("Only Low Product Risk and Material Supplier Only (not Onsite or "
-							+ "Offsite) contractor accounts can be set to List Only. Please verify contractor "
+				if (!contractor.isListOnlyEligible()) {
+					errors.addElement("Only Low Product Risk and Material Supplier Only / Low Safety Risk Offsite "
+							+ "Services / Sole Proprietors which are Offsite or Material Supplier and "
+							+ "affiliated with Suncor can be set to List Only. Please verify contractor "
 							+ "information before setting List Only status.");
 				}
 				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
