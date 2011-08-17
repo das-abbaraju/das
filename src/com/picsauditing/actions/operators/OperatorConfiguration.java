@@ -16,15 +16,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.ClearCacheAction;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -50,8 +47,6 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
-	@Autowired
-	private AppPropertyDAO appPropDAO;
 
 	private List<OperatorAccount> allParents;
 	private List<OperatorAccount> otherCorporates;
