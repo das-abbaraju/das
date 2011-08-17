@@ -958,7 +958,7 @@
 		<br clear="all" />
 		<div class="filterOption">
 			<label>
-				<s:checkbox name="filter.caoChangesFlagChanges" /> <s:text name="Filters.label.showCaoDetails" />
+				<s:checkbox name="filter.caoChangesFlagChanges" /> <s:text name="Filters.label.ShowCaoDetails" />
 			</label>
 		</div>
 	</s:if>
