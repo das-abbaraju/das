@@ -25,7 +25,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -57,7 +56,6 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_info")
-@PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAccount extends Account implements JSONable {
 	private String taxId;

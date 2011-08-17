@@ -13,7 +13,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -29,7 +28,6 @@ import com.picsauditing.util.SpringUtils;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operators")
-@PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorAccount extends Account {
 
@@ -181,7 +179,6 @@ public class OperatorAccount extends Account {
 		this.activationFee = activationFee;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Transient
 	public OperatorAccount getActivationFeeOperator(InvoiceFee activation) {
 		// if Operator activation fee is reduced, then use Operator account activation fee

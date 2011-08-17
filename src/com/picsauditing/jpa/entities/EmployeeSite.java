@@ -6,7 +6,6 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,7 +16,6 @@ import org.json.simple.JSONObject;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee_site")
-@PrimaryKeyJoinColumn(name = "id")
 public class EmployeeSite extends BaseHistory implements JSONable {
 
 	private OperatorAccount operator;
@@ -27,15 +25,15 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	private Date orientationDate;
 	private Date orientationExpiration;
 
-	private int[] monthsToExp = {36, 24, 12, 6, 0};
+	private int[] monthsToExp = { 36, 24, 12, 6, 0 };
 	private int months;
 
 	public EmployeeSite() {
-//		monthsToExp = new HashMap<Integer, Integer>();
-//		monthsToExp.put(1, 36);
-//		monthsToExp.put(2, 24);
-//		monthsToExp.put(3, 12);
-//		monthsToExp.put(4, 6);
+		// monthsToExp = new HashMap<Integer, Integer>();
+		// monthsToExp.put(1, 36);
+		// monthsToExp.put(2, 24);
+		// monthsToExp.put(3, 12);
+		// monthsToExp.put(4, 6);
 	}
 
 	@Transient
@@ -46,7 +44,8 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 			Calendar c = Calendar.getInstance(), c1 = Calendar.getInstance();
 			c.setTime(orientationDate);
 			c1.setTime(orientationExpiration);
-			int result = ((c1.get(Calendar.YEAR) - c.get(Calendar.YEAR)) * 12)+(c1.get(Calendar.MONTH)-c.get(Calendar.MONTH));
+			int result = ((c1.get(Calendar.YEAR) - c.get(Calendar.YEAR)) * 12)
+					+ (c1.get(Calendar.MONTH) - c.get(Calendar.MONTH));
 			if (result <= 6)
 				return 3;
 			else if (result <= 12)
@@ -89,7 +88,7 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 		return orientationExpiration;
 	}
 
-	public void setOrientationDate(Date orientationDate) {	
+	public void setOrientationDate(Date orientationDate) {
 		this.orientationDate = orientationDate;
 	}
 
@@ -122,8 +121,7 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 	public boolean canOperatorViewSite(int id) {
 		if (id == operator.getId()) {
 			return true;
-		} 
-		else if (operator.getParent() != null) {
+		} else if (operator.getParent() != null) {
 			if (id == operator.getParent().getId()) {
 				return true;
 			}
@@ -140,7 +138,7 @@ public class EmployeeSite extends BaseHistory implements JSONable {
 			expirationDate = jobSite.getProjectStop();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject toJSON(boolean full) {

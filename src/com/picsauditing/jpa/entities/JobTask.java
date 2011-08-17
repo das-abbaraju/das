@@ -17,7 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -28,7 +27,6 @@ import org.json.simple.JSONObject;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "job_task")
-@PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class JobTask extends BaseTable implements Comparable<JobTask> {
 
@@ -213,16 +211,17 @@ public class JobTask extends BaseTable implements Comparable<JobTask> {
 		// No criteria groups we completely met
 		return false;
 	}
-	
+
 	/**
 	 * Same idea as isQualified, but return the assessment results that apply to all groups
+	 * 
 	 * @param testResults
 	 * @return
 	 */
 	@Transient
 	public List<AssessmentResult> getQualifiedResults(List<AssessmentResult> testResults) {
 		List<AssessmentResult> applicable = new ArrayList<AssessmentResult>();
-		
+
 		Map<AssessmentTest, AssessmentResult> resultMap = new HashMap<AssessmentTest, AssessmentResult>();
 		for (AssessmentResult results : testResults) {
 			if (results.isCurrent())
@@ -243,12 +242,12 @@ public class JobTask extends BaseTable implements Comparable<JobTask> {
 					count++;
 				}
 			}
-			
+
 			if (group.size() != count) {
 				applicable = applicable.subList(0, applicable.size() - count);
 			}
 		}
-		
+
 		return applicable;
 	}
 
@@ -257,13 +256,13 @@ public class JobTask extends BaseTable implements Comparable<JobTask> {
 	public String toString() {
 		return label + " (" + id + ")";
 	}
-	
+
 	@Transient
 	@Override
 	public int compareTo(JobTask o) {
 		if (this.displayOrder == o.getDisplayOrder())
 			return this.label.compareTo(o.getLabel());
-		
+
 		return this.displayOrder - o.getDisplayOrder();
 	}
 }
