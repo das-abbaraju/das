@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:set name="osha" value="[0]"></s:set>
 
@@ -25,7 +26,7 @@
 <s:if test="!corporate">
 <tr>
 	<th class="label">Site Description</th>
-	<td><s:textfield name="osha.description" value="%{description}" cssStyle="width: 95%" value="%{description}" maxlength="250"></s:textfield></td>
+	<td><s:textfield name="osha.description" value="%{description}" cssStyle="width: 95%" maxlength="250"></s:textfield></td>
 </tr>
 </s:if>
 <tr>
