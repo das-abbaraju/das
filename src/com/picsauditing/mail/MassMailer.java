@@ -53,6 +53,7 @@ public class MassMailer extends PicsActionSupport {
 	private String templateBody;
 	private OpPerms recipient;
 	private boolean templateAllowsVelocity;
+	private boolean templateHtml;
 	private String fromMyAddress = "info@picsauditing.com";
 	private List<String> fromAddresses = new ArrayList<String>();
 	private boolean editTemplate = false;
@@ -107,6 +108,7 @@ public class MassMailer extends PicsActionSupport {
 				templateBody = template.getBody();
 				templateName = template.getTemplateName();
 				templateAllowsVelocity = template.isAllowsVelocity();
+				templateHtml = template.isHtml();
 				type = template.getListType();
 			} else {
 				templateSubject = "";
@@ -431,6 +433,18 @@ public class MassMailer extends PicsActionSupport {
 
 	public boolean isTemplateAllowsVelocity() {
 		return templateAllowsVelocity;
+	}
+
+	public boolean isTemplateHtml() {
+		return templateHtml;
+	}
+
+	public void setTemplateHtml(boolean templateHtml) {
+		this.templateHtml = templateHtml;
+	}
+
+	public void setTemplateAllowsVelocity(boolean templateAllowsVelocity) {
+		this.templateAllowsVelocity = templateAllowsVelocity;
 	}
 
 	public int getRemoveID() {

@@ -34,6 +34,5 @@
 	<s:radio name="fromMyAddress" list="fromAddresses" ></s:radio><br />
 </s:if>
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
-<s:if test="templateAllowsVelocity">
-	<div class="info">This template allows velocity tags</div>
-</s:if>
+<s:checkbox name="templateAllowsVelocity" id="templateAllowsVelocity" onclick="dirtyOn();" /><label for="templateAllowsVelocity">Template Allows Velocity Tags</label><br />
+<s:checkbox name="templateHtml" id="templateHtml" onclick="dirtyOn();" /><label for="templateHtml">Template is HTML</label>

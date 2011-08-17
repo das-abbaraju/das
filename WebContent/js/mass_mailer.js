@@ -137,7 +137,9 @@ function addTemplate(id) {
 			'template.templateName': $('#templateName').val(),
 			'template.subject': $('#templateSubject').val(),
 			'template.body': $('#templateBody').val(),
-			'template.recipient': $('#recipient').val()
+			'template.recipient': $('#recipient').val(),
+			'template.allowsVelocity': $('#templateAllowsVelocity').val(),
+			'template.html': $('#templateHtml').val()
 	};
 	
 	$('#messages').load('EmailTemplateSaveAjax.action', data,
