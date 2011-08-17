@@ -56,38 +56,85 @@ where a.status in ('Active','Pending'); */
 -- END
 
 -- PICS-3021
--- delete all invisible caos
-delete from contractor_audit_operator where id in (select id from (
-select cao.id from contractor_audit ca
-join accounts a on ca.conID = a.id and a.type = 'Contractor' and a.status = 'Active'
-join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 0
-where ca.auditTypeID in (2)
-) aa);
-
--- insert new pics global cao with data from later on workflow
-insert into contractor_audit_operator (auditID, opID, createdBy, updatedBy, creationDate, updateDate, status, visible, percentVerified, percentComplete, statusChangedDate)
-select distinct ca.id, 4, 37951, 37951, now(), now(), cao.status, 1, max(cao.percentVerified), max(cao.percentComplete), now()
-from contractor_audit ca
-join accounts a on ca.conID = a.id and a.type = 'Contractor' and a.status = 'Active'
+-- correct all statuses so they are all the same on all visible to invisible caos
+UPDATE contractor_audit ca
+join accounts a on ca.conID = a.id
 join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1
-where ca.auditTypeID in (2)
+join contractor_audit_operator cao2 on ca.id = cao2.auditID and cao.id != cao2.id and cao.status != cao2.status
+SET cao2.status = cao.status
+where ca.auditTypeID = 2;
+
+-- insert pics global where it does not exist
+insert into contractor_audit_operator (auditID, opID, createdBy, updatedBy, creationDate, updateDate, status, visible, percentVerified, percentComplete, statusChangedDate)
+select distinct ca.id, 4, 37951, 37951, now(), now(), case when cao.status is null then 'Pending' else cao.status end as status, 0, 
+case when max(cao.percentVerified) is null then 0 else max(cao.percentVerified) end as percentVerified, 
+case when max(cao.percentComplete) is null then 0 else max(cao.percentComplete) end as percentComplete, now()
+from contractor_audit ca
+left join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1
+where ca.auditTypeID = 2
+and not exists (select * from contractor_audit_operator exist where exist.auditID = ca.id and exist.opID = 4)
 group by ca.id;
 
--- delete all other caos
-delete from contractor_audit_operator where id in (select id from (
-select cao.id from contractor_audit ca
-join accounts a on ca.conID = a.id and a.type = 'Contractor' and a.status = 'Active'
-join contractor_audit_operator cao on ca.id = cao.auditID and cao.opID != 4 and cao.visible = 1
-where ca.auditTypeID in (2)
-) aa);
+-- create and insert into temp tables with results of counts for each caow
+CREATE TABLE IF NOT EXISTS pics_temp.temp_caow_copy
+(
+id mediumint(20) AUTO_INCREMENT primary key,
+auditID mediumint(20),
+caoID mediumint(20),
+opID mediumInt(20),
+countCaow smallint(3)
+);
 
--- Script to reset the cron for all those contractors who have a new CAO. 
-update contractor_info ci
-join accounts a on ci.id = a.id
-join contractor_audit ca on ci.id = ca.conID and ca.auditTypeID = 2
-join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1 and cao.opID = 4 and cao.creationDate > curdate()
-set ci.needsRecalculation = ci.needsRecalculation + 2, ci.lastRecalculation = null
-where a.type = 'Contractor' and a.status = 'Active'
+insert into pics_temp.temp_caow_copy (auditID, caoID, opID, countCaow)
+select ca.id, cao2.id as caoID, cao2.opID, count(caow.id)
+from contractor_audit ca
+join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 0 and cao.opID = 4 and ca.auditTypeID = 2
+join contractor_audit_operator cao2 on ca.id = cao2.auditID and cao2.opID != 4
+join contractor_audit_operator_workflow caow on cao2.id = caow.caoID
+group by cao2.id
+order by ca.id;
+
+CREATE TABLE IF NOT EXISTS pics_temp.temp_caow_copy_max_value
+(
+id mediumint(20) AUTO_INCREMENT primary key,
+auditID mediumint(20),
+caoID mediumint(20),
+opID mediumInt(20),
+countCaow smallint(3)
+);
+
+insert into pics_temp.temp_caow_copy_max_value (auditID, caoID, opID, countCaow)
+select auditID, min(caoID) as caoID, opID, countCaow from pics_temp.temp_caow_copy tcc
+	where countCaow = (
+		select max(countCaow) from pics_temp.temp_caow_copy tcc2 where tcc.auditID = tcc2.auditID
+	)
+group by auditID;
+
+-- for every invisible manual audit pics global, insert the caows for the matching caoID
+insert into contractor_audit_operator_workflow (createdBy, updatedBy, creationDate, updateDate, caoID, status, previousStatus, notes)
+select 37951, 37951, now(), now(), cao.id, caow.status, caow.previousStatus, caow.notes
+from contractor_audit ca
+join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 0 and cao.opID = 4
+join pics_temp.temp_caow_copy_max_value tcc on ca.id = tcc.auditID
+join contractor_audit_operator_workflow caow on tcc.caoID = caow.caoID
+where ca.auditTypeID = 2;
+
+-- for every invisible manual audit pics global, update the caops for the matching caoID
+update contractor_audit_operator_permission caop
+join contractor_audit ca on ca.auditTypeID = 2
+join contractor_audit_operator cao on ca.id = cao.auditID and cao.opID = 4
+join contractor_audit_operator cao2 on ca.id = cao2.auditID and cao2.id = caop.caoID and cao2.opID != 4
+set caop.caoID = cao.id,
+caop.previousCaoID = caop.caoID;
+
+-- update all invisible pics globals to visible and all other caos to invisible
+update contractor_audit_operator cao
+join contractor_audit ca on ca.id = cao.auditID and cao.visible = 0 and cao.opID = 4 and ca.auditTypeID = 2
+set visible = 1;
+
+update contractor_audit_operator cao
+join contractor_audit ca on ca.id = cao.auditID and cao.visible = 1 and cao.opID != 4 and ca.auditTypeID = 2
+set visible = 0;
 
 -- Lucas
 -- Find all the deleted audit categories with orphaned child data in audit category data
