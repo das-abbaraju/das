@@ -10,6 +10,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -100,6 +101,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 			}
 			con.setSafetyRisk(newSafetyRisk);
+			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
+				con.setAccountLevel(AccountLevel.Full);
 			con.setSafetyRiskVerified(new Date());
 		} else {
 			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
@@ -115,6 +118,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				con.setLastUpgradeDate(new Date());
 
 			con.setProductRisk(productRisk);
+			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
+				con.setAccountLevel(AccountLevel.Full);
 			con.setProductRiskVerified(new Date());
 		}
 
@@ -173,8 +178,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString);
 
 		String where = String
-				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)",
-						type.toLowerCase());
+				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)", type
+						.toLowerCase());
 
 		if (type.equals("Product")) {
 			sql2.addWhere("a.materialSupplier = 1");

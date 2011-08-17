@@ -303,8 +303,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	public void setSafetyRisk(LowMedHigh safetyRisk) {
-		if (getAccountLevel().isListOnly() && !isListOnlyEligible())
-			setAccountLevel(AccountLevel.Full);
 		this.safetyRisk = safetyRisk;
 	}
 
@@ -323,8 +321,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	public void setProductRisk(LowMedHigh productRisk) {
-		if (getAccountLevel().isListOnly() && !isListOnlyEligible())
-			setAccountLevel(AccountLevel.Full);
 		this.productRisk = productRisk;
 	}
 
