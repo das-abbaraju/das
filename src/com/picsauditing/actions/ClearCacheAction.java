@@ -50,6 +50,9 @@ public class ClearCacheAction extends PicsActionSupport {
 
 		// Clear the translations from the cache
 		I18nCache.getInstance().clear();
+		
+		// Clear the config environment settings
+		PicsActionSupport.CONFIG = null;
 
 		return SUCCESS;
 	}

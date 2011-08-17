@@ -150,8 +150,10 @@ function showOption() {
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
-<s:include value="../actionMessages.jsp" />
 
+<s:include value="../config_environment.jsp" />
+
+<s:include value="../actionMessages.jsp" />
 <s:form id="save" cssClass="form">
 	<s:hidden name="id" />
 	<s:hidden name="parentID" value="%{question.category.id}"/>

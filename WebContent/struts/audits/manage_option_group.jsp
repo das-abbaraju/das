@@ -48,6 +48,9 @@ $(function () {
 </head>
 <body>
 <h1>Manage Audit Options<span class="sub">Option Groups</span></h1>
+
+<s:include value="../config_environment.jsp" />
+
 <s:include value="../actionMessages.jsp" />
 <s:if test="editOnly">
 	<s:if test="question != null">

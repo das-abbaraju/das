@@ -132,6 +132,9 @@ $(function() {
 <body>
 <h1><s:property value="ruleType"/> Rule Editor</h1>
 <s:include value="../actionMessages.jsp"/>
+
+<s:include value="../config_environment.jsp" />
+
 <div>
 	<s:if test="rule.id > 0 && canEditRule">
 			<a class="add" href="<s:property value="urlPrefix"/>RuleEditor.action?button=New">Create new rule</a>

@@ -75,6 +75,9 @@ span.view {
 <h1>Manage Translations</h1>
 
 <s:include value="../actionMessages.jsp" />
+
+<s:include value="../config_environment.jsp" />
+
 <s:if test="tracingOn">
 	<div class="alert">
 	Text Tracing for Internationalization is turned ON.

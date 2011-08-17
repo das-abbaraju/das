@@ -32,6 +32,9 @@
 <h1>Manage Flag Criteria</h1>
 
 <s:include value="../actionMessages.jsp"/>
+
+<s:include value="../config_environment.jsp" />
+
 <div>
 	<a href="ManageFlagCriteria!edit.action" class="add">New Criteria</a>
 </div>

@@ -61,6 +61,9 @@ function showRules() {
 </head>
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
+
+<s:include value="../config_environment.jsp" />
+
 <s:if test="auditType.id > 0">
 	<a class="edit" href="ManageAuditTypeHierarchy.action?id=<s:property value="auditType.id"/>">Manage Hierarchy</a>
 </s:if>

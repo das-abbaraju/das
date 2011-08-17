@@ -41,6 +41,8 @@ var aqvExtraParams = {
 <s:include value="../actionMessages.jsp"/>
 </s:if>
 
+<s:include value="../config_environment.jsp" />
+
 <a href="ManageFlagCriteria.action">&lt;&lt; Back to List</a>
 <s:form id="itemform" method="post" cssClass="form">
 	<s:hidden name="criteria"/>

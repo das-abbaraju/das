@@ -106,6 +106,9 @@ function hideCat(id) {
 <body>
 <s:include value="opHeader.jsp" />
 <s:include value="../actionMessages.jsp"/>
+
+<s:include value="../config_environment.jsp" />
+
 <fieldset class="form">
 <s:if test="operator.operator">
 	<h2 class="formLegend">Parent Accounts</h2>

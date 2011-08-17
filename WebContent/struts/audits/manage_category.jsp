@@ -50,6 +50,7 @@ function showRules() {
 <body>
 <s:include value="manage_audit_type_breadcrumbs.jsp" />
 
+<s:include value="../config_environment.jsp" />
 
 <a class="preview" href="AuditCatPreview.action?categoryID=<s:property value="category.id" />&button=PreviewCategory">Preview Category</a>
 <s:form id="save">

@@ -66,6 +66,9 @@ $(function() {
 </head>
 <body>
 <h1>Manage Option Value<span class="sub"><s:property value="group.name" /></span></h1>
+
+<s:include value="../config_environment.jsp" />
+
 <s:include value="../actionMessages.jsp" />
 <table style="width: 100%;">
 	<tr>

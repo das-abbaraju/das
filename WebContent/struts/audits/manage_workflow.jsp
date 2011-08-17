@@ -77,6 +77,9 @@ function loadData(that, action){
 </head>
 <body>
 <h1>Manage Workflow</h1>
+
+<s:include value="../config_environment.jsp" />
+
 <table>
 	<tr>
 		<td>

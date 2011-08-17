@@ -38,6 +38,8 @@ import com.picsauditing.util.URLUtils;
 @SuppressWarnings("serial")
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
+	protected static Boolean CONFIG = null;
+
 	protected static final String PLAIN_TEXT = "plain-text";
 	protected static final String ACTION_MESSAGES = "action-messages";
 	protected static final String LOGIN_AJAX = "LoginAjax";
@@ -95,6 +97,17 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String getVersion() {
 		// Released 2011-07-05
 		return "6.3.1";
+	}
+
+	public boolean isShowConfigMessage() {
+		return !isConfigEnvironment();
+	}
+
+	public boolean isConfigEnvironment() {
+		if (CONFIG == null) {
+			CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
+		}
+		return CONFIG;
 	}
 
 	/**
