@@ -149,3 +149,8 @@ where categoryID in (28,422,423,424,1196,1197,1796,1797,1824,1828,1835);
 
 INSERT INTO useraccess (userID, accessType, grantFlag, lastUpdate, grantedByID)
 select 33885, 'Debug', 1, NOW(), 941;
+
+-- PICS-2727 Operator Trades View
+insert into useraccess (userID, accessType, viewFlag, editFlag, deleteFlag, grantFlag, grantedByID)
+values (1553, 'ManageTrades', 1, 0, 0, 0, 23157), (1554, 'ManageTrades', 1, 0, 0, 0, 23157);
+--
