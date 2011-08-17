@@ -11,8 +11,8 @@ $(function() {
 	var ROOT_NODE = 5; /* Trade.TOP_ID */
 	var oldform = $('#trade-view').html();
 	
-	if (typeof(loadTradeCallback) === undefined) {
-		loadTradeCallback = function() { }
+	if (typeof(loadTradeCallback) == "undefined") {
+		loadTradeCallback = $.noop;
 	}
 
 	if (typeof(setupTree) == 'function') {
