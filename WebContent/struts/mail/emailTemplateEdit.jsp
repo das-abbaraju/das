@@ -89,7 +89,6 @@ function changeType(){
 </head>
 <body>
 <h1 id="tempTitle">Editing Templates</h1>
-<s:include value="../config_environment.jsp" />
 
 <div id="messages">
 	<s:include value="../actionMessages.jsp" />
