@@ -1,4 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <h3><s:property value="templateName"/></h3>
 <div id="div_saveEmail" style="display: none;">
@@ -34,5 +36,7 @@
 	<s:radio name="fromMyAddress" list="fromAddresses" ></s:radio><br />
 </s:if>
 <s:textarea name="templateBody" rows="20" onkeyup="dirtyOn();" />
-<s:checkbox name="templateAllowsVelocity" id="templateAllowsVelocity" onclick="dirtyOn();" /><label for="templateAllowsVelocity">Template Allows Velocity Tags</label><br />
-<s:checkbox name="templateHtml" id="templateHtml" onclick="dirtyOn();" /><label for="templateHtml">Template is HTML</label>
+<pics:permission perm="DevelopmentEnvironment">
+	<s:checkbox name="templateAllowsVelocity" id="templateAllowsVelocity" onclick="dirtyOn();" /><label for="templateAllowsVelocity">Template Allows Velocity Tags</label><br />
+	<s:checkbox name="templateHtml" id="templateHtml" onclick="dirtyOn();" /><label for="templateHtml">Template is HTML</label>
+</pics:permission>
