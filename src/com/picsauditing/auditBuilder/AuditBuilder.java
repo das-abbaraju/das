@@ -191,8 +191,8 @@ public class AuditBuilder {
 	 *            Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator> previousCaoMap = 
-			new HashMap<ContractorAuditOperatorPermission, ContractorAuditOperator>();
+		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = 
+			new HashMap<OperatorAccount, ContractorAuditOperator>();
 		
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
@@ -202,7 +202,7 @@ public class AuditBuilder {
 			
 			// add to map for comparison later
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				previousCaoMap.put(caop, cao);
+				previousCaoMap.put(caop.getOperator(), cao);
 			}
 		}
 
@@ -239,7 +239,7 @@ public class AuditBuilder {
 		// set previous coa on coap
 		for (ContractorAuditOperator cao : conAudit.getOperators())	{
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				ContractorAuditOperator prevCao = previousCaoMap.get(caop);
+				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
 					changedCao = true;
 					caop.setPreviousCao(prevCao);
