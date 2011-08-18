@@ -249,9 +249,9 @@ public class AuditDataSave extends AuditActionSupport {
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
-						if (cao.getStatus().equals(AuditStatus.Complete) && 
+						if (cao.getStatus().isComplete() && 
 								cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
-							cao.changeStatus(AuditStatus.Resubmitted, permissions);
+							cao.changeStatus(AuditStatus.Pending, permissions);
 							updateAudit = true;
 							break;
 						}
