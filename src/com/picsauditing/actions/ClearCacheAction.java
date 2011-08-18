@@ -50,13 +50,14 @@ public class ClearCacheAction extends PicsActionSupport {
 
 		// Clear the translations from the cache
 		I18nCache.getInstance().clear();
-		
+
 		// Clear the config environment settings
 		PicsActionSupport.CONFIG = null;
 
 		return SUCCESS;
 	}
 
+	@Anonymous
 	public String monitor() {
 		String property = appPropertyDAO.getProperty(CLEAR_CACHE_PROPERTY);
 		if ("1".equals(property)) {
