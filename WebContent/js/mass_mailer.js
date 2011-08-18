@@ -62,6 +62,8 @@ function pEmail(id) {
 				type: type,
 				templateSubject: $('#templateSubject').val(),
 				templateBody: $('#templateBody').val(),
+				templateAllowsVelocity: $('#templateAllowsVelocity').is(':checked'),
+				templateHtml: $('#templateHtml').is(':checked'),
 				recipient: $('#recipient').val()
 		};
 		$('#previewEmail').html('<img src="images/ajax_process2.gif" />');
@@ -138,8 +140,8 @@ function addTemplate(id) {
 			'template.subject': $('#templateSubject').val(),
 			'template.body': $('#templateBody').val(),
 			'template.recipient': $('#recipient').val(),
-			'template.allowsVelocity': $('#templateAllowsVelocity').val(),
-			'template.html': $('#templateHtml').val()
+			'template.allowsVelocity': $('#templateAllowsVelocity').is(':checked'),
+			'template.html': $('#templateHtml').is(':checked')
 	};
 	
 	$('#messages').load('EmailTemplateSaveAjax.action', data,

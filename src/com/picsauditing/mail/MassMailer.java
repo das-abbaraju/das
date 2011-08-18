@@ -315,6 +315,8 @@ public class MassMailer extends PicsActionSupport {
 		template.setTemplateName(templateName);
 		template.setSubject(templateSubject);
 		template.setBody(templateBody);
+		template.setAllowsVelocity(templateAllowsVelocity);
+		template.setHtml(templateHtml);
 		return template;
 	}
 
