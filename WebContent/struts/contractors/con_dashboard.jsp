@@ -227,15 +227,9 @@ table.report tr.hurdle td {
 					</s:if>
 
 					<div class="co_flag">
-						<s:if test="permissions.corporate && opID == permissions.accountId">
-							<p><s:property value="co.flagColor.bigIcon" escape="false"/></p>
-							<p><s:text name="%{co.flagColor.i18nKey}"/></p>
-						</s:if>
-						<s:else>
-							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
-							<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
-							<s:text name="%{co.flagColor.i18nKey}"/></a></p>
-						</s:else>
+						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>"><s:property value="co.flagColor.bigIcon" escape="false"/></a></p>
+						<p><a href="ContractorFlag.action?id=<s:property value="id"/>&opID=<s:property value="opID"/>">
+						<s:text name="%{co.flagColor.i18nKey}"/></a></p>
 					<s:if test="co.forcedFlag">
 						<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 							<s:text name="ContractorView.ManualForceFlag">
