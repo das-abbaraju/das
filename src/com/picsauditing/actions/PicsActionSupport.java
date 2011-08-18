@@ -95,8 +95,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	// Should we put this in another file? so we don't always check in the
 	// PicsActionSupport file?
 	public static final String getVersion() {
-		// Released 2011-07-05
-		return "6.3.1";
+		// Released 2011-08-17
+		return "6.4";
 	}
 
 	public boolean isShowConfigMessage() {
