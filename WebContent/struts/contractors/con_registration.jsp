@@ -42,7 +42,6 @@ function checkUsername(username) {
 }
 
 function checkTaxId(taxId) {
-	startThinking({div:'taxId_status', message: translate('JS.Registration.CheckingTaxID')});
 	var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
 	$('#taxId_status').load('ContractorValidateAjax.action', data);
 }
