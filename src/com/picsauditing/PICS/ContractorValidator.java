@@ -52,11 +52,6 @@ public class ContractorValidator {
 				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\d{9}", contractor
 						.getTaxId()))) {
 			errorMessages.addElement("Please enter your 9 digit Tax ID with only the digits 0-9, no dashes.");
-		} else if (contractor.getCountry().isCanada()
-				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\w{15}", contractor
-						.getTaxId()))) {
-			errorMessages
-					.addElement("Please enter your 15 character Business Number with only letters and the digits 0-9.");
 		} else if (Strings.isEmpty(contractor.getTaxId())) {
 			errorMessages.addElement("Please fill in the Tax ID field");
 		}
@@ -131,7 +126,9 @@ public class ContractorValidator {
 
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 			if ("CA".equals(country) && taxId.length() != 15) {
-				errorMessages.add("Your Business Number must be 15 characters in length.");
+				errorMessages
+						.add("Your Business Number must be 15 characters in length. If you are having trouble with this field please give PICS a call at "
+								+ Strings.getPicsCustomerServicePhone("CA"));
 				return errorMessages;
 			} else if (!"CA".equals(country) && taxId.length() != 9) {
 				errorMessages.add("Your Tax ID must be 9 characters in length.");

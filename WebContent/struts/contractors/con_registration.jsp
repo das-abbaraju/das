@@ -30,9 +30,7 @@
 <script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 $(function() {
-	$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
-	$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
-	$('#contractorTaxId').attr('maxlength', '9');
+	changeCountry($("#contractorCountry").val());
 });
 
 function checkUsername(username) {

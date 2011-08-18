@@ -26,12 +26,27 @@ function countryChanged(country) {
 	} else {
 		$('#tax_li').show();
 		$('#zip_li').show();
+
+		if (country == 'US'){
+			$('#contractorTaxId').attr('maxlength', '9');
+			$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
+		} else if (country == 'CA') {
+			$('#contractorTaxId').attr('maxlength', '15');
+			$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
+		} else {
+			$('#contractorTaxId').attr('maxlength', '9');
+			$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
+			$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
+		}
 	}
 	changeState(country);
 	changeBillingState(country);
 }
 
 $(function() {
+	countryChanged($("#contractorCountry").val());
 	changeState($("#contractorCountry").val());
 	changeBillingState($("#contractorBillingCountry").val());
 	$('.datepicker').datepicker();
@@ -164,7 +179,7 @@ $(function() {
 				<h2 class="formLegend"><s:text name="ContractorEdit.IndustryDetails.heading"/></h2>
 				<ol>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="tax_li"><label><s:text name="ContractorEdit.IndustryDetails.TaxID"/>:</label>
+						<li id="tax_li"><label><s:div cssClass="taxIdLabel" /></label>
 							<s:property value="contractor.taxId"/>
 						</li>
 					</s:if>
@@ -264,8 +279,9 @@ $(function() {
 						</li>
 					</s:if>
 					<s:if test="contractor.country.isoCode != 'AE'">
-						<li id="taxIdItem"><label>Tax ID:</label>
-							<s:textfield name="contractor.taxId" size="9" maxLength="9" />*(only digits 0-9, no dashes)
+						<li id="taxIdItem"><label><s:div cssClass="taxIdLabel" /></label>
+							<s:textfield id="contractorTaxId" name="contractor.taxId" size="9" maxLength="9" />
+							<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 						</li>
 					</s:if>
 					<li><label>Must Pay?</label>

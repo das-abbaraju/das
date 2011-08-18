@@ -226,6 +226,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			accountDao.save(contractor);
 
 			addActionMessage("Successfully modified " + contractor.getName());
+			for (String msg : contractorValidator.verifyTaxID(contractor)) {
+				addActionMessage(msg);
+			}
 		}
 
 		return SUCCESS;
