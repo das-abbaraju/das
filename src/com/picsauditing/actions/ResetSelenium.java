@@ -93,15 +93,7 @@ public class ResetSelenium extends PicsActionSupport {
 			Delete t = new Delete("accounts");
 			t.addJoin("WHERE t.id IN (" + accountIDs + ")");
 			t.delete(db);
-			t.table = "operators";
-			t.delete(db);
-			t.table = "contractor_info";
-			t.delete(db);
-		}
-		{
-			Delete t = new Delete("accounts");
-			t.addJoin("WHERE t.id IN (" + accountIDs + ")");
-			t.delete(db);
+			// Looks like these might cascade delete
 			t.table = "operators";
 			t.delete(db);
 			t.table = "contractor_info";
