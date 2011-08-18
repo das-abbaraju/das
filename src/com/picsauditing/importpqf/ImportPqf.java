@@ -266,7 +266,7 @@ public abstract class ImportPqf {
 		
 		for (AuditQuestion question : questions) {
 			AuditExtractOption option = question.getExtractOption();
-			if (option != null & option.isAnswerFound()) {
+			if (option != null && option.isAnswerFound()) {
 				answersProcessed++;
 				
 				AuditData data = currentAnswers.get(question.getId());
