@@ -208,7 +208,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			// Resubmit still needs to be completed and verified,
 			// so we still need to show the % complete
 			showVerified = true;
-			if (cao.getStatus() == AuditStatus.Resubmit || cao.getStatus().before(AuditStatus.Complete)) {
+			if (!cao.getStatus().isSubmittedResubmitted() || cao.getStatus() == AuditStatus.Resubmit) {
 				showVerified = false;
 				break;
 			}
@@ -709,7 +709,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isEveryCAOCompleteOrHigher() {
 		boolean allComplete = true;
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorAuditOperator cao : conAudit.getViewableOperators(permissions)) {
 			if (!cao.getStatus().after(AuditStatus.Resubmitted))
 				allComplete = false;
 		}
