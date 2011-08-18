@@ -305,7 +305,7 @@ public class PicsMenu {
 			menuItems.put("Import/Export Translations", "TranslationETL.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageTrades)) {
-			menuItems.put("Manage Trades", "TradeTaxonomy.action");
+			menuItems.put(getTitle("TradeTaxonomy"), "TradeTaxonomy.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits)) {
 			menuItems.put("Audit Definition", "ManageAuditType.action");
