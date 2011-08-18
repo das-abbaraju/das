@@ -119,13 +119,27 @@ join pics_temp.temp_caow_copy_max_value tcc on ca.id = tcc.auditID
 join contractor_audit_operator_workflow caow on tcc.caoID = caow.caoID
 where ca.auditTypeID = 2;
 
+-- delete all invisible cao caops
+delete caop
+from contractor_audit_operator_permission caop
+join contractor_audit_operator cao on caop.caoID = cao.id and cao.visible = 0;
+
 -- for every invisible manual audit pics global, update the caops for the matching caoID
+create temporary table cao_op
+as select distinct caop.caoID, caop.opID from contractor_audit_operator_permission caop
+join contractor_audit ca on ca.auditTypeID = 2
+join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1 and cao.opID = 4
+and cao.id = caop.caoID;
+
 update contractor_audit_operator_permission caop
 join contractor_audit ca on ca.auditTypeID = 2
 join contractor_audit_operator cao on ca.id = cao.auditID and cao.opID = 4
 join contractor_audit_operator cao2 on ca.id = cao2.auditID and cao2.id = caop.caoID and cao2.opID != 4
 set caop.caoID = cao.id,
-caop.previousCaoID = caop.caoID;
+caop.previousCaoID = caop.caoID
+where not exists (select * from cao_op co where cao.id = co.caoID and caop.opID = co.opID);
+
+drop table cao_op;
 
 -- update all invisible pics globals to visible and all other caos to invisible
 update contractor_audit_operator cao
