@@ -6,11 +6,12 @@ $(function(){
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState('subCat');
 		$.bbq.removeState('viewBlanks');
-		if ($.bbq.getState().categoryID == lastState.categoryID)
+		var state = $.bbq.getState();
+		if (state.categoryID == lastState.categoryID && state.mode == lastState.mode)
 			$.bbq.pushState({"_": (new Date()).getTime()});
 		else
 			$.bbq.removeState("_");
-		if ($.bbq.getState().mode == 'ViewQ' || $.bbq.getState().viewBlanks == "false")
+		if (state.mode == 'ViewQ' || state.viewBlanks == "false")
 			$.bbq.removeState('mode');
 		return false;
 	});
@@ -55,7 +56,11 @@ $(function(){
 			data.button='load';
 			loadCategories(data, messageLoadingAllCategories);
 		} else if (state.categoryID === undefined) {
-			var data = $.deparam.querystring($.param.querystring(location.href, $.deparam.fragment($('a.hist-category:first').attr('href'))));
+			var options = {};
+			if (!lastState || lastState.categoryID === undefined)
+				options = $.deparam.fragment($('a.hist-category:first').attr('href'));
+			$.extend(options, $.deparam.fragment(location.href));
+			var data = $.deparam.querystring($.param.querystring(location.href, options));
 			data.button = 'load';
 			loadCategories(data, messageLoadingCategory);
 		} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
