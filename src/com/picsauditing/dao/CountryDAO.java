@@ -8,7 +8,9 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -52,6 +54,7 @@ public class CountryDAO extends PicsDAO {
 		return findByTranslatableField("", value, locale);
 	}
 
+	// TODO: Refactor this and merge Country and state DAO.
 	public List<Country> findByTranslatableField(String where, String value, Locale locale) {
 		SelectSQL sql = new SelectSQL("ref_country t");
 		sql.addField("t.*");
@@ -62,11 +65,16 @@ public class CountryDAO extends PicsDAO {
 		}
 
 		sql.addWhere("tr.msgValue LIKE :value");
-		sql.addWhere("tr.locale = :locale");
+		sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+
+		// fr_ca
+		// fr_ca || (!fr_ca && fr) || (!fr_ca && !fr && en)
 
 		Query query = em.createNativeQuery(sql.toString(), Country.class);
 		query.setParameter("value", value);
-		query.setParameter("locale", locale.toString());
+		query.setParameter("locale", locale);
+		query.setParameter("lang", locale.getLanguage());
+		query.setParameter("default", I18nCache.DEFAULT_LANGUAGE);
 		return query.getResultList();
 	}
 }

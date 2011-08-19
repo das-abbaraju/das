@@ -51,6 +51,7 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 
 					result.addAll(stateList);
 					result.addAll(countryList);
+
 					return result;
 				}
 			}
@@ -63,5 +64,13 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 			return result;
 		}
 		return Collections.emptyList();
+	}
+
+	class CountryAutocomplete extends Country {
+		Autocompleteable a;
+		@Override
+		public String getAutocompleteResult() {
+			return super.getAutocompleteResult() + "X";
+		}
 	}
 }

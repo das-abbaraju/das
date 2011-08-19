@@ -197,7 +197,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Transient
 	public String getAutocompleteResult() {
-		return isoCode;
+		return isoCode + "_C";
 	}
 
 	@Transient
