@@ -11,7 +11,7 @@ public class ReportWcbAccounts extends ReportAccount {
 		getFilter().setShowAccountName(false);
 		getFilter().setShowCcOnFile(false);
 		getFilter().setShowService(false);
-		getFilter().setShowState(false);
+		getFilter().setShowLocation(false);
 		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowConWithPendingAudits(false);
 		getFilter().setShowPrimaryInformation(false);

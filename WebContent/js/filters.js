@@ -7,7 +7,7 @@ function loadFiltersCallback() {
 	    var value = that.val();
 	    var r_ids;
 	    if(value != 'undefined' && value.length > 0){
-		    r_ids = value.split(',').map(Number);
+		    r_ids = value.split(',');
 	    }
 	    that.removeAttr('name');
 

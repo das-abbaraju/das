@@ -57,9 +57,7 @@ public class ReportFlagChanges extends ReportAccount {
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowConWithPendingAudits(false);
-		getFilter().setShowOfficeIn(false);
-		getFilter().setShowWorksIn(false);
-		getFilter().setShowLicensedIn(false);
+		getFilter().setShowLocation(false);
 		getFilter().setShowStatus(false);
 		getFilter().setShowAccountManager(true);
 		getFilter().setShowCaoChangesFlagChanges(true);

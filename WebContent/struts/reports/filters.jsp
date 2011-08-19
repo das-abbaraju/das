@@ -85,39 +85,6 @@
 		</div>
 	</s:if>
 	
-	<s:if test="filter.showOfficeIn">
-		<div class="filterOption">
-			<a href="#"class="filterBox"><s:text name="Filters.label.OfficeInStateProvince" /></a> =
-			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
-			<span class="clearLink q_box select">
-				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.officeIn" cssClass="tokenAuto" />
-				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-			</span>
-		</div>
-	</s:if>
-
-	<s:if test="filter.showWorksIn">
-		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Filters.label.WorksInStateProvince" /></a> =
-			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
-			<span class="clearLink q_box select">
-				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.worksIn" cssClass="tokenAuto" />
-				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-			</span>
-		</div>
-	</s:if>
-	
-	<s:if test="filter.showLicensedIn">
-		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Filters.label.LicensedInStateProvince" /></a> =
-			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
-			<span class="clearLink q_box select">
-				<s:textfield rel="StateQuestion/OfficeLocation" name="filter.stateLicensedIn" cssClass="tokenAuto" />
-				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-			</span>
-		</div>
-	</s:if>
-
 	<s:if test="filter.showAccountLevel">
 		<div class="filterOption">
 			<a href="#" class="filterBox"><s:text name="Filters.label.AccountLevel" /></a> =
@@ -135,52 +102,14 @@
 			<span class="q_status"><s:text name="global.Address" />:</span>
 			<s:textfield name="filter.city" cssClass="forms" size="15"  />
 			<s:textfield name="filter.zip" cssClass="forms" size="5"  />
-			<span class="filterOption">
-				<a href="#" class="filterBox"><s:text name="State" /></a> =
-				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
-				<span id="form1_state_select" class="clearLink q_box select">
-					<s:select name="filter.state" list="{}" cssClass="forms" multiple="true" size="15">
-						<s:iterator value="filter.stateMap.asMap()">
-							<s:optgroup label="%{key.name}" list="value" listKey="isoCode" listValue="name"></s:optgroup>
-						</s:iterator>
-					</s:select><br/>
-					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-				</span>
-			</span>
-			<span class="filterOption">
-				<a href="#" class="filterBox"><s:text name="Country" /></a> =
-				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
-				<span id="form1_country_select" class="clearLink q_box select">
-					<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
-						listValue="name" cssClass="forms" multiple="true" size="15" /><br />
-					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-				</span>
-			</span>
 		</div>
 	</s:if>
 
-	<s:if test="filter.showState">
-		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="State" /></a> =
-			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
-			<span class="clearLink q_box select">
-				<s:select name="filter.state" list="{}" cssClass="forms" multiple="true" size="15">
-					<s:iterator value="filter.stateMap.asMap()">
-						<s:optgroup label="%{key.name}" list="value" listKey="isoCode" listValue="name"></s:optgroup>
-					</s:iterator>
-				</s:select><br/>
-				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-			</span>
-		</div>
-	</s:if>
-
-	<s:if test="filter.showCountry">
-		<div class="filterOption">
-			<a href="#" class="filterBox"><s:text name="Country" /></a> =
-			<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
-			<span class="clearLink q_box select">
-				<s:select id="form1_country" name="filter.country" list="filter.countryList" listKey="isoCode"
-					listValue="name" cssClass="forms" multiple="true" size="15" /><br />
+	<s:if test="filter.showLocation">
+		<div class="filterOption"><a href="#" class="filterBox">Location</a> = 
+			<span class="q_status">ALL</span><br />
+			<span class="clearLink q_box select"> 
+				<s:textfield rel="Location" name="filter.location" cssClass="tokenAuto" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 			</span>
 		</div>

@@ -74,7 +74,7 @@ public class ReportContractorApproval extends ReportAccount {
 		getFilter().setShowFlagStatus(false);
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowWorkStatus(true);
-		getFilter().setShowOfficeIn(false);
+		getFilter().setShowLocation(false);
 		getFilter().setWorkStatus("P");
 	}
 

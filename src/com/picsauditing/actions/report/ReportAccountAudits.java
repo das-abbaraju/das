@@ -23,8 +23,8 @@ public class ReportAccountAudits extends ReportAccount {
 
 		if (permissions.isPicsEmployee())
 			getFilter().setShowAddress(true);
-		else
-			getFilter().setShowState(true);
+
+		getFilter().setShowLocation(true);
 	}
 
 	@Override

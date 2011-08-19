@@ -38,7 +38,7 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 					return dao.findWhere(true, "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'" + corpPerms);
 			}
 		} else if (itemKeys.length > 0) {
-			return dao.findWhere(true, "a.id IN (" + Strings.implode(itemKeys) + ")" + corpPerms, limit);
+			return dao.findWhere(true, "a.id IN (" + Strings.implodeForDB(itemKeys,",") + ")" + corpPerms, limit);
 		}
 		return Collections.emptyList();
 	}

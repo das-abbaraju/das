@@ -34,9 +34,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
 		getFilter().setShowOperator(false);
-		getFilter().setShowLicensedIn(false);
-		getFilter().setShowWorksIn(false);
-		getFilter().setShowOfficeIn(false);
+		getFilter().setShowLocation(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowRiskLevel(false);
 		getFilter().setShowRegistrationDate(false);
@@ -143,8 +141,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 			if (!permissions.hasGroup(User.GROUP_CSR)) { // Everyone but CSRs
 				getFilter().setShowConAuditor(true);
-				getFilter().setShowState(true);
-				getFilter().setShowCountry(true);
+				getFilter().setShowLocation(true);
 			}
 		}
 	}
@@ -160,15 +157,13 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			report.addFilter(new SelectFilter("accountName", "cr.name LIKE '%?%'", accountName));
 		}
 
-		String stateList = Strings.implodeForDB(f.getState(), ",");
-		if (filterOn(stateList)) {
-			sql.addWhere("cr.state IN (" + stateList + ")");
-			setFiltered(true);
-		}
-
-		String countryList = Strings.implodeForDB(f.getCountry(), ",");
-		if (filterOn(countryList) && !filterOn(stateList)) {
-			sql.addWhere("cr.country IN (" + countryList + ")");
+		String locationList = Strings.implodeForDB(f.getLocation(), ",");
+		if (filterOn(locationList)) {
+			sql.addWhere("cr.state IN (" + locationList + ") OR cr.country IN (" + locationList + ")");
+			sql.addOrderBy("CASE WHEN cr.country IN (" + locationList + ") THEN 1 ELSE 2 END, cr.country");
+			sql.addOrderBy("CASE WHEN cr.state IN (" + locationList + ") THEN 1 ELSE 2 END, cr.state");
+			sql.addOrderBy("cr.country");
+			sql.addOrderBy("cr.state");
 			setFiltered(true);
 		}
 

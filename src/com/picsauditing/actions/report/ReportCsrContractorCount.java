@@ -27,9 +27,7 @@ public class ReportCsrContractorCount extends ReportAccount {
 		getFilter().setShowStatus(false);
 		getFilter().setShowOperator(false);
 		getFilter().setShowTrade(false);
-		getFilter().setShowLicensedIn(false);
-		getFilter().setShowWorksIn(false);
-		getFilter().setShowOfficeIn(false);
+		getFilter().setShowLocation(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowRiskLevel(false);
 		getFilter().setShowProductRiskLevel(false);

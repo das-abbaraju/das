@@ -28,8 +28,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected String startsWith;
 	protected String accountName;
 	protected String city;
-	protected String[] state;
-	protected String[] country;
+	protected String[] location;
 	protected String zip;
 	protected String[] type;
 	protected AccountStatus[] status;
@@ -159,20 +158,12 @@ public class ReportFilterAccount extends ReportFilter {
 		this.city = city;
 	}
 
-	public String[] getState() {
-		return state;
+	public String[] getLocation() {
+		return location;
 	}
 
-	public void setState(String[] state) {
-		this.state = state;
-	}
-
-	public String[] getCountry() {
-		return country;
-	}
-
-	public void setCountry(String[] country) {
-		this.country = country;
+	public void setLocation(String[] location) {
+		this.location = location;
 	}
 
 	public String getZip() {

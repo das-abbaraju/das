@@ -10,9 +10,8 @@ public class ReportEmailWebinar extends ReportAccount {
 
 		getFilter().setShowRegistrationDate(true);
 		getFilter().setAllowMailMerge(true);
-		getFilter().setShowState(true);
+		getFilter().setShowLocation(true);
 		
-		getFilter().setShowLicensedIn(false);
 		getFilter().setShowTaxID(false);
 		getFilter().setShowTrade(false);
 		getFilter().setShowRiskLevel(false);

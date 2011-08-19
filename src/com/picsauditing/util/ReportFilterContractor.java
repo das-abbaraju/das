@@ -16,7 +16,6 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
@@ -33,9 +32,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showOperatorSingle = false;
 	protected boolean showAnyCAOOperator = false;
 	protected boolean showTrade = true;
-	protected boolean showLicensedIn = true;
-	protected boolean showWorksIn = true;
-	protected boolean showOfficeIn = true;
 	protected boolean showTaxID = true;
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
@@ -65,7 +61,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAuditQuestionFlagChanges = false;
 	protected boolean showSoleProprietership = true;
 	protected boolean showAccountLevel = false;
-	protected boolean showState = false;
+	protected boolean showLocation = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -73,11 +69,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected int[] contractor;
 	protected int[] operator;
 	protected int operatorSingle;
-	protected int[] stateLicensedIn;
-	protected int[] worksIn;
 	protected String taxID;
 	protected String[] flagStatus;
-	protected int[] officeIn;
 	protected int[] conAuditorId;
 	protected int[] riskLevel;
 	protected int[] productRiskLevel;
@@ -153,30 +146,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowTrade(boolean showTrade) {
 		this.showTrade = showTrade;
-	}
-
-	public boolean isShowLicensedIn() {
-		return showLicensedIn;
-	}
-
-	public void setShowLicensedIn(boolean showLicensedIn) {
-		this.showLicensedIn = showLicensedIn;
-	}
-
-	public boolean isShowWorksIn() {
-		return showWorksIn;
-	}
-
-	public void setShowWorksIn(boolean showWorksIn) {
-		this.showWorksIn = showWorksIn;
-	}
-
-	public boolean isShowOfficeIn() {
-		return showOfficeIn;
-	}
-
-	public void setShowOfficeIn(boolean showOfficeIn) {
-		this.showOfficeIn = showOfficeIn;
 	}
 
 	public boolean isShowTaxID() {
@@ -451,22 +420,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.operatorSingle = operatorSingle;
 	}
 
-	public int[] getStateLicensedIn() {
-		return stateLicensedIn;
-	}
-
-	public void setStateLicensedIn(int[] stateLicensedIn) {
-		this.stateLicensedIn = stateLicensedIn;
-	}
-
-	public int[] getWorksIn() {
-		return worksIn;
-	}
-
-	public void setWorksIn(int[] worksIn) {
-		this.worksIn = worksIn;
-	}
-
 	public String getTaxID() {
 		if (Strings.isEmpty(taxID))
 			taxID = getDefaultTaxID();
@@ -484,14 +437,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setFlagStatus(String[] flagStatus) {
 		this.flagStatus = flagStatus;
-	}
-
-	public int[] getOfficeIn() {
-		return officeIn;
-	}
-
-	public void setOfficeIn(int[] officeIn) {
-		this.officeIn = officeIn;
 	}
 
 	public int[] getConAuditorId() {
@@ -557,18 +502,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	// ///
 	private AuditQuestionDAO getQuestionDAO() {
 		return (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-	}
-
-	public List<AuditQuestion> getStateLicensesList() throws Exception {
-		return getQuestionDAO().findQuestionByType("License");
-	}
-
-	public List<AuditQuestion> getWorksInList() throws Exception {
-		return getQuestionDAO().findQuestionByOptionGroupByUniqueCode("OfficeLocation");
-	}
-
-	public List<AuditQuestion> getOfficeInList() throws Exception {
-		return getQuestionDAO().findQuestionByOptionGroupByUniqueCode("OfficeLocation");
 	}
 
 	public String[] getTradePerformedByList() {
@@ -914,12 +847,12 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.accountLevel = accountLevel;
 	}
 
-	public boolean isShowState() {
-		return showState;
+	public boolean isShowLocation() {
+		return showLocation;
 	}
 
-	public void setShowState(boolean showState) {
-		this.showState = showState;
+	public void setShowLocation(boolean showLocation) {
+		this.showLocation = showLocation;
 	}
 
 	public static String getDefaultAmount() {

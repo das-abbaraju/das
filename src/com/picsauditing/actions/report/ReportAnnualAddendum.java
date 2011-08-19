@@ -34,9 +34,7 @@ public class ReportAnnualAddendum extends ReportContractorAuditOperator {
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowAuditType(false);
 		getFilter().setShowAuditor(false);
-		getFilter().setShowLicensedIn(false);
-		getFilter().setShowWorksIn(false);
-		getFilter().setShowOfficeIn(false);
+		getFilter().setShowLocation(false);
 		getFilter().setShowCreatedDate(false);
 		getFilter().setPendingPqfAnnualUpdate(false);
 		

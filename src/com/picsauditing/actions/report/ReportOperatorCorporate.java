@@ -159,15 +159,13 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
-		String stateList = Strings.implodeForDB(f.getState(), ",");
-		if (filterOn(stateList)) {
-			sql.addWhere("a.state IN (" + stateList + ")");
-			setFiltered(true);
-		}
-
-		String countryList = Strings.implodeForDB(f.getCountry(), ",");
-		if (filterOn(countryList) && !filterOn(stateList)) {
-			sql.addWhere("a.country IN (" + countryList + ")");
+		String locationList = Strings.implodeForDB(f.getLocation(), ",");
+		if (filterOn(locationList)) {
+			sql.addWhere("a.state IN (" + locationList + ") OR a.country IN (" + locationList + ")");
+			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END, a.country");
+			sql.addOrderBy("CASE WHEN a.state IN (" + locationList + ") THEN 1 ELSE 2 END, a.state");
+			sql.addOrderBy("a.country");
+			sql.addOrderBy("a.state");
 			setFiltered(true);
 		}
 

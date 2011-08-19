@@ -18,7 +18,7 @@ public abstract class AutocompleteActionSupport<T extends Autocompleteable> exte
 
 	protected String q;
 	protected int limit;
-	public int[] itemKeys;
+	public String[] itemKeys;
 
 	public final String autocomplete() {
 		StringBuilder sb = new StringBuilder();
@@ -102,11 +102,11 @@ public abstract class AutocompleteActionSupport<T extends Autocompleteable> exte
 		this.limit = limit;
 	}
 
-	public int[] getItemKeys() {
+	public String[] getItemKeys() {
 		return itemKeys;
 	}
 
-	public void setItemKeys(int[] itemKeys) {
+	public void setItemKeys(String[] itemKeys) {
 		this.itemKeys = itemKeys;
 	}
 

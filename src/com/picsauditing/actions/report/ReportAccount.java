@@ -226,15 +226,19 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
 			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
 
-		String stateList = Strings.implodeForDB(f.getState(), ",");
-		if (filterOn(stateList)) {
-			sql.addWhere("a.state IN (" + stateList + ")");
-			setFiltered(true);
-		}
-
-		String countryList = Strings.implodeForDB(f.getCountry(), ",");
-		if (filterOn(countryList) && !filterOn(stateList)) {
-			sql.addWhere("a.country IN (" + countryList + ")");
+		String locationList = Strings.implodeForDB(f.getLocation(), ",");
+		if (filterOn(locationList)) {
+			sql.addWhere("a.state IN (" + locationList + ") OR a.country IN (" + locationList + ") OR "
+					+ "a.id IN (SELECT DISTINCT ca.conID FROM contractor_audit ca "
+					+ "JOIN pqfdata d ON ca.id = d.auditID " + "JOIN audit_question aq ON aq.id = d.questionID "
+					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id "
+					+ "WHERE cao.status IN ('Complete','Submitted','Resubmit','Resubmitted') "
+					+ "AND cao.visible = 1  AND ca.auditTypeID = 1 AND aq.uniqueCode in (" + locationList + ") "
+					+ "AND LENGTH(d.answer) > 0)");
+			sql.addOrderBy("CASE WHEN a.country IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("CASE WHEN a.state IN (" + locationList + ") THEN 1 ELSE 2 END");
+			sql.addOrderBy("a.country");
+			sql.addOrderBy("a.state");
 			setFiltered(true);
 		}
 
@@ -296,21 +300,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (f.getOperatorSingle() > 0) {
 			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID = " + f.getOperatorSingle() + ")");
-		}
-
-		if (filterOn(f.getStateLicensedIn())) {
-			String list = Strings.implode(f.getStateLicensedIn(), ",");
-			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer > ''");
-		}
-
-		if (filterOn(f.getWorksIn())) {
-			String list = Strings.implode(f.getWorksIn(), ",");
-			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer LIKE 'Yes%'");
-		}
-
-		if (filterOn(f.getOfficeIn())) {
-			String list = Strings.implode(f.getOfficeIn(), ",");
-			createPqfDataClause(sql, "AND d.questionID IN (" + list + ") AND d.answer = 'YesWithOffice'");
 		}
 
 		if (filterOn(f.getTaxID(), ReportFilterContractor.getDefaultTaxID()))
@@ -461,14 +450,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere("a.requiresCompetencyReview = 1");
 		if (getFilter().isSoleProprietership())
 			sql.addWhere("c.soleProprietor = 1");
-	}
-
-	private void createPqfDataClause(SelectSQL sql, String where) {
-		String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca JOIN pqfdata d on ca.id = d.auditID "
-				+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Complete','Submitted','Resubmit','Resubmitted') AND cao.visible = 1  AND ca.auditTypeID = 1 "
-				+ where + ")";
-		sql.addWhere(query);
-		setFiltered(true);
 	}
 
 	/**

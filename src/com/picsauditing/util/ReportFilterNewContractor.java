@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.StateDAO;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
@@ -16,7 +14,6 @@ import com.picsauditing.jpa.entities.WaitingOn;
 @SuppressWarnings("serial")
 public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showOpen = true;
-	protected boolean showCountry = false;
 	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
@@ -43,14 +40,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setShowOpen(boolean showOpen) {
 		this.showOpen = showOpen;
-	}
-
-	public boolean isShowCountry() {
-		return showCountry;
-	}
-
-	public void setShowCountry(boolean showCountry) {
-		this.showCountry = showCountry;
 	}
 
 	public boolean isShowHandledBy() {
@@ -178,9 +167,4 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		return stateDAO.findAll();
 	}
-
-	public List<Country> getCountryList() {
-		CountryDAO countryDAO = (CountryDAO) SpringUtils.getBean("CountryDAO");
-		return countryDAO.findAll();
-	}
-}
+ }

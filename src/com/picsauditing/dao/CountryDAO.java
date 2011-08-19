@@ -2,12 +2,15 @@ package com.picsauditing.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -33,6 +36,37 @@ public class CountryDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Country WHERE csr.id = ?");
 		query.setParameter(1, csrID);
 
+		return query.getResultList();
+	}
+
+	public List<Country> findWhere(String where) {
+		Query query = em.createQuery("FROM Country WHERE " + where);
+		return query.getResultList();
+	}
+
+	public List<Country> findByTranslatableField(String value) {
+		return findByTranslatableField("", value, Locale.ENGLISH);
+	}
+
+	public List<Country> findByTranslatableField(String value, Locale locale) {
+		return findByTranslatableField("", value, locale);
+	}
+
+	public List<Country> findByTranslatableField(String where, String value, Locale locale) {
+		SelectSQL sql = new SelectSQL("ref_country t");
+		sql.addField("t.*");
+		sql.addJoin("JOIN app_translation tr ON CONCAT('Country.',t.isoCode) = tr.msgKey");
+
+		if (!Strings.isEmpty(where)) {
+			sql.addWhere(where);
+		}
+
+		sql.addWhere("tr.msgValue LIKE :value");
+		sql.addWhere("tr.locale = :locale");
+
+		Query query = em.createNativeQuery(sql.toString(), Country.class);
+		query.setParameter("value", value);
+		query.setParameter("locale", locale.toString());
 		return query.getResultList();
 	}
 }
