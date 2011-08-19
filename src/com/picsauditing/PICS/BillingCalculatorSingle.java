@@ -298,7 +298,7 @@ public class BillingCalculatorSingle {
 				// Bid-only should not be an upgrade
 				// Just a safety check
 				if (fee.isHasChanged() && !fee.getNewLevel().isFree()
-						&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().equals(AccountLevel.ListOnly)))
+						&& (!fee.getNewLevel().isBidonly() || !fee.getNewLevel().isListonly()))
 					upgrades.add(fee);
 			}
 
@@ -320,16 +320,23 @@ public class BillingCalculatorSingle {
 						upgradeAmountDifference = upgradeAmountDifference.subtract(upgrade.getCurrentAmount());
 					}
 
-					upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
-							new BigDecimal(365), 0, RoundingMode.HALF_UP);
-
-					if (upgradeAmount.floatValue() > 0) {
-						upgradeTotal = upgradeTotal.add(upgradeAmount);
-						description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
-								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getSymbol()
-								+ upgradeAmount;
-					} else
-						upgradeAmount = BigDecimal.ZERO.setScale(2);
+					// If membership fee prorate amount
+					if (upgrade.getFeeClass().isMembership()) {
+						upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
+								new BigDecimal(365), 0, RoundingMode.HALF_UP);
+						
+						if (upgradeAmount.floatValue() > 0) {
+							upgradeTotal = upgradeTotal.add(upgradeAmount);
+							description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
+									+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getSymbol()
+									+ upgradeAmount;
+						} else
+							upgradeAmount = BigDecimal.ZERO.setScale(2);
+						
+						// If not membership fee, don't prorate amount
+					} else {
+						upgradeAmount = upgrade.getNewAmount();
+					}
 
 					InvoiceItem invoiceItem = new InvoiceItem();
 					invoiceItem.setInvoiceFee(upgrade.getNewLevel());
