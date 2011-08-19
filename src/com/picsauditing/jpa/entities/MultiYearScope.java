@@ -24,7 +24,7 @@ public enum MultiYearScope {
 	public String getAuditFor() {
 		if (this == ThreeYearAverage)
 			return "Average";
-		
+
 		Calendar cal = Calendar.getInstance();
 		if (this == ThreeYearsAgo)
 			cal.add(Calendar.YEAR, -3);
@@ -33,6 +33,19 @@ public enum MultiYearScope {
 		if (this == LastYearOnly)
 			cal.add(Calendar.YEAR, -1);
 		return "" + cal.get(Calendar.YEAR);
+	}
+
+	public static MultiYearScope getScopeFromYear(int year) {
+		Calendar cal = Calendar.getInstance();
+
+		if ((cal.get(Calendar.YEAR) - 3) == year)
+			return ThreeYearsAgo;
+		if ((cal.get(Calendar.YEAR) - 2) == year)
+			return TwoYearsAgo;
+		if ((cal.get(Calendar.YEAR) - 1) == year)
+			return LastYearOnly;
+
+		return null;
 	}
 
 	static public Map<Integer, MultiYearScope> getMap() {

@@ -1243,6 +1243,10 @@
 			class="com.picsauditing.actions.report.ReportObsoleteScheduledAudits">
 			<result>struts/reports/obsolete_scheduled_audits_data.jsp</result>
 		</action>
+		
+		<action name="AuditDownload"
+			class="com.picsauditing.actions.audits.ContractorAuditDownload">
+		</action>
 
 		<!-- Track Auditor Payments -->
 

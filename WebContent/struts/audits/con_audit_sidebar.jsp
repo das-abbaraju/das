@@ -52,6 +52,9 @@
 	<li>
 		<a class="print" href="#" onclick="printPreview(<s:property value="auditID"/>); return false;"><s:text name="Audit.button.PrintAll" /></a>
 	</li>
+	<li>
+		<a class="excel" href="AuditDownload.action?auditID=<s:property value="auditID" />"><s:text name="Audit.DownloadToExcel" /></a>
+	</li>
 </ul>
 
 <div

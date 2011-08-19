@@ -394,6 +394,9 @@ ul.vert-toolbar li a {
 ul#toolbar li a {
 	padding-left: 20px;
 }
+ul#toolbar li a.excel {
+	margin-left: 5px;
+}
 ul.vert-toolbar li a:link {
 	text-decoration: none;
 }
