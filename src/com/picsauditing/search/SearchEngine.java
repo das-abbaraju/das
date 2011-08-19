@@ -171,7 +171,7 @@ public class SearchEngine {
 						.append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
 						.append(currPerm.getAccountId()).append(")) AS acc on a.id = acc.id AND a.status IN ('Active','Pending')\n)\n");
 				if (fullSearch) {
-					sb.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor')\n");
+					sb.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN ('Active','Pending'))\n");
 				} else {
 					sb.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
 							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
