@@ -186,12 +186,12 @@ $(function() {
 					<li><label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
 						<s:property value="contractor.naics.code"/>
 					</li>
-					<li><label><s:text name="ContractorEdit.SoleProprietor.heading"/></label>
+					<li><label><s:text name="ContractorEdit.SoleProprietor.heading"/>:</label>
 						<s:if test="contractor.soleProprietor">
-							<s:text name="ContractorAccount.soleProprietor" />
+							<s:text name="YesNo.Yes" />
 						</s:if>
 						<s:else>
-							<s:text name="ContractorAccount.notSoleProprietor" />
+							<s:text name="YesNo.No" />
 						</s:else>
 					</li>
 					<s:if test="contractor.safetyRisk != null">
