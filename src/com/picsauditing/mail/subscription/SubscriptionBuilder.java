@@ -1,5 +1,6 @@
 package com.picsauditing.mail.subscription;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
-import com.picsauditing.util.Strings;
 
 public abstract class SubscriptionBuilder {
 	@Autowired
@@ -19,9 +19,9 @@ public abstract class SubscriptionBuilder {
 
 	Map<String, Object> tokens = new HashMap<String, Object>();
 
-	public abstract void process(EmailSubscription subscription);
+	public abstract void process(EmailSubscription subscription) throws IOException;
 
-	protected void buildEmail(EmailSubscription subscription) {
+	protected EmailQueue buildEmail(EmailSubscription subscription) throws IOException {
 		if (tokens.size() > 0) {
 			int templateID = subscription.getSubscription().getTemplateID();
 			User user = subscription.getUser();
@@ -35,10 +35,14 @@ public abstract class SubscriptionBuilder {
 			emailBuilder.addToken("user", user);
 
 			String seed = "u" + user.getId() + "t" + templateID;
-			String confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub=" + subscription
-					+ "&key=" + Strings.hashUrlSafe(seed);
-
-			emailBuilder.addToken("confirmLink", confirmLink);
+			/*
+			 * TODO: change this in the templates String
+			 * 
+			 * confirmLink = serverName + "EmailUserUnsubscribe.action?id=" + user.getId() + "&sub=" + subscription +
+			 * "&key=" + Strings.hashUrlSafe(seed);
+			 * 
+			 * emailBuilder.addToken("confirmLink", confirmLink);
+			 */
 
 			emailBuilder.addToken("subscription", subscription);
 
@@ -48,6 +52,10 @@ public abstract class SubscriptionBuilder {
 			EmailQueue email = emailBuilder.build();
 			email.setViewableById(Account.PRIVATE);
 			email.setCreatedBy(user);
+
+			return email;
 		}
+
+		return null;
 	}
 }
