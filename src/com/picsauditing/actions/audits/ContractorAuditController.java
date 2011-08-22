@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -455,5 +456,8 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setProblems(Map<ContractorAuditOperator, String> problems) {
 		this.problems = problems;
+	}
+	public String getIP(){
+		return ServletActionContext.getRequest().getRemoteAddr();
 	}
 }
