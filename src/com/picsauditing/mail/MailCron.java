@@ -33,7 +33,7 @@ public class MailCron extends PicsActionSupport {
 	SubscriptionBuilderFactory subscriptionFactory;
 
 	@Anonymous
-	public String execute() {
+	public String execute() throws Exception {
 		// No authentication required since this runs as a cron job
 
 		// DO ALL SUBSCRIPTIONS
