@@ -5,21 +5,20 @@ import java.util.Date;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
-/*
- * Please use new EmailSenderSpring
- */
-@Deprecated
-public class EmailSender {
+public class EmailSenderSpring {
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
+
 	private static String defaultPassword = "e3r4t5";
-	private EmailQueueDAO emailQueueDAO = null;
 
 	/**
 	 * Try sending with the first email address info@picsauditing.com still fails, then try regular linux sendmail
@@ -56,14 +55,9 @@ public class EmailSender {
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
 
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-
 			emailQueueDAO.save(email);
 		} catch (AddressException e) {
 			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} catch (MessagingException e) {
 			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
@@ -74,10 +68,6 @@ public class EmailSender {
 			} else {
 				PicsLogger.log("Failed to send email using sendmail...exiting");
 				email.setStatus(EmailStatus.Error);
-
-				if (emailQueueDAO == null)
-					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-
 				emailQueueDAO.save(email);
 			}
 		}
@@ -91,9 +81,6 @@ public class EmailSender {
 				email.setSentDate(new Date());
 				PicsLogger.log("Skipping Email \nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 						+ "\nSUBJECT: " + email.getSubject());
-				if (emailQueueDAO == null)
-					emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
-
 				emailQueueDAO.save(email);
 				return true;
 			}
@@ -126,8 +113,6 @@ public class EmailSender {
 
 		} catch (AddressException e) {
 			email.setStatus(EmailStatus.Error);
-			if (emailQueueDAO == null)
-				emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 			emailQueueDAO.save(email);
 		} finally {
 			PicsLogger.stop();
@@ -139,15 +124,14 @@ public class EmailSender {
 	 * 
 	 * @param email
 	 */
-	public static void send(EmailQueue email) {
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
+	public void send(EmailQueue email) {
 		emailQueueDAO.save(email);
 	}
 
 	/**
 	 * Save this email to the queue for sending later
 	 */
-	public static void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
+	public void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
 		EmailQueue email = new EmailQueue();
 		email.setCreationDate(new Date());
 		email.setSubject(subject);
@@ -156,10 +140,10 @@ public class EmailSender {
 		email.setToAddresses(toAddress);
 		email.setCcAddresses(ccAddress);
 		email.setCreationDate(new Date());
-		EmailSender.send(email);
+		send(email);
 	}
 
-	public static void send(String toAddress, String subject, String body) throws Exception {
+	public void send(String toAddress, String subject, String body) throws Exception {
 		send(null, toAddress, null, subject, body);
 	}
 
