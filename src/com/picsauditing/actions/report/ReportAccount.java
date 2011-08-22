@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 
@@ -241,7 +240,16 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 			StringBuilder sb = new StringBuilder();
 
+			if (!countries.isEmpty()) {
+				String countryList = Strings.implodeForDB(countries, ",");
+				sb.append("a.country IN (").append(countryList).append(")");
+				sql.addOrderBy("CASE WHEN a.country IN (" + countryList + ") THEN 1 ELSE 2 END");
+			}
+
 			if (!states.isEmpty()) {
+				if (!countries.isEmpty())
+					sb.append(" OR ");
+
 				String stateList = Strings.implodeForDB(states, ",");
 				sb.append("a.state IN (").append(stateList).append(") OR ")
 						.append("a.id IN (SELECT DISTINCT ca.conID FROM contractor_audit ca ")
@@ -252,14 +260,6 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 						.append("AND cao.visible = 1  AND ca.auditTypeID = 1 AND aq.uniqueCode in (").append(stateList)
 						.append(") ").append("AND LENGTH(d.answer) > 0)");
 				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
-			}
-			if (!countries.isEmpty()) {
-				if (!states.isEmpty())
-					sb.append(" OR ");
-
-				String countryList = Strings.implodeForDB(countries, ",");
-				sb.append("a.country IN (").append(countryList).append(")");
-				sql.addOrderBy("CASE WHEN a.country IN (" + countryList + ") THEN 1 ELSE 2 END");
 			}
 
 			sql.addOrderBy("a.country");

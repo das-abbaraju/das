@@ -1,6 +1,7 @@
 package com.picsauditing.dao;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -8,6 +9,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
@@ -107,7 +109,6 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List findWhere(String className, String where, int limit) {
 		Query q = em.createQuery("FROM " + className + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
@@ -116,24 +117,36 @@ abstract public class PicsDAO {
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value) {
-		return findByTranslatableField(cls, "", name, value);
+		return findByTranslatableField(cls, "", name, value, null);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
+			String value) {
+		return findByTranslatableField(cls, where, name, value, null);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
-			String value) {
-
+			String value, Locale locale) {
 		String tableName = ReflectUtil.getTableName(cls);
 
 		SelectSQL sql = new SelectSQL(tableName + " t");
 
+		String identifier = "";
+		if (name != null && name.length() > 0) {
+			name = ",'." + name + "'";
+			identifier = "id";
+		} else {
+			identifier = "isoCode";
+		}
+
 		try {
 			if (cls.getDeclaredField("uniqueCode") != null)
 				sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName()
-						+ ".',IF(t.uniqueCode <> '',t.uniqueCode,t.id),'." + name + "') = tr.msgKey");
+						+ ".',IF(t.uniqueCode <> '',t.uniqueCode,t." + identifier + ")" + name + ") = tr.msgKey");
 		} catch (NoSuchFieldException theFieldDoesNotExist) {
-			sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t.id,'." + name
-					+ "') = tr.msgKey");
+			sql.addJoin("JOIN app_translation tr ON CONCAT('" + cls.getSimpleName() + ".',t." + identifier + name
+					+ ") = tr.msgKey");
 		} catch (SecurityException justIgnoreIt) {
 		}
 
@@ -145,10 +158,32 @@ abstract public class PicsDAO {
 
 		sql.addField("t.*");
 
+		if (locale != null)
+			sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+
 		Query query = em.createNativeQuery(sql.toString(), cls);
 		query.setParameter("value", value);
 
+		if (locale != null) {
+			query.setParameter("locale", locale);
+			query.setParameter("lang", locale.getLanguage());
+			query.setParameter("default", I18nCache.DEFAULT_LANGUAGE);
+		}
+
 		return query.getResultList();
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value) {
+		return findByTranslatableField(cls, "", value, Locale.ENGLISH);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value, Locale locale) {
+		return findByTranslatableField(cls, "", value, locale);
+	}
+
+	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String value,
+			Locale locale) {
+		return findByTranslatableField(cls, where, "", value, locale);
 	}
 
 	public int deleteData(Class<? extends BaseTable> clazz, String where) {

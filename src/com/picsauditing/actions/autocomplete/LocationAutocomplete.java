@@ -35,19 +35,20 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 							+ "%'");
 					result.addAll(stateList);
 					result.addAll(countryList);
-					stateList = stateDAO.findByTranslatableField("%" + Utilities.escapeQuotes(q) + "%", getLocale());
-					countryList = countryDAO
-							.findByTranslatableField("%" + Utilities.escapeQuotes(q) + "%", getLocale());
+					stateList = stateDAO.findByTranslatableField(State.class, "%" + Utilities.escapeQuotes(q) + "%",
+							getLocale());
+					countryList = countryDAO.findByTranslatableField(Country.class, "%" + Utilities.escapeQuotes(q)
+							+ "%", getLocale());
 
 					result.addAll(stateList);
 					result.addAll(countryList);
 					return result;
 				} else {
 					// any more or less characters, then search only through translations
-					List<State> stateList = stateDAO.findByTranslatableField("%" + Utilities.escapeQuotes(q) + "%",
-							getLocale());
-					List<Country> countryList = countryDAO.findByTranslatableField("%" + Utilities.escapeQuotes(q)
-							+ "%", getLocale());
+					List<State> stateList = stateDAO.findByTranslatableField(State.class,
+							"%" + Utilities.escapeQuotes(q) + "%", getLocale());
+					List<Country> countryList = countryDAO.findByTranslatableField(Country.class,
+							"%" + Utilities.escapeQuotes(q) + "%", getLocale());
 
 					result.addAll(stateList);
 					result.addAll(countryList);
@@ -68,6 +69,7 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 
 	class CountryAutocomplete extends Country {
 		Autocompleteable a;
+
 		@Override
 		public String getAutocompleteResult() {
 			return super.getAutocompleteResult() + "X";

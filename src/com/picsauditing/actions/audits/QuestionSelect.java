@@ -63,7 +63,7 @@ public class QuestionSelect extends PicsActionSupport {
 		}
 
 		List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
-				"%" + Utilities.escapeQuotes(questionName) + "%");
+				"%" + Utilities.escapeQuotes(questionName) + "%", null);
 
 		Collections.sort(questionList, AuditQuestion.getComparator());
 		questions.addAll(questionList);

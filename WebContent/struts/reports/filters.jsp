@@ -106,7 +106,7 @@
 	</s:if>
 
 	<s:if test="filter.showLocation">
-		<div class="filterOption"><a href="#" class="filterBox">Location</a> = 
+		<div class="filterOption"><a href="#" class="filterBox"><s:text name="Filters.label.StateProvinceCountry" /></a> = 
 			<span class="q_status">ALL</span><br />
 			<span class="clearLink q_box select"> 
 				<s:textfield rel="Location" name="filter.location" cssClass="tokenAuto" />

@@ -1,12 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -25,15 +16,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.util.Strings;
-
-import freemarker.template.utility.StringUtil;
 
 @Entity
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
-public class Country implements Comparable<Country>, Serializable, Autocompleteable, Translatable, IsoCode {
+public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = 6312208192653925848L;
 
 	protected String isoCode;
@@ -54,55 +42,6 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public Country(String isoCode, String english) {
 		this.isoCode = isoCode;
 		this.english = english;
-	}
-
-	@Transient
-	private List<Field> getTranslatableFields() {
-		List<Field> result = new ArrayList<Field>();
-		for (Field field : this.getClass().getDeclaredFields()) {
-			if (field.getType().equals(TranslatableString.class)) {
-				result.add(field);
-			}
-		}
-
-		return result;
-	}
-
-	@PostLoad
-	public void postLoad() throws Exception {
-		for (Field field : getTranslatableFields()) {
-			I18nCache i18nCache = I18nCache.getInstance();
-			TranslatableString translatable = new TranslatableString();
-			Map<String, String> translationCache = i18nCache.getText(getI18nKey());
-			for (String key : translationCache.keySet()) {
-				translatable.putTranslation(key, translationCache.get(key), false);
-			}
-
-			Method declaredMethod = this.getClass().getDeclaredMethod("set" + StringUtil.capitalize(field.getName()),
-					TranslatableString.class);
-			declaredMethod.invoke(this, translatable);
-		}
-	}
-
-	@PostUpdate
-	@PostPersist
-	public void postSave() throws Exception {
-		for (Field field : getTranslatableFields()) {
-			I18nCache i18nCache = I18nCache.getInstance();
-			Method getField = this.getClass().getDeclaredMethod("get" + StringUtil.capitalize(field.getName()));
-			String key = this.getI18nKey();
-			TranslatableString value = (TranslatableString) getField.invoke(this);
-			i18nCache.saveTranslatableString(key, value);
-		}
-	}
-
-	@PreRemove
-	public void preRemove() throws Exception {
-		I18nCache i18nCache = I18nCache.getInstance();
-		List<String> keys = new ArrayList<String>();
-		String key = this.getI18nKey();
-		keys.add(key);
-		i18nCache.removeTranslatableStrings(keys);
 	}
 
 	@Id
@@ -254,7 +193,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 	public boolean isCanada() {
 		return "CA".equals(isoCode);
 	}
-	
+
 	@Transient
 	public boolean isUAE() {
 		return "AE".equals(isoCode);

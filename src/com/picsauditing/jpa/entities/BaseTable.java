@@ -3,15 +3,11 @@ package com.picsauditing.jpa.entities;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,28 +17,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreRemove;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 
-import freemarker.template.utility.StringUtil;
-
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseTable implements JSONable, Serializable, Autocompleteable, Translatable {
+public abstract class BaseTable extends BaseTranslatable implements JSONable, Serializable, Autocompleteable {
 
 	protected int id;
 	protected User createdBy;
@@ -55,57 +44,6 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 
 	public BaseTable(User user) {
 		setAuditColumns(user);
-	}
-
-	@Transient
-	private List<Field> getTranslatableFields() {
-		List<Field> result = new ArrayList<Field>();
-		for (Field field : this.getClass().getDeclaredFields()) {
-			if (field.getType().equals(TranslatableString.class)) {
-				result.add(field);
-			}
-		}
-
-		return result;
-	}
-
-	@PostLoad
-	public void postLoad() throws Exception {
-		for (Field field : getTranslatableFields()) {
-			I18nCache i18nCache = I18nCache.getInstance();
-			TranslatableString translatable = new TranslatableString();
-			Map<String, String> translationCache = i18nCache.getText(getI18nKey(field.getName()));
-			for (String key : translationCache.keySet()) {
-				translatable.putTranslation(key, translationCache.get(key), false);
-			}
-
-			Method declaredMethod = this.getClass().getDeclaredMethod("set" + StringUtil.capitalize(field.getName()),
-					TranslatableString.class);
-			declaredMethod.invoke(this, translatable);
-		}
-	}
-
-	@PostUpdate
-	@PostPersist
-	public void postSave() throws Exception {
-		for (Field field : getTranslatableFields()) {
-			I18nCache i18nCache = I18nCache.getInstance();
-			Method getField = this.getClass().getDeclaredMethod("get" + StringUtil.capitalize(field.getName()));
-			String key = this.getI18nKey(field.getName());
-			TranslatableString value = (TranslatableString) getField.invoke(this);
-			i18nCache.saveTranslatableString(key, value);
-		}
-	}
-
-	@PreRemove
-	public void preRemove() throws Exception {
-		I18nCache i18nCache = I18nCache.getInstance();
-		List<String> keys = new ArrayList<String>();
-		for (Field field : getTranslatableFields()) {
-			String key = this.getI18nKey(field.getName());
-			keys.add(key);
-		}
-		i18nCache.removeTranslatableStrings(keys);
 	}
 
 	@Id
