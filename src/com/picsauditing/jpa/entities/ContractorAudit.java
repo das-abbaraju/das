@@ -710,7 +710,9 @@ public class ContractorAudit extends BaseTable {
 
 		for (AuditCatData auditCatData : sortedCats) {
 			boolean add = false;
-			if (!permissions.isContractor() && (auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY)) {
+			if (!permissions.isContractor()
+					&& ((auditCatData.getCategory().getId() == AuditCategory.WORK_HISTORY) || (auditCatData
+							.getCategory().getId() == AuditCategory.FINANCIAL_HISTORY))) {
 				if (permissions.hasPermission(OpPerms.ViewFullPQF))
 					add = true;
 			} else if (permissions.isAdmin() || permissions.isAuditor()) {

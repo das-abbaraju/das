@@ -29,6 +29,7 @@ import com.picsauditing.util.Strings;
 public class AuditCategory extends BaseTable implements Comparable<AuditCategory> {
 
 	public static final int WORK_HISTORY = 6;
+	public static final int FINANCIAL_HISTORY = 200;
 	public static final int OSHA_AUDIT = 151;
 	public static final int GENERAL_INFORMATION = 155;
 	public static final int EMR = 152;
