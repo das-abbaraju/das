@@ -50,7 +50,7 @@
 			}).live('mouseleave', function(event) {
 				$(this).removeClass('tr-hover-clickable');
 			});
-			$('fieldset.form ol :input:not(:checkbox):not(:button):not([type=hidden]):not(:radio):not(:submit)').addClass('input-edit-field');
+			$('input[type=text],input[type=password],select,textarea', 'fieldset.form ol').addClass('input-edit-field');
 		}
 		$('.hoverable').live('mouseenter', function(){
    			$(this).addClass('hover');
