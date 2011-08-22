@@ -189,4 +189,8 @@ public enum Subscription {
 	public void setRequiredForAdmin(boolean requiredForAdmin) {
 		this.requiredForAdmin = requiredForAdmin;
 	}
+	
+	public int getTemplateID() {
+		return 0;
+	}
 }

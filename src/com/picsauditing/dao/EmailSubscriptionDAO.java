@@ -80,4 +80,10 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<EmailSubscription> findSubscriptionsToSend(int limit) {
+		Query query = em.createQuery("FROM EmailSubscription e WHERE e.user.isActive = 'Yes'");
+		query.setMaxResults(limit);
+		return query.getResultList();
+	}
+
 }
