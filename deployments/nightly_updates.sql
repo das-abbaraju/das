@@ -19,13 +19,6 @@ where status != 'Expired' AND auditID IN (
 	select ca.id from contractor_audit ca JOIN audit_type aType ON aType.id = ca.auditTypeID where ca.expiresDate < NOW() AND aType.renewable = 0
 );
 
--- rebuild stats for AppIndex
-TRUNCATE TABLE app_index_stats;
-INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;
-INSERT INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;
-INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;
-ANALYZE TABLE app_index, app_index_stats;
-
 -- remove old data from the contractor_cron_log
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;
 
