@@ -144,8 +144,8 @@ public class SearchEngine {
 		}
 		sql.addField(sb.toString());
 		sb.setLength(0);
-		sb.append("JOIN ").append(indexStats).append(" t ON i1.indexType = t.indexType AND t.value IS NULL\n");
-		sb.append("JOIN ").append(indexStats).append(" v1 ON v1.indexType IS NULL and i1.value = v1.value");
+		sb.append("LEFT JOIN ").append(indexStats).append(" t ON i1.indexType = t.indexType AND t.value IS NULL\n");
+		sb.append("LEFT JOIN ").append(indexStats).append(" v1 ON v1.indexType IS NULL and i1.value = v1.value");
 		sql.addJoin(sb.toString());
 		sb.setLength(0);
 		for (int i = 1; i < Math.min(terms.size(), MAX_TERMS); i++) {
