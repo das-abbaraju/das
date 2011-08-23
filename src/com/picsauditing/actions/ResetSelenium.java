@@ -90,10 +90,8 @@ public class ResetSelenium extends PicsActionSupport {
 			t.delete(db);
 		}
 		{
-			Delete t = new Delete("app_index_stats");
+			Delete t = new Delete("app_index");
 			t.addJoin("WHERE t.foreignKey IN (" + accountIDs + ")");
-			t.delete(db);
-			t.table = "app_index";
 			t.delete(db);
 		}
 		{
