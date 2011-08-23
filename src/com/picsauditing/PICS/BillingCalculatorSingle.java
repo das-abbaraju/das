@@ -324,15 +324,17 @@ public class BillingCalculatorSingle {
 					if (upgrade.getFeeClass().isMembership()) {
 						upgradeAmount = new BigDecimal(daysUntilExpiration).multiply(upgradeAmountDifference).divide(
 								new BigDecimal(365), 0, RoundingMode.HALF_UP);
-						
-						if (upgradeAmount.floatValue() > 0) {
+
+						if (upgradeAmount.floatValue() > 0.0f) {
 							upgradeTotal = upgradeTotal.add(upgradeAmount);
-							description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
-									+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getSymbol()
-									+ upgradeAmount;
+							if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
+								description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
+										+ upgrade.getCurrentAmount() + ". Prorated "
+										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
+							}
 						} else
 							upgradeAmount = BigDecimal.ZERO.setScale(2);
-						
+
 						// If not membership fee, don't prorate amount
 					} else {
 						upgradeAmount = upgrade.getNewAmount();
