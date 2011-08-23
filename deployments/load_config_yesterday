@@ -18,8 +18,8 @@ sqltmpfile2=/tmp/pics_cfg_tbls.sql
 /usr/bin/scp tallred@db1.picsauditing.com:$dlfile2 $dlfile2
 
 #echo "copying pics.sql.gz..."
-/bin/mv -f $dlfile $tmpfile 
-/bin/mv -f $dlfile2 $tmpfile2 
+/bin/cp -f $dlfile $tmpfile 
+/bin/cp -f $dlfile2 $tmpfile2 
 
 #echo "unzipping /tmp/sql.gz"
 /bin/gunzip $tmpfile 
