@@ -37,7 +37,7 @@ public abstract class BaseTranslatable implements Translatable {
 		for (Field field : getTranslatableFields()) {
 			I18nCache i18nCache = I18nCache.getInstance();
 			TranslatableString translatable = new TranslatableString();
-			Map<String, String> translationCache = i18nCache.getText(getI18nKey());
+			Map<String, String> translationCache = i18nCache.getText(getI18nKey(field.getName()));
 			for (String key : translationCache.keySet()) {
 				translatable.putTranslation(key, translationCache.get(key), false);
 			}
