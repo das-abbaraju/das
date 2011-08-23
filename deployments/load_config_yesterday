@@ -32,7 +32,7 @@ sqltmpfile2=/tmp/pics_cfg_tbls.sql
 /var/backups/drop_tables.sh pics_yesterday
 
 #echo "loading into pics_config"
-#/usr/bin/mysql $dbname < $sqltmpfile 
+/usr/bin/mysql $dbname < $sqltmpfile 
 /usr/bin/mysql $dbname2 < $sqltmpfile
 /usr/bin/mysql $dbname2 < $sqltmpfile2
 
