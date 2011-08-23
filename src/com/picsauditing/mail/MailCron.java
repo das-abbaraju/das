@@ -30,7 +30,7 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
-	SubscriptionBuilderFactory subscriptionFactory;
+	private SubscriptionBuilderFactory subscriptionFactory;
 
 	@Anonymous
 	public String execute() throws Exception {
