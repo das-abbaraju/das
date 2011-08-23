@@ -191,15 +191,14 @@ public class AuditBuilder {
 	 *            Map of CAOs to CAOPs
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = 
-			new HashMap<OperatorAccount, ContractorAuditOperator>();
-		
+		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<OperatorAccount, ContractorAuditOperator>();
+
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
 			cao.setVisible(caoShouldBeVisible);
-			
+
 			// add to map for comparison later
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				previousCaoMap.put(caop.getOperator(), cao);
@@ -230,14 +229,14 @@ public class AuditBuilder {
 			if (conAudit.isExpired()) {
 				cao.changeStatus(AuditStatus.Expired, null);
 			}
-			
+
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 
 		boolean changedCao = false;
 
 		// set previous coa on coap
-		for (ContractorAuditOperator cao : conAudit.getOperators())	{
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
@@ -285,12 +284,10 @@ public class AuditBuilder {
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
 				/*
-				 * per Mina (PICS-2902) only change this to Manual and Implementation Audits
-				 * changes logic from 'does not have any pending CAOs' to
-				 * to 'has at least one submitted or greater cao'
+				 * per Mina (PICS-2902) only change this to Manual and Implementation Audits changes logic from 'does
+				 * not have any pending CAOs' to to 'has at least one submitted or greater cao'
 				 */
-				if (conAudit.getAuditType().isDesktop()
-						|| conAudit.getAuditType().isImplementation()) {
+				if (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation()) {
 					if (hasAnyCaoStatusAfterIncomplete(conAudit) || auditCatData.isOverride()) {
 						if (auditCatData.isApplies())
 							categoriesNeeded.add(auditCatData.getCategory());
@@ -298,7 +295,7 @@ public class AuditBuilder {
 							categoriesNeeded.remove(auditCatData.getCategory());
 					}
 				} else {
-					//TODO combine or change logic for all other audits to match Manual/Implementation 
+					// TODO combine or change logic for all other audits to match Manual/Implementation
 					if (!hasPendingCaos || auditCatData.isOverride()) {
 						/*
 						 * Lock the audit category down...keeping it as it was this is to ensure that we don't add new
@@ -325,7 +322,7 @@ public class AuditBuilder {
 				if (categoryApplies) {
 					// Making sure the top level parent applies for
 					// subcategories when adding it to the AuditCatData
-					categoryApplies = categoriesNeeded.contains(catData.getCategory().getTopParent());
+					categoryApplies = areAllParentsApplicable(categoriesNeeded, catData.getCategory());
 				}
 				if (categoryApplies != catData.isApplies())
 					catData.setAuditColumns(systemUser);
@@ -341,6 +338,14 @@ public class AuditBuilder {
 		if (conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		}
+	}
+
+	protected boolean areAllParentsApplicable(Set<AuditCategory> categoriesNeeded, AuditCategory category) {
+		if (category.getParent() != null)
+			return areAllParentsApplicable(categoriesNeeded, category.getParent())
+					&& categoriesNeeded.contains(category);
+		else
+			return categoriesNeeded.contains(category);
 	}
 
 	/**
@@ -500,8 +505,8 @@ public class AuditBuilder {
 
 	public void recalculateCategories(ContractorAudit conAudit) {
 		categoryRuleCache.initialize(auditDecisionTableDAO);
-		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, conAudit
-				.getContractorAccount());
+		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
+				conAudit.getContractorAccount());
 
 		/*
 		 * I really don't like this. We should probably have the list of operators somewhere else, but I couldn't find
