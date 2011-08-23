@@ -135,7 +135,7 @@ public class ContractorValidator {
 				return errorMessages;
 			}
 
-			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
+			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country, contractorAccount);
 			if (con != null) {
 				if (con.getCountry().isUS())
 					errorMessages

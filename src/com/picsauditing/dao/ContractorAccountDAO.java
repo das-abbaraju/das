@@ -76,7 +76,7 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	/**
-	 * Return a list of Contractors 
+	 * Return a list of Contractors
 	 * 
 	 * @param where
 	 * @param permissions
@@ -185,8 +185,24 @@ public class ContractorAccountDAO extends PicsDAO {
 		try {
 			Query query = em
 					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId LIKE :taxId AND country.isoCode = :country");
-			query.setParameter("taxId", taxId+"%");
+			query.setParameter("taxId", taxId + "%");
 			query.setParameter("country", country);
+			query.setMaxResults(1);
+			return (ContractorAccount) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
+	public ContractorAccount findTaxID(String taxId, String country, ContractorAccount contractor) {
+		if (taxId == null)
+			taxId = "";
+		try {
+			Query query = em
+					.createQuery("SELECT a FROM ContractorAccount a WHERE taxId LIKE :taxId AND country.isoCode = :country AND a != :contractor");
+			query.setParameter("taxId", taxId + "%");
+			query.setParameter("country", country);
+			query.setParameter("contractor", contractor);
 			query.setMaxResults(1);
 			return (ContractorAccount) query.getSingleResult();
 		} catch (NoResultException e) {
@@ -220,9 +236,8 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	/**
-	 * Find ids for all active contractors who either need recalculation but
-	 * haven't been calculated in the past 15 minutes or haven't been calculated
-	 * in the past week
+	 * Find ids for all active contractors who either need recalculation but haven't been calculated in the past 15
+	 * minutes or haven't been calculated in the past week
 	 * 
 	 * @return
 	 */
