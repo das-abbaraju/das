@@ -91,8 +91,9 @@ public enum Subscription {
 			130,
 			"Recent Operator Qualification Changes",
 			"This email notifies the contractors with recent OQ changes.",
-			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Event},
-			false, true, false),
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None,	SubscriptionTimePeriod.Monthly},
+			OpPerms.ViewTrialAccounts,
+			false, false, false, true),
 	Webinar(
 			"Webinar",
 			"This email notifies the contractor of upcoming Webinars",
@@ -120,6 +121,7 @@ public enum Subscription {
 	private boolean requiredForContractor = true;
 	private boolean requiredForAdmin = true;
 	private OpPerms requiredPerms = null;
+	private boolean requiresOQ = false;
 
 	Subscription(String description, String longDescription) {
 		this.description = description;
@@ -207,6 +209,20 @@ public enum Subscription {
 		this.requiredForContractor = requiredForContractor;
 		this.requiredForAdmin = requiredForAdmin;
 	}
+	
+	Subscription(int templateID, String description, String longDescription,
+			SubscriptionTimePeriod[] supportedTimePeriods, OpPerms requiredPerms,
+			boolean requiredForOperator, boolean requiredForContractor, boolean requiredForAdmin, boolean requiresOQ) {
+		this.templateID = templateID;
+		this.description = description;
+		this.longDescription = longDescription;
+		this.supportedTimePeriods = supportedTimePeriods;
+		this.requiredPerms = requiredPerms;
+		this.requiredForOperator = requiredForOperator;
+		this.requiredForContractor = requiredForContractor;
+		this.requiredForAdmin = requiredForAdmin;
+		this.requiresOQ = requiresOQ;
+	}
 
 	public int getTemplateID() {
 		return templateID;
@@ -246,5 +262,9 @@ public enum Subscription {
 
 	public void setRequiredForAdmin(boolean requiredForAdmin) {
 		this.requiredForAdmin = requiredForAdmin;
+	}
+
+	public boolean isRequiresOQ() {
+		return requiresOQ;
 	}
 }

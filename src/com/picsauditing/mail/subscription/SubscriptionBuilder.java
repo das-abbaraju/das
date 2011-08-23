@@ -11,11 +11,11 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 
 public abstract class SubscriptionBuilder {
 	@Autowired
-	protected EmailSender sender;
+	protected EmailSenderSpring sender;
 
 	Map<String, Object> tokens = new HashMap<String, Object>();
 

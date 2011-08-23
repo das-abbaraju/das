@@ -172,8 +172,11 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 					subList.add(subscription);
 				} else if (permissions.isContractor() && subscription.isRequiredForContractor()) {
 					subList.add(subscription);
-				} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor())
+				} else if (subscription.isRequiredForOperator() && subscription.isRequiredForContractor()) {
 					subList.add(subscription);
+				} else if (permissions.isRequiresOQ() && subscription.isRequiresOQ()) {
+					subList.add(subscription);
+				}
 			}
 		}
 		return subList;

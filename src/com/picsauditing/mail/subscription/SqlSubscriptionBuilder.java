@@ -1,12 +1,12 @@
 package com.picsauditing.mail.subscription;
 
-import com.picsauditing.jpa.entities.EmailSubscription;
+import java.util.List;
 
-public class SqlSubscriptionBuilder extends SubscriptionBuilder {
+import org.apache.commons.beanutils.BasicDynaBean;
 
-	@Override
-	public void process(EmailSubscription subscription) {
-		
-	}
+import com.picsauditing.search.Report;
 
+public abstract class SqlSubscriptionBuilder extends SubscriptionBuilder {
+	protected Report report = new Report();
+	protected List<BasicDynaBean> data;
 }

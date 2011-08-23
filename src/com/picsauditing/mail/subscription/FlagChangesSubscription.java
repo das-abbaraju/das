@@ -6,21 +6,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
 
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
-public class FlagChangesSubscription extends SubscriptionBuilder {
-
-	protected Report report = new Report();
-	protected List<BasicDynaBean> data;
+public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 
 	@Override
 	public void process(EmailSubscription subscription) {
