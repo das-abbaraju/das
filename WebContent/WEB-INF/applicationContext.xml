@@ -108,6 +108,16 @@
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	
+	<bean id="ContractorAddedSubscription" class="com.picsauditing.mail.subscription.ContractorAddedSubscription" />
+	<bean id="ContractorRegistrationSubscription" class="com.picsauditing.mail.subscription.ContractorRegistrationSubscription" />
+	<bean id="FlagChangesSubscription" class="com.picsauditing.mail.subscription.FlagChangesSubscription" />
+	<bean id="FlagColorSubscription" class="com.picsauditing.mail.subscription.FlagColorSubscription" />
+	<bean id="ForcedFlagsSubscription" class="com.picsauditing.mail.subscription.ForcedFlagsSubscription" />
+	<bean id="InsuranceCertificateSubscription" class="com.picsauditing.mail.subscription.InsuranceCertificateSubscription" />
+	<bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription" />
+	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" />
+	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" />
+	
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
