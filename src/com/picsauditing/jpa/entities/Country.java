@@ -176,7 +176,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	@Transient
 	public String getI18nKey(String property) {
-		return getI18nKey() + "." + property;
+		return getI18nKey();
 	}
 
 	@Override

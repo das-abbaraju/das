@@ -146,7 +146,7 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 
 	@Transient
 	public String getI18nKey(String property) {
-		return getI18nKey() + "." + property;
+		return getI18nKey();
 	}
 
 	@Override
