@@ -8,6 +8,7 @@ pics_live_sql=pics.sql
 pics_config_sql=pics_config.sql
 db_live=pics
 db_config=pics_config
+db_config_released=pics_config_released
 db_yesterday=pics_yesterday
 
 MYSQL=$(which mysql)
@@ -32,7 +33,6 @@ get_config_tables ()
 	cfg_tbls="${cfg_tbls} $line"
 	done
 }
-get_config_tables
 
 cleanup () {
 	echo "cleanup temp files"
@@ -43,6 +43,7 @@ dump_database () {
 	# Usage: dump_database pics_config 1
 	# Usage: dump_database pics
 	database=$1
+	get_config_tables
 	
 	case "$2" in
 		1)
@@ -95,12 +96,11 @@ backup_live () {
 load_config () {
 	dumpfile=${backup_dir}$pics_config_sql
 	dumpdb="pics_config"
-	dbname=$2
-	
+	dbname=$1
 	if [ "$dbname" = "" ]
 	then
-		echo "Usage: $0 $1 TARGET_DATABASE"
-		echo "Example: $0 $1 pics_alpha1"
+		echo "Usage: $0 load_config TARGET_DATABASE"
+		echo "Example: $0 load_config pics_alpha1"
 		exit 1
 	fi
 	
@@ -157,16 +157,12 @@ load_config_yesterday () {
 }
 
 release_config_to_live () {
-	filename="pics_config_tbls.sql"
-	deploy_dir=${backup_dir}deployments/
 	dumpfile=${backup_dir}$pics_config_sql
-	dumpdb="pics_config"
-	dbname="pics"
 	
 	dump_database $db_config 1
 	
-	drop_tables pics_config_release
-	/usr/bin/mysql pics_config_release < $dumpfile
+	drop_tables $db_config_released
+	/usr/bin/mysql $db_config_released < $dumpfile
 
 	echo "Compressing config tables dump file"
 	/usr/bin/gzip -f $dumpfile
@@ -175,15 +171,25 @@ release_config_to_live () {
 	/usr/bin/scp $dumpfile.gz tallred@db1.picsauditing.com:$dumpfile.gz
 	
 	echo "uncompressing config tables dumpfile on db1"
-	/usr/bin/ssh tallred@db1.picsauditing.com /usr/bin/gunzip $dumpfile.gz
-	
-	echo "Importing config tables to live"
-	/usr/bin/ssh tallred@db1.picsauditing.com '/usr/bin/mysql $dbname < $dumpfile'
-	
+	/usr/bin/ssh tallred@db1.picsauditing.com ${backup_dir}deployments/backup.sh load_config_to_live
+
 	echo "Cleaning up dump files"
 	/bin/rm $dumpfile.gz
-	/usr/bin/ssh tallred@db1.picsauditing.com /bin/rm $dumpfile
 }
+
+load_config_to_live () {
+	dumpfile=${backup_dir}$pics_config_sql
+
+	echo "uncompressing config tables dumpfile on db1"
+	/usr/bin/gunzip $dumpfile.gz
+	
+	echo "Importing config tables to live"
+	/usr/bin/mysql $db_live < $dumpfile
+	
+	echo "Rezip the config data"
+	/bin/gzip -f $dumpfile
+}
+
 
 case "$1" in
   backup_config)
@@ -198,11 +204,14 @@ case "$1" in
         ;;
   load_config)
         #Dump pics_config config tables and import into specified database
-        load_config
+        load_config $2
         ;;
   load_config_yesterday)
         # Run from cobalt nightly
         load_config_yesterday
+        ;;
+  load_config_to_live)
+        load_config_to_live
         ;;
   release_config_to_live)
         # Run this on cobalt
@@ -210,7 +219,8 @@ case "$1" in
         release_config_to_live
         ;;
   *)
-        echo $"Usage: $0 {backup_config|backup_live|load_config|load_config_yesterday|release_config_to_live}"
+        echo $"Usage (on live): $0 {backup_live|load_config_to_live}"
+        echo $"Usage (on cobalt): $0 {backup_config|load_config DB|load_config_yesterday|release_config_to_live}"
         exit 1
 esac
 
