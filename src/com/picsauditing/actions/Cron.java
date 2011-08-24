@@ -396,7 +396,6 @@ public class Cron extends PicsActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
 		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
-		List<Integer> questions = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
 
 		for (Invoice invoice : invoices) {
 			Set<String> emailAddresses = new HashSet<String>();
@@ -409,7 +408,8 @@ public class Cron extends PicsActionSupport {
 				emailAddresses.add(cAccount.getCcEmail());
 
 			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
-				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questions);
+				List<Integer> questionsWithEmailAddresses = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
+				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questionsWithEmailAddresses);
 				for (AuditData auditData : aList) {
 					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
 						emailAddresses.add(auditData.getAnswer());

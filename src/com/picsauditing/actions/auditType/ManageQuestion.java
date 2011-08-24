@@ -1,6 +1,5 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -10,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditExtractOptionDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
-import com.picsauditing.dao.AuditTransformOptionDAO;
-import com.picsauditing.importpqf.ImportComparison;
 import com.picsauditing.importpqf.ImportStopAt;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -31,11 +27,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
-	@Autowired
-	protected AuditExtractOptionDAO auditExtractOptionDAO;
-	@Autowired
-	protected AuditTransformOptionDAO auditTransformOptionDAO;
-	
+
 	private Integer requiredQuestionID;
 	private Integer visibleQuestionID;
 	private List<AuditOptionGroup> optionTypes;
@@ -71,7 +63,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			startAtBeginning = question.getExtractOption().isStartAtBeginning();
 			startingPoint = question.getExtractOption().getStartingPoint();
 			collectAsLines = question.getExtractOption().isCollectAsLines();
-			stoppingPoint  = question.getExtractOption().getStoppingPoint();
+			stoppingPoint = question.getExtractOption().getStoppingPoint();
 			if (startingPoint == null)
 				startingPoint = "";
 			if (stoppingPoint == null)
@@ -83,12 +75,12 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	@Override
 	public void prepare() throws Exception {
 		super.prepare();
-		
+
 		groupID = getParameter("groupID");
 		if (groupID > 0)
 			question.setOption(auditOptionValueDAO.findOptionGroup(groupID));
 	}
-	
+
 	public boolean save() {
 		if (question != null) {
 			if (Strings.isEmpty(question.getName().toString())) {
@@ -138,13 +130,13 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
 			if (question.getScoreWeight() > 0)
 				question.setRequired(true);
-			
+
 			if (extractOptionDefined) {
 				AuditExtractOption option = question.getExtractOption();
 				if (option == null) {
 					option = new AuditExtractOption();
 					option.setQuestion(question);
-					auditExtractOptionDAO.save(option);
+					dao.save(option);
 				}
 				option.setCollectAsLines(collectAsLines);
 				option.setStopAt(ImportStopAt.valueOf(stopAt));
@@ -164,9 +156,9 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				AuditExtractOption option = question.getExtractOption();
 				if (option != null) {
 					option.setQuestion(null);
-					auditExtractOptionDAO.remove(option.getId());
+					dao.remove(option);
 				}
-			question.setExtractOption(null);
+				question.setExtractOption(null);
 			}
 
 			question = auditQuestionDAO.save(question);
@@ -190,7 +182,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 			auditQuestionDAO.deleteData(AuditCategoryRule.class, "question.id = " + question.getId());
 			auditQuestionDAO.deleteData(AuditTypeRule.class, "question.id = " + question.getId());
 			if (question.getExtractOption() != null) {
-				auditExtractOptionDAO.remove(question.getExtractOption().getId());
+				dao.remove(question.getExtractOption());
 			}
 			auditQuestionDAO.remove(question.getId());
 
@@ -318,7 +310,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	public void setGroupID(int groupID) {
 		this.groupID = groupID;
 	}
-	
+
 	public boolean isExtractable() {
 		if (question != null && question.getId() != 0 && question.getAuditType().isExtractable())
 			return true;
@@ -376,7 +368,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 	public ImportStopAt[] getStopAtOptions() {
 		return ImportStopAt.values();
 	}
-	
+
 	public List<AuditTransformOption> getTransformOptions() {
 		return question.getTransformOptions();
 	}

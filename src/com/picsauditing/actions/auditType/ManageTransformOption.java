@@ -120,7 +120,7 @@ public class ManageTransformOption extends ManageQuestion {
 		
 		// save
 		if (origOption == null) {
-			option = auditTransformOptionDAO.save(option);
+			dao.save(option);
 			question.getTransformOptions().add(option);
 		} else {
 			origOption.copy(option);
@@ -136,7 +136,7 @@ public class ManageTransformOption extends ManageQuestion {
 
 	protected boolean delete() {
 		if (origOption != null) {
-			auditTransformOptionDAO.remove(origOption.getId());
+			dao.remove(origOption);
 			question.getTransformOptions().remove(origOption);
 			question = auditQuestionDAO.save(question);
 			try {

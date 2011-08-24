@@ -484,33 +484,30 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public void autoExpireOldAudits(ContractorAudit conAudit, AuditStatus status) {
-		if (!conAudit.getAuditType().isDesktop() || !status.isSubmitted())
-			return;
-
-		for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
-			if ((!ca.getAuditType().isDesktop() && !ca.getAuditType().isImplementation())
-					|| ca.getId() == conAudit.getId() || ca.isExpired())
-				continue;
-			if (ca.getEffectiveDate().before(conAudit.getEffectiveDate())) {
-				boolean submitted = false;
-				boolean completed = false;
-				for (ContractorAuditOperator cao : ca.getOperators()) {
-					if (cao.getStatus().isComplete()) {
-						completed = true;
-						break;
-					}
-					if (cao.getStatus().isSubmitted()) {
-						submitted = true;
-					}
-				}
-
-				if (submitted && !completed) {
+	protected void autoExpireOldAudits(ContractorAudit conAudit, AuditStatus status) {
+		if (status.isSubmitted() && (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation())) {
+			for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
+				if (isMatchingOldAudit(conAudit, ca)) {
+					// Expire the previous audit that is Pending or Submitted
 					ca.setExpiresDate(new Date());
 					conAuditDAO.save(ca);
 				}
 			}
 		}
+	}
+
+	private boolean isMatchingOldAudit(ContractorAudit conAudit, ContractorAudit ca) {
+		if (!ca.getAuditType().equals(conAudit.getAuditType()))
+			return false;
+		if (ca.getId() == conAudit.getId())
+			return false;
+		if (ca.isExpired())
+			return false;
+		if (ca.getEffectiveDate().after(conAudit.getEffectiveDate()))
+			return false;
+		if (ca.hasCaoStatus(AuditStatus.Complete))
+			return false;
+		return true;
 	}
 
 	protected void auditSetExpiresDate(ContractorAuditOperator cao, AuditStatus status) {

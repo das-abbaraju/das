@@ -26,7 +26,7 @@ public class AuditExtractOption extends BaseTable implements java.io.Serializabl
 	private String startingPoint;
 	private String stoppingPoint;
 	private boolean collectAsLines = false;
-	AuditQuestion question;
+	private AuditQuestion question;
 
 	// Transient attributes
 	String answer = null;

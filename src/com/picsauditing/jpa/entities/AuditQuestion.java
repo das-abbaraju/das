@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
 import org.json.simple.JSONObject;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -554,7 +555,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		return getName().toString();
 	}
 
-	@OneToOne(mappedBy = "question")
+	@OneToOne(mappedBy = "question", fetch = FetchType.LAZY)
 	public AuditExtractOption getExtractOption() {
 		return extractOption;
 	}
