@@ -1,5 +1,6 @@
 backup_dir=/var/backups/
 
+pics_live_sql=pics.sql
 pics_config_sql=pics_config.sql
 db_live=pics
 db_config=pics_config

@@ -1,19 +1,15 @@
 #!/bin/sh
-backup_dir=/var/backups/
+# Run this on cobalt
+# Targetted ad hoc run for Monday and Thurday afternoon
+
+. main.sh
+
 filename="pics_config_tbls.sql"
 deploy_dir=${backup_dir}deployments/
-cfg_file=${deploy_dir}config_tables.txt
 dumpfile=${backup_dir}${filename}
 dumpfile2=${dumpfile}.gz
 dumpdb="pics_config"
 dbname="pics"
-
-exec<$cfg_file
-while read line
-do
-cfg_tbls="${cfg_tbls} $line"
-done
-
 
 echo "Dumping pics_config config tables"
 /usr/bin/mysqldump $dumpdb $cfg_tbls > $dumpfile
