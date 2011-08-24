@@ -1,8 +1,10 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +12,7 @@ import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.search.SelectSQL;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -81,8 +84,25 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<EmailSubscription> findSubscriptionsToSend(int limit) {
-		Query query = em.createQuery("FROM EmailSubscription e WHERE e.user.isActive = 'Yes'");
+
+		SelectSQL sql = new SelectSQL("email_subscription e");
+		sql.addJoin("JOIN users u ON u.id = e.userID");
+		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
+		sql.addWhere("u.isActive = 'Yes'");
+		sql.addWhere("a.status = 'Active'");
+		sql.addWhere("e.timePeriod NOT IN ('None', 'Event')");
+		sql.addWhere("e.lastSent IS NULL OR e.lastSent < CASE e.timePeriod "
+				+ "WHEN 'Daily' THEN DATE_SUB(:now, INTERVAL 1 DAY)"
+				+ "WHEN 'Weekly' THEN DATE_SUB(:now, INTERVAL 1 WEEK)"
+				+ "WHEN 'Monthly' THEN DATE_SUB(:now, INTERVAL 1 MONTH) END");
+		sql.addOrderBy("e.lastSent");
+
+		sql.addField("e.*");
+
+		Query query = em.createNativeQuery(sql.toString(), EmailSubscription.class);
+		query.setParameter("now", new Date(), TemporalType.TIMESTAMP);
 		query.setMaxResults(limit);
+
 		return query.getResultList();
 	}
 
