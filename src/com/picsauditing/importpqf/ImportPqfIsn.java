@@ -50,6 +50,14 @@ public class ImportPqfIsn extends ImportPqf {
 	}
 	
 	@Override
+	protected String trimPQFSpecific(String question, String match) {
+		match = match.substring(match.indexOf(question) + question.length(), match.length());
+		match = match.trim();
+		return match;
+	}
+
+	
+	@Override
 	protected String processMatchPQFSpecific(String question, String match) {
 		int index = match.indexOf(question);
 		if (index > -1) {

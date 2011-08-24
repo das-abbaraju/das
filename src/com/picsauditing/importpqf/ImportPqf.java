@@ -100,7 +100,10 @@ public abstract class ImportPqf {
 						String response = data.getAnswer();
 						boolean allSame = true;
 						for (Integer id : option.getComparisonIds()) {
-							String otherResponse = auditAnswers.get(id.intValue()).getAnswer();
+							AuditData data2 = auditAnswers.get(id.intValue());
+							String otherResponse = null;
+							if (data2 != null)
+								otherResponse = data.getAnswer();
 							if (!Strings.isEqualNullSafe(response, otherResponse)) {
 								allSame = false;
 								break;
@@ -113,7 +116,10 @@ public abstract class ImportPqf {
 							answer = "Yes";
 						} else {
 							for (Integer id : option.getComparisonIds()) {
-								String otherResponse = auditAnswers.get(id.intValue()).getAnswer();
+								AuditData data2 = auditAnswers.get(id.intValue());
+								String otherResponse = null;
+								if (data2 != null)
+									otherResponse = data.getAnswer();
 								if (containsNullSafe(otherResponse, "Yes")) {
 									answer = "Yes";
 									break;
@@ -352,9 +358,7 @@ public abstract class ImportPqf {
 					match = match.substring(question.length()).trim();
 				} else if (isMatchPQFSpecific(question, match)) {
 					option.setQuestionFound(true);
-					match = match.substring(0, match.indexOf(question)).trim() + 
-						" " + match.substring(match.indexOf(question) + question.length());
-					match = match.trim();
+					match = trimPQFSpecific(question, match);
 				} else if (isPartialMatchPQFSpecific(question, match)) {
 					match += " ";
 				} else if (match.length() == 0) { // blank line
@@ -590,6 +594,19 @@ public abstract class ImportPqf {
 	 */
 	protected boolean isMatchPQFSpecific(String question, String match) {
 		return false;
+	}
+	
+	/**
+	 * Trims match string of question
+	 * @param question
+	 * @param match
+	 * @return
+	 */
+	protected String trimPQFSpecific(String question, String match) {
+		match = match.substring(0, match.indexOf(question)).trim() + " "
+				+ match.substring(match.indexOf(question) + question.length());
+		match = match.trim();
+		return match;
 	}
 	
 	/**
