@@ -14,8 +14,6 @@ audit_type
 audit_type_rule
 flag_criteria
 invoice_fee
-naics
-naics_lookup
 operatorforms
 pqfoptions
 ref_country
