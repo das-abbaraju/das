@@ -24,7 +24,7 @@ public class ChartFlagCountCorp extends ChartMSAction {
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
 		sql
-				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search&filter.flagStatus=',gc.flag,'&filter.operator=',op.id) as link");
+				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=',gc.flag,'%26filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");

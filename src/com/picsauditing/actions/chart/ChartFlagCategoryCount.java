@@ -28,7 +28,7 @@ public class ChartFlagCategoryCount extends ChartMSAction {
 		sql.addField("fd.flag as series");
 		sql.addField("fc.category as label");
 		sql.addField("count(*) as value");
-		sql.addField("CONCAT('OperatorFlagMatrix.action?flagColor=',fd.flag,'&category=',fc.category) as link");
+		sql.addField("CONCAT('OperatorFlagMatrix.action?flagColor=',fd.flag,'%26category=',fc.category) as link");
 		sql.addGroupBy("fd.flag,fc.category");
 		sql.addOrderBy("fd.flag,fc.category");
 
