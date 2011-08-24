@@ -20,7 +20,7 @@ dbname="pics"
 exec<$cfg_file
 while read line
 do
-ign_tbls="${ign_tbls} --ignore_table $line"
+ign_tbls="${ign_tbls} --ignore_table ${dbname}.${line}"
 cfg_tbls="${cfg_tbls} $line"
 done
 
