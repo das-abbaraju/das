@@ -16,6 +16,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.importpqf.ImportPqf;
 import com.picsauditing.importpqf.ImportPqfCanQual;
 import com.picsauditing.importpqf.ImportPqfComplyWorks;
+import com.picsauditing.importpqf.ImportPqfIsn;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -254,7 +255,11 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		
 		if (data != null && data.isAnswered()) {
 			if (data.getAnswer().equals("514")) // CanQual
-				importPqf = new ImportPqfCanQual();			
+				importPqf = new ImportPqfCanQual();	
+			else if (data.getAnswer().equals("518")) // ISN Canada
+				importPqf = new ImportPqfIsn();	
+//			else if (data.getAnswer().equals("515")) // ComplyWorks
+//				importPqf = new ImportPqfComplyWorks();				
 		}
 		
 		return importPqf;
