@@ -260,7 +260,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 						.append("AND cao.visible = 1 ")
 						.append("WHERE ca.conID = a.id ")
 						.append("AND ca.auditTypeID = 1 AND aq.uniqueCode in (").append(stateList)
-						.append(") ");
+						.append(")) ");
 				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
 			}
 
