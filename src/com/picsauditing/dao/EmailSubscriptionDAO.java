@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -84,7 +85,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<EmailSubscription> findSubscriptionsToSend(int limit) {
-
 		SelectSQL sql = new SelectSQL("email_subscription e");
 		sql.addJoin("JOIN users u ON u.id = e.userID");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
@@ -102,8 +102,27 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql.toString(), EmailSubscription.class);
 		query.setParameter("now", new Date(), TemporalType.TIMESTAMP);
 		query.setMaxResults(limit);
+		query.setParameter("none", SubscriptionTimePeriod.None);
 
 		return query.getResultList();
+	}
+
+	public List<EmailSubscription> findOptOutSubscriptionsToSend(Subscription subscription, int limit) {
+		Query query = em.createNativeQuery(subscription.getNonSubscribedUsersQuery().toString(), User.class);
+		query.setMaxResults(limit);
+		List<User> users = query.getResultList();
+
+		List<EmailSubscription> subs = new ArrayList<EmailSubscription>();
+		for (User u : users) {
+			EmailSubscription sub = new EmailSubscription();
+			sub.setAuditColumns(new User(User.SYSTEM));
+			sub.setSubscription(subscription);
+			sub.setUser(u);
+			sub.setTimePeriod(subscription.getDefaultTimePeriod());
+			subs.add(sub);
+		}
+
+		return subs;
 	}
 
 }

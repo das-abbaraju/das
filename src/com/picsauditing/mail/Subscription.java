@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.search.SelectSQL;
 
 public enum Subscription {
 	ContractorRegistration(
@@ -78,10 +79,34 @@ public enum Subscription {
 			"This email notifies the users when there has been updates or changes to the PICS system.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, true, false,
 			false),
+	/**
+	 * OPT-OUT SUBSCRIPTIONS MUST HAVE SubscriptionTimePeriod.None AND ONLY ONE OF {Monthly, Weekly, Daily, Quarterly}
+	 * as well as a native query to pull up the currently non-subscribed users (i.e. EmailSubscription does exist) NOTE:
+	 * DO NOT USE SubscriptionTimePeriod.Event
+	 */
 	OQChanges(130, "Recent Operator Qualification Changes",
 			"This email notifies the contractors with recent OQ changes.", new SubscriptionTimePeriod[] {
 					SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly }, OpPerms.ViewTrialAccounts, false,
-			false, false, true),
+			false, false, true, false) {
+		public SelectSQL getNonSubscribedUsersQuery() {
+			SelectSQL sql = new SelectSQL("users u");
+			sql.addField("u.*");
+			sql.setDistinct(true);
+
+			sql.addJoin("JOIN useraccess ua ON ua.userID = u.id");
+			sql.addJoin("JOIN accounts a ON u.accountID = a.id");
+			sql.addJoin("LEFT JOIN email_subscription s ON u.id = s.userID AND s.subscription = 'OQChanges'");
+
+			sql.addWhere("s.id IS NULL");
+			sql.addWhere("u.isActive = 'Yes'");
+			sql.addWhere("a.status = 'Active'");
+			sql.addWhere("a.requiresOQ = 1");
+			sql.addWhere("a.type = 'Contractor'");
+			sql.addWhere("ua.accessType in ('ContractorAdmin','ContractorSafety')");
+
+			return sql;
+		}
+	},
 	Webinar("Webinar", "This email notifies the contractor of upcoming Webinars", new SubscriptionTimePeriod[] {
 			SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, true, true, true),
 	OpenTasks(168, "Contractor Open Tasks",
@@ -99,6 +124,7 @@ public enum Subscription {
 	private String longDescription;
 	private SubscriptionTimePeriod[] supportedTimePeriods = { SubscriptionTimePeriod.None,
 			SubscriptionTimePeriod.Daily, SubscriptionTimePeriod.Weekly, SubscriptionTimePeriod.Monthly };
+	private SubscriptionTimePeriod defaultTimePeriod = SubscriptionTimePeriod.Monthly;
 	private boolean requiredForOperator = true;
 	private boolean requiredForContractor = true;
 	private boolean requiredForAdmin = true;
@@ -191,7 +217,7 @@ public enum Subscription {
 
 	Subscription(int templateID, String description, String longDescription,
 			SubscriptionTimePeriod[] supportedTimePeriods, OpPerms requiredPerms, boolean requiredForOperator,
-			boolean requiredForContractor, boolean requiredForAdmin, boolean requiresOQ) {
+			boolean requiredForContractor, boolean requiredForAdmin, boolean requiresOQ, boolean optIn) {
 		this.templateID = templateID;
 		this.description = description;
 		this.longDescription = longDescription;
@@ -245,5 +271,13 @@ public enum Subscription {
 
 	public boolean isRequiresOQ() {
 		return requiresOQ;
+	}
+
+	public SelectSQL getNonSubscribedUsersQuery() {
+		return null;
+	}
+	
+	public SubscriptionTimePeriod getDefaultTimePeriod() {
+		return defaultTimePeriod;
 	}
 }

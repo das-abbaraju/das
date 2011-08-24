@@ -1,5 +1,6 @@
 package com.picsauditing.mail;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class MailCron extends PicsActionSupport {
 	public String execute() throws Exception {
 		// No authentication required since this runs as a cron job
 
-		// DO ALL SUBSCRIPTIONS
+		// DO ALL OPT-IN SUBSCRIPTIONS
 		{
 			List<EmailSubscription> subs = subscriptionDAO.findSubscriptionsToSend(limit);
 			for (EmailSubscription emailSubscription : subs) {
@@ -44,6 +45,27 @@ public class MailCron extends PicsActionSupport {
 				com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
 						.getBuilder(emailSubscription.getSubscription());
 				builder.process(emailSubscription);
+
+				emailSubscription.setLastSent(new Date());
+				subscriptionDAO.save(emailSubscription);
+			}
+		}
+
+		// DO ALL OPT-OUT SUBSCRIPTIONS (everyone that hasn't opted in or selected none)
+		{
+			for (Subscription sub : Subscription.values()) {
+				if (sub.getNonSubscribedUsersQuery() != null) {
+					List<EmailSubscription> subs = subscriptionDAO.findOptOutSubscriptionsToSend(sub, limit);
+
+					for (EmailSubscription emailSubscription : subs) {
+						com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
+								.getBuilder(sub);
+						builder.process(emailSubscription);
+
+						emailSubscription.setLastSent(new Date());
+						subscriptionDAO.save(emailSubscription);
+					}
+				}
 			}
 		}
 
