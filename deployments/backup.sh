@@ -67,9 +67,9 @@ backup_config () {
 }
 
 backup_live () {
-	filename=${backup_dir}pics.sql
+	filename=${backup_dir}$pics_live_sql
 	
-	filename_cfg=${backup_dir}pics_config.sql
+	filename_cfg=${backup_dir}$pics_config_sql
 	
 	#Backup pics db without config tables
 	dump_database $db_live
