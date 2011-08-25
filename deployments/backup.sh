@@ -68,28 +68,21 @@ backup_config () {
 
 backup_live () {
 	filename=${backup_dir}$pics_live_sql
-	
-	filename_cfg=${backup_dir}$pics_config_sql
-	
 	#Backup pics db without config tables
 	dump_database $db_live
-	
-	/bin/gzip -f $filename
 	
 	#Backup pics db config tables only
 	dump_database $db_live 1
 	
-	/bin/gzip -f $filename_cfg
-	
-	wfilename=${backup_dir}pics.sql.gz
-	mfilename=${backup_dir}pics.sql.gz
+	/bin/gzip -f $filename
+	/bin/gzip -f ${backup_dir}$pics_config_sql
 	
 	if [ `date +%a` = "Mon" ]; then
-	   cp $filename.gz $wfilename
+	   cp $filename.gz ${filename}w.gz
 	fi
 	
 	if [ `date +%d` = "01" ]; then
-	   cp $filename.gz $mfilename
+	   cp $filename.gz ${backup_dir}archive/pics`date +"%Y%m%d"`.sql.gz
 	fi
 }
 
