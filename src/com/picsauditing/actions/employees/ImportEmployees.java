@@ -214,9 +214,8 @@ public class ImportEmployees extends PicsActionSupport {
 
 					if (row.getCell(0) != null) {
 						String cellValue = row.getCell(0).getRichStringCellValue().getString().trim();
-						String headerValue = getText("ManageEmployeesUpload.label.EmployeeFirstName").trim();
 
-						if (cellValue.equals(headerValue)) {
+						if (row.getRowNum() == 0 && cellValue.contains("*")) {
 							int start = getEmployeeInfo().length;
 							int end = row.getLastCellNum();
 							operators = new ArrayList<OperatorAccount>();
@@ -262,7 +261,8 @@ public class ImportEmployees extends PicsActionSupport {
 	}
 
 	private boolean parseRow(Row row) throws Exception {
-		if (row.getCell(0) != null && row.getCell(1) != null && row.getCell(2) != null && row.getCell(3) != null) {
+		// Check first name, last name and title only
+		if (row.getCell(0) != null && row.getCell(1) != null && row.getCell(2) != null) {
 			Employee e = new Employee();
 			e.setAccount(account);
 			e.setAuditColumns(permissions);
