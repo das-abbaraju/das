@@ -151,7 +151,7 @@ public class QBXmlAdaptor {
 			billAddress.setCity(contractor.getBillingCity());
 			if (contractor.getBillingState() != null)
 				billAddress.setState(contractor.getBillingState().getIsoCode());
-			billAddress.setPostalCode(contractor.getBillingZip());
+			billAddress.setPostalCode(contractor.getShortZip(contractor.getBillingZip()));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
@@ -159,9 +159,9 @@ public class QBXmlAdaptor {
 			billAddress.setCity(contractor.getCity());
 			if (contractor.getState() != null)
 				billAddress.setState(contractor.getState().getIsoCode());
-			billAddress.setPostalCode(contractor.getZip());
+			billAddress.setPostalCode(contractor.getShortZip(contractor.getZip()));
 		}
-		billAddress.setCountry(contractor.getCountry().getName());
+		billAddress.setCountry(contractor.getCountry().getIsoCode());
 		return billAddress;
 	}
 }

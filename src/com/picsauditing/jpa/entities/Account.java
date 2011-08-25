@@ -210,6 +210,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return this.zip;
 	}
 
+	@Transient
+	public String getShortZip(String zip) {
+		if (zip.length() >= 5)
+			return zip.substring(0, 5);
+		else
+			return zip.substring(0, zip.length() - 1);
+	}
+
 	public void setZip(String zip) {
 		this.zip = zip;
 	}
@@ -717,8 +725,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
-				.append(this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
+				this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)
