@@ -9,7 +9,7 @@ public enum ContractorRegistrationStep {
 		if (contractor == null || contractor.getId() == 0)
 			return Register;
 		
-		if (contractor.getStatus().isDemo())
+		if (contractor.getStatus().isDemo() || contractor.getStatus().isActive())
 			return Done;
 
 		if (contractor.getTrades().size() == 0)
@@ -23,8 +23,6 @@ public enum ContractorRegistrationStep {
 		if (!contractor.isHasFreeMembership() && !contractor.isPaymentMethodStatusValid())
 			return Payment;
 
-		if (contractor.getStatus().isActive())
-			return Done;
 
 		return Confirmation;
 	}
