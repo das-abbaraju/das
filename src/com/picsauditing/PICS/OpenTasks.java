@@ -61,7 +61,7 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 
-		if (user.hasPermission(OpPerms.ContractorBilling)) {
+		if (user.hasPermission(OpPerms.ContractorBilling) || user.getAccount().isAdmin()) {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
