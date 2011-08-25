@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -25,11 +25,13 @@ public class ConInsureGuard extends ContractorActionSupport {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 
-	String[] certTypes = {"Current", "Expired", "Uploaded"};
-	
-	private Map<AuditStatus, Map<ContractorAudit, List<ContractorAuditOperator>>> policiesMap;
-	private Map<String, Map<Certificate, List<ContractorAuditOperator>>> certificatesMap;
-	
+	String[] certTypes = { "Current", "Expired", "Uploaded" };
+
+	private Map<String, Map<Certificate, String>> certificatesMap;
+
+	private Map<ContractorAudit, List<ContractorAuditOperator>> currentPoliciesMap;
+	private Map<ContractorAudit, List<ContractorAuditOperator>> expiredPoliciesMap;
+
 	public ConInsureGuard() {
 		this.noteCategory = NoteCategory.Insurance;
 		subHeading = "InsureGUARD&trade;";
@@ -37,52 +39,69 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		findContractor();
+
+		//Initializing Maps
+		certificatesMap = new HashMap<String, Map<Certificate, String>>();
+
+		currentPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
+				new Comparator<ContractorAudit>() {
+					@Override
+					public int compare(ContractorAudit o1, ContractorAudit o2) {
+						return (o1.getAuditType().getName().compareTo(o2.getAuditType().getName()));
+					}
+				});
 		
-		policiesMap = new HashMap<AuditStatus, Map<ContractorAudit, List<ContractorAuditOperator>>>();
-		certificatesMap = new HashMap<String, Map<Certificate, List<ContractorAuditOperator>>>();
-		
-		for (AuditStatus auditStatus : AuditStatus.values()) {
-			policiesMap.put(auditStatus, new HashMap<ContractorAudit, List<ContractorAuditOperator>>());
-		}
-		
-		for (String certType : certTypes) {
-			certificatesMap.put(certType, new HashMap<Certificate, List<ContractorAuditOperator>>());
-		}
-		
-		for (ContractorAudit ca : contractor.getAudits()) {
-			if (ca.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
-				for (ContractorAuditOperator cao : ca.getOperatorsVisible()) {
-					if (permissions.canSeeAudit(ca.getAuditType())) {
-						List<ContractorAuditOperator> list = new ArrayList<ContractorAuditOperator>();
-						for (ContractorAuditOperator cao2 : ca.getOperatorsVisible()) {
+		expiredPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
+				new Comparator<ContractorAudit>() {
+					@Override
+					public int compare(ContractorAudit o1, ContractorAudit o2) {
+						return (o1.getAuditType().getName().compareTo(o2.getAuditType().getName()));
+					}
+				});
+
+		//Populating policy Maps
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+				if (audit.isExpired())
+					expiredPoliciesMap.put(audit, null);
+				else {
+					List<ContractorAuditOperator> caos = new ArrayList<ContractorAuditOperator>();
+					for (ContractorAuditOperator cao : audit.getOperatorsVisible()) {
+						if (permissions.canSeeAudit(audit.getAuditType())) {
 							if (permissions.isOperatorCorporate()) {
-								if (cao2.isVisibleTo(permissions)) 
-									list.add(cao2);
+								if (cao.isVisibleTo(permissions)) {
+									caos.add(cao);
+								}
 							} else {
-								list.add(cao2);
+								caos.add(cao);
 							}
 						}
-						policiesMap.get(cao.getStatus()).put(ca, list);
 					}
+					currentPoliciesMap.put(audit, caos);
 				}
 			}
 		}
-		
+
+		//populating certificate map
+		for (String certType : certTypes) {
+			certificatesMap.put(certType, new HashMap<Certificate, String>());
+		}
+
 		for (Certificate certificate : getCertificates()) {
 			List<AuditData> auditData = auditDataDAO.findByCertificateID(contractor.getId(), certificate.getId());
 
 			if (auditData.size() == 0) {
-				certificatesMap.get("Uploaded").put(certificate, Collections.<ContractorAuditOperator>emptyList());
+				certificatesMap.get("Uploaded").put(certificate, "");
 			} else {
 				if (certificate.isExpired())
-					certificatesMap.get("Expired").put(certificate, auditData.get(0).getAudit().getOperatorsVisible());
+					certificatesMap.get("Expired").put(certificate, auditData.get(0).getQuestion().getCategory().getName().toString());
 				else
-					certificatesMap.get("Current").put(certificate, auditData.get(0).getAudit().getOperatorsVisible());
+					certificatesMap.get("Current").put(certificate, auditData.get(0).getQuestion().getCategory().getName().toString());
 			}
 		}
 		return SUCCESS;
 	}
-	
+
 	@Override
 	public List<Certificate> getCertificates() {
 		if (certificates == null) {
@@ -98,25 +117,17 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		return certificates;
 	}
-	
+
 	public String getAuditForYear(Date effectiveDate) {
-		Date d = (effectiveDate == null) ? new Date(): effectiveDate;
+		Date d = (effectiveDate == null) ? new Date() : effectiveDate;
 		return DateBean.format(d, "yy");
 	}
-	
-	public Map<AuditStatus, Map<ContractorAudit, List<ContractorAuditOperator>>> getPoliciesMap() {
-		return policiesMap;
-	}
 
-	public void setPoliciesMap(Map<AuditStatus, Map<ContractorAudit, List<ContractorAuditOperator>>> policiesMap) {
-		this.policiesMap = policiesMap;
-	}
-
-	public Map<String, Map<Certificate, List<ContractorAuditOperator>>> getCertificatesMap() {
+	public Map<String, Map<Certificate, String>> getCertificatesMap() {
 		return certificatesMap;
 	}
 
-	public void setCertificatesMap(Map<String, Map<Certificate, List<ContractorAuditOperator>>> certificatesMap) {
+	public void setCertificatesMap(Map<String, Map<Certificate, String>> certificatesMap) {
 		this.certificatesMap = certificatesMap;
 	}
 
@@ -126,5 +137,21 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 	public void setCertTypes(String[] certTypes) {
 		this.certTypes = certTypes;
+	}
+
+	public Map<ContractorAudit, List<ContractorAuditOperator>> getCurrentPoliciesMap() {
+		return currentPoliciesMap;
+	}
+
+	public void setCurrentPoliciesMap(Map<ContractorAudit, List<ContractorAuditOperator>> currentPoliciesMap) {
+		this.currentPoliciesMap = currentPoliciesMap;
+	}
+
+	public Map<ContractorAudit, List<ContractorAuditOperator>> getExpiredPoliciesMap() {
+		return expiredPoliciesMap;
+	}
+
+	public void setExpiredPoliciesMap(Map<ContractorAudit, List<ContractorAuditOperator>> expiredPoliciesMap) {
+		this.expiredPoliciesMap = expiredPoliciesMap;
 	}
 }

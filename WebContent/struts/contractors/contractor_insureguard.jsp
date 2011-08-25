@@ -31,61 +31,89 @@
 <body>
 <s:include value="conHeader.jsp" />
 
-<table>
-	<tr>
-		<td style="padding-left: 2em;">
+<s:if test="currentPoliciesMap.size > 0">
+<h3>Current Policies</h3>
+<table class="report">
+	<thead>
+		<tr>
+			<td>Policy Type</td>
 			<s:iterator value="@com.picsauditing.jpa.entities.AuditStatus@values()" var="stat">
-				<s:if test="policiesMap.get(#stat).size > 0">
-					<h3><s:property value="#stat" /> Policies</h3>
-					<table class="report">
-						<thead>
-							<tr>
-								<td>Policy Type</td>
-								<td>Operator</td>
-								<td>Status</td>
-								<td>View</td>
-							</tr>
-						</thead>
-						<tbody>
-							<s:iterator value="policiesMap.get(#stat).keySet()" var="audit">
-								<s:iterator value="policiesMap.get(#stat).get(#audit)" var="cao" status="s">
-								<tr>
-									<td rowspan="<s:property value="#rowspan" />">
-										<a href="Audit.action?auditID=<s:property value="#audit.id"/>">
-											<s:property value="#audit.auditType.name" /> '<s:property value="getAuditForYear(#audit.effectiveDate)" />
-										</a>
-										<br />
-										<span style="font-size: 10px">
-											<s:if test="#stat == 'Expired'">
-												Expired on <s:date name="#audit.expiresDate" format="M/d/yy" />
-											</s:if>
-											<s:else>
-												<s:date name="#audit.effectiveDate" format="MMM yyyy" />
-											</s:else>
-										</span>
-									</td>
-									<td><s:property value="#cao.operator.name" /></td>
-									<!-- <td><s:property value="#cao.status" /></td> -->
-									<td><span class="<s:property value="#stat" /> <s:property value="#cao.status" />"><s:property value="#cao.status" /></span></td>
-									<td class="center">
-										<s:if test="caoCert.get(#cao).id">
-											<a title="<s:property value="caoCert.get(#cao).description"/>"
-												href="CertificateUpload.action?id=<s:property value="contractor.id"/>&certID=<s:property value="caoCert.get(#cao).id" />&button=download"
-												target="_BLANK">
-												<img src="images/icon_insurance.gif"/>
-											</a>
-										</s:if>
-									</td>
-								</tr>
-								</s:iterator>
-							</s:iterator>
-						</tbody>
-					</table>
+				<s:if test="#stat.toString() != 'Expired'">
+					<td><s:property value="#stat" /></td>
 				</s:if>
 			</s:iterator>
-		
-		</td>
-		<td style="padding-left: 2em;">
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="currentPoliciesMap.keySet()" var="audit">
+			<tr>
+				<td>
+					<a href="Audit.action?auditID=<s:property value="#audit.id"/>">
+					<s:text name="Audit.auditFor" >
+						<s:param value="%{#audit.auditType.name}" />
+						<s:param value="%{#audit.auditFor != null && #audit.auditFor.length() > 0 ? 1 : 0}" />
+						<s:param value="%{#audit.auditFor != null && #audit.auditFor.length() > 0 ? #audit.auditFor : #audit.effectiveDateLabel}" />
+					</s:text>
+					</a>
+				</td>
+				<s:iterator value="@com.picsauditing.jpa.entities.AuditStatus@values()" var="stat">
+					<s:if test="#stat.toString() != 'Expired'">
+					<td>
+						<table class="inner">
+							<s:iterator value="currentPoliciesMap.get(#audit)" var="cao">
+								<tr>
+									<td style="font-size:10px">
+									<s:if test="#cao.status.toString() == #stat.toString()">
+										<nobr><s:property value="#cao.operator.name" /></nobr>
+									</s:if>
+									</td>
+								</tr>
+							</s:iterator>
+						</table>
+					</td>
+					</s:if>
+				</s:iterator>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
+
+<br />
+
+</s:if>
+<s:if test="expiredPoliciesMap.size > 0">
+<h3>Expired Policies</h3>
+<table class="report">
+	<thead>
+		<tr>
+			<td>Policy Type</td>
+			<td>Expired Date</td>
+		</tr>
+	</thead>
+	<tbody>
+		<s:iterator value="expiredPoliciesMap.keySet()" var="expiredPolicy">
+			<tr>
+				<td>
+					<a href="Audit.action?auditID=<s:property value="#expiredPolicy.id"/>">
+					<s:text name="Audit.auditFor" >
+						<s:param value="%{#expiredPolicy.auditType.name}" />
+						<s:param value="%{#expiredPolicy.auditFor != null && #expiredPolicy.auditFor.length() > 0 ? 1 : 0}" />
+						<s:param value="%{#expiredPolicy.auditFor != null && #expiredPolicy.auditFor.length() > 0 ? #expiredPolicy.auditFor : #expiredPolicy.effectiveDateLabel}" />
+					</s:text>
+					</a>
+				</td>
+				<td><s:date name="#expiredPolicy.expiresDate" format="M/d/yy"/></td>
+			</tr>
+		</s:iterator>
+	</tbody>
+</table>
+</s:if>
+
+<br />
+
+<table>
+	<tr>
+		<td>
 			<s:iterator value="certTypes" var="stat">
 				<s:if test="certificatesMap.get(#stat).size > 0">
 					<h3><s:property value="#stat" /> Certificates</h3>
@@ -116,18 +144,9 @@
 									</s:if></td>
 									<s:if test="#stat != 'Uploaded'">
 										<td>
-											<table class="inner">
-												<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
-													<s:iterator value="certificatesMap.get(#stat).get(#cert)" var="cao">
-														<tr>
-															<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditType.name"/></nobr></td>
-															<td style="font-size:10px"><nobr><s:property value="#cao.audit.auditFor" /> <s:date name="#audit.effectiveDate" format="MMM yyyy" /></nobr></td>
-															<td style="font-size:10px"><nobr><s:property value="#cao.operator.name" /></nobr></td>
-															<td style="font-size:10px"><nobr><s:date name="#cao.audit.expiresDate" format="M/d/yy"/></nobr></td>
-														</tr>
-													</s:iterator>
-												</s:if>
-											</table>
+											<s:if test="!permissions.operatorCorporate || permissions.insuranceOperatorID == operator.id">
+													<s:property value="certificatesMap.get(#stat).get(#cert)" />
+											</s:if>
 										</td>
 									</s:if>
 								</tr>
@@ -135,6 +154,7 @@
 						</tbody>
 					</table>
 				</s:if>
+				<br />
 			</s:iterator>
 			<div>
 				<input type="button" class="picsbutton positive" value="Add File" onclick="showCertUpload(<s:property value="id" />, 0)" title="Opens in new window (please disable your popup blocker)"/>
