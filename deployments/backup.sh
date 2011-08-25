@@ -110,15 +110,17 @@ load_config () {
 }
 
 download () {
-	echo "downloading $1.gz..."
-	download_file=${backup_dir}$l.gz
+	file=$1
+	echo "downloading $file.gz..."
+	download_file=${backup_dir}${file}.gz
+	echo "download_file = $download_file"
 	/usr/bin/scp tallred@db1.picsauditing.com:$download_file $download_file
 
-	echo "copying $1.gz to tmp..."
-	/bin/cp -f $download_file /tmp/$1.gz
+	echo "copying $file.gz to tmp..."
+	/bin/cp -f $download_file /tmp/$file.gz
 	
-	echo "unzipping $1.gz"
-	/bin/gunzip /tmp/$1.gz
+	echo "unzipping $file.gz"
+	/bin/gunzip /tmp/$file.gz
 }
 
 drop_tables () {
