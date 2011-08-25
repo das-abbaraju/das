@@ -479,6 +479,7 @@ table.report tr.hurdle td {
 					<span class="locality"><s:property value="contractor.city" /></span>,
 					<span class="region"><s:property value="contractor.state.isoCode" /></span>
 					<span class="postal-code"><s:property value="contractor.zip" /></span> <br />
+					<span class="region"><s:property value="contractor.country.name" /></span>
 				</p>
 				<div class="telecommunications">
 					<p class="tel"><s:text name="ContractorView.MainPhone" />: <span class="value"><s:property value="contractor.phone" /></span></p>
