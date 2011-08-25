@@ -20,6 +20,7 @@ import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
@@ -406,5 +407,10 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		return false;
+	}
+	
+	public String bumpContractors() throws Exception {
+		operatorDao.incrementContractors(operator.getId());
+		return redirect("ManageFlagCriteriaOperator.action?id=" + operator.getId());
 	}
 }

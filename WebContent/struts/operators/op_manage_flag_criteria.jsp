@@ -182,6 +182,11 @@ var accountID = '<s:property value="account.id" />';
 	</table>
 </s:form>
 </div>
-
+<s:if test="criteriaList.size() > 0">
+	<s:form id="bump_contractors">
+		<s:hidden name="operator" />
+		<s:submit style="float: left;" method="bumpContractors" key="ManageFlagCriteriaOperator.button.BumpContractors" cssClass="picsbutton" />
+	</s:form>
+</s:if>
 </body>
 </html>

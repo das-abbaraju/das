@@ -240,4 +240,12 @@ public class OperatorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public void incrementContractors(int id) {
+		Query q = em.createNativeQuery("UPDATE contractor_info " +
+										"SET    needsRecalculation = IF(needsRecalculation + 1 < 127, needsRecalculation + 1, 127) " +
+										"WHERE  id IN (SELECT gc.subID " +
+										              "FROM   generalcontractors gc JOIN accounts a ON a.id = gc.subID " +
+										              "WHERE  gc.genID = " + id + " AND a.status = 'Active')");
+		q.executeUpdate();
+	}
 }
