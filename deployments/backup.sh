@@ -179,6 +179,9 @@ load_config_to_live () {
 	echo "Importing config tables to live"
 	/usr/bin/mysql $db_live < $dumpfile
 	
+	echo "clear cache"
+	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = 'true' WHERE property = 'clear_cache'"
+	
 	echo "Rezip the config data"
 	/bin/gzip -f $dumpfile
 }
