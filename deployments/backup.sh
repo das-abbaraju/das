@@ -25,6 +25,8 @@ GREP=$(which grep)
 get_config_tables ()
 {
 	cfg_file=${backup_dir}deployments/config_tables.txt
+	ign_tbls=""
+	cfg_tbls=""
 	dos2unix $cfg_file
 	exec<$cfg_file
 	while read line
