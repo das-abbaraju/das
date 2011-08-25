@@ -63,9 +63,10 @@ dump_database () {
 
 backup_config () {
 	dump_database $db_config 1
+	/bin/mv ${backup_dir}${pics_config_sql} ${backup_dir}config/
 	
-	echo "Compressing ${backup_dir}${pics_config_sql}"
-	/bin/gzip -f ${backup_dir}${pics_config_sql}
+	echo "Compressing ${backup_dir}config/${pics_config_sql}"
+	/bin/gzip -f ${backup_dir}config/${pics_config_sql}
 }
 
 backup_live () {
