@@ -22,6 +22,28 @@ $(function(){
 		return false;
 	});
 
+	$('#auditViewArea').delegate(
+			'input.resetAnswer',
+			'click',
+			function(e) {
+				var me = $(this).parents('div.question:first');
+				me.block({
+					message : 'Clearing answer...'
+				}).load('AuditDataSaveAjax.action',
+						$('form.qform', me).serializeArray().map(function(t) {
+							if (t.name == 'auditData.answer') {
+								t.value = '';
+							}
+							return t;
+						}), function(response, status) {
+							if (status == 'success') {
+								me.trigger('updateDependent');
+								me.unblock();
+							}
+						});
+				return false;
+			});
+
 	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
 		var me = $(this).parents('div.question:first');
 		var pars = $('form.qform', me).serializeArray()
