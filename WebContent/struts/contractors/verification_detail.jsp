@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<s:if test="pqfQuestions.size == 0 && oshasUS.size == 0 && emrs.size == 0">
+<s:if test="verificationAudits.size == 0">
 	<div class="alert">No Audits found to verify</div>
 </s:if>
 <s:else>
 	<s:form id="verify">
 		<table class="summary">
-			<s:if test="pqfQuestions.size() > 0 ">
+			<s:if test="pqfQuestions.size > 0">
 				<s:iterator value="pqfQuestions.values">
 					<thead>
 						<tr>
@@ -27,16 +27,23 @@
 						</s:else>
 					</tr>
 				</s:iterator>
-				<s:iterator value="verificationAudits">
-					<s:if test="auditType.Pqf && (hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted'))">
-						<tr>
-							<td class="center" colspan="2">
-								<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.name"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
-							</td>
-						</tr>	
-					</s:if>
-				</s:iterator>
 			</s:if>
+			<s:iterator value="verificationAudits">
+				<s:if test="auditType.Pqf && (hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted'))">
+					<s:if test="pqfQuestions.size == 0">
+						<thead>
+							<tr>
+								<th class="center" colspan="2">PQF</th>
+							</tr>
+						</thead>
+					</s:if>
+					<tr>
+						<td class="center" colspan="2">
+							<input type="button" id="verifyaudit" value="Verify <s:property value="auditType.name"/>" onclick="showAudit(<s:property value="id"/>); return false;"/>
+						</td>
+					</tr>	
+				</s:if>
+			</s:iterator>
 		</table>
 			
 		<br/>

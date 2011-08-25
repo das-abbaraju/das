@@ -28,67 +28,69 @@
 	</div>
 </s:if>
 <s:if test="conAudit.auditType.pqf">
-	<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
-	<h2 class="formLegend">PQF Questions</h2>
-	<s:iterator value="pqfQuestions">
-		<ol>
-			<li><s:property value="question.category.name"/><br />
-				<s:property value="question.expandedNumber"/>
-				<s:property value="question.name"/></li>
-		 
-			<s:if test="question.questionType != 'File'">
-				<li><label>Answer:</label>			
-				<s:textfield id="answer_%{question.id}" name="answer"/></li>
-			</s:if>
-			<s:else>
-				<li><label>File:</label> 
-				<s:if test="answer.length() > 0">
-						<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">View File</a>
-						<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"	target="_BLANK">Change File</a>
+	<s:if test="">
+		<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
+			<h2 class="formLegend">PQF Questions</h2>
+			<s:iterator value="pqfQuestions">
+				<ol>
+					<li><s:property value="question.category.name"/><br />
+						<s:property value="question.expandedNumber"/>
+						<s:property value="question.name"/></li>
+				 
+					<s:if test="question.questionType != 'File'">
+						<li><label>Answer:</label>			
+						<s:textfield id="answer_%{question.id}" name="answer"/></li>
 					</s:if>
 					<s:else>
-						None. <a
-							href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"
-							target="_BLANK">Upload New Files</a>
+						<li><label>File:</label> 
+						<s:if test="answer.length() > 0">
+								<a href="DownloadAuditData.action?auditID=<s:property value="audit.id"/>&auditData.question.id=<s:property value="question.id"/>" target="_BLANK">View File</a>
+								<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"	target="_BLANK">Change File</a>
+							</s:if>
+							<s:else>
+								None. <a
+									href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=33&mode=Edit"
+									target="_BLANK">Upload New Files</a>
+							</s:else>
+						</li>
 					</s:else>
-				</li>
-			</s:else>
-			<s:if test="verified == false">
-				<s:set name="verifyText" value="'Verify'"/>
-			</s:if>
-			<s:else>
-				<s:set name="verifyText" value="'Unverify'"/>
-			</s:else>
-
-			<li>
-				<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>, <s:property value="question.category.id" />);"	value="<s:property value="#attr.verifyText"/>"/>
-				<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div>
-			</li>
-			<s:if test="verified">
-				<s:set name="displayVerified" value="'block'"/>
-			</s:if>
-			<s:else>
-				<s:set name="displayVerified" value="'none'"/>
-			</s:else>
-			<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
-				format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div>
-			</li>
-			<li>
-				<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
-			</li>
-			<s:if test="question.questionType == 'License'">
-				<li>
-					<s:property value="@com.picsauditing.util.Constants@displayStateLink(question.question, answer)" escape="false" />
-				</li>
-			</s:if>
-			<li>
-				<hr>
-			</li>
-		</ol>
-		<s:div id="qid_%{question.id}">
-		</s:div>
-	</s:iterator>
-	</fieldset>
+					<s:if test="verified == false">
+						<s:set name="verifyText" value="'Verify'"/>
+					</s:if>
+					<s:else>
+						<s:set name="verifyText" value="'Unverify'"/>
+					</s:else>
+		
+					<li>
+						<input id="verify_<s:property value="question.id"/>" type="submit" onclick="return toggleVerify(<s:property value="conAudit.id"/>, <s:property value="question.id"/>, <s:property value="id"/>, <s:property value="question.category.id" />);"	value="<s:property value="#attr.verifyText"/>"/>
+						<s:div cssStyle="display : inline;" id="status_%{question.id}"></s:div>
+					</li>
+					<s:if test="verified">
+						<s:set name="displayVerified" value="'block'"/>
+					</s:if>
+					<s:else>
+						<s:set name="displayVerified" value="'none'"/>
+					</s:else>
+					<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;"><label>Verified:</label><s:div cssStyle="display:inline;" id="verify_details_%{question.id}"><s:date name="dateVerified"
+						format="MM/dd/yyyy" /> by <s:property value="auditor.name"/></s:div>
+					</li>
+					<li>
+						<label>Comment:</label> <s:textfield onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" id="comment_%{question.id}" name="comment" />
+					</li>
+					<s:if test="question.questionType == 'License'">
+						<li>
+							<s:property value="@com.picsauditing.util.Constants@displayStateLink(question.question, answer)" escape="false" />
+						</li>
+					</s:if>
+					<li>
+						<hr>
+					</li>
+				</ol>
+				<s:div id="qid_%{question.id}">
+				</s:div>
+			</s:iterator>
+		</fieldset>
+	</s:if>
 </s:if>
 
 <s:else>

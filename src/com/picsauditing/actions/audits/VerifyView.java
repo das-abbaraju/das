@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -34,7 +35,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
-
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
@@ -55,13 +55,10 @@ public class VerifyView extends ContractorActionSupport {
 		noteCategory = NoteCategory.Audits;
 	}
 
+	@RequiredPermission(value=OpPerms.AuditVerification)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		permissions.tryPermission(OpPerms.AuditVerification);
 		this.findContractor();
-		subHeading = getText(String.format("%s.title", getScope()));
+		subHeading = getText("VerifyView.title");
 
 		boolean needsOsha = false;
 		boolean needsEmr = false;
