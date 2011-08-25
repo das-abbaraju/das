@@ -64,13 +64,16 @@ public enum Subscription {
 			"Bid Only Contractor Accounts",
 			"This email includes a list of Bid Only contractor accounts who have recently registered at PICS with your account and are awaiting Approval. You can choose to receive this daily, weekly or monthly.",
 			OpPerms.ViewTrialAccounts, true, false, false),
-	ContractorInvoices("Contractor Invoices", "This email notifies the contractor about the PICS Invoices.", false,
-			true, false),
+	ContractorInvoices("Contractor Invoices", "This email notifies the contractor about the PICS Invoices.",
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
+			false),
 	InsuranceExpiration("Insurance Expiration",
-			"This email notifies the contractor when the insurance certificate has expired in PICS.", false, true,
+			"This email notifies the contractor when the insurance certificate has expired in PICS.",
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
 			false),
 	AuditOpenRequirements("Audit Open Requirements",
-			"This email notifies the contractors with the Audit Open Requirements.", false, true, false),
+			"This email notifies the contractors with the Audit Open Requirements.", new SubscriptionTimePeriod[] {
+					SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true, false),
 	FinishPICSProcess("Contractor Completes the PICS process",
 			"This email notifies the contractor when they have completed the PICS process.",
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
@@ -276,7 +279,7 @@ public enum Subscription {
 	public SelectSQL getNonSubscribedUsersQuery() {
 		return null;
 	}
-	
+
 	public SubscriptionTimePeriod getDefaultTimePeriod() {
 		return defaultTimePeriod;
 	}

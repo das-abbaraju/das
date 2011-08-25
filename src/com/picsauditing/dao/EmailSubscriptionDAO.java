@@ -49,13 +49,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<User> findUsersBySubscription(Subscription subscription) {
-		Query query = em.createQuery("SELECT es.user FROM EmailSubscription es WHERE es.subscription = :sub");
-		query.setParameter("sub", subscription);
-
-		return query.getResultList();
-	}
-
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
 		Query query = em
 				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.status = 'Active' AND user.isActive = 'Yes'");
@@ -102,7 +95,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql.toString(), EmailSubscription.class);
 		query.setParameter("now", new Date(), TemporalType.TIMESTAMP);
 		query.setMaxResults(limit);
-		query.setParameter("none", SubscriptionTimePeriod.None);
 
 		return query.getResultList();
 	}

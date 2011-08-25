@@ -54,10 +54,32 @@ public class MailCron extends PicsActionSupport {
 				// TODO: Had to do this because the old Subscription builder in the same package
 				com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
 						.getBuilder(emailSubscription.getSubscription());
-				builder.process(emailSubscription);
+				if (builder != null) {
+					builder.process(emailSubscription);
 
-				emailSubscription.setLastSent(new Date());
-				subscriptionDAO.save(emailSubscription);
+					emailSubscription.setLastSent(new Date());
+					subscriptionDAO.save(emailSubscription);
+				} else {
+					/**
+					 * This is if a contractor has an invalid subscription. Notify errors and continue.
+					 */
+					try {
+						EmailQueue email = new EmailQueue();
+						email.setToAddresses("errors@picsauditing.com");
+						email.setFromAddress("PICS Mailer<info@picsauditing.com>");
+						email.setSubject("Error in MailCron for userID = " + emailSubscription.getUser().getId());
+						email.setBody("User " + emailSubscription.getUser().getId() + " is subscribed to "
+								+ emailSubscription.getSubscription() + " on a " + emailSubscription.getTimePeriod()
+								+ " time period. There is no mapping for this Subscription "
+								+ "in the SubscriptionFactory.");
+						email.setCreationDate(new Date());
+						emailSenderSpring.send(email);
+					} catch (Exception notMuchWeCanDoButLogIt) {
+						System.out.println("Error sending email");
+						System.out.println(notMuchWeCanDoButLogIt);
+						notMuchWeCanDoButLogIt.printStackTrace();
+					}
+				}
 			}
 
 			// DO ALL OPT-OUT SUBSCRIPTIONS (everyone that hasn't opted in or selected none)

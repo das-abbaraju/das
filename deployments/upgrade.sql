@@ -13,4 +13,7 @@ insert into app_properties (property, value)
 	values ('subscription.limit', '5');
 insert into app_properties (property, value)
 	values ('subscription.enable', 'true');
+update email_subscription s set s.timePeriod = 'Event' 
+where s.timePeriod not in ('Event','None') 
+ and s.subscription in ('ContractorInvoices','InsuranceExpiration','AuditOpenRequirements','FinishPICSProcess','PICSSystemNotifications','ContractorFinished','ContractorDeactivation');
 --
