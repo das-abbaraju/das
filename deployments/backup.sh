@@ -166,7 +166,7 @@ release_config_to_live () {
 	/usr/bin/scp $dumpfile.gz tallred@db1.picsauditing.com:$dumpfile.gz
 	
 	echo "uncompressing config tables dumpfile on db1"
-	/usr/bin/ssh tallred@db1.picsauditing.com ${backup_dir}deployments/backup.sh load_config_to_live
+	/usr/bin/ssh tallred@db1.picsauditing.com "sh ${backup_dir}deployments/backup.sh load_config_to_live"
 
 	echo "Cleaning up dump files"
 	/bin/rm $dumpfile.gz
