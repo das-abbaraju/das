@@ -18,7 +18,6 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
