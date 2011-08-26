@@ -7,7 +7,6 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -74,14 +73,14 @@ public class EmailQueueDAO extends PicsDAO {
 		permWhere = "(createdBy.id = " + permissions.getUserId() + " AND viewableBy.id = " + Account.PRIVATE + ")";
 		// Show the note available to all users
 		permWhere += " OR (viewableBy.id = " + Account.EVERYONE + ")";
-		
+
 		// Show intra-company notes users
 		if (permissions.isOperatorCorporate())
 			permWhere += " OR (viewableBy.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
 		else
 			permWhere += " OR (viewableBy IS NULL) OR (viewableBy.id > 2)";
-		permWhere += ")";		
-		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id AND (" + permWhere + ") " + " ORDER BY sentDate DESC");
+		Query query = em.createQuery("FROM EmailQueue WHERE contractorAccount.id = :id AND (" + permWhere
+				+ ") ORDER BY sentDate DESC");
 		query.setMaxResults(25);
 		query.setParameter("id", id);
 		return query.getResultList();
@@ -99,14 +98,14 @@ public class EmailQueueDAO extends PicsDAO {
 	}
 
 	public long findNumberOfEmailsWithStatus(String status) {
-		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'";
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '" + status + "'";
 		Query query = em.createQuery(hql);
 
 		return (Long) query.getSingleResult();
 	}
 
 	public long findNumberOfEmailsWithStatusBeforeTime(String status, int creationTimeInMinutes) {
-		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'"
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '" + status + "'"
 				+ "AND t.creationDate < :creationTime";
 		Query query = em.createQuery(hql);
 
@@ -116,9 +115,9 @@ public class EmailQueueDAO extends PicsDAO {
 
 		return (Long) query.getSingleResult();
 	}
-	
+
 	public long findNumberOfEmailsWithStatusInTime(String status, int creationTimeInMinutes) {
-		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '"+status+"'"
+		String hql = "SELECT COUNT(*) FROM EmailQueue t WHERE t.status = '" + status + "'"
 				+ "AND t.creationDate >= :creationTime";
 		Query query = em.createQuery(hql);
 
