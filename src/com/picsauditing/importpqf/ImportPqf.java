@@ -176,6 +176,10 @@ public abstract class ImportPqf {
 		try {
 			inputStream = new FileInputStream(pdfFile);
 			reader = new PdfReader(inputStream);
+			if (reader.isEncrypted()) {
+				log.append("Unabled to process. File is encrypted.");
+				return lines;
+			}
 			PdfReaderContentParser parser = new PdfReaderContentParser(reader);
 			for (int page = 1; page <= reader.getNumberOfPages(); page++) {
 				sb.append(
@@ -188,6 +192,8 @@ public abstract class ImportPqf {
 					lines.add(line);
 			}
 		} catch (Exception x) {
+			log.append(x);
+		} catch (Error x) {
 			log.append(x);
 		} finally {
 			try {
