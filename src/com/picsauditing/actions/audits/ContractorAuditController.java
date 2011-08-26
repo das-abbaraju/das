@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -65,6 +66,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Import PQF
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private AuditDataDAO auditDataDAO;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -460,4 +463,14 @@ public class ContractorAuditController extends AuditActionSupport {
 	public String getIP(){
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
+	
+	public boolean hasChanged(int qID) {
+		AuditData ad = auditDataDAO.findAnswerByAuditQuestion(auditID, qID);
+		if (conAudit.getUpdateDate().after(ad.getUpdateDate())){
+			addActionMessage("This document has changed since you have last signed it.  Your signature is needed again.");
+			return true;
+		}
+		return false;
+	}
+	
 }

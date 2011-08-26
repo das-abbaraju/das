@@ -54,7 +54,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
-			"License", "Money", "Number" };
+			"License", "Money", "Number","ESignature" };
 
 	private int number;
 	private int scoreWeight;

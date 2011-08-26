@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 $(function() {
-	$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
+	$('.cluetip').cluetip({
 		arrows: true,
 		cluetipClass: 'jtip',
 		local: true,
@@ -15,21 +15,8 @@ $(function() {
 		showTitle: false,
 		closeText: "<img src='images/cross.png' width='16' height='16'>"
 	});
-	$("[name='qTranslations']").cluetip({
-		sticky : true,
-		hoverClass : 'cluetip',
-		mouseOutClose : true,
-		clickThrough : true,
-		ajaxCache : true,
-		closeText : "<img src='images/cross.png' width='16' height='16'>",
-		hoverIntent : {
-			interval : 300
-		},
-		arrows : true,
-		dropShadow : false,
-		cluetipClass : 'jtip',
-	});	
 });
+
 </script>
 
 <s:set name="questionStillRequired" value="false" />
@@ -70,11 +57,6 @@ $(function() {
 		</s:if>
 	</span>
 	<s:property value="#q.name.toString()" escape="false"/>
-	<s:if test="permissions.admin">
-		<a name="qTranslations" class="cluetip" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
-			<img src="images/preview.gif">
-		</a>
-	</s:if>
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
 </span>
@@ -201,6 +183,24 @@ $(function() {
 		</s:if>
 		<s:if test="#q.questionType == 'Calculation'">
 			<s:property value="#a.answer"/>
+		</s:if>
+		<s:if test="#q.questionType == 'ESignature'">
+			<div id="signature_<s:property value="%{#q.id}"/>">
+				<s:if test="#a == null || #this.hasChanged(#q.id)"> 
+				<div id="editSig_<s:property value="%{#q.id}"/>">
+					Please enter your full name
+					<br />
+					<s:textfield name="auditData.answer" value=""/>
+					<s:hidden name="auditData.comment" value="%{#this.IP}"/>
+					<br />
+				</div>
+				</s:if>
+				<s:else>
+					<div id="showSig_<s:property value="%{#q.id}"/>">
+						<s:property value="%{#a.answer}"/> (<s:property value="%{#a.updateDate}"/>)
+					</div>
+				</s:else>
+			</div>
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">
