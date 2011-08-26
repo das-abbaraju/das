@@ -18,6 +18,7 @@ import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -55,7 +56,7 @@ public class VerifyView extends ContractorActionSupport {
 		noteCategory = NoteCategory.Audits;
 	}
 
-	@RequiredPermission(value=OpPerms.AuditVerification)
+	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String execute() throws Exception {
 		this.findContractor();
 		subHeading = getText("VerifyView.title");
@@ -356,5 +357,24 @@ public class VerifyView extends ContractorActionSupport {
 
 	public void setPreviewEmail(EmailQueue previewEmail) {
 		this.previewEmail = previewEmail;
+	}
+
+	public boolean isHasVerifiableAudits() {
+		// check if PQFQuestions/OSHA/EMR data is empty
+		boolean hasUpload = false;
+		for (ContractorAudit audit : getVerificationAudits()) {
+			if (audit.getAuditType().isPqf()) {
+				for (AuditData data : audit.getData()) {
+					if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF)
+						hasUpload = true;
+				}
+
+				break;
+			}
+		}
+
+		// If Contractors don't need to upload their safety manual but the PQF still needs to be verified, show the
+		// verify button.
+		return hasUpload ? !(pqfQuestions.isEmpty() && oshasUS.isEmpty() && emrs.isEmpty()) : !hasUpload;
 	}
 }

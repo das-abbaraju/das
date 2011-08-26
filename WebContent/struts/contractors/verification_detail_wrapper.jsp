@@ -327,11 +327,16 @@ $(function(){
 <div id="verification_detail" style="line-height: 15px;">
 <s:include value="verification_detail.jsp" />
 </div><br />
-
-<table style="width: 100%;"><tbody><tr>
-<td><div id="chartEmrTrir" align="center"></div></td>
-<td><div id="chartManHours" align="center"></div></td>
-</tr></tbody></table>
+<s:if test="oshasUS.size > 0 || emrs.size > 0">
+	<table style="width: 100%;">
+		<tbody>
+			<tr>
+				<td><div id="chartEmrTrir" align="center"></div></td>
+				<td><div id="chartManHours" align="center"></div></td>
+			</tr>
+		</tbody>
+	</table>
+</s:if>
 
 <div id="approve_flags"></div>
 <div id="verification_audit"></div>

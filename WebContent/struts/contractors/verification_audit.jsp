@@ -28,7 +28,7 @@
 	</div>
 </s:if>
 <s:if test="conAudit.auditType.pqf">
-	<s:if test="">
+	<s:if test="pqfQuestions.size > 0">
 		<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
 			<h2 class="formLegend">PQF Questions</h2>
 			<s:iterator value="pqfQuestions">
