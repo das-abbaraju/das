@@ -11,7 +11,7 @@
 <h1><s:property value="reportName"/></h1>
 <s:text name="OperatorFlagMatrix.messageText" />
 <br />
-<a class="excel" href="OperatorFlagMatrixCSV.action" target="_BLANK"><s:text name="OperatorFlagMatrix.label.DownloadReport" /></a>
+<a class="excel" href="OperatorFlagMatrixCSV.action?flagColor=<s:property value="flagColor"/>&category=<s:property value="category"/>" target="_BLANK"><s:text name="OperatorFlagMatrix.label.DownloadReport" /></a>
 <table class="report">
 	<thead>
 		<tr>
