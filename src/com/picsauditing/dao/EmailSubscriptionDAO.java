@@ -1,6 +1,5 @@
 package com.picsauditing.dao;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +9,6 @@ import javax.persistence.TemporalType;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.search.SelectSQL;
@@ -98,23 +96,4 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 		return query.getResultList();
 	}
-
-	public List<EmailSubscription> findOptOutSubscriptionsToSend(Subscription subscription, int limit) {
-		Query query = em.createNativeQuery(subscription.getNonSubscribedUsersQuery().toString(), User.class);
-		query.setMaxResults(limit);
-		List<User> users = query.getResultList();
-
-		List<EmailSubscription> subs = new ArrayList<EmailSubscription>();
-		for (User u : users) {
-			EmailSubscription sub = new EmailSubscription();
-			sub.setAuditColumns(new User(User.SYSTEM));
-			sub.setSubscription(subscription);
-			sub.setUser(u);
-			sub.setTimePeriod(subscription.getDefaultTimePeriod());
-			subs.add(sub);
-		}
-
-		return subs;
-	}
-
 }

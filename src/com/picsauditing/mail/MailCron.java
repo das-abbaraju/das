@@ -82,22 +82,6 @@ public class MailCron extends PicsActionSupport {
 				}
 			}
 
-			// DO ALL OPT-OUT SUBSCRIPTIONS (everyone that hasn't opted in or selected none)
-			for (Subscription sub : Subscription.values()) {
-				if (sub.getNonSubscribedUsersQuery() != null) {
-					subs = subscriptionDAO.findOptOutSubscriptionsToSend(sub, limit);
-
-					for (EmailSubscription emailSubscription : subs) {
-						com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
-								.getBuilder(sub);
-						builder.process(emailSubscription);
-
-						emailSubscription.setLastSent(new Date());
-						subscriptionDAO.save(emailSubscription);
-					}
-				}
-			}
-
 			/**
 			 * Do normal mail NOTE: This is a copy of the else block using new spring loaded Email Sender.
 			 */

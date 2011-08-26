@@ -72,3 +72,12 @@ join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROU
 SET p.childCountTotal = c.total;
 
 DELETE from contractor_audit_operator where visible = 0 and status = 'Pending';
+
+-- Opt Out Subscription Inserts
+-- OQChanges
+insert into email_subscription (id,userID,subscription,timePeriod,lastSent,permission,createdBy,updatedBy,creationDate,updateDate)
+select distinct null,u.id,'OQChanges','Monthly',null,null,1,1,now(),now() from users u
+join useraccess ua on ua.userID = u.id
+join accounts a on u.accountID = a.id
+left join email_subscription s on u.id = s.userID and s.subscription = 'OQChanges'
+where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.requiresOQ = 1 and a.type = 'Contractor' and ua.accessType in ('ContractorAdmin','ContractorSafety');
