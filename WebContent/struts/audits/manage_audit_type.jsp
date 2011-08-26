@@ -87,7 +87,7 @@ function showRules() {
 					</pics:fieldhelp>
 				</li>
 				<li>
-					<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>" target="_BLANK">Manage Translations</a>
+					<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditType.<s:property value="auditType.id"/>." target="_BLANK">Manage Translations</a>
 				</li>
 				<li><label>Class:</label>
 					<s:select list="classList" name="auditType.classType" />
