@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 
@@ -21,43 +23,54 @@ public class IGVerification extends ContractorActionSupport {
 	@Autowired
 	protected EmailTemplateDAO templateDAO;
 
-	protected EmailTemplate template;
+	protected String body;
+	protected String subject;
 	protected EmailQueue previewEmail;
-
 	protected List<ContractorAuditOperator> caoList;
 
 	@Override
+	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		permissions.tryPermission(OpPerms.AuditVerification);
-		this.findContractor();
 		this.subHeading = "Insurance Verification";
-
-		String subject = null;
-		String body = null;
-		if (previewEmail != null) {
-			subject = previewEmail.getSubject();
-			body = previewEmail.getBody();
-		}
-
 		buildPreviewEmail();
 
-		if ("Send Email".equals(button)) {
-			previewEmail.setBody(body);
-			previewEmail.setSubject(subject);
-			previewEmail.setPriority(50);
+		return SUCCESS;
+	}
 
-			try {
-				EmailSender.send(previewEmail);
-				addActionMessage("Successfully sent email to " + previewEmail.getToAddresses());
-			} catch (Exception e) {
-				addActionError("Could not send email to " + previewEmail.getToAddresses());
-			}
+	public String sendEmail() throws Exception {
+		buildPreviewEmail();
+
+		previewEmail.setBody(body);
+		previewEmail.setSubject(subject);
+		previewEmail.setPriority(50);
+
+		try {
+			EmailSender.send(previewEmail);
+			addActionMessage("Successfully sent email to " + previewEmail.getToAddresses() + " and stamped notes");
+
+			String note = "Insurance Verification email sent to " + previewEmail.getToAddresses();
+			addNote(contractor, note, NoteCategory.Insurance);
+		} catch (Exception e) {
+			addActionError("Could not send email to " + previewEmail.getToAddresses());
 		}
 
 		return SUCCESS;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	public EmailQueue getPreviewEmail() {
@@ -73,8 +86,11 @@ public class IGVerification extends ContractorActionSupport {
 	}
 
 	public void buildPreviewEmail() throws Exception {
+		if (contractor == null)
+			findContractor();
+
 		EmailBuilder emailBuilder = new EmailBuilder();
-		template = templateDAO.find(132); // Insurance Policies rejected by PICS
+		EmailTemplate template = templateDAO.find(132); // Insurance Policies rejected by PICS
 		caoList = caoDAO.findByCaoStatus(1000, permissions, "cao.status = 'Incomplete' "
 				+ "AND cao.audit.auditType.classType = 'Policy' " + "AND cao.audit.contractorAccount.id = "
 				+ contractor.getId(), "cao.audit.contractorAccount");

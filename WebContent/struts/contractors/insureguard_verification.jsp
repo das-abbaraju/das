@@ -23,9 +23,15 @@ small {
 
 <s:if test="caoList.size > 0">
 	<s:form>
-		<div id="emailPreview"><s:include value="verification_mail.jsp" /></div>
+		<div id="emailPreview">
+			<br/>
+			<label>Subject:</label>
+			<s:textfield id="subject" name="subject" value="%{previewEmail.subject}" size="100" />
+			<br/>
+			<s:textarea id="body" name="body" value="%{previewEmail.body}" rows="15" cols="100"/>
+		</div>
 		<s:hidden name="id" />
-		<input type="submit" id="sendEmailButton" class="picsbutton positive" value="Send Email" name="button" />
+		<s:submit value="Send Email" method="sendEmail" cssClass="picsbutton positive" />
 	</s:form>
 </s:if>
 <s:else>
