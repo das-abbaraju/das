@@ -110,6 +110,10 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getId() > 0)
 			userIsGroup = user.getIsGroup();
 
+		if (!userIsGroup.isTrue() && user.getPermissions().size() == 0) {
+			addActionMessage("Please assign this user to a group or add some permissions.");
+		}
+		
 		for (UserAccess ua : user.getOwnedPermissions()) {
 			if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
 				conAdmin = true;
