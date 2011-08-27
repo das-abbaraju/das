@@ -5,7 +5,7 @@
 
 <script type="text/javascript">
 $(function() {
-	$('.cluetip').cluetip({
+	$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
 		arrows: true,
 		cluetipClass: 'jtip',
 		local: true,
@@ -44,8 +44,10 @@ $(function() {
 	<span class="printrequired"><img src="images/yellow_star.gif"></span>
 </s:if>
 
-<span class="question <s:if test="#questionStillRequired">required</s:if>">
-	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
+<h3 class="question <s:if test="#questionStillRequired">required</s:if>">
+	<span class="questionNumber">
+		<s:property value="#q.expandedNumber"/>
+		
 		<s:if test="!isStringEmpty(#q.helpText)">
 			<br />
 			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
@@ -56,10 +58,12 @@ $(function() {
 			</div>
 		</s:if>
 	</span>
-	<s:property value="#q.name.toString()" escape="false"/>
+	
+	<s:property value="#q.name" escape="false"/>
+	
 	<br />
 	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
-</span>
+</h3>
 
 <div class="answer">
 	<s:form cssClass="qform" id="qform%{#q.id}" onsubmit="return false;">
@@ -72,9 +76,6 @@ $(function() {
 		</s:else>
 		<s:hidden name="auditData.question.id" value="%{#q.id}" cssClass="get_request"/>
 		<s:hidden name="mode" cssClass="get_request"/>
-		<s:if test="mode == 'Verify'">
-			<s:property value="#a.answer"/>
-		</s:if>
 
 		<!-- Option Types -->
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
@@ -106,32 +107,32 @@ $(function() {
 
 		<!-- Check box -->
 		<s:if test="#q.questionType == 'Check Box'">
-			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\""/>
+			<s:checkbox fieldValue="X" name="auditData.answer" value="#a.answer == \"X\"" />
 		</s:if>
 		<!-- Non checkbox -->
 		<s:if test="#q.questionType == 'Text Area'">
-			<s:textarea rows="4" cols="70" name="auditData.answer" value="%{#a.answer}"></s:textarea>
+			<s:textarea name="auditData.answer" value="%{#a.answer}"></s:textarea>
 		</s:if>
 		<s:if test="#q.questionType == 'Text'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Additional Insured'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
 		</s:if>
 		<s:if test="#q.questionType == 'Date'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
 			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
 		</s:if>
 		<s:if test="#q.questionType == 'License'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" size="30"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" cssClass="text"/>
 		</s:if>
 		<s:if test="#q.questionType == 'AMBest'">
 			<s:hidden name="auditData.comment" value="%{#a.comment}"/>
-			<s:textfield id="ambest" name="auditData.answer" value="%{#a.answer}" size="30"/>
+			<s:textfield id="ambest" name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
 
 			<script type="text/javascript">
 			$(function() {
@@ -204,28 +205,44 @@ $(function() {
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">
-			<span class="verified">
+			<div class="verified">
 				Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
-			</span>
+			</div>
 		</s:if>
 		<s:if test="#a.hasRequirements">
 			<br />
 			<span class="requirement">
 				<label>Requirement:</label>
 				<s:if test="#a.requirementOpen">
-					<span class="unverified">Open</span>
+					<div class="unverified">Open</div>
 				</s:if>
 				<s:elseif test="#a.wasChangedB">
-					<span class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></span>
+					<div class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></div>
 				</s:elseif>
 			</span>
 		</s:if>
 		<s:if test="#q.showComment || mode == 'Verify'">
 			<br/>
 			<label>Comments:</label> <br/>
-			<s:textarea name="auditData.comment" value="%{#a.comment}" rows="6" cols="70" />
+			<s:textarea name="auditData.comment" value="%{#a.comment}" />
 		</s:if>
 	</s:form>
+	<s:if test="mode == 'Verify'">
+		<s:if test="#a.verified == true">
+			<s:set name="verifyText" value="'Unverify'" />
+			<s:set name="verifyDetailDisplay" value="'inline'" />
+		</s:if>
+		<s:else>
+			<s:set name="verifyText" value="'Verify'" />
+			<s:set name="verifyDetailDisplay" value="'none'" />
+		</s:else>
+	
+		<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" value="<s:property value="#attr.verifyText"/>" />
+	
+		<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
+			Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+		</div>
+	</s:if>
 </div>
 
 <s:if test="#a.hasRequirements && #a.requirementOpen">
@@ -235,22 +252,6 @@ $(function() {
 
 <s:include value="../actionMessages.jsp" />
 
-<s:if test="mode == 'Verify'">
-	<s:if test="#a.verified == true">
-		<s:set name="verifyText" value="'Unverify'" />
-		<s:set name="verifyDetailDisplay" value="'inline'" />
-	</s:if>
-	<s:else>
-		<s:set name="verifyText" value="'Verify'" />
-		<s:set name="verifyDetailDisplay" value="'none'" />
-	</s:else>
-
-	<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" value="<s:property value="#attr.verifyText"/>" />
-
-	<span id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-		Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
-	</span>
-</s:if>
 <div class="dependentFunction hide"><s:iterator value="#q.functionWatchers" status="s"><s:property value="function.question.id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
 <div class="dependentRequired hide"><s:iterator value="#q.dependentRequired" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
 <div class="dependentVisible hide"><s:iterator value="#q.getDependentVisible(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>

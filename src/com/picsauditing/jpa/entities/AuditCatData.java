@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -67,9 +70,8 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	}
 
 	/**
-	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or
-	 * more CAOs require this category. If Override==true, then the value must
-	 * be manually set
+	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or more CAOs require this category. If
+	 * Override==true, then the value must be manually set
 	 */
 	@Column(nullable = false)
 	public boolean isApplies() {
@@ -127,13 +129,28 @@ public class AuditCatData extends BaseTable implements java.io.Serializable {
 	public void setNumVerified(int numVerified) {
 		this.numVerified = numVerified;
 	}
-	
+
 	public Integer getRuleID() {
 		return ruleID;
 	}
-	
+
 	public void setRuleID(Integer ruleID) {
-		this.ruleID  = ruleID;
+		this.ruleID = ruleID;
+	}
+
+	@Transient
+	public List<AuditQuestion> getEffectiveQuestions() {
+		List<AuditQuestion> result = new ArrayList<AuditQuestion>();
+		Date effectiveDate = audit.getEffectiveDate();
+		if (effectiveDate == null)
+			effectiveDate = new Date();
+		for (AuditQuestion auditQuestion : category.getQuestions()) {
+			if (auditQuestion.isCurrent(effectiveDate)) {
+				result.add(auditQuestion);
+			}
+		}
+
+		return result;
 	}
 
 	@Transient

@@ -15,23 +15,52 @@ h4.groupTitle {
 div.question {
 	padding-bottom: 10px;
 	padding-top: 10px;
+	position: relative;
 }
 
-span.question {
-	float: left;
-	padding-left: 20px;
-	width: 100%;
+h3.question,
+h3.question-checkbox
+{
 	color: #111;
+	font-size: 14px;
 	font-weight: bold;
-	line-height: normal;
+	line-height: 20px;
+	padding-left: 20px;
+}
+
+h3.question-checkbox
+{
+	margin-left: 24px;
 }
 
 #content div.answer {
-	width: 60%;
-	/*color: #012142;*/
 	padding-left: 20px;
 	padding-right: 15px;
+}
+
+#content div.answer .radio
+{
+	list-style-type: none;
+	margin: 0px;
+}
+
+#content div.answer .radio li
+{
 	clear: both;
+	margin-bottom: 4px;
+	overflow: hidden;
+}
+
+#content div.answer .radio input
+{
+	float: left;
+}
+
+#content div.answer .radio label
+{
+	float: left;
+	line-height: 20px;
+	width: 75%;
 }
 
 #content div.subquestion {
@@ -42,9 +71,8 @@ span.question {
 	background-color: #FFFFFF;
 }
 
-span.required {
-	background: transparent url(../images/yellow_star.gif) no-repeat
-		left top;
+h3.required {
+	background: transparent url(../images/yellow_star.gif) no-repeat left top;
 	color: #272;
 	font-weight: bold;
 	zoom: 1;
@@ -78,19 +106,18 @@ input.number {
 	padding-right: 10px;
 }
 
-span.verified {
+div.verified 
+{
+	background: transparent url(../images/okCheck.gif) no-repeat left center;
 	color: #272;
 	padding-left: 20px;
-	background: transparent url(../images/okCheck.gif) no-repeat
-		left center;
 	zoom: 1;
 }
 
-span.unverified {
+div.unverified {
+	background: transparent url(../images/notOkCheck.gif) no-repeat left center;
 	color: #900;
 	padding-left: 20px;
-	background: transparent url(../images/notOkCheck.gif) no-repeat
-		left center;
 	zoom: 1;
 }
 
@@ -566,10 +593,6 @@ table.osha tfoot th {
 
 /*** END OSHA **/
 
-.audit_category {
-	padding-bottom: 20px;
-}
-
 #auditViewArea .buttons {
 	margin-top: 10px;
 }
@@ -589,14 +612,21 @@ table.osha tfoot th {
 	height:500px;
 }
 
-.audit_category h2{
+.audit_category
+{
+	clear: both;
+	overflow: hidden;
+	padding-bottom: 20px;
+}
+
+.audit_category h2 {
 	background-color: #5d9bce;
+	color: #FFFFFF;
+	font-size: 24px;
+	letter-spacing: normal;
+	line-height: 28px;
 	margin-bottom: 10px;
 	padding: 10px 0 5px 10px;
-	color: #FFFFFF;
-	letter-spacing: normal;
-	font-size: 24px;
-	line-height: 28px;
 	zoom: 1;
 }
 
@@ -604,17 +634,63 @@ table.osha tfoot th {
 	width: auto;	
 }
 
-.audit_category .audit_category{
-	padding-left: 10px;
+.audit_category .column
+{
+	float: left;
+	list-style-type: none;
+	margin: 0px;
+}
+
+.audit_category .columns-1 .column
+{
+	width: 100%;
+}
+
+.audit_category .columns-2 .column
+{
+	width: 50%;
+}
+.audit_category .columns-3 .column
+{
+	width: 33%;
+}
+
+.audit_category .columns-1 div.question
+{
 	margin-right: 6px;
 }
 
-.audit_category .audit_category h2{
+.audit_category textarea
+{
+	height: 80px;
+	width: 100%;
+}
+
+.audit_category input.text
+{
+	min-width: 160px;
+	width: 50%;
+}
+
+.audit_category input.checkbox
+{
+	left: 20px;
+	position: absolute;
+	top: 10px;
+}
+
+.audit_category .audit_category {
+	padding-left: 10px;
+}
+
+.audit_category .audit_category h2 {
 	font-size: 22px;
 	background-color: #AAAAAA;
 }
 
-.categoryNumber, .questionNumber{
+.categoryNumber, 
+.questionNumber 
+{
 	float: right;
 	padding: 0 18px 5px 15px;
 	display: block;
@@ -626,9 +702,9 @@ table.osha tfoot th {
 	color: #386788;
 }
 
-.questionNumber{
+.questionNumber {
 	color: #8E8D8B;
-	padding-right: 29px;
+	padding-right: 13px;
 }
 
 .audit_category .audit_category .categoryNumber{

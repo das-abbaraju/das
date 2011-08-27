@@ -55,6 +55,7 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	private boolean hasHelpText;
 	private String uniqueCode;
 	private float scoreWeight = 0f;
+	private int columns = 1;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
@@ -185,6 +186,15 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 
 	public void setScoreWeight(float scoreWeight) {
 		this.scoreWeight = scoreWeight;
+	}
+
+	@Transient
+	public int getColumns() {
+		return columns;
+	}
+
+	public void setColumns(int columns) {
+		this.columns = columns;
 	}
 
 	@Column(nullable = false)
