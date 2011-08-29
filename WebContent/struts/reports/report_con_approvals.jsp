@@ -2,33 +2,30 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Contractor Approval </title>
+<title><s:text name="ContractorApproval.title" /></title>
 <s:include value="reportHeader.jsp" />
 <script type="text/javascript">
-function setAllChecked(elm) {
-	$('.massCheckable').attr({checked: $(elm).is(':checked')});
-	return false;
-}
+$(function() {
+	$('#report_data').delegate('#selectAll', 'click', function() {
+		$('.massCheckable').attr('checked', $(this).is(':checked'));
+	}).delegate('#saveChanges', 'click', function(e) {
+		e.preventDefault();
+		
+		var pars = $('#approveContractorForm').serialize();
+		startThinking({div: 'messages', message: translate('JS.ContractorApproval.SavingChanges'), type: 'large'});
 
-function saveRows() {
-	var pars = $('#approveContractorForm').serialize();
-	pars += '&button=Save';
-	startThinking({div: 'messages', message: 'Saving changes', type: 'large'});
-
-	$.post('ContractorApprovalAjax.action', pars, function(text, status) {
+		$.post('ContractorApprovalAjax!save.action', pars, function(text, status) {
 			if (status=='success')
 				clickSearch('form1');
-		}
-	);
-
-	return false;
-}
-
+			}
+		);
+	});
+});
 </script>
 
 </head>
 <body>
-<h1>Contractor Approval</h1>
+<h1><s:text name="ContractorApproval.title" /></h1>
 
 <s:include value="filters.jsp" />
 

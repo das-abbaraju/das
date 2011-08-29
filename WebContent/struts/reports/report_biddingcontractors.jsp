@@ -3,11 +3,11 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Bid Only Contractor Accounts </title>
+<title><s:text name="BiddingContractorSearch.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Bid Only Contractor Accounts List</h1>
+<h1><s:text name="BiddingContractorSearch.title" /></h1>
 
 <s:include value="filters.jsp" />
 
@@ -25,10 +25,10 @@
 	<tr>
 		<td colspan="2"><s:text name="global.ContractorName" /></td>
 		<s:if test="permissions.operator">
-			<td>Waiting On</td>
+			<td><s:text name="WaitingOn" /></td>
 		</s:if>
 		<pics:permission perm="ViewTrialAccounts" type="Edit">
-			<td>Notes</td>
+			<td><s:text name="global.Notes" /></td>
 			<td></td>
 			<td></td>
 		</pics:permission>
@@ -62,10 +62,10 @@
 			</s:if>
 			<pics:permission perm="ViewTrialAccounts" type="Edit">
 				<s:form action="BiddingContractorSearch" method="POST">
-					<s:hidden value="%{get('id')}" name="conID"/>
+					<s:hidden value="%{get('id')}" name="contractor"/>
 					<td><s:textarea name="operatorNotes" cols="15" rows="4"/></td>
-					<td><input type="submit" class="picsbutton positive" name="button" value="Upgrade"/></td>
-					<td><input type="submit" class="picsbutton negative" name="button" value="Reject"/></td>
+					<td><s:submit cssClass="picsbutton positive" method="upgrade" value="%{getText('BiddingContractorSearch.button.Upgrade')}" /></td>
+					<td><s:submit cssClass="picsbutton negative" method="reject" value="%{getText('button.Reject')}" /></td>
 				</s:form>
 			</pics:permission>
 			<s:if test="showContact">

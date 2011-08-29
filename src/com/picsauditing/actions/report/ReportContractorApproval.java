@@ -2,8 +2,11 @@ package com.picsauditing.actions.report;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -18,23 +21,18 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportContractorApproval extends ReportAccount {
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	protected NoteDAO noteDAO;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	protected ContractorOperatorDAO contractorOperatorDAO;
+
 	protected List<Integer> conids = null;
 	protected String operatorNotes = "";
 	protected String workStatus = "P";
-
-	protected ContractorAccountDAO contractorAccountDAO;
-	protected NoteDAO noteDAO;
-	protected OperatorAccountDAO operatorAccountDAO;
-	protected ContractorOperatorDAO contractorOperatorDAO;
-
-	public ReportContractorApproval(ContractorAccountDAO contractorAccountDAO,
-			NoteDAO noteDAO, OperatorAccountDAO operatorAccountDAO,
-			ContractorOperatorDAO contractorOperatorDAO) {
-		this.contractorAccountDAO = contractorAccountDAO;
-		this.noteDAO = noteDAO;
-		this.operatorAccountDAO = operatorAccountDAO;
-		this.contractorOperatorDAO = contractorOperatorDAO;
-	}
 
 	@Override
 	protected void buildQuery() {
@@ -46,19 +44,12 @@ public class ReportContractorApproval extends ReportAccount {
 			if (filterOn(getFilter().getWorkStatus()))
 				where = "gc.workStatus = '" + getFilter().getWorkStatus() + "'";
 
-			sql
-					.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc "
-							+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = "
-							+ permissions.getAccountId()
-							+ ""
-							+ " AND "
-							+ where
-							+ ")");
+			sql.addWhere("a.id IN (SELECT gc.subID FROM generalcontractors gc "
+					+ "JOIN facilities f ON f.opID = gc.genID AND f.corporateID = " + permissions.getAccountId() + ""
+					+ " AND " + where + ")");
 		}
 		if (permissions.isOperator()) {
-			sql
-					.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID="
-							+ permissions.getAccountId());
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID=" + permissions.getAccountId());
 			sql.addField("gc.creationDate as dateAdded");
 			sql.addField("gc.workStatus");
 		}
@@ -78,54 +69,45 @@ public class ReportContractorApproval extends ReportAccount {
 		getFilter().setWorkStatus("P");
 	}
 
-	@Override
-	public String execute() throws Exception {
-		loadPermissions();
-		if (button != null && !"Search".equals(button)) {
-			if ("Save".equals(button)) {
-				permissions.hasPermission(OpPerms.ContractorApproval,
-						OpType.Edit);
-				if (conids != null && conids.size() > 0) {
-					for (Integer i : conids) {
-						ContractorAccount cAccount = contractorAccountDAO
-								.find(i);
-						if (permissions.isOperator()) {
-							approveContractor(cAccount, permissions
-									.getAccountId(), getWorkStatus());
-						}
+	@RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
+	public String save() {
+		OperatorAccount corporate = null;
+		if (permissions.isCorporate())
+			corporate = operatorAccountDAO.find(permissions.getAccountId());
 
-						if (permissions.isCorporate()) {
-							OperatorAccount corporate = operatorAccountDAO
-									.find(permissions.getAccountId());
-							for (Facility facility : corporate
-									.getOperatorFacilities()) {
-								approveContractor(cAccount, facility
-										.getOperator().getId(), getWorkStatus());
-							}
-						}
+		if (conids != null && conids.size() > 0) {
+			List<ContractorAccount> cAccounts = contractorAccountDAO.findWhere("a.id IN (" + Strings.implode(conids)
+					+ ")");
+			for (ContractorAccount cAccount : cAccounts) {
+				if (permissions.isOperator()) {
+					approveContractor(cAccount, permissions.getAccountId(), getWorkStatus());
+				}
 
-						cAccount.incrementRecalculation();
-						cAccount.setAuditColumns(permissions);
-						contractorAccountDAO.save(cAccount);
-
-						String summary = "Changed workStatus to "
-								+ getWorkStatusDesc(getWorkStatus()) + " for "
-								+ permissions.getAccountName();
-						Note note = new Note(cAccount, getUser(), summary);
-						if (!Strings.isEmpty(operatorNotes)) {
-							note.setBody(operatorNotes);
-						}
-						note.setNoteCategory(NoteCategory.OperatorChanges);
-						note.setCanContractorView(true);
-						note.setViewableById(permissions.getAccountId());
-						noteDAO.save(note);
+				if (permissions.isCorporate()) {
+					for (Facility facility : corporate.getOperatorFacilities()) {
+						approveContractor(cAccount, facility.getOperator().getId(), getWorkStatus());
 					}
 				}
+
+				cAccount.incrementRecalculation();
+				cAccount.setAuditColumns(permissions);
+				contractorAccountDAO.save(cAccount);
+
+				String summary = "Changed workStatus to " + getWorkStatusDesc(getWorkStatus()) + " for "
+						+ permissions.getAccountName();
+				Note note = new Note(cAccount, getUser(), summary);
+				if (!Strings.isEmpty(operatorNotes)) {
+					note.setBody(operatorNotes);
+				}
+				note.setNoteCategory(NoteCategory.OperatorChanges);
+				note.setCanContractorView(true);
+				note.setViewableById(permissions.getAccountId());
+				noteDAO.save(note);
 			}
-			operatorNotes = "";
-			return BLANK;
 		}
-		return super.execute();
+
+		operatorNotes = "";
+		return BLANK;
 	}
 
 	public List<Integer> getConids() {
@@ -152,8 +134,7 @@ public class ReportContractorApproval extends ReportAccount {
 		this.workStatus = workStatus;
 	}
 
-	public void approveContractor(ContractorAccount cAccount, int operatorID,
-			String workStatus) {
+	public void approveContractor(ContractorAccount cAccount, int operatorID, String workStatus) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus(workStatus);
