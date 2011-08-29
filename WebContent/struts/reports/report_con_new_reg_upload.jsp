@@ -9,10 +9,13 @@
 <meta http-equiv="Expires" content="0" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
-function closePage() {
-	window.opener.location.reload();
-	self.close();
-}
+$(function() {
+	$('.closeButton').live('click', function(e) {
+		e.preventDefault();
+		window.opener.location.reload();
+		self.close();
+	});
+});
 </script>
 </head>
 <body>
@@ -29,8 +32,8 @@ function closePage() {
 					<div class="question">
 						<label>File:</label>
 						<s:file name="file" value="%{file}" size="50"></s:file><br /><br />
-						<button class="picsbutton" onclick="closePage(); return false;">Close and Return to Page</button>
-						<button class="picsbutton positive" name="button" value="Save" type="submit">Upload</button>
+						<input type="button" class="picsbutton closeButton" value="Close and Return to Page" />
+						<s:submit method="save" cssClass="picsbutton positive" value="Upload" />
 					</div>
 				</div>
 			</s:form>
