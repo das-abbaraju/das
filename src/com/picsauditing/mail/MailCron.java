@@ -55,10 +55,7 @@ public class MailCron extends PicsActionSupport {
 				com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
 						.getBuilder(emailSubscription.getSubscription());
 				if (builder != null) {
-					builder.process(emailSubscription);
-
-					emailSubscription.setLastSent(new Date());
-					subscriptionDAO.save(emailSubscription);
+					builder.sendSubscription(emailSubscription);
 				} else {
 					/**
 					 * This is if a contractor has an invalid subscription. Notify errors and continue.
@@ -100,7 +97,7 @@ public class MailCron extends PicsActionSupport {
 				}
 			}
 			if (this.getActionErrors().size() == 0)
-				this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
+				this.addActionMessage("Successfully sent " + (emails.size() + subs.size()) + " email(s)");
 
 		} else {
 			/**
