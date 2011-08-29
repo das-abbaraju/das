@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.PicsActionSupport;
@@ -33,42 +34,35 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
+	@Autowired
+	protected ContractorRegistrationRequestDAO crrDAO;
+	@Autowired
+	protected StateDAO stateDAO;
+	@Autowired
+	protected CountryDAO countryDAO;
+	@Autowired
+	protected AccountDAO accountDAO;
+	@Autowired
+	protected UserDAO userDAO;
+
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
 	protected String fileName = null;
-	protected StateDAO stateDAO;
-	protected CountryDAO countryDAO;
-	protected AccountDAO accountDAO;
-	protected UserDAO userDAO;
-	protected ContractorRegistrationRequestDAO crrDAO;
 
-	public ReportNewReqConImport(StateDAO stateDAO, CountryDAO countryDAO, AccountDAO accountDAO, UserDAO userDAO,
-			ContractorRegistrationRequestDAO crrDAO) {
-		this.stateDAO = stateDAO;
-		this.countryDAO = countryDAO;
-		this.accountDAO = accountDAO;
-		this.userDAO = userDAO;
-		this.crrDAO = crrDAO;
-	}
-
-	public String execute() throws Exception {
-		if (button != null) {
-			if (button.startsWith("Save")) {
-				String extension = null;
-				if (file != null && file.length() > 0) {
-					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-					if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
-						file = null;
-						addActionError("Must be an Excel file");
-						return SUCCESS;
-					}
-
-					importData(file);
-				} else if (file == null || file.length() == 0) {
-					addActionError("No file was selected");
-				}
+	public String save() throws Exception {
+		String extension = null;
+		if (file != null && file.length() > 0) {
+			extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+			if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
+				file = null;
+				addActionError("Must be an Excel file");
+				return SUCCESS;
 			}
+
+			importData(file);
+		} else if (file == null || file.length() == 0) {
+			addActionError("No file was selected");
 		}
 
 		return SUCCESS;
@@ -142,6 +136,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					crr.setRequestedByUserOther((String) getValue(row, 12));
 					crr.setDeadline((Date) getValue(row, 13));
 					crr.setNotes((String) getValue(row, 14));
+					crr.setAuditColumns(permissions);
 
 					// Assuming that no company name = empty row
 					if (crr.getName() == null)
@@ -152,13 +147,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 					if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
 							|| crr.getRequestedBy() == null)
-						addActionError("Missing required fields in row " + j);
+						addActionError("Missing required fields in row " + (j + 1));
 
 					if (Strings.isEmpty(crr.getEmail()))
-						addActionError("Contact information is required. Missing email in row " + j);
+						addActionError("Contact information is required. Missing email in row " + (j + 1));
 
 					if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
-						addActionError("Missing requested by user field in row " + j);
+						addActionError("Missing requested by user field in row " + (j + 1));
 
 					if (crr.getDeadline() == null)
 						crr.setDeadline(DateBean.addMonths(new Date(), 2));
