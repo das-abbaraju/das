@@ -203,6 +203,12 @@ public class AuditBuilder {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				previousCaoMap.put(caop.getOperator(), cao);
 			}
+
+			if (!caoShouldBeVisible && cao.getCaoPermissions().size() > 0) {
+				// need to remove invisible caos because fillAuditOperatorPermissions only works on visible caos
+				fillAuditOperatorPermissions(cao, new HashSet<OperatorAccount>());
+				cao.getCaoPermissions().clear();
+			}
 		}
 
 		// Add CAOs that don't yet exist
@@ -399,8 +405,6 @@ public class AuditBuilder {
 		// Removed this because of PICS-2596
 		// if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
 		// caopOperators.clear();
-		if (!cao.isVisible())
-			caopOperators.clear();
 
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
