@@ -258,8 +258,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 				importPqf = new ImportPqfCanQual();	
 			else if (data.getAnswer().equals("518")) // ISN Canada
 				importPqf = new ImportPqfIsn();	
-//			else if (data.getAnswer().equals("515")) // ComplyWorks
-//				importPqf = new ImportPqfComplyWorks();				
+			else if (data.getAnswer().equals("515")) // ComplyWorks
+				importPqf = new ImportPqfComplyWorks();				
 		}
 		
 		return importPqf;
