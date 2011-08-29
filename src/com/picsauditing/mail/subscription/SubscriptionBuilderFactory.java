@@ -6,6 +6,8 @@ import com.picsauditing.mail.Subscription;
 
 public class SubscriptionBuilderFactory {
 	@Autowired
+	ContractorAddedSubscription contractorAdded;
+	@Autowired
 	ContractorRegistrationSubscription contractorRegistration;
 	@Autowired
 	FlagChangesSubscription flagChanges;
@@ -31,6 +33,8 @@ public class SubscriptionBuilderFactory {
 	 */
 	public SubscriptionBuilder getBuilder(Subscription subscription) {
 		switch (subscription) {
+		case ContractorAdded:
+			return contractorAdded;
 		case ContractorRegistration:
 			return contractorRegistration;
 		case ForcedFlags:
