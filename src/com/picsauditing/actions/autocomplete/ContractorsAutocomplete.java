@@ -26,8 +26,14 @@ public final class ContractorsAutocomplete extends AutocompleteActionSupport<Con
 					return dao.findWhere("a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
 			}
 		} else if (itemKeys.length > 0) {
-			return dao.findWhere("a.id IN (" + Strings.implodeForDB(itemKeys,",") + ")");
+			return dao.findWhere("a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")");
 		}
 		return Collections.emptyList();
+	}
+
+	@Override
+	public StringBuilder formatAutocomplete(ContractorAccount item) {
+		StringBuilder sb = new StringBuilder();
+		return sb.append(item.getId()).append("|").append(item.getName()).append("|").append(item.getName());
 	}
 }
