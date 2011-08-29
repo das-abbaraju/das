@@ -56,7 +56,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.search.Database;
@@ -89,6 +89,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
 	private EmailQueueDAO emailQueueDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private ContractorRegistrationRequest newContractor = new ContractorRegistrationRequest();
 	protected boolean redirect = false;
@@ -193,7 +195,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				if ("C".equalsIgnoreCase(type))
 					query.append("SELECT a.id, a.name FROM accounts a WHERE a.id IN (");
 				else if ("U".equalsIgnoreCase(type))
-					query.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
+					query
+							.append("SELECT a.id, a.name FROM accounts a JOIN users u ON a.id = u.accountID WHERE a.id IN(");
 				for (BasicDynaBean bdb : matches) {
 					int id = Integer.parseInt(bdb.get("foreignKey").toString());
 					ids.add(id);
@@ -419,11 +422,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
 
 		emailBuilder.setToAddresses(newContractor.getEmail());
-		
-		if (hasEmailSubscription()){
+
+		if (hasEmailSubscription()) {
 			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
 		}
-		
+
 		emailBuilder.addToken("con", newContractor);
 		emailBuilder.addToken("op", newContractor.getRequestedBy());
 		emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
@@ -485,7 +488,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
 			emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
-			
+
 			if (hasEmailSubscription())
 				emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
 
@@ -921,7 +924,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	private void sendEmail(EmailQueue emailQueue) {
 		try {
-			EmailSender.send(emailQueue);
+			emailSender.send(emailQueue);
 		} catch (Exception e) {
 			addActionError("Could not send registration request email to " + emailQueue.getToAddresses());
 		}
@@ -959,10 +962,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 				operatorTags.add(tag);
 		}
 	}
+
 	private boolean hasEmailSubscription() {
 		if (newContractor.getRequestedByUser() == null)
 			return false;
-		EmailSubscription sub = newContractor.getRequestedByUser().getEmailSubscription(Subscription.RegistrationRequests);
+		EmailSubscription sub = newContractor.getRequestedByUser().getEmailSubscription(
+				Subscription.RegistrationRequests);
 		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
 			return true;
 		return false;

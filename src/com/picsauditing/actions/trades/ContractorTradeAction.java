@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -23,7 +24,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Tree;
 
@@ -31,6 +32,10 @@ import com.picsauditing.util.Tree;
 public class ContractorTradeAction extends ContractorActionSupport {
 	@Autowired
 	private TradeDAO tradeDAO;
+	@Autowired
+	private EmailSenderSpring sender;
+	@Autowired
+	private NoteDAO noteDAO;
 
 	private ContractorTrade trade;
 
@@ -114,7 +119,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			emailQueue.setBody("Trade: " + trade.getTrade().getId() + "-" + trade.getTrade().getName()
 					+ " Contractor: " + contractor.getId() + "-" + contractor.getName());
 
-			EmailSender sender = new EmailSender();
 			sender.sendNow(emailQueue);
 		}
 
@@ -135,7 +139,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			Note note = new Note(contractor, new User(permissions.getUserId()), "Added contractor type"
 					+ (noteSummary.size() > 1 ? "s" : "") + Strings.implode(noteSummary) + " when selecting trade "
 					+ trade.getTrade().getName());
-			getNoteDao().save(note);
+			noteDAO.save(note);
 		}
 
 		// If the risk level for either product or safety increases due to this new trade, reset the verified date on

@@ -39,7 +39,7 @@ import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -72,6 +72,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private UserAccessDAO uaDAO;
 	@Autowired
 	private UserAssignmentDAO userAssignmentDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private User auditor = null;
 	private InvoiceFee rescheduling;
@@ -157,9 +159,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		addActionMessage("Audit Saved Successfully");
 		// check for a time overlap here
-		List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(),
-				DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120),
-				DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, 120));
+		List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(), DateBean
+				.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120), DateBean.addField(conAudit
+				.getScheduledDate(), Calendar.MINUTE, 120));
 		if (conflicts.size() > 1) {
 			addActionMessage(getText("ScheduleAudit.message.Overlap"));
 			for (ContractorAudit cAudit : conflicts) {
@@ -190,8 +192,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public String select() throws Exception {
 		// Look up if there are multiple auditors for this area
-		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
-				conAudit.getAuditType());
+		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor, conAudit
+				.getAuditType());
 		List<User> auditors = new ArrayList<User>();
 		if (assignments.size() > 0) {
 			for (UserAssignment ua : assignments)
@@ -274,7 +276,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				email.setToAddresses(Strings.implode(emails));
 				email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 				email.setViewableById(Account.PicsID);
-				EmailSender.send(email);
+				emailSender.send(email);
 			}
 		}
 
@@ -348,8 +350,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
 
-		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
-				conAudit.getAuditType());
+		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor, conAudit
+				.getAuditType());
 
 		if (conAudit.getAuditor() != null) {
 			// There's all ready an auditor set
@@ -622,7 +624,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
 			email.setViewableById(getViewableByAccount(conAudit.getAuditType().getAccount()));
-			EmailSender.send(email);
+			emailSender.send(email);
 		}
 		if (conAudit.getAuditorConfirm() == null) {
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -639,7 +641,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			EmailQueue email = emailBuilder.build();
 			email.setCcAddresses(null);
 			email.setViewableById(Account.PicsID);
-			EmailSender.send(email);
+			emailSender.send(email);
 		}
 
 		addNote(contractor, summary, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));

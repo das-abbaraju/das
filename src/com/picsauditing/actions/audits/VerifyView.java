@@ -30,7 +30,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -39,6 +39,8 @@ public class VerifyView extends ContractorActionSupport {
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private Map<Integer, AuditData> pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 	private Map<Integer, AuditData> infoSection = new LinkedHashMap<Integer, AuditData>();
@@ -97,7 +99,8 @@ public class VerifyView extends ContractorActionSupport {
 					int categoryID = d.getQuestion().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
 							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
+									.getQuestion().getId() >= 3565
+									&& d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
 						if (!needsEmr)
 							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
 									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
@@ -132,8 +135,8 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		});
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
-				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
+				57, 103, 104, 123, 124, 125));
 		return SUCCESS;
 	}
 
@@ -235,7 +238,7 @@ public class VerifyView extends ContractorActionSupport {
 		}
 		EmailQueue email = emailBuilder.build();
 		email.setViewableById(Account.EVERYONE);
-		EmailSender.send(email);
+		emailSender.send(email);
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);
 

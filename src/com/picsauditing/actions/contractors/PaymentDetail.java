@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -31,7 +31,7 @@ import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -46,6 +46,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private AppPropertyDAO appPropDao;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private Payment payment;
 	private PaymentMethod method = null;
@@ -162,7 +164,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							emailQueue = emailBuilder.build();
 							emailQueue.setPriority(90);
 							emailQueue.setViewableById(Account.PicsID);
-							EmailSender.send(emailQueue);
+							emailSender.send(emailQueue);
 						} catch (Exception e) {
 							PicsLogger
 									.log("Cannot send email error message or determine credit processing status for contractor "

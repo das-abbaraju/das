@@ -1,5 +1,7 @@
 package com.picsauditing.actions.report;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -9,37 +11,43 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
 public class ReportExpiredCreditCards extends ReportAccount {
 
+	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	private EmailBuilder emailBuilder;
+	@Autowired
 	private NoteDAO noteDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private String[] sendMail;
 
-	public ReportExpiredCreditCards(ContractorAccountDAO contractorAccountDAO, EmailBuilder emailBuilder, NoteDAO noteDAO) {
+	public ReportExpiredCreditCards(ContractorAccountDAO contractorAccountDAO, EmailBuilder emailBuilder,
+			NoteDAO noteDAO) {
 		sql = new SelectContractorAudit();
 		this.contractorAccountDAO = contractorAccountDAO;
 		this.emailBuilder = emailBuilder;
 		this.noteDAO = noteDAO;
-		
+
 		orderByDefault = "c.balance DESC, c.paymentExpires DESC, c.ccExpiration";
 	}
 
 	public void buildQuery() {
 		super.buildQuery();
-		
+
 		sql.addJoin("LEFT JOIN email_queue eq ON c.id = eq.conID AND eq.templateID = 59");
 
 		sql.addWhere("c.paymentMethod = 'CreditCard'");
 		sql.addWhere("c.ccExpiration < NOW()");
 		sql.addWhere("c.ccOnFile = 1");
 		sql.addWhere("eq.creationDate IS NULL");
-		
+
 		sql.addGroupBy("c.id");
 		sql.addGroupBy("eq.templateID");
 
@@ -73,8 +81,8 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 						EmailQueue email = emailBuilder.build();
 						email.setViewableById(Account.PicsID);
-						EmailSender.send(email);
-						
+						emailSender.send(email);
+
 						Note note = new Note();
 						note.setAccount(con);
 						note.setAuditColumns(permissions);

@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.beanutils.DynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 
 @SuppressWarnings("serial")
 public class ReportObsoleteScheduledAudits extends ReportContractorAudits {
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private static final int TEMPLATE_ID = 162;
 
@@ -30,7 +33,8 @@ public class ReportObsoleteScheduledAudits extends ReportContractorAudits {
 
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("scheduledDate IS NOT NULL");
-		sql.addWhere("NOT EXISTS (SELECT 'x' FROM contractor_audit_operator cao WHERE ca.id = cao.auditID AND cao.visible = 1)");
+		sql
+				.addWhere("NOT EXISTS (SELECT 'x' FROM contractor_audit_operator cao WHERE ca.id = cao.auditID AND cao.visible = 1)");
 
 		orderByDefault = "a.name DESC";
 		filteredDefault = true;
@@ -58,7 +62,7 @@ public class ReportObsoleteScheduledAudits extends ReportContractorAudits {
 
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(90);
-			EmailSender.send(emailQueue);
+			emailSender.send(emailQueue);
 			addActionMessage("Report Sent to Auditors");
 			return BLANK;
 		}

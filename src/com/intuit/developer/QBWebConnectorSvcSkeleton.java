@@ -17,7 +17,7 @@ import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -71,17 +71,18 @@ public class QBWebConnectorSvcSkeleton {
 				}
 			}
 
-			if (("PICSQBLOADER".equals(authenticate.getStrUserName()) || "PICSQBLOADERCAN".equals(authenticate.getStrUserName()))
+			if (("PICSQBLOADER".equals(authenticate.getStrUserName()) || "PICSQBLOADERCAN".equals(authenticate
+					.getStrUserName()))
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
 				QBSession session = new QBSession();
 				session.setSessionId(GUID.asString());
 				session.setLastRequest(new Date());
 				// set country specific fields
-				if("PICSQBLOADER".equals(authenticate.getStrUserName())){
+				if ("PICSQBLOADER".equals(authenticate.getStrUserName())) {
 					session.setCurrencyCode("USD");
 					session.setQbID("qbListID");
-				} else if("PICSQBLOADERCAN".equals(authenticate.getStrUserName())){
+				} else if ("PICSQBLOADERCAN".equals(authenticate.getStrUserName())) {
 					session.setCurrencyCode("CAD");
 					session.setQbID("qbListCAID");
 				}
@@ -260,7 +261,8 @@ public class QBWebConnectorSvcSkeleton {
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());
 
-					EmailSender.send(email);
+					EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+					emailSender.send(email);
 
 				} catch (Exception notMuchWeCanDoButLogIt) {
 					System.out.println("**********************************");

@@ -42,7 +42,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -67,6 +67,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private BrainTreeService paymentService = new BrainTreeService();
 
@@ -132,8 +134,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
-									payment.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
+									.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -166,7 +168,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 								emailQueue.setPriority(90);
 								emailQueue.setViewableById(Account.PicsID);
 
-								EmailSender.send(emailQueue);
+								emailSender.send(emailQueue);
 							} catch (Exception e) {
 								PicsLogger
 										.log("Cannot send email error message or determine credit processing status for contractor "
@@ -242,9 +244,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							contractor.setRenew(true);
 
 						updateTotals();
-						this.addNote(
-								"Created invoice for " + contractor.getCurrencyCode().getSymbol()
-										+ invoice.getTotalAmount(), NoteCategory.Billing);
+						this.addNote("Created invoice for " + contractor.getCurrencyCode().getSymbol()
+								+ invoice.getTotalAmount(), NoteCategory.Billing);
 					}
 
 				} else {

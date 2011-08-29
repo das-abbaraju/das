@@ -4,25 +4,28 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AccountRecovery extends PicsActionSupport {
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
+
 	private String email, username;
 	private User user;
-	private UserDAO userDAO;
 	private Recaptcha recaptcha;
-
-	public AccountRecovery(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
 
 	@Anonymous
 	@Override
@@ -75,7 +78,7 @@ public class AccountRecovery extends PicsActionSupport {
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setPriority(100);
 
-				EmailSender.send(emailQueue);
+				emailSender.send(emailQueue);
 
 				addActionMessage("An email has been sent to this address: <b>" + email + "</b> "
 						+ "with your PICS account username" + (matchingUsers.size() > 1 ? "s" : ""));
@@ -137,7 +140,8 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSender.send(emailQueue);
+			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			emailSenderStatic.send(emailQueue);
 			return "An email has been sent to " + user.getEmail()
 					+ ". This email includes a link to set or reset the password on the account.";
 		} catch (Exception e) {
@@ -163,7 +167,8 @@ public class AccountRecovery extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSender.send(emailQueue);
+			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			emailSenderStatic.send(emailQueue);
 			return "An email has been sent to " + user.getEmail()
 					+ ". This email includes a link to set or reset the password on the account.";
 		} catch (Exception e) {

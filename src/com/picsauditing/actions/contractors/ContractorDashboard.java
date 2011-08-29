@@ -36,6 +36,7 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -59,7 +60,7 @@ import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -87,6 +88,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -143,7 +146,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("AddTag".equals(button)) {
-			// TODO Move this into a new class 
+			// TODO Move this into a new class
 			// and then redirect back to Dashboard if necessary
 			if (tagId > 0) {
 				ContractorTag cTag = new ContractorTag();
@@ -170,11 +173,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
-			
-			// TODO Move this into a new class (maybe Payment Options or Facilities or Billing Details) 
+
+			// TODO Move this into a new class (maybe Payment Options or Facilities or Billing Details)
 			// and then redirect back to Dashboard if necessary
 			// See also ReportBiddingContractors/RequestNewContractor Upgrade
-			contractor.setAcceptsBids(false);
+			contractor.setAccountLevel(AccountLevel.Full);
 			contractor.setRenew(true);
 
 			auditBuilder.buildAudits(contractor);
@@ -187,7 +190,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 							auditDao.save(cao);
 						}
 					}
-					
+
 					auditBuilder.recalculateCategories(cAudit);
 					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 					auditPercentCalculator.percentCalculateComplete(cAudit);
@@ -225,7 +228,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				emailQueue.setViewableById(permissions.getTopAccountID());
 			else
 				emailQueue.setViewableById(Account.EVERYONE);
-			EmailSender.send(emailQueue);
+			emailSender.send(emailQueue);
 
 			if (permissions.isContractor()) {
 				ServletActionContext.getResponse().sendRedirect(

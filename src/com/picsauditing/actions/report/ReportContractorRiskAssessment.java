@@ -20,7 +20,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectAccount.Type;
 import com.picsauditing.util.Strings;
@@ -40,6 +40,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	public ReportContractorRiskAssessment() {
 		this.orderByDefault = "a.creationDate DESC, a.name";
@@ -94,7 +96,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 					emailQueue = emailBuilder.build();
 					emailQueue.setPriority(60);
 					emailQueue.setViewableById(Account.PicsID);
-					EmailSender.send(emailQueue);
+					emailSender.send(emailQueue);
 				} catch (Exception e) {
 					PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
 				}

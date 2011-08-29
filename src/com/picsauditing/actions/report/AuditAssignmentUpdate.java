@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -38,6 +38,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 	protected UserDAO userDao = null;
 	@Autowired
 	protected EmailBuilder emailBuilder;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected Date origScheduledDate = null;
 	protected String origLocation = null;
@@ -110,7 +112,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 					email.setViewableBy(contractorAudit.getAuditType().getAccount());
 				else
 					email.setViewableById(Account.EVERYONE);
-				EmailSender.send(email);
+				emailSender.send(email);
 			}
 			if (contractorAudit.getAuditorConfirm() == null) {
 				emailBuilder.setTemplate(14);
@@ -127,7 +129,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
 				email.setViewableById(Account.PicsID);
-				EmailSender.send(email);
+				emailSender.send(email);
 			}
 
 			NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");

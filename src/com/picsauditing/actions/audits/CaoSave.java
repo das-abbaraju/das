@@ -30,11 +30,13 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected int caoID = 0;
 	private int noteID = 0;
@@ -288,21 +290,18 @@ public class CaoSave extends AuditActionSupport {
 		emailBuilder.addToken("note", note);
 		EmailQueue email = emailBuilder.build();
 		email.setViewableBy(cao.getOperator());
-		EmailSender.send(email);
+		emailSender.send(email);
 	}
 
 	private void checkNewStatus(WorkflowStep step, ContractorAuditOperator cao) {
 		ContractorAudit audit = cao.getAudit();
 
 		/*
-		 * // TODO Consider locking the Manual Audit categories here instead of
-		 * on the AuditBuilder.fillAuditCategories() advantage is that newly
-		 * added categories will get added to a Submitted Manual Audit and
-		 * existing Subcategories we be locked on Manual Audit. UPGRADE SQL:
-		 * UPDATE audit_cat_data acd join contractor_audit ca on acd.auditID =
-		 * ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
-		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1
-		 * ;
+		 * // TODO Consider locking the Manual Audit categories here instead of on the
+		 * AuditBuilder.fillAuditCategories() advantage is that newly added categories will get added to a Submitted
+		 * Manual Audit and existing Subcategories we be locked on Manual Audit. UPGRADE SQL: UPDATE audit_cat_data acd
+		 * join contractor_audit ca on acd.auditID = ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
+		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1 ;
 		 */
 		// if (step.getNewStatus().after(AuditStatus.Pending)) {
 		// if (audit.getAuditType().isDesktop()) {

@@ -37,7 +37,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -57,6 +57,8 @@ public class ContractorRegistration extends ContractorActionSupport {
 	private UserLoginLogDAO userLoginLogDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -225,7 +227,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(90);
 		emailQueue.setViewableById(Account.EVERYONE);
-		EmailSender.send(emailQueue);
+		emailSender.send(emailQueue);
 		addNote(contractor, "Welcome Email Sent");
 
 		// Update the Registration Request

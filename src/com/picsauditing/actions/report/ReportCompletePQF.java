@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
@@ -26,6 +26,8 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 	protected EmailBuilder emailBuilder;
 	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private Date followUpDate = null;
 	private String[] sendMail = null;
@@ -86,7 +88,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 							emailBuilder.setFromAddress(conAudit.getContractorAccount().getAuditor());
 						EmailQueue email = emailBuilder.build();
 						email.setViewableById(Account.EVERYONE);
-						EmailSender.send(email);
+						emailSender.send(email);
 
 						Note note = new Note();
 						note.setAccount(conAudit.getContractorAccount());

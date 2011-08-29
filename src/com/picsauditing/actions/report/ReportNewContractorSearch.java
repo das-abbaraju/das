@@ -24,6 +24,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -34,7 +35,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.Strings;
 
@@ -58,6 +59,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private FacilityChanger facilityChanger;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private List<FlagCriteriaOperator> opCriteria;
 	private OperatorAccount operator;
@@ -204,19 +207,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 		facilityChanger.setOperator(operator);
 		facilityChanger.add();
 
-		ActionContext
-				.getContext()
-				.getSession()
-				.put("actionMessage",
-						getText("NewContractorSearch.message.SuccessfullyAdded",
-								new Object[] { (Integer) contractor.getId(), contractor.getName() }));
+		ActionContext.getContext().getSession().put(
+				"actionMessage",
+				getText("NewContractorSearch.message.SuccessfullyAdded", new Object[] { (Integer) contractor.getId(),
+						contractor.getName() }));
 
 		// Automatically upgrading Contractor per discussion
 		// 2/15/2011
-		if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
+		if (contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids()) {
 			// See also ReportBiddingContractors/ContractorDashboard
 			// Upgrade
-			contractor.setAcceptsBids(false);
+			contractor.setAccountLevel(AccountLevel.Full);
 			contractor.setRenew(true);
 
 			auditBuilder.buildAudits(contractor);
@@ -252,7 +253,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
 			emailQueue.setViewableById(Account.PicsID);
-			EmailSender.send(emailQueue);
+			emailSender.send(emailQueue);
 		}
 
 		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
@@ -266,12 +267,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		facilityChanger.setOperator(operator);
 		facilityChanger.remove();
 
-		ActionContext
-				.getContext()
-				.getSession()
-				.put("actionMessage",
-						getText("NewContractorSearch.message.SuccessfullyRemoved",
-								new Object[] { contractor.getName() }));
+		ActionContext.getContext().getSession().put("actionMessage",
+				getText("NewContractorSearch.message.SuccessfullyRemoved", new Object[] { contractor.getName() }));
 
 		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
 				+ "&filter.tradeInformation=true");

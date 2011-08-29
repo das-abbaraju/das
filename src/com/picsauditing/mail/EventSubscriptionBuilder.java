@@ -16,8 +16,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class EventSubscriptionBuilder {
@@ -31,13 +31,7 @@ public class EventSubscriptionBuilder {
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
 
-//		OperatorAccount parent = co.getOperatorAccount().getParent();
-//		while(parent != null){ // adding corporate subscriptions
-//			subscriptions.addAll(subscriptionDAO.find(Subscription.ContractorFinished,
-//					SubscriptionTimePeriod.Event, parent.getId()));
-//			parent = parent.getParent();
-//		}
-		
+		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
 			builder.setTemplate(templateID);
@@ -53,7 +47,7 @@ public class EventSubscriptionBuilder {
 			q.setHtml(true);
 			q.setViewableBy(co.getOperatorAccount().getTopAccount());
 
-			EmailSender.send(q);
+			emailSender.send(q);
 
 			subscription.setLastSent(now);
 			subscriptionDAO.save(subscription);
@@ -65,12 +59,12 @@ public class EventSubscriptionBuilder {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		// creating list of recipients
 		Set<String> billingUserEmails = new HashSet<String>();
-		for(User u : contractor.getUsersByRole(OpPerms.ContractorBilling))
+		for (User u : contractor.getUsersByRole(OpPerms.ContractorBilling))
 			billingUserEmails.add(u.getEmail());
 		// removing main recipient
 		billingUserEmails.remove(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		String emails = Strings.implode(billingUserEmails, ", ");
-		if(!Strings.isEmpty(emails))
+		if (!Strings.isEmpty(emails))
 			emailBuilder.setCcAddresses(emails);
 		// finishing rest of email
 		emailBuilder.setTemplate(45);
@@ -114,14 +108,15 @@ public class EventSubscriptionBuilder {
 
 		if (emailAddresses.size() > 1)
 			emailBuilder.setCcAddresses(emailAddresses.get(1));
-		
+
 		EmailQueue email = emailBuilder.build();
 		if (invoice.getStatus().isPaid())
 			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
 		email.setViewableById(Account.PicsID);
-		EmailSender.send(email);
+		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+		emailSender.send(email);
 
 		return email;
 	}

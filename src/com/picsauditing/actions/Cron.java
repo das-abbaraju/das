@@ -56,7 +56,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.EbixLoader;
@@ -97,6 +97,8 @@ public class Cron extends PicsActionSupport {
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
 	private IndexerEngine indexer;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -208,7 +210,7 @@ public class Cron extends PicsActionSupport {
 				contractor.setRenew(false);
 				contractor.setStatus(AccountStatus.Deactivated);
 				// Setting a deactivation reason
-				if (contractor.isAcceptsBids()) {
+				if (contractor.getAccountLevel().isBidOnly()) {
 					contractor.setReason("Bid Only Account");
 				}
 				// Leave the PaymentExpires in the past
@@ -321,7 +323,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			EmailSender.send(toAddress, "Cron job report", report.toString());
+			emailSender.send(toAddress, "Cron job report", report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("**********************************");
 			System.out.println("Error Sending email from cron job");
@@ -409,7 +411,8 @@ public class Cron extends PicsActionSupport {
 
 			if (DateBean.getDateDifference(invoice.getDueDate()) < -10) {
 				List<Integer> questionsWithEmailAddresses = Arrays.<Integer> asList(604, 606, 624, 627, 630, 1437);
-				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(), questionsWithEmailAddresses);
+				List<AuditData> aList = auditDataDAO.findAnswerByConQuestions(cAccount.getId(),
+						questionsWithEmailAddresses);
 				for (AuditData auditData : aList) {
 					if (!Strings.isEmpty(auditData.getAnswer()) && Strings.isValidEmail(auditData.getAnswer()))
 						emailAddresses.add(auditData.getAnswer());
@@ -452,13 +455,13 @@ public class Cron extends PicsActionSupport {
 
 			if (!hasReactivation) {
 				// Calculate Late Fee
-				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
-						.setScale(0, BigDecimal.ROUND_HALF_UP);
+				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
+						BigDecimal.ROUND_HALF_UP);
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-						((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i
+						.getAccount()).getPayingFacilities());
 				InvoiceItem lateFeeItem = new InvoiceItem(fee);
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
@@ -533,13 +536,16 @@ public class Cron extends PicsActionSupport {
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
 		// Running Query
 		StringBuilder query = new StringBuilder();
-		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query
+				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query
+				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query
+				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
@@ -551,7 +557,7 @@ public class Cron extends PicsActionSupport {
 
 		if (data.isEmpty())
 			return;
-		
+
 		// Sorting results into buckets by AM to add as tokens into the email
 		Map<String, List<DynaBean>> amMap = new HashMap<String, List<DynaBean>>();
 		for (DynaBean bean : data) {

@@ -12,6 +12,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -24,7 +25,7 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
@@ -47,6 +48,8 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	protected AuditBuilder auditBuilderController;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	@Override
 	protected void buildQuery() {
@@ -80,11 +83,11 @@ public class ReportBiddingContractors extends ReportAccount {
 			int templateId = 0;
 			if ("Upgrade".equals(button)) {
 				// See also ContractorDashboard/ReportNewContractorSearch Upgrade to Full Membership
-				cAccount.setAcceptsBids(false);
+				cAccount.setAccountLevel(AccountLevel.Full);
 				cAccount.setRenew(true);
 
 				auditBuilderController.buildAudits(cAccount);
-				
+
 				for (ContractorAudit cAudit : cAccount.getAudits()) {
 					if (cAudit.getAuditType().isPqf()) {
 						for (ContractorAuditOperator cao : cAudit.getOperators()) {
@@ -100,7 +103,7 @@ public class ReportBiddingContractors extends ReportAccount {
 						contractorAccountDAO.save(cAudit);
 					}
 				}
-				
+
 				if (permissions.isOperator() && permissions.isApprovesRelationships()) {
 					approveContractor(cAccount, permissions.getAccountId());
 				}
@@ -159,7 +162,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
 							: "PICS Info <info@picsauditing.com>");
 					emailQueue.setViewableById(permissions.getTopAccountID());
-					EmailSender.send(emailQueue);
+					emailSender.send(emailQueue);
 					addActionMessage(summary);
 				} catch (Exception e) {
 					addActionError(e.getLocalizedMessage());

@@ -14,7 +14,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 
 @SuppressWarnings("serial")
 public class IGVerification extends ContractorActionSupport {
@@ -22,6 +22,8 @@ public class IGVerification extends ContractorActionSupport {
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
 	protected EmailTemplateDAO templateDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected String body;
 	protected String subject;
@@ -45,9 +47,14 @@ public class IGVerification extends ContractorActionSupport {
 		previewEmail.setPriority(50);
 
 		try {
-			EmailSender.send(previewEmail);
 			addActionMessage("Successfully sent email to " + previewEmail.getToAddresses() + " and stamped notes");
 
+			try {
+				emailSender.send(previewEmail);
+				addActionMessage("Successfully sent email to " + previewEmail.getToAddresses());
+			} catch (Exception e) {
+				addActionError("Could not send email to " + previewEmail.getToAddresses());
+			}
 			String note = "Insurance Verification email sent to " + previewEmail.getToAddresses();
 			addNote(contractor, note, NoteCategory.Insurance);
 		} catch (Exception e) {

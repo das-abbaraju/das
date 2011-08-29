@@ -14,6 +14,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -23,7 +24,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.Strings;
@@ -43,6 +44,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	protected FacilityChanger facilityChanger;
 	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	protected OperatorAccount operator;
 	protected ContractorAccount contractor;
@@ -61,8 +64,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 			addActionMessage(getText("ReportCompetencyByAccount.message.SuccessfullyAddedContractor", new Object[] {
 					(Integer) contractor.getId(), contractor.getName() }));
 
-			if (contractor.isAcceptsBids() && !operator.isAcceptsBids()) {
-				contractor.setAcceptsBids(false);
+			if (contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids()) {
+				contractor.setAccountLevel(AccountLevel.Full);
 				contractor.setRenew(true);
 
 				auditBuilder.buildAudits(contractor);
@@ -98,7 +101,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				emailQueue.setPriority(60);
 				emailQueue.setFromAddress("billing@picsauditing.com");
 				emailQueue.setViewableById(Account.PicsID);
-				EmailSender.send(emailQueue);
+				emailSender.send(emailQueue);
 			}
 		} catch (Exception e) {
 			addActionError(e.getMessage());
@@ -132,8 +135,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				}
 			}
 
-			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)",
-					Strings.implode(opIDs)));
+			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)", Strings
+					.implode(opIDs)));
 			sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
 			sql.addJoin(String.format(
 					"LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",

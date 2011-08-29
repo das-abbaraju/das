@@ -29,7 +29,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -47,6 +47,8 @@ public class FacilityChanger {
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -96,7 +98,7 @@ public class FacilityChanger {
 			EmailQueue emailQueue = emailBuilder.build();
 			emailQueue.setPriority(60);
 			emailQueue.setViewableBy(operator.getTopAccount());
-			EmailSender.send(emailQueue);
+			emailSender.send(emailQueue);
 		}
 
 		if (contractor.getAccountLevel().isFull()) {
@@ -161,7 +163,7 @@ public class FacilityChanger {
 
 						EmailQueue emailQueue = emailBuilder.build();
 						emailQueue.setPriority(60);
-						EmailSender.send(emailQueue);
+						emailSender.send(emailQueue);
 					}
 
 					checkOQ();

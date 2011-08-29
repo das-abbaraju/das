@@ -26,7 +26,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
@@ -45,6 +45,8 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private int conID;
 	private ReportFilterWashingtonAudit filter = new ReportFilterWashingtonAudit();
@@ -100,7 +102,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 			email.setToAddresses("Mina Mina <mmina@picsauditing.com>");
 
 			try {
-				EmailSender.send(email);
+				emailSender.send(email);
 			} catch (Exception e) {
 				addActionError("Could not send field audit request email to auditors");
 			}
@@ -142,9 +144,9 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 
 	@Override
 	protected String returnResult() throws IOException {
-		String original = sql.toString();
-		sql.addJoin("JOIN audit_cat_data acd ON acd.auditID = ca.id AND acd.applies = 1 AND acd.numAnswered = acd.numVerified "
-				+ "AND acd.numAnswered > 0");
+		sql
+				.addJoin("JOIN audit_cat_data acd ON acd.auditID = ca.id AND acd.applies = 1 AND acd.numAnswered = acd.numVerified "
+						+ "AND acd.numAnswered > 0");
 		sql.addField("acd.categoryID");
 
 		List<BasicDynaBean> data2 = null;

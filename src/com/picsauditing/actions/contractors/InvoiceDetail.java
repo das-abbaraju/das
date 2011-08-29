@@ -40,7 +40,7 @@ import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -61,6 +61,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private NoteDAO noteDAO;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private EmailSenderSpring emailSender;
 
 	private boolean edit = false;
 	private int newFeeId;
@@ -280,7 +282,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 								emailQueue = emailBuilder.build();
 								emailQueue.setPriority(90);
 								emailQueue.setViewableById(Account.PicsID);
-								EmailSender.send(emailQueue);
+								emailSender.send(emailQueue);
 							} catch (Exception e) {
 								PicsLogger
 										.log("Cannot send email error message or determine credit processing status for contractor "
