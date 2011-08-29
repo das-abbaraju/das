@@ -90,18 +90,9 @@
 										<s:if test="!#q.groupedWithPrevious">
 											<s:set name="shaded" value="!#shaded" scope="action"/>
 										</s:if>
-										
-										<div id="node_<s:property value="#q.id"/>" class="clearfix question
-											<s:if test="#shaded && #category.columns == 1"> shaded</s:if>
-											<s:if test="#hidden"> hide</s:if>
-											<s:if test="#q.dependentRequired.size() > 0"> hasDependentRequired</s:if>
-											<s:if test="#q.dependentVisible.size() > 0"> hasDependentVisible</s:if>
-											<s:if test="#q.auditCategoryRules.size() > 0"> hasDependentRules</s:if>
-											<s:if test="affectsAudit"> affectsAudit</s:if>
-											<s:if test="#q.functionWatchers.size > 0"> hasFunctions</s:if>
-										">
-											<s:include value="audit_cat_question.jsp"></s:include>
-										</div>
+
+										<%-- Audit Category Question --%>
+										<s:include value="audit_cat_question.jsp"></s:include>
 									</s:if>
 								</s:if>		
 							</li>

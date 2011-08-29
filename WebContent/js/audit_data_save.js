@@ -9,54 +9,68 @@ $(function(){
 	});
 
 	$('#auditViewArea').delegate('div.question', 'change saveQuestion', function() {
-		$(this)
-			.block({message: 'Saving answer...'})
-			.load('AuditDataSaveAjax.action',
-				$('form.qform', this).serializeArray(),
-				function(response, status) {
-					if (status=='success') {
-						$(this).trigger('updateDependent');
-						$(this).unblock();
-					}
-				});
+		var element = $(this);
+		var form = $('form.qform', element);
+		var url = 'AuditDataSaveAjax.action';
+		var data = form.serializeArray();
+		
+		element.block({
+			message: 'Saving answer...'
+		});
+		
+		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+			element.trigger('updateDependent');
+			element.replaceWith(data);
+		});
+		
 		return false;
 	});
 
-	$('#auditViewArea').delegate(
-			'input.resetAnswer',
-			'click',
-			function(e) {
-				var me = $(this).parents('div.question:first');
-				me.block({
-					message : 'Clearing answer...'
-				}).load('AuditDataSaveAjax.action',
-						$('form.qform', me).serializeArray().map(function(t) {
-							if (t.name == 'auditData.answer') {
-								t.value = '';
-							}
-							return t;
-						}), function(response, status) {
-							if (status == 'success') {
-								me.trigger('updateDependent');
-								me.unblock();
-							}
-						});
-				return false;
-			});
+	$('#auditViewArea').delegate('input.resetAnswer', 'click', function(event) {
+		var element = $(this).parents('div.question:first');
+		var form = $('form.qform', element);
+		var url = 'AuditDataSaveAjax.action';
+		
+		var data = form.serializeArray().map(function(data) {
+			if (data.name == 'auditData.answer') {
+				data.value = '';
+			}
+			
+			return data;
+		});
+		
+		element.block({
+			message : 'Clearing answer...'
+		});
+		
+		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+			element.trigger('updateDependent');
+			element.replaceWith(data);
+		});
+	
+		return false;
+	});
 
-	$('#auditViewArea').delegate('input.verify', 'click', function(e) {
-		var me = $(this).parents('div.question:first');
-		var pars = $('form.qform', me).serializeArray()
-		pars.push({name: "toggleVerify", value:"true"});
-		me.block({message: $(this).val()+'ing...'})
-			.load('AuditDataSaveAjax.action',
-				pars,
-				function(response, status) {
-					if (status=='success') {
-						$(this).trigger('updateDependent');
-						$(this).unblock();
-					}
-				});
+	$('#auditViewArea').delegate('input.verify', 'click', function(event) {
+		var element = $(this).parents('div.question:first');
+		var form = $('form.qform', element);
+		var url = 'AuditDataSaveAjax.action';
+		var data = form.serializeArray();
+		
+		data.push({
+			name: "toggleVerify",
+			value: "true"
+		});
+		
+		element.block({
+			message: $(this).val() + 'ing...'
+		});
+		
+		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+			element.trigger('updateDependent');
+			element.replaceWith(data);
+		});
+
 		return false;
 	});
 
@@ -127,11 +141,20 @@ function showCertUpload(certID, questionID) {
 }
 
 function reloadQuestion(qid) {
-	var pars = $('#node_'+qid).find('form.qform input.get_request').serialize()+'&button=reload';
-	$('#node_'+qid)
-		.block({message: 'Reloading question...'})
-		.load('AuditDataSaveAjax.action',pars, function() {
-		$(this).unblock();
+	var element = $('#node_' + qid);
+	var url = 'AuditDataSaveAjax.action';
+	var data = element.find('form.qform input.get_request').serializeArray();
+	
+	data.push({
+		button: 'reload'
+	});
+	
+	element.block({
+		message: 'Reloading question...'
+	});
+	
+	$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+		element.replaceWith(data);
 	});
 }
 

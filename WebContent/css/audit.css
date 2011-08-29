@@ -12,14 +12,15 @@ h4.groupTitle {
 	font-weight: bold;
 }
 
-div.question {
+/* question */
+.question
+{
 	padding-bottom: 10px;
 	padding-top: 10px;
 	position: relative;
 }
 
-h3.question,
-h3.question-checkbox
+.question h3
 {
 	color: #111;
 	font-size: 14px;
@@ -28,9 +29,22 @@ h3.question-checkbox
 	padding-left: 20px;
 }
 
-h3.question-checkbox
+.question.required h3
+{
+	color: #272;
+	font-weight: bold;
+	zoom: 1;
+}
+
+.question.checkbox h3
 {
 	margin-left: 24px;
+}
+
+.question.checkbox img.required
+{
+	left: -25px;
+	position: relative;
 }
 
 #content div.answer {
@@ -71,23 +85,12 @@ h3.question-checkbox
 	background-color: #FFFFFF;
 }
 
-h3.required {
-	background: transparent url(../images/yellow_star.gif) no-repeat left top;
-	color: #272;
-	font-weight: bold;
-	zoom: 1;
-}
-
 span.printrequired {
 	display: none;
 }
 
 span.printchecked {
 	display: none;
-}
-
-div.thinking {
-	float: right;
 }
 
 #content div.requiredLegend {
@@ -128,8 +131,7 @@ span.boxed {
 
 span.checked {
 	padding-left: 20px;
-	background: transparent url(../images/checkBoxTrue.gif) no-repeat
-		left center;
+	background: transparent url(../images/checkBoxTrue.gif) no-repeat left center;
 	zoom: 1;
 }
 
@@ -625,7 +627,6 @@ table.osha tfoot th {
 	font-size: 24px;
 	letter-spacing: normal;
 	line-height: 28px;
-	margin-bottom: 10px;
 	padding: 10px 0 5px 10px;
 	zoom: 1;
 }
@@ -639,6 +640,7 @@ table.osha tfoot th {
 	float: left;
 	list-style-type: none;
 	margin: 0px;
+	overflow: hidden;
 }
 
 .audit_category .columns-1 .column
@@ -657,7 +659,7 @@ table.osha tfoot th {
 
 .audit_category .columns-1 div.question
 {
-	margin-right: 6px;
+	margin: 0px 10px;
 }
 
 .audit_category textarea
@@ -679,8 +681,13 @@ table.osha tfoot th {
 	top: 10px;
 }
 
+.audit_category .question.required input.checkbox
+{
+	left: 40px;
+}
+
 .audit_category .audit_category {
-	padding-left: 10px;
+	padding: 10px 0px 20px 10px;
 }
 
 .audit_category .audit_category h2 {

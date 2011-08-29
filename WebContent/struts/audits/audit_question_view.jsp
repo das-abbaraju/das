@@ -1,62 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<script type="text/javascript">
-$(function() {
-	$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
-		arrows: true,
-		cluetipClass: 'jtip',
-		local: true,
-		clickThrough: false,
-		activation: 'click',
-		sticky: true,
-		showTitle: false,
-		closeText: "<img src='images/cross.png' width='16' height='16'>"
-	});
-});
-</script>
-<s:set name="questionStillRequired" value="false" />
-<s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
-	<s:if test="#q.required">
-		<s:set name="questionStillRequired" value="true" />
-	</s:if>
-	<s:if test="#q.requiredQuestion.id > 0">
-		<s:set name="dependsAnswer" value="answerMap.get(#q.requiredQuestion.id)" />
-		<s:if test="#q.requiredAnswer == 'NULL' && (#dependsAnswer == null || #dependsAnswer.answer == '')">
-        	<% // Policies must have either Policy Expiration Date OR In Good Standing %>
-           	<s:set name="questionStillRequired" value="true" />
-        </s:if>
-		<s:if test="#q.requiredAnswer == 'NOTNULL' && #dependsAnswer != null && #dependsAnswer.answer != ''">
-        	<% // If dependsOnQuestion is a textfield, textbox or a select box etc where the dependsOnAnswer is not null %>
-           	<s:set name="questionStillRequired" value="true" />
-        </s:if>
-		<s:if test="#dependsAnswer != null && #q.requiredAnswer == #dependsAnswer.answer">
-			<s:set name="questionStillRequired" value="true" />
-		</s:if>
-	</s:if>
-</s:if>
-<% //TODO check stuff here %>
-<s:if test="questionStillRequired">
-	<span class="printrequired"><img src="images/yellow_star.gif"></span>
-</s:if>
-<span class="question<s:if test="questionStillRequired"> required</s:if>">
-	<a name="q<s:property value="#q.id"/>"></a>
-	<span class="questionNumber"><s:property value="#q.expandedNumber"/>
-		<s:if test="!isStringEmpty(#q.helpText)">
-			<br />
-			<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
-			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
-				<span title="<s:property value="#q.name"/>">
-					<s:property value="#q.helpText" escape="false" />
-				</span>
-			</div>
-		</s:if>
-	</span>
-	
-	<s:property value="#q.name" escape="false"/>
-	<br />
-	<s:if test="#q.helpPage.length() > 0"><a href="http://help.picsauditing.com/wiki/<s:property value="#q.helpPage"/>" class="help" target="_BLANK" title="opens in new window"><s:text name="Header.HelpCenter" /></a></s:if>
-	<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0"><a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a></s:if>
-</span>
 
 <div class="answer">
 	<s:if test="#q.questionType == 'File'">
@@ -122,6 +65,7 @@ $(function() {
 			<s:text name="Audit.message.AnswerVerifiedOn"><s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param></s:text>
 		</span>
 	</s:if>
+	
 	<s:if test="#a.hasRequirements">
 		<br/><br/>
 		<s:if test="#a.requirementOpen">
@@ -137,6 +81,7 @@ $(function() {
 			</s:elseif>
 		</span>
 	</s:if>
+	
 	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
 		<br/>
 		<div class="info">
