@@ -88,6 +88,20 @@ function showRules() {
 				<s:textfield name="category.uniqueCode" />
 			</li>
 			<li>
+				<label># of columns</label>
+				<s:textfield name="category.columns" />
+				<pics:fieldhelp title="Multi-Column Layout">
+					<p>
+						This enables the multi-column layout for a category.
+						The default is 1 column, and can support up to 3.
+					</p>
+					<p>
+						This field disables the question's "Grouped With Previous" property.
+						All questions will be shaded the same color.
+					</p>
+				</pics:fieldhelp>
+			</li>
+			<li>
 				<label>Score Weight</label>
 				<s:textfield name="category.scoreWeight"/>
 			</li>

@@ -188,7 +188,6 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 		this.scoreWeight = scoreWeight;
 	}
 
-	@Transient
 	public int getColumns() {
 		return columns;
 	}
