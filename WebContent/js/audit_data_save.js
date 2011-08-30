@@ -1,4 +1,84 @@
 $(function(){
+	if (!window.AUDIT) {
+		AUDIT = {};
+	}
+	
+	// audit question
+	AUDIT.question = {
+		init: function() {
+			$('#auditViewArea').delegate('input.resetAnswer', 'click', this.events.reset);
+			$('#auditViewArea').delegate('div.question', 'saveQuestion', this.events.save);
+			$('#auditViewArea').delegate('div.question:not(.save-disable)', 'change', this.events.save);
+			$('#auditViewArea').delegate('input.verify', 'click', this.events.verify);
+			
+			$('#auditViewArea').delegate('.question-save', 'click', function(event) {
+				AUDIT.question.events.save.apply($(this).closest('div.question'));
+			});
+		},
+		
+		// question events
+		events: {
+			reset: function(event) {
+				var element = $(this).parents('div.question:first');
+				var form = $('form.qform', element);
+				var url = 'AuditDataSaveAjax.action';
+				
+				var data = form.serializeArray().map(function(data) {
+					if (data.name == 'auditData.answer') {
+						data.value = '';
+					}
+					
+					return data;
+				});
+				
+				element.block({
+					message : 'Clearing answer...'
+				});
+				
+				AUDIT.question.execute(element, url, data);
+			},
+			save: function(event) {
+				var element = $(this);
+				var form = $('form.qform', element);
+				var url = 'AuditDataSaveAjax.action';
+				var data = form.serializeArray();
+				
+				element.block({
+					message: 'Saving answer...'
+				});
+				
+				AUDIT.question.execute(element, url, data);
+			},
+			verify: function(event) {
+				var element = $(this).parents('div.question:first');
+				var form = $('form.qform', element);
+				var url = 'AuditDataSaveAjax.action';
+				var data = form.serializeArray();
+				
+				data.push({
+					name: 'toggleVerify',
+					value: 'true'
+				});
+				
+				element.block({
+					message: $(this).val() + 'ing...'
+				});
+				
+				AUDIT.question.execute(element, url, data);
+			}
+		},
+		
+		// question methods
+		execute: function(element, url, data) {
+			$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+				element.trigger('updateDependent');
+				element.replaceWith(data);
+			});
+		}
+	};
+	
+	AUDIT.question.init();
+	
 	$('div.question .fileUpload').live('click', function(e) {
 		var q = $(this).parents('form.qform:first').serialize();
 		url = 'AuditDataUpload.action?' + q;
@@ -6,72 +86,6 @@ $(function(){
 		pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 		fileUpload = window.open(url,title,pars);
 		fileUpload.focus();
-	});
-
-	$('#auditViewArea').delegate('div.question', 'change saveQuestion', function() {
-		var element = $(this);
-		var form = $('form.qform', element);
-		var url = 'AuditDataSaveAjax.action';
-		var data = form.serializeArray();
-		
-		element.block({
-			message: 'Saving answer...'
-		});
-		
-		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
-			element.trigger('updateDependent');
-			element.replaceWith(data);
-		});
-		
-		return false;
-	});
-
-	$('#auditViewArea').delegate('input.resetAnswer', 'click', function(event) {
-		var element = $(this).parents('div.question:first');
-		var form = $('form.qform', element);
-		var url = 'AuditDataSaveAjax.action';
-		
-		var data = form.serializeArray().map(function(data) {
-			if (data.name == 'auditData.answer') {
-				data.value = '';
-			}
-			
-			return data;
-		});
-		
-		element.block({
-			message : 'Clearing answer...'
-		});
-		
-		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
-			element.trigger('updateDependent');
-			element.replaceWith(data);
-		});
-	
-		return false;
-	});
-
-	$('#auditViewArea').delegate('input.verify', 'click', function(event) {
-		var element = $(this).parents('div.question:first');
-		var form = $('form.qform', element);
-		var url = 'AuditDataSaveAjax.action';
-		var data = form.serializeArray();
-		
-		data.push({
-			name: "toggleVerify",
-			value: "true"
-		});
-		
-		element.block({
-			message: $(this).val() + 'ing...'
-		});
-		
-		$.post(url, data, function(data, textStatus, XMLHttpRequest) {
-			element.trigger('updateDependent');
-			element.replaceWith(data);
-		});
-
-		return false;
 	});
 
 	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {

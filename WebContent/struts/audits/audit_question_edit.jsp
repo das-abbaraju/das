@@ -118,22 +118,17 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'ESignature'">
-			<div id="signature_<s:property value="%{#q.id}"/>">
-				<s:if test="#a == null || #this.hasChanged(#q.id)"> 
-					<div id="editSig_<s:property value="%{#q.id}"/>">
-						Please enter your full name<br />
-						
-						<s:textfield name="auditData.answer" value=""/>
-						<s:hidden name="auditData.comment" value="%{#this.IP}"/>
-						<br />
-					</div>
-				</s:if>
-				<s:else>
-					<div id="showSig_<s:property value="%{#q.id}"/>">
-						<s:property value="%{#a.answer}"/> (<s:property value="%{#a.updateDate}"/>)
-					</div>
-				</s:else>
-			</div>
+			<s:if test="#a == null || #this.hasChanged(#q.id)"> 
+				<label>Please enter your full name</label>
+				
+				<br />
+				<s:hidden name="auditData.comment" value="%{#this.IP}"/>
+				<s:textfield name="auditData.answer" value=""/>
+				<s:submit type="button" value="Sign" cssClass="question-save" />
+			</s:if>
+			<s:else>
+				${a.answer} ${a.updateDate}
+			</s:else>
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">

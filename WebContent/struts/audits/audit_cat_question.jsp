@@ -72,6 +72,14 @@
 	</s:if>
 </s:if>
 
+<%-- Question auto save disable --%>
+<s:if test="#q.questionType == 'ESignature'">
+	<s:set name="save" value="%{'save-disable'}" />
+</s:if>
+<s:else>
+	<s:set name="save" value="" />
+</s:else>
+
 <%-- Question --%>
 
 <div id="node_<s:property value="#q.id"/>" class="clearfix question
@@ -84,6 +92,7 @@
 	<s:if test="#q.functionWatchers.size > 0"> hasFunctions</s:if>
 	<s:if test="#questionStillRequired">required</s:if>
 	<s:if test="#q.questionType == 'Check Box'">checkbox</s:if>
+	${save}
 ">
 	<h3>
 		<s:if test="#questionStillRequired">
