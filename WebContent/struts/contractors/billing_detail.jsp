@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:property value="contractor.name" /> <s:text name="%{scope}.title" /></title>
+<title><s:property value="contractor.name" /> <s:text name="BillingDetail.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
@@ -25,31 +25,31 @@
 	<tr>
 		<td style="vertical-align: top; width: 48%;">
 		<fieldset class="form">
-		<h2 class="formLegend"><s:text name="%{scope}.Info.heading" /></h2>
+		<h2 class="formLegend"><s:text name="BillingDetail.Info.heading" /></h2>
 		<ol>
 			<li><label><s:text name="global.Active" />:</label> <s:property value="contractor.status"/></li>
-			<li><label title="The Date the Account was Created."><s:text name="%{scope}.Info.RegistrationDate" />:</label> <s:date
+			<li><label title="The Date the Account was Created."><s:text name="BillingDetail.Info.RegistrationDate" />:</label> <s:date
 				name="contractor.creationDate" format="MMM d, yyyy" /></li>
-			<li><label title="The Date the Activation/Reactivation Fee was Paid."><s:text name="%{scope}.Info.ActivationDate" />:</label> <s:date
+			<li><label title="The Date the Activation/Reactivation Fee was Paid."><s:text name="BillingDetail.Info.ActivationDate" />:</label> <s:date
 				name="contractor.membershipDate" format="MMM d, yyyy" /></li>
-			<li><label><s:text name="%{scope}.Info.WillBeRenewed" />:</label> <s:if test="contractor.renew">Yes</s:if> <s:else>No</s:else></li>
-			<li><label><s:text name="%{scope}.Info.RenewalDate" />:</label> <s:date name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
-			<li><label><s:text name="%{scope}.Info.PaymentMethod" />:</label> <s:property value="contractor.paymentMethod.description" /></li>
-			<li><label><s:text name="%{scope}.Info.CreditCardOnFile" />?</label> <s:if test="contractor.ccOnFile">Yes</s:if><s:elseif test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >Invalid</span></s:elseif><s:else>No</s:else></li>
+			<li><label><s:text name="BillingDetail.Info.WillBeRenewed" />:</label> <s:if test="contractor.renew">Yes</s:if> <s:else>No</s:else></li>
+			<li><label><s:text name="BillingDetail.Info.RenewalDate" />:</label> <s:date name="contractor.paymentExpires" format="MMM d, yyyy" /></li>
+			<li><label><s:text name="BillingDetail.Info.PaymentMethod" />:</label> <s:property value="contractor.paymentMethod.description" /></li>
+			<li><label><s:text name="BillingDetail.Info.CreditCardOnFile" />?</label> <s:if test="contractor.ccOnFile">Yes</s:if><s:elseif test="!contractor.ccOnFile && contractor.ccExpiration != null"><span style="color:red;" >Invalid</span></s:elseif><s:else>No</s:else></li>
 		</ol>
 		</fieldset>
 
 		<fieldset class="form bottom">
-		<h2 class="formLegend"><s:text name="%{scope}.Facilities.heading" /></h2>
+		<h2 class="formLegend"><s:text name="BillingDetail.Facilities.heading" /></h2>
 		<ol>
-			<li><label><s:text name="%{scope}.Facilities.RequestedBy" />:</label> <s:property value="requestedBy.name" /></li>
+			<li><label><s:text name="BillingDetail.Facilities.RequestedBy" />:</label> <s:property value="requestedBy.name" /></li>
 			<s:if test="!contractor.materialSupplierOnly">
 				<li><label><s:text name="global.SafetyRisk" />:</label> <s:text name="%{contractor.safetyRisk.i18nKey}" /></li>
 			</s:if>
 			<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 				<li><label><s:text name="global.ProductRisk" />:</label> <s:text name="%{contractor.productRisk.i18nKey}" /></li>
 			</s:if>
-			<li><label><s:text name="%{scope}.Facilities.Facilities" />:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
+			<li><label><s:text name="BillingDetail.Facilities.Facilities" />:</label> <s:property value="contractor.payingFacilities" /> paying operator(s)<br />
 			<br />
 			<ul style="position: relative; left: 1em; list-style-type: disc;">
 				<s:iterator value="contractor.nonCorporateOperators">
@@ -70,26 +70,26 @@
 				</s:iterator>
 			</ul>
 			</li>
-			<li><label><s:text name="%{scope}.Facilities.ViewOperators" />:</label> <a href="ContractorFacilities.action?id=<s:property value="id" />"><s:text name="%{scope}.Facilities.Facilities" /></a>
+			<li><label><s:text name="BillingDetail.Facilities.ViewOperators" />:</label> <a href="ContractorFacilities.action?id=<s:property value="id" />"><s:text name="BillingDetail.Facilities.Facilities" /></a>
 			</li>
-			<li><label><s:text name="%{scope}.Facilities.LastUpgradeDate" />:</label> <s:date name="contractor.lastUpgradeDate" format="MMM d, yyyy" /></li>
+			<li><label><s:text name="BillingDetail.Facilities.LastUpgradeDate" />:</label> <s:date name="contractor.lastUpgradeDate" format="MMM d, yyyy" /></li>
 		</ol>
 		</fieldset>
 		</td>
 		<td style="width: 5px;"></td>
 		<td style="vertical-align: top; width: 48%;">
 		<fieldset class="form">
-		<h2 class="formLegend"><s:text name="%{scope}.Invoicing.heading" /></h2>
+		<h2 class="formLegend"><s:text name="BillingDetail.Invoicing.heading" /></h2>
 		<ol>
-			<li><label><s:text name="%{scope}.Invoicing.CurrentBalance" />:</label> <s:property value="contractor.balance" /> <s:property value="contractor.currencyCode"/> <s:if
+			<li><label><s:text name="BillingDetail.Invoicing.CurrentBalance" />:</label> <s:property value="contractor.balance" /> <s:property value="contractor.currencyCode"/> <s:if
 				test="contractor.balance > 0">
 				<pics:permission perm="Billing" type="Edit">
 					<a href="PaymentDetail.action?id=<s:property value="id" />" class="add">Make a Payment</a>
 				</pics:permission>
 			</s:if></li>
-			<li><label><s:text name="%{scope}.Invoicing.BillingStatus" />:</label> <s:property value="contractor.billingStatus" /></li>
-			<li><label><s:text name="%{scope}.Invoicing.MustPay" />:</label> <s:property value="contractor.mustPay" /></li>
-			<li><label><s:text name="%{scope}.Invoicing.CurrentLevel" />:</label>
+			<li><label><s:text name="BillingDetail.Invoicing.BillingStatus" />:</label> <s:property value="contractor.billingStatus" /></li>
+			<li><label><s:text name="BillingDetail.Invoicing.MustPay" />:</label> <s:property value="contractor.mustPay" /></li>
+			<li><label><s:text name="BillingDetail.Invoicing.CurrentLevel" />:</label>
 				<table>
 				<s:iterator value="contractor.fees.keySet()" var="feeClass">
 					<s:if test="!contractor.fees.get(#feeClass).currentLevel.free && #feeClass.membership">
@@ -141,7 +141,7 @@
 			</s:if></fieldset>
 		</s:if>
 		<fieldset class="form bottom">
-		<h2 class="formLegend"><s:text name="%{scope}.TransactionHistory.heading" /></h2>
+		<h2 class="formLegend"><s:text name="BillingDetail.TransactionHistory.heading" /></h2>
 		<ol>
 			<li>
 			<table class="report">
