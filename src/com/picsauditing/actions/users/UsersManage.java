@@ -105,6 +105,9 @@ public class UsersManage extends PicsActionSupport {
 		if ("Suggest".equalsIgnoreCase(button))
 			return "suggest";
 
+		if ("department".equalsIgnoreCase(button))
+			return "department";
+
 		if (user.getAccount() != null)
 			account = user.getAccount();
 		if (user.getId() > 0)

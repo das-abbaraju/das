@@ -85,6 +85,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Date lockUntil = null;
 	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
+	private String department ;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -140,6 +141,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.lockUntil = u.lockUntil;
 		this.timezone = u.timezone;
 		this.locale = u.locale;
+		this.department = u.department;
 		this.groups = u.groups;
 		this.members = u.members;
 		this.ownedPermissions = u.ownedPermissions;
@@ -458,6 +460,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setTimezone(TimeZone timezone) {
 		this.timezone = timezone;
+	}
+
+	@Column(length = 100)
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
 	}
 
 	/**

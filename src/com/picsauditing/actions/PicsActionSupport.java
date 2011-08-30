@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -8,10 +9,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONObject;
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -31,6 +35,8 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectUser;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -308,6 +314,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getReferer() {
 		return ServletActionContext.getRequest().getHeader("Referer");
+	}
+
+	public List<BasicDynaBean> getDepartmentList() throws SQLException {
+		String like = (String) ((String[]) ActionContext.getContext().getParameters().get("q"))[0];
+		if (like == null)
+			like = "";
+		like = like.trim();
+
+		SelectUser sql = new SelectUser();
+		sql.addWhere("u.department LIKE '%" + Utilities.escapeQuotes(like) + "%'");
+		sql.addGroupBy("u.department");
+		sql.addField("u.department");
+		sql.addOrderBy("u.department");
+		Database db = new Database();
+		return db.select(sql.toString(), true);
 	}
 
 	public Set<User> getAuditorList() {

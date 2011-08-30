@@ -68,6 +68,9 @@
 			e.preventDefault();
 			showTab('tab_permissions');
 		});
+		$('#departmentSuggest').autocomplete('UserProfileAjax.action?user=<s:property value="user.id"/>&button=Department').result(function(event, data){
+			$('#departmentRole').val(data[3])
+		});
 	});
 </script>
 
@@ -128,6 +131,9 @@
 			<li>
 				<s:select name="u.timezone" id="timezone" value="u.timezone.iD" theme="form" 
 					list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+			</li>
+			<s:hidden id="departmentRole" />
+			<li><s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
 			</li>
 			<li>
 				<label><s:text name="global.CreationDate" />:</label>

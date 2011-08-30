@@ -24,6 +24,9 @@ $(function(){
 	$('#accountMoveSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Suggest').result(function(event, data){
 		$('#moveToAccount').val(data[1])
 	});
+	$('#departmentSuggest').autocomplete('UsersManageAjax.action?user=<s:property value="user.id"/>&button=Department').result(function(event, data){
+		$('#departmentRole').val(data[3])
+	});
 });
 </script>
 <style type="text/css">
@@ -247,6 +250,11 @@ div.autocomplete ul li {
 				<li><s:select name="user.timezone" value="user.timezone.iD" theme="form" 
 					list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"></s:select>
 				</li>
+				<s:if test="account.operatorCorporate">
+					<s:hidden id="departmentRole" />
+					<li><s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
+					</li>
+				</s:if>
 				<s:if test="user.account.id != 1100">
 				<li><label>&nbsp;Primary Contact:</label>
 					<s:checkbox id="setPrimaryAccount" name="setPrimaryAccount" />

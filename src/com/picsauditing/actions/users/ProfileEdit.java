@@ -113,6 +113,8 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 				permissions.setLocale(u.getLocale());
 
 				addActionMessage("Your profile was saved successfully");
+			} else if ("department".equalsIgnoreCase(button)) {
+				return "department";
 			}
 		}
 
