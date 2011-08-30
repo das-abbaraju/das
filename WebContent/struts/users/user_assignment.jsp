@@ -134,7 +134,7 @@ tr.dirty a.save { display: inline; }
 				<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state" value="%{state.isoCode}"></s:select></td>
 				<td><s:textfield name="assignment.postalStart" value="%{postalStart}" size="10"/></td>
 				<td><s:textfield name="assignment.postalEnd" value="%{postalEnd}" size="10"/></td>
-				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
+				<td><pics:autocomplete action="ContractorsAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
 				<s:if test="type.toString() == 'Auditor'">
 					<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit',100:'HSE Competency Review',176:'WA State Verification'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" value="%{auditType.id}" /></td>
 				</s:if>
@@ -152,7 +152,7 @@ tr.dirty a.save { display: inline; }
 		<td><s:select list="states" listKey="isoCode" listValue="name" headerKey="" headerValue="- State -" name="assignment.state"></s:select></td>
 		<td><s:textfield name="assignment.postalStart" size="10"/></td>
 		<td><s:textfield name="assignment.postalEnd" size="10"/></td>
-		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>
+		<td><pics:autocomplete action="ContractorsAutocomplete" htmlName="assignment.contractor" /></td>
 		<s:if test="type.toString() == 'Auditor'">
 			<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit',100:'HSE Competency Review',176:'WA State Verification'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" /></td>
 		</s:if>
