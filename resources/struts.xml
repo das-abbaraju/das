@@ -122,8 +122,8 @@
 			<result>struts/blank.jsp</result>
 		</action>
 		
-		<action name="ContractorPublic" class="com.picsauditing.actions.contractors.ContractorPublic">
-			<result>struts/contractors/con_public.jsp</result>
+		<action name="ContractorSummaryExternal" class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
+			<result>struts/contractors/con_summary_external.jsp</result>
 		</action>
 
 		<!-- <action name="error404" class="com.picsauditing.actions.Error404"> 

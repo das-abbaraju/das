@@ -3,12 +3,12 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <s:include value="../jquery.jsp"/>
 
-<h1>
-	<s:property value="contractor.name" />
-	<span class="sub" >Contractor Summary</span>
-</h1>
+<s:property value="contractor.name" /><br /><br />
+<s:property value="contractor.phone" /><br />
 <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />,
 <s:property value="contractor.state" />
 <s:property value="contractor.zip" /><br />
-<s:property value="contractor.country" />  
+<s:property value="contractor.country" />  <br />
+<s:property value="contractor.webUrl" /><br /><br />
+<s:property value="contractor.description" /><br />

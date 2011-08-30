@@ -38,5 +38,6 @@
 		<pattern>/ChartXML*</pattern>
 		<pattern>/con_pricing.jsp</pattern>
 		<pattern>/AuditFileUpload.action</pattern>
+		<pattern>/*External.action</pattern>
 	</decorator>
 </decorators>

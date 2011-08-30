@@ -8,7 +8,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 
 @SuppressWarnings("serial")
-public class ContractorPublic extends PicsActionSupport {
+public class ContractorSummaryExternal extends PicsActionSupport {
 	@Autowired
 	protected ContractorAccountDAO accountDao;
 
