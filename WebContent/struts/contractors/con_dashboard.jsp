@@ -452,6 +452,12 @@ table.report tr.hurdle td {
 				<s:if test="contractor.materialSupplier && contractor.productRisk != null">
 					<p><s:text name="global.ProductRisk" />: <strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong></p>
 				</s:if>
+				<p>
+					<s:text name="ContractorAccount.type" />: 
+					<s:if test="contractor.isOnsiteServices()"><s:text name="ContractorAccount.onsiteServices" /></s:if>
+					<s:if test="contractor.isOffsiteServices()">, <s:text name="ContractorAccount.offsiteServices" /></s:if>
+					<s:if test="contractor.isMaterialSupplier()">, <s:text name="ContractorAccount.supplier" /></s:if>
+				</p>
 				<s:if test="hasOperatorTags">
 					<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
 						<div><span><s:text name="OperatorTags.title" />: </span>
