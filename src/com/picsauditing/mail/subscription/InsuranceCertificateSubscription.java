@@ -1,17 +1,10 @@
 package com.picsauditing.mail.subscription;
 
-import java.util.List;
-
-import org.apache.commons.beanutils.BasicDynaBean;
-
 import com.picsauditing.PICS.I18nCache;
-import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectSQL;
 
 public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
@@ -37,13 +30,13 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN pqfdata d ON d.auditID = ca.id");
 			sql.addJoin("JOIN audit_question q ON q.id = d.questionID " + "AND q.columnHeader = 'Certificate' "
 					+ "AND q.questionType = 'FileCertificate' " + "AND q.number = 1");
-			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id"
-					+ (o.isOperator() ? " AND gc.genID = " + o.getInheritInsuranceCriteria().getId() : ""));
+			sql.addJoin("JOIN generalcontractors gc ON gc.subID = a.id");
+			if (o.isOperator())
+				sql.addWhere("gc.genID = " + o.getInheritInsuranceCriteria().getId());
 			if (o.isCorporate())
 				sql.addJoin("JOIN facilities f ON f.corporateID = " + o.getId() + " AND f.opID = gc.genID");
-			sql
-					.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = '"
-							+ caoStatus + "'");
+			sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = '"
+					+ caoStatus + "'");
 			sql.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
 					+ o.getId());
 			sql.addJoin("JOIN accounts o ON o.id = gc.genID");
@@ -63,7 +56,7 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			sql.addWhere("o.status = 'Active'");
 			sql.addWhere("d.answer > ''");
 
-			sql.addOrderBy("o.name,a.name,auditID");
+			sql.addOrderBy("o.name, a.name, auditID");
 
 			report.setLimit(100000);
 			report.setSql(sql);
