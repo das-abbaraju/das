@@ -120,7 +120,6 @@
 		<s:if test="#q.questionType == 'ESignature'">
 			<s:if test="#a == null || #this.hasChanged(#q.id)"> 
 				<label>Please enter your full name</label>
-				
 				<br />
 				<s:hidden name="auditData.comment" value="%{#this.IP}"/>
 				<s:textfield name="auditData.answer" value=""/>
