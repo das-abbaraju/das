@@ -87,7 +87,7 @@
 ">
 	<h3>
 		<s:if test="#questionStillRequired">
-			<img src="images/star.png" class="required">
+			<img src="images/star.png" class="required" alt="<s:text name="AuditQuestion.required" />">
 		</s:if>
 		
 		<span class="questionNumber">
