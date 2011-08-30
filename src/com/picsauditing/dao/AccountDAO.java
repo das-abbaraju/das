@@ -1,37 +1,21 @@
 package com.picsauditing.dao;
 
+import java.util.List;
+
 import javax.persistence.Query;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
-
-import java.util.List;
 
 @Transactional
 @SuppressWarnings("unchecked")
 public class AccountDAO extends PicsDAO {
-	public Account save(Account o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
-			o = em.merge(o);
-		}
-		return o;
-	}
-
-	public void remove(int id) {
-		Account row = find(id);
-		if (row != null) {
-			em.remove(row);
-		}
-	}
-
 	public Account find(int id) {
 		Account a = em.find(Account.class, id);
 		return a;

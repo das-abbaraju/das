@@ -115,7 +115,7 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 				}
 
 				// center.setNeedsIndexing(true);
-				center = accountDAO.save(center);
+				accountDAO.save(center);
 				id = center.getId();
 
 				addActionMessage("Successfully saved " + center.getName());
