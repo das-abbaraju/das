@@ -27,9 +27,9 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.conID = a.id AND fcc.criteriaID = 559");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours >= " + getFilter().getIncidenceRate() + ")");
 		sql.addWhere("(os.recordableTotal*200000/os.manHours < " + getFilter().getIncidenceRateMax() + ")");
-		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < " + 
-				getFilter().getIncidenceRateAvgMax() + ")" + 
-				(getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
+		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < "
+				+ getFilter().getIncidenceRateAvgMax() + ")"
+				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
@@ -39,25 +39,27 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("os.cad7");
 		sql.addField("os.neer");
 		sql.addField("n.trir");
-		
+
 		setVerifiedAnnualUpdateFilter("verifiedDate");
-		
-		if(getFilter().getCad7() > 0) {
+
+		if (getFilter().getCad7() > 0) {
 			sql.addWhere("os.cad7 IS NOT NULL AND os.cad7 >= " + getFilter().getCad7());
 		}
-		if(getFilter().getNeer() > 0) {
-			sql.addWhere("os.neer IS NOT NULL AND os.neer >= "+ getFilter().getNeer());
+		if (getFilter().getNeer() > 0) {
+			sql.addWhere("os.neer IS NOT NULL AND os.neer >= " + getFilter().getNeer());
 		}
 	}
-	
+
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		excelSheet.addColumn(new ExcelColumn("auditFor", "Year", ExcelCellType.Integer), 30);
-		excelSheet.addColumn(new ExcelColumn("location", "Location"));
-		excelSheet.addColumn(new ExcelColumn("description", "Description"));
-		excelSheet.addColumn(new ExcelColumn("SHAType", "SHAType"));
-		excelSheet.addColumn(new ExcelColumn("incidenceRate", "Rate", ExcelCellType.Double));
-		excelSheet.addColumn(new ExcelColumn("trirAverage", "Average", ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("auditFor", getText("Filters.label.ForYear"), ExcelCellType.Integer), 30);
+		excelSheet.addColumn(new ExcelColumn("location", getText("ReportIncidenceRate.Location")));
+		excelSheet.addColumn(new ExcelColumn("description", getText("global.Description")));
+		excelSheet.addColumn(new ExcelColumn("SHAType", getText("Filters.label.SHAType")));
+		excelSheet
+				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("ReportIncidenceRate.Average"),
+				ExcelCellType.Double));
 	}
 }
