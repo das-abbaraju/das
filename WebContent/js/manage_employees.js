@@ -156,11 +156,12 @@ function setupDatepicker() {
 }
 
 function loadEmployee(id) {
-	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', {
-		employee : id
-	}, function() {
+	startThinking({div:employeeFormDiv,message:translate('JS.ManageEmployees.message.AjaxLoad')});
+	
+	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', { employee : id }, function() {
 		setupEmployee();
 	});
+	
 	return false;
 }
 
