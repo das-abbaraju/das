@@ -113,7 +113,7 @@ var accountID = '<s:property value="account.id" />';
 					<div id="corporateList">
 						<div class="info"><s:text name="ManageFlagCriteriaOperator.message.LinkedAccounts" /></div>
 						<a href="#" class="remove" id="emptyChildCriteria"></a>
-						<div id="childCriteria"></div>
+						<div id="childCriteria" data-op="0"></div>
 						<table class="report">
 							<thead>
 								<tr>

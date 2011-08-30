@@ -35,6 +35,7 @@ $(function() {
 				function() {
 					stopThinking({div:'thinking'});
 					$('#emptyChildCriteria').text(opName).show();
+					$('#childCriteria').attr('data-op', opID);
 				}
 			);
 		}
@@ -61,14 +62,7 @@ $(function() {
 		e.preventDefault();
 		
 		var fcoID = $(this).closest('tr').attr('id');
-		
-		startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.ImpactedContractors')});
-		$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', { fcoID: fcoID, opID: accountID }, 
-			function() {
-				$(this).show('slow');
-				stopThinking({div:'thinking'});
-			}
-		);
+		getImpact(fcoID, accountID);
 	}).delegate('.edit', 'click', function(e) {
 		e.preventDefault();
 		
@@ -139,7 +133,35 @@ $(function() {
 			}
 		);
 	});
+	
+	$('#childCriteria').delegate('a.getImpact', 'click', function(e) {
+		e.preventDefault();
+		
+		var opID = $('#childCriteria').data('op');
+		var fcoID = $(this).closest('tr').attr('id');
+		
+		getImpact(fcoID, opID);
+	}).delegate('#recalculateAll', 'click', function(e) {
+		e.preventDefault();
+		
+		var opID = $('#childCriteria').data('op');
+		
+		$('#childCriteria table.report tbody tr').each(function() {
+			var fcoID = $(this).attr('id');
+			updateAffected(fcoID, opID);
+		});
+	});
 });
+
+function getImpact(fcoID, accountID) {
+	startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.ImpactedContractors')});
+	$('#impactDiv').load('OperatorFlagsCalculatorAjax.action', { fcoID: fcoID, opID: accountID }, 
+		function() {
+			$(this).show('slow');
+			stopThinking({div:'thinking'});
+		}
+	);
+}
 
 function submitHurdle(id) {
 	var insurance = $("#form1_insurance").val();
