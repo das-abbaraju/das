@@ -55,11 +55,11 @@
 	width: 300px;
 	font-style: italic;
 	margin: 5px;
-	line-height: 18px;
+	line-height: 16px;
 }
 
 #content div.target_recipient li {
-	padding: 5px 0 0;
+	padding: 3px 0 0;
 }
 
 #content div.target_recipient li span {

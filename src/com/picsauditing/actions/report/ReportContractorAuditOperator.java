@@ -212,10 +212,10 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			AmBest amBest = amBestDAO.findByNaic(comment);
 			if (amBest != null) {
 				if (!Strings.isEmpty(amBest.getRatingAlpha())) {
-					value = "<nobr> Ratings: " + amBest.getRatingAlpha() + "</nobr><br/>";
+					value = "<nobr> " + getText("AmBest.ratingCode") + " " + amBest.getRatingAlpha() + "</nobr><br/>";
 				}
 				if (!Strings.isEmpty(amBest.getFinancialAlpha())) {
-					value += "Class: " + amBest.getFinancialAlpha();
+					value += getText("AmBest.financialCode") + " " + amBest.getFinancialAlpha();
 				}
 			}
 		}

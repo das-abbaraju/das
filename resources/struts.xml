@@ -10,27 +10,18 @@
 
 	<package name="com.picsauditing" extends="struts-default">
 		<result-types>
-			<result-type name="plain-text"
-				class="com.picsauditing.strutsutil.PlainTextResult" />
-			<result-type name="action-messages"
-				class="com.picsauditing.strutsutil.MessageResult" />
-			<result-type name="json"
-				class="com.picsauditing.strutsutil.JSONResult" />
-			<result-type name="jsonp"
-				class="com.picsauditing.strutsutil.JSONPResult" />
+			<result-type name="plain-text" class="com.picsauditing.strutsutil.PlainTextResult" />
+			<result-type name="action-messages" class="com.picsauditing.strutsutil.MessageResult" />
+			<result-type name="json" class="com.picsauditing.strutsutil.JSONResult" />
+			<result-type name="jsonp" class="com.picsauditing.strutsutil.JSONPResult" />
 		</result-types>
 
 		<interceptors>
-			<interceptor name="http2https"
-				class="com.picsauditing.interceptors.PicsInterceptor" />
-			<interceptor name="i18n"
-				class="com.picsauditing.interceptors.I18nInterceptor" />
-			<interceptor name="security"
-				class="com.picsauditing.interceptors.SecurityInterceptor" />
-			<interceptor name="checkbox"
-				class="com.picsauditing.strutsutil.CheckboxInterceptor" />
-			<interceptor name="cachecontrol"
-				class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
+			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor" />
+			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor" />
+			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
+			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
+			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
@@ -68,12 +59,8 @@
 
 		<global-results>
 			<result name="Exception">/exception_handler.jsp</result>
-			<result name="NoRightsException">
-				/no_rights_exception.jsp
-			</result>
-			<result name="RecordNotFoundException">
-				/record_not_found_exception.jsp
-			</result>
+			<result name="NoRightsException">/no_rights_exception.jsp</result>
+			<result name="RecordNotFoundException">/record_not_found_exception.jsp</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
 			<result name="login">/struts/login_ajax.jsp</result>
 			<result name="login-redirect" type="redirectAction">

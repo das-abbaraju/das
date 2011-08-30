@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.UserDAO;
@@ -29,22 +30,40 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportUserPermissionMatrix extends ReportActionSupport {
+	@Autowired
+	private UserDAO userDAO;
+
 	private int accountID;
 	private List<User> users;
 	private Set<OpPerms> perms;
-	private UserDAO userDAO;
 
 	private TableDisplay tableDisplay;
 
-	public ReportUserPermissionMatrix(UserDAO userDAO) {
-		setReportName("User Permissions Matrix");
-		this.userDAO = userDAO;
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		buildPermissions();
+		return SUCCESS;
+	}
+	
+	public String download() throws Exception {
+		buildPermissions();
+		
+		setReportName(getText("ReportUserPermissionMatrix.title"));
+		
+		HSSFWorkbook wb = getTableDisplay().buildWorkbook();
+		String filename = getReportName();
+		filename += ".xls";
 
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+
+		return null;
+	}
+	
+	private void buildPermissions() {
 		if (accountID == 0 || !permissions.hasPermission(OpPerms.AllOperators))
 			accountID = permissions.getAccountId();
 
@@ -60,23 +79,6 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 			}
 		}
 		PicsLogger.stop();
-
-		if ("download".equals(button)) {
-			HSSFWorkbook wb = getTableDisplay().buildWorkbook();
-			String filename = getReportName();
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-
-			return null;
-		}
-
-		return SUCCESS;
 	}
 
 	public int getAccountID() {

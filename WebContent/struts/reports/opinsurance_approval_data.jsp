@@ -9,19 +9,19 @@
 <table class="report">
 <thead>
 	<tr>
-		<td><input title="Check all" type="checkbox" onclick="setAllChecked(this);"/></td>
-		<td title="PICS Recommendation" style="cursor: help;"></td>
-		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
-		<td><a>Policy</a></td>
-		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');">Expires</a></td>
+		<td><input title="Check all" type="checkbox" id="setAllCheckboxes" /></td>
+		<td title="<s:text name="ReportInsuranceApproval.PICSRecommendation" />" style="cursor: help;"></td>
+		<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></td>
+		<td><a><s:text name="ReportInsuranceApproval.Policy" /></a></td>
+		<td align="center"><a href="javascript: changeOrderBy('form1','expiresDate ASC');"><s:text name="ReportInsuranceApproval.Expires" /></a></td>
 		<s:if test="filter.primaryInformation">
-			<td>Contact</td>
+			<td><s:text name="global.Contact" /></td>
 		</s:if>
-		<td>Limits</td>
-		<td>AMBest</td>
-		<td title="Additional Requirements">Add'l</td>
-		<td>Cert</td>
-		<td>Notes</td>
+		<td><s:text name="ReportInsuranceApproval.Limits" /></td>
+		<td><s:text name="AmBest" /></td>
+		<td title="<s:text name="ReportInsuranceApproval.AdditionalRequirements" />"><s:text name="ReportInsuranceApproval.AdditionalShort" /></td>
+		<td><s:text name="ReportInsuranceApproval.Cert" /></td>
+		<td><s:text name="global.Notes" /></td>
 	</tr>
 </thead>
 <s:iterator value="data" status="stat">
@@ -45,7 +45,7 @@
 			<s:if test="get('auditID') == 14">
 				<s:iterator value="getDataForAudit(get('auditID'),'GoodStanding')">
 					<s:if test='answer == "X"'>
-						In Good Standing
+						<s:text name="ReportInsuranceApproval.InGoodStanding" />
 						<br />
 					</s:if>
 				</s:iterator>
@@ -71,8 +71,8 @@
 			</s:iterator>
 		</td>
 		<td class="center">
-			<s:if test="get('valid').toString() == 'Yes'">Yes</s:if>
-			<s:else>No</s:else>
+			<s:if test="get('valid').toString() == 'Yes'"><s:text name="YesNo.Yes" /></s:if>
+			<s:else><s:text name="YesNo.No" /></s:else>
 		</td>
 		<td class="center">
 			<s:if test="get('certID') != null">
@@ -89,9 +89,10 @@
 	<tr>
 		<td colspan="<s:property value="filter.primaryInformation ? 11 : 10" />">
 			<div style="height:28px;">
-			<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':'Approve Selected','Incomplete':'Reject Selected','NotApplicable':'Mark as N/A'}" />
+				<s:radio cssClass="statusSelects" name="newStatuses"
+					list="#{'Approved':getText('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getText('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getText('ReportInsuranceApproval.MarkNA')}" />
 			</div>
-			<a class="picsbutton positive" href="#" onclick="return changeAuditStatus();">Save Changes</a>
+			<a class="picsbutton positive" href="#" onclick="return changeAuditStatus();"><s:text name="ReportInsuranceApproval.SaveChanges" /></a>
 		</td>
 	</tr>
 </table>
@@ -101,5 +102,5 @@
 </div>
 </s:if>
 <s:else>
-	<div class="info">There are no matching policies to review at this time.</div>
+	<div class="info"><s:text name="ReportInsuranceApproval.NoMatchingPolicies" /></div>
 </s:else>

@@ -87,14 +87,6 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addGroupBy("cao.id");
 	}
 
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		return super.execute();
-	}
-
 	public Map<Integer, ContractorAuditOperator> getCaos() {
 		return caos;
 	}

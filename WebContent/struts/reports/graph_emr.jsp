@@ -10,7 +10,7 @@
 
 <div id="search">
 <s:form>
-<s:submit value="Refresh" cssClass="picsbutton positive" />
+<s:submit value="%{getText('button.Refresh')}" cssClass="picsbutton positive" />
 <br/>
 <s:text name="Filters.label.ForYear" />:
 <s:select list="yearsList" cssClass="forms" name="years" multiple="true" size="5" />

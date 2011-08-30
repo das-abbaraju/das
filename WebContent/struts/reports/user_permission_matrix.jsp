@@ -166,7 +166,18 @@ div.filterOption input {
 			</td>
 			<s:iterator value="tableDisplay.cols" id="perm">
 				<td class="<s:property value="#perm"/> permdata">
-					<s:property value="tableDisplay.get(#user, #perm)"/>
+					<s:if test="tableDisplay.get(#user, #perm).viewFlag">
+						<img src="images/preview.gif" alt="<s:text name="OpType.View" />" title="<s:text name="OpType.View" />" />
+					</s:if>
+					<s:if test="tableDisplay.get(#user, #perm).editFlag">
+						<img src="images/edit_pencil.gif" alt="<s:text name="OpType.Edit" />" title="<s:text name="OpType.Edit" />" />
+					</s:if>
+					<s:if test="tableDisplay.get(#user, #perm).deleteFlag">
+						<img src="images/cross.png" alt="<s:text name="OpType.Delete" />" title="<s:text name="OpType.Delete" />" />
+					</s:if>
+					<s:if test="tableDisplay.get(#user, #perm).grantFlag">
+						<img src="images/wrench.png" alt="<s:text name="OpType.Grant" />" title="<s:text name="OpType.Grant" />" />
+					</s:if>
 				</td>
 			</s:iterator>
 		</tr>

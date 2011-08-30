@@ -2,76 +2,59 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Insurance Policy Approval</title>
+<title><s:text name="ReportInsuranceApproval.title" /></title>
 <s:include value="reportHeader.jsp" />
 
 <script type="text/javascript">
-function setAllChecked(elm) {
-	$('.massCheckable').attr({checked: $(elm).is(':checked')});
-	return false;
-}
-
-function searchByFlag(flag) {
-	$('[name="filter.recommendedFlag"]').val(flag);
-	return clickSearch('form1');
-}
-
-function saveRows() {
-	var pars = $('#approveInsuranceForm').serialize();
-	pars += '&button=save';
-
-	startThinking({div: 'messages', message: 'Saving changes', type: 'large'});
-
-	$.post('ReportInsuranceApprovalAjax.action', pars, function(text, status) {
-			$('#messages').html(text);
-			if (status=='success')
-				clickSearch('form1');
-		}
-	);
-
-	return false;
-}
-
-function changeAuditStatus() {
-	var caoIDs = new Array();
-	$('#approveInsuranceForm').find('input[name="caoIDs"]:checked').each(function() {
-		caoIDs.push($(this).val());
+$(function() {
+	$('.buttons').delegate('.searchByFlag', 'click', function() {
+		var flag = $(this).data('color');
+		$('[name="filter.recommendedFlag"]').val(flag);
+		return clickSearch('form1');
 	});
-
-	var status = $('#approveInsuranceForm').find('input[name="newStatuses"]:checked').val();
-	if (status == undefined) {
-		alert("Please choose a status");
-		return false;
-	}
 	
-	var data= {
-		status: status,
-		caoIDs: caoIDs,
-		insurance: true
-	};
-
-	$('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function(){
-        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} });
-         
-        if($('.clearOnce').val()=='')
-			$('#clearOnceField').val(0);
+	$('#report_data').delegate('.positive', 'click', function(e) {
+		e.preventDefault();
 		
-	    $('#yesButton').click(function(){
-	        $.blockUI({message: 'Saving Status, please wait...'});
-	        data.note = $('#addToNotes').val();
-	        data.insurance = true;
-	        $.post('CaoSaveAjax!save.action', data, function() { $.unblockUI(); clickSearch('form1') });
-	    });
-	     
-	    $('#noButton').click(function(){
-	        $.unblockUI();
-	        return false;
-	    });
+		var caoIDs = new Array();
+		$('#approveInsuranceForm').find('input[name="caoIDs"]:checked').each(function() {
+			caoIDs.push($(this).val());
+		});
+
+		var status = $('#approveInsuranceForm').find('input[name="newStatuses"]:checked').val();
+		if (status == undefined) {
+			alert("Please choose a status");
+			return false;
+		}
+		
+		var data= {
+			status: status,
+			caoIDs: caoIDs,
+			insurance: true
+		};
+
+		$('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function(){
+	        $.blockUI({ message:$('#noteAjax'), css: { width: '350px'} });
+	         
+	        if($('.clearOnce').val()=='')
+				$('#clearOnceField').val(0);
+			
+		    $('#yesButton').click(function(){
+		        $.blockUI({message: 'Saving Status, please wait...'});
+		        data.note = $('#addToNotes').val();
+		        data.insurance = true;
+		        $.post('CaoSaveAjax!save.action', data, function() { $.unblockUI(); clickSearch('form1') });
+		    });
+		     
+		    $('#noButton').click(function(){
+		        $.unblockUI();
+		        return false;
+		    });
+		});
+	}).delegate('#setAllCheckboxes', 'click', function() {
+		$('.massCheckable').attr('checked', $(this).is(':checked'));
 	});
-		
-	return false;
-}
-
+});
 </script>
 <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 <link rel="stylesheet" href="js/jquery/blockui/blockui.css" type="text/css" />
@@ -85,14 +68,16 @@ function changeAuditStatus() {
 
 </head>
 <body>
-<h1>Policies Awaiting Decision</h1>
+<h1><s:text name="ReportInsuranceApproval.title" /></h1>
 
 <div class="buttons">
-	<button class="picsbutton" onclick="return searchByFlag('Green');">
-		<s:property	value="@com.picsauditing.jpa.entities.FlagColor@Green.bigIcon" escape="false"/> Show Policies to Approve
+	<button class="picsbutton searchByFlag" data-color="Green">
+		<s:property	value="@com.picsauditing.jpa.entities.FlagColor@Green.bigIcon" escape="false"/>
+		<s:text name="ReportInsuranceApproval.ShowPoliciesToApprove" />
 	</button>
-	<button class="picsbutton" onclick="return searchByFlag('Red');">
-		<s:property	value="@com.picsauditing.jpa.entities.FlagColor@Red.bigIcon" escape="false"/> Show Policies to Reject
+	<button class="picsbutton searchByFlag" data-color="Red">
+		<s:property	value="@com.picsauditing.jpa.entities.FlagColor@Red.bigIcon" escape="false"/>
+		<s:text name="ReportInsuranceApproval.ShowPoliciesToReject" />
 	</button>
 </div>
 <div class="clear"></div>

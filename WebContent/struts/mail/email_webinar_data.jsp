@@ -9,7 +9,7 @@
 <pics:permission perm="ContractorDetails">
 	<div class="right">
 		<a class="excel" href="javascript: download('EmailWebinar');" 
-			<s:if test="report.allRows > 500">onclick="return confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));"</s:if>
+			<s:if test="report.allRows > 500">onclick="return confirm(<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>);"</s:if>
 			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
 			<s:text name="global.Download" />
 		</a>
@@ -79,7 +79,7 @@
 				<td><a href="ContractorEdit.action?id=<s:property value="get('id')"/>"><s:text name="button.Edit" /></a></td>
 			</pics:permission>
 			<pics:permission perm="ContractorDetails">
-				<td><a href="ContractorDocuments.action?id=<s:property value="get('id')"/>">Audits</a></td>
+				<td><a href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ReportEmailWebinar.Audits" /></a></td>
 					<s:if test="pqfVisible">
 						<td class="icon center">
 								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon"><img

@@ -2,15 +2,44 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Email Wizard</title>
+<title><s:text name="EmailWizard.title" /></title>
 
 <s:include value="../reports/reportHeader.jsp" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
+<style type="text/css">
+.back_to_step {
+	display: none;
+}
+</style>
 <script type="text/javascript">
+$(function() {
+	<s:if test="type != null">
+		selectList('<s:property value="type"/>');
+	</s:if>
+	$('.target_sample').delegate('.target_recipient', 'click', function() {
+		selectList($(this).data('type'));
+	}).delegate('#back_to_step1', 'click', function(e) {
+		e.preventDefault();
+		
+		$('#back_to_step1').hide();
+		$('#target_recipients').show('normal');
+		$('#filter_recipients').fadeOut('normal');
+		$('#report_data').empty();
+		$('#selectedListType').hide();
+
+		$.ajax({
+			url: 'ReportFilterAjax.action',
+			data: {
+				clear: true
+			}
+		});
+	});
+});
+
 function selectList(listType) {
 	$('#filter_recipients').show();
-	$('#filter_recipients').html("<img src='images/ajax_process2.gif' width='48' height='48' />Loading filters for "+listType+"s");
+	$('#filter_recipients').html(translate('JS.EmailWizard.LoadingFilters' + listType + 's'));
 	$('#report_data').empty();
 	$('#target_recipients').hide('normal');
 	$('#back_to_step1').show();
@@ -18,81 +47,43 @@ function selectList(listType) {
 		function(response, status) {
 			if (status=='success') {
 				loadFiltersCallback();
-				$('#selectedListType').html(listType + " List").fadeIn('normal');
+				$('#selectedListType').html(translate('JS.EmailWizard.' + listType + 'List')).fadeIn('normal');
 			}
 		}
 	);
 }
-function showLists() {
-	$('#back_to_step1').hide();
-	$('#target_recipients').show('normal');
-	$('#filter_recipients').fadeOut('normal');
-	$('#report_data').empty();
-	$('#selectedListType').hide();
-
-	$.ajax({
-		url: 'ReportFilterAjax.action',
-		data: {
-			clear: true
-		}
-	});
-}
-<s:if test="type != null">
-$(function() {
-	selectList('<s:property value="type"/>');
-});
-</s:if>
 </script>
 </head>
 <body>
 
-<h1>Email Wizard</h1>
+<h1><s:text name="EmailWizard.title" /></h1>
 
 <s:if test="listSize > 0">
-	<div class="alert">You already have <s:property value="listSize"/> records in your mailing list. 
-		<a href="MassMailer.action">Skip to Step 4</a></div>
+	<div class="alert"><s:text name="EmailWizard.RecordsInMailingList"><s:param value="%{listSize}" /></s:text></div>
 </s:if>
 
 <div class="clear"></div>
 <!--Step 1-->
 <div class="target_sample">
-	<div class="instructions">Choose a method to find your recipients</div>
+	<div class="instructions"><s:text name="EmailWizard.ChooseAMethod" /></div>
 	<span class="step_number">1</span>
-	<div id="back_to_step1" style="display: none" onclick="showLists();return false;" class="back_to_step" title="Start Over">Start Over</div>
+	<div id="back_to_step1" class="back_to_step" title="<s:text name="EmailWizard.StartOver" />">
+		<s:text name="EmailWizard.StartOver" />
+	</div>
 	<h2 id="selectedListType" style="text-align: center"></h2>
 	<div id="target_recipients">
-		<div class="target_recipient" onclick="selectList('Contractor');">
-			<h2>Contractors</h2>
-			<ul class="samples" title="Sample emails you might send to contractors">
-				<li><span>"Notification of Annual Contractor Training Meeting"</span> to all contractors</li>
-				<li><span>"Invitation to Contractor Improvement Program"</span> to contractors with an Amber Flag color</li>
-				<li><span>"Crane Safety Policy Updates"</span> to all contractors who do "Cranes &amp; Rigging"</li>
-			</ul>
-		
-			<span class="footer_instruction">* One email per contractor</span>
+		<div class="target_recipient" data-type="Contractor">
+			<s:text name="EmailWizard.Contractors" />
 			<span class="shadow_sample"></span>
 		</div>
 		
-		<div class="target_recipient" onclick="selectList('User');">
-			<h2>Users</h2>
-			<ul class="samples" title="Sample emails you might send to users">
-				<li><span>"Login Instructions"</span> to all users who haven't logged in yet</li>
-				<li><span>"New Policy Change"</span> to all users</li>
-			</ul>
-			
-			<span class="footer_instruction">* One email per end user</span>
+		<div class="target_recipient" data-type="User">
+			<s:text name="EmailWizard.Users" />
 			<span class="shadow_sample"></span>
 		</div>
 		
-		<div class="target_recipient" onclick="selectList('Audit');">
-			<h2>Contractors by Audit</h2>
-			<ul class="samples" title="Sample emails you might send to contractors regarding one of their audits">
-				<li><span>"Thank you for completing your Audit"</span> to contractors who have completed a Manual or Implementation Audit this month</li>
-				<li><span>"Reminder to complete PQF"</span> to contractors with an outstanding PQF audit to complete</li>
-				<li><span>"Reminder to close requirements"</span> to contractors with open requirements on a Manual, Implementation, or Field audit</li>
-			</ul>
-			
-			<span class="footer_instruction">* One email per audit</span>
+		<div class="target_recipient" data-type="Audit">
+			<s:text name="EmailWizard.ContractorsByAudit" />
 			<span class="shadow_sample"></span>
 		</div>
 		<div class="clear"></div>
@@ -101,18 +92,18 @@ $(function() {
 
 <!--Step 2-->
 <div class="target_sample">
-	<div class="instructions">Find recipients by specifying search criteria</div>
+	<div class="instructions"><s:text name="EmailWizard.FindRecipients" /></div>
 	<span class="step_number">2</span>
 	<div id="filter_recipients"></div>
 </div>
 
 <!--Step 3-->
 <div class="target_sample">
-	<div class="instructions">Review your recipient list</div>
+	<div class="instructions"><s:text name="EmailWizard.ReviewRecipients" /></div>
 	<span class="step_number">3</span>
 	<div id="report_data"></div>
 </div>
 
-<span id="email_previousSTP"><a href="#">Previous step</a></span>
+<span id="email_previousSTP"><a href="#"><s:text name="EmailWizard.PreviousStep" /></a></span>
 </body>
 </html>

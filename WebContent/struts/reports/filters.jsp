@@ -594,7 +594,7 @@
 
 	<s:if test="filter.showRecommendedFlag">
 		<div class="filterOption">
-			<s:select list="filter.flagStatusList" headerKey="" headerValue="- %{getText('Filters.header.PolicyCompliance')} -"
+			<s:select list="filter.flagStatusList" listValue="%{getText(i18nKey)}" headerKey="" headerValue="- %{getText('Filters.header.PolicyCompliance')} -"
 				cssClass="forms" name="filter.recommendedFlag" />
 		</div>
 	</s:if>

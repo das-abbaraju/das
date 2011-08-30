@@ -54,9 +54,9 @@
 		<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 		<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 		<td><s:property value="get('caoAccountName')" /></td>
-		<td><s:property value="get('auditStatus')"/></td>
-		<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
-		<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
+		<td><s:text name="AuditStatus.%{get('auditStatus')}"/></td>
+		<td class="center"><s:date name="get('statusChangedDate')" /></td>
+		<td class="center"><s:date name="get('expiresDate')" /></td>
 	    <s:if test="permissions.picsEmployee">
 			<td><s:property value="get('auditor_name')"/></td>
 		</s:if>
