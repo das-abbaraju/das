@@ -11,7 +11,6 @@
 		$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
 			arrows: true,
 			cluetipClass: 'jtip',
-			local: true,
 			clickThrough: false,
 			activation: 'click',
 			sticky: true,
@@ -114,6 +113,12 @@
 		</span>
 		
 		<s:property value="#q.name" escape="false"/>
+		
+		<s:if test="permissions.admin">
+			<a name="qTranslations" class="cluetip" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
+				<img src="images/preview.gif">
+			</a>
+		</s:if>
 		
 		<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
 			<br />
