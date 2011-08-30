@@ -11,6 +11,7 @@ $(function(){
 			$('#auditViewArea').delegate('div.question:not(.save-disable)', 'change', this.events.save);
 			$('#auditViewArea').delegate('input.verify', 'click', this.events.verify);
 			
+			// question save trigger for "save-disable" questions
 			$('#auditViewArea').delegate('.question-save', 'click', function(event) {
 				AUDIT.question.events.save.apply($(this).closest('div.question'));
 			});
