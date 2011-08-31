@@ -5,8 +5,8 @@
 	</decorator>
 	<decorator name="simple" page="simple.jsp">
 		<pattern>/NoteEditor.action</pattern>
-		<pattern>/privacy_policy.jsp</pattern>
-		<pattern>/refund_policy.jsp</pattern>
+		<pattern>/PrivacyPolicy.action</pattern>
+		<pattern>/RefundPolicy.action</pattern>
 		<pattern>/ContractorAgreement.action</pattern>
 		<pattern>/contractor_agreement.jsp</pattern>
 		<pattern>/ContractorPricing.action</pattern>

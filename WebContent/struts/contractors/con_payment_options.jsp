@@ -208,9 +208,9 @@ function updateExpDate() {
 	</s:if>
 </s:if>
 <li><label>&nbsp;</label>
-	<a onClick="window.open('privacy_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
+	<a onClick="window.open('PrivacyPolicy.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
 		 href="#" class="ext"><s:text name="Footer.Privacy" /></a> |
-	<a href="#" onClick="window.open('refund_policy.jsp','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
+	<a href="#" onClick="window.open('RefundPolicy.action','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=500,height=500'); return false;"
 		 href="#" class="ext"><s:text name="ContractorPaymentOptions.RefundPolicy" /></a> |
 	<a href="ContractorAgreementAjax.action?id=<s:property value="contractor.id"/>" rel="facebox">
 	<s:text name="ContractorPaymentOptions.ContractorAgreement" /></a>
