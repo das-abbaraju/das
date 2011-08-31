@@ -95,16 +95,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	protected void buildQuery() {
 		super.buildQuery();
 
-		getFilter().setShowInsuranceLimits(true);
-		getFilter().setShowWaitingOn(false);
-		getFilter().setShowOpertorTagName(false);
-		getFilter().setShowRegistrationDate(false);
-		getFilter().setShowMinorityOwned(true);
-		getFilter().setPermissions(permissions);
-
-		if (permissions.getCorporateParent().size() > 0)
-			getFilter().setShowInParentCorporation(true);
-
 		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
@@ -182,6 +172,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 			addActionMessage(ActionContext.getContext().getSession().get("actionMessage").toString());
 			ActionContext.getContext().getSession().remove("actionMessage");
 		}
+
+		getFilter().setShowInsuranceLimits(true);
+		getFilter().setShowWaitingOn(false);
+		getFilter().setShowOpertorTagName(false);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowMinorityOwned(true);
+		getFilter().setPermissions(permissions);
+
+		if (permissions.getCorporateParent().size() > 0)
+			getFilter().setShowInParentCorporation(true);
 
 		if (button == null) {
 			runReport = false;
