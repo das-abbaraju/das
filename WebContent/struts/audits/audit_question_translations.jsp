@@ -22,4 +22,4 @@
 	</tbody>
 </table>
 
-<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="id"/>" target="_BLANK">Manage Translations</a>
+<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditQuestion.<s:property value="id"/>.name" target="_BLANK">Manage Translations</a>
