@@ -14,15 +14,9 @@ audit_type
 audit_type_rule
 flag_criteria
 invoice_fee
-operatorforms
-pqfoptions
 ref_country
 ref_state
-ref_trade
-ref_trade_alt
-ref_trade_stats
 token
-user_assignment
 widget
 widget_user
 workflow
