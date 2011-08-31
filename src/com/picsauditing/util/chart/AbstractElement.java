@@ -14,7 +14,6 @@ abstract public class AbstractElement {
 	protected static void append(StringBuilder xml, String name, String value) {
 		if (value != null) {
 			value = StringEscapeUtils.escapeXml(value);
-			value = value.replaceAll("&", "%26");
 
 			xml.append(" ").append(name).append("='").append(value).append("'");
 		}

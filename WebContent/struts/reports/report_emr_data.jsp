@@ -24,7 +24,7 @@
 	    <th><a href="?orderBy=a.name" ><s:text name="global.Contractor" /></a></th>
 	    <th><s:text name="ReportEmrRates.header.Year" /></th>
 	    <th><a href="javascript: changeOrderBy('form1','d.answer');"><s:text name="ReportEmrRates.header.Rate" /></a></th>
-	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');"><s:text name="Filters.label.Average" /></a></th>
+	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');"><s:text name="global.Average" /></a></th>
 	    <td><s:text name="global.Verified" /></td>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>

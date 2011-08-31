@@ -40,6 +40,6 @@ public class ReportEmrRates extends ReportAnnualAddendum {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("auditFor", getText("ReportEmrRates.header.Year"), ExcelCellType.Integer), 30);
 		excelSheet.addColumn(new ExcelColumn("answer", getText("ReportEmrRates.header.Rate"), ExcelCellType.Double));
-		excelSheet.addColumn(new ExcelColumn("emrAverage", getText("ReportEmrRates.header.Average"), ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("emrAverage", getText("global.Average"), ExcelCellType.Double));
 	}
 }

@@ -59,7 +59,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("SHAType", getText("Filters.label.SHAType")));
 		excelSheet
 				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
-		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("ReportIncidenceRate.Average"),
+		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"),
 				ExcelCellType.Double));
 	}
 }

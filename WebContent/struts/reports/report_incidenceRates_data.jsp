@@ -29,7 +29,7 @@
 				<td><s:text name="Filters.label.Neer" /></td>
 			</s:if>
 			<td><s:text name="Filters.label.ForYear" /></td>
-		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');"><s:text name="Filters.label.Average" /></a></th>
+		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');"><s:text name="global.Average" /></a></th>
 			<td><s:text name="global.Verified" /></td>
 			<td><s:text name="ReportIncidenceRate.TrirIndustryAverage" /></td>
 			<s:if test="showContact">
