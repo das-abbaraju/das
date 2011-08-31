@@ -126,15 +126,34 @@ public class QBXmlAdaptor {
 		return in.substring(start, end);
 	}
 
-	static public String getNullSafeZip(String zipCode, Country country) {
+	static public String nullSafeZip(String zipCode, Country country) {
 		if (country == null)
-			return nullSafeSubString(zipCode, 0, 5);
+			return nullSafeSubString(zipCode, 0, 8);
 		if (country.isUS())
 			return nullSafeSubString(zipCode, 0, 5);
 		if (country.isCanada())
 			return nullSafeSubString(zipCode, 0, 6);
-
-		return nullSafeSubString(zipCode, 0, 5);
+		if (country.isFrance())
+			return nullSafeSubString(zipCode, 0, 7);
+		if (country.isUK())
+			return nullSafeSubString(zipCode, 0, 8);
+		
+		return nullSafeSubString(zipCode, 0, 8);
+	}
+	
+	static public String nullSafeCity(String city, Country country) {
+		if (country == null)
+			return nullSafeSubString(city, 0, 24);
+		if (country.isUS())
+			return nullSafeSubString(city, 0, 27);
+		if (country.isCanada())
+			return nullSafeSubString(city, 0, 26);
+		if (country.isFrance())
+			return nullSafeSubString(city, 0, 25);
+		if (country.isUK())
+			return nullSafeSubString(city, 0, 24);
+		
+		return nullSafeSubString(city, 0, 24);
 	}
 
 	static public String nullSafePhoneFormat(String in) {
@@ -160,18 +179,18 @@ public class QBXmlAdaptor {
 			billAddress.setAddr2("c/o "
 					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
-			billAddress.setCity(nullSafeSubString(contractor.getBillingCity(), 0, 27));
+			billAddress.setCity(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()));
 			if (contractor.getBillingState() != null)
 				billAddress.setState(contractor.getBillingState().getIsoCode());
-			billAddress.setPostalCode(getNullSafeZip(contractor.getBillingZip(), contractor.getCountry()));
+			billAddress.setPostalCode(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
-			billAddress.setCity(nullSafeSubString(contractor.getCity(), 0, 27));
+			billAddress.setCity(nullSafeCity(contractor.getCity(), contractor.getCountry()));
 			if (contractor.getState() != null)
 				billAddress.setState(contractor.getState().getIsoCode());
-			billAddress.setPostalCode(getNullSafeZip(contractor.getZip(), contractor.getCountry()));
+			billAddress.setPostalCode(nullSafeZip(contractor.getZip(), contractor.getCountry()));
 		}
 		if (contractor.getCountry() != null)
 			billAddress.setCountry(contractor.getCountry().getIsoCode());

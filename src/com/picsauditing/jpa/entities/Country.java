@@ -198,4 +198,14 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	public boolean isUAE() {
 		return "AE".equals(isoCode);
 	}
+	
+	@Transient
+	public boolean isUK() {
+		return "GB".equals(isoCode);
+	}
+	
+	@Transient
+	public boolean isFrance() {
+		return "FR".equals(isoCode);
+	}
 }
