@@ -19,7 +19,7 @@
 <p><label><s:text name="ContractorAccount.name" />:</label> <s:property value="contractor.name" /></p>
 <p><label><s:text name="ContractorAccount.address" />:</label> <s:property value="contractor.address" /><br />
 <s:property value="contractor.city" />, <s:property value="contractor.state.isoCode" /> <s:property value="contractor.zip" /></p>
-<p><label><s:text name="ContractorAccount.created" />:</label> <s:date name="contractor.creationDate" format="MMM d, yyyy" /></p>
+<p><label><s:text name="ContractorAccount.created" />:</label> <s:date name="contractor.creationDate" format="%{getText('date.long')}" /></p>
 <p><label><s:text name="global.ContactPrimary" />:</label> <s:property value="contractor.primaryContact.name" /></p>
 <p><label><s:text name="User.phone" />:</label> <s:property value="contractor.primaryContact.phone" /></p>
 <p><label><s:text name="User.email" />:</label> <s:property value="contractor.primaryContact.email" /></p>
@@ -34,13 +34,15 @@
 			<table>
 			<s:iterator value="contractor.fees.keySet()" var="feeClass">
 				<s:if test="!contractor.fees.get(#feeClass).currentLevel.free && #feeClass.membership">
-					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
+					<tr><td colspan="2"><s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;</td>
+					<td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.fees.get(#feeClass).currentAmount" /></td>
+					<td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 				</s:if>
 			</s:iterator>
 			</table>
 		</s:if>
 		<s:else>
-			Free
+			<s:text name="ContractorStatsAjax.Free" />
 		</s:else>
 	</p>
 	<s:if test="contractor.mustPayB || (contractor.ccOnFile && creditCard != null)">

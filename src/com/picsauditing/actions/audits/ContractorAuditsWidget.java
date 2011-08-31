@@ -2,23 +2,22 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 
 @SuppressWarnings("serial")
 public class ContractorAuditsWidget extends PicsActionSupport {
+	@Autowired
 	protected ContractorAuditOperatorDAO dao;
+	
 	private List<ContractorAuditOperator> upcoming;
 	private List<ContractorAuditOperator> closed;
 	private List<ContractorAuditOperator> assigned;
 
-	public ContractorAuditsWidget(ContractorAuditOperatorDAO dao) {
-		this.dao = dao;
-	}
-
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

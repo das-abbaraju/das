@@ -5,22 +5,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.audits.ContractorAuditsWidget;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class WynnewoodRatesWidget extends ContractorAuditsWidget {
+	@Autowired
 	private ContractorAuditDAO conAuditDAO;
 	
-	public WynnewoodRatesWidget(ContractorAuditOperatorDAO dao, ContractorAuditDAO conAuditDAO) {
-		super(dao);
-		this.conAuditDAO = conAuditDAO; 
-	}
-
 	public Map<ContractorAudit, ContractorAudit> getContractRates() {
 		List<ContractorAudit> waitingOnContracts = conAuditDAO.findAuditsByOperator(
 				permissions.getAccountId(), 89, WaitingOn.Operator);

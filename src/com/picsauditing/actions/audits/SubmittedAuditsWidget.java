@@ -11,14 +11,6 @@ import com.picsauditing.search.SelectAccount;
 
 @SuppressWarnings("serial")
 public class SubmittedAuditsWidget extends PicsActionSupport {
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-		
-		return SUCCESS;
-	}
-	
 	public List<BasicDynaBean> getSubmittedAudits() {
 		SelectAccount sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);

@@ -3,11 +3,18 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th>Contractor</th>
+			<th><s:text name="global.Contractor" /></th>
 			<s:if test="permissions.admin">
-				<th>Requested By</th>
+				<th><s:text name="ContractorAccount.requestedBy" /></th>
 			</s:if>
-			<th>Date <s:if test="permissions.admin">Registered</s:if><s:else>Added</s:else></th>
+			<th>
+				<s:if test="permissions.admin">
+					<s:text name="RegisteredContractorsAjax.DateRegistered" />
+				</s:if>
+				<s:else>
+					<s:text name="RegisteredContractorsAjax.DateAdded" />
+				</s:else>
+			</th>
 		</tr>
 	</thead>
 	<s:iterator value="newContractors">
@@ -23,7 +30,7 @@
 			<s:if test="permissions.admin">
 				<td><s:property value="requestedBy.name" /></td>
 			</s:if>
-			<td class="center"><s:date name="creationDate" format="MMM dd yyyy" /></td>
+			<td class="center"><s:date name="creationDate" format="%{getText('date.long')}" /></td>
 		</tr>
 	</s:iterator>
 </table>

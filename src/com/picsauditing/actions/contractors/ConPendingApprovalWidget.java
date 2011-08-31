@@ -15,12 +15,10 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 
 @SuppressWarnings("serial")
 public class ConPendingApprovalWidget extends PicsActionSupport {
-
 	@Autowired
 	ContractorOperatorDAO contractorOperatorDAO;
 
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

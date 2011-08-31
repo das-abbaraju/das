@@ -13,14 +13,6 @@ import com.picsauditing.search.SelectAccount;
 public class WelcomeCallWidget extends PicsActionSupport {
 	private int csrID;
 
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		return SUCCESS;
-	}
-
 	public List<BasicDynaBean> getPendingWelcomeCalls() {
 		SelectAccount sql = new SelectAccount();
 		sql.setType(SelectAccount.Type.Contractor);

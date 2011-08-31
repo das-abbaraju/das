@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
@@ -13,14 +15,10 @@ import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class OperatorPicsContactsWidget extends PicsActionSupport {
+	@Autowired
 	private AccountUserDAO amDAO;
 	
-	public OperatorPicsContactsWidget(AccountUserDAO amDAO) {
-		this.amDAO = amDAO;
-	}
-	
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

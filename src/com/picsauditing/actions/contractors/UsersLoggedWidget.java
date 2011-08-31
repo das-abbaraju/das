@@ -2,20 +2,18 @@ package com.picsauditing.actions.contractors;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class UsersLoggedWidget extends PicsActionSupport {
+	@Autowired
 	UserDAO userDAO;
 
-	public UsersLoggedWidget(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

@@ -11,14 +11,6 @@ import com.picsauditing.search.SelectAccount;
 
 @SuppressWarnings("serial")
 public class PQFVerificationWidget extends PicsActionSupport {
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		return SUCCESS;
-	}
-
 	public List<BasicDynaBean> getPqfVerifications() {
 		SelectAccount sql = new SelectAccount();
 

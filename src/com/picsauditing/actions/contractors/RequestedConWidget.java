@@ -2,6 +2,8 @@ package com.picsauditing.actions.contractors;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
@@ -9,14 +11,10 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class RequestedConWidget extends PicsActionSupport {
+	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
 
-	public RequestedConWidget(ContractorRegistrationRequestDAO requestDAO) {
-		this.requestDAO = requestDAO;
-	}
-
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 

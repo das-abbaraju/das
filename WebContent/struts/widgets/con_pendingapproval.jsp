@@ -3,8 +3,8 @@
 <table class="report">
 	<thead>
 		<tr>
-			<th>Contractor</th>
-			<th>Date</th>
+			<th><s:text name="global.Contractor" /></th>
+			<th><s:text name="global.Date" /></th>
 		</tr>
 	</thead>
 	<s:iterator value="pendingApprovalContractors.keySet()" id="contractor">

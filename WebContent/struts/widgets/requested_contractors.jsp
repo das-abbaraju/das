@@ -3,14 +3,14 @@
 <table class="report" id="requestedContractor">
 	<thead>
 		<tr>
-			<td><s:text name="%{scope}.header.RequestedContractor" /></td>
-			<td><s:text name="%{scope}.header.RequestedBy" /></td>
-			<td><s:text name="%{scope}.header.Deadline" /></td>
-			<td><s:text name="%{scope}.header.LastContacted" /></td>
+			<td><s:text name="RequestedContractorsAjax.header.RequestedContractor" /></td>
+			<td><s:text name="RequestedContractorsAjax.header.RequestedBy" /></td>
+			<td><s:text name="RequestedContractorsAjax.header.Deadline" /></td>
+			<td><s:text name="RequestedContractorsAjax.header.LastContacted" /></td>
 		</tr>
 	</thead>
 	<s:if test="requestedContractors.size  == 0">
-		<tr><td colspan="4"><s:text name="%{scope}.message.NoOpenRequests" /></td></tr>
+		<tr><td colspan="4"><s:text name="RequestedContractorsAjax.message.NoOpenRequests" /></td></tr>
 	</s:if>
 	<s:else>
 	<s:iterator value="requestedContractors">
@@ -22,8 +22,8 @@
 				</s:if>
 				<s:else><s:property value="requestedBy.name" /></s:else>
 			</td>
-			<td><nobr><s:property value="maskDateFormat(deadline)"/></nobr></td>
-			<td class="call"><nobr><s:property value="maskDateFormat(lastContactDate)"/></nobr></td>
+			<td><nobr><s:date name="deadline"/></nobr></td>
+			<td class="call"><nobr><s:date name="lastContactDate"/></nobr></td>
 		</tr>
 	</s:iterator>
 	</s:else>
@@ -32,9 +32,9 @@
 	<table class="report" style="width: 100%">
 		<thead>
 			<tr>
-				<th><s:text name="%{scope}.header.ReturnedRequests" /></th>
-				<th><s:text name="%{scope}.header.RequestedBy" /></th>
-				<th><s:text name="%{scope}.header.LastContacted" /></th>
+				<th><s:text name="RequestedContractorsAjax.header.ReturnedRequests" /></th>
+				<th><s:text name="RequestedContractorsAjax.header.RequestedBy" /></th>
+				<th><s:text name="RequestedContractorsAjax.header.LastContacted" /></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -42,11 +42,11 @@
 				<tr>
 					<td><a href="RequestNewContractor.action?requestID=<s:property value="id"/>"><s:property value="name" /></a></td>
 					<td><s:property value="requestedByUser == null ? requestedByUserOther : requestedByUser.name" /></td>
-					<td><nobr><s:property value="maskDateFormat(lastContactDate)"/></nobr></td>
+					<td><nobr><s:date name="lastContactDate"/></nobr></td>
 				</tr>
 			</s:iterator>
 		</tbody>
 	</table>
 	
-	<a href="ReportNewRequestedContractor.action" class="preview">See all Open Registration Requests</a>
+	<a href="ReportNewRequestedContractor.action" class="preview"><s:text name="RequestedContractorsAjax.SeeAllOpenRequests" /></a>
 </s:if>

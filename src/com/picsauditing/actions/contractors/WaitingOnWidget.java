@@ -13,7 +13,6 @@ public class WaitingOnWidget extends PicsActionSupport {
 	private List<BasicDynaBean> data;
 	
 	public String execute() throws Exception {
-		loadPermissions();
 		if (!permissions.isLoggedIn())
 			return LOGIN_AJAX;
 		
