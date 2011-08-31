@@ -1137,7 +1137,7 @@
 			class="com.picsauditing.actions.report.ReportWcbAccounts">
 			<result>struts/reports/wcb_accounts_data.jsp</result>
 		</action>
-
+		
 		<action name="ReportImportPQFs" class="com.picsauditing.actions.report.ReportImportPQFs">
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
@@ -2258,6 +2258,19 @@
 
 		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
 			<result>struts/i18n/translate_js.jsp</result>
+		</action>
+		
+		<!-- Configuration Changes -->
+		<action name="ConfigChanges" class="com.picsauditing.actions.report.ConfigChanges">
+			<result>/struts/reports/config_changes.jsp</result>
+		</action>
+		
+		<action name="AuditTypeRulesChangesAjax" class="com.picsauditing.actions.rules.AuditTypeRulesChangesAjax">
+			<result>/struts/rules/audit_rule_table.jsp</result>
+		</action>
+		
+		<action name="AuditCatRulesChangesAjax" class="com.picsauditing.actions.rules.AuditCatRulesChangesAjax">
+			<result>/struts/rules/audit_rule_table.jsp</result>
 		</action>
 	</package>
 </struts>
