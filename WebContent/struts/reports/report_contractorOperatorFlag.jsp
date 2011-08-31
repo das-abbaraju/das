@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Contractor Operator Flag</title>
+<title><s:text name="ReportContractorOperatorFlag.subheading" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
@@ -26,12 +26,12 @@
 	<thead>
 		<tr>
 			<td></td>
-			<td>Contractor</td>
-			<td>Operator</td>
+			<td><s:text name="global.Contractor" /></td>
+			<td><s:text name="global.Operator" /></td>
 			<td><s:text name="global.Flag" /></td>
 			<s:if test="operatorAccount.approvesRelationships.isTrue()">
 				<pics:permission perm="ViewUnApproved">
-					<td><nobr>Approved</nobr></td>
+					<td><nobr><s:text name="ReportContractorOperatorFlag.Approved" /></nobr></td>
 				</pics:permission>
 			</s:if>
 			<s:if test="showContact">
@@ -53,15 +53,17 @@
 		<s:iterator value="data" status="stat">
 			<tr>
 				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-				<td><a
-					href="ContractorView.action?id=<s:property value="get('id')"/>"
-					><s:property value="get('name')" /></a>
+				<td>
+					<a href="ContractorView.action?id=<s:property value="get('id')"/>">
+						<s:property value="get('name')" />
+					</a>
 				</td>
 				<td><s:property value="get('opName')"/></td>
 				<td class="center">
 					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>" 
-						title="<s:property value="get('flag')"/> - Click to view details"><img 
-						src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0"></a>
+						title="<s:text name="ReportContractorOperatorFlag.ClickToViewDetails"><s:param value="%{get('flag')}" /></s:text>">
+						<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0">
+					</a>
 				</td>
 				<s:if test="operatorAccount.approvesRelationships.isTrue()">
 					<pics:permission perm="ViewUnApproved">

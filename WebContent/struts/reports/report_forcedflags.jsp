@@ -57,7 +57,7 @@
 			<td class="center">
 				<s:if test="get('opType').toString() == 'Operator'">
 					<a href="ContractorFlag.action?id=<s:property value="get('id')"/>&opID=<s:property value="get('opId')"/>"
-						title="Click to view Flag Color details">
+						title="<s:text name="ReportContractorsWithForcedFlags.ViewFlagColorDetails" />">
 						<img src="images/icon_<s:property value="get('flag')"/>Flag.gif" width="12" height="15" border="0">
 					</a>
 				</s:if>
@@ -79,8 +79,7 @@
 		</tr>
 	</s:iterator>
 </table>
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 
 </body>
 </html>

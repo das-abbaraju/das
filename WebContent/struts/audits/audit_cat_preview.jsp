@@ -30,9 +30,10 @@ $(document).ready(function() {
 		<ul id="aCatlist" class="vert-toolbar catUL">
 			<li class="head"><s:text name="Audit.header.Categories" /></li>
 			<s:iterator value="conAudit.auditType.topCategories">
-				<li class="catlist<s:if test="categoryID == id"> current</s:if>"><a class=""
-					href="AuditCatPreview.action?categoryID=<s:property value="id" />&button=PreviewCategory"
-					title="Preview Category"><s:property value="name" /></a></li>
+				<li class="catlist<s:if test="categoryID == id"> current</s:if>">
+					<a href="AuditCatPreview.action?categoryID=<s:property value="id" />&button=PreviewCategory"
+						title="<s:text name="Audit.PreviewCategory" />"><s:property value="name" /></a>
+				</li>
 			</s:iterator>
 		</ul>
 		</td>

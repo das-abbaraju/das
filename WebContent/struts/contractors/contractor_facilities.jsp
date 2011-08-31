@@ -201,7 +201,7 @@
 <table width="100%">
 <tr>
 	<td style="width: 44%; vertical-align: top;">
-	<h3><s:text name="%{scope}.ContractorFacilities.SelctedFacilities" /></h3>
+	<h3><s:text name="ContractorFacilities.ContractorFacilities.SelctedFacilities" /></h3>
 		<div id="thinkingDiv"></div>
 
 		<div id="facilities" >
@@ -223,17 +223,17 @@
 	</td>
 	<td style="width: 2%"></td>
 	<td style="width: 44%; vertical-align: top;">
-	<h3><s:text name="%{scope}.ContractorFacilities.AddFacilities" /></h3>
+	<h3><s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" /></h3>
 		<form id="facilitySearch" onsubmit="runSearch(); return false;">
 			<s:hidden name="id"/>
 			<div id="search">
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
 						onclick="runSearch()">Search</button>
-					<nobr><s:text name="%{scope}.ContractorFacilities.Search.Name" />: 
+					<nobr><s:text name="ContractorFacilities.ContractorFacilities.Search.Name" />: 
 						<s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/>
 					</nobr>
-					<nobr><s:text name="%{scope}.ContractorFacilities.Search.Location" />: 
+					<nobr><s:text name="global.Location" />: 
 						<s:select cssClass="forms clearable" list="stateList" 
 							onchange="runSearch()" name="state" listKey="isoCode" listValue="english" 
 							headerKey="" headerValue="- State or Province -"></s:select>

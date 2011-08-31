@@ -7,19 +7,18 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorOperatorFlag extends ReportAccount {
 
 	public ReportContractorOperatorFlag() {
-		setReportName("Contractor Operator Flag");
 		orderByDefault = "a.name, operator.name";
 	}
 
 	@Override
 	protected void buildQuery() {
+		setReportName(getText("ReportContractorOperatorFlag.subheading"));
 		skipPermissions = true;
 		super.buildQuery();
 
@@ -44,33 +43,32 @@ public class ReportContractorOperatorFlag extends ReportAccount {
 
 		sql.addJoin("JOIN generalcontractors gc on gc.subid = a.id");
 		sql.addJoin("JOIN accounts operator on operator.id = gc.genid");
-		
+
 		if (permissions.isAdmin()) {
 			sql.addField("GROUP_CONCAT(operator.name ORDER BY operator.name ASC SEPARATOR ', ') AS opName");
 			sql.addGroupBy("a.name, flag");
-		}
-		else
+		} else
 			sql.addField("operator.name AS opName");
-		
+
 		sql.addField("operator.id AS opId");
 		sql.addField("gc.flag");
 		sql.addField("lower(gc.flag) AS lflag");
 		sql.addWhere("a.status IN ('Active','Demo')");
 		sql.addWhere("operator.type = 'Operator'");
 		sql.addField("gc.workStatus");
-		if(!Strings.isEmpty(opIds))
+		if (!Strings.isEmpty(opIds))
 			sql.addWhere("operator.id in (" + opIds + ")");
 	}
 
 	@Override
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-		
+
 		if (permissions.isAdmin())
-			excelSheet.addColumn(new ExcelColumn("opName", "Operators", ExcelCellType.String), 30);
+			excelSheet.addColumn(new ExcelColumn("opName", getText("global.Operators")), 30);
 		else
-			excelSheet.addColumn(new ExcelColumn("opName", "Operator Name", ExcelCellType.String), 30);
-		
-		excelSheet.addColumn(new ExcelColumn("flag", "Flag", ExcelCellType.String), 40);
+			excelSheet.addColumn(new ExcelColumn("opName", getText("ReportContractorOperatorFlag.OperatorName")), 30);
+
+		excelSheet.addColumn(new ExcelColumn("flag", getText("global.Flag")), 40);
 	}
 }

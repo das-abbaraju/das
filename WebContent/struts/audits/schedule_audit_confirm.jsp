@@ -28,11 +28,11 @@
 		<li><label><s:text name="ScheduleAudit.label.AuditTime" />:</label> <s:date name="availabilitySelected.startDate" format="h:mm a z" /></li>
 
 		<s:if test="conAudit.conductedOnsite">
-			<li><label><s:text name="ScheduleAudit.label.Location" />:</label> <s:property value="conAudit.fullAddress" /> <a
+			<li><label><s:text name="global.Location" />:</label> <s:property value="conAudit.fullAddress" /> <a
 				href="ScheduleAudit.action?auditID=<s:property value="conAudit.id" />"><s:text name="ScheduleAudit.link.Change" /></a></li>
 		</s:if>
 		<s:else>
-			<li><label><s:text name="ScheduleAudit.label.Location" />:</label> <s:text name="ScheduleAudit.message.Web" /> &nbsp;&nbsp;&nbsp;&nbsp;<a
+			<li><label><s:text name="global.Location" />:</label> <s:text name="ScheduleAudit.message.Web" /> &nbsp;&nbsp;&nbsp;&nbsp;<a
 				href="http://help.picsauditing.com/wiki/Office_Audit" class="help" style="font-size: 10px" target="_BLANK"><s:text name="ScheduleAudit.help.WebAudit" /></a></li>
 			<li><label><s:text name="ScheduleAudit.label.VideoCamera" />:</label> <s:radio name="conAudit.needsCamera" theme="pics"
 				list="#{false: getText('ScheduleAudit.message.HasWebcam'), true: getText('ScheduleAudit.message.MailWebcam') + ': ' + conAudit.fullAddress}" />

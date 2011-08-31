@@ -40,7 +40,7 @@
 	</s:iterator>
 		<tr>
 			<td class="center">
-				<center><input title="Check all" type="checkbox" id="selectAll" /><br/><s:text name="ContractorApproval.SelectAll" /></center>
+				<center><input title="ContractorApproval.CheckAll" type="checkbox" id="selectAll" /><br/><s:text name="ContractorApproval.SelectAll" /></center>
 			</td>
 			<td>
 				<div style="height:28px;">

@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="%{scope}.title" /><s:if test="user.id > 0">: <s:property value="user.name"/></s:if></title>
+<title><s:text name="UsersManage.title" /><s:if test="user.id > 0">: <s:property value="user.name"/></s:if></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -62,7 +62,7 @@ div.autocomplete ul li {
 </style>
 </head>
 <body>
-<h1><s:text name="%{scope}.title" /></h1>
+<h1><s:text name="UsersManage.title" /></h1>
 
 <s:if test="account.contractor">
 	<a href="ContractorView.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
@@ -74,7 +74,7 @@ div.autocomplete ul li {
 	<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.admin">PICS</s:if>
-&gt; <a href="UsersManage.action?account=<s:property value="account.id"/>"><s:text name="%{scope}.title" /></a>
+&gt; <a href="UsersManage.action?account=<s:property value="account.id"/>"><s:text name="UsersManage.title" /></a>
 <s:if test="user.id > 0">&gt; <a href="?user=<s:property value="user.id"/>"><s:property value="user.name" /></a>
 </s:if>
 <s:if test="user.id == 0">&gt; NEW USER</s:if>
@@ -86,7 +86,7 @@ div.autocomplete ul li {
 		<button class="picsbutton positive" type="submit"><s:text name="button.Search" /></button>
 		<br />
 		<div class="filterOption">
-		<h4><s:text name="%{scope}.Type" />:</h4>
+		<h4><s:text name="UsersManage.Type" />:</h4>
 		<s:hidden name="account.id" value="%{account.id}" />
 		<s:radio name="isGroup"
 			list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" value="isGroup" />
@@ -104,11 +104,11 @@ div.autocomplete ul li {
 	<s:if test="!account.contractor">
 		<a class="add"
 			href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=Yes"
-			><s:text name="%{scope}.addGroup" /></a>
+			><s:text name="UsersManage.addGroup" /></a>
 	</s:if>
 	<a class="add" 
 		href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=No"
-		><s:text name="%{scope}.addUser" /></a>
+		><s:text name="UsersManage.addUser" /></a>
 	<s:if test="!account.contractor">
 		<a class="preview"
 			href="ReportUserPermissionMatrix.action?accountID=<s:property value="account.id"/>"><s:text name="ReportUserPermissionMatrix.title" /></a>
@@ -125,7 +125,7 @@ div.autocomplete ul li {
 				<thead>
 					<tr>
 						<td>&nbsp;</td>
-						<td colspan="2"><s:text name="%{scope}.UserGroup" /></td>
+						<td colspan="2"><s:text name="UsersManage.UserGroup" /></td>
 						<td><s:text name="User.lastLogin" /></td>
 					</tr>
 				</thead>
@@ -133,14 +133,14 @@ div.autocomplete ul li {
 					<tr>
 						<td class="right"><s:property value="#stat.count" />.</td>
 						<s:if test="get('isGroup') == 'Yes'">
-							<td><s:text name="%{scope}.Group" /></td>
+							<td><s:text name="UsersManage.Group" /></td>
 							<td style="font-weight: bold"><a
 								href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
 								value="get('name')" /></a></td>
 							<td><s:text name="global.NA" /></td>
 						</s:if>
 						<s:else>
-							<td><s:text name="%{scope}.User" /></td>
+							<td><s:text name="UsersManage.User" /></td>
 							<td><a
 								href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
 								class="userActive<s:property value="get('isActive')" />"><s:property value="get('name')" /></a></td>
@@ -148,7 +148,7 @@ div.autocomplete ul li {
 								<s:if test="get('lastLogin') != null">
 									<s:date name="get('lastLogin')" />
 								</s:if>
-								<s:else><s:text name="%{scope}.never" /></s:else>
+								<s:else><s:text name="UsersManage.never" /></s:else>
 							</td>
 						</s:else>
 					</tr>
@@ -187,7 +187,7 @@ div.autocomplete ul li {
 		<s:if test="user.locked">
 			<div class="alert">This user account is locked.
 				<pics:permission perm="EditAccountDetails">
-					<span title="<s:text name="%{scope}.help.Unlock" />Press this button to unlock this user's account">
+					<span title="<s:text name="UsersManage.help.Unlock" />Press this button to unlock this user's account">
 						<s:submit method="unlock" cssClass="picsbutton negative" value="%{getText(scope + '.button.UnlockThisAccount')}" />
 					</span>
 				</pics:permission>

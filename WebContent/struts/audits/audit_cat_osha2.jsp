@@ -2,8 +2,14 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="osha">
 <tr class="location">
-	<td colspan="3"><s:property value="conAudit.auditFor"/> <s:text name="%{type}.dataHeader"/> <s:property value="location"/> <s:property value="description"/>
-		<s:if test="verified"><span class="verified" style="font-size: 16px;" title="Verified by <s:property value="conAudit.auditor.name"/> From PICS">Verified</span></s:if>
+	<td colspan="3">
+		<s:property value="conAudit.auditFor"/>
+		<s:text name="%{type}.dataHeader"/>
+		<s:property value="location"/>
+		<s:property value="description"/>
+		<s:if test="verified">
+			<span class="verified" style="font-size: 16px;" title="<s:text name="Audit.VerifiedBy"><s:param value="%{conAudit.auditor.name}" /></s:text>"><s:text name="global.Verified" /></span>
+		</s:if>
 	</td>
 	<s:if test="type.toString().equals('OSHA') && corporate"><td colspan="2" class="label" style="text-align: center; font-size: smaller;">3 year avg.</td></s:if>
 </tr>

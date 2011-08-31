@@ -103,7 +103,7 @@
 			
 			<s:if test="!isStringEmpty(#q.helpText)">
 				<br />
-				<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="Additional Information"></a>
+				<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />></a>
 				<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
 					<span title="<s:property value="#q.name"/>">
 						<s:property value="#q.helpText" escape="false" />
@@ -122,7 +122,9 @@
 		
 		<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
 			<br />
-			<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="opens in new window">OSHA Citations</a>
+			<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
+				<s:text name="Audit.OshaCitations" />
+			</a>
 		</s:if>
 	</h3>
 

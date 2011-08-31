@@ -21,7 +21,7 @@
 		<tr>
 			<td></td>
 			<th><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></th>
-			<td><s:text name="ReportIncidenceRate.Location" /></td>
+			<td><s:text name="global.Location" /></td>
 			<td><s:text name="global.Type" /></td>
 			<td><s:text name="ReportIncidenceRate.Rate" /></td>
 			<s:if test="filter.shaType.toString().equals('COHS')">

@@ -9,7 +9,7 @@
 <table class="report">
 <thead>
 	<tr>
-		<td><input title="Check all" type="checkbox" id="setAllCheckboxes" /></td>
+		<td><input title="<s:text name="ReportInsuranceApproval.CheckAll" />" type="checkbox" id="setAllCheckboxes" /></td>
 		<td title="<s:text name="ReportInsuranceApproval.PICSRecommendation" />" style="cursor: help;"></td>
 		<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></td>
 		<td><a><s:text name="ReportInsuranceApproval.Policy" /></a></td>

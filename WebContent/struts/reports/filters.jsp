@@ -117,7 +117,7 @@
 
 	<s:if test="filter.showTaxID">
 		<div class="filterOption">
-			<s:textfield name="filter.taxID" cssClass="forms" size="9" title="must be 9 digits" />
+			<s:textfield name="filter.taxID" cssClass="forms" size="9" title="<s:text name="Filters.MustBe9Digits" />" />
 		</div>
 	</s:if>
 

@@ -4,7 +4,7 @@
 
 <html>
 <head>
-<title><s:text name="%{scope}.title" /></title>
+<title><s:text name="ManageProjects.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
@@ -179,7 +179,7 @@ $(function() {
 <table id="sitesTable">
 	<tr>
 		<td style="padding-right: 10px;">
-			<h3><s:text name="%{scope}.label.Projects" /></h3>
+			<h3><s:text name="ManageProjects.label.Projects" /></h3>
 			<h4><s:text name="global.Active" /></h4>
 			<table class="report">
 				<thead>
@@ -188,7 +188,7 @@ $(function() {
 						<th><s:text name="JobSite.name" /></th>
 						<s:if test="canEdit">
 							<th><s:text name="button.Edit" /></th>
-							<th><s:text name="%{scope}.label.TasksAndCompanies" /></th>
+							<th><s:text name="ManageProjects.label.TasksAndCompanies" /></th>
 							<th><s:text name="JobSite.projectStart" /></th>
 							<th><s:text name="JobSite.projectStop" /></th>
 						</s:if>
@@ -214,10 +214,10 @@ $(function() {
 								</td>
 								<s:if test="canEdit">
 									<td class="center">
-										<a href="#" class="edit" title="<s:text name="%{scope}.help.EditProject" />"></a>
+										<a href="#" class="edit" title="<s:text name="ManageProjects.help.EditProject" />"></a>
 									</td>
 									<td class="center">
-										<a href="#" class="preview" title="View"></a>
+										<a href="#" class="preview" title="<s:text name="button.View" />"></a>
 									</td>
 									<td><s:date name="#site.projectStart" /></td>
 									<td><s:date name="#site.projectStop" /></td>
@@ -248,7 +248,7 @@ $(function() {
 										<a href="#" class="edit" title="Edit Project"></a>
 									</td>
 									<td class="center">
-										<a href="#" class="preview" title="View"></a>
+										<a href="#" class="preview" title="<s:text name="button.View" />"></a>
 									</td>
 									<td><s:date name="#site.projectStart" /></td>
 									<td><s:date name="#site.projectStop" /></td>
@@ -265,19 +265,19 @@ $(function() {
 					</s:if>
 					<s:if test="(activeSites.size + futureSites.size) == 0">
 						<tr>
-							<td colspan="<s:property value="canEdit ? 7 : 8" />"><s:text name="%{scope}.message.NoSites" /></td>
+							<td colspan="<s:property value="canEdit ? 7 : 8" />"><s:text name="ManageProjects.message.NoSites" /></td>
 						</tr>
 					</s:if>
 				</tbody>
 			</table>
 			<s:if test="canEdit">
 				<div id="editProject"></div>
-				<a href="#" id="addLink" class="add"><s:text name="%{scope}.link.AddNewProject" /></a>
+				<a href="#" id="addLink" class="add"><s:text name="ManageProjects.link.AddNewProject" /></a>
 				<div id="addJobSite" style="display: none; clear: both;">
 					<s:form id="newJobSite" method="POST" enctype="multipart/form-data" cssStyle="clear: both;">
 						<s:hidden name="operator" />
 						<fieldset class="form">
-							<h2 class="formLegend"><s:text name="%{scope}.link.AddNewProject" /></h2>
+							<h2 class="formLegend"><s:text name="ManageProjects.link.AddNewProject" /></h2>
 							<ol>
 								<li><label><s:text name="JobSite.label" /><span class="redMain">*</span>:</label>
 									<s:textfield name="siteLabel" size="20" maxlength="15" />
@@ -323,7 +323,7 @@ $(function() {
 </table>
 <s:if test="inactiveSites.size() > 0">
 	<div>
-		<h4><s:text name="%{scope}.label.PastProjects" /></h4>
+		<h4><s:text name="ManageProjects.label.PastProjects" /></h4>
 		<table class="report">
 			<thead>
 				<tr><th></th>
@@ -335,7 +335,7 @@ $(function() {
 					<th><s:text name="JobSite.projectStart" /></th>
 					<th><s:text name="JobSite.projectStop" /></th>
 					<s:if test="canEdit">
-						<th><s:text name="%{scope}.label.Reactivate" /></th>
+						<th><s:text name="ManageProjects.label.Reactivate" /></th>
 					</s:if>
 				</tr>
 			</thead>

@@ -67,13 +67,13 @@
 						<td class="progress nobr">
 							<s:if test="isShowVerifiedBar(#currentCao)">
 								<div style="position: relative">
-									<table class="progressTable" title="Percent Verified"><tr><td class="progressBar" style="width: <s:property value="percentVerified" />%"></td><td style="width: <s:property value="100 - percentVerified" />%"></td></tr></table>
+									<table class="progressTable" title="<s:text name="Audit.PercentVerified" />"><tr><td class="progressBar" style="width: <s:property value="percentVerified" />%"></td><td style="width: <s:property value="100 - percentVerified" />%"></td></tr></table>
 									<span class="progressPercent"><s:property value="percentVerified" />%</span>
 								</div>
 							</s:if>
 							<s:elseif test="isShowCompleteBar(#currentCao)">
 								<div style="position: relative">
-									<table class="progressTable" title="Percent Complete"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
+									<table class="progressTable" title="<s:text name="Audit.PercentComplete" />"><tr><td class="progressBar" style="width: <s:property value="percentComplete" />%"></td><td style="width: <s:property value="100 - percentComplete" />%"></td></tr></table>
 									<span class="progressPercent"><s:property value="percentComplete" />%</span>
 								</div>
 							</s:elseif>

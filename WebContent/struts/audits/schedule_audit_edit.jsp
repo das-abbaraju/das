@@ -107,7 +107,11 @@ function showChooseDate(override) {
 <h2><s:text name="ScheduleAudit.label.Reschedule"><s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param></s:text></h2>
 
 <div>
-<a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="opens in new window"><s:text name="ScheduleAudit.button.OpenAuditorSchedule"><s:param><s:property value="conAudit.auditor.name"/></s:param></s:text></a>
+<a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="<s:text name="global.NewWindow" />">
+	<s:text name="ScheduleAudit.button.OpenAuditorSchedule">
+		<s:param value=%{conAudit.auditor.name}" />
+	</s:text>
+</a>
 </div>
 
 <s:form onsubmit="return submitForm();">
@@ -135,7 +139,7 @@ function showChooseDate(override) {
 			<s:property value="permissions.timezone.displayName"/>
 		</li>
 		<li><label><s:text name="global.SafetyProfessional" />:</label> <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/></li>
-		<li><label><s:text name="ScheduleAudit.label.Location" />:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
+		<li><label><s:text name="global.Location" />:</label> <s:radio name="conAudit.conductedOnsite" theme="pics"
 			list="#{false: getText('ScheduleAudit.message.Web'), true: getText('ScheduleAudit.message.OnSite')}" /></li>
 		<s:if test="conAudit.contractorAccount.webcam.id > 0">
 			<li><label><s:text name="ScheduleAudit.label.CurrentWebcam" />:</label> <s:property value="conAudit.contractorAccount.webcam" /></li>
@@ -147,7 +151,7 @@ function showChooseDate(override) {
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="ScheduleAudit.label.Location" /></h2>
+	<h2 class="formLegend"><s:text name="global.Location" /></h2>
 	<ol style="float: left;">
 		<li><s:text name="ScheduleAudit.message.AddressConducted" /></li>
 		<li><label></label><input type="button" value="<s:text name="ScheduleAudit.button.UseContractorInfo" />" onclick="useContractor()"/></li>
