@@ -21,6 +21,7 @@ public class ReportFilter extends TranslationActionSupport implements Serializab
 	protected boolean allowMailReport = false;
 	protected String customAPI;
 	protected boolean showAnyOperator = false;
+	protected int showSelfPerformedTrade = 2;
 
 	public boolean isAllowMailMerge() {
 		return allowMailMerge;
@@ -90,5 +91,13 @@ public class ReportFilter extends TranslationActionSupport implements Serializab
 
 	public void setShowAnyOperator(boolean showAnyOperator) {
 		this.showAnyOperator = showAnyOperator;
+	}
+
+	public int getShowSelfPerformedTrade() {
+		return showSelfPerformedTrade;
+	}
+
+	public void setShowSelfPerformedTrade(int showSelfPerformedTrade) {
+		this.showSelfPerformedTrade = showSelfPerformedTrade;
 	}
 }

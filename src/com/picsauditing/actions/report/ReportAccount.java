@@ -253,10 +253,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				String stateList = Strings.implodeForDB(states, ",");
 				sb.append("a.state IN (").append(stateList).append(") OR ")
 						.append("EXISTS (SELECT 'x' FROM pqfdata d ")
-						.append("JOIN audit_question aq ON aq.id = d.questionID ")
-						.append("WHERE ca1.id = d.auditID ")
-						.append("AND aq.uniqueCode in (").append(stateList)
-						.append(")) ");
+						.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
+						.append("AND aq.uniqueCode in (").append(stateList).append(")) ");
 				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
 			}
 
@@ -294,9 +292,15 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
 				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
 				tradeSQL.addWhere("a.id = ct.conID");
-				// TODO allow users to search for Self Performed, Manufacture and Activity Percent
+				// TODO allow users to search for Manufacture
+				// and Activity Percent
 				tradeSQL.addWhere("ct.activityPercent > 1");
-				tradeSQL.addWhere("ct.selfPerformed = 1");
+
+				if (f.getShowSelfPerformedTrade() == 1)
+					tradeSQL.addWhere("ct.selfPerformed = 1");
+				else if (f.getShowSelfPerformedTrade() == 0)
+					tradeSQL.addWhere("ct.selfPerformed = 0");
+
 				tradeSQL.addWhere("related.id IN (" + tradeID + ")");
 				sql.addWhere("EXISTS ( " + tradeSQL.toString() + ")");
 			}

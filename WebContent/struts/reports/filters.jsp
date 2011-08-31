@@ -128,6 +128,8 @@
 			<span class="clearLink q_box select">
 				<s:textfield rel="Trade/true" name="filter.trade" cssClass="tokenAuto" />
 				<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				<s:radio list="#{2:getText('Filters.status.Any'),1:getText('ContractorList.label.SelfPerformed'),0:getText('ContractorList.label.SubContracted')}"
+					name="filter.showSelfPerformedTrade"/>
 			</span>
 		</div>
 	</s:if>
