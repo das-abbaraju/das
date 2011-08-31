@@ -68,7 +68,7 @@
 			e.preventDefault();
 			showTab('tab_permissions');
 		});
-		$('#departmentSuggest').autocomplete('UserProfileAjax.action?user=<s:property value="user.id"/>&button=Department').result(function(event, data){
+		$('#departmentSuggest').autocomplete('UserProfileAjax!department.action?user=<s:property value="user.id"/>').result(function(event, data){
 			$('#departmentRole').val(data[3])
 		});
 	});
@@ -104,7 +104,7 @@
 		
 <s:form id="saveProfileForm" cssClass="form">
 	<s:hidden name="url"/>
-	<s:hidden name="u.id" />
+	<s:hidden name="u" value="%{u.id}" />
 	<fieldset>
 	<h2><s:text name="ProfileEdit.Profile.heading" /></h2>
 		<ol>
@@ -157,8 +157,7 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<input type="hidden" name="button" value="save">
-		<input type="submit" class="picsbutton positive" value="<s:text name="button.Save" />">
+		<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save" />
 	</fieldset>
 </s:form>
 		

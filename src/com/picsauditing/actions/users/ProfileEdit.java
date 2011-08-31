@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -22,16 +24,22 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ProfileEdit extends PicsActionSupport implements Preparable {
-	protected User u;
+public class ProfileEdit extends PicsActionSupport {
+	@Autowired
 	protected UserDAO dao;
+	@Autowired
 	protected ContractorAccountDAO accountDao;
+	@Autowired
 	protected UserSwitchDAO userSwitchDao;
+	@Autowired
 	protected EmailSubscriptionDAO emailSubscriptionDAO;
+	@Autowired
+	protected UserLoginLogDAO loginLogDao;
+
+	protected User u;
 	protected String password1;
 	protected String password2;
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
@@ -39,86 +47,73 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 
 	private boolean goEmailSub = false;
 
-	public ProfileEdit(UserDAO dao, ContractorAccountDAO accountDao, UserSwitchDAO userSwitchDao,
-			EmailSubscriptionDAO emailSubscriptionDAO) {
-		this.dao = dao;
-		this.accountDao = accountDao;
-		this.userSwitchDao = userSwitchDao;
-		this.emailSubscriptionDAO = emailSubscriptionDAO;
-	}
-
-	public void prepare() throws Exception {
-		getPermissions();
-		u = dao.find(permissions.getUserId());
-	}
-
 	@Anonymous
 	public String execute() throws Exception {
 		loadPermissions();
-
 		if (!permissions.isLoggedIn()) {
-			redirect("Login.action?button=logout&msg=Your session has timed out. Please log back in");
+			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
 			return LOGIN;
 		}
 
 		if (!permissions.hasPermission(OpPerms.EditProfile)) {
-			addActionError("This user does not have access to Edit their Profile. Please contact your Administrator");
+			addActionError(getText("ProfileEdit.error.MissingEditProfile"));
 			return BLANK;
 		}
 
-		// u = dao.find(permissions.getUserId());
-
-		if (button != null) {
-			if (button.equals("save")) {
-				permissions.tryPermission(OpPerms.EditProfile, OpType.Edit);
-
-				dao.clear();
-
-				if (dao.duplicateUsername(u.getUsername(), u.getId())) {
-					addActionError("Another user is already using the username: " + u.getUsername());
-					return SUCCESS;
-				}
-
-				String result = Strings.validUserName(u.getUsername().trim());
-				if (!result.equals("valid")) {
-					addActionError(result);
-					return SUCCESS;
-				}
-
-				if (!Strings.isEmpty(password2)) {
-					if (!password1.equals(password2))
-						addActionError("Passwords don't match");
-
-					if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail()))
-						addActionError("Please enter a valid email address. This is our main way of communicating with you so it must be valid.");
-
-					if (getActionErrors().size() > 0)
-						return SUCCESS;
-					int maxHistory = 0;
-					// u.getAccount().getPasswordPreferences().getMaxHistory()
-					// TODO: Check is addPasswordToHistory is still needed
-					u.addPasswordToHistory(password1, maxHistory);
-					u.setEncryptedPassword(password1);
-					if (!Strings.isEmpty(url) && u.isForcePasswordReset())
-						redirect(url);
-
-					u.setForcePasswordReset(false);
-					permissions.setForcePasswordReset(false);
-				}
-				u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-				permissions.setTimeZone(u);
-				permissions.setLocale(u.getLocale());
-				ActionContext.getContext().getSession().put("permissions", permissions);
-				u = dao.save(u);
-				permissions.setLocale(u.getLocale());
-
-				addActionMessage("Your profile was saved successfully");
-			} else if ("department".equalsIgnoreCase(button)) {
-				return "department";
-			}
-		}
+		u = dao.find(permissions.getUserId());
 
 		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.EditProfile, type = OpType.Edit)
+	public String save() throws Exception {
+		dao.clear();
+
+		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
+			addActionError(getText("ProfileEdit.error.UsernameInUse", u.getUsername()));
+			return SUCCESS;
+		}
+
+		String result = Strings.validUserName(u.getUsername().trim());
+		if (!result.equals("valid")) {
+			addActionError(result);
+			return SUCCESS;
+		}
+
+		if (!Strings.isEmpty(password2)) {
+			if (!password1.equals(password2))
+				addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
+
+			if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail()))
+				addActionError(getText("ProfileEdit.error.EnterValidEmail"));
+
+			if (getActionErrors().size() > 0)
+				return SUCCESS;
+			int maxHistory = 0;
+			// u.getAccount().getPasswordPreferences().getMaxHistory()
+			// TODO: Check is addPasswordToHistory is still needed
+			u.addPasswordToHistory(password1, maxHistory);
+			u.setEncryptedPassword(password1);
+			if (!Strings.isEmpty(url) && u.isForcePasswordReset())
+				redirect(url);
+
+			u.setForcePasswordReset(false);
+			permissions.setForcePasswordReset(false);
+		}
+		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
+		permissions.setTimeZone(u);
+		permissions.setLocale(u.getLocale());
+		ActionContext.getContext().getSession().put("permissions", permissions);
+		u = dao.save(u);
+		permissions.setLocale(u.getLocale());
+
+		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
+
+		return SUCCESS;
+	}
+	
+	public String department() {
+		return "department";
 	}
 
 	public User getU() {
@@ -142,7 +137,6 @@ public class ProfileEdit extends PicsActionSupport implements Preparable {
 	}
 
 	public List<UserLoginLog> getRecentLogins() {
-		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(u.getId(), 10);
 	}
 
