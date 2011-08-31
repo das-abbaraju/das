@@ -115,7 +115,7 @@
 		<s:property value="#q.name" escape="false"/>
 		
 		<s:if test="permissions.admin">
-			<a name="qTranslations" class="cluetip" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
+			<a name="qTranslations" class="cluetip debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
 				<img src="images/preview.gif">
 			</a>
 		</s:if>
