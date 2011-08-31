@@ -143,7 +143,7 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	@Override
-	public String getText(String aTextName, String defaultValue, List<Object> args) {
+	public String getText(String aTextName, String defaultValue, List<?> args) {
 		return getText(aTextName, defaultValue, args, null);
 	}
 
@@ -153,7 +153,7 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	@Override
-	public String getText(String aTextName, String defaultValue, List<Object> args, ValueStack stack) {
+	public String getText(String aTextName, String defaultValue, List<?> args, ValueStack stack) {
 		useKey(aTextName);
 		if (i18nCache.hasKey(aTextName, getLocale())) {
 			Object[] argArray = null;
@@ -179,7 +179,7 @@ public class TranslationActionSupport extends ActionSupport {
 	}
 
 	@Override
-	public String getText(String aTextName, List<Object> args) {
+	public String getText(String aTextName, List<?> args) {
 		return getText(aTextName, null, args);
 	}
 
