@@ -90,6 +90,9 @@ public class UsersManage extends PicsActionSupport {
 	public String execute() throws Exception {
 		startup();
 
+		if ("department".equalsIgnoreCase(button))
+			return "department";
+
 		if (user == null)
 			return SUCCESS;
 
@@ -104,9 +107,6 @@ public class UsersManage extends PicsActionSupport {
 
 		if ("Suggest".equalsIgnoreCase(button))
 			return "suggest";
-
-		if ("department".equalsIgnoreCase(button))
-			return "department";
 
 		if (user.getAccount() != null)
 			account = user.getAccount();
