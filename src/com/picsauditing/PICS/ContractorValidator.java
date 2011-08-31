@@ -37,7 +37,7 @@ public class ContractorValidator {
 			errorMessages.addElement("Please fill in the City field.");
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
 			errorMessages.addElement("Please select a Country");
-		if (contractor.getCountry().isHasStates()) {
+		if (contractor.getCountry() != null && contractor.getCountry().isHasStates()) {
 			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
 				errorMessages.addElement("Please select a State");
 			}
@@ -46,9 +46,10 @@ public class ContractorValidator {
 		if (Strings.isEmpty(contractor.getPhone()))
 			errorMessages.addElement("Please fill in the Phone field.");
 
-		if (!contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
+		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
-		if (contractor.getCountry().isUS()
+		if (contractor.getCountry() != null
+				&& contractor.getCountry().isUS()
 				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\d{9}", contractor
 						.getTaxId()))) {
 			errorMessages.addElement("Please enter your 9 digit Tax ID with only the digits 0-9, no dashes.");
@@ -135,13 +136,8 @@ public class ContractorValidator {
 				return errorMessages;
 			}
 
-			ContractorAccount con = null;
-			if (contractorAccount.getId() > 0)
-				con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country, contractorAccount);
-			else
-				con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
-
-			if (con != null) {
+			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
+			if (con != null && !con.equals(contractorAccount)) {
 				if (con.getCountry().isUS())
 					errorMessages
 							.add("The Tax ID which was entered already exists in the United States. Please contact"

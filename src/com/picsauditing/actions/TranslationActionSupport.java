@@ -129,6 +129,10 @@ public class TranslationActionSupport extends ActionSupport {
 	/**
 	 * This is for a parameter-based getText
 	 */
+	public String getTextParameterized(String aTextName, Object... args) {
+		return getText(aTextName, null, Arrays.asList(args));
+	}
+
 	public String getText(String aTextName, Object[] args) {
 		return getText(aTextName, null, Arrays.asList(args));
 	}

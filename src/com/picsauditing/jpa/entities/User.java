@@ -30,7 +30,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
@@ -755,36 +754,4 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		return null;
 	}
-
-	@Transient
-	public boolean hasPermission(OpPerms opPerm, OpType oType) {
-		for (UserAccess perm : getPermissions()) {
-			if (opPerm.isForContractor() && getAccount().isContractor() && perm.getOpPerm() == OpPerms.ContractorAdmin)
-				return true;
-			if (opPerm == perm.getOpPerm()) {
-				if (oType == OpType.Edit)
-					return isTrue(perm.getEditFlag());
-				else if (oType == OpType.Delete)
-					return isTrue(perm.getDeleteFlag());
-				else if (oType == OpType.Grant)
-					return isTrue(perm.getGrantFlag());
-				// Default to OpType.View
-				return isTrue(perm.getViewFlag());
-			}
-		}
-		return false;
-	}
-
-	@Transient
-	private boolean isTrue(Boolean value) {
-		if (value == null)
-			return false;
-		return value;
-	}
-
-	@Transient
-	public boolean hasPermission(OpPerms opPerm) {
-		return this.hasPermission(opPerm, OpType.View);
-	}
-
 }
