@@ -16,7 +16,7 @@
 		<s:hidden name="mode" cssClass="get_request"/>
 
 		<%-- Option types [START] --%>
-		
+
 		<%-- radio // select --%>
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
@@ -76,7 +76,7 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number" cssClass="text"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number text"/>
 		</s:if>
 		
 		<s:if test="#q.questionType == 'AMBest'">
