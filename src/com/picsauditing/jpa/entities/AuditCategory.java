@@ -28,22 +28,24 @@ import com.picsauditing.util.Strings;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditCategory extends BaseTable implements Comparable<AuditCategory> {
 
+	public static final int COMPANY_INFORMATION = 2;
+	public static final int GENERAL_SAFETY_INFORMATION = 8;
 	public static final int WORK_HISTORY = 6;
-	public static final int FINANCIAL_HISTORY = 200;
+	public static final int SAFETY_POLICIES = 7;
+	public static final int TRAINING = 25;
 	public static final int OSHA_AUDIT = 151;
-	public static final int GENERAL_INFORMATION = 155;
 	public static final int EMR = 152;
+	public static final int GENERAL_INFORMATION = 155;
 	public static final int MSHA = 157;
 	public static final int CANADIAN_STATISTICS = 158;
 	public static final int LOSS_RUN = 159;
-	public static final int TRAINING = 25;
-	public static final int SAFETY_POLICIES = 7;
-	public static final int SERVICES_PERFORMED = 28;
+	public static final int SUPPLIER_DIVERSITY = 184;
+	public static final int FINANCIAL_HISTORY = 200;
 	public static final int WCB = 210;
 	public static final int CITATIONS = 278;
-	public static final int RISK_ASSESSMENT = 1721;
 	public static final int PRODUCT_CRITICAL = 1682;
 	public static final int PRODUCT_SAFETY_CRITICAL = 1683;
+	public static final int RISK_ASSESSMENT = 1721;
 
 	private AuditType auditType;
 	private AuditCategory parent;

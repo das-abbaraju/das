@@ -19,11 +19,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
@@ -42,10 +38,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorRegistration extends ContractorActionSupport {
-	protected User user;
-	protected String password;
-	protected String confirmPassword;
-	protected int requestID;
 
 	@Autowired
 	private UserDAO userDAO;
@@ -59,6 +51,11 @@ public class ContractorRegistration extends ContractorActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private EmailSenderSpring emailSender;
+
+	protected User user;
+	protected String password;
+	protected String confirmPassword;
+	protected int requestID;
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -209,17 +206,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		// contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 		accountDao.save(contractor);
 
-		// Create a blank PQF for this contractor
-		ContractorAudit audit = new ContractorAudit();
-		audit.setContractorAccount(contractor);
-		audit.setAuditType(new AuditType(1));
-		audit.setAuditColumns(new User(User.SYSTEM));
-		addAuditCategories(audit, 2); // COMPANY INFORMATION
-		addAuditCategories(audit, 8); // GENERAL INFORMATION
-		addAuditCategories(audit, AuditCategory.SERVICES_PERFORMED);
-		addAuditCategories(audit, 184); // SUPPLIER DIVERSITY
-		auditDao.save(audit);
-
 		// Send the Welcome Email
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
@@ -252,18 +238,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 
 		return BLANK;
 
-	}
-
-	private void addAuditCategories(ContractorAudit audit, int CategoryID) {
-		AuditCatData catData = new AuditCatData();
-		catData.setCategory(new AuditCategory());
-		catData.getCategory().setId(CategoryID);
-		catData.setAudit(audit);
-		catData.setApplies(true);
-		catData.setOverride(false);
-		catData.setNumRequired(1);
-		catData.setAuditColumns(new User(User.SYSTEM));
-		audit.getCategories().add(catData);
 	}
 
 	public ContractorAccount getContractor() {
