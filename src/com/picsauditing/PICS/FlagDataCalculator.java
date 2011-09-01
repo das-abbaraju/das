@@ -393,7 +393,7 @@ public class FlagDataCalculator {
 									} else {
 										// Assuming that a null permission means
 										// "Only PICS" can edit
-										if (conAudit.getAuditType().getId() == 3) {
+										if (conAudit.getAuditType().isImplementation()) {
 											Date scheduledDate = conAudit.getScheduledDate();
 											if (scheduledDate == null)
 												return WaitingOn.Contractor;
