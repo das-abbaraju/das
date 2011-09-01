@@ -390,10 +390,18 @@ public class FlagDataCalculator {
 											waitingOnOperator = true;
 										else
 											waitingOnPics = true;
-									} else
+									} else {
 										// Assuming that a null permission means
 										// "Only PICS" can edit
-										waitingOnPics = true;
+										if (conAudit.getAuditType().getId() == 3) {
+											Date scheduledDate = conAudit.getScheduledDate();
+											if (scheduledDate == null)
+												return WaitingOn.Contractor;
+											else
+												return WaitingOn.None;
+										} else
+											waitingOnPics = true;
+									}
 								} else {
 									AuditStatus requiredStatus = key.getRequiredStatus();
 
