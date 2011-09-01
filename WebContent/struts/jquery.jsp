@@ -17,7 +17,6 @@
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
 
 <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen" />
-<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
 
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">

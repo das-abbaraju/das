@@ -75,6 +75,7 @@
 <script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 <script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
+<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
 <script type="text/javascript">
 $(function() {
 	$(document).ajaxError(function(e, xhr, originalSettings, exception) {
@@ -109,6 +110,11 @@ $(function() {
 		e.preventDefault();
 		$('body').toggleClass('debugging');
 		$.cookie('debugging', $('body').is('.debugging'), { expires: 20 });
+	});
+	
+	$('a[rel*="facebox"]').facebox({
+		loading_image : 'loading.gif',
+		close_image : 'closelabel.gif'
 	});
 });
 </script>
@@ -403,11 +409,10 @@ function buildAction(type, id){
 %>
 <div id="footermain">
 <div id="footercontent">
-Copyright &copy; 2011
-<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
-<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
-<a href="#" onclick="return openWindow('privacy_policy.jsp','PRIVACY');"
-	title="<%=i18nCache.getText("global.NewWindow", locale)%>" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>
+	Copyright &copy; 2011
+	<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
+	<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
+	<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>  
 </div>
 </div>
 </div>
