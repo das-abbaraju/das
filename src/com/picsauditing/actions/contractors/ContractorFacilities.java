@@ -123,7 +123,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		}
 
 		if (permissions.isOperator())
-			throw new NoPermissionException("Operators can't view this page");
+			throw new NoPermissionException(getText("ContractorFacilities.error.OperatorCannotView"));
 
 		if (permissions.isContractor()) {
 			contractor.setViewedFacilities(new Date());
@@ -204,8 +204,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 								searchResults.add(o);
 						}
 
-						addActionMessage("This list of operators was generated based on your location. "
-								+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
+						addActionMessage(getText("ContractorFacilities.message.FacilitiesBasedLocation"));
 					} else {
 						// Search for a list of operators in the contractor's
 						// country?
@@ -277,8 +276,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
 						proccessSearchResults(data);
 
-						addActionMessage("This list of operators is generated based on the operators you currently have selected."
-								+ "To find a specific operator, use the search filters above or click Show ALL Operators.");
+						addActionMessage(getText("ContractorFacilities.message.FacilitiesBasedSelection"));
 					} else {
 						// Corporate users should only see the operators under
 						// their umbrella
@@ -380,8 +378,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					recalculate = true;
 				} else {
 					// Not sure when this happens
-					addActionError("The service you have selected for this operator doesn't match what "
-							+ "you selected for your company. Please choose another option.");
+					addActionError(getText("ContractorFacilities.error.ServiceMismatch"));
 				}
 				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
 			}

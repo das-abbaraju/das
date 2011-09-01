@@ -1,10 +1,13 @@
 package com.picsauditing.PICS;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -17,34 +20,52 @@ public class ContractorValidator {
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	
+	private I18nCache i18nCache = I18nCache.getInstance();
+
+	public static Locale getLocaleStatic() {
+		try {
+			return (Locale) ActionContext.getContext().get(ActionContext.LOCALE);
+		} catch (Exception defaultToEnglish) {
+			return Locale.ENGLISH;
+		}
+	}
+	
+	private String getText(String aTextName) {
+		return i18nCache.getText(aTextName, getLocaleStatic());
+	}
+
+	public String getTextParameterized(String aTextName, Object... args) {
+		return i18nCache.getText(aTextName, getLocaleStatic(), Arrays.asList(args));
+	}
 
 	public Vector<String> validateContractor(ContractorAccount contractor) {
 		Vector<String> errorMessages = new Vector<String>();
 		if (contractor.getType() == null) {
-			errorMessages.addElement("Please indicate the account type.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoAccountType"));
 			return errorMessages;
 		}
-
+		
 		// Company Name
 		if (Strings.isEmpty(contractor.getName()))
-			errorMessages.addElement("Please fill in the Company Name field.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoCompanyName"));
 		else if (contractor.getName().length() < 3)
-			errorMessages.addElement("Your company name must be at least 3 characters long.");
+			errorMessages.addElement(getText("ContractorValidator.error.CompanyNameNotLongEnoough"));
 
 		if (Strings.isEmpty(contractor.getAddress()))
-			errorMessages.addElement("Please fill in the Address field.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoAddress"));
 		if (Strings.isEmpty(contractor.getCity()))
-			errorMessages.addElement("Please fill in the City field.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoAdCity"));
 		if (contractor.getCountry() == null || Strings.isEmpty(contractor.getCountry().getIsoCode()))
-			errorMessages.addElement("Please select a Country");
+			errorMessages.addElement(getText("ContractorValidator.error.NoCountry"));
 		if (contractor.getCountry() != null && contractor.getCountry().isHasStates()) {
 			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
-				errorMessages.addElement("Please select a State");
+				errorMessages.addElement(getText("ContractorValidator.error.NoState"));
 			}
 		}
 
 		if (Strings.isEmpty(contractor.getPhone()))
-			errorMessages.addElement("Please fill in the Phone field.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoPhone"));
 
 		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement("Please fill in the Zip field.");
@@ -52,15 +73,14 @@ public class ContractorValidator {
 				&& contractor.getCountry().isUS()
 				&& (Strings.isEmpty(contractor.getTaxId()) || !java.util.regex.Pattern.matches("\\d{9}", contractor
 						.getTaxId()))) {
-			errorMessages.addElement("Please enter your 9 digit Tax ID with only the digits 0-9, no dashes.");
+			errorMessages.addElement(getText("ContractorValidator.error.InvalidUSTaxId"));
 		} else if (Strings.isEmpty(contractor.getTaxId())) {
-			errorMessages.addElement("Please fill in the Tax ID field");
+			errorMessages.addElement(getText("ContractorValidator.error.NoTaxId"));
 		}
 
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
-			errorMessages.addElement("Please select at least one of Onsite Services, Offsite Services "
-					+ "or Material Supplier to indicate the services you perform.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoServiceSelection"));
 
 		return errorMessages;
 	}
@@ -72,28 +92,27 @@ public class ContractorValidator {
 		if (!Strings.validUserName(user.getUsername()).equals("valid"))
 			errorMessages.addElement(Strings.validUserName(user.getUsername()));
 		else if (!verifyUsername(user))
-			errorMessages.addElement("Username already exists. Please type another.");
+			errorMessages.addElement(getText("ContractorValidator.error.DuplicateUserName"));
 
 		if (Strings.isEmpty(user.getName()))
-			errorMessages.addElement("Please fill in the Primary Contact Name");
+			errorMessages.addElement(getText("ContractorValidator.error.NoPrimaryContact"));
 		if (!Strings.isValidEmail(user.getEmail()))
-			errorMessages
-					.addElement("Please enter a valid email address. This is our main way of communicating with you.");
+			errorMessages.addElement(getText("ContractorValidator.error.NoEmail"));
 
 		// Passwords
 		if (!Strings.isEmpty(password2)) {
 			// They are trying to set/reset the password
 
 			if (!password1.equals(password2))
-				errorMessages.addElement("The passwords don't match");
+				errorMessages.addElement(getText("ContractorValidator.error.PasswordsDontMatch"));
 
 			if (password1.length() < MIN_PASSWORD_LENGTH)
-				errorMessages.addElement("Please choose a password at least " + MIN_PASSWORD_LENGTH
-						+ " characters in length.");
+				errorMessages.addElement(getTextParameterized("ContractorValidator.error.InvalidPasswordLength",
+						MIN_PASSWORD_LENGTH));
 			if (password1.equalsIgnoreCase(user.getUsername()))
-				errorMessages.addElement("Please choose a password different from your username.");
+				errorMessages.addElement(getText("ContractorValidator.error.InvalidPassword2"));
 			if (password1.equalsIgnoreCase("password"))
-				errorMessages.addElement("You can't use that password");
+				errorMessages.addElement(getText("ContractorValidator.error.InvalidPassword1"));
 			// TODO - Remove Side-effect
 			if (errorMessages.size() == 0) {
 				user.setPassword(password1);
@@ -128,20 +147,18 @@ public class ContractorValidator {
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 			if ("CA".equals(country) && taxId.length() != 15) {
 				errorMessages
-						.add("Your Business Number must be 15 characters in length. If you are having trouble with this field please give PICS a call at "
-								+ Strings.getPicsCustomerServicePhone("CA"));
+						.add(getTextParameterized("InvalidBusinessNumber", Strings.getPicsCustomerServicePhone("CA")));
 				return errorMessages;
 			} else if (!"CA".equals(country) && taxId.length() != 9) {
-				errorMessages.add("Your Tax ID must be 9 characters in length.");
+				errorMessages.add(getText("ContractorValidator.error.InvalidTaxId"));
 				return errorMessages;
 			}
 
 			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
 			if (con != null && !con.equals(contractorAccount)) {
 				if (con.getCountry().isUS())
-					errorMessages
-							.add("The Tax ID which was entered already exists in the United States. Please contact"
-									+ " a PICS representative at 800-506-7427");
+					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId",
+							Strings.getPicsCustomerServicePhone("US")));
 			}
 		}
 

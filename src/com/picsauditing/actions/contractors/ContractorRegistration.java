@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.struts2.ServletActionContext;
@@ -61,7 +62,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 	public String execute() throws Exception {
 		loadPermissions(false);
 		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
-			addActionError("You must logout before trying to register a new contractor account");
+			addActionError(getText("ContractorRegistration.errorLogoutBeforRegistering"));
 			return BLANK;
 		}
 
@@ -98,9 +99,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 					user.setEmail(crr.getEmail());
 					user.setPhone(crr.getPhone());
 				} else {
-					addActionError("You have already registered with PICS. <a href=\"Login.action\" title=\"Login to PICS\">"
-							+ "Click here to log in</a>. If you forgot your login information, <a href=\"AccountRecovery.action\">"
-							+ "click here to recover it</a>.");
+					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
 					return SUCCESS;
 				}
 			}
@@ -115,13 +114,13 @@ public class ContractorRegistration extends ContractorActionSupport {
 		Vector<String> errors = contractorValidator.validateContractor(contractor);
 		errors.addAll(contractorValidator.validateUser(password, confirmPassword, user));
 		if (Strings.isEmpty(user.getPassword()))
-			errors.add("Please fill in the Password field.");
+			errors.add(getText("ContractorRegistration.error.NoPassword"));
 
 		errors.addAll(contractorValidator.verifyTaxID(contractor));
 
 		if (!contractorValidator.verifyName(contractor)) {
-			errors.add("The name <b>" + contractor.getName()
-					+ "</b> already exists.  Please contact a PICS representative.");
+			errors.add(getTextParameterized("ContractorRegistration.error.DuplicateContractorName",
+					contractor.getName()));
 		}
 
 		if (errors.size() > 0) {
@@ -163,6 +162,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		user.setActive(true);
 		user.setAccount(contractor);
 		user.setTimezone(contractor.getTimezone());
+		user.setLocale(ActionContext.getContext().getLocale());
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);
 		userDAO.save(user);

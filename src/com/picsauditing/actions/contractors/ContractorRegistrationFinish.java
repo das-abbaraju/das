@@ -76,7 +76,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 	private boolean complete = false;
 
 	public String execute() throws Exception {
-		subHeading = "Finish Registration";
+		subHeading = getText("ContractorRegistrationFinish.FinishRegistration");
 
 		findContractor();
 
@@ -91,12 +91,12 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
 					|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
 				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
-						+ "&msg=Please select the services you perform.";
+						+ "&msg=" + getText("ContractorRegistrationFinish.message.SelectService");
 			} else if (contractor.getNonCorporateOperators().size() == 0) {
-				url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg=Please add at least one facility.";
+				url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + getText("ContractorRegistrationFinish.message.AddFacility");
 			} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
 				url = "ContractorPaymentOptions.action?id=" + contractor.getId()
-						+ "&msg=Please add a valid payment method.";
+						+ "&msg=" + getText("ContractorRegistrationFinish.message.AddPaymentMethod");
 			}
 
 			if (!url.isEmpty()) {
@@ -179,8 +179,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
-									+ permissions.getPicsBillingPhone() + ".");
+							addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
+									permissions.getPicsBillingPhone()));
 
 							// Assuming paid status per Aaron so that he can
 							// refund or void manually.
@@ -190,7 +190,8 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 							return SUCCESS;
 						} catch (BrainTreeServiceErrorResponseException e) {
 							addNote("Credit Card transaction failed: " + e.getMessage());
-							this.addActionError("Failed to charge credit card. " + e.getMessage());
+							addActionError(getText("ContractorRegistrationFinish.error.CreditCardFailure") + " "
+									+ e.getMessage());
 							return SUCCESS;
 						}
 					}

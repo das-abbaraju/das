@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:property value="contractor.name" /> Facilities</title>
+<title><s:property value="contractor.name" /> <s:text name="global.Facilities" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -21,7 +21,7 @@
 		if (button === undefined)
 			button = "search";
 		
-		startThinking( {div: 'thinkingSearchDiv', type:'large', message: 'Searching for matching facilities' } );
+		startThinking( {div: 'thinkingSearchDiv', type:'large', message:translate('JS.ContractorFacilities.message.SearchingForMatches') } );
 		$('#results').empty();
 		var data= $('#facilitySearch').serialize();
 		data += "&button=" + button;
@@ -59,7 +59,7 @@
 			dataType: "json",
 	        success: function(result) {
 				if(result.isBidOnlyContractor && !result.isBidOnlyOperator)
-					r = confirm("The Operator you have selected does not accept Bid Only Contractors. Would you like to Upgrade this Account to a Regular Account and Add this Operator?\n\nNote: There will be a fee upgrade when changing from a Bid Only account to a Regular Account");
+					r = confirm(translate("JS.ContractorFacilities.message.UpgradeOffer"));
 	        }
 		});
 
@@ -67,7 +67,7 @@
 		if(r == false)
 			return;
 
-		startThinking( {div: 'thinkingDiv', message: 'Linking contractor and operator' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.LinkingOperator') } );
 		var data= {id: conId, button: 'addOperator', 'operator': opId, type: $('#results_' + opId + ' input[name="type"]:checked').val()};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
@@ -88,7 +88,7 @@
 		return false;
 	}
 	function removeOperator( conId, opId ) {
-		startThinking( {div: 'thinkingDiv', message: 'Unlinking contractor and operator' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.UnLinkingOperator') } );
 		var data= {id: conId, button: 'removeOperator', 'operator': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action',
@@ -112,7 +112,7 @@
 		return false;
 	}
 	function reloadOperators( conId ) {
-		startThinking( {div: 'thinkingDiv', message: 'Refreshing Operator List' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.RefreshingList') } );
 		var data= {id: conId, button: 'load'};
 		$('#facilities').load('ContractorFacilityAjax.action', data, function() {
 				stopThinking( {div: 'thinkingDiv' } );
@@ -121,7 +121,7 @@
 		return false;
 	}
 	function setRequestedBy( conId, opId) {
-		startThinking( {div: 'thinkingDiv', message: 'Saving Requested Operator Account' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.SavingRequestedBy') } );
 		var data= {id: conId, button: 'request', 'operator': opId};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
@@ -140,11 +140,11 @@
 	}
 
 	function changeToTrialAccount(conId) {
-		var r = confirm("Are you sure you need to switch to a Bid Only account? You will still be required to upgrade in the future if you are selected for work by this Operator.")
+		var r = confirm(translate("JS.ContractorFacilities.message.BidOnly"))
 		if(r == false) {
 			return false;
 		}
-		startThinking( {div: 'thinkingDiv', message: 'Switching to Bid Only Account' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.SwitchingToTrial') } );
 		var data= {id: conId, button: 'SwitchToTrialAccount'};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
@@ -160,7 +160,7 @@
 	}
 	
 	function setCanadianCompetitorAnswer(conId,answer) {
-		startThinking( {div: 'thinkingDiv', message: 'Setting answer' } );
+		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.SettingAnswer') } );
 		var data= {id: conId, button: 'setCompetitorAnswer', competitorAnswer: answer};
 		$.ajax({
 			url: 'ContractorFacilityAjax.action', 
@@ -229,7 +229,7 @@
 			<div id="search">
 				<div class="buttons" style="min-height: 30px;">
 					<button class="picsbutton positive" name="button" type="button" 
-						onclick="runSearch()">Search</button>
+						onclick="runSearch()"><s:text name="global.Search" /></button>
 					<nobr><s:text name="ContractorFacilities.ContractorFacilities.Search.Name" />: 
 						<s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/>
 					</nobr>

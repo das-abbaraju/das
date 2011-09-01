@@ -4,19 +4,19 @@
 <s:set name="con" value="contractor"/>
 
 <s:if test="searchResults.size() == 0">
-	<div class="alert">No Facilities Found</div>
+	<div class="alert"><s:text name="ContractorFacilities.NoFoundFacilities" /></div>
 </s:if>
 <s:else>
 	<s:if test="state == '' && operator.name == ''">
 	<div id="help">
-		Here are some suggestions for other locations you might work at:
+		<s:text name="ContractorFacilities.SuggestedOperators" />:
 	</div>
 	</s:if>
 <table class="report">
 	<thead>
 		<tr>
-			<th>Operator Name</th>
-			<th>Add Operator</th>
+			<th><s:text name="ContractorFacilities.OperatorName" /></th>
+			<th><s:text name="ContractorFacilities.AddOperator" /></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -30,13 +30,13 @@
 				<div class="operatorlocation"><s:property value="getShortAddress(permissions.getCountry())" /></div>
 			</td>
 			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>);"
-				class="add">Add</a></td>
+				class="add"><s:text name="global.Add" /></a></td>
 		</tr>
 	</s:iterator>
 	<s:if test="searchResults.size() > 1 && !permissions.corporate">
 		<tr id="showAllLink">
 			<td colspan="3" class="right" style="padding:10px 0 10px 0;">
-				<a href="#" onclick="showAllOperators(); return false;" class="picsbutton positive">Show ALL Operators</a>
+				<a href="#" onclick="showAllOperators(); return false;" class="picsbutton positive"><s:text name="ContractorFacilities.ShowAllOperators" /></a>
 			</td>
 		</tr>
 	</s:if>

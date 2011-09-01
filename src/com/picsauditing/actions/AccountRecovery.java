@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
@@ -32,94 +33,92 @@ public class AccountRecovery extends PicsActionSupport {
 	public String execute() throws Exception {
 		recaptcha = new Recaptcha();
 
-		if (button == null)
-			return SUCCESS;
-
-		if ("Find Username".equals(button)) {
-
-			if (email == null || email.equals("")) {
-				addActionError("Please input an email address");
-				return SUCCESS;
-			}
-
-			if (!Strings.isValidEmail(email)) {
-				addActionError("Please enter a valid email address.");
-				return SUCCESS;
-			}
-
-			EmailBuilder emailBuilder = new EmailBuilder();
-
-			List<User> matchingUsers = userDAO.findByEmail(email);
-
-			if (matchingUsers.size() == 0) {
-				addActionError("No account in our records has that email address.  Please verify it is "
-						+ "the one you used when creating your PICS company profile.");
-				return SUCCESS;
-			}
-
-			Boolean response = recaptcha.isRecaptchaResponseValid();
-			if (response == null) {
-				addActionError("Problem communicating with ReCaptcha server. Please refresh this page and retry again.");
-				return SUCCESS;
-			}
-
-			if (!response) {
-				addActionError("Find Username reCaptcha verification does not match");
-				return SUCCESS;
-			}
-
-			try {
-				emailBuilder.setTemplate(86); // Username Reminder
-				emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
-				emailBuilder.addToken("users", matchingUsers);
-				emailBuilder.setToAddresses(email);
-				emailBuilder.addToken("username", matchingUsers.get(0).getName());
-				emailBuilder.addToken("user", matchingUsers.get(0));
-				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setPriority(100);
-
-				emailSender.send(emailQueue);
-
-				addActionMessage("An email has been sent to this address: <b>" + email + "</b> "
-						+ "with your PICS account username" + (matchingUsers.size() > 1 ? "s" : ""));
-			} catch (Exception e) {
-				addActionError("Failed to send emails");
-			}
-			return SUCCESS;
-		} else if ("Reset Password".equals(button)) {
-			if (username == null || username.equals("")) {
-				addActionError("Please input a username");
-				return SUCCESS;
-			}
-
-			Boolean response = recaptcha.isRecaptchaResponseValid();
-			if (response == null) {
-				addActionError("Problem communication with ReCaptcha server. Please refresh this page and retry again.");
-				return SUCCESS;
-			}
-
-			if (!response) {
-				addActionError("Reset Password reCaptcha verification does not match");
-				return SUCCESS;
-			}
-
-			try {
-				user = userDAO.findName(username);
-				if (user == null)
-					throw new Exception("No such user exists");
-
-				// Seeding the time in the reset hash so that each one will be
-				// guaranteed unique
-				user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-				userDAO.save(user);
-
-				addActionMessage(sendRecoveryEmail(user));
-			} catch (Exception e) {
-				addActionError("No such user exists");
-			}
+		return SUCCESS;
+	}
+	
+	@Anonymous
+	public String findName() {
+		if (email == null || email.equals("")) {
+			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;
 		}
 
+		if (!Strings.isValidEmail(email)) {
+			addActionError(getText("AccountRecovery.error.InvalidEmail"));
+			return SUCCESS;
+		}
+
+		EmailBuilder emailBuilder = new EmailBuilder();
+
+		List<User> matchingUsers = userDAO.findByEmail(email);
+
+		if (matchingUsers.size() == 0) {
+			addActionError(getText("AccountRecovery.error.EmailNotFound"));
+			return SUCCESS;
+		}
+
+		Boolean response = recaptcha.isRecaptchaResponseValid();
+		if (response == null) {
+			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
+			return SUCCESS;
+		}
+
+		if (!response) {
+			addActionError(getText("AccountRecovery.error.ReCaptchaMismatch"));
+			return SUCCESS;
+		}
+
+		try {
+			emailBuilder.setTemplate(86); // Username Reminder
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.addToken("users", matchingUsers);
+			emailBuilder.setToAddresses(email);
+			emailBuilder.addToken("username", matchingUsers.get(0).getName());
+			emailBuilder.addToken("user", matchingUsers.get(0));
+			EmailQueue emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			emailSender.send(emailQueue);
+
+			addActionMessage(getTextParameterized("AccountRecovery.EmailSent2", email));
+		} catch (Exception e) {
+			addActionError(getText("AccountRecovery.error.NoEmailSent"));
+		}
+		return SUCCESS;
+	}
+	
+	@Anonymous
+	public String resetPassword() {
+		if (username == null || username.equals("")) {
+			addActionError(getText("AccountRecovery.error.NoUserName"));
+			return SUCCESS;
+		}
+
+		Boolean response = recaptcha.isRecaptchaResponseValid();
+		if (response == null) {
+			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
+			return SUCCESS;
+		}
+
+		if (!response) {
+			addActionError(getText("AccountRecovery.error.ReCaptchaMismatch"));
+			return SUCCESS;
+		}
+
+		try {
+			user = userDAO.findName(username);
+			if (user == null)
+				throw new Exception(getText("AccountRecovery.error.UserNotFound"));
+
+			// Seeding the time in the reset hash so that each one will be
+			// guaranteed unique
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+			userDAO.save(user);
+
+			addActionMessage(sendRecoveryEmail(user));
+		} catch (Exception e) {
+			addActionError(getText("AccountRecovery.error.UserNameNotFound"));
+		}
 		return SUCCESS;
 	}
 
@@ -142,10 +141,9 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			return "An email has been sent to " + user.getEmail()
-					+ ". This email includes a link to set or reset the password on the account.";
+			return I18nCache.getInstance().getText("AccountRecovery.EmailSent", null, user.getEmail());
 		} catch (Exception e) {
-			return "An error occurred in sending the password reset email.";
+			return I18nCache.getInstance().getText("AccountRecovery.error.ResetEmailError", null);
 		}
 	}
 
@@ -169,10 +167,9 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			return "An email has been sent to " + user.getEmail()
-					+ ". This email includes a link to set or reset the password on the account.";
+			return I18nCache.getInstance().getText("AccountRecovery.EmailSent", null, user.getEmail());
 		} catch (Exception e) {
-			return "An error occurred in sending the password reset email.";
+			return I18nCache.getInstance().getText("AccountRecovery.error.ResetEmailError", null);
 		}
 	}
 

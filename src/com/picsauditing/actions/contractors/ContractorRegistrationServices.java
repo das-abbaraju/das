@@ -93,7 +93,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			}
 
 			if (!requiredQuestions) {
-				addActionError("Please answer all the questions on the General Info section");
+				addActionError(getText("ContractorRegistrationServices.error.AnswerAll"));
 				return SUCCESS;
 			}
 
@@ -156,25 +156,25 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				if (!isSafetyOK || !isProductOK) {
 					String safetyAssessment = safety.toString();
 					if (safetyAssessment.equals("Med"))
-						safetyAssessment = "Medium";
+						safetyAssessment = getText("LowMedHigh.Med");
 
 					String productAssessment = product.toString();
 					if (productAssessment.equals("Med"))
-						productAssessment = "Medium";
+						productAssessment = getText("LowMedHigh.Med");
 
 					List<String> increases = new ArrayList<String>();
 					if (safety.ordinal() > conSafety.ordinal() && !contractor.isMaterialSupplierOnly())
-						increases.add("Service Safety Evaluation to <b>" + safety + "</b>");
+						increases.add(getTextParameterized("ContractorRegistrationServices.message.ServiceEvaluation",
+								safety));
 					if (product.ordinal() > conProduct.ordinal() && contractor.isMaterialSupplier())
-						increases.add("Business Interruption Evaluation to <b>" + productAssessment + "</b>");
+						increases.add(getTextParameterized("ContractorRegistrationServices.message.BusinessEvaluation",
+								productAssessment));
 					if (product.ordinal() > conProductSafety.ordinal() && contractor.isMaterialSupplier())
-						increases.add("Product Safety Evaluation to <b>" + productAssessment + "</b>");
+						increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
+								productAssessment));
 
-					output = "The answers you have provided indicate higher risk levels than the "
-							+ "ratings you have selected. We recommend increasing your "
-							+ Strings.implode(increases, ", and your ")
-							+ ". You can still continue with the registration process. "
-							+ "<br />Please contact PICS with any questions.";
+					output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
+							Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
 
 					return SUCCESS;
 				}

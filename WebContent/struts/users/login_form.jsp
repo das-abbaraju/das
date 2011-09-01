@@ -26,7 +26,7 @@
 	</s:form>
 
 	<div class="info other">
-		<p><s:text name="Login.forgot?" /> <a href="AccountRecovery.action">Click here to recover it</a></p>
-		<p>Are you a contractor? <a href="ContractorRegistration.action">Click to Register your company</a></p>
+		<p><s:text name="Login.forgot?" /> <a href="AccountRecovery.action"><s:text name="Login.ClickToRecover" /></a></p>
+		<p><s:text name="Login.ContractorAsk" /> <a href="ContractorRegistration.action"><s:text name="Login.ClickToRegister" /></a></p>
 	</div>
 </div>
