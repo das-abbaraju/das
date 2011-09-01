@@ -192,7 +192,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AssignAudits))
 			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
-			subMenu.addChild("Audit Calendar", "AuditCalendar.action");
+			addChildAction(subMenu, "AuditCalendar");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Answer Updates", "AuditDataUpdates.action");
 		if (permissions.isAuditor()) {
@@ -237,7 +237,7 @@ public class PicsMenu {
 			addChildAction(subMenu, "ReportPolicyList");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
-			subMenu.addChild("Policy Verification", "PolicyVerification.action"
+			subMenu.addChild(getTitle("PolicyVerification"), "PolicyVerification.action"
 					+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId=" + permissions.getShadowedUserID()
 							: ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
@@ -290,7 +290,7 @@ public class PicsMenu {
 			addChildAction(subMenu, "ProfileEdit");
 		}
 		if (permissions.hasPermission(OpPerms.EditAccountDetails))
-			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?id=" + permissions.getAccountId());
+			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?operator=" + permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
