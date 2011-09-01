@@ -128,17 +128,17 @@ public class QBXmlAdaptor {
 
 	static public String nullSafeZip(String zipCode, Country country) {
 		if (country == null)
-			return nullSafeSubString(zipCode, 0, 8);
+			return nullSafeSubString(zipCode, 0, 9);
 		if (country.isUS())
-			return nullSafeSubString(zipCode, 0, 5);
-		if (country.isCanada())
 			return nullSafeSubString(zipCode, 0, 6);
-		if (country.isFrance())
+		if (country.isCanada())
 			return nullSafeSubString(zipCode, 0, 7);
-		if (country.isUK())
+		if (country.isFrance())
 			return nullSafeSubString(zipCode, 0, 8);
+		if (country.isUK())
+			return nullSafeSubString(zipCode, 0, 9);
 		
-		return nullSafeSubString(zipCode, 0, 8);
+		return nullSafeSubString(zipCode, 0, 9);
 	}
 	
 	static public String nullSafeCity(String city, Country country) {
