@@ -1,9 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page language="java" errorPage="/exception_handler.jsp"%>
 <html>
 <head>
-<title>Implementation Audit Calendar</title>
+<title><s:text name="AuditCalendar.subheading" /></title>
 <s:include value="../jquery.jsp" />
 
 <link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
@@ -23,7 +23,7 @@ $(function() {
 			},
 			loading: function(isLoading, view) {
 				if(isLoading)
-					startThinking( {div: 'thinking', message: 'Fetching Calendar Events' } );
+					startThinking( {div: 'thinking', message: translate('JS.AuditCalendar.FetchingEvents') } );
 				else
 					stopThinking ( {div: 'thinking' } );
 			},
@@ -46,23 +46,22 @@ $(function() {
 				);
 			},
 			events: function(start, end, callback) {
-				$.getJSON("AuditCalendarJSON.action",
+				$.getJSON("AuditCalendarJSON!audits.action",
 					{
-						button: 'audits',
-						start: $.fullCalendar.formatDate(start,'MM/dd/yyyy HH:mm'),
+						start: $.fullCalendar.formatDate(start, 'MM/dd/yyyy HH:mm'),
 						end: $.fullCalendar.formatDate(end,'MM/dd/yyyy HH:mm')
 					},
 					function(json) {
 						callback(json.events);
-						$table = $('<table class="report" />');
-						$table.append('<thead><tr><td>Safety Professional</td><td>Number of Audits</td></tr></thead>');
+						$('#auditorReportTable tbody').empty();
+						
 						$.each(json.auditorCount, function (k, v) {
-								if (k != 'Total')
-									$table.append('<tr><td>'+k+'</td><td>'+v+'</td></tr>');
-							}
-						);
-						$table.append('<tr><td> Total </td><td>'+json.auditorCount['Total']+'</td></tr>');
-						$('#auditorReport').html($table);
+							if (k != translate('JS.AuditCalendar.Total'))
+								$('#auditorReportTable tbody').append('<tr><td>'+k+'</td><td>'+v+'</td></tr>');
+						});
+						
+						$('#auditorReportTable tbody').append('<tr><td>' + translate('JS.AuditCalendar.Total') + 
+								'</td><td>'+json.auditorCount[translate('JS.AuditCalendar.Total')]+'</td></tr>');
 					}
 				);
 			}
@@ -95,11 +94,22 @@ ul {
 </style>
 </head>
 <body>
-<h1>Implementation Audit Calendar</h1>
+<h1><s:text name="AuditCalendar.subheading" /></h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <div id="thinking"></div>
 <div id="calendar"></div>
-<div id="auditorReport"></div>
+<div id="auditorReport">
+	<table class="report" id="auditorReportTable">
+		<thead>
+			<tr>
+				<th><s:text name="global.SafetyProfessional" /></th>
+				<th><s:text name="AuditCalendar.NumberOfAudits" /></th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+</div>
 </body>
 </html>

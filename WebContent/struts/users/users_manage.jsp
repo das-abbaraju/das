@@ -68,7 +68,7 @@ div.autocomplete ul li {
 	<a href="ContractorView.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.operatorCorporate">
-	<a href="FacilitiesEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+	<a href="FacilitiesEdit.action?operator=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.assessment">
 	<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>

@@ -129,7 +129,7 @@ table.jobSiteTasks th, table.jobSiteTasks td {
 									<a href="ContractorView.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 								</s:if>
 								<s:elseif test="employee.account.operatorCorporate && (permissions.admin || permissions.accountId == employee.account.id)">
-									<a href="FacilitiesEdit.action?id=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
+									<a href="FacilitiesEdit.action?operator=<s:property value="employee.account.id" />"><s:property value="employee.account.name" /></a><br />
 								</s:elseif>
 								<s:else>
 									<s:property value="employee.account.name" />

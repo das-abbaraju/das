@@ -6,7 +6,7 @@
 <s:if test="permissions.admin">
 <div id="internalnavcontainer">
 <ul id="navlist">
-	<li><a href="FacilitiesEdit.action?id=<s:property value="operator.id"/>"
+	<li><a href="FacilitiesEdit.action?operator=<s:property value="operator.id"/>"
 		<s:if test="requestURI.contains('operator_edit')">class="current"</s:if>>Edit</a></li>
 	<pics:permission perm="ManageOperators" type="Edit">
 		<li><a href="OperatorConfiguration.action?id=<s:property value="operator.id"/>"

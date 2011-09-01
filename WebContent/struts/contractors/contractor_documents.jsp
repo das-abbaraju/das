@@ -97,7 +97,7 @@
 														<tr>
 															<td>
 																<pics:permission perm="ManageOperators">
-																	<a href="FacilitiesEdit.action?id=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
+																	<a href="FacilitiesEdit.action?operator=<s:property value="#cao.operator.id"/>"><s:property value="#cao.operator.name"/></a>
 																</pics:permission>
 																<pics:permission perm="ManageOperators" negativeCheck="true">
 																	<s:property value="#cao.operator.name" />

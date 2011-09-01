@@ -10,7 +10,7 @@
 		<tr>
 			<td class="center"><s:property value="get('flagChanges')"/></td>
 			<td>
-				<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a>
+				<a href="FacilitiesEdit.action?operator=<s:property value="get('id')"/>"><s:property value="get('name')"/></a>
 			</td>
 		</tr>
 	</s:iterator>

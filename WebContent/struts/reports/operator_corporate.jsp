@@ -70,7 +70,7 @@ $(document).ready(function() {
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td>
 				<s:if test="get('type') == 'Operator' || get('type') == 'Corporate'">
-					<a href="FacilitiesEdit.action?id=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"
+					<a href="FacilitiesEdit.action?operator=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"
 						rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>"
 						class="operatorQuick account<s:property value="get('status')" />"
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>

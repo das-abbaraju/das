@@ -126,7 +126,7 @@
 	<s:iterator value="data" status="stat">
 		<tr>
 			<td><s:property value="get('userName')" /></td>
-			<td><a href="FacilitiesEdit.action?id=<s:property value="get('accountID')"/>&type=<s:property value="get('type')"/>"><s:property value="get('accountName')" /></a></td>
+			<td><a href="FacilitiesEdit.action?operator=<s:property value="get('accountID')"/>&type=<s:property value="get('type')"/>"><s:property value="get('accountName')" /></a></td>
 			<td class="center"><s:date name="get('creationDate')" format="MMM dd"/></td>
 			<td><s:property value="@com.picsauditing.actions.users.UserAccountRole@getDesc(get('role'))"/></td>
 			<td class="right"><s:property value="get('ownerPercent')" />%</td>

@@ -12,7 +12,7 @@
 		</thead>
 		<s:iterator value="criteriaOperators">
 			<tr>
-				<td><a href="FacilitiesEdit.action?id=<s:property value="Operator.id"/>"><s:property value="Operator.FullName"/><a/></td>
+				<td><a href="FacilitiesEdit.action?operator=<s:property value="Operator.id"/>"><s:property value="Operator.FullName"/><a/></td>
 				<td><s:property value="Operator.Status"/></td>
 			</tr>
 		</s:iterator>

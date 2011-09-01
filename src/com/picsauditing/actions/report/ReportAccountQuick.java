@@ -44,7 +44,7 @@ public class ReportAccountQuick extends ReportAccount {
 			else if (data.get(0).get("type").equals("Assessment"))
 				ServletActionContext.getResponse().sendRedirect("AssessmentCenterEdit.action?id=" + id);
 			else
-				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?id=" + id);
+				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?operator=" + id);
 		}
 		return SUCCESS;
 	}

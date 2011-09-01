@@ -739,7 +739,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		if (this.type.equals("Contractor")) {
 			return ("ContractorView.action?id=" + this.id);
 		} else if (this.type.equals("Operator") || this.type.equals("Corporate")) {
-			return ("FacilitiesEdit.action?id=" + this.id);
+			return ("FacilitiesEdit.action?operator=" + this.id);
 		} else if (this.type.equals("Assessment")) {
 			return ("AssessmentCenterEdit.action?id=" + this.id);
 		}

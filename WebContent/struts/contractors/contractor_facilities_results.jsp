@@ -24,7 +24,7 @@
 		<tr id="results_<s:property value="id"/>">
 			<td	class="account<s:property value="status" />">
 				<s:if test="permissions.admin">
-					<a href="FacilitiesEdit.action?id=<s:property value="id"/>"><s:property value="fullName" /></a>
+					<a href="FacilitiesEdit.action?operator=<s:property value="id"/>"><s:property value="fullName" /></a>
 				</s:if>
 				<s:else><s:property value="fullName" /></s:else>
 				<div class="operatorlocation"><s:property value="getShortAddress(permissions.getCountry())" /></div>

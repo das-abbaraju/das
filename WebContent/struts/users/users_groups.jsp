@@ -11,7 +11,7 @@ var currentUserID = 0;
 <s:if test="user.id > 0">currentUserID = <s:property value="user.id"/>;</s:if>
 </script>
 <s:if test="account.operatorCorporate">
-	<a href="FacilitiesEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+	<a href="FacilitiesEdit.action?operator=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 </s:if>
 <s:if test="account.admin">PICS</s:if>
 &gt; <a href="UsersManage.action?account=<s:property value="account.id"/>">Manage User Accounts</a>

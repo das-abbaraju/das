@@ -1,6 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@page language="java" errorPage="/exception_handler.jsp"%>
 <%@page import="com.picsauditing.PICS.DateBean"%>
 <html>
 <head>
@@ -58,72 +58,69 @@ function checkFee(activationFee, oldValue) {
 </s:else>
 
 <s:if test="permissions.admin">
-	<s:if test="id > 0 && operator.visibleAudits.size == 0">
-		<div class="alert">This operator doesn't have access to any	audits. Please <a
-			href="AuditOperator.action?oID=<s:property value="id"/>">double
-		check the configuration</a>.</div>
+	<s:if test="operator.visibleAudits.size == 0">
+		<div class="alert">
+			<s:text name="FacilitiesEdit.NoAccessToAudits">
+				<s:param>
+					<s:property value="operator.id" />
+				</s:param>
+			</s:text>
+		</div>
 	</s:if>
-	<s:if test="id > 0 && operator.flagCriteriaInherited.size == 0">
-		<div class="alert">This operator doesn't have any flag criteria
-		defined. Please <a
-			href="ManageFlagCriteriaOperator.action?id=<s:property value="id"/>">double
-		check the configuration</a>.</div>
+	<s:if test="operator.flagCriteriaInherited.size == 0">
+		<div class="alert">
+			<s:text name="FacilitiesEdit.NoFlagCriteriaDefined">
+				<s:param>
+					<s:property value="operator.id" />
+				</s:param>
+			</s:text>
+		</div>
 	</s:if>
 </s:if>
 
 <s:form id="save" method="POST" enctype="multipart/form-data">
-	<div><input type="submit" class="picsbutton positive"
-		name="button" value="Save" /></div>
+	<div>
+		<s:submit cssClass="picsbutton positive" value="%{getText('button.Save')}" method="save" />
+	</div>
 	<br clear="all" />
-	<s:hidden name="id" />
+	<s:hidden name="operator" />
 	<s:hidden name="type" />
 	<fieldset class="form">
-	<h2 class="formLegend">Account Summary</h2>
+	<h2 class="formLegend"><s:text name="FacilitiesEdit.AccountSummary" /></h2>
 	<ol>
 		<s:if test="operator.id > 0">
 			<li>
-				Created by: <s:set var="o" value="operator" />
+				<s:text name="OperatorAccount.createdBy" />:
+				<s:set var="o" value="operator" />
 				<s:include value="../who.jsp" />
 			</li>
 		</s:if>
 		<li>
-			<label>Short Name:</label> <s:textfield name="operator.name" maxlength="50" />
-			<pics:fieldhelp title="Name">
-				This is the name of the operator as will be displayed on reports, graphs, and titles. The max size is 50 characters.
-			</pics:fieldhelp>
+			<s:textfield name="operator.name" maxlength="50" theme="formhelp" />
 		</li>
 		<li>
-			<label>Full Name:</label> <s:textfield name="operator.dbaName" />
-			<pics:fieldhelp title="Full Name">
-				<p>Optional: This is the full name of the operator that may include other details such as short comments or cities. There is no limit to this field.</p>
-				<p>If the application displays the full name and no full name is available, the short name above will be used.</p>
-			</pics:fieldhelp>
+			<s:textfield name="operator.dbaName" theme="formhelp" />
 		</li>
-		<li><label>Status:</label>
-			<s:select list="statusList" name="operator.status" />
-			<pics:fieldhelp>
-				<ul>
-					<li><b>Active</b> - if you have completed the process of configuring the Operator account and you are ready to send out letters to Contractors.</li>
-					<li><b>Pending (default)</b> - if you are in the process of configuring a real Operator account for which we have already received a contract.</li>
-					<li><b>Demo</b> - if you are creating a temporary account for client demo purposes.</li>
-					<li><b>Deleted</b> - if this operator was created by mistake or merged with another account.</li>
-					<li><b>Deactivated</b> - if the operator has canceled their PICS membership.</li>
-				</ul>
-			</pics:fieldhelp>
-		</li>
+		<s:if test="permissions.admin">
+			<li>
+				<s:select list="statusList" name="operator.status" theme="form" listValue="%{getText(i18nKey)}" />
+				<div class="fieldhelp">
+					<s:text name="OperatorAccount.status.fieldhelp" />
+				</div>
+			</li>
+		</s:if>
 		<s:if test="operator.id > 0">
 			<s:if test="operator.status.deactivated || operator.status.deleted">
-				<li><label>Reason:</label> <s:textarea name="operator.reason"
-					rows="3" /></li>
+				<li><s:textarea name="operator.reason" rows="3" theme="form" /></li>
 			</s:if>
 			<s:if test="operator.operator">
-				<li><label>Account Manager:</label>
+				<li><label><s:text name="FacilitiesEdit.AccountManager" />:</label>
 					<s:iterator value="accountManagers" id="au">
 						<s:property value="#au.user.name"/>
 					</s:iterator>
 				</li>
 				<s:if test="salesReps.size() > 0">
-					<li><label>Sales Rep:</label>
+					<li><label><s:text name="FacilitiesEdit.SalesRepresentative" />:</label>
 						<s:iterator value="salesReps" id="au">
 							<s:property value="#au.user.name"/>
 						</s:iterator>
@@ -133,124 +130,148 @@ function checkFee(activationFee, oldValue) {
 		</s:if>
 	</ol>
 	</fieldset>
-	<s:if test="id > 0">
+	<s:if test="operator.id > 0">
 		<fieldset class="form">
-		<h2 class="formLegend">Linked Accounts</h2>
+		<h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts" /></h2>
 		<ol>
 			<s:if test="operator.corporate">
-				<li><label>Primary Corporate:</label>
-					<s:checkbox name="operator.primaryCorporate" />
-					<pics:fieldhelp>
-						Check this box if this corporate account is the top global account for all operators associated with this company.
-						Do NOT check this if this account represents a division, hub, or business unit.
-					</pics:fieldhelp>
+				<li>
+					<s:checkbox name="operator.primaryCorporate" theme="formhelp" />
 				</li>
-				<li><label>Child Operators:</label> <s:select list="operatorList"
-					listValue="get('name')" listKey="get('id')" name="facilities" multiple="7"
-					size="15" /></li>
+				<li>
+					<label><s:text name="FacilitiesEdit.ChildOperators" />:</label>
+					<s:select list="operatorList" listValue="get('name')" listKey="get('id')" name="facilities" 
+						multiple="7" size="15" />
+				</li>
 			</s:if>
 			<s:if test="operator.operator">
 				<s:if test="operator.corporateFacilities.size() > 0">
-					<li><label>Parent Corporation / Division / Hub:</label> <s:select
-						name="foreignKeys.parent" list="operator.corporateFacilities"
-						listKey="corporate.id" listValue="corporate.name" headerKey="0"
-						headerValue=" - Select a Parent Facility - "
-						value="operator.parent.id" /> <a
-						href="?id=<s:property value="operator.parent.id"/>">Go</a>
-						<pics:fieldhelp>Choose the account that is directly above this operator in the corporate hierarchy.
-						<br/>If the account doesn't display here, then make sure you add this operator to this account's list of child operators first.
-						</pics:fieldhelp>
+					<li>
+						<label><s:text name="FacilitiesEdit.ParentCorporationDivisionHub" />:</label>
+						<s:select name="foreignKeys.parent" list="operator.corporateFacilities" listKey="corporate.id" 
+							listValue="corporate.name" headerKey="0"  value="operator.parent.id"
+							headerValue="- %{getText('FacilitiesEdit.SelectParentFacility')} -" />
+						<s:if test="operator.parent.id > 0">
+							<a href="?operator=<s:property value="operator.parent.id"/>">
+								<s:text name="FacilitiesEdit.Go" />
+							</a>
+						</s:if>
+						<div class="fieldhelp">
+							<h3><s:text name="FacilitiesEdit.ParentCorporationDivisionHub" /></h3>
+							<s:text name="OperatorAccount.parent.fieldhelp" />
+						</div>
 					</li>
 				</s:if>
-				<li><label>Flag Criteria:</label> <s:select
-					name="foreignKeys.inheritFlagCriteria"
-					value="operator.inheritFlagCriteria.id" list="relatedFacilities"
-					listKey="id" listValue="name"></s:select> <a
-					href="?id=<s:property value="operator.inheritFlagCriteria.id"/>">Go</a></li>
-				<li><label>Insurance Criteria:</label> <s:select
-					name="foreignKeys.inheritInsuranceCriteria"
-					value="operator.inheritInsuranceCriteria.id"
-					list="relatedFacilities" listKey="id" listValue="name"></s:select>
-				<a
-					href="?id=<s:property value="operator.inheritInsuranceCriteria.id"/>">Go</a></li>
+				<li>
+					<label><s:text name="FlagCriteria" />:</label>
+					<s:select name="foreignKeys.inheritFlagCriteria" value="operator.inheritFlagCriteria.id" 
+						list="relatedFacilities" listKey="id" listValue="name" />
+					<s:if test="operator.inheritFlagCriteria.id > 0">
+						<a href="?operator=<s:property value="operator.inheritFlagCriteria.id"/>">
+							<s:text name="FacilitiesEdit.Go" />
+						</a>
+					</s:if>
+				</li>
+				<li>
+					<label><s:text name="FlagCriteria.insurance" />:</label>
+					<s:select name="foreignKeys.inheritInsuranceCriteria" value="operator.inheritInsuranceCriteria.id" 
+						list="relatedFacilities" listKey="id" listValue="name" />
+					<s:if test="operator.inheritInsuranceCriteria.id > 0">
+						<a href="?operator=<s:property value="operator.inheritInsuranceCriteria.id"/>">
+							<s:text name="FacilitiesEdit.Go" />
+						</a>
+					</s:if>
+				</li>
 			</s:if>
 			<s:if test="operator.corporateFacilities.size() > 0">
-				<li><label>Corporate Facilities:</label>
+				<li><label><s:text name="OperatorAccount.corporateFacilities" />:</label>
 					<s:iterator value="operator.corporateFacilities" id="facility">
-						| <a href="FacilitiesEdit.action?id=<s:property value="#facility.corporate.id"/>"><s:property value="#facility.corporate.name"/></a>
-					</s:iterator> |
+						|
+						<s:if test="#facility.corporate.picsCorporate && !permissions.admin">
+							<s:property value="#facility.corporate.name"/>
+						</s:if>
+						<s:else>
+							<a href="FacilitiesEdit.action?operator=<s:property value="#facility.corporate.id"/>">
+								<s:property value="#facility.corporate.name"/></a>
+						</s:else>
+					</s:iterator>
+					|
 				</li>
 			</s:if>
 		</ol>
 		</fieldset>
 	</s:if>
 	<fieldset class="form">
-	<h2 class="formLegend">Primary Address</h2>
+	<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
 	<ol>
-		<s:if test="id > 0"><li><label>Primary Contact:</label> <s:select
-			list="primaryOperatorContactUsers"
-			name="contactID"
-			listKey="id"
-			listValue="name"
-			headerKey=""
-			headerValue="- Select a User -" 
-			value="%{operator.primaryContact.id}"/>
-			<s:if test="operator.primaryContact">
-				<a href="UsersManage.action?account=<s:property value="operator.id"/>&user=<s:property value="operator.primaryContact.id"/>">View</a>
-			</s:if>
-			<s:else>
-				<a class="add" href="UsersManage!add.action?account=<s:property value="operator.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
-			</s:else>
-		</li>
+		<s:if test="operator.id > 0">
+			<li>
+				<label><s:text name="global.ContactPrimary" />:</label>
+				<s:select list="primaryOperatorContactUsers" name="contactID" listKey="id" listValue="name" headerKey=""
+					headerValue="- %{getText('FacilitiesEdit.SelectAUser')} -" value="%{operator.primaryContact.id}" />
+				<s:if test="operator.primaryContact">
+					<a href="UsersManage.action?account=<s:property value="operator.id"/>&user=<s:property value="operator.primaryContact.id"/>">
+						<s:text name="button.View" />
+					</a>
+				</s:if>
+				<s:else>
+					<a class="add" href="UsersManage!add.action?account=<s:property value="operator.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+						<s:text name="FacilitiesEdit.AddUser" />
+					</a>
+				</s:else>
+			</li>
 		</s:if>
-		<li><label>Address:</label>
+		<li>
+			<label><s:text name="global.Address" />:</label>
 			<s:textfield name="operator.address" size="35" /><br />
 			<s:textfield name="operator.address2" size="35" />
 		</li>
-		<li><label>City:</label> <s:textfield name="operator.city"
-			size="20" />
-			<pics:fieldhelp>The city will display for PICS employees on the operator popup and also to contractors on the facility search.</pics:fieldhelp>
+		<li>
+			<s:textfield name="operator.city" size="20" theme="formhelp" />
 		</li>
-		<li><label><s:text name="Country" />:</label> <s:select 
-			list="countryList"
-			id="opCountry"
-			name="country.isoCode" 
-			listKey="isoCode"
-			listValue="name" 
-			headerKey="" headerValue="- Country -"
-			value="operator.country.isoCode"
-			onchange="countryChanged(this.value)" />
+		<li>
+			<label><s:text name="Country" />:</label>
+			<s:select list="countryList" id="opCountry" name="country.isoCode" listKey="isoCode" listValue="name" 
+				headerKey="" headerValue="- %{getText('Country')} -" value="operator.country.isoCode" onchange="countryChanged(this.value)" />
 			<s:if test="permissions.admin || operator.operator">
-				<pics:fieldhelp title="Address">
-					<p>Please select the country in which operator is located. This is may affect what configuration is inherited from PICS Country configuration.</p>
-				</pics:fieldhelp>
+				<div class="fieldhelp">
+					<h3><s:text name="Country" /></h3>
+					<s:text name="OperatorAccount.country.fieldhelp" />
+				</div>
 			</s:if>
 		</li>
 		<li id="state_li"></li>
 		<s:if test="operator.country.isoCode != 'AE'">
-			<li id="zip_li"><label>Zip:</label>
-				<s:textfield name="operator.zip" size="7" />
+			<li id="zip_li">
+				<s:textfield name="operator.zip" size="7" theme="form" />
 			</li>
 		</s:if>
 		<li>
 			<s:select name="operator.timezone" value="operator.timezone.iD" theme="form" 
 				list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 		</li>
-		<li><label>Main Phone:</label><s:textfield name="operator.phone" /></li>
-		<li><label>Main Fax:</label><s:textfield name="operator.fax" /></li>
-		<li><label>Web URL:</label> <s:textfield name="operator.webUrl"
-			size="30" /></li>
+		<li>
+			<s:textfield name="operator.phone" theme="form" />
+		</li>
+		<li>
+			<s:textfield name="operator.fax" theme="form" />
+		</li>
+		<li>
+			<s:textfield name="operator.webUrl" theme="form" />
+		</li>
 	</ol>
 	</fieldset>
 	<fieldset class="form">
-	<h2 class="formLegend">Company Identification</h2>
+	<h2 class="formLegend"><s:text name="FacilitiesEdit.CompanyIdentification" /></h2>
 	<ol>
-		<li><label>Description:</label> <s:textarea
-			name="operator.description" cols="40" rows="15" />
-			<pics:fieldhelp>General notes about this owner operator.</pics:fieldhelp>
+		<li>
+			<s:textarea name="operator.description" cols="40" rows="15" theme="formhelp" />
 		</li>
-		<s:if test="id > 0">
-			<li><label>Account Since:</label> <s:date name="operator.creationDate" format="MMMMM yyyy" /></li>
+		<s:if test="operator.id > 0">
+			<li>
+				<label><s:text name="FacilitiesEdit.AccountSince" />:</label>
+				<s:date name="operator.creationDate" format="MMMMM yyyy" />
+			</li>
 		</s:if>
 	</ol>
 	</fieldset>
@@ -314,7 +335,7 @@ function checkFee(activationFee, oldValue) {
 			<li id="act_li"><label>Contractor Activation Fee:</label>
 				<s:if test="activationFeeOperator.id != operator.id">
 					$<s:property value="activationFeeOperator.activationFee" />
-						&nbsp;&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?id=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
+						&nbsp;&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?operator=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
 				</s:if>
 				<s:else>
 					<pics:permission perm="UserRolePicsOperator">
@@ -352,21 +373,29 @@ function checkFee(activationFee, oldValue) {
 								<s:hidden value="%{role}" name="accountRole" />
 								<s:if test="role.description == 'Sales Representative' && current">
 									<tr>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-											value="user.name" /></td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-											value="ownerPercent" />%</td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-											name="startDate" format="MM/dd/yyyy" /></td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-											name="endDate" format="MM/dd/yyyy" /></td>
-										<td><a
-											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
-											class="remove">Remove</a></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:property value="user.name" />
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:property value="ownerPercent" />%
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:date name="startDate" />
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:date name="endDate" />
+										</td>
+										<td>
+											<a href="FacilitiesEdit!remove.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="remove">
+												<s:text name="button.Remove" />
+											</a>
+										</td>
 										<s:if test="operator.corporate">
-											<td><a
-											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts"
-											class="add">Copy To Child Accounts</a></td>
+											<td>
+												<a href="FacilitiesEdit!copyToChildAccounts.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="add">
+													<s:text name="FacilitiesEdit.CopyToChildAccounts" />
+												</a>
+											</td>
 										</s:if>										
 									</tr>
 									<tr id="show_<s:property value="id"/>" style="display: none;">
@@ -383,18 +412,21 @@ function checkFee(activationFee, oldValue) {
 											id="endDate[%{id}]"
 											value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}" />
 										</nobr></td>
-										<td><input type="submit" class="picsbutton positive"
-											name="button" value="Save Role" /></td>
+										<td>
+											<s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role" />
+										</td>
 									</tr>
 								</s:if>
 							</s:iterator>
 							<tr>
-								<td colspan="4"><s:select name="salesRep.user.id"
-									list="userList" listKey="id" listValue="name" headerKey="0"
-									headerValue="- Select a User -" /></td>
-								<td <s:if test="operator.corporate">colspan="2"</s:if>><s:hidden value="PICSSalesRep" name="salesRep.role" /><input
-									type="submit" class="picsbutton positive" name="button"
-									value="Add Role" /></td>
+								<td colspan="4">
+									<s:select name="salesRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0" 
+										headerValue="- Select a User -" />
+								</td>
+								<td <s:if test="operator.corporate">colspan="2"</s:if>>
+									<s:hidden value="PICSSalesRep" name="salesRep.role" />
+									<s:submit cssClass="picsbutton positive" method="addRole" value="Add Role" />
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -417,20 +449,26 @@ function checkFee(activationFee, oldValue) {
 							<s:iterator value="operator.accountUsers" status="role">
 								<s:if test="role.description == 'Account Manager' && current">
 									<tr>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-											value="user.name" /></td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:property
-											value="ownerPercent" />%</td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-											name="startDate" format="MM/dd/yyyy" /></td>
-										<td onclick="$('#show_<s:property value="id"/>').show();"><s:date
-											name="endDate" format="MM/dd/yyyy" /></td>
-										<td><a
-											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=Remove"
-											class="remove">Remove</a></td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:property value="user.name" />
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:property value="ownerPercent" />%
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:date name="startDate" />
+										</td>
+										<td onclick="$('#show_<s:property value="id"/>').show();">
+											<s:date name="endDate" />
+										</td>
+										<td>
+											<a href="FacilitiesEdit!remove.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="remove">
+												Remove
+											</a>
+										</td>
 										<s:if test="operator.corporate">
 											<td><a
-											href="FacilitiesEdit.action?id=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts"
+											href="FacilitiesEdit.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts"
 											class="add">Copy To Child Accounts</a></td>
 										</s:if>										
 									</tr>
@@ -454,12 +492,14 @@ function checkFee(activationFee, oldValue) {
 								</s:if>
 							</s:iterator>
 							<tr>
-								<td colspan="4"><s:select name="accountRep.user.id"
-									list="userList" listKey="id" listValue="name" headerKey="0"
-									headerValue="- Select a User -" /></td>
-								<td <s:if test="operator.corporate">colspan="2"</s:if>><s:hidden value="PICSAccountRep"
-									name="accountRep.role" /><input type="submit"
-									class="picsbutton positive" name="button" value="Add Role" /></td>
+								<td colspan="4">
+									<s:select name="accountRep.user.id" list="userList" listKey="id" listValue="name" 
+										headerKey="0" headerValue="- Select a User -" />
+								</td>
+								<td <s:if test="operator.corporate">colspan="2"</s:if>>
+									<s:hidden value="PICSAccountRep" name="accountRep.role" />
+									<s:submit cssClass="picsbutton positive" method="addRole" value="Add Role" />
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -498,8 +538,9 @@ function checkFee(activationFee, oldValue) {
 			</pics:permission>
 		</s:if>
 	</s:if>
-	<fieldset class="form submit"><input type="submit" class="picsbutton positive"
-		name="button" value="Save" /></fieldset>
+	<fieldset class="form submit">
+		<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
+	</fieldset>
 </s:form>
 </body>
 </html>

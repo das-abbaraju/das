@@ -178,7 +178,7 @@ $(function() {
 				<s:else>
 					<li>
 						<s:if test="rule.operatorAccount != null">
-							<a href="FacilitiesEdit.action?id=<s:property value="rule.operatorAccount.id" />"
+							<a href="FacilitiesEdit.action?operator=<s:property value="rule.operatorAccount.id" />"
 								><s:property value="rule.operatorAccount.name" /></a><br />
 						</s:if>
 						<s:if test="rule.auditType != null">

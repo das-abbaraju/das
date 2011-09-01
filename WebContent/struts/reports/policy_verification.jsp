@@ -2,11 +2,11 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>Policy Verification</title>
+<title><s:text name="PolicyVerification.title" /></title>
 <s:include value="reportHeader.jsp" />
 </head>
 <body>
-<h1>Policy Verification</h1>
+<h1><s:text name="PolicyVerification.title" /></h1>
 <s:include value="filters.jsp" />
 <div>
 <s:property value="report.pageLinksWithDynamicForm" escape="false" />
@@ -16,13 +16,13 @@
 	<thead>
 	<tr>
 		<td></td>
-		<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
+		<td><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></td>
 		<s:if test="filter.primaryInformation">
-			<td>Contact</td>
+			<td><s:text name="global.Contact" /></td>
 		</s:if>
-		<td>Policy</td>
-		<td><a href="javascript: changeOrderBy('form1','statusChangedDate DESC');">Changed On</a></td>
-		<td>Operators</td>
+		<td><s:text name="PolicyVerification.Policy" /></td>
+		<td><a href="javascript: changeOrderBy('form1','statusChangedDate DESC');"><s:text name="PolicyVerification.ChangedOn" /></a></td>
+		<td><s:text name="global.Operators" /></td>
 		<td></td>
 	</tr>
 	</thead>
@@ -40,7 +40,7 @@
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
 			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
 			<td><s:property value="get('operatorCount')"/></td>
-			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY">Open</a></td>
+			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>&policy=true" target="VERIFY" class="preview" title="<s:text name="button.View" />"></a></td>
 		</tr>
 	</s:iterator>
 </table>
