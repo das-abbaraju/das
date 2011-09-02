@@ -259,6 +259,19 @@ public class AuditDataSave extends AuditActionSupport {
 					if (updateAudit)
 						auditDao.save(tempAudit);
 				}
+				
+				if (tempAudit.getAuditType().getClassType().isPolicy()) {
+					boolean updateAudit = false;
+					for (ContractorAuditOperator cao : tempAudit.getViewableOperators(permissions)) {
+						if (cao.getStatus().equals(AuditStatus.Pending) && cao.getPercentComplete() == 100) {
+							cao.changeStatus(AuditStatus.Submitted, permissions);
+							updateAudit = true;
+							break;
+						}
+					}
+					if (updateAudit)
+						auditDao.save(tempAudit);
+				}
 
 				if (tempAudit.getAuditType().getId() == AuditType.COR) {
 					if (auditData.getQuestion().getId() == 2950) {
