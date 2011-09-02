@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -64,8 +65,10 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		Set<Integer> questionIds = new HashSet<Integer>();
 		for (AuditCategory category : categories.keySet()) {
 			for (AuditQuestion question : category.getQuestions()) {
-				infoQuestions.add(question);
-				questionIds.add(question.getId());
+				if (question.isValidQuestion(new Date())) {
+					infoQuestions.add(question);
+					questionIds.add(question.getId());
+				}
 			}
 		}
 
@@ -95,9 +98,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			if (!requiredQuestions) {
 				addActionError(getText("ContractorRegistrationServices.error.AnswerAll"));
 				return SUCCESS;
-			}
-
-			if (requiredQuestions) {
+			} else {
 				Collection<AuditData> auditList = answerMap.values();
 				// Calculated assessments
 				LowMedHigh safety = LowMedHigh.Low;
@@ -316,7 +317,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		}
 
 		auditDao.save(pqf);
-		
+
 		// refresh the audit to force the categories to reload
 		auditDao.refresh(conAudit);
 
