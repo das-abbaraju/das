@@ -177,7 +177,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 	@RequiredPermission(value = OpPerms.ManageTrades, type = OpType.Edit)
 	public String addAlternateAjax() {
 		if (Strings.isEmpty(alternateName)) {
-			addActionError("Alternate Name cannot be blank.");
+			addActionError(getText("TradeTaxonomy.error.NeedAlternateName"));
 			return "alternate";
 		}
 		if (Strings.isEmpty(alternateCategory)) {
@@ -187,7 +187,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 
 		TradeAlternate tradeAlternate = new TradeAlternate(trade, alternateName, alternateCategory);
 		if (trade.getAlternates().contains(tradeAlternate))
-			addActionError("Alternate Already Exists.");
+			addActionError(getText("TradeTaxonomy.error.NeedAlternateCategory"));
 		else {
 			trade.getAlternates().add(tradeAlternate);
 			tradeDAO.save(trade);
@@ -228,7 +228,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 			/*
 			 * This is a sanity check. It should never happen as there is nothing in the UI to allow it.
 			 */
-			addActionError("You cannot delete the top level node.");
+			addActionError(getText("TradeTaxonomy.error.CannotDeleteTopNode"));
 			return false;
 		}
 
@@ -258,7 +258,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		} else if (trade.getContractorCount() == 0 && trade.getChildren().size() == 0) {
 			tradeDAO.remove(trade);
 		} else {
-			addActionError("You cannot delete a root level trade that is associated with any contractors or trades.");
+			addActionError(getText("TradeTaxonomy.error.CannotDeleteTradeRootNode"));
 			success = false;
 		}
 
