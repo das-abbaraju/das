@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<h4>Selected trades</h4>
+<h4><s:text name="ContractorTrades.SelectedTrades" /></h4>
 
 <s:if test="!#hideTradeCloudInstructions">
 	<s:if test="!permissions.operatorCorporate">
@@ -17,7 +17,7 @@
 			</s:if>
 			<s:else>
 				<div>
-					<a class="CTInstructions help" rel="#ContractorTradesInstructions">Instructions</a>
+					<a class="CTInstructions help" rel="#ContractorTradesInstructions"><s:text name="ContractorTrades.InstructionsTitle" /></a>
 					
 					<div id="ContractorTradesInstructions">
 						<p>

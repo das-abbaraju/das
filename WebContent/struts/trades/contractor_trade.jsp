@@ -28,14 +28,14 @@ var conID = '<s:property value="id"/>';
 		<div class="alert" id="reviewTrades">
 			<s:hidden name="contractor" />
 			<s:text name="ContractorTrade.reviewTrades"/><br /><br />
-			<s:submit method="removeAllTradesAjax" value="Start Over (recommended)" cssClass="picsbutton positive" />
-			<s:submit method="continueWithTradesAjax" value="Keep Existing Trades" cssClass="picsbutton" />
+			<s:submit method="removeAllTradesAjax" value="%{getText('button.StartOver')}" cssClass="picsbutton positive" />
+			<s:submit method="continueWithTradesAjax" value="%{getText('button.KeepTrades')}" cssClass="picsbutton" />
 		</div>
 	</s:form>
 </s:if>
 
 <s:if test="!permissions.operatorCorporate">
-<h4>What are your business trades?</h4>
+<h4><s:text name="ContractorTrades.SearchTitle" /></h4>
 <s:include value="trade_search.jsp"/>
 </s:if>
 

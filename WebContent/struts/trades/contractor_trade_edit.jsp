@@ -167,11 +167,11 @@
 	
 		<div>
 			<s:if test="trade.id == 0">
-				<s:submit method="saveTradeAjax" value="Add" cssClass="save picsbutton positive" id="addButton" onclick="$('#next_button').show()" />
+				<s:submit method="saveTradeAjax" value="%{getText('button.Add')}" cssClass="save picsbutton positive" id="addButton" onclick="$('#next_button').show()" />
 			</s:if>
 			<s:else>
-				<s:submit method="saveTradeAjax" value="Save" cssClass="save picsbutton positive"/>
-				<s:submit method="removeTradeAjax" value="Remove" cssClass="remove picsbutton negative" />
+				<s:submit method="saveTradeAjax" value="%{getText('button.Save')}" cssClass="save picsbutton positive"/>
+				<s:submit method="removeTradeAjax" value="%{getText('button.Remove')}" cssClass="remove picsbutton negative" />
 			</s:else>
 		</div>
 	</s:if>

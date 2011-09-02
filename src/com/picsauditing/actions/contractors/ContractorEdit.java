@@ -121,8 +121,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
 				country = countryDAO.find(countryIsos[0]);
 
-			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"billingCountry.isoCode");
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				billingCountry = countryDAO.find(billingCountryIsos[0]);
 
@@ -130,8 +130,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				state = stateDAO.find(stateIsos[0]);
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				billingState = stateDAO.find(billingStateIsos[0]);
 		}
@@ -146,7 +146,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				String[] validExtensions = { "jpg", "gif", "png" };
 
 				if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-					addActionError("Logos must be a jpg, gif or png image");
+					addActionError(getText("ContractorEdit.error.LogoFormat"));
 					return SUCCESS;
 				}
 				String fileName = "logo_" + contractor.getId();
@@ -159,7 +159,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
 
 				if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-					addActionError("Brochure must be a image, doc or pdf file");
+					addActionError(getText("ContractorEdit.error.Brochure Format"));
 					return SUCCESS;
 				}
 				String fileName = "brochure_" + contractor.getId();
@@ -190,10 +190,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
 				// Now check if they have a product risk level
 				if (!contractor.isListOnlyEligible()) {
-					errors.addElement("Only Low Product Risk and Material Supplier Only / Low Safety Risk Offsite "
-							+ "Services / Sole Proprietors which are Offsite or Material Supplier and "
-							+ "affiliated with Suncor can be set to List Only. Please verify contractor "
-							+ "information before setting List Only status.");
+					errors.addElement(getText("ContractorEdit.error.ListOnlyRequirements"));
 				}
 				for (ContractorOperator co : contractor.getNonCorporateOperators()) {
 					List<String> nonListOnlyOperators = new ArrayList<String>();
@@ -201,9 +198,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 						nonListOnlyOperators.add(co.getOperatorAccount().getName());
 
 					if (!nonListOnlyOperators.isEmpty())
-						errors.addElement(Strings.implode(nonListOnlyOperators)
-								+ " do not accept List Only contractors. You cannot switch to List Only while "
-								+ "these Operators are attached.");
+						errors.addElement(this.getTextParameterized("ContractorEdit.error.OperatorsDoneAcceptList",
+								Strings.implode(nonListOnlyOperators)));
 				}
 			}
 
@@ -225,7 +221,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			// contractor.setNeedsIndexing(true);
 			accountDao.save(contractor);
 
-			addActionMessage("Successfully modified " + contractor.getName());
+			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 			for (String msg : contractorValidator.verifyTaxID(contractor)) {
 				addActionMessage(msg);
 			}
@@ -248,7 +244,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		if (contractor.getAudits().size() > 0) {
-			addActionError("Cannot Remove Contractor with Audits");
+			addActionError(getText("ContractorEdit.error.CannotRemoveAudits"));
 			return SUCCESS;
 		}
 
@@ -301,8 +297,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				if (emails.size() > 0)
 					emailAddresses.addAll(emails);
 				else
-					addActionError("No primary contact or 'Contractor Registration' Subscriber for Operator ID: "
-							+ operatorID);
+					addActionError(getTextParameterized("ContractorEdit.error.NoPrimaryContact", operatorID));
 			}
 
 			if (emailAddresses.size() > 0) {
@@ -335,7 +330,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				note.setStatus(NoteStatus.Closed);
 				noteDAO.save(note);
 
-				this.addActionMessage("Successfully sent the email to operators");
+				this.addActionMessage(getText("ContractorEdit.message.EmailSent"));
 			}
 		}
 
@@ -357,7 +352,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String deactivate() throws Exception {
 		if (Strings.isEmpty(contractor.getReason())) {
-			addActionError("Please select a deactivation reason before you cancel the account");
+			addActionError(getText("ContractorEdit.error.DeactivationReason"));
 		} else {
 			contractor.setRenew(false);
 			if (contractor.isHasFreeMembership())
@@ -365,16 +360,16 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			String expiresMessage = "";
 			if (contractor.getPaymentExpires().after(new Date()))
-				expiresMessage = " This account will no longer be visible to operators after "
-						+ contractor.getPaymentExpires();
+				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
+						contractor.getPaymentExpires());
 			else {
-				expiresMessage = " This account is no longer visible to operators.";
+				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
 				contractor.setStatus(AccountStatus.Deactivated);
 			}
 			accountDao.save(contractor);
 
 			this.addNote(contractor, "Closed contractor account." + expiresMessage);
-			this.addActionMessage("Successfully closed this contractor account." + expiresMessage);
+			this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
 		}
 		this.subHeading = "Contractor Edit";
 		return SUCCESS;
@@ -388,8 +383,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		contractor.setReason("");
 		accountDao.save(contractor);
 		addNote(contractor, "Reactivated account");
-		addActionMessage("Successfully reactivated this contractor account. " + "<a href='BillingDetail.action?id="
-				+ id + "'>Click to Create their invoice</a>");
+		addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountReactivated", id));
 		return SUCCESS;
 	}
 
@@ -402,7 +396,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public String expireImportPQF() {
 		billingService.removeImportPQF(contractor);
-		addActionMessage("Removed ImportPQF Audit");
+		addActionMessage(getText("ContractorEdit.message.RemovedImportPQF"));
 
 		return SUCCESS;
 	}

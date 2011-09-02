@@ -8,11 +8,11 @@
 	</ul>
 	<div id="search-tab">
 		<form id="suggest">
-			<input type="search" class="searchText" name="q" placeholder="Search..."/>
-			<input type="submit" class="searchButton" title="Submit Search" value="Search" />
+			<input type="search" class="searchText" name="q" placeholder="<s:text name='ContractorTrades.button.SearchPlaceholder' />"/>
+			<input type="submit" class="searchButton" title="<s:text name='ContractorTrades.button.SearchTitle' />" value="Search" />
 		</form>
-		Use one or more key words to search for what your company does. Examples might include "drilling wells", "asbestos abatement", "civil engineering" or even a NAICS code.<br/><strong>Display results as:</strong>
-		<s:radio cssClass="searchType" name="searchType" list="#{'list':'List', 'tree':'Tree'}" value="'list'"/>
+		<s:text name="ContractorTrades.SearchInstructions" />
+		<s:radio cssClass="searchType" name="searchType" list="#{'list':getText('ContractorTrades.button.List'), 'tree':getText('ContractorTrades.button.Tree')}" value="'list'"/>
 		<div class="messages"></div>
 		<div id="search-list"></div>
 		<div id="search-tree"></div>
@@ -28,8 +28,8 @@
 		</pics:permission>
 	</div>
 	<div>
-		<span class="service">Service</span>
-		<span class="product">Product</span>
-		<span class="product-service">Both</span>
+		<span class="service"><s:text name="ContractorTrades.Service" /></span>
+		<span class="product"><s:text name="ContractorTrades.Product" /></span>
+		<span class="product-service"><s:text name="ContractorTrades.Both" /></span>
 	</div>
 </div>
