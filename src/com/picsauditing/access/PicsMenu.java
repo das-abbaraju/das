@@ -67,16 +67,16 @@ public class PicsMenu {
 
 				// Don't show for insurance only users
 				if (!permissions.isInsuranceOnlyContractorUser()) {
-					subMenu = menu.addChild("Company");
-					subMenu.addChild("Our Profile", "ContractorView.action");
-					subMenu.addChild("Where We Work", "ContractorFacilities.action");
-					subMenu.addChild("Activity Log", "ContractorNotes.action");
+					subMenu = menu.addChild(getText("global.Company"));
+					subMenu.addChild(getText("menu.Contractor.OurProfile"), "ContractorView.action");
+					subMenu.addChild(getText("menu.Contractor.WhereWeWork"), "ContractorFacilities.action");
+					subMenu.addChild(getText("menu.Contractor.ActivityLog"), "ContractorNotes.action");
 				}
 
 				if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
-					subMenu = menu.addChild("Edit");
-					subMenu.addChild("Company Account", "ContractorEdit.action");
-					subMenu.addChild("Users", "UsersManage.action");
+					subMenu = menu.addChild(getText("button.Edit"));
+					subMenu.addChild(getText("menu.Contractor.CompanyAccount"), "ContractorEdit.action");
+					subMenu.addChild(getText("global.Users"), "UsersManage.action");
 					subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action");
 					if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
 						subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action");
@@ -95,15 +95,15 @@ public class PicsMenu {
 				}
 
 				if (permissions.hasPermission(OpPerms.ContractorBilling)) {
-					subMenu = menu.addChild("Billing");
-					subMenu.addChild("Billing Details", "BillingDetail.action");
-					subMenu.addChild("Payment Options", "ContractorPaymentOptions.action");
+					subMenu = menu.addChild(getText("menu.Billing"));
+					subMenu.addChild(getText("menu.Contractor.BillingDetails"), "BillingDetail.action");
+					subMenu.addChild(getText("menu.Contractor.PaymentOptions"), "ContractorPaymentOptions.action");
 				}
 
-				menu.addChild("Forms &amp; Docs", "ContractorForms.action");
+				menu.addChild(getText("global.FormsAndDocs"), "ContractorForms.action");
 
 				subMenu = addSupportLink(menu);
-				subMenu.addChild("Edit Profile", "ProfileEdit.action");
+				addChildAction(subMenu, "ProfileEdit");
 			} else {
 				subMenu = menu.addChild(getText("ContractorRegistration.CompanyDetails.heading"),
 						"ContractorEdit.action");
