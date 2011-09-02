@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -78,7 +77,10 @@ public enum QuestionFunction {
 	TRIR {
 		@Override
 		public Object calculate(FunctionInput input) {
-			return "global.MissingTranslation";
+			Map<String, String> params = getParameterMap(input);
+			BigDecimal manHours = new BigDecimal(params.get("manHours")).setScale(3);
+			BigDecimal lostWorkdayCases = new BigDecimal(params.get("lostWorkdayCases")).setScale(3);
+			return manHours.divide(lostWorkdayCases, BigDecimal.ROUND_HALF_UP);
 		}
 	},
 	SCORE {
