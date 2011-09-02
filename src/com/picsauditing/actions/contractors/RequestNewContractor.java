@@ -298,7 +298,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 
 			else if ("Active".equals(newContractor.getStatus())) {
-				addToNotes = "Request set to hold until " + maskDateFormat(newContractor.getHoldDate());
+				newContractor.setNotes(prepend("Request set to hold until "
+								+ maskDateFormat(newContractor.getHoldDate()), newContractor.getNotes()));
 				String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
 						+ "request&requestID=" + newContractor.getId();
 
