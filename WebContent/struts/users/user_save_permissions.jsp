@@ -15,10 +15,9 @@
 	</thead>
 	<tbody>
 		<s:iterator value="user.ownedPermissions">
-
 			<tr id="permission_<s:property value="id"/>">
 				<td rowspan="2" style="font-weight: bold; cursor: help" title="Changed <s:date name="lastUpdate" /> by <s:property value="grantedBy.name"/>">
-					<s:property value="opPerm.description" />
+					<s:text name="%{opPerm.getI18nKey('description')}" />
 				</td>
 
 				<pics:permission perm="EditUsers" type="Grant">
@@ -38,17 +37,17 @@
 				</pics:permission>
 			</tr>
 			<tr>
-				<td colspan="5"><s:property value="opPerm.helpText"/></td>
+				<td colspan="5"><s:text name="%{opPerm.getI18nKey('helpText')}"/></td>
 			</tr>
 		</s:iterator>
 	<pics:permission perm="EditUsers" type="Grant">
 		<tr>
 			<td colspan="6">
 			<div class="buttons" id="addPermissionButton">
-				<button name="button" onclick="addPermission();" id="permButton">Add</button>
+				<button name="button" onclick="addPermission();" id="permButton"><s:text name="button.Add" /></button>
 			</div>
 			<s:select id="newPermissionSelect" list="grantablePermissions"
-				listValue="description" name="opPerm" headerKey="" headerValue="- Add Permission -" 
+				listValue="%{getText('description')}" name="opPerm" headerKey="" headerValue="- Add Permission -" 
 				onchange="showPermDesc(this);" />
 			</td>
 		</tr>

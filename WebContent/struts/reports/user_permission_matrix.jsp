@@ -154,7 +154,7 @@ div.filterOption input {
 	<tr>
 		<th><s:text name="UserGroup" /></th>
 		<s:iterator value="tableDisplay.cols">
-			<th class="<s:property/> permdata"><s:property value="description" /></th>
+			<th class="<s:property/> permdata"><s:text name="%{getI18nKey('description')}" /></th>
 		</s:iterator>
 	</tr>
 	</thead>

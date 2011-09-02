@@ -264,20 +264,38 @@ div.autocomplete ul li {
 				</li>
 				</s:if>		
 				<s:if test="account.contractor">
-					<li><label>User Role:</label>
+					<li>
+						<label>User Role:</label>
 						<s:checkbox id="conAdmin" name="conAdmin"/>
 						<label for="conAdmin" class="checkbox">
-						<b><s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.description"/></b>
-						<i>(<s:property value="@com.picsauditing.access.OpPerms@ContractorAdmin.helpText"/>)</i></label></li>
-					<li><label>&nbsp;</label> <s:checkbox
-						id="conBilling" name="conBilling" /><label
-						for="conBilling" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorBilling.helpText"/>)</i></label></li>
-					<li><label>&nbsp;</label> <s:checkbox
-						id="conSafety" name="conSafety" /><label
-						for="conSafety" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorSafety.helpText"/>)</i></label></li>
-					<li><label>&nbsp;</label> <s:checkbox
-						id="conInsurance" name="conInsurance" /><label
-						for="conInsurance" class="checkbox"><b><s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.description"/></b><i> (<s:property value="@com.picsauditing.access.OpPerms@ContractorInsurance.helpText"/>)</i></label></li>
+							<b><s:text name="OpPerms.ContractorAdmin.description" /></b>
+							<i>(<s:text name="OpPerms.ContractorAdmin.helpText" />)</i>
+						</label>
+					</li>
+					<li>
+						<label>&nbsp;</label>
+						<s:checkbox id="conBilling" name="conBilling" />
+						<label for="conBilling" class="checkbox">
+							<b><s:property value="OpPerms.ContractorBilling.description" /></b>
+							<i> (<s:property value="OpPerms.ContractorBilling.helpText" />)</i>
+						</label>
+					</li>
+					<li>
+						<label>&nbsp;</label>
+						<s:checkbox id="conSafety" name="conSafety" />
+						<label for="conSafety" class="checkbox">
+							<b><s:property value="OpPerms.ContractorSafety.description" /></b>
+							<i> (<s:property value="OpPerms.ContractorSafety.helpText" />)</i>
+						</label>
+					</li>
+					<li>
+						<label>&nbsp;</label>
+						<s:checkbox id="conInsurance" name="conInsurance" />
+						<label for="conInsurance" class="checkbox">
+							<b><s:property value="OpPerms.ContractorInsurance.description" /></b>
+							<i> (<s:property value="OpPerms.ContractorInsurance.helpText" />)</i>
+						</label>
+					</li>
 					</s:if>
 				<s:if test="user.id > 0">
 					<li><label>Last Login:</label><s:if test="user.lastLogin != null"> <s:date name="user.lastLogin" /></s:if><s:else> never</s:else>
