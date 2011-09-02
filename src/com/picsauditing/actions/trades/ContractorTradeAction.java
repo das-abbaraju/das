@@ -179,6 +179,9 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		contractor.setTradesUpdated(new Date());
 		accountDao.save(contractor);
+		
+		// Set the ajax mode to view after saving
+		mode = "View";
 
 		return "trade";
 	}

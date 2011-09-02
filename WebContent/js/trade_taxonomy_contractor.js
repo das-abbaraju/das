@@ -32,7 +32,8 @@ function setupCluetip() {
 $(function() {
 	$('a.tradeInfo').live('click',function(e) {
 		e.preventDefault();
-		$($(this).attr('href')).toggle();
+		
+		$('#trade_children').toggle();
 	});
 
 	$('body').delegate('.jstree a', 'click', function(e) {

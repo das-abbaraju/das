@@ -8,12 +8,11 @@
 	<s:if test="!permissions.operatorCorporate">
 		<s:if test="scope != 'ContractorView'">
 			<s:if test="trade == null">
-				<div id="trade-instructions">
+				<div id="trade_instructions" class="alert-message">
 					<p>
 						<s:text name="ContractorTrades.instructions" />
 					</p>
 				</div>
-				<br />
 			</s:if>
 			<s:else>
 				<div>
@@ -31,13 +30,13 @@
 </s:if>
 
 <s:if test="contractor.trades.size() > 0">
-	<div id="trade-cloud">
+	<div id="trade_cloud">
 		<ul>
 			<s:iterator value="contractor.tradesSorted" var="trade" status="status">
-				<li class="<s:if test="#status.odd">odd</s:if><s:else>even</s:else>">
+				<li>
 					<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>&mode=View" 
 						rel="ContractorTrades!quickTrade.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>"
-						class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/> <s:if test="#trade.id == [1].trade.id">current</s:if>">
+						class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/> btn <s:if test="#trade.id == [1].trade.id">primary</s:if>">
 						<s:property value="#trade.trade.name"/>
 					</a>
 				</li>

@@ -18,14 +18,14 @@
 			<s:if test="trade.trade.parent != null">
 				<div class="trade-section">
 					<s:iterator value="tradeClassification" var="atrade">
-						<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
-							<s:if test="isStringEmpty(#atrade.name2)">
-								<s:property value="#atrade.name"/>
-							</s:if>
-							<s:else>
-								<s:property value="#atrade.name2"/>
-							</s:else>
-						</a> &gt;
+						<s:if test="isStringEmpty(#atrade.name2)">
+							<s:set name="trade_name" value="#atrade.name" />
+						</s:if>
+						<s:else>
+							<s:set name="trade_name" value="#atrade.name2" />
+						</s:else>
+						
+						<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade.trade=${atrade.id}" class="trade">${trade_name}</a> &gt;
 					</s:iterator>
 				</div>
 			</s:if>
@@ -39,12 +39,46 @@
 			</div>
 		</s:if>
 		
-		<s:if test="mode == 'Edit'">
-			<s:include value="contractor_trade_edit.jsp" />
-		</s:if>
-		<s:else>
-			<s:include value="contractor_trade_view.jsp" />
-		</s:else>
+		<div class="trade-information">
+			<s:if test="mode == 'Edit'">
+				<s:include value="contractor_trade_edit.jsp" />
+			</s:if>
+			<s:else>
+				<s:include value="contractor_trade_view.jsp" />
+			</s:else>
+			
+			<%-- Specialties (Trade children) --%>
+			<s:if test="!permissions.operatorCorporate">
+				<s:if test="trade.trade.children.size > 0">
+					<div id="trade-section-nav">
+						<a href="#trade_children" class="tradeInfo btn">
+							<s:text name="ContractorTrade.specialties">
+								<s:param value="%{trade.trade.children.size}"/>
+							</s:text>
+							<span>[toggle]</span>
+						</a>
+					</div>
+					
+					<div id="trade_children" class="trade-section">
+						<h5>Specialties</h5>
+						<ul>
+							<s:iterator value="trade.trade.children" var="atrade">
+								<li class="trade-child">
+									<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
+										<s:if test="isStringEmpty(#atrade.name2)">
+											<s:property value="#atrade.name"/>
+										</s:if>
+										<s:else>
+											<s:property value="#atrade.name2"/>
+										</s:else>
+									</a>
+								</li>
+							</s:iterator>
+						</ul>
+					</div>
+				</s:if>
+			</s:if>
+		</div>
 		
 	</div>
 

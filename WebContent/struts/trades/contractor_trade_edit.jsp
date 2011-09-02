@@ -2,10 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
-<s:if test="!permissions.operatorCorporate">
-	<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade=${trade.id}&mode=View" class="trade view">
-		<s:text name="global.View" />
-	</a>
+<s:if test="!permissions.operatorCorporate && trade.id">
+	<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade=${trade.id}&mode=View" class="trade view"><s:text name="global.View" /></a>
 </s:if>
 
 <s:form id="trade-form">
@@ -14,42 +12,8 @@
 	<s:hidden name="trade"/>
 	<s:hidden name="trade.trade"/>
 	
-	<%-- Specialties (Trade children) --%>
-	<s:if test="!permissions.operatorCorporate">
-		<s:if test="trade.trade.children.size > 0">
-			<div id="trade-section-nav">
-				<ul>
-					<li>
-						<a href="#trade_children" class="tradeInfo">
-							<s:text name="ContractorTrade.specialties">
-								<s:param value="%{trade.trade.children.size}"/>
-							</s:text>
-						</a>
-					</li>
-				</ul>
-			</div>
-			
-			<div id="trade_children" class="trade-section">
-				<ul>
-					<s:iterator value="trade.trade.children" var="atrade">
-						<li class="trade-child">
-							<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
-								<s:if test="isStringEmpty(#atrade.name2)">
-									<s:property value="#atrade.name"/>
-								</s:if>
-								<s:else>
-									<s:property value="#atrade.name2"/>
-								</s:else>
-							</a>
-						</li>
-					</s:iterator>
-				</ul>
-			</div>
-		</s:if>
-	</s:if>
-	
 	<s:if test="trade.id > 0 && trade.activityPercent == 0">
-		<div class="alert">
+		<div class="alert-message">
 			<s:text name="ContractorTrade.activityPercent.missing"/>
 		</div>
 	</s:if>
@@ -127,7 +91,6 @@
 		<s:if test="trade.id == 0">
 			<div>
 				<s:if test="requiresService">
-					<br />
 					<s:if test="!onsite">
 						<s:checkbox name="conTypes" fieldValue="Onsite" value="%{contractor.onsiteServices}" cssClass="service" />
 						<s:text name="ContractorTrade.onsiteServices" />
@@ -148,7 +111,7 @@
 		</s:if>
 	
 		<s:if test="affectedTrades.size > 0">
-			<div class="alert">
+			<div class="alert-message">
 				<s:text name="ContractorTrades.affectedTrades">
 					<s:param>
 						<ul>
@@ -167,11 +130,11 @@
 	
 		<div>
 			<s:if test="trade.id == 0">
-				<s:submit method="saveTradeAjax" value="%{getText('button.Add')}" cssClass="save picsbutton positive" id="addButton" onclick="$('#next_button').show()" />
+				<s:submit method="saveTradeAjax" value="%{getText('button.Add')}" cssClass="save btn success" id="addButton" onclick="$('#next_button').show()" />
 			</s:if>
 			<s:else>
-				<s:submit method="saveTradeAjax" value="%{getText('button.Save')}" cssClass="save picsbutton positive"/>
-				<s:submit method="removeTradeAjax" value="%{getText('button.Remove')}" cssClass="remove picsbutton negative" />
+				<s:submit method="saveTradeAjax" value="%{getText('button.Save')}" cssClass="save btn success" />
+				<s:submit method="removeTradeAjax" value="%{getText('button.Remove')}" cssClass="remove btn danger" />
 			</s:else>
 		</div>
 	</s:if>
