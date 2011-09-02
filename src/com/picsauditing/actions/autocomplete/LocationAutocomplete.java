@@ -30,11 +30,11 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 			if (!Strings.isEmpty(q)) {
 				if (q.length() == 2) {
 					// search both iso and translated fields for the 2 letter combinations
-					List<State> stateList = stateDAO.findWhere("isoCode LIKE '%" + Utilities.escapeQuotes(q) + "%'");
-					List<Country> countryList = countryDAO.findWhere("isoCode LIKE '%" + Utilities.escapeQuotes(q)
-							+ "%'");
+					List<State> stateList = stateDAO.findWhere("isoCode = '" + Utilities.escapeQuotes(q) + "'");
+					List<Country> countryList = countryDAO.findWhere("isoCode = '" + Utilities.escapeQuotes(q) + "'");
 					result.addAll(stateList);
 					result.addAll(countryList);
+					
 					stateList = stateDAO.findByTranslatableField(State.class, "%" + Utilities.escapeQuotes(q) + "%",
 							getLocale());
 					countryList = countryDAO.findByTranslatableField(Country.class, "%" + Utilities.escapeQuotes(q)
