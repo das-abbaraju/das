@@ -53,6 +53,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	private List<ContractorType> conTypes = Collections.emptyList();
 
+	private String mode = "Edit";
+
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
 		this.currentStep = ContractorRegistrationStep.Trades;
@@ -375,5 +377,21 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public void setService(boolean service) {
 		this.service = service;
+	}
+
+	public String getMode() {
+		if (permissions.isOperatorCorporate()) {
+			mode = "View";
+		}
+
+		if (!trade.getTrade().isSelectable()) {
+			mode = "View";
+		}
+
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
 	}
 }
