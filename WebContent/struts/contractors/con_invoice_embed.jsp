@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <table class="allborder">
@@ -8,7 +9,12 @@
 	<s:iterator value="#i.items">
 		<tr>
 			<td>
-				<s:property value="invoiceFee.fee" />
+				<s:if test="invoiceFee.fee.length > 0">
+					<s:property value="invoiceFee.fee" />
+				</s:if>
+				<s:else>
+					<s:text name="InvoiceFee.%{invoiceFee.id}.fee" />
+				</s:else>
 				<span style="color: #444; font-style: italic; font-size: 10px;">
 				<s:if test="invoiceFee.feeClass == 'Activation'">effective
 					<s:if test="paymentExpires == null"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></s:if>

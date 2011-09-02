@@ -130,7 +130,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						if (item.getPaymentExpires() != null) {
 							membershipExpiration = item.getPaymentExpires();
 						}
-						removedItemNames.add(item.getInvoiceFee().getFee());
+						removedItemNames.add(item.getInvoiceFee().getFee().toString());
 						iterator.remove();
 						invoiceItemDAO.remove(item);
 					}
@@ -149,7 +149,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						newInvoiceItem.setInvoice(invoice);
 						invoice.getItems().add(newInvoiceItem);
 
-						createdItemNames.add(newInvoiceItem.getInvoiceFee().getFee());
+						createdItemNames.add(newInvoiceItem.getInvoiceFee().getFee().toString());
 					}
 				}
 

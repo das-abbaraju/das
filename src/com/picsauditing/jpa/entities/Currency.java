@@ -52,7 +52,6 @@ public enum Currency {
 		if (isCanada()) {
 			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
 			gst.setFeeClass(FeeClass.GST);
-			gst.setFee("Goods & Services Tax (GST#84887 4913)");
 			return gst;
 		} else
 			return null;

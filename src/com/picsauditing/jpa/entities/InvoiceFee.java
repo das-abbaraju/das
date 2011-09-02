@@ -21,7 +21,7 @@ public class InvoiceFee extends BaseTable {
 	public final static int OLDLATEFEE = 55;
 	public final static int GST = 200;
 	public final static int IMPORTFEE = 340;
-	private String fee;
+	private TranslatableString fee;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
 	private FeeClass feeClass;
@@ -37,11 +37,12 @@ public class InvoiceFee extends BaseTable {
 		this.id = id;
 	}
 
-	public String getFee() {
+	@Transient
+	public TranslatableString getFee() {
 		return fee;
 	}
 
-	public void setFee(String fee) {
+	public void setFee(TranslatableString fee) {
 		this.fee = fee;
 	}
 
