@@ -23,8 +23,7 @@ public class ChartFlagCountCorp extends ChartMSAction {
 		sql.addField("flag as series");
 		sql.addField("op.name as label");
 		sql.addField("count(*) as value");
-		sql
-				.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=',gc.flag,'%26filter.operator=',op.id) as link");
+		sql.addField("CONCAT('ReportContractorOperatorFlag.action?button=Search%26filter.flagStatus=',gc.flag,'%26filter.operator=',op.id) as link");
 		sql.addGroupBy("series, label");
 		sql.addOrderBy("series, label");
 		sql.addJoin("JOIN generalcontractors gc ON a.id = gc.subID");
@@ -46,9 +45,13 @@ public class ChartFlagCountCorp extends ChartMSAction {
 		Map<String, DataSet> dataSet = converter.getChart().getDataSets();
 		for (DataSet row : dataSet.values()) {
 			row.setShowValues(false);
+			FlagColor flagColor = FlagColor.valueOf(row.getSeriesName());
+
 			for (Set set : row.getSets().values()) {
-				set.setColor(FlagColor.valueOf(row.getSeriesName()).getHex());
+				set.setColor(flagColor.getHex());
 			}
+
+			row.setSeriesName(getText(flagColor.getI18nKey()));
 		}
 
 		return chart;
