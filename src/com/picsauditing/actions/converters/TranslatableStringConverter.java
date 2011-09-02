@@ -8,8 +8,8 @@ import org.apache.struts2.util.StrutsTypeConverter;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.util.Strings;
 
+@SuppressWarnings("rawtypes")
 public class TranslatableStringConverter extends StrutsTypeConverter {
 
 	@Override
