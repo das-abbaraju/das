@@ -249,8 +249,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
-						if (cao.getStatus().after(AuditStatus.Incomplete)
-								&& cao.getStatus().before(AuditStatus.NotApplicable)
+						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
 								&& cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
 							cao.changeStatus(AuditStatus.Incomplete, permissions);
 							updateAudit = true;
@@ -260,7 +259,7 @@ public class AuditDataSave extends AuditActionSupport {
 					if (updateAudit)
 						auditDao.save(tempAudit);
 				}
-				
+
 				if (tempAudit.getAuditType().getClassType().isPolicy()) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getViewableOperators(permissions)) {

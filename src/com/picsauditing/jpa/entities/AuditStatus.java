@@ -59,6 +59,17 @@ public enum AuditStatus implements Translatable {
 		return this.ordinal() > o.ordinal();
 	}
 
+	/**
+	 * Inclusive between
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public boolean between(AuditStatus start, AuditStatus end) {
+		return start.ordinal() <= this.ordinal() && this.ordinal() <= end.ordinal();
+	}
+	
 	public boolean isApproved() {
 		return this.equals(Approved);
 	}
