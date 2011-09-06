@@ -79,8 +79,8 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(),
-						auditData.getQuestion().getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+						.getId());
 			}
 
 			if (newCopy == null) {
@@ -169,28 +169,28 @@ public class AuditDataSave extends AuditActionSupport {
 			/*
 			 * Update my function questions;
 			 */
-//			Multimap<AuditQuestion, Object> functionResults = auditData.getQuestion().runFunctions(
-//					QuestionFunctionType.Calculation, answerMap);
-//			for (Entry<AuditQuestion, Collection<Object>> entry : functionResults.asMap().entrySet()) {
-//				if (entry.getValue().size() > 1) {
-//					System.out.printf(
-//							"Too many calculations for question %d. I will only use the first one. You need to fix this.\n",
-//							entry.getKey().getId());
-//				}
-//				/*
-//				 * Only take the first one
-//				 */
-//				Object result = entry.getValue().iterator().next();
-//				AuditData target = auditDataDao.findAnswerByAuditQuestion(auditID, entry.getKey().getId());
-//				if (target == null) {
-//					target = new AuditData();
-//					target.setAudit(auditData.getAudit());
-//					target.setQuestion(entry.getKey());
-//				}
-//				target.setAnswer(result.toString());
-//				target.setAuditColumns(permissions);
-//				auditDataDao.save(target);
-//			}
+			// Multimap<AuditQuestion, Object> functionResults = auditData.getQuestion().runFunctions(
+			// QuestionFunctionType.Calculation, answerMap);
+			// for (Entry<AuditQuestion, Collection<Object>> entry : functionResults.asMap().entrySet()) {
+			// if (entry.getValue().size() > 1) {
+			// System.out.printf(
+			// "Too many calculations for question %d. I will only use the first one. You need to fix this.\n",
+			// entry.getKey().getId());
+			// }
+			// /*
+			// * Only take the first one
+			// */
+			// Object result = entry.getValue().iterator().next();
+			// AuditData target = auditDataDao.findAnswerByAuditQuestion(auditID, entry.getKey().getId());
+			// if (target == null) {
+			// target = new AuditData();
+			// target.setAudit(auditData.getAudit());
+			// target.setQuestion(entry.getKey());
+			// }
+			// target.setAnswer(result.toString());
+			// target.setAuditColumns(permissions);
+			// auditDataDao.save(target);
+			// }
 
 			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;
@@ -249,9 +249,10 @@ public class AuditDataSave extends AuditActionSupport {
 				if (tempAudit.getAuditType().isAnnualAddendum()) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
-						if (cao.getStatus().isComplete() && 
-								cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
-							cao.changeStatus(AuditStatus.Pending, permissions);
+						if (cao.getStatus().after(AuditStatus.Incomplete)
+								&& cao.getStatus().before(AuditStatus.NotApplicable)
+								&& cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
+							cao.changeStatus(AuditStatus.Incomplete, permissions);
 							updateAudit = true;
 							break;
 						}
@@ -284,8 +285,8 @@ public class AuditDataSave extends AuditActionSupport {
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
 			try {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(),
-						auditData.getQuestion().getCategory().getId());
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
+						.getCategory().getId());
 			} catch (NoResultException e) {
 				// Create AuditCatData for categories that don't have one
 				// yet
