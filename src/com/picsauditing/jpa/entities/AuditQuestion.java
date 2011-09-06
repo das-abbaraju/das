@@ -72,9 +72,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private String columnHeader;
 	private String uniqueCode;
 	private String title;
-	private String requirement;
+	private TranslatableString requirement;
 	private String helpPage;
-	private String helpText;
+	private TranslatableString helpText;
 	private String criteria;
 	private String criteriaAnswer;
 	private AuditQuestion requiredQuestion;
@@ -322,22 +322,21 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 		this.helpPage = helpPage;
 	}
 
-	// @Deprecated
-	@Column(length = 1000)
-	public String getHelpText() {
+	@Transient
+	public TranslatableString getHelpText() {
 		return helpText;
 	}
 
-	public void setHelpText(String helpText) {
+	public void setHelpText(TranslatableString helpText) {
 		this.helpText = helpText;
 	}
 
-	public void setRequirement(String requirement) {
+	public void setRequirement(TranslatableString requirement) {
 		this.requirement = requirement;
 	}
 
-	// @Deprecated
-	public String getRequirement() {
+	@Transient
+	public TranslatableString getRequirement() {
 		return requirement;
 	}
 

@@ -42,8 +42,10 @@ public abstract class BaseTranslatable implements Translatable {
 				translatable.putTranslation(key, translationCache.get(key), false);
 			}
 
-			Method declaredMethod = this.getClass().getDeclaredMethod("set" + StringUtil.capitalize(field.getName()),
-					TranslatableString.class);
+			StringBuilder sb = new StringBuilder();
+			sb.append("set").append(field.getName().substring(0, 1).toUpperCase()).append(field.getName().substring(1));
+
+			Method declaredMethod = this.getClass().getDeclaredMethod(sb.toString(), TranslatableString.class);
 			declaredMethod.invoke(this, translatable);
 		}
 	}
