@@ -42,11 +42,6 @@ $(function() {
 		$('#trade-view').load('ContractorTrades!tradeAjax.action', data, loadTradeCallback);
 	});
 
-	$('#search-list').delegate('a.trade', 'click', function(e) {
-		e.preventDefault();
-		$('#trade-view').load($(this).attr('href'), loadTradeCallback);
-	});
-	
 	$('#trade-view').delegate('#trade-form', 'submit', function(e) {
 		e.preventDefault();
 	}).delegate('#trade-form .save', 'click', function(e) {

@@ -23,13 +23,11 @@
 {
 	height: 500px;
 	overflow: auto;
-	padding: 1em;
 }
 
-#search-tree,
-#search-list
+#search-list ul
 {
-	height: 464px;
+	margin: 0px;
 }
 
 /* trade view */
@@ -351,7 +349,7 @@ h3.new {
 #browse-tab,
 #search-tab
 {
-	padding: 1em 0 0 1em;
+	padding: 10px;
 }
 
 #trade-nav li.matching > a {
@@ -384,4 +382,16 @@ h3.new {
 
 .product-service {
 	background-image: url(../images/icon_box_combo.png);
+}
+
+/* load area icon */
+
+.load-area
+{
+	background: url(../images/loading.gif);
+	height: 75px;
+	margin: -40px auto 0px !important;
+	position: relative;
+	top: 50%;
+	width: 75px;
 }

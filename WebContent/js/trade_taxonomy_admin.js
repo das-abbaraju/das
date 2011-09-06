@@ -112,11 +112,6 @@ $(function() {
 		$('body').removeClass('busy')
 	});
 
-	$('a.add.trade').live('click', function(e) {
-		e.preventDefault();
-		$('#trade-view').load('TradeTaxonomy!tradeAjax.action', loadTradeCallback);
-	});
-
 	$('#trade-view').delegate('#removelogo','click',function(e) {
 		e.preventDefault();
 		$('#trade-view').load('TradeTaxonomy!removeFileAjax.action', {trade: $('#saveTrade [name="trade"]').val()}, loadTradeCallback);
