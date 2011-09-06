@@ -118,16 +118,18 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'ESignature'">
-			<s:if test="#a == null || #this.hasChanged(#q.id)"> 
-				<label>Please enter your full name</label>
+			<s:if test="#a == null"> 
+				<label><s:text name="QuestionType.ESignature.fullName" /></label>
 				<br />
-				
 				<s:hidden name="auditData.comment" value="%{#this.IP}"/>
+				<s:textfield name="auditData.answer" value="" size="1"/>
 				<s:textfield name="auditData.answer" value=""/>
 				<s:submit type="button" value="Sign" cssClass="question-save" />
 			</s:if>
 			<s:else>
-				${a.answer} ${a.updateDate}
+				<label><s:text name="QuestionType.ESignature.alreadySigned" /></label>
+				<br />
+				${a.answer} (<s:date name="#a.updateDate" format="MMM d, yyyy" />)
 			</s:else>
 		</s:if>
 

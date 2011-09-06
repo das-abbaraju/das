@@ -464,13 +464,4 @@ public class ContractorAuditController extends AuditActionSupport {
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
 	
-	public boolean hasChanged(int qID) {
-		AuditData ad = auditDataDAO.findAnswerByAuditQuestion(auditID, qID);
-		if (conAudit.getUpdateDate().after(ad.getUpdateDate())){
-			addActionMessage("This document has changed since you have last signed it.  Your signature is needed again.");
-			return true;
-		}
-		return false;
-	}
-	
 }

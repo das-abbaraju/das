@@ -498,6 +498,10 @@ public class AuditDataSave extends AuditActionSupport {
 				auditData.setAnswer("");
 		}
 
+		if ("ESignature".equals(questionType))
+			// Strip the first comma that results from the two part answer.
+			auditData.setAnswer(answer = answer.trim().replaceFirst(",", ""));
+		
 		return true;
 	}
 
