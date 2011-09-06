@@ -107,55 +107,6 @@
 		});
 	});
 </script>
-<style>
-div#opTagAjax{
-	/*background: #F9F9F9;
-	border: 2px solid #012142;
-	padding: 3px;
-	display: none;
-	width: 80%;
-	margin-left: auto;
-	margin-right: auto;*/
-}
-img.contractor_logo {
-	float: left;
-	padding: 20px;
-	max-width: 180px;
-	/* IE Image max-width */
-	width: expression(this.width > 180 ? 180 : true);
-}
-div.co_flag {
-	float: left;
-	text-align: center;
-	margin: 10px 20px 10px 5px;
-}
-div.co_problems {
-	float: left;
-}
-div.co_select {
-	clear: left;
-	border-top: 1px solid #cecece;
-	margin: 2px;
-	padding: 2px;
-	text-align: center;
-}
-.hide_services {
-	display: none;
-}
-ul {
-	list-style: none;
-}
-#conoperator_tags {
-	padding: 10px;
-}
-tr.hurdle {
-	background-color:Cornsilk;
-	display: none;
-}
-table.report tr.hurdle td {
-	font-size: 11px;
-}
-</style>
 </head>
 <body>
 <s:include value="conHeader.jsp"/>
@@ -171,7 +122,7 @@ table.report tr.hurdle td {
 <table>
 <tr>
 <td style="vertical-align:top; width: 48%">
-	<!-- Operator Flag Status -->
+	<%-- Operator Flag Status --%>
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -334,7 +285,8 @@ table.report tr.hurdle td {
 	</s:if>
 	</s:iterator>
 	<s:if test="oshaDisplay.hasData">
-	<!-- Statistics -->
+	
+	<%-- Statistics --%>
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -376,37 +328,37 @@ table.report tr.hurdle td {
 	</s:if>
 
 	<s:if test="criteriaList.categories.size() > 0">
-	<!-- Flaggable Data -->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				<s:text name="ContractorView.FlaggableData" />
-			</div>
-			<div class="panel_content">
-				<div class="clear" style="height: 0px; overflow: hidden"></div>
-				<s:iterator value="criteriaList.categories" id="datacat">
-					<s:if test="#datacat != 'Insurance Criteria'">
-					<div class="flagData">
-						<strong><s:property value="#datacat"/></strong>
-						<ul>
-						<s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">
-							<li><span><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></span></li>
-						</s:iterator>
-						</ul>
-					</div>
-					</s:if>
-				</s:iterator>
-				<div class="clear"></div>
+		<%-- Flaggable Data --%>
+		<div class="panel_placeholder">
+			<div class="panel">
+				<div class="panel_header">
+					<s:text name="ContractorView.FlaggableData" />
+				</div>
+				<div class="panel_content">
+					<div class="clear" style="height: 0px; overflow: hidden"></div>
+					<s:iterator value="criteriaList.categories" id="datacat">
+						<s:if test="#datacat != 'Insurance Criteria'">
+						<div class="flagData">
+							<strong><s:property value="#datacat"/></strong>
+							<ul>
+							<s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">
+								<li><span><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></span></li>
+							</s:iterator>
+							</ul>
+						</div>
+						</s:if>
+					</s:iterator>
+					<div class="clear"></div>
+				</div>
 			</div>
 		</div>
-	</div>
 	</s:if>
 </td>
 
 <td width="15px"></td>
 
 <td style="vertical-align:top; width: 48%">
-	<!-- Contractor Info -->
+	<%-- Contractor Info --%>
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -471,7 +423,8 @@ table.report tr.hurdle td {
 			</div>
 		</div>
 	</div>
-	<!-- Contact Info -->
+	
+	<%-- Contact Info --%>
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -503,7 +456,8 @@ table.report tr.hurdle td {
 			</div>
 		</div>
 	</div>
-	<!-- Description -->
+	
+	<%-- Description --%>
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
@@ -526,11 +480,13 @@ table.report tr.hurdle td {
 			</div>
 		</div>
 	</div>
-	<!-- All Locations -->
-	<div class="panel_placeholder">
+	
+	<%-- All Locations --%>
+	<div class="panel_placeholder widget locations">
 		<div class="panel" id="all">
 			<div class="panel_header">
 				<s:text name="ContractorView.AllLocations" />
+				<a href="ContractorFacilities.action?id=${id}"><s:text name="global.Facilities" /></a>
 			</div>
 			<div class="panel_content">
 				<s:iterator value="activeOperatorsMap">
@@ -562,24 +518,26 @@ table.report tr.hurdle td {
 			</div>
 		</div>
 	</div>
+	
 	<s:if test="permissions.admin || permissions.contractor">
-	<!-- Open Tasks -->
-	<div class="panel_placeholder">
-		<div class="panel">
-			<div class="panel_header">
-				<s:text name="Widget.6.caption"/>
-			</div>
-			<div class="panel_content" id="con_tasks">
-				<div class="inprogress"></div>
-				<script type="text/javascript">
-					$(function() {
-						$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
-					});
-				</script>
+		<%-- Open Tasks --%>
+		<div class="panel_placeholder">
+			<div class="panel">
+				<div class="panel_header">
+					<s:text name="Widget.6.caption"/>
+				</div>
+				<div class="panel_content" id="con_tasks">
+					<div class="inprogress"></div>
+					<script type="text/javascript">
+						$(function() {
+							$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
+						});
+					</script>
+				</div>
 			</div>
 		</div>
-	</div>
 	</s:if>
+	
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
