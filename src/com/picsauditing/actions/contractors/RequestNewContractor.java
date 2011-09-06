@@ -112,6 +112,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 	protected String term;
 	protected String type;
+	protected String requestedTagIds;
 
 	protected List<String> unusedTerms;
 	protected List<String> usedTerms;
@@ -149,15 +150,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		// initialize tags
-		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
-			StringTokenizer st = new StringTokenizer(newContractor.getOperatorTags(), ", ");
-			while (st.hasMoreTokens()) {
-				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st.nextToken()));
-				if (tag != null) {
-					requestedTags.add(tag);
-				}
-			}
-		}
+		loadRequestedTags();
 		loadOperatorTags();
 
 		String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
@@ -259,6 +252,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 		}
 		conID = (newContractor.getContractor() == null) ? 0 : newContractor.getContractor().getId();
+		
+		loadRequestedTags();
 
 		return SUCCESS;
 	}
@@ -381,14 +376,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setMatchCount(potentialMatches.size());
 
 		newContractor.setAuditColumns(permissions);
-
-		StringBuffer tagIds = new StringBuffer("");
-		for (OperatorTag tag : requestedTags) {
-			if (tagIds.length() > 0)
-				tagIds.append(",");
-			tagIds.append("" + tag.getId());
-		}
-		newContractor.setOperatorTags(tagIds.toString());
+		newContractor.setOperatorTags(requestedTagIds);
 
 		if (newContractor.getId() == 0) {
 			newContractor = crrDAO.save(newContractor);
@@ -413,10 +401,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		newContractor = crrDAO.save(newContractor);
+		
+		loadRequestedTags();
 
 		return SUCCESS;
 	}
-
+	
 	private void sendHoldEmail(String requestLink) throws IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(163);
@@ -959,8 +949,23 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		// add only tags not in request
 		for (OperatorTag tag : list) {
-			if (!requestedTags.contains(tag))
-				operatorTags.add(tag);
+			operatorTags.add(tag);
+		}
+	}
+	
+	private void loadRequestedTags() {
+		requestedTags.clear();
+		
+		requestedTagIds = newContractor.getOperatorTags();
+		
+		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
+			StringTokenizer st = new StringTokenizer(newContractor.getOperatorTags(), ", ");
+			while (st.hasMoreTokens()) {
+				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st.nextToken()));
+				if (tag != null) {
+					requestedTags.add(tag);
+				}
+			}
 		}
 	}
 
@@ -972,6 +977,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (sub == null || sub.getTimePeriod() == SubscriptionTimePeriod.Event)
 			return true;
 		return false;
+	}
+	
+	public String getRequestedTagIds() {
+		return requestedTagIds;
+	}
+
+	public void setRequestedTagIds(String requestedTagIds) {
+		this.requestedTagIds = requestedTagIds;
 	}
 
 	public List<OperatorTag> getRequestedTags() {
