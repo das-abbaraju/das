@@ -713,4 +713,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 		return allComplete;
 	}
+
+	public boolean isCanEditCategory(AuditCategory category) {
+		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
+			return false;
+	
+		if (!conAudit.getAuditType().getClassType().isPolicy())
+			return true;
+	
+		if (conAudit.getOperatorsVisible().size() == 1
+				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
+			return true;
+	
+		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
+			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
+				return false;
+		}
+	
+		return true;
+	}
 }

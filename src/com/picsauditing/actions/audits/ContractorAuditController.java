@@ -194,8 +194,7 @@ public class ContractorAuditController extends AuditActionSupport {
 						AuditStatus.Incomplete)) {
 					if (caow.getCao().isVisible()) {
 						if (permissions.isAdmin()
-								|| (permissions.isContractor() && permissions.getAccountId() == conAudit
-										.getContractorAccount().getId())) {
+								|| (permissions.isContractor() && permissions.getAccountId() == conAudit.getContractorAccount().getId())) {
 							problems.put(caow.getCao(), caow.getNotes());
 						} else if (getViewableOperators(permissions).contains(caow.getCao())) {
 							problems.put(caow.getCao(), caow.getNotes());
@@ -325,25 +324,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 	}
 
-	public boolean isCanEditCategory(AuditCategory category) {
-		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
-			return false;
-
-		if (!conAudit.getAuditType().getClassType().isPolicy())
-			return true;
-
-		if (conAudit.getOperatorsVisible().size() == 1
-				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
-			return true;
-
-		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
-			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
-				return false;
-		}
-
-		return true;
-	}
-
 	public int getCaoID() {
 		return caoID;
 	}
@@ -381,8 +361,7 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
-											.intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount().intValue() > 450))
 								return true;
 						}
 					}
@@ -460,8 +439,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setProblems(Map<ContractorAuditOperator, String> problems) {
 		this.problems = problems;
 	}
-	public String getIP(){
+
+	public String getIP() {
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
-	
+
 }
