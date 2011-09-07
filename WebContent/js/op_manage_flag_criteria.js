@@ -151,6 +151,11 @@ $(function() {
 			updateAffected(fcoID, opID);
 		});
 	});
+	
+	// bump contractors
+	$('.bump-contractor').bind('click', function(event) {
+		$('#bump_contractors input[type=submit]').click();
+	});
 });
 
 function getImpact(fcoID, accountID) {

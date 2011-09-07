@@ -1,0 +1,41 @@
+table.report a {
+	text-decoration: underline;
+}
+
+.flagImage {
+	width: 10px;
+	height: 12px;
+}
+
+.leftHand, .rightHand {
+	vertical-align: top;
+}
+
+.leftHand {
+	width: 70%;
+}
+
+.leftHand table.report {
+	width: 100%;
+}
+
+.rightHand table.report {
+	float: right;
+}
+
+.editable, #emptyChildCriteria {
+	display: none;
+}
+
+.hover {
+	margin-left: 10px;
+}
+
+.newImpact {
+	color: gray;
+}
+
+#addCriteria
+{
+	margin-top: 10px;
+}
