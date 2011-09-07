@@ -26,7 +26,7 @@
 	</s:form>
 
 	<div class="info other">
-		<p><s:text name="Login.forgot?" /> <a href="AccountRecovery.action"><s:text name="Login.ClickToRecover" /></a></p>
+		<p><s:text name="Login.Forgot" /> <a href="AccountRecovery.action"><s:text name="Login.ClickToRecover" /></a></p>
 		<p><s:text name="Login.ContractorAsk" /> <a href="ContractorRegistration.action"><s:text name="Login.ClickToRegister" /></a></p>
 	</div>
 </div>
