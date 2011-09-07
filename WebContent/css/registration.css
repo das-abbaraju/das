@@ -1,0 +1,71 @@
+#operatorForms {
+	overflow: auto;
+	background-color: white;
+}
+
+#hidden #operatorForms {
+	display: none;
+}
+
+#attachment {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#email_preview {
+	display: none;
+	border: 1px solid #C3C3C3;
+	margin-top: 10px;
+	background-color: #FBFBF8;
+	padding: 5px;
+}
+
+#email_preview td {
+	padding: 5px;
+}
+
+.normal:hover {
+	color: #4C4D4D;
+	text-decoration: none;
+}
+
+#notesPreview,#addHere {
+	background-color: transparent;
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+#addToNotes {
+	margin-bottom: 10px;
+}
+
+#notesHere {
+	background: #FFFF99;
+	padding: 10px 5px 10px 5px;
+	border-top: 2px solid #4686BF;
+	border-bottom: 2px solid #4686BF;
+	min-width: 400px;
+	z-index: 1;
+	position: relative;
+}
+
+#notesDiv {
+	position: relative;
+}
+
+#editRequestNotes {
+	position: absolute;
+	top: 10px;
+	left: 2px;
+	z-index: 0;
+}
+
+* html #editRequestNotes {
+	left: -5px;
+}
