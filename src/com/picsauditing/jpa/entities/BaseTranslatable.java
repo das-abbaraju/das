@@ -13,6 +13,8 @@ import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.WordUtils;
+
 import com.picsauditing.PICS.I18nCache;
 
 import freemarker.template.utility.StringUtil;
@@ -55,7 +57,7 @@ public abstract class BaseTranslatable implements Translatable {
 	public void postSave() throws Exception {
 		for (Field field : getTranslatableFields()) {
 			I18nCache i18nCache = I18nCache.getInstance();
-			Method getField = this.getClass().getDeclaredMethod("get" + StringUtil.capitalize(field.getName()));
+			Method getField = this.getClass().getDeclaredMethod("get" + WordUtils.capitalize(field.getName()));
 			String key = this.getI18nKey();
 			TranslatableString value = (TranslatableString) getField.invoke(this);
 			i18nCache.saveTranslatableString(key, value);
