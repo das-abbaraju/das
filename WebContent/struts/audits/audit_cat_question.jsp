@@ -134,9 +134,10 @@
 		<s:include value="audit_question_view.jsp"></s:include>
 	</s:if>
 	<s:elseif test="#mode == 'Edit'">
-	 	<s:if test="isCanEditCategory(#category) || #q.questionType != 'Calculation'">
+	 	<s:if test="isCanEditCategory(#category) && #q.questionType != 'Calculation'">
 			<s:include value="audit_question_edit.jsp"></s:include>
-		</s:if><s:else>
+		</s:if>
+		<s:else>
 			<s:include value="audit_question_view.jsp"></s:include>
 		</s:else>
 	</s:elseif>
