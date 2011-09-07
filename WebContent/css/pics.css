@@ -986,6 +986,7 @@ span.block:hover .hoverhelp {
 	position: absolute;
 	right: 21px;
 	text-align: right;
+	z-index: 9;
 }
 
 #helpbox a
