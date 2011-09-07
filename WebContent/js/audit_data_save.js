@@ -158,11 +158,11 @@ function showCertUpload(certID, questionID) {
 function reloadQuestion(qid) {
 	var element = $('#node_' + qid);
 	var url = 'AuditDataSaveAjax.action';
-	var data = element.find('form.qform input.get_request').serializeArray();
-	
-	data.push({
-		button: 'reload'
-	});
+	var data = {
+		button: 'reload',
+		'auditData.question': qid,
+		'auditData.audit': auditID
+	};
 	
 	element.block({
 		message: 'Reloading question...'
