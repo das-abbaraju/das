@@ -5,17 +5,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.collect.Multimap;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.auditBuilder.AuditBuilder;
@@ -24,7 +21,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -36,7 +32,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Naics;
-import com.picsauditing.jpa.entities.QuestionFunctionType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
@@ -63,10 +58,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditBuilder auditBuilder;
 
 	public String execute() throws Exception {
-		if (getCategoryID() == 0) {
-			addActionError("Missing categoryID");
-			return BLANK;
-		}
 
 		AuditCatData catData;
 		try {
@@ -79,8 +70,8 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
-						.getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(),
+						auditData.getQuestion().getId());
 			}
 
 			if (newCopy == null) {
@@ -284,8 +275,8 @@ public class AuditDataSave extends AuditActionSupport {
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
 			try {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
-						.getCategory().getId());
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(),
+						auditData.getQuestion().getCategory().getId());
 			} catch (NoResultException e) {
 				// Create AuditCatData for categories that don't have one
 				// yet
@@ -501,7 +492,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("ESignature".equals(questionType))
 			// Strip the first comma that results from the two part answer.
 			auditData.setAnswer(answer = answer.trim().replaceFirst(",", ""));
-		
+
 		return true;
 	}
 
