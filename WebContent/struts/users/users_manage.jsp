@@ -284,18 +284,15 @@
 									<s:textfield name="user.fax" size="15" />
 								</li>
 								
-								<s:if test="user.account.demo || user.account.admin">
+								<%-- <s:if test="user.account.demo || user.account.admin"> --%>
 									<li>
 										<label for="user.locale">Language:</label>
-										<s:select
-										list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-										name="user.locale" listValue="displayName"></s:select>
+										<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" name="user.locale" listValue="displayName"></s:select>
 									</li>
-								</s:if>
+								<%-- </s:if> --%>
 								
 								<li>
-									<s:select name="user.timezone" value="user.timezone.iD" theme="form" 
-									list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"></s:select>
+									<s:select name="user.timezone" value="user.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"></s:select>
 								</li>
 								
 								<s:if test="account.operatorCorporate">

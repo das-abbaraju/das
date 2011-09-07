@@ -15,7 +15,7 @@
 	</head>
 	<body>
 	
-		<%--<s:if test="debugging"><!-- We can remove this once we've release i18n --> --%>
+		<%-- <s:if test="debugging"><!-- We can remove this once we've release i18n --> --%>
 		<ul class="locales">
 			<li>
 				<a href="?request_locale=en">English</a>
@@ -27,7 +27,7 @@
 				<a href="?request_locale=es">Español</a>
 			</li>
 		</ul> 
-		<%--</s:if> --%>
+		<%-- </s:if> --%>
 		
 		<s:include value="login_form.jsp"/>
 	
