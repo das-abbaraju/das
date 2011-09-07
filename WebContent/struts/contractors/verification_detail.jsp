@@ -16,8 +16,7 @@
 						</tr>
 					</thead>
 					<tr>
-						<td><s:property value="question.category.name" />/<s:property
-							value="question.name" /></td>
+						<td><s:property value="question.category.name" />/<s:text name="question.name" /></td>
 						<s:if test="verified">
 							<td class="center" style="color: #006400; font-weight: bold;"><s:property
 								value="answer" /></td>
