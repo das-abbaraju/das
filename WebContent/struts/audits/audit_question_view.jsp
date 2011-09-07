@@ -52,6 +52,14 @@
 		<s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
 			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
 		</s:if>
+		<s:elseif test="#q.questionType == 'Calculation'">
+			<s:if test="hasKey(#a.answer)">
+				<s:text name="%{#a.answer}" />			
+			</s:if>
+			<s:else>
+				<s:property value="#a.answer" />
+			</s:else>
+		</s:elseif>
 		<s:else>
 			<s:property value="#a.answer" />
 		</s:else>
