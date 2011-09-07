@@ -112,11 +112,7 @@
 		<s:if test="#q.questionType == 'FileCertificate'">
 			<s:include value="audit_question_cert_load.jsp" />
 		</s:if>
-		
-		<s:if test="#q.questionType == 'Calculation'">
-			<s:property value="#a.answer"/>
-		</s:if>
-		
+
 		<s:if test="#q.questionType == 'ESignature'">
 			<s:if test="#a == null"> 
 				<label><s:text name="QuestionType.ESignature.fullName" /></label>
