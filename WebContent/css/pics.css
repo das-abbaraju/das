@@ -975,37 +975,35 @@ span.block:hover .hoverhelp {
 }
 
 /********************** LIVE HELP BOX ******************************/
-#helpbox {
-	position: absolute;
+#helpbox
+{
 	background-color: #ECECEC;
-	right: 21px;
-	font-size: 12px;
-	padding: 5px;
-	line-height: 18px;
-	border-left: 1px solid #C3C3C3;
 	border-bottom: 1px solid #C3C3C3;
+	border-left: 1px solid #C3C3C3;
+	font-size: 12px;
+	line-height: 18px;
+	padding: 5px;
+	position: absolute;
+	right: 21px;
+	text-align: right;
 }
 
-#helpbox a {
+#helpbox a
+{
 	padding-left: 17px;
 	margin-left: 2px;
 	background: url('../images/help.gif') no-repeat left center;
 	zoom: 1;
 }
 
-#helpbox a,a:active,a:hover,a:visited {
-
-}
-
-#chatIcon {
-	position: absolute;
-	top: 153px;
-	right: 23px;
-	font-size: 12px;
-	padding: 1px;
-	line-height: 18px;
-	z-index: 1;
-	text-align: center;
+#helpbox a.liveperson-chat
+{
+	background: none;
+	clear: both;
+	display: none;
+	height: 77px;
+	margin: 5px 0px 0px;
+	padding: 0px;
 }
 
 #content div.helpOnRight {

@@ -2,15 +2,6 @@
 // Make sure everything in this file should be included on EVERY page call
 // In other words, make it brief here
 
-/*** Chat icon on top right of every page ***/
-function showChat() {
-	var elem = getElement('chatIcon');
-	elem.style.display = 'block';
-}
-function hideChat() {
-	var elem = getElement('chatIcon');
-	elem.style.display = 'none';
-}
 function getElement(whichLayer) {
 	var elem;
 	if( document.getElementById )
@@ -93,3 +84,29 @@ function augment (oSelf, oOther) {
     }
     return oSelf;
 }
+
+/**
+ * Chat - solutions.liveperson.com
+ */
+
+$(function() {
+	$('.liveperson-chat-toggle').bind('mouseover', function() {
+		var element = $('.liveperson-chat');
+		
+		if (!element.is(':visible')) {
+			element.css({
+				display: 'block'
+			});
+		}
+	});
+	
+	$('#helpbox').bind('mouseleave', function(event) {
+		var element = $('.liveperson-chat');
+		
+		if (element.is(':visible')) {
+			element.css({
+				display: 'none'
+			});
+		}
+	});
+});
