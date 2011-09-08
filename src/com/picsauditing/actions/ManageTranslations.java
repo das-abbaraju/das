@@ -101,7 +101,7 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
-		sql.addOrderBy("t1.updatedBy, t1.lastUsed DESC");
+		sql.addOrderBy("t2.updatedBy, t2.lastUsed DESC, t1.updatedBy, t1.lastUsed DESC");
 
 		if (searchType != null) {
 			if (searchType.equals("Common")) {
