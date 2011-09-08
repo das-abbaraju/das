@@ -3,7 +3,9 @@ package com.picsauditing.access;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum OpPerms {
+import com.picsauditing.jpa.entities.Translatable;
+
+public enum OpPerms implements Translatable{
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
 	Debug("Debug", "Allows PICS users to see debugging information", false, false, true, false, false),
@@ -88,6 +90,7 @@ public enum OpPerms {
 	ContractorTags("Contractor Tags", "Allow operators to tag and categorize their contractors into searchable groups.", true, true, true, false, true),
 	EmailAnnualUpdate("Email Annual Updates", "Send contractors reminder emails to update their PICS info. Edit permission is required to send the emails.", true, false, true, false, true),
 	EmailTemplates("Email Templates", "Allows PICS employees to edit the templates used to automatically send emails", true, true, true, false, false),
+	EmailVelocityHtml("Edit Email Velocity and HTML attributes", "Allows PICS employees to edit the email velocity and html attributes", true, true, true, false, false),
 	EmailQueue("Email Queue", "Allow PICS Employees to view the report for Email Queue", true, true, true, false, true),
 	SwitchUser("Switch to User", "Can auto login as another user", false, false, true, false, false),
 
@@ -225,4 +228,13 @@ public enum OpPerms {
 		return operatorPermissions;
 	}
 
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
+	}
 }
