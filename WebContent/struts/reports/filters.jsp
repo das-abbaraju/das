@@ -30,11 +30,12 @@
 		</s:if>
 		<s:else>
 			<s:if test="filter.allowMailReport">
-				<button type="submit" id="send_report_button" name="button"
-				value="Email Report" class="picsbutton positive" style="display: none"><s:text name="Filters.button.EmailReport" /></button>
-				<button id="search" type="submit" name="button" value="Search"
-				onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');"
-				class="picsbutton positive"><s:text name="button.Search" /></button>
+				<button type="submit" id="send_report_button" name="button" value="Email Report" class="picsbutton positive" style="display: none">
+					<s:text name="Filters.button.EmailReport" />
+				</button>
+				<button type="submit" name="button" value="Search" onclick="checkStateAndCountry('form1_state','form1_country'); return clickSearch('form1');" class="picsbutton positive">
+					<s:text name="button.Search" />
+				</button>
 			</s:if>
 			<s:else>
 				<button id="searchfilter" type="submit" name="button" value="Search"
