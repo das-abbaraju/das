@@ -24,10 +24,9 @@ public class ContractorNotes extends ContractorActionSupport {
 
 	private EmailQueueDAO emailDAO;
 
-	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			EmailQueueDAO emailDAO) {
+	public ContractorNotes(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, EmailQueueDAO emailDAO) {
 		this.emailDAO = emailDAO;
-		this.subHeading = "Notes/Emails";
+		this.subHeading = getText("ReportActivityWatch.label.NotesAndEmails");
 	}
 
 	public String execute() throws Exception {

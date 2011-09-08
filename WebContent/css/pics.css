@@ -642,12 +642,13 @@ ul#navlist {
 	line-height: 30px
 }
 
-#navlist li {
-	font-size: 13px;
+#navlist li
+{
 	border: 0px;
 	display: inline;
+	font-size: 13px;
 	list-style-type: none;
-	margin-right: 0px;
+	margin-left: 3px;
 }
 
 #navlist a {
