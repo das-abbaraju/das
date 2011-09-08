@@ -159,9 +159,10 @@
 							onchange="changeCountry(this.value);"
 							listKey="isoCode" listValue="name" />
 					</li>
-					<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>><label><s:div id="taxIdLabel" /></label>
-						<s:textfield name="contractor.taxId" id="contractorTaxId"
-							size="15" maxLength="15" onchange="checkTaxId(this.value);" />
+					<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>>
+						<label><s:div id="taxIdLabel" /></label>
+						<s:textfield name="contractor.taxId" id="contractorTaxId" size="15" maxLength="15" onchange="checkTaxId(this.value);" />
+						
 						<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 						<div id="taxId_status"></div>
 					</li>

@@ -267,7 +267,7 @@
 						<% if (!Strings.isEmpty(chatIcon)) { %>
 							<img src="<%= chatIcon %>" />
 						<% } else { %>
-							Chat
+							<%= i18nCache.getText("Header.Chat", locale) %>
 						<% } %>
 					</a>
 				</div>
