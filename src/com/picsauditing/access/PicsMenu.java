@@ -146,7 +146,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.RequestNewContractor))
 			addChildAction(subMenu, "ReportNewRequestedContractor");
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
-			subMenu.addChild(getTitle("BiddingContractorSearch"), "BiddingContractorSearch.action?filter.status=Active");
+			String statusFilter = "";
+			if (!permissions.getAccountStatus().isDemo())
+				statusFilter = "?filter.status=Active";
+			subMenu.addChild(getTitle("BiddingContractorSearch"), "BiddingContractorSearch.action" + statusFilter);
 		}
 		if (permissions.isCorporate())
 			addChildAction(subMenu, "ReportContractorOperatorFlag");
@@ -190,7 +193,9 @@ public class PicsMenu {
 		if (permissions.isAdmin())
 			subMenu.addChild("Obsolete Sched. Audits", "ObsoleteScheduledAudits.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
+			subMenu
+					.addChild("Close Assigned Audits",
+							"ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			addChildAction(subMenu, "AuditCalendar");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -213,11 +218,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild(
-					"PQF Verification",
-					"PqfVerification.action?filter.status=Active"
-							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
-									+ permissions.getShadowedUserID() : ""));
+			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active"
+					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId=" + permissions.getShadowedUserID()
+							: ""));
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
@@ -290,7 +293,9 @@ public class PicsMenu {
 			addChildAction(subMenu, "ProfileEdit");
 		}
 		if (permissions.hasPermission(OpPerms.EditAccountDetails))
-			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?operator=" + permissions.getAccountId());
+			subMenu
+					.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?operator="
+							+ permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
@@ -459,7 +464,7 @@ public class PicsMenu {
 
 		if (permissions.seesAllContractors())
 			subMenu.addChild("Report WCB Accounts", "ReportWcbAccounts.action");
-		
+
 		if (permissions.isOperatorCorporate()) {
 			addSupportLink(menu);
 		}
