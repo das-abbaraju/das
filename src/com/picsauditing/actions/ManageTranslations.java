@@ -9,11 +9,13 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.jpa.entities.AppTranslation;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
@@ -87,15 +89,19 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		SelectSQL sql = new SelectSQL("app_translation t1");
-		sql.addOrderBy("t1.updateDate DESC");
 		sql.setSQL_CALC_FOUND_ROWS(true);
 		sql.addWhere("t1.locale = '" + localeFrom + "'");
 		sql.addJoin("LEFT JOIN app_translation t2 ON t1.msgKey = t2.msgKey AND t2.locale = '" + localeTo + "'");
 		sql.addField("t1.msgKey");
+		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
+		sql.addField("t1.updatedBy fromUpdatedBy");
 		sql.addField("t1.msgValue fromValue");
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
+		sql.addField("t2.lastUsed toLastUsed");
+		sql.addField("t2.updatedBy toUpdatedBy");
+		sql.addOrderBy("t1.updatedBy, t1.lastUsed DESC");
 
 		if (searchType != null) {
 			if (searchType.equals("Common")) {
@@ -160,6 +166,13 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setId(Integer.parseInt(row.get("fromID").toString()));
 			from.setKey(row.get("msgKey").toString());
 			from.setValue(row.get("fromValue").toString());
+			from.setLocale(localeFrom.getLanguage());
+			Object fromLastUsed = row.get("fromLastUsed");
+			if (fromLastUsed != null)
+				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
+			Object fromUpdatedBy = row.get("fromUpdatedBy");
+			if (fromUpdatedBy != null)
+				from.setUpdatedBy(new User(Integer.parseInt(fromUpdatedBy.toString())));
 
 			Object toID = row.get("toID");
 			if (toID != null) {
@@ -168,6 +181,13 @@ public class ManageTranslations extends ReportActionSupport {
 				if (to.getId() > 0) {
 					to.setKey(from.getKey());
 					to.setValue(row.get("toValue").toString());
+					to.setLocale(localeTo.getLanguage());
+					Object toLastUsed = row.get("toLastUsed");
+					if (toLastUsed != null)
+						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
+					Object toUpdatedBy = row.get("toUpdatedBy");
+					if (toUpdatedBy != null)
+						to.setUpdatedBy(new User(Integer.parseInt(toUpdatedBy.toString())));
 				} else {
 					to = null;
 				}

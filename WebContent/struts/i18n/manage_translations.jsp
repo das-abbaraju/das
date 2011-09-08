@@ -108,7 +108,7 @@ span.view {
 		name="localeFrom" listValue="displayName"></s:select>
 	To: <s:select
 		list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-		name="localeTo" listValue="displayName"></s:select>
+		name="localeTo" listValue="displayName" value="permissions.locale.language"></s:select>
 		
 	Key: <s:textfield name="key" />
 	Search: <s:textfield name="search" />
@@ -133,7 +133,7 @@ span.view {
 	<thead>
 		<tr>
 			<td width="20%">Key</td>
-			<td width="40%"><s:property value="localeFrom.displayName"/></td>
+			<td width="40"><s:property value="localeFrom.displayName"/></td>
 			<td width="40%"><s:property value="localeTo.displayName"/></td>
 		</tr>
 	</thead>
@@ -160,6 +160,9 @@ span.view {
 							<button name="button" class="save">Save</button>
 							<button class="cancel">Cancel</button>
 						</div>
+						<s:if test="(updatedBy == null || updatedBy.id == 1) && locale != 'en'">
+							<button class="right" name="button" class="save">Approve</button>
+						</s:if>
 					</form>
 				</td>
 			</s:iterator>
