@@ -3,7 +3,7 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Flag Status for <s:property value="contractor.name" /></title>
+<title><s:text name="ContractorFlag.title"><s:param><s:property value="contractor.name" /></s:param></s:text></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
@@ -62,7 +62,7 @@ $(function() {
 		showOn: 'both',
 		buttonImage: 'images/icon_calendar.gif',
 		buttonImageOnly: true,
-		buttonText: 'Choose a date...',
+		buttonText: translate('JS.ContractorFlag.ChooseDate'),
 		constrainInput: true,
 		showAnim: 'fadeIn'
 	});
@@ -94,7 +94,7 @@ function checkReason(id) {
 	var text = $('#' + id + '_override').find('[name="forceNote"]').val();
 
 	if (text == null || text == '') {
-		alert("Please fill in reason");
+		alert(translate("JS.ContractorFlag.FillInReason"));
 		return false;
 	} else {
 		return true;
@@ -103,15 +103,12 @@ function checkReason(id) {
 </script>
 </head>
 <body>
-<s:push value="#subHeading='Flag Status'" />
 <s:include value="conHeader.jsp" />
 
 <!-- OVERALL FLAG -->
 
 <div id="cluetip2">
-		The minimum requirements set by <s:property value="co.operatorAccount.name"/> are listed in this page. 
-		If any requirements exceed the acceptable threshold or answer, those requirements will be flagged. The overall flag color is set to Red if any requirement is flagged Red. 
-		It is set to Amber if any requirement is flagged Amber. If no requirement is Red or Amber, then the overall flag color will be Green.
+<s:text name="ContractorFlag.MinimumOperatorRequirements"><s:param><s:property value="co.operatorAccount.name"/></s:param></s:text>
 </div>
 <div id="info-box">
 	<div class="baseFlag">
@@ -120,10 +117,13 @@ function checkReason(id) {
 				<s:form>
 					<s:hidden name="id" />
 					<s:hidden name="opID" />
-					This flag has recently changed from 
-					<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.baselineFlag)" escape="false"/> <s:property value="co.baselineFlag" escape="false"/> to 
-						<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.flagColor)" escape="false"/> <s:property value="co.flagColor" escape="false"/><br /><br />
-					<s:submit type="button" name="button" value="Approve Flag" cssClass="picsbutton positive" />
+					<s:text name="ContractorFlag.FlagRecentlyChanged">
+					<s:param><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.baselineFlag)" escape="false"/></s:param>
+					<s:param><s:property value="co.baselineFlag" escape="false"/></s:param>
+					<s:param><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(co.flagColor)" escape="false"/></s:param>
+					<s:param><s:property value="co.flagColor" escape="false"/></s:param>
+					</s:text>
+					<s:submit type="button" method="approveFlag" value="%{getText('button.ApproveFlag')}" cssClass="picsbutton positive" />
 				</s:form>
 			</div>
 		</s:if>
@@ -133,12 +133,12 @@ function checkReason(id) {
 			<s:hidden name="id" />
 			<s:hidden name="opID" />
 			<s:if test="contractor.lastRecalculation != null">
-				<s:if test="permissions.admin || permissions.operatorCorporate">Contractor's flag</s:if>
-				<s:else>Flag</s:else>
-				last calculated <s:date name="contractor.lastRecalculation" nice="true" />.
+				<s:if test="permissions.admin || permissions.operatorCorporate">
+				<s:text name="ContractorFlag.ContractorLastCalculated"><s:param><s:date name="contractor.lastRecalculation" nice="true" /></s:param></s:text></s:if>
+				<s:else><s:text name="ContractorFlag.FlagLastCalculated"><s:param><s:date name="contractor.lastRecalculation" nice="true" /></s:param></s:text></s:else>
 			</s:if>
-			<s:else>Contractor's flag has not been calculated.</s:else>
-			<button class="picsbutton" type="submit" name="button" value="Recalculate Now">Recalculate Now</button>
+			<s:else><s:text name="ContractorFlag.NotCalculated"></s:text></s:else>
+			<s:submit type="button" name="button" method="recalculate" value="%{getText('button.RecalculateNow')}" cssClass="picsbutton positive" />
 		</s:form>
 	</div>
 </div>
@@ -147,7 +147,7 @@ function checkReason(id) {
 	<div class="panel_placeholder">
 		<div class="panel">
 			<div class="panel_header">
-				Flag Status <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="Flag Help"></a></span>
+				<s:else><s:text name="ContractorFlag.FlagStatus"></s:text></s:else> <span style="float: right;"><a href="#" onclick="return false;" class="cluetip help" rel="#cluetip2" title="<s:text name="ContractorFlag.FlagHelp" />"></a></span>
 			</div>
 			<div class="panel_content">
 				<div class="bigFlagIcon">
@@ -156,33 +156,35 @@ function checkReason(id) {
 				<div class="FlagCriteriaContent">
 					<b>
 						<pics:permission perm="EditFlagCriteria">
-							<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />" title="View Flag Criteria"><s:property value="co.operatorAccount.name"/></a>		
+							<a href="ManageFlagCriteriaOperator.action?id=<s:property value="co.operatorAccount.inheritFlagCriteria.id" />" title="<s:text name="ContractorFlag.ViewFlagCriteria" />"><s:property value="co.operatorAccount.name"/></a>		
 						</pics:permission>
 						<pics:permission perm="EditFlagCriteria" negativeCheck="true">
 							<s:property value="co.operatorAccount.name"/>
 						</pics:permission>
 					</b>
 					<br />
-					Currently waiting on <b><s:property value="co.waitingOn"/></b>
+					<s:text name="ContractorFlag.CurrentlyWaitingOn"><s:param><s:property value="co.waitingOn"/></s:param></s:text>
 				</div>
 				<div class="clear"></div>
 				<div style="margin-left:10px;">
 					<s:if test="co.flagColor.clear" >
-						This <s:property value="co.contractorAccount.status"/> 
-						<s:if test="co.contractorAccount.acceptsBids"> Bid Only </s:if>
-						contractor has a "Not Applicable" flag color.
-						The old way of representing with Green/Red flag color was 
-						misleading as the contractor has not yet completed all the operator requirements.
+						<s:text name="ContractorFlag.NotApplicable">
+						<s:param><s:property value="co.contractorAccount.status"/></s:param>
+						<s:param><s:if test="co.contractorAccount.acceptsBids"> <s:text name="ContractorFlag.BidOnly"></s:text></s:if></s:param>
+						</s:text>
 					</s:if>
 				</div>
 				<div style="margin-left:10px;">
 					<s:if test="co.forceOverallFlag != null || getFlagDataOverrides().size() > 0">
 						<s:form cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 							<s:if test="co.forceOverallFlag != null">
-							Manual Force Flag <s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" /><br/> until <s:date name="co.forceOverallFlag.forceEnd" format="MMM d, yyyy" /> 
-							by <s:property value="co.forceOverallFlag.forcedBy.name" /> from <s:property value="co.forceOverallFlag.forcedBy.account.name"/> 
-							<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'"> for all the sites</s:if>.
-							<br/>
+							<s:text name="ContractorFlag.ManualForceFlagInfo">
+							<s:param><s:property value="co.forceOverallFlag.forceFlag.smallIcon" escape="false" /></s:param>
+							<s:param><s:date name="co.forceOverallFlag.forceEnd" format="MMM d, yyyy" /></s:param>
+							<s:param><s:property value="co.forceOverallFlag.forcedBy.name" /></s:param>
+							<s:param><s:property value="co.forceOverallFlag.forcedBy.account.name"/></s:param>
+							<s:param><s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'"> <s:text name="ContractorFlag.ForAllSites" /></s:if></s:param>
+							</s:text>
 							</s:if>
 							<s:if test="getFlagDataOverrides().size() > 0">
 								<s:iterator id="key" value="flagDataMap.keySet()">
@@ -190,16 +192,20 @@ function checkReason(id) {
 										<s:if test="#data.flag.redAmber || isFlagDataOverride(#data)">
 										<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}"/>							
 											<s:if test="#flagoverride != null">
-											Manual <s:property value="#flagoverride.criteria.label" /> Individual Force Flag to <s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
-											by <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/>
-											<s:if test="#flagoverride.operator.corporate"> for all the sites.</s:if>
-											<br/>
+											<s:text name="ContractorFlag.ManualIndividualForceFlagInfo">
+											<s:param><s:property value="#flagoverride.criteria.label" /></s:param>
+											<s:param><s:property value="#flagoverride.forceflag.getSmallIcon()" escape="false" /></s:param>
+											<s:param><s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" /></s:param>
+											<s:param><s:property value="#flagoverride.updatedBy.name" /></s:param>
+											<s:param><s:property value="#flagoverride.updatedBy.account.name"/></s:param>
+											<s:param><s:if test="#flagoverride.operator.corporate"> <s:text name="ContractorFlag.ForAllSites" /></s:if></s:param>
+											</s:text>
 											</s:if>
 										</s:if>
 									</s:iterator>
 								</s:iterator>
 							</s:if>
-							<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>View Notes</a>
+							<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'><s:text name="ContractorFlag.ViewNotes" /></a>
 						</s:form>
 					</s:if>
 					<br/>
@@ -211,11 +217,11 @@ function checkReason(id) {
 								<s:hidden name="opID" />
 								<s:if test="co.forceOverallFlag.operatorAccount.type == 'Corporate'">
 									<s:hidden name="overrideAll" value="true"/>
-									<label>By Clicking on the Cancel Override the force flags at all your facilities will be removed.</label><br/>
+									<label><s:text name="ContractorFlag.CancelOverride"></s:text></label><br/>
 								</s:if>
-								Reason:<br><s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
+								<s:text name="ContractorFlag.Reason"></s:text>:<br><s:textarea name="forceNote" value="" rows="3" cols="15"></s:textarea>
 								<div>
-									<button class="picsbutton positive" type="submit" name="button" value="Cancel Override">Cancel Override</button>
+									<s:submit type="button" name="button" method="cancelOverride" value="%{getText('button.CancelOverride')}" cssClass="picsbutton positive" />
 								</div>
 							</s:form>
 						</s:if>
@@ -227,38 +233,39 @@ function checkReason(id) {
 								<fieldset class="form">
 								<ol>
 								<li>
-									<span class="label-txt">Force Flag to:</span>
+									<span class="label-txt"><s:text name="ContractorFlag.ForceFlagTo"></s:text></span>
 									<s:radio id="forceFlag" list="unusedCoFlag" name="forceFlag" theme="pics" />
 								</li>
 								<li> 
-									<span class="label-txt">Until:</span> 
+									<span class="label-txt"><s:text name="ContractorFlag.Until"></s:text></span> 
 									<input id="forceEnd" name="forceEnd" size="10" type="text" class="datepicker" />
 								</li>
 								<li class="required">
-									<span class="label-txt">Reason:</span> 
+									<span class="label-txt"><s:text name="ContractorFlag.Reason"></s:text>:</span> 
 									<s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea><br />
-									<pics:fieldhelp title="Reason">
-					                    <p class="redMain">* All Fields are required</p>									
-									</pics:fieldhelp>
+									<div class="fieldhelp">
+										<h3><s:text name="ContractorFlag.Reason" /></h3>
+										<s:text name="ContractorFlag.AllFieldsRequired" />
+									</div>
 								</li>
 								<li>
-									<span class="label-txt">File Attachment:</span>
+									<span class="label-txt"><s:text name="ContractorFlag.FileAttachment"></s:text></span>
 									<s:file name="file" id="%{id}"></s:file>
 								</li>
 								<li>
-									<button class="picsbutton positive" type="submit" name="button" value="Force Overall Flag">Force Overall Flag</button>
+									<s:submit type="button" name="button" method="forceOverallFlag" value="%{getText('button.ForceOverrideFlag')}" cssClass="picsbutton positive" />
 								</li>
 								<li>
 									<s:if test="permissions.corporate">
-										<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>
+										<s:checkbox id="overRAll_main" name="overrideAll"/><label for="overRAll_main"><s:text name="ContractorFlag.OverrideForAllSites"><s:param><s:property value="permissions.accountName" /></s:param></s:text></label><br/>
 									</s:if>
 								</li>
 								</ol>
 								</fieldset>
 							</s:form>
-							<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;">Nevermind</a>
+							<a href="#" onclick="$('#override_link').slideDown(); $('#override').slideUp(); return false;"><s:text name="ContractorFlag.Nevermind"></s:text></a>
 							</div>
-							<a id="override_link" class="override_wrench" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;">Force Overall Flag Color</a><br />
+							<a id="override_link" class="override_wrench" href="#" onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;"><s:text name="ContractorFlag.ForceOverallFlagColor"></s:text></a><br />
 						</s:else>
 					</pics:permission>		
 				</div>	
@@ -268,7 +275,7 @@ function checkReason(id) {
 </div>
 <s:if test="co.flagColor.toString() == 'Green' && co.forceOverallFlag == null && flagDataOverrides.keySet().size() == 0">
 	<div class="info" style="width: 50%; text-align: left">
-		Congratulations, you've completed all the requirements for <s:property value="co.operatorAccount.name" />.<br />We will email you if there are any changes.
+		<s:text name="ContractorFlag.Congratulations"><s:param><s:property value="co.operatorAccount.name" /></s:param></s:text>
 	</div>
 </s:if>
 
@@ -278,9 +285,9 @@ function checkReason(id) {
 <!-- Putting Tabs Here -->
 <div id="tabs">
 	<ul>
-		<li><a href="#tabs-1">Problems</a></li>
-		<li><a href="#tabs-2">Flagable Data</a></li>
-		<li><a href="#tabs-3">Notes</a></li>
+		<li><a href="#tabs-1"><s:text name="ContractorFlag.Problems"></s:text></a></li>
+		<li><a href="#tabs-2"><s:text name="ContractorFlag.FlagableData"></s:text></a></li>
+		<li><a href="#tabs-3"><s:text name="ContractorFlag.Notes"></s:text></a></li>
 	</ul>
 	<div id="tabs-1">
 		<!-- OVERRIDES -->
@@ -288,10 +295,10 @@ function checkReason(id) {
 		<table class="report" style="clear: none;">
 			<thead>
 				<tr>
-					<td>Flag</td>
-					<td>Description</td>
-					<td>Value</td>
-					<td>Override Detail</td>
+					<td><s:text name="ContractorFlag.Flag"></s:text></td>
+					<td><s:text name="ContractorFlag.Description"></s:text></td>
+					<td><s:text name="ContractorFlag.Value"></s:text></td>
+					<td><s:text name="ContractorFlag.OverrideDetail"></s:text></td>
 				</tr>
 			</thead>
 			<tbody>
@@ -308,8 +315,8 @@ function checkReason(id) {
 								<s:set name="opCriteria" value="getApplicableOperatorCriteria(#data)" />
 								<s:if test="#opCriteria != null">
 									<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
-										<s:property value="#opCriteria.replaceHurdle" /><a href="#" onclick="return false;" class="help cluetip" rel="#cluetip<s:property value="#opCriteria.id" />" title="Statistics"></a>
-										<div id="cluetip<s:property value="#opCriteria.id" />">The statistics provided must have a status other than pending to be calculated.</div>
+										<s:property value="#opCriteria.replaceHurdle" /><a href="#" onclick="return false;" class="help cluetip" rel="#cluetip<s:property value="#opCriteria.id" />" title="<s:text name="ContractorFlag.Statistics"></s:text>"></a>
+										<div id="cluetip<s:property value="#opCriteria.id" />"><s:text name="ContractorFlag.StatusNotPending"></s:text></div>
 									</s:if>
 									<s:else>
 										<s:property value="#opCriteria.replaceHurdle" />
@@ -318,9 +325,15 @@ function checkReason(id) {
 							</td>
 							<!-- flagoverride info -->
 								<s:if test="#flagoverride != null">
-									<span style="display: none;" title='By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>'>
-										Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
-										<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>View Notes</a>
+									<span style="display: none;" title='<s:text name="ContractorFlag.ByTitle"><s:param><s:property value="#flagoverride.updatedBy.name" /></s:param><s:param><s:property value="#flagoverride.updatedBy.account.name"/></s:param><s:param><s:if test="#flagoverride.updatedBy.account.corporate"><s:text name="ContractorFlag.ForAllSites" /></s:if></s:param></s:text>'>
+										<s:text name="ContractorFlag.ManualForceFlagShort">
+											<s:param><s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /></s:param>
+											<s:param><s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" /></s:param>
+											<s:param></s:param>
+											<s:param></s:param>
+											<s:param></s:param>
+										</s:text>
+										<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'><s:text name="ContractorFlag.ViewNotes"></s:text></a>
 									</span>
 								</s:if>
 							<!-- Value -->
@@ -336,7 +349,7 @@ function checkReason(id) {
 										<s:set var="cao" value="missingAudits.get(#data.criteria.auditType)" />
 										<p style="padding-left: 20px; font-size: x-small">
 										<s:if test="#cao.flag != null">
-											Recommend: <s:property value="#cao.flag"/><br />
+											<s:text name="ContractorFlag.Recommend"></s:text> <s:property value="#cao.flag"/><br />
 										</s:if>
 										<s:iterator var="insuranceFlagData" value="co.flagDatas">
 											<s:if test="#insuranceFlagData.criteria.insurance && #insuranceFlagData.criteria.question.auditType == #data.criteria.auditType">
@@ -361,11 +374,11 @@ function checkReason(id) {
 							<!-- Override Detail -->
 							<td class="center">
 								<s:if test="#flagoverride != null">
-									<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip<s:property value="#flagoverride.id"/>" title="Location">Manual Force Flag </a>	
+									<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip<s:property value="#flagoverride.id"/>" title="<s:text name="ContractorFlag.Location"></s:text>"><s:text name="ContractorFlag.ManualForceFlag"></s:text> </a>	
 										<div id="cluetip<s:property value="#flagoverride.id"/>">
-											<span title='By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>'>
-												Flag forced <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
-												<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>Search For Related Notes</a>
+											<span title='<s:text name="ContractorFlag.ByTitle"><s:param><s:property value="#flagoverride.updatedBy.name" /></s:param><s:param><s:property value="#flagoverride.updatedBy.account.name"/></s:param><s:param><s:if test="#flagoverride.updatedBy.account.corporate"> <s:text name="ContractorFlag.ForAllSites" /></s:if></s:param></s:text>'>
+												<s:text name="ContractorFlag.ForceFlagTo"></s:text> <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> <s:text name="ContractorFlag.Until"></s:text> <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+												<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'><s:text name="ContractorFlag.SearchNotes"></s:text></a>
 											</span>
 										</div>						
 								</s:if>
@@ -379,36 +392,35 @@ function checkReason(id) {
 											<s:hidden value="%{#data.id}" name="dataID" />
 											<s:if test="canForceDataFlag(#flagoverride)">
 												<s:if test="#flagoverride!=null">
-													There is a site level override in effect by <s:property value="#flagoverride.createdBy.name"/>, 
-													to cancel this override you must log in as a site level user.
+												<s:text name="ContractorFlag.SiteOverride"><s:param><s:property value="#flagoverride.createdBy.name"/></s:param></s:text>
 												</s:if>
 												<s:else>												
 													<fieldset class="form">
 														<ol>							
 															<li>
-																<label>Force Flag to:</label>
+																<label><s:text name="ContractorFlag.ForceFlagTo"></s:text></label>
 																<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" theme="pics" />
 															</li> 
 															<li> 
-																<label>Until:</label> 
+																<label><s:text name="ContractorFlag.Until"></s:text></label> 
 																<input id="forceEnd_<s:property value="%{#data.id}" />" name="forceEnd" size="10" type="text" class="datepicker" />
 															</li>
 															<li class="required">
-																<label>Reason for Forcing:</label>
+																<label><s:text name="ContractorFlag.Reason"></s:text>:</label>
 																<s:textarea name="forceNote" value="" rows="2" cols="30" cssStyle="vertical-align: top;"></s:textarea>
-																<pics:fieldhelp title="Reason">
-			                     								<p class="redMain">* All Fields are required</p>									
-																</pics:fieldhelp>
+																<div class="fieldhelp">
+																	<h3><s:text name="ContractorFlag.Reason" /></h3>
+																	<s:text name="ContractorFlag.AllFieldsRequired" />
+																</div>
 															</li>
 															<li>
-																<span class="label-txt">File Attachment:</span>
+																<span class="label-txt"><s:text name="ContractorFlag.FileAttachment"></s:text></span>
 																<s:file name="file" id="%{#data.id}_file"></s:file>
 															</li>
 															<li>
-																<button class="picsbutton positive" type="submit" name="button" value="Force Individual Flag"
-																	onclick="return checkReason(<s:property value="%{#data.id}" />);">Force Individual Flag</button>
+																<s:submit type="button" name="button" method="forceIndividualFlag"  onclick="return checkReason(%{#data.id})" value="%{getText('ContractorFlag.ForceIndividualFlag')}" cssClass="picsbutton positive" />
 																<s:if test="permissions.corporate">
-																		<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>">Override the Flag for all <s:property value="permissions.accountName" /> sites </label><br/>														
+																		<s:checkbox id="overRAll_%{#data.id}" name="overrideAll"/><label for="overRAll_<s:property value="%{#data.id}"/>"><s:text name="ContractorFlag.OverrideForAllSites"><s:param><s:property value="permissions.accountName" /></s:param></s:text></label><br/>														
 																</s:if>
 																</li>
 															</ol>
@@ -418,16 +430,15 @@ function checkReason(id) {
 											<s:else>
 												<s:if test="#flagoverride.operator.type == 'Corporate'">
 													<s:hidden name="overrideAll" value="true"/>
-													<label>By Clicking on the Cancel Override the force flags at all your facilities will be removed.</label><br/>
+													<label><s:text name="ContractorFlag.CancelOverrideInfo"></s:text></label><br/>
 												</s:if>
-												&nbsp;Reason for Cancelling: <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
-												<input type="submit" value="Cancel Data Override" class="picsbutton positive" name="button" 
-													onclick="return checkReason(<s:property value="%{#data.id}" />);" />
+												&nbsp;<s:text name="ContractorFlag.ReasonCancelling"></s:text> <s:textarea name="forceNote" value="" rows="2" cols="15" cssStyle="vertical-align: top;"></s:textarea>
+												<s:submit type="button" name="button" method="cancelDataOverride"  onclick="return checkReason(%{#data.id})" value="%{getText('button.CancelDataOverride')}" cssClass="picsbutton positive" />
 											</s:else>
 										</form>
-										<span class="override_wrap override_hide"><a href="#" class="override_wrench override_table_link">Hide Force Line</a></span>
+										<span class="override_wrap override_hide"><a href="#" class="override_wrench override_table_link"><s:text name="ContractorFlag.HideForceLine"></s:text></a></span>
 									</div>
-									<span class="override_wrap"><a href="#" class="override_wrench override_table_link">Show Force Line</a></span>
+									<span class="override_wrap"><a href="#" class="override_wrench override_table_link"><s:text name="ContractorFlag.ShowForceLine"></s:text></a></span>
 								</td>
 							</tr>
 						</pics:permission>
@@ -446,7 +457,7 @@ function checkReason(id) {
 				<td><table class="report">
 					<thead>
 						<tr>
-							<td>Flag</td>
+							<td><s:text name="ContractorFlag.Flag"></s:text></td>
 							<td><s:property value="#flagData.key"/></td>
 						</tr>
 					</thead>
@@ -473,10 +484,10 @@ function checkReason(id) {
 	<div id="tabs-3">		
 		<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
 			<s:if test="co.workStatusPending">
-				<div class="alert">The operator has not approved this contractor yet.</div>
+				<div class="alert"><s:text name="ContractorFlag.OperatorHasNotApproved"></s:text></div>
 			</s:if>
 			<s:if test="co.workStatusRejected">
-				<div class="alert">The operator did not approve this contractor.</div>
+				<div class="alert"><s:text name="ContractorFlag.OperatorDidNotApproved"></s:text></div>
 			</s:if>
 		</s:if>
 		

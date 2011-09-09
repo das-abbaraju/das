@@ -6,14 +6,14 @@
 <div id="thinking_notesList"></div>
 <table class="notes" >
 	<thead>
-		<tr><th colspan="3">Notes (<s:property value="noteCategory"/>)</th>
+		<tr><th colspan="3"><s:text name="global.Notes"></s:text> (<s:property value="noteCategory"/>)</th>
 		</tr>
 	</thead>
 	<tbody>
 		<pics:permission perm="EditNotes" type="Edit">
 		<tr class="clickable"
 				onclick="noteEditor('<s:property value="id"/>', 0, 'edit', '<s:property value="noteCategory"/>');">
-			<td colspan="3" class="center">Click to add a new Note</td>
+			<td colspan="3" class="center"><s:text name="Notes.ClickToAddNote"></s:text></td>
 		</tr>
 		</pics:permission>
 		<s:iterator value="notes">
@@ -34,7 +34,7 @@
 		</s:iterator>
 		<s:if test="showMoreNotes">
 		<tr>
-			<td colspan="3" class="center"><a href="<s:property value="account.type"/>Notes.action?id=<s:property value="id" />">Show more Notes</a></td>
+			<td colspan="3" class="center"><a href="<s:property value="account.type"/>Notes.action?id=<s:property value="id" />"><s:text name="Notes.ShowMoreNotes"></s:text></a></td>
 		</tr>
 		</s:if>
 	</tbody>

@@ -88,6 +88,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.facDAO = facDAO;
 		this.naicsDAO = naicsDAO;
 		this.caoDAO = caoDAO;
+		subHeading = getText("ContractorFlag.FlagStatus");
 	}
 
 	public String execute() throws Exception {
@@ -95,7 +96,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return LOGIN;
 		limitedView = true;
 		findContractor();
-
+		
 		try {
 			PicsLogger.start("ContractorFlagAction");
 			contractor.incrementRecalculation();
@@ -112,39 +113,221 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				if (opID != permissions.getAccountId()) {
 					Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
 					if (f == null) {
-						addActionError("You do not have permission to view this Facility");
+						addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
 						return BLANK;
 					}
 				}
 			} else if (permissions.isContractor()) {
 				if (id != permissions.getAccountId()) {
 					// check to see if con id and id match
-					addActionError("You do not have permission to view this Facility");
+					addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
 					return BLANK;
 				}
 			}
 
 			co = contractorOperatorDao.find(id, opID);
 			if (co == null) {
-				addActionError("This contractor doesn't work at the given site");
+				addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
 				return BLANK;
 			}
+		} finally {
+			PicsLogger.stop();
+		}
 
-			if (button != null) {
-				if ("Approve Flag".equals(button)) {
-					co.resetBaseline(permissions);
-					contractorOperatorDao.save(co);
-					this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
+		// TODO: This is here to solve the LazyInitializationException. Find a
+		// better way to do this.
+		contractor.getFlagCriteria().size();
+
+		return SUCCESS;
+	}
+	
+	public String approveFlag() {
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+
+		co.resetBaseline(permissions);
+		
+		contractorOperatorDao.save(co);
+		try {
+			this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
+			permissions.tryPermission(OpPerms.EditForcedFlags);
+		} catch (Exception x) {
+		}
+		return completeAction("");
+	}
+	
+	public String recalculate() {
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+
+		contractorOperatorDao.save(co);
+
+		try {
+			String redirectUrl = URLEncoder.encode("ContractorFlag.action?id=" + id + "&opID=" + opID, "UTF-8");
+			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=0&steps=All&redirectUrl=" + redirectUrl);
+		} catch (Exception x) {
+		}
+		return SUCCESS;
+	}
+	
+	public String cancelOverride() {
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+		
+		try {
+		permissions.tryPermission(OpPerms.EditForcedFlags);
+		} catch (Exception x) {
+			return SUCCESS;
+		}
+		
+		String noteText = "";
+		
+		if (overrideAll == true) {
+			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
+					permissions.getAccountId());
+			co2.removeForceFlag();
+			co2.setAuditColumns(permissions);
+			contractorOperatorDao.save(co2);
+			contractor.incrementRecalculation();
+		} else {
+			co.removeForceFlag();
+			noteText = "Removed the forced flag for " + co.getOperatorAccount().getName();
+		}
+
+		return completeAction(noteText);
+	}
+	
+	public String forceOverallFlag() {
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+		
+		String noteText = "";
+
+		if (forceFlag == null || forceFlag.equals(co.getForceFlag()))
+			addActionError(getText("ContractorFlag.error.FlagNotChange"));
+		if (forceEnd == null)
+			addActionError(getText("ContractorFlag.error.NoDate"));
+		if (Strings.isEmpty(forceNote))
+			addActionError(getText("ContractorFlag.error.NoteRequire"));
+
+		if (getActionErrors().size() > 0) {
+			return SUCCESS;
+		}
+
+		if (overrideAll == true) {
+			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
+					permissions.getAccountId());
+			co2.setForceEnd(forceEnd);
+			co2.setForceFlag(forceFlag);
+			co2.setForceBegin(new Date());
+			co2.setForcedBy(getUser());
+			contractorOperatorDao.save(co2);
+			noteText = "Forced the flag to " + forceFlag + " for all the sites";
+		} else {
+			co.setForceEnd(forceEnd);
+			co.setForceFlag(forceFlag);
+			co.setForceBegin(new Date());
+			co.setForcedBy(getUser());
+			noteText = "Forced the flag to " + forceFlag + " for " + co.getOperatorAccount().getName();
+		}
+		
+		return completeAction(noteText);
+	}
+	
+	public String forceIndividualFlag() {
+		try {
+			findContractor();
+		} catch (Exception x) {
+			return BLANK;
+		}
+
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+
+		if (forceFlag == null) {
+			addActionError(getText("ContractorFlag.error.NoFlagColorChosen"));
+			return SUCCESS;
+		}
+		FlagData flagData = flagDataDAO.find(dataID);
+
+		if (forceEnd == null)
+			addActionError(getText("ContractorFlag.error.NoEndDate"));
+		if (getActionErrors().size() > 0) {
+			return SUCCESS;
+		}
+
+		FlagDataOverride flagOverride = flagDataOverrideDAO.findByConAndOpAndCrit(contractor.getId(), opID,
+				flagData.getCriteria().getId());
+		if (flagOverride == null) {
+			flagOverride = new FlagDataOverride();
+			flagOverride.setContractor(contractor);
+			flagOverride.setOperator(co.getOperatorAccount());
+		}
+		if (overrideAll) {
+			flagOverride.setOperator(new OperatorAccount());
+			flagOverride.getOperator().setId(permissions.getAccountId());
+		}
+		flagOverride.setForceflag(forceFlag);
+		flagOverride.setForceEnd(forceEnd);
+		flagOverride.setCriteria(flagData.getCriteria());
+		flagOverride.setAuditColumns(permissions);
+		flagDataOverrideDAO.save(flagOverride);
+
+		String noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
+				+ " for " + co.getOperatorAccount().getName();
+		return completeAction(noteText);
+	}
+	
+	public String cancelDataOverride() {
+		try {
+			findContractor();
+		} catch (Exception x) {
+			return BLANK;
+		}
+
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return BLANK;
+		}
+		FlagData flagData = flagDataDAO.find(dataID);
+		String noteText = "Removed the Force flag for criteria " + flagData.getCriteria().getLabel() + " for "
+				+ co.getOperatorAccount().getName();
+
+		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
+		if (flagDataOverride != null) {
+			for (Iterator<FlagCriteria> it = getFlagDataOverrides().keySet().iterator(); it.hasNext();) {
+				if (it.next().equals(flagDataOverride.getCriteria()))
+					it.remove();
+			}
+			if (overrideAll) {
+				if (flagDataOverride.getOperator().getId() == permissions.getAccountId()) {
+					flagDataOverrideDAO.remove(flagDataOverride);
 				}
-				if (button.equalsIgnoreCase("Recalculate Now")) {
-					contractorOperatorDao.save(co);
-					String redirectUrl = URLEncoder.encode("ContractorFlag.action?id=" + id + "&opID=" + opID, "UTF-8");
-					return redirect("ContractorCronAjax.action?conID=" + id + "&opID=0&steps=All&redirectUrl="
-							+ redirectUrl);
-				}
-
-				permissions.tryPermission(OpPerms.EditForcedFlags);
-
+			} else if (flagDataOverride.getOperator().equals(co.getOperatorAccount()))
+				flagDataOverrideDAO.remove(flagDataOverride);
+		}
+		return completeAction(noteText);
+	}
+	
+	private String completeAction(String noteText) {
+		try {
+			if (!Strings.isEmpty(noteText)) {
 				Note note = new Note();
 				note.setAccount(co.getContractorAccount());
 				note.setAuditColumns(permissions);
@@ -152,103 +335,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				note.setViewableByOperator(permissions);
 				note.setCanContractorView(true);
 
-				String noteText = "";
-				if (button.equalsIgnoreCase("Force Overall Flag")) {
-					if (forceFlag.equals(co.getForceFlag()))
-						addActionError("You didn't change the flag color");
-					if (forceEnd == null)
-						addActionError("You didn't specify an end date");
-					if (Strings.isEmpty(forceNote))
-						addActionError("You must enter a note when forcing a flag ");
-
-					if (getActionErrors().size() > 0) {
-						PicsLogger.stop();
-						return SUCCESS;
-					}
-
-					if (overrideAll == true) {
-						ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
-								permissions.getAccountId());
-						co2.setForceEnd(forceEnd);
-						co2.setForceFlag(forceFlag);
-						co2.setForceBegin(new Date());
-						co2.setForcedBy(getUser());
-						contractorOperatorDao.save(co2);
-						noteText = "Forced the flag to " + forceFlag + " for all the sites";
-					} else {
-						co.setForceEnd(forceEnd);
-						co.setForceFlag(forceFlag);
-						co.setForceBegin(new Date());
-						co.setForcedBy(getUser());
-						noteText = "Forced the flag to " + forceFlag + " for " + co.getOperatorAccount().getName();
-					}
-				} else if (button.equalsIgnoreCase("Cancel Override")) {
-					if (overrideAll == true) {
-						ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
-								permissions.getAccountId());
-						co2.removeForceFlag();
-						co2.setAuditColumns(permissions);
-						contractorOperatorDao.save(co2);
-						contractor.incrementRecalculation();
-					} else {
-						co.removeForceFlag();
-						noteText = "Removed the forced flag for " + co.getOperatorAccount().getName();
-					}
-				} else if ("Force Individual Flag".equals(button)) {
-					if (forceFlag == null) {
-						addActionError("You did not choose a flag color");
-						return SUCCESS;
-					}
-					FlagData flagData = flagDataDAO.find(dataID);
-
-					if (forceEnd == null)
-						addActionError("You didn't specify an end date");
-					if (getActionErrors().size() > 0) {
-						PicsLogger.stop();
-						return SUCCESS;
-					}
-
-					FlagDataOverride flagOverride = flagDataOverrideDAO.findByConAndOpAndCrit(contractor.getId(), opID,
-							flagData.getCriteria().getId());
-					if (flagOverride == null) {
-						flagOverride = new FlagDataOverride();
-						flagOverride.setContractor(contractor);
-						flagOverride.setOperator(co.getOperatorAccount());
-					}
-					if (overrideAll) {
-						flagOverride.setOperator(new OperatorAccount());
-						flagOverride.getOperator().setId(permissions.getAccountId());
-					}
-					flagOverride.setForceflag(forceFlag);
-					flagOverride.setForceEnd(forceEnd);
-					flagOverride.setCriteria(flagData.getCriteria());
-					flagOverride.setAuditColumns(permissions);
-					flagDataOverrideDAO.save(flagOverride);
-
-					noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
-							+ " for " + co.getOperatorAccount().getName();
-				} else if ("Cancel Data Override".equals(button)) {
-					FlagData flagData = flagDataDAO.find(dataID);
-					noteText = "Removed the Force flag for criteria " + flagData.getCriteria().getLabel() + " for "
-							+ co.getOperatorAccount().getName();
-
-					FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
-					if (flagDataOverride != null) {
-						for (Iterator<FlagCriteria> it = getFlagDataOverrides().keySet().iterator(); it.hasNext();) {
-							if (it.next().equals(flagDataOverride.getCriteria()))
-								it.remove();
-						}
-						if (overrideAll) {
-							if (flagDataOverride.getOperator().getId() == permissions.getAccountId()) {
-								flagDataOverrideDAO.remove(flagDataOverride);
-							}
-						} else if (flagDataOverride.getOperator().equals(co.getOperatorAccount()))
-							flagDataOverrideDAO.remove(flagDataOverride);
-					}
-				}
-
-				co.setFlagLastUpdated(new Date());
-				co.setAuditColumns(permissions);
 				note.setSummary(noteText);
 
 				if (!Strings.isEmpty(forceNote))
@@ -261,19 +347,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 				// If everything's okay, now save
 				getNoteDao().save(note);
-				contractorOperatorDao.save(co);
-
-				String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
-				return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID
-						+ "&steps=Flag&steps=WaitingOn" + "&redirectUrl=" + redirectUrl);
 			}
-		} finally {
-			PicsLogger.stop();
-		}
+			co.setFlagLastUpdated(new Date());
+			co.setAuditColumns(permissions);
+			contractorOperatorDao.save(co);
 
-		// TODO: This is here to solve the LazyInitializationException. Find a
-		// better way to do this.
-		contractor.getFlagCriteria().size();
+			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
+			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
+					+ "&redirectUrl=" + redirectUrl);
+		} catch (Exception x) {
+		}
 
 		return SUCCESS;
 	}
@@ -481,13 +564,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			answer = getAmBestRating(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getId() == AuditQuestion.EMR) {
 			addLabel = false;
-			answer = "EMR for " + fcc.getAnswer2().split("<br/>")[0] + " is "
-					+ format(Float.parseFloat(answer), "#,##0.000");
+			answer = getTextParameterized("ContractorFlag.EMRAnswer", fcc.getAnswer2().split("<br/>")[0],
+					format(Float.parseFloat(answer), "#,##0.000"));
 		} else if (fc.getOshaRateType() != null) {
 			addLabel = false;
 			String rate = answer;
-			answer = fc.getOshaType().name() + " " + fc.getOshaRateType().getDescription() + " for "
-					+ fcc.getAnswer2().split("<br/>")[0] + " is ";
+			answer = getTextParameterized("ContractorFlag.OshaAnswer", fc.getOshaType().name(), fc.getOshaRateType()
+					.getDescription(), fcc.getAnswer2().split("<br/>")[0]);
 			if (fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
 				Double value = Double.parseDouble(rate);
 				answer += value.intValue();
@@ -499,7 +582,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 					|| fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
 				for (FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
 					if (fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
-						answer += " and must be less than ";
+						answer += getText("ContractorFlag.OshaAnswer2");
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
 							answer += (getBroaderNaics(true, f.getContractor().getNaics()).getLwcr() * Float
 									.parseFloat(fco.criteriaValue())) / 100;
@@ -509,7 +592,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 						}
 					}
 				}
-				answer += " for industry code " + f.getContractor().getNaics().getCode();
+				answer += getText("ContractorFlag.OshaAnswer3") + f.getContractor().getNaics().getCode();
 			}
 		} else if (fc.getDataType().equals(FlagCriteria.NUMBER))
 			answer = Strings.formatDecimalComma(answer);
@@ -625,7 +708,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			// will fail for "" too
 			if (!FileUtils.checkFileExtension(extension)) {
-				addActionError("File type not supported.");
+				addActionError(getText("ContractorFlag.error.FileTypeNotSuppoprted"));
 				return false;
 			}
 			// delete old files
