@@ -486,7 +486,7 @@
 		<div class="panel" id="all">
 			<div class="panel_header">
 				<s:text name="ContractorView.AllLocations" />
-				<a href="ContractorFacilities.action?id=${id}"><s:text name="global.Facilities" /></a>
+				<a href="ContractorFacilities.action?id=${id}"><s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" /></a>
 			</div>
 			<div class="panel_content">
 				<s:iterator value="activeOperatorsMap">
