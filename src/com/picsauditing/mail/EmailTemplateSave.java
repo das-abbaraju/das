@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityExistsException;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
@@ -17,20 +19,22 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmailTemplateSave extends PicsActionSupport implements Preparable {
+	@Autowired
 	private EmailTemplateDAO emailTemplateDAO;
 	private int id;
 	private EmailTemplate template;
+	private EmailTemplate template2;
 	private List<EmailTemplate> emailTemplates = null;
-
-	public EmailTemplateSave(EmailTemplateDAO emailTemplateDAO) {
-		this.emailTemplateDAO = emailTemplateDAO;
-	}
+	private boolean allowsVelocity;
+	private boolean allowsHtml;
 
 	@Override
 	public void prepare() throws Exception {
 		id = getParameter("id");
 		if (id > 0) {
 			template = emailTemplateDAO.find(id);
+			allowsVelocity = template.isAllowsVelocity();
+			allowsHtml = template.isHtml();
 		} else
 			template = new EmailTemplate();
 	}
@@ -79,6 +83,13 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			template.setUpdateDate(new Date());
 			template.setUpdatedBy(getUser());
 			try {
+				/****************/
+				if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+					template.setAllowsVelocity(allowsVelocity);
+					template.setHtml(allowsHtml);
+				}
+				/****************/
+				
 				template = emailTemplateDAO.save(template);
 				addActionMessage("Successfully saved email template");
 				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
@@ -113,5 +124,29 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		if (emailTemplates == null)
 			emailTemplates = emailTemplateDAO.findByAccountID(permissions.getAccountId(), template.getListType());
 		return emailTemplates;
+	}
+
+	public EmailTemplate getTemplate2() {
+		return template2;
+	}
+
+	public void setTemplate2(EmailTemplate template2) {
+		this.template2 = template2;
+	}
+
+	public boolean isAllowsVelocity() {
+		return allowsVelocity;
+	}
+
+	public void setAllowsVelocity(boolean allowsVelocity) {
+		this.allowsVelocity = allowsVelocity;
+	}
+
+	public boolean isAllowsHtml() {
+		return allowsHtml;
+	}
+
+	public void setAllowsHtml(boolean allowsHtml) {
+		this.allowsHtml = allowsHtml;
 	}
 }
