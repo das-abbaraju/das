@@ -44,7 +44,7 @@ function importTranslations() {
 }
 
 function exportTranslations() {
-	var params = $('#etlForm').serializeArray();
+	var params = $('#etlForm').serializeArray().filter(function(t) { return t.name != 'translations'; });
 	$('#translationETL').html('<img src="images/ajax_process.gif" />');
 	
 	params.push({name: "importTranslations", value: false});
