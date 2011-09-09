@@ -332,8 +332,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	 */
 	private void addAuditCategories(ContractorAudit audit, int categoryId) {
 		AuditCatData catData = new AuditCatData();
-		catData.setCategory(new AuditCategory());
-		catData.getCategory().setId(categoryId);
+		catData.setCategory(dao.find(AuditCategory.class, categoryId));
 		catData.setAudit(audit);
 		catData.setApplies(true);
 		catData.setOverride(false);

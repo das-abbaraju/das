@@ -83,7 +83,7 @@ abstract public class PicsDAO {
 		}
 	}
 
-	public BaseTable find(Class<? extends BaseTable> clazz, int id) {
+	public <T extends BaseTable> T find(Class<T> clazz, int id) {
 		return em.find(clazz, id);
 	}
 
