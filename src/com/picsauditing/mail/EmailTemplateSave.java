@@ -83,13 +83,10 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			template.setUpdateDate(new Date());
 			template.setUpdatedBy(getUser());
 			try {
-				/****************/
 				if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 					template.setAllowsVelocity(allowsVelocity);
 					template.setHtml(allowsHtml);
 				}
-				/****************/
-				
 				template = emailTemplateDAO.save(template);
 				addActionMessage("Successfully saved email template");
 				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
