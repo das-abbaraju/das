@@ -1,23 +1,28 @@
 package com.picsauditing.jpa.entities;
 
-public enum OshaRateType {
-	LwcrAbsolute("LWCR"),
-	LwcrNaics("LWCR Industry Avg"),
-	TrirAbsolute("TRIR"),
-	TrirNaics("TRIR Industry Avg"),
-	Fatalities("Fatalities"),
-	Dart("DART"),
-	SeverityRate("Severity Rate"),
-	Cad7("CAD7"),
-	Neer("NEER");
+public enum OshaRateType implements Translatable {
+	LwcrAbsolute,
+	LwcrNaics,
+	TrirAbsolute,
+	TrirNaics,
+	Fatalities,
+	Dart,
+	SeverityRate,
+	Cad7,
+	Neer;
 
-	private String description;
-
-	private OshaRateType(String description) {
-		this.description = description;
+	public String getDescriptionKey() {
+		return getI18nKey("description");
+	}
+	
+	@Override
+	public String getI18nKey() {
+		return this.toString();
+	}
+	
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 
-	public String getDescription() {
-		return description;
-	}
 }

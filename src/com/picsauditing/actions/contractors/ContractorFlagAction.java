@@ -569,8 +569,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		} else if (fc.getOshaRateType() != null) {
 			addLabel = false;
 			String rate = answer;
-			answer = getTextParameterized("ContractorFlag.OshaAnswer", fc.getOshaType().name(), fc.getOshaRateType()
-					.getDescription(), fcc.getAnswer2().split("<br/>")[0]);
+			answer = getTextParameterized("ContractorFlag.OshaAnswer", fc.getOshaType().name(), getText(fc.getOshaRateType().getDescriptionKey()), fcc.getAnswer2().split("<br/>")[0]);
 			if (fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
 				Double value = Double.parseDouble(rate);
 				answer += value.intValue();

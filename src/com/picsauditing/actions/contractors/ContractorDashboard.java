@@ -469,26 +469,26 @@ public class ContractorDashboard extends ContractorActionSupport {
 							OshaRateType.Fatalities }) {
 						Float value = organizer.getRate(OshaType.OSHA, scope, rate);
 						if (rate.equals(OshaRateType.Fatalities)) {
-							put(rate.getDescription(), auditFor, Integer.toString((value.intValue())));
+							put(getText(rate.getDescriptionKey()), auditFor, Integer.toString((value.intValue())));
 						} else {
-							put(rate.getDescription(), auditFor, format(value));
+							put(getText(rate.getDescriptionKey()), auditFor, format(value));
 						}
 					}
 
-					put("Hours Worked", auditFor, format(audit.getManHours()));
+					put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor, format(audit.getManHours()));
 				}
 			}
 
-			String ind = "Industry";
+			String ind = getText("ContractorView.ContractorDashboard.Industry");
 			if (auditForSet.size() != 0) {
 				auditForSet.add(ind);
 			}
 
-			if (data.get(OshaRateType.TrirAbsolute.getDescription()) != null)
-				put(OshaRateType.TrirAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(false,
+			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
+				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(false,
 						contractor.getNaics())));
-			if (data.get(OshaRateType.LwcrAbsolute.getDescription()) != null)
-				put(OshaRateType.LwcrAbsolute.getDescription(), ind, format(naicsDAO.getIndustryAverage(true,
+			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
+				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(true,
 						contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
@@ -518,17 +518,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			for (Map.Entry<String, AuditData> entry : contractor.getEmrs().entrySet()) {
 				if (entry.getValue() != null) {
-					put("EMR", entry.getKey(), entry.getValue().getAnswer());
+					put(getText("ContractorView.ContractorDashboard.EMR"), entry.getKey(), entry.getValue().getAnswer());
 					auditForSet.add(entry.getKey());
 				}
 			}
 
-			if (data.get("EMR") != null) {
+			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
 				for (OperatorAccount o : inheritedOperators) {
 					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 						if (fco.getCriteria().getQuestion() != null
 								&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
-							String operatorDisplay = getOperatorDisplay(o, " EMR");
+							String operatorDisplay = getOperatorDisplay(o, " " + getText("ContractorView.ContractorDashboard.EMR"));
 							String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
 
 							if (getData(operatorDisplay, auditFor) != null)
@@ -566,8 +566,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		private void buildRateTypeSet(Collection<OperatorAccount> operators) {
 			for (OshaRateType ort : Arrays.asList(OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 					OshaRateType.Fatalities)) {
-				if (data.get(ort.getDescription()) != null) {
-					rateTypeSet.add(ort.getDescription());
+				if (data.get(getText(ort.getDescriptionKey())) != null) {
+					rateTypeSet.add(getText(ort.getDescriptionKey()));
 					for (OperatorAccount operatorAccount : operators) {
 						String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(ort));
 						if (data.get(disp) != null)
@@ -575,25 +575,25 @@ public class ContractorDashboard extends ContractorActionSupport {
 					}
 				}
 			}
-			if (data.get("EMR") != null) {
-				rateTypeSet.add("EMR");
+			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
+				rateTypeSet.add(getText("ContractorView.ContractorDashboard.EMR"));
 				for (OperatorAccount operatorAccount : operators) {
-					String disp = getOperatorDisplay(operatorAccount, " EMR");
+					String disp = getOperatorDisplay(operatorAccount, " " + getText("ContractorView.ContractorDashboard.EMR"));
 					if (data.get(disp) != null)
 						rateTypeSet.add(disp);
 				}
 			}
-			if (data.get("Hours Worked") != null)
-				rateTypeSet.add("Hours Worked");
+			if (data.get(getText("ContractorView.ContractorDashboard.HoursWorked")) != null)
+				rateTypeSet.add(getText("ContractorView.ContractorDashboard.HoursWorked"));
 		}
 
 		private String getOshaSuffix(OshaRateType rateType) {
 			if (OshaRateType.TrirAbsolute.equals(rateType))
-				return " TRIR";
+				return " " + getText("ContractorView.ContractorDashboard.TRIR");
 			else if (OshaRateType.LwcrAbsolute.equals(rateType))
-				return " LWCR";
+				return " " + getText("ContractorView.ContractorDashboard.LWCR");
 			else if (OshaRateType.Fatalities.equals(rateType))
-				return " Fatalities";
+				return " " + getText("ContractorView.ContractorDashboard.Fatalities");
 
 			return "";
 		}
@@ -609,7 +609,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				auditFor = null;
 			} else if (audit.getConAudit() == null) {
 				if (scope.equals(MultiYearScope.ThreeYearAverage))
-					auditFor = "Average";
+					auditFor = getText("ContractorView.ContractorDashboard.Average");
 			} else
 				auditFor = audit.getConAudit().getAuditFor();
 			return auditFor;
