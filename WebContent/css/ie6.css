@@ -1,6 +1,12 @@
 /********************  SIDEBOX STYLES - ie6 fixes  ************************/
-#helpbox {
+#helpbox
+{
 	right: 20px;
+}
+
+#helpbox a.liveperson-chat
+{
+	width: 100px;
 }
 
 /******* Dashboard Panels ********/

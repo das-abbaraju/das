@@ -875,9 +875,9 @@ span.block:hover .hoverhelp {
 
 #helpbox a
 {
-	padding-left: 17px;
-	margin-left: 2px;
 	background: url('../images/help.gif') no-repeat left center;
+	margin-left: 2px;
+	padding-left: 17px;
 	zoom: 1;
 }
 
