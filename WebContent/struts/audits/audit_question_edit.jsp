@@ -1,5 +1,5 @@
-<%@ page language="java" errorPage="/exception_handler.jsp" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ page language="java" errorPage="/exception_handler.jsp" contentType="text/html; charset=UTF-8"  pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
 
 <div class="answer">
 	<s:form cssClass="qform" id="qform%{#q.id}" onsubmit="return false;">
@@ -30,13 +30,19 @@
 					<s:if test="#op != null && #op.id > 0">
 						<div class="clearfix question shaded">
 							If it does NOT comply, please explain below.
+							
 							<s:if test="#op.insuranceForms.size > 0">
 								<ul style="list-style:none">
 									<s:iterator value="#op.insuranceForms">
-										<li><a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window"><s:property value="formName"/></a></li>
+										<li>
+											<a href="forms/<s:property value="file"/>" target="_BLANK" title="Opens in new Window">
+												<s:property value="formName"/>
+											</a>
+										</li>
 									</s:iterator>
 								</ul>
 							</s:if>
+							
 							<br clear="all"/>
 							<div class="clear"></div>
 						</div>
@@ -117,14 +123,18 @@
 			<s:if test="#a == null"> 
 				<label><s:text name="QuestionType.ESignature.fullName" /></label>
 				<br />
+				
 				<s:hidden name="auditData.comment" value="%{#this.IP}"/>
+				
 				<s:textfield name="auditData.answer" value="" size="1"/>
 				<s:textfield name="auditData.answer" value=""/>
+				
 				<s:submit type="button" value="Sign" cssClass="question-save" />
 			</s:if>
 			<s:else>
 				<label><s:text name="QuestionType.ESignature.alreadySigned" /></label>
 				<br />
+				
 				${a.answer} (<s:date name="#a.updateDate" format="MMM d, yyyy" />)
 			</s:else>
 		</s:if>
@@ -139,6 +149,7 @@
 			<br />
 			<span class="requirement">
 				<label>Requirement:</label>
+				
 				<s:if test="#a.requirementOpen">
 					<div class="unverified">Open</div>
 				</s:if>
