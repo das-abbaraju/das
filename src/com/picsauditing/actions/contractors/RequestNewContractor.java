@@ -1,8 +1,8 @@
 package com.picsauditing.actions.contractors;
 
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -285,23 +285,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (increaseContactCount)
 			newContractor.contact();
 
-		if (!status.equals("Hold")) {
-			newContractor.setHoldDate(null);
-		} else {
-			if (newContractor.getHoldDate() == null) {
-				addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
-			}
-
-			else if ("Active".equals(newContractor.getStatus())) {
-				newContractor.setNotes(prepend("Request set to hold until "
-								+ maskDateFormat(newContractor.getHoldDate()), newContractor.getNotes()));
-				String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
-						+ "request&requestID=" + newContractor.getId();
-
-				sendHoldEmail(requestLink);
-			}
-		}
-
 		if (!status.equals("Closed Unsuccessful"))
 			newContractor.setReasonForDecline(null);
 		else if (Strings.isEmpty(newContractor.getReasonForDecline()))
@@ -407,30 +390,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return SUCCESS;
 	}
 	
-	private void sendHoldEmail(String requestLink) throws IOException {
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(163);
-		emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
-
-		emailBuilder.setToAddresses(newContractor.getEmail());
-
-		if (hasEmailSubscription()) {
-			emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
-		}
-
-		emailBuilder.addToken("con", newContractor);
-		emailBuilder.addToken("op", newContractor.getRequestedBy());
-		emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
-		emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
-		emailBuilder.addToken("holdDate", maskDateFormat(newContractor.getHoldDate()));
-		emailBuilder.addToken("link", requestLink);
-
-		EmailQueue email = emailBuilder.build();
-		email.setPriority(30);
-		email.setViewableById(Account.PicsID);
-		emailQueueDAO.save(email);
-	}
-
 	public String phone() throws Exception {
 		if (Strings.isEmpty(addToNotes))
 			addActionError(getText("RequestNewContractor.error.EnterAdditionalNotes"));
