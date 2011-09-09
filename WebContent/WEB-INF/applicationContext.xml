@@ -97,7 +97,7 @@
 	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
 	
 	<bean id="AuditScheduleBuilder" class="com.picsauditing.PICS.AuditScheduleBuilder" scope="prototype"/>
-	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle" scope="prototype"/>
+	<bean id="BillingCalculatorSingle" class="com.picsauditing.PICS.BillingCalculatorSingle"/>
 	<bean id="ContractorFlagETL" class="com.picsauditing.PICS.ContractorFlagETL" scope="prototype"/>
 	<bean id="ContractorValidator" class="com.picsauditing.PICS.ContractorValidator" scope="prototype"/>
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
