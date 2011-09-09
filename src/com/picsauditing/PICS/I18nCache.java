@@ -70,8 +70,8 @@ public class I18nCache implements Serializable {
 			if (args == null || args.length == 0)
 				return getText(key, locale);
 			else {
-				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)), Strings
-						.parseLocale(locale));
+				MessageFormat message = new MessageFormat(fixFormatCharacters(getText(key, locale)),
+						Strings.parseLocale(locale));
 				StringBuffer buffer = new StringBuffer();
 				message.format(args, buffer, null);
 				return buffer.toString();
@@ -102,10 +102,11 @@ public class I18nCache implements Serializable {
 				long startTime = System.currentTimeMillis();
 				cache = TreeBasedTable.create();
 				Database db = new Database();
-				List<BasicDynaBean> messages = db.select("SELECT msgKey, locale, msgValue, lastUsed FROM app_translation", false);
+				List<BasicDynaBean> messages = db.select(
+						"SELECT msgKey, locale, msgValue, lastUsed FROM app_translation", false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")), String
-							.valueOf(message.get("msgValue")));
+					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
+							String.valueOf(message.get("msgValue")));
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
@@ -118,13 +119,15 @@ public class I18nCache implements Serializable {
 	}
 
 	public void clear() {
-		Database db = new Database();
-		String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey IN (" + Strings.implodeForDB(cacheUsed, ",") +
-				")";
-		try {
-			db.execute(sql);
-		} catch (SQLException doNothing) {
-			throw new RuntimeException("Failed to update app_translation lastUsed on clear.");
+		if (cacheUsed.size() > 0) {
+			Database db = new Database();
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey IN ("
+					+ Strings.implodeForDB(cacheUsed, ",") + ")";
+			try {
+				db.execute(sql);
+			} catch (SQLException doNothing) {
+				throw new RuntimeException("Failed to update app_translation lastUsed on clear.");
+			}
 		}
 		cache = null;
 		cacheUsed.clear();
