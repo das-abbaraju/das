@@ -348,7 +348,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().isAnnualAddendum()) {
-					String linkText = audit.getAuditFor() + " Update";
+					String linkText = this.getTextParameterized("ContractorActionSupport.Update", audit.getAuditFor());
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						childMenu.setName(linkText);
@@ -380,10 +380,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 
 			if (subMenu.getChildren().size() > 0) {
-				subMenu.addChild("Manage Certificates", "ConInsureGUARD.action?id=" + contractor.getId());
+				subMenu.addChild(getText("ContractorActionSupport.ManageCertificates"), "ConInsureGUARD.action?id=" + contractor.getId());
 
 				if (permissions.hasPermission(OpPerms.AuditVerification))
-					subMenu.addChild("Insurance Verification",
+					subMenu.addChild(getText("ContractorActionSupport.InsuranceVerification"),
 							"InsureGuardVerification.action?id=" + contractor.getId());
 
 				addSubMenu(menu, subMenu);
