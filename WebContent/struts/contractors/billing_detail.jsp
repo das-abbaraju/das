@@ -66,6 +66,7 @@
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Info.CreditCardOnFile" />?</label>
+								
 								<s:if test="contractor.ccOnFile">
 									<s:text name="YesNo.Yes" />
 								</s:if>
@@ -244,6 +245,7 @@
 										<s:property value="invoiceTotal" />
 										<s:property value="contractor.currencyCode"/>
 									</li>
+									
 									<pics:permission perm="Billing">
 										<li>
 											<div>
