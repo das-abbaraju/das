@@ -3,8 +3,8 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <table class="allborder">
 	<tr>
-		<th>Item &amp; Description</th>
-		<th width="100px">Fee Amount</th>
+		<th><s:text name="InvoiceEmbed.ItemAndDescription" /></th>
+		<th width="100px"><s:text name="InvoiceEmbed.FeeAmount" /></th>
 	</tr>
 	<s:iterator value="#i.items">
 		<tr>
@@ -16,12 +16,15 @@
 					<s:text name="InvoiceFee.%{invoiceFee.id}.fee" />
 				</s:else>
 				<span style="color: #444; font-style: italic; font-size: 10px;">
-				<s:if test="invoiceFee.feeClass == 'Activation'">effective
-					<s:if test="paymentExpires == null"><s:date name="invoice.creationDate" format="MMM d, yyyy" /></s:if>
-					<s:else><s:date name="paymentExpires" /></s:else>
+				<s:if test="invoiceFee.feeClass == 'Activation'">
+					<s:text name="InvoiceEmbed.Effective" >
+						<s:param name="%{paymentExpires == null ? invoice.creationDate : paymentExpires}" />
+					</s:text>
 				</s:if>
 				<s:if test="invoiceFee.feeClass == 'Membership' && paymentExpires != null">
-					expires <s:date name="paymentExpires" format="MMM d, yyyy"/>
+					<s:text name="InvoiceEmbed.Expires" >
+						<s:param name="%{paymentExpires}" />
+					</s:text>
 				</s:if>
 				</span>
 			</td>
@@ -31,7 +34,7 @@
 		</tr>
 	</s:iterator>
 	<tr>
-		<th class="big right">Invoice Total</th>
+		<th class="big right"><s:text name="ContractorRegistrationFinish.InvoiceTotal" /></th>
 		<td class="big right"><s:property value="#i.currency.symbol" /><s:property value="#i.totalAmount" /> <s:property value="#i.currency" /></td>
 	</tr>
 </table>
