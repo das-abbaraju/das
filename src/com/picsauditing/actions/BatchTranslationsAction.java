@@ -57,8 +57,8 @@ public class BatchTranslationsAction extends PicsActionSupport {
 			a.setAuditColumns(new User(User.SYSTEM));
 
 			dao.save(a);
-			
-			//System.out.println(a.getId());
+
+			Thread.sleep(400);
 		}
 
 		return SUCCESS;
