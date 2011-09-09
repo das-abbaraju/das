@@ -58,7 +58,7 @@ public class BatchTranslationsAction extends PicsActionSupport {
 
 			dao.save(a);
 			
-			System.out.println(a.getId());
+			//System.out.println(a.getId());
 		}
 
 		return SUCCESS;
