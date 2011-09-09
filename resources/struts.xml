@@ -1887,6 +1887,10 @@
 		<action name="ManageTranslations" class="com.picsauditing.actions.ManageTranslations">
 			<result>struts/i18n/manage_translations.jsp</result>
 		</action>
+		
+		<action name="BatchTranslations" class="com.picsauditing.actions.BatchTranslationsAction">
+			<result>struts/i18n/batch_translations.jsp</result>
+		</action>
 
 		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.ManageTranslations">
 			<result>struts/blank.jsp</result>
