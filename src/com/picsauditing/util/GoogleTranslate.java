@@ -5,8 +5,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.CharsetDecoder;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -33,10 +33,10 @@ public class GoogleTranslate {
 			con.setDoOutput(true);
 			con.getOutputStream().write(toSend.toString().getBytes("UTF-8"));
 
-			InputStreamReader reader = new InputStreamReader(con.getInputStream());
+			InputStreamReader reader = new InputStreamReader(con.getInputStream(), "UTF-8");
 			JSONObject response = (JSONObject) JSONValue.parse(reader);
 			JSONObject responseData = (JSONObject) response.get("responseData");
-			return responseData.get("translatedText").toString();
+			return StringEscapeUtils.unescapeXml(responseData.get("translatedText").toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
