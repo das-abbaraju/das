@@ -10,9 +10,10 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.jboss.util.Strings;
+
 
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Strings;
 
 /**
  * The function that a specific {@link AuditQuestion} performs. This is used for calculated values.
@@ -20,7 +21,9 @@ import com.picsauditing.util.AnswerMap;
  * @author kpartridge
  * 
  */
+
 public enum QuestionFunction {
+
 	/**
 	 * Used for custom {@link AuditQuestionFunction}s. This requires an expression be placed on the params map.
 	 * 
@@ -73,14 +76,72 @@ public enum QuestionFunction {
 	},
 	/**
 	 * Annual Update TRIR
+	 * Formula: TRIR = (Total Recordable Incidents * 200,000) / Total Man Hours
 	 */
 	TRIR {
 		@Override
 		public Object calculate(FunctionInput input) {
+
 			Map<String, String> params = getParameterMap(input);
-			BigDecimal manHours = new BigDecimal(params.get("manHours")).setScale(3);
-			BigDecimal lostWorkdayCases = new BigDecimal(params.get("lostWorkdayCases")).setScale(3);
-			return manHours.divide(lostWorkdayCases, BigDecimal.ROUND_HALF_UP);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("lostWorkdayCases"))
+					|| Strings.isEmpty(params.get("restrictedCases"))
+					|| Strings.isEmpty(params.get("injuries")))
+				return "Audit.missingParameter";
+			
+			BigDecimal manHours = new BigDecimal(params.get("manHours"))
+					.setScale(2);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities"))
+					.setScale(2);
+			BigDecimal lostWorkdayCases = new BigDecimal(params
+					.get("lostWorkdayCases")).setScale(2);
+			BigDecimal restrictedCases = new BigDecimal(params
+					.get("restrictedCases")).setScale(2);
+			BigDecimal injuries = new BigDecimal(params.get("injuries"))
+					.setScale(2);
+			BigDecimal totalIncidents = fatalities.add(lostWorkdayCases).add(
+					restrictedCases).add(injuries);
+
+			BigDecimal result;
+			try {
+				result = (totalIncidents.multiply(OSHA_NORMALIZER)).divide(
+						manHours, BigDecimal.ROUND_HALF_UP);
+			} catch (java.lang.ArithmeticException e) {
+				return "Audit.missingParameter";
+			}
+			return result;
+		}
+	},
+	/**
+	 * Annual Update LWCR
+	 * LWCR  = (Total Lost Workday Cases / Total Man Hours) * 200,000
+	 */
+	LWCR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("lostWorkdayCases")))
+				return "Audit.missingParameter";
+
+			BigDecimal lostWorkdayCases = new BigDecimal(params
+					.get("lostWorkdayCases")).setScale(7);
+			BigDecimal manHours = new BigDecimal(params.get("manHours"))
+					.setScale(7);
+
+			BigDecimal result;
+			try {
+				result = OSHA_NORMALIZER.multiply(
+						lostWorkdayCases.divide(manHours,
+								BigDecimal.ROUND_HALF_UP)).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return "Audit.missingParameter";
+			}
+
+			return result;
 		}
 	},
 	SCORE {
@@ -116,6 +177,8 @@ public enum QuestionFunction {
 			return "E";
 		}
 	};
+	// OSHA standard normalizer. Hours in a year * 100 employees
+	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
 
 	public abstract Object calculate(FunctionInput input);
 
@@ -181,4 +244,5 @@ public enum QuestionFunction {
 
 		return params;
 	}
+
 }
