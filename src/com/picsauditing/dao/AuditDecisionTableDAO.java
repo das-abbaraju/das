@@ -85,8 +85,14 @@ public class AuditDecisionTableDAO extends PicsDAO {
 	}
 
 	public List<AuditTypeRule> findAuditTypeRulesByTags(List<OperatorTag> tags) {
-		Query query = em.createQuery(findByQuery("AuditTypeRule", " AND (r.tag IN (:tags))"));
-		query.setParameter("tags", tags);
+		Query query;
+		if (tags.size() > 0) {
+			query = em.createQuery(findByQuery("AuditTypeRule", " AND (r.tag IN (:tags))"));
+			query.setParameter("tags", tags);
+		} else {
+			query = em.createQuery(findByQuery("AuditTypeRule", ""));
+		}
+
 		query.setMaxResults(250);
 		return query.getResultList();
 	}
