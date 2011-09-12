@@ -92,7 +92,7 @@ function showExcelUpload() {
 										</a>
 									</td>
 									<td><s:property value="#e.title" /></td>
-									<td><s:property value="#e.classification" /></td>
+									<td><s:text name="%{#e.classification.getI18nKey('description')}" /></td>
 									<td class="center">
 										<a href="#employee=<s:property value="#e.id" />" class="loadEmployee edit" title="<s:text name="ManageEmployees.title.EditProfile" />"></a>
 									</td>
