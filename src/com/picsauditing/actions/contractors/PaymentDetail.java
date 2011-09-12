@@ -14,6 +14,7 @@ import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
@@ -76,6 +77,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 	}
 
+	@RequiredPermission(value = OpPerms.AllContractors)
 	public String execute() throws Exception {
 		if (!forceLogin())
 			return LOGIN;
