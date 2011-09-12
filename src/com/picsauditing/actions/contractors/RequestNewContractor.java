@@ -163,7 +163,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 
 		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + permissions.getPicsPhone() + "\n"
 				+ "Fax: " + permissions.getPicsCustomerServiceFax()
-				+ "\nhttp://www.picsauditing.com\nemail: marketing@picsauditing.com "
+				+ "\nhttp://www.picsauditing.com\nemail: Registrations@picsauditing.com "
 				+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
 		status = newContractor.getStatus();
 	}
@@ -437,7 +437,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(167);
 			emailBuilder.setToAddresses(newContractor.getEmail());
-			emailBuilder.setFromAddress("\"PICS System\"<marketing@picsauditing.com>");
+			emailBuilder.setFromAddress("\"Registration Specialist\" <Registrations@picsauditing.com>");
 
 			if (hasEmailSubscription())
 				emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
@@ -861,7 +861,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		emailQueue.setPriority(80);
 		emailQueue.setHtml(template.isHtml());
 
-		emailQueue.setFromAddress("PICS Auditing <marketing@picsauditing.com>");
+		emailQueue.setFromAddress("\"Registration Specialist\" <Registrations@picsauditing.com>");
 		emailQueue.setToAddresses(newContractor.getContact() + " <" + newContractor.getEmail() + ">");
 		emailQueue.setBody(emailBody);
 		emailQueue.setSubject(emailSubject);
