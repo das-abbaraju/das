@@ -85,4 +85,124 @@ ul.jump-header-list li.hover a.jump-current {
 ul.jump-header-list li.hover a.jump-down {
 	background: url(../images/arrow-down.gif) no-repeat left center;
 }
- 
+
+/* BUTTONS */
+
+.picsbutton,a.picsbutton:visited,a.picsbutton:link {
+	margin: 0 7px 0 0;
+	border-top: 1px;
+	border-left: 1px;
+	border-bottom: 2px;
+	border-right: 2px;
+	border-color: #4686BF;
+	border-style: solid;
+	font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+	font-size: 100%;
+	line-height: 130%;
+	text-decoration: none;
+	font-weight: bold;
+	color: #565656;
+	cursor: pointer;
+	background-color: #fff;
+}
+
+a.picsbutton {
+	padding: 5px 11px 4px 12px; /* Links */
+}
+
+.picsbutton {
+	width: auto;
+	overflow: visible;
+	padding: 4px 10px 3px 7px; /* IE6 */
+}
+
+.buttons button[type] {
+	line-height: 17px; /* Safari */
+}
+
+* :first-child+html button[type] {
+	padding: 4px 10px 3px 7px; /* IE7 */
+}
+
+.buttons button img,.buttons a img {
+	margin: 0 3px -3px 0 !important;
+	padding: 0;
+	border: none;
+	width: 16px;
+	height: 16px;
+}
+
+.showPointer {
+	cursor: pointer;
+}
+
+/* UTILITIES */
+.picsbutton:hover,.picsbutton:active,a.picsbutton:hover,a.picsbutton:active
+	{
+	background-color: #dff4ff;
+	border-left: 2px;
+	border-right: 1px;
+	border-bottom: 1px;
+	border-top: 2px;
+	margin-top: -1px;
+	margin-bottom: 1px;
+	border-style: solid;
+	border-color: #6990DB;
+	color: #336699;
+	text-decoration: none;
+}
+
+.picsbutton:active,a.picsbutton:active {
+	background-color: #6299c5;
+	color: #fff;
+}
+
+.picsbutton.grey {
+	background: #dedede;
+	border-color: #ababab;
+	color: #ababab;
+}
+
+/* POSITIVE */
+.positive,a.positive:visited,a.positive:link {
+	color: #529214;
+}
+
+.positive:hover,a.positive:hover {
+	background-color: #E6EFC2;
+	border-color: #C6D880;
+	color: #529214;
+	text-decoration: none;
+}
+
+.positive:active,a.positive:active {
+	background-color: #529214;
+	border-color: #C6D880;
+	color: #fff;
+}
+
+/* NEGATIVE */
+.negative,a.negative:visited,a.negative:link {
+	color: #d12f19;
+}
+
+.negative:hover,a.negative:hover {
+	background: #fbe3e4;
+	border-color: #fbc2c4;
+	color: #d12f19;
+}
+
+.negative:active,a.negative:active {
+	background-color: #d12f19;
+	border-color: #d12f19;
+	color: #fff;
+}
+
+.picsbutton[disabled],.picsbutton[disabled]:hover {
+	background: #dedede;
+	border-width: 1px 2px 2px 1px;
+	margin-bottom: -1px;
+	border-color: #ababab;
+	cursor: default;
+	color: #ababab;
+}

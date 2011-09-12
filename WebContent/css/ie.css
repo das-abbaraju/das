@@ -54,3 +54,17 @@ span.jump-to { position: relative; }
 ul.jump-header-list {
 	*top:24px;
 }
+
+/* BUTTONS */
+
+.btn,
+.picsbutton
+{
+	border-radius:0 \0;
+}
+
+.btn:hover,
+.picsbutton:hover
+{
+	filter: none !important;
+}

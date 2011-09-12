@@ -68,7 +68,8 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<%=version%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
+		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
 		
 		<script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
@@ -79,6 +80,7 @@
 		<script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 		<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
+		
 		<script type="text/javascript">
 			$(function() {
 				$(document).ajaxError(function(e, xhr, originalSettings, exception) {
@@ -143,9 +145,7 @@
 		<!--[if lt IE 7]>
 			<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 		<![endif]-->
-		
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-		
+			
 		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 		<script type="text/javascript" src="js/main_search.js"></script>
