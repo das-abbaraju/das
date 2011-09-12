@@ -124,6 +124,7 @@ public class ContractorAudit extends BaseTable {
 		this.operators = operators;
 	}
 
+	// TODO Should we pass in permissions to this? See ConInsureGuard.java execute() lines 54-67
 	@Transient
 	public List<ContractorAuditOperator> getOperatorsVisible() {
 		return new Grepper<ContractorAuditOperator>() {

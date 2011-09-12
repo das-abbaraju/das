@@ -165,7 +165,11 @@ public class AuditDataDAO extends PicsDAO {
 		return mapData(query.getResultList());
 	}
 
-	//TODO: Ask Kyle why we are doing this instead of using findAnswerByConQuestions() line 229
+	// TODO merge with findAnswerByConQuestions and findCurrentAnswers and return a Map<
+	public Map<Integer, AuditData> findTODOHERE(int conID, Collection<Integer> questionIds){
+		return null;
+	}
+	
 	public AnswerMap findCurrentAnswers(int conId, Collection<Integer> questionIds) {
 		if (questionIds.size() == 0)
 			return new AnswerMap(Collections.<AuditData>emptyList());
@@ -174,6 +178,15 @@ public class AuditDataDAO extends PicsDAO {
 				" left join contractor_audit ca2 on ca.conID = ca2.conID and ca.auditTypeID = ca2.auditTypeID and ca.creationDate < ca2.creationDate " +
                 " where ca2.id is null and ca.conID = " + conId + " and d.questionID in (" + Strings.implode(questionIds) + ")", AuditData.class);
 		return mapData(query.getResultList());
+	}
+
+	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
+		Query query = em
+				.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
+						+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1) "
+						+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.id DESC");
+		query.setParameter(1, conID);
+		return query.getResultList();
 	}
 
 	public Map<Integer, AuditData> findAnswersForSafetyManual(int conID, int questionId) {
@@ -225,15 +238,6 @@ public class AuditDataDAO extends PicsDAO {
 	 */
 	static private AnswerMap mapData(List<AuditData> result) {
 		return new AnswerMap(result);
-	}
-
-	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
-		Query query = em
-				.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
-						+ "AND d.audit IN (SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Pending','Submitted','Resubmitted','Complete') AND cao.visible = 1) "
-						+ "AND d.question.id IN (" + Strings.implode(questionIds) + ") " + "ORDER BY d.audit.id DESC");
-		query.setParameter(1, conID);
-		return query.getResultList();
 	}
 
 	public AuditData findAnswerByConQuestion(int conID, int questionID) {

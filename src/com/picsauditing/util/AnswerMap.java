@@ -8,7 +8,8 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.AuditData;
 
 /**
- * This is a legacy class from when we used tuples. This is overkill now and should be removed.
+ * This is a legacy class from when we used tuples. This is overkill now.
+ * TODO Remove this and use a Map<Integer, AuditData> in its place
  */
 public class AnswerMap {
 	private Map<Integer, List<AuditData>> list = new HashMap<Integer, List<AuditData>>();
