@@ -150,6 +150,7 @@ load_config_yesterday () {
 	/usr/bin/mysql $db_yesterday < /tmp/$pics_live_sql
 	echo "loading into pics_config"
 	/usr/bin/mysql $db_config < /tmp/$pics_live_sql
+	/usr/bin/mysql $db_config < ${backup_dir}deployments/clean_config.sql
 	
 	cleanup
 }
