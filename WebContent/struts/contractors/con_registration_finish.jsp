@@ -121,7 +121,7 @@
 							</s:if>
 						</s:if>
 						
-						<input type="submit" class="picsbutton positive" value="<s:text name="ContractorRegistrationFinish.CompleteMyRegistration" />" name="button"/>
+						<s:submit action="ContractorRegistrationFinish!completeRegistration" cssClass="picsbutton positive" value="%{getText('ContractorRegistrationFinish.CompleteMyRegistration')}" /> 
 					</div>
 				</s:form>
 			</div>

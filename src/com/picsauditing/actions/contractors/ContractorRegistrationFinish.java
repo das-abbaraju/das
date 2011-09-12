@@ -85,128 +85,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 		auditBuilder.buildAudits(contractor);
 		this.resetActiveAudits();
 
-		if ("Complete My Registration".equals(button)) {
-			// enforcing workflow steps before completing registration
-			String url = "";
-			if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
-					|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-				url = "ContractorRegistrationServices.action?id=" + contractor.getId()
-						+ "&msg=" + getText("ContractorRegistrationFinish.message.SelectService");
-			} else if (contractor.getNonCorporateOperators().size() == 0) {
-				url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + getText("ContractorRegistrationFinish.message.AddFacility");
-			} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-				url = "ContractorPaymentOptions.action?id=" + contractor.getId()
-						+ "&msg=" + getText("ContractorRegistrationFinish.message.AddPaymentMethod");
-			}
-
-			if (!url.isEmpty()) {
-				ServletActionContext.getResponse().sendRedirect(url);
-				return SUCCESS;
-			}
-
-			if (contractor.isHasFreeMembership()) {
-				// Free accounts should just be activated
-				contractor.setStatus(AccountStatus.Active);
-				contractor.setAuditColumns(permissions);
-				contractor.setMembershipDate(new Date());
-				if (contractor.getBalance() == null)
-					contractor.setBalance(BigDecimal.ZERO);
-				accountDao.save(contractor);
-			} else {
-				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
-					if (contractor.isCcValid()) {
-						String canadaProcessorID = appPropDAO.find("brainTree.processor_id.canada").getValue();
-						paymentService.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
-						paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
-						paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
-
-						Payment payment = null;
-						try {
-							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
-
-							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
-								throw new RuntimeException("Canadian ProcessorID Mismatch");
-							paymentService.setCanadaProcessorID(canadaProcessorID);
-
-							paymentService.processPayment(payment, invoice);
-
-							CreditCard creditCard = paymentService.getCreditCard(id);
-							payment.setCcNumber(creditCard.getCardNumber());
-
-							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
-									.getTotalAmount());
-							payment.setQbSync(true);
-
-							paymentDAO.save(payment);
-							invoice.updateAmountApplied();
-							billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
-							contractor.syncBalance();
-
-							// Activate the contractor
-							billingService.activateContractor(contractor, invoice);
-							accountDao.save(contractor);
-
-							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
-						} catch (NoBrainTreeServiceResponseException re) {
-							addNote("Credit Card service connection error: " + re.getMessage());
-
-							EmailBuilder emailBuilder = new EmailBuilder();
-							emailBuilder.setTemplate(106);
-							emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-							emailBuilder.setToAddresses("billing@picsauditing.com");
-							emailBuilder.setPermissions(permissions);
-							emailBuilder.addToken("permissions", permissions);
-							emailBuilder.addToken("contractor", contractor);
-							emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
-							emailBuilder.addToken("invoice", invoice);
-
-							EmailQueue emailQueue;
-							try {
-								emailQueue = emailBuilder.build();
-								emailQueue.setPriority(90);
-								emailQueue.setViewableById(Account.PicsID);
-
-								emailSender.send(emailQueue);
-							} catch (Exception e) {
-								PicsLogger
-										.log("Cannot send email error message or determine credit processing status for contractor "
-												+ contractor.getName()
-												+ " ("
-												+ contractor.getId()
-												+ ") for invoice "
-												+ invoice.getId());
-							}
-
-							addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
-									permissions.getPicsBillingPhone()));
-
-							// Assuming paid status per Aaron so that he can
-							// refund or void manually.
-							payment.setStatus(TransactionStatus.Unpaid);
-							paymentDAO.save(payment);
-
-							return SUCCESS;
-						} catch (BrainTreeServiceErrorResponseException e) {
-							addNote("Credit Card transaction failed: " + e.getMessage());
-							addActionError(getText("ContractorRegistrationFinish.error.CreditCardFailure") + " "
-									+ e.getMessage());
-							return SUCCESS;
-						}
-					}
-
-					// Send a receipt to the contractor
-					try {
-						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
-					} catch (Exception theyJustDontGetAnEmail) {
-					}
-				}
-			}
-
-			complete = true;
-
-		} else if (contractor.getStatus().isPendingDeactivated()) {
+		if (contractor.getStatus().isPendingDeactivated()) {
 			billingService.calculateAnnualFees(contractor);
 
 			if (!contractor.isHasFreeMembership()) {
@@ -306,6 +185,142 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 				}
 			}
 		}
+
+		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
+			contractor.setRenew(true);
+			accountDao.save(contractor);
+		}
+
+		return SUCCESS;
+	}
+	
+	public String completeRegistration() throws Exception {
+		findContractor();
+
+		findUnpaidInvoice();
+
+		auditBuilder.buildAudits(contractor);
+		this.resetActiveAudits();
+
+		// enforcing workflow steps before completing registration
+		String url = "";
+		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
+				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
+			url = "ContractorRegistrationServices.action?id=" + contractor.getId() + "&msg="
+					+ getText("ContractorRegistrationFinish.message.SelectService");
+		} else if (contractor.getNonCorporateOperators().size() == 0) {
+			url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg="
+					+ getText("ContractorRegistrationFinish.message.AddFacility");
+		} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
+			url = "ContractorPaymentOptions.action?id=" + contractor.getId() + "&msg="
+					+ getText("ContractorRegistrationFinish.message.AddPaymentMethod");
+		}
+
+		if (!url.isEmpty()) {
+			ServletActionContext.getResponse().sendRedirect(url);
+			return SUCCESS;
+		}
+
+		if (contractor.isHasFreeMembership()) {
+			// Free accounts should just be activated
+			contractor.setStatus(AccountStatus.Active);
+			contractor.setAuditColumns(permissions);
+			contractor.setMembershipDate(new Date());
+			if (contractor.getBalance() == null)
+				contractor.setBalance(BigDecimal.ZERO);
+			accountDao.save(contractor);
+		} else {
+			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
+				if (contractor.isCcValid()) {
+					String canadaProcessorID = appPropDAO.find("brainTree.processor_id.canada").getValue();
+					paymentService.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
+					paymentService.setUserName(appPropDAO.find("brainTree.username").getValue());
+					paymentService.setPassword(appPropDAO.find("brainTree.password").getValue());
+
+					Payment payment = null;
+					try {
+						payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
+
+						if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
+							throw new RuntimeException("Canadian ProcessorID Mismatch");
+						paymentService.setCanadaProcessorID(canadaProcessorID);
+
+						paymentService.processPayment(payment, invoice);
+
+						CreditCard creditCard = paymentService.getCreditCard(id);
+						payment.setCcNumber(creditCard.getCardNumber());
+
+						// Only if the transaction succeeds
+						PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
+						payment.setQbSync(true);
+
+						paymentDAO.save(payment);
+						invoice.updateAmountApplied();
+						billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
+						contractor.syncBalance();
+
+						// Activate the contractor
+						billingService.activateContractor(contractor, invoice);
+						accountDao.save(contractor);
+
+						addNote("Credit Card transaction completed and emailed the receipt for "
+								+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
+					} catch (NoBrainTreeServiceResponseException re) {
+						addNote("Credit Card service connection error: " + re.getMessage());
+
+						EmailBuilder emailBuilder = new EmailBuilder();
+						emailBuilder.setTemplate(106);
+						emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+						emailBuilder.setToAddresses("billing@picsauditing.com");
+						emailBuilder.setPermissions(permissions);
+						emailBuilder.addToken("permissions", permissions);
+						emailBuilder.addToken("contractor", contractor);
+						emailBuilder.addToken("billingusers", contractor.getUsersByRole(OpPerms.ContractorBilling));
+						emailBuilder.addToken("invoice", invoice);
+
+						EmailQueue emailQueue;
+						try {
+							emailQueue = emailBuilder.build();
+							emailQueue.setPriority(90);
+							emailQueue.setViewableById(Account.PicsID);
+
+							emailSender.send(emailQueue);
+						} catch (Exception e) {
+							PicsLogger
+									.log("Cannot send email error message or determine credit processing status for contractor "
+											+ contractor.getName()
+											+ " ("
+											+ contractor.getId()
+											+ ") for invoice "
+											+ invoice.getId());
+						}
+
+						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
+								permissions.getPicsBillingPhone()));
+
+						// Assuming paid status per Aaron so that he can
+						// refund or void manually.
+						payment.setStatus(TransactionStatus.Unpaid);
+						paymentDAO.save(payment);
+
+						return SUCCESS;
+					} catch (BrainTreeServiceErrorResponseException e) {
+						addNote("Credit Card transaction failed: " + e.getMessage());
+						addActionError(getText("ContractorRegistrationFinish.error.CreditCardFailure") + " "
+								+ e.getMessage());
+						return SUCCESS;
+					}
+				}
+
+				// Send a receipt to the contractor
+				try {
+					EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
+				} catch (Exception theyJustDontGetAnEmail) {
+				}
+			}
+		}
+
+		complete = true;
 
 		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
 			contractor.setRenew(true);
