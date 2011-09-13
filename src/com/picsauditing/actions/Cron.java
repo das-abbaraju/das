@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,8 +32,10 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -45,9 +48,11 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -95,6 +100,10 @@ public class Cron extends PicsActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
+	@Autowired
+	private FlagDataOverrideDAO flagDataOverrideDAO;
+	@Autowired
+	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private IndexerEngine indexer;
 	@Autowired
@@ -244,7 +253,7 @@ public class Cron extends PicsActionSupport {
 		}
 		try {
 			startTask("\nStamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
-			contractorAccountDAO.clearForceFlags();
+			clearForceFlags();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -617,6 +626,52 @@ public class Cron extends PicsActionSupport {
 			conReq.setNotes("\n" + maskDateFormat(conReq.getHoldDate())
 					+ " - System - Request status changed from Hold to Active." + "\n" + "\n" + conReq.getNotes());
 			conReq.setHoldDate(null);
+		}
+	}
+
+	public void clearForceFlags() {
+		List<FlagDataOverride> fdos = flagDataOverrideDAO.findExpiredForceFlags();
+
+		Iterator<FlagDataOverride> fdoIter = fdos.iterator();
+		while (fdoIter.hasNext()) {
+			FlagDataOverride fdo = fdoIter.next();
+
+			// Create note & Delete override
+			Note note = new Note(fdo.getContractor(), system, "Forced " + fdo.getCriteria().getLabel() + " Flag to "
+					+ fdo.getForceflag() + " Expired for " + fdo.getContractor().getName());
+			note.setCanContractorView(true);
+			note.setPriority(LowMedHigh.Med);
+			note.setNoteCategory(NoteCategory.Flags);
+			note.setAuditColumns(system);
+			note.setViewableBy(fdo.getOperator());
+			noteDAO.save(note);
+
+			flagDataOverrideDAO.remove(fdo);
+			fdoIter.remove();
+		}
+
+		List<ContractorOperator> overrides = contractorOperatorDAO.findExpiredForceFlags();
+
+		Iterator<ContractorOperator> overrideIter = overrides.iterator();
+		while (overrideIter.hasNext()) {
+			ContractorOperator override = overrideIter.next();
+
+			// Create note & Remove override
+			Note note = new Note(override.getContractorAccount(), system, "Overall Forced Flag to "
+					+ override.getFlagColor() + " Expired for " + override.getContractorAccount().getName());
+			note.setCanContractorView(true);
+			note.setPriority(LowMedHigh.Med);
+			note.setNoteCategory(NoteCategory.Flags);
+			note.setAuditColumns(system);
+			note.setViewableBy(override.getOperatorAccount());
+			noteDAO.save(note);
+
+			override.setForceEnd(null);
+			override.setForceFlag(null);
+			override.setForceBegin(null);
+			override.setForcedBy(null);
+
+			contractorOperatorDAO.save(override);
 		}
 	}
 }

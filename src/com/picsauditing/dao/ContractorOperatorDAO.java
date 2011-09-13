@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -98,6 +99,12 @@ public class ContractorOperatorDAO extends PicsDAO {
 		if (!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
 		Query query = em.createQuery(where);
+		return query.getResultList();
+	}
+
+	public List<ContractorOperator> findExpiredForceFlags() {
+		Query query = em.createQuery("FROM ContractorOperator WHERE forceFlag IS NOT NULL AND forceEnd < :now");
+		query.setParameter("now", new Date());
 		return query.getResultList();
 	}
 }
