@@ -23,17 +23,16 @@ input[type=submit] {
 </s:if>
 
 <s:if test="invoice.status.void">
-	<div class="alert" class="noprint">This invoice has been CANCELED.</div>
+	<div class="alert" class="noprint"><s:text name="InvoiceDetail.InvoiceCanceled"></s:text></div>
 </s:if>
 <s:elseif test="invoice.status.paid">
-	<div class="info" class="noprint">This invoice has been PAID in full.</div>
+	<div class="info" class="noprint"><s:text name="InvoiceDetail.InvoicePaid"></s:text></div>
 </s:elseif>
 <s:elseif test="invoice.overdue && contractor.status.active">
-	<div class="alert" class="noprint">This invoice is currently OVERDUE!</div>
+	<div class="alert" class="noprint"><s:text name="InvoiceDetail.InvoiceOverdue"></s:text></div>
 </s:elseif>
 <s:if test="invoice.status.unpaid && !contractor.paymentMethodStatusValid && contractor.mustPayB">
-	<div class="alert" class="noprint">Our records show that you do not have a valid method of payment on file, 
-	or your credit card has expired. Please <a href="ContractorPaymentOptions.action?id=<s:property value="contractor.id"/>"> update your payment information.</a></div>
+	<div class="alert" class="noprint"><s:text name="InvoiceDetail.UpdatePaymentOption"><s:param><s:property value="contractor.id"/></s:param></s:text></div>
 </s:if>
 
 <s:if test="permissions.admin">
@@ -41,14 +40,14 @@ input[type=submit] {
 	<div class="alert" class="noprint">Please post a note after you have modified the invoice!</div>
 </s:if>
 <s:if test="invoice.qbSync">
-	<div class="alert" class="noprint">This invoice is still waiting to be synced with QuickBooks!</div>
+	<div class="alert" class="noprint"><s:text name="InvoiceDetail.WaitingSync"></s:text></div>
 </s:if>
 </s:if>
 
 <s:form id="save" name="save" method="POST">
 	<s:hidden name="id"></s:hidden>
 	<s:hidden name="invoice.id"></s:hidden>
-	<s:hidden name="button" value="Save"></s:hidden>
+	<s:hidden name="button" value="save"></s:hidden>
 
 	<table width="100%">
 		<tr>
@@ -71,8 +70,8 @@ input[type=submit] {
 					<td width="400">
 					<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
 						<tr>
-							<th>Date</th>
-							<th class="big" style="white-space: nowrap;">Invoice #</th>
+							<th><s:text name="InvoiceDetail.Date"></s:text></th>
+							<th class="big" style="white-space: nowrap;"><s:text name="InvoiceDetail.InvoiceNumber"></s:text></th>
 						</tr>
 						<tr>
 							<td class="center"><nobr> <s:date name="invoice.creationDate" format="MMM d, yyyy" /> <s:set
@@ -87,30 +86,30 @@ input[type=submit] {
 					<ul>
 						<pics:permission perm="Billing" type="Edit">
 							<s:if test="edit">
-								<li><a class="save" href="#" onclick="document.forms['save'].submit(); return false;">Save</a></li>
-								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>">Return</a></li>
+								<li><a class="save" href="#" onclick="document.forms['save'].submit(); return false;"><s:text name="button.Save" /></a></li>
+								<li><a class="exit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>"><s:text name="button.Return" /></a></li>
 							</s:if>
 							<s:else>
 								<s:if test="invoice.status.unpaid">
-									<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>">Pay</a></li>
+									<li><a class="pay" href="PaymentDetail.action?id=<s:property value="id"/>&amountApplyMap[<s:property value="invoice.id"/>]=<s:property value="invoice.balance"/>"><s:text name="button.Pay" /></a></li>
 								</s:if>
-								<li><a class="edit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true">Edit</a></li>
+								<li><a class="edit" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&edit=true"><s:text name="button.Edit" /></a></li>
 								<pics:permission perm="Billing" type="Delete">
 									<li><a class="void"
-										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Cancel" onclick="return confirm('Are you sure you want to cancel this invoice?');">Void</a></li>
+										href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=cancel" onclick="return confirm(translate('JS.InvoiceDetail.ConfirmVoid'));"><s:text name="button.Void" /></a></li>
 								</pics:permission>
 								<pics:permission perm="InvoiceEdit">
-									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>">Sys Edit</a></li>
+									<li><a class="system_edit" href="ConInvoiceMaintain.action?id=<s:property value="id"/>&invoiceId=<s:property value="invoice.id"/>"><s:text name="button.SysEdit" /></a></li>
 								</pics:permission>
 							</s:else>
 						</pics:permission>
 						<s:if test="!edit">
 							<s:if test="permissions.contractor && invoice.status.unpaid && contractor.ccValid">
-								<li><a class="pay" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=pay" onclick="return confirm('The credit card on file (<s:property value="ccNumber" />) will be charged. Do you wish to continue?'); this.disable()">Pay</a></li>
+								<li><a class="pay" href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=pay" onclick="return confirm(translate('JS.InvoiceDetail.ConfirmCharge', [<s:property value="ccNumber" />])); this.disable()"><s:text name="button.Pay" /></a></li>
 							</s:if>
 							<li><a class="email"
-								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=Email">Email</a></li>
-							<li><a class="print" href="javascript: window.print();">Print</a></li>
+								href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id"/>&button=email"><s:text name="button.Email" /></a></li>
+							<li><a class="print" href="javascript: window.print();"><s:text name="button.Print" /></a></li>
 						</s:if>
 					</ul>
 					</div>
@@ -123,9 +122,9 @@ input[type=submit] {
 			<td style="padding-top: 15px;">
 			<table width="100%" class="allborder">
 				<tr>
-					<th>Bill To</th>
-					<th width="16%">PO #</th>
-					<th width="16%">Due Date</th>
+					<th><s:text name="InvoiceDetail.BillTo" /></th>
+					<th width="16%"><s:text name="InvoiceDetail.PoNumber" /></th>
+					<th width="16%"><s:text name="InvoiceDetail.DueDate" /></th>
 				</tr>
 				<tr>
 					<td><s:property value="contractor.name" /><br />
@@ -160,26 +159,26 @@ input[type=submit] {
 			<td style="padding-top: 15px;">
 						<s:if test="edit && hasInvoiceMembershipChanged" >
 							<div class="buttons right" style="padding:7px;">
-								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=Change to"
-								class="picsbutton positive">Change Membership Level(s)</a>
+								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=changeto"
+								class="picsbutton positive"><s:text name="InvoiceDetail.ChangeMembership" /></a>
 							</div>
 						</s:if>
 			<table width="100%" class="allborder">
 				<tr>
-					<th colspan="2">Item &amp; Description</th>
-					<th width="200px">Fee Amount</th>
+					<th colspan="2"><s:text name="InvoiceDetail.ItemDescription" /></th>
+					<th width="200px"><s:text name="InvoiceDetail.FeeAmount" /></th>
 				</tr>
 				<s:iterator value="invoice.items" status="stat">
 					<tr>
 						<td style="border-right: 0"><s:set name="o" value="[0]"></s:set> <s:include value="../who.jsp"></s:include> <s:property
 							value="invoiceFee.fee" /> <span style="color: #444; font-style: italic; font-size: 10px;">
 							<s:if test="paymentExpires != null">
-								<s:if test="invoiceFee.membership">expires</s:if><s:else>effective</s:else>
+								<s:if test="invoiceFee.membership"><s:text name="InvoiceDetail.Expires" /></s:if><s:else><s:text name="InvoiceDetail.Effective" /></s:else>
 								<s:date name="paymentExpires" />
 							</s:if></span></td>
 						<s:if test="edit">
 							<td><s:textfield name="invoice.items[%{#stat.index}].description" value="%{description}" size="30" />
-							(optional description) </td>
+							<s:text name="InvoiceDetail.OptionalDescription" /></td>
 							<td class="right"><s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" /> <s:property value="invoice.currency"/>
 							</td>
 						</s:if>
@@ -197,12 +196,12 @@ input[type=submit] {
 					</tr>
 				</s:if>
 				<tr>
-					<th colspan="2" class="big right">Invoice Total</th>
+					<th colspan="2" class="big right"><s:text name="InvoiceDetail.InvoiceTotal" /></th>
 					<td class="big right"><s:property value="invoice.totalAmount" /> <s:property value="invoice.currency"/></td>
 				</tr>
 				<s:if test="invoice.payments.size() > 0">
 					<tr>
-						<th colspan="2" class="big right">Payment(s)</th>
+						<th colspan="2" class="big right"><s:text name="InvoiceDetail.Payments" /></th>
 						<td class="right"><s:iterator value="invoice.payments">
 							<pics:permission perm="Billing">
 								<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />"><s:date name="payment.creationDate" format="MMM d, yyyy" /></a>
@@ -215,14 +214,14 @@ input[type=submit] {
 							<span class="small">
 							<s:if test="payment.paymentMethod.creditCard">
 								<s:if test="payment.ccType == null || payment.ccType.length() == 0">
-									Credit Card
+									<s:text name="InvoiceDetail.CreditCard" />
 								</s:if>
 								<s:else>
 									<s:property value="payment.ccType"/>
 								</s:else>
 							</s:if>
 							<s:else>
-								Check <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0">#<s:property value="payment.checkNumber"/></s:if>
+								<s:text name="InvoiceDetail.Check" /> <s:if test="payment.checkNumber != null && payment.checkNumber.length() > 0"><s:text name="InvoiceDetail.CheckNumber" /><s:property value="payment.checkNumber"/></s:if>
 							</s:else>
 							</span>
 							<span class="big">(<s:property value="amount" /> <s:property value="invoice.currency"/>)</span>
@@ -230,7 +229,7 @@ input[type=submit] {
 						</s:iterator></td>
 					</tr>
 					<tr>
-						<th colspan="2" class="big right">Balance</th>
+						<th colspan="2" class="big right"><s:text name="InvoiceDetail.Balance" /></th>
 						<td class="big right"><s:property value="invoice.balance" /> <s:property value="invoice.currency"/></td>
 					</tr>
 				</s:if>
@@ -238,7 +237,7 @@ input[type=submit] {
 			</td>
 		</tr>
 		<tr>
-			<td style="padding: 15px;">Comments: <s:if test="edit">
+			<td style="padding: 15px;"><s:text name="InvoiceDetail.Comments" /><s:if test="edit">
 				<br />
 				<s:textarea name="invoice.notes" cols="60" rows="4"></s:textarea>
 			</s:if> <s:else>
@@ -250,10 +249,10 @@ input[type=submit] {
 
 			<table width="100%" class="allborder">
 				<tr>
-					<th width="25%">Phone#</th>
-					<th width="25%">Fax#</th>
-					<th width="25%">Email</th>
-					<th width="25%">Website</th>
+					<th width="25%"><s:text name="InvoiceDetail.Phone" /></th>
+					<th width="25%"><s:text name="InvoiceDetail.Fax" /></th>
+					<th width="25%"><s:text name="InvoiceDetail.Email" /></th>
+					<th width="25%"><s:text name="InvoiceDetail.Website" /></th>
 				</tr>
 				<tr>
 					<td class="center"><s:property value="permissions.picsPhone" /></td>

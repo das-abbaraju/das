@@ -87,36 +87,36 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public String execute() throws NoRightsException, IOException {
 		if (invoice == null) {
-			addActionError("We could not find the invoice you were looking for");
+			addActionError(getText("InvoiceDetail.error.CantFindInvoice"));
 			return BLANK;
 		}
 
 		if (!permissions.hasPermission(OpPerms.AllContractors)
 				&& permissions.getAccountId() != invoice.getAccount().getId()) {
-			throw new NoRightsException("You can't view this invoice");
+			throw new NoRightsException(getText("InvoiceDetail.error.CantViewInvoice"));
 		}
 
 		country = invoice.getAccount().getCountry().toString();
-		invoice.updateAmountApplied();
+		invoice.updateAmountApplied();http://localhost:8080/picsWeb2/InvoiceDetail.action?invoice.id=85858&edit=true#
 		for (PaymentApplied ip : invoice.getPayments())
 			ip.getPayment().updateAmountApplied();
 
 		if (button != null) {
 			String message = null;
 
-			if ("Save".equals(button)) {
+			if ("save".equals(button)) {
 				edit = false;
 				if (newFeeId > 0) {
 					addInvoiceItem(newFeeId);
 					newFeeId = 0;
 					edit = true;
 				} else {
-					message = "Saved Invoice";
+					message = getText("InvoiceDetail.message.SavedInvoice");
 				}
 				updateTotals();
 				invoice.setQbSync(true);
 			}
-			if (button.startsWith("Change to")) {
+			if ("changeto".equals(button)) {
 				List<String> removedItemNames = new ArrayList<String>();
 				List<String> createdItemNames = new ArrayList<String>();
 
@@ -157,7 +157,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
 						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
-				message = "Changed Membership Level";
+				message = getText("InvoiceDetail.message.ChangedLevel");
 
 				String notes = "Thank you for doing business with PICS!";
 				notes += billingService.getOperatorsString(contractor);
@@ -166,7 +166,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				contractor.syncBalance();
 			}
 
-			if (button.startsWith("Email")) {
+			if ("email".equals(button)) {
 				try {
 					EmailQueue email = EventSubscriptionBuilder
 							.contractorInvoiceEvent(contractor, invoice, permissions);
@@ -180,13 +180,13 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					if (!Strings.isEmpty(email.getCcAddresses()))
 						note += " and cc'd " + email.getCcAddresses();
 					addNote(note, getUser());
-					message = "Sent Email";
+					message = getText("InvoiceDetail.message.SentEmail");
 
 				} catch (Exception e) {
-					message = "Sorry!! Failed to send email.";
+					message = getText("InvoiceDetail.message.EmailFail");
 				}
 			}
-			if (button.equalsIgnoreCase("Cancel")) {
+			if ("cancel".equals(button)) {
 				Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
 				if (paIterator.hasNext()) {
 					PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
@@ -220,7 +220,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
 
-				message = "Cancelled Invoice";
+				message = getText("InvoiceDetail.message.CanceledInvoice");
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
 						+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount().toString();
@@ -293,8 +293,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 												+ invoice.getId());
 							}
 
-							addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
-									+ permissions.getPicsBillingPhone() + ".");
+							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
+									permissions.getPicsBillingPhone()));
 
 							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.
@@ -304,7 +304,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							return SUCCESS;
 						} catch (Exception e) {
 							addNote("Credit Card transaction failed: " + e.getMessage(), getUser());
-							this.addActionError("Failed to charge credit card. " + e.getMessage());
+							this.addActionError(getText("InvoiceDetail.error.FailedCreditCard") + e.getMessage());
 							return SUCCESS;
 						}
 					}

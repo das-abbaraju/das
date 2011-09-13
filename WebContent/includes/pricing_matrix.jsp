@@ -9,16 +9,16 @@ $(document).ready(function() {
 	var auditGUARDNum = '<s:property value="auditGUARDNum" />';
 	var employeeGUARDNum = '<s:property value="employeeGUARDNum" />';
 	
-	$('#'+docuGUARDNum+'docuGUARD').css({'background-color':'#FFFF12'});
-	$('#'+auditGUARDNum+'auditGUARD').css({'background-color':'#FFFF12'});
-	$('#'+employeeGUARDNum+'employeeGUARD').css({'background-color':'#FFFF12'});
+	$('#'+docuGUARDNum+'DocuGUARD').css({'background-color':'#FFFF12'});
+	$('#'+auditGUARDNum+'AuditGUARD').css({'background-color':'#FFFF12'});
+	$('#'+employeeGUARDNum+'EmployeeGUARD').css({'background-color':'#FFFF12'});
 	
 });
 </script>
 
-<h2>PICS Annual Membership Price</h2>
+<h2><s:text name="ContractorPricing.MatrixTitle" /></h2>
 <p>
-	The cells highlighted in yellow are the prices that apply to your account.
+	<s:text name="ContractorPricing.Description"></s:text>
 </p>
 
 <table class="report center"
@@ -30,15 +30,14 @@ $(document).ready(function() {
 				<s:text name="global.Operators" />
 			</td>
 			<td class="center" style="background-color: #79b7e0">
-				DocuGUARD<br />
-				InsureGUARD
+				<s:text name="global.DocuGUARD"></s:text><br />
+				<s:text name="global.InsureGUARD"></s:text>
 			</td>
 			<td class="center" style="background-color: #a75025">
-				AuditGUARD
+				<s:text name="global.AuditGUARD"></s:text>
 			</td>
 			<td class="center" style="background-color: #838486">
-				Employee<br />
-				GUARD
+				<s:text name="global.EmployeeGUARD"></s:text>
 			</td>
 		</tr>
 	</thead>
@@ -47,103 +46,106 @@ $(document).ready(function() {
 			<td class="center">
 				1
 			</td>
-			<td class="center" id="1docuGUARD">
-				$99
+			<td class="center" id="1DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1DocuGUARD')"/>
 			</td>
 			<td class="center" id="1auditGUARD">
-				+$399
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1AuditGUARD')"/>
 			</td>
-			<td class="center" id="1employeeGUARD">
-				+$99
+			<td class="center" id="1EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="2">
 			<td class="center">
 				2-4
 			</td>
-			<td class="center" id="2docuGUARD">
-				$99
+			<td class="center" id="2DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2DocuGUARD')"/>
 			</td>
-			<td class="center" id="2auditGUARD">
-				+$799
+			<td class="center" id="2AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2AuditGUARD')"/>
 			</td>
-			<td class="center" id="2employeeGUARD">
-				+$199
+			<td class="center" id="2EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="5">
 			<td class="center">
 				5-8
 			</td>
-			<td class="center" id="5docuGUARD">
-				$99
+			<td class="center" id="5DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5DocuGUARD')"/>
 			</td>
-			<td class="center" id="5auditGUARD">
-				+$1,199
+			<td class="center" id="5AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5AuditGUARD')"/>
 			</td>
-			<td class="center" id="5employeeGUARD">
-				+$299
+			<td class="center" id="5EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="9">
 			<td class="center">
 				9-12
 			</td>
-			<td class="center" id="9docuGUARD">
-				$99
+			<td class="center" id="9DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9DocuGUARD')"/>
 			</td>
-			<td class="center" id="9auditGUARD">
-				+$1,499
+			<td class="center" id="9AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9AuditGUARD')"/>
 			</td>
-			<td class="center" id="9employeeGUARD">
-				+$399
+			<td class="center" id="9EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="13">
 			<td class="center">
 				13-19
 			</td>
-			<td class="center" id="13docuGUARD">
-				$99
+			<td class="center" id="13DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13DocuGUARD')"/>
 			</td>
-			<td class="center" id="13auditGUARD">
-				+$1,899
+			<td class="center" id="13AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13AuditGUARD')"/>
 			</td>
-			<td class="center" id="13employeeGUARD">
-				+$599
+			<td class="center" id="13EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="20">
 			<td class="center">
 				20-49
 			</td>
-			<td class="center" id="20docuGUARD">
-				$99
+			<td class="center" id="20DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20DocuGUARD')"/>
 			</td>
-			<td class="center" id="20auditGUARD">
-				+$2,899
+			<td class="center" id="20AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20AuditGUARD')"/>
 			</td>
-			<td class="center" id="20employeeGUARD">
-				+$799
+			<td class="center" id="20EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="50">
 			<td class="center">
 				50+
 			</td>
-			<td class="center" id="50docuGUARD">
-				$99
+			<td class="center" id="50DocuGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50DocuGUARD')"/>
 			</td>
-			<td class="center" id="50auditGUARD">
-				+$3,899
+			<td class="center" id="50AuditGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50AuditGUARD')"/>
 			</td>
-			<td class="center" id="50employeeGUARD">
-				+$999
+			<td class="center" id="50EmployeeGUARD">
+				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50EmployeeGUARD')"/>
 			</td>
 		</tr>
 	</tbody>
 </table>
 
 <p class="redMain">
-	* There is an account activation/reactivation fee of $199
+	<s:text name="ContractorPricing.ActivationFee">
+	<s:param><s:property value="%{con.currencyCode.symbol}" /></s:param>
+	<s:param><s:property value="getPrice('1Activation')"/></s:param>
+	</s:text>
 </p>
