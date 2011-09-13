@@ -42,7 +42,7 @@
 
 	<s:if test="filter.showPhone">
 		<div class="filterOption"><s:text name="Filters.label.PhoneNumber" />:
-			<s:textfield name="filter.phoneNumber" cssClass="forms" size="15" onfocus="clearText(this)" title="<s:text name="Filters.MustBe9Digits" />" />
+			<s:textfield name="filter.phoneNumber" cssClass="forms" size="15" onfocus="clearText(this)" title="%{getText('Filters.MustBe9Digits')}" />
 		</div>
 	</s:if>
 
