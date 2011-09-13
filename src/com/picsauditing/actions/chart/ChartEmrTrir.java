@@ -50,8 +50,7 @@ public class ChartEmrTrir extends ChartMSAction {
 				+ "AVG(FLOOR(fcc.answer*10)/10) AS value FROM flag_criteria fc "
 				+ "JOIN flag_criteria_contractor fcc ON fcc.criteriaID = fc.id "
 				+ "WHERE fc.oshaRateType = 'TrirAbsolute' AND fcc.conID = " + conID
-				+ " AND fc.multiYearScope NOT LIKE '%average%' AND RIGHT(fc.label, 2) > RIGHT("
-				+ cal.get(Calendar.YEAR) + ",2) GROUP BY RIGHT(fc.label,2)) "
+				+ " AND fc.multiYearScope NOT LIKE '%average%')"
 				+ "UNION (SELECT CONCAT('20',RIGHT(pqf.auditFor, 2)) AS label, 'EMR' AS series, "
 				+ "AVG(FLOOR(d.answer*10)/10) AS value FROM contractor_audit pqf "
 				+ "JOIN pqfdata d ON d.auditID = pqf.id WHERE d.answer > 0 "
