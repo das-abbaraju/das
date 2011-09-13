@@ -123,7 +123,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	@RequiredPermission(value = OpPerms.EditFlagCriteria, type = OpType.Edit)
 	public String add() throws Exception {
 		FlagCriteriaOperator fco = new FlagCriteriaOperator();
-		fco.setAuditColumns(permissions);
+		fco.setAuditColumns(getUser());
 		fco.setCriteria(flagCriteria);
 		fco.setFlag(newFlag);
 		fco.setTag(operatorTag);

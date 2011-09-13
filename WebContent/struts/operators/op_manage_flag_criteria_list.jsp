@@ -123,6 +123,19 @@
 	
 	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" id="recalculateAll" />
 	
+	
+	<a href="#" class="picsbutton bump-contractor"><s:text name="ManageFlagCriteriaOperator.button.BumpContractors" /></a>
+	
+	<s:if test="canEdit">
+		<pics:permission perm="ManageAudits">
+			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
+		</pics:permission>
+		
+		<a href="#" class="add newCriteria"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
+		
+		<div id="addCriteria"></div>
+	</s:if>
+	
 </s:if>
 <s:else>
 	<div class="alert">
