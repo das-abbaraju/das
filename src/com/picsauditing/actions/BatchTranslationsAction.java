@@ -12,7 +12,6 @@ import com.picsauditing.util.GoogleTranslate;
 
 @SuppressWarnings("serial")
 public class BatchTranslationsAction extends PicsActionSupport {
-
 	private int limit = 100;
 	private String localeTo = "fr";
 	private int count = 0;
