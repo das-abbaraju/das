@@ -171,7 +171,7 @@ function showOption() {
 			</s:else>
 		</li>
 		<li>
-			<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditQuestion.<s:property value="question.id"/>" target="_BLANK">Manage Translations</a>
+			<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditQuestion.<s:property value="question.id"/>." target="_BLANK">Manage Translations</a>
 		</li>
 		<li><label>Question Type:</label>
 			<div id="questionTypes">
