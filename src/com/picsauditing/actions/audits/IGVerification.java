@@ -47,14 +47,8 @@ public class IGVerification extends ContractorActionSupport {
 		previewEmail.setPriority(50);
 
 		try {
+			emailSender.send(previewEmail);
 			addActionMessage("Successfully sent email to " + previewEmail.getToAddresses() + " and stamped notes");
-
-			try {
-				emailSender.send(previewEmail);
-				addActionMessage("Successfully sent email to " + previewEmail.getToAddresses());
-			} catch (Exception e) {
-				addActionError("Could not send email to " + previewEmail.getToAddresses());
-			}
 			String note = "Insurance Verification email sent to " + previewEmail.getToAddresses();
 			addNote(contractor, note, NoteCategory.Insurance);
 		} catch (Exception e) {
