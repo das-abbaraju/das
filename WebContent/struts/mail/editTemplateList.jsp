@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
@@ -7,16 +8,16 @@
 			<thead>
 				<tr>
 					<td></td>
-					<td style="min-width: 200px;">Name</td>
-					<td class="center">Template Type</td>
-					<td>Remove</td>
+					<td style="min-width: 200px;"><s:text name="global.Name" /></td>
+					<td class="center"><s:text name="EditEmailTemplate.TemplateType" /></td>
+					<td><s:text name="button.Remove" /></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td>1</td>
-					<td><a href="#template=blank">~ Start with a Blank Email ~</a></td>
-					<td>None</td>
+					<td><a href="#template=blank"><s:text name="EditEmailTemplate.StartWithBlank" /></a></td>
+					<td><s:text name="EditEmailTemplate.None" /></td>
 					<td></td>
 				</tr>
 				<s:iterator value="emailTemplates" status="num" id="template">
@@ -33,7 +34,7 @@
 	<td style="width: 60%; padding-left: 10px;">
 		<div id="menu_selector" style="display: none;">
 			<pics:permission perm="EmailTemplates" type="Edit">
-				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="Save this email as a template for future use">Save...</button>
+				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="<s:text name="EditEmailTemplate.SaveAsTemplate" />"><s:text name="button.Save" />...</button>
 			</pics:permission>
 			<br clear="all">
 		</div>

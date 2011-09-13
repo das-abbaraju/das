@@ -1,10 +1,12 @@
 package com.picsauditing.mail;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,6 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Token;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -50,6 +53,7 @@ public class EmailBuilder {
 	protected Permissions permissions;
 
 	private boolean debug = false;
+	private boolean edited = false;
 
 	public EmailBuilder() {
 		velocityAdaptor = new VelocityAdaptor();
@@ -82,11 +86,23 @@ public class EmailBuilder {
 			}
 		}
 
-		String subject = convertPicsTagsToVelocity(template.getSubject(), template.isAllowsVelocity());
+		String templateBody = template.getBody();
+		String templateSubject = template.getSubject();
+		// If we're using the default template, pull up the correct translation for the user we're sending the email to.
+		if (!edited && template.isTranslated()) {
+			Locale locale = getUserLocale();
+
+			if (template.getTranslatedBody() != null)
+				templateBody = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
+			if (template.getTranslatedSubject() != null)
+				templateSubject = getUserTranslation(locale, template.getTranslatedSubject().getTranslations());
+		}
+
+		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity());
 		subject = velocityAdaptor.merge(subject, tokens);
 		email.setSubject(subject);
 
-		String body = convertPicsTagsToVelocity(template.getBody(), template.isAllowsVelocity());
+		String body = convertPicsTagsToVelocity(templateBody, template.isAllowsVelocity());
 		body = velocityAdaptor.merge(body, tokens);
 		email.setBody(body);
 
@@ -158,8 +174,7 @@ public class EmailBuilder {
 	}
 
 	/**
-	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
-	 * like this ${token.name}
+	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags like this ${token.name}
 	 * 
 	 * @param text
 	 * @param allowsVelocity
@@ -186,6 +201,37 @@ public class EmailBuilder {
 		return text;
 	}
 
+	private Locale getUserLocale() {
+		Locale locale = null;
+
+		if (tokens.containsKey("permissions")) {
+			Permissions permissions = (Permissions) tokens.get("permissions");
+			locale = permissions.getLocale();
+		}
+
+		if (tokens.containsKey("user")) {
+			User user = (User) tokens.get("user");
+			locale = user.getLocale();
+		}
+
+		if (locale == null)
+			locale = Locale.ENGLISH;
+
+		return locale;
+	}
+
+	private String getUserTranslation(Locale locale, Collection<Translation> translations) {
+		String english = null;
+		for (Translation translation : translations) {
+			if ("en".equals(translation.getLocale()))
+				english = translation.getValue();
+			if (locale.getLanguage().equals(translation.getLocale()))
+				return translation.getValue();
+		}
+
+		return english;
+	}
+
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 		addToken("permissions", permissions);
@@ -210,10 +256,9 @@ public class EmailBuilder {
 	public void setFromAddress(String fromAddress) {
 		this.fromAddress = fromAddress;
 	}
-	
+
 	public void setFromAddress(User u) {
-		this.fromAddress = "\"" + u.getName()
-		+ "\"<" + u.getEmail() + ">";
+		this.fromAddress = "\"" + u.getName() + "\"<" + u.getEmail() + ">";
 	}
 
 	public String getToAddresses() {
@@ -246,6 +291,19 @@ public class EmailBuilder {
 
 	public void setDebug(boolean debug) {
 		this.debug = debug;
+	}
+
+	/**
+	 * Default value is false.<br />
+	 * <br />
+	 * A flag for whether templates were edited, not using the default template subject and body. If edited, we're not
+	 * going to pull up any translations and send out the email as is. MassMailer and everywhere else we edit the
+	 * body/subject for an email should set this flag to true.
+	 * 
+	 * @param edited
+	 */
+	public void setEdited(boolean edited) {
+		this.edited = edited;
 	}
 
 	public String getPassword() {

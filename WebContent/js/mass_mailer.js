@@ -137,12 +137,19 @@ function addTemplate(id) {
 			id: id,
 			'template.listType': type,
 			'template.templateName': $('#templateName').val(),
-			'template.subject': $('#templateSubject').val(),
-			'template.body': $('#templateBody').val(),
 			'template.recipient': $('#recipient').val(),
 			'template.allowsVelocity': $('#templateAllowsVelocity').is(':checked'),
-			'template.html': $('#templateHtml').is(':checked')
+			'template.html': $('#templateHtml').is(':checked'),
+			'template.translated': $('#templateTranslated').is(':checked')
 	};
+	
+	if ($('#templateTranslated').is(':checked')) {
+		data['template.translatedSubject'] = $('#templateSubject').val();
+		data['template.translatedBody'] = $('#templateBody').val();
+	} else {
+		data['template.subject'] = $('#templateSubject').val();
+		data['template.body'] = $('#templateBody').val();
+	}
 	
 	$('#messages').load('EmailTemplateSaveAjax.action', data,
 			function(response, status) {

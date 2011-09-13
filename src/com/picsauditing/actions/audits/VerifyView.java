@@ -232,6 +232,7 @@ public class VerifyView extends ContractorActionSupport {
 			emailTemplate.setId(11);
 			emailTemplate.setBody(emailBody);
 			emailTemplate.setSubject(emailSubject);
+			emailBuilder.setEdited(true);
 			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
 					+ contractor.getAuditor().getEmail() + ">");
 			emailBuilder.setTemplate(emailTemplate);

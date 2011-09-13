@@ -1,6 +1,6 @@
 package com.picsauditing.jpa.entities;
 
-public enum ListType {
+public enum ListType implements Translatable {
 	ALL("Any List"),
 	Contractor("Contractors"),
 	Audit("Contractors by Audit"),
@@ -17,5 +17,15 @@ public enum ListType {
 	
 	public String getDescription() {
 		return description;
+	}
+
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+	
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -41,6 +43,13 @@ import com.picsauditing.util.Strings;
  */
 @SuppressWarnings("serial")
 public class MassMailer extends PicsActionSupport {
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
+	@Autowired
+	private EmailTemplateDAO emailTemplateDAO;
+	@Autowired
+	private TokenDAO tokenDAO;
+
 	private Set<Integer> ids = null;
 	private ListType type;
 
@@ -54,6 +63,7 @@ public class MassMailer extends PicsActionSupport {
 	private OpPerms recipient;
 	private boolean templateAllowsVelocity;
 	private boolean templateHtml;
+	private boolean templateTranslated;
 	private String fromMyAddress = "info@picsauditing.com";
 	private List<String> fromAddresses = new ArrayList<String>();
 	private boolean editTemplate = false;
@@ -64,25 +74,15 @@ public class MassMailer extends PicsActionSupport {
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
 
-	private EmailQueueDAO emailQueueDAO;
-	private EmailTemplateDAO emailTemplateDAO;
-	private TokenDAO tokenDAO;
-
 	private EmailBuilder emailBuilder;
 	private EmailQueue emailPreview;
 
-	public MassMailer(EmailQueueDAO emailQueueDAO, EmailTemplateDAO emailTemplateDAO, TokenDAO tokenDAO) {
-		this.emailQueueDAO = emailQueueDAO;
-		this.emailTemplateDAO = emailTemplateDAO;
-		this.tokenDAO = tokenDAO;
+	public MassMailer() {
 		this.emailBuilder = new EmailBuilder();
 	}
 
+	@RequiredPermission(value = OpPerms.EmailTemplates)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		permissions.tryPermission(OpPerms.EmailTemplates);
 		// ActionContext.getContext().getActionInvocation().getProxy()
 
 		// Start the main logic for actions that require passing the contractors
@@ -92,7 +92,7 @@ public class MassMailer extends PicsActionSupport {
 			fromOtherAction = false;
 			type = wizardSession.getListType();
 		} else if (type == null) {
-			addActionMessage("Please select a template or start with a blank email to get started");
+			addActionMessage(getText("MassMailer.SelectATemplate"));
 			return SUCCESS;
 		}
 
@@ -109,6 +109,13 @@ public class MassMailer extends PicsActionSupport {
 				templateName = template.getTemplateName();
 				templateAllowsVelocity = template.isAllowsVelocity();
 				templateHtml = template.isHtml();
+				templateTranslated = template.isTranslated();
+				
+				if (template.isTranslated()) {
+					templateSubject = template.getTranslatedSubject().toString();
+					templateBody = template.getTranslatedBody().toString();
+				}
+				
 				type = template.getListType();
 			} else {
 				templateSubject = "";
@@ -135,6 +142,7 @@ public class MassMailer extends PicsActionSupport {
 
 			EmailTemplate template = buildEmailTemplate();
 			emailBuilder.setTemplate(template);
+			emailBuilder.setEdited(true);
 			getRecipient();
 			addTokens(previewID);
 
@@ -171,6 +179,7 @@ public class MassMailer extends PicsActionSupport {
 				// else
 				emailBuilder.setFromAddress(fromMyAddress);
 				emailBuilder.setTemplate(template);
+				emailBuilder.setEdited(true);
 
 				for (Integer id : ids) {
 					getRecipient();
@@ -318,6 +327,7 @@ public class MassMailer extends PicsActionSupport {
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			template.setAllowsVelocity(templateAllowsVelocity);
 			template.setHtml(templateHtml);
+			template.setTranslated(templateTranslated);
 		}
 		return template;
 	}
@@ -439,6 +449,10 @@ public class MassMailer extends PicsActionSupport {
 		return templateAllowsVelocity;
 	}
 
+	public void setTemplateAllowsVelocity(boolean templateAllowsVelocity) {
+		this.templateAllowsVelocity = templateAllowsVelocity;
+	}
+
 	public boolean isTemplateHtml() {
 		return templateHtml;
 	}
@@ -447,8 +461,12 @@ public class MassMailer extends PicsActionSupport {
 		this.templateHtml = templateHtml;
 	}
 
-	public void setTemplateAllowsVelocity(boolean templateAllowsVelocity) {
-		this.templateAllowsVelocity = templateAllowsVelocity;
+	public boolean isTemplateTranslated() {
+		return templateTranslated;
+	}
+
+	public void setTemplateTranslated(boolean templateTranslated) {
+		this.templateTranslated = templateTranslated;
 	}
 
 	public int getRemoveID() {

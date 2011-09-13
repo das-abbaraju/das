@@ -28,10 +28,13 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private String templateName = "";
 	private String subject;
 	private String body;
+	private TranslatableString translatedSubject;
+	private TranslatableString translatedBody;
 	private String recipient;
 	private ListType listType;
 	private boolean allowsVelocity = false;
 	private boolean html = false;
+	private boolean translated = false;
 
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
@@ -71,6 +74,24 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 
 	public void setBody(String body) {
 		this.body = body;
+	}
+
+	@Transient
+	public TranslatableString getTranslatedSubject() {
+		return translatedSubject;
+	}
+
+	public void setTranslatedSubject(TranslatableString translatedSubject) {
+		this.translatedSubject = translatedSubject;
+	}
+
+	@Transient
+	public TranslatableString getTranslatedBody() {
+		return translatedBody;
+	}
+
+	public void setTranslatedBody(TranslatableString translatedBody) {
+		this.translatedBody = translatedBody;
 	}
 
 	public String getRecipient() {
@@ -115,9 +136,28 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 		this.html = html;
 	}
 
+	public boolean isTranslated() {
+		return translated;
+	}
+
+	public void setTranslated(boolean translated) {
+		this.translated = translated;
+	}
+
 	@Transient
 	public static final Set<Integer> VALID_DEACTIVATED_EMAILS() {
 		return Collections.unmodifiableSet(PRIVATE_VALID_DEACTIVATED_EMAILS);
 	}
 
+	@Transient
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + id;
+	}
+
+	@Transient
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
+	}
 }

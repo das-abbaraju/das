@@ -17,8 +17,6 @@ import org.apache.commons.lang.WordUtils;
 
 import com.picsauditing.PICS.I18nCache;
 
-import freemarker.template.utility.StringUtil;
-
 @MappedSuperclass
 public abstract class BaseTranslatable implements Translatable {
 

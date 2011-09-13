@@ -27,6 +27,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 	private List<EmailTemplate> emailTemplates = null;
 	private boolean allowsVelocity;
 	private boolean allowsHtml;
+	private boolean allowsTranslations;
 
 	@Override
 	public void prepare() throws Exception {
@@ -35,6 +36,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 			template = emailTemplateDAO.find(id);
 			allowsVelocity = template.isAllowsVelocity();
 			allowsHtml = template.isHtml();
+			allowsTranslations = template.isTranslated();
 		} else
 			template = new EmailTemplate();
 	}
@@ -49,7 +51,7 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
-			addActionError("You don't have permission to change this template");
+			addActionError(getText("EmailTemplateSave.MissingPermission"));
 			emailTemplateDAO.clear(); // don't save
 			return BLANK;
 		}
@@ -57,17 +59,33 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 		if ("delete".equals(button)) {
 			permissions.tryPermission(OpPerms.EmailTemplates, OpType.Delete);
 			emailTemplateDAO.remove(template.getId());
-			addActionMessage("Successfully deleted email template");
+			addActionMessage(getText("EmailTemplateSave.SuccessfullyDeleted"));
 			return BLANK;
 		}
 		if ("save".equals(button)) {
 			permissions.tryPermission(OpPerms.EmailTemplates, OpType.Edit);
 			if (Strings.isEmpty(template.getTemplateName()))
-				addActionError("Please enter a template name");
-			if (Strings.isEmpty(template.getSubject()))
-				addActionError("Please enter a subject");
-			if (Strings.isEmpty(template.getBody()))
-				addActionError("Please enter a body");
+				addActionError(getText("EmailTemplateSave.EnterTemplateName"));
+
+			boolean subjectMissing = false;
+			boolean bodyMissing = false;
+
+			if (template.isTranslated()) {
+				if (template.getTranslatedSubject() == null)
+					subjectMissing = true;
+				if (template.getTranslatedBody() == null)
+					bodyMissing = true;
+			} else {
+				if (Strings.isEmpty(template.getSubject()))
+					subjectMissing = true;
+				if (Strings.isEmpty(template.getBody()))
+					bodyMissing = true;
+			}
+
+			if (subjectMissing)
+				addActionError(getText("EmailTemplateSave.EnterSubject"));
+			if (bodyMissing)
+				addActionError(getText("EmailTemplateSave.EnterBody"));
 
 			if (hasActionErrors()) { // change
 				emailTemplateDAO.clear(); // don't save
@@ -86,15 +104,16 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 				if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 					template.setAllowsVelocity(allowsVelocity);
 					template.setHtml(allowsHtml);
+					template.setTranslated(allowsTranslations);
 				}
 				template = emailTemplateDAO.save(template);
 				addActionMessage("Successfully saved email template");
 				WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 				wizardSession.setTemplateID(template.getId());
 			} catch (EntityExistsException e) {
-				addActionError("Each template must have a unique name <a href='#' onclick=\"dirtyOn(); $('#div_saveEmail').show(); return false;\">Click to Try Again</a>");
+				addActionError(getText("EmailTemplateSave.MustHaveUniqueName"));
 			} catch (Exception e) {
-				addActionError("Failed saved email template: " + e.getMessage());
+				addActionError(getText("EmailTemplateSave.FailedSaveTemplate", new Object[] { e.getMessage() }));
 			}
 			return BLANK;
 		}
@@ -145,5 +164,13 @@ public class EmailTemplateSave extends PicsActionSupport implements Preparable {
 
 	public void setAllowsHtml(boolean allowsHtml) {
 		this.allowsHtml = allowsHtml;
+	}
+
+	public boolean isAllowsTranslations() {
+		return allowsTranslations;
+	}
+
+	public void setAllowsTranslations(boolean allowsTranslations) {
+		this.allowsTranslations = allowsTranslations;
 	}
 }

@@ -1,8 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Email Template Editor</title>
+<title><s:text name="EditEmailTemplate.title" /></title>
 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
@@ -36,7 +37,7 @@ $(function(){
 });
 function changeType(){	
 	type = $('#changeType').val();
-	$('#tempTitle').text('Editing '+type+' Templates');
+	$('#tempTitle').text(translate('JS.EditEmailTemplate.EditingTemplate', [type]));
 	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
 }
 </script>
@@ -88,12 +89,13 @@ function changeType(){
 </style>
 </head>
 <body>
-<h1 id="tempTitle">Editing Templates</h1>
+<h1 id="tempTitle"><s:text name="EditEmailTemplate.EditingTemplates" /></h1>
 
 <div id="messages">
 	<s:include value="../actionMessages.jsp" />
 </div>
-Template Type: <s:select id="changeType" name="type" list="{'Audit', 'Contractor', 'User'}" onchange="changeType(); return false;" />
+<s:text name="EditEmailTemplate.TemplateType" />:
+<s:select id="changeType" name="type" list="#{'Audit':getText('ListType.Audit'), 'Contractor':getText('ListType.Contractor'), 'User':getText('ListType.User')}" onchange="changeType(); return false;" />
 <table id="emailTemplateTable">	
 	<s:include value="editTemplateList.jsp" />
 </table>
