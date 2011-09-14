@@ -97,9 +97,23 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					+ " flagged";
 			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 		} else {
-			addActionError("Could not update " + (insurance ? "Insurance" : "Flag") + " Criteria \""
-					+ flagCriteriaOperator.getCriteria().getDescription() + "\" with flag " + newFlag
-					+ (operatorTag != null ? " and tag " + operatorTag.getTag() : "") + ", criteria already exists.");
+			if (insurance) {
+				addActionError(getTextParameterized(
+						"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaInsurance",
+						flagCriteriaOperator.getCriteria().getDescription(),
+						newFlag,
+						((operatorTag != null) ? getTextParameterized(
+								"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaAndTag", operatorTag.getTag())
+								: "")));
+			} else {
+				addActionError(getTextParameterized(
+						"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaFlag",
+						flagCriteriaOperator.getCriteria().getDescription(),
+						newFlag,
+						((operatorTag != null) ? getTextParameterized(
+								"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaAndTag", operatorTag.getTag())
+								: "")));
+			}
 		}
 
 		return "list";
@@ -144,8 +158,12 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
 			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 		} else {
-			addActionError("Flag Criteria '" + fco.getCriteria().getLabel() + "' with flag color " + fco.getFlag()
-					+ (fco.getTag() != null ? " and tag id " + fco.getTag().getId() : "") + " already exists.");
+			addActionError(getTextParameterized(
+					"ManageFlagCriteriaOperator.error.FlagColorExists",
+					fco.getCriteria().getLabel(),
+					fco.getFlag(),
+					((fco.getTag() != null) ? getTextParameterized("ManageFlagCriteriaOperator.error.AndTagID", fco
+							.getTag().getId()) : "")));
 		}
 
 		return "list";
