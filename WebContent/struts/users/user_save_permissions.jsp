@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
@@ -5,11 +6,11 @@
 <table class="report" style="width: 100%" width="100%">
 	<thead>
 		<tr>
-			<th>Permission</th>
-			<th>Read</th>
-			<th>Edit</th>
-			<th>Delete</th>
-			<th>Grant</th>
+			<th><s:text name="OpPerms" /></th>
+			<th><s:text name="OpType.View" /></th>
+			<th><s:text name="OpType.Edit" /></th>
+			<th><s:text name="OpType.Delete" /></th>
+			<th><s:text name="OpType.Grant" /></th>
 			<th></th>
 		</tr>
 	</thead>

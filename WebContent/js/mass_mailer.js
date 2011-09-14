@@ -17,8 +17,7 @@ function showTemplateList() {
 
 function sendEmails() {	
 	// Confirm box for sending out emails
-	var r = confirm("You are sending " + $('#sendSize').val() 
-			+ " emails. Please confirm if this is correct.");
+	var r = confirm(translate("JS.MassMailer.SendingEmails", [ $('#sendSize').val() ]));
 	if(r == false) {
 		return false;
 	}
@@ -44,7 +43,7 @@ function editEmail() {
 
 function pEmail(id) { 
 	if (templateID == 0) { 
-		alert("Select an email template to use first"); 
+		alert(translate("JS.MassMailer.SelectTemplateFirst")); 
 		return;
 	}
 	
@@ -70,7 +69,7 @@ function pEmail(id) {
 		$('#previewEmail').load('MailPreviewAjax.action', data);
 		
 	} else {
-		alert("You must select record to preview");
+		alert(translate("JS.MassMailer.SelectRecordToPreview"));
 	}
 }
 
@@ -110,22 +109,16 @@ function saveClick() {
 }
 
 function deleteTemplate(id) {
-	var deleteMe = confirm('Are you sure you want to delete this email template?');
+	var deleteMe = confirm(translate("JS.MassMailer.DeleteTemplate"));
 	if (!deleteMe)
 		return;
 	
 	$('#messages').html('');
-	
-	var data = {
-			button: 'delete',
-			id: id
-	};
-
-	$('#messages').load('EmailTemplateSaveAjax.action', data, 
-			function(response, status) {
-				if (status=='success')
-					$('#li_template'+id).fadeOut();
-			}
+	$('#messages').load('EmailTemplateSave!delete', { template: id }, 
+		function(response, status) {
+			if (status=='success')
+				$('#li_template'+id).fadeOut();
+		}
 	);
 }
 
@@ -133,14 +126,16 @@ function addTemplate(id) {
 	$('#messages').html('');
 	
 	var data = {
-			button: 'save',
-			id: id,
+			template: id,
 			'template.listType': type,
 			'template.templateName': $('#templateName').val(),
 			'template.recipient': $('#recipient').val(),
 			'template.allowsVelocity': $('#templateAllowsVelocity').is(':checked'),
 			'template.html': $('#templateHtml').is(':checked'),
-			'template.translated': $('#templateTranslated').is(':checked')
+			'template.translated': $('#templateTranslated').is(':checked'),
+			allowsVelocity: $('#original_velocity').val(),
+			allowsHtml: $('#original_html').val(),
+			allowsTranslations: $('#original_translated').val()
 	};
 	
 	if ($('#templateTranslated').is(':checked')) {
@@ -151,20 +146,20 @@ function addTemplate(id) {
 		data['template.body'] = $('#templateBody').val();
 	}
 	
-	$('#messages').load('EmailTemplateSaveAjax.action', data,
-			function(response, status) {
-				if (status=='success') {
-					$('#div_saveEmail').fadeOut();
-					$('#buttonSave').attr({'disabled':'disabled'});
-					dirty = false;
-					refreshList();
-				}
+	$('#messages').load('EmailTemplateSave!save', data,
+		function(response, status) {
+			if (status=='success') {
+				$('#div_saveEmail').fadeOut();
+				$('#buttonSave').attr({'disabled':'disabled'});
+				dirty = false;
+				refreshList();
 			}
+		}
 	);
 }
 
 function removeSelected() {
-	var deleteMe = confirm('Are you sure you want to delete the selected items?');
+	var deleteMe = confirm(translate("JS.MassMailer.DeleteItem"));
 	if (!deleteMe)
 		return;
 	
@@ -172,5 +167,5 @@ function removeSelected() {
 }
 
 function refreshList() {
-	$('#templateChooser').load('EmailTemplateSaveAjax.action', {'template.listType': type});
+	$('#templateChooser').load('EmailTemplateSave', {'template.listType': type});
 }

@@ -1,8 +1,9 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Mass Emailer</title>
+<title><s:text name="MassMailer.title" /></title>
 
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/mass_mailer.js?v=<s:property value="version"/>"></script>
@@ -70,8 +71,8 @@ $(function(){
 </head>
 <body>
 
-<h1>Email Wizard <span class="sub">Step 4: Write Email</span></h1>
-<div><a href="EmailWizard.action">&lt;&lt; Back to Steps 1-3 of the Email Wizard</a></div>
+<h1><s:text name="EmailWizard.title" /> <span class="sub"><s:text name="EmailWizard.WriteEmail" /></span></h1>
+<div><a href="EmailWizard.action"><s:text name="EmailWizard.BackToPreviousSteps" /></a></div>
 <s:include value="../actionMessages.jsp" />
 <div id="messages"></div>
 <s:form	id="form1" method="post">
@@ -88,13 +89,13 @@ $(function(){
 	<td style="vertical-align: top; padding-left: 25px; width: 95%;">
 		<div id="menu_selector" style="display: none;">
 			<s:if test="emailTemplates.size > 0">
-				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="Choose another email template">Pick Template</button>
+				<button id="buttonPick" class="picsbutton" type="button" onclick="showTemplateList();" title="<s:text name="EmailWizard.ChooseAnotherTemplate" />"><s:text name="EmailWizard.PickTemplate" /></button>
 			</s:if>
 			<pics:permission perm="EmailTemplates" type="Edit">
-				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="Save this email as a template for future use">Save...</button>
+				<button id="buttonSave" class="picsbutton" type="button" onclick="saveClick();" title="<s:text name="EmailWizard.SaveTemplateForFutureUse" />"><s:text name="button.Save" /></button>
 			</pics:permission>
-			<button id="buttonEdit" class="picsbutton" style="display: none" type="button" onclick="editEmail();" title="Continue editing the email">Continue Editing</button>
-			<s:if test="list.size() >0"><button class="picsbutton positive" type="button" onclick="sendEmails();">Send	Emails</button></s:if>
+			<button id="buttonEdit" class="picsbutton" style="display: none" type="button" onclick="editEmail();" title="<s:text name="EmailWizard.ContinueEditingEmail" />"><s:text name="EmailWizard.ContinueEditing" /></button>
+			<s:if test="list.size() >0"><button class="picsbutton positive" type="button" onclick="sendEmails();"><s:text name="EmailWizard.SendEmails" /></button></s:if>
 			<br clear="all">
 		</div>
 		<br clear="all" />
@@ -103,7 +104,7 @@ $(function(){
 				<td style="vertical-align: top;">
 				<div
 					style="color: #A84D10; padding: 20px; font-size: 18px; border: 1px solid #A84D10; text-align: center;">
-					Select an Email <br />Template to Use
+					<s:text name="EmailWizard.SelectEmailTemplate" />
 				</div>
 				</td>
 				<td valign="top">

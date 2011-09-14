@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -16,12 +17,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "token")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
-public class Token implements java.io.Serializable {
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
+public class Token extends BaseTranslatable implements java.io.Serializable {
 	protected int id;
-	protected String tokenName;
+	protected TranslatableString name;
 	protected ListType listType;
-	protected String velocityCode;
+	protected TranslatableString velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -34,33 +35,33 @@ public class Token implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "tokenName", nullable = false, length = 50)
-	public String getTokenName() {
-		return this.tokenName;
+	@Transient
+	public TranslatableString getName() {
+		return name;
 	}
 
-	public void setTokenName(String tokenName) {
-		this.tokenName = tokenName;
-	}
-	
-	@Column(name = "velocityCode", nullable = true, length = 50)
-	public String getVelocityCode() {
-		return this.velocityCode;
+	public void setName(TranslatableString name) {
+		this.name = name;
 	}
 
-	public void setVelocityCode(String velocityCode) {
+	@Transient
+	public TranslatableString getVelocityCode() {
+		return velocityCode;
+	}
+
+	public void setVelocityCode(TranslatableString velocityCode) {
 		this.velocityCode = velocityCode;
-	}	
+	}
 
 	@Enumerated(EnumType.STRING)
 	public ListType getListType() {
 		return listType;
 	}
-	
+
 	public void setListType(ListType listType) {
 		this.listType = listType;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int PRIME = 31;
@@ -75,7 +76,7 @@ public class Token implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		
+
 		try {
 			// Try to cast this to an account
 			final Token other = (Token) obj;
@@ -86,5 +87,17 @@ public class Token implements java.io.Serializable {
 			// something went wrong so these must not be equal
 			return false;
 		}
+	}
+
+	@Override
+	@Transient
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + id;
+	}
+
+	@Override
+	@Transient
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }

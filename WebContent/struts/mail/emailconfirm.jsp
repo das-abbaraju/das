@@ -1,21 +1,20 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title>Email Confirmation Page</title>
+<title><s:text name="EmailWizard.ConfirmationPage" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
 </head>
 <body>
-<h1>Email Confirmation</h1>
+<h1><s:text name="EmailWizard.EmailConfirmation" /></h1>
 <div class="info">
-You have sent <s:property value="ids.size()"/> emails to the queue.<br/>
+	<s:text name="EmailWizard.EmailsSentToQueue">
+		<s:param value="%{ids.size}" />
+	</s:text>
 </div>
 <div class="instructions">
-If you want to view the list of your emails in the email queue, please click on 
-<a href="EmailQueueList.action?filter.status=Pending">Email Queue</a>.<br /><br /> 
-
-If you want to send more emails, please click on 
-<a href="EmailWizard.action">Email Wizard</a>.
+	<s:text name="EmailWizard.QueueWizardInstructions" />
 </div>
 </body>
 </html>

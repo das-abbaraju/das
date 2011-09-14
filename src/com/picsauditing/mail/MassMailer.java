@@ -158,8 +158,7 @@ public class MassMailer extends PicsActionSupport {
 			if (type != null)
 				url += "?type=" + type;
 
-			addActionError("Please select at least one record to which to send an email. <a href='" + url
-					+ "'>Click to Continue</a>");
+			addActionError(getText("MassMailer.SelectRecordToSendEmail", new Object[] { url }));
 			return BLANK;
 		}
 

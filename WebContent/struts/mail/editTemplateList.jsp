@@ -10,7 +10,9 @@
 					<td></td>
 					<td style="min-width: 200px;"><s:text name="global.Name" /></td>
 					<td class="center"><s:text name="EditEmailTemplate.TemplateType" /></td>
-					<td><s:text name="button.Remove" /></td>
+					<pics:permission perm="EmailTemplates" type="Delete">
+						<td><s:text name="button.Remove" /></td>
+					</pics:permission>
 				</tr>
 			</thead>
 			<tbody>
@@ -24,8 +26,12 @@
 					<tr>	
 						<td><s:property value="#num.count+1" /></td>
 						<td><a href="#template=<s:property value="id"/>"><s:property value="#template.templateName" /></a></td>
-						<td><s:property value="#template.listType" /></td>
-						<td><img src="images/cross.png" /></td>
+						<td><s:text name="%{#template.listType.i18nKey}" /></td>
+						<pics:permission perm="EmailTemplates" type="Delete">
+							<td class="center">
+								<a href="#" class="remove" data-id="<s:property value="#template.id" />"></a>
+							</td>
+						</pics:permission>
 					</tr>
 				</s:iterator>
 			</tbody>

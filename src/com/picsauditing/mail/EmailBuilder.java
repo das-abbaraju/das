@@ -195,8 +195,8 @@ public class EmailBuilder {
 			// This token is valid for this type of email template
 			// Convert anything like this <Name> into something like this
 			// ${person.name}
-			String find = "<" + tag.getTokenName() + ">";
-			text = text.replace(find, tag.getVelocityCode());
+			String find = "<" + tag.getName().toString() + ">";
+			text = text.replace(find, tag.getVelocityCode().toString());
 		}
 		return text;
 	}

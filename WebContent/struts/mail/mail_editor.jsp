@@ -28,8 +28,11 @@
 	<br />
 </s:if>
 <s:hidden name="templateID" />
+<s:hidden id="original_velocity" value="%{templateAllowsVelocity}" />
+<s:hidden id="original_html" value="%{templateHtml}" />
+<s:hidden id="original_translated" value="%{templateTranslated}" />
 <s:select cssClass="forms" id="tokens" name="tokens" headerKey="0" headerValue="- %{getText('MassMailer.AddFieldToEmail')} -"
-	listKey="tokenName" listValue="tokenName" list="picsTags" onchange="addToken(this);" cssStyle="float: right;" />
+	listKey="name" listValue="name" list="picsTags" onchange="addToken(this);" cssStyle="float: right;" />
 <label><s:text name="EmailQueue.subject" />:</label>
 <s:textfield name="templateSubject" size="60" maxlength="150" cssClass="forms" onchange="dirtyOn();" />&nbsp;&nbsp;&nbsp;
 <s:if test="!editTemplate">

@@ -1601,7 +1601,7 @@
 			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 
-		<action name="EmailTemplateSaveAjax" class="com.picsauditing.mail.EmailTemplateSave">
+		<action name="EmailTemplateSave" class="com.picsauditing.mail.EmailTemplateSave">
 			<result>struts/mail/select_templates.jsp</result>
 		</action>
 

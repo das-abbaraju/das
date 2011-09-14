@@ -34,10 +34,30 @@ $(function(){
 			$('#draftEmail').load('MailEditorAjax.action', data);
 		}
 	});
+	
+	$('#emailTemplateTable').delegate('.remove', 'click', function(e) {
+		e.preventDefault();
+		
+		var deleteMe = confirm(translate("JS.MassMailer.DeleteTemplate"));
+		if (!deleteMe)
+			return;
+		
+		$('#messages').html('');
+		$('#messages').load('EmailTemplateSave!delete', { template: $(this).data('id') }, 
+			function(response, status) {
+				if (status=='success')
+					$('#li_template'+id).fadeOut();
+			}
+		);
+		
+		type = $('#changeType').val();
+		$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
+	});
 });
 function changeType(){	
 	type = $('#changeType').val();
-	$('#tempTitle').text(translate('JS.EditEmailTemplate.EditingTemplate', [type]));
+	typeTranslated = $('#changeType option[value=' + $('#changeType').val() + ']').text();
+	$('#tempTitle').text(translate('JS.EditEmailTemplate.EditingTemplate', [typeTranslated]));
 	$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
 }
 </script>
