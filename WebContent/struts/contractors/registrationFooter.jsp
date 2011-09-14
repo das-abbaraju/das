@@ -5,10 +5,10 @@
 		<s:form>
 			<span>
 				<s:if test="previousRegistrationStep != null">
-					<s:submit action="%{scope}!previousStep" cssClass="picsbutton previous" value="<< %{getText('button.Previous')}" />
+					<s:submit method="previousStep" cssClass="picsbutton previous" value="<< %{getText('button.Previous')}" />
 				</s:if>
 				<span id="next_button" <s:if test="nextRegistrationStep == null">style="display:none;"</s:if>>
-					<s:submit action="%{scope}!nextStep" cssClass="picsbutton positive next right" value="%{getText('button.Next')} >>" />
+					<s:submit method="nextStep" cssClass="picsbutton positive next right" value="%{getText('button.Next')} >>" />
 				</span>
 			</span>
 		</s:form>
