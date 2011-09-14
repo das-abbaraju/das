@@ -72,20 +72,24 @@ public class OpenTasks extends TranslationActionSupport {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.GenerateInvoice", contractor.getId()));
+				openTasks.add(getTextParameterized(
+						"ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
+						contractor.getId()));
 			}
 
 			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 				for (Invoice invoice : contractor.getInvoices()) {
 					if (invoice.getStatus().isUnpaid()) {
-						openTasks.add(getTextParameterized("ContractorWidget.message.OpenInvoiceReminder", invoice
-								.getId(), invoice.getBalance(), invoice.getDueDate()));
+						openTasks.add(getTextParameterized("ContractorWidget.message.OpenInvoiceReminder"
+								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
+								invoice.getBalance(), invoice.getDueDate()));
 					}
 				}
 			}
 
 			if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.UpdatePaymentMethod", contractor.getId()));
+				openTasks.add(getTextParameterized("ContractorWidget.message.UpdatePaymentMethod"
+						+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), contractor.getId()));
 			}
 		}
 		String auditName;
