@@ -49,7 +49,7 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 	public OperatorFlagMatrix(OperatorAccountDAO operatorDAO) {
 		this.listType = ListType.Operator;
-		this.orderByDefault = "fc.displayOrder, fc.label";
+		this.orderByDefault = "fc.displayOrder";
 	}
 
 	@Override
