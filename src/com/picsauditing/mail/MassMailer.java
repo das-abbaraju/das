@@ -32,7 +32,6 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.util.SelectOption;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 /**
@@ -44,11 +43,19 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class MassMailer extends PicsActionSupport {
 	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	private ContractorAuditDAO contractorAuditDAO;
+	@Autowired
+	private ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
 	private EmailTemplateDAO emailTemplateDAO;
 	@Autowired
 	private TokenDAO tokenDAO;
+	@Autowired
+	private UserDAO userDAO;
 
 	private Set<Integer> ids = null;
 	private ListType type;
@@ -110,12 +117,12 @@ public class MassMailer extends PicsActionSupport {
 				templateAllowsVelocity = template.isAllowsVelocity();
 				templateHtml = template.isHtml();
 				templateTranslated = template.isTranslated();
-				
+
 				if (template.isTranslated()) {
 					templateSubject = template.getTranslatedSubject().toString();
 					templateBody = template.getTranslatedBody().toString();
 				}
-				
+
 				type = template.getListType();
 			} else {
 				templateSubject = "";
@@ -135,7 +142,7 @@ public class MassMailer extends PicsActionSupport {
 
 		if ("MailPreviewAjax".equals(button)) {
 			if (previewID == 0) {
-				templateSubject = "Please one record to preview email";
+				templateSubject = getText("MassMailer.SelectRecordToPreview");
 				templateBody = "";
 				return SUCCESS;
 			}
@@ -199,9 +206,9 @@ public class MassMailer extends PicsActionSupport {
 				wizardSession.clear();
 
 				if (getActionErrors().size() > 0) {
-					addActionMessage("You have sent " + (ids.size() - getActionErrors().size())
-							+ " emails to the queue.");
-					addActionError("<a href=\"EmailWizard.action\">Click here</a> to go back to Email Wizard.");
+					addActionMessage(getText("MassMailer.SentEmailsToQueue",
+							new Object[] { (Integer) (ids.size() - getActionErrors().size()) }));
+					addActionError(getText("MassMailer.GoBackToEmailWizard"));
 					return BLANK;
 				}
 
@@ -216,8 +223,7 @@ public class MassMailer extends PicsActionSupport {
 			String url = "EmailWizard.action";
 			if (type != null)
 				url += "?type=" + type;
-			addActionMessage("You have removed all matches from your list, to start again " + "<a href=\"" + url
-					+ "\">Click here</a> " + "to go back to the Email Wizzard");
+			addActionMessage(getText("MassMailer.RemovedAllMatches", new Object[] { url }));
 			return SUCCESS;
 		}
 
@@ -274,13 +280,11 @@ public class MassMailer extends PicsActionSupport {
 		emailBuilder.clear();
 		emailBuilder.setPermissions(permissions);
 		if (ListType.Contractor.equals(type)) {
-			ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-			ContractorAccount contractor = dao.find(id);
+			ContractorAccount contractor = contractorAccountDAO.find(id);
 			ContractorOperator co = null;
 
 			if (permissions.isOperator()) {
-				ContractorOperatorDAO coDAO = (ContractorOperatorDAO) SpringUtils.getBean("ContractorOperatorDAO");
-				co = coDAO.find(id, permissions.getAccountId());
+				co = contractorOperatorDAO.find(id, permissions.getAccountId());
 				emailBuilder.addToken("flagColor", co.getFlagColor());
 			}
 
@@ -297,13 +301,11 @@ public class MassMailer extends PicsActionSupport {
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		}
 		if (ListType.Audit.equals(type)) {
-			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
-			ContractorAudit conAudit = dao.find(id);
+			ContractorAudit conAudit = contractorAuditDAO.find(id);
 			emailBuilder.setConAudit(conAudit);
 		}
 		if (ListType.User.equals(type)) {
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			User user = dao.find(id);
+			User user = userDAO.find(id);
 			emailBuilder.setUser(user);
 		}
 	}
