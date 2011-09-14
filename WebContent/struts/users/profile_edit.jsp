@@ -157,8 +157,6 @@
 											list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 									</li>
 									
-									<s:hidden id="departmentRole" />
-									
 									<li>
 										<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
 									</li>
