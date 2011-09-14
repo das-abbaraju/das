@@ -22,14 +22,14 @@
 			<s:if test="#q.option.radio">
 				<s:radio theme="audits" list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
 				
-				<input class="resetAnswer" id="clearButton_<s:property value="#q.id"/>" type="submit" value="Clear" />
+				<input class="resetAnswer" type="submit" value="Clear" />
 				
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
 					
 					<s:if test="#op != null && #op.id > 0">
 						<div class="clearfix question shaded">
-							If it does NOT comply, please explain below.
+							<s:text name="AuditQuestion.DoesntComply"></s:text>
 							
 							<s:if test="#op.insuranceForms.size > 0">
 								<ul style="list-style:none">
