@@ -91,7 +91,7 @@
 			
 			<s:set name="shaded" value="true" scope="action"/>
 			<s:set name="mode" value="mode"/>
-			<s:set name="questions" value="categories.get(#category).effectiveQuestions"/>
+			<s:set name="questions" value="#category.getEffectiveQuestions(conAudit.effectiveDate)"/>
 			
 			<s:if test="#questions.size() > 0">
 				<div class="columns-<s:property value="#category.columns" />">

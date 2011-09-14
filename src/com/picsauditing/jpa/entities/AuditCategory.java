@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -247,6 +249,22 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 
 	public void setQuestions(List<AuditQuestion> questions) {
 		this.questions = questions;
+	}
+
+	@Transient
+	public List<AuditQuestion> getEffectiveQuestions(Date date) {
+		final Date comparison;
+		if (date == null) {
+			comparison = new Date();
+		} else {
+			comparison = date;
+		}
+		return new Grepper<AuditQuestion>() {
+			@Override
+			public boolean check(AuditQuestion t) {
+				return t.isCurrent(comparison);
+			}
+		}.grep(questions);
 	}
 
 	public boolean isHasHelpText() {
