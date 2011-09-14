@@ -46,7 +46,7 @@ function showPanel(panel) {
 					</s:if>
 					<s:text name="%{'Widget.' + widgetID + '.caption'}" />
 					<pics:permission perm="DevelopmentEnvironment">
-						<a href="<s:property value="url"/>" target="_BLANK">URL</a>
+						<a href="<s:property value="url"/>" target="_BLANK" class = "debug">URL</a>
 					</pics:permission>
 				</div>
 				<div id="panel<s:property value="widgetID"/>_content" class="panel_content" style="display: block;">
