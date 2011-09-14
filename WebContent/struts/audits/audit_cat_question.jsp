@@ -126,6 +126,12 @@
 				<s:text name="Audit.OshaCitations" />
 			</a>
 		</s:if>
+		<s:if test="(#q.id == 9208) && #a.answer.length() > 0">
+			<br />
+			<a href="http://safer.fmcsa.dot.gov/query.asp?searchtype=ANY&query_type=queryCarrierSnapshot&query_param=USDOT&query_string=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
+				<s:text name="Audit.USDOT" />
+			</a>
+		</s:if>
 	</h3>
 
 	<%-- Question modes --%>
