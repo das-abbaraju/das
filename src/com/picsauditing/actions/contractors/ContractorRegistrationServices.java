@@ -298,7 +298,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		if (pqf == null) {
 			pqf = new ContractorAudit();
 			pqf.setContractorAccount(contractor);
-			pqf.setAuditType(new AuditType(1));
+			pqf.setAuditType(new AuditType(AuditType.PQF));
 			pqf.setAuditColumns(new User(User.SYSTEM));
 		}
 
