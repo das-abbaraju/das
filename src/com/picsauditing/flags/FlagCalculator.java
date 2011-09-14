@@ -203,9 +203,9 @@ public class FlagCalculator {
 			AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 			if (amBest == null)
 				return null;
-			if (criteria.getLabel().contains("Rating"))
+			if (criteria.getCategory().equals("Insurance AMB Rating"))
 				answer = Integer.toString(amBest.getRatingCode());
-			if (criteria.getLabel().contains("Class"))
+			if (criteria.getCategory().equals("Insurance AMB Class"))
 				answer = Integer.toString(amBest.getFinancialCode());
 		} else {
 			answer = parseAnswer(criteria, auditData);

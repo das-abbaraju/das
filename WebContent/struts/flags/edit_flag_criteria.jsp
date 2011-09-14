@@ -131,6 +131,9 @@ var aqvExtraParams = {
 				<s:checkbox name="criteria.insurance" theme="form"/>
 			</li>
 			<li>
+				<s:select name="criteria.optionCode" list="optionCodeList" theme="form"/>
+			</li>
+			<li>
 				<s:checkbox name="criteria.flaggableWhenMissing" theme="form"/>
 			</li>
 		</ol>

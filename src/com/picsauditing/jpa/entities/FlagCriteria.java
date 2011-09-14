@@ -1,5 +1,6 @@
 package com.picsauditing.jpa.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,8 +27,8 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private AuditType auditType;
 	private OshaType oshaType;
 	private OshaRateType oshaRateType;
-	private String label;
-	private String description;
+	private TranslatableString label;
+	private TranslatableString description;
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
 	protected AuditStatus requiredStatus = AuditStatus.Complete;
@@ -36,6 +37,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private String dataType = "string";
 	private boolean flaggableWhenMissing = false;
 	private boolean insurance = false;
+	private FlagCriteriaOptionCode optionCode;
 
 	public static final String BOOLEAN = "boolean";
 	public static final String NUMBER = "number";
@@ -92,37 +94,39 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		this.oshaRateType = oshaRateType;
 	}
 
-	public String getLabel() {
+	@Transient
+	public TranslatableString getLabel() {
 		return label;
 	}
 
-	public void setLabel(String label) {
+	public void setLabel(TranslatableString label) {
 		this.label = label;
 	}
 
-	public String getDescription() {
+	@Transient
+	public TranslatableString getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	public void setDescription(TranslatableString description) {
 		this.description = description;
 	}
 
 	@Transient
 	public String getDescriptionBeforeHurdle() {
 		try {
-			return description.substring(0, description.indexOf("{HURDLE}"));
+			return description.toString().substring(0, description.toString().indexOf("{HURDLE}"));
 		} catch (Exception e) {
-			return description;
+			return description.toString();
 		}
 	}
 
 	@Transient
 	public String getDescriptionAfterHurdle() {
 		try {
-			if (description.indexOf("{HURDLE}") < 0)
+			if (description.toString().indexOf("{HURDLE}") < 0)
 				return null;
-			return description.substring(description.indexOf("{HURDLE}") + 8);
+			return description.toString().substring(description.toString().indexOf("{HURDLE}") + 8);
 		} catch (Exception e) {
 			return null;
 		}
@@ -203,18 +207,28 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		this.displayOrder = displayOrder;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	public FlagCriteriaOptionCode getOptionCode() {
+		return optionCode;
+	}
+
+	public void setOptionCode(FlagCriteriaOptionCode optionCode) {
+		this.optionCode = optionCode;
+	}
+
 	/**
 	 * @return the question ID if this criteria should include
 	 */
 	public Integer includeExcess() {
-		if (!insurance)
+		if (!insurance || optionCode == null)
 			return null;
 
 		// We should consider putting this into the DB eventually
-		if (description.contains("plus Excess Aggregate"))
+		if (optionCode == FlagCriteriaOptionCode.ExcessAggregate)
 			return AuditQuestion.EXCESS_AGGREGATE;
 
-		if (description.contains("plus Excess Each Occurrence"))
+		if (optionCode == FlagCriteriaOptionCode.ExcessEachOccurrence)
 			return AuditQuestion.EXCESS_EACH;
 
 		return null;
@@ -236,8 +250,8 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 		json.put("auditType", auditType == null ? null : auditType.toJSON(full));
 		json.put("oshaType", oshaType == null ? null : oshaType.toString());
 		json.put("oshaRateType", oshaRateType == null ? null : oshaRateType.toString());
-		json.put("label", label);
-		json.put("description", description);
+		json.put("label", label.toString());
+		json.put("description", description.toString());
 		json.put("comparison", comparison);
 		json.put("multiYearScope", multiYearScope == null ? null : multiYearScope.toString());
 		json.put("requiredStatus", requiredStatus);

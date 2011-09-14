@@ -79,8 +79,8 @@ public class OperatorFlagMatrix extends ReportAccount {
 		sql.addGroupBy("a.id, fc.id");
 
 		sql.addField("fc.id criteriaID");
-		sql.addField("fc.label");
-		sql.addField("fc.description");
+		sql.addField("CONCAT('FlagCriteria.', fc.id, '.label') label");
+		sql.addField("CONCAT('FlagCriteria.', fc.id, '.description') description");
 		sql.addField("MAX(fd.flag) flag");
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
@@ -135,10 +135,10 @@ public class OperatorFlagMatrix extends ReportAccount {
 
 				rowIds.put(d.get("name").toString(), d.get("id").toString());
 
-				columns.add(d.get("label").toString());
-				columnHover.put(d.get("label").toString(), d.get("label").toString());
+				columns.add(getText(d.get("label").toString()));
+				columnHover.put(getText(d.get("label").toString()), getText(d.get("description").toString()));
 
-				content.put(d.get("name").toString(), d.get("label").toString(), d.get("flag").toString());
+				content.put(d.get("name").toString(), getText(d.get("label").toString()), d.get("flag").toString());
 			}
 		}
 

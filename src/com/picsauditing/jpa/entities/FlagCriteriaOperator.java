@@ -114,7 +114,7 @@ public class FlagCriteriaOperator extends BaseTable {
 		if (criteria.getDataType().equals(FlagCriteria.NUMBER))
 			value = Strings.formatDecimalComma(value);
 
-		return criteria.getDescription().replaceAll("\\{HURDLE\\}", value);
+		return criteria.getDescription().toString().replaceAll("\\{HURDLE\\}", value);
 	}
 
 	@Transient

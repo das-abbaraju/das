@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -132,7 +133,13 @@ public class ManageFlagCriteria extends PicsActionSupport {
 	}
 
 	public String[] getCriteriaCategory() {
-		return new String[] { "Audits", "Insurance", "Insurance Criteria", "Paperwork", "Safety", "Statistics" };
+		return new String[] { "Audits", "Insurance", "Insurance AMB Class", "Insurance AMB Rating", "Insurance Criteria", "Paperwork", "Safety", "Statistics" };
+	}
+	
+	public String[] getOptionCodeList() {
+		return new String[] { FlagCriteriaOptionCode.None.toString(),
+				FlagCriteriaOptionCode.ExcessAggregate.toString(),
+				FlagCriteriaOptionCode.ExcessEachOccurrence.toString() };
 	}
 
 }

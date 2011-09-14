@@ -558,9 +558,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		FlagCriteria fc = f.getCriteria();
 		String answer = fcc.getAnswer();
 
-		if (fc.getDescription().contains("AMB Class"))
+		if (fc.getCategory().equals("Insurance AMB Class"))
 			answer = getAmBestClass(answer);
-		else if (fc.getDescription().contains("AMB Rating"))
+		else if (fc.getCategory().equals("Insurance AMB Rating"))
 			answer = getAmBestRating(answer);
 		else if (fc.getQuestion() != null && fc.getQuestion().getId() == AuditQuestion.EMR) {
 			addLabel = false;
