@@ -71,4 +71,9 @@ public class UserSwitchDAO extends PicsDAO {
 		}
 	}
 
+	public List<User> findUsersBySwitchToAccount(int aID) {
+		Query query = em.createQuery("SELECT us.user FROM UserSwitch us WHERE us.switchTo.account.id = :aID");
+		query.setParameter("aID", aID);
+		return query.getResultList();
+	}
 }

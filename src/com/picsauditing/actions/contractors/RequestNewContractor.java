@@ -1,6 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.sql.SQLException;
@@ -37,6 +36,7 @@ import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -71,6 +71,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
+	@Autowired
+	protected UserSwitchDAO userSwitchDAO;
 	@Autowired
 	protected CountryDAO countryDAO;
 	@Autowired
@@ -252,7 +254,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			}
 		}
 		conID = (newContractor.getContractor() == null) ? 0 : newContractor.getContractor().getId();
-		
+
 		loadRequestedTags();
 
 		return SUCCESS;
@@ -384,12 +386,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		newContractor = crrDAO.save(newContractor);
-		
+
 		loadRequestedTags();
 
 		return SUCCESS;
 	}
-	
+
 	public String phone() throws Exception {
 		if (Strings.isEmpty(addToNotes))
 			addActionError(getText("RequestNewContractor.error.EnterAdditionalNotes"));
@@ -498,7 +500,11 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	}
 
 	public List<User> getUsersList(int accountID) {
-		return userDAO.findByAccountID(accountID, "Yes", "No");
+		List<User> usersAndSwitchTos = userDAO.findByAccountID(accountID, "Yes", "No");
+		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(accountID);
+
+		usersAndSwitchTos.addAll(switchTos);
+		return usersAndSwitchTos;
 	}
 
 	public int getPrimaryContact(int opID) {
@@ -911,12 +917,12 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			operatorTags.add(tag);
 		}
 	}
-	
+
 	private void loadRequestedTags() {
 		requestedTags.clear();
-		
+
 		requestedTagIds = newContractor.getOperatorTags();
-		
+
 		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
 			StringTokenizer st = new StringTokenizer(newContractor.getOperatorTags(), ", ");
 			while (st.hasMoreTokens()) {
@@ -937,7 +943,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			return true;
 		return false;
 	}
-	
+
 	public String getRequestedTagIds() {
 		return requestedTagIds;
 	}
