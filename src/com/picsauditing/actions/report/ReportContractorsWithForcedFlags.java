@@ -61,6 +61,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("u.id as forcedById"); 
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
+		sql.addField("gc.workStatus");
 		
 		if (filterOn(getFilter().getOperator())) {
 			String list = Strings.implode(getFilter().getOperator(), ",");
