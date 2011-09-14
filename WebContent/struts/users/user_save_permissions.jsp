@@ -47,7 +47,7 @@
 				<button name="button" onclick="addPermission();" id="permButton"><s:text name="button.Add" /></button>
 			</div>
 			<s:select id="newPermissionSelect" list="grantablePermissions"
-				listValue="%{getText('description')}" name="opPerm" headerKey="" headerValue="- Add Permission -" 
+				listValue="%{getText(getI18nKey('description'))}" name="opPerm" headerKey="" headerValue="- %{getText('UsersManage.AddPermission')} -" 
 				onchange="showPermDesc(this);" />
 			</td>
 		</tr>
