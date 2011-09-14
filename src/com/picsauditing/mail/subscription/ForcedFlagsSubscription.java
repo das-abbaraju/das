@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.DynaBean;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -28,10 +29,10 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 
 			SelectSQL sql = new SelectAccount();
 			String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label FROM"
-					+ " (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'Overall' AS label FROM generalcontractors gc"
+					+ " (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label FROM generalcontractors gc"
 					+ " WHERE gc.forceFlag IS NOT NULL"
 					+ " UNION"
-					+ " SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, fc1.label FROM flag_data_override fdo"
+					+ " SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.',fc1.id,'.label') AS label FROM flag_data_override fdo"
 					+ " JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id" + " WHERE fdo.forceFlag IS NOT NULL) t"
 					+ " ) ff ON a.id = ff.conid";
 
@@ -77,6 +78,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 			if (forcedFlags.size() > 0) {
 				tokens.put("forcedflags", forcedFlags);
 				tokens.put("date", subscription.getTimePeriod().getComparisonDate());
+				tokens.put("i18nCache", I18nCache.getInstance());
 			}
 
 		} catch (Exception e) {
