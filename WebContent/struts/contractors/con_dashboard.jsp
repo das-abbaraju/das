@@ -252,7 +252,7 @@
 
 		</div>
 	</div>
-	<s:iterator value="#{'DocuGUARD': docuGUARD, 'AuditGUARD': auditGUARD, 'InsureGUARD': insureGUARD}">
+	<s:iterator value="#{getText('global.DocuGUARD'): docuGUARD, getText('global.AuditGUARD'): auditGUARD, getText('global.InsureGUARD'): insureGUARD}">
 	<s:if test="value.size() > 0">
 	<div class="panel_placeholder">
 		<div class="panel">
@@ -384,7 +384,7 @@
 				</pics:permission>
 				<p><s:text name="ContractorView.MemberSince" />:
 					<strong>
-						<strong><s:date name="contractor.membershipDate" format="M/d/yyyy" /></strong>
+						<strong><s:date name="contractor.membershipDate" /></strong>
 					</strong>
 				</p>
 				<p><s:text name="global.CSR" />:

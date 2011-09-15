@@ -64,7 +64,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public Boolean competitorAnswer;
 
 	public ContractorFacilities() {
-		this.subHeading = "Facilities";
 		this.noteCategory = NoteCategory.OperatorChanges;
 		this.currentStep = ContractorRegistrationStep.Facilities;
 	}
@@ -72,6 +71,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() throws Exception {
+		this.subHeading = getText("ContractorFacilities.title");
 		limitedView = true;
 		findContractor();
 

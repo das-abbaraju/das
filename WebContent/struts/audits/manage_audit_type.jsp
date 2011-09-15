@@ -138,7 +138,7 @@ function showRules() {
 				</li>
 				<li>
 					<label>Permission to Edit:</label>
-					<s:select name="editPerm" list="@com.picsauditing.access.OpPerms@values()" listValue="description" 
+					<s:select name="editPerm" list="@com.picsauditing.access.OpPerms@values()" listValue="%{getText(getI18nKey('description'))}" 
 						headerKey="" headerValue="Only PICS" listKey="name()" value="editPerm"/>
 					<pics:fieldhelp title="Permission to Edit">For Operators and PICS Admins this will restrict the ability to edit this audit
 						type to that permission.</pics:fieldhelp>

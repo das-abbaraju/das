@@ -4,7 +4,7 @@
 <html>
 <head>
 <title>
-	<s:text name="%{scope}.title">
+	<s:text name="ContractorAuditFileUpload.title">
 		<s:param><s:property value="conAudit.auditType.name" /></s:param>
 		<s:param><s:property value="conAudit.contractorAccount.name" /></s:param>
 	</s:text>
@@ -82,7 +82,7 @@ $(function(){
 						<td>
 							<s:if test="!isStringEmpty(question.helpText)">
 								<div class="right cluetipHolder">
-									<a class="cluetip help" rel="#cluetip_<s:property value="question.id"/>" title="Additional Information"></a>
+									<a class="cluetip help" rel="#cluetip_<s:property value="question.id"/>" title="<s:text name="Audit.AdditionalInformation" />"></a>
 									<div id="cluetip_<s:property value="question.id" />">
 										<s:property value="question.helpText" escape="false" />
 									</div>

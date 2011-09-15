@@ -56,8 +56,8 @@
 		</s:if>
 		<s:if test="showTrade">
 			<td><s:text name="Trade" /></td>
-			<td><s:text name="ContractorList.label.SelfPerformed" /></td>
-			<td><s:text name="ContractorList.label.SubContracted" /></td>			
+			<td><s:text name="ContractorAccount.tradesSelf" /></td>
+			<td><s:text name="ContractorAccount.tradesSub" /></td>
 		</s:if>
 	</tr>
 	</thead>

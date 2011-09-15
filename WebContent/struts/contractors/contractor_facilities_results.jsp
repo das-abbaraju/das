@@ -30,7 +30,7 @@
 				<div class="operatorlocation"><s:property value="getShortAddress(permissions.getCountry())" /></div>
 			</td>
 			<td class="center"><a id="facility_<s:property value="id"/>" href="#" onclick="javascript: return addOperator( <s:property value="#conID"/>, <s:property value="id"/>);"
-				class="add"><s:text name="global.Add" /></a></td>
+				class="add"><s:text name="button.Add" /></a></td>
 		</tr>
 	</s:iterator>
 	<s:if test="searchResults.size() > 1 && !permissions.corporate">
