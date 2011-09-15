@@ -1092,6 +1092,10 @@ div.blockDialog {
 	display: inline-block;
 }
 
+#debug-menu span:after {
+	content: " OFF";	
+}
+
 .debugging #debug-menu span:after {
 	content: " ON";
 }

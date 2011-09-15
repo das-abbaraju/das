@@ -300,6 +300,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
+		if (permissions.hasPermission(OpPerms.Debug)) {
+			MenuComponent debug = subMenu.addChild("Debug", "#");
+			debug.setHtmlId("debug-menu");
+		}
 
 		// Configuration
 		subMenu = menu.addChild(getText("menu.Configuration"));
@@ -363,10 +367,6 @@ public class PicsMenu {
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 			subMenu.addChild("Exception Log", "ReportExceptions.action");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action");
-			if (permissions.hasPermission(OpPerms.Debug)) {
-				MenuComponent debug = subMenu.addChild("Debug", "#");
-				debug.setHtmlId("debug-menu");
-			}
 		}
 
 		subMenu = menu.addChild(getText("menu.Reports"));
