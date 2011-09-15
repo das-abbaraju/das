@@ -6,17 +6,21 @@
 
 	<%-- document.ready --%>
 	$(function() {
+
+		var cluetipOptions = {
+			activation: 'click',
+			arrows: true,
+			clickThrough: false,
+			closeText: "<img src='images/cross.png' width='16' height='16'>",
+			cluetipClass: 'jtip',
+			sticky: true
+		};
 		
 		<%-- cluetip --%>
-		$('#node_<s:property value="#q.id"/> .cluetip').cluetip({
-			arrows: true,
-			cluetipClass: 'jtip',
-			clickThrough: false,
-			activation: 'click',
-			sticky: true,
-			showTitle: false,
-			closeText: "<img src='images/cross.png' width='16' height='16'>"
-		});
+		$('#node_<s:property value="#q.id"/> .cluetip').cluetip($.extend({local: true}, cluetipOptions));
+		
+		<%-- translation cluetip --%>
+		$('#node_<s:property value="#q.id"/> .cluetip-translation').cluetip(cluetipOptions);
 
 		<%-- ambest --%>
 		var ambest = $('#ambest');
@@ -115,7 +119,7 @@
 		<s:property value="#q.name" escape="false"/>
 		
 		<s:if test="permissions.admin">
-			<a name="qTranslations" class="cluetip debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
+			<a class="cluetip-translation debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
 				<img src="images/preview.gif">
 			</a>
 		</s:if>
