@@ -148,7 +148,7 @@ function checkFee(activationFee, oldValue) {
 				<s:if test="operator.corporateFacilities.size() > 0">
 					<li>
 						<label><s:text name="FacilitiesEdit.ParentCorporationDivisionHub" />:</label>
-						<s:select name="foreignKeys.parent" list="operator.corporateFacilities" listKey="corporate.id" 
+						<s:select name="operator.parent" list="operator.corporateFacilities" listKey="corporate.id" 
 							listValue="corporate.name" headerKey="0"  value="operator.parent.id"
 							headerValue="- %{getText('FacilitiesEdit.SelectParentFacility')} -" />
 						<s:if test="operator.parent.id > 0">
@@ -164,7 +164,7 @@ function checkFee(activationFee, oldValue) {
 				</s:if>
 				<li>
 					<label><s:text name="FlagCriteria" />:</label>
-					<s:select name="foreignKeys.inheritFlagCriteria" value="operator.inheritFlagCriteria.id" 
+					<s:select name="operator.inheritFlagCriteria" value="operator.inheritFlagCriteria.id" 
 						list="relatedFacilities" listKey="id" listValue="name" />
 					<s:if test="operator.inheritFlagCriteria.id > 0">
 						<a href="?operator=<s:property value="operator.inheritFlagCriteria.id"/>">
@@ -174,7 +174,7 @@ function checkFee(activationFee, oldValue) {
 				</li>
 				<li>
 					<label><s:text name="FlagCriteria.insurance" />:</label>
-					<s:select name="foreignKeys.inheritInsuranceCriteria" value="operator.inheritInsuranceCriteria.id" 
+					<s:select name="operator.inheritInsuranceCriteria" value="operator.inheritInsuranceCriteria.id" 
 						list="relatedFacilities" listKey="id" listValue="name" />
 					<s:if test="operator.inheritInsuranceCriteria.id > 0">
 						<a href="?operator=<s:property value="operator.inheritInsuranceCriteria.id"/>">
