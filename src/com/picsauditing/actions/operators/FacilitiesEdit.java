@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -59,7 +57,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int nameId;
 	protected String name;
-	protected Map<String, Integer> foreignKeys = new HashMap<String, Integer>();
 	protected Map<UserAccountRole, List<AccountUser>> managers;
 
 	protected int accountUserId;
@@ -211,25 +208,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
 
-			Map<Integer, OperatorAccount> opMap = new HashMap<Integer, OperatorAccount>();
-			for (OperatorAccount op : getRelatedFacilities()) {
-				opMap.put(op.getId(), op);
-			}
-
-			for (String key : foreignKeys.keySet()) {
-				int keyID = foreignKeys.get(key);
-
-				if (key.equals("parent")) {
-					operator.setParent(opMap.get(keyID));
-				}
-				if (key.equals("inheritFlagCriteria")) {
-					operator.setInheritFlagCriteria(opMap.get(keyID));
-				}
-				if (key.equals("inheritInsuranceCriteria")) {
-					operator.setInheritInsuranceCriteria(opMap.get(keyID));
-				}
-			}
-
 			if (operator.isCorporate()) {
 				if (facilities != null) {
 					List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
@@ -279,7 +257,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.getNaics().setCode("0");
 			operator.setNameIndex();
 
-			if (id == 0) {
+			if (operator.getId() == 0) {
 				operator.setInheritFlagCriteria(operator);
 				operator.setInheritInsuranceCriteria(operator);
 
@@ -307,14 +285,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return SUCCESS;
-	}
-
-	public Map<String, Integer> getForeignKeys() {
-		return foreignKeys;
-	}
-
-	public void setForeignKeys(Map<String, Integer> foreignKeys) {
-		this.foreignKeys = foreignKeys;
 	}
 
 	public List<BasicDynaBean> getOperatorList() throws Exception {
