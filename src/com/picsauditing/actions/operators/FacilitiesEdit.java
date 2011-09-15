@@ -16,7 +16,6 @@ import java.util.Vector;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -388,22 +387,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return formDAO.findByopID(this.id);
 	}
 
-	static private Vector<String> validateAccount(OperatorAccount operator) {
-		I18nCache cache = I18nCache.getInstance();
-		Locale locale = TranslationActionSupport.getLocaleStatic();
-		
+	private Vector<String> validateAccount(OperatorAccount operator) {
 		Vector<String> errorMessages = new Vector<String>();
 		if (Strings.isEmpty(operator.getName()))
-			errorMessages.addElement(cache.getText("FacilitiesEdit.PleaseFillInCompanyName", locale));
+			errorMessages.addElement(getText("FacilitiesEdit.PleaseFillInCompanyName"));
 		else if (operator.getName().length() < 2)
-			errorMessages.addElement(cache.getText("FacilitiesEdit.NameAtLeast2Chars", locale));
+			errorMessages.addElement(getText("FacilitiesEdit.NameAtLeast2Chars"));
 
 		if (operator.getCountry() == null) {
-			errorMessages.addElement(cache.getText("FacilitiesEdit.SelectCountry", locale));
+			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
 		}
 
 		if (operator.getActivationFee() != null && operator.getActivationFee() > 200) {
-			errorMessages.addElement(cache.getText("FacilitiesEdit.EnterValidRange", locale));
+			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
 		}
 
 		return errorMessages;
