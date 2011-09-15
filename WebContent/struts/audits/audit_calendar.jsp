@@ -94,7 +94,7 @@ ul {
 </style>
 </head>
 <body>
-<h1><s:text name="AuditCalendar.subheading" /></h1>
+<h1><s:text name="AuditCalendar.title" /></h1>
 <s:include value="../actionMessages.jsp"></s:include>
 
 <div id="thinking"></div>
