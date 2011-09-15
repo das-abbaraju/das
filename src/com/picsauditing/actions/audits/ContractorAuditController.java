@@ -419,7 +419,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	public BigDecimal getImportPQFFeeAmount() {
-		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 0);
+		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 		return fee.getAmount();
 	}
 
