@@ -156,7 +156,7 @@
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
 		<div id="bodywrap">
-			<% if (systemMessage != null) { %>
+			<% if (!Strings.isEmpty(systemMessage)) { %>
 				<div id="systemMessage">
 					<%= systemMessage %>
 					<div class="clear"></div>
