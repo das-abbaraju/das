@@ -847,15 +847,25 @@ span.block:hover .hoverhelp {
 }
 
 /* PREVIOUS & NEXT */
-.navigationButtons {
-	clear: both;
-	width: 100%;
+.navigationButtons
+{
+	overflow: hidden;
 	padding: 10px 0;
 }
 
-.navigationButtons .next {
+.navigationButtons .previous
+{
+	float: left;
+}
+
+.navigationButtons .next
+{
 	float: right;
-	margin-right: 0;
+}
+
+.navigationButtonsBottom
+{
+	margin-top: 10px;
 }
 
 /********************** LIVE HELP BOX ******************************/
