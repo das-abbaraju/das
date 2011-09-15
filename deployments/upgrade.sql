@@ -9,10 +9,6 @@ where aq.id in (1619,1620,1622,1623,1624,1625,1626,1627,1628,1629,1630,1631,1632
 --
 
 -- PICS-3099
-insert into app_properties (property, value)
-	values ('subscription.limit', '5');
-insert into app_properties (property, value)
-	values ('subscription.enable', 'true');
 update email_subscription s set s.timePeriod = 'Monthly' where s.subscription = 'OQChanges';
 update email_subscription s set s.timePeriod = 'Event' 
 where s.timePeriod not in ('Event','None') 
