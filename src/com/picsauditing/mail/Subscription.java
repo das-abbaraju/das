@@ -32,8 +32,8 @@ public enum Subscription implements Translatable {
 			true, false, false),
 	OQChanges(130, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly },
 			OpPerms.ViewTrialAccounts, false, false, false, true, false),
-	Webinar(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, true, true,
-			true),
+	Webinar(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
+			false),
 	// Please use nightly_updates.sql for controling opt-out subscription inserts
 	OpenTasks(168, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly }, false,
 			true, false),
