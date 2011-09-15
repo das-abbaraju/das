@@ -94,6 +94,9 @@ public class AccountRecovery extends PicsActionSupport {
 			return SUCCESS;
 		}
 
+		if (recaptcha == null)
+			recaptcha = new Recaptcha();
+		
 		Boolean response = recaptcha.isRecaptchaResponseValid();
 		if (response == null) {
 			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
