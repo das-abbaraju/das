@@ -148,7 +148,7 @@
 									
 									<%-- <s:if test="u.account.demo || u.account.admin"> --%>
 										<li>
-											<s:select name="u.locale" listValue="displayName" theme="form" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+											<s:select name="u.locale" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" listValue="getDisplayName(language)" theme="form" />
 										</li>
 									<%-- </s:if> --%>
 									
