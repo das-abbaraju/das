@@ -209,7 +209,7 @@ public class ReportActivityWatch extends ReportAccount {
 					+ (permissions.isOperatorCorporate() ? " AND o.id = " + permissions.getAccountId() : ""));
 			joins.add("JOIN flag_data fd ON fd.opID = fco.opID AND fd.criteriaID = fc.id");
 			SelectSQL sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fco.updateDate",
-					"o.name", "fc.label", "''", "''", "''", joins);
+					"o.name", "CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''", "''", "''", joins);
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();
 
@@ -217,7 +217,7 @@ public class ReportActivityWatch extends ReportAccount {
 				joins.add("JOIN (SELECT DISTINCT criteriaID, conID FROM flag_data WHERE conID = " + contractor.getId()
 						+ (permissions.isOperatorCorporate() ? " AND opID = " + permissions.getAccountId() : "") + ")"
 						+ " fd ON fc.id = fd.criteriaID");
-				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate", "fc.label", "''",
+				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate", "CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''",
 						"''", "''", "''", joins);
 
 				watchOptions.add("(" + sql2.toString() + ")");
@@ -240,11 +240,11 @@ public class ReportActivityWatch extends ReportAccount {
 		sql.addField(accountID + " conID");
 		sql.addField("'ReportActivityWatch." + activityType + "' activityType");
 		sql.addField(activityDate + " activityDate");
-		sql.addField(url + " url");
-		sql.addField(v1 + " v1");
-		sql.addField(v2 + " v2");
-		sql.addField(v3 + " v3");
-		sql.addField(v4 + " v4");
+		sql.addField(url + " AS url");
+		sql.addField(v1 + " AS v1");
+		sql.addField(v2 + " AS v2");
+		sql.addField(v3 + " AS v3");
+		sql.addField(v4 + " AS v4");
 
 		for (String join : joins) {
 			sql.addJoin(join);

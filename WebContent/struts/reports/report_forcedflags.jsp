@@ -65,7 +65,7 @@
 					<img src="images/icon_<s:property value="get('flag')"/>Flag.gif" width="12" height="15" border="0">
 				</s:else>
 			</td>
-			<td class="center"><s:property value="get('fLabel')" /></td>
+			<td class="center"><s:text name="%{get('fLabel')}" /></td>
 			<td title="<s:property value="get('forcedByAccount')"/>"><s:property value="get('forcedBy')"/></td>
 			<td><s:date name="get('forceBegin')" format="MMM d, yyyy" /></td>
 			<td><s:date name="get('forceend')" format="MMM d, yyyy" /></td>

@@ -27,10 +27,10 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		super.buildQuery();
 		
 		String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label FROM"+ 
-		" (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'Overall' AS label FROM generalcontractors gc" +
+		" (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label FROM generalcontractors gc" +
 		" WHERE gc.forceFlag IS NOT NULL" +
 		" UNION" +
-		" SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, fc1.label FROM flag_data_override fdo"+
+		" SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label FROM flag_data_override fdo"+
 		" JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id"+
 		" WHERE fdo.forceFlag IS NOT NULL) t"+
 		" ) ff ON a.id = ff.conid";
@@ -81,7 +81,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		
 		excelSheet.addColumn(new ExcelColumn("opName"));
 		excelSheet.addColumn(new ExcelColumn("forceFlag", "Flag"));
-		excelSheet.addColumn(new ExcelColumn("fLabel", "Flag Issue"));
+		excelSheet.addColumn(new ExcelColumn("fLabel", "Flag Issue", ExcelCellType.Translated));
 		excelSheet.addColumn(new ExcelColumn("forcedBy", "Forced By"));
 		excelSheet.addColumn(new ExcelColumn("forceBegin", "Start Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));
