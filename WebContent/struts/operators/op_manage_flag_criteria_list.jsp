@@ -123,9 +123,6 @@
 	
 	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" id="recalculateAll" />
 	
-	
-	<a href="#" class="picsbutton bump-contractor"><s:text name="ManageFlagCriteriaOperator.button.BumpContractors" /></a>
-	
 	<s:if test="canEdit">
 		<pics:permission perm="ManageAudits">
 			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
