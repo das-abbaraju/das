@@ -18,6 +18,19 @@ update email_subscription s set s.timePeriod = 'Event'
 where s.timePeriod not in ('Event','None') 
  and s.subscription in ('ContractorInvoices','InsuranceExpiration','AuditOpenRequirements','FinishPICSProcess','PICSSystemNotifications','ContractorFinished','ContractorDeactivation','Webinar');
 --
+
+ -- PICS-3287
+update pqfData pd
+  join contractor_audit ca
+    on ca.id = pd.auditID
+  join contractor_audit ca2
+    on ca2.conID = ca.conID
+set pd.auditID = ca2.id, pd.questionID = (case pd.questionID when 7786 then 9186 when 7787 then 9188 when 7788 then 9187 end)
+where (pd.questionID = 7786
+        or pd.questionID = 7787
+        or pd.questionID = 7788)
+    and ca2.auditTypeID = 279;
+
  
 -- PICS-3219
 update email_template t set t.body = '<SubscriptionHeader>
