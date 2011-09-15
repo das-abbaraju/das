@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public enum SubscriptionTimePeriod {
+import com.picsauditing.jpa.entities.Translatable;
+
+public enum SubscriptionTimePeriod implements Translatable {
 	None, Daily, Weekly, Monthly, Quarterly, Event;
 
 	public Date getComparisonDate() {
@@ -38,5 +40,15 @@ public enum SubscriptionTimePeriod {
 			}
 		}
 		return values;
+	}
+	
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + this.name();
+	}
+	
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }
