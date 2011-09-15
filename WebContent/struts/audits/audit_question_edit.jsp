@@ -141,20 +141,30 @@
 
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<div class="verified">
-				Answer verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" />
+				<s:text name="Audit.message.AnswerVerifiedOn">
+					<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+				</s:text>
 			</div>
 		</s:if>
 		
 		<s:if test="#a.hasRequirements">
 			<br />
 			<span class="requirement">
-				<label>Requirement:</label>
+				<label><s:text name="Audit.message.RequirementStatus" />:</label>
 				
 				<s:if test="#a.requirementOpen">
-					<div class="unverified">Open</div>
+					<div class="unverified-answer">
+						<img src="images/notOkCheck.gif" />
+						<s:text name="Audit.message.Open" />
+					</div>
 				</s:if>
 				<s:elseif test="#a.wasChangedB">
-					<div class="verified">Closed on <s:date name="#a.dateVerified" format="MMM d, yyyy" /></div>
+					<div class="verified-answer">
+						<img src="images/okCheck.gif" />
+						<s:text name="Audit.message.ClosedOn">
+							<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+						</s:text>
+					</div>
 				</s:elseif>
 			</span>
 		</s:if>

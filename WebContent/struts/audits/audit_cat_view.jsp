@@ -11,6 +11,7 @@
 		<s:if test="value.applies">
 			<s:set value="false" name="req" />
 			<s:set name="category" value="key" />
+			
 			<s:include value="audit_cat_view.jsp" />
 		</s:if>
 	</s:iterator>
@@ -28,7 +29,7 @@
 		</h2>
 		
 		<pics:permission perm="ManageAudits">
-			<section class="debug debug-summary">
+			<div class="debug debug-summary">
 				<h1>Debug Mode</h1>
 				
 				<s:set name="scoreable" value="conAudit.auditType.scoreable" />
@@ -78,7 +79,7 @@
 						</td>
 					</tr>
 				</table>
-			</section>
+			</div>
 		</pics:permission>
 		
 		<s:if test="#category.sha">

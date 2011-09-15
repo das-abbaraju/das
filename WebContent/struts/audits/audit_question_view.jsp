@@ -4,10 +4,11 @@
 <div class="answer">
 	<s:if test="#q.questionType == 'File'">
 		<s:if test="#a.id > 0 && #a.answer.length() > 0">
-			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" 
-				target="_BLANK"><s:text name="Audit.link.ViewFile" /></a>
+			<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" target="_BLANK"><s:text name="Audit.link.ViewFile" /></a>
 		</s:if>
-		<s:else><s:text name="Audit.message.FileNotUploaded" /></s:else>
+		<s:else>
+			<s:text name="Audit.message.FileNotUploaded" />
+		</s:else>
 	</s:if>
 	<s:elseif test="#q.questionType == 'FileCertificate'">
 		<s:include value="audit_question_cert_load.jsp" />
@@ -34,15 +35,19 @@
 	</s:elseif>
 	<s:elseif test="#q.questionType == 'AMBest'">
 		<s:property value="#a.answer" />
+		
 		<s:if test="#a.commentLength">
 			<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
-			<br>
+			
+			<br />
 			NAIC#: <s:property value="#a.comment" />
+			
 			<s:if test="#ambest.amBestId > 0">
 				AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
 				Class: <s:property value="#ambest.financialAlpha" />
 			</s:if>
-			<br>
+			
+			<br />
 		</s:if>
 	</s:elseif>
 	<s:elseif test="#q.questionType == 'Text Area'">
@@ -63,6 +68,7 @@
 		<s:else>
 			<s:property value="#a.answer" />
 		</s:else>
+		
 		<s:if test="#q.questionType == 'License'">
 			<s:property value="@com.picsauditing.util.Constants@displayStateLink(#q.question, #a.answer)" escape="false" />
 		</s:if>
@@ -70,35 +76,53 @@
 	
 	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
-			<s:text name="Audit.message.AnswerVerifiedOn"><s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param></s:text>
+			<s:text name="Audit.message.AnswerVerifiedOn">
+				<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+			</s:text>
 		</span>
 	</s:if>
 	
 	<s:if test="#a.hasRequirements">
 		<br/><br/>
+		
 		<s:if test="#a.requirementOpen">
 			<s:set name="extraClass" value="'boxed'"/>
 		</s:if>
+		
 		<span class="requirement <s:property value="#extraClass" default=""/>">
 			<label><s:text name="Audit.message.RequirementStatus" />:</label>
+			
 			<s:if test="#a.requirementOpen">
-				<span class="unverified"><s:text name="Audit.message.Open" /></span>
+				<div class="unverified-answer">
+					<img src="images/notOkCheck.gif" />
+					<s:text name="Audit.message.Open" />
+				</div>
 			</s:if>
 			<s:elseif test="#a.wasChangedB">
-				<span class="verified"><s:text name="Audit.message.ClosedOn"><s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param></s:text></span>
+				<div class="verified-answer">
+					<img src="images/okCheck.gif" />
+					<s:text name="Audit.message.ClosedOn">
+						<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+					</s:text>
+				</div>
 			</s:elseif>
 		</span>
 	</s:if>
 	
 	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
-		<br/>
+		<br />
+		
 		<div class="info">
-		<label><s:text name="Audit.message.Comment" />:</label> <s:property value="#a.getHtmlDisplay(#a.comment)" escape="false"/>
+			<label><s:text name="Audit.message.Comment" />:</label>
+			<s:property value="#a.getHtmlDisplay(#a.comment)" escape="false"/>
 		</div>
 	</s:if>
 </div>
 
 <s:if test="#a.hasRequirements && #a.requirementOpen">
 	<br clear="all"/>
-	<div class="error"><s:property value="#q.requirement" escape="false"/></div>
+	
+	<div class="error">
+		<s:property value="#q.requirement" escape="false"/>
+	</div>
 </s:if>
