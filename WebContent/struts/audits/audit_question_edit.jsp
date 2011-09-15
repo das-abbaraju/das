@@ -21,8 +21,10 @@
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
 				<s:radio theme="audits" list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
-				
-				<input class="resetAnswer" type="submit" value="Clear" />
+
+				<s:if test="!isStringEmpty(#a.answer)">
+					<input class="resetAnswer" type="submit" value="Clear" />
+				</s:if>
 				
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">
 					<s:set name="op" value="%{getOperatorByName(#q.category.name)}" />
