@@ -324,27 +324,24 @@
 										</label>
 									</li>
 									<li>
-										<label>&nbsp;</label>
 										<s:checkbox id="conBilling" name="conBilling" />
 										<label for="conBilling" class="checkbox">
-											<b><s:property value="OpPerms.ContractorBilling.description" /></b>
-											<i> (<s:property value="OpPerms.ContractorBilling.helpText" />)</i>
+											<b><s:text name="OpPerms.ContractorBilling.description" /></b>
+											<i> (<s:text name="OpPerms.ContractorBilling.helpText" />)</i>
 										</label>
 									</li>
 									<li>
-										<label>&nbsp;</label>
 										<s:checkbox id="conSafety" name="conSafety" />
 										<label for="conSafety" class="checkbox">
-											<b><s:property value="OpPerms.ContractorSafety.description" /></b>
-											<i> (<s:property value="OpPerms.ContractorSafety.helpText" />)</i>
+											<b><s:text name="OpPerms.ContractorSafety.description" /></b>
+											<i> (<s:text name="OpPerms.ContractorSafety.helpText" />)</i>
 										</label>
 									</li>
 									<li>
-										<label>&nbsp;</label>
 										<s:checkbox id="conInsurance" name="conInsurance" />
 										<label for="conInsurance" class="checkbox">
-											<b><s:property value="OpPerms.ContractorInsurance.description" /></b>
-											<i> (<s:property value="OpPerms.ContractorInsurance.helpText" />)</i>
+											<b><s:text name="OpPerms.ContractorInsurance.description" /></b>
+											<i> (<s:text name="OpPerms.ContractorInsurance.helpText" />)</i>
 										</label>
 									</li>
 								</s:if>
