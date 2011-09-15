@@ -78,6 +78,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			noteSummary.add("changed the safety risk level from " + oldSafety.toString() + " to "
 					+ safetyRisk.toString());
 			contractor.setSafetyRisk(safetyRisk);
+			contractor.setSafetyRiskVerified(new Date());
 
 			if (oldSafety.compareTo(safetyRisk) < 0)
 				needsUpgrades = true;
@@ -87,6 +88,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			noteSummary.add("changed the product risk level from " + oldProduct.toString() + " to "
 					+ productRisk.toString());
 			contractor.setProductRisk(productRisk);
+			contractor.setProductRiskVerified(new Date());
 
 			if (oldProduct.compareTo(productRisk) < 0)
 				needsUpgrades = true;
