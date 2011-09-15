@@ -207,10 +207,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		facilityChanger.setOperator(operator);
 		facilityChanger.add();
 
-		ActionContext.getContext().getSession().put(
-				"actionMessage",
-				getText("NewContractorSearch.message.SuccessfullyAdded", new Object[] { (Integer) contractor.getId(),
-						contractor.getName() }));
+		addActionMessage(getText("NewContractorSearch.message.SuccessfullyAdded", new Object[] {
+				contractor.getId() + "", contractor.getName() }));
 
 		// Automatically upgrading Contractor per discussion
 		// 2/15/2011
@@ -256,8 +254,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailSender.send(emailQueue);
 		}
 
-		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
-				+ "&filter.tradeInformation=true");
+		return SUCCESS;
 	}
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
@@ -267,8 +264,12 @@ public class ReportNewContractorSearch extends ReportAccount {
 		facilityChanger.setOperator(operator);
 		facilityChanger.remove();
 
-		ActionContext.getContext().getSession().put("actionMessage",
-				getText("NewContractorSearch.message.SuccessfullyRemoved", new Object[] { contractor.getName() }));
+		ActionContext
+				.getContext()
+				.getSession()
+				.put("actionMessage",
+						getText("NewContractorSearch.message.SuccessfullyRemoved",
+								new Object[] { contractor.getName() }));
 
 		return redirect("NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true"
 				+ "&filter.tradeInformation=true");
