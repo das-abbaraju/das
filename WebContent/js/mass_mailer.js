@@ -145,17 +145,32 @@ function addTemplate(id) {
 		data['template.subject'] = $('#templateSubject').val();
 		data['template.body'] = $('#templateBody').val();
 	}
-	
-	$('#messages').load('EmailTemplateSave!save', data,
-		function(response, status) {
-			if (status=='success') {
-				$('#div_saveEmail').fadeOut();
-				$('#buttonSave').attr({'disabled':'disabled'});
-				dirty = false;
-				refreshList();
-			}
+	// Translated email template that will no longer be translated will overwrite the original email template.
+	if ($('#original_translated').val() == "true" && $('#templateTranslated').is(':checked') == false) {
+		if (confirm(translate("JS.MassMailer.ReplaceOriginalTemplate"))) {
+			$('#messages').load('EmailTemplateSave!save', data,
+				function(response, status) {
+					if (status=='success') {
+						$('#div_saveEmail').fadeOut();
+						$('#buttonSave').attr({'disabled':'disabled'});
+						dirty = false;
+						refreshList();
+					}
+				}
+			);
 		}
-	);
+	} else {
+		$('#messages').load('EmailTemplateSave!save', data,
+			function(response, status) {
+				if (status=='success') {
+					$('#div_saveEmail').fadeOut();
+					$('#buttonSave').attr({'disabled':'disabled'});
+					dirty = false;
+					refreshList();
+				}
+			}
+		);
+	}
 }
 
 function removeSelected() {
