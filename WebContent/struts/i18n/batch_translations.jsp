@@ -10,7 +10,7 @@
 		</li>
 		<li>
 			<label>Locale To</label>
-			<s:select name="localeTo" list="{'fr'}"/>
+			<s:select name="localeTo" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" listValue="displayName"/>
 		</li>
 		<li>
 			<s:submit method="count" value="Show Count" class="picsbutton"/>
