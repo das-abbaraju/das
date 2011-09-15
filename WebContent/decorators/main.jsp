@@ -41,7 +41,12 @@
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
-	boolean showMessage = !Strings.isEmpty(appProperty.getValue());
+	String systemMessage = null;
+	if (!locale.getLanguage().equals("en")) {
+		systemMessage = i18nCache.getText("global.BetaTranslations", locale);
+	} else if (appProperty != null) {
+		systemMessage = appProperty.getValue();
+	}
 	
 	boolean debugMode = false;
 	if (request != null && request.getCookies() != null) {
@@ -152,9 +157,9 @@
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
 		<div id="bodywrap">
-			<% if (showMessage) { %>
+			<% if (systemMessage != null) { %>
 				<div id="systemMessage">
-					<%= appProperty.getValue()%>
+					<%= systemMessage %>
 					<div class="clear"></div>
 				</div>
 			<% } %>
