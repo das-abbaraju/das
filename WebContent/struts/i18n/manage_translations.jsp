@@ -108,7 +108,7 @@ span.view {
 		name="localeFrom" listValue="displayName"></s:select>
 	To: <s:select
 		list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
-		name="localeTo" listValue="displayName" value="permissions.locale.language"></s:select>
+		name="localeTo" listValue="displayName"></s:select>
 		
 	Key: <s:textfield name="key" />
 	Search: <s:textfield name="search" />

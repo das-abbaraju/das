@@ -40,7 +40,7 @@ public class ManageTranslations extends ReportActionSupport {
 		permissions.tryPermission(OpPerms.Translator);
 
 		if (localeTo == null) {
-			localeTo = permissions.getLocale();
+			localeTo = new Locale(permissions.getLocale().getLanguage());
 		}
 
 		if (button != null) {
