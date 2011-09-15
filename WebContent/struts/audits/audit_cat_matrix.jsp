@@ -3,7 +3,7 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <html>
 <head>
-<title>Audit Category Matrix</title>
+<title><s:text name="AuditCategoryMatrix.subheading"/></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <script type="text/javascript">
 function getCategories(id) {
@@ -105,13 +105,13 @@ function viewTable() {
 </script>
 </head>
 <body>
-<h1>Audit Category Matrix</h1>
+<h1><s:text name="AuditCategoryMatrix.subheading"/></h1>
 
 <div id="messages" style="display: none;"><s:include value="../actionMessages.jsp" /></div>
 <div id="search">
 	<s:form id="form1">
 		<div class="filterOption">
-			Audit: <s:select list="#{100:'Competency Review'}" headerKey="0" headerValue="- Select Audit Type -" 
+			<s:text name="AuditCategoryMatrix.label.Audit"/><s:select list="#{100:getText('AuditCategoryMatrix.label.CompetencyReview')}" headerKey="0" headerValue="%{getText('global.SelectAuditType')}" 
 				onchange="getCategories(this.value);" name="auditTypeID" />
 		</div>
 		<div class="clear"></div>

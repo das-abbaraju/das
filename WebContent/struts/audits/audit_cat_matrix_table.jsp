@@ -3,22 +3,22 @@
 <%@ page language="java" errorPage="exception_handler.jsp"%>
 <div id="filterLoadData" style="display: none;">
 	<div class="filterOption" id="select_categories">
-		<a href="#" onclick="toggleBox('form1_categories'); return false;">Categories</a> =
-		<span id="form1_categories_query">NONE</span>
+		<a href="#" onclick="toggleBox('form1_categories'); return false;"><s:text name="AuditCategoryMatrix.label.Categories"/></a> =
+		<span id="form1_categories_query"><s:text name="AuditCategoryMatrix.label.NONE"/></span>
 		<br />
 		<span id="form1_categories_select" style="display: none" class="clearLink">
 			<s:select list="auditCategories" multiple="true" cssClass="forms"
 				name="categoryIDs" id="form1_categories" listKey="id" listValue="name" />
 			<br />
 			
-			<a class="clearLink" href="#" onclick="selectAll('form1_categories'); return false;">Select All</a><br />
-			<a class="clearLink" href="#" onclick="clearSelected('form1_categories'); return false;">Clear</a>
+			<a class="clearLink" href="#" onclick="selectAll('form1_categories'); return false;"><s:text name="AuditCategoryMatrix.label.SelectAll"/></a><br />
+			<a class="clearLink" href="#" onclick="clearSelected('form1_categories'); return false;"><s:text name="button.Clear"/></a>
 		</span>
 	</div>
 	<div class="clear"></div>
 	<div class="filterOption" id="select_items">
-		<a href="#" onclick="toggleBox('form1_items'); return false;">Competencies</a> =
-		<span id="form1_items_query">NONE</span>
+		<a href="#" onclick="toggleBox('form1_items'); return false;"><s:text name="AuditCategoryMatrix.label.Competencies"/></a> =
+		<span id="form1_items_query"><s:text name="AuditCategoryMatrix.label.NONE"/></span>
 		<br />
 		<span id="form1_items_select" style="display: none" class="clearLink">
 			<s:if test="auditType.desktop">
@@ -30,13 +30,13 @@
 					name="itemIDs" id="form1_items" listKey="id" listValue="label" />
 			</s:else>
 			<br />
-			<a class="clearLink" href="#" onclick="selectAll('form1_items'); return false;">Select All</a><br />
-			<a class="clearLink" href="#" onclick="clearSelected('form1_items'); return false;">Clear</a>
+			<a class="clearLink" href="#" onclick="selectAll('form1_items'); return false;"><s:text name="AuditCategoryMatrix.label.SelectAll"/></a><br />
+			<a class="clearLink" href="#" onclick="clearSelected('form1_items'); return false;"><s:text name="button.Clear"/></a>
 		</span>
 	</div>
 	<div class="clear"></div>
 	<div class="filterOption">
-		<s:checkbox name="pivot" /> Swap Rows and Columns
+		<s:checkbox name="pivot" /> <s:text name="AuditCategoryMatrix.label.SwapRowsandColumns"/>
 	</div>
 	<div class="clear"></div>
 	<div><input type="button" value="Update" class="picsbutton positive" onclick="addFilter(); return false;" /></div>
@@ -48,10 +48,10 @@
 		<thead>
 			<tr>
 				<s:if test="editTable">
-					<th><button onclick="viewTable(); return false;" class="picsbutton">View</button></th>
+					<th><button onclick="viewTable(); return false;" class="picsbutton"><s:text name="global.View"/></button></th>
 				</s:if>
 				<s:else>
-					<th><button onclick="editTable(); return false;" class="picsbutton">Edit</button></th>
+					<th><button onclick="editTable(); return false;" class="picsbutton"><s:text name="global.Edit"/></button></th>
 				</s:else>
 				<s:iterator value="pivot ? selectedItems : selectedCategories">
 					<th style="width: 100%"><s:property value="name" /></th>
@@ -93,5 +93,5 @@
 	</table>
 </s:if>
 <s:else>
-	<div class="info">Please select categories and competencies to view the matrix.</div>
+	<div class="info"><s:text name="AuditCategoryMatrix.label.SelectCategories"/></div>
 </s:else>

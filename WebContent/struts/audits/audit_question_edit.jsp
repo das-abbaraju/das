@@ -75,7 +75,7 @@
 		
 		<s:if test="#q.questionType == 'Date'">
 			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
-			<span style="font-style: italic; font-size: 12px;">example: 12/31/1999</span>
+			<span style="font-style: italic; font-size: 12px;"><s:text name="global.Example" />: 12/31/1999</span>
 		</s:if>
 		
 		<s:if test="#q.questionType == 'License'">
@@ -95,10 +95,10 @@
 				<s:set name="ambest" value="@com.picsauditing.dao.AmBestDAO@getAmBest(#a.comment)" />
 				<br />
 				
-				NAIC#: <s:property value="#a.comment" />
+				<s:text name="AmBest.NAIC" /><s:property value="#a.comment" />
 				<s:if test="#ambest.amBestId > 0">
-					AM Best Rating: <s:property value="#ambest.ratingAlpha" /> /
-					Class: <s:property value="#ambest.financialAlpha" />
+					<s:text name="AuditQuestionEdit.label.AMBestRating" /><s:property value="#ambest.ratingAlpha" /> /
+					<s:text name="AmBest.financialCode" /><s:property value="#ambest.financialAlpha" />
 				</s:if>
 				
 				<br />
@@ -108,10 +108,10 @@
 		<s:if test="#q.questionType == 'File'">
 			<nobr>
 				<s:if test="#a.id > 0 && #a.answer.length() > 0">
-					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" target="_BLANK">View File</a>
+					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" target="_BLANK"><s:text name="Audit.link.ViewFile" /></a>
 				</s:if>
 				<s:else>
-					File Not Uploaded
+					<s:text name="Audit.message.FileNotUploaded" />
 				</s:else>
 				<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 			</nobr>
@@ -173,7 +173,7 @@
 		
 		<s:if test="#q.showComment || mode == 'Verify'">
 			<br />
-			<label>Comments:</label>
+			<label><s:text name="AuditQuestionEdit.label.Comments" /></label>
 			<br />
 			<s:textarea name="auditData.comment" value="%{#a.comment}" />
 		</s:if>
