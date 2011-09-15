@@ -48,8 +48,10 @@
 			<td><s:property value="get('auditFor')"/></td>
 			<td class="right"><s:property value="get('answer')"/></td>
 			<td class="right"><s:property value="get('emrAverage')"/></td>
-		    <td><s:if test="get('dateVerified') != null">
-		    	<span class="verified" style="font-size: 16px;"></span></s:if>
+		    <td class="center">
+		    	<s:if test="get('dateVerified') != null">
+		    		<img src="images/okCheck.gif" alt="<s:text name="global.Verified" />" title="<s:text name="global.Verified" />" />
+		    	</s:if>
 		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>
