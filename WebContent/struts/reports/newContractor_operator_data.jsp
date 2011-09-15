@@ -55,7 +55,9 @@
 			<td><a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');"><s:text name="NewContractorSearch.label.CityState" /></a></td>
 		</s:if>
 		<s:if test="showTrade">
-			<td><s:text name="NewContractorSearch.label.PrimaryTrade" /></td>
+			<td><s:text name="Trade" /></td>
+			<td><s:text name="ContractorAccount.tradesSelf" /></td>
+			<td><s:text name="ContractorAccount.tradesSub" /></td>
 		</s:if>
 		<td><s:text name="global.Insurance" /></td>
 	</tr>
@@ -123,6 +125,8 @@
 				</s:if>
 				<s:if test="showTrade">
 					<td><s:property value="get('main_trade')"/></td>
+					<td><s:property value="get('tradesSelf')"/></td>
+					<td><s:property value="get('tradesSub')"/></td>
 				</s:if>
 					<td>
 						<s:if test="get('answer2074') != null">
