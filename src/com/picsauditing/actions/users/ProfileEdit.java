@@ -107,11 +107,11 @@ public class ProfileEdit extends PicsActionSupport {
 		u = dao.save(u);
 		permissions.setLocale(u.getLocale());
 
-		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
+		this.redirect("ProfileEdit.action?success");
 
 		return SUCCESS;
 	}
-	
+
 	public String department() {
 		return "department";
 	}
@@ -192,6 +192,10 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public boolean isGoEmailSub() {
 		return goEmailSub;
+	}
+
+	public void setSuccess(boolean success) {
+		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 	}
 
 }
