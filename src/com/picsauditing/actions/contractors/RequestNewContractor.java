@@ -287,6 +287,20 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (increaseContactCount)
 			newContractor.contact();
 
+		if (!status.equals("Hold")) {
+			newContractor.setHoldDate(null);
+		} else {
+			if (newContractor.getHoldDate() == null) {
+				addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
+			}
+
+			else if ("Active".equals(newContractor.getStatus())) {
+				newContractor.setNotes(prepend("Request set to hold until "
+						+ maskDateFormat(newContractor.getHoldDate()),
+						newContractor.getNotes()));
+			}
+		}
+
 		if (!status.equals("Closed Unsuccessful"))
 			newContractor.setReasonForDecline(null);
 		else if (Strings.isEmpty(newContractor.getReasonForDecline()))
