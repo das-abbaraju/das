@@ -158,11 +158,19 @@ function showCertUpload(certID, questionID) {
 function reloadQuestion(qid) {
 	var element = $('#node_' + qid);
 	var url = 'AuditDataSaveAjax.action';
-	var data = {
-		button: 'reload',
-		'auditData.question': qid,
-		'auditData.audit': auditID
-	};
+	var data;
+	var inputs = element.find('form.qform :input.get_request');
+	if (inputs.length) {
+		data = inputs.serializeArray();
+		data.push({ name:'button', value:'refresh' });
+	} else {
+		data = {
+			button: 'reload',
+			'auditData.question': qid,
+			'auditData.audit': auditID
+		};
+		
+	}
 	
 	element.block({
 		message: 'Reloading question...'
