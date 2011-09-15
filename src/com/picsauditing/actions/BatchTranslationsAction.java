@@ -70,6 +70,7 @@ public class BatchTranslationsAction extends PicsActionSupport {
 		sql.addWhere("t_from.locale = 'en'");
 		sql.addWhere("t_to.id IS NULL");
 		sql.addWhere("t_from.msgValue NOT LIKE '%{_,%'");
+		sql.addWhere("t_from.msgValue NOT LIKE '%${%'");
 
 		return sql;
 	}
