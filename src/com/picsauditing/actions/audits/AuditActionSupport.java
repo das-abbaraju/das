@@ -164,8 +164,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
 			questionID = 3477;
 		}
-		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), questionID);
+		Map<Integer, AuditData> answers = auditDataDao.findAnswersForSafetyManual(
+				conAudit.getContractorAccount().getId(), questionID);
 		if (answers == null || answers.size() == 0)
 			return null;
 		return answers;
@@ -245,8 +245,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 		}
 		if (!actionStatus.isEmpty()) {
-			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en
-					.hasNext();) {
+			for (Iterator<Entry<AuditStatus, Collection<Integer>>> en = actionStatus.asMap().entrySet().iterator(); en.hasNext();) {
 				if (!(en.next().getValue().size() > 1))
 					en.remove();
 			}
@@ -714,22 +713,26 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return allComplete;
 	}
 
-	public boolean isCanEditCategory(AuditCategory category) {
+	public boolean isCanEditCategory(AuditCategory category) throws RecordNotFoundException, NoRightsException {
 		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
 			return false;
-	
+
+		if (conAudit == null) {
+			findConAudit();
+		}
+
 		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return true;
-	
+
 		if (conAudit.getOperatorsVisible().size() == 1
 				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
 			return true;
-	
+
 		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
 				return false;
 		}
-	
+
 		return true;
 	}
 }

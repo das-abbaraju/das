@@ -74,6 +74,8 @@ public class AuditDataSave extends AuditActionSupport {
 						auditData.getQuestion().getId());
 			}
 
+			auditID = auditData.getAudit().getId();
+
 			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
@@ -138,8 +140,6 @@ public class AuditDataSave extends AuditActionSupport {
 
 				auditData = newCopy;
 			}
-
-			auditID = auditData.getAudit().getId();
 
 			loadAnswerMap();
 
