@@ -68,6 +68,8 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=<%=version%>" />
+		<link rel="stylesheet" type="text/css" href="css/print.css?v=<%=version%>" />
+		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<%=version%>" />
