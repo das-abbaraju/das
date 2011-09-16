@@ -125,7 +125,7 @@ public class AccountRecovery extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	static public String sendRecoveryEmail(User user) {
+	public String sendRecoveryEmail(User user) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(85);
@@ -144,13 +144,13 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			return I18nCache.getInstance().getText("AccountRecovery.EmailSent", null, user.getEmail());
+			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
-			return I18nCache.getInstance().getText("AccountRecovery.error.ResetEmailError", null);
+			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
 
-	static public String sendActivationEmail(User user, Permissions permission) {
+	public String sendActivationEmail(User user, Permissions permission) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
 			emailBuilder.setTemplate(5);
@@ -170,9 +170,9 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			return I18nCache.getInstance().getText("AccountRecovery.EmailSent", null, user.getEmail());
+			return getText("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
-			return I18nCache.getInstance().getText("AccountRecovery.error.ResetEmailError", null);
+			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
 
