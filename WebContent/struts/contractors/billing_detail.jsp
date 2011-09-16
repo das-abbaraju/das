@@ -311,7 +311,9 @@
 														</s:else>
 													</td>
 													<td class="right">
-														<s:date name="creationDate" format="M/d/yy" />
+														<s:text name="short_dates">
+															<s:param value="%{creationDate}" />
+														</s:text>
 													</td>
 													<td class="right">
 														<s:property value="totalAmount" />
