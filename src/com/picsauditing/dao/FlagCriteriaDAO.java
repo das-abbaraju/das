@@ -17,7 +17,7 @@ public class FlagCriteriaDAO extends PicsDAO {
 	}
 	
 	public List<FlagCriteria> findAll() {
-		Query q = em.createQuery("FROM FlagCriteria t ORDER BY t.displayOrder, t.category, t.label");
+		Query q = em.createQuery("FROM FlagCriteria t ORDER BY t.displayOrder, t.category");
 		return q.getResultList();
 	}
 	
