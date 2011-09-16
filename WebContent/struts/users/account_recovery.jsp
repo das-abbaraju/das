@@ -16,19 +16,19 @@
 		<script type="text/javascript" src="js/account_recovery.js"></script>
 	</head>
 	<body>
-		<%-- <s:if test="debugging"><!-- We can remove this once we've release i18n --> --%>
-		<ul class="locales">
-			<li>
-				<a href="?request_locale=en">English</a>
-			</li>
-			<li>
-				<a href="?request_locale=fr">Français</a>
-			</li>
-			<li>
-				<a href="?request_locale=es">Español</a>
-			</li>
-		</ul> 
-		<%-- </s:if> --%>
+		<s:if test="configEnvironment"><!-- We can remove this once we've release i18n -->
+			<ul class="locales">
+				<li>
+					<a href="?request_locale=en">English</a>
+				</li>
+				<li>
+					<a href="?request_locale=fr">Français</a>
+				</li>
+				<li>
+					<a href="?request_locale=es">Español</a>
+				</li>
+			</ul> 
+		</s:if>
 		
 		<h1><s:text name="AccountRecovery.title" /></h1>
 		
