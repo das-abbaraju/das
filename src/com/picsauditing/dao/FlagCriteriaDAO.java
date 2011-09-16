@@ -8,6 +8,7 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
 @Transactional
 @SuppressWarnings("unchecked")
@@ -26,7 +27,9 @@ public class FlagCriteriaDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	// get select FlagCriteria where id in (select id from FlagCriteriaOperator)
+	/**
+	 * This method pulls back all {@link FlagCriteria} that is in use by {@link OperatorAccount}s.
+	 */
 	public HashSet<FlagCriteria> getDistinctOperatorFlagCriteria() {
 		Query query = em.createQuery("SELECT DISTINCT criteria from FlagCriteriaOperator");
 		return new HashSet(query.getResultList());
