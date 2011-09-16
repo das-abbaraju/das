@@ -204,6 +204,30 @@ h4.groupTitle
 	position: relative;
 }
 
+/* esignature */
+.esignature
+{
+	
+}
+
+.esignature .name,
+.esignature .date,
+.esignature .ip
+{
+	overflow: hidden;
+}
+
+.esignature span
+{
+	display: block;
+	float: left;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 10px;
+	width: 100px;
+}
+
 #content div.answer {
 	padding-left: 20px;
 	padding-right: 15px;

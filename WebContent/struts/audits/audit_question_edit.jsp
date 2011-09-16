@@ -122,23 +122,50 @@
 		</s:if>
 
 		<s:if test="#q.questionType == 'ESignature'">
-			<s:if test="#a == null"> 
-				<label><s:text name="QuestionType.ESignature.fullName" /></label>
-				<br />
+			<div class="esignature">
+				<s:if test="#a.answer != null">
+					<s:set name="esignature_edit" value="%{'display: none'}" />
+				</s:if>
+				<s:else>
+					<s:set name="esignature_edit" value="" />
+				</s:else>
 				
-				<s:hidden name="auditData.comment" value="%{#this.IP}"/>
+				<div class="edit" style="${esignature_edit}">
+					<div class="name">
+						<label><s:text name="QuestionType.ESignature.fullName" />:</label>
+						<s:textfield name="ESignatureName" />
+					</div>
+					
+					<div class="title">
+						<label><s:text name="QuestionType.ESignature.title" />:</label>
+						<s:textfield name="ESignatureTitle" />
+					</div>
+					
+					<div class="ip">
+						<span><s:text name="Login.IPAddress" />: ${IP}</span>
+					</div>
+					
+					<s:submit type="button" value="Sign" cssClass="question-save" />
+				</div>
 				
-				<s:textfield name="auditData.answer" value="" size="1"/>
-				<s:textfield name="auditData.answer" value=""/>
-				
-				<s:submit type="button" value="Sign" cssClass="question-save" />
-			</s:if>
-			<s:else>
-				<label><s:text name="QuestionType.ESignature.alreadySigned" /></label>
-				<br />
-				
-				${a.answer} (<s:date name="#a.updateDate" format="MMM d, yyyy" />)
-			</s:else>
+				<s:if test="#a.answer != null">
+					<div class="view">
+						<div class="name">
+							<span><s:text name="QuestionType.ESignature.label.NameTitle" />:</span> ${a.answer}
+						</div>
+
+						<div class="date">
+							<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{getText('struts.date.format')}" />
+						</div>
+						
+						<div class="ip">
+							<span><s:text name="Login.IPAddress" />:</span> ${IP}
+						</div>
+						
+						<a href="javascript:;" class="edit-esignature"><s:text name="global.Edit" /></a>
+					</div>
+				</s:if>
+			</div>
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">

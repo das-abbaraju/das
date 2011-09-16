@@ -53,6 +53,23 @@
 	<s:elseif test="#q.questionType == 'Text Area'">
 		<s:property value="#a.getHtmlDisplay(#a.answer)" escape="false"/>
 	</s:elseif>	
+	<s:elseif test="#q.questionType == 'ESignature'">
+		<div class="esignature">
+			<div class="view">
+				<div class="name">
+					<span><s:text name="QuestionType.ESignature.label.NameTitle" />:</span> ${a.answer}
+				</div>
+
+				<div class="date">
+					<span><s:text name="global.Date" />:</span> <s:date name="#a.updateDate" format="%{getText('struts.date.format')}" />
+				</div>
+				
+				<div class="ip">
+					<span><s:text name="Login.IPAddress" />:</span> ${IP}
+				</div>
+			</div>
+		</div>
+	</s:elseif>
 	<s:else>
 		<s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
 			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
@@ -109,7 +126,8 @@
 		</span>
 	</s:if>
 	
-	<s:if test="#a.commentLength && #q.questionType != 'AMBest'">
+	<%-- Show comments: exclude -- AMBEST, ESignature --%>
+	<s:if test="#a.commentLength && #q.questionType != 'AMBest' && #q.questionType != 'ESignature'">
 		<br />
 		
 		<div class="info">

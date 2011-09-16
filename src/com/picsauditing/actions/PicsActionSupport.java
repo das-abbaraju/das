@@ -311,6 +311,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
+	
+	public String getIP() {
+		return ServletActionContext.getRequest().getRemoteAddr();
+	}
 
 	public String getReferer() {
 		return ServletActionContext.getRequest().getHeader("Referer");

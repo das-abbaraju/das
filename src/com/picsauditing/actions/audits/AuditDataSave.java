@@ -45,6 +45,10 @@ public class AuditDataSave extends AuditActionSupport {
 	private AnswerMap answerMap;
 	private String mode;
 	private boolean toggleVerify = false;
+	
+	// e-signature data
+	private String eSignatureName = null;
+	private String eSignatureTitle = null;
 
 	@Autowired
 	private AuditQuestionDAO questionDao = null;
@@ -86,40 +90,36 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				if (auditData.getAnswer() != null) {
-					// if answer is being set, then
-					// we are not currently verifying
-					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())
-							|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
+				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()) || (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
 
-						if (!checkAnswerFormat(auditData, newCopy)) {
-							auditData = newCopy;
-							return SUCCESS;
-						}
+					if (!checkAnswerFormat(auditData, newCopy)) {
+						auditData = newCopy;
+						return SUCCESS;
+					}
 
-						if (!toggleVerify) {
-							newCopy.setDateVerified(null);
-						}
+					if (!toggleVerify) {
+						newCopy.setDateVerified(null);
+					}
 
-						newCopy.setAnswer(auditData.getAnswer());
-						if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
-								&& permissions.isPicsEmployee()) {
-							if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
-								newCopy.setWasChanged(YesNo.Yes);
+					newCopy.setAnswer(auditData.getAnswer());
+					if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
+							&& permissions.isPicsEmployee()) {
+						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
+							newCopy.setWasChanged(YesNo.Yes);
 
-								if (!toggleVerify) {
-									if (newCopy.isRequirementOpen()) {
-										newCopy.setDateVerified(null);
-										newCopy.setAuditor(null);
-									} else {
-										newCopy.setDateVerified(new Date());
-										newCopy.setAuditor(getUser());
-									}
+							if (!toggleVerify) {
+								if (newCopy.isRequirementOpen()) {
+									newCopy.setDateVerified(null);
+									newCopy.setAuditor(null);
+								} else {
+									newCopy.setDateVerified(new Date());
+									newCopy.setAuditor(getUser());
 								}
 							}
 						}
 					}
 				}
+				
 				// we were handed the verification parms
 				// instead of the edit parms
 
@@ -432,11 +432,31 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private boolean checkAnswerFormat(AuditData auditData, AuditData databaseCopy) {
 
-		if (databaseCopy == null)
+		if (databaseCopy == null) {
 			databaseCopy = auditData;
+		}
+			
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		String answer = auditData.getAnswer();
 
+		if ("ESignature".equals(questionType)) {
+			if (Strings.isEmpty(eSignatureName)) {
+				addActionError(getText("AuditData.ESignature.name.missing"));
+			}
+			
+			if (Strings.isEmpty(eSignatureTitle)) {
+				addActionError(getText("AuditData.ESignature.title.missing"));
+			}
+			
+			if (hasActionErrors()) {
+				return false;
+			}
+			
+			// Strip the first comma that results from the two part answer.
+			auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
+			auditData.setComment(getIP());
+		}
+		
 		// Null or blank answers are always OK
 		if (Strings.isEmpty(answer))
 			return true;
@@ -489,10 +509,6 @@ public class AuditDataSave extends AuditActionSupport {
 				auditData.setAnswer("");
 		}
 
-		if ("ESignature".equals(questionType))
-			// Strip the first comma that results from the two part answer.
-			auditData.setAnswer(answer = answer.trim().replaceFirst(",", ""));
-
 		return true;
 	}
 
@@ -512,5 +528,20 @@ public class AuditDataSave extends AuditActionSupport {
 
 		return guessNaicsCode(naics.substring(0, naics.length() - 1));
 	}
-
+	
+	public String getESignatureName() {
+		return eSignatureName;
+	}
+	
+	public void setESignatureName(String eSignatureName) {
+		this.eSignatureName = eSignatureName;
+	}
+	
+	public String getESignatureTitle() {
+		return eSignatureTitle;
+	}
+	
+	public void setESignatureTitle(String eSignatureTitle) {
+		this.eSignatureTitle = eSignatureTitle;
+	}
 }

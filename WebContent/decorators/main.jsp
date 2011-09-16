@@ -84,6 +84,12 @@
 		<script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 		<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
+		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
+		<script type="text/javascript" src="js/main_search.js"></script>
+		
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/audit.js"></script>
 		
 		<script type="text/javascript">
 			$(function() {
@@ -149,10 +155,6 @@
 		<!--[if lt IE 7]>
 			<link rel="stylesheet" href="css/ie6.css" type="text/css" />
 		<![endif]-->
-			
-		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
-		<script type="text/javascript" src="js/main_search.js"></script>
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
 		<div id="bodywrap">
