@@ -54,7 +54,7 @@ public abstract class SubscriptionBuilder {
 
 			// TODO: change this in the templates String
 			String confirmLink = "http://www.picsorganizer.com/EmailUserUnsubscribe.action?id=" + user.getId()
-					+ "&sub=" + subscription + "&key=" + Strings.hashUrlSafe(seed);
+					+ "&sub=" + subscription.getSubscription() + "&key=" + Strings.hashUrlSafe(seed);
 
 			emailBuilder.addToken("confirmLink", confirmLink);
 
