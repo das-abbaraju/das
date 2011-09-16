@@ -159,12 +159,12 @@
 									<s:select name="contractor.timezone" value="contractor.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 								</li>
 								
-								<%--<s:if test="contractor.demo"> --%>
+								<s:if test="contractor.demo || configEnvironment">
 									<li>
 										<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
 										<s:select name="contractor.locale" listValue="displayName" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 									</li>
-								<%--</s:if> --%>
+								</s:if>
 								
 								<li>
 									<label><s:text name="ContractorEdit.PrimaryAddress.CompanyPhone"/>:</label>
