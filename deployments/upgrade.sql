@@ -72,4 +72,4 @@ Below are all the contractors whose flags have been forced. <br/>
 <SubscriptionFooter>' where t.id = 165;
 --
 
-update email_template t set t.translated = 1 where t.id in (9,86,62,51,107,63,60,65,61,71,130,168,45,48,50,10,70,63);
+update email_template t set t.translated = 1 where t.id in (9,81,86,62,51,107,63,60,65,61,71,130,168,45,48,50,10,70,63);
