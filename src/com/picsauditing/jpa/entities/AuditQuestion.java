@@ -54,7 +54,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
-			"License", "Money", "Number","ESignature" };
+			"License", "Money", "Number", "ESignature" };
 
 	private int number;
 	private int scoreWeight;
@@ -93,7 +93,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> functions;
 	private List<AuditQuestionFunctionWatcher> functionWatchers;
-	
+
 	private AuditExtractOption extractOption;
 	private List<AuditTransformOption> transformOptions;
 
@@ -428,6 +428,9 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 			dependentQuestions = new HashSet<AuditQuestion>();
 			dependentQuestions.addAll(dependentRequired);
 			dependentQuestions.addAll(dependentVisible);
+			for (AuditQuestionFunctionWatcher watcher : functionWatchers) {
+				dependentQuestions.add(watcher.getFunction().getQuestion());
+			}
 		}
 
 		return dependentQuestions;
@@ -558,12 +561,12 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	public AuditExtractOption getExtractOption() {
 		return extractOption;
 	}
-	
+
 	public void setExtractOption(AuditExtractOption extractOption) {
 		this.extractOption = extractOption;
 	}
 
-	@OneToMany(mappedBy = "sourceQuestion", cascade={CascadeType.REMOVE})
+	@OneToMany(mappedBy = "sourceQuestion", cascade = { CascadeType.REMOVE })
 	public List<AuditTransformOption> getTransformOptions() {
 		return transformOptions;
 	}

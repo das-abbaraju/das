@@ -232,7 +232,4 @@
 
 <s:include value="../actionMessages.jsp" />
 
-<div class="dependentFunction hide"><s:iterator value="#q.functionWatchers" status="s"><s:property value="function.question.id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
-<div class="dependentRequired hide"><s:iterator value="#q.dependentRequired" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
-<div class="dependentVisible hide"><s:iterator value="#q.getDependentVisible(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
-<div class="dependentVisibleHide hide"><s:iterator value="#q.getDependentVisibleHide(#a.answer)" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
+<div class="dependent-questions hide"><s:iterator value="#q.dependentQuestions" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>

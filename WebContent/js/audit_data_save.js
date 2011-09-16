@@ -10,22 +10,7 @@ $(function(){
 	});
 
 	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
-		$.each($(this).find('div.dependentRequired:first').text().split(','), function(i,v) {
-			reloadQuestion(v);
-		});
-	});
-
-	$('#auditViewArea').delegate('div.hasDependentVisible', 'updateDependent', function() {
-		$.each($(this).find('div.dependentVisible:first').text().split(','), function(i,v) {
-			reloadQuestion(v);
-		});
-		$.each($(this).find('div.dependentVisibleHide:first').text().split(','), function(i,v) {
-			reloadQuestion(v);
-		});
-	});
-
-	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
-		$.each($(this).find('div.dependentFunction:first').text().split(','), function(i,v) {
+		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
 		});
 	});
@@ -80,14 +65,13 @@ function reloadQuestion(qid) {
 	var inputs = element.find('form.qform :input.get_request');
 	if (inputs.length) {
 		data = inputs.serializeArray();
-		data.push({ name:'button', value:'refresh' });
+		data.push({ name:'button', value:'reload' });
 	} else {
 		data = {
 			button: 'reload',
 			'auditData.question': qid,
 			'auditData.audit': auditID
 		};
-		
 	}
 	
 	element.block({
