@@ -50,6 +50,10 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addField("gc.flag AS flag");
 			sql.addField("oa.name AS opName");
 			sql.addField("o.id AS opID");
+			
+			if (o.isOperator()) {
+				sql.addGroupBy("a.id, oa.id");
+			}
 
 			sql.addOrderBy("a.name, oa.name");
 
