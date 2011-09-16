@@ -1,5 +1,6 @@
 package com.picsauditing.actions.users;
 
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.AccountRecovery;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
@@ -31,12 +33,15 @@ import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectAccount;
@@ -102,7 +107,7 @@ public class UsersManage extends PicsActionSupport {
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 			userDAO.save(user);
 
-			addActionMessage(AccountRecovery.sendRecoveryEmail(user));
+			addActionMessage(sendRecoveryEmail(user));
 		}
 
 		if ("Suggest".equalsIgnoreCase(button))
@@ -319,7 +324,7 @@ public class UsersManage extends PicsActionSupport {
 
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
-			addActionMessage(AccountRecovery.sendActivationEmail(user, permissions));
+			addActionMessage(sendActivationEmail(user, permissions));
 
 		if (user.getId() == 0) {
 			newUser = true;
@@ -837,6 +842,57 @@ public class UsersManage extends PicsActionSupport {
 				permissions.remove();
 				accessToBeRemoved.add(ua);
 			}
+		}
+	}
+	
+	public String sendRecoveryEmail(User user) {
+		try {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(85);
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.addToken("user", user);
+
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setToAddresses(user.getEmail());
+
+			EmailQueue emailQueue;
+			emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			emailSenderStatic.send(emailQueue);
+			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
+		} catch (Exception e) {
+			return getText("AccountRecovery.error.ResetEmailError");
+		}
+	}
+	
+	public String sendActivationEmail(User user, Permissions permission) {
+		try {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(5);
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.setBccAddresses("\"PICS Marketing\"<marketing@picsauditing.com>");
+			emailBuilder.addToken("user", user);
+			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setToAddresses(user.getEmail());
+			emailBuilder.setPermissions(permission);
+
+			EmailQueue emailQueue;
+			emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			emailSenderStatic.send(emailQueue);
+			return getText("AccountRecovery.EmailSent", user.getEmail());
+		} catch (Exception e) {
+			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
 }
