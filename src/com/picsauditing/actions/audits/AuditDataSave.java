@@ -45,7 +45,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private AnswerMap answerMap;
 	private String mode;
 	private boolean toggleVerify = false;
-	
+
 	// e-signature data
 	private String eSignatureName = null;
 	private String eSignatureTitle = null;
@@ -80,6 +80,15 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditID = auditData.getAudit().getId();
 
+			/*
+			 * If we are reloading the question, we need to exit early to prevent the object from saving
+			 */
+			if ("reload".equals(button)) {
+				auditData = newCopy;
+				loadAnswerMap();
+				return SUCCESS;
+			}
+
 			if (newCopy == null) {
 				// insert mode
 				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
@@ -90,7 +99,8 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()) || (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
+				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())
+						|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
 
 					if (!checkAnswerFormat(auditData, newCopy)) {
 						auditData = newCopy;
@@ -119,7 +129,7 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
-				
+
 				// we were handed the verification parms
 				// instead of the edit parms
 
@@ -143,13 +153,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 			loadAnswerMap();
 
-			// Load Dependent questions
-			auditData.getQuestion().getDependentRequired();
-			auditData.getQuestion().getDependentVisible();
 			auditData.setAuditColumns(permissions);
-			if ("reload".equals(button)) {
-				return SUCCESS;
-			}
+
 			if (auditData.getQuestion().getId() == 57) {
 				if ("0".equals(guessNaicsCode(auditData.getAnswer()))) {
 					addActionError("This is not a valid 2007 NAICS code");
@@ -435,7 +440,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if (databaseCopy == null) {
 			databaseCopy = auditData;
 		}
-			
+
 		String questionType = databaseCopy.getQuestion().getQuestionType();
 		String answer = auditData.getAnswer();
 
@@ -443,20 +448,20 @@ public class AuditDataSave extends AuditActionSupport {
 			if (Strings.isEmpty(eSignatureName)) {
 				addActionError(getText("AuditData.ESignature.name.missing"));
 			}
-			
+
 			if (Strings.isEmpty(eSignatureTitle)) {
 				addActionError(getText("AuditData.ESignature.title.missing"));
 			}
-			
+
 			if (hasActionErrors()) {
 				return false;
 			}
-			
+
 			// Strip the first comma that results from the two part answer.
 			auditData.setAnswer(eSignatureName + " / " + eSignatureTitle);
 			auditData.setComment(getIP());
 		}
-		
+
 		// Null or blank answers are always OK
 		if (Strings.isEmpty(answer))
 			return true;
@@ -528,19 +533,19 @@ public class AuditDataSave extends AuditActionSupport {
 
 		return guessNaicsCode(naics.substring(0, naics.length() - 1));
 	}
-	
+
 	public String getESignatureName() {
 		return eSignatureName;
 	}
-	
+
 	public void setESignatureName(String eSignatureName) {
 		this.eSignatureName = eSignatureName;
 	}
-	
+
 	public String getESignatureTitle() {
 		return eSignatureTitle;
 	}
-	
+
 	public void setESignatureTitle(String eSignatureTitle) {
 		this.eSignatureTitle = eSignatureTitle;
 	}
