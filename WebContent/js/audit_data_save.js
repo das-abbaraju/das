@@ -97,12 +97,10 @@ $(function(){
 
 	$('#auditViewArea').delegate('div.hasDependentVisible', 'updateDependent', function() {
 		$.each($(this).find('div.dependentVisible:first').text().split(','), function(i,v) {
-			$('#node_'+v).removeClass('hide');
-			$('#title_'+v).removeClass('hide');
+			reloadQuestion(v);
 		});
 		$.each($(this).find('div.dependentVisibleHide:first').text().split(','), function(i,v) {
-			$('#node_'+v).addClass('hide');
-			$('#title_'+v).addClass('hide');
+			reloadQuestion(v);
 		});
 	});
 

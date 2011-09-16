@@ -85,6 +85,8 @@
 
 <%-- Question --%>
 
+<s:set name="hidden" value="!#q.isVisible(answerMap)" />
+
 <div id="node_<s:property value="#q.id"/>" class="clearfix question
 	<s:if test="#shaded && #category.columns == 1"> shaded</s:if>
 	<s:if test="#hidden"> hide</s:if>
