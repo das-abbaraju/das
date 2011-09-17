@@ -1,6 +1,7 @@
 <decorators defaultdir="/decorators">
 	<decorator name="main" page="main.jsp">
-		<pattern>/*</pattern>
+		<pattern>/*.jsp</pattern>
+		<pattern>/*.action</pattern>
 	</decorator>
 	<decorator name="simple" page="simple.jsp">
 		<pattern>/NoteEditor.action</pattern>
@@ -23,7 +24,6 @@
 		<pattern>/*json*</pattern>
 		<pattern>/*Autocomplete.action</pattern>
 		<pattern>/*CSV.action</pattern>
-		<pattern>/*download*</pattern>
 		<pattern>/Download*</pattern>
 		<pattern>/AuditDataUpload.action</pattern>
 		<pattern>/CertificateUpload.action</pattern>
