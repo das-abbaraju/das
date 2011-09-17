@@ -186,7 +186,7 @@ load_config_to_live () {
 	/usr/bin/mysql $db_live < $dumpfile
 	
 	echo "clear cache"
-	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = 'true' WHERE property = 'clear_cache'"
+	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = '1' WHERE property = 'PICS.clear_cache'"
 	
 	echo "Rezip the config data"
 	/bin/gzip -f $dumpfile
