@@ -139,4 +139,14 @@
 		<s:if test="insurance"><s:text name="ManageFlagCriteriaOperator.alert.OperatorHasNoInsuranceCriteria" /></s:if>
 		<s:else><s:text name="ManageFlagCriteriaOperator.alert.OperatorHasNoFlagCriteria" /></s:else>
 	</div>
+	
+	<s:if test="canEdit">
+		<pics:permission perm="ManageAudits">
+			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
+		</pics:permission>
+		
+		<a href="#" class="add newCriteria"><s:text name="ManageFlagCriteriaOperator.link.AddNewCriteria" /></a>
+		
+		<div id="addCriteria"></div>
+	</s:if>
 </s:else>
