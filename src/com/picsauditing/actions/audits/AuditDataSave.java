@@ -219,7 +219,7 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 
 				// Stop concurrent modification exception
-				if (tempAudit.getAuditType().isAnnualAddendum()) {
+				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
