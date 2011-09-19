@@ -57,7 +57,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		this.findConAudit();
 
 		if (auditData == null) {
-			addActionError("No question supplied for upload");
+			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
 			return SUCCESS;
 		}
 		
@@ -88,7 +88,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			if (questionID > 0)
 				question = questionDAO.find(questionID);
 			if (question == null) {
-				addActionError("Failed to find question");
+				addActionError(getText("AuditDataUpload.error.CantFindQuestion"));
 				return BLANK;
 			}
 			auditData.setQuestion(question);
@@ -105,97 +105,12 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 						downloader.download(files[0], null);
 						return null;
 					} catch (Exception e) {
-						addActionError("Failed to download file: " + e.getMessage());
+						addActionError(getText("AuditDataUpload.error.FailedDownload") + e.getMessage());
 						return BLANK;
 					}
 				} else {
-					addActionError("File does not exist");
+					addActionError(getText("AuditDataUpload.error.FileDoesntExist"));
 					return BLANK;
-				}
-			}
-
-			if (dataID > 0 && button.startsWith("Delete")) {
-				try {
-					// remove all files ie (pdf, jpg)
-					for (File oldFile : getFiles(dataID))
-						FileUtils.deleteFile(oldFile);
-				} catch (Exception e) {
-					addActionError("Failed to save file: " + e.getMessage());
-					e.printStackTrace();
-					return INPUT;
-				}
-
-				auditDataDao.remove(auditData.getId());
-
-				auditData = new AuditData();
-				auditData.setAudit(conAudit);
-				AuditQuestion question = null;
-				if (questionID > 0)
-					question = questionDAO.find(questionID);
-				if (question == null) {
-					addActionError("Failed to find question");
-					return BLANK;
-				}
-				auditData.setQuestion(question);
-
-				addActionMessage("Successfully removed file");
-			}
-			if (button.equalsIgnoreCase("Upload File")) {
-				if (copyDataID > 0) {
-					// COPY FILE
-					AuditData toCopy = auditDataDao.find(copyDataID);
-
-					if (toCopy != null) {
-
-						// TODO Check permissions
-						for (File toCopyFile : getFiles(copyDataID)) {
-							file = toCopyFile;
-						}
-						fileFileName = file.getName();
-					} else {
-						addActionError("Could not find data record to copy");
-						return BLANK;
-					}
-				} else {
-					// UPLOAD FILE
-
-					if (file == null || file.length() == 0) {
-						addActionError("File was missing or empty");
-						return SUCCESS;
-					}
-				}
-				String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-				if (!FileUtils.checkFileExtension(extension)) {
-					file = null;
-					addActionError("Bad File Extension");
-					return SUCCESS;
-				}
-
-				auditData.setAnswer(extension);
-
-				auditData.setAuditColumns(permissions);
-				auditDataDao.save(auditData);
-				dataID = auditData.getId();
-
-				if (copyDataID > 0) {
-					FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID),
-							getFileName(dataID), extension, true);
-					addActionMessage("Successfully copied file");
-				} else {
-					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID),
-							getFileName(dataID), extension, true);
-					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
-					
-					if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF && extension.toLowerCase().equals("pdf")) {
-						ImportPqf importer = getImportPqf();
-						if (importer != null) {
-							ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(),
-									importer.getAuditType());
-							File[] files = getFiles(dataID);
-							importer.calculate(pqfAudit, files[0]);
-							debugLog = importer.getLog();
-						}
-					}
 				}
 			}
 		}
@@ -206,7 +121,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 				if (files.length > 0)
 					file = files[0];
 				if (files.length > 1)
-					addActionError("Somehow, two files were uploaded.");
+					addActionError(getText("AuditDataUpload.error.TwoFiles"));
 			}
 		}
 
@@ -220,6 +135,289 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		return SUCCESS;
 	}
 	
+	public String deleteFile() throws Exception {
+		this.findConAudit();
+
+		if (auditData == null) {
+			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
+			return SUCCESS;
+		}
+		
+		debugLog = null;
+
+		int dataID = auditData.getId();
+		int questionID = 0;
+		if (auditData.getQuestion() != null)
+			questionID = auditData.getQuestion().getId();
+
+		try {
+			// Try to find the previous version using the passed in auditData
+			// record
+			if (dataID > 0)
+				auditData = auditDataDao.find(dataID);
+			else {
+				int auditID = conAudit.getId();
+				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+			}
+		} catch (NoResultException notReallyAProblem) {
+		}
+
+		if (auditData == null) {
+			dataID = 0;
+			auditData = new AuditData();
+			auditData.setAudit(conAudit);
+			AuditQuestion question = null;
+			if (questionID > 0)
+				question = questionDAO.find(questionID);
+			if (question == null) {
+				addActionError(getText("AuditDataUpload.error.CantFindQuestion"));
+				return BLANK;
+			}
+			auditData.setQuestion(question);
+		} else
+			dataID = auditData.getId();
+		
+		if (dataID > 0) {
+			try {
+				// remove all files ie (pdf, jpg)
+				for (File oldFile : getFiles(dataID))
+					FileUtils.deleteFile(oldFile);
+			} catch (Exception e) {
+				addActionError(getText("AuditDataUpload.error.FailedSavingFile") + e.getMessage());
+				e.printStackTrace();
+				return INPUT;
+			}
+		}
+
+		return SUCCESS;
+	}
+
+	public String uploadFile() throws Exception {
+		this.findConAudit();
+
+		if (auditData == null) {
+			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
+			return SUCCESS;
+		}
+
+		debugLog = null;
+
+		int dataID = auditData.getId();
+		int questionID = 0;
+		if (auditData.getQuestion() != null)
+			questionID = auditData.getQuestion().getId();
+
+		try {
+			// Try to find the previous version using the passed in auditData
+			// record
+			if (dataID > 0)
+				auditData = auditDataDao.find(dataID);
+			else {
+				int auditID = conAudit.getId();
+				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+			}
+		} catch (NoResultException notReallyAProblem) {
+		}
+
+		if (auditData == null) {
+			dataID = 0;
+			auditData = new AuditData();
+			auditData.setAudit(conAudit);
+			AuditQuestion question = null;
+			if (questionID > 0)
+				question = questionDAO.find(questionID);
+			if (question == null) {
+				addActionError(getText("AuditDataUpload.error.CantFindQuestion"));
+				return BLANK;
+			}
+			auditData.setQuestion(question);
+		} else
+			dataID = auditData.getId();
+
+		if (copyDataID > 0) {
+			// COPY FILE
+			AuditData toCopy = auditDataDao.find(copyDataID);
+
+			if (toCopy != null) {
+
+				// TODO Check permissions
+				for (File toCopyFile : getFiles(copyDataID)) {
+					file = toCopyFile;
+				}
+				fileFileName = file.getName();
+			} else {
+				addActionError(getText("AuditDataUpload.error.CouldNotFindRecord"));
+				return BLANK;
+			}
+		} else {
+			// UPLOAD FILE
+			if (file == null || file.length() == 0) {
+				addActionError(getText("AuditDataUpload.error.FileMissing"));
+				return SUCCESS;
+			}
+		}
+		String extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+		if (!FileUtils.checkFileExtension(extension)) {
+			file = null;
+			addActionError(getText("AuditDataUpload.error.BadExtension"));
+			return SUCCESS;
+		}
+
+		auditData.setAnswer(extension);
+
+		auditData.setAuditColumns(permissions);
+		auditDataDao.save(auditData);
+		dataID = auditData.getId();
+
+		if (copyDataID > 0) {
+			FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
+					extension, true);
+			addActionMessage(getText("AuditDataUpload.message.CopySuccess"));
+		} else {
+			FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
+					extension, true);
+			addActionMessage(this.getTextParameterized("AuditDataUpload.message.UploadSuccess", fileFileName));
+
+			if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF && extension.toLowerCase().equals("pdf")) {
+				ImportPqf importer = getImportPqf();
+				if (importer != null) {
+					ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
+					File[] files = getFiles(dataID);
+					importer.calculate(pqfAudit, files[0]);
+					debugLog = importer.getLog();
+				}
+			}
+		}
+
+		if (dataID > 0) {
+			File[] files = getFiles(dataID);
+			if (files != null) {
+				if (files.length > 0)
+					file = files[0];
+				if (files.length > 1)
+					addActionError(getText("AuditDataUpload.error.TwoFiles"));
+			}
+		}
+
+		for (AuditCatData auditCatData : getCategories().values()) {
+			if (auditCatData.getCategory().equals(auditData.getQuestion().getCategory())) {
+				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+				auditDao.save(auditCatData);
+			}
+		}
+
+		return SUCCESS;
+	}
+
+	public String downloadFile() throws Exception {
+		this.findConAudit();
+
+		if (auditData == null) {
+			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
+			return SUCCESS;
+		}
+
+		debugLog = null;
+
+		int dataID = auditData.getId();
+		int questionID = 0;
+		if (auditData.getQuestion() != null)
+			questionID = auditData.getQuestion().getId();
+
+		try {
+			// Try to find the previous version using the passed in auditData
+			// record
+			if (dataID > 0)
+				auditData = auditDataDao.find(dataID);
+			else {
+				int auditID = conAudit.getId();
+				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+			}
+		} catch (NoResultException notReallyAProblem) {
+		}
+
+		if (auditData == null) {
+			dataID = 0;
+			auditData = new AuditData();
+			auditData.setAudit(conAudit);
+			AuditQuestion question = null;
+			if (questionID > 0)
+				question = questionDAO.find(questionID);
+			if (question == null) {
+				addActionError(getText("AuditDataUpload.error.CantFindQuestion"));
+				return BLANK;
+			}
+			auditData.setQuestion(question);
+		} else
+			dataID = auditData.getId();
+
+		if (dataID > 0) {
+			Downloader downloader = new Downloader(ServletActionContext.getResponse(),
+					ServletActionContext.getServletContext());
+			try {
+				File[] files = getFiles(dataID);
+				downloader.download(files[0], null);
+				return null;
+			} catch (Exception e) {
+				addActionError(getText("AuditDataUpload.error.FailedDownload") + e.getMessage());
+				return BLANK;
+			}
+		} else {
+			addActionError(getText("AuditDataUpload.error.FileDoesntExist"));
+			return BLANK;
+		}
+	}
+	
+	private String initialize() throws Exception {
+		this.findConAudit();
+
+		if (auditData == null) {
+			addActionError(getText("AuditDataUpload.error.NoQuestionSupplied"));
+			return SUCCESS;
+		}
+		
+		debugLog = null;
+
+		int dataID = auditData.getId();
+		int questionID = 0;
+		if (auditData.getQuestion() != null)
+			questionID = auditData.getQuestion().getId();
+
+		try {
+			// Try to find the previous version using the passed in auditData
+			// record
+			if (dataID > 0)
+				auditData = auditDataDao.find(dataID);
+			else {
+				int auditID = conAudit.getId();
+				auditData = auditDataDao.findAnswerToQuestion(auditID, questionID);
+			}
+		} catch (NoResultException notReallyAProblem) {
+		}
+
+		if (auditData == null) {
+			dataID = 0;
+			auditData = new AuditData();
+			auditData.setAudit(conAudit);
+			AuditQuestion question = null;
+			if (questionID > 0)
+				question = questionDAO.find(questionID);
+			if (question == null) {
+				addActionError(getText("AuditDataUpload.error.CantFindQuestion"));
+				return BLANK;
+			}
+			auditData.setQuestion(question);
+		} else
+			dataID = auditData.getId();
+
+		
+		return null;
+	}
+	
+	private String postprocess() {
+		return null;
+	}
+
 	private ContractorAudit getPqfAudit(ContractorAccount contractor, int auditId) {
 		ContractorAudit audit = null;
 		
