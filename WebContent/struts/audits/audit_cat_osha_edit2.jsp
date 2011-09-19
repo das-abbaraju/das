@@ -39,7 +39,7 @@
 	</s:else>
 	</th>
 	<td>
-		<s:textfield name='osha.manHours' value="%{getText('format.plain',manHours)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.manHours" value="%{getTextParameterized('format.plain',manHours)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -47,7 +47,7 @@
 		<s:text name="AnnualUpdate.fatalities"/>
 	</th>
 	<td>
-		<s:textfield name='osha.fatalities' value="%{getText('format.plain',fatalities)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.fatalities" label="%{getTextParameterized('format.plain',fatalities)}" value="%{fatalities}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -55,7 +55,7 @@
 		<s:text name="%{type}.lostWorkDayCases"/>
 	</th>
 	<td>
-		<s:textfield name='osha.lostWorkCases' value="%{getText('format.plain',lostWorkCases)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.lostWorkCases" value="%{getTextParameterized('format.plain',lostWorkCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -63,7 +63,7 @@
 		<s:text name="%{type}.lostWorkDays"/>
 	</th>
 	<td>
-		<s:textfield name='osha.lostWorkDays' value="%{getText('format.plain',lostWorkDays)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.lostWorkDays" value="%{getTextParameterized('format.plain',lostWorkDays)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -71,7 +71,7 @@
 		<s:text name="%{type}.restrictedCases"/>
 	</th>
 	<td>
-		<s:textfield name='osha.restrictedWorkCases' value="%{getText('format.plain',restrictedWorkCases)}" cssClass="osha"></s:textfield>
+		<s:textfield name='osha.restrictedWorkCases' value="%{getTextParameterized('format.plain',restrictedWorkCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id in { 151, 158 }">
@@ -80,7 +80,7 @@
 		<s:text name="%{type}.modifiedWorkDay"/>
 	</th>
 	<td>
-		<s:textfield name='osha.modifiedWorkDay' value="%{getText('format.plain',modifiedWorkDay)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.modifiedWorkDay" value="%{getTextParameterized('format.plain',modifiedWorkDay)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
@@ -89,7 +89,7 @@
 		<s:text name="%{type}.injuryAndIllness"/>
 	</th>
 	<td>
-		<s:textfield name='osha.injuryIllnessCases' value="%{getText('format.plain',injuryIllnessCases)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.injuryIllnessCases" value="%{getTextParameterized('format.plain',injuryIllnessCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id == 158">
@@ -98,7 +98,7 @@
 		<s:text name="%{type}.firstAidInjuries"/>
 	</th>
 	<td>
-		<s:textfield name='osha.firstAidInjuries' value="%{getText('format.plain',firstAidInjuries)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.firstAidInjuries" value="%{getTextParameterized('format.plain',firstAidInjuries)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -106,7 +106,7 @@
 		<s:text name="%{type}.vehicleIncidents"/>
 	</th>
 	<td>
-		<s:textfield name='osha.vehicleIncidents' value="%{getText('format.plain',vehicleIncidents)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.vehicleIncidents" value="%{getTextParameterized('format.plain',vehicleIncidents)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <tr>
@@ -114,7 +114,7 @@
 		<s:text name="%{type}.totalkmDriven"/>
 	</th>
 	<td>
-		<s:textfield name='osha.totalkmDriven' value="%{getText('format.plain',totalkmDriven)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.totalkmDriven" value="%{getTextParameterized('format.plain',totalkmDriven)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 </s:if>
