@@ -109,7 +109,7 @@ function showChooseDate(override) {
 <div>
 <a href="MySchedule.action?currentUserID=<s:property value="conAudit.auditor.id"/>" class="picsbutton" target="_BLANK" title="<s:text name="global.NewWindow" />">
 	<s:text name="ScheduleAudit.button.OpenAuditorSchedule">
-		<s:param value=%{conAudit.auditor.name}" />
+		<s:param value="%{conAudit.auditor.name}" />
 	</s:text>
 </a>
 </div>
