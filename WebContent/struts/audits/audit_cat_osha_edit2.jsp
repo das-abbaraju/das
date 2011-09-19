@@ -71,7 +71,7 @@
 		<s:text name="%{type}.restrictedCases"/>
 	</th>
 	<td>
-		<s:textfield name='osha.restrictedWorkCases' value="%{getTextParameterized('format.plain',restrictedWorkCases)}" cssClass="osha"></s:textfield>
+		<s:textfield name="osha.restrictedWorkCases" value="%{getTextParameterized('format.plain',restrictedWorkCases)}" cssClass="osha"></s:textfield>
 	</td>
 </tr>
 <s:if test="#category.id in { 151, 158 }">
