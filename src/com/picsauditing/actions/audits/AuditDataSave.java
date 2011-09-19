@@ -112,9 +112,9 @@ public class AuditDataSave extends AuditActionSupport {
 
 					if (!toggleVerify) {
 						newCopy.setDateVerified(null);
+						newCopy.setAnswer(auditData.getAnswer());
 					}
 
-					newCopy.setAnswer(auditData.getAnswer());
 					if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
 							&& permissions.isPicsEmployee()) {
 						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
@@ -456,7 +456,7 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			if (hasBadChar) {
-				addActionError("The answer must be a number.");
+				addActionError(getText("AuditData.error.MustBeNumber"));
 				return false;
 			}
 
@@ -477,10 +477,10 @@ public class AuditDataSave extends AuditActionSupport {
 			Date newDate = DateBean.parseDate(answer);
 
 			if (newDate == null) {
-				addActionError("Invalid Date Format");
+				addActionError(getText("AuditData.error.InvalidDate"));
 				return false;
 			} else if (newDate.after(DateBean.parseDate("9999-12-31"))) {
-				addActionError("Date Out Of Range");
+				addActionError(getText("AuditData.error.DateOutOfRange"));
 				return false;
 			} else
 				auditData.setAnswer(s.format(newDate));
