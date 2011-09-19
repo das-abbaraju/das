@@ -1,64 +1,124 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <s:if test="report.allRows == 0">
-	<div class="alert">No rows found matching the given criteria.
-	Please try again.</div>
+	<div class="alert">
+		No rows found matching the given criteria. Please try again.
+	</div>
 </s:if>
 <s:else>
-	<div><s:property value="report.pageLinksWithDynamicForm"
-		escape="false" /></div>
+	<div>
+		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	</div>
+	
 	<table class="report">
 		<thead>
 			<tr>
-				<td>View</td>
-				<td>Include</td>
-				<td>Audit Type</td>
+				<td>
+					View
+				</td>
+				<td>
+					Include
+				</td>
+				<td>
+					Audit Type
+				</td>
+				
 				<s:if test="categoryRule">
-					<td>Category</td>
+					<td>
+						Category
+					</td>
 				</s:if>
-				<td>Operator</td>
-				<td>Tag</td>
-				<td>Risk</td>
-				<td>Type</td>
+				
+				<td>
+					Operator
+				</td>
+				<td>
+					Tag
+				</td>
+				<td>
+					Risk
+				</td>
+				<td>
+					Type
+				</td>
 				<s:if test="!categoryRule">
-					<td colspan="2">Dependency</td>
+					<td colspan="2">
+						Dependency
+					</td>
 				</s:if>
-				<td style="max-width: 200px">Question</td>
+				
+				<td style="max-width: 200px">
+					Question
+				</td>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="data" status="stat">
 				<tr class="<s:property value="get('include') ? 'on' : 'off'"/>">
-					<td class="center"><a href="<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>" class="preview"></a></td>
-					<td class="center"><s:property value="get('include') ? 'Include' : 'Exclude'"/></td>
-					<td><s:if test="get('auditTypeID') > 0"><a href="ManageAuditType.action?id=<s:property value="get('auditTypeID')"/>"><s:property value="get('audit_type')"/></a></s:if><s:else>*</s:else></td>
+					<td class="center">
+						<a href="<s:property value="actionUrl"/><s:property value="get('id')"/><s:if test="filter.checkDate!=null">&date=<s:property value="filter.checkDate"/></s:if>" class="preview"></a>
+					</td>
+					<td class="center">
+						<s:property value="get('include') ? 'Include' : 'Exclude'"/>
+					</td>
+					<td>
+						<s:if test="get('auditTypeID') > 0">
+							<a href="ManageAuditType.action?id=<s:property value="get('auditTypeID')"/>"><s:property value="get('audit_type')"/></a>
+						</s:if>
+						<s:else>
+							*
+						</s:else>
+					</td>
+					
 					<s:if test="categoryRule">
 						<td>
 							<s:if test="get('catID') > 0">
-							<a href="ManageCategory.action?id=<s:property value="get('catID')"/>"><s:property value="get('category')"/></a>
-						</s:if>
-						<s:else>
-							<b>- <s:property value="get('rootCategory') ? 'Top' : 'Sub'"/> Category -</b>
-						</s:else>
+								<a href="ManageCategory.action?id=<s:property value="get('catID')"/>"><s:property value="get('category')"/></a>
+							</s:if>
+							<s:else>
+								<b>- <s:property value="get('rootCategory') ? 'Top' : 'Sub'"/> Category -</b>
+							</s:else>
 						</td>
 					</s:if>
-					<td><s:if test="get('opID') > 0"><a href="OperatorConfiguration.action?id=<s:property value="get('opID')"/>"
-						class="account<s:property value="get('operatorStatus')"/>"><s:property value="get('operator')"/></a></s:if><s:else>*</s:else></td>
-					<td><s:property value="get('tag')"/></td>
-					<td><s:property value="get('risk') > 0 ? getRisk(get('risk')) : '*'"/></td>
-					<td><s:property value="get('con_type')"/></td>
+					
+					<td>
+						<s:if test="get('opID') > 0">
+							<a href="OperatorConfiguration.action?id=<s:property value="get('opID')"/>" class="account<s:property value="get('operatorStatus')"/>"><s:property value="get('operator')"/></a>
+						</s:if>
+						<s:else>
+							*
+						</s:else>
+					</td>
+					<td>
+						<s:property value="get('tag')"/>
+					</td>
+					<td>
+						<s:property value="get('risk') > 0 ? getRisk(get('risk')) : '*'"/>
+					</td>
+					<td>
+						<s:property value="get('con_type')"/>
+					</td>
+					
 					<s:if test="!categoryRule">
-						<td><s:property value="get('dependentAuditType')"/></td>
-						<td><s:property value="get('dependentAuditStatus')"/></td>
+						<td>
+							<s:property value="get('dependentAuditType')"/>
+						</td>
+						<td>
+							<s:property value="get('dependentAuditStatus')"/>
+						</td>
 					</s:if>
-					<td><s:property value="get('question')"/></td>
+					
+					<td>
+						<s:property value="get('question')"/>
+					</td>
 				</tr>
 			</s:iterator>
 		</tbody>
 	</table>
-	<div class="alphapaging"><s:property value="report.pageLinksWithDynamicForm"
-		escape="false" /></div>
+	
+	<div class="alphapaging">
+		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	</div>
 </s:else>
