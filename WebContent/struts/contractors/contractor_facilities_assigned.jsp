@@ -31,7 +31,7 @@
 				</s:if>
 			</s:iterator>
 			<tr><td class="left"><s:if test="contractor.accountLevel.full">
-				<a onclick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window"><s:text name="ContractorFacilities.ViewPricing" /></a>
+				<a href="ContractorPricing.action?con=<s:property value="contractor.id" />" rel="facebox" class="ext"><s:text name="ContractorFacilities.ViewPricing" /></a>
 				</s:if></td>
 				<td><s:text name="ContractorFacilities.Total" />:</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.newMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>
@@ -45,7 +45,7 @@
 				</s:if>
 			</s:iterator>
 			<tr><td class="left"><s:if test="contractor.accountLevel.full">
-				<a onclick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="opens in new window"><s:text name="ContractorFacilities.ViewPricing" /></a>
+				<a href="ContractorPricing.action?con=<s:property value="contractor.id" />" rel="facebox" class="ext"><s:text name="ContractorFacilities.ViewPricing" /></a>
 				</s:if></td>
 				<td><s:text name="ContractorFacilities.Total" />:</td><td class="right"><s:property value="contractor.currencyCode.symbol" /><s:property value="contractor.currentMembershipAmount"/></td><td>&nbsp;<s:property value="contractor.currency"/></td></tr>
 		</table>

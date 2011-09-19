@@ -140,7 +140,7 @@ function updateExpDate() {
 								<s:text name="ContractorPaymentOptions.NextBillingAmount"/>:
 								
 								<s:if test="contractor.accountLevel.full">
-									(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="<s:text name="global.NewWindow"/>"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
+									(<a href="ContractorPricing.action?con=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
 								</s:if>
 							</label>
 							
@@ -213,7 +213,7 @@ function updateExpDate() {
 									<s:text name="ContractorPaymentOptions.AnnualMembership" />:
 	
 									<s:if test="contractor.accountLevel.full">
-										(<a onClick="window.open('ContractorPricing.action?con=<s:property value="contractor.id" />','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=420,height=420'); return false;" href="#" title="<s:text name="global.NewWindow"/>"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
+										(<a href="ContractorPricing.action?con=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorFacilities.ContractorFacilities.ViewPricing"/></a>)
 									</s:if>
 								</label>
 								

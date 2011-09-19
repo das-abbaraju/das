@@ -11,8 +11,5 @@
 </head>
 <body bgcolor="#EEEEEE" background="images/watermark.gif" vlink="#003366" alink="#003366" style="margin: 10px; text-align: center;">
 <%@ include file="includes/pricing_matrix.jsp" %>
-<form>
-	<s:submit type="button" onclick="window.close()"><s:text name="button.Close" /></s:submit>
-</form>
 </body>
 </html>
