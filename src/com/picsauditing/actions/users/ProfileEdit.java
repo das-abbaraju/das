@@ -7,18 +7,18 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.interceptors.SecurityInterceptor;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
@@ -47,27 +47,31 @@ public class ProfileEdit extends PicsActionSupport {
 
 	private boolean goEmailSub = false;
 
+	/**
+	 * This method needs to be anonymous to prevent the user from redirecting on login if the {@link User}'s
+	 * forcePasswordReset is true.
+	 */
 	@Anonymous
 	public String execute() throws Exception {
-		loadPermissions();
-		if (!permissions.isLoggedIn()) {
-			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
-			return LOGIN;
-		}
 
-		if (!permissions.hasPermission(OpPerms.EditProfile)) {
-			addActionError(getText("ProfileEdit.error.MissingEditProfile"));
-			return BLANK;
+		String loginResult = checkProfileEditLogin();
+		if (loginResult != null) {
+			return loginResult;
 		}
-
-		u = dao.find(permissions.getUserId());
 
 		return SUCCESS;
 	}
 
-	@RequiredPermission(value = OpPerms.EditProfile, type = OpType.Edit)
+	@Anonymous
 	public String save() throws Exception {
+
+		// Need to clear the user dao to prevent Hibernate from flushing the changes.
 		dao.clear();
+
+		String loginResult = checkProfileEditLogin();
+		if (loginResult != null) {
+			return loginResult;
+		}
 
 		if (dao.duplicateUsername(u.getUsername(), u.getId())) {
 			addActionError(getText("ProfileEdit.error.UsernameInUse", u.getUsername()));
@@ -80,33 +84,60 @@ public class ProfileEdit extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		if (!Strings.isEmpty(password2)) {
-			if (!password1.equals(password2))
-				addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
-
-			if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail()))
-				addActionError(getText("ProfileEdit.error.EnterValidEmail"));
-
-			if (getActionErrors().size() > 0)
-				return SUCCESS;
-			int maxHistory = 0;
-			// u.getAccount().getPasswordPreferences().getMaxHistory()
-			// TODO: Check is addPasswordToHistory is still needed
-			u.addPasswordToHistory(password1, maxHistory);
-			u.setEncryptedPassword(password1);
-			if (!Strings.isEmpty(url) && u.isForcePasswordReset())
-				redirect(url);
-
-			u.setForcePasswordReset(false);
-			permissions.setForcePasswordReset(false);
-		}
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
-		ActionContext.getContext().getSession().put("permissions", permissions);
-		u = dao.save(u);
-		permissions.setLocale(u.getLocale());
 
+		/*
+		 * Some browsers (i.e. Chrome) store the user's password in the first password field. We will assume that if the
+		 * confirm password has a value that the user is attempting to change their password.
+		 */
+		if (!Strings.isEmpty(password2)) {
+			boolean forcedReset = u.isForcePasswordReset();
+			if (!password1.equals(password2)) {
+				addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
+			}
+
+			if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail())) {
+				addActionError(getText("ProfileEdit.error.EnterValidEmail"));
+			}
+
+			if (getActionErrors().size() > 0) {
+				return SUCCESS;
+			}
+
+			// Set password to the encrypted version
+			u.setEncryptedPassword(password1);
+
+			/*
+			 * TODO: this doesn't seem to to anything at the moment.
+			 * 
+			 * Also, these passwords should not be saved in plain text.
+			 */
+			int maxHistory = 0;
+			u.addPasswordToHistory(password1, maxHistory);
+
+			// If the user is changing their password, they are no longer forced to reset.
+			u.setForcePasswordReset(false);
+			permissions.setForcePasswordReset(false);
+
+			/*
+			 * If the user came to profile edit as a result of a forcedPasswordReset, they will have the `url` field
+			 * set.
+			 */
+			if (!Strings.isEmpty(url) && forcedReset) {
+				u = dao.save(u);
+				return redirect(url);
+			}
+
+		}
+
+		u = dao.save(u);
+
+		/*
+		 * This redirct is required if the user happened to change their locale, as we would be stuck in a request for
+		 * the previous locale.
+		 */
 		this.redirect("ProfileEdit.action?success");
 
 		return SUCCESS;
@@ -114,6 +145,46 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public String department() {
 		return "department";
+	}
+
+	/**
+	 * This method is used instead of the {@link SecurityInterceptor} method, since the user cannot be redirected on
+	 * this page due to the possibility of a `forcePasswordReset`.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	private String checkProfileEditLogin() throws Exception {
+
+		loadPermissions();
+
+		/*
+		 * This should only be null on the `execute` method, since there are no querystring parameters.
+		 * 
+		 * If the user is set, we have to leave it alone, since the `u` object could be modified.
+		 */
+		if (u == null) {
+			u = dao.find(permissions.getUserId());
+		}
+
+		// Only the current user should be allowed to edit their profile.
+		if (permissions.getUserId() != u.getId()) {
+			throw new NoRightsException(OpPerms.EditProfile, OpType.Edit);
+		}
+
+		// If the user is not logged in, they should be redirected to the login page.
+		if (!permissions.isLoggedIn()) {
+			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
+			return LOGIN;
+		}
+
+		// Only users with the edit profile permission can edit their profiles.
+		if (!permissions.hasPermission(OpPerms.EditProfile)) {
+			addActionError(getText("ProfileEdit.error.MissingEditProfile"));
+			return BLANK;
+		}
+
+		return null;
 	}
 
 	public User getU() {
@@ -178,6 +249,11 @@ public class ProfileEdit extends PicsActionSupport {
 		return subList;
 	}
 
+	/**
+	 * This is used primarily for redirecting after `forcePasswordReset`.
+	 * 
+	 * @return
+	 */
 	public String getUrl() {
 		return url;
 	}
@@ -194,6 +270,12 @@ public class ProfileEdit extends PicsActionSupport {
 		return goEmailSub;
 	}
 
+	/**
+	 * This method is triggered as a result of a redirect when the user saves his/her profile.
+	 * 
+	 * @param success
+	 *            this parameter is not used.
+	 */
 	public void setSuccess(boolean success) {
 		addActionMessage(getText("ProfileEdit.message.ProfileSavedSuccessfully"));
 	}
