@@ -178,6 +178,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowOpertorTagName(false);
 		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowMinorityOwned(true);
+		getFilter().setShowLocation(true);
 		getFilter().setPermissions(permissions);
 
 		if (permissions.getCorporateParent().size() > 0)
