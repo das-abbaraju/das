@@ -113,9 +113,14 @@ $(function() {
 		popupWin = window.open(newurl, 'OperatorFlagsCalculator', '');
 	});
 	
-	$('#addCriteria').delegate('.add', 'click', function(e) {
-		e.preventDefault();
-		startThinking({div:'thinking', message:translate('JS.ManageFlagCriteriaOperator.message.AddingCriteria')});
+	/* Add New Criteria */
+	$('#criteriaDiv').delegate('#addCriteria .add', 'click', function(event) {
+		event.preventDefault();
+		
+		startThinking({
+			div: 'thinking', 
+			message: translate('JS.ManageFlagCriteriaOperator.message.AddingCriteria')
+		});
 		
 		var fcOptions = $(this).closest('tr').find('input,select').serialize();
 		var insurance = $("#form1_insurance").val();
@@ -124,11 +129,15 @@ $(function() {
 			flagCriteria: $(this).data('id')
 		};
 		
-		$('#criteriaDiv').load('ManageFlagCriteriaOperator!add.action?insurance='+insurance + 
-				(fcOptions.length > 0 ? "&" + fcOptions : ""), data,
-			function() {
-				$('#addCriteria').slideUp('slow', function() { $(this).empty(); });
-				stopThinking({div:'thinking'});
+		$('#criteriaDiv').load('ManageFlagCriteriaOperator!add.action?insurance='+insurance + (fcOptions.length > 0 ? "&" + fcOptions : ""), data, function() {
+				$('#addCriteria').slideUp('slow', function() {
+					$(this).empty();
+				});
+				
+				stopThinking({
+					div: 'thinking'
+				});
+				
 				$('#criteriaDiv .datepicker').datepicker();
 			}
 		);
