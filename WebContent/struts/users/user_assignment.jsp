@@ -14,9 +14,9 @@ $(function() {
 		e.preventDefault();
 		if (confirm('Are you sure you want to delete this row?')) {
 			var me = $(this);
-			var pars = me.closest('tr').find(':input').serialize() + "&button=Remove";
+			var pars = me.closest('tr').find(':input').serialize();
 			me.closest('tr').hide();
-			$.post('<s:property value="type"/>AssignmentMatrixJSON.action', pars, function(json, status, xhr) {
+			$.post('<s:property value="type"/>AssignmentMatrix!remove.action', pars, function(json, status, xhr) {
 				console.log($(json.oldAssigment).serialize());
 				if(json.gritter) {
 					$.gritter.add({title: json.gritter.title, text: json.gritter.text});
@@ -42,13 +42,13 @@ $(function() {
 	$('a.save').live('click', function(e) {
 		e.preventDefault();
 		var me = $(this);
-		var pars = me.closest('tr').find(':input').serialize() + "&button=Save";
+		var pars = me.closest('tr').find(':input').serialize();
 		if (me.closest('tr').is('.new')) {
 			me.closest('tr').find('.ac_text,.ac_hidden').each(function(){
 				$(this).removeAttr('id');
 			});
 		}
-		$.post('<s:property value="type"/>AssignmentMatrixJSON.action', pars, function(json, status, xhr) {
+		$.post('<s:property value="type"/>AssignmentMatrix!save.action', pars, function(json, status, xhr) {
 			if(json.gritter) {
 				$.gritter.add({title: json.gritter.title, text: json.gritter.text});
 			}

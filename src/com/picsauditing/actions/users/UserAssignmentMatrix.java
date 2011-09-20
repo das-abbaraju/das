@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -42,70 +43,70 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 	private List<User> users = new ArrayList<User>();
 	private int auditTypeID;
 
-	@Override
 	public void prepare() throws Exception {
 		parameterCleanUp("assignment.postalStart");
 		parameterCleanUp("assignment.postalEnd");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@RequiredPermission(OpPerms.UserZipcodeAssignment)
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		return SUCCESS;
+	}
 
-		tryPermissions(OpPerms.UserZipcodeAssignment);
+	@SuppressWarnings("unchecked")
+	@RequiredPermission(OpPerms.UserZipcodeAssignment)
+	public String save() {
+		if (assignment.getUser() == null) {
+			json = new JSONObject();
+			json.put("status", "failure");
 
-		if ("Save".equals(button)) {
-			if (assignment.getUser() == null) {
-				json = new JSONObject();
-				json.put("status", "failure");
+			JSONObject gritter = new JSONObject();
+			gritter.put("title", "Save Failed");
+			gritter.put("text", "You must specify a user.");
 
-				JSONObject gritter = new JSONObject();
-				gritter.put("title", "Save Failed");
-				gritter.put("text", "You must specify a user.");
+			json.put("gritter", gritter);
 
-				json.put("gritter", gritter);
+			return JSON;
+		}
+		final boolean newAssignment = assignment.getId() == 0;
 
-				return JSON;
-			}
-			final boolean newAssignment = assignment.getId() == 0;
+		if (auditTypeID > 0)
+			assignment.setAuditType(auditTypeDAO.find(auditTypeID));
 
-			if (auditTypeID > 0)
-				assignment.setAuditType(auditTypeDAO.find(auditTypeID));
+		assignment.setAssignmentType(type);
+		assignment.setAuditColumns(permissions);
+		assignmentDAO.save(assignment);
 
-			assignment.setAssignmentType(type);
-			assignment.setAuditColumns(permissions);
-			assignmentDAO.save(assignment);
+		json = new JSONObject();
+		json.put("status", "success");
 
+		JSONObject gritter = new JSONObject();
+		if (newAssignment)
+			gritter.put("title", "Assignment Created Successfully");
+		else
+			gritter.put("title", "Assignment Saved Successfully");
+		gritter.put("text", assignment.toString());
+		json.put("gritter", gritter);
+
+		json.put("assignment", assignment.toJSON());
+		return JSON;
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequiredPermission(OpPerms.UserZipcodeAssignment)
+	public String remove() {
+		if (assignmentDAO.isContained(assignment)) {
+			assignmentDAO.remove(assignment);
 			json = new JSONObject();
 			json.put("status", "success");
 
 			JSONObject gritter = new JSONObject();
-			if (newAssignment)
-				gritter.put("title", "Assignment Created Successfully");
-			else
-				gritter.put("title", "Assignment Saved Successfully");
+			gritter.put("title", "Assignment Successfully Removed");
 			gritter.put("text", assignment.toString());
 			json.put("gritter", gritter);
 
-			json.put("assignment", assignment.toJSON());
 			return JSON;
-		}
-
-		if ("Remove".equals(button)) {
-			if (assignmentDAO.isContained(assignment)) {
-				assignmentDAO.remove(assignment);
-				json = new JSONObject();
-				json.put("status", "success");
-
-				JSONObject gritter = new JSONObject();
-				gritter.put("title", "Assignment Successfully Removed");
-				gritter.put("text", assignment.toString());
-				json.put("gritter", gritter);
-
-				return JSON;
-			}
 		}
 
 		return SUCCESS;
@@ -127,8 +128,8 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 
 	public List<BasicDynaBean> getAuditedByState() {
 		List<BasicDynaBean> list = contractorAuditDAO.findAuditedContractorsByStateCount();
-		
-		return list;	
+
+		return list;
 	}
 
 	public List<Country> getCountries() {
