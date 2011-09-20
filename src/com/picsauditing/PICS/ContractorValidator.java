@@ -20,7 +20,7 @@ public class ContractorValidator {
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
-	
+
 	private I18nCache i18nCache = I18nCache.getInstance();
 
 	public static Locale getLocaleStatic() {
@@ -30,7 +30,7 @@ public class ContractorValidator {
 			return Locale.ENGLISH;
 		}
 	}
-	
+
 	private String getText(String aTextName) {
 		return i18nCache.getText(aTextName, getLocaleStatic());
 	}
@@ -45,7 +45,7 @@ public class ContractorValidator {
 			errorMessages.addElement(getText("ContractorValidator.error.NoAccountType"));
 			return errorMessages;
 		}
-		
+
 		// Company Name
 		if (Strings.isEmpty(contractor.getName()))
 			errorMessages.addElement(getText("ContractorValidator.error.NoCompanyName"));
@@ -145,11 +145,7 @@ public class ContractorValidator {
 			return errorMessages;
 
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
-			if ("CA".equals(country) && taxId.length() != 15) {
-				errorMessages
-						.add(getTextParameterized("ContractorValidator.error.InvalidBusinessNumber", Strings.getPicsCustomerServicePhone("CA")));
-				return errorMessages;
-			} else if (!"CA".equals(country) && taxId.length() != 9) {
+			if (!"CA".equals(country) && taxId.length() != 9) {
 				errorMessages.add(getText("ContractorValidator.error.InvalidTaxId"));
 				return errorMessages;
 			}
@@ -157,8 +153,8 @@ public class ContractorValidator {
 			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
 			if (con != null && !con.equals(contractorAccount)) {
 				if (con.getCountry().isUS())
-					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId",
-							Strings.getPicsCustomerServicePhone("US")));
+					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId", Strings
+							.getPicsCustomerServicePhone("US")));
 			}
 		}
 
