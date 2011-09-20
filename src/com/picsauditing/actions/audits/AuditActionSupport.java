@@ -713,21 +713,48 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return allComplete;
 	}
 
+	/**
+	 * This method is used to determine if a user has the ability to edit a category.
+	 * 
+	 * @param category
+	 * 
+	 * @return
+	 */
 	public boolean isCanEditCategory(AuditCategory category) throws RecordNotFoundException, NoRightsException {
-		if (permissions.isContractor() && category.getAuditType().getId() == 100 && category.getParent() != null)
-			return false;
-
 		if (conAudit == null) {
 			findConAudit();
 		}
 
+		/*
+		 * This is hardcoded for the HSE Competency Review. Contractors are only allowed to edit the sub-categories of
+		 * these audits.
+		 */
+		if (permissions.isContractor() && category.getAuditType().getId() == AuditType.HSE_COMPETENCY
+				&& category.getParent() != null)
+			return false;
+
+		/*
+		 * Non-policy audits do not have restrictions on a per category basis. If the user can see the category and has
+		 * the 'Edit' view, they are allowed to edit the audit.
+		 */
 		if (!conAudit.getAuditType().getClassType().isPolicy())
 			return true;
 
+		/*
+		 * Single CAO audits (in this case, policies) are editable by the owners of that CAO
+		 */
 		if (conAudit.getOperatorsVisible().size() == 1
 				&& conAudit.getOperatorsVisible().get(0).hasCaop(permissions.getAccountId()))
 			return true;
 
+		/*
+		 * Contractors are only allowed to edit the limits and policy information BEFORE the policy is submitted. Once
+		 * the policy is submitted we "lock" down these categories to prevent contractors from changing them.
+		 * 
+		 * Contractors are still allowed to edit the attached certificates of this policy. For example, when the
+		 * contractors add a new facility they should be allowed to add their certificate to that operator's insurance
+		 * category.
+		 */
 		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
 			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
 				return false;
