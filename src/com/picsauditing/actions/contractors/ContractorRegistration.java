@@ -3,7 +3,6 @@ package com.picsauditing.actions.contractors;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.struts2.ServletActionContext;
@@ -115,8 +114,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 		errors.addAll(contractorValidator.validateUser(password, confirmPassword, user));
 		if (Strings.isEmpty(user.getPassword()))
 			errors.add(getText("ContractorRegistration.error.NoPassword"));
-
-		errors.addAll(contractorValidator.verifyTaxID(contractor));
 
 		if (!contractorValidator.verifyName(contractor)) {
 			errors.add(getTextParameterized("ContractorRegistration.error.DuplicateContractorName",
