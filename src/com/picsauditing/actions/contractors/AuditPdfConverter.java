@@ -61,7 +61,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private Map<String, File> attachments = new TreeMap<String, File>();
 
-	private Font headerFont = FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new BaseColor(0xa8, 0x4d, 0x10));
+	private Font headerFont = FontFactory
+			.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new BaseColor(0xa8, 0x4d, 0x10));
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0x01, 0x21, 0x42));
 	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0xa8, 0x4d, 0x10));
 	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new BaseColor(0xa8, 0x4d, 0x10));
@@ -335,9 +336,11 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException, IOException {
 		for (File oshaFile : attachments.values()) {
+			InputStream pdfs = null;
+			PdfReader pdfReader = null;
 			try {
-				InputStream pdfs = new FileInputStream(oshaFile);
-				PdfReader pdfReader = new PdfReader(pdfs);
+				pdfs = new FileInputStream(oshaFile);
+				pdfReader = new PdfReader(pdfs);
 				PdfContentByte cb = pdfWriter.getDirectContent();
 				if (!pdfReader.isEncrypted()) {
 					for (int i = 1; i <= pdfReader.getNumberOfPages(); i++) {
@@ -351,10 +354,19 @@ public class AuditPdfConverter extends AuditActionSupport {
 						cb.addTemplate(page, 0, 0);
 					}
 				}
-			} catch (FileNotFoundException e) {
-				continue;
-			} catch (IOException e) {
-				continue;
+			} catch (Exception e) {
+			} finally {
+				try {
+					if (pdfs != null) {
+						pdfs.close();
+						pdfs = null;
+					}
+					if (pdfReader != null) {
+						pdfReader.close();
+						pdfReader = null;
+					}
+				} catch (Exception ignore) {
+				}
 			}
 		}
 	}
