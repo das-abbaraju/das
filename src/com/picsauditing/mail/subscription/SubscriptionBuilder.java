@@ -33,6 +33,7 @@ public abstract class SubscriptionBuilder {
 
 		subscription.setLastSent(new Date());
 		subscriptionDAO.save(subscription);
+		tokens.clear();
 	}
 
 	protected abstract void process(EmailSubscription subscription) throws IOException;
