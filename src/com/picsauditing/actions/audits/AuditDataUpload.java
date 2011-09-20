@@ -180,6 +180,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		if (dataID > 0) {
 			try {
 				// remove all files ie (pdf, jpg)
+				auditData.setAnswer(null);
+				auditDataDao.save(auditData);
 				for (File oldFile : getFiles(dataID))
 					FileUtils.deleteFile(oldFile);
 			} catch (Exception e) {
