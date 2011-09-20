@@ -167,15 +167,15 @@ public class ProfileEdit extends PicsActionSupport {
 			u = dao.find(permissions.getUserId());
 		}
 
-		// Only the current user should be allowed to edit their profile.
-		if (permissions.getUserId() != u.getId()) {
-			throw new NoRightsException(OpPerms.EditProfile, OpType.Edit);
-		}
-
 		// If the user is not logged in, they should be redirected to the login page.
 		if (!permissions.isLoggedIn()) {
 			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
 			return LOGIN;
+		}
+
+		// Only the current user should be allowed to edit their profile.
+		if (permissions.getUserId() != u.getId()) {
+			throw new NoRightsException(OpPerms.EditProfile, OpType.Edit);
 		}
 
 		// Only users with the edit profile permission can edit their profiles.
