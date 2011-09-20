@@ -105,7 +105,7 @@ public class AuditDataSave extends AuditActionSupport {
 				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())
 						|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
 
-					if (!checkAnswerFormat(auditData, newCopy)) {
+					if (!checkAnswerFormat(auditData, newCopy) && !toggleVerify) {
 						auditData = newCopy;
 						return SUCCESS;
 					}
