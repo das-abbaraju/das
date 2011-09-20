@@ -262,14 +262,14 @@
 			<div class="panel_content">
 				<ul>
 					<pics:permission perm="ContractorDetails">
-					<s:if test="key == 'DocuGUARD'">
+					<s:if test="key == getText('global.DocuGUARD')">
 						<li><strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>"><s:text name="ContractorView.DownloadPQF" /></a></strong></li></s:if>
 					</pics:permission>
 				<s:iterator value="value">
 					<li>
 						<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.name"/>
 						<s:if test="auditFor != null"> <s:property value="auditFor"/></s:if><s:else><s:date name="effectiveDate" format="MMM yyyy" /></s:else></a>
-						<s:if test="key == 'InsureGUARD'">
+						<s:if test="key == getText('global.InsureGUARD')">
 							<s:property value="getSynopsis(co.operatorAccount)"/>
 						</s:if>
 						<s:else>
