@@ -147,7 +147,7 @@ public class ContractorValidator {
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 			if ("CA".equals(country) && taxId.length() != 15) {
 				errorMessages
-						.add(getTextParameterized("InvalidBusinessNumber", Strings.getPicsCustomerServicePhone("CA")));
+						.add(getTextParameterized("ContractorValidator.error.InvalidBusinessNumber", Strings.getPicsCustomerServicePhone("CA")));
 				return errorMessages;
 			} else if (!"CA".equals(country) && taxId.length() != 9) {
 				errorMessages.add(getText("ContractorValidator.error.InvalidTaxId"));
