@@ -1573,7 +1573,7 @@
 			<result type="json"></result>
 		</action>
 
-		<action name="{type}AssignmentMatrix*"
+		<action name="{type}AssignmentMatrix"
 			class="com.picsauditing.actions.users.UserAssignmentMatrix">
 			<result name="input">struts/blank.jsp</result>
 			<result>struts/users/user_assignment.jsp</result>
