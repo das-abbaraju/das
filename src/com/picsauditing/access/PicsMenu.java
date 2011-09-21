@@ -7,7 +7,10 @@ import java.util.Iterator;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class PicsMenu {
@@ -412,7 +415,13 @@ public class PicsMenu {
 		if (permissions.getAccountName().startsWith("Tesoro"))
 			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
 
-		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
+		// Hide this menu if the operator doesn't have any required tags.
+		OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO) SpringUtils
+				.getBean("OperatorAccountDAO");
+		if (permissions.hasPermission(OpPerms.ContractorTags)
+				&& permissions.isOperatorCorporate()
+				&& !Strings.isEmpty(operatorAccountDAO.find(
+						permissions.getAccountId()).getRequiredTags()))
 			addChildAction(subMenu, "ReportUntaggedContractors");
 		if (permissions.hasPermission(OpPerms.ManageTrades) && permissions.isAdmin())
 			subMenu.addChild("Contractor Trade Conflicts", "ReportContractorTradeConflict.action");
