@@ -313,7 +313,7 @@ function updateExpDate() {
 						</s:if>
 					</li>
 					
-					<s:if test="contractor.agreementDate != null && !contractor.agreementInEffect">
+					<s:if test="contractor.agreementDate == null || (contractor.agreementDate != null && !contractor.agreementInEffect)">
 						<li>
 							<span style="color:grey;">
 								<s:if test="!permissions.admin && (
@@ -340,7 +340,7 @@ function updateExpDate() {
 				<li>
 					<a href="PrivacyPolicy.action" rel="facebox" class="ext"><s:text name="Footer.Privacy" /></a> | 
 					<a href="RefundPolicy.action" rel="facebox" class="ext"><s:text name="ContractorPaymentOptions.RefundPolicy" /></a> |
-					<a href="ContractorAgreementAjax.action?id=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorPaymentOptions.ContractorAgreement" /></a>
+					<a href="ContractorAgreement.action?id=${contractor.id}" rel="facebox" class="ext"><s:text name="ContractorPaymentOptions.ContractorAgreement" /></a>
 				</li>
 				
 				<s:if test="contractor.newMembershipAmount > 500 || permissions.admin">

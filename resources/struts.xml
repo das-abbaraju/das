@@ -114,7 +114,7 @@
 			<result>struts/users/account_recovery.jsp</result>
 		</action>
 
-		<action name="ContractorAgreementAjax"
+		<action name="ContractorAgreement"
 			class="com.picsauditing.actions.contractors.ContractorAgreement">
 			<result>contractor_agreement.jsp</result>
 		</action>
