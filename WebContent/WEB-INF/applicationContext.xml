@@ -92,7 +92,7 @@
 	<bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
 
 	<bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder" scope="prototype"/>
-	<bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator" scope="prototype"/>
+	<bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator" />
 	<bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
 	<bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
 	

@@ -37,8 +37,6 @@ import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
 public class AuditPercentCalculator {
-	private List<AuditData> verifiedPqfData = null;
-
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
@@ -93,8 +91,8 @@ public class AuditPercentCalculator {
 			}
 		}
 
-		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(
-				catData.getAudit().getContractorAccount().getId(), functionWatcherQuestionIds);
+		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(catData.getAudit().getContractorAccount()
+				.getId(), functionWatcherQuestionIds);
 
 		// Run functions to update answers
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
@@ -260,8 +258,8 @@ public class AuditPercentCalculator {
 			recalcAllAuditCatDatas(conAudit);
 
 		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
-				conAudit.getContractorAccount());
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, conAudit
+				.getContractorAccount());
 
 		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 
@@ -473,9 +471,7 @@ public class AuditPercentCalculator {
 	}
 
 	public List<AuditData> getVerifiedPqfData(int auditID) {
-		if (verifiedPqfData == null)
-			verifiedPqfData = auditDataDAO.findCustomPQFVerifications(auditID);
-		return verifiedPqfData;
+		return auditDataDAO.findCustomPQFVerifications(auditID);
 	}
 
 }
