@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.UserDAO;
@@ -32,7 +31,7 @@ public class AccountRecovery extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		recaptcha = new Recaptcha();
-
+		
 		return SUCCESS;
 	}
 	
@@ -57,6 +56,9 @@ public class AccountRecovery extends PicsActionSupport {
 			return SUCCESS;
 		}
 
+		if (recaptcha == null)
+			recaptcha = new Recaptcha();
+		
 		Boolean response = recaptcha.isRecaptchaResponseValid();
 		if (response == null) {
 			addActionError(getText("AccountRecovery.error.ReCaptchaCommProblem"));
