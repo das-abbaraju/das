@@ -89,8 +89,8 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	protected List<AuditOptionValue> options;
 	private List<AuditCategoryRule> auditCategoryRules;
 	private List<AuditTypeRule> auditTypeRules;
-	private List<AuditQuestionFunction> functions;
-	private List<AuditQuestionFunctionWatcher> functionWatchers;
+	private List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<AuditQuestionFunctionWatcher>();
 
 	private AuditExtractOption extractOption;
 	private List<AuditTransformOption> transformOptions;

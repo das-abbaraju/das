@@ -3,8 +3,6 @@
 
 <div class="answer">
 	<s:form cssClass="qform" id="qform%{#q.id}" onsubmit="return false;">
-		<s:hidden name="categoryID" value="%{#q.category.id}" cssClass="get_request"/>
-		
 		<s:if test="auditData.audit != null">
 			<s:hidden name="auditData.audit.id" cssClass="get_request"/>
 		</s:if>

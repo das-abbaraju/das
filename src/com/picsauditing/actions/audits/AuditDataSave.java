@@ -84,7 +84,9 @@ public class AuditDataSave extends AuditActionSupport {
 			 * If we are reloading the question, we need to exit early to prevent the object from saving.
 			 */
 			if ("reload".equals(button)) {
-				auditData = newCopy;
+				if (auditData.getId() == 0) {
+					auditData = newCopy;
+				}
 				loadAnswerMap();
 				return SUCCESS;
 			}
