@@ -47,14 +47,14 @@ public class AuditFileUpload extends AuditActionSupport {
 					downloader.download(files[0], contractorAuditFile.getDescription() + "." + contractorAuditFile.getFileType());
 					return null;
 				} catch (Exception e) {
-					addActionError("Failed to download file: " + e.getMessage());
+					addActionError(getText("AuditFileUplooad.error.FailedDownload") + e.getMessage());
 					return BLANK;
 				}
 			}
 
 			if (fileID > 0 && button.startsWith("Delete")) {
 				if (contractorAuditFile.isReviewed()) {
-					addActionError("Failed to remove the file reviewed by the Safety Professional.");
+					addActionError(getText("AuditFileUplooad.error.FailedRemove"));
 					return SUCCESS;
 				}
 				try {
@@ -62,23 +62,23 @@ public class AuditFileUpload extends AuditActionSupport {
 						FileUtils.deleteFile(oldFile);
 					fileID = 0;
 				} catch (Exception e) {
-					addActionError("Failed to save file: " + e.getMessage());
+					addActionError(getText("AuditFileUplooad.error.FailedSaved") + e.getMessage());
 					e.printStackTrace();
 					return SUCCESS;
 				}
 				contractorAuditFileDAO.remove(contractorAuditFile);
-				addActionMessage("Successfully removed file");
+				addActionMessage(getText("AuditFileUplooad.message.FileRemoved"));
 				return SUCCESS;
 			}
 
 			if (button.startsWith("Save")) {
 				if (fileID == 0) {
 					if (file == null || file.length() == 0) {
-						addActionError("File was missing or empty");
+						addActionError(getText("AuditFileUplooad.error.FileMissing"));
 						return SUCCESS;
 					}
 					if(Strings.isEmpty(fileName)) {
-						addActionError("Please provide a description for your document");
+						addActionError(getText("AuditFileUplooad.error.ProvideDescription"));
 						file = null;
 						return SUCCESS;
 					}
@@ -92,7 +92,7 @@ public class AuditFileUpload extends AuditActionSupport {
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
-						addActionError("Bad File Extension");
+						addActionError(getText("AuditFileUplooad.error.BadExtension"));
 						return SUCCESS;
 					}
 					if (contractorAuditFile.getId() > 0) {
@@ -115,7 +115,7 @@ public class AuditFileUpload extends AuditActionSupport {
 				if (file != null && file.length() > 0) {
 					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(fileID),
 							getFileName(fileID), extension, true);
-					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+					addActionMessage(getTextParameterized("AuditFileUplooad.message.FileUploaded", fileFileName));
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class AuditFileUpload extends AuditActionSupport {
 				if (files.length > 0)
 					file = files[0];
 				if (files.length > 1)
-					addActionError("Somehow, two files were uploaded.");
+					addActionError(getText("AuditFileUplooad.error.TwoFiles"));
 			}
 		}
 
