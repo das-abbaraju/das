@@ -33,15 +33,12 @@
 					$('#zip_li').show();
 			
 					if (country == 'US'){
-						$('#contractorTaxId').attr('maxlength', '9');
 						$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
 						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
 					} else if (country == 'CA') {
-						$('#contractorTaxId').attr('maxlength', '15');
 						$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
 						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
 					} else {
-						$('#contractorTaxId').attr('maxlength', '9');
 						$('.taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
 						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
 					}
@@ -358,7 +355,7 @@
 								
 								<s:if test="contractor.country.isoCode != 'AE'">
 									<li id="taxIdItem"><label><s:div cssClass="taxIdLabel" /></label>
-										<s:textfield id="contractorTaxId" name="contractor.taxId" size="9" maxLength="9" />
+										<s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15" />
 										<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 									</li>
 								</s:if>

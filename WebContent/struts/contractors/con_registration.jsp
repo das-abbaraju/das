@@ -27,11 +27,6 @@
 			$('#username_status').load('user_ajax.jsp', data);
 		}
 		
-		function checkTaxId(taxId) {
-			var data = {taxId: taxId, button: 'taxId', country: $('#contractorCountry').val()};
-			$('#taxId_status').load('ContractorValidateAjax.action', data);
-		}
-		
 		function checkName(name) {
 			if (name.indexOf('^^^') > 0) {
 				$('#name_status').html("This contractor will be created as a DEMO account.");
@@ -57,23 +52,15 @@
 					$('#zipItem').show();
 		
 				if (country == 'US'){
-					$('#contractorTaxId').val('');
-					$('#contractorTaxId').attr('maxlength', '9');
 					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
 					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
 				} else if (country == 'CA') {
-					$('#contractorTaxId').val('');
-					$('#contractorTaxId').attr('maxlength', '15');
 					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
 					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
 				} else {
-					$('#contractorTaxId').val('');
-					$('#contractorTaxId').attr('maxlength', '9');
 					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
 					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
 				}
-				
-				checkTaxId($('#contractorTaxId').val());
 			}
 			
 			changeState(country);
@@ -161,7 +148,7 @@
 					</li>
 					<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>>
 						<label><s:div id="taxIdLabel" /></label>
-						<s:textfield name="contractor.taxId" id="contractorTaxId" size="15" maxLength="15" onchange="checkTaxId(this.value);" />
+						<s:textfield name="contractor.taxId" id="contractorTaxId" size="15" maxLength="15" />
 						
 						<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 						<div id="taxId_status"></div>
