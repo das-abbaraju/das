@@ -84,7 +84,7 @@ public class AuditDataSave extends AuditActionSupport {
 			 * If we are reloading the question, we need to exit early to prevent the object from saving.
 			 */
 			if ("reload".equals(button)) {
-				if (auditData.getId() == 0) {
+				if (auditData.getId() == 0 && newCopy != null) {
 					auditData = newCopy;
 				}
 				loadAnswerMap();
@@ -356,6 +356,8 @@ public class AuditDataSave extends AuditActionSupport {
 
 	private void loadAnswerMap() {
 		List<Integer> questionIds = new ArrayList<Integer>();
+		AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+		auditData.setQuestion(question);
 		questionIds.add(auditData.getQuestion().getId());
 		if (auditData.getQuestion().getRequiredQuestion() != null)
 			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
