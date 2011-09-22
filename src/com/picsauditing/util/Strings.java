@@ -489,6 +489,9 @@ public class Strings {
 		// US and CANADA
 		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
 			return "800-506-PICS (7427)";
+		
+		if ("GB".equalsIgnoreCase(countryCode) || "UK".equalsIgnoreCase(countryCode))
+				return "0 845 609 1882";
 
 		return "949-936-4500";
 	}
