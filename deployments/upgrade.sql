@@ -1198,3 +1198,5 @@ UPDATE `naics` SET `trir` = 6.2, `lwcr` = 3.3 WHERE `code` = 9221;
 UPDATE `naics` SET `trir` = 7.8, `lwcr` = 4.3 WHERE `code` = 92214;
 UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
 --
+-- PICS-3414 removing spaces from the msgKey in these translations
+update app_translation set msgKey = "ContractorEdit.error.BrochureFormat" where msgKey = "ContractorEdit.error.Brochure Format"

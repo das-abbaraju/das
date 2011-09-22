@@ -159,7 +159,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				String[] validExtensions = { "jpg", "gif", "png", "doc", "pdf" };
 
 				if (!FileUtils.checkFileExtension(extension, validExtensions)) {
-					addActionError(getText("ContractorEdit.error.Brochure Format"));
+					addActionError(getText("ContractorEdit.error.BrochureFormat"));
 					return SUCCESS;
 				}
 				String fileName = "brochure_" + contractor.getId();
