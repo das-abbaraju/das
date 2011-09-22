@@ -1199,4 +1199,11 @@ UPDATE `naics` SET `trir` = 7.8, `lwcr` = 4.3 WHERE `code` = 92214;
 UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
 --
 -- PICS-3414 removing spaces from the msgKey in these translations
-update app_translation set msgKey = "ContractorEdit.error.BrochureFormat" where msgKey = "ContractorEdit.error.Brochure Format"
+update app_translation set msgKey = "ContractorEdit.error.BrochureFormat" where msgKey = "ContractorEdit.error.Brochure Format";
+
+-- PICS-3318
+update `email_template`
+set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates have been approved or rejected by <MyName> at <MyCompanyName> for the following reasons:\r\n\r\n#foreach ( $cao in $caoList )\r\n#if ( $cao.status == \"Incomplete\" )\r\n#foreach ( $caow in $cao.caoWorkflow )\r\n#if ( $caow.status == \"Incomplete\" )\r\n-- ${cao.audit.auditType.name} Insurance Certificates have been ${cao.status.button}ed\r\n#if ( $caow.notes.length() > 0 )because ${caow.notes}.\r\n\r\n#end\r\n#end\r\n#end\r\n#end\r\n#end\r\n\r\nPlease correct these issues and re-upload your insurance certificate to your PICS account.\r\nIf you have any specific questions about any operator''s insurance requirements, please review the Insurance Requirements documents in the Forms and Docs section. For questions, please contact ${permissions.name} at ${permissions.email}.\r\n\r\nWhen you renew any policy, please make sure that you upload the new insurance certificate to keep the information up to date.\r\n\r\nHave a great day,\r\nPICS Customer Service',
+`updatedBy`=23157,`updateDate`=NOW()
+where `id`='132';
+--

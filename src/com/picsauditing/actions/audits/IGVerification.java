@@ -1,6 +1,8 @@
 package com.picsauditing.actions.audits;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,7 +11,9 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -92,9 +96,28 @@ public class IGVerification extends ContractorActionSupport {
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		EmailTemplate template = templateDAO.find(132); // Insurance Policies rejected by PICS
-		caoList = caoDAO.findByCaoStatus(1000, permissions, "cao.status = 'Incomplete' "
-				+ "AND cao.audit.auditType.classType = 'Policy' " + "AND cao.audit.contractorAccount.id = "
-				+ contractor.getId(), "cao.audit.contractorAccount");
+		caoList = caoDAO.findByCaoStatus(1000, permissions,
+				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' "
+						+ "AND cao.audit.contractorAccount.id = " + contractor.getId(), "cao.audit.contractorAccount");
+
+		Map<AuditType, ContractorAuditOperatorWorkflow> mostRecentRejection = new TreeMap<AuditType, ContractorAuditOperatorWorkflow>();
+		for (ContractorAuditOperator cao : caoList) {
+			AuditType auditType = cao.getAudit().getAuditType();
+
+			for (ContractorAuditOperatorWorkflow caow : cao.getCaoWorkflow()) {
+				if (mostRecentRejection.get(auditType) == null) {
+					mostRecentRejection.put(auditType, caow);
+				} else {
+					if (caow.getCreationDate().after(mostRecentRejection.get(auditType).getCreationDate()))
+						mostRecentRejection.put(auditType, caow);
+				}
+			}
+		}
+
+		caoList.clear();
+		for (ContractorAuditOperatorWorkflow caow : mostRecentRejection.values()) {
+			caoList.add(caow.getCao());
+		}
 
 		emailBuilder.setTemplate(template);
 		emailBuilder.addToken("caoList", caoList);
