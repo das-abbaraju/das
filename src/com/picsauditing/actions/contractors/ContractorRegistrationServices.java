@@ -46,11 +46,11 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 		// get the categories for a contractor based on their Onsite/Offsite/Material Supplier status
 		Set<Integer> categoryIds = new HashSet<Integer>();
 		if (contractor.isOnsiteServices() || contractor.isOffsiteServices()) {
-			categoryIds.add(AuditCategory.RISK_ASSESSMENT);
+			categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
 		}
 		if (contractor.isMaterialSupplier()) {
-			categoryIds.add(AuditCategory.PRODUCT_CRITICAL);
-			categoryIds.add(AuditCategory.PRODUCT_SAFETY_CRITICAL);
+			categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+			categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
 		}
 
 		conAudit = getContractorPQF(categoryIds);
@@ -118,14 +118,14 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				for (AuditData auditData : auditList) {
 					AuditQuestion q = auditData.getQuestion();
 					// if (q.getCategory().getId() == 269) {
-					if (q.getCategory().getId() == AuditCategory.RISK_ASSESSMENT) {
+					if (q.getCategory().getId() == AuditCategory.SERVICE_SAFETY_EVAL) {
 						AuditData aData = answerMap.get(q.getId());
 						safety = getRiskLevel(aData, safety);
 
 						if (q.getId() == AuditQuestion.RISK_LEVEL_ASSESSMENT)
 							conSafety = getRiskLevel(aData, conSafety);
-					} else if (q.getCategory().getId() == AuditCategory.PRODUCT_CRITICAL
-							|| q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_CRITICAL) {
+					} else if (q.getCategory().getId() == AuditCategory.BUSINESS_INTERRUPTION_EVAL
+							|| q.getCategory().getId() == AuditCategory.PRODUCT_SAFETY_EVAL) {
 						AuditData aData = answerMap.get(q.getId());
 						product = getRiskLevel(aData, product);
 
