@@ -12,6 +12,7 @@ public class UserGroupSave extends UsersManage {
 	protected int memberId;
 	protected int groupId;
 	protected int userGroupId;
+	protected User user;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
 
@@ -28,6 +29,15 @@ public class UserGroupSave extends UsersManage {
 			return SUCCESS;
 		}
 		if ("RemoveGroup".equals(button)) {
+			// Remove from memory first
+			UserGroup remove = null;
+			for (UserGroup ug: user.getGroups())
+				if (ug.getId() == userGroupId) {
+					remove = ug;
+					break;
+				}
+			user.getGroups().remove(remove);
+			// Then remove fom the database
 			userGroupDAO.remove(userGroupId);
 			return SUCCESS;
 		}
@@ -157,4 +167,12 @@ public class UserGroupSave extends UsersManage {
 		this.userGroupId = userGroupId;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 }
