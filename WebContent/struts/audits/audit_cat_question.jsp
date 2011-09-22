@@ -126,6 +126,16 @@
 			</a>
 		</s:if>
 		
+		<s:if test="permissions.admin">
+			<s:url var="editQuestion" action="ManageQuestion">
+				<s:param name="id">${id}</s:param>
+			</s:url>
+			
+			<a class="edit-question debug" href="${editQuestion}" target="_blank">
+				<img src="images/edit_pencil.png" />
+			</a>
+		</s:if>
+		
 		<s:if test="(#q.id == 3563 || #q.id == 3565 || #q.id == 3566) && #a.answer.length() > 0">
 			<br />
 			<a href="http://www.osha.gov/pls/imis/establishment.inspection_detail?id=<s:property value="#a.answer"/>" target="_BLANK" title="<s:text name="global.NewWindow" />">
