@@ -1787,6 +1787,7 @@
 
 		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
 			<result>/struts/contractors/contractor_cron.jsp</result>
+			<result name="synchronize">/struts/contractors/contractor_cron_messages.jsp</result>
 		</action>
 
 		<action name="ContractorCronAjax" class="com.picsauditing.actions.ContractorCron">

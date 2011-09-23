@@ -87,6 +87,7 @@ public class ContractorCron extends PicsActionSupport {
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
 	private FlagDataCalculator flagDataCalculator;
+	private ContractorAccount contractor;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
@@ -113,6 +114,10 @@ public class ContractorCron extends PicsActionSupport {
 		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
 		}
+		
+		if ("synchronize".equals(button)) {
+			return button;
+		}
 
 		return SUCCESS;
 	}
@@ -126,7 +131,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	@Transactional
 	private void run(int conID, int opID) {
-		ContractorAccount contractor = contractorDAO.find(conID);
+		contractor = contractorDAO.find(conID);
 
 		try {
 			runBilling(contractor);
@@ -280,8 +285,8 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		/*
-		 * PICS-3313:
-		 * This section is likely no longer needed, but this should prevent SQL errors when trying to save a contractor.
+		 * PICS-3313: This section is likely no longer needed, but this should prevent SQL errors when trying to save a
+		 * contractor.
 		 */
 		String tradesSelf = Strings.implode(selfPerform, ";");
 		if (tradesSelf.length() > 4000) {
@@ -306,7 +311,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		contractor.setRequiresOQ(false);
 		if (requiresOQ) {
-			AuditData oqAuditData = auditDataDAO.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
+			AuditData oqAuditData = auditDataDAO
+					.findAnswerByConQuestion(contractor.getId(), AuditQuestion.OQ_EMPLOYEES);
 			contractor.setRequiresOQ(oqAuditData == null || oqAuditData.getAnswer() == null
 					|| oqAuditData.getAnswer().equals("Yes"));
 		}
@@ -554,8 +560,8 @@ public class ContractorCron extends PicsActionSupport {
 						// if CO data does not already exist, assume green flag
 						// then if CO data is found later, will be updated to
 						// proper flag color
-						FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData.get(parent)
-								: FlagColor.Green;
+						FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+								.get(parent) : FlagColor.Green;
 						FlagColor operatorFacilityColor = coOperator.getFlagColor();
 						FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, operatorFacilityColor);
 						corporateRollupData.put(parent, worstColor);
@@ -571,8 +577,8 @@ public class ContractorCron extends PicsActionSupport {
 			OperatorAccount parent = corporate.getParent();
 
 			if (parent != null) {
-				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData.get(parent)
-						: FlagColor.Green;
+				FlagColor parentFacilityColor = (corporateRollupData.get(parent) != null) ? corporateRollupData
+						.get(parent) : FlagColor.Green;
 				FlagColor currentFacilityColor = corporateRollupData.get(corporate);
 
 				FlagColor worstColor = FlagColor.getWorseColor(parentFacilityColor, currentFacilityColor);
@@ -678,6 +684,14 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
+	}
+
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
 	}
 
 	public int getConID() {

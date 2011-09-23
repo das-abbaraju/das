@@ -237,11 +237,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
-		if ("Synchronize Contractor".equals(button)) {
-			String redirectUrl = "ContractorView.action?id=" + id;
-			return redirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
-		}
-
 		if (permissions.isOperatorCorporate()) {
 			operatorTags = getOperatorTagNamesList();
 
@@ -475,7 +470,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 						}
 					}
 
-					put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor, format(audit.getManHours()));
+					put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor,
+							format(audit.getManHours()));
 				}
 			}
 
@@ -485,11 +481,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(false,
-						contractor.getNaics())));
+				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind,
+						format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(true,
-						contractor.getNaics())));
+				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
+						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : contractorOperators) {
@@ -528,7 +524,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 						if (fco.getCriteria().getQuestion() != null
 								&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
-							String operatorDisplay = getOperatorDisplay(o, " " + getText("ContractorView.ContractorDashboard.EMR"));
+							String operatorDisplay = getOperatorDisplay(o, " "
+									+ getText("ContractorView.ContractorDashboard.EMR"));
 							String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
 
 							if (getData(operatorDisplay, auditFor) != null)
@@ -578,7 +575,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
 				rateTypeSet.add(getText("ContractorView.ContractorDashboard.EMR"));
 				for (OperatorAccount operatorAccount : operators) {
-					String disp = getOperatorDisplay(operatorAccount, " " + getText("ContractorView.ContractorDashboard.EMR"));
+					String disp = getOperatorDisplay(operatorAccount, " "
+							+ getText("ContractorView.ContractorDashboard.EMR"));
 					if (data.get(disp) != null)
 						rateTypeSet.add(disp);
 				}
