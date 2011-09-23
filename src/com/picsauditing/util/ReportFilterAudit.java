@@ -331,6 +331,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 			if ((aType.getClassType().equals(AuditTypeClass.PQF) || aType.isAnnualAddendum()) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
+		Collections.sort(list, null);
+
 		return list;
 	}
 
@@ -341,6 +343,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 			if (aType.getClassType().isPolicy() && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
+		Collections.sort(list, null);
+
 		return list;
 	}
 
