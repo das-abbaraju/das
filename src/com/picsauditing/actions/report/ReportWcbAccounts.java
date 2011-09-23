@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import com.picsauditing.search.SelectContractorAudit;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportWcbAccounts extends ReportAccount {
@@ -48,5 +49,15 @@ public class ReportWcbAccounts extends ReportAccount {
 		filteredDefault = true;
 		
 		addFilterToSQL();
+	}
+
+	@Override
+	public void addExcelColumns() {
+		excelSheet.setData(data);
+		excelSheet.addColumn(new ExcelColumn("wcbAccountNumber", "WCB Account Number"));
+		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+		excelSheet.addColumn(new ExcelColumn("id", "PICS Account Number"));
+		excelSheet.addColumn(new ExcelColumn("province", "WCB Province"));
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Date"));
 	}
 }

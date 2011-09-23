@@ -1137,6 +1137,11 @@
 			<param name="filter.destinationAction">ReportWcbAccounts</param>
 			<result>struts/reports/wcb_accounts.jsp</result>
 		</action>
+		<action name="ReportWcbAccountsCSV"
+			class="com.picsauditing.actions.report.ReportWcbAccounts">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 		<action name="ReportWcbAccountsAjax"
 			class="com.picsauditing.actions.report.ReportWcbAccounts">
 			<result>struts/reports/wcb_accounts_data.jsp</result>
