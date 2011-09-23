@@ -1729,6 +1729,7 @@
 		-->
 		<action name="TradeTaxonomyAjax" class="com.picsauditing.actions.trades.TradeTaxonomy">
 			<result>struts/trades/trade_taxonomy.jsp</result>
+			<result name="edit">struts/trades/trade_taxonomy_edit.jsp</result>
 			<result name="trade">struts/trades/trade_taxonomy_edit.jsp</result>
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
