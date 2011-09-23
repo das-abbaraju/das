@@ -3,6 +3,8 @@ package com.picsauditing.actions.audits;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletOutputStream;
 
@@ -12,6 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -34,15 +37,28 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		HSSFSheet sheet = wb.createSheet(conAudit.getAuditType().getName().toString());
 
 		// Fonts
+		
+		// Header
 		HSSFFont boldedFont = wb.createFont();
 		boldedFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
 		HSSFCellStyle boldedStyle = wb.createCellStyle();
 		boldedStyle.setFont(boldedFont);
 		boldedStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+		
+		// Category
 		HSSFCellStyle boldedStyleLeft = wb.createCellStyle();
 		boldedStyleLeft.setFont(boldedFont);
+		
+		// Question
 		HSSFCellStyle wrapped = wb.createCellStyle();
 		wrapped.setWrapText(true);
+		
+		// Hyperlinks
+		HSSFFont hyperlinkFont = wb.createFont();
+		hyperlinkFont.setUnderline(HSSFFont.U_SINGLE);
+		hyperlinkFont.setColor(HSSFColor.BLUE.index);
+		HSSFCellStyle hyperlink = wb.createCellStyle();
+		hyperlink.setFont(hyperlinkFont);
 
 		// Audit Name - Contractor header
 		HSSFRow row = sheet.createRow(0);
@@ -65,6 +81,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		sheetStatus.sheet = sheet;
 		sheetStatus.bold = boldedStyleLeft;
 		sheetStatus.wrapped = wrapped;
+		sheetStatus.hyperlink = hyperlink;
 
 		Set<Integer> viewableCats = new HashSet<Integer>();
 		for (AuditCatData catData : conAudit.getCategories()) {
@@ -139,11 +156,32 @@ public class ContractorAuditDownload extends AuditActionSupport {
 				HSSFRow row = sheetStatus.sheet.createRow(sheetStatus.rownum++);
 				HSSFCell cell = row.createCell(0);
 				String cellValue = question.getExpandedNumber() + " - " + question.getName().toString();
-				cell.setCellValue(cellValue);
-				cell.setCellStyle(sheetStatus.wrapped);
 
-				double cellHeight = Math.ceil((double) cellValue.length() / 100.00);
-				row.setHeightInPoints((float) (row.getHeightInPoints() * cellHeight));
+				// There is HTML
+				if (cellValue.toLowerCase().contains("<a href") || cellValue.toLowerCase().contains("<br")
+						|| cellValue.toLowerCase().contains("<ul")) {
+					// Remove breaks
+					cellValue = cellValue.replaceAll("<br\\s?\\/?>", "");
+					String questionText = cellValue.replaceAll("<a href=\"(.*?)\" target=\"[\\w]*?\">(.*?)</a>", "")
+							.trim();
+					questionText = questionText.replaceAll("<.*?>", "");
+					cell.setCellValue(questionText);
+					cell.setCellStyle(sheetStatus.wrapped);
+
+					// Match links
+					Pattern href = Pattern.compile("<a href=\"(.*?)\" target=\"[\\w]*?\">(.*?)</a>");
+					Matcher links = href.matcher(cellValue);
+
+					while (links.find()) {
+						row = sheetStatus.sheet.createRow(sheetStatus.rownum++);
+						cell = row.createCell(0);
+						cell.setCellFormula("HYPERLINK(\"" + links.group(1) + "\",\"" + links.group(2) + "\")");
+						cell.setCellStyle(sheetStatus.hyperlink);
+					}
+				} else {
+					cell.setCellValue(cellValue);
+					cell.setCellStyle(sheetStatus.wrapped);
+				}
 
 				// Find the corresponding audit data
 				AuditData answer = null;
@@ -155,6 +193,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 				if (answer != null) {
 					if (!Strings.isEmpty(answer.getAnswer())) {
 						cell = row.createCell(1);
+
 						// Is the answer using an audit option value?
 						if (question.getOption() != null) {
 							for (AuditOptionValue value : question.getOption().getValues()) {
@@ -178,12 +217,19 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		return sheetStatus;
 	}
 
+	/**
+	 * Modeled after the OSHA Organizer. Need to update this when the OSHA Organizer changes or is removed.
+	 * 
+	 * @param sheetStatus
+	 * @param oshaAudit
+	 * @param average
+	 */
 	private void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
 		OshaType type = oshaAudit.getType();
 		boolean osha = OshaType.OSHA.equals(type);
 		boolean cohs = OshaType.COHS.equals(type);
 		boolean corporate = "Corporate".equals(oshaAudit.getLocation());
-
+		// Header
 		createRow(
 				sheetStatus,
 				getText(type.getI18nKey("dataHeader"))
@@ -192,15 +238,20 @@ public class ContractorAuditDownload extends AuditActionSupport {
 						+ (oshaAudit.isVerified() ? " - "
 								+ getText("AuditDownload.VerifiedBy", new Object[] { conAudit.getAuditor().getName() })
 								: ""), null, null, corporate, getText("OSHA.ThreeYearAverage"), null);
+
 		createRow(sheetStatus, getText("totalHoursWorked"),
 				getText("format.decimal", new Object[] { oshaAudit.getManHours() }), null, osha && corporate,
 				getText("format.decimal", new Object[] { average.getManHours() }), null);
+
 		createRow(sheetStatus, null, "#", getText("OSHA.Rate"), osha && corporate, "#", getText("OSHA.Rate"));
+
 		createRow(sheetStatus, null, "fatalities", oshaAudit.getFatalities(), oshaAudit.getFatalitiesRate(), osha
 				&& corporate, average.getFatalities(), average.getFatalitiesRate());
+
 		createRow(sheetStatus, type, "lostWorkDayCases", oshaAudit.getLostWorkCases(),
 				oshaAudit.getLostWorkCasesRate(), osha && corporate, average.getLostWorkCases(),
 				average.getLostWorkCasesRate());
+
 		createRow(sheetStatus, type, "restrictedCases", oshaAudit.getRestrictedWorkCases(),
 				oshaAudit.getRestrictedWorkCasesRate(), osha && corporate, average.getRestrictedWorkCases(),
 				average.getRestrictedWorkCasesRate());
@@ -217,7 +268,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 
 		if (cohs) {
 			createRow(sheetStatus, getText(type.getI18nKey("injuryAndIllness")),
-					getText("format.number", new Object[] { oshaAudit.getFirstAidInjuries() }), null, false, null, null);
+					getText("format.number", new Object[] { oshaAudit.getFirstAidInjuries() }));
 		}
 
 		if (osha) {
@@ -246,23 +297,37 @@ public class ContractorAuditDownload extends AuditActionSupport {
 
 		if (cohs) {
 			createRow(sheetStatus, getText(type.getI18nKey("vehicleIncidents")),
-					getText("format.number", new Object[] { oshaAudit.getVehicleIncidents() }), null, false, null, null);
+					getText("format.number", new Object[] { oshaAudit.getVehicleIncidents() }));
+
 			createRow(sheetStatus, getText(type.getI18nKey("totalkmDriven")),
-					getText("format.number", new Object[] { oshaAudit.getTotalkmDriven() }), null, false, null, null);
+					getText("format.number", new Object[] { oshaAudit.getTotalkmDriven() }));
 		}
 
 		if (osha && corporate) {
 			createRow(sheetStatus, getText(type.getI18nKey("VerificationIssues")),
-					oshaAudit.isVerified() ? getText("OSHA.None") : oshaAudit.getComment(), null, false, null, null);
+					oshaAudit.isVerified() ? getText("OSHA.None") : oshaAudit.getComment());
 		}
+	}
+
+	private void createRow(SheetStatus sheetStatus, String statistic, String total) {
+		createRow(sheetStatus, statistic, total, null, false, null, null);
 	}
 
 	private void createRow(SheetStatus sheetStatus, OshaType type, String property, float total, float rate,
 			boolean showAverage, float avgTotal, float avgRate) {
-		createRow(sheetStatus, type == null ? getText(property) : getText(type.getI18nKey(property)),
-				getText("format.number", new Object[] { total }), getText("format.decimal", new Object[] { rate }),
-				showAverage, getText("format.number", new Object[] { avgTotal }),
-				getText("format.decimal", new Object[] { avgRate }));
+		String typeProperty = "";
+		if (type == null)
+			typeProperty = getText(property);
+		else
+			typeProperty = getText(type.getI18nKey(property));
+
+		String totalFormatted = getText("format.number", new Object[] { total });
+		String rateFormatted = getText("format.decimal", new Object[] { rate });
+		String avgTotalFormatted = getText("format.number", new Object[] { avgTotal });
+		String avgRateFormatted = getText("format.decimal", new Object[] { avgRate });
+
+		createRow(sheetStatus, typeProperty, totalFormatted, rateFormatted, showAverage, avgTotalFormatted,
+				avgRateFormatted);
 	}
 
 	private void createRow(SheetStatus sheetStatus, String statistic, String total, String rate, boolean show3YAvg,
@@ -304,5 +369,6 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		// Common
 		public HSSFCellStyle bold;
 		public HSSFCellStyle wrapped;
+		public HSSFCellStyle hyperlink;
 	}
 }
