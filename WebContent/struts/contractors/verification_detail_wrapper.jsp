@@ -104,7 +104,8 @@ small {
 			'categoryID': categoryId,
 			'auditData.id': answerId,
 			'auditData.question.id': questionId,
-			'auditData.comment': $('#comment_' + questionId).val()
+			'auditData.comment': $('#comment_' + questionId).val(),
+			'toggleVerify': true
 		};
 
 		$.post('AuditDataSaveAjax.action', data, function(text, status){
