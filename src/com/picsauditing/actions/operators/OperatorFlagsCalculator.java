@@ -85,7 +85,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			List<Integer> opIDs = new ArrayList<Integer>();
 			if (operator.isCorporate()) {
 				for (Facility f : operator.getOperatorFacilities()) {
-					opIDs.add(f.getId());
+					opIDs.add(f.getOperator().getId());
 				}
 			}
 
