@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -28,6 +29,8 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public abstract class ImportPqf {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
 
 	StringBuilder log = new StringBuilder();
 
@@ -50,7 +53,7 @@ public abstract class ImportPqf {
 			// dumpQuestions(questions);
 		}
 		transformPqf(conAudit);
-		// System.out.println(log);
+//		 System.out.println(log);
 	}
 
 	/**
@@ -149,6 +152,12 @@ public abstract class ImportPqf {
 				}
 			}
 		}
+		
+		if (auditPercentCalculator == null) {
+			auditPercentCalculator = (AuditPercentCalculator) SpringUtils.getBean("AuditPercentCalculator");
+		}
+		
+		auditPercentCalculator.percentCalculateComplete(pqfAudit, true);
 
 		int percent = 0;
 
