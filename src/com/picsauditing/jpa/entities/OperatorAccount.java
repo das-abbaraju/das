@@ -240,6 +240,15 @@ public class OperatorAccount extends Account {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
 
+	
+	@Transient
+	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance){
+		if (insurance)
+			return inheritInsuranceCriteria.getFlagCriteria();
+		else
+			return inheritFlagCriteria.getFlagCriteria();
+	}
+	
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();

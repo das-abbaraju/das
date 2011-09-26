@@ -134,10 +134,10 @@
 								<s:set name="linkedOp" value="operator" />
 								
 								<s:if test="insurance && !operator.equals(operator.inheritInsuranceCriteria)">
-									<s:set name="linkedOp" value="operator.inheritFlagCriteria" />
+									<s:set name="linkedOp" value="operator.inheritInsuranceCriteria" />
 								</s:if>
 								<s:elseif test="!insurance && !operator.equals(operator.inheritFlagCriteria)">
-									<s:set name="linkedOp" value="operator.inheritInsuranceCriteria" />
+									<s:set name="linkedOp" value="operator.inheritFlagCriteria" />
 								</s:elseif>
 								
 								<a href="ManageFlagCriteriaOperator.action?id=<s:property value="#linkedOp.id" />&insurance=<s:property value="insurance" />"><s:property value="#linkedOp.name" /></a>

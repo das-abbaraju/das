@@ -316,7 +316,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public List<FlagCriteriaOperator> getCriteriaList() {
 		operator.getFlagCriteriaInherited();
 		// Filter out here?
-		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited();
+		List<FlagCriteriaOperator> inheritedCriteria = operator.getFlagCriteriaInherited(insurance);
 		List<FlagCriteriaOperator> valid = new ArrayList<FlagCriteriaOperator>();
 
 		// Sort by category, description
