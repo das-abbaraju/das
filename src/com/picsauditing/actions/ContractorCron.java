@@ -207,14 +207,15 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("There was an error running ContractorCron for id=");
 				body.append(conID);
 				body.append("\n\n");
-
-				body.append(t.getStackTrace());
-				body.append("\n\n");
 				
 				try {
 					body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
 				} catch (UnknownHostException e) {
 				}
+				
+				body.append(t.getStackTrace());
+				body.append("\n\n");
+
 
 				body.append(sw.toString());
 
