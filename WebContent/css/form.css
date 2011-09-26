@@ -1,0 +1,35 @@
+/* optiontransferselect */
+
+div.double-list
+{
+	margin: 10px 0px;
+}
+
+div.double-list-left,
+div.double-list-action,
+div.double-list-right
+{
+	float: left;
+}
+
+div.double-list label
+{
+	font-size: 13px !important;
+	font-weight: normal !important;
+}
+
+div.double-list-action input.add-left,
+div.double-list-action input.add-right
+{
+	position: relative;
+	top: 140px;
+}
+
+/* radio */
+ 
+ul.radio
+{
+	list-style-type: none;
+	margin: 0px;
+}
+

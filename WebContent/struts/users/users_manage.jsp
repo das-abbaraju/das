@@ -1,10 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <html>
 	<head>
-		<title><s:text name="UsersManage.title" /><s:if test="user.id > 0">: <s:property value="user.name"/></s:if></title>
+		<title>
+			<s:text name="UsersManage.title" />
+			
+			<s:if test="user.id > 0">
+				: <s:property value="user.name"/>
+			</s:if>
+		</title>
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -33,41 +39,39 @@
 		</script>
 		
 		<style type="text/css">
-		.user-password, .addableGroup, .addableMember {
-			display: none;
-		}
-		div.autocomplete {
-			position: absolute;
-			width: 250px;
-			background-color: white;
-			border: 1px solid #888;
-			margin: 0;
-			padding: 0;
-		}
-		
-		div.autocomplete ul {
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-		}
-		
-		div.autocomplete ul li.selected {
-			background-color: #ffb;
-		}
-		
-		div.autocomplete ul li {
-			list-style-type: none;
-			display: block;
-			margin: 0;
-			padding: 2px;
-			cursor: pointer;
-		}
+			.user-password, .addableGroup, .addableMember {
+				display: none;
+			}
+			div.autocomplete {
+				position: absolute;
+				width: 250px;
+				background-color: white;
+				border: 1px solid #888;
+				margin: 0;
+				padding: 0;
+			}
+			
+			div.autocomplete ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			
+			div.autocomplete ul li.selected {
+				background-color: #ffb;
+			}
+			
+			div.autocomplete ul li {
+				list-style-type: none;
+				display: block;
+				margin: 0;
+				padding: 2px;
+				cursor: pointer;
+			}
 		</style>
 	</head>
 	<body>
-		<h1>
-			<s:text name="UsersManage.title" />
-		</h1>
+		<h1><s:text name="UsersManage.title" /></h1>
 		
 		<s:if test="account.contractor">
 			<a href="ContractorView.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
@@ -101,12 +105,15 @@
 						
 						<div class="filterOption">
 							<h4><s:text name="UsersManage.Type" />:</h4>
+							
 							<s:hidden name="account.id" value="%{account.id}" />
+							
 							<s:radio name="isGroup" list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" value="isGroup" />
 						</div>
 						
 						<div class="filterOption">
 							<h4><s:text name="global.Status" />:</h4>
+							
 							<s:radio name="isActive" list="#{'Yes':'Active', 'No':'Inactive', '':'All'}" value="isActive" />
 						</div>
 					</s:form>
@@ -117,22 +124,29 @@
 			
 			<div style="margin:5px 0 5px 0; list-style: none;">
 				<s:if test="!account.contractor">
-					<a class="add"
-						href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=Yes"
-						><s:text name="UsersManage.addGroup" /></a>
+					<a 
+						class="add" 
+						href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=Yes">
+						<s:text name="UsersManage.addGroup" />
+					</a>
 				</s:if>
 				
-				<a class="add" 
-					href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=No"
-					><s:text name="UsersManage.addUser" /></a>
+				<a 
+					class="add" 
+					href="<s:property value="scope" />!add.action?account=<s:property value="account.id"/>&isActive=<s:property value="isActive"/>&isGroup=<s:property value="isGroup"/>&userIsGroup=No">
+					<s:text name="UsersManage.addUser" />
+				</a>
 					
 				<s:if test="!account.contractor">
-					<a class="preview"
-						href="ReportUserPermissionMatrix.action?accountID=<s:property value="account.id"/>"><s:text name="ReportUserPermissionMatrix.title" /></a>
+					<a class="preview" href="ReportUserPermissionMatrix.action?accountID=<s:property value="account.id"/>">
+						<s:text name="ReportUserPermissionMatrix.title" />
+					</a>
 				</s:if>
 				
 				<s:if test="account.contractor && account.users.size() > 1">
-					<a class="edit" href="ManageUserPermissions.action?id=<s:property value="account.id"/>"><s:text name="ManageUserPermissions.title" /></a>
+					<a class="edit" href="ManageUserPermissions.action?id=<s:property value="account.id"/>">
+						<s:text name="ManageUserPermissions.title" />
+					</a>
 				</s:if>
 			</div>
 			
@@ -142,28 +156,48 @@
 						<table class="report">
 							<thead>
 								<tr>
-									<td>&nbsp;</td>
-									<td colspan="2"><s:text name="UsersManage.UserGroup" /></td>
-									<td><s:text name="User.lastLogin" /></td>
+									<td>
+										&nbsp;
+									</td>
+									<td colspan="2">
+										<s:text name="UsersManage.UserGroup" />
+									</td>
+									<td>
+										<s:text name="User.lastLogin" />
+									</td>
 								</tr>
 							</thead>
 							
 							<s:iterator value="userList" status="stat">
 								<tr>
-									<td class="right"><s:property value="#stat.count" />.</td>
+									<td class="right">
+										<s:property value="#stat.count" />.
+									</td>
 									
 									<s:if test="get('isGroup') == 'Yes'">
-										<td><s:text name="UsersManage.Group" /></td>
-										<td style="font-weight: bold"><a
-											href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property
-											value="get('name')" /></a></td>
-										<td><s:text name="global.NA" /></td>
+										<td>
+											<s:text name="UsersManage.Group" />
+										</td>
+										<td style="font-weight: bold">
+											<a href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
+												<s:property value="get('name')" />
+											</a>
+										</td>
+										<td>
+											<s:text name="global.NA" />
+										</td>
 									</s:if>
 									<s:else>
-										<td><s:text name="UsersManage.User" /></td>
-										<td><a
-											href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
-											class="userActive<s:property value="get('isActive')" />"><s:property value="get('name')" /></a></td>
+										<td>
+											<s:text name="UsersManage.User" />
+										</td>
+										<td>
+											<a
+												href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"
+												class="userActive<s:property value="get('isActive')" />">
+												<s:property value="get('name')" />
+											</a>
+										</td>
 										<td>
 											<s:if test="get('lastLogin') != null">
 												<s:date name="get('lastLogin')" />
@@ -231,7 +265,7 @@
 							<s:if test="account.users.size() > 1">
 								<s:if test="user.id > 0">
 									<li>
-										<label> <s:if test="user.group">Group</s:if> <s:else>User</s:else> #:</label>
+										<label><s:if test="user.group">Group</s:if> <s:else>User</s:else> #:</label>
 										<s:property value="user.id" />
 									</li>				
 									<li>
@@ -245,6 +279,7 @@
 								<label>Display Name:</label>
 								<s:textfield name="user.name" size="30" />
 							</li>
+							
 							<s:if test="user.isGroup.toString() == 'No'">
 								<li>
 									<label>Email:</label>
@@ -372,7 +407,7 @@
 							<s:if test="user.id > 0">
 								<li>
 									<label>Active:</label>
-									<s:radio theme="pics" list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
+									<s:radio list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
 								</li>
 								
 								<s:if test="permissions.isAdmin()">
@@ -384,8 +419,9 @@
 										<s:textfield id="accountMoveSuggest" /><br/>
 										
 										<pics:fieldhelp title="Move User to Account">
-											<p>The name of the account you wish to move the user to.  
-											This field will autocomplete as you type.</p>
+											<p>
+												The name of the account you wish to move the user to. This field will autocomplete as you type.
+											</p>
 										</pics:fieldhelp>
 										
 										<s:submit method="move" cssClass="picsbutton" value="%{getText(scope + '.button.MoveUser')}" onclick="return confirm('%{getText(scope + '.confirm.Move')}');" />
@@ -427,8 +463,6 @@
 				<s:if test="user.id > 0">
 					<s:if test="!account.contractor">
 						<s:if test="!user.superUser">
-							<td class="column">
-							</td>
 							<div id="permissionReport" style="width: 600px">
 								<s:include value="user_save_permissions.jsp" />
 							</div>
@@ -457,20 +491,34 @@
 						<table class="report">
 							<thead>
 								<tr>
-									<th>Login Date/Time</th>
-									<th>IP Address</th>
-									<th>Notes</th>
+									<th>
+										Login Date/Time
+									</th>
+									<th>
+										IP Address
+									</th>
+									<th>
+										Notes
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<s:iterator value="recentLogins">
 									<tr>
-										<td><s:date name="loginDate" /></td>
-										<td><a href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />"><s:property value="remoteAddress" /></a></td>
-										<td><s:if test="admin.id > 0">Login by <s:property
-												value="admin.name" /> from <s:property
-												value="admin.account.name" />
-										</s:if> <s:if test="successful == 'N'">Incorrect password attempt</s:if>
+										<td>
+											<s:date name="loginDate" />
+										</td>
+										<td>
+											<a href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />"><s:property value="remoteAddress" /></a>
+										</td>
+										<td>
+											<s:if test="admin.id > 0">
+												Login by <s:property value="admin.name" /> from <s:property value="admin.account.name" />
+											</s:if>
+											
+											<s:if test="successful == 'N'">
+												Incorrect password attempt
+											</s:if>
 										</td>
 									</tr>
 								</s:iterator>

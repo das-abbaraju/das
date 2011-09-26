@@ -17,93 +17,93 @@
 		<script type="text/javascript" src="js/detect_timezone.js?v=<s:property value="version"/>"></script>
 		
 		<script type="text/javascript">
-		$(function() {
-			changeCountry($("#contractorCountry").val());
-		});
-		
-		function checkUsername(username) {
-			$('#username_status').text(translate('JS.Registration.CheckingUsername'));
-			var data = {userID: 0, username: username};
-			$('#username_status').load('user_ajax.jsp', data);
-		}
-		
-		function checkName(name) {
-			if (name.indexOf('^^^') > 0) {
-				$('#name_status').html("This contractor will be created as a DEMO account.");
-				$('#contractorTaxId').val('000000000');
-				$('#contractorPhone').val('949-387-1940');
-				return;
+			$(function() {
+				changeCountry($("#contractorCountry").val());
+			});
+			
+			function checkUsername(username) {
+				$('#username_status').text(translate('JS.Registration.CheckingUsername'));
+				var data = {userID: 0, username: username};
+				$('#username_status').load('user_ajax.jsp', data);
 			}
-			startThinking({div:'name_status', message: translate('JS.Registration.CheckingName')});
-			var data = {companyName: name, button: 'name'};
-			$('#name_status').load('ContractorValidateAjax.action', data);
-		}
-		
-		function changeCountry(country) {
-			if (country == 'AE') {
-				$('#contractorTaxId').val('');
-				$('#taxIdItem').hide();
-				$('#ContractorRegistration_contractor_zip').val('');
-				$('#zipItem').hide();
-			} else {
-				if($('#taxIdItem').is(':hidden'))
-					$('#taxIdItem').show();
-				if($('#zipItem').is(':hidden'))
-					$('#zipItem').show();
-		
-				if (country == 'US'){
-					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
-					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
-				} else if (country == 'CA') {
-					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
-					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
+			
+			function checkName(name) {
+				if (name.indexOf('^^^') > 0) {
+					$('#name_status').html("This contractor will be created as a DEMO account.");
+					$('#contractorTaxId').val('000000000');
+					$('#contractorPhone').val('949-387-1940');
+					return;
+				}
+				startThinking({div:'name_status', message: translate('JS.Registration.CheckingName')});
+				var data = {companyName: name, button: 'name'};
+				$('#name_status').load('ContractorValidateAjax.action', data);
+			}
+			
+			function changeCountry(country) {
+				if (country == 'AE') {
+					$('#contractorTaxId').val('');
+					$('#taxIdItem').hide();
+					$('#ContractorRegistration_contractor_zip').val('');
+					$('#zipItem').hide();
 				} else {
-					$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
-					$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
+					if($('#taxIdItem').is(':hidden'))
+						$('#taxIdItem').show();
+					if($('#zipItem').is(':hidden'))
+						$('#zipItem').show();
+			
+					if (country == 'US'){
+						$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.US')+':');
+						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.US.help'));
+					} else if (country == 'CA') {
+						$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.CA')+':');
+						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.CA.help'));
+					} else {
+						$('#taxIdLabel').text(translate('JS.ContractorAccount.taxId.Other')+':');
+						$('#taxIdLabelHelp').html(translate('JS.ContractorAccount.taxId.Other.help'));
+					}
+				}
+				
+				changeState(country);
+			}
+			
+			function changeState(country) {
+				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.'});
+				$('#country_display').val($('#contractorCountry option:selected').text());
+			
+			}
+			
+			// Probably a better way to do this
+			function updateHeader() {
+				if ($('input#materialSupplier').is(':checked') && !$('input#onsiteService').is(':checked') && !$('input#offsiteService').is(':checked')) {
+					$('#step2').hide();
+					$('span.vendor').show();
+					$('span.service').hide();
+				} else {
+					$('#step2').show();
+					$('span.vendor').hide();
+					$('span.service').show();
 				}
 			}
 			
-			changeState(country);
-		}
-		
-		function changeState(country) {
-			$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.'});
-			$('#country_display').val($('#contractorCountry option:selected').text());
-		
-		}
-		
-		// Probably a better way to do this
-		function updateHeader() {
-			if ($('input#materialSupplier').is(':checked') && !$('input#onsiteService').is(':checked') && !$('input#offsiteService').is(':checked')) {
-				$('#step2').hide();
-				$('span.vendor').show();
-				$('span.service').hide();
-			} else {
-				$('#step2').show();
-				$('span.vendor').hide();
-				$('span.service').show();
+			function updateRequiredField() {
+				if($('#Onsite').is(':checked') || $('#Offsite').is(':checked') || $('#Supplier').is(':checked')) {
+					$('#Onsite').parent().addClass('hasdata');
+					$('#Offsite').parent().addClass('hasdata');
+					$('#Supplier').parent().addClass('hasdata');
+				}
+				if(!$('#Onsite').is(':checked') && !$('#Offsite').is(':checked') && !$('#Supplier').is(':checked')) {
+					$('#Onsite').parent().removeClass('hasdata');
+					$('#Offsite').parent().removeClass('hasdata');
+					$('#Supplier').parent().removeClass('hasdata');
+				}
+					
 			}
-		}
-		
-		function updateRequiredField() {
-			if($('#Onsite').is(':checked') || $('#Offsite').is(':checked') || $('#Supplier').is(':checked')) {
-				$('#Onsite').parent().addClass('hasdata');
-				$('#Offsite').parent().addClass('hasdata');
-				$('#Supplier').parent().addClass('hasdata');
-			}
-			if(!$('#Onsite').is(':checked') && !$('#Offsite').is(':checked') && !$('#Supplier').is(':checked')) {
-				$('#Onsite').parent().removeClass('hasdata');
-				$('#Offsite').parent().removeClass('hasdata');
-				$('#Supplier').parent().removeClass('hasdata');
-			}
-				
-		}
-		
-		$(function(){
-			changeState($('#contractorCountry').val());
-		
-			$('#timezone').val(jzTimezoneDetector.determine_timezone().timezone.olson_tz);
-		})
+			
+			$(function(){
+				changeState($('#contractorCountry').val());
+			
+				$('#timezone').val(jzTimezoneDetector.determine_timezone().timezone.olson_tz);
+			});
 		
 		</script>
 	</head>
@@ -131,6 +131,7 @@
 			
 			<fieldset class="form">
 				<h2 class="formLegend"><s:text name="%{scope}.CompanyDetails.heading" /></h2>
+				
 				<ol>
 					<li class="required">
 						<s:textfield name="contractor.name" size="35" theme="formhelp" onchange="checkName(this.value);"/>
@@ -149,7 +150,6 @@
 					<li class="required" id="taxIdItem" <s:if test="contractor.country.isoCode =='AE'">style="display: none;"</s:if>>
 						<label><s:div id="taxIdLabel" /></label>
 						<s:textfield name="contractor.taxId" id="contractorTaxId" size="15" maxLength="15" />
-						
 						<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 						<div id="taxId_status"></div>
 					</li>
@@ -221,9 +221,7 @@
 				<ol>
 					<li>
 						<label><s:text name="ContractorAccount.soleProprietor" /></label>
-						
-						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="SoleProprietor" name="contractor.soleProprietor" theme="pics" />
-						
+						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="SoleProprietor" name="contractor.soleProprietor" />
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorAccount.soleProprietor.fieldhelptitle" /></h3>
 							<s:text name="ContractorAccount.soleProprietor.fieldhelp" />
@@ -231,8 +229,7 @@
 					</li>
 					<li>
 						<label><s:text name="ContractorAccount.competitorMembership" /></label>
-						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" theme="pics" />
-						
+						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" />
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorAccount.competitorMembership.fieldhelptitle" /></h3>
 							<s:text name="ContractorAccount.competitorMembership.fieldhelp" />
@@ -240,9 +237,7 @@
 					</li>
 					<li>
 						<label><s:text name="ContractorAccount.description.alttitle" />:</label>
-						
 						<s:textarea name="contractor.description" cols="60" rows="15" />
-						
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorAccount.description" /></h3>
 							<s:text name="ContractorAccount.description.fieldhelp" />

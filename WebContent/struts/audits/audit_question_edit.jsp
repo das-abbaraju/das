@@ -18,7 +18,7 @@
 		<%-- radio // select --%>
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
-				<s:radio theme="audits" list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
 
 				<s:if test="!isStringEmpty(#a.answer)">
 					<input class="resetAnswer" type="submit" value="Clear" />

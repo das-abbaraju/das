@@ -97,6 +97,7 @@
 		
 		<s:form id="save" method="POST" enctype="multipart/form-data">
 			<br clear="all" />
+			
 			<s:hidden name="id" />
 			
 			<table width="100%">
@@ -127,7 +128,8 @@
 							<ol>
 								<li>
 									<label><s:text name="global.Address"/>:</label>
-									<s:textfield name="contractor.address" size="35" /><br />
+									<s:textfield name="contractor.address" size="35" />
+									<br />
 									<s:textfield name="contractor.address2" size="35" />
 								</li>
 								<li>
@@ -136,12 +138,13 @@
 								</li>
 								<li>
 									<label><s:text name="Country" />:</label>
-									<s:select list="countryList"
+									<s:select
+										list="countryList"
 										name="country.isoCode" id="contractorCountry"
 										listKey="isoCode" listValue="name"
 										value="contractor.country.isoCode"
 										onchange="countryChanged(this.value)"
-										/>
+									/>
 								</li>
 								<li id="state_li"></li>
 								
@@ -179,7 +182,7 @@
 										listKey="id"
 										listValue="name"
 										value="%{contractor.primaryContact.id}"
-										/>
+									/>
 										
 									<s:if test="permissions.admin">
 										<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
@@ -354,14 +357,16 @@
 								</s:if>
 								
 								<s:if test="contractor.country.isoCode != 'AE'">
-									<li id="taxIdItem"><label><s:div cssClass="taxIdLabel" /></label>
+									<li id="taxIdItem">
+										<label><s:div cssClass="taxIdLabel" /></label>
 										<s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15" />
 										<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
 									</li>
 								</s:if>
+								
 								<li>
 									<label>Must Pay?</label>
-									<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay" value="contractor.mustPay" theme="pics" />
+									<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay" value="contractor.mustPay" />
 								</li>
 								<li>
 									<label>Upgrade Date:</label>
@@ -386,13 +391,14 @@
 										<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
 											<h5><s:property value="#conType.type" /></h5>
 											
-											<s:property value="#conType.description" escape="false" /><br />
+											<s:property value="#conType.description" escape="false" />
+											<br />
 										</s:iterator>
 									</pics:fieldhelp>
 								</li>
 								<li>
 									<label for="conCompetitorMembership">Has Competitor Membership:</label>
-									<s:radio id="conCompetitorMembership" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
+									<s:radio id="conCompetitorMembership" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
 									<br />
 									
 									<s:if test="hasImportPQFAudit">
@@ -404,12 +410,15 @@
 									
 									<div class="fieldhelp">
 										<h3>Competitor Membership</h3>
-										<p>Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.</p>
+										
+										<p>
+											Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.
+										</p>
 									</div>
 								</li>
 								<li>
 									<label for="conCanadianCompetitor">Has Canadian Competitor:</label>
-									<s:radio id="conCanadianCompetitor" theme="pics" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" name="contractor.hasCanadianCompetitor" />
+									<s:radio id="conCanadianCompetitor" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" name="contractor.hasCanadianCompetitor" />
 								</li>
 								<li>
 									<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />

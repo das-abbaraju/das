@@ -1,22 +1,33 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <s:if test="criteria != null">
-<s:include value="../actionMessages.jsp"/>
+	<s:include value="../actionMessages.jsp"/>
 </s:if>
+
 <a href="#" type="button" class="goback">&lt;&lt; Back</a>
+
 <s:form id="itemform" method="post" action="ManageFlagCriteria">
 	<s:hidden name="id"/>
+	
 	<fieldset class="form">
 		<h2 class="formLegend">General</h2>
+		
 		<ol>
 			<li>
 				<label>ID:</label>
-				<s:if test="criteria.id == 0">NEW</s:if>
-				<s:else><s:property value="criteria.id"/></s:else>
+				
+				<s:if test="criteria.id == 0">
+					NEW
+				</s:if>
+				<s:else>
+					<s:property value="criteria.id"/>
+				</s:else>
+				
 				<s:if test="criteria.id > 0">
-				<s:set name="o" value="criteria"/><s:include value="../who.jsp"/>
+					<s:set name="o" value="criteria"/>
+					<s:include value="../who.jsp"/>
 				</s:if>
 			</li>
 			<li>
@@ -30,7 +41,9 @@
 			<li>
 				<label>Label:</label>
 				<s:textfield name="criteria.label" maxlength="30"/>
-				<pics:fieldhelp title="Label"><p>A short description of this criteria that can be used as column headers in reports.</p></pics:fieldhelp>
+				<pics:fieldhelp title="Label">
+					<p>A short description of this criteria that can be used as column headers in reports.</p>
+				</pics:fieldhelp>
 			</li>
 			<li>
 				<label>Description:</label>
@@ -38,15 +51,15 @@
 				<pics:fieldhelp title="Description">
 					<p>A helpful description of this criteria.</p>
 					<p>If allowing a Custom Hurdle below, be sure to include {HURDLE} in the description. The operator's custom hurdle rate will be replaced with this text.</p>
-					<p>If this criteria is for an insurance limit and you want the add the Excess policy, 
-						then include either <b>plus Excess Aggregate</b> or <b>plus Excess Each Occurrence</b>
-						somewhere in the description.</p>
+					<p>If this criteria is for an insurance limit and you want the add the Excess policy, then include either <b>plus Excess Aggregate</b> or <b>plus Excess Each Occurrence</b> somewhere in the description.</p>
 				</pics:fieldhelp>
 			</li>
 		</ol>
 	</fieldset>
+	
 	<fieldset class="form">
 		<h2 class="formLegend">Value</h2>
+		
 		<ol>
 			<li>
 				<label>Data Type:</label>
@@ -100,8 +113,10 @@
 		</ol>
 	</fieldset>
 	<!-- end problem area -->
+	
 	<fieldset class="form">
 		<h2 class="formLegend">OSHA</h2>
+		
 		<ol>
 			<li>
 				<label>Osha Type:</label>
@@ -117,6 +132,7 @@
 			</li>
 		</ol>
 	</fieldset>
+	
 	<fieldset class="form">
 		<ol>
 			<li>
