@@ -11,6 +11,8 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -56,6 +58,8 @@ public class OperatorAccount extends Account {
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
 	private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 	private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
+	private List<OperatorAccount> childOperators = new ArrayList<OperatorAccount>();
+	private List<OperatorAccount> parentOperators = new ArrayList<OperatorAccount>();
 	private List<OperatorTag> tags = new ArrayList<OperatorTag>();
 	private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
 	private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
@@ -240,15 +244,14 @@ public class OperatorAccount extends Account {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
 
-	
 	@Transient
-	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance){
+	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
 		if (insurance)
 			return inheritInsuranceCriteria.getFlagCriteria();
 		else
 			return inheritFlagCriteria.getFlagCriteria();
 	}
-	
+
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
@@ -423,6 +426,26 @@ public class OperatorAccount extends Account {
 
 	public void setCompetencies(List<OperatorCompetency> competencies) {
 		this.competencies = competencies;
+	}
+
+	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
+	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "corporateID"), inverseJoinColumns = @JoinColumn(name = "opID"))
+	public List<OperatorAccount> getChildOperators() {
+		return childOperators;
+	}
+
+	public void setChildOperators(List<OperatorAccount> childOperators) {
+		this.childOperators = childOperators;
+	}
+	
+	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
+	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "opID"), inverseJoinColumns = @JoinColumn(name = "corporateID"))
+	public List<OperatorAccount> getParentOperators() {
+		return parentOperators;
+	}
+
+	public void setParentOperators(List<OperatorAccount> parentOperators) {
+		this.parentOperators = parentOperators;
 	}
 
 	@Transient
