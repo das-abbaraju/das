@@ -2,6 +2,7 @@ package com.picsauditing.mail;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.Token;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
@@ -210,6 +213,36 @@ public class MassMailer extends PicsActionSupport {
 							new Object[] { (Integer) (ids.size() - getActionErrors().size()) }));
 					addActionError(getText("MassMailer.GoBackToEmailWizard"));
 					return BLANK;
+				}
+
+				if (permissions.isOperatorCorporate()
+						&& (ListType.Contractor.equals(type) || ListType.Audit.equals(type))) {
+					Set<ContractorAccount> contractors = new HashSet<ContractorAccount>();
+
+					if (ListType.Contractor.equals(type)) {
+						contractors.addAll(contractorAccountDAO.findWhere("a.id IN (" + Strings.implode(ids) + ")"));
+					} else {
+						List<ContractorAudit> audits = contractorAuditDAO.findWhere(10000,
+								"id IN (" + Strings.implode(ids) + ")", "");
+						for (ContractorAudit audit : audits) {
+							contractors.add(audit.getContractorAccount());
+						}
+					}
+
+					OperatorAccount operator = new OperatorAccount();
+					operator.setId(permissions.getAccountId());
+					operator.setName(permissions.getAccountName());
+
+					for (ContractorAccount contractor : contractors) {
+						Note note = new Note();
+						note.setSummary("An email with subject '" + template.getSubject() + "' was sent by "
+								+ permissions.getName() + " from " + operator.getName());
+						note.setAccount(contractor);
+						note.setCanContractorView(true);
+						note.setViewableBy(operator);
+						note.setAuditColumns(permissions);
+						dao.save(note);
+					}
 				}
 
 				return "emailConfirm";
