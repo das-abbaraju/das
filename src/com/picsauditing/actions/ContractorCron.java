@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -208,7 +209,12 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("\n\n");
 
 				body.append(t.getStackTrace());
-				body.append("\n");
+				body.append("\n\n");
+				
+				try {
+					body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
+				} catch (UnknownHostException e) {
+				}
 
 				body.append(sw.toString());
 
