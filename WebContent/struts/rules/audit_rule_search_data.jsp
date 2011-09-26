@@ -65,7 +65,9 @@
 					</td>
 					<td>
 						<s:if test="get('auditTypeID') > 0">
-							<a href="ManageAuditType.action?id=<s:property value="get('auditTypeID')"/>"><s:property value="get('audit_type')"/></a>
+							<a href="ManageAuditType.action?id=<s:property value="get('auditTypeID')"/>">
+								<s:text name="AuditType.%{get('auditTypeID')}.name" />
+							</a>
 						</s:if>
 						<s:else>
 							*
