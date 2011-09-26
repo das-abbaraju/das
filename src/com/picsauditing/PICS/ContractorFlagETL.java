@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -25,21 +27,18 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
-
+	@Autowired
+	private FlagCriteriaDAO flagCriteriaDao;
+	@Autowired
 	private AuditDataDAO auditDataDao;
+	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
 
-	private Set<FlagCriteria> distinctFlagCriteria = null;
-	private Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
-	protected boolean hasOqEmployees = false;
-	protected boolean hasCOR = false;
+	public void calculate(ContractorAccount contractor) {
+		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
-	public ContractorFlagETL(FlagCriteriaDAO flagCriteriaDao, AuditDataDAO auditDataDao,
-			FlagCriteriaContractorDAO flagCriteriaContractorDao) {
-		this.auditDataDao = auditDataDao;
-		this.flagCriteriaContractorDao = flagCriteriaContractorDao;
-
-		distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+		Set<FlagCriteria> distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
+		Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
 
 		// Get AuditQuestion ids that are used
 		for (FlagCriteria fc : distinctFlagCriteria) {
@@ -54,10 +53,6 @@ public class ContractorFlagETL {
 				}
 			}
 		}
-	}
-
-	public void calculate(ContractorAccount contractor) {
-		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(),
 				criteriaQuestionSet);
@@ -256,8 +251,8 @@ public class ContractorFlagETL {
 			// Checking OSHA
 			if (flagCriteria.getOshaType() != null) {
 				OshaOrganizer osha = contractor.getOshaOrganizer();
-				Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-						flagCriteria.getOshaRateType());
+				Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria
+						.getOshaRateType());
 				PicsLogger.log("Answer = " + answer);
 
 				if (answer != null) {
