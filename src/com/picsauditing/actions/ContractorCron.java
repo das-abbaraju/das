@@ -210,12 +210,11 @@ public class ContractorCron extends PicsActionSupport {
 				
 				try {
 					body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
+					body.append("\n\n");
 				} catch (UnknownHostException e) {
 				}
 				
 				body.append(t.getStackTrace());
-				body.append("\n\n");
-
 
 				body.append(sw.toString());
 
