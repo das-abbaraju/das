@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
 <title>Schedule &amp; Assign Audits</title>
@@ -16,7 +17,6 @@
 					$('#audit_'+auditId).effect('highlight', {color: '#FFFF11'}, 1000);
 			}
 		);
-			
 	}
 </script>
 </head>
@@ -26,12 +26,12 @@
 <s:include value="filters.jsp" />
 <div class="blueMain"><a href="AuditCalendar.action" target="_BLANK">Audit Calendar</a></div>
 
-<div><s:property value="report.pageLinksWithDynamicForm"
-	escape="false" /></div>
+<div><s:property value="report.pageLinksWithDynamicForm" escape="false" /></div>
 <s:form id="assignScheduleAuditsForm" method="post" cssClass="forms">
 	<table class="report">
 		<thead>
 			<tr>
+				<td></td>
 				<td></td>
 				<td><a href="javascript: changeOrderBy('form1','a.name');">Contractor</a></td>
 				<td align="center"><a>Type</a></td>
@@ -60,8 +60,8 @@
 		</thead>
 		<s:iterator value="data" status="stat">
 			<tr id="audit_<s:property value="[0].get('auditID')"/>">
-				<td class="right"><s:property
-					value="#stat.index + report.firstRowNumber" /></td>
+				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
+				<td class="center"><input type="checkbox" value="<s:property value="[0].get('auditID')" />" name="auditIDs" /></td>
 				<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>" 
 						class="contractorQuick" title="<s:property value="[0].get('name')"/>"
 						rel="ContractorQuickAjax.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a>
@@ -124,6 +124,16 @@
 				</s:if>
 			</tr>
 		</s:iterator>
+		<pics:permission perm="AssignAudits" type="Edit">
+			<tr>
+				<td colspan="2" class="right"><input type="checkbox" id="selectAll" /> Select All</td>
+				<td colspan="<s:property value="10 + (showContact ? 8 : 0) + (showTrade ? 1 : 0)" />">
+					<s:select cssClass="blueMain" list="auditorList" listKey="id" name="auditor" listValue="name" 
+						headerKey="0" headerValue="- Safety Professional -" />
+					<s:submit method="updateAll" cssClass="picsbutton" />
+				</td>
+			</tr>
+		</pics:permission>
 	</table>
 </s:form>
 <div>
