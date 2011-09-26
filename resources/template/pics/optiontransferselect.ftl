@@ -53,11 +53,12 @@
 			<#assign addToLeftLabel = parameters.addToLeftLabel?default("<-")?html/><#t/>
 			
 			<#if parameters.doubleHeaderKey??><#t/>
-				<input type="button"
+				<input type="button" class="add-left btn 
 				
 				<#if parameters.buttonCssClass??><#t/>
-	 				class="add-left ${parameters.buttonCssClass?html}"
+	 				${parameters.buttonCssClass?html}
 				</#if><#t/>
+				"
 				
 				<#if parameters.buttonCssStyle??><#t/>
 	 				style="${parameters.buttonCssStyle?html}"
@@ -65,11 +66,12 @@
 	 			
 	 			value="${addToLeftLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), false, '${parameters.doubleHeaderKey}', '');<#if parameters.addToLeftOnclick?has_content>${parameters.addToLeftOnclick};</#if>" />
 			<#else><#t/>
-				<input type="button"
+				<input type="button" class="add-left btn 
 				
 				<#if parameters.buttonCssClass??><#t/>
-			 		class="add-left ${parameters.buttonCssClass?html}"
+			 		${parameters.buttonCssClass?html}
 				</#if><#t/>
+				"
 				
 				<#if parameters.buttonCssStyle??><#t/>
 			 		style="${parameters.buttonCssStyle?html}"
@@ -83,11 +85,12 @@
 			<#assign addToRightLabel=parameters.addToRightLabel?default("->")?html /><#t/>
 			
 			<#if parameters.headerKey??><#t/>
-				<input type="button"
+				<input type="button" class="add-right btn 
 				
 				<#if parameters.buttonCssClass??><#t/>
-				 	class="add-right ${parameters.buttonCssClass?html}"
+				 	${parameters.buttonCssClass?html}
 				</#if><#t/>
+				"
 				
 				<#if parameters.buttonCssStyle??><#t/>
 				 	style="${parameters.buttonCssStyle?html}"
@@ -95,11 +98,12 @@
 				
 				value="${addToRightLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), false, '${parameters.headerKey}', '');<#if parameters.addToRightOnclick?has_content>${parameters.addToRightOnclick};</#if>" />
 			<#else><#t/>
-				<input type="button"
+				<input type="button" class="add-right btn 
 				
 				<#if parameters.buttonCssClass??><#t/>
-				 	class="add-right ${parameters.buttonCssClass?html}"
+				 	${parameters.buttonCssClass?html}
 				</#if><#t/>
+				"
 				
 				<#if parameters.buttonCssStyle??>
 				 	style="${parameters.buttonCssStyle?html}"

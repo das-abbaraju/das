@@ -18,11 +18,19 @@ div.double-list label
 	font-weight: normal !important;
 }
 
+div.double-list-action
+{
+	margin: 0px 10px;
+}
+
 div.double-list-action input.add-left,
 div.double-list-action input.add-right
 {
+	display: block;
+	margin-bottom: 10px;
 	position: relative;
-	top: 140px;
+	top: 115px;
+	width: 75px;
 }
 
 /* radio */

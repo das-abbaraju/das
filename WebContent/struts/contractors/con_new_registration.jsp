@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
 <html>
 	<head>
@@ -272,9 +272,7 @@
 		</script>
 	</head>
 	<body>
-		<h1>
-			<s:text name="RequestNewContractor.title" />
-		</h1>
+		<h1><s:text name="RequestNewContractor.title" /></h1>
 		
 		<pics:permission perm="RequestNewContractor">
 			<a href="ReportNewRequestedContractor.action">&lt;&lt; <s:text name="RequestNewContractor.link.BackToRequests" /></a>
@@ -406,7 +404,6 @@
 				<ol>
 					<li>
 						<label for="newContractorCountry"><s:text name="Country" />:</label>
-						
 						<s:select list="countryList" name="country.isoCode" id="newContractorCountry" listKey="isoCode" 
 							listValue="name" value="%{newContractor.country.isoCode}" />
 							
@@ -439,7 +436,6 @@
 				<ol>
 					<li>
 						<label><s:text name="ContractorRegistrationRequest.requestedBy" />:</label>
-						 
 						<s:select list="operatorsList" id="operatorsList" headerKey="0" 
 							headerValue="- %{getText('RequestNewContractor.header.SelectAnOperator')} -" 
 							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name" 
@@ -464,7 +460,6 @@
 					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
 						<li>
 							<label><s:text name="RequestNewContractor.label.AddToWatchlist" />:</label>
-							
 							<s:checkbox name="newContractor.watch" />
 							
 							<div class="fieldhelp">
@@ -492,13 +487,33 @@
 					<li>
 						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
 					</li>
+					<li>
+						<label>Operator Tags</label>
+						<s:optiontransferselect
+							label="Operator Tags"
+							name="operatorTagsLeft"
+							list="operatorTags"
+							listKey="id"
+							listValue="tag"
+							doubleName="operatorTagsRight"
+							doubleList="{}"
+							leftTitle="Selectable Tags"
+							rightTitle="Assigned Tags"
+							addToLeftLabel="Remove"
+							addToRightLabel="Assign"
+							allowAddAllToLeft="false"
+							allowAddAllToRight="false"
+							allowSelectAll="false"
+							allowUpDownOnLeft="false"
+							allowUpDownOnRight="false"
+							buttonCssClass="arrow"
+ 						/>
+					</li>
 				</ol>
 			</fieldset>
 			
 			<fieldset class="form">
-				<h2 class="formLegend">
-					<s:text name="RequestNewContractor.header.ContactSummary" />
-				</h2>
+				<h2 class="formLegend"><s:text name="RequestNewContractor.header.ContactSummary" /></h2>
 				
 				<ol>
 					<s:if test="newContractor.id > 0">
@@ -517,12 +532,10 @@
 							<li>
 								<label><s:text name="RequestNewContractor.label.FollowUp" />:</label>
 								
-								<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" theme="pics" />
+								<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" />
 								
 								<div class="fieldhelp">
-									<h3>
-										<s:text name="RequestNewContractor.label.FollowUp" />
-									</h3>
+									<h3><s:text name="RequestNewContractor.label.FollowUp" /></h3>
 									
 									<s:text name="ContractorRegistrationRequest.handledBy.fieldhelp" />
 								</div>
@@ -547,11 +560,13 @@
 							<label><s:text name="RequestNewContractor.label.PICSContractor" />:</label>
 							
 							<s:if test="permissions.admin">
-								<s:textfield value="%{newContractor.contractor.name}"
-									id="matchedContractor" size="20" />
+								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
 								<div class="fieldhelp">
-								<h3><s:text name="RequestNewContractor.button.ReturnToOperator" /></h3>
-								<p><s:text name="RequestNewContractor.help.ReturnToOperator" /></p>
+									<h3><s:text name="RequestNewContractor.button.ReturnToOperator" /></h3>
+									
+									<p>
+										<s:text name="RequestNewContractor.help.ReturnToOperator" />
+									</p>
 								</div>
 							</s:if>
 							
@@ -576,9 +591,7 @@
 						</div>
 						
 						<div class="fieldhelp">
-							<h3>
-								<s:text name="global.Notes" />
-							</h3>
+							<h3><s:text name="global.Notes" /></h3>
 							
 							<p>
 								<s:text name="RequestNewContractor.help.Notes" />
@@ -611,9 +624,7 @@
 			
 			<s:if test="newContractor.id > 0">
 				<fieldset class="form">
-					<h2 class="formLegend">
-						<s:text name="ContractorRegistrationRequest.label.status" />
-					</h2>
+					<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.label.status" /></h2>
 					
 					<ol>
 						<s:if test="permissions.admin">
@@ -632,9 +643,7 @@
 								</p>
 								
 								<div class = "fieldhelp">
-									<h3>
-										<s:text name="RequestNewContractor.label.reasonForDecline" />
-									</h3>
+									<h3><s:text name="RequestNewContractor.label.reasonForDecline" /></h3>
 										
 									<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
 								</div>
@@ -672,6 +681,7 @@
 				<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
 					<s:submit value="%{getText('RequestNewContractor.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
 				</s:elseif>
+				
 				<s:if test="permissions.operatorCorporate && newContractor.id > 0 && newContractor.handledBy.toString() == 'Operator'">
 					<s:submit value="%{getText('RequestNewContractor.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
 				</s:if>
@@ -686,20 +696,28 @@
 					<table class="report">
 						<thead>
 							<tr>
-								<th colspan="2"><s:text name="ManageForms.title" /></th>
-								<th><s:text name="global.Facility" /></th>
+								<th colspan="2">
+									<s:text name="ManageForms.title" />
+								</th>
+								<th>
+									<s:text name="global.Facility" />
+								</th>
 							</tr>
 						</thead>
 						<tbody>
 							<s:iterator value="forms" status="stat">
 								<tr>
-									<td class="right"><s:property value="#stat.index + 1" /></td>
+									<td class="right">
+										<s:property value="#stat.index + 1" />
+									</td>
 									<td>
 										<a href="#" onclick="addAttachment('<s:property value="formName" />','<s:property value="file" />'); return false;">
 											<s:property value="formName" />
 										</a>
 									</td>
-									<td><s:property value="account.name" /></td>
+									<td>
+										<s:property value="account.name" />
+									</td>
 								</tr>
 							</s:iterator>
 						</tbody>
@@ -710,9 +728,7 @@
 		
 		<div class="blockMsg" id="phoneSubmit" style="display: none">
 			<s:form>
-				<h3>
-					<s:text name = "RequestNewContractor.button.ContactedByPhone" />
-				</h3>
+				<h3><s:text name = "RequestNewContractor.button.ContactedByPhone" /></h3>
 				
 				<br />
 				
