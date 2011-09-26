@@ -207,7 +207,7 @@ public class ContractorCron extends PicsActionSupport {
 				body.append(conID);
 				body.append("\n\n");
 
-				body.append(t.getMessage());
+				body.append(t.getStackTrace());
 				body.append("\n");
 
 				body.append(sw.toString());
