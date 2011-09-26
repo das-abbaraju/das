@@ -177,7 +177,7 @@ public class QBXmlAdaptor {
 		if (!Strings.isEmpty(contractor.getBillingAddress()) && !Strings.isEmpty(contractor.getBillingCity())) {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
 			billAddress.setAddr2("c/o "
-					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
+					+ nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 37));
 			billAddress.setAddr3(nullSafeSubString(contractor.getBillingAddress(), 0, 41));
 			billAddress.setCity(nullSafeCity(contractor.getBillingCity(), contractor.getCountry()));
 			if (contractor.getBillingState() != null)
