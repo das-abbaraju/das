@@ -151,5 +151,12 @@
 			</table>
 		</s:form>
 	</div>
+	<%-- Bump contractor form + so another button can alias this form without having to dynamically embed and create forms --%>
+	<s:if test="permissions.admin && criteriaList.size() > 0">
+		<s:form id="bump_contractors">
+			<s:hidden name="operator" />
+			<s:submit method="bumpContractors" key="ManageFlagCriteriaOperator.button.BumpContractors" cssClass="picsbutton" />
+		</s:form>
+	</s:if>
 </body>
 </html>
