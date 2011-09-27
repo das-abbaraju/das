@@ -3,16 +3,16 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 <head>
-<title><s:text name="ReportUserPermissionMatrix.title" /></title>
+<title><s:text name="ReportEmailSubscriptionMatrix.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
 <script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
-var ac_users = <s:property value="tableDisplay.rowsJSON" escape="false"/>;
-var ac_permissions = <s:property value="tableDisplay.colsJSON" escape="false"/>;
-var users_acfb, permissions_acfb;
+var ac_users = <s:property value="usersJSON" escape="false" />;
+var ac_subscriptions = <s:property value="subsJSON" escape="false" />;
+var users_acfb, subscriptions_acfb;
 $(function(){
 	function acfbuild(cls,url,type){
 		var ix = $("input"+cls);
@@ -47,12 +47,11 @@ $(function(){
 			});
 	}
 	users_acfb = acfbuild('.users', ac_users, 'userdata');
-	users_permissions_acfbacfb = acfbuild('.permissions', ac_permissions, 'permdata');
+	users_subscriptions_acfbacfb = acfbuild('.subscriptions', ac_subscriptions, 'subdata');
 
 	$('#form1').submit(function(e){e.preventDefault()});
 });
 </script>
-
 <style type="text/css">
 .table-key {
 	float: left;
@@ -112,31 +111,31 @@ div.filterOption input {
 </head>
 <body>
 
-<h1><s:text name="ReportUserPermissionMatrix.title" /></h1>
+<h1><s:text name="ReportEmailSubscriptionMatrix.title" /></h1>
 
 <div id="search">
 	<div class="clear"></div>
 	<s:form id="form1" method="get" cssStyle="width: 800px;">
-			<fieldset class="form">
+		<fieldset class="form">
 			<div class="filterOption">
-				<h4><s:text name="ReportUserPermissionMatrix.label.SearchByUserGroup" />:</h4>
-					<s:hidden name="users" value=""/>
-					<s:textfield size="50" cssClass="users"/>
+				<h4><s:text name="ReportEmailSubscriptionMatrix.SearchByUser" />:</h4>
+				<s:hidden name="users" value=""/>
+				<s:textfield size="50" cssClass="users"/>
+			</div>
+		<div class="filterOption">
+			<h4><s:text name="ReportEmailSubscriptionMatrix.SearchBySubscription" />:</h4>
+				<s:hidden name="perms" value=""/>
+				<s:textfield size="50" cssClass="subscriptions"/>
 				</div>
-			<div class="filterOption">
-				<h4><s:text name="ReportUserPermissionMatrix.label.SearchByPermission" />:</h4>
-					<s:hidden name="perms" value=""/>
-					<s:textfield size="50" cssClass="permissions"/>
-					</div>
-			</fieldset>
+		</fieldset>
 	</s:form>
 	<div class="table-key">
 		<h4><s:text name="global.Legend" /></h4>
 		<ul>
-			<li><img src="images/preview.gif" width="14" height="14"> <s:text name="OpType.View" /></li>
-			<li><img src="images/edit_pencil.gif" width="14" height="14"> <s:text name="OpType.Edit" /></li>
-			<li><img src="images/cross.png" width="16" height="16"> <s:text name="OpType.Delete" /></li>
-			<li><img src="images/wrench.png" width="16" height="16"> <s:text name="OpType.Grant" /></li>
+			<li><s:text name="SubscriptionTimePeriod.Daily.short" /> - <s:text name="SubscriptionTimePeriod.Daily" /></li>
+			<li><s:text name="SubscriptionTimePeriod.Weekly.short" /> - <s:text name="SubscriptionTimePeriod.Weekly" /></li>
+			<li><s:text name="SubscriptionTimePeriod.Monthly.short" /> - <s:text name="SubscriptionTimePeriod.Monthly" /></li>
+			<li><s:text name="SubscriptionTimePeriod.Event.short" /> - <s:text name="SubscriptionTimePeriod.Event" /></li>
 		</ul>
 	</div>
 	<div class="clear"></div>
@@ -144,40 +143,30 @@ div.filterOption input {
 <div style="height:22px;">
 	<div class="right" id="mainThinkingDiv"></div>
 </div>
-
 <table class="report" id="matrix">
 	<thead>
 	<tr>
-		<th><s:text name="UserGroup" /></th>
-		<s:iterator value="tableDisplay.cols">
-			<th class="<s:property/> permdata"><s:text name="%{getI18nKey('description')}" /></th>
+		<th><s:text name="User" /></th>
+		<s:iterator value="@com.picsauditing.mail.Subscription@values()">
+			<th class="<s:property /> subdata"><s:text name="%{getI18nKey('description')}" /></th>
 		</s:iterator>
 	</tr>
 	</thead>
 	<tbody>
-	<s:iterator value="tableDisplay.rows" id="user">
-		<tr class="<s:property value="#user.id"/> userdata">
-			<td>
-				<a href="UsersManage.action?account=<s:property value="#user.account.id"/>&user=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
-			</td>
-			<s:iterator value="tableDisplay.cols" id="perm">
-				<td class="<s:property value="#perm"/> permdata">
-					<s:if test="tableDisplay.get(#user, #perm).viewFlag">
-						<img src="images/preview.gif" alt="<s:text name="OpType.View" />" title="<s:text name="OpType.View" />" />
-					</s:if>
-					<s:if test="tableDisplay.get(#user, #perm).editFlag">
-						<img src="images/edit_pencil.gif" alt="<s:text name="OpType.Edit" />" title="<s:text name="OpType.Edit" />" />
-					</s:if>
-					<s:if test="tableDisplay.get(#user, #perm).deleteFlag">
-						<img src="images/cross.png" alt="<s:text name="OpType.Delete" />" title="<s:text name="OpType.Delete" />" />
-					</s:if>
-					<s:if test="tableDisplay.get(#user, #perm).grantFlag">
-						<img src="images/wrench.png" alt="<s:text name="OpType.Grant" />" title="<s:text name="OpType.Grant" />" />
-					</s:if>
+		<s:iterator value="users" id="user">
+			<tr class="<s:property value="#user.id"/> userdata">
+				<td>
+					<a href="UsersManage.action?user=<s:property value="#user.id"/>"><s:property value="#user.name" /></a>
 				</td>
-			</s:iterator>
-		</tr>
-	</s:iterator>
+				<s:iterator value="@com.picsauditing.mail.Subscription@values()" id="sub">
+					<td class="<s:property value="#sub"/> subdata">
+						<s:if test="table.get(#user, #sub).timePeriod != null">
+							<s:text name="%{table.get(#user, #sub).timePeriod.getI18nKey('short')}" />
+						</s:if>
+					</td>
+				</s:iterator>
+			</tr>
+		</s:iterator>
 	</tbody>
 </table>
 </body>

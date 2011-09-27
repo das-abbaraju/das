@@ -143,6 +143,12 @@
 					</a>
 				</s:if>
 				
+				<s:if test="account.operatorCorporate">
+					<a class="preview" href="ReportEmailSubscriptionMatrix.action?account=<s:property value="account.id"/>">
+						<s:text name="ReportEmailSubscriptionMatrix.title" />
+					</a>
+				</s:if>
+				
 				<s:if test="account.contractor && account.users.size() > 1">
 					<a class="edit" href="ManageUserPermissions.action?id=<s:property value="account.id"/>">
 						<s:text name="ManageUserPermissions.title" />

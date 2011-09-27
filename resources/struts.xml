@@ -1039,6 +1039,11 @@
 			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
 			<result>struts/reports/user_permission_matrix.jsp</result>
 		</action>
+		
+		<action name="ReportEmailSubscriptionMatrix"
+			class="com.picsauditing.actions.report.ReportEmailSubscriptionMatrix">
+			<result>struts/reports/email_subscription_matrix.jsp</result>
+		</action>
 
 		<action name="QuestionAnswerSearch"
 			class="com.picsauditing.actions.report.ReportAnswerSearch">
