@@ -203,15 +203,12 @@ div.fieldhelp {
 }
 
 div.fieldhelp li {
-	list-style-type: disc;
-	margin-left: 0;
-	margin-bottom:2px;
-	line-height:16px;
-	text-indent:none;
+	font-size: 12px !important;
 	list-style-position: inside;
-	font-size: inherit;
-	padding: 0;
-	width: 100%;
+	list-style-type: disc;
+	margin: 0px !important;
+	padding: 0px !important;
+	text-indent:none;
 }
 
 div.fieldhelp p {
