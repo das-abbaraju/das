@@ -43,6 +43,9 @@
 				<td>
 					Type
 				</td>
+				<td>
+					Trade
+				</td>
 				<s:if test="!categoryRule">
 					<td colspan="2">
 						Dependency
@@ -102,7 +105,14 @@
 					<td>
 						<s:property value="get('con_type')"/>
 					</td>
-					
+					<td>
+						<s:if test="get('tradeID') > 0 ">
+							<s:text name="Trade.%{get('tradeID')}.name" />
+						</s:if>
+						<s:else>
+							*
+						</s:else>
+					</td>
 					<s:if test="!categoryRule">
 						<td>
 							<s:property value="get('dependentAuditType')"/>

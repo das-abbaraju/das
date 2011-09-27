@@ -21,7 +21,9 @@
 				constrainInput: true,
 				showAnim: 'fadeIn'
 			});
+			
 		});
+		
 		</script>
 	</head>
 	<body>
@@ -74,6 +76,11 @@
 					<div class="filterOption">
 						Effective Date: <s:textfield cssClass="datepicker" name="filter.checkDate" />
 					</div>
+					
+					<div class="filterOption">
+						Trade: <pics:autocomplete action="TradeAutocomplete" name="filter.trade" />
+					</div>
+					
 				</div>
 				
 				<br clear="all" />

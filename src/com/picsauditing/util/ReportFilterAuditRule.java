@@ -5,6 +5,7 @@ import java.util.Date;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Trade;
 
 @SuppressWarnings("serial")
 public class ReportFilterAuditRule extends ReportFilter {
@@ -14,7 +15,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 
 	protected String operator = null;
 	protected int opID;
-	protected int tradeID;
+	
+	protected Trade trade;
 
 	protected String contractorType = null;
 	protected LowMedHigh safetyRisk;
@@ -85,14 +87,6 @@ public class ReportFilterAuditRule extends ReportFilter {
 		this.checkDate = DateBean.parseDate(checkDate);
 	}
 
-	public int getTradeID() {
-		return tradeID;
-	}
-
-	public void setTradeID(int tradeID) {
-		this.tradeID = tradeID;
-	}
-
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
 	}
@@ -116,5 +110,14 @@ public class ReportFilterAuditRule extends ReportFilter {
 	public void setSoleProprietor(Boolean soleProprietor) {
 		this.soleProprietor = soleProprietor;
 	}
+
+	public Trade getTrade() {
+		return trade;
+	}
+
+	public void setTrade(Trade trade) {
+		this.trade = trade;
+	}
+	
 
 }

@@ -39,7 +39,7 @@ public class AuditRuleSearch extends ReportActionSupport {
 		sql.addField("op.status operatorStatus");
 		
 		sql.addJoin("LEFT JOIN audit_question aq ON aq.id = a_search.questionID");
-
+	
 		sql.addOrderBy("a_search.priority");
 	}
 
@@ -72,8 +72,8 @@ public class AuditRuleSearch extends ReportActionSupport {
 		} else {
 			sql.addWhere("a_search.effectiveDate <= NOW() AND a_search.expirationDate >= NOW()");
 		}
-		if (filter.getTradeID() > 0) {
-			sql.addWhere("a_search.tradeID = " + filter.getTradeID());
+		if (filter.getTrade() != null) {
+			sql.addWhere("a_search.tradeID = " + filter.getTrade().getId());
 		}
 		if (filter.getSoleProprietor() != null) {
 			sql.addWhere("a_search.soleProprietor = " + filter.getSoleProprietor());
