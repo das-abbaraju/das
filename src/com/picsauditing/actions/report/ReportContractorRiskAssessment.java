@@ -31,7 +31,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected int conID;
 	protected String auditorNotes;
 	protected Note note;
-	protected String type;
+	protected String type = "All";
 	protected ContractorAccount con;
 
 	@Autowired
@@ -55,13 +55,25 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 
-		String safetyRisk = getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
-		String productRisk = getRiskSQL("Product", "GROUP_CONCAT(CONCAT(CASE d.questionID "
-				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
-				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
-				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
+		if ("Safety".equals(type)) {
+			sql.addJoin("JOIN (" + getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT)
+					+ ") r ON r.id = a.id");
+		} else if ("Product".equals(type)) {
+			sql.addJoin("JOIN ("
+					+ getRiskSQL("Product", "GROUP_CONCAT(CONCAT(CASE d.questionID "
+							+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
+							+ "d.answer) SEPARATOR '<br />') answer",
+							new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
+									AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT }) + ") r ON r.id = a.id");
+		} else {
+			String safetyRisk = getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
+			String productRisk = getRiskSQL("Product", "GROUP_CONCAT(CONCAT(CASE d.questionID "
+					+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
+					+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
+					AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
 
-		sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
+			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
+		}
 
 		sql.addField("r.riskType");
 		sql.addField("r.risk");
@@ -71,69 +83,74 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String accept() throws Exception {
-		String noteMessage = type + " risk adjusted from ";
+		if (!Strings.isEmpty(type)) {
+			String noteMessage = type + " risk adjusted from ";
 
-		if (type.equals("Safety")) {
-			LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
-			LowMedHigh currentSafetyRisk = con.getSafetyRisk();
+			if ("Safety".equals(type)) {
+				LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
+				LowMedHigh currentSafetyRisk = con.getSafetyRisk();
 
-			noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
+				noteMessage += currentSafetyRisk.toString() + " to " + newSafetyRisk.toString();
 
-			// How can this happen?
-			if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal())
-				con.setLastUpgradeDate(new Date());
-			else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
-				EmailBuilder emailBuilder = new EmailBuilder();
-				emailBuilder.setTemplate(159);
-				emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
-				emailBuilder.setToAddresses("billing@picsauditing.com");
-				emailBuilder.addToken("contractor", con);
-				emailBuilder.addToken("currentSafetyRisk", currentSafetyRisk);
-				emailBuilder.addToken("newSafetyRisk", newSafetyRisk);
+				// How can this happen?
+				if (newSafetyRisk.ordinal() > currentSafetyRisk.ordinal())
+					con.setLastUpgradeDate(new Date());
+				else if (newSafetyRisk.ordinal() < currentSafetyRisk.ordinal()) {
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(159);
+					emailBuilder.setFromAddress("\"PICS IT Team\"<it@picsauditing.com>");
+					emailBuilder.setToAddresses("billing@picsauditing.com");
+					emailBuilder.addToken("contractor", con);
+					emailBuilder.addToken("currentSafetyRisk", currentSafetyRisk);
+					emailBuilder.addToken("newSafetyRisk", newSafetyRisk);
 
-				EmailQueue emailQueue;
-				try {
-					emailQueue = emailBuilder.build();
-					emailQueue.setPriority(60);
-					emailQueue.setViewableById(Account.PicsID);
-					emailSender.send(emailQueue);
-				} catch (Exception e) {
-					PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
+					EmailQueue emailQueue;
+					try {
+						emailQueue = emailBuilder.build();
+						emailQueue.setPriority(60);
+						emailQueue.setViewableById(Account.PicsID);
+						emailSender.send(emailQueue);
+					} catch (Exception e) {
+						PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
+					}
+
 				}
+				con.setSafetyRisk(newSafetyRisk);
+				if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
+					con.setAccountLevel(AccountLevel.Full);
+				con.setSafetyRiskVerified(new Date());
+			} else {
+				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
+				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
+				// Get highest
+				if (productRisk.ordinal() < businessRisk.ordinal())
+					productRisk = businessRisk;
 
+				noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
+
+				// How can this happen?
+				if (productRisk.ordinal() > con.getProductRisk().ordinal())
+					con.setLastUpgradeDate(new Date());
+
+				con.setProductRisk(productRisk);
+				if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
+					con.setAccountLevel(AccountLevel.Full);
+				con.setProductRiskVerified(new Date());
 			}
-			con.setSafetyRisk(newSafetyRisk);
-			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
-				con.setAccountLevel(AccountLevel.Full);
-			con.setSafetyRiskVerified(new Date());
+
+			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
+			note.setNoteCategory(NoteCategory.RiskRanking);
+			noteDAO.save(note);
+
+			con.setAuditColumns(permissions);
+			con.syncBalance();
+			contractorAccountDAO.save(con);
+
+			auditorNotes = "";
 		} else {
-			LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
-			LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
-			// Get highest
-			if (productRisk.ordinal() < businessRisk.ordinal())
-				productRisk = businessRisk;
-
-			noteMessage += con.getProductRisk().toString() + " to " + productRisk.toString();
-
-			// How can this happen?
-			if (productRisk.ordinal() > con.getProductRisk().ordinal())
-				con.setLastUpgradeDate(new Date());
-
-			con.setProductRisk(productRisk);
-			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
-				con.setAccountLevel(AccountLevel.Full);
-			con.setProductRiskVerified(new Date());
+			addActionError("Missing Risk Assessment Type");
 		}
 
-		Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
-		note.setNoteCategory(NoteCategory.RiskRanking);
-		noteDAO.save(note);
-
-		con.setAuditColumns(permissions);
-		con.syncBalance();
-		contractorAccountDAO.save(con);
-
-		auditorNotes = "";
 		return super.execute();
 	}
 
@@ -180,8 +197,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString);
 
 		String where = String
-				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)", type
-						.toLowerCase());
+				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)",
+						type.toLowerCase());
 
 		if (type.equals("Product")) {
 			sql2.addWhere("a.materialSupplier = 1");

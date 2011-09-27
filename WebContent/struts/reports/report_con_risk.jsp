@@ -10,11 +10,6 @@
 	color: red;
 }
 </style>
-<script type="text/javascript">
-$(function() {
-	wireClueTips();
-});
-</script>
 </head>
 <body>
 	<h1>Contractor Risk Assessment</h1>
@@ -23,14 +18,43 @@ $(function() {
 	<div id="approve_cluetip">If approved, the highest of the Contractor selected product risk Levels will be 
 		set as their new product risk level.</div>
 	
-	<s:form id="form1">
-		<s:hidden name="filter.ajax" value="false" />
-		<s:hidden name="filter.destinationAction" />
-		<s:hidden name="filter.allowMailMerge" />
-		<s:hidden name="showPage" value="1" />
-		<s:hidden name="filter.startsWith" />
-		<s:hidden name="orderBy" />
-	</s:form>
+	<div id="search">
+		<s:form id="form1">
+			<s:hidden name="filter.ajax" value="false" />
+			<s:hidden name="filter.destinationAction" />
+			<s:hidden name="filter.allowMailMerge" />
+			<s:hidden name="showPage" value="1" />
+			<s:hidden name="filter.startsWith" />
+			<s:hidden name="orderBy" />
+			
+			<div>
+				<button id="searchfilter" type="submit" name="button" value="Search" onclick="return clickSearch('form1');" class="picsbutton positive">
+					<s:text name="button.Search" />
+				</button>
+			</div>
+			
+			<div class="filterOption">
+				<a href="#" class="filterBox"><s:text name="global.Operators" /></a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+					<s:radio list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" name="filter.showAnyOperator"/>
+				</span>
+			</div>
+			
+			<div class="filterOption">
+				<a href="#" class="filterBox">Risk Type</a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:select list="#{'Safety':'Safety','Product':'Product','All':getText('JS.Filters.status.All')}" cssClass="forms" name="type" />
+				</span>
+			</div>
+		</s:form>
+		<div class="clear"></div>
+	</div>
 	<div>
 		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 	</div>
