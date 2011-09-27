@@ -488,19 +488,22 @@
 						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
 					</li>
 					<li>
-						<label>Operator Tags</label>
+						<label><s:text name="RequestNewContractor.OperatorTags" /></label>
 						<s:optiontransferselect
 							label="Operator Tags"
-							name="operatorTagsLeft"
+							name="dumbell"
 							list="operatorTags"
 							listKey="id"
 							listValue="tag"
-							doubleName="operatorTagsRight"
-							doubleList="{}"
-							leftTitle="Selectable Tags"
-							rightTitle="Assigned Tags"
-							addToLeftLabel="Remove"
-							addToRightLabel="Assign"
+							doubleId="rightList"
+							doubleName="rightAnswers"
+							doubleList="requestedTags"
+							doubleListKey="id"
+							doubleListValue="tag"
+							leftTitle="%{getText('RequestNewContractor.AvailableTags')}"
+							rightTitle="%{getText('RequestNewContractor.AssignedTags')}"
+							addToLeftLabel="%{getText('RequestNewContractor.Remove')}"
+							addToRightLabel="%{getText('RequestNewContractor.Assign')}"
 							allowAddAllToLeft="false"
 							allowAddAllToRight="false"
 							allowSelectAll="false"
@@ -508,6 +511,11 @@
 							allowUpDownOnRight="false"
 							buttonCssClass="arrow"
  						/>
+						<div class="fieldhelp">
+							<h3><s:text name="RequestNewContractor.OperatorTags" /></h3>
+							
+							<s:text name="RequestNewContractor.OperatorTags.fieldhelp" />
+						</div>
 					</li>
 				</ol>
 			</fieldset>

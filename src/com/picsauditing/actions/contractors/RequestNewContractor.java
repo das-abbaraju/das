@@ -115,6 +115,7 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	protected String term;
 	protected String type;
 	protected String requestedTagIds;
+	protected List<String> rightAnswers;
 
 	protected List<String> unusedTerms;
 	protected List<String> usedTerms;
@@ -255,8 +256,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 		conID = (newContractor.getContractor() == null) ? 0 : newContractor.getContractor().getId();
 
-		loadRequestedTags();
-
 		return SUCCESS;
 	}
 
@@ -375,6 +374,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 			newContractor.setMatchCount(potentialMatches.size());
 
 		newContractor.setAuditColumns(permissions);
+		requestedTagIds = "";
+		if (rightAnswers != null) {
+			for (String value:rightAnswers) {
+				if (requestedTagIds.length() > 0)
+					requestedTagIds +=",";
+				requestedTagIds += value;
+			}
+		}
 		newContractor.setOperatorTags(requestedTagIds);
 
 		if (newContractor.getId() == 0) {
@@ -400,8 +407,9 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		}
 
 		newContractor = crrDAO.save(newContractor);
-
+		
 		loadRequestedTags();
+		loadOperatorTags();
 
 		return SUCCESS;
 	}
@@ -731,6 +739,14 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	public String[] getTokens() {
 		return names;
 	}
+	
+	public List<String> getRightAnswers() {
+		return rightAnswers;
+	}
+
+	public void setRightAnswers(List<String> rightAnswers) {
+		this.rightAnswers = rightAnswers;
+	}
 
 	public List<ContractorAccount> runGapAnalysis(ContractorRegistrationRequest newContractor) {
 		List<String> terms = new ArrayList<String>();
@@ -926,9 +942,18 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 	private void loadOperatorTags() {
 		List<OperatorTag> list = operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 
+		operatorTags.clear();
 		// add only tags not in request
 		for (OperatorTag tag : list) {
-			operatorTags.add(tag);
+			boolean found = false;
+			for (OperatorTag reqTag:requestedTags) {
+				if (reqTag.getTag().equals(tag.getTag())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				operatorTags.add(tag);
 		}
 	}
 
