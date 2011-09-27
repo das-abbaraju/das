@@ -777,20 +777,20 @@
 			class="com.picsauditing.actions.report.ReportOperatorCorporate">
 			<result>struts/reports/operator_corporate_data.jsp</result>
 		</action>
-		<action name="FacilitiesEdit"
-			class="com.picsauditing.actions.operators.FacilitiesEdit">
+		<action name="FacilitiesEdit" class="com.picsauditing.actions.operators.FacilitiesEdit">
 			<result>struts/operators/operator_edit.jsp</result>
+			<result name="redirect" type="redirectAction">
+				<param name="actionName">FacilitiesEdit</param>
+				<param name="operator">${operator.id}</param>
+			</result>
 		</action>
-		<action name="OperatorConfiguration"
-			class="com.picsauditing.actions.operators.OperatorConfiguration">
+		<action name="OperatorConfiguration" class="com.picsauditing.actions.operators.OperatorConfiguration">
 			<result>struts/operators/op_config.jsp</result>
 		</action>
 		<action name="OperatorConfigurationAjax"
 			class="com.picsauditing.actions.operators.OperatorConfiguration">
-			<result name="category">struts/operators/op_config_included_cats.jsp
-			</result>
-			<result name="audit">struts/operators/op_config_included_audits.jsp
-			</result>
+			<result name="category">struts/operators/op_config_included_cats.jsp</result>
+			<result name="audit">struts/operators/op_config_included_audits.jsp</result>
 			<result>/struts/blank.jsp</result>
 		</action>
 		<action name="OperatorTags" class="com.picsauditing.actions.operators.OperatorTags">

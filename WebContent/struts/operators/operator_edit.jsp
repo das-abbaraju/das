@@ -158,7 +158,28 @@
 							</li>
 							<li>
 								<label><s:text name="FacilitiesEdit.ChildOperators" />:</label>
-								<s:select list="operatorList" listValue="get('name')" listKey="get('id')" name="facilities" multiple="7" size="15" />
+								
+								<s:optiontransferselect
+									label="Child Operators"
+									name="operatorListLeft"
+									list="operatorList"
+									listKey="id"
+									listValue="name"
+									doubleName="facilities"
+									doubleList="childOperatorList"
+									doubleListKey="id"
+									doubleListValue="name"
+									leftTitle="Operators List:"
+									rightTitle="Child Operators:"
+									addToLeftLabel="Remove"
+									addToRightLabel="Assign"
+									allowAddAllToLeft="false"
+									allowAddAllToRight="false"
+									allowSelectAll="false"
+									allowUpDownOnLeft="false"
+									allowUpDownOnRight="false"
+									buttonCssClass="arrow"
+		 						/>
 							</li>
 						</s:if>
 						

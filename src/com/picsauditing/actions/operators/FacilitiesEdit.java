@@ -65,6 +65,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Country country;
 	protected State state;
 	protected int contactID;
+	
+	public List<OperatorAccount> operatorList;
+	public List<OperatorAccount> childOperatorList;
 
 	public String execute() throws Exception {
 		if (permissions.isAdmin())
@@ -94,7 +97,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			if (operator.getPrimaryContact() == null)
 				addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
 		}
-
+		
+		operatorList = getOperatorList();
+		childOperatorList = operator.getChildOperators();
+		
 		return SUCCESS;
 	}
 
@@ -284,11 +290,18 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
-		return SUCCESS;
+		return "redirect";
 	}
 
-	public List<BasicDynaBean> getOperatorList() throws Exception {
-		return operatorDao.findWhereNatively(false, "status IN ('Active','Demo','Pending')");
+	public List<OperatorAccount> getOperatorList() throws Exception {
+		// find all operators
+		operatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
+		
+		// remove operators that are children of the current operator
+		operatorList.removeAll(operator.getChildOperators());
+		
+		// return the list of operators not associated with the current operator
+		return operatorList;
 	}
 
 	public List<User> getUserList() throws Exception {

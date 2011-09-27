@@ -93,6 +93,7 @@
 		
 		<script type="text/javascript" src="js/main.js"></script>
 		<script type="text/javascript" src="js/audit.js"></script>
+		<script type="text/javascript" src="js/utils.js"></script>
 		
 		<script type="text/javascript">
 			$(function() {

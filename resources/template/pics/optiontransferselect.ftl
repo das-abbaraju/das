@@ -64,7 +64,7 @@
 	 				style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 	 			
-	 			value="${addToLeftLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), false, '${parameters.doubleHeaderKey}', '');<#if parameters.addToLeftOnclick?has_content>${parameters.addToLeftOnclick};</#if>" />
+	 			value="${addToLeftLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), true, '${parameters.doubleHeaderKey}', '');<#if parameters.addToLeftOnclick?has_content>${parameters.addToLeftOnclick};</#if>" />
 			<#else><#t/>
 				<input type="button" class="add-left btn 
 				
@@ -77,7 +77,7 @@
 			 		style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-			 	value="${addToLeftLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), false, '');<#if parameters.addToLeftOnclick?has_content>${parameters.addToLeftOnclick};</#if>" />
+			 	value="${addToLeftLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), true, '');<#if parameters.addToLeftOnclick?has_content>${parameters.addToLeftOnclick};</#if>" />
 			</#if><#t/>
 		</#if><#t/>
 		
@@ -96,7 +96,7 @@
 				 	style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-				value="${addToRightLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), false, '${parameters.headerKey}', '');<#if parameters.addToRightOnclick?has_content>${parameters.addToRightOnclick};</#if>" />
+				value="${addToRightLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), true, '${parameters.headerKey}', '');<#if parameters.addToRightOnclick?has_content>${parameters.addToRightOnclick};</#if>" />
 			<#else><#t/>
 				<input type="button" class="add-right btn 
 				
@@ -109,7 +109,7 @@
 				 	style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-				value="${addToRightLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), false, '');<#if parameters.addToRightOnclick?has_content>${parameters.addToRightOnclick};</#if>" />
+				value="${addToRightLabel}" onclick="moveSelectedOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), true, '');<#if parameters.addToRightOnclick?has_content>${parameters.addToRightOnclick};</#if>" />
 			</#if><#t/>
 		</#if><#t/>
 		
@@ -127,7 +127,7 @@
 				 	style="${parameters.buttonCssStyle}"
 				</#if><#t/>
 				 
-				value="${addAllToLeftLabel}" onclick="moveAllOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), false, '${parameters.doubleHeaderKey}', '');<#if parameters.addAllToLeftOnclick?has_content>${parameters.addAllToLeftOnclick};</#if>" />
+				value="${addAllToLeftLabel}" onclick="moveAllOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), true, '${parameters.doubleHeaderKey}', '');<#if parameters.addAllToLeftOnclick?has_content>${parameters.addAllToLeftOnclick};</#if>" />
 			<#else><#t/>
 				<input type="button"
 				
@@ -139,7 +139,7 @@
 				 	style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-				value="${addAllToLeftLabel}" onclick="moveAllOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), false, '');<#if parameters.addAllToLeftOnclick?has_content>${parameters.addAllToLeftOnclick};</#if>" />
+				value="${addAllToLeftLabel}" onclick="moveAllOptions(document.getElementById('${parameters.doubleId?html}'), document.getElementById('${parameters.id?html}'), true, '');<#if parameters.addAllToLeftOnclick?has_content>${parameters.addAllToLeftOnclick};</#if>" />
 			</#if><#t/>
 		</#if><#t/>
 		
@@ -157,7 +157,7 @@
 				 	style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-				value="${addAllToRightLabel}" onclick="moveAllOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), false, '${parameters.headerKey}', '');<#if parameters.addAllToRightOnclick?has_content>${parameters.addAllToRightOnclick};</#if>" />
+				value="${addAllToRightLabel}" onclick="moveAllOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), true, '${parameters.headerKey}', '');<#if parameters.addAllToRightOnclick?has_content>${parameters.addAllToRightOnclick};</#if>" />
 			<#else><#t/>
 				<input type="button"
 				
@@ -169,7 +169,7 @@
 				 	style="${parameters.buttonCssStyle?html}"
 				</#if><#t/>
 				
-				value="${addAllToRightLabel}" onclick="moveAllOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), false, '');<#if parameters.addAllToRightOnclick?has_content>${parameters.addAllToRightOnclick};</#if>" />
+				value="${addAllToRightLabel}" onclick="moveAllOptions(document.getElementById('${parameters.id?html}'), document.getElementById('${parameters.doubleId?html}'), true, '');<#if parameters.addAllToRightOnclick?has_content>${parameters.addAllToRightOnclick};</#if>" />
 			</#if><#t/>
 		</#if><#t/>
 		
