@@ -17,6 +17,7 @@ import com.picsauditing.importpqf.ImportPqf;
 import com.picsauditing.importpqf.ImportPqfCanQual;
 import com.picsauditing.importpqf.ImportPqfComplyWorks;
 import com.picsauditing.importpqf.ImportPqfIsn;
+import com.picsauditing.importpqf.ImportPqfIsnUs;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -284,9 +285,11 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 				ImportPqf importer = getImportPqf();
 				if (importer != null) {
 					ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
-					File[] files = getFiles(dataID);
-					importer.calculate(pqfAudit, files[0]);
-					debugLog = importer.getLog();
+					if (pqfAudit != null) {
+						File[] files = getFiles(dataID);
+						importer.calculate(pqfAudit, files[0]);
+						debugLog = importer.getLog();
+					}
 				}
 			}
 		}
@@ -432,6 +435,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		
 		if (audit == null) {
 			AuditType auditType = auditTypeDAO.find(auditId);
+			if (auditType == null) {
+				return null;
+			}
 			audit = new ContractorAudit();
 			audit.setContractorAccount(contractor);
 			audit.setAuditType(auditType);
@@ -460,6 +466,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 				importPqf = new ImportPqfIsn();	
 			else if (data.getAnswer().equals("515")) // ComplyWorks
 				importPqf = new ImportPqfComplyWorks();				
+			else if (data.getAnswer().equals("1040")) // ISN US
+				importPqf = new ImportPqfIsnUs();				
 		}
 		
 		return importPqf;
