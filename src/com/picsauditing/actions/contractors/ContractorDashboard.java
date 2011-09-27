@@ -639,6 +639,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return true;
 		if (permissions.hasGroup(959))
 			return true;
+		if (permissions.isContractor())
+			return true;
 		return false;
 	}
 

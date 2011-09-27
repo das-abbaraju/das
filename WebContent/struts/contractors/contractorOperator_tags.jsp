@@ -4,7 +4,7 @@
 	<s:iterator value="contractor.operatorTags">
 		<s:if test="tag.active">
 			<s:set name="tagRemovable" value="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)" />
-			<s:if test="#tagRemovable || permissions.admin">
+			<s:if test="#tagRemovable || permissions.admin || (permissions.contractor && tag.visibleToContractor)">
 				<tr>
 					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
 					<td>Created by: <s:set var="o" value="tag" /><s:include value="../who.jsp" />
