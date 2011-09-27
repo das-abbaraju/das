@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -179,7 +178,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.creationDate = creationDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "createdBy")
 	public User getCreatedBy() {
 		return createdBy;
@@ -198,7 +197,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.sentDate = sentDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "templateID", nullable = true)
 	public EmailTemplate getEmailTemplate() {
 		return emailTemplate;
@@ -208,7 +207,7 @@ public class EmailQueue implements java.io.Serializable {
 		this.emailTemplate = emailTemplate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractorAccount() {
 		return contractorAccount;
