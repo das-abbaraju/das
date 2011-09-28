@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -50,12 +51,11 @@ public class ManageJobRoles extends PicsActionSupport {
 
 	@Before
 	public void startup() throws Exception {
-		if (permissions.isContractor())
+		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
-		else {
+		} else if (permissions.isOperatorCorporate()) {
 			permissions.tryPermission(OpPerms.DefineRoles);
-
-			if (permissions.isOperatorCorporate() && permissions.getAccountId() != account.getId())
+			if (permissions.getAccountId() != account.getId())
 				permissions.tryPermission(OpPerms.AllOperators);
 		}
 
@@ -76,6 +76,10 @@ public class ManageJobRoles extends PicsActionSupport {
 		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
+		}
+		
+		if (account == null) {
+			throw new RecordNotFoundException("account");
 		}
 	}
 
