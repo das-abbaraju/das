@@ -2,7 +2,11 @@ package com.picsauditing.actions.employees;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -48,6 +52,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 	private List<Employee> employees;
 	private List<OperatorCompetency> competencies;
+	private Map<Employee, String> employeeJobRoles;
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public String execute() throws Exception {
@@ -174,7 +179,10 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		employees = new ArrayList<Employee>();
 		competencies = new ArrayList<OperatorCompetency>();
+		employeeJobRoles = new HashMap<Employee, String>();
 		map = new DoubleMap<Employee, OperatorCompetency, EmployeeCompetency>();
+
+		Map<Employee, Set<String>> jobRoles = new HashMap<Employee, Set<String>>();
 
 		for (BasicDynaBean d : data2) {
 			Employee e = new Employee();
@@ -185,6 +193,13 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 			if (!employees.contains(e))
 				employees.add(e);
+
+			String jobRole = d.get("jobRoleName").toString();
+
+			if (jobRoles.get(e) == null)
+				jobRoles.put(e, new TreeSet<String>());
+
+			jobRoles.get(e).add(jobRole);
 
 			OperatorCompetency o = new OperatorCompetency();
 			o.setId(Integer.parseInt(d.get("competencyID").toString()));
@@ -206,6 +221,20 @@ public class EmployeeCompetencies extends ReportEmployee {
 			}
 
 			map.put(e, o, c);
+		}
+
+		for (Employee e : jobRoles.keySet()) {
+			List<String> roles = new ArrayList<String>(jobRoles.get(e));
+
+			int last = roles.size();
+			if (last > 3)
+				last = 3;
+
+			String suffix = "";
+			if (roles.size() > 3)
+				suffix = "...";
+
+			employeeJobRoles.put(e, Strings.implode(roles.subList(0, last), ", ") + suffix);
 		}
 	}
 
@@ -326,6 +355,10 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 	public List<OperatorCompetency> getCompetencies() {
 		return competencies;
+	}
+
+	public Map<Employee, String> getEmployeeJobRoles() {
+		return employeeJobRoles;
 	}
 
 	public DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> getMap() {
