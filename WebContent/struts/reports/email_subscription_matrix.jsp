@@ -160,7 +160,7 @@ div.filterOption input {
 				</td>
 				<s:iterator value="@com.picsauditing.mail.Subscription@values()" id="sub">
 					<td class="<s:property value="#sub"/> subdata">
-						<s:if test="table.get(#user, #sub).timePeriod != null">
+						<s:if test="table.get(#user, #sub).timePeriod != null && table.get(#user, #sub).timePeriod.name() != 'None'">
 							<s:text name="%{table.get(#user, #sub).timePeriod.getI18nKey('short')}" />
 						</s:if>
 					</td>
