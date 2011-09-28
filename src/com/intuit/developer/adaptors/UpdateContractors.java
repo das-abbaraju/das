@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -14,6 +13,7 @@ import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.CustomerMod;
 import com.picsauditing.quickbooks.qbxml.CustomerModRqType;
 import com.picsauditing.quickbooks.qbxml.CustomerModRsType;
@@ -76,13 +76,20 @@ public class UpdateContractors extends CustomerAdaptor {
 				customer.setEditSequence((String) thisCustomerParms.get("EditSequence"));
 
 				customer.setName(contractor.getIdString());
-				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew())).toString());
+				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
+						.toString());
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
-				customer.setContact(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
-				customer.setFirstName(nullSafeSubString(getFirstName(contractor.getPrimaryContact().getName()), 0, 25));
-				customer.setLastName(nullSafeSubString(getLastName(contractor.getPrimaryContact().getName()), 0, 25));
+				User primary = null;
+				if (contractor.getPrimaryContact() != null)
+					primary = contractor.getPrimaryContact();
+				else
+					primary = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+
+				customer.setContact(nullSafeSubString(primary.getName(), 0, 41));
+				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
+				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
 
@@ -90,10 +97,12 @@ public class UpdateContractors extends CustomerAdaptor {
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
-				customer.setEmail(contractor.getPrimaryContact().getEmail());
+				customer.setEmail(primary.getEmail());
 
-				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getName(), 0, 41));
-				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getPhone()));
+				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
+						.getName(), 0, 41));
+				customer.setAltPhone(nullSafePhoneFormat(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
+						.getPhone()));
 
 				customer.setTermsRef(factory.createTermsRef());
 				customer.getTermsRef().setFullName("Net 30");
@@ -116,7 +125,6 @@ public class UpdateContractors extends CustomerAdaptor {
 	@Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
-		List<ContractorAccount> successes = new Vector<ContractorAccount>();
 		Map<String, Map<String, Object>> updatePool = currentSession.getToUpdate();
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();

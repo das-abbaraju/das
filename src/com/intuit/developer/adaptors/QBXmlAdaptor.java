@@ -15,6 +15,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Country;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -137,10 +138,10 @@ public class QBXmlAdaptor {
 			return nullSafeSubString(zipCode, 0, 8);
 		if (country.isUK())
 			return nullSafeSubString(zipCode, 0, 9);
-		
+
 		return nullSafeSubString(zipCode, 0, 9);
 	}
-	
+
 	static public String nullSafeCity(String city, Country country) {
 		if (country == null)
 			return nullSafeSubString(city, 0, 24);
@@ -152,7 +153,7 @@ public class QBXmlAdaptor {
 			return nullSafeSubString(city, 0, 25);
 		if (country.isUK())
 			return nullSafeSubString(city, 0, 24);
-		
+
 		return nullSafeSubString(city, 0, 24);
 	}
 
@@ -185,7 +186,13 @@ public class QBXmlAdaptor {
 			billAddress.setPostalCode(nullSafeZip(contractor.getBillingZip(), contractor.getCountry()));
 		} else {
 			billAddress.setAddr1(nullSafeSubString(contractor.getName(), 0, 41));
-			billAddress.setAddr2(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
+			User primary = null;
+			if (contractor.getPrimaryContact() != null)
+				primary = contractor.getPrimaryContact();
+			else
+				primary = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
+
+			billAddress.setAddr2(nullSafeSubString(primary.getName(), 0, 41));
 			billAddress.setAddr3(nullSafeSubString(contractor.getAddress(), 0, 41));
 			billAddress.setCity(nullSafeCity(contractor.getCity(), contractor.getCountry()));
 			if (contractor.getState() != null)

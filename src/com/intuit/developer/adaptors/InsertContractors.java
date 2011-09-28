@@ -11,6 +11,7 @@ import javax.xml.bind.Unmarshaller;
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.CustomerAdd;
 import com.picsauditing.quickbooks.qbxml.CustomerAddRqType;
 import com.picsauditing.quickbooks.qbxml.CustomerAddRsType;
@@ -26,7 +27,8 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a."+currentSession.getQbID()+" is null and a.currencyCode = '"+currentSession.getCurrencyCode()+"'");
+				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.currencyCode = '"
+						+ currentSession.getCurrencyCode() + "'");
 
 		// no work to do
 		if (contractors.size() == 0) {
@@ -68,10 +70,15 @@ public class InsertContractors extends CustomerAdaptor {
 
 				customer.setCompanyName(nullSafeSubString(contractor.getName(), 0, 41));
 
-				customer.setContact(nullSafeSubString(contractor.getPrimaryContact().getName(), 0, 41));
+				User primary = null;
+				if (contractor.getPrimaryContact() != null)
+					primary = contractor.getPrimaryContact();
+				else
+					primary = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
 
-				customer.setFirstName(nullSafeSubString(getFirstName(contractor.getPrimaryContact().getName()), 0, 25));
-				customer.setLastName(nullSafeSubString(getLastName(contractor.getPrimaryContact().getName()), 0, 25));
+				customer.setContact(nullSafeSubString(primary.getName(), 0, 41));
+				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
+				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
 
@@ -79,7 +86,7 @@ public class InsertContractors extends CustomerAdaptor {
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
-				customer.setEmail(contractor.getPrimaryContact().getEmail());
+				customer.setEmail(primary.getEmail());
 
 				customer.setAltContact(nullSafeSubString(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0)
 						.getName(), 0, 41));
@@ -134,7 +141,7 @@ public class InsertContractors extends CustomerAdaptor {
 					int accountId = Integer.parseInt(accountNumber);
 
 					if (accountId != 0) {
-						if(currentSession.isUS())
+						if (currentSession.isUS())
 							connected.setQbListID(customer.getListID());
 						else
 							connected.setQbListCAID(customer.getListID());
@@ -157,7 +164,7 @@ public class InsertContractors extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				if(currentSession.isUS())
+				if (currentSession.isUS())
 					connected.setQbListID(null);
 				else
 					connected.setQbListCAID(null);
