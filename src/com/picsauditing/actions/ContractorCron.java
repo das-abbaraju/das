@@ -88,7 +88,6 @@ public class ContractorCron extends PicsActionSupport {
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
 	private FlagDataCalculator flagDataCalculator;
-	private ContractorAccount contractor;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
@@ -116,10 +115,6 @@ public class ContractorCron extends PicsActionSupport {
 			return redirect(redirectUrl);
 		}
 		
-		if ("synchronize".equals(button)) {
-			return button;
-		}
-
 		return SUCCESS;
 	}
 
@@ -132,7 +127,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	@Transactional
 	private void run(int conID, int opID) {
-		contractor = contractorDAO.find(conID);
+		ContractorAccount contractor = contractorDAO.find(conID);
 
 		try {
 			runBilling(contractor);
@@ -690,14 +685,6 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
-	}
-
-	public ContractorAccount getContractor() {
-		return contractor;
-	}
-
-	public void setContractor(ContractorAccount contractor) {
-		this.contractor = contractor;
 	}
 
 	public int getConID() {

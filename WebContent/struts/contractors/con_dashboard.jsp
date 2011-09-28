@@ -9,15 +9,6 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
-<style type="text/css">
-#syncPanel {
-	text-align: center;
-}
-
-#syncButton {
-	margin: 5px auto;
-}
-</style>
 <script type="text/javascript">
 	function removeTag(tagId) {
 		var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
@@ -112,17 +103,6 @@
 		});
 		$('a.trade').each(function() {
 			$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
-		});
-		$('#syncPanel').delegate('#syncButton', 'click', function() {
-			$(this).attr('disabled', true);
-			$('#syncResult').html('<img src="images/ajax_process.gif" alt="' + 
-					translate('JS.ContractorView.SynchronizingContractor') + '" /> ' + 
-					translate('JS.ContractorView.SynchronizingContractor'));
-			
-			var id = $(this).data('id');
-			$('#syncResult').load('ContractorCron.action', { button: 'synchronize', conID: id, steps: 'All' }, function() {
-				$('#syncButton').attr('disabled', false);
-			});
 		});
 	});
 </script>
@@ -569,13 +549,16 @@
 					<s:text name="ContractorView.SynchronizeContractorMessage" />
 				</div>
 			</div>
-			<div class="panel_content" id="syncPanel">
-				<input type="submit" class="picsbutton"	data-id="<s:property value="id" />" 
-					value="<s:text name="ContractorView.Synchronize" />" id="syncButton" />
-				<br />
-				<div id="syncResult">
-					<s:include value="contractor_cron_messages.jsp" />
-				</div>
+			<div class="panel_content" style="text-align: center;">
+				<s:form id="form_sync">
+					<s:hidden name="id" />
+					<s:hidden name="button" value="Synchronize Contractor" />
+					<input type="submit" class="picsbutton" onclick="$(this).attr('disabled', true); $('#form_sync').submit();"
+						style="margin: 5px auto;" value="<s:text name="ContractorView.Synchronize" />" />
+					<s:if test="contractor.lastRecalculation != null">
+						<br /><s:text name="ContractorView.LastSync"><s:param value="%{contractor.lastRecalculation}" /></s:text>
+					</s:if>
+				</s:form>
 			</div>
 		</div>
 	</div>

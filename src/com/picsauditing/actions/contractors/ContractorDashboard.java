@@ -237,6 +237,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 
+		if ("Synchronize Contractor".equals(button)) {
+			String redirectUrl = "ContractorView.action?id=" + id;
+			return redirect("ContractorCronAjax.action?conID=" + id + "&steps=All&redirectUrl=" + redirectUrl);
+		}
+
 		if (permissions.isOperatorCorporate()) {
 			operatorTags = getOperatorTagNamesList();
 
