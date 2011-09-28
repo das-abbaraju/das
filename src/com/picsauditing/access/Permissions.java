@@ -552,8 +552,11 @@ public class Permissions implements Serializable {
 			return auditType.isCanContractorView();
 		if (isPicsEmployee())
 			return true;
-		if (isOperatorCorporate())
+		if (isOperatorCorporate()) {
+			if (!auditType.isCanOperatorView())
+				return false;
 			return getVisibleAuditTypes().contains(auditType.getId());
+		}
 		return false;
 	}
 

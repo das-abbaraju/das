@@ -61,6 +61,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected boolean hasAuditor;
 	protected boolean canContractorView;
 	protected boolean canContractorEdit;
+	protected boolean canOperatorView;
 	protected boolean renewable = true;
 	protected boolean scoreable = false;
 	protected Integer monthsToExpire;
@@ -173,6 +174,14 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	public void setCanContractorEdit(boolean canContractorEdit) {
 		this.canContractorEdit = canContractorEdit;
+	}
+
+	public boolean isCanOperatorView() {
+		return canOperatorView;
+	}
+
+	public void setCanOperatorView(boolean canOperatorView) {
+		this.canOperatorView = canOperatorView;
 	}
 
 	public Integer getMonthsToExpire() {

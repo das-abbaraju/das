@@ -1207,3 +1207,6 @@ set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates hav
 `updatedBy`=23157,`updateDate`=NOW()
 where `id`='132';
 --
+
+-- PICS-2600 Allow Audit Types to be hidden from Operators but not contractors
+update audit_type set canOperatorView=0 where id=9 or id=232 or id=269 or id=270 or id =272 or id=281;

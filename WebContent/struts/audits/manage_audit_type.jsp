@@ -136,6 +136,9 @@ function showRules() {
 				<li><label>Contractor Can Edit:</label>
 					<s:checkbox name="auditType.canContractorEdit" />
 				</li>
+				<li><label>Operator Can View:</label>
+					<s:checkbox name="auditType.canOperatorView" />
+				</li>
 				<li>
 					<label>Permission to Edit:</label>
 					<s:select name="editPerm" list="@com.picsauditing.access.OpPerms@values()" listValue="%{getText(getI18nKey('description'))}" 

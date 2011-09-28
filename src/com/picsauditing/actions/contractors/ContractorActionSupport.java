@@ -126,7 +126,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 						}
 					} else if (permissions.isPicsEmployee()) {
 						contractorAuditWithStatuses.put(contractorAudit, null);
-					} else {
+					} else if (contractorAudit.getAuditType().isCanOperatorView()){
 						for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
 							if (cao.isVisibleTo(permissions)) {
 								contractorAuditWithStatuses.put(contractorAudit, cao.getStatus());

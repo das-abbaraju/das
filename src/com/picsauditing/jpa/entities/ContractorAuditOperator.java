@@ -275,6 +275,9 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 		if (operator.getId() == permissions.getAccountId())
 			return true;
+		
+		if (permissions.isOperatorCorporate() && !getAudit().getAuditType().isCanOperatorView())
+			return false;
 
 		if (permissions.isCorporate()) {
 			for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
