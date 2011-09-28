@@ -157,7 +157,7 @@
 						</div>
 						
 						<div class="ip">
-							<span><s:text name="Login.IPAddress" />:</span> ${IP}
+							<span><s:text name="Login.IPAddress" />:</span> ${a.comment}
 						</div>
 						
 						<a href="javascript:;" class="edit-esignature"><s:text name="global.Edit" /></a>

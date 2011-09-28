@@ -65,7 +65,7 @@
 				</div>
 				
 				<div class="ip">
-					<span><s:text name="Login.IPAddress" />:</span> ${IP}
+					<span><s:text name="Login.IPAddress" />:</span> ${a.comment}
 				</div>
 			</div>
 		</div>
