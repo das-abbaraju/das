@@ -45,7 +45,7 @@ public class MailCron extends PicsActionSupport {
 		AppProperty appPropSubEnable = appPropDAO.find("subscription.enable");
 		if (Boolean.parseBoolean(appPropSubEnable.getValue())) {
 			AppProperty appPropLimit = appPropDAO.find("subscription.limit");
-			if (appPropLimit != null && limit == 0)
+			if (appPropLimit != null)
 				limit = Integer.parseInt(appPropLimit.getValue());
 
 			// DO ALL OPT-IN SUBSCRIPTIONS
