@@ -45,7 +45,7 @@ public class MailCron extends PicsActionSupport {
 		AppProperty appPropSubEnable = appPropDAO.find("subscription.enable");
 		if (Boolean.parseBoolean(appPropSubEnable.getValue())) {
 			AppProperty appPropLimit = appPropDAO.find("subscription.limit");
-			if (appPropLimit != null)
+			if (appPropLimit != null && limit == 0)
 				limit = Integer.parseInt(appPropLimit.getValue());
 
 			// DO ALL OPT-IN SUBSCRIPTIONS
@@ -105,6 +105,10 @@ public class MailCron extends PicsActionSupport {
 			 * are sure the new subscription system is sending mail as expected.
 			 */
 			PicsLogger.start("EmailSender");
+			AppProperty appPropLimit = appPropDAO.find("subscription.limit");
+			if (appPropLimit != null && limit == 0)
+				limit = Integer.parseInt(appPropLimit.getValue());
+
 			try {
 				List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
 				if (emails.size() == 0) {
