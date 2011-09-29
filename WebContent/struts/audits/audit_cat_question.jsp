@@ -23,7 +23,7 @@
 		$('#node_<s:property value="#q.id"/> .cluetip-translation').cluetip(cluetipOptions);
 
 		<%-- ambest --%>
-		var ambest = $('#ambest');
+		var ambest = $('#node_<s:property value="#q.id"/> #ambest');
 		
 		if (ambest.length) {
 			ambest.autocomplete('AmBestSuggestAjax.action', {

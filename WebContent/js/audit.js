@@ -7,9 +7,19 @@
 	// audit question
 	AUDIT.question = {
 		init: function() {
+			// reset answer
 			$('#auditViewArea').delegate('input.resetAnswer', 'click', this.events.reset);
+			
+			// triggered save question on save cert / detach cert?
 			$('#auditViewArea').delegate('div.question', 'saveQuestion', this.events.save);
-			$('#auditViewArea').delegate('div.question:not(.save-disable)', 'change', this.events.save);
+			
+			// every question that is not 'save-disabled' should have a auto save
+			// give problems in IE 6,7,8 - sending double change events
+			// $('#auditViewArea').delegate('div.question:not(.save-disable)', 'change', this.events.save);
+			
+			$('div.question:not(.save-disable)').live('change', this.events.save);
+			
+			// every verified question
 			$('#auditViewArea').delegate('input.verify', 'click', this.events.verify);
 			
 			// question save trigger for "save-disable" questions
@@ -25,7 +35,7 @@
 				var form = $('form.qform', element);
 				var url = 'AuditDataSaveAjax.action';
 				
-				var data = form.serializeArray().map(function(data) {
+				var data = $.map(form.serializeArray(), function(data, i) {
 					if (data.name == 'auditData.answer') {
 						data.value = '';
 					}
