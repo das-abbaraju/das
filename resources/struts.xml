@@ -1744,7 +1744,7 @@
 			<result>struts/trades/contractor_trade.jsp</result>
 			<result name="trade">struts/trades/contractor_trade_select_trades.jsp</result>
 			<result name="cloud">struts/trades/contractor_trade_cloud.jsp</result>
-			<result name="quick">struts/trades/contractor_trade_quick.jsp</result>
+			<result name="preview">struts/trades/contractor_trade_preview.jsp</result>
 		</action>
 
 		<!-- Autocomplete Ajax -->

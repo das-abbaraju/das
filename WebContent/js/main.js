@@ -12,6 +12,9 @@
 		
 		// initialize audit question save / reset / verify
 		AUDIT.question.init();
+		
+		// initialize trade preview
+		TRADE.preview.init();
 	});
 	
 })(jQuery);

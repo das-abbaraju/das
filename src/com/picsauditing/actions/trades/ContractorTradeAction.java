@@ -200,8 +200,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		return "trade";
 	}
 
-	public String quickTrade() throws Exception {
-		return "quick";
+	public String preview() throws Exception {
+		return "preview";
 	}
 
 	public List<ContractorTrade> findAffectedTrades() {

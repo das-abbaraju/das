@@ -1,20 +1,24 @@
 /* trade search */
-#trade-nav {
+#trade-nav
+{
 	float: left;
 	width: 50%;
 }
 
-#trade-nav {
+#trade-nav
+{
 	border: 2px solid #4686BF;
 }
 
-#trade-nav .ui-tabs-panel {
+#trade-nav .ui-tabs-panel
+{
 	background-color: white;
 }
 
-#trade_description {
-	padding-left: 1em;
+#trade_description
+{
 	font-style: italic;
+	padding-left: 1em;
 }
 
 #search-tree,
@@ -31,15 +35,17 @@
 }
 
 /* trade view */
-#trade-view {
+#trade-view
+{
 	float: right;
 	position: relative;
 	width: 45%;
 }
 
-#trade-view.fullwidth {
-	width: 100%;
+#trade-view.fullwidth
+{
 	margin-top: 20px;
+	width: 100%;
 }
 
 #trade-view h4 {
@@ -395,3 +401,23 @@ h3.new {
 	top: 50%;
 	width: 75px;
 }
+
+/* trade preview */
+
+.trade-preview img
+{
+	float: left;
+	margin: 0px 10px 10px 0px;	
+}
+
+.trade-preview .trade-section
+{
+	font-size: 14px;
+	margin-bottom: 10px;
+} 
+
+.trade-preview #activityPercent
+{
+	clear: both;
+}
+

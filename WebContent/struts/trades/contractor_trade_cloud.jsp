@@ -34,9 +34,11 @@
 		<ul>
 			<s:iterator value="contractor.tradesSorted" var="trade" status="status">
 				<li>
-					<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>&mode=View" 
-						rel="ContractorTrades!quickTrade.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>"
-						class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/> btn <s:if test="#trade.id == [1].trade.id">primary</s:if>">
+					<a 
+						href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>&mode=View" 
+						rel="ContractorTrades!preview.action?contractor=<s:property value="contractor.id"/>&trade=<s:property value="#trade.id"/>"
+						class="trade trade-cloud-<s:property value="tradeCssMap.get(#trade)"/> btn <s:if test="#trade.id == [1].trade.id">primary</s:if>"
+						title="${trade.name}">
 						<s:property value="#trade.trade.name"/>
 					</a>
 				</li>
