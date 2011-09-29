@@ -141,6 +141,11 @@ div.filterOption input {
 	</div>
 	<div class="clear"></div>
 </div>
+<div class="right">
+	<a class="excel" title="<s:text name="ReportUserPermissionMatrix.title.DownloadAllPermissions" />"
+		href="ReportUserPermissionMatrix!download.action?accountID=<s:property value="accountID" />"><s:text name="global.Download" />
+	</a>
+</div>
 <div style="height:22px;">
 	<div class="right" id="mainThinkingDiv"></div>
 </div>

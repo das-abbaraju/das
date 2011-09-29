@@ -3,10 +3,22 @@ package com.picsauditing.actions.report;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -28,8 +40,8 @@ public class ReportEmailSubscriptionMatrix extends ReportActionSupport {
 	private List<User> users;
 	private DoubleMap<User, Subscription, EmailSubscription> table;
 
-	@Override
-	public String execute() throws Exception {
+	@Before
+	public void build() throws Exception {
 		if (account == null || !permissions.hasPermission(OpPerms.AllOperators))
 			account = accountDAO.find(permissions.getAccountId());
 
@@ -42,8 +54,69 @@ public class ReportEmailSubscriptionMatrix extends ReportActionSupport {
 		for (EmailSubscription emailSubscription : emailSubscriptions) {
 			table.put(emailSubscription.getUser(), emailSubscription.getSubscription(), emailSubscription);
 		}
+	}
 
-		return SUCCESS;
+	public String download() throws Exception {
+		// Setting up workbook
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet(getText("ReportEmailSubscriptionMatrix.title"));
+
+		HSSFDataFormat df = wb.createDataFormat();
+		HSSFFont font = wb.createFont();
+		font.setFontHeightInPoints((short) 12);
+
+		HSSFFont headerFont = wb.createFont();
+		headerFont.setFontHeightInPoints((short) 12);
+		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+
+		HSSFCellStyle headerStyle = wb.createCellStyle();
+		headerStyle.setFont(headerFont);
+		headerStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+
+		int rowNumber = 0;
+		{
+			// Add the Column Headers to the top of the report
+			int columnCount = 1;
+			HSSFRow r = sheet.createRow(rowNumber);
+			rowNumber++;
+
+			for (Subscription s : Subscription.values()) {
+				HSSFCell c = r.createCell(columnCount++);
+				c.setCellValue(new HSSFRichTextString(s.name()));
+				c.setCellStyle(headerStyle);
+			}
+		}
+
+		for (User u : users) {
+			HSSFRow r = sheet.createRow(rowNumber++);
+			int colNumber = 0;
+			HSSFCell header = r.createCell(colNumber++);
+			header.setCellValue(new HSSFRichTextString(u.getName()));
+			for (Subscription s : Subscription.values()) {
+				HSSFCell c = r.createCell(colNumber++);
+				if (table.get(u, s) != null)
+					c.setCellValue(new HSSFRichTextString(getText(table.get(u, s).getTimePeriod().getI18nKey("short"))));
+			}
+		}
+
+		for (short c = 0; c <= Subscription.values().length; c++) {
+			HSSFCellStyle cellStyle = wb.createCellStyle();
+			cellStyle.setDataFormat(df.getFormat("@"));
+			sheet.setDefaultColumnStyle(c, cellStyle);
+			sheet.autoSizeColumn(c);
+		}
+
+		String filename = this.getClass().getSimpleName();
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+
+		return null;
 	}
 
 	public Account getAccount() {

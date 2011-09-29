@@ -217,7 +217,7 @@ public class ReportUserPermissionMatrix extends ReportActionSupport {
 				}
 			}
 
-			for (short c = 0; c < cols.size(); c++) {
+			for (short c = 0; c <= cols.size(); c++) {
 				HSSFCellStyle cellStyle = wb.createCellStyle();
 				cellStyle.setDataFormat(df.getFormat("@"));
 				sheet.setDefaultColumnStyle(c, cellStyle);

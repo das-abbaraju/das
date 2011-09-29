@@ -140,6 +140,11 @@ div.filterOption input {
 	</div>
 	<div class="clear"></div>
 </div>
+<div class="right">
+	<a class="excel" href="ReportEmailSubscriptionMatrix!download.action?account=<s:property value="account.id" />">
+		<s:text name="global.Download" />
+	</a>
+</div>
 <div style="height:22px;">
 	<div class="right" id="mainThinkingDiv"></div>
 </div>
