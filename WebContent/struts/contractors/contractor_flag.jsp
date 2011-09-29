@@ -432,7 +432,9 @@
 														<s:text name="ContractorFlag.ProblemValue">
 															<s:param><s:text name="%{status.i18nKey}"/></s:param>
 															<s:param>
-																<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"><s:property value="#data.criteria.auditType.name" /> <s:property value="audit.auditFor" /></a>
+																<a href="Audit.action?auditID=<s:property value="#cao.audit.id" />"><s:property value="#data.criteria.auditType.name" /> 
+																<s:if test="!#cao.audit.auditType.classType.isPqf()"> '<s:date name="#cao.audit.effectiveDateLabel" format="yy" /></s:if>
+																<s:else><s:property value="audit.auditFor" /></s:else></a>
 															</s:param>
 														</s:text>
 														<br/>
