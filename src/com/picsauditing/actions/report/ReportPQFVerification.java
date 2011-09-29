@@ -25,9 +25,9 @@ public class ReportPQFVerification extends ReportAccount {
 		sql.addField("csr.name csr_name");
 
 		sql.addJoin("JOIN contractor_audit ca ON ca.conid = a.id "
-				+ "AND ca.auditTypeID IN (1,11) AND ca.expiresDate > NOW()");
+				+ "AND ca.auditTypeID IN (1,11) AND (ca.expiresDate is null OR ca.expiresDate > NOW())");
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id "
-				+ "AND cao.visible = 1 AND cao.status IN ('Submitted','Resubmitted') AND cao.percentComplete = 100");
+				+ "AND cao.visible = 1 AND cao.status IN ('Submitted','Resubmitted')");
 		sql.addJoin("JOIN accounts o ON o.id = cao.opID");
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 		sql.addWhere("c.accountLevel = 'Full'");
