@@ -111,7 +111,7 @@ public class ContractorAuditDAO extends PicsDAO {
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
-				+ "AND expiresDate > Now() ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
+				+ "AND (expiresDate is null OR expiresDate > Now()) ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
