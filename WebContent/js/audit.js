@@ -10,7 +10,7 @@
 			// reset answer
 			$('#auditViewArea').delegate('input.resetAnswer', 'click', this.events.reset);
 			
-			// triggered save question on save cert / detach cert?
+			// give the ability for questions to manually trigger save question
 			$('#auditViewArea').delegate('div.question', 'saveQuestion', this.events.save);
 			
 			// every question that is not 'save-disabled' should have a auto save
