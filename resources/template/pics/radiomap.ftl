@@ -21,7 +21,7 @@
  */
 -->
 
-<ul class="radio">
+<ul class="radio <#if parameters.cssClass??>${parameters.cssClass?html}</#if>">
 
 <@s.iterator value="parameters.list">
     <#if parameters.listKey??>
@@ -62,10 +62,6 @@
 			
 			<#if parameters.tabindex??>
 			 tabindex="${parameters.tabindex?html}"<#rt/>
-			</#if>
-			
-			<#if parameters.cssClass??>
-			 class="${parameters.cssClass?html}"<#rt/>
 			</#if>
 			
 			<#if parameters.cssStyle??>

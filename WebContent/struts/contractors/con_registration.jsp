@@ -221,7 +221,7 @@
 				<ol>
 					<li>
 						<label><s:text name="ContractorAccount.soleProprietor" /></label>
-						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="SoleProprietor" name="contractor.soleProprietor" />
+						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="SoleProprietor" name="contractor.soleProprietor" cssClass="inline" />
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorAccount.soleProprietor.fieldhelptitle" /></h3>
 							<s:text name="ContractorAccount.soleProprietor.fieldhelp" />
@@ -229,7 +229,7 @@
 					</li>
 					<li>
 						<label><s:text name="ContractorAccount.competitorMembership" /></label>
-						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" />
+						<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" id="CompetitorMembership" name="contractor.competitorMembership" cssClass="inline" />
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorAccount.competitorMembership.fieldhelptitle" /></h3>
 							<s:text name="ContractorAccount.competitorMembership.fieldhelp" />

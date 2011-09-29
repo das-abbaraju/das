@@ -41,3 +41,26 @@ ul.radio
 	margin: 0px;
 }
 
+ul.radio.inline li
+{
+	clear: none !important;
+	display: inline !important;
+	padding: 5px 5px 10px 0px !important;
+}
+
+ul.radio.inline input,
+ul.radio.inline label
+{
+	float: left !important;
+}
+
+ul.radio.inline input
+{
+	margin-right: 5px;
+}
+
+ul.radio.inline label
+{
+	line-height: 20px !important;
+	margin: 0px !important;
+}
