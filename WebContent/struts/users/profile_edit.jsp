@@ -137,6 +137,9 @@
 										<s:textfield name="u.name" theme="form" />
 									</li>
 									<li>
+										<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
+									</li>
+									<li>
 										<s:textfield name="u.email" theme="form" />
 									</li>
 									<li>
@@ -157,9 +160,6 @@
 											list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 									</li>
 									
-									<li>
-										<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
-									</li>
 									<li>
 										<label><s:text name="global.CreationDate" />:</label>
 										<s:date name="u.creationDate"/>

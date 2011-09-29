@@ -288,6 +288,10 @@
 							
 							<s:if test="user.isGroup.toString() == 'No'">
 								<li>
+									<s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
+								</li>
+
+								<li>
 									<label>Email:</label>
 									<s:textfield name="user.email" size="40" />
 								</li>
@@ -335,14 +339,6 @@
 								<li>
 									<s:select name="user.timezone" value="user.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"></s:select>
 								</li>
-								
-								<s:if test="account.operatorCorporate">
-									<s:hidden id="departmentRole" />
-									
-									<li>
-										<s:textfield id="departmentSuggest" name="user.department" size="15" theme="formhelp" />
-									</li>
-								</s:if>
 								
 								<s:if test="user.account.id != 1100">
 									<li>
