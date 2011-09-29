@@ -373,6 +373,11 @@ public class UsersManage extends PicsActionSupport {
 
 	public String move() throws Exception {
 		startup();
+		
+		if (user.getAccount().getUsers().size() == 1)
+			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
+					+ "&msg=You Cannot Move This User As They Are The Only User On This Account");
+		
 		// accounts are different so we are moving to a new account
 		// user.setOwnedPermissions(null);
 		List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
