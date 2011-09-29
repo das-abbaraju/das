@@ -1,8 +1,175 @@
 (function($) {
 	
+	/* ajax history - bbq */
+	var lastState, catXHR;
+	
+	$('a.hist-category, a.modeset').live('click', function() {
+		$.bbq.pushState(this.href);
+		$.bbq.removeState('onlyReq');
+		$.bbq.removeState('subCat');
+		$.bbq.removeState('viewBlanks');
+		var state = $.bbq.getState();
+		if (state.categoryID == lastState.categoryID && state.mode == lastState.mode)
+			$.bbq.pushState({"_": (new Date()).getTime()});
+		else
+			$.bbq.removeState("_");
+		if (state.mode == 'ViewQ' || state.viewBlanks == "false")
+			$.bbq.removeState('mode');
+		return false;
+	});
+
+	$('ul.subcat-list li a').live('click', function() {
+		$.bbq.pushState(this.href);
+		$.bbq.removeState('viewBlanks');
+		$.bbq.removeState('onlyReq');
+		$.bbq.removeState("_");
+		return false;
+	});
+
+	$('ul.vert-toolbar a.preview').live('click', function() {
+		$.bbq.pushState(this.href);
+		$.bbq.removeState('viewBlanks');
+		$.bbq.removeState('onlyReq');
+		$.bbq.removeState('_');
+		$.bbq.removeState('subCat');
+		return false;
+	});
+	/* end ajax history - bbq */
+	
 	if (!window.AUDIT) {
 		AUDIT = {};
 	}
+	
+	// audit load category
+	AUDIT.load_category = {
+		init: function() {
+			$(window).bind('hashchange', function() {
+				var state = $.bbq.getState();
+				
+				if (state.subCat !== undefined) {
+					$.scrollTo('#cathead_' + state.subCat, 800, {
+						axis: 'y'
+					});
+				} else {
+					// default request parameters
+					var data = $.deparam.querystring($.param.querystring(location.href, state));
+					
+					// default load operation
+					data.button = 'load';
+					
+					// default loading message
+					var message = messageLoadingCategory;
+					
+					if(state.onlyReq !== undefined){
+						data.button = 'PrintReq';
+						
+						$('#auditViewArea').block({
+							message: messageLoadingRequirements, 
+							centerY: false, 
+							css: {
+								top: '20px'
+							}
+						}).load('AuditAjax.action', data, function() {
+							$('ul.catUL li.current').removeClass('current');
+							$(this).unblock();
+						});
+						
+						$('#printReqButton').show();
+					} else if (state.mode == 'ViewQ') {
+						message = messageLoadingPreview;
+					} else if (state.viewBlanks == "false") {
+						message = messageLoadingAnsweredQuestions;
+					} else if (state.mode == "ViewAll") {
+						message = messageLoadingAllCategories;
+					} else if (state.categoryID === undefined) {
+						var options = {};
+						
+						if (!lastState || lastState.categoryID === undefined) {
+							options = $.deparam.fragment($('a.hist-category:first').attr('href'));
+						}
+						
+						$.extend(options, $.deparam.fragment(location.href));
+						
+						var data = $.deparam.querystring($.param.querystring(location.href, options));
+						
+						data.button = 'load';
+						
+						message = messageLoadingCategory;
+					} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
+						$('#printReqButton').hide();
+						
+						if ($(window).scrollTop() > $('#auditViewArea').offset().top) {
+							$.scrollTo('#auditViewArea', 800, {
+								axis: 'y'
+							});
+						}
+					}
+					
+					AUDIT.load_category.reload(data, message);
+				}
+				
+				lastState = state;
+			});
+		},
+		
+		reload: function(data, msg) {
+			var categoryID = data.categoryID;
+			
+			catXHR && catXHR.abort();
+			
+			$('#auditViewArea').block({
+				message: msg, 
+				centerY: false, 
+				css: {
+					top: '20px'
+				} 
+			});
+			
+			catXHR = $.ajax({
+				url: 'AuditAjax.action',
+				data: data,
+				success: function(html, status, XMLHttpRequest) {
+					var state = $.bbq.getState();
+					
+					$('li.current').removeClass('current');
+					$('#auditViewArea').html(html).unblock();
+
+					var subCatScroll = $('#cathead_'+state.subCat);
+					
+					if (subCatScroll.length)
+						$.scrollTo(subCatScroll, 800, {axis: 'y'});
+
+					if (state.categoryID !== undefined) {
+						highlight_category(state.categoryID);
+					} else if (data.categoryID !== undefined) {
+						highlight_category(data.categoryID);
+					}
+
+					if (state.mode == 'ViewQ') {
+						$('a.preview').closest('li').addClass('current');
+					}
+
+					if (state.viewBlanks == "false") {
+						$('#viewBlanks').closest('li').addClass('current');
+					}
+
+					showNavButtons();
+					clearLinks();
+					
+					$('a.filter').cluetip({
+						sticky: true,
+						showTitle: false,
+						dropShadow: false,
+						mouseOutClose: true,
+						clickThrough: false
+					});
+					
+					// enable ambest questions on audit category reload
+					AUDIT.am_best_suggest.autocomplete($('#auditViewArea #ambest'));
+				}
+			});
+		}
+	};
 	
 	// audit question
 	AUDIT.question = {
@@ -83,13 +250,18 @@
 		// question methods
 		execute: function(element, url, data) {
 			$.post(url, data, function(data, textStatus, XMLHttpRequest) {
+				var element_id = element.attr('id');
+				
 				element.trigger('updateDependent');
 				element.replaceWith(data);
+				
+				// re-enable ambest questions on audit category reload
+				AUDIT.am_best_suggest.autocomplete($('#' + element_id + ' ' + '#ambest'));
 			});
 		}
 	};
 	
-	
+	// Esignature questions
 	AUDIT.esignature = {
 		init: function() {
 			$('#auditViewArea').delegate('.edit-esignature', 'click', this.events.edit);
@@ -110,5 +282,48 @@
 			}
 		}
 	};
+	
+	// AM BEST SUGGEST
+	AUDIT.am_best_suggest = {
+
+		// jquery.autocomplete.plugin 1.1
+		autocomplete: function(element) {
+			if (element.length) {
+				element.autocomplete('AmBestSuggestAjax.action', {
+					minChars: 3,
+					formatResult: function(data,i,count) {
+						return data[1];
+					}
+				}).change(function(event) {
+					// must stop propogation - otherwise this event will bubble and fire other change events
+					event.stopPropagation();
+
+					// if the ambest value changes and there are no values then remove the ID saved in the comment field
+					if ($(this).blank()) {
+						var form = $(this).closest('form');
+						var comment = form.find('[name="auditData.comment"]');
+						
+						comment.val('');
+					}
+				}).result(function(event, data, formatted) {
+					// data[0] - full name (id)
+					// data[1] - full name
+					// data[2] - id
+					
+					var form = $(this).closest('form');
+					var comment = form.find('[name="auditData.comment"]');
+					
+					// if there is an ID available - place the ID in the comments
+					if (data[2] != "UNKNOWN") {
+						comment.val(data[2]);
+					} else {
+						comment.val('');
+					}
+					
+					$(this).trigger('saveQuestion');
+				});
+			}
+		}
+	}
 	
 })(jQuery);

@@ -38,6 +38,7 @@
 				<s:if test="conAudit.categories.size == 0">
 					updateCategoriesNow();
 				</s:if>
+				
 				<s:if test="!permissions.operatorCorporate">
 					$('a.passAudit').live('click', function() {
 						window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;

@@ -21,47 +21,6 @@
 		
 		<%-- translation cluetip --%>
 		$('#node_<s:property value="#q.id"/> .cluetip-translation').cluetip(cluetipOptions);
-
-		<%-- ambest --%>
-		var ambest = $('#node_<s:property value="#q.id"/> #ambest');
-		
-		if (ambest.length) {
-			
-			ambest.autocomplete('AmBestSuggestAjax.action', {
-				minChars: 3,
-				formatResult: function(data,i,count) {
-					return data[1];
-				}
-			// if the autocomplete form changes and there are no values then remove the ID saved in the comment field
-			}).change(function(event) {
-				// must stop propogation - otherwise this event will bubble and fire other change events
-				event.stopPropagation();
-				
-				if ($(this).blank()) {
-					var form = $(this).closest('form');
-					var comment = form.find('[name="auditData.comment"]');
-					
-					comment.val('');
-				}
-			// autocomplete result parser
-			}).result(function(event, data, formatted) {
-				// data[0] - full name (id)
-				// data[1] - full name
-				// data[2] - id
-				
-				var form = $(this).closest('form');
-				var comment = form.find('[name="auditData.comment"]');
-				
-				// if there is an ID available - place the ID in the comments
-				if (data[2] != "UNKNOWN") {
-					comment.val(data[2]);
-				} else {
-					comment.val('');
-				}
-				
-				$(this).trigger('saveQuestion');
-			});
-		}
 	});
 })(jQuery);
 </script>
