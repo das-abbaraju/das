@@ -127,7 +127,7 @@
 		<tr>
 			<td colspan="<s:property value="filter.primaryInformation ? 11 : 10" />">
 				<div style="height:28px;">
-					<s:radio cssClass="statusSelects" name="newStatuses" list="#{'Approved':getText('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getText('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getText('ReportInsuranceApproval.MarkNA')}" />
+					<s:radio cssClass="statusSelects inline" name="newStatuses" list="#{'Approved':getText('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getText('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getText('ReportInsuranceApproval.MarkNA')}" />
 				</div>
 				
 				<a class="picsbutton positive" href="#" onclick="return changeAuditStatus();"><s:text name="ReportInsuranceApproval.SaveChanges" /></a>
