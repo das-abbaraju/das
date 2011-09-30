@@ -408,7 +408,7 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.TRIRReport)) {
 			addChildAction(subMenu, "GraphTrirRates");
-			final String url = "ReportIncidenceRate.action?filter.auditFor=2009&filter.shaType=OSHA&filter.shaLocation=Corporate";
+			final String url = "ReportIncidenceRate.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate";
 			subMenu.addChild(getTitle("ReportIncidenceRate"), url);
 		}
 
