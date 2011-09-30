@@ -16,6 +16,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -26,6 +27,10 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
@@ -203,9 +208,26 @@ public class CaoSave extends AuditActionSupport {
 		} else
 			checkNewStatus(step, cao);
 
-		if (step.getEmailTemplate() != null)
+		if (step.getEmailTemplate() != null) {
 			sendStatusChangeEmail(step, cao);
-
+			
+			Note note = new Note();
+			note.setAccount(cao.getAudit().getContractorAccount());
+			note.setAuditColumns(permissions);
+			String summary = "Email sent to contractor for Changed Status for "
+					+ cao.getAudit().getAuditType().getName().toString() + "(" + cao.getAudit().getId() + ") ";
+			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
+				summary += " for " + cao.getAudit().getAuditFor();
+			summary += " from " + prevStatus + " to " + cao.getStatus();
+			note.setSummary(summary);
+			note.setPriority(LowMedHigh.Med);
+			note.setNoteCategory(NoteCategory.General);
+			note.setViewableById(Account.PicsID);
+			note.setCanContractorView(false);
+			note.setStatus(NoteStatus.Closed);
+			noteDAO.save(note);
+		}
+		
 		caoDAO.save(cao);
 		setCaoUpdatedNote(prevStatus, cao, note);
 		autoExpireOldAudits(cao.getAudit(), newStatus);
