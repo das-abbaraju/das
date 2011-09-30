@@ -88,6 +88,7 @@
 		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
 		<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
 		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
+		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 		<script type="text/javascript" src="js/main_search.js"></script>
 		

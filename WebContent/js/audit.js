@@ -43,73 +43,81 @@
 	// audit load category
 	AUDIT.load_category = {
 		init: function() {
-			$(window).bind('hashchange', function() {
-				var state = $.bbq.getState();
+			if ($('#audit-layout').length) {
+				var messageLoadingRequirements = translate('JS.Audit.LoadingRequirements');
+				var messageLoadingCategory = translate('JS.Audit.LoadingCategory');
+				var messageLoadingAllCategories = translate('JS.Audit.LoadingAllCategories');
+				var messageLoadingAnsweredQuestions = translate('JS.Audit.LoadingAnsweredQuestions');
+				var messageLoadingPreview = translate('JS.Audit.LoadingPreview');
 				
-				if (state.subCat !== undefined) {
-					$.scrollTo('#cathead_' + state.subCat, 800, {
-						axis: 'y'
-					});
-				} else {
-					// default request parameters
-					var data = $.deparam.querystring($.param.querystring(location.href, state));
+				$(window).bind('hashchange', function() {
+					var state = $.bbq.getState();
 					
-					// default load operation
-					data.button = 'load';
-					
-					// default loading message
-					var message = messageLoadingCategory;
-					
-					if(state.onlyReq !== undefined){
-						data.button = 'PrintReq';
-						
-						$('#auditViewArea').block({
-							message: messageLoadingRequirements, 
-							centerY: false, 
-							css: {
-								top: '20px'
-							}
-						}).load('AuditAjax.action', data, function() {
-							$('ul.catUL li.current').removeClass('current');
-							$(this).unblock();
+					if (state.subCat !== undefined) {
+						$.scrollTo('#cathead_' + state.subCat, 800, {
+							axis: 'y'
 						});
+					} else {
+						// default request parameters
+						var data = $.deparam.querystring($.param.querystring(location.href, state));
 						
-						$('#printReqButton').show();
-					} else if (state.mode == 'ViewQ') {
-						message = messageLoadingPreview;
-					} else if (state.viewBlanks == "false") {
-						message = messageLoadingAnsweredQuestions;
-					} else if (state.mode == "ViewAll") {
-						message = messageLoadingAllCategories;
-					} else if (state.categoryID === undefined) {
-						var options = {};
-						
-						if (!lastState || lastState.categoryID === undefined) {
-							options = $.deparam.fragment($('a.hist-category:first').attr('href'));
-						}
-						
-						$.extend(options, $.deparam.fragment(location.href));
-						
-						var data = $.deparam.querystring($.param.querystring(location.href, options));
-						
+						// default load operation
 						data.button = 'load';
 						
-						message = messageLoadingCategory;
-					} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
-						$('#printReqButton').hide();
+						// default loading message
+						var message = messageLoadingCategory;
 						
-						if ($(window).scrollTop() > $('#auditViewArea').offset().top) {
-							$.scrollTo('#auditViewArea', 800, {
-								axis: 'y'
+						if(state.onlyReq !== undefined){
+							data.button = 'PrintReq';
+							
+							$('#auditViewArea').block({
+								message: messageLoadingRequirements, 
+								centerY: false, 
+								css: {
+									top: '20px'
+								}
+							}).load('AuditAjax.action', data, function() {
+								$('ul.catUL li.current').removeClass('current');
+								$(this).unblock();
 							});
+							
+							$('#printReqButton').show();
+						} else if (state.mode == 'ViewQ') {
+							message = messageLoadingPreview;
+						} else if (state.viewBlanks == "false") {
+							message = messageLoadingAnsweredQuestions;
+						} else if (state.mode == "ViewAll") {
+							message = messageLoadingAllCategories;
+						} else if (state.categoryID === undefined) {
+							var options = {};
+							
+							if (!lastState || lastState.categoryID === undefined) {
+								options = $.deparam.fragment($('a.hist-category:first').attr('href'));
+							}
+							
+							$.extend(options, $.deparam.fragment(location.href));
+							
+							var data = $.deparam.querystring($.param.querystring(location.href, options));
+							
+							data.button = 'load';
+							
+							message = messageLoadingCategory;
+						} else if (!lastState || !lastState.categoryID || state.categoryID != lastState.categoryID || state.mode != lastState.mode || state["_"]) {
+							$('#printReqButton').hide();
+							
+							if ($(window).scrollTop() > $('#auditViewArea').offset().top) {
+								$.scrollTo('#auditViewArea', 800, {
+									axis: 'y'
+								});
+							}
 						}
+						
+						AUDIT.load_category.reload(data, message);
 					}
 					
-					AUDIT.load_category.reload(data, message);
-				}
-				
-				lastState = state;
-			});
+					lastState = state;
+				});
+			}
 		},
 		
 		reload: function(data, msg) {
