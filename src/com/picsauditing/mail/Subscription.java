@@ -38,7 +38,9 @@ public enum Subscription implements Translatable {
 	OpenTasks(168, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly }, false,
 			true, false),
 	RegistrationRequests(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
-			true, false, false);
+			true, false, false),
+	EmailCronFailure(181, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false, true),
+	ContractorCronFailure(182, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false, true);
 
 	private int templateID;
 	private TranslatableString description;

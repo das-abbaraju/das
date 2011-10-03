@@ -1,6 +1,8 @@
 package com.picsauditing.mail;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -9,6 +11,7 @@ import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -22,6 +25,9 @@ import com.picsauditing.util.Strings;
 
 public class EventSubscriptionBuilder {
 
+	private static EmailSubscriptionDAO subscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
+	private static EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+	
 	public static void contractorFinishedEvent(EmailSubscriptionDAO subscriptionDAO, ContractorOperator co)
 			throws Exception {
 		Date now = new Date();
@@ -31,7 +37,6 @@ public class EventSubscriptionBuilder {
 		List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorFinished,
 				SubscriptionTimePeriod.Event, co.getOperatorAccount().getId());
 
-		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 		for (EmailSubscription subscription : subscriptions) {
 			EmailBuilder builder = new EmailBuilder();
 			builder.setTemplate(templateID);
@@ -115,9 +120,63 @@ public class EventSubscriptionBuilder {
 		email.setPriority(60);
 		email.setHtml(true);
 		email.setViewableById(Account.PicsID);
-		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 		emailSender.send(email);
 
 		return email;
+	}
+	
+	public static void theSystemIsDown(ContractorCronStatistics stats) {
+		
+
+		Calendar now = Calendar.getInstance();
+
+		if (stats.isEmailCronError()) {
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(
+					Subscription.EmailCronFailure, 1100);
+			for (EmailSubscription subscription : subscriptions) {
+				if (subscription.getLastSent() == null
+						|| checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
+					sendSystemStatusEmail(subscription, stats);
+				}
+			}
+		}
+
+		if (stats.isContractorCronError()) {
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(
+					Subscription.ContractorCronFailure, 1100);
+			if (stats.isContractorCronError()) {
+				for (EmailSubscription subscription : subscriptions) {
+					if (subscription.getLastSent() == null
+							|| checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
+						sendSystemStatusEmail(subscription, stats);
+					}
+				}
+			}
+		}
+	}
+
+	public static boolean checkLastSentPlusTenMinutes(Calendar now, Date lastSent) {
+		// Make sure this email hasn't been sent within the last 10 minutes
+		Calendar result = Calendar.getInstance();
+		result.setTime(lastSent);
+		result.add(Calendar.MINUTE, 10);
+		return now.after(result);
+	}
+
+	private static void sendSystemStatusEmail(EmailSubscription subscription, ContractorCronStatistics stats) {
+		EmailBuilder email = new EmailBuilder();
+		email.addToken("stats", stats);
+		email.setToAddresses(subscription.getUser().getEmail());
+		email.setFromAddress("info@picsauditing.com");
+		email.setTemplate(subscription.getSubscription().getTemplateID());
+		try {
+			EmailQueue q = email.build();
+			emailSender.sendNow(q);
+			subscription.setLastSent(new Date());
+			subscriptionDAO.save(subscription);
+			System.out.println("email sent to " + email.getToAddresses());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

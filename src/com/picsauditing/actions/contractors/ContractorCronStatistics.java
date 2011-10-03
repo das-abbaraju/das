@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailQueueDAO;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 
 @SuppressWarnings("serial")
 public class ContractorCronStatistics extends PicsActionSupport {
@@ -55,6 +56,9 @@ public class ContractorCronStatistics extends PicsActionSupport {
 		} else {
 			emailCronWarning = true;
 		}
+
+		if (contractorCronError || emailCronError)
+			EventSubscriptionBuilder.theSystemIsDown(this);
 
 		return SUCCESS;
 	}

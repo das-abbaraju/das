@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.actions.report.ReportObsoleteScheduledAudits;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -108,6 +109,8 @@ public class Cron extends PicsActionSupport {
 	private IndexerEngine indexer;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private EmailQueueDAO emailQueueDAO;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -285,6 +288,13 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nSending Report Emails to Registration Reqeusts Which Have Moved from Hold to Active");
 			checkRegistratoinRequestHoldDate();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		try {
+			startTask("\nChecking System Status");
+			checkSystemStatus();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -673,5 +683,9 @@ public class Cron extends PicsActionSupport {
 
 			contractorOperatorDAO.save(override);
 		}
+	}
+	private void checkSystemStatus() throws Exception{
+		ContractorCronStatistics stats = new ContractorCronStatistics(contractorAccountDAO, emailQueueDAO);
+		stats.execute();
 	}
 }
