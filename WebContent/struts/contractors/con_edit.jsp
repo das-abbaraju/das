@@ -366,7 +366,7 @@
 								
 								<li>
 									<label>Must Pay?</label>
-									<s:radio list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay" value="contractor.mustPay" />
+									<s:radio cssClass="inline" list="#{'Yes':'Yes','No':'No'}" name="contractor.mustPay" value="contractor.mustPay" />
 								</li>
 								<li>
 									<label>Upgrade Date:</label>
@@ -398,7 +398,7 @@
 								</li>
 								<li>
 									<label for="conCompetitorMembership">Has Competitor Membership:</label>
-									<s:radio id="conCompetitorMembership" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
+									<s:radio cssClass="inline" id="conCompetitorMembership" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="contractor.competitorMembership" />
 									<br />
 									
 									<s:if test="hasImportPQFAudit">
@@ -418,7 +418,7 @@
 								</li>
 								<li>
 									<label for="conCanadianCompetitor">Has Canadian Competitor:</label>
-									<s:radio id="conCanadianCompetitor" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" name="contractor.hasCanadianCompetitor" />
+									<s:radio cssClass="inline" id="conCanadianCompetitor" list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" name="contractor.hasCanadianCompetitor" />
 								</li>
 								<li>
 									<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
