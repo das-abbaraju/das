@@ -11,6 +11,10 @@
 	<br /><s:text name="WhoIs.LastUpdatedBy"><s:param><s:property value="#o.updatedBy.name"/></s:param><s:param><s:property value="#o.updatedBy.account.name"/></s:param><s:param><s:date name="#o.updateDate"/></s:param></s:text>
 </s:if>
 
+<s:if test="#addBy != null && #addDate != null" >
+	<br /><s:text name="WhoIs.AddBy" ><s:param><s:property value="#addBy.name"/></s:param><s:param><s:property value="#addDate" /></s:param></s:text>
+</s:if>
+
 </div>
 <img class="noprint" src="images/help.gif" width="12" height="12" 
 	title='<s:text name="WhoIs.ShowWho" />' style="cursor: pointer;" 
