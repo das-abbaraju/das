@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
@@ -385,15 +386,14 @@ public class AuditBuilder {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
-			// Trevor 6/9/2011 Removed this because we're switching to allow multiple CAOs for Desktop
-			// for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
-			// if (cao.isVisible()
-			// && co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
-			// // Once the Manual Audit has at least one status that's Complete, then show it to all the
-			// // contractor's operators
-			// caopOperators.add(co.getOperatorAccount());
-			// }
-			// }
+			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
+				if (cao.isVisible()
+						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+					// Once the Manual Audit has at least one status that's Complete, then show it to all the
+					// contractor's operators
+					caopOperators.add(co.getOperatorAccount());
+				}
+			}
 		}
 
 		/*
