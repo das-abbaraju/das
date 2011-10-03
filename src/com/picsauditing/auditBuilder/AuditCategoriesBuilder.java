@@ -72,6 +72,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		operators.clear();
 		if (auditOperators.size() == 0)
 			return categories;
+		
+		auditType = conAudit.getAuditType();
 
 		if (conAudit.getAuditType().getId() == AuditType.FIELD) { 
 			// field audits will only have caos that are manually specified (not by rules)
