@@ -189,7 +189,8 @@ load_config_to_live () {
 	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = '1' WHERE property = 'PICS.clear_cache'"
 	
 	echo "updating configupdatedate on live"
-	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = NOW() WHERE property = 'ConfigUpdateDate'"
+	# we're accounting for the time difference between Houston and Irvine -- The time set reflects PST
+	/usr/bin/mysql $db_live -e "UPDATE app_properties SET value = DATE_SUB(NOW(), INTERVAL 2 HOUR) WHERE property = 'ConfigUpdateDate'"
 	
 	echo "Rezip the config data"
 	/bin/gzip -f $dumpfile

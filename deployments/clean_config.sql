@@ -2,6 +2,10 @@
 update users set password = SHA1(CONCAT('M0ckingj@y',id)) WHERE accountID != 1100;
 update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
+-- Clean up the email data in config that was just copied from Yesterday (Live)
+update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null 
+where status = 'Pending'
+and (toAddresses not like '%picsauditing.com' or ccAddresses not like '%picsauditing.com');
 
 update generalcontractors set baselineFlag = flag, baselineFlagDetail = flagDetail;
 update flag_data set baselineFlag = flag;
