@@ -176,7 +176,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 	
-	public String cancelOverride() {
+	public String cancelOverride() throws Exception {
+		findContractor();
 		co = contractorOperatorDao.find(id, opID);
 		if (co == null) {
 			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
@@ -198,9 +199,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co2.setAuditColumns(permissions);
 			contractorOperatorDao.save(co2);
 			contractor.incrementRecalculation();
+			noteText = "Removed the Forced flag for all the sites";
 		} else {
 			co.removeForceFlag();
-			noteText = "Removed the forced flag for " + co.getOperatorAccount().getName();
+			noteText = "Removed the Forced flag for " + co.getOperatorAccount().getName();
 		}
 
 		return completeAction(noteText);
@@ -306,7 +308,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return BLANK;
 		}
 		FlagData flagData = flagDataDAO.find(dataID);
-		String noteText = "Removed the Force flag for criteria " + flagData.getCriteria().getLabel() + " for "
+		String noteText = "Removed the Forced flag for criteria " + flagData.getCriteria().getLabel() + " for "
 				+ co.getOperatorAccount().getName();
 
 		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
@@ -331,7 +333,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				Note note = new Note();
 				note.setAccount(co.getContractorAccount());
 				note.setAuditColumns(permissions);
-				note.setNoteCategory(noteCategory);
+				note.setNoteCategory(NoteCategory.Flags);
 				note.setViewableByOperator(permissions);
 				note.setCanContractorView(true);
 

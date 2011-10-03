@@ -42,8 +42,20 @@
 				<td>
 					<s:property value="noteCategory" />:
 					<s:property value="summary" />
-					<br />
-					<s:property value="bodyHtml" escape="false" />
+					<s:if test="body != null">
+						<br />
+						<s:if test="body.length() > 150">
+							<s:property value="bodyHtml.substring(0,150)" escape="false" />
+						</s:if>
+						<s:else>
+							<s:property value="bodyHtml" escape="false" />
+						</s:else>
+					</s:if>
+					<s:if test="attachment != null">
+						<br /><br />
+						<a href="NoteEditor.action?button=attachment&note.id=<s:property value="id"/>" target="_BLANK">
+						<s:text name="ContractorNotes.ViewAttachment" /></a>
+					</s:if>
 				</td>
 			</tr>
 		</s:iterator>

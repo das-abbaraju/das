@@ -121,11 +121,16 @@
 					
 					<s:property value="summary" />
 					
-					<s:if test="body != null && body.length() > 0">
+					<s:if test="body != null && body.length() > 150">
 						<br />
 						
 						<s:property value="bodyHtml.substring(0,150)" escape="false"/>
 					</s:if>
+					<s:elseif test="body != null">
+						<br />
+						
+						<s:property value="bodyHtml" escape="false"/>
+					</s:elseif>
 					
 					<br /><br />
 					
