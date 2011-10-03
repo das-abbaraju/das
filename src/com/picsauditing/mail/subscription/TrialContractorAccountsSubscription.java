@@ -1,6 +1,8 @@
 package com.picsauditing.mail.subscription;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +16,9 @@ public class TrialContractorAccountsSubscription extends SubscriptionBuilder {
 	private ContractorOperatorDAO contractorOperatorDAO;
 
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+		
 		OperatorAccount o = (OperatorAccount) subscription.getUser().getAccount();
 
 		List<ContractorOperator> trialAccounts = contractorOperatorDAO.findPendingApprovalContractors(o.getId(), true,
@@ -22,5 +26,7 @@ public class TrialContractorAccountsSubscription extends SubscriptionBuilder {
 		if (trialAccounts.size() > 0) {
 			tokens.put("trialContractors", trialAccounts);
 		}
+		
+		return tokens;
 	}
 }

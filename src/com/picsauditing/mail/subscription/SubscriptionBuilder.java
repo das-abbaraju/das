@@ -2,7 +2,6 @@ package com.picsauditing.mail.subscription;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,9 @@ public abstract class SubscriptionBuilder {
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
 
-	Map<String, Object> tokens = new HashMap<String, Object>();
-
 	public void sendSubscription(EmailSubscription subscription) throws IOException {
-		process(subscription);
-		EmailQueue queue = buildEmail(subscription);
+		Map<String, Object> tokens = process(subscription);
+		EmailQueue queue = buildEmail(subscription, tokens);
 
 		if (queue != null)
 			sender.send(queue);
@@ -36,9 +33,9 @@ public abstract class SubscriptionBuilder {
 		tokens.clear();
 	}
 
-	protected abstract void process(EmailSubscription subscription) throws IOException;
+	protected abstract Map<String, Object> process(EmailSubscription subscription) throws IOException;
 
-	private EmailQueue buildEmail(EmailSubscription subscription) throws IOException {
+	private EmailQueue buildEmail(EmailSubscription subscription, Map<String, Object> tokens) throws IOException {
 		if (tokens.size() > 0) {
 			int templateID = subscription.getSubscription().getTemplateID();
 			User user = subscription.getUser();

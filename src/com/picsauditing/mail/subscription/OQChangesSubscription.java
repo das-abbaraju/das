@@ -3,8 +3,10 @@ package com.picsauditing.mail.subscription;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -23,7 +25,9 @@ public class OQChangesSubscription extends SubscriptionBuilder {
 	private Account a;
 
 	@Override
-	public void process(EmailSubscription subscription) throws IOException {
+	public Map<String, Object> process(EmailSubscription subscription) throws IOException {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		try {
 			daysAgo = DateBean.getDateDifference(subscription.getTimePeriod().getComparisonDate(), new Date());
 			this.a = subscription.getUser().getAccount();
@@ -40,6 +44,8 @@ public class OQChangesSubscription extends SubscriptionBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return tokens;
 	}
 
 	private List<BasicDynaBean> getChangedCriteriaList() throws SQLException {

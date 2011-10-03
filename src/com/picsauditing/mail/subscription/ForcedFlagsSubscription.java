@@ -1,8 +1,10 @@
 package com.picsauditing.mail.subscription;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.DynaBean;
@@ -16,7 +18,9 @@ import com.picsauditing.search.SelectSQL;
 
 public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		try {
 			OperatorAccount o = (OperatorAccount) subscription.getUser().getAccount();
 
@@ -84,5 +88,7 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return tokens;
 	}
 }

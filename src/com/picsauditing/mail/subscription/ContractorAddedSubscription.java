@@ -1,6 +1,7 @@
 package com.picsauditing.mail.subscription;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,9 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 public class ContractorAddedSubscription extends SubscriptionBuilder {
 
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		Set<OperatorAccount> children = new HashSet<OperatorAccount>();
 		OperatorAccount operator = (OperatorAccount) subscription.getUser().getAccount();
 
@@ -43,6 +46,8 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 
 		if (operators.size() > 0)
 			tokens.put("operators", operators);
+
+		return tokens;
 	}
 
 	private Comparator<OperatorAccount> getOperatorComparator() {

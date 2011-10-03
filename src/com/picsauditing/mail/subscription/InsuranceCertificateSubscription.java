@@ -1,5 +1,8 @@
 package com.picsauditing.mail.subscription;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -9,7 +12,9 @@ import com.picsauditing.search.SelectSQL;
 
 public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		try {
 			AuditStatus caoStatus = AuditStatus.Pending;
 
@@ -35,8 +40,9 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 				sql.addWhere("gc.genID = " + o.getInheritInsuranceCriteria().getId());
 			if (o.isCorporate())
 				sql.addJoin("JOIN facilities f ON f.corporateID = " + o.getId() + " AND f.opID = gc.genID");
-			sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = '"
-					+ caoStatus + "'");
+			sql
+					.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id AND cao.visible = 1 AND cao.status = '"
+							+ caoStatus + "'");
 			sql.addJoin("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID = "
 					+ o.getId());
 			sql.addJoin("JOIN accounts o ON o.id = gc.genID");
@@ -71,5 +77,7 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return tokens;
 	}
 }

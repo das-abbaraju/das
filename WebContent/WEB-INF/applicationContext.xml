@@ -118,7 +118,7 @@
 	<bean id="OpenTasksSubscription" class="com.picsauditing.mail.subscription.OpenTasksSubscription" scope="prototype"/>
 	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
-	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory"/>
+	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

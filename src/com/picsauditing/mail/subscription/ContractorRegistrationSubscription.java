@@ -2,6 +2,7 @@ package com.picsauditing.mail.subscription;
 
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,9 @@ public class ContractorRegistrationSubscription extends SubscriptionBuilder {
 	}
 
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		Set<OperatorAccount> children = new HashSet<OperatorAccount>();
 		OperatorAccount operator = (OperatorAccount) subscription.getUser().getAccount();
 
@@ -59,5 +62,7 @@ public class ContractorRegistrationSubscription extends SubscriptionBuilder {
 
 		if (operators.size() > 0)
 			tokens.put("operators", operators);
+
+		return tokens;
 	}
 }

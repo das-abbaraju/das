@@ -2,8 +2,10 @@ package com.picsauditing.mail.subscription;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.DynaBean;
@@ -18,7 +20,9 @@ import com.picsauditing.util.Strings;
 public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		try {
 			OperatorAccount o = (OperatorAccount) subscription.getUser().getAccount();
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -50,7 +54,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addField("gc.flag AS flag");
 			sql.addField("oa.name AS opName");
 			sql.addField("o.id AS opID");
-			
+
 			if (o.isOperator()) {
 				sql.addGroupBy("a.id, oa.id");
 			}
@@ -84,5 +88,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return tokens;
 	}
 }

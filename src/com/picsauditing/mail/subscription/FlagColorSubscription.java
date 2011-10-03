@@ -1,7 +1,9 @@
 package com.picsauditing.mail.subscription;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -14,7 +16,9 @@ import com.picsauditing.util.Strings;
 
 public class FlagColorSubscription extends SqlSubscriptionBuilder {
 	@Override
-	public void process(EmailSubscription subscription) {
+	public Map<String, Object> process(EmailSubscription subscription) {
+		Map<String, Object> tokens = new HashMap<String, Object>();
+
 		try {
 			FlagColor flagColor = FlagColor.Red;
 			if (subscription.getSubscription().equals(Subscription.RedFlags))
@@ -77,6 +81,8 @@ public class FlagColorSubscription extends SqlSubscriptionBuilder {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return tokens;
 	}
 
 	private Comparator<ContractorOperator> getCOComparator() {
