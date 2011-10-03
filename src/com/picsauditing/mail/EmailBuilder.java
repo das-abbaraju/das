@@ -209,6 +209,11 @@ public class EmailBuilder {
 			locale = permissions.getLocale();
 		}
 
+		if (tokens.containsKey("contractor")) {
+			ContractorAccount contractor = (ContractorAccount) tokens.get("contractor");
+			locale = contractor.getLocale();
+		}
+		
 		if (tokens.containsKey("user")) {
 			User user = (User) tokens.get("user");
 			locale = user.getLocale();
