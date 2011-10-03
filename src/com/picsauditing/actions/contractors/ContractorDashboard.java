@@ -28,6 +28,7 @@ import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -90,6 +91,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private AuditDecisionTableDAO auditRuleDAO;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -157,6 +160,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
 				accountDao.save(contractor);
+				auditTypeRuleCache.initialize(auditRuleDAO);
 				for (AuditTypeRule atr : auditTypeRuleCache.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
 						runTagConCronAjax = true;
