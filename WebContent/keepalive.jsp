@@ -13,7 +13,7 @@ try {
 }
 OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
 String status = "";
-if(os.getSystemLoadAverage() > os.getAvailableProcessors() * loadFactor)
+if(os.getSystemLoadAverage() > loadFactor)
 	status = "SYSTEM LOAD = " + os.getSystemLoadAverage();
 else
 	status = "SYSTEM OK";
