@@ -92,7 +92,7 @@
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 		<script type="text/javascript" src="js/main_search.js"></script>
 		
-		<s:include value="/struts/layout/include_javascript.jsp" />
+		<jsp:include page="/struts/layout/include_javascript.jsp" />
 		
 		<script type="text/javascript">
 			$(function() {

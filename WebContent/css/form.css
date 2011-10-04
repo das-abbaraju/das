@@ -45,6 +45,7 @@ ul.radio.inline li
 {
 	clear: none !important;
 	display: inline !important;
+	overflow: hidden;
 	padding: 5px 5px 10px 0px !important;
 }
 
