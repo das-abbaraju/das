@@ -148,7 +148,7 @@ function addTemplate(id) {
 	// Translated email template that will no longer be translated will overwrite the original email template.
 	if ($('#original_translated').val() == "true" && $('#templateTranslated').is(':checked') == false) {
 		if (confirm(translate("JS.MassMailer.ReplaceOriginalTemplate"))) {
-			$('#messages').load('EmailTemplateSave!save', data,
+			$('#messages').load('EmailTemplateSave!save.action', data,
 				function(response, status) {
 					if (status=='success') {
 						$('#div_saveEmail').fadeOut();
@@ -160,7 +160,7 @@ function addTemplate(id) {
 			);
 		}
 	} else {
-		$('#messages').load('EmailTemplateSave!save', data,
+		$('#messages').load('EmailTemplateSave!save.action', data,
 			function(response, status) {
 				if (status=='success') {
 					$('#div_saveEmail').fadeOut();

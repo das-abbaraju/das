@@ -43,7 +43,7 @@ $(function(){
 			return;
 		
 		$('#messages').html('');
-		$('#messages').load('EmailTemplateSave!delete', { template: $(this).data('id') }, 
+		$('#messages').load('EmailTemplateSave!delete.action', { template: $(this).data('id') }, 
 			function(response, status) {
 				if (status=='success')
 					$('#li_template'+id).fadeOut();
