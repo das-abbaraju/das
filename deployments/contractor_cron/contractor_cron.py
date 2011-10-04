@@ -8,8 +8,10 @@ from locked_iterator import LockedIterator
 
 logging.config.fileConfig("logging.conf")
 
-SERVER = "http://%s.picsorganizer.com/"
-SERVERS = ['web1','web2','web3']
+SERVER = "http://%s/"
+# Organizer1 = '10.178.52.21'
+# Organizer2 = '10.178.52.164'
+SERVERS = ['web1.picsorganizer.com','web2.picsorganizer.com','web3.picsorganizer.com','10.178.52.21','10.178.52.164']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
