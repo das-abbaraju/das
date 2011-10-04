@@ -1,26 +1,25 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
-<%@ page import="com.picsauditing.actions.TranslationActionSupport"%>
-<%@ page import="com.picsauditing.PICS.I18nCache"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
+<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%
 	// Usage: <s:include value="../jquery.jsp" />
 	// Use to include jQuery, jQuery UI, and Gritter (for notifications)
 	// If you just need jQuery, the just include it with the single line
 %>
+
+<link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
+<link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
+<link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen" />
+<link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">
+
 <script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+
 <% if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) { %>
 <script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= TranslationActionSupport.getLocaleStatic().getLanguage() %>.js"></script>
 <% } %>
 
-<script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
-
-<link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
-<link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
-
-<link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen" />
-
 <script type="text/javascript" src="js/jquery/cluetip/jquery.cluetip.min.js"></script>
-<link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">
-
+<script type="text/javascript" src="js/jquery/gritter/jquery.gritter.js"></script>
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
 <script type="text/javascript" src="js/jquery/jquery.fieldfocus.js"></script>
 
