@@ -1,71 +1,106 @@
-#operatorForms {
-	overflow: auto;
-	background-color: white;
+#ContractorRegistration-page #main
+{
+	margin: 0px auto;
+	width: 960px;
 }
 
-#hidden #operatorForms {
+#ContractorRegistration-page .registration
+{
+	display: inline;
+	float: left;
+	margin: 0px 10px;
+	position: relative;
+}
+
+.registration header
+{
+	border: 0px;
+	height: auto;
+	margin-bottom: 20px;
+	padding: 0px;
+}
+
+.registration header h1
+{
+	color: #A84D10;
+	font-size: 30px;
+	font-weight: bold;
+	margin: 10px 0px;
+}
+
+.registration header h2
+{
+	font-size: 15px;
+}
+
+/* registration form */
+
+.registration-form
+{
+	
+}
+
+.registration-form h1
+{
+	font-size: 20px;
+	margin: 10px 0px;
+}
+
+.registration-form li
+{
+	margin-bottom: 5px;
+}
+
+.registration-form label
+{
+	display: block;
+	float: left;
+	font-size: 13px;
+	line-height: 25px;
+	margin-right: 10px;
+	text-align: right;
+	width: 300px;
+}
+
+.registration-form .help-text
+{
 	display: none;
 }
 
-#attachment {
-	display: inline-block;
-	vertical-align: top;
+.registration-form .help
+{
+	color: #AAA;
+	display: block;
+	font-size: 11px;
+	left: 310px;
+	position: relative;
 }
 
-#email_preview {
-	display: none;
-	border: 1px solid #C3C3C3;
-	margin-top: 10px;
-	background-color: #FBFBF8;
-	padding: 5px;
+.registration-form .actions
+{
+	padding-left: 310px;
 }
 
-#email_preview td {
-	padding: 5px;
+.registration-form .actions p
+{
+	font-size: 12px;
+	line-height: 18px;
+	margin: 10px 0px; 
 }
 
-.normal:hover {
-	color: #4C4D4D;
-	text-decoration: none;
+/* popover */
+
+#ContractorRegistration-page .popover
+{
+	font-size: 12px;	
 }
 
-#notesPreview,#addHere {
-	background-color: transparent;
+#ContractorRegistration-page .popover .inner
+{
+	width: 300px;
 }
 
-pre {
-	white-space: pre-wrap; /* css-3 */
-	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
-	white-space: -pre-wrap; /* Opera 4-6 */
-	white-space: -o-pre-wrap; /* Opera 7 */
-	word-wrap: break-word; /* Internet Explorer 5.5+ */
-}
-
-#addToNotes {
+#ContractorRegistration-page .popover .inner p
+{
 	margin-bottom: 10px;
-}
-
-#notesHere {
-	background: #FFFF99;
-	padding: 10px 5px 10px 5px;
-	border-top: 2px solid #4686BF;
-	border-bottom: 2px solid #4686BF;
-	min-width: 400px;
-	z-index: 1;
-	position: relative;
-}
-
-#notesDiv {
-	position: relative;
-}
-
-#editRequestNotes {
-	position: absolute;
-	top: 10px;
-	left: 2px;
-	z-index: 0;
-}
-
-* html #editRequestNotes {
-	left: -5px;
 }

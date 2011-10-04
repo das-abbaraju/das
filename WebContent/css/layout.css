@@ -1,0 +1,145 @@
+header
+{
+	border-bottom: 2px solid #9E9FA3;
+	height: 52px;
+	padding: 0px 20px;
+}
+
+header .active
+{
+	float: right;
+	margin-top: 15px;
+}
+
+.logo
+{
+	display: block;
+	float: left;
+	height: 31px;
+	margin: 10px 0px;
+	width: 100px;
+}
+
+.logo img
+{
+	
+}
+
+/* chat */
+header .chat
+{
+	float: left;
+	margin-right: 20px;
+}
+
+header .chat a
+{
+	color: #80B3DA;
+	font-size: 12px;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+header .chat a:hover .link
+{
+	text-decoration: underline;
+}
+
+header .chat img
+{
+	margin-right: 5px;
+	position: relative;
+	top: 3px;
+}
+
+/* phone */
+header .phone
+{
+	color: #80B3DA;
+	float: left;
+	font-size: 12px;
+	font-weight: bold;
+	margin-right: 20px;
+}
+
+header .phone img
+{
+	margin-right: 5px;
+	position: relative;
+	top: 3px;
+}
+
+/* header menu */
+header .header-menu
+{
+	float: right;
+	margin-top: 5px;
+}
+
+header .header-menu li
+{
+	color: #343434;
+	float: left;
+	font-size: 12px;
+	margin-right: 10px;
+}
+
+header .header-menu a
+{
+	color: #343434;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+header .header-menu a:hover
+{
+	text-decoration: underline;
+}
+
+header .welcome-message
+{
+	font-weight: bold;
+}
+
+#container
+{
+	
+}
+
+#main
+{
+	
+}
+
+footer
+{
+	background-color: #012142;
+	border-top: 3px solid #4686BF;
+	clear: both;
+	color: #69C;
+	font-size: 11px;
+	overflow: hidden;
+	padding: 20px;
+}
+
+footer .footer-menu li
+{
+	float: left;
+	margin-right: 10px;	
+}
+
+footer .footer-menu a
+{
+	color: #69C;
+	text-decoration: none;
+}
+
+footer .footer-menu a:hover
+{
+	text-decoration: underline;
+}
+
+footer .stats
+{
+	float: right;
+}
