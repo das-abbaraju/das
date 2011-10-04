@@ -317,8 +317,6 @@ public class SearchEngine {
 	public List<String> sortSearchTerms(List<String> terms, boolean onlyValid) {
 		if (terms.size() <= 1)
 			return terms;
-		else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && perm.isPicsEmployee())
-			return terms;
 		List<String> array;
 		List<BasicDynaBean> l = null;
 		String commonSql = "' term, SUM(total) t FROM " + indexStats + " WHERE value LIKE '";

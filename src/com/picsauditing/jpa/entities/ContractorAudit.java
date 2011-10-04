@@ -36,7 +36,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
-public class ContractorAudit extends AbstractIndexableTable {
+public class ContractorAudit extends BaseTable {
 
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
@@ -297,8 +297,9 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	/**
 	 * 
-	 * @see isAboutToExpire() they are basically the same thing, but we decided to keep both since isAboutToExpire
-	 *      accounts for the year which is important when dealing with PQF class audits
+	 * @see isAboutToExpire() they are basically the same thing, but we decided
+	 *      to keep both since isAboutToExpire accounts for the year which is
+	 *      important when dealing with PQF class audits
 	 */
 	@Transient
 	public boolean willExpireSoon() {
@@ -425,7 +426,8 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	/**
-	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM for "John Doe"
+	 * Who, what, or when is this audit for? Examples: OSHA/EMR for "2005" IM
+	 * for "John Doe"
 	 * 
 	 * @return
 	 */
@@ -753,7 +755,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		if (u != null) {
 			if (u.getId() == 10600) // Mike Casey
 				return 38048; // Chad Frost
-			else if (u.getId() == 910) // Dennis Dooley
+			else if (u.getId() == 910) // Dennis Dooley 
 				return 38050; // George Megress
 			else if (u.getId() == 902) // John McCaughey
 				return 1029; // Mina Mina
@@ -761,40 +763,5 @@ public class ContractorAudit extends AbstractIndexableTable {
 				return u.getId();
 		}
 		return null;
-	}
-
-	@Override
-	@Transient
-	public boolean isNeedsIndexing() {
-		return needsIndexing;
-	}
-
-	@Override
-	@Transient
-	public void setNeedsIndexing(boolean needsIndexing) {
-		this.needsIndexing = needsIndexing;
-	}
-
-	@Transient
-	public String getReturnType() {
-		return "audit";
-	}
-
-	@Transient
-	public String getSearchText() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(this.getReturnType()).append('|').append("Audit");
-		sb.append('|').append(this.id).append('|').append(this.auditType.name);
-		if (auditFor != null) {
-			sb.append(" ").append(this.auditFor);
-		}
-		sb.append('|').append(this.contractorAccount.name).append("\n");
-		return sb.toString();
-	}
-
-	@Transient
-	public String getViewLink() {
-		return "Audit.action?auditID=" + this.id;
 	}
 }

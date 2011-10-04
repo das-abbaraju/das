@@ -61,11 +61,6 @@ function format(row, i){
 			")</span></div><div style=\"\">"+row[3]+"<br/> at ("+row[4]+")</div>";
 		return rStr;
 	}
-	if(row[0]=='audit'){
-		var rStr = "<div style=\"float: left; margin-right: 10px;\"><strong>"+row[1]+":</strong><br/><span style=\"font-size: .9em\">(ID "+row[2]+
-			")</span></div><div style=\"\">"+row[3]+"<br/> for ("+row[4]+")</div>";
-		return rStr;
-	}
 	if(row[0]=='FULL')
 		return row[1];
 	if(row[0]=='NULL')
