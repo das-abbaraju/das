@@ -145,7 +145,7 @@ $(function() {
 	/**
 	 * Search Trades List
 	 */
-	$('div.searchType-list:not(.clean-list) #suggest').live('submit', function(event) {
+	$('div.searchType-list #suggest').live('submit', function(event) {
 		event.preventDefault();
 		
 		var q = $('input[name="q"]', this).val();
@@ -193,7 +193,7 @@ $(function() {
 	/**
 	 * Search Trades Tree
 	 */
-	$('div.searchType-tree:not(.clean-tree) #suggest').live('submit', function(event) {
+	$('div.searchType-tree #suggest').live('submit', function(event) {
 		event.preventDefault();
 		
 		var q = $('input[name="q"]', this).val();
