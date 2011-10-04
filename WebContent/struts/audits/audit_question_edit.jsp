@@ -18,10 +18,17 @@
 		<%-- radio // select --%>
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
-				<s:radio list="#q.option.values" listValue="name" listKey="identifier" name="auditData.answer" value="%{#a.answer}"></s:radio>
+				<s:radio 
+					list="#q.option.values" 
+					listValue="name" 
+					listKey="identifier" 
+					name="auditData.answer" 
+					value="%{#a.answer}"
+					theme="pics"
+				/>
 
 				<s:if test="!isStringEmpty(#a.answer)">
-					<input class="resetAnswer" type="submit" value="Clear" />
+					<a href="#" class="reset-answer"><s:text name="global.Reset" /></a>
 				</s:if>
 				
 				<s:if test="#q.auditType.policy && #q.option.uniqueCode.equals('YesNo')">

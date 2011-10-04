@@ -179,6 +179,7 @@
 									allowUpDownOnLeft="false"
 									allowUpDownOnRight="false"
 									buttonCssClass="arrow"
+									theme="pics"
 		 						/>
 							</li>
 						</s:if>
@@ -343,7 +344,12 @@
 						
 						<li>
 							<label>Approves Contractors:</label>
-							<s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.approvesRelationships" />
+							<s:radio 
+								list="#{'Yes':'Yes','No':'No'}" 
+								name="operator.approvesRelationships" 
+								theme="pics"
+								cssClass="inline"
+							/>
 							<pics:fieldhelp title="Approves Contractors">
 								If Yes, contractors must be approved before operator users will see them. 
 								Default and recommended setting is No. 
@@ -352,14 +358,24 @@
 						</li>
 						<li>
 							<label>Health &amp; Safety Organization:</label>
-							<s:radio list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" name="operator.oshaType" />
+							<s:radio 
+								list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" 
+								name="operator.oshaType"
+								theme="pics"
+								cssClass="inline" 
+							/>
 							<pics:fieldhelp title="Health &amp; Safety Organization">
 								<p>The source of statistics that should be used to evaluate contractors. Operators can collect more than one, but only one can be used to evaluate stats.</p>
 							</pics:fieldhelp>
 						</li>
 						<li>
 							<label>Contractors pay:</label>
-							<s:radio list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" name="operator.doContractorsPay" />
+							<s:radio 
+								list="#{'Yes':'Yes','No':'No','Multiple':'Multiple'}" 
+								name="operator.doContractorsPay"
+								theme="pics"
+								cssClass="inline" 
+							/>
 							<pics:fieldhelp>Are contractors required to pay. This field is only applicable for Active accounts. Default = Yes
 								Multiple means that contractors working only for this operator will not be charged an annual membership fee.
 							</pics:fieldhelp>
@@ -377,7 +393,12 @@
 						
 						<li>
 							<label>InsureGUARD&trade;:</label>
-							<s:radio list="#{'Yes':'Yes','No':'No'}" name="operator.canSeeInsurance" />
+							<s:radio 
+								list="#{'Yes':'Yes','No':'No'}" 
+								name="operator.canSeeInsurance"
+								theme="pics"
+								cssClass="inline" 
+							/>
 							<pics:fieldhelp>
 								This field is no longer needed. Edit the configuration to add InsureGUARD features.
 							</pics:fieldhelp>

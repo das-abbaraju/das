@@ -183,7 +183,7 @@
 	AUDIT.question = {
 		init: function() {
 			// reset answer
-			$('#auditViewArea').delegate('input.resetAnswer', 'click', this.events.reset);
+			$('#auditViewArea').delegate('.reset-answer', 'click', this.events.reset);
 			
 			// give the ability for questions to manually trigger save question
 			$('#auditViewArea').delegate('div.question', 'saveQuestion', this.events.save);
@@ -206,6 +206,8 @@
 		// question events
 		events: {
 			reset: function(event) {
+				event.preventDefault();
+				
 				var element = $(this).parents('div.question:first');
 				var form = $('form.qform', element);
 				var url = 'AuditDataSaveAjax.action';

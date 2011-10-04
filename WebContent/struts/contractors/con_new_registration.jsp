@@ -510,6 +510,7 @@
 							allowUpDownOnLeft="false"
 							allowUpDownOnRight="false"
 							buttonCssClass="arrow"
+							theme="pics"
  						/>
 						<div class="fieldhelp">
 							<h3><s:text name="RequestNewContractor.OperatorTags" /></h3>

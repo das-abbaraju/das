@@ -233,6 +233,11 @@ h4.groupTitle
 	padding-right: 15px;
 }
 
+#content div.answer .reset-answer
+{
+	font-size: 12px;
+}
+
 #content div.answer .radio
 {
 	list-style-type: none;
@@ -255,7 +260,14 @@ h4.groupTitle
 {
 	float: left;
 	line-height: 20px;
-	width: 75%;
+}
+
+#content .columns-2 div.answer .radio label,
+#content .columns-3 div.answer .radio label
+{
+	float: left;
+	line-height: 20px;
+	width: 65%;
 }
 
 #content div.subquestion {
