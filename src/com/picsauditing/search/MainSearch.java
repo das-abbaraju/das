@@ -15,11 +15,12 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
@@ -50,7 +51,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	@Autowired
 	private EmployeeDAO empDAO;
 	@Autowired
-	private ContractorOperatorDAO coDAO;
+	private ContractorAuditDAO contractorAuditDAO;
 
 	private final int PAGEBREAK = 50;
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
@@ -72,6 +73,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				record = userDAO.find(searchID);
 			else if ("employee".equals(searchType))
 				record = empDAO.find(searchID);
+			else if ("audit".equals(searchType) && permissions.isPicsEmployee())
+				record = contractorAuditDAO.find(searchID);
 			if (record != null)
 				redirect(record.getViewLink());
 			else
@@ -85,34 +88,44 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				addActionMessage("No searchable terms, please try again");
 				return SUCCESS;
 			}
-			// if corporate then build list of contractors in their system
-			ht = searchEngine.getConIds(permissions);
-			String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", startIndex, 50, false,
-					true);
-			List<BasicDynaBean> queryList = db.select(query, true);
-			totalRows = db.getAllRows();
-
-			if (totalRows > PAGEBREAK) {
-				String commonTermQuery = searchEngine.buildCommonTermQuery(terms, ignoreTerms, totalRows);
-				List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
-				searchEngine.buildCommonSuggest(commonList, searchTerm);
+			else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee())
+			{
+				int auditID = Integer.parseInt(terms.get(1));
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
+				if (audit != null)
+					redirect(audit.getViewLink());
 			}
-
-			if (queryList != null && queryList.size() > 0)
-				fullList = getFullResults(queryList);
-			else {
-				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
-				fullList = getFullResults(queryList);
-			}
-			if (fullList == null)
-				return SUCCESS;
-
-			int end = 0;
-			if (totalRows - (startIndex + 1) < PAGEBREAK)
-				end = totalRows;
 			else
-				end = startIndex + PAGEBREAK;
-			buildPages(totalRows, startIndex + 1, end, startIndex / PAGEBREAK + 1);
+			{
+				// if corporate then build list of contractors in their system
+				ht = searchEngine.getConIds(permissions);
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", startIndex, 50, false,
+						true);
+				List<BasicDynaBean> queryList = db.select(query, true);
+				totalRows = db.getAllRows();
+
+				if (totalRows > PAGEBREAK) {
+					String commonTermQuery = searchEngine.buildCommonTermQuery(terms, ignoreTerms, totalRows);
+					List<BasicDynaBean> commonList = db.select(commonTermQuery, false);
+					searchEngine.buildCommonSuggest(commonList, searchTerm);
+				}
+
+				if (queryList != null && queryList.size() > 0)
+					fullList = getFullResults(queryList);
+				else {
+					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
+					fullList = getFullResults(queryList);
+				}
+				if (fullList == null)
+					return SUCCESS;
+
+				int end = 0;
+				if (totalRows - (startIndex + 1) < PAGEBREAK)
+					end = totalRows;
+				else
+					end = startIndex + PAGEBREAK;
+				buildPages(totalRows, startIndex + 1, end, startIndex / PAGEBREAK + 1);
+			}
 
 			return SUCCESS;
 		} else { // autosuggest/complete
@@ -122,14 +135,24 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 						+ "- did not return any results. Please try different a different search|";
 				return BLANK;
 			}
-			String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", 0, 10, false, false);
-			List<BasicDynaBean> queryList = db.select(query, true);
-			totalRows = db.getAllRows();
-			if (queryList != null && queryList.size() > 0)
-				getResults(queryList);
-			else {
-				queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
-				getResults(queryList);
+			else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee())
+			{
+				int auditID = Integer.parseInt(terms.get(1));
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
+				if (audit != null)
+					output = audit.getSearchText();
+			}
+			else
+			{
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", 0, 10, false, false);
+				List<BasicDynaBean> queryList = db.select(query, true);
+				totalRows = db.getAllRows();
+				if (queryList != null && queryList.size() > 0)
+					getResults(queryList);
+				else {
+					queryList = db.select(searchEngine.buildAccountSearch(permissions, terms), true);
+					getResults(queryList);
+				}
 			}
 
 			return BLANK;

@@ -110,8 +110,10 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
-		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
-				+ "AND (expiresDate is null OR expiresDate > Now()) ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
+		Query query = em
+				.createQuery("SELECT t FROM ContractorAudit t "
+						+ "WHERE t.contractorAccount.id = ? "
+						+ "AND (expiresDate is null OR expiresDate > Now()) ORDER BY t.auditType.displayOrder, t.auditFor, t.creationDate DESC");
 		query.setParameter(1, conID);
 		return query.getResultList();
 	}
@@ -311,6 +313,25 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addWhere("cao.status NOT IN ('NotApplicable', 'Expired')");
 			sql.addGroupBy("a.country, a.state");
 			sql.addOrderBy("a.country, a.state");
+			report.setSql(sql);
+
+			data = report.getPage();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return data;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BasicDynaBean> findAuditByID(int auditID) {
+		List<BasicDynaBean> data = null;
+
+		try {
+			Report report = new Report();
+			SelectSQL sql = new SelectSQL("contractor_audit ca");
+			sql.addField("*");
+			sql.addWhere("id = " + auditID);
 			report.setSql(sql);
 
 			data = report.getPage();
