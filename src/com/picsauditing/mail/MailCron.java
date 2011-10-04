@@ -1,10 +1,14 @@
 package com.picsauditing.mail;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -14,6 +18,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -25,9 +30,6 @@ import com.picsauditing.util.log.PicsLogger;
  */
 @SuppressWarnings("serial")
 public class MailCron extends PicsActionSupport {
-
-	private int limit;
-
 	@Autowired
 	private AppPropertyDAO appPropDAO;
 	@Autowired
@@ -39,18 +41,25 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private EmailSenderSpring emailSenderSpring;
 
+	private int limit = 2;
+	private int subscriptionID = 0;
+
 	@Anonymous
 	public String execute() throws Exception {
 		// No authentication required since this runs as a cron job
 		AppProperty appPropSubEnable = appPropDAO.find("subscription.enable");
 		if (Boolean.parseBoolean(appPropSubEnable.getValue())) {
-			AppProperty appPropLimit = appPropDAO.find("subscription.limit");
-			if (appPropLimit != null)
-				limit = Integer.parseInt(appPropLimit.getValue());
+			EmailSubscription emailSubscription = null;
+			if (subscriptionID > 0) {
+				emailSubscription = subscriptionDAO.find(subscriptionID);
+			}
 
-			// DO ALL OPT-IN SUBSCRIPTIONS
-			List<EmailSubscription> subs = subscriptionDAO.findSubscriptionsToSend(limit);
-			for (EmailSubscription emailSubscription : subs) {
+			if (subscriptionID == 0 || emailSubscription == null) {
+				addActionError("You must supply a valid subscription id.");
+				return SUCCESS;
+			}
+			try {
+
 				// TODO: Had to do this because the old Subscription builder in the same package
 				com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
 						.getBuilder(emailSubscription.getSubscription());
@@ -77,27 +86,65 @@ public class MailCron extends PicsActionSupport {
 						notMuchWeCanDoButLogIt.printStackTrace();
 					}
 				}
-			}
 
-			/**
-			 * Do normal mail NOTE: This is a copy of the else block using new spring loaded Email Sender.
-			 */
-			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
-			if (emails.size() == 0) {
-				addActionMessage("The email queue is empty");
-				return ACTION_MESSAGES;
-			}
+				/**
+				 * Do normal mail NOTE: This is a copy of the else block using new spring loaded Email Sender.
+				 */
+				List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
+				if (emails.size() == 0) {
+					addActionMessage("The email queue is empty");
+					return ACTION_MESSAGES;
+				}
 
-			for (EmailQueue email : emails) {
-				try {
-					emailSenderSpring.sendNow(email);
-				} catch (Exception e) {
-					PicsLogger.log("ERROR with MailCron: " + e.getMessage());
-					addActionError("Failed to send email: " + e.getMessage());
+				for (EmailQueue email : emails) {
+					try {
+						emailSenderSpring.sendNow(email);
+					} catch (Exception e) {
+						PicsLogger.log("ERROR with MailCron: " + e.getMessage());
+						addActionError("Failed to send email: " + e.getMessage());
+					}
+				}
+				if (this.getActionErrors().size() == 0)
+					this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
+			} catch (Throwable t) {
+				StringWriter sw = new StringWriter();
+				t.printStackTrace(new PrintWriter(sw));
+
+				if (!isDebugging()) {
+					addActionError("Error occurred on subscription " + subscriptionID + "<br>" + t.getMessage());
+					// In case this contractor errored out while running contractor
+					// cron
+					// we bump the last recalculation date to 1 day in future.
+					emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
+					subscriptionDAO.save(emailSubscription);
+
+					StringBuffer body = new StringBuffer();
+
+					body.append("There was an error running MailCron for id=");
+					body.append(subscriptionID);
+					body.append("\n\n");
+
+					try {
+						body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
+						body.append("\n\n");
+					} catch (UnknownHostException e) {
+					}
+
+					body.append(t.getStackTrace());
+
+					body.append(sw.toString());
+
+					try {
+						sendMail(body.toString(), subscriptionID);
+					} catch (Exception notMuchWeCanDoButLogIt) {
+						System.out.println("Error sending email");
+						System.out.println(notMuchWeCanDoButLogIt);
+						notMuchWeCanDoButLogIt.printStackTrace();
+					}
+				} else {
+					addActionError(sw.toString());
 				}
 			}
-			if (this.getActionErrors().size() == 0)
-				this.addActionMessage("Successfully sent " + (emails.size() + subs.size()) + " email(s)");
 
 		} else {
 			/**
@@ -142,7 +189,37 @@ public class MailCron extends PicsActionSupport {
 	}
 
 	public void setLimit(int limit) {
-		this.limit = limit;
 	}
 
+	public void setSubscriptionID(int subscriptionID) {
+		this.subscriptionID = subscriptionID;
+	}
+
+	public int getSubscriptionID() {
+		return subscriptionID;
+	}
+
+	@Anonymous
+	public String listAjax() {
+		List<Integer> subs = subscriptionDAO.findSubscriptionsToSend(limit);
+		output = Strings.implode(subs);
+		return PLAIN_TEXT;
+	}
+
+	private void sendMail(String message, int subscriptionID) {
+		try {
+			SendMail sendMail = new SendMail();
+			EmailQueue email = new EmailQueue();
+			email.setToAddresses("errors@picsauditing.com");
+			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
+			email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
+			email.setBody(message);
+			email.setCreationDate(new Date());
+			sendMail.send(email);
+		} catch (Exception notMuchWeCanDoButLogIt) {
+			System.out.println("Error sending email");
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
+		}
+	}
 }

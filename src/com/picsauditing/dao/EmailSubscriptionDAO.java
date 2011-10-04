@@ -81,8 +81,8 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public List<EmailSubscription> findSubscriptionsToSend(int limit) {
-		SelectSQL sql = new SelectSQL("email_subscription e");
+	public List<Integer> findSubscriptionsToSend(int limit) {
+		SelectSQL sql = new SelectSQL("email_subscription e.id");
 		sql.addJoin("JOIN users u ON u.id = e.userID");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addWhere("u.isActive = 'Yes'");
