@@ -11,7 +11,7 @@ logging.config.fileConfig("logging.conf")
 SERVER = "http://%s/"
 # Organizer1 = '10.178.52.21'
 # Organizer2 = '10.178.52.164'
-SERVERS = ['web1.picsorganizer.com','web2.picsorganizer.com','web3.picsorganizer.com','10.178.52.21','10.178.52.164']
+SERVERS = ['10.178.52.21','10.178.52.164']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
@@ -178,7 +178,7 @@ class CronWorker(CronThread):
 			else:
 				time.sleep(self.sleeptime)
 			totaltime = time.time() - start
-			stats_q.put((id, starttime, totaltime, success))
+			stats_q.put((id, starttime, totaltime, success, cronurl))
 			
 			running_lock.acquire()
 			try:
@@ -225,7 +225,7 @@ class CronStats(CronThread):
 	def run(self):
 		self.logger.debug("starting CronStats thread")
 		while self.running:
-			if stats_q.qsize() > 15:
+			if stats_q.qsize() > 5:
 				try:
 					self.logger.info("getting database connection")
 					records = []
@@ -236,8 +236,8 @@ class CronStats(CronThread):
 					conn = MySQLdb.connect (host = "192.168.100.67", user = "pics", passwd = "pics", db = "pics")
 					cursor = conn.cursor()
 					cursor.executemany("""
-						INSERT INTO contractor_cron_log (conID, startDate, runTime, success)
-						VALUES (%s, %s, %s, %s)
+						INSERT INTO contractor_cron_log (conID, startDate, runTime, success, server)
+						VALUES (%s, %s, %s, %s, %s)
 					""", records)
 				except Exception, e:
 					self.logger.error(e)
