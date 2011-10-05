@@ -48,18 +48,9 @@
 		<fieldset class="form bottom">
 			<h2 class="formLegend">Support Links</h2>
 				<ol>
-					<li><label>Help Center:</label>
-						<s:if test="permissions.loggedIn && !permissions.picsEmployee">
-							<s:if test="permissions.contractor">
-								<a href="http://help.picsauditing.com/wiki/User_Manual_for_Contractors"> Help Center</a>
-							</s:if>
-							<s:elseif test="permissions.operatorCorporate">
-								<a href="http://help.picsauditing.com/wiki/User_Manual_for_Operators"> Help Center</a>
-							</s:elseif>
-						</s:if>
-						<s:else>
-							<a href="http://help.picsauditing.com/wiki/Help_Center"> Help Center</a>
-						</s:else>
+					<li>
+					<label>Help Center:</label>
+						<a href="<s:property value='helpURL' />" target="_BLANK"><s:text name="Header.HelpCenter" /></a>
 					<li><label>Online Chat:</label>
 					<a id="_lpChatBtn"
 						href='<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= URLUtils.getProtocol( request ) %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' 

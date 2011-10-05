@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.persistence.Transient;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
@@ -524,4 +526,19 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return Strings.isEmpty(s);
 	}
 
+	@Transient
+	public String getHelpURL() {
+		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
+		
+		if (permissions.isOperatorCorporate()) {
+			helpUrl += "os_username=operator&os_password=oper456ator";
+		} else if (permissions.isContractor()) {
+			helpUrl += "os_username=contractor&os_password=con123tractor";
+		} else {
+			helpUrl += "os_username=admin&os_password=ad9870mins";
+		}
+
+		return helpUrl;
+	}
+	
 }
