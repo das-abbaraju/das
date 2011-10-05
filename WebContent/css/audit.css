@@ -204,6 +204,18 @@ h4.groupTitle
 	position: relative;
 }
 
+.question h3 a
+{
+	text-decoration: none;
+}
+
+.question h3 a.cluetip
+{
+	position: relative;
+	top: 2px;
+}
+
+
 /* esignature */
 .esignature
 {

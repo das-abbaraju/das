@@ -17,7 +17,9 @@
 		};
 		
 		<%-- cluetip --%>
-		$('#node_<s:property value="#q.id"/> .cluetip').cluetip($.extend({local: true}, cluetipOptions));
+		$('#node_<s:property value="#q.id"/> .cluetip').cluetip($.extend({
+			local: true
+		}, cluetipOptions));
 		
 		<%-- translation cluetip --%>
 		$('#node_<s:property value="#q.id"/> .cluetip-translation').cluetip(cluetipOptions);
@@ -84,19 +86,21 @@
 		
 		<span class="questionNumber">
 			<s:property value="#q.expandedNumber"/>
-			
-			<s:if test="!isStringEmpty(#q.helpText)">
-				<br />
-				<a class="cluetip helpBig" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />"></a>
-				<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
-					<span title="<s:property value="#q.name"/>">
-						<s:property value="#q.helpText" escape="false" />
-					</span>
-				</div>
-			</s:if>
 		</span>
 		
 		<s:property value="#q.name" escape="false"/>
+		
+		<s:if test="!isStringEmpty(#q.helpText)">
+			<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
+				<img src="images/help-icon.png" />
+			</a>
+			
+			<div id="cluetip_<s:property value="#q.id"/>" class="cluetipBox">
+				<span title="<s:property value="#q.name"/>">
+					<s:property value="#q.helpText" escape="false" />
+				</span>
+			</div>
+		</s:if>
 		
 		<s:if test="permissions.admin">
 			<a class="cluetip-translation debug" rel="QuestionTranslationsAjax.action?id=<s:property value="id"/>">
