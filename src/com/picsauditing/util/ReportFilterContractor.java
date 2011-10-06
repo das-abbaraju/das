@@ -474,9 +474,10 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public void setPermissions(Permissions permissions) {
 		super.setPermissions(permissions);
 
+		if (permissions.isOperatorCorporate())
+			setShowFlagStatus(true);
 		if (permissions.isOperator()) {
 			setShowOperator(false);
-			setShowFlagStatus(true);
 			setShowWaitingOn(true);
 			if (permissions.hasPermission(OpPerms.ViewUnApproved)) {
 				setShowWorkStatus(true);
