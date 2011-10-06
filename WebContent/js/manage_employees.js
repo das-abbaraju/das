@@ -40,8 +40,9 @@ function startup() {
 	if (getEmployeeIDFromHash() > 0)
 		employeeID = getEmployeeIDFromHash();
 
-	if (employeeID > 0)
+	if (employeeID > 0) {
 		loadEmployee(employeeID);
+	}
 
 	$('#employeeFormDiv').delegate('#employee_nccer_link', 'click', function(e) {
 		e.preventDefault();
@@ -128,6 +129,15 @@ function setupEmployee() {
 	$.mask.definitions['S'] = '[X0-9]';
 	$('input.ssn').mask('SSS-SS-SSSS');
 	$('input.date').mask('99/99/9999');
+	
+	json_previousTitles = $.map(json_previousTitles, function(value, i) {
+		if (!!value) {
+			return value;
+		} else {
+			return null;
+		}
+	});
+	
 	$('#locationSuggest').autocomplete(json_previousLocations);
 	$('#titleSuggest').autocomplete(json_previousTitles);
 	$('.cluetip').cluetip({
@@ -156,7 +166,10 @@ function setupDatepicker() {
 }
 
 function loadEmployee(id) {
-	startThinking({div:employeeFormDiv,message:translate('JS.ManageEmployees.message.AjaxLoad')});
+	startThinking({
+		div: 'employeeFormDiv', 
+		message: translate('JS.ManageEmployees.message.AjaxLoad')
+	});
 	
 	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', { employee : id }, function() {
 		setupEmployee();
