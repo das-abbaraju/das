@@ -10,8 +10,9 @@ logging.config.fileConfig("logging.conf")
 
 SERVER = "http://%s/"
 # Organizer1 = '10.178.52.21'
-# Organizer2 = '10.178.52.164'
-SERVERS = ['10.178.52.21','10.178.52.164']
+# Organizer2 = '10.178.52.187'
+# Organizer3 = '10.178.52.99'
+SERVERS = ['web1.picsorganizer.com','web2.picsorganizer.com','web3.picsorganizer.com','10.178.52.21','10.178.52.99','10.178.52.187']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
