@@ -172,7 +172,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			return getText("AccountRecovery.EmailSent", user.getEmail());
+			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
