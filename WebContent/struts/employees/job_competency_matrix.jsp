@@ -44,9 +44,12 @@
 	<body>
 		<s:if test="auditID > 0">
 			<div class="info">
-				<s:text name="JobCompetencyMatrix.Step3">
+				<s:text name="JobCompetencyMatrix.Step2">
 					<s:param>
 						<s:property value="auditID" />
+					</s:param>
+					<s:param>
+						<s:text name="AuditType.99.name" />
 					</s:param>
 				</s:text>
 			</div>

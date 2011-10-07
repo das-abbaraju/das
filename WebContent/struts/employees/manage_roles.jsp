@@ -103,9 +103,12 @@
 		
 		<s:if test="auditID > 0">
 			<div class="info">
-				<s:text name="ManageJobRoles.Step2">
+				<s:text name="ManageJobRoles.Step1">
 					<s:param>
 						<s:property value="auditID" />
+					</s:param>
+					<s:param>
+						<s:text name="AuditType.99.name" />
 					</s:param>
 				</s:text>
 			</div>
