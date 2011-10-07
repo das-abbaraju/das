@@ -8,7 +8,6 @@ import java.util.Iterator;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -285,6 +284,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailQueue)) {
 			subMenu.addChild(getTitle("EmailQueueList"), "EmailQueueList.action?filter.status=Pending");
+			subMenu.addChild("Email Error Report", "ReportEmailError.action");
 		}
 		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
 			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
