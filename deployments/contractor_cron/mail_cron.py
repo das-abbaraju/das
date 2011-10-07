@@ -8,8 +8,13 @@ from locked_iterator import LockedIterator
 
 logging.config.fileConfig("logging.conf")
 
-SERVER = "http://%s.picsorganizer.com/"
-SERVERS = ['web1','web2','web3']
+SERVER = "http://%s/"
+# Organizer1 = '10.178.52.21'
+# Organizer2 = '10.178.52.187'
+# Organizer3 = '10.178.52.99'
+# use this list for production
+# SERVERS = ['web1.picsorganizer.com','web2.picsorganizer.com','web3.picsorganizer.com','10.178.52.21','10.178.52.99','10.178.52.187']
+SERVERS = ['alpha.picsorganizer.com']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
@@ -37,13 +42,6 @@ class qcron(Daemon):
 				worker = CronWorker(i, con_q, server_g)
 				worker.start()
 				workers.append(worker)
-			
-			logging.info('starting cache monitor')
-			cachemon = CacheMonitor(server_g)
-			cachemon.start()
-			
-			stats = CronStats()
-			stats.start()
 			
 			theadlog = logging.getLogger('thread')
 			while True:
@@ -133,7 +131,7 @@ class CronPublisher(CronThread):
 						finally:
 							running_lock.release() # release lock, no matter what
 							
-						self.logger.debug("Contractors waiting in the queue: %s" % self.con_q.qsize())
+						self.logger.debug("Subscriptions waiting in the queue: %s" % self.con_q.qsize())
 				except Exception, e:
 					self.logger.error(e)
 			else:
@@ -141,7 +139,7 @@ class CronPublisher(CronThread):
 			time.sleep(self.sleeptime)
 
 class CronWorker(CronThread):
-	"""This thread is responsible for calling the ContractorCronAjax.action against the proper server/conID"""
+	"""This thread is responsible for calling the MailCronAjax.action against the proper server/conID"""
 	def __init__ (self, i, con_q, server_g):
 		super(CronWorker, self).__init__()
 		self.thread_id = i
@@ -162,13 +160,13 @@ class CronWorker(CronThread):
 			starttime = datetime.now()
 			success = False
 			try:
-				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
+				self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
 				cronurl = self.url % (self.server_g.next(), id)
 				self.logger.debug('using url: %s' % cronurl)
 				result = urllib2.urlopen(cronurl).read()
 				success = True
 				if success:
-					self.logger.info('Contractor %s finished successfully.' % id)
+					self.logger.info('Subscription %s finished successfully.' % id)
 				else:
 					self.logger.warning('Error with contractor %s' % id)
 			except Exception, e:
@@ -176,7 +174,7 @@ class CronWorker(CronThread):
 			else:
 				time.sleep(self.sleeptime)
 			totaltime = time.time() - start
-			stats_q.put((id, starttime, totaltime, success))
+			stats_q.put((id, starttime, totaltime, success, cronurl))
 			
 			running_lock.acquire()
 			try:
@@ -184,72 +182,8 @@ class CronWorker(CronThread):
 			finally:
 				running_lock.release() # release lock, no matter what
 
-class CacheMonitor(CronThread):
-	def __init__(self, server_g):
-		super(CacheMonitor, self).__init__()
-		self.server_g = server_g
-		self.url = SERVER + 'ClearCache!monitor.action'
-		self.sleeptime = 60
-		self.logger = logging.getLogger('cache')
-	def run(self):
-		# Monitor the cache to see if it needs to be cleared
-		self.logger.debug("Starting CacheMonitor")
-		while self.running:
-			result = ""
-			try:
-				result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
-				self.logger.debug('"%s" returned from cache' % result)
-				if result == 'CLEAR':
-					self.logger.debug("clearing cache");
-					for server in SERVERS:
-						try:
-							clearurl = (SERVER+"ClearCache.action") % server
-							result = urllib2.urlopen(clearurl).read()
-							if "Cleared" in result:
-								self.logger.info('cleared %s' % server)
-							else:
-								self.logger.warning('cache on %s may not have been cleared' % server)
-						except Exception, e:
-							self.logger.error(e)
-			except Exception, e:
-				self.logger.error(e)
-			time.sleep(self.sleeptime)
-
-class CronStats(CronThread):
-	def __init__(self):
-		super(CronStats, self).__init__()
-		self.sleeptime = 10
-		self.logger = logging.getLogger("stats")
-	def run(self):
-		self.logger.debug("starting CronStats thread")
-		while self.running:
-			if stats_q.qsize() > 15:
-				try:
-					self.logger.info("getting database connection")
-					records = []
-					self.logger.info(stats_q)
-					for i in range(stats_q.qsize()):
-						records.append(stats_q.get())
-					self.logger.info("inserting records: %s", records)
-					conn = MySQLdb.connect (host = "192.168.100.67", user = "pics", passwd = "pics", db = "pics")
-					cursor = conn.cursor()
-					cursor.executemany("""
-						INSERT INTO contractor_cron_log (conID, startDate, runTime, success)
-						VALUES (%s, %s, %s, %s)
-					""", records)
-				except Exception, e:
-					self.logger.error(e)
-				else:
-					if cursor:
-						cursor.close()
-					if conn:
-						conn.close()
-			else:
-				self.logger.info('not enough contractors to run the stats, sleeping for now')
-			time.sleep(self.sleeptime)
-
 def main():
-	daemon = qcron("/tmp/con_cron.pid")
+	daemon = qcron("/tmp/mail_cron.pid")
 	if len(sys.argv) == 2 :
 		if 'start' == sys.argv[1]:
 			daemon.start()
