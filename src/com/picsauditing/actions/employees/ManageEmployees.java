@@ -20,6 +20,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
@@ -53,15 +54,17 @@ public class ManageEmployees extends AccountActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	protected EmployeeDAO employeeDAO;
+	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
-	protected JobRoleDAO roleDAO;
+	protected EmployeeDAO employeeDAO;
 	@Autowired
 	protected EmployeeRoleDAO employeeRoleDAO;
 	@Autowired
-	protected JobSiteDAO jobSiteDAO;
-	@Autowired
 	protected EmployeeSiteDAO employeeSiteDAO;
+	@Autowired
+	protected JobRoleDAO roleDAO;
+	@Autowired
+	protected JobSiteDAO jobSiteDAO;
 	@Autowired
 	protected JobSiteTaskDAO siteTaskDAO;
 
@@ -88,19 +91,12 @@ public class ManageEmployees extends AccountActionSupport {
 	public void startup() throws Exception {
 		if (permissions.isContractor()) {
 			permissions.tryPermission(OpPerms.ContractorAdmin);
-		} else {
-			if (permissions.isOperatorCorporate()) {
-				id = permissions.getAccountId();
+		} else if (permissions.isOperatorCorporate()) {
+			id = permissions.getAccountId();
 
-				if (employee != null && employee.getAccount() != null
-						&& permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
-					id = employee.getAccount().getId();
-			} else {
-				permissions.tryPermission(OpPerms.ManageEmployees);
-
-				if (account != null && permissions.getAccountId() != account.getId())
-					permissions.tryPermission(OpPerms.AllOperators);
-			}
+			if (employee != null && employee.getAccount() != null
+					&& permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
+				id = employee.getAccount().getId();
 		}
 
 		if (id > 0)
@@ -111,23 +107,23 @@ public class ManageEmployees extends AccountActionSupport {
 
 		if (account == null)
 			account = accountDAO.find(permissions.getAccountId());
-	}
 
-	@Override
-	public String execute() throws Exception {
 		// Get auditID
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
 
 			if (permissions.isAdmin()) {
-				ContractorAudit audit = (ContractorAudit) accountDAO.find(ContractorAudit.class, auditID);
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				account = audit.getContractorAccount();
 			}
 		} else {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		}
+	}
 
+	@Override
+	public String execute() throws Exception {
 		if (employee != null)
 			// TODO Put this into the employee cron
 			for (EmployeeSite es : employee.getEmployeeSites()) {
