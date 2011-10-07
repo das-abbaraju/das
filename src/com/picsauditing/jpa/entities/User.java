@@ -416,7 +416,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.switchFroms = switchFroms;
 	}
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
 	public List<EmailSubscription> getSubscriptions() {
 		return subscriptions;
 	}
