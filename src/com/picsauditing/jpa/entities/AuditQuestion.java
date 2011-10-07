@@ -583,8 +583,13 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 		if (cmp != 0)
 			return cmp;
+		
+		int numberCmp = new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 
-		return new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
+		if (numberCmp != 0)
+			return numberCmp;
+		
+		return new Integer(id).compareTo(new Integer(other.getId()));
 	}
 
 	/**
