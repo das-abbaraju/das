@@ -145,7 +145,7 @@
 
 		<action name="ContractorSummaryExternal"
 			class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
-			<result>struts/contractors/con_summary_external.jsp</result>
+			<result type="json"></result>
 		</action>
 
 		<!--

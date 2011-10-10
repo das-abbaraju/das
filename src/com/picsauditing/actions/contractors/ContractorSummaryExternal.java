@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -13,12 +14,38 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 	protected ContractorAccountDAO accountDao;
 
 	private int id;
-	private ContractorAccount contractor; 
-
+	private ContractorAccount contractor;
+	protected JSONObject json = new JSONObject();
+	
+	@SuppressWarnings("unchecked")
 	@Anonymous
 	public String execute() throws Exception {
+		
 		contractor = accountDao.find(id);
+		
+		if (contractor != null) {
+			json.put("name", contractor.getName());
+			json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
+			json.put("address", contractor.getAddress());
+			json.put("city", contractor.getCity());
+			json.put("state", contractor.getState());
+			json.put("zip", contractor.getZip());
+			json.put("country", contractor.getCountry());
+			json.put("description", contractor.getDescription());
+			json.put("phone", contractor.getPhone());
+			json.put("website", contractor.getWebUrl());
+			return JSON;
+		}
+		
 		return SUCCESS;
+	}
+
+	public JSONObject getJson() {
+		return json;
+	}
+
+	public void setJson(JSONObject json) {
+		this.json = json;
 	}
 	
 	public int getId() {
