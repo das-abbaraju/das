@@ -254,6 +254,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 							}
 						}
 					}
+					if (operator.getParent() != null && newFacilities.size() > 0)
+						linkChildOperatorsToAllParentAccounts(newFacilities);
 				}
 			}
 
@@ -287,10 +289,41 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		// operator.setNeedsIndexing(true);
 		operator = operatorDao.save(operator);
 		id = operator.getId();
+	
 
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return "redirect";
+	}
+	// Insure that all newly added facilities get linked to all parent accounts.
+	// i.e.  if F1 -> Hub -> US -> Corporate
+	// then F1 needs to be linked to US and Corporate
+	private void linkChildOperatorsToAllParentAccounts(List<OperatorAccount> newFacilities) {
+		List<OperatorAccount> parents = new ArrayList<OperatorAccount>(); //= operator.getParentOperators();
+		//parents.remove(operator);
+		findParentAccounts(operator, parents);
+		for (OperatorAccount child: newFacilities) {
+			for (OperatorAccount parent: parents){
+				// add the link into facilities, if it doesn't already exist.
+				Facility facility = facilitiesDAO.findByCorpOp(parent.getId(), child.getId());
+				if (facility == null) {
+					facility = new Facility();
+					facility.setCorporate(parent);
+					facility.setOperator(child);
+					facility.setAuditColumns(permissions);
+					facilitiesDAO.save(facility);
+				}
+			}
+		}
+	}
+	// Recursively find all the parents of this operator.
+	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents){
+		if (currentOperator.getParent() == null)
+			return;
+		else {
+			parents.add(currentOperator.getParent());
+			findParentAccounts(currentOperator.getParent(), parents);
+		}				
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
