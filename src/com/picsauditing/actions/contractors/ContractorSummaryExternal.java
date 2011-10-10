@@ -26,11 +26,12 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 		if (contractor != null) {
 			json.put("name", contractor.getName());
 			json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
-			json.put("address", contractor.getAddress());
-			json.put("city", contractor.getCity());
-			json.put("state", contractor.getState());
-			json.put("zip", contractor.getZip());
-			json.put("country", contractor.getCountry());
+			json.put("address", contractor.getAddress() + " " +
+								contractor.getCity() + ", " +
+								contractor.getState().toString() + " " +
+								contractor.getZip() + " " +
+								contractor.getCountry().toString()
+					);
 			json.put("description", contractor.getDescription());
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
