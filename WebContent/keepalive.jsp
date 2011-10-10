@@ -4,7 +4,7 @@
 <%@page session="false" %>
 <% 
 String[] loadFactors = request.getParameterValues("load_factor");
-float loadFactor = 1f;
+float loadFactor = 3f;
 try {
 	if (loadFactors != null && loadFactors.length > 0) {
 		loadFactor = Float.parseFloat(loadFactors[0].toString());
