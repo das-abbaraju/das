@@ -113,40 +113,40 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public User(User u, boolean copyAll) {
 		if (copyAll) {
-			this.id = u.id;
-			this.createdBy = u.createdBy;
-			this.creationDate = u.creationDate;
-			this.updatedBy = u.updatedBy;
-			this.updateDate = u.updateDate;
+			this.id = u.getId();
+			this.createdBy = u.getCreatedBy();
+			this.creationDate = u.getCreationDate();
+			this.updatedBy = u.getUpdatedBy();
+			this.updateDate = u.getUpdateDate();
 		}
 
-		this.username = u.username;
-		this.isGroup = u.isGroup;
-		this.email = u.email;
-		this.emailConfirmedDate = u.emailConfirmedDate;
-		this.name = u.name;
-		this.isActive = u.isActive;
-		this.lastLogin = u.lastLogin;
-		this.account = u.account;
-		this.phone = u.phone;
-		this.phoneIndex = u.phoneIndex;
-		this.fax = u.fax;
-		this.password = u.password;
-		this.passwordChanged = u.passwordChanged;
-		this.resetHash = u.resetHash;
-		this.passwordHistory = u.passwordHistory;
-		this.forcePasswordReset = u.forcePasswordReset;
-		this.failedAttempts = u.failedAttempts;
-		this.lockUntil = u.lockUntil;
-		this.timezone = u.timezone;
-		this.locale = u.locale;
-		this.department = u.department;
-		this.groups = u.groups;
-		this.members = u.members;
-		this.ownedPermissions = u.ownedPermissions;
-		this.switchTos = u.switchTos;
-		this.switchFroms = u.switchFroms;
-		this.subscriptions = u.subscriptions;
+		this.username = u.getUsername();
+		this.isGroup = u.getIsGroup();
+		this.email = u.getEmail();
+		this.emailConfirmedDate = u.getEmailConfirmedDate();
+		this.name = u.getName();
+		this.isActive = u.getIsActive();
+		this.lastLogin = u.getLastLogin();
+		this.account = u.getAccount();
+		this.phone = u.getPhone();
+		this.phoneIndex = u.getPhoneIndex();
+		this.fax = u.getFax();
+		this.password = u.getPassword();
+		this.passwordChanged = u.getPasswordChanged();
+		this.resetHash = u.getResetHash();
+		this.passwordHistory = u.getPasswordHistory();
+		this.forcePasswordReset = u.isForcePasswordReset();
+		this.failedAttempts = u.getFailedAttempts();
+		this.lockUntil = u.getLockUntil();
+		this.timezone = u.getTimezone();
+		this.locale = u.getLocale();
+		this.department = u.getDepartment();
+		this.groups = u.getGroups();
+		this.members = u.getMembers();
+		this.ownedPermissions = u.getOwnedPermissions();
+		this.switchTos = u.getSwitchTos();
+		this.switchFroms = u.getSwitchFroms();
+		this.subscriptions = u.getSubscriptions();
 	}
 
 	@Column(length = 100, nullable = false, unique = true)
