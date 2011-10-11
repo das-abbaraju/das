@@ -82,7 +82,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<Integer> findSubscriptionsToSend(int limit) {
-		SelectSQL sql = new SelectSQL("email_subscription e.id");
+		SelectSQL sql = new SelectSQL("email_subscription e");
 		sql.addJoin("JOIN users u ON u.id = e.userID");
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addWhere("u.isActive = 'Yes'");
@@ -94,9 +94,9 @@ public class EmailSubscriptionDAO extends PicsDAO {
 				+ "WHEN 'Monthly' THEN DATE_SUB(:now, INTERVAL 1 MONTH) END");
 		sql.addOrderBy("e.lastSent");
 
-		sql.addField("e.*");
+		sql.addField("e.id");
 
-		Query query = em.createNativeQuery(sql.toString(), EmailSubscription.class);
+		Query query = em.createNativeQuery(sql.toString());
 		query.setParameter("now", new Date(), TemporalType.TIMESTAMP);
 		query.setMaxResults(limit);
 

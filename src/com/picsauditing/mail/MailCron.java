@@ -201,7 +201,7 @@ public class MailCron extends PicsActionSupport {
 
 	@Anonymous
 	public String listAjax() {
-		List<Integer> subs = subscriptionDAO.findSubscriptionsToSend(limit);
+		List<Integer> subs = subscriptionDAO.findSubscriptionsToSend(15);
 		output = Strings.implode(subs);
 		return PLAIN_TEXT;
 	}
