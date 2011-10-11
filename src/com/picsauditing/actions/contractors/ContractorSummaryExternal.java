@@ -36,7 +36,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			String ext = fName.substring(fName.lastIndexOf(".") + 1);
 			
 			BufferedImage img = ImageUtil.createBufferedImage(logo);
-			//img = ImageUtil.resize(img, 150, 150, true);
+			img = ImageUtil.resize(img, 150, 150, true);
 	
 			ByteArrayOutputStream bStream = new ByteArrayOutputStream();
 			ImageIO.write(img, ext, bStream);
