@@ -151,5 +151,15 @@
     </bean>
 
     <tx:annotation-driven transaction-manager="transactionManager" />
+    <!-- the transactional advice (i.e. what 'happens'; see the <aop:advisor/> bean below) -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	    <!-- the transactional semantics... -->
+	    <tx:attributes>
+	      <!-- all methods starting with 'get' are read-only (optimization) -->
+	      <tx:method name="get*" read-only="true"/>
+	      <!-- other methods use the default transaction settings (see below) -->
+	      <tx:method name="*"/>
+	    </tx:attributes>
+	</tx:advice>
 
 </beans>
