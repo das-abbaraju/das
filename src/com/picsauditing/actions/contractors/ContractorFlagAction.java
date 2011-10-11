@@ -103,33 +103,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			accountDao.save(contractor);
 			noteCategory = NoteCategory.Flags;
 
-			if (permissions.isOperator() || (opID == 0 && permissions.isCorporate()))
-				opID = permissions.getAccountId();
-
-			// can't view unrelated co links
-			if (permissions.isCorporate()) {
-				// check to see if corporate id pulls anything with this op id,
-				// if not then give error
-				if (opID != permissions.getAccountId()) {
-					Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
-					if (f == null) {
-						addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
-						return BLANK;
-					}
-				}
-			} else if (permissions.isContractor()) {
-				if (id != permissions.getAccountId()) {
-					// check to see if con id and id match
-					addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
-					return BLANK;
-				}
-			}
-
-			co = contractorOperatorDao.find(id, opID);
-			if (co == null) {
-				addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			if (!canFindOperator())
 				return BLANK;
-			}
+			
+		} catch (Exception ignore) {
 		} finally {
 			PicsLogger.stop();
 		}
@@ -141,12 +118,41 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return SUCCESS;
 	}
 	
-	public String approveFlag() {
+	private boolean canFindOperator() {
+		if (permissions.isOperator() || (opID == 0 && permissions.isCorporate()))
+			opID = permissions.getAccountId();
+
+		// can't view unrelated co links
+		if (permissions.isCorporate()) {
+			// check to see if corporate id pulls anything with this op id,
+			// if not then give error
+			if (opID != permissions.getAccountId()) {
+				Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
+				if (f == null) {
+					addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
+					return false;
+				}
+			}
+		} else if (permissions.isContractor()) {
+			if (id != permissions.getAccountId()) {
+				// check to see if con id and id match
+				addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
+				return false;
+			}
+		}
+
 		co = contractorOperatorDao.find(id, opID);
 		if (co == null) {
 			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
-			return BLANK;
+			return false;
 		}
+		return true;
+	}
+	
+	public String approveFlag() throws Exception {
+		findContractor();
+		if (!canFindOperator())
+			return BLANK;
 
 		co.resetBaseline(permissions);
 		
@@ -159,12 +165,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return completeAction("");
 	}
 	
-	public String recalculate() {
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+	public String recalculate() throws Exception {
+		findContractor();
+		if (!canFindOperator())
 			return BLANK;
-		}
 
 		contractorOperatorDao.save(co);
 
@@ -178,11 +182,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	
 	public String cancelOverride() throws Exception {
 		findContractor();
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+		if (!canFindOperator())
 			return BLANK;
-		}
 		
 		try {
 		permissions.tryPermission(OpPerms.EditForcedFlags);
@@ -208,12 +209,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return completeAction(noteText);
 	}
 	
-	public String forceOverallFlag() {
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+	public String forceOverallFlag() throws Exception {
+		findContractor();
+		if (!canFindOperator())
 			return BLANK;
-		}
 		
 		String noteText = "";
 
@@ -248,18 +247,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return completeAction(noteText);
 	}
 	
-	public String forceIndividualFlag() {
-		try {
-			findContractor();
-		} catch (Exception x) {
+	public String forceIndividualFlag() throws Exception {
+		findContractor();
+		if (!canFindOperator())
 			return BLANK;
-		}
-
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
-			return BLANK;
-		}
 
 		if (forceFlag == null) {
 			addActionError(getText("ContractorFlag.error.NoFlagColorChosen"));
@@ -295,18 +286,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return completeAction(noteText);
 	}
 	
-	public String cancelDataOverride() {
-		try {
-			findContractor();
-		} catch (Exception x) {
+	public String cancelDataOverride() throws Exception {
+		findContractor();
+		if (!canFindOperator())
 			return BLANK;
-		}
 
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
-			return BLANK;
-		}
 		FlagData flagData = flagDataDAO.find(dataID);
 		String noteText = "Removed the Forced flag for criteria " + flagData.getCriteria().getLabel() + " for "
 				+ co.getOperatorAccount().getName();
