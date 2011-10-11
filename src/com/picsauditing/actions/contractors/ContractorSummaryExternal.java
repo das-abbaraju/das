@@ -31,6 +31,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 		contractor = accountDao.find(id);
 		if (contractor != null) {
 		
+			/*
 			File logo = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
 			String fName = contractor.getLogoFile();
 			String ext = fName.substring(fName.lastIndexOf(".") + 1);
@@ -42,6 +43,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			ImageIO.write(img, ext, bStream);
 			Base64 base64 = new Base64();
 			byte[] encodedImage = base64.encode(bStream.toByteArray());
+			*/
 	    
 			json.put("name", contractor.getName());
 			//json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
@@ -55,7 +57,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
 			json.put("logoFileName", contractor.getLogoFile());
-			json.put("image", encodedImage.toString());
+			//json.put("image", encodedImage.toString());
 			return JSON;
 		}
 		
