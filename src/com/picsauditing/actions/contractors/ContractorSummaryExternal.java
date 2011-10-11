@@ -44,7 +44,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			byte[] encodedImage = base64.encode(bStream.toByteArray());
 	    
 			json.put("name", contractor.getName());
-			json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
+			//json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
 			json.put("address", contractor.getAddress() + "<br />" +
 								contractor.getCity() + ", " +
 								contractor.getState().toString() + " " +
@@ -55,7 +55,7 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
 			json.put("logoFileName", contractor.getLogoFile());
-			json.put("image", encodedImage);
+			json.put("image", encodedImage.toString());
 			return JSON;
 		}
 		
