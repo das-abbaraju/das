@@ -803,6 +803,11 @@
 			class="com.picsauditing.actions.operators.ReportUntaggedContractors">
 			<result>struts/operators/report_untaggedcontractors.jsp</result>
 		</action>
+		<action name="ReportUntaggedContractorsCSV"
+			class="com.picsauditing.actions.operators.ReportUntaggedContractors">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
 
 		<action name="AccountNameEditAjax"
 			class="com.picsauditing.actions.operators.FacilitiesEdit">

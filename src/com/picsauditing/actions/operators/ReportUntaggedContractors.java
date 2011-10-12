@@ -15,6 +15,8 @@ import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportUntaggedContractors extends ReportAccount {
@@ -71,8 +73,14 @@ public class ReportUntaggedContractors extends ReportAccount {
 			addActionMessage(getText("ReportUntaggedContractors.error.NoRequiredTagsDefined"));
 			return BLANK;
 		}
+		
+		if (button == null) {
+			return super.execute();
+		}
 
-		return super.execute();
+		buildQuery();
+		run(sql);
+		return returnResult();
 	}
 
 	public String save() throws Exception {
@@ -102,6 +110,33 @@ public class ReportUntaggedContractors extends ReportAccount {
 		}
 		
 		return super.execute();
+	}
+
+	@Override
+	protected void addExcelColumns() {
+		excelSheet.setData(data);
+		excelSheet.addColumn(new ExcelColumn("creationDate", "Creation Date", ExcelCellType.Date), 500);
+		if (isShowContact()) {
+			excelSheet.addColumn(new ExcelColumn("contactname", "Primary Contact"));
+			excelSheet.addColumn(new ExcelColumn("contactphone", "Phone"));
+			excelSheet.addColumn(new ExcelColumn("contactemail", "Email"));
+			excelSheet.addColumn(new ExcelColumn("address", "Address"));
+			excelSheet.addColumn(new ExcelColumn("city", "City"));
+			excelSheet.addColumn(new ExcelColumn("state", "State"));
+			excelSheet.addColumn(new ExcelColumn("zip", "Zip Code", ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("web_URL", "URL"));
+		}
+		if (isShowTrade()) {
+			excelSheet.addColumn(new ExcelColumn("main_trade", "Main Trade"));
+			excelSheet.addColumn(new ExcelColumn("tradesSelf", "Self Performed"));
+			excelSheet.addColumn(new ExcelColumn("tradesSub", "Sub Contracted"));
+		}
+
+		// Add these to the beginning
+		excelSheet.addColumn(new ExcelColumn("id", ExcelCellType.Integer), 0);
+		excelSheet.addColumn(new ExcelColumn("name", "Contractor Name"));
+		excelSheet.addColumn(new ExcelColumn("phone", "Corporate Phone"));
+		excelSheet.addColumn(new ExcelColumn("fax", "Fax Number"));
 	}
 
 	@Override
