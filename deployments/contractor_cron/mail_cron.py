@@ -145,7 +145,7 @@ class CronWorker(CronThread):
 		self.thread_id = i
 		self.con_q = con_q
 		self.server_g = server_g
-		self.url = SERVER+"MailCronAjax.action?subscriptionID=%s"
+		self.url = SERVER+"MailCron.action?subscriptionID=%s"
 		self.sleeptime = 6
 		self.logger = logging.getLogger('worker')
 	def run(self):
