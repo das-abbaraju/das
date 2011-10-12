@@ -1210,3 +1210,12 @@ where `id`='132';
 
 -- PICS-2600 Allow Audit Types to be hidden from Operators but not contractors
 update audit_type set canOperatorView=0 where id=9 or id=232 or id=269 or id=270 or id =272 or id=281;
+
+
+-- PICS-3547
+
+USE `pics_alpha2`;
+
+/* Alter table in target */
+ALTER TABLE `auditor_vacation` 
+	ADD COLUMN `allDay` tinyint(4)   NOT NULL DEFAULT '0' after `endDate`;
