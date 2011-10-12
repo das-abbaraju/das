@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Note;
@@ -15,16 +14,15 @@ import com.picsauditing.search.SelectContractorAudit;
 
 @SuppressWarnings("serial")
 public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
-	protected int auditID;
-	protected int closeAuditor;
-	protected String notes;
-
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
-	@Autowired
-	protected UserDAO userDAO;
+
+	protected String notes;
+	protected ContractorAudit audit;
+	protected User closingAuditor;
+	protected int[] auditIDs;
 
 	public ReportCloseAuditAssignments() {
 		super();
@@ -51,49 +49,85 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 		getFilter().setShowAuditFor(false);
 	}
 
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if (auditID > 0 && closeAuditor > 0) {
-			ContractorAudit cAudit = contractorAuditDAO.find(auditID);
-			cAudit.setClosingAuditor(new User(closeAuditor));
-			cAudit.setAuditColumns(permissions);
-			contractorAuditDAO.save(cAudit);
-
-			User user = userDAO.find(closeAuditor);
+	public String save() throws Exception {
+		if (audit != null) {
 			Note note = new Note();
-			note.setAccount(cAudit.getContractorAccount());
+
+			if (closingAuditor != null) {
+				note.setSummary("Assigned " + closingAuditor.getName() + " as Closing Auditor for "
+						+ audit.getAuditType().getName().toString());
+			} else {
+				note.setSummary("Unassigned closing auditor for " + audit.getAuditType().getName().toString());
+			}
+
+			audit.setClosingAuditor(closingAuditor);
+			audit.setAuditColumns(permissions);
+			contractorAuditDAO.save(audit);
+
+			note.setAccount(audit.getContractorAccount());
 			note.setAuditColumns(permissions);
-			note.setSummary("Assigned " + user.getName() + " as Closing Auditor for "
-					+ cAudit.getAuditType().getName().toString());
 			note.setBody(notes);
 			note.setNoteCategory(NoteCategory.Audits);
-			if (cAudit.getAuditType().getAccount() != null)
-				note.setViewableBy(cAudit.getAuditType().getAccount());
+			if (audit.getAuditType().getAccount() != null)
+				note.setViewableBy(audit.getAuditType().getAccount());
 			else
 				note.setViewableById(Account.EVERYONE);
+
 			noteDAO.save(note);
 		}
 
+		return BLANK;
+	}
+	
+	public String saveAll() throws Exception {
+		if (auditIDs != null && auditIDs.length > 0) {
+			for (Integer auditID : auditIDs) {
+				ContractorAudit audit = contractorAuditDAO.find(auditID);
+				
+				Note note = new Note();
+				
+				if (closingAuditor != null) {
+					note.setSummary("Assigned " + closingAuditor.getName() + " as Closing Auditor for "
+							+ audit.getAuditType().getName().toString());
+				} else {
+					note.setSummary("Unassigned closing auditor for " + audit.getAuditType().getName().toString());
+				}
+				
+				audit.setClosingAuditor(closingAuditor);
+				audit.setAuditColumns(permissions);
+				contractorAuditDAO.save(audit);
+				
+				note.setAccount(audit.getContractorAccount());
+				note.setAuditColumns(permissions);
+				note.setBody(notes);
+				note.setNoteCategory(NoteCategory.Audits);
+				if (audit.getAuditType().getAccount() != null)
+					note.setViewableBy(audit.getAuditType().getAccount());
+				else
+					note.setViewableById(Account.EVERYONE);
+				
+				noteDAO.save(note);
+			}
+		}
+		
+		notes = "";
 		return super.execute();
 	}
 
-	public int getAuditID() {
-		return auditID;
+	public ContractorAudit getAudit() {
+		return audit;
 	}
 
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
 	}
 
-	public int getCloseAuditor() {
-		return closeAuditor;
+	public User getClosingAuditor() {
+		return closingAuditor;
 	}
 
-	public void setCloseAuditor(int closeAuditor) {
-		this.closeAuditor = closeAuditor;
+	public void setClosingAuditor(User closingAuditor) {
+		this.closingAuditor = closingAuditor;
 	}
 
 	public String getNotes() {
@@ -102,5 +136,13 @@ public class ReportCloseAuditAssignments extends ReportContractorAuditOperator {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public int[] getAuditIDs() {
+		return auditIDs;
+	}
+
+	public void setAuditIDs(int[] auditIDs) {
+		this.auditIDs = auditIDs;
 	}
 }
