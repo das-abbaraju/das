@@ -867,11 +867,6 @@
 			<result>struts/reports/close_audit_assignments.jsp</result>
 		</action>
 
-		<action name="AuditCloseUpdateAjax"
-			class="com.picsauditing.actions.report.ReportCloseAuditAssignments">
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<action name="GraphEmrRates" class="com.picsauditing.actions.chart.GraphEmrRates">
 			<result>struts/reports/graph_emr.jsp</result>
 		</action>
