@@ -1,5 +1,7 @@
 package com.picsauditing.actions.users;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
@@ -167,13 +170,31 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 						}
 
 						vacation.setDescription(calEvent.title);
+						Date startDate = null;
+						Date endDate = null;
+						
+						if (calEvent.start > 0) {
+							startDate = new Date(calEvent.start);
+							vacation.setStartDate(startDate);
+						}
 
-						if (calEvent.start > 0)
-							vacation.setStartDate(new Date(calEvent.start));
+						if (calEvent.end > 0) {
+							endDate = new Date(calEvent.end);
+							vacation.setEndDate(endDate);
+						}
 
-						if (calEvent.end > 0)
-							vacation.setEndDate(new Date(calEvent.end));
+						// set allDay
+						DateFormat format = new SimpleDateFormat("HH");
+						if (currentUser != null)
+							format.setTimeZone(currentUser.getTimezone());
 
+						if (format.format(startDate).equals("00")
+								&& (endDate == null || endDate.equals(DateBean.getNextDayMidnight(startDate))))
+							vacation.setAllDay(true);
+						else
+							vacation.setAllDay(false);
+
+						
 						vacation.setAuditColumns(permissions);
 						auditorVacationDAO.save(vacation);
 

@@ -27,6 +27,7 @@ public class AuditorVacation extends BaseTable {
 	private User user;
 	private Date startDate;
 	private Date endDate;
+	private boolean allDay;
 	private String description = null;
 
 	@ManyToOne
@@ -54,6 +55,14 @@ public class AuditorVacation extends BaseTable {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public boolean isAllDay() {
+		return allDay;
+	}
+
+	public void setAllDay(boolean allDay) {
+		this.allDay = allDay;
 	}
 
 	public String getDescription() {
@@ -96,15 +105,7 @@ public class AuditorVacation extends BaseTable {
 			obj.put("end", end.getTimeInMillis());
 		}
 
-		DateFormat format = new SimpleDateFormat("HH");
-		if (user != null)
-			format.setTimeZone(user.getTimezone());
-
-		if (format.format(startDate).equals("00")
-				&& (end == null || end.getTime().equals(DateBean.getNextDayMidnight(startDate))))
-			obj.put("allDay", true);
-		else
-			obj.put("allDay", false);
+		obj.put("allDay", allDay);
 
 		if (user == null)
 			obj.put("className", "cal-holiday");
