@@ -11,7 +11,7 @@ import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobRoleDAO extends PicsDAO {
 	public JobRole find(int id) {

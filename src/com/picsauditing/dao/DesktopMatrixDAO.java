@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.DesktopMatrix;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class DesktopMatrixDAO extends PicsDAO {
+	@Transactional
 	public DesktopMatrix save(DesktopMatrix o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -25,6 +27,7 @@ public class DesktopMatrixDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(DesktopMatrix row) {
 		if (row != null) {
 			em.remove(row);
@@ -35,7 +38,7 @@ public class DesktopMatrixDAO extends PicsDAO {
 		return em.find(DesktopMatrix.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<DesktopMatrix> findByQuestions(int[] questionIDs) {
 		String list = Strings.implode(questionIDs, ",");
 		Query query = em.createQuery("FROM DesktopMatrix t WHERE t.question.id IN (" + list + ")");

@@ -11,9 +11,10 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class OperatorFormDAO extends PicsDAO {
-
+	@Transactional
 	public OperatorForm save(OperatorForm o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -28,6 +29,7 @@ public class OperatorFormDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(OperatorForm row) {
 		if (row != null) {
 			em.remove(row);
@@ -38,7 +40,7 @@ public class OperatorFormDAO extends PicsDAO {
 		return em.find(OperatorForm.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<OperatorForm> findByopID(int opID) {
 		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id = ?");
 		query.setParameter(1, opID);
@@ -56,7 +58,6 @@ public class OperatorFormDAO extends PicsDAO {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperatorForm> findByOperators(Collection<Integer> operatorIds) {
 		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.account.name, o.formName");
 		return query.getResultList();

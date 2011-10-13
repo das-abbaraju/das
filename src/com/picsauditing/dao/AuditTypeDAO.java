@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class AuditTypeDAO extends PicsDAO {
+	@Transactional
 	public AuditType save(AuditType o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -23,6 +25,7 @@ public class AuditTypeDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AuditType row = find(id);
 		if (row != null) {
@@ -34,7 +37,7 @@ public class AuditTypeDAO extends PicsDAO {
 		return em.find(AuditType.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<AuditType> findWhere(String where) {
 		if (where == null)
 			where = "";

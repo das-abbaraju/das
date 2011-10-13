@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorNote;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorNoteDAO extends PicsDAO {
+	@Transactional
 	public ContractorNote save(ContractorNote o) {
 		if (o.getId() == 0) {
 			em.persist(o);

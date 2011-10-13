@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.UserLoginLog;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class UserLoginLogDAO extends PicsDAO {
+	@Transactional
 	public UserLoginLog save(UserLoginLog o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -19,6 +21,7 @@ public class UserLoginLogDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		UserLoginLog row = find(id);
 		if (row != null) {
@@ -30,7 +33,6 @@ public class UserLoginLogDAO extends PicsDAO {
 		return em.find(UserLoginLog.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<UserLoginLog> findRecentLogins(int userID, int startIndex, int maxResults) {
 		Query query = em.createQuery("FROM UserLoginLog t WHERE t.user.id = :userID ORDER BY t.loginDate DESC");
 		query.setParameter("userID", userID);

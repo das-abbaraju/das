@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.OperatorTag;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class OperatorTagDAO extends PicsDAO {
-
+	@Transactional
 	public OperatorTag save(OperatorTag o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,6 +21,7 @@ public class OperatorTagDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		OperatorTag row = find(id);
 		if (row != null) {
@@ -27,6 +29,7 @@ public class OperatorTagDAO extends PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(OperatorTag row) {
 		if (row != null) {
 			em.remove(row);
@@ -37,7 +40,6 @@ public class OperatorTagDAO extends PicsDAO {
 		return em.find(OperatorTag.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperatorTag> findByOperator(int opID, boolean active) {
 		String hql = "SELECT t FROM OperatorTag t WHERE " +
 				"t.operator.id = :opID OR " +
@@ -52,7 +54,6 @@ public class OperatorTagDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<OperatorTag> findUnused(int opID){
 		Query query = em.createQuery("FROM OperatorTag o WHERE o.operator.id = ? AND o.operator.id NOT IN "+ 
 				"(SELECT c.tag.id FROM ContractorTag c)");

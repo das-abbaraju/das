@@ -9,9 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class EmailTemplateDAO extends PicsDAO {
-
+	@Transactional
 	public EmailTemplate save(EmailTemplate o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -26,6 +27,7 @@ public class EmailTemplateDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(EmailTemplate row) {
 		if (row != null) {
 			em.remove(row);
@@ -36,14 +38,13 @@ public class EmailTemplateDAO extends PicsDAO {
 		return em.find(EmailTemplate.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<EmailTemplate> findByAccountID(int accountID) {
 		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=? ORDER BY templateName");
 		query.setParameter(1, accountID);
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailTemplate> findByAccountID(int accountID, ListType listType) {
 		Query query = em.createQuery("FROM EmailTemplate WHERE accountID=? AND listType=? ORDER BY templateName");
 		query.setParameter(1, accountID);
@@ -51,7 +52,6 @@ public class EmailTemplateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailTemplate> findAll() {
 		return (List<EmailTemplate>) super.findAll(EmailTemplate.class);
 	}

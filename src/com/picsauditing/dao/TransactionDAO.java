@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Transaction;
 
-@Transactional
+@Transactional(readOnly = true)
 public class TransactionDAO extends PicsDAO {
-
+	@Transactional
 	public Transaction save(Transaction o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -24,6 +24,7 @@ public class TransactionDAO extends PicsDAO {
 		remove(find(id));
 	}
 
+	@Transactional
 	public void remove(Transaction row) {
 		if (row != null) {
 			em.remove(row);

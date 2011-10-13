@@ -19,10 +19,10 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
-
+	@Transactional
 	public OperatorAccount save(OperatorAccount o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -37,6 +37,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(OperatorAccount row) {
 		if (row != null) {
 			em.remove(row);

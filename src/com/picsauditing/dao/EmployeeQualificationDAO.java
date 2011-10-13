@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.util.DoubleMap;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeQualificationDAO extends PicsDAO {
 

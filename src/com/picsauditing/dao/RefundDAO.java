@@ -5,9 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Refund;
 
-@Transactional
+@Transactional(readOnly = true)
 public class RefundDAO extends PicsDAO {
-
+	@Transactional
 	public Refund save(Refund o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,6 +21,7 @@ public class RefundDAO extends PicsDAO {
 		remove(find(id));
 	}
 
+	@Transactional
 	public void remove(Refund row) {
 		if (row != null) {
 			em.remove(row);

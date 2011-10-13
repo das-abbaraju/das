@@ -15,9 +15,10 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class NoteDAO extends PicsDAO {
-
+	@Transactional
 	public Note save(Note o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,6 +28,7 @@ public class NoteDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		Note row = find(id);
 		if (row != null) {
@@ -34,6 +36,7 @@ public class NoteDAO extends PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(Note row) {
 		if (row != null) {
 			em.remove(row);
@@ -44,7 +47,7 @@ public class NoteDAO extends PicsDAO {
 		return em.find(Note.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<Note> findWhere(int id, String where, int limit) {
 		if (where == null)
 			where = "";
@@ -71,7 +74,6 @@ public class NoteDAO extends PicsDAO {
 	 * @param permissions
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<Note> getNotes(int accountID, Permissions permissions, String where, int firstResult, int limit) {
 		if (Strings.isEmpty(where))
 			where = "1";
@@ -109,7 +111,6 @@ public class NoteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Note> getTasksForUser(int userID) {
 		Query query = em.createQuery("FROM Note WHERE createdBy.id = ? AND status = ? "
 				+ "ORDER BY priority DESC, creationDate");
@@ -119,7 +120,6 @@ public class NoteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Note> getTasksForAccount(int userID, int accountID) {
 		Query query = em.createQuery("FROM Note WHERE createdBy.id = ? AND account.id = ? AND status = ? "
 				+ "ORDER BY priority DESC, creationDate");

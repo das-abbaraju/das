@@ -13,7 +13,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserAssignmentDAO extends PicsDAO {
 

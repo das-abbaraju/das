@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class InvoiceFeeDAO extends PicsDAO {
-
+	@Transactional
 	public InvoiceFee save(InvoiceFee o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -26,6 +27,7 @@ public class InvoiceFeeDAO extends PicsDAO {
 		remove(find(id));
 	}
 
+	@Transactional
 	public void remove(InvoiceFee row) {
 		if (row != null) {
 			em.remove(row);
@@ -67,7 +69,6 @@ public class InvoiceFeeDAO extends PicsDAO {
 		return this.findByNumberOfOperatorsAndClass(classType, numPayingFacilities);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<InvoiceFee> findAll() {
 		Query query = em.createQuery("FROM InvoiceFee ORDER BY fee");
 		return query.getResultList();

@@ -28,9 +28,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {
-
+	@Transactional
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -91,7 +92,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		save(oCAudit);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<ContractorAudit> findByContractor(int conID) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
 				+ "ORDER BY auditTypeID");
@@ -99,7 +100,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findByAuditType(int conID, AuditTypeClass classType) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t "
 				+ "WHERE t.contractorAccount.id = ? AND t.auditType.classType = '?'" + "ORDER BY auditTypeID");
@@ -108,7 +108,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findNonExpiredByContractor(int conID) {
 		Query query = em
 				.createQuery("SELECT t FROM ContractorAudit t "
@@ -118,7 +117,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingWebcams() {
 		Query q = em
 				.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");
@@ -126,7 +124,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
 		String hql = "FROM ContractorAudit";
 		if (where.length() > 0)
@@ -143,7 +140,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return em.find(ContractorAudit.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAccount> findContractorsWithExpiringAudits() {
 		int startDay = 59; // between 50 and 70 days in the future
 		int range = 10;
@@ -168,7 +164,6 @@ public class ContractorAuditDAO extends PicsDAO {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findExpiredCertificates() {
 		SelectSQL sql = new SelectSQL("contractor_audit ca");
 		sql.addField("ca.*");
@@ -197,7 +192,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsByOperator(int opID, int auditTypeID, WaitingOn waitingOnStatus) {
 		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.auditType.id = :auditTypeID "
 				+ "AND ca.contractorAccount IN (" + "SELECT contractorAccount FROM ContractorOperator co "
@@ -213,7 +207,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findAuditsNeedingRecalculation() {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ "WHERE (ca.lastRecalculation IS NULL OR ca.lastRecalculation < :threeMonthsAgo) "
@@ -229,7 +222,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
 				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
@@ -248,7 +240,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate,
 			Permissions permissions) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
@@ -274,7 +265,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List findAuditorBatches(int auditorID, Date startDate) {
 		String hql = "SELECT NEW MAP(ca.paidDate as paidDate, ca.auditor as auditor, COUNT(*) as total) FROM ContractorAudit ca WHERE ";
 		if (auditorID > 0) {
@@ -295,7 +285,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> findAuditedContractorsByStateCount() {
 		List<BasicDynaBean> data = null;
 
@@ -323,7 +312,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		return data;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<BasicDynaBean> findAuditByID(int auditID) {
 		List<BasicDynaBean> data = null;
 

@@ -13,9 +13,10 @@ import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobSiteTaskDAO extends PicsDAO {
+	@Transactional
 	public JobSiteTask save(JobSiteTask o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -25,6 +26,7 @@ public class JobSiteTaskDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		JobSiteTask row = find(id);
 		if (row != null) {

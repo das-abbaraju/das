@@ -10,7 +10,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagDataDAO extends PicsDAO {
 
@@ -72,6 +72,7 @@ public class FlagDataDAO extends PicsDAO {
 	}
 
 	@Override
+	@Transactional
 	public void remove(BaseTable row) {
 		if (row != null)
 			em.remove(row);

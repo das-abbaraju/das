@@ -13,7 +13,7 @@ import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeDAO extends PicsDAO {
 

@@ -9,9 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class TokenDAO extends PicsDAO {
+	@Transactional
 	public Token save(Token o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,6 +22,7 @@ public class TokenDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		Token row = find(id);
 		if (row != null) {

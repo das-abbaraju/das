@@ -16,7 +16,8 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class IndexableDAO extends PicsDAO {
 	public BaseTable find(int id) {
 		return em.find(BaseTable.class, id);
@@ -26,7 +27,6 @@ public class IndexableDAO extends PicsDAO {
 		return em.find(clazz, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Indexable> find(Class<? extends Indexable> clazz, Collection<Integer> ids) {
 		if (ids == null || ids.isEmpty())
 			return Collections.emptyList();
@@ -48,7 +48,6 @@ public class IndexableDAO extends PicsDAO {
 	 *            or equal to 0 is is ignored
 	 * @return Set of ids of indexable objects
 	 */
-	@SuppressWarnings("unchecked")
 	public Set<Integer> getIndexable(Class<? extends Indexable> clazz, int id, int limit) {
 		String tableName = ReflectUtil.getTableName(clazz);
 		SelectSQL sql = new SelectSQL(tableName);

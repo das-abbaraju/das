@@ -11,9 +11,10 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class OshaAuditDAO extends PicsDAO {
-
+	@Transactional
 	public OshaAudit save(OshaAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -23,6 +24,7 @@ public class OshaAuditDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		OshaAudit row = find(id);
 		if (row != null) {
@@ -34,7 +36,6 @@ public class OshaAuditDAO extends PicsDAO {
 		return em.find(OshaAudit.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OshaAudit> findByContractor(ContractorAudit conAudit) {
 		Query query = em.createQuery("SELECT o FROM OshaAudit o " + "WHERE o.conAudit = ? "
 				+ "ORDER BY id");
@@ -45,7 +46,6 @@ public class OshaAuditDAO extends PicsDAO {
 
 	
 	//TODO: get rid of this after the release
-	@SuppressWarnings("unchecked")
 	public OshaAudit findNewOshaAuditFromOld(int oldId, int year) {
 		
 		StringBuilder query = new StringBuilder( " select oa.* " ) 
@@ -68,7 +68,6 @@ public class OshaAuditDAO extends PicsDAO {
 	}
 
 	//TODO: get rid of this after the release
-	@SuppressWarnings("unchecked")
 	public AuditData findDataIdFromQuestionAndContractor(int questionId, int contractorId, int year) {
 		
 		StringBuilder query = new StringBuilder( " select pd.* from " ) 
@@ -96,8 +95,8 @@ public class OshaAuditDAO extends PicsDAO {
 		
 		return ( AuditData ) qry.getSingleResult();
 	}
-	
-	@SuppressWarnings("unchecked")
+
+	@Transactional
 	public int removeByType(int auditID, OshaType oshaType) {
 		Query query = em.createQuery("DELETE OshaAudit WHERE conAudit.id = ? AND type = ?");
 		query.setParameter(1, auditID);

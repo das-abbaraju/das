@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorCompetencyDAO extends PicsDAO {
 	

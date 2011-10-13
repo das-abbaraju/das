@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserSwitch;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserSwitchDAO extends PicsDAO {
+	@Transactional
 	public UserSwitch save(UserSwitch o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -22,12 +23,14 @@ public class UserSwitchDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(UserSwitch row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
+	@Transactional
 	public void remove(int id) {
 		UserSwitch row = find(id);
 		if (row != null)

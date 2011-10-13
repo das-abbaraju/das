@@ -18,14 +18,16 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
+	@Transactional
 	public void remove(int id) {
 		AuditData row = find(id);
 		remove(row);
 	}
 
+	@Transactional
 	public int remove(Set<Integer> ids) {
 		if (ids == null || ids.size() == 0)
 			return 0;

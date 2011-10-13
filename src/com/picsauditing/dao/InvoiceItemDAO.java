@@ -4,8 +4,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.InvoiceItem;
 
-@Transactional
+@Transactional(readOnly = true)
 public class InvoiceItemDAO extends PicsDAO {
+	@Transactional
 	public InvoiceItem save(InvoiceItem o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -15,6 +16,7 @@ public class InvoiceItemDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		InvoiceItem row = find(id);
 		if (row != null) {
@@ -22,6 +24,7 @@ public class InvoiceItemDAO extends PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(InvoiceItem row) {
 		if (row != null) {
 			em.remove(row);

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AssessmentTestDAO extends PicsDAO {
 	public AssessmentTest find(int id) {

@@ -15,8 +15,10 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.TransactionStatus;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class InvoiceDAO extends PicsDAO {
+	@Transactional
 	public Invoice save(Invoice o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -30,6 +32,7 @@ public class InvoiceDAO extends PicsDAO {
 		remove(find(id));
 	}
 
+	@Transactional
 	public void remove(Invoice row) {
 		if (row != null) {
 			em.remove(row);
@@ -40,7 +43,6 @@ public class InvoiceDAO extends PicsDAO {
 		return em.find(Invoice.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Invoice> findDelinquentContractors(Permissions permissions, int limit) {
 		if (permissions == null)
 			return new ArrayList<Invoice>();
@@ -57,7 +59,6 @@ public class InvoiceDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Invoice> findWhere(String where, int limit) {
 		if (where == null)
 			where = "";
@@ -68,7 +69,6 @@ public class InvoiceDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Invoice> findDelinquentInvoicesMissingLateFees() {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_WEEK, -30);

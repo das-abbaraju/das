@@ -20,9 +20,10 @@ import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAuditOperatorDAO extends PicsDAO {
+	@Transactional
 	public ContractorAuditOperator save(ContractorAuditOperator o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -32,6 +33,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void insert(ContractorAuditOperatorPermission caop) {
 		em.persist(caop);
 	}
@@ -41,6 +43,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	 * 
 	 * @param caop
 	 */
+	@Transactional
 	public void remove(ContractorAuditOperatorPermission caop) {
 		em.remove(caop);
 	}
@@ -103,12 +106,14 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(ContractorAuditOperator row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
+	@Transactional
 	public void refresh(ContractorAuditOperator row) {
 		if (row != null && row.getId() != 0)
 			em.refresh(row);

@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCatData;
 
-@Transactional
+@Transactional(readOnly = true)
 public class AuditCategoryDataDAO extends PicsDAO {
+	@Transactional
 	public AuditCatData save(AuditCatData o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -17,6 +18,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AuditCatData row = find(id);
 		if (row != null) {

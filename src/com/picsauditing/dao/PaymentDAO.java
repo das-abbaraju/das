@@ -14,9 +14,10 @@ import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class PaymentDAO extends PicsDAO {
-
+	@Transactional
 	public Payment save(Payment o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -26,6 +27,7 @@ public class PaymentDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public Refund save(Refund o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -39,6 +41,7 @@ public class PaymentDAO extends PicsDAO {
 		remove(find(id));
 	}
 
+	@Transactional
 	public void remove(Payment row) {
 		if (row != null) {
 			em.remove(row);
@@ -52,6 +55,7 @@ public class PaymentDAO extends PicsDAO {
 		row = null;
 	}
 
+	@Transactional
 	public void remove(PaymentApplied row) {
 		if (row != null) {
 			em.remove(row);
@@ -78,7 +82,7 @@ public class PaymentDAO extends PicsDAO {
 		return findWhere(where, 0);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<Payment> findWhere(String where, int limit) {
 		if (where.length() > 0)
 			where = "WHERE " + where;

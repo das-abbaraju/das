@@ -21,9 +21,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class CertificateDAO extends PicsDAO {
-
+	@Transactional
 	public Certificate save(Certificate o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -43,19 +44,19 @@ public class CertificateDAO extends PicsDAO {
 			remove(row);
 	}
 
+	@Transactional
 	public void remove(Certificate row) {
 		if (row != null)
 			em.remove(row);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<Certificate> findByConId(int conID) {
 		Query q = em.createQuery("SELECT c FROM Certificate c WHERE c.contractor.id = ? ");
 		q.setParameter(1, conID);
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Certificate> findByConId(int conID, Permissions permissions, boolean showExpired) {
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions, PermissionQueryBuilder.HQL);
 		permQuery.setAccountAlias("c.contractor");
@@ -75,7 +76,6 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public Map<ContractorAccount, List<Certificate>> findConCertMap(String fileHash) {
 		Query q = em.createQuery("FROM Certificate WHERE fileHash = :fileHash ORDER BY contractor.id, fileHash");
 		q.setParameter("fileHash", fileHash);
@@ -104,7 +104,6 @@ public class CertificateDAO extends PicsDAO {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Certificate> findWhere(String where) {
 		String query = "FROM Certificate c WHERE " + where;
 
@@ -113,7 +112,6 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Certificate> findWhere(String where, int limit) {
 		String query = "FROM Certificate c WHERE " + where;
 
@@ -123,7 +121,6 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<String> findDupeHashes(int limit) {
 		Query q = em
 				.createQuery("SELECT DISTINCT fileHash FROM Certificate WHERE fileHash IS NOT NULL GROUP BY fileHash, contractor.id HAVING COUNT(*) > 1");
@@ -131,7 +128,6 @@ public class CertificateDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditData> findConCertsAuditData(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.auditType.classType = 'Policy' "
 				+ "AND d.question.columnHeader= 'Certificate' " + "AND d.question.questionType = 'FileCertificate' "
@@ -141,7 +137,6 @@ public class CertificateDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Integer> findOpsByCert(int certID) {
 		SelectSQL sql = new SelectSQL("audit_category_rule acr");
 		sql.addField("DISTINCT acr.opID");

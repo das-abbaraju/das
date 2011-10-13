@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagCriteriaOperatorDAO extends PicsDAO {
 

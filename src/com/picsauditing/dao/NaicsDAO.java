@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 public class NaicsDAO extends PicsDAO {
 
 	public Naics find(String code) {

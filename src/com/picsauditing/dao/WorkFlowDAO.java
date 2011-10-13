@@ -4,11 +4,12 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.hibernate.validator.Length;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Workflow;
 import com.picsauditing.jpa.entities.WorkflowStep;
 
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class WorkFlowDAO extends PicsDAO {
 

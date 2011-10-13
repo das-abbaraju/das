@@ -10,9 +10,10 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.util.log.PicsLogger;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class UserAccessDAO extends PicsDAO {
-
+	@Transactional
 	public UserAccess save(UserAccess o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -22,6 +23,7 @@ public class UserAccessDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		UserAccess row = find(id);
 		if (row != null) {
@@ -29,7 +31,8 @@ public class UserAccessDAO extends PicsDAO {
 			em.remove(row);
 		}
 	}
-	
+
+	@Transactional
 	public void remove(UserAccess ua){
 		if(ua!=null){
 			PicsLogger.log("Removing UserAccess=" + ua.getOpPerm() + " for userID=" + ua.getUser().getId());
@@ -41,21 +44,18 @@ public class UserAccessDAO extends PicsDAO {
 		return em.find(UserAccess.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<UserAccess> findByUser(int userID) {
 		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.id = :userID");
 		query.setParameter("userID", userID);
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<UserAccess> findByAccount(int aID) {
 		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.account.id = :aID");
 		query.setParameter("aID", aID);
 		return query.getResultList();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public UserAccess findByUserAndOpPerm(int userID, OpPerms opPerm) {
 		Query query = em.createQuery("FROM UserAccess ua WHERE ua.user.id = ? AND ua.opPerm = ?");
 		query.setParameter(1, userID);
@@ -63,7 +63,6 @@ public class UserAccessDAO extends PicsDAO {
 		return (UserAccess) query.getSingleResult();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public List<UserAccess> findByOpPerm(OpPerms opPerm) {
 		Query query = em.createQuery("FROM UserAccess ua WHERE ua.opPerm = ?");
 		query.setParameter(1, opPerm);

@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditQuestionText;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class AuditQuestionTextDAO extends PicsDAO {
-
+	@Transactional
 	public AuditQuestionText save(AuditQuestionText o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,6 +21,7 @@ public class AuditQuestionTextDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AuditQuestionText row = find(id);
 		if (row != null) {
@@ -31,7 +33,7 @@ public class AuditQuestionTextDAO extends PicsDAO {
 		return em.find(AuditQuestionText.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public List<AuditQuestionText> findByQuestion(int qid) {
 		Query q = em.createQuery("FROM AuditQuestionText t WHERE t.question.id = :qid").setParameter("qid", qid);
 

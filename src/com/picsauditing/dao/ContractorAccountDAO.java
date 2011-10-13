@@ -28,7 +28,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
 	public void remove(ContractorAccount row, String ftpDir) {

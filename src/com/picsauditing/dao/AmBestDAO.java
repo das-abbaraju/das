@@ -10,8 +10,10 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.util.SpringUtils;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class AmBestDAO extends PicsDAO {
+	@Transactional
 	public AmBest save(AmBest o) {
 		if (o.getAmBestId() == 0) {
 			em.persist(o);
@@ -21,12 +23,14 @@ public class AmBestDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(AmBest row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AmBest row = find(id);
 		if (row != null)
@@ -37,7 +41,6 @@ public class AmBestDAO extends PicsDAO {
 		return em.find(AmBest.class, id);
 	}
 
-	@SuppressWarnings("unchecked")
 	public AmBest findByNaic(String naic) {
 		Query q = em.createQuery("SELECT ab FROM AmBest ab WHERE ab.naic = ?");
 		q.setParameter(1, naic);
@@ -57,7 +60,6 @@ public class AmBestDAO extends PicsDAO {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AmBest> findByCompanyName(String name) {
 		name = Utilities.escapeQuotes(name);
 		Query q = em.createQuery("SELECT ab FROM AmBest ab " +

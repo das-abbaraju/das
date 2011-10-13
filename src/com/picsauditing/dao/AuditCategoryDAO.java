@@ -7,11 +7,11 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.BaseTable;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditCategoryDAO extends PicsDAO {
+	@Transactional
 	public AuditCategory save(AuditCategory o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,6 +20,7 @@ public class AuditCategoryDAO extends PicsDAO {
 		}
 		return o;
 	}
+	@Transactional
 	public void remove(int id) {
 		AuditCategory row = find(id);
         if (row != null) {

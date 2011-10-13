@@ -9,9 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.WaitingOn;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorRegistrationRequestDAO extends PicsDAO {
+	@Transactional
 	public ContractorRegistrationRequest save(ContractorRegistrationRequest o) {
 		if (o.getId() == 0) {
 			em.persist(o);

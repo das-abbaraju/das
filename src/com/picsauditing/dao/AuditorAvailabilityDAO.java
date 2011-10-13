@@ -10,9 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.User;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditorAvailabilityDAO extends PicsDAO {
+	@Transactional
 	public AuditorAvailability save(AuditorAvailability o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -22,6 +23,7 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AuditorAvailability row = find(id);
 		remove(row);

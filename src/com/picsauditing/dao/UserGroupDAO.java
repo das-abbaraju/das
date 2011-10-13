@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.UserGroup;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserGroupDAO extends PicsDAO {
+	@Transactional
 	public UserGroup save(UserGroup o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,6 +21,7 @@ public class UserGroupDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		UserGroup row = find(id);
 		if (row != null) {

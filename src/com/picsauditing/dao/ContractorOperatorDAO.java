@@ -12,7 +12,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
 

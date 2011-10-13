@@ -17,7 +17,7 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagDataOverrideDAO extends PicsDAO {
 

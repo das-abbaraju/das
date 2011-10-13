@@ -9,8 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class AuditOptionValueDAO extends PicsDAO {
+	@Transactional
 	public AuditOptionValue save(AuditOptionValue o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -36,7 +38,6 @@ public class AuditOptionValueDAO extends PicsDAO {
 		return (AuditOptionGroup) query.getSingleResult();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AuditOptionGroup> findOptionTypeWhere(String where) {
 		if (where != null && !where.isEmpty())
 			where = " WHERE " + where;

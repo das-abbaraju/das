@@ -16,7 +16,8 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 abstract public class PicsDAO {
 	protected EntityManager em;
 	protected QueryMetaData queryMetaData = null;
@@ -54,6 +55,7 @@ abstract public class PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void clear() {
 		em.clear();
 	}
@@ -62,6 +64,7 @@ abstract public class PicsDAO {
 		return em.contains(o);
 	}
 
+	@Transactional
 	public BaseTable save(BaseTable o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -77,6 +80,7 @@ abstract public class PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(BaseTable row) {
 		if (row != null) {
 			em.remove(row);
@@ -87,13 +91,12 @@ abstract public class PicsDAO {
 		return em.find(clazz, id);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	protected List<? extends BaseTable> findAll(Class<? extends BaseTable> clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
@@ -101,7 +104,6 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit, String orderBy) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY " + orderBy);
 		if (limit > 0)
@@ -125,7 +127,6 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, where, name, value, null);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
 			String value, Locale locale) {
 		String tableName = ReflectUtil.getTableName(cls);

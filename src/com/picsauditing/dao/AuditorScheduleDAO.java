@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditorSchedule;
 
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
-@Transactional
 public class AuditorScheduleDAO extends PicsDAO {
+	@Transactional
 	public AuditorSchedule save(AuditorSchedule o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -25,6 +26,7 @@ public class AuditorScheduleDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(AuditorSchedule row) {
 		if (row != null) {
 			em.remove(row);

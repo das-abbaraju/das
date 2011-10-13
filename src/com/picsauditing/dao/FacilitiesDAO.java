@@ -11,9 +11,10 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FacilitiesDAO extends PicsDAO {
+	@Transactional
 	public Facility save(Facility o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -28,6 +29,7 @@ public class FacilitiesDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional
 	public void remove(Facility row) {
 		if (row != null) {
 			em.remove(row);

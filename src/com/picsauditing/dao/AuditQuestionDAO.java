@@ -14,10 +14,10 @@ import com.picsauditing.jpa.entities.AuditQuestionFunction;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.QuestionFunctionType;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditQuestionDAO extends PicsDAO {
-
+	@Transactional
 	public AuditQuestion save(AuditQuestion o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,6 +27,7 @@ public class AuditQuestionDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AuditQuestion row = find(id);
 		if (row != null) {

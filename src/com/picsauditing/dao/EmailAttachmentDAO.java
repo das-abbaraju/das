@@ -8,9 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailAttachment;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class EmailAttachmentDAO extends PicsDAO {
-
+	@Transactional
 	public EmailAttachment save(EmailAttachment o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,6 +21,7 @@ public class EmailAttachmentDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		EmailAttachment row = find(id);
 		if (row != null) {
@@ -27,6 +29,7 @@ public class EmailAttachmentDAO extends PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(EmailAttachment row) {
 		if (row != null) {
 			em.remove(row);
@@ -37,7 +40,7 @@ public class EmailAttachmentDAO extends PicsDAO {
 		return em.find(EmailAttachment.class, id);
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	public List<EmailAttachment> findByEmailID(int emailID) {
 		Query query = em.createQuery("SELECT e from EmailAttachment e WHERE emailQueue.id = ?");
 		query.setParameter(1, emailID);

@@ -4,12 +4,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class ContractorAuditOperatorWorkflowDAO extends PicsDAO {
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAuditOperatorWorkflow> findByCaoID(int caoID) {
 		Query query = em
 				.createQuery("FROM ContractorAuditOperatorWorkflow c WHERE c.cao.id = ? ORDER BY c.creationDate DESC");
@@ -27,7 +30,6 @@ public class ContractorAuditOperatorWorkflowDAO extends PicsDAO {
 		return (ContractorAuditOperatorWorkflow) query.getSingleResult();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ContractorAuditOperatorWorkflow> findbyAuditStatus(int auditID, AuditStatus status) {
 		Query query = em.createQuery("FROM ContractorAuditOperatorWorkflow caow where caow.cao.audit.id = :auditID "
 				+ "AND caow.status = :status AND caow.updateDate = "

@@ -8,14 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AppProperty;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AppPropertyDAO extends PicsDAO {
+	@Transactional
 	public AppProperty save(AppProperty o) {
 		o = em.merge(o);
 		return o;
 	}
 
+	@Transactional
 	public void remove(String property) {
 		AppProperty row = find(property);
 		if (row != null) {

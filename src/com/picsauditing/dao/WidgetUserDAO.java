@@ -9,9 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.WidgetUser;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class WidgetUserDAO extends PicsDAO {
+	@Transactional
 	public WidgetUser save(WidgetUser o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,6 +22,7 @@ public class WidgetUserDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		WidgetUser row = find(id);
 		if (row != null) {

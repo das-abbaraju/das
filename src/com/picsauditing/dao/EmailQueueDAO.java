@@ -12,9 +12,10 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
+@SuppressWarnings("unchecked")
 public class EmailQueueDAO extends PicsDAO {
-
+	@Transactional
 	public EmailQueue save(EmailQueue o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -24,6 +25,7 @@ public class EmailQueueDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		EmailQueue row = find(id);
 		if (row != null) {
@@ -31,6 +33,7 @@ public class EmailQueueDAO extends PicsDAO {
 		}
 	}
 
+	@Transactional
 	public void remove(EmailQueue row) {
 		if (row != null) {
 			em.remove(row);
@@ -45,7 +48,6 @@ public class EmailQueueDAO extends PicsDAO {
 		return getPendingEmails("", limit);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailQueue> getPendingEmails(String where, int limit) {
 		if (!Strings.isEmpty(where))
 			where = "AND " + where;
@@ -55,7 +57,7 @@ public class EmailQueueDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	public EmailQueue getQuickbooksError() {
 		Query query = em.createQuery("FROM EmailQueue t WHERE t.subject = 'QBWebConnector Errors'"
 				+ " ORDER BY t.id DESC");
@@ -66,7 +68,6 @@ public class EmailQueueDAO extends PicsDAO {
 		return list.get(0);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<EmailQueue> findByContractorId(int id, Permissions permissions) {
 		String permWhere;
 		// Show the user's private notes

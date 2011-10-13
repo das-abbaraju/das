@@ -15,9 +15,10 @@ import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Strings;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AssessmentResultDAO extends PicsDAO {
+	@Transactional
 	public AssessmentResult save(AssessmentResult o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,6 +28,7 @@ public class AssessmentResultDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional
 	public void remove(int id) {
 		AssessmentResult row = find(id);
 		if (row != null) {

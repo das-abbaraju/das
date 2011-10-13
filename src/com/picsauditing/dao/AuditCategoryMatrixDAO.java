@@ -16,7 +16,7 @@ import com.picsauditing.jpa.entities.AuditCategoryMatrixDesktop;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditCategoryMatrixDAO extends PicsDAO {
 	public AuditCategoryMatrix find(int id) {

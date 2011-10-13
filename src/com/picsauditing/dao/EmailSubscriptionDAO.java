@@ -13,10 +13,10 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.search.SelectSQL;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmailSubscriptionDAO extends PicsDAO {
-
+	@Transactional
 	public EmailSubscription save(EmailSubscription o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -36,6 +36,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 			remove(row);
 	}
 
+	@Transactional
 	public void remove(EmailSubscription row) {
 		if (row != null)
 			em.remove(row);

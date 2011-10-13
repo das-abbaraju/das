@@ -12,7 +12,7 @@ import com.google.common.collect.Multimap;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class StateDAO extends PicsDAO {
 

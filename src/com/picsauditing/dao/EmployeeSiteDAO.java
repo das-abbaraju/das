@@ -12,7 +12,7 @@ import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@Transactional
+@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeSiteDAO extends PicsDAO {
 
