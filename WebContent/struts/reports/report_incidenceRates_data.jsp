@@ -30,7 +30,6 @@
 			</s:if>
 			<td><s:text name="Filters.label.ForYear" /></td>
 		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');"><s:text name="global.Average" /></a></th>
-			<td><s:text name="global.Verified" /></td>
 			<td><s:text name="ReportIncidenceRate.TrirIndustryAverage" /></td>
 			<s:if test="showContact">
 				<td><s:text name="global.ContactPrimary" /></td>
@@ -73,9 +72,6 @@
 			</s:if>
 			<td><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('trirAverage')" /></td>
-			<td><s:if test="get('verifiedDate') != null">
-		    	<span class="verified" style="font-size: 16px;"></span></s:if>
-		    </td>
 		    <td><s:property value="[0].get('trir')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>

@@ -25,7 +25,6 @@
 	    <th><s:text name="ReportEmrRates.header.Year" /></th>
 	    <th><a href="javascript: changeOrderBy('form1','d.answer');"><s:text name="ReportEmrRates.header.Rate" /></a></th>
 	    <th><a href="javascript: changeOrderBy('form1','c.emrAverage');"><s:text name="global.Average" /></a></th>
-	    <td><s:text name="global.Verified" /></td>
 		<s:if test="showContact">
 			<td><s:text name="global.ContactPrimary" /></td>
 			<td><s:text name="User.phone" /></td>
@@ -48,11 +47,6 @@
 			<td><s:property value="get('auditFor')"/></td>
 			<td class="right"><s:property value="get('answer')"/></td>
 			<td class="right"><s:property value="get('emrAverage')"/></td>
-		    <td class="center">
-		    	<s:if test="get('dateVerified') != null">
-		    		<img src="images/okCheck.gif" alt="<s:text name="global.Verified" />" title="<s:text name="global.Verified" />" />
-		    	</s:if>
-		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>
 				<td><s:property value="get('contactphone')"/></td>

@@ -24,7 +24,6 @@
 			<td><a href="?orderBy=ca.auditFor DESC"><s:text name="Filters.label.ForYear" /></a></td>
 			<td><a href="?orderBy=os.SHAType DESC"><s:text name="Filters.label.SHAType" /></a></td>
 			<td><s:text name="ReportFatalities.header.Fatalities" /></td>
-			<td><s:text name="global.Verified" /></td>
 			<s:if test="showContact">
 				<td><s:text name="global.ContactPrimary" /></td>
 				<td><s:text name="User.phone" /></td>
@@ -60,9 +59,6 @@
 			<td class="center"><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('SHAType')"/></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
-			<td class="center"><s:if test="get('verifiedDate') != null">
-		    	<span class="verified" style="font-size: 16px;"></span></s:if>
-		    </td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>
 				<td><s:property value="get('contactphone')"/></td>
