@@ -59,7 +59,7 @@
 				</tr>
 			</thead>
 			<s:iterator value="data" status="stat">
-				<tr>
+				<tr id="audit_<s:property value="[0].get('auditID')"/>">
 					<td class="right">
 						<s:property value="#stat.index + report.firstRowNumber" />
 					</td>
@@ -111,9 +111,10 @@
 					</td>
 					<td colspan="8">
 						<s:select cssClass="blueMain" list="auditorList" listKey="id" listValue="name" 
-							headerKey="" headerValue="- Safety Professional -" name="closingAuditor" />
+							headerKey="0" headerValue="- Safety Professional -" name="closingAuditor" />
 						<s:textarea name="notes" rows="3" cols="15" />
-						<s:submit method="saveAll" id="saveAll" cssClass="picsbutton" value="Save All" />
+						<input type="hidden" name="method:saveAll" value="Save All" />
+						<input type="button" class="picsbutton" value="Save All" id="saveAll" />
 					</td>
 				</tr>
 			</pics:permission>
