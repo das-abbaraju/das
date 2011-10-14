@@ -64,6 +64,7 @@ public class AuditDataSave extends AuditActionSupport {
 	public String execute() throws Exception {
 
 		AuditCatData catData;
+		boolean commentOnly = false;
 		try {
 			getUser();
 			AuditData newCopy = null;
@@ -74,8 +75,8 @@ public class AuditDataSave extends AuditActionSupport {
 					throw new Exception("Missing Audit");
 				if (auditData.getQuestion() == null)
 					throw new Exception("Missing Question");
-				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(),
-						auditData.getQuestion().getId());
+				newCopy = auditDataDao.findAnswerToQuestion(auditData.getAudit().getId(), auditData.getQuestion()
+						.getId());
 			}
 
 			auditID = auditData.getAudit().getId();
@@ -104,15 +105,25 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
+				if (!newCopy.getComment().equals(auditData.getComment())) {
+					if (newCopy.getAnswer() == null && auditData.getAnswer() == null)
+						commentOnly = true;
+					else if (newCopy.getQuestion().getQuestionType().equals("File") || 
+							newCopy.getAnswer().equals(auditData.getAnswer()))
+						commentOnly = true;
+					else 
+						commentOnly = false;
+				}
+
 				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())
 						|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
 
-					if (!checkAnswerFormat(auditData, newCopy) && !toggleVerify) {
+					if (!checkAnswerFormat(auditData, newCopy) && !toggleVerify && !commentOnly) {
 						auditData = newCopy;
 						return SUCCESS;
 					}
 
-					if (!toggleVerify) {
+					if (!toggleVerify && !commentOnly) {
 						newCopy.setDateVerified(null);
 						newCopy.setAnswer(auditData.getAnswer());
 					}
@@ -122,7 +133,7 @@ public class AuditDataSave extends AuditActionSupport {
 						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
 							newCopy.setWasChanged(YesNo.Yes);
 
-							if (!toggleVerify) {
+							if (!toggleVerify && !commentOnly) {
 								if (newCopy.isRequirementOpen()) {
 									newCopy.setDateVerified(null);
 									newCopy.setAuditor(null);
@@ -138,7 +149,7 @@ public class AuditDataSave extends AuditActionSupport {
 				// we were handed the verification parms
 				// instead of the edit parms
 
-				if (toggleVerify) {
+				if (toggleVerify && !commentOnly) {
 
 					if (newCopy.isVerified()) {
 						newCopy.setDateVerified(null);
@@ -259,8 +270,8 @@ public class AuditDataSave extends AuditActionSupport {
 			// hook to calculation read/update
 			// the ContractorAudit and AuditCatData
 			try {
-				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(),
-						auditData.getQuestion().getCategory().getId());
+				catData = catDataDao.findAuditCatData(auditData.getAudit().getId(), auditData.getQuestion()
+						.getCategory().getId());
 			} catch (NoResultException e) {
 				// Create AuditCatData for categories that don't have one
 				// yet
