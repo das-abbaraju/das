@@ -138,6 +138,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String save() throws Exception {
+		findContractor();
+		
 		String ftpDir = getFtpDir();
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
@@ -208,7 +210,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					addActionError(error);
 				// TODO I don't know if this is the right answer here, but we don't want to save anything if
 				// there are errors.
-				accountDao.refresh(contractor);
+				contractor = accountDao.find(contractor.getId());
 				return SUCCESS;
 			}
 			contractor.setQbSync(true);
@@ -260,6 +262,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@RequiredPermission(value = OpPerms.EmailOperators)
 	public String sendDeactivationEmail() throws Exception {
+		findContractor();
+		
 		Set<String> emailAddresses = new HashSet<String>();
 		if (operatorIds != null) {
 			for (int operatorID : operatorIds) {
@@ -348,6 +352,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String deactivate() throws Exception {
+		findContractor();
+		
 		if (Strings.isEmpty(contractor.getReason())) {
 			addActionError(getText("ContractorEdit.error.DeactivationReason"));
 		} else {
@@ -373,6 +379,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String reactivate() throws Exception {
+		findContractor();
+		
 		contractor.setRenew(true);
 		if (contractor.isHasFreeMembership())
 			contractor.setStatus(AccountStatus.Active);
@@ -385,13 +393,17 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String createImportPQF() throws Exception {
+		findContractor();
+		
 		redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
 				+ contractor.getId());
 
 		return SUCCESS;
 	}
 
-	public String expireImportPQF() {
+	public String expireImportPQF() throws Exception {
+		findContractor();
+		
 		billingService.removeImportPQF(contractor);
 		addActionMessage(getText("ContractorEdit.message.RemovedImportPQF"));
 
