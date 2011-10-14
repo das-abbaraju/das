@@ -217,7 +217,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		String noteText = "";
 
 		if (forceFlag == null || forceFlag.equals(co.getForceFlag()))
-			addActionError(getText("ContractorFlag.error.FlagNotChange"));
+			addActionMessage(getText("ContractorFlag.error.FlagNotChange"));
 		if (forceEnd == null)
 			addActionError(getText("ContractorFlag.error.NoDate"));
 		if (Strings.isEmpty(forceNote))
