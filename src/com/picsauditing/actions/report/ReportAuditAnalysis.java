@@ -26,17 +26,9 @@ public class ReportAuditAnalysis extends PicsActionSupport {
 		
 		permissions.tryPermission(OpPerms.ManageAudits);
 		
-		String sql = "select label, sortBy, sum(createdCount) createdCount, sum(completeCount) completeCount, " +
+		String sql = "select label, sortBy, sum(completeCount) completeCount, " +
 			"sum(closedCount) closedCount " +
-			"FROM (SELECT DATE_FORMAT(closedDate, '%b %Y') label, " +
-			"DATE_FORMAT(closedDate, '%Y%m') sortBy, " +
-			"0 createdCount, 0 completeCount, count(*) closedCount " +
-			"FROM contractor_audit WHERE closedDate > 0 " + where + 
-			"GROUP BY sortBy union select DATE_FORMAT(completedDate, '%b %Y') label, " +
-			"DATE_FORMAT(completedDate, '%Y%m') sortBy, " +
-			"0 createdCount, count(*) completeCount, 0 closedCount " +
-			"FROM contractor_audit WHERE completedDate > 0 " + where + 
-			"GROUP BY sortBy union select DATE_FORMAT(creationDate, '%b %Y') label, " +
+			"FROM (select DATE_FORMAT(creationDate, '%b %Y') label, " +
 			"DATE_FORMAT(creationDate, '%Y%m') sortBy, " +
 			"count(*) creationDate, 0 completeCount, 0 closedCount " +
 			"FROM contractor_audit WHERE creationDate > 0 AND creationDate > '2001-01-01 00:00:00'" + where + 

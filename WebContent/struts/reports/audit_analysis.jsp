@@ -14,7 +14,6 @@
 	<thead>
 		<tr>
 			<td>Month</td>
-			<td>Created</td>
 			<td>Submitted</td>
 			<td>Closed</td>
 		</tr>
@@ -23,9 +22,6 @@
 		<tr>
 			<td class="right">
 				<s:property value="[0].get('label')" />
-			</td>
-			<td>
-				<s:property value="[0].get('createdCount')" />
 			</td>
 			<td>
 				<s:property value="[0].get('completeCount')" />			
