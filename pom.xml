@@ -20,6 +20,11 @@
 			<name>Maven Repository for iText</name>
 			<url>http://maven.itextpdf.com/</url>
 		</repository>
+		<repository>
+			<id>terracotta.org</id>
+			<name>Terracotta</name>
+			<url>http://repo.terracotta.org/maven2</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
