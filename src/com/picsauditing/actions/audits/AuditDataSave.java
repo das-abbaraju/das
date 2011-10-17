@@ -105,7 +105,7 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				if (!newCopy.getComment().equals(auditData.getComment())) {
+				if (newCopy.getComment() != null && !newCopy.getComment().equals(auditData.getComment())) {
 					if (newCopy.getAnswer() == null && auditData.getAnswer() == null)
 						commentOnly = true;
 					else if (newCopy.getQuestion().getQuestionType().equals("File") || 
