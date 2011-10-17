@@ -10,6 +10,14 @@
 	<div id="nonSelectable" class="alert-message">
 		<s:text name="ContractorTrade.nonSelectable" />
 	</div>
+	
+	<s:form id="trade-form">
+		<s:hidden name="contractor"/>
+		<s:hidden name="trade"/>
+		<s:hidden name="trade.trade"/>
+		
+		<s:submit method="removeTradeAjax" value="%{getText('button.Remove')}" cssClass="remove btn danger" /> 
+	</s:form>
 </s:if>
 
 <s:if test="trade.id > 0 && trade.activityPercent == 0">
