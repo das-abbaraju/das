@@ -72,17 +72,16 @@ public class OpenTasks extends TranslationActionSupport {
 			String billingStatus = contractor.getBillingStatus();
 			if ("Upgrade".equals(billingStatus)
 					|| ("Renewal".equals(billingStatus) && contractor.getAccountLevel().isBidOnly())) {
-				openTasks.add(getTextParameterized(
-						"ContractorWidget.message.GenerateInvoice" + ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""),
-						contractor.getId()));
+				openTasks.add(getTextParameterized("ContractorWidget.message.GenerateInvoice"
+						+ ((user.getAccount().isAdmin()) ? ".IsAdmin" : ""), contractor.getId()));
 			}
 
 			if (contractor.getBalance().compareTo(BigDecimal.ZERO) > 0) {
 				for (Invoice invoice : contractor.getInvoices()) {
 					if (invoice.getStatus().isUnpaid()) {
 						openTasks.add(getTextParameterized("ContractorWidget.message.OpenInvoiceReminder"
-								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
-								invoice.getBalance(), invoice.getDueDate()));
+								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(), invoice
+								.getBalance(), invoice.getDueDate()));
 					}
 				}
 			}
@@ -209,6 +208,17 @@ public class OpenTasks extends TranslationActionSupport {
 										conAudit.getId(), auditName, showAuditFor, auditFor));
 							}
 						}
+					} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY ||
+							conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
+							&& conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
+						Integer conAuditID = conAudit.getId();
+						String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
+								auditName, showAuditFor, auditFor);
+						if (!openReq) {
+							text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
+							openReq = true;
+						}
+						openTasks.add(text);
 					}
 				}
 			}
