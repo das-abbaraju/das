@@ -26,5 +26,7 @@ public class AuditCatRulesChangesAjax extends
 	public void setLastRelease(String releaseDate) {
 		this.lastRelease = releaseDate;
 	}
-
+	public String getUrlPrefix() {
+		return "Category";
+	}
 }

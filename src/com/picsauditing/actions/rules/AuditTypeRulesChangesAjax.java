@@ -25,5 +25,7 @@ public class AuditTypeRulesChangesAjax extends
 	public void setLastRelease(String releaseDate) {
 		this.lastRelease = releaseDate;
 	}
-
+	public String getUrlPrefix() {
+		return "AuditType";
+	}
 }
