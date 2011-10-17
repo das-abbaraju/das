@@ -62,12 +62,13 @@ public class ReportAuditAnalysis extends PicsActionSupport {
 	
 	public void setAuditorId(int[] auditorId) {
 		String auditorIdList = Strings.implode(auditorId, ",");
-		where += " AND auditorID IN (" + auditorIdList + ") ";
+		if (!auditorIdList.equals(""))
+			where += " AND auditorID IN (" + auditorIdList + ") ";
 	}
 
 	public void setAuditTypeID(int[] auditTypeID) {
 		String auditList = Strings.implode(auditTypeID, ",");
-		if (auditList.equals("0"))
+		if (auditList.equals("0") || auditList.equals(""))
 			return;
 
 		where += " AND auditTypeID IN (" + auditList + ") ";
