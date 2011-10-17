@@ -30,7 +30,7 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 		getFilter().setShowCaoOperator(true);
 		super.buildQuery();
 
-		sql.addWhere("cao.status = 'Submitted'");
+		sql.addWhere("cao.status IN ('Submitted', 'Resubmitted')");
 
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 
