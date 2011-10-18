@@ -174,7 +174,6 @@ public class EventSubscriptionBuilder {
 			emailSender.sendNow(q);
 			subscription.setLastSent(new Date());
 			subscriptionDAO.save(subscription);
-			System.out.println("email sent to " + email.getToAddresses());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
