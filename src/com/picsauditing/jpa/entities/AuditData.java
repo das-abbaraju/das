@@ -15,9 +15,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.util.Strings;
@@ -25,7 +22,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "pqfdata")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditData extends BaseTable implements java.io.Serializable, Comparable<AuditData> {
 
 	private ContractorAudit audit;
