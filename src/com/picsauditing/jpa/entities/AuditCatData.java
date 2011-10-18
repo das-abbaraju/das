@@ -15,13 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_cat_data")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	private ContractorAudit audit;
