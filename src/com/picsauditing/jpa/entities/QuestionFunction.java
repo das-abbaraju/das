@@ -144,6 +144,82 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
+	/**
+	 * Annual Update AIR
+	 * AIR = (Number of reportable injuries / Number of employees) X 100,000
+	 */
+	AIR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("majorInjuries"))
+					|| Strings.isEmpty(params.get("overThreeDays"))
+					|| Strings.isEmpty(params.get("underThreeDays"))
+					|| Strings.isEmpty(params.get("diseases"))
+					|| Strings.isEmpty(params.get("gas")))
+				return "Audit.missingParameter";
+			
+			BigDecimal employees = new BigDecimal(params.get("employees")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
+			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
+			BigDecimal overThreeDays = new BigDecimal(params.get("overThreeDays")).setScale(7);
+			BigDecimal underThreeDays = new BigDecimal(params.get("underThreeDays")).setScale(7);
+			BigDecimal diseases = new BigDecimal(params.get("diseases")).setScale(7);
+			BigDecimal gas = new BigDecimal(params.get("gas")).setScale(7);
+					
+			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(overThreeDays.add(underThreeDays.add(diseases.add(gas)))));
+			
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(employees).multiply(UK_NORMALIZER).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return "Audit.missingParameter";
+			}
+			
+			return result;
+		}
+	},
+	/**
+	 * Annual Update AFR
+	 * AFR = (Number of injuries / total hours worked) x 100,000 
+	 */	
+	AFR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("totalHours"))
+					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("majorInjuries"))
+					|| Strings.isEmpty(params.get("overThreeDays"))
+					|| Strings.isEmpty(params.get("underThreeDays"))
+					|| Strings.isEmpty(params.get("diseases"))
+					|| Strings.isEmpty(params.get("gas")))
+				return "Audit.missingParameter";
+			
+			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
+			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
+			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
+			BigDecimal overThreeDays = new BigDecimal(params.get("overThreeDays")).setScale(7);
+			BigDecimal underThreeDays = new BigDecimal(params.get("underThreeDays")).setScale(7);
+			BigDecimal diseases = new BigDecimal(params.get("diseases")).setScale(7);
+			BigDecimal gas = new BigDecimal(params.get("gas")).setScale(7);
+					
+			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(overThreeDays.add(underThreeDays.add(diseases.add(gas)))));
+			
+			BigDecimal result;
+			try {
+				result = totalIncidents.divide(totalHours).multiply(UK_NORMALIZER).setScale(2);
+			} catch (java.lang.ArithmeticException e) {
+				return "Audit.missingParameter";
+			}
+			
+			return result;
+		}
+	},
 	SCORE {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -179,6 +255,9 @@ public enum QuestionFunction {
 	};
 	// OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
+	
+	// UK HSE standard normalizer.
+	private static final BigDecimal UK_NORMALIZER = new BigDecimal(100000);
 
 	public abstract Object calculate(FunctionInput input);
 
