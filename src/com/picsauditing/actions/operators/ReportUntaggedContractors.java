@@ -191,7 +191,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 			return operatorTags;
 
 		if (operator != null)
-			return operator.getTags();
+			return operatorTagDAO.findByOperator(operator.getId(), true);
 
 		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
