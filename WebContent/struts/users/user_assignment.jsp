@@ -102,8 +102,6 @@ tr.dirty a.save { display: inline; }
 <body>
 <h1><s:property value="type"/> Assignment</h1>
 
-<s:include value="../config_environment.jsp" />
-
 <div id="report_data">
 <s:include value="user_assignment_data.jsp"></s:include>
 </div>
