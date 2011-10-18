@@ -134,6 +134,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	@Where(clause = "expiresDate > NOW()")
 	public List<ContractorAudit> getAudits() {
 		return this.audits;
 	}
