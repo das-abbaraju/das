@@ -397,15 +397,10 @@ public class AuditBuilder {
 		}
 
 		/*
-		 * For now we have decided to hard code Welcome Call audit to not be viewable for operators. We might add a
-		 * field later if required.
+		 * Remove COAPs from audits where operators cannot view the audit such as the Welcome Call
 		 */
-		// TODO Kirk, please clean this up with AuditType.isOperatorCanSee
-		if (cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
+		if (!cao.getAudit().getAuditType().isCanOperatorView())
 			caopOperators.clear();
-		// Removed this because of PICS-2596
-		// if (cao.getAudit().getAuditType().getId() == AuditType.IMPORT_PQF)
-		// caopOperators.clear();
 
 		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
