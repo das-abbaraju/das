@@ -23,7 +23,6 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.AccountRecovery;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -433,6 +432,10 @@ public class UsersManage extends PicsActionSupport {
 				return SUCCESS;
 			}
 			if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
+				addActionError(message);
+				return SUCCESS;
+			}
+			if (!userDAO.canRemoveUser("ContractorRegistrationRequest", user.getId(), "t.requestedByUser.id = :userID")) {
 				addActionError(message);
 				return SUCCESS;
 			}
