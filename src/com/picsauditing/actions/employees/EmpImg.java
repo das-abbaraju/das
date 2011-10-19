@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Map;
 
-import org.terracotta.agent.repkg.de.schlichtherle.io.FileInputStream;
+import java.io.FileInputStream;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
