@@ -400,6 +400,7 @@ public class AuditBuilder {
 		 * For now we have decided to hard code Welcome Call audit to not be viewable for operators. We might add a
 		 * field later if required.
 		 */
+		// TODO Kirk, please clean this up with AuditType.isOperatorCanSee
 		if (cao.getAudit().getAuditType().getId() == AuditType.WELCOME)
 			caopOperators.clear();
 		// Removed this because of PICS-2596
