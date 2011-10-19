@@ -89,6 +89,7 @@ public class AuditDataSave extends AuditActionSupport {
 					auditData = newCopy;
 				}
 				loadAnswerMap();
+
 				return SUCCESS;
 			}
 
@@ -105,52 +106,22 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				if (newCopy.getComment() != null && !newCopy.getComment().equals(auditData.getComment())) {
-					if (newCopy.getAnswer() == null && auditData.getAnswer() == null)
-						commentOnly = true;
-					else if (newCopy.getQuestion().getQuestionType().equals("File") || 
-							newCopy.getAnswer().equals(auditData.getAnswer()))
-						commentOnly = true;
-					else 
-						commentOnly = false;
+				boolean verifyButton = ("verify".equals(button));
+				boolean commentChanged = false;
+				boolean answerChanged = false;
+
+				if (auditData.getComment() != null) {
+					if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
+						commentChanged = true;
 				}
 
-				if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer())
-						|| (!Utilities.isEmptyArray(multiAnswer) || newCopy.getAnswer() != null)) {
-
-					if (!checkAnswerFormat(auditData, newCopy) && !toggleVerify && !commentOnly) {
-						auditData = newCopy;
-						return SUCCESS;
-					}
-
-					if (!toggleVerify && !commentOnly) {
-						newCopy.setDateVerified(null);
-						newCopy.setAnswer(auditData.getAnswer());
-					}
-
-					if (newCopy.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()
-							&& permissions.isPicsEmployee()) {
-						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)) {
-							newCopy.setWasChanged(YesNo.Yes);
-
-							if (!toggleVerify && !commentOnly) {
-								if (newCopy.isRequirementOpen()) {
-									newCopy.setDateVerified(null);
-									newCopy.setAuditor(null);
-								} else {
-									newCopy.setDateVerified(new Date());
-									newCopy.setAuditor(getUser());
-								}
-							}
-						}
-					}
+				if (auditData.getAnswer() != null) {
+					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
+						answerChanged = true;
 				}
 
-				// we were handed the verification parms
-				// instead of the edit parms
-
-				if (toggleVerify && !commentOnly) {
-
+				if (verifyButton) {
+					// verify mode
 					if (newCopy.isVerified()) {
 						newCopy.setDateVerified(null);
 						newCopy.setAuditor(null);
@@ -158,13 +129,32 @@ public class AuditDataSave extends AuditActionSupport {
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
 					}
-				}
+				} else {
+					// update mode
+					if (commentChanged) {
+						newCopy.setComment(auditData.getComment());
+					}
 
-				if (auditData.getComment() != null) {
-					newCopy.setComment(auditData.getComment());
+					if (answerChanged) {
+						if (!checkAnswerFormat(auditData, newCopy)) {
+							auditData = newCopy;
+							return SUCCESS;
+						}
+
+						if (newCopy.isVerified()) {
+							newCopy.setDateVerified(null);
+							newCopy.setAuditor(null);
+						}
+
+						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
+							newCopy.setWasChanged(YesNo.Yes);
+
+						newCopy.setAnswer(auditData.getAnswer());
+					}
 				}
 
 				auditData = newCopy;
+
 			}
 
 			loadAnswerMap();

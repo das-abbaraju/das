@@ -182,6 +182,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			try {
 				// remove all files ie (pdf, jpg)
 				auditData.setAnswer(null);
+				auditData.setDateVerified(null);
 				auditDataDao.save(auditData);
 				for (File oldFile : getFiles(dataID))
 					FileUtils.deleteFile(oldFile);
@@ -267,8 +268,9 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		}
 
 		auditData.setAnswer(extension);
-
 		auditData.setAuditColumns(permissions);
+		auditData.setDateVerified(null);
+		
 		auditDataDao.save(auditData);
 		dataID = auditData.getId();
 

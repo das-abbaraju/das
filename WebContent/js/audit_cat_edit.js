@@ -16,7 +16,8 @@ function verifyAnswer(questionid, answerid) {
 			'catDataID':catDataID,
 			'auditData.question.id':questionid,
 			'auditData.id':answerid,
-			'toggleVerify':true
+			'toggleVerify':true,
+			'button' : 'verify'
 	};
 	
 	$.getJSON('AuditToggleVerifyAjax.action', data, function(json, status) {

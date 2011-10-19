@@ -37,7 +37,8 @@ small {
 				'categoryID': categoryId,
 				'auditData.question.id': questionId,
 				'auditData.comment': comment,
-				'toggleVerify': true
+				'toggleVerify': true,
+				'button' : 'verify'
 			};
 
 		if( answerelm != null ) {

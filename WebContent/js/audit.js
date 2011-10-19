@@ -246,7 +246,12 @@
 				
 				data.push({
 					name: 'toggleVerify',
-					value: 'true'
+					value: 'true',
+					
+				});
+				data.push({
+					name: 'button',
+					value: 'verify'
 				});
 				
 				element.block({
