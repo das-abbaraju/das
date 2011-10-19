@@ -10,7 +10,7 @@
 update app_translation set msgKey = "ContractorEdit.error.BrochureFormat" where msgKey = "ContractorEdit.error.Brochure Format"
 
 -- PICS-2600 Allow Audit Types to be hidden from Operators but not contractors
-update audit_type set canOperatorView=0 where id=9 or id=232 or id=269 or id=270 or id =272 or id=281;
+update audit_type set canOperatorView=0 where id=9 or id=232 or id=269 or id=270 or id=271 or id=281;
 
 -- PICS-3450
 insert into `audit_question_function_watcher` (`functionID`, `questionID`, `uniqueCode`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`) values('55','8867','fatalities','38586','38586','2011-09-27 16:19:35','2011-09-27 16:19:35');
