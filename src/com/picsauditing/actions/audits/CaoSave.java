@@ -210,24 +210,15 @@ public class CaoSave extends AuditActionSupport {
 
 		if (step.getEmailTemplate() != null) {
 			sendStatusChangeEmail(step, cao);
-			
-			Note note = new Note();
-			note.setAccount(cao.getAudit().getContractorAccount());
-			note.setAuditColumns(permissions);
+
 			String summary = "Email sent to contractor for Changed Status for "
 					+ cao.getAudit().getAuditType().getName().toString() + "(" + cao.getAudit().getId() + ") ";
 			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
 				summary += " for " + cao.getAudit().getAuditFor();
 			summary += " from " + prevStatus + " to " + cao.getStatus();
-			note.setSummary(summary);
-			note.setPriority(LowMedHigh.Med);
-			note.setNoteCategory(NoteCategory.General);
-			note.setViewableById(Account.PicsID);
-			note.setCanContractorView(false);
-			note.setStatus(NoteStatus.Closed);
-			noteDAO.save(note);
+			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false, Account.PicsID, null, null);
 		}
-		
+
 		caoDAO.save(cao);
 		setCaoUpdatedNote(prevStatus, cao, note);
 		autoExpireOldAudits(cao.getAudit(), newStatus);
