@@ -41,6 +41,8 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private EmailSenderSpring emailSenderSpring;
 
+	private static String defaultPassword = "e3r4t5";
+
 	private int limit = 2;
 	private int subscriptionID = 0;
 
@@ -208,14 +210,14 @@ public class MailCron extends PicsActionSupport {
 
 	private void sendMail(String message, int subscriptionID) {
 		try {
-			SendMail sendMail = new SendMail();
+			GridSender gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 			EmailQueue email = new EmailQueue();
 			email.setToAddresses("errors@picsauditing.com");
 			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
 			email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
 			email.setBody(message);
 			email.setCreationDate(new Date());
-			sendMail.send(email);
+			gridSender.sendMail(email);
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("Error sending email");
 			System.out.println(notMuchWeCanDoButLogIt);

@@ -5,7 +5,7 @@
 <%@page import="com.opensymphony.xwork2.ActionContext"%>
 <%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
 <%@page import="com.picsauditing.mail.EmailSender"%>
-<%@page import="com.picsauditing.mail.SendMail"%>
+<%@page import="com.picsauditing.mail.GridSender"%>
 <%@page import="com.picsauditing.search.Database"%>
 <%@page import="java.sql.SQLException"%>
 <%@page import="java.sql.Timestamp"%>
@@ -86,8 +86,8 @@
 	try {
 		EmailSender.send(mail);
 	} catch (Exception e) {
-		System.out.println("PICS Exception Handler ... sending email via sendMail");
-		SendMail sendMail = new SendMail();
+		System.out.println("PICS Exception Handler ... sending email via SendGrid");
+		GridSender sendMail = new GridSender();
 		mail.setFromAddress("\"PICS Exception Handler\"<info@picsauditing.com>");
 		sendMail.send(mail);
 		System.out.println(mail.getBody());

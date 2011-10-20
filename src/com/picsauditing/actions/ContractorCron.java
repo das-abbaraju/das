@@ -59,7 +59,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.mail.SendMail;
+import com.picsauditing.mail.GridSender;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -86,6 +86,8 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
+
+	private static String defaultPassword = "e3r4t5";
 
 	private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
@@ -228,14 +230,14 @@ public class ContractorCron extends PicsActionSupport {
 
 	private void sendMail(String message, int conID) {
 		try {
-			SendMail sendMail = new SendMail();
+			GridSender gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 			EmailQueue email = new EmailQueue();
 			email.setToAddresses("errors@picsauditing.com");
 			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
 			email.setSubject("Error in ContractorCron for conID = " + conID);
 			email.setBody(message);
 			email.setCreationDate(new Date());
-			sendMail.send(email);
+			gridSender.sendMail(email);
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("Error sending email");
 			System.out.println(notMuchWeCanDoButLogIt);

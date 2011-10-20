@@ -27,31 +27,25 @@ public class EmailSenderSpring {
 	 */
 	private void sendMail(EmailQueue email, int attempts) {
 		attempts++;
-		boolean useSendGrid = true;
-		if (attempts > 2 || email.getToAddresses().endsWith("@picsauditing.com"))
-			useSendGrid = false;
+
 		try {
 			if (checkDeactivated(email))
 				return;
-			if (useSendGrid) {
-				GridSender gridSender;
-				if (!Strings.isEmpty(email.getFromPassword())) {
-					// Use a specific email address like
-					// tallred@picsauditing.com
-					// We need the password to correctly authenticate with GMail
-					PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
-					gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
-				} else {
-					// Use the default info@picsauditing.com address
-					PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
-					gridSender = new GridSender("info@picsauditing.com", defaultPassword);
-				}
-				gridSender.sendMail(email);
+
+			GridSender gridSender;
+			if (!Strings.isEmpty(email.getFromPassword())) {
+				// Use a specific email address like
+				// tallred@picsauditing.com
+				// We need the password to correctly authenticate with GMail
+				PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
+				gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
 			} else {
-				PicsLogger.log("using localhost sendmail to send");
-				SendMail sendMail = new SendMail();
-				sendMail.send(email);
+				// Use the default info@picsauditing.com address
+				PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
+				gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 			}
+			gridSender.sendMail(email);
+
 			email.setStatus(EmailStatus.Sent);
 			email.setSentDate(new Date());
 
@@ -63,13 +57,8 @@ public class EmailSenderSpring {
 			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
 					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
 					+ "\nSUBJECT: " + email.getSubject());
-			if (useSendGrid) {
-				this.sendMail(email, attempts);
-			} else {
-				PicsLogger.log("Failed to send email using sendmail...exiting");
-				email.setStatus(EmailStatus.Error);
-				emailQueueDAO.save(email);
-			}
+
+			this.sendMail(email, attempts);
 		}
 	}
 
