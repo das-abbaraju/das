@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.TreeSet;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +19,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -40,7 +38,7 @@ public class Permissions implements Serializable {
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 	private Set<Integer> groups = new HashSet<Integer>();
-	private Set<UserAccess> permissions = new TreeSet<UserAccess>();
+	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
@@ -185,12 +183,14 @@ public class Permissions implements Serializable {
 					}
 				}
 			}
-			permissions = user.getPermissions();
+			
+			for (com.picsauditing.jpa.entities.UserAccess ua : user.getPermissions()) {
+				permissions.add(new UserAccess(ua));				
+			}
 
 			if (isContractor()) {
 				UserAccess conProfileEdit = new UserAccess();
 				conProfileEdit.setOpPerm(OpPerms.EditProfile);
-				conProfileEdit.setViewFlag(true);
 				conProfileEdit.setEditFlag(true);
 				permissions.add(conProfileEdit);
 			}
@@ -311,22 +311,16 @@ public class Permissions implements Serializable {
 				return true;
 			if (opPerm == perm.getOpPerm()) {
 				if (oType == OpType.Edit)
-					return isTrue(perm.getEditFlag());
+					return perm.isEditFlag();
 				else if (oType == OpType.Delete)
-					return isTrue(perm.getDeleteFlag());
+					return perm.isDeleteFlag();
 				else if (oType == OpType.Grant)
-					return isTrue(perm.getGrantFlag());
+					return perm.isGrantFlag();
 				// Default to OpType.View
-				return isTrue(perm.getViewFlag());
+				return perm.isViewFlag();
 			}
 		}
 		return false;
-	}
-
-	private boolean isTrue(Boolean value) {
-		if (value == null)
-			return false;
-		return value;
 	}
 
 	public boolean hasPermission(OpPerms opPerm) {
@@ -599,11 +593,8 @@ public class Permissions implements Serializable {
 	public void setTranslatorOn() {
 		UserAccess ua = new UserAccess();
 		ua.setOpPerm(OpPerms.Translator);
-		ua.setUser(new User(getUserId()));
-		ua.setViewFlag(true);
 		ua.setEditFlag(true);
 		ua.setDeleteFlag(true);
-		ua.setGrantFlag(false);
 
 		this.permissions.add(ua);
 	}

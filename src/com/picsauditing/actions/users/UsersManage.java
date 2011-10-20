@@ -652,9 +652,9 @@ public class UsersManage extends PicsActionSupport {
 
 	public List<OpPerms> getGrantablePermissions() {
 		List<OpPerms> list = new ArrayList<OpPerms>();
-		for (UserAccess perm : permissions.getPermissions()) {
+		for (com.picsauditing.access.UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
-			if (perm.getGrantFlag() != null && perm.getGrantFlag() == true)
+			if (perm.isGrantFlag())
 				list.add(perm.getOpPerm());
 		}
 		for (UserAccess perm : user.getOwnedPermissions()) {
