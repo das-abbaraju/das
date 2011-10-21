@@ -21,7 +21,7 @@
 	</fieldset>
 	<fieldset class="form submit">
 	<button class="picsbutton positive" name="button" value="Run"
-		type="submit">Run</button>
+		type="submit" onclick="$(this).attr('disabled', true); $('#form').submit();">Run</button>
 	</fieldset>
 </s:form>
 
