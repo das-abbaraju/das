@@ -177,5 +177,13 @@
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
 	</welcome-file-list>
-	 
+    <mime-mapping>
+        <extension>docx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xlsx</extension>
+        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
+    </mime-mapping>
+    
 </web-app>
