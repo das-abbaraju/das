@@ -35,6 +35,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showTaxID = true;
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
+	protected boolean showPolicyChangedDate = false;
 	protected boolean showRiskLevel = true;
 	protected boolean showProductRiskLevel = true;
 	protected boolean showService = true;
@@ -72,6 +73,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String taxID;
 	protected String[] flagStatus;
 	protected int[] conAuditorId;
+	protected Date policyChangedDate1;
+	protected Date policyChangedDate2;
 	protected int[] riskLevel;
 	protected int[] productRiskLevel;
 	protected String[] service;
@@ -170,6 +173,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowConAuditor(boolean showConAuditor) {
 		this.showConAuditor = showConAuditor;
+	}
+
+	public boolean isShowPolicyChangedDate() {
+		return showPolicyChangedDate;
+	}
+
+	public void setShowPolicyChangedDate(boolean showPolicyChangedDate) {
+		this.showPolicyChangedDate = showPolicyChangedDate;
 	}
 
 	public boolean isShowRiskLevel() {
@@ -445,6 +456,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setConAuditorId(int[] conAuditorId) {
 		this.conAuditorId = conAuditorId;
+	}
+
+	public Date getPolicyChangedDate1() {
+		return policyChangedDate1;
+	}
+
+	public void setPolicyChangedDate1(Date policyChangedDate1) {
+		this.policyChangedDate1 = policyChangedDate1;
+	}
+
+	public Date getPolicyChangedDate2() {
+		return policyChangedDate2;
+	}
+
+	public void setPolicyChangedDate2(Date policyChangedDate2) {
+		this.policyChangedDate2 = policyChangedDate2;
 	}
 
 	public int[] getRiskLevel() {

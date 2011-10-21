@@ -63,8 +63,13 @@ public class ReportAnswerSearch extends ReportAccount {
 
 	@Override
 	public void run(SelectSQL sql) throws SQLException, IOException {
+		run(sql, new ArrayList<SelectSQL>());
+	}
+
+	@Override
+	public void run(SelectSQL sql, List<SelectSQL> unionSql) throws SQLException, IOException {
 		if (questions.size() > 0)
-			super.run(sql);
+			super.run(sql, unionSql);
 	}
 	
 	@Override

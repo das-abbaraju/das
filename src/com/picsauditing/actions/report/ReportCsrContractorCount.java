@@ -61,7 +61,7 @@ public class ReportCsrContractorCount extends ReportAccount {
 		sql.addField("count(a.name) as cnt");
 		sql.addJoin("JOIN contractor_info c");
 		sql.addJoin("JOIN users u ON c.welcomeAuditor_id = u.id");
-		String opIds = " c.welcomeAuditor_id IN (" + csrIds[0];
+		String opIds = " u.id IN (" + csrIds[0];
 		for (int i = 1; i < csrIds.length; i++) {
 			opIds += "," + csrIds[i];
 		}
@@ -69,7 +69,7 @@ public class ReportCsrContractorCount extends ReportAccount {
 		sql.addWhere(opIds);
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("a.id = c.id");
-		sql.addGroupBy("c.welcomeAuditor_id, a.state");
+		sql.addGroupBy("u.id, a.state");
 		
 		orderByDefault = "u.name,a.state DESC";
 		filteredDefault = true;

@@ -380,10 +380,11 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
-		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER))
+		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER)) {
 			subMenu.addChild(getTitle("ReportCsrActivity"), "ReportCsrActivity.action");
-		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER))
 			subMenu.addChild("CSR Contractor Count", "ReportCsrContractorCount.action");
+			subMenu.addChild("CSR Policies Status Count", "ReportCsrPoliciesStatusCount.action");
+		}
 
 		if (permissions.hasPermission(OpPerms.ManageCategoryRules)
 				|| permissions.hasPermission(OpPerms.ManageAuditTypeRules))

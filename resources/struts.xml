@@ -1136,6 +1136,17 @@
 			<result>struts/reports/csr_contractor_count_data.jsp</result>
 		</action>
 
+		<action name="ReportCsrPoliciesStatusCount"
+			class="com.picsauditing.actions.report.ReportCsrPoliciesStatusCount">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportCsrPoliciesStatusCount</param>
+			<result>struts/reports/csr_policies_status_count.jsp</result>
+		</action>
+		<action name="ReportCsrPoliciesStatusCountAjax"
+			class="com.picsauditing.actions.report.ReportCsrPoliciesStatusCount">
+			<result>struts/reports/csr_policies_status_count_data.jsp</result>
+		</action>
+
 		<action name="ReportWcbAccounts"
 			class="com.picsauditing.actions.report.ReportWcbAccounts">
 			<param name="filter.ajax">true</param>

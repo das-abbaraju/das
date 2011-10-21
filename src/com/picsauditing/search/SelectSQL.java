@@ -1,6 +1,7 @@
 package com.picsauditing.search;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.picsauditing.util.log.PicsLogger;
 
@@ -18,19 +19,23 @@ public class SelectSQL {
 	protected boolean distinct = false;
 
 	/**
-	 * fullClause allows developers to use the SQLBuilder class as a sql string
-	 * instead and explicitly describe the SQL statement in full.
+	 * fullClause allows developers to use the SQLBuilder class as a sql string instead and explicitly describe the SQL
+	 * statement in full.
 	 */
 	String fullClause = "";
 
 	/**
 	 * Return the sql clause in this format:
 	 * 
-	 * SELECT {fields<String>} FROM {fromTable} [{joinClause<String>}] [WHERE
-	 * {whereClause}] [GROUP BY {groupByFields<String>] [HAVING {havingClause}]
-	 * [ORDER BY {orderBys<String>} [LIMIT {limit}|LIMIT {startRow}, {limit}]
+	 * SELECT {fields<String>} FROM {fromTable} [{joinClause<String>}] [WHERE {whereClause}] [GROUP BY
+	 * {groupByFields<String>] [HAVING {havingClause}] [ORDER BY {orderBys<String>} [LIMIT {limit}|LIMIT {startRow},
+	 * {limit}]
 	 */
 	public String toString() {
+		return toString(new ArrayList<SelectSQL>());
+	}
+
+	public String toString(List<SelectSQL> unionSql) {
 		PicsLogger.start("SelectSQL");
 		if (fullClause.length() > 0)
 			return fullClause;
@@ -69,6 +74,14 @@ public class SelectSQL {
 			if (havingClause != null && havingClause.length() > 0) {
 				sql.append("\nHAVING ");
 				sql.append(this.havingClause);
+			}
+		}
+		
+		// do the same as above for the union
+		if (unionSql.size() > 0) {
+			for (SelectSQL union : unionSql) {
+				sql.append("\nUNION\n");
+				sql.append(union.toString());
 			}
 		}
 		if (this.orderBys.size() > 0) {

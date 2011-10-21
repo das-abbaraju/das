@@ -2,6 +2,8 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.TransactionStatus;
@@ -20,8 +22,13 @@ public class ReportContractorUnpaidInvoice extends ReportAccount {
 
 	@Override
 	public void run(SelectSQL sql) throws SQLException, IOException {
+		run(sql, null);
+	}
+
+	@Override
+	public void run(SelectSQL sql, List<SelectSQL> unionSql) throws SQLException, IOException {
 		if (filterOn(getFilter().getAccountName(), "- Name - ") || invoiceID != null) {
-			super.run(sql);
+			super.run(sql, new ArrayList<SelectSQL>());
 		}
 	}
 

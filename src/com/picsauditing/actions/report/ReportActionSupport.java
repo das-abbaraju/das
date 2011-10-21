@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,10 @@ public class ReportActionSupport extends PicsActionSupport {
 	protected boolean filteredDefault = false;
 
 	public void run(SelectSQL sql) throws SQLException, IOException {
+		run(sql, new ArrayList<SelectSQL>());
+	}
+
+	public void run(SelectSQL sql, List<SelectSQL> unionSql) throws SQLException, IOException {
 		if (download || mailMerge || mailReport) {
 			this.report.setLimit(100000);
 			showPage = 1;
@@ -56,6 +61,7 @@ public class ReportActionSupport extends PicsActionSupport {
 			orderBy = orderByDefault;
 		report.setOrderBy(this.orderBy, orderByDefault);
 		report.setSql(sql);
+		report.setUnionSql(unionSql);
 
 		if (showPage > 0)
 			report.setCurrentPage(showPage);

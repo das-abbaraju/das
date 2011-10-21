@@ -45,6 +45,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected List<Integer> ids = new ArrayList<Integer>();
 
 	protected SelectAccount sql = new SelectAccount();
+	protected List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
+	
 	private ReportFilterContractor filter = new ReportFilterContractor();
 
 	public ReportAccount() {
@@ -157,7 +159,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (runReport) {
 			buildQuery();
-			run(sql);
+			run(sql, unionSql);
 
 			WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 			wizardSession.clear();
@@ -344,8 +346,18 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");
-			sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
+			sql.addWhere("u.id IN (" + list + ")");
 			setFiltered(true);
+		}
+
+		if (filterOn(f.getPolicyChangedDate1())) {
+			report.addFilter(new SelectFilterDate("policyChangedDate1", "caow.creationDate > '?'", DateBean.format(
+					f.getPolicyChangedDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getPolicyChangedDate2())) {
+			report.addFilter(new SelectFilterDate("policyChangedDate2", "caow.creationDate < '?'", DateBean.format(
+					f.getPolicyChangedDate2(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getAccountLevel())) {
@@ -515,6 +527,30 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	public void setSql(SelectAccount sql) {
 		this.sql = sql;
+	}
+
+	public List<SelectSQL> getUnionSql() {
+		return unionSql;
+	}
+
+	public void setUnionSql(List<SelectSQL> unionSql) {
+		this.unionSql = unionSql;
+	}
+
+	public void addUnion(SelectAccount sql) {
+		unionSql.add(sql);
+	}
+
+	public SelectSQL getUnion(int index) {
+		return unionSql.get(index);
+	}
+
+	public SelectSQL removeUnion(int index) {
+		return unionSql.remove(index);
+	}
+
+	public void clearUnion(SelectAccount sql) {
+		unionSql.clear();
 	}
 
 	public boolean isShowContact() {

@@ -411,6 +411,20 @@
 			</div>
 		</s:if>
 		
+		<s:if test="filter.showPolicyChangedDate">
+			<br clear="all" />
+			<div class="filterOption">
+				<a href="#" class="filterBox"><s:text name="Filters.label.PolicyChangedDate" /></a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+				<br />
+				<span class="clearLink q_box textfield">
+					<s:textfield cssClass="forms datepicker" size="10" name="filter.policyChangedDate1" />
+					<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" name="filter.policyChangedDate2" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+		</s:if>
+	
 		<s:if test="filter.showConLicense">
 			<br clear="all" />
 			<div class="filterOption">

@@ -14,6 +14,8 @@ import com.picsauditing.util.LinkBuilder;
 @SuppressWarnings("serial")
 public class Report extends TranslationActionSupport {
 	private SelectSQL sql;
+	private List<SelectSQL> unionSql;
+
 	private int limit = 100;
 	private int currentPage = 1;
 	private int returnedRows = 0;
@@ -29,8 +31,13 @@ public class Report extends TranslationActionSupport {
 		sql.setLimit(this.limit);
 		sql.setStartRow((this.currentPage - 1) * this.limit);
 
+		for (SelectSQL union : unionSql) {
+			for (String filter : filters.keySet()) {
+				union.addWhere(filters.get(filter).getWhere());
+			}
+		}
 		Database db = new Database();
-		List<BasicDynaBean> pageData = db.select(sql.toString(), true);
+		List<BasicDynaBean> pageData = db.select(sql.toString(unionSql), true);
 		returnedRows = pageData.size();
 		allRows = db.getAllRows();
 		return pageData;
@@ -43,6 +50,14 @@ public class Report extends TranslationActionSupport {
 	public void setSql(SelectSQL sql) {
 		this.sql = sql;
 		this.sql.setSQL_CALC_FOUND_ROWS(true);
+	}
+
+	public List<SelectSQL> getUnionSql() {
+		return unionSql;
+	}
+
+	public void setUnionSql(List<SelectSQL> unionSql) {
+		this.unionSql = unionSql;
 	}
 
 	private int getPages() {
