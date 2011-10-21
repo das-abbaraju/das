@@ -8,6 +8,7 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
@@ -29,9 +30,6 @@ import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Populate the permissions object in session with appropriate login credentials and access/permission data
- *
- * @author Glenn & Trevor
- *
  */
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
@@ -52,10 +50,10 @@ public class LoginController extends PicsActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (button == null) {
-			ServletActionContext.getRequest().getSession().invalidate();
+			// ServletActionContext.getRequest().getSession().invalidate();
 			return SUCCESS;
 		}
-
+		
 		loadPermissions(false);
 
 		if ("logout".equals(button)) {
@@ -85,12 +83,12 @@ public class LoginController extends PicsActionSupport {
 			}
 
 			ActionContext.getContext().getSession().clear();
-			ServletActionContext.getRequest().getSession().invalidate();
-			ServletActionContext.getRequest().getSession().removeAttribute("permissions");
+			// ServletActionContext.getRequest().getSession().invalidate();
+			// ServletActionContext.getRequest().getSession().removeAttribute("permissions");
 
 			return SUCCESS;
 		}
-
+		
 		if ("confirm".equals(button)) {
 			try {
 				user = userDAO.findName(username);
@@ -150,7 +148,8 @@ public class LoginController extends PicsActionSupport {
 			if (error.length() > 0) {
 				logAttempt();
 				addActionError(error);
-				ServletActionContext.getRequest().getSession().invalidate();
+				// ServletActionContext.getRequest().getSession().invalidate();
+				ActionContext.getContext().getSession().clear();
 				return SUCCESS;
 			}
 
@@ -170,27 +169,34 @@ public class LoginController extends PicsActionSupport {
 			cookie.setMaxAge(3600 * 24);
 			getResponse().addCookie(cookie);
 
-			// TODO we should allow each account to set their own timeouts
-			// ie..session.setMaxInactiveInterval(user.getAccountTimeout());
-			if (permissions.isPicsEmployee())
-				getRequest().getSession().setMaxInactiveInterval(3600);
-
 			PicsLogger.stop();
 		}
 
 		if (permissions.isLoggedIn())
 			ActionContext.getContext().getSession().put("permissions", permissions);
 		else
-			ServletActionContext.getRequest().getSession().invalidate();
+			ActionContext.getContext().getSession().clear();
 		logAttempt();
 		postLogin();
 
 		return SUCCESS;
 	}
 
+	private void printSession() {
+		try {
+			System.out.println("SessionID: " + getRequest().getSession().getId());
+			System.out.println("CreationTime: " + getRequest().getSession().getCreationTime());
+			System.out.println("LastAccessedTime: " + getRequest().getSession().getLastAccessedTime());
+			System.out.println("MaxInactiveInterval: " + getRequest().getSession().getMaxInactiveInterval());
+			System.out.println("Session Size: " + ActionContext.getContext().getSession().size());
+		} catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+
 	/**
 	 * Method to log in via an ajax overlay
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -209,7 +215,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
-	 *
+	 * 
 	 * @return
 	 */
 	@Anonymous
@@ -221,7 +227,7 @@ public class LoginController extends PicsActionSupport {
 	/**
 	 * Figure out if the current username/password is a valid user or account that can actually login. But don't
 	 * actually login yet
-	 *
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
