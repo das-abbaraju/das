@@ -313,7 +313,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
-	
+
 	public String getIP() {
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
@@ -493,7 +493,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isDebugging() {
-		return "1".equals(System.getProperty("pics.debug"));
+		return "1".equals(System.getProperty("pics.debug"))
+				|| permissions.hasPermission(OpPerms.DevelopmentEnvironment);
 	}
 
 	public Collection<String> internalGetAlertMessages() {
@@ -529,7 +530,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	@Transient
 	public String getHelpURL() {
 		String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
-		
+
 		if (permissions.isOperatorCorporate()) {
 			helpUrl += "os_username=operator&os_password=oper456ator";
 		} else if (permissions.isContractor()) {
@@ -540,5 +541,5 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return helpUrl;
 	}
-	
+
 }

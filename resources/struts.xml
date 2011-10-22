@@ -71,7 +71,9 @@
 		<default-interceptor-ref name="picsStack" />
 
 		<global-results>
-			<result name="Exception">/exception_handler.jsp</result>
+			<result name="Exception" type="chain">
+				<param name="actionName">ExceptionAction</param>
+			</result>
 			<result name="NoRightsException">/no_rights_exception.jsp</result>
 			<result name="RecordNotFoundException">/record_not_found_exception.jsp</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
@@ -101,6 +103,13 @@
 			<exception-mapping exception="com.picsauditing.access.AjaxNotLoggedInException"
 				result="login-overlay" />
 		</global-exception-mappings>
+
+		<action name="ExceptionAction" class="com.picsauditing.actions.ExceptionAction">
+			<interceptor-ref name="exception" />
+			<interceptor-ref name="chain" />
+			<result name="Exception">exception_handler.jsp</result>
+		</action>
+
 		<action name="Login" class="com.picsauditing.access.LoginController">
 			<result>struts/users/login.jsp</result>
 			<result name="forgot">struts/users/account_recovery.jsp</result>
