@@ -8,7 +8,7 @@
 <body>
 
 <h1>Contractor Cron</h1>
-<s:form method="GET">
+<s:form id="form" method="GET">
 	<fieldset class="form">
 	<h2 class="formLegend">Custom Options</h2>
 	<ol>
