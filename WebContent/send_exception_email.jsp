@@ -89,7 +89,7 @@
 		System.out.println("PICS Exception Handler ... sending email via SendGrid");
 		GridSender sendMail = new GridSender();
 		mail.setFromAddress("\"PICS Exception Handler\"<info@picsauditing.com>");
-		sendMail.send(mail);
+		sendMail.sendMail(mail);
 		System.out.println(mail.getBody());
 	}
 %>
