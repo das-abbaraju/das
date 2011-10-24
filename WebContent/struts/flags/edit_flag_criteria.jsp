@@ -124,8 +124,23 @@ var aqvExtraParams = {
 	<fieldset>
 		<ol>
 			<li>
+				<s:select name="criteria.requiredStatusComparison" list="comparisonList" theme="form"/>
+				<pics:fieldhelp title="Audit Status">
+					<ul>
+						<li>&lt; means statuses before this one (Default)</li>
+						<li>&gt; means status after this one</li>
+						<li>= means only this status</li>
+						<li>!= means any status but this one</li>
+					</ul>
+				</pics:fieldhelp>
+			</li>
+			<li>
 				<s:select list="@com.picsauditing.jpa.entities.AuditStatus@values()" name="criteria.requiredStatus" theme="form"/>
-				<pics:fieldhelp title="Audit Status">You must choose an Audit Status if the Audit Type is Annual Update. For all other Audit Types, Audit Status is optional.</pics:fieldhelp>
+				<pics:fieldhelp title="Audit Status">This is only used for Audit Type Flag Criteria except for Annual Updates. 
+				Annual Updates assumes the required status is Submitted. If left blank, then any status is acceptable (not flagged).
+				If the CAO Status is equal or later than the Required Audit Status, then it's acceptable. For example: If the 
+				Required Status = Submitted, then Pending and Incomplete will be flagged. All others including Submitted will 
+				be Green.</pics:fieldhelp>
 			</li>
 			<li>
 				<s:checkbox name="criteria.insurance" theme="form"/>

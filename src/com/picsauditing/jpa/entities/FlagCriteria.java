@@ -32,6 +32,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private String comparison;
 	private MultiYearScope multiYearScope = null;
 	protected AuditStatus requiredStatus = AuditStatus.Complete;
+	private String requiredStatusComparison;
 	private String defaultValue;
 	private boolean allowCustomValue = false;
 	private String dataType = "string";
@@ -157,6 +158,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 
 	public void setRequiredStatus(AuditStatus requiredStatus) {
 		this.requiredStatus = requiredStatus;
+	}
+
+	public String getRequiredStatusComparison() {
+		return requiredStatusComparison;
+	}
+
+	public void setRequiredStatusComparison(String requiredStatusComparison) {
+		this.requiredStatusComparison = requiredStatusComparison;
 	}
 
 	public String getDefaultValue() {

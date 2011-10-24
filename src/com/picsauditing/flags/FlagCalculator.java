@@ -161,7 +161,7 @@ public class FlagCalculator {
 					// This audit isn't required by this operator, we can ignore it
 				} else {
 					// TODO Handle Bid Only
-					if (isVerified(criteria, cao)) {
+					if (flagCAO(criteria, cao)) {
 						return true;
 					}
 				}
@@ -398,14 +398,28 @@ public class FlagCalculator {
 		return "";
 	}
 
-	private boolean isVerified(FlagCriteria criteria, ContractorAuditOperator cao) {
+	/**
+	 * 
+	 * @param criteria
+	 * @param cao
+	 * @return
+	 */
+	private boolean flagCAO(FlagCriteria criteria, ContractorAuditOperator cao) {
 		if (criteria.getRequiredStatus() == null)
 			return true;
 
-		if (cao.getStatus().before(criteria.getRequiredStatus()))
-			return false;
-		return true;
-		// What about answer.isVerified()
+		String compare = criteria.getRequiredStatusComparison();
+		if (compare == null)
+			compare = "<";
+		
+		if (compare.equals(">"))
+			return !cao.getStatus().after(criteria.getRequiredStatus());
+		if (compare.equals("="))
+			return !cao.getStatus().equals(criteria.getRequiredStatus());
+		if (compare.equals("!="))
+			return cao.getStatus().equals(criteria.getRequiredStatus());
+		// Default is "<"
+		return !cao.getStatus().before(criteria.getRequiredStatus());
 	}
 
 	private String getHurdle(FlagCriteriaRule rule) {
