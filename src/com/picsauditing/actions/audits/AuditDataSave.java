@@ -106,6 +106,7 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
+				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
 				boolean verifyButton = ("verify".equals(button));
 				boolean commentChanged = false;
 				boolean answerChanged = false;
@@ -119,7 +120,7 @@ public class AuditDataSave extends AuditActionSupport {
 					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
 						answerChanged = true;
 				}
-
+				
 				if (verifyButton) {
 					// verify mode
 					if (newCopy.isVerified()) {
@@ -136,14 +137,19 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 
 					if (answerChanged) {
+						if (isAudit) {
+							if (newCopy.isOK()) {
+								newCopy.setDateVerified(new Date());
+								newCopy.setAuditor(getUser());
+							}
+						} else if (newCopy.isVerified()) {
+							newCopy.setDateVerified(null);
+							newCopy.setAuditor(null);
+						}
+						
 						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
 							return SUCCESS;
-						}
-
-						if (newCopy.isVerified()) {
-							newCopy.setDateVerified(null);
-							newCopy.setAuditor(null);
 						}
 
 						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
