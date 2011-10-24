@@ -28,6 +28,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -257,7 +258,10 @@ public class AuditBuilder {
 		if (changedCao && conAudit.getAuditType().isPqf()) {
 			for (ContractorAuditOperator operator : conAudit.getOperators()) {
 				if (operator.getStatus().isComplete()) {
-					operator.changeStatus(AuditStatus.Resubmit, null);
+					ContractorAuditOperatorWorkflow caow = operator.changeStatus(AuditStatus.Resubmit, null);
+					caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
+							.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+					contractorAuditOperatorDAO.save(caow);
 				}
 			}
 		}
