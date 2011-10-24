@@ -25,7 +25,6 @@ import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
 
 public class GridSender extends javax.mail.Authenticator {
 	private String user;
@@ -41,11 +40,6 @@ public class GridSender extends javax.mail.Authenticator {
 	public GridSender(String user, String password) {
 		this.user = user;
 		this.password = password;
-
-		if (Strings.isEmpty(this.user)) {
-			this.user = "\"PICS Exception Handler\"<info@picsauditing.com>";
-			this.password = defaultPassword;
-		}
 
 		Properties props = new Properties();
 		props.setProperty("mail.transport.protocol", "smtp");
