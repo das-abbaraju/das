@@ -381,4 +381,11 @@ public class ContractorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAccount> findPendingAccounts(String whereClause) {
+		String sql = "SELECT * FROM accounts a " + "JOIN contractor_info c ON a.id = c.id "
+				+ "JOIN users u ON a.contactID = u.id " + "WHERE a.status = 'Pending' " + "AND " + whereClause;
+		Query query = em.createNativeQuery(sql, ContractorAccount.class);
+		return query.getResultList();
+	}
+
 }

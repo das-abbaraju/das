@@ -57,7 +57,6 @@ public class EmailQueueDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	
 	public EmailQueue getQuickbooksError() {
 		Query query = em.createQuery("FROM EmailQueue t WHERE t.subject = 'QBWebConnector Errors'"
 				+ " ORDER BY t.id DESC");
@@ -127,5 +126,14 @@ public class EmailQueueDAO extends PicsDAO {
 		query.setParameter("creationTime", calendar.getTime());
 
 		return (Long) query.getSingleResult();
+	}
+
+	public List<String> findPendingActivationEmails(String timeframe) {
+		String sql = "SELECT DISTINCT toAddresses "
+				+ "FROM email_queue eq "
+				+ "WHERE eq.subject IN ('Incomplete Client Site Registration','Reminder: Client Site Registration Incomplete','Registration Will Be Deleted for Client Site') "
+				+ "AND eq.creationDate > DATE_SUB(CURDATE(), INTERVAL " + timeframe + ")";
+		Query query = em.createNativeQuery(sql, EmailQueue.class);
+		return query.getResultList();
 	}
 }

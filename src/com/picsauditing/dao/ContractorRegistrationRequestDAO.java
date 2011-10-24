@@ -71,4 +71,10 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
+
+	public List<ContractorRegistrationRequest> findActiveByDate(String whereClause) {
+		String sql = "SELECT * FROM ContractorRegistrationRequest c " + "WHERE c.open AND " + whereClause;
+		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
+		return query.getResultList();
+	}
 }
