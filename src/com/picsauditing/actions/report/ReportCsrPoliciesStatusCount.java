@@ -39,6 +39,7 @@ public class ReportCsrPoliciesStatusCount extends ReportAccount {
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowSoleProprietership(false);
+		getFilter().setNonContactUser(true);
 	}
 
 	public void buildQuery() {

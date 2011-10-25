@@ -346,7 +346,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");
-			sql.addWhere("u.id IN (" + list + ")");
+			
+			if (f.isNonContactUser())
+				sql.addWhere("u.id IN (" + list + ")");
+			else
+				sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
 			setFiltered(true);
 		}
 

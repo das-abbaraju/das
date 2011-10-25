@@ -35,6 +35,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showTaxID = true;
 	protected boolean showFlagStatus = false;
 	protected boolean showConAuditor = false;
+	protected boolean isNonContactUser = false;
 	protected boolean showPolicyChangedDate = false;
 	protected boolean showRiskLevel = true;
 	protected boolean showProductRiskLevel = true;
@@ -173,6 +174,14 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setShowConAuditor(boolean showConAuditor) {
 		this.showConAuditor = showConAuditor;
+	}
+
+	public boolean isNonContactUser() {
+		return isNonContactUser;
+	}
+
+	public void setNonContactUser(boolean isNonContactUser) {
+		this.isNonContactUser = isNonContactUser;
 	}
 
 	public boolean isShowPolicyChangedDate() {
