@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Suncor Online Training</title>
+<link rel="stylesheet" type="text/css" href="../css/960.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/pnotify/jquery.pnotify.default.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/training.css"/>
+<link rel="Shortcut Icon" href="favicon.ico">
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-1.6.4.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/pnotify/jquery.pnotify.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/cornerz/jquery.cornerz.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.core.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.section.js"></script>
+<script language="javascript" type="text/javascript" src="../js/training.js"></script>
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function() {
+
+	$("#DialogMessageContainer").dialog(
+		{
+			autoOpen: false,
+			title: "Feature Not Implemented",
+			modal: true,
+			buttons: {
+				"OK": function () { $("#DialogMessageContainer").dialog("close"); }
+			}
+		});
+
+	$("#siteTabs").tabs();
+
+	var vars = getUrlVars() ;
+	
+
+	$("#btnLogOut").click(function() {
+		window.location.replace("login.html");
+	});
+	
+});
+</script>
+</head>
+
+<body>
+
+	<div id="DialogMessageContainer"><span id="DialogMessage">This test is not available as part of the demo. Please use the Suncor Land Reclamation Process Training as a demonstration lesson</span></div>
+
+  <div class="container_16">
+  
+  <div class="grid_16" style="background:#04223e;border:1px solid #005694;border-bottom:none;">
+    <div class="grid_4 header">
+      Suncor Online Training
+    </div>
+    
+    <div class="grid_4 header">
+    </div>
+
+    <div class="grid_4 header">
+    </div>
+
+    <div class="grid_4 header" style="text-align:right;font-size:12px">
+   		Ken Daigle&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" id="btnLogOut" value="Log Out" />
+    </div>
+  </div>
+  
+  <div id="MainFormDiv" class="grid_16" style="background:#ffffff;border:1px solid #005694;min-height:650px;padding-bottom:12px;">
+    <div style="padding-left:10px;float:left;"><img src="../images/training/logo.gif" width="149" height="100" alt="Suncor" /></div>
+    <div style="padding-left:10px;padding-right:10px;margin-top:70px;text-align:right;"><h1>Contractor Online Training Home</h1></div>
+    <div style="margin:10px;padding:10px;border-top:1px solid #678ca3;">
+
+      <div class="grid_15">
+        <div data-widget="section" class="clearfix">
+          <h3>Contractor Dashboard</h3>
+          <div class="section-content" style="padding:0px;">
+          	<div class="grid_4" style="padding:4px;text-align:right;">Total Facilities:</div><div class="grid_4" style="font-weight:bold;padding:4px;">2</div>
+            <div class="clear"></div>
+          	<div class="grid_4" style="padding:4px;text-align:right;">Total Employees:</div><div class="grid_4" style="font-weight:bold;padding:4px;">7</div>
+            <div class="clear"></div>
+          	<div class="grid_4" style="padding:4px;text-align:right;">Employees with Training Due:</div><div class="grid_4" style="font-weight:bold;padding:4px;">5</div>
+          </div>
+        </div>
+      </div>
+
+			<div class="grid_15" style="margin-top:20px;">
+        <div id="siteTabs">
+        	<ul>
+          	<li><a href="#OilSands">Suncor Energy Oil Sands</a></li>
+          	<li><a href="#Edmonton">Suncor Energy Edmonton Refinery</a></li>
+          </ul>
+
+          <div id="OilSands">
+            <h3>Suncor Energy Oil Sands Employee Training Status</h3>
+            <table cellpadding="2" cellspacing="0" border="0" width="100%">
+							<thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Required Training</th>
+                  <th>Training Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="employee" rowspan="3">Joan Dahl</td>
+                  <td>Suncor Land Reclamation Process Training</td>
+                  <td>Completed: 9/5/2011</td>
+                </tr>
+                <tr>
+                	<td class="incomplete">Operational Safety Guidelines</td>
+                  <td class="incomplete">Due: 10/5/2011</td>
+                </tr>
+                <tr>
+                	<td class="employee">Emergency lockdown protocol training</td>
+                  <td class="employee">Completed: 11/5/2009</td>
+                </tr>
+                <tr>
+                  <td class="employee" rowspan="3">Kevin Dahls</td>
+                  <td>Suncor Land Reclamation Process Training</td>
+                  <td>Completed: 9/30/2010</td>
+                </tr>
+                <tr>
+                	<td>Operational Safety Guidelines</td>
+                  <td>Completed: 8/5/2010</td>
+                </tr>
+                <tr>
+                	<td class="employee" class="incomplete">Emergency lockdown protocol training</td>
+                  <td class="employee" class="incomplete">Due: 11/5/2011</td>
+                </tr>
+                <tr>
+                  <td class="employee" rowspan="3">Ken Daigle</td>
+                  <td class="incomplete">Suncor Land Reclamation Process Training</td>
+                  <td class="incomplete">Due: 9/30/2011</td>
+                </tr>
+                <tr>
+                	<td>Operational Safety Guidelines</td>
+                  <td>Completed: 8/5/2010</td>
+                </tr>
+                <tr>
+                	<td class="employee">Emergency lockdown protocol training</td>
+                  <td class="employee">Completed: 11/5/2009</td>
+                </tr>
+                <tr>
+                  <td class="employee" rowspan="3">Mary Edmonds</td>
+                  <td class="incomplete">Suncor Land Reclamation Process Training</td>
+                  <td class="incomplete">Due: 9/30/2011</td>
+                </tr>
+                <tr>
+                	<td>Operational Safety Guidelines</td>
+                  <td>Completed: 8/5/2010</td>
+                </tr>
+                <tr>
+                	<td class="employee">Emergency lockdown protocol training</td>
+                  <td class="employee">Completed: 11/5/2009</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="Edmonton">
+            <h3>Suncor Energy Edmonton Refinery Employee Training Status</h3>
+            <table cellpadding="2" cellspacing="0" border="0" width="100%">
+							<thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Required Training</th>
+                  <th>Training Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="employee" rowspan="2">Sam Anders</td>
+                  <td>Heavy Machinery Operations Safety</td>
+                  <td>Completed: 9/5/2011</td>
+                </tr>
+                <tr>
+                	<td class="employee">Hazardous Spill Procedures</td>
+                  <td class="employee">Completed: 11/5/2009</td>
+                </tr>
+                <tr>
+                  <td class="employee" rowspan="2">Charles Carmichael</td>
+                  <td>Heavy Machinery Operations Safety</td>
+                  <td>Completed: 9/30/2010</td>
+                </tr>
+                <tr>
+                	<td class="employee incomplete">Hazardous Spill Procedures</td>
+                  <td class="employee incomplete">Due: 11/5/2011</td>
+                </tr>
+                <tr>
+                  <td class="employee" rowspan="2">Ken Daigle</td>
+                  <td class="incomplete">Heavy Machinery Operations Safety</td>
+                  <td class="incomplete">Due: 9/30/2011</td>
+                </tr>
+                <tr>
+                	<td class="employee">Hazardous Spill Procedures</td>
+                  <td class="employee">Completed: 11/5/2009</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+      
+  </div>
+  
+
+  <div class="mainfooter grid_16">
+    <div style="padding-top:8px;margin-left:104px;font-weight:bold;">Powered</div>
+  </div>
+</div>
+</body>
+</html>

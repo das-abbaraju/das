@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Suncor Online Training</title>
+<link rel="stylesheet" type="text/css" href="../css/960.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/pnotify/jquery.pnotify.default.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/training.css"/>
+<link rel="Shortcut Icon" href="favicon.ico">
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-1.6.4.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/pnotify/jquery.pnotify.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/cornerz/jquery.cornerz.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.core.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.section.js"></script>
+<script language="javascript" type="text/javascript" src="../js/training.js"></script>
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function() {
+
+	var vars = getUrlVars() ;
+
+	var Name = "John Anderson";
+	var Company = "Suncor Victoria";
+	
+	var pattern = "%20";
+	var expression = new RegExp(pattern, "g");
+	
+	if (vars["Name"]) {
+		Name = vars["Name"].replace(expression, " ");
+	}
+	
+	if (vars["Company"]) {
+		Company = vars["Company"].replace(expression, " ");
+	}
+
+	$("#NameSpan").text(Name);
+	$("#CompanySpan").text(Company);
+
+	$("#btnSubmitAnswers").click(function() {
+		
+		if ($("#btnSubmitAnswers").val() == "Submit Answers") {
+		
+			$("input[name=Q1]").attr("disabled", "true");
+			$("input[name=Q2]").attr("disabled", "true");
+			$("input[name=Q3]").attr("disabled", "true");
+			$("input[name=Q4]").attr("disabled", "true");
+			$("input[name=Q5]").attr("disabled", "true");
+			
+			if ($("input[name=Q1]:checked").val() == "C") {
+				$("input[name=Q1]:checked").parent().addClass("correctanswer");
+				$("#Q1MessageDiv").text("Correct");
+				$("#Q1MessageDiv").css("visibility", "visible");
+				$("#Q1MessageDiv").addClass("correctanswer");
+			}
+			else {
+				$("#Q1CorrectLabel").addClass("correctanswer");
+				$("input[name=Q1]:checked").parent().addClass("incorrectanswer");
+				$("#Q1MessageDiv").css("visibility", "visible");
+				$("#Q1MessageDiv").addClass("incorrectanswer");
+			}
+			
+			if ($("input[name=Q2]:checked").val() == "B") {
+				$("input[name=Q2]:checked").parent().addClass("correctanswer");
+				$("#Q2MessageDiv").text("Correct");
+				$("#Q2MessageDiv").css("visibility", "visible");
+				$("#Q2MessageDiv").addClass("correctanswer");
+			}
+			else {
+				$("#Q2CorrectLabel").addClass("correctanswer");
+				$("input[name=Q2]:checked").parent().addClass("incorrectanswer");
+				$("#Q2MessageDiv").css("visibility", "visible");
+				$("#Q2MessageDiv").addClass("incorrectanswer");
+			}
+	
+			if ($("input[name=Q3]:checked").val() == "B") {
+				$("input[name=Q3]:checked").parent().addClass("correctanswer");
+				$("#Q3MessageDiv").text("Correct");
+				$("#Q3MessageDiv").css("visibility", "visible");
+				$("#Q3MessageDiv").addClass("correctanswer");
+			}
+			else {
+				$("#Q3CorrectLabel").addClass("correctanswer");
+				$("input[name=Q3]:checked").parent().addClass("incorrectanswer");
+				$("#Q3MessageDiv").css("visibility", "visible");
+				$("#Q3MessageDiv").addClass("incorrectanswer");
+			}
+	
+			if ($("input[name=Q4]:checked").val() == "D") {
+				$("input[name=Q4]:checked").parent().addClass("correctanswer");
+				$("#Q4MessageDiv").text("Correct");
+				$("#Q4MessageDiv").css("visibility", "visible");
+				$("#Q4MessageDiv").addClass("correctanswer");
+			}
+			else {
+				$("#Q4CorrectLabel").addClass("correctanswer");
+				$("input[name=Q4]:checked").parent().addClass("incorrectanswer");
+				$("#Q4MessageDiv").css("visibility", "visible");
+				$("#Q4MessageDiv").addClass("incorrectanswer");
+			}
+	
+			if ($("input[name=Q5]:checked").val() == "A") {
+				$("input[name=Q5]:checked").parent().addClass("correctanswer");
+				$("#Q5MessageDiv").text("Correct");
+				$("#Q5MessageDiv").css("visibility", "visible");
+				$("#Q5MessageDiv").addClass("correctanswer");
+			}
+			else {
+				$("#Q5CorrectLabel").addClass("correctanswer");
+				$("input[name=Q5]:checked").parent().addClass("incorrectanswer");
+				$("#Q5MessageDiv").css("visibility", "visible");
+				$("#Q5MessageDiv").addClass("incorrectanswer");
+			}
+			
+			$("#btnSubmitAnswers").val("Home");
+		}
+		else {
+			window.location.replace("home.html?TestComplete=true&Name=" + Name + "&Company=" + Company);
+		}
+		
+	});
+});
+
+</script>
+</head>
+
+<body>
+<div class="container_16">
+
+  <div class="grid_16" style="background:#04223e;border:1px solid #005694;border-bottom:none;">
+    <div class="grid_6 header" style="padding-right:0px;margin-right:0px;">
+      PICS Online Training
+    </div>
+    
+    <div class="grid_10 header" style="text-align:right;font-size:12px">
+   		<span id="NameSpan"></span>&nbsp;-&nbsp;<span id="CompanySpan"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" id="btnLogOut" value="Log Out" />
+    </div>
+  </div>
+
+  <div id="MainFormDiv" class="grid_16" style="background:#ffffff;border:1px solid #005694;">
+    <div style="padding-left:10px;padding-top:10px;float:left;"><img src="../images/training/logo.gif" width="149" height="64" alt="Suncor" /></div>
+    <div style="padding-left:10px;padding-right:10px;margin-top:60px;text-align:right;"><h1>Online Training Review Test</h1></div>
+    <div style="margin:10px;padding:10px;border-top:1px solid #678ca3;">
+    
+      <div class="grid_15">
+        <div data-widget="section" class="clearfix">
+          <h3>Oil Sands Land Reclamation Training: Review Test (5 questions)</h3>
+          <div class="section-content" style="padding:10px;">
+            <form id="TestForm" method="post">
+              <div class="grid_1" style="text-align:right;">1)</div>
+              <div class="grid_12">What is the current disturbed land reclamation percentage?</div>
+              <div class="clear"></div>
+              <div class="grid_1">&nbsp;</div>
+              <div class="grid_8">
+                <label><input type="radio" name="Q1" value="A" /> A. -10%</label><br />
+                <label><input type="radio" name="Q1" value="B" /> B. 0%</label><br />
+                <label id="Q1CorrectLabel"><input type="radio" name="Q1" value="C" /> C. 7%</label><br />
+                <label><input type="radio" name="Q1" value="D" /> D. 14%</label>
+              </div>
+              <div class="grid_5" id="Q1MessageDiv" style="visibility:hidden;">Incorrect. Currently, Suncor reclaims 7% of land used for oil sands.</div>
+              <div class="row clear"></div>
+
+              <div class="grid_1" style="text-align:right;">2)</div>
+              <div class="grid_12">What is one of the biggest challenges Suncorp faces as an energy industry leader?</div>
+              <div class="clear"></div>
+              <div class="grid_1">&nbsp;</div>
+              <div class="grid_8">
+                <label><input type="radio" name="Q2" value="A" /> A. Maintaining profitability while providing consumer friendly service</label><br />
+                <label id="Q2CorrectLabel"><input type="radio" name="Q2" value="B" /> B. Reducing the environmental footprint of energy production</label><br />
+                <label><input type="radio" name="Q2" value="C" /> C. Searching for new energy sources</label><br />
+                <label><input type="radio" name="Q2" value="D" /> D. Developing technologies to sustain energy production levels</label>
+              </div>
+              <div class="grid_5" id="Q2MessageDiv" style="visibility:hidden;">Incorrect. One of Suncor's primary priorities is reducing the environmental impact of its overall business and production.</div>
+              <div class="row clear"></div>
+              
+              <div class="grid_1" style="text-align:right;">3)</div>
+              <div class="grid_12">What is the target year for 100% reclamation of land use?</div>
+              <div class="clear"></div>
+              <div class="grid_1">&nbsp;</div>
+              <div class="grid_8">
+                <label><input type="radio" name="Q3" value="A" /> A. 2012</label><br />
+                <label id="Q3CorrectLabel"><input type="radio" name="Q3" value="B" /> B. 2015</label><br />
+                <label><input type="radio" name="Q3" value="C" /> C. 2020</label><br />
+                <label><input type="radio" name="Q3" value="D" /> D. 2018</label>
+              </div>
+              <div class="grid_5" id="Q3MessageDiv" style="visibility:hidden;">Incorrect. With the full scale advent of polymer technologies, Suncor has targeted 2015 for 100% land use reclamation.</div>
+              <div class="row clear"></div>
+              
+              <div class="grid_1" style="text-align:right;">4)</div>
+              <div class="grid_12">What is the effect of adding the polymer solution to suspension of fine tailings?</div>
+              <div class="clear"></div>
+              <div class="grid_1">&nbsp;</div>
+              <div class="grid_8">
+                <label><input type="radio" name="Q4" value="A" /> A. Reduces toxicity of solution</label><br />
+                <label><input type="radio" name="Q4" value="B" /> B. Solidifies solution so it can act as soil</label><br />
+                <label><input type="radio" name="Q4" value="C" /> C. Decelerates separation process to enhance reclamation</label><br />
+                <label id="Q4CorrectLabel"><input type="radio" name="Q4" value="D" /> D. Bonds to clay particles to separate water in a very short time</label>
+              </div>
+              <div class="grid_5" id="Q4MessageDiv" style="visibility:hidden;">Incorrect. The polymer solution added to fine tailing suspension separtes water from clay in a very short time.</div>
+              <div class="row clear"></div>
+              
+              <div class="grid_1" style="text-align:right;">5)</div>
+              <div class="grid_12">What is Suncor's goal for the dried clay fields that result from tailing pond reclamation?</div>
+              <div class="clear"></div>
+              <div class="grid_1">&nbsp;</div>
+              <div class="grid_8">
+                <label id="Q5CorrectLabel"><input type="radio" name="Q5" value="A" /> A. Turning topsoil onto pond for revegetation</label><br />
+                <label><input type="radio" name="Q5" value="B" /> B. Harvest clay for materials construction</label><br />
+                <label><input type="radio" name="Q5" value="C" /> C. Utilize clay for fertilizer for agriculture industries</label><br />
+                <label><input type="radio" name="Q5" value="D" /> D. Research clay composition for future environmental impacts</label>
+              </div>
+              <div class="grid_5" id="Q5MessageDiv" style="visibility:hidden;">Incorrect. Each pond will be reclaimed as a dry clay field for revegetation.</div>
+              <div class="row clear"></div>
+              
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid_13" style="text-align:center;padding:20px;">
+        <input type="submit" value="Submit Answers" id="btnSubmitAnswers" />
+      </div>
+ 
+
+    </div>
+      
+  </div>
+  
+  <div class="grid_16 mainfooter">
+    <div style="padding-top:8px;margin-left:104px;font-weight:bold;">Powered</div>
+  </body>
+</div>
+
+</body>  
+</html>

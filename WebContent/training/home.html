@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Suncor Online Training</title>
+<link rel="stylesheet" type="text/css" href="../css/960.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/pnotify/jquery.pnotify.default.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/training.css"/>
+<link rel="Shortcut Icon" href="favicon.ico">
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-1.6.4.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/pnotify/jquery.pnotify.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/cornerz/jquery.cornerz.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.core.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.section.js"></script>
+<script language="javascript" type="text/javascript" src="../js/training.js"></script>
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function() {
+
+	var vars = getUrlVars() ;
+
+	var Name = "John Anderson";
+	var Company = "Suncor Victoria";
+	
+	var pattern = "%20";
+	var expression = new RegExp(pattern, "g");
+	
+	if (vars["Name"]) {
+		Name = vars["Name"].replace(expression, " ");
+	}
+	
+	if (vars["Company"]) {
+		Company = vars["Company"].replace(expression, " ");
+	}
+
+	$("#NameSpan").text(Name);
+	$("#CompanySpan").text(Company);
+
+	$("#DialogMessageContainer").dialog(
+		{
+			autoOpen: false,
+			title: "Feature Not Implemented",
+			modal: true,
+			buttons: {
+				"OK": function () { $("#DialogMessageContainer").dialog("close"); }
+			}
+		});
+
+
+	if (vars["TestComplete"] == "true") {
+		
+		var date = new Date();
+		
+		$("#OilSandsTestDiv").addClass("completed").removeClass("incomplete");
+		$("#btnCompleteTraining").val("Review");
+		$("#DateCompletedSpan").text("[Completed: " + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear() + "]");
+	}
+	
+	
+	$("input:submit").click(function() {
+		if ($(this).attr("id") == "btnCompleteTraining" || $(this).attr("id") == "btnLogOut") {
+			if ($("#btnCompleteTraining").val() == "Complete") {
+				window.location.replace("lesson.html?Name=" + Name + "&Company=" + Company);
+			}
+			else {
+				window.location.replace("review.html?Name=" + Name + "&Company=" + Company);
+			}
+		}
+		else {
+			$("#DialogMessageContainer").dialog("open");
+		}
+	});
+
+		
+	$("#OilSandsCheckBox").click(function() {
+		if ($(this).is(":checked")) {
+			$("#OilSandsContainer").show();
+		}
+		else {
+			$("#OilSandsContainer").hide();
+		}
+	});
+
+	$("#EdmontonCheckBox").click(function() {
+		if ($(this).is(":checked")) {
+			$("#EdmontonContainer").show();
+		}
+		else {
+			$("#EdmontonContainer").hide();
+		}
+	});
+
+	$("#MajorProjectsCheckBox").click(function() {
+		if ($(this).is(":checked")) {
+			$("#MajorProjectsContainer").show();
+		}
+		else {
+			$("#MajorProjectsContainer").hide();
+		}
+	});
+	
+	$("#NAOCheckBox").click(function() {
+		if ($(this).is(":checked")) {
+			$("#NAOContainer").show();
+		}
+		else {
+			$("#NAOContainer").hide();
+		}
+	});
+
+	$("#btnLogOut").click(function() {
+		window.location.replace("login.html");
+	});
+	
+	
+});
+</script>
+</head>
+
+<body>
+
+	<div id="DialogMessageContainer"><span id="DialogMessage">This test is not available as part of the demo. Please use the Suncor Land Reclamation Process Training as a demonstration lesson</span></div>
+
+  <div class="container_16">
+  
+  <div class="grid_16" style="background:#04223e;border:1px solid #005694;border-bottom:none;">
+    <div class="grid_6 header" style="padding-right:0px;margin-right:0px;">
+      PICS Online Training
+    </div>
+    
+    <div class="grid_10 header" style="text-align:right;font-size:12px">
+   		<span id="NameSpan"></span>&nbsp;-&nbsp;<span id="CompanySpan"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" id="btnLogOut" value="Log Out" />
+    </div>
+  </div>
+  
+  <div id="MainFormDiv" class="grid_16" style="background:#ffffff;border:1px solid #005694;min-height:650px;padding-bottom:12px;">
+    <div style="padding-left:10px;padding-top:10px;float:left;"><img src="../images/training/logo.gif" width="149" height="64" alt="Suncor" /></div>
+    <div style="padding-left:10px;padding-right:10px;margin-top:60px;text-align:right;"><h1>Online Training Home</h1></div>
+    <div style="margin:10px;padding:10px;border-top:1px solid #678ca3;">
+    
+      <div class="grid_15">
+        <div data-widget="section" class="clearfix">
+          <h3>Welcome: John Anderson</h3>
+          <div class="section-content" style="padding:10px;">
+            <h1>Training Updates</h1>
+            <ul>
+              <li>[9/17/2011] Edmonton Refinery has posted new training material for dock receiving.</li>
+              <li>[9/5/2011] Oil Sands updated extraction equipment safety training.</li>
+            </ul>
+            <h1>Work Site News</h1>
+            <ul>
+              <li>[9/18/2011] Suncor announces acquisitions of new heavy lifting equipment.</li>
+              <li>[9/6/2011] Petro-Canada announces expansion of low-impact Saskatchewan pipeline and safety guidelines.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid_7">
+        <div data-widget="section" class="clearfix">
+          <h3>My Current Work Sites</h3>
+          <div class="section-content" style="padding:10px;" id="WorkSitesContainer">
+            <label><input type="checkbox" name="WorkSite" value="OilSands" id="OilSandsCheckBox" checked="checked" /> Suncor Energy Oil Sands</label><br />
+            <label><input type="checkbox" name="WorkSite" value="Edmonton" id="EdmontonCheckBox" /> Suncor Energy Edmonton Refinery</label><br />
+            <label><input type="checkbox" name="WorkSite" value="MajorProjects" id="MajorProjectsCheckBox" /> Suncor Energy Major Projects</label><br />
+            <label><input type="checkbox" name="WorkSite" value="NAO" id="NAOCheckBox" /> Suncor Energy NAO</label><br />
+          </div>
+        </div>
+      </div>
+
+      <div class="grid_8">
+        <div data-widget="section" class="clearfix">
+          <h3>Required Training</h3>
+          <div class="section-content" style="background:#04223e;margin-right:0px;">
+            <div id="OilSandsContainer">
+              <div class="site">Suncor Energy Oil Sands</div>
+              <div class="incomplete" id="OilSandsTestDiv">
+                <div class="grid_6">Suncor Land Reclamation Process Training<br /><span id="DateCompletedSpan">[Due: 9/30/2011]</span></div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" id="btnCompleteTraining" /></div>
+              </div>
+              <div class="completed">
+                <div class="grid_6">Operational Safety Guidelines<br />[Completed: 8/5/2010]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Review" /></div>
+              </div>
+              <div class="completed">
+                <div class="grid_6">Emergency lockdown protocol training<br />[Completed: 11/5/2009]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Review" /></div>
+              </div>
+            </div>
+
+            <div id="EdmontonContainer" style="display:none;">
+              <div class="site">Suncor Energy Edmonton Refinery</div>
+              <div class="incomplete">
+                <div class="grid_6">Heavy Machinery Operations Safety<br />[Due: 10/30/2011]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+              <div class="incomplete">
+                <div class="grid_6">Hazardous Spill Procedures<br />[Due: 9/26/2011]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+            </div>
+
+            <div id="MajorProjectsContainer" style="display:none;">
+              <div class="site">Suncor Energy Major Projects</div>
+              <div class="incomplete">
+                <div class="grid_6">Project Management Process<br />[Due: 11/16/2011]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+              <div class="incomplete">
+                <div class="grid_6">Risk Mitigation Training<br />[Due: 12/5/2011]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+            </div>
+
+            <div id="NAOContainer" style="display:none;">
+              <div class="site">Suncor Energy NAO</div>
+              <div class="incomplete">
+                <div class="grid_6">Tooling Safety Procedures<br />[Due: 10/3/2011]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+              <div class="incomplete">
+                <div class="grid_6">Emergency Evacuation Protocols<br />[Due: 11/22/2010]</div>
+                <div class="grid_1" style="padding:0px;margin:0px;"><input type="submit" value="Complete" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+
+    </div>
+      
+  </div>
+  
+
+  <div class="mainfooter grid_16">
+    <div style="padding-top:8px;margin-left:104px;font-weight:bold;">Powered</div>
+  </div>
+</div>
+</body>
+</html>

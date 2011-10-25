@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Suncor Online Training</title>
+<link rel="stylesheet" type="text/css" href="../css/960.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/pnotify/jquery.pnotify.default.css"/>
+<link rel="stylesheet" type="text/css" href="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.css"/>
+<link rel="stylesheet" type="text/css" href="../css/training.css"/>
+<link rel="Shortcut Icon" href="favicon.ico">
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-1.6.4.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/jquery-ui/jquery-ui-1.8.16.custom.min.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/pnotify/jquery.pnotify.js"></script>
+<script language="javascript" type="text/javascript" src="../js/jquery/cornerz/jquery.cornerz.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.core.js"></script>
+<script language="javascript" type="text/javascript" src="../js/surge/surge.section.js"></script>
+<script language="javascript" type="text/javascript" src="../js/training.js"></script>
+<script language="javascript" type="text/javascript">
+
+$(document).ready(function() {
+	
+	var vars = getUrlVars() ;
+
+	var Name = "John Anderson";
+	var Company = "Suncor Victoria";
+	
+	var pattern = "%20";
+	var expression = new RegExp(pattern, "g");
+	
+	if (vars["Name"]) {
+		Name = vars["Name"].replace(expression, " ");
+	}
+	
+	if (vars["Company"]) {
+		Company = vars["Company"].replace(expression, " ");
+	}
+
+	$("#NameSpan").text(Name);
+	$("#CompanySpan").text(Company);
+
+	
+	$("#btnTakeTest").click(function() {
+		window.location.replace("test.html?Name=" + Name + "&Company=" + Company);
+	});
+	
+
+});
+
+</script>
+</head>
+
+<body>
+<div class="container_16">
+
+  <div class="grid_16" style="background:#04223e;border:1px solid #005694;border-bottom:none;">
+    <div class="grid_6 header" style="padding-right:0px;margin-right:0px;">
+      PICS Online Training
+    </div>
+    
+    <div class="grid_10 header" style="text-align:right;font-size:12px">
+   		<span id="NameSpan"></span>&nbsp;-&nbsp;<span id="CompanySpan"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type="submit" id="btnLogOut" value="Log Out" />
+    </div>
+  </div>
+
+  <div id="MainFormDiv" class="grid_16" style="background:#ffffff;border:1px solid #005694;min-height:650px;">
+    <div style="padding-left:10px;padding-top:10px;float:left;"><img src="../images/training/logo.gif" width="149" height="64" alt="Suncor" /></div>
+    <div style="padding-left:10px;padding-right:10px;margin-top:60px;text-align:right;"><h1>Online Training Lesson</h1></div>
+    <div style="margin:10px;padding:10px;border-top:1px solid #678ca3;">
+    
+      <div class="grid_2">&nbsp;</div>
+      
+      <div class="grid_10" style="width:562px;">
+        <div data-widget="section" class="clearfix">
+          <h3>Oil Sands Land Reclamation Training</h3>
+          <div class="section-content" style="padding:0px;text-align:center;">
+            <iframe width="560" height="315" src="http://www.youtube.com/embed/NwlvG85QdA0" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid_2">&nbsp;</div>
+
+      <div class="grid_13" style="text-align:center;padding:20px;padding-top:0px;">
+        <p>After you have watched the training media, please take the test to certify the completion of this training.</p>
+        <input type="submit" value="Take Test" id="btnTakeTest" />
+      </div>
+ 
+
+    </div>
+      
+  </div>
+  <div class="grid_16 mainfooter">
+    <div style="padding-top:8px;margin-left:104px;font-weight:bold;">Powered</div>
+  </body>
+  
+</div>
+  
+</html>

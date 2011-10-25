@@ -1,0 +1,219 @@
+html, body {
+	height: 100%;
+}
+
+
+body{
+	background: #c9dae7;
+	margin: 0px;
+	padding: 0px;
+}
+
+.wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -32px;
+}
+
+.mainfooter, .loginfooter, .push {
+	height: 31px;
+}
+
+.loginfooter {
+	background:#ffffff url(../images/logo_sm.png) left top no-repeat;
+	vertical-align:middle;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color:#04223e;
+	border-top:solid 1px #04223e;
+}
+
+.mainfooter{
+	background:#ffffff url(../images/logo_sm.png) left top no-repeat;
+	vertical-align:middle;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color:#04223e;
+	border:solid 1px #005694;
+	border-top: none;
+}
+
+h1 {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #005694;
+	font-weight: bold;
+	font-size: 18px;
+	margin: 0px;
+	padding: 0px;
+}
+
+p {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #005694;
+	font-size: 12px;
+}
+
+li {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #000000;
+	padding-bottom: 6px;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+
+.menu {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #678ca3;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+label {
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #678ca3;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+input[type="text"] {
+	border: 1px solid #678ca3;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: 12px;
+	padding: 2px;	
+}
+
+input[type="submit"] {
+	font-size: 10px;
+}
+
+.sfx-section {
+	border: 1px solid #005694;
+	margin-top:15px;
+}
+
+.sfx-section h3 {
+	margin:0px;
+	background-color: #005694;
+	color: #fff;
+	padding: 5px;
+	font-size: 14px;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+}
+	
+.section-content {
+	font-size: 14px;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	color: #005694;
+}
+
+div.incomplete, div.completed{
+	padding: 6px;
+	padding-top: 4px;
+	font-size: 10px;
+	height: 22px;
+	overflow: visible;
+}
+
+.site{
+	padding: 6px;
+	color:#ffffff;
+	background: #04223e;
+}
+
+div.incomplete{
+	font-weight: bold;
+	padding-left: 16px;
+	color:#ffffff;
+	background: #fd2516;
+	border-top: solid 1px #005694;
+}
+
+div.completed{
+	padding-left: 16px;
+	color:#04223e;
+	background: #c9dae7;
+	border-top: solid 1px #005694;
+}
+
+table{
+	border-left: solid 1px #005694;
+	border-top: solid 1px #005694;
+}
+
+td.employee{
+	border-bottom: solid 2px #005694;
+}
+
+th {
+	border-right: solid 1px #005694;
+	border-bottom: solid 2px #005694;
+	font-size: 12px;
+	text-align: left;
+	padding: 6px;
+	color:#ffffff;
+	background: #04223e;
+}
+
+td.incomplete{
+	font-weight: bold;
+	color:#ffffff;
+	background: #fd2516;
+}
+
+td {
+	padding: 6px;
+	font-size: 10px;
+	vertical-align: top;
+	color:#04223e;
+	background: #c9dae7;
+	border-right: solid 1px #005694;
+	border-bottom: solid 1px #005694;
+}
+
+#LoginTable table {
+	border-top: none;
+	border-left: none;
+	background-color: transparent;
+}
+
+#LoginTable td{
+	border: none;
+	vertical-align: middle;
+	padding: 2px;
+	background-color: transparent;
+}
+
+
+#TestForm label, #WorkSitesContainer label{
+	cursor: pointer;
+}
+
+.row{
+	height: 16px;
+}
+
+.correctanswer{
+	color: #04223e;
+}
+
+.incorrectanswer {
+	color: #fd2516;
+}
+
+.header {
+	color:#ffffff;
+	font-family: "Lucida Grande", Lucida, Verdana, sans-serif;
+	font-size: 18px;
+	margin: 0px;
+	padding: 6px;
+	font-weight: bold;
+	height: 22px;
+}
+
+#header a:link, #header a:visited, #header a:active {
+	padding: 20px;
+	text-decoration: none;
+	color:#c9dae7;
+	font-size: 12px;
+	font-weight: normal;
+}
