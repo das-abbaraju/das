@@ -9,7 +9,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=1" />
 		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/registration.css" />
 		
