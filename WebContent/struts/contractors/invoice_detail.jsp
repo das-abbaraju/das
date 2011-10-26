@@ -255,8 +255,8 @@ input[type=submit] {
 					<th width="25%"><s:text name="InvoiceDetail.Website" /></th>
 				</tr>
 				<tr>
-					<td class="center"><s:property value="permissions.picsPhone" /></td>
-					<td class="center"><s:property value="permissions.picsBillingFax" /></td>
+					<td class="center"><s:property value="@com.picsauditing.util.Strings@getPicsPhone(permissions.country)" /></td>
+					<td class="center"><s:property value="@com.picsauditing.util.Strings@getPicsBillingFax(permissions.country)" /></td>
 					<td class="center">billing@picsauditing.com</td>
 					<td class="center">www.picsauditing.com</td>
 				</tr>

@@ -296,7 +296,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 						}
 
 						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
-								permissions.getPicsBillingPhone()));
+								Strings.getPicsBillingPhone(permissions.getCountry())));
 
 						// Assuming paid status per Aaron so that he can
 						// refund or void manually.

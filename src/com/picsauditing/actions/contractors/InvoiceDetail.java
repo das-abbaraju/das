@@ -294,7 +294,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							}
 
 							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
-									permissions.getPicsBillingPhone()));
+									Strings.getPicsBillingPhone(permissions.getCountry())));
 
 							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.

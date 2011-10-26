@@ -22,7 +22,7 @@
 		<s:include value="/struts/layout/chat.jsp" />
 		
 		<span class="phone">
-			<img src="images/phone-icon.png" alt="Call Us" />${permissions.picsPhone}
+			<img src="images/phone-icon.png" alt="Call Us" />${@com.picsauditing.util.Strings@getPicsPhone(permissions.country)}
 		</span>
 		
 		<ul class="header-menu">

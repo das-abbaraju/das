@@ -60,7 +60,7 @@
 		<s:elseif test="contractor.status.active && !contractor.paymentMethodStatusValid && contractor.mustPayB">
 			<div class="info">
 				<s:text name="ContractorPaymentOptions.EnterCreditCard">
-					<s:param value="%{permissions.picsBillingPhone}" />
+					<s:param value="%{@com.picsauditing.util.Strings@getPicsBillingPhone(permissions.country)}" />
 				</s:text>
 			</div>
 		</s:elseif>
@@ -115,12 +115,11 @@
 							</div>
 						</li>
 					</s:if>
-					
 					<s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
 						<li>
 							<div class="info">
 								<s:text name="ContractorPaymentOptions.CCOnFile">
-									<s:param value="%{permissions.picsPhone}" />
+									<s:param value="%{@com.picsauditing.util.Strings@getPicsPhone(permissions.country)}" />
 								</s:text>
 							</div>
 						</li>

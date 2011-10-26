@@ -86,8 +86,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		if (newRegistration) {
-			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", new Object[] { permissions
-					.getPicsTollFreePhone() }));
+			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
+					new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
 		}
 
 		if ("copyBillingEmail".equals(button)) {
@@ -179,8 +179,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { permissions
-					.getPicsTollFreePhone() }));
+			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+					new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
 			braintreeCommunicationError = true;
 			return SUCCESS;
 		}

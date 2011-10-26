@@ -22,7 +22,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.util.Strings;
 
 /**
  * This is the main class that is stored for each user containing information if they are logged in, which groups
@@ -497,38 +496,6 @@ public class Permissions implements Serializable {
 		return country;
 	}
 	
-	public String getPicsPhone() {
-		return Strings.getPicsPhone(country);
-	}
-
-	public String getPicsFax() {
-		return Strings.getPicsFax(country);
-	}
-
-	public String getPicsTollFreePhone() {
-		return Strings.getPicsTollFreePhone(country);
-	}
-
-	public String getPicsMainPhone() {
-		return Strings.getPicsMainPhone(country);
-	}
-
-	public String getPicsCustomerServicePhone() {
-		return Strings.getPicsCustomerServicePhone(country);
-	}
-
-	public String getPicsCustomerServiceFax() {
-		return Strings.getPicsCustomerServiceFax(country);
-	}
-
-	public String getPicsBillingPhone() {
-		return Strings.getPicsBillingPhone(country);
-	}
-
-	public String getPicsBillingFax() {
-		return Strings.getPicsBillingFax(country);
-	}
-
 	public boolean isRequiresCompetencyReview() {
 		return requiresCompetencyReview;
 	}

@@ -164,8 +164,8 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 			state = stateDAO.find(stateIsos[0]);
 
-		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + permissions.getPicsPhone() + "\n"
-				+ "Fax: " + permissions.getPicsCustomerServiceFax()
+		picsSignature = "PICS\nP.O. Box 51387\nIrvine CA 92619-1387\nTel: " + Strings.getPicsPhone(permissions.getCountry()) + "\n"
+				+ "Fax: " + Strings.getPicsCustomerServiceFax(permissions.getCountry())
 				+ "\nhttp://www.picsauditing.com\nemail: Registrations@picsauditing.com "
 				+ "(Please add this email address to your address book to prevent it from being labeled as spam)";
 		status = newContractor.getStatus();

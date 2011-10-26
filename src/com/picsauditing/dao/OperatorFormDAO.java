@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,6 +48,18 @@ public class OperatorFormDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<OperatorForm> findTopByOpID(int opID) {
+		Query query;
+		if (opID == 0) {
+			query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.parent is NULL ORDER BY o.account.name, o.formName");
+		} else {
+			query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id = ? and o.parent is NULL ORDER BY o.account.name, o.formName");
+			query.setParameter(1, opID);
+		}
+		return query.getResultList();
+	}
+
 	public boolean deleteOperatorForms(int opID, String ftpDir) {
 		List<OperatorForm> opList = findByopID(opID);
 		String path = ftpDir + "/forms/";
@@ -59,7 +72,24 @@ public class OperatorFormDAO extends PicsDAO {
 	}
 
 	public List<OperatorForm> findByOperators(Collection<Integer> operatorIds) {
-		Query query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.account.name, o.formName");
+		Query query;
+		
+		if (operatorIds == null || operatorIds.size() == 0) {
+			query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.parent is NULL ORDER BY o.account.name, o.formName");
+		} else {
+			query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.account.id IN (" + Strings.implode(operatorIds, ",") + ") and o.parent is NULL ORDER BY o.account.name, o.formName");
+		}
+		return query.getResultList();
+	}
+
+	public List<OperatorForm> findChildrenByOperators(Collection<Integer> operatorIds) {
+		Query query;
+		
+		if (operatorIds == null || operatorIds.size() == 0) {
+			return new ArrayList<OperatorForm>();
+		} else {
+			query = em.createQuery("SELECT o FROM OperatorForm o WHERE o.parent.id IN (" + Strings.implode(operatorIds, ",") + ") ORDER BY o.account.name, o.formName");
+		}
 		return query.getResultList();
 	}
 

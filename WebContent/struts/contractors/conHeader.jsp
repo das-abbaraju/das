@@ -286,7 +286,7 @@ function loadStatus(caoID){
 			<s:if test="permissions.contractor">
 				<li>
 					<a href="ContractorForms.action?id=<s:property value="id" />"<s:if test="requestURI.contains('con_forms')">class="current"</s:if>>
-						<s:text name="global.FormsAndDocs" />
+						<s:text name="global.Resources" />
 					</a>
 				</li>
 			</s:if>

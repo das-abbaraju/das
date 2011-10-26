@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -174,7 +175,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						}
 
 						addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
-								+ permissions.getPicsBillingPhone() + ".");
+								+ Strings.getPicsBillingPhone(permissions.getCountry()) + ".");
 
 						// Assuming paid status per Aaron so that he can refund
 						// or void manually.

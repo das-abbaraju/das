@@ -15,7 +15,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 
 @SuppressWarnings("serial")
 public class ContractorForms extends ContractorActionSupport {
-	OperatorFormDAO operatorFormDAO;
+	private OperatorFormDAO operatorFormDAO;
 	
 	public ContractorForms(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
 			OperatorFormDAO operatorFormDAO) {
@@ -29,11 +29,11 @@ public class ContractorForms extends ContractorActionSupport {
 		
 		findContractor();
 		
-		subHeading = "Forms & Documents";
+		subHeading = getText("global.Resources");
 		return SUCCESS;
 	}
 	
-	public List<OperatorForm> getForms() {
+	public List<OperatorForm> getResources() {
 		Set<Integer> ids = new HashSet<Integer>();
 		
 		ids.add(Account.PicsID);
