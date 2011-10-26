@@ -1518,6 +1518,7 @@
 		<action name="AuditTypeRuleEditor"
 			class="com.picsauditing.actions.rules.AuditTypeRuleEditor">
 			<result>struts/rules/audit_rule_editor.jsp</result>
+			<result name="dependentAuditStatusSelect">struts/rules/_dependent_audit_status_select.jsp</result>
 		</action>
 
 		<action name="AuditTypeRuleTableAjax"

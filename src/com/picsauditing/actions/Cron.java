@@ -328,8 +328,8 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 		try {
-			startTask("\nSending Report Emails to Registration Reqeusts Which Have Moved from Hold to Active");
-			checkRegistratoinRequestHoldDate();
+			startTask("\nSending Registration Request Emails");
+			sendRegistrationRequestEmails();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -829,9 +829,9 @@ public class Cron extends PicsActionSupport {
 		rosa.execute();
 	}
 
-	public void checkRegistratoinRequestHoldDate() throws Exception {
+	public void sendRegistrationRequestEmails() throws Exception {
 
-		SelectSQL selectCons = new SelectSQL("contractor_registration_request rr");
+		/*SelectSQL selectCons = new SelectSQL("contractor_registration_request rr");
 		selectCons.addField("rr.id");
 
 		selectCons.addWhere("rr.holdDate <= CURRENT_TIMESTAMP");
@@ -845,7 +845,8 @@ public class Cron extends PicsActionSupport {
 			conReq.setNotes("\n" + maskDateFormat(conReq.getHoldDate())
 					+ " - System - Request status changed from Hold to Active." + "\n" + "\n" + conReq.getNotes());
 			conReq.setHoldDate(null);
-		}
+		}*/
+		
 	}
 
 	public void clearForceFlags() {

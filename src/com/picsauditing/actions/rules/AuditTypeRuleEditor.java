@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.WorkflowStep;
 
@@ -18,6 +20,8 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 	protected Integer ruleDependentAuditTypeId;
 	@Autowired
 	protected AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
+	protected AuditTypeDAO auditTypeDAO;
 
 	public AuditTypeRuleEditor() {
 		this.requiredPermission = OpPerms.ManageAuditTypeRules;
@@ -31,6 +35,10 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		if (ruleID > 0)
 			rule = dao.findAuditTypeRule(ruleID);
 	}
+	
+	public String dependentAuditStatusSelect(){
+		return "dependentAuditStatusSelect";
+	}
 
 	@Override
 	protected AuditTypeRule newRule() {
@@ -39,10 +47,19 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	public LinkedHashSet<AuditStatus> getDependentAuditStatus() {
 		LinkedHashSet<AuditStatus> set = new LinkedHashSet<AuditStatus>();
-		if (rule != null && rule.getDependentAuditType() != null) {
-			for (WorkflowStep step : rule.getDependentAuditType().getWorkFlow().getSteps())
-				set.add(step.getNewStatus());
+
+		AuditType auditType;
+
+		if (getParameter("audit_id") > 0)
+			auditType = auditTypeDAO.find(getParameter("audit_id"));
+		else {
+			auditType = rule.getDependentAuditType();
 		}
+		if (auditType == null)
+			return set;
+		for (WorkflowStep step : auditType.getWorkFlow().getSteps())
+			set.add(step.getNewStatus());
+
 		return set;
 	}
 

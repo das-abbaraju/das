@@ -84,7 +84,17 @@
 				});
 				</s:if>
 				$('#dependentAudit').change(function() {
-					if ($(this).blank()) {
+					AJAX.request({
+						url:'AuditTypeRuleEditor!dependentAuditStatusSelect.action',
+						data:{
+							id: $('#rule_form_id').val(),
+							audit_id: $(this).val()
+						},
+						success: function(data, textStatus, XMLHttpRequest) {
+							$('.requiresDependentAudit').html(data);
+						}
+					});
+					if ($(this).val() == '') {
 						$('.requiresDependentAudit').hide();
 					} else {
 						$('.requiresDependentAudit').show();
@@ -373,8 +383,7 @@
 									<div id="dependentAudit_display"></div>
 								</li>
 								<li class="requiresDependentAudit">
-									<label>Dependent Status</label>
-									<s:select list="dependentAuditStatus" name="rule.dependentAuditStatus" id="dAuditSelect" headerKey="" headerValue="Any" />
+									<s:include value="/struts/rules/_dependent_audit_status_select.jsp" />
 								</li>					
 							</s:if>
 							<li>
