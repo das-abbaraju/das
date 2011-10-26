@@ -229,7 +229,7 @@ public class FlagDataCalculator {
 						}
 						for (ContractorAuditOperator cao : ca.getOperators()) {
 							if (cao.isVisible() && cao.hasCaop(getOperator().getId())) {
-								if (!cao.getStatus().before(criteria.getRequiredStatus()))
+								if (flagCAO(criteria, cao))
 									return false;
 								else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly())
 									return false;
@@ -461,6 +461,29 @@ public class FlagDataCalculator {
 		for (FlagCriteriaContractor value : list) {
 			contractorCriteria.put(value.getCriteria(), value);
 		}
+	}
+	/**
+	 * 
+	 * @param criteria
+	 * @param cao
+	 * @return
+	 */
+	private boolean flagCAO(FlagCriteria criteria, ContractorAuditOperator cao) {
+		if (criteria.getRequiredStatus() == null)
+			return true;
+
+		String compare = criteria.getRequiredStatusComparison();
+		if (Strings.isEmpty(compare))
+			compare = "<";
+		
+		if (compare.equals(">"))
+			return !cao.getStatus().after(criteria.getRequiredStatus());
+		if (compare.equals("="))
+			return !cao.getStatus().equals(criteria.getRequiredStatus());
+		if (compare.equals("!="))
+			return cao.getStatus().equals(criteria.getRequiredStatus());
+		// Default is "<"
+		return !cao.getStatus().before(criteria.getRequiredStatus());
 	}
 
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
