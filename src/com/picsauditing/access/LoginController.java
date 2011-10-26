@@ -8,7 +8,6 @@ import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
@@ -25,6 +24,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -78,6 +78,7 @@ public class LoginController extends PicsActionSupport {
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
+				LocaleController.setLocaleOfNearestSupported(permissions);
 				postLogin();
 				return SUCCESS;
 			}
@@ -129,6 +130,7 @@ public class LoginController extends PicsActionSupport {
 				boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
 
 				permissions.login(user);
+				LocaleController.setLocaleOfNearestSupported(permissions);
 				permissions.setAdminID(adminID);
 				if (translator)
 					permissions.setTranslatorOn();
@@ -161,6 +163,7 @@ public class LoginController extends PicsActionSupport {
 			// /////////////////
 			PicsLogger.log("logging in user: " + user.getUsername());
 			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
 
 			user.setLastLogin(new Date());
 			userDAO.save(user);

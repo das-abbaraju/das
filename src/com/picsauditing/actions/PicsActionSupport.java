@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
+import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -165,6 +166,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
 					permissions.login(user);
+					LocaleController.setLocaleOfNearestSupported(permissions);
 					ActionContext.getContext().getSession().put("permissions", permissions);
 				} catch (Exception e) {
 					System.out.println("Problem autologging in.  Id supplied was: " + autoLoginID);

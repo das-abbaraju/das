@@ -34,6 +34,7 @@ import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.LocaleController;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -179,6 +180,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		// Login the User
 		Permissions permissions = new Permissions();
 		permissions.login(user);
+		LocaleController.setLocaleOfNearestSupported(permissions);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		// adding this user to the login log

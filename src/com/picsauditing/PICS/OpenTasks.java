@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -36,6 +37,7 @@ public class OpenTasks extends TranslationActionSupport {
 		Permissions permissions = new Permissions();
 		try {
 			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
