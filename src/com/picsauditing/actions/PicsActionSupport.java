@@ -494,7 +494,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public boolean isDebugging() {
 		return "1".equals(System.getProperty("pics.debug"))
-				|| permissions.hasPermission(OpPerms.DevelopmentEnvironment);
+				|| (permissions != null && permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 	}
 
 	public Collection<String> internalGetAlertMessages() {
