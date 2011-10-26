@@ -227,7 +227,7 @@ public class OpenTasks extends TranslationActionSupport {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-				openTasks.add(getText("ContractorWidget.message.WebcamHasShipped", contractor.getWebcam()
+				openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShipped", contractor.getWebcam()
 						.getTrackingNumber()));
 			}
 		}
