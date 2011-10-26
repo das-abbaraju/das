@@ -62,6 +62,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
@@ -472,14 +473,23 @@ public class Cron extends PicsActionSupport {
 			throws EmailException, IOException {
 		for (ContractorAccount contractor : list) {
 			if (!emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
+				List<OperatorAccount> operators = contractor.getOperatorAccounts();
+
 				emailBuilder.clear();
 
-				emailBuilder.setTemplate(templateID);
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailExclusionList.add(contractor.getPrimaryContact().getEmail());
 
 				emailBuilder.addToken("contractor", contractor);
+
+				// use the first operator
+				if (!operators.isEmpty()) {
+					int noFacilityTemplateID = templateID + 10;
+					emailBuilder.addToken("operator", operators.get(0));
+					emailBuilder.setTemplate(noFacilityTemplateID);
+				} else
+					emailBuilder.setTemplate(templateID);
 
 				if (last) {
 					Calendar cal = Calendar.getInstance();
