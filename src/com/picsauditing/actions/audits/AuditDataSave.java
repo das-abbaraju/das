@@ -99,8 +99,6 @@ public class AuditDataSave extends AuditActionSupport {
 				return SUCCESS;
 			}
 
-			boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
-			boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
 			boolean verifyButton = ("verify".equals(button));
 			boolean commentChanged = false;
 			boolean answerChanged = false;
@@ -118,6 +116,8 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
+				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
+				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
 				if (auditData.getComment() != null) {
 					if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
 						commentChanged = true;
