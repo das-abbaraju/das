@@ -15,7 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "invoice_fee")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class InvoiceFee extends BaseTable {
 	public final static int LATEFEE = 336;
 	public final static int OLDLATEFEE = 55;

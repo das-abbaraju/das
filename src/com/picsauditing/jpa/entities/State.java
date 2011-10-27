@@ -18,7 +18,7 @@ import org.json.simple.JSONObject;
 
 @Entity
 @Table(name = "ref_state")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class State extends BaseTranslatable implements Comparable<State>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = -7010252482295453919L;
 

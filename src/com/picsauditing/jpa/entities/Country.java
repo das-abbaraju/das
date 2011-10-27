@@ -20,7 +20,7 @@ import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "ref_country")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Country extends BaseTranslatable implements Comparable<Country>, Serializable, Autocompleteable, IsoCode {
 	private static final long serialVersionUID = 6312208192653925848L;
 

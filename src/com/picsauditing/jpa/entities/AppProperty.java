@@ -11,7 +11,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "app_properties")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AppProperty implements java.io.Serializable {
 
 	private String property;
