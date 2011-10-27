@@ -6,7 +6,9 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.NoResultException;
 
@@ -22,6 +24,7 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
+import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -30,9 +33,11 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Naics;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.AnswerMap;
@@ -94,6 +99,12 @@ public class AuditDataSave extends AuditActionSupport {
 				return SUCCESS;
 			}
 
+			boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
+			boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
+			boolean verifyButton = ("verify".equals(button));
+			boolean commentChanged = false;
+			boolean answerChanged = false;
+			
 			/*
 			 * If the `newCopy` is not set, then this is the first time the question is being answered.
 			 */
@@ -107,12 +118,6 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
-				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
-				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
-				boolean verifyButton = ("verify".equals(button));
-				boolean commentChanged = false;
-				boolean answerChanged = false;
-
 				if (auditData.getComment() != null) {
 					if (newCopy.getComment() == null || !newCopy.getComment().equals(auditData.getComment()))
 						commentChanged = true;
@@ -232,9 +237,15 @@ public class AuditDataSave extends AuditActionSupport {
 				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 				
-				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify) {
+				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify && !commentChanged) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
+						Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
+							operators.add(caop.getOperator());
+						Set<AuditCategory> cats = builder.calculate(auditData.getAudit(), operators); 
+						
+						
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete) &&
 								builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 							cao.changeStatus(AuditStatus.Incomplete, permissions);
