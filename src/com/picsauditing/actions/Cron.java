@@ -68,7 +68,6 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.SpringUtils;
@@ -485,11 +484,14 @@ public class Cron extends PicsActionSupport {
 
 				// use the first operator
 				if (!operators.isEmpty()) {
-					int noFacilityTemplateID = templateID + 10;
-					emailBuilder.addToken("operator", operators.get(0));
-					emailBuilder.setTemplate(noFacilityTemplateID);
-				} else
+					OperatorAccount operator = operators.get(0);
+
+					emailBuilder.addToken("operator", operator);
 					emailBuilder.setTemplate(templateID);
+				} else {
+					int noFacilityTemplateID = templateID + 10;
+					emailBuilder.setTemplate(noFacilityTemplateID);
+				}
 
 				if (last) {
 					Calendar cal = Calendar.getInstance();
