@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -228,12 +229,14 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 
-				// Stop concurrent modification exception
+				auditCategoryRuleCache.initialize(auditRuleDAO);
+				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+				
 				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
-						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
-								&& cao.getAudit().isCategoryApplicable(auditData.getQuestion().getCategory().getId())) {
+						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete) &&
+								builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 							cao.changeStatus(AuditStatus.Incomplete, permissions);
 							updateAudit = true;
 							break;
