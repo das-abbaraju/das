@@ -6,15 +6,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operator_competency")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorCompetency extends BaseTable implements Comparable<OperatorCompetency> {
 
 	private String category;

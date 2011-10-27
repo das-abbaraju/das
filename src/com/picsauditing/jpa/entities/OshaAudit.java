@@ -19,14 +19,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "osha_audit")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 	private static final long serialVersionUID = -4451146415122493617L;
 

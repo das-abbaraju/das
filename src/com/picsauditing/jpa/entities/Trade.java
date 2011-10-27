@@ -15,8 +15,6 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.google.common.base.Objects;
@@ -32,7 +30,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "ref_trade")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 @IndexableOverride(ignores = { @IndexOverrideIgnore(methodName = "getId") })
 public class Trade extends AbstractIndexableTable implements Hierarchical<Trade> {

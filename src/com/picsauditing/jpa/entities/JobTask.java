@@ -20,14 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "job_task")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class JobTask extends BaseTable implements Comparable<JobTask> {
 
 	private OperatorAccount operator;

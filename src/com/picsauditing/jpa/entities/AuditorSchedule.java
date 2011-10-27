@@ -9,15 +9,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "auditor_schedule")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditorSchedule extends BaseTable {
 	private User user;
 	private int weekDay;

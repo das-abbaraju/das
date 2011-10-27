@@ -10,13 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_fee")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorFee extends BaseTable {
 	private ContractorAccount contractor;
 	private FeeClass feeClass;

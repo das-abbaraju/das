@@ -8,13 +8,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagData extends BaseTable implements Comparable<FlagData> {
 
 	private ContractorAccount contractor;

@@ -17,9 +17,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
@@ -27,7 +24,6 @@ import com.picsauditing.access.Permissions;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "note")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class Note extends BaseTable implements java.io.Serializable {
 	private Account account;
 	private String summary = "";

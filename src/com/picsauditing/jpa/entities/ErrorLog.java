@@ -3,13 +3,9 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "app_error_log")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ErrorLog extends BaseTable implements java.io.Serializable {
 
 	private String category;

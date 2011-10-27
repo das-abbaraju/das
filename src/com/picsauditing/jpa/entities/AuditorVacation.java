@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -12,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
@@ -22,7 +18,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "auditor_vacation")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class AuditorVacation extends BaseTable {
 	private User user;
 	private Date startDate;

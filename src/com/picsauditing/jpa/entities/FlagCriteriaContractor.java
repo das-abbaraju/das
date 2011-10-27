@@ -1,20 +1,15 @@
 package com.picsauditing.jpa.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_contractor")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaContractor extends BaseTable implements Comparable<FlagCriteriaContractor> {
 
 	private ContractorAccount contractor;

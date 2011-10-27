@@ -42,7 +42,7 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "users")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 @IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
 public class User extends AbstractIndexableTable implements java.io.Serializable, Comparable<User>, JSONable {
 

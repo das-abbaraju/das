@@ -15,18 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "useraccess")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class UserAccess implements java.io.Serializable, Comparable<UserAccess> {
 	private int id;
 	private User user;

@@ -16,13 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private int accountID;
 	private String templateName = "";

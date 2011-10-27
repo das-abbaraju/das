@@ -11,13 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_registration_request")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorRegistrationRequest extends BaseTable implements java.io.Serializable {
 	private String name;
 	private OperatorAccount requestedBy;

@@ -35,7 +35,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAudit extends AbstractIndexableTable {
 
 	private AuditType auditType;

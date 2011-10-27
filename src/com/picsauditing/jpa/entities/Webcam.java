@@ -12,8 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.util.Strings;
@@ -21,7 +19,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "webcam")
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "temp")
 public class Webcam extends BaseTable implements JSONable {
 	private String make = "Logitech";
 	private String model;

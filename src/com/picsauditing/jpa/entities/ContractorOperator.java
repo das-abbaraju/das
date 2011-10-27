@@ -32,7 +32,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "generalcontractors")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
 
 	private OperatorAccount operatorAccount;

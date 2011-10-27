@@ -30,18 +30,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
@@ -56,7 +54,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_info")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
+// See parent for @Cache rule
 public class ContractorAccount extends Account implements JSONable {
 	private String taxId;
 	private String logoFile;

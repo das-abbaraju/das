@@ -6,12 +6,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_file")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAuditFile extends BaseTable {
 	private ContractorAudit audit;
 	private String fileType;

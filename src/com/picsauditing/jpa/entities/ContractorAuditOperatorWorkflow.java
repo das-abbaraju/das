@@ -8,13 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator_workflow")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class ContractorAuditOperatorWorkflow extends BaseTable {
 
 	private ContractorAuditOperator cao;

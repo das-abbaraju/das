@@ -9,12 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "certificate")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class Certificate extends BaseTable {
 	private ContractorAccount contractor;
 	private String fileType;

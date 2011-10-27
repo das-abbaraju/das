@@ -4,12 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @SuppressWarnings("serial")
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Naics implements java.io.Serializable {
 	private String code;
 	private float trir;

@@ -105,8 +105,6 @@
 		</global-exception-mappings>
 
 		<action name="ExceptionAction" class="com.picsauditing.actions.ExceptionAction">
-			<interceptor-ref name="exception" />
-			<interceptor-ref name="chain" />
 			<result name="Exception">exception_handler.jsp</result>
 		</action>
 
@@ -1848,6 +1846,11 @@
 
 		<action name="ClearCache" class="com.picsauditing.actions.ClearCacheAction">
 			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="CacheStatistics" class="com.picsauditing.actions.CacheStatistics">
+			<result>struts/misc/cache_statistics.jsp</result>
+			<result name="CacheElementList">struts/misc/cache_statistics_list.jsp</result>
 		</action>
 
 		<action name="OpenAuditsMailer" class="com.picsauditing.actions.audits.OpenAuditsMailer">

@@ -11,16 +11,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "email_subscription")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "temp")
 public class EmailSubscription extends BaseTable {
 	private User user;
 	private Subscription subscription;
