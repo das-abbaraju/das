@@ -166,10 +166,9 @@ public class MailCron extends PicsActionSupport {
 				}
 
 				// Get the default sender (info@pics)
-				EmailSender sender = new EmailSender();
 				for (EmailQueue email : emails) {
 					try {
-						sender.sendNow(email);
+						emailSenderSpring.sendNow(email);
 					} catch (Exception e) {
 						PicsLogger.log("ERROR with MailCron: " + e.getMessage());
 						addActionError("Failed to send email: " + e.getMessage());

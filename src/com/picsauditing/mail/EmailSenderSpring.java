@@ -25,9 +25,12 @@ public class EmailSenderSpring {
 	 * 
 	 * @param email
 	 */
-	private void sendMail(EmailQueue email, int attempts) {
+	private void sendMail(EmailQueue email, int attempts) throws AddressException {
 		attempts++;
 
+		if (attempts > 3)
+			throw new AddressException();
+		
 		try {
 			if (checkDeactivated(email))
 				return;
@@ -86,6 +89,8 @@ public class EmailSenderSpring {
 	public void sendNow(EmailQueue email) {
 		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
 		try {
+			email.cleanupEmailAddresses();
+
 			if (checkDeactivated(email))
 				return;
 			// Check all the addresses

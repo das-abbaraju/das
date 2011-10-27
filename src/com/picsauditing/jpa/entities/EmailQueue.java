@@ -20,6 +20,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.springframework.util.StringUtils;
+
+import com.ibm.icu.util.StringTokenizer;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -254,6 +257,32 @@ public class EmailQueue implements java.io.Serializable {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public void cleanupEmailAddresses() {
+		toAddresses = cleanupEmailAddress(toAddresses);
+		fromAddress = cleanupEmailAddress(fromAddress);
+		ccAddresses = cleanupEmailAddress(ccAddresses);
+		bccAddresses = cleanupEmailAddress(bccAddresses);
+	}
+
+	public String cleanupEmailAddress(String addresses) {
+		if (addresses == null)
+			return null;
+		
+		StringTokenizer st = new StringTokenizer(addresses, ",");
+		StringBuilder sb = new StringBuilder();
+		while (st.hasMoreTokens()) {
+			String address = st.nextToken();
+
+			address = StringUtils.trimAllWhitespace(address);
+			address = StringUtils.trimLeadingCharacter(address, '[');
+			address = StringUtils.trimTrailingCharacter(address, ']');
+			address = StringUtils.delete(address, "mailto:");
+			sb.append(address).append(",");
+		}
+		String returnAddress = StringUtils.trimTrailingCharacter(sb.toString(), ',');
+		return returnAddress;
 	}
 
 	public boolean isHtml() {
