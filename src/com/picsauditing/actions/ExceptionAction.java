@@ -105,7 +105,7 @@ public class ExceptionAction extends PicsActionSupport {
 				} catch (Exception e) {
 					System.out.println("PICS Exception Handler ... sending email via SendGrid");
 					GridSender sendMail = new GridSender(user, password);
-					mail.setFromAddress("\"PICS Exception Handler\"<info@picsauditing.com>");
+					mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 					try {
 						sendMail.sendMail(mail);
 					} catch (MessagingException e1) {
@@ -184,7 +184,7 @@ public class ExceptionAction extends PicsActionSupport {
 			} catch (Exception e) {
 				System.out.println("PICS Exception Handler ... sending email via SendGrid");
 				GridSender sendMail = new GridSender(user, password);
-				mail.setFromAddress("\"PICS Exception Handler\"<info@picsauditing.com>");
+				mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 				sendMail.sendMail(mail);
 				System.out.println(mail.getBody());
 			}

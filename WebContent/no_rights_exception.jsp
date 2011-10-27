@@ -68,7 +68,7 @@
         $('#response_form').submit(function() {
         	var priority = $('input[name="priority"]:checked').val();
         	var user_message = $("textarea#user_message").val();
-        	var to_address = "info@picsauditing.com";
+        	var to_address = "errors@picsauditing.com";
         	var from_address = $("#from_address").val();
         	var user_name = $("#user_name").val();
         	var dataString = 'priority='+ priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;  
