@@ -20,5 +20,14 @@
 		timeToLiveSeconds="86400" timeToIdleSeconds="14400" overflowToDisk="false"
 		memoryStoreEvictionPolicy="LFU">
 	</cache>
+	<!--
+		Configuring Query Cache
+	-->
+	<cache name="org.hibernate.cache.StandardQueryCache"
+		maxElementsInMemory="5" eternal="false" timeToLiveSeconds="120"
+		overflowToDisk="false" />
+
+	<cache name="org.hibernate.cache.UpdateTimestampsCache"
+		maxElementsInMemory="1000" eternal="true" overflowToDisk="false" />
 
 </ehcache>
