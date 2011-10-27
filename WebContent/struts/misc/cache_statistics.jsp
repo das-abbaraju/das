@@ -22,11 +22,9 @@
 			<form>
 				<s:hidden name="cacheName" value="%{name}" />
 				<p>
-					# of Items: <strong><s:property value="size" /></strong><br/>
+					# of Items: <strong><s:property value="size" /> / <s:property value="cacheConfiguration.maxElementsInMemory" /></strong><br/>
 					Memory Used: <strong><s:property value="calculateInMemorySize()/1000000" /> MBs</strong><br/>
 					Average Element Size: <strong><s:property value="calculateInMemorySize()/size/1000" /> KBs</strong><br/>
-					Total Possible Size: <strong><s:property value="cacheConfiguration.maxElementsInMemory" /></strong><br/>
-					Total Approximate Memory Usage: <strong><s:property value="((calculateInMemorySize()/size)*cacheConfiguration.maxElementsInMemory)/1000000" /> MBs</strong><br />
 					Time To Live: <strong><s:property value="cacheConfiguration.timeToLiveSeconds == 0 ? '∞' : cacheConfiguration.timeToLiveSeconds + 's'" /></strong><br />
 					Time To Idle: <strong><s:property value="cacheConfiguration.timeToIdleSeconds == 0 ? '∞' : cacheConfiguration.timeToIdleSeconds + 's'" /></strong><br />
 					Eviction Policy: <strong><s:property value="cacheConfiguration.memoryStoreEvictionPolicy" /></strong>
