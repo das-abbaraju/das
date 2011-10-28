@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -20,10 +21,9 @@ import com.picsauditing.search.Database;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAuditOperatorDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAuditOperator save(ContractorAuditOperator o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -33,7 +33,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void insert(ContractorAuditOperatorPermission caop) {
 		em.persist(caop);
 	}
@@ -43,7 +43,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	 * 
 	 * @param caop
 	 */
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(ContractorAuditOperatorPermission caop) {
 		em.remove(caop);
 	}
@@ -106,14 +106,13 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(ContractorAuditOperator row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
-	@Transactional
 	public void refresh(ContractorAuditOperator row) {
 		if (row != null && row.getId() != 0)
 			em.refresh(row);

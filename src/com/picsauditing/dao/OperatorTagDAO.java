@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.OperatorTag;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorTagDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public OperatorTag save(OperatorTag o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,7 +21,7 @@ public class OperatorTagDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		OperatorTag row = find(id);
 		if (row != null) {
@@ -29,7 +29,7 @@ public class OperatorTagDAO extends PicsDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(OperatorTag row) {
 		if (row != null) {
 			em.remove(row);

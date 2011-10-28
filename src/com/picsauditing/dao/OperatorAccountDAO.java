@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
@@ -19,10 +20,9 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorAccountDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public OperatorAccount save(OperatorAccount o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -37,7 +37,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(OperatorAccount row) {
 		if (row != null) {
 			em.remove(row);

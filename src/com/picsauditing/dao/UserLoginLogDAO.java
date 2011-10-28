@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.UserLoginLog;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserLoginLogDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public UserLoginLog save(UserLoginLog o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,7 +21,7 @@ public class UserLoginLogDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		UserLoginLog row = find(id);
 		if (row != null) {

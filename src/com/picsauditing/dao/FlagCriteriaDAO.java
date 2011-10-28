@@ -5,12 +5,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagCriteriaDAO extends PicsDAO {
 	public FlagCriteria find(int id) {

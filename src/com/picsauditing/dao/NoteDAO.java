@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
@@ -15,10 +16,9 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class NoteDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Note save(Note o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -28,7 +28,7 @@ public class NoteDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		Note row = find(id);
 		if (row != null) {
@@ -36,7 +36,7 @@ public class NoteDAO extends PicsDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(Note row) {
 		if (row != null) {
 			em.remove(row);

@@ -5,14 +5,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeSite;
 import com.picsauditing.jpa.entities.EmployeeSiteTask;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeSiteDAO extends PicsDAO {
 

@@ -2,13 +2,13 @@ package com.picsauditing.dao;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCatData;
 
-@Transactional(readOnly = true)
 public class AuditCategoryDataDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditCatData save(AuditCatData o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -18,7 +18,7 @@ public class AuditCategoryDataDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditCatData row = find(id);
 		if (row != null) {

@@ -5,12 +5,12 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorTagDAO extends PicsDAO {
 
@@ -18,7 +18,7 @@ public class ContractorTagDAO extends PicsDAO {
 		return em.find(ContractorTag.class, id);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		ContractorTag row = find(id);
 		remove(row);

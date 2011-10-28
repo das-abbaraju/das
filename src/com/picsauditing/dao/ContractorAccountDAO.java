@@ -13,7 +13,6 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
@@ -28,7 +27,6 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
 	public void remove(ContractorAccount row, String ftpDir) {

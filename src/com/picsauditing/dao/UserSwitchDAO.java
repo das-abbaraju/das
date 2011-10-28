@@ -5,15 +5,15 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserSwitch;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserSwitchDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public UserSwitch save(UserSwitch o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -23,14 +23,14 @@ public class UserSwitchDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(UserSwitch row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		UserSwitch row = find(id);
 		if (row != null)

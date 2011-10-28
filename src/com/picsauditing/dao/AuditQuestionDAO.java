@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -14,10 +15,9 @@ import com.picsauditing.jpa.entities.AuditQuestionFunction;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.QuestionFunctionType;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditQuestionDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditQuestion save(AuditQuestion o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,7 +27,7 @@ public class AuditQuestionDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditQuestion row = find(id);
 		if (row != null) {

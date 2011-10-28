@@ -4,12 +4,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAuditOperatorWorkflowDAO extends PicsDAO {
 

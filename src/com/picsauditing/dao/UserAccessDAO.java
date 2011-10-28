@@ -4,16 +4,16 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.util.log.PicsLogger;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserAccessDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public UserAccess save(UserAccess o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -23,7 +23,7 @@ public class UserAccessDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		UserAccess row = find(id);
 		if (row != null) {
@@ -32,7 +32,7 @@ public class UserAccessDAO extends PicsDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(UserAccess ua){
 		if(ua!=null){
 			PicsLogger.log("Removing UserAccess=" + ua.getOpPerm() + " for userID=" + ua.getUser().getId());

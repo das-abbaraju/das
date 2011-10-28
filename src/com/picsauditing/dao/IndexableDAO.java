@@ -8,15 +8,12 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class IndexableDAO extends PicsDAO {
 	public BaseTable find(int id) {

@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeCompetency;
 import com.picsauditing.jpa.entities.JobCompetency;
@@ -18,7 +16,6 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorCompetencyDAO extends PicsDAO {
 	

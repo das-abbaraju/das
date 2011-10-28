@@ -4,20 +4,20 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AppProperty;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AppPropertyDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AppProperty save(AppProperty o) {
 		o = em.merge(o);
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(String property) {
 		AppProperty row = find(property);
 		if (row != null) {

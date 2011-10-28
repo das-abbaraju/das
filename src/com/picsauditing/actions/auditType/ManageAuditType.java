@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -236,7 +235,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return false;
 	}
 
-	@Transactional
 	protected int copyAllRecursive() {
 		// Copying Audit
 		AuditType auditTypeCopy = copyAuditType(auditType);
@@ -258,7 +256,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return auditTypeCopy.getId();
 	}
 
-	@Transactional
 	protected AuditType copyAuditType(AuditType a) {
 		AuditType copy = new AuditType(a);
 		copy.setAuditColumns(permissions);
@@ -269,7 +266,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	/**
 	 * Copy this audit category to this audit type
 	 */
-	@Transactional
 	protected AuditCategory copyAuditCategory(AuditCategory a, AuditType at) {
 		AuditCategory copy = new AuditCategory(a, at);
 		copy.setAuditColumns(permissions);
@@ -286,7 +282,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	/**
 	 * Copy this audit question to this audit subcategory
 	 */
-	@Transactional
 	protected AuditQuestion copyAuditQuestion(AuditQuestion sourceQuestion, AuditCategory destinationCategory) {
 		AuditQuestion copy = new AuditQuestion(sourceQuestion, destinationCategory);
 		copy.setAuditColumns(permissions);

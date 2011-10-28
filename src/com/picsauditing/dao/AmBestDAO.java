@@ -4,16 +4,16 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.util.SpringUtils;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AmBestDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AmBest save(AmBest o) {
 		if (o.getAmBestId() == 0) {
 			em.persist(o);
@@ -23,14 +23,14 @@ public class AmBestDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(AmBest row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AmBest row = find(id);
 		if (row != null)

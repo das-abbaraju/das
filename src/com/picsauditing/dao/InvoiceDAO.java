@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -15,10 +16,9 @@ import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.TransactionStatus;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class InvoiceDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Invoice save(Invoice o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -32,7 +32,7 @@ public class InvoiceDAO extends PicsDAO {
 		remove(find(id));
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(Invoice row) {
 		if (row != null) {
 			em.remove(row);

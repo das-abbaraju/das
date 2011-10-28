@@ -4,15 +4,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.WaitingOn;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorRegistrationRequestDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public ContractorRegistrationRequest save(ContractorRegistrationRequest o) {
 		if (o.getId() == 0) {
 			em.persist(o);

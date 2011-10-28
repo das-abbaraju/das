@@ -6,14 +6,11 @@ import java.util.Random;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeDAO extends PicsDAO {
 

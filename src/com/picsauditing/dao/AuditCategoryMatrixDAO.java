@@ -7,8 +7,6 @@ import java.util.TreeMap;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryMatrix;
 import com.picsauditing.jpa.entities.AuditCategoryMatrixCompetencies;
@@ -16,7 +14,6 @@ import com.picsauditing.jpa.entities.AuditCategoryMatrixDesktop;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditCategoryMatrixDAO extends PicsDAO {
 	public AuditCategoryMatrix find(int id) {

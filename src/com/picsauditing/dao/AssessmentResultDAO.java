@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Account;
@@ -15,10 +16,9 @@ import com.picsauditing.jpa.entities.AssessmentResult;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AssessmentResultDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AssessmentResult save(AssessmentResult o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -28,7 +28,7 @@ public class AssessmentResultDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AssessmentResult row = find(id);
 		if (row != null) {

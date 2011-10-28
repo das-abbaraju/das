@@ -8,15 +8,12 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Tree;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class TradeDAO extends PicsDAO {
 

@@ -4,15 +4,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmailTemplateDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public EmailTemplate save(EmailTemplate o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,7 +27,7 @@ public class EmailTemplateDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(EmailTemplate row) {
 		if (row != null) {
 			em.remove(row);

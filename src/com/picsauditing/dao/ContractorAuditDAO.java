@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -28,10 +29,9 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PermissionQueryBuilder;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);

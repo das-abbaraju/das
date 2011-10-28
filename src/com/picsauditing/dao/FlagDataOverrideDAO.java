@@ -9,15 +9,12 @@ import java.util.Map;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagDataOverrideDAO extends PicsDAO {
 

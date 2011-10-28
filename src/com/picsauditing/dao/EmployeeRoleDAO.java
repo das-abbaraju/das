@@ -4,12 +4,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeRoleDAO extends PicsDAO {
 	public EmployeeRole find(int id) {

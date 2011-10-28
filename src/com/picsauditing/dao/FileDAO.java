@@ -6,11 +6,8 @@ import java.util.Map;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.FileAttachment;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FileDAO extends PicsDAO {
 

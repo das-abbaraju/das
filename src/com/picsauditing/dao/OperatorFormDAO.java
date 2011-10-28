@@ -6,16 +6,16 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OperatorFormDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public OperatorForm save(OperatorForm o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -30,7 +30,7 @@ public class OperatorFormDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(OperatorForm row) {
 		if (row != null) {
 			em.remove(row);

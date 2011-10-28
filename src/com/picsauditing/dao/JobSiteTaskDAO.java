@@ -7,16 +7,16 @@ import java.util.TreeMap;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.JobSite;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobSiteTaskDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public JobSiteTask save(JobSiteTask o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -26,7 +26,7 @@ public class JobSiteTaskDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		JobSiteTask row = find(id);
 		if (row != null) {

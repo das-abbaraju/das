@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditCategory;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditCategoryDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditCategory save(AuditCategory o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -20,7 +20,7 @@ public class AuditCategoryDAO extends PicsDAO {
 		}
 		return o;
 	}
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditCategory row = find(id);
         if (row != null) {

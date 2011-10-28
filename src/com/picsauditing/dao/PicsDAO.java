@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.PICS.I18nCache;
@@ -16,7 +17,6 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
 	protected EntityManager em;
@@ -55,7 +55,6 @@ abstract public class PicsDAO {
 		}
 	}
 
-	@Transactional
 	public void clear() {
 		em.clear();
 	}
@@ -64,7 +63,7 @@ abstract public class PicsDAO {
 		return em.contains(o);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public BaseTable save(BaseTable o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -80,7 +79,7 @@ abstract public class PicsDAO {
 		}
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(BaseTable row) {
 		if (row != null) {
 			em.remove(row);

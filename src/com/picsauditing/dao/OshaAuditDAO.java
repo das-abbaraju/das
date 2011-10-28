@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditData;
@@ -11,10 +12,9 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class OshaAuditDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public OshaAudit save(OshaAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -24,7 +24,7 @@ public class OshaAuditDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		OshaAudit row = find(id);
 		if (row != null) {
@@ -96,7 +96,7 @@ public class OshaAuditDAO extends PicsDAO {
 		return ( AuditData ) qry.getSingleResult();
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public int removeByType(int auditID, OshaType oshaType) {
 		Query query = em.createQuery("DELETE OshaAudit WHERE conAudit.id = ? AND type = ?");
 		query.setParameter(1, auditID);

@@ -5,15 +5,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditorAvailability;
 import com.picsauditing.jpa.entities.User;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditorAvailabilityDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditorAvailability save(AuditorAvailability o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -23,7 +23,7 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditorAvailability row = find(id);
 		remove(row);

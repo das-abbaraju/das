@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditData;
@@ -18,16 +19,15 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditDataDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditData row = find(id);
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public int remove(Set<Integer> ids) {
 		if (ids == null || ids.size() == 0)
 			return 0;

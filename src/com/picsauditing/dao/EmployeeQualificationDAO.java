@@ -7,15 +7,12 @@ import java.util.TreeMap;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.EmployeeQualification;
 import com.picsauditing.jpa.entities.JobSiteTask;
 import com.picsauditing.jpa.entities.JobTask;
 import com.picsauditing.util.DoubleMap;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmployeeQualificationDAO extends PicsDAO {
 

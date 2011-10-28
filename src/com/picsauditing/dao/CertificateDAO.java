@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
@@ -21,10 +22,9 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class CertificateDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Certificate save(Certificate o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -44,7 +44,7 @@ public class CertificateDAO extends PicsDAO {
 			remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(Certificate row) {
 		if (row != null)
 			em.remove(row);

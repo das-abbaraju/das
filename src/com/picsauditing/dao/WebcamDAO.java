@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Webcam;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class WebcamDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Webcam save(Webcam o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -26,7 +26,7 @@ public class WebcamDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(Webcam row) {
 		if (row != null) {
 			em.remove(row);

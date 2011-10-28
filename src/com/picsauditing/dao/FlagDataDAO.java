@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class FlagDataDAO extends PicsDAO {
 
@@ -72,7 +72,7 @@ public class FlagDataDAO extends PicsDAO {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(BaseTable row) {
 		if (row != null)
 			em.remove(row);

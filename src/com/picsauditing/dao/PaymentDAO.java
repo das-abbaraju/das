@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.Invoice;
@@ -14,10 +15,9 @@ import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class PaymentDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Payment save(Payment o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -27,7 +27,7 @@ public class PaymentDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Refund save(Refund o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -41,7 +41,7 @@ public class PaymentDAO extends PicsDAO {
 		remove(find(id));
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(Payment row) {
 		if (row != null) {
 			em.remove(row);
@@ -55,7 +55,7 @@ public class PaymentDAO extends PicsDAO {
 		row = null;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(PaymentApplied row) {
 		if (row != null) {
 			em.remove(row);

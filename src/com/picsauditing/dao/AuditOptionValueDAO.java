@@ -4,15 +4,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditOptionValueDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditOptionValue save(AuditOptionValue o) {
 		if (o.getId() == 0) {
 			em.persist(o);

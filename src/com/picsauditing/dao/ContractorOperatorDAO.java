@@ -6,13 +6,10 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
 

@@ -4,12 +4,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.util.Strings;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobCompetencyDAO extends PicsDAO {
 	public JobCompetency find(int id) {

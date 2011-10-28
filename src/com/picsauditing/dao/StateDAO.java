@@ -5,14 +5,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class StateDAO extends PicsDAO {
 

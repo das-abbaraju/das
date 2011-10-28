@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorNote;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class ContractorNoteDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public ContractorNote save(ContractorNote o) {
 		if (o.getId() == 0) {
 			em.persist(o);

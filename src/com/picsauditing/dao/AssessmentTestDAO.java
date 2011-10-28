@@ -4,12 +4,9 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AssessmentTest;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AssessmentTestDAO extends PicsDAO {
 	public AssessmentTest find(int id) {

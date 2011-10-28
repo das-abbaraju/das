@@ -4,14 +4,14 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.UserGroup;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class UserGroupDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public UserGroup save(UserGroup o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -21,7 +21,7 @@ public class UserGroupDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		UserGroup row = find(id);
 		if (row != null) {

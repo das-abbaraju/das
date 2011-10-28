@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -13,10 +14,9 @@ import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.search.SelectSQL;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class EmailSubscriptionDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public EmailSubscription save(EmailSubscription o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -36,7 +36,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 			remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(EmailSubscription row) {
 		if (row != null)
 			em.remove(row);

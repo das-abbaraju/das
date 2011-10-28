@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.Country;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class CountryDAO extends PicsDAO {
 

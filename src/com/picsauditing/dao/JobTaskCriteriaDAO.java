@@ -5,11 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.JobTaskCriteria;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobTaskCriteriaDAO extends PicsDAO {
 	public JobTaskCriteria find(int id) {

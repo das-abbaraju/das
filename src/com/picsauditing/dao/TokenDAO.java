@@ -4,15 +4,15 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ListType;
 import com.picsauditing.jpa.entities.Token;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class TokenDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public Token save(Token o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -22,7 +22,7 @@ public class TokenDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		Token row = find(id);
 		if (row != null) {

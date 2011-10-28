@@ -4,14 +4,11 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class JobRoleDAO extends PicsDAO {
 	public JobRole find(int id) {

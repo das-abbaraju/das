@@ -6,14 +6,14 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditorVacation;
 
-@Transactional(readOnly = true)
 @SuppressWarnings("unchecked")
 public class AuditorVacationDAO extends PicsDAO {
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public AuditorVacation save(AuditorVacation o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -28,7 +28,7 @@ public class AuditorVacationDAO extends PicsDAO {
 		remove(row);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(AuditorVacation row) {
 		if (row != null) {
 			em.remove(row);
