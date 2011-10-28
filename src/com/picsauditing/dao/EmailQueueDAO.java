@@ -131,9 +131,11 @@ public class EmailQueueDAO extends PicsDAO {
 	public List<String> findPendingActivationEmails(String timeframe) {
 		String sql = "SELECT DISTINCT toAddresses "
 				+ "FROM email_queue eq "
-				+ "WHERE eq.subject IN ('Incomplete Client Site Registration','Reminder: Client Site Registration Incomplete','Registration Will Be Deleted for Client Site') "
+				+ "WHERE eq.subject IN ('Incomplete Registration','Incomplete Client Site Registration','Incomplete Registration Reminder',"
+				+ "'Reminder: Client Site Registration Incomplete','Registration Will Be Deleted for PICS Operator',"
+				+ "'Registration Will Be Deleted for Client Site','Pending PICS Account Closed') "
 				+ "AND eq.creationDate > DATE_SUB(CURDATE(), INTERVAL " + timeframe + ")";
-		Query query = em.createNativeQuery(sql, EmailQueue.class);
+		Query query = em.createNativeQuery(sql);
 		return query.getResultList();
 	}
 }

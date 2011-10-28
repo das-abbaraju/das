@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
@@ -188,5 +189,36 @@ public class UserDAO extends PicsDAO {
 				+ " ORDER BY c.user.name, c.contractor.name");
 
 		return query.getResultList();
+	}
+
+	public User findByName(String name) {
+		if (name == null)
+			name = "";
+
+		try {
+			Query query = em.createQuery("SELECT u FROM User u WHERE name = ?");
+			query.setParameter(1, name);
+			return (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		} catch (NonUniqueResultException nure) {
+			return null;
+		}
+	}
+
+	public User findByNameAndAccount(String name, int accountID) {
+		if (name == null)
+			name = "";
+
+		try {
+			Query query = em.createQuery("SELECT u FROM User u WHERE name = ? AND account.id = ?");
+			query.setParameter(1, name);
+			query.setParameter(2, accountID);
+			return (User) query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		} catch (NonUniqueResultException nure) {
+			return null;
+		}
 	}
 }
