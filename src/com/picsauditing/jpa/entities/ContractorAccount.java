@@ -839,20 +839,19 @@ public class ContractorAccount extends Account implements JSONable {
 			if (!invoice.getStatus().isVoid()) {
 				for (InvoiceItem invoiceItem : invoice.getItems()) {
 					if (!foundMembership && invoiceItem.getInvoiceFee().isMembership()) {
-						if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.ListOnly)
-								&& !foundListOnlyMembership) {
+						FeeClass currentFeeClass = invoiceItem.getInvoiceFee().getFeeClass();
+
+						if (currentFeeClass.equals(FeeClass.ListOnly) && !foundListOnlyMembership) {
 							foundListOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
 									getPayingFacilities());
 							setCurrentFee(fee);
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)
-								&& !foundBidOnlyMembership) {
+						} else if (currentFeeClass.equals(FeeClass.BidOnly) && !foundBidOnlyMembership) {
 							foundBidOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
 									getPayingFacilities());
 							setCurrentFee(fee);
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)
-								&& !foundDocuGUARDMembership) {
+						} else if (currentFeeClass.equals(FeeClass.DocuGUARD) && !foundDocuGUARDMembership) {
 							foundDocuGUARDMembership = true;
 
 							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
@@ -875,8 +874,7 @@ public class ContractorAccount extends Account implements JSONable {
 							clearCurrentFee(FeeClass.BidOnly, feeDAO);
 							foundListOnlyMembership = true;
 							clearCurrentFee(FeeClass.ListOnly, feeDAO);
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.AuditGUARD)
-								&& !foundAuditGUARDMembership) {
+						} else if (currentFeeClass.equals(FeeClass.AuditGUARD) && !foundAuditGUARDMembership) {
 							foundAuditGUARDMembership = true;
 
 							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
@@ -884,7 +882,8 @@ public class ContractorAccount extends Account implements JSONable {
 										invoiceItem.getInvoiceFee());
 								setCurrentFee(fee);
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee());
+								getFees().get(currentFeeClass).setCurrentLevel(invoiceItem.getInvoiceFee());
+								getFees().get(currentFeeClass).setCurrentAmount(invoiceItem.getAmount());
 							}
 
 							// Old AuditGUARD included DocuGUARD fee
@@ -895,14 +894,13 @@ public class ContractorAccount extends Account implements JSONable {
 										invoiceItem.getInvoiceFee());
 								setCurrentFee(fee);
 							}
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
-								&& !foundInsureGUARDMembership) {
+						} else if (currentFeeClass.equals(FeeClass.InsureGUARD) && !foundInsureGUARDMembership) {
 							foundInsureGUARDMembership = true;
 							setCurrentFee(invoiceItem.getInvoiceFee());
-						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)
-								&& !foundEmployeeGUARDMembership) {
+						} else if (currentFeeClass.equals(FeeClass.EmployeeGUARD) && !foundEmployeeGUARDMembership) {
 							foundEmployeeGUARDMembership = true;
-							setCurrentFee(invoiceItem.getInvoiceFee());
+							getFees().get(currentFeeClass).setCurrentLevel(invoiceItem.getInvoiceFee());
+							getFees().get(currentFeeClass).setCurrentAmount(invoiceItem.getAmount());
 						}
 
 						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
@@ -1155,8 +1153,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if (status.isPending() && membershipDate == null){
-			if(getAccountLevel().isFull())
+		if (status.isPending() && membershipDate == null) {
+			if (getAccountLevel().isFull())
 				return "Activation";
 			else
 				return "Renewal";
