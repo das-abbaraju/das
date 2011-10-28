@@ -11,6 +11,7 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -48,6 +49,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	protected List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
 	
 	private ReportFilterContractor filter = new ReportFilterContractor();
+	
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
 
 	public ReportAccount() {
 		listType = ListType.Contractor;
@@ -438,24 +444,26 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere(f.getCustomAPI());
 
 		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
+			int[] questions = getFilter().getMinorityQuestion();			
 			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
-			if (getFilter().getMinorityQuestion() != 3) {
-				sql.addJoin("JOIN pqfdata pdsd on casd.id = pdsd.auditID AND pdsd.questionID = "
-						+ getFilter().getMinorityQuestion());
-				if ((getFilter().getMinorityQuestion() == 3543) || (getFilter().getMinorityQuestion() == 66)
-						|| (getFilter().getMinorityQuestion() == 77))
-					sql.addWhere("pdsd.answer = 'X'");
-				else
-					sql.addWhere("pdsd.answer = 'Yes'");
-			} else {
-				sql.addJoin("JOIN pqfdata pd2340 on casd.id = pd2340.auditID AND pd2340.questionID = 2340");
-				sql.addJoin("JOIN pqfdata pd2354 on casd.id = pd2354.auditID AND pd2354.questionID = 2354");
-				sql.addJoin("JOIN pqfdata pd2373 on casd.id = pd2373.auditID AND pd2373.questionID = 2373");
-				sql.addJoin("LEFT JOIN pqfdata pd3543 on casd.id = pd3543.auditID AND pd3543.questionID = 3543");
-				sql.addJoin("LEFT JOIN pqfdata pd66 on casd.id = pd66.auditID AND pd66.questionID = 66");
-				sql.addJoin("LEFT JOIN pqfdata pd77 on casd.id = pd77.auditID AND pd77.questionID = 77");
-				sql.addWhere("pd2340.answer = 'Yes' OR pd2354.answer = 'Yes' OR pd2373.answer = 'Yes' OR pd3543.answer = 'X' OR pd66.answer = 'X' OR pd77.answer = 'X'");
+			for (int question: questions){
+				sql.addJoin("LEFT JOIN pqfdata pdsd"+question+" on casd.id = pdsd"+ question+".auditID AND pdsd"+question+".questionID = "
+						+ question);
 			}
+			StringBuilder where = new StringBuilder();
+			for (int i = 0; i < questions.length; i ++){
+				int question = questions[i];
+				if (i != 0)
+					where.append("OR ");
+				
+				where.append("pdsd").append(question);
+				if ((question == 3543) || (question == 66)
+						|| (question == 77))
+					where.append(".answer = 'X' ");
+				else
+					where.append(".answer = 'Yes' ");
+			}
+			sql.addWhere(where.toString());
 		}
 
 		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
@@ -504,11 +512,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 */
 	public int getContractorCount() {
 		if (permissions.isOperator() || permissions.isCorporate()) {
-			OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-			return dao.getContractorCount(permissions.getAccountId(), permissions);
+			return operatorAccountDAO.getContractorCount(permissions.getAccountId(), permissions);
 		}
-		ContractorAccountDAO cAccountDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-		return cAccountDAO.getActiveContractorCounts("");
+		return contractorAccountDAO.getActiveContractorCounts("");
 	}
 
 	public List<Integer> getIds() {

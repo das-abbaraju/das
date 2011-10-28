@@ -54,16 +54,18 @@ public class ReportAccountAudits extends ReportAccount {
 			sql.addField("pd3543.answer AS 3543answer");
 			sql.addField("pd66.answer AS 66answer");
 			sql.addField("pd77.answer AS 77answer");
-			sql.addField("pd3283.answer AS 3283answer");
-			if (getFilter().getMinorityQuestion() != 3) {
-				sql.addJoin("LEFT JOIN pqfdata pd2340 ON ca1.id = pd2340.auditID AND pd2340.questionID = 2340");
-				sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
-				sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
-				sql.addJoin("LEFT JOIN pqfdata pd3543 ON ca1.id = pd3543.auditID AND pd3543.questionID = 3543");
-				sql.addJoin("LEFT JOIN pqfdata pd66 on ca1.id = pd66.auditID AND pd66.questionID = 66");
-				sql.addJoin("LEFT JOIN pqfdata pd77 on ca1.id = pd77.auditID AND pd77.questionID = 77");
-				sql.addJoin("LEFT JOIN pqfdata pd3283 on ca1.id = pd3283.auditID AND pd3283.questionID = 3283");
-			}
+			sql.addField("pd9672.answer AS 9672answer");
+			sql.addField("pd9675.answer AS 9675answer");
+
+			sql.addJoin("LEFT JOIN pqfdata pd2340 ON ca1.id = pd2340.auditID AND pd2340.questionID = 2340");
+			sql.addJoin("LEFT JOIN pqfdata pd2354 ON ca1.id = pd2354.auditID AND pd2354.questionID = 2354");
+			sql.addJoin("LEFT JOIN pqfdata pd2373 ON ca1.id = pd2373.auditID AND pd2373.questionID = 2373");
+			sql.addJoin("LEFT JOIN pqfdata pd3543 ON ca1.id = pd3543.auditID AND pd3543.questionID = 3543");
+			sql.addJoin("LEFT JOIN pqfdata pd66 on ca1.id = pd66.auditID AND pd66.questionID = 66");
+			sql.addJoin("LEFT JOIN pqfdata pd77 on ca1.id = pd77.auditID AND pd77.questionID = 77");
+			sql.addJoin("LEFT JOIN pqfdata pd9672 on ca1.id = pd9672.auditID AND pd9672.questionID = 9672");
+			sql.addJoin("LEFT JOIN pqfdata pd9675 on ca1.id = pd9675.auditID AND pd9675.questionID = 9675");
+
 			// Stop duplicates from appearing
 			sql.addGroupBy("a.name");
 		}
@@ -111,6 +113,7 @@ public class ReportAccountAudits extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("3543answer", "Disabled Veteran Owned"));
 		excelSheet.addColumn(new ExcelColumn("66answer", "Union Personnel"));
 		excelSheet.addColumn(new ExcelColumn("77answer", "Non-union Personnel"));
-		excelSheet.addColumn(new ExcelColumn("3283answer", "Aboriginal Owned"));
+		excelSheet.addColumn(new ExcelColumn("9672answer", "Aboriginal Owned"));
+		excelSheet.addColumn(new ExcelColumn("9675answer", "Aboriginal Employee"));
 	}
 }

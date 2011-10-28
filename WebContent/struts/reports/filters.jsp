@@ -155,7 +155,12 @@
 	
 		<s:if test="filter.showMinorityOwned">
 			<div class="filterOption">
-				<s:select cssClass="forms" list="filter.minorityQuestions" name="filter.minorityQuestion" headerKey="0" headerValue="- %{getText('Filters.label.SupplierDiversity')} -" />
+				<a href="#" class="filterBox"><s:text name="Filters.label.SupplierDiversity" /></a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
+				<span class="clearLink q_box select">
+					<s:select list="filter.minorityQuestions" cssClass="forms" name="filter.minorityQuestion" multiple="true" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
 			</div>
 		</s:if>
 	

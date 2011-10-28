@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -95,7 +97,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date invoiceDueDate1;
 	protected Date invoiceDueDate2;
 	protected String deactivationReason;
-	protected int minorityQuestion = 0;
+	protected int[] minorityQuestion;
 	protected String workStatus;
 	protected String glEachOccurrence;
 	protected String glGeneralAggregate;
@@ -110,6 +112,20 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditQuestionFlagChanges = false;
 	protected boolean soleProprietership = false;
 	protected String[] accountLevel;
+	
+	// // DAOs
+	@Autowired
+	protected OperatorTagDAO operatorTagDAO;
+	@Autowired
+	protected EmailTemplateDAO emailTemplateDAO;
+	@Autowired
+	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	protected AuditQuestionDAO auditQuestionDAO;
+	@Autowired
+	protected UserDAO userDAO;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -537,10 +553,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	// ///
-	private AuditQuestionDAO getQuestionDAO() {
-		return (AuditQuestionDAO) SpringUtils.getBean("AuditQuestionDAO");
-	}
-
 	public String[] getTradePerformedByList() {
 		String[] list = { getDefaultPerformedBy(), "Self Performed", "Sub Contracted" };
 		return list;
@@ -549,27 +561,23 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public List<ContractorAccount> getContractorList() throws Exception {
 		if (permissions == null)
 			return null;
-		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
-		return dao.findWhere("", permissions);
+		return contractorAccountDAO.findWhere("", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		if (permissions == null)
 			return null;
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(false, "", permissions);
+		return operatorAccountDAO.findWhere(false, "", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
 		if (permissions == null)
 			return null;
-		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-		return dao.findWhere(true, "", permissions);
+		return operatorAccountDAO.findWhere(true, "", permissions);
 	}
 
 	public List<User> getAuditorList() throws Exception {
-		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-		return new AuditorCache(dao).getList();
+		return new AuditorCache(userDAO).getList();
 	}
 
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
@@ -577,13 +585,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public List<EmailTemplate> getEmailTemplateList() throws Exception {
-		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
-		return dao.findByAccountID(permissions.getAccountId(), getEmailListType());
+		return emailTemplateDAO.findByAccountID(permissions.getAccountId(), getEmailListType());
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
-		OperatorTagDAO dao = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
-		return dao.findByOperator(permissions.getAccountId(), true);
+		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 
 	public static Map<String, String> getDeactivationReasons() {
@@ -727,11 +733,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.deactivationReason = deactivationReason;
 	}
 
-	public int getMinorityQuestion() {
+	public int[] getMinorityQuestion() {
 		return minorityQuestion;
 	}
 
-	public void setMinorityQuestion(int minorityQuestion) {
+	public void setMinorityQuestion(int[] minorityQuestion) {
 		this.minorityQuestion = minorityQuestion;
 	}
 
@@ -871,8 +877,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		temp.put(3543, getText("Filters.status.DisabledVeteranOwned"));
 		temp.put(66, getText("Filters.status.UnionPersonnel"));
 		temp.put(77, getText("Filters.status.NonUnionPersonnel"));
-		temp.put(3283, getText("Filters.status.AboriginalOwned"));
-		temp.put(3, getText("Filters.status.AllTheAbove"));
+		temp.put(9672, getText("Filters.status.AboriginalOwned"));
+		temp.put(9675, getText("Filters.status.AboriginalEmployees"));
 		return Collections.unmodifiableMap(temp);
 	}
 
