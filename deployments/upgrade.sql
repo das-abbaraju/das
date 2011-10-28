@@ -1237,7 +1237,7 @@ UPDATE app_translation set msgValue=replace(msgValue, '.xls', '') where msgValue
 UPDATE app_translation set msgValue=replace(msgValue, '.docx', '') where msgValue like '%.docx%' and msgValue not like '%.txt%';
 UPDATE app_translation set msgValue=replace(msgValue, '.xlsx', '') where msgValue like '%.xlsx%' and msgValue not like '%.txt%';
 -- update url
-update app_translation set msgValue=replace(msgValue, 'forms/form', 'ManageResources!downloadResource.action?id=') where msgValue like '%forms/form%';
+update app_translation set msgValue=replace(msgValue, 'forms/form', 'Resources!download.action?id=') where msgValue like '%forms/form%';
 -- update any remaining names
 update app_translation set msgValue=replace(msgValue, 'Forms & Docs', 'Resources') where msgValue like '%Forms & Docs%';
 --
