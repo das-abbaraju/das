@@ -102,7 +102,7 @@ public class PicsMenu {
 					subMenu.addChild(getText("menu.Contractor.PaymentOptions"), "ContractorPaymentOptions.action");
 				}
 
-				menu.addChild(getText("global.FormsAndDocs"), "ContractorForms.action");
+				menu.addChild(getText("global.Resources"), "ContractorForms.action");
 
 				subMenu = addSupportLink(menu);
 				addChildAction(subMenu, "ProfileEdit");
@@ -269,9 +269,6 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.ManageEmployees))
 			subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action?id=" + permissions.getAccountId());
 
-		if (permissions.hasPermission(OpPerms.FormsAndDocs))
-			subMenu.addChild(getTitle("ManageForms"), "manage_forms.jsp");
-
 		if (permissions.seesAllContractors()) {
 			subMenu.addChild("Email Subscriptions", "ReportEmailSubscription.action");
 		}
@@ -288,6 +285,9 @@ public class PicsMenu {
 		}
 		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
 			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
+
+		if (permissions.hasPermission(OpPerms.FormsAndDocs))
+			subMenu.addChild(getTitle("Resources"), "Resources.action");
 
 		if (permissions.hasPermission(OpPerms.UserRolePicsOperator)) {
 			subMenu.addChild("Sales Report", "ReportSalesReps.action");

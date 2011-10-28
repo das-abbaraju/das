@@ -49,6 +49,13 @@
 			</s:else>
 		</div>
 	
+		<s:if test="filter.showTitleName">
+			<div class="filterOption">
+				<s:text name="global.Resource" /> 
+				<s:textfield name="filter.titleName" cssClass="forms" size="18" />
+			</div>
+		</s:if>
+
 		<s:if test="filter.showAccountName">
 			<div class="filterOption">
 				<s:textfield name="filter.accountName" cssClass="forms" size="18" />

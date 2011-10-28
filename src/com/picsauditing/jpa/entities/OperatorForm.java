@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -91,4 +92,47 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 		this.locale = locale;
 	}
 
+	@Transient
+	public OperatorForm getMostApplicableForm(Locale loc) {
+		OperatorForm selectedForm = null;
+		boolean countryMatch = getLocale().getCountry().toString().equals(loc.getCountry().toString());
+		boolean primaryLanguageMatch = getLocale().getLanguage().toString().equals(loc.getLanguage().toString());
+
+		if (countryMatch && primaryLanguageMatch) {
+			selectedForm = this;
+		}
+		
+		if (selectedForm == null) {
+			for (OperatorForm child:getChildren()) {
+				countryMatch = child.getLocale().getCountry().toString().equals(loc.getCountry().toString());
+				boolean languageMatch = child.getLocale().getLanguage().toString().equals(loc.getLanguage().toString());
+				if (countryMatch && languageMatch) {
+					selectedForm = child;
+					break;
+				} else if (languageMatch && !primaryLanguageMatch && selectedForm == null) {
+					selectedForm = child; // first match of just language
+					break;
+				}
+			}
+		}
+		
+		if (selectedForm == null) {
+			selectedForm = this;
+		}
+
+		return selectedForm;
+	}
+	
+	@Transient
+	public List<OperatorForm> getAllForms() {
+		ArrayList<OperatorForm> list = new ArrayList<OperatorForm>();
+		
+		OperatorForm parent = (getParent() != null) ? getParent() : this;
+		list.add(parent);
+		for (OperatorForm child:getChildren()) {
+			list.add(child);
+		}
+		
+		return list;
+	}
 }

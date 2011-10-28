@@ -570,6 +570,13 @@ a.down-arrow {
 	padding-left: 20px;
 }
 
+a.top {
+	padding-left: 18px;
+	margin-left: 2px;
+	background: url('../images/arrow-up-top.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.processing {
 	background: url('../images/ajax_process.gif') no-repeat left center;
 }

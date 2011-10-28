@@ -155,11 +155,11 @@ public class TranslationActionSupport extends ActionSupport {
 	@Override
 	public String getText(String aTextName, String defaultValue, List<?> args, ValueStack stack) {
 		useKey(aTextName);
-		if (i18nCache.hasKey(aTextName, getLocale())) {
+		if (i18nCache.hasKey(aTextName, getLocaleStatic())) {
 			Object[] argArray = null;
 			if (args != null)
 				argArray = args.toArray();
-			return i18nCache.getText(aTextName, getLocale(), argArray);
+			return i18nCache.getText(aTextName, getLocaleStatic(), argArray);
 		}
 		return defaultValue;
 	}

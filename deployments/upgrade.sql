@@ -1216,3 +1216,29 @@ where `id`='132';
 -- PICS-3547
 ALTER TABLE `auditor_vacation` 
 	ADD COLUMN `allDay` tinyint(4)   NOT NULL DEFAULT '0' after `endDate`;
+
+-- PICS-3276 Docs and Forms to Resources
+-- This upgrade needs to upgrade file names and there directory locations.
+-- This assumes that the schema upgrade has been run adding a locale and parent id to the operatorforms table
+-- 1. Create a batch script to create new directories and execute it
+-- select distinct CONCAT('mkdir files/', SUBSTRING(id, 1, 3)) from operatorforms where id>999 order by id;
+
+-- 2. Create a batch script of the file rename/move and execute it
+-- select CONCAT('mv forms/', file, ' files/', IF(id > 999, CONCAT(SUBSTRING(id, 1, 3), '/'), ''), CONCAT('resource_', id, '.', REVERSE(SUBSTRING_INDEX(REVERSE(file), '.', 1)))) as move_me from operatorforms order by id DESC;
+
+-- 3. Execute the following script to rename the filenames and set locale in database
+update operatorforms of set of.file=CONCAT('resource_', of.id, RIGHT(of.file, INSTR(REVERSE(of.file), '.'))), locale='en';
+
+-- 4. Execute the following script to update app transalations
+-- remove extension
+UPDATE app_translation set msgValue=replace(msgValue, '.pdf', '') where msgValue like '%.pdf%' and msgValue not like '%.txt%';
+UPDATE app_translation set msgValue=replace(msgValue, '.doc', '') where msgValue like '%.doc%' and msgValue not like '%.txt%';
+UPDATE app_translation set msgValue=replace(msgValue, '.xls', '') where msgValue like '%.xls%' and msgValue not like '%.txt%';
+UPDATE app_translation set msgValue=replace(msgValue, '.docx', '') where msgValue like '%.docx%' and msgValue not like '%.txt%';
+UPDATE app_translation set msgValue=replace(msgValue, '.xlsx', '') where msgValue like '%.xlsx%' and msgValue not like '%.txt%';
+-- update url
+update app_translation set msgValue=replace(msgValue, 'forms/form', 'ManageResources!downloadResource.action?id=') where msgValue like '%forms/form%';
+-- update any remaining names
+update app_translation set msgValue=replace(msgValue, 'Forms & Docs', 'Resources') where msgValue like '%Forms & Docs%';
+--
+

@@ -232,6 +232,22 @@
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
 
+		<action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
+			<result>struts/forms/manage_resources.jsp</result>
+		</action>
+		
+		<action name="Resources"
+			class="com.picsauditing.actions.report.ReportResources">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">Resources</param>
+			<result>struts/reports/resources.jsp</result>
+		</action>
+		
+		<action name="ResourcesAjax"
+			class="com.picsauditing.actions.report.ReportResources">
+			<result>struts/reports/resources_data.jsp</result>
+		</action>
+
 		<action name="ContractorPendingApprovalAjax"
 			class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
 			<result>struts/widgets/con_pendingapproval.jsp</result>

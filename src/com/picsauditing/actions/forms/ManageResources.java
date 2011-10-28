@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -41,6 +42,7 @@ public class ManageResources extends PicsActionSupport {
 	private int parentId;
 	private int childId;
 	private OperatorAccount operator;
+	private String accountName;
 
 	@Override
 	public String execute() throws Exception {
@@ -100,8 +102,27 @@ public class ManageResources extends PicsActionSupport {
 	public String save() throws Exception {
 		findResource();
 		
+		if (parentResource != null) {
+			account = parentResource.getAccount();
+		}
+		
+		if (id==0 && account==null && Strings.isEmpty(accountName)) {
+			addActionError(getText("ManageResources.error.NoAccount"));
+			return SUCCESS;			
+		}
+		
+		if (id==0 && account==null) {
+			@SuppressWarnings("unchecked")
+			List<Account> accounts = accountDAO.findWhere("name='" + Utilities.escapeQuotes(accountName) + "'");
+			if (accounts.size() != 1) {
+				addActionError(getText("ManageResources.error.NoAccount"));
+				return SUCCESS;							
+			}
+			account = accounts.get(0);
+		}
+		
 		if (Strings.isEmpty(formName)) {
-			addActionError(getText("ManageResources.error.NoFormName"));
+			addActionError(getText("ManageResources.error.NoName"));
 			return SUCCESS;
 		}
 		
@@ -420,5 +441,21 @@ public class ManageResources extends PicsActionSupport {
 	public void setChildId(int childId) {
 		this.childId = childId;
 	}
-	
+
+	public OperatorForm getParentResource() {
+		return parentResource;
+	}
+
+	public void setParentResource(OperatorForm parentResource) {
+		this.parentResource = parentResource;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
 }

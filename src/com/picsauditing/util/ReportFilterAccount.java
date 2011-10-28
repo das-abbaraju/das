@@ -23,6 +23,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected boolean showType = false;
 	protected boolean showPrimaryInformation = false;
 	protected boolean showTradeInformation = false;
+	protected boolean showTitleName = false;
 
 	// /////// Parameter Values /////////////////
 	protected String startsWith;
@@ -34,6 +35,7 @@ public class ReportFilterAccount extends ReportFilter {
 	protected AccountStatus[] status;
 	protected boolean primaryInformation = false;
 	protected boolean tradeInformation = false;
+	protected String titleName;
 
 	protected Permissions permissions = null;
 
@@ -211,6 +213,22 @@ public class ReportFilterAccount extends ReportFilter {
 
 	public void setTradeInformation(boolean tradeInformation) {
 		this.tradeInformation = tradeInformation;
+	}
+
+	public boolean isShowTitleName() {
+		return showTitleName;
+	}
+
+	public void setShowTitleName(boolean showTitleName) {
+		this.showTitleName = showTitleName;
+	}
+
+	public String getTitleName() {
+		return titleName;
+	}
+
+	public void setTitleName(String titleName) {
+		this.titleName = titleName;
 	}
 
 	public Permissions getPermissions() {

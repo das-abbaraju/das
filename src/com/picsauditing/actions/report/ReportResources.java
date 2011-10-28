@@ -12,6 +12,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -43,6 +44,8 @@ public class ReportResources extends ReportActionSupport {
 		if (!forceLogin())
 			return LOGIN;
 		
+		getFilter().setShowTitleName(true);
+		
 		findOperator();
 		
 		Set<Integer> ids = new HashSet<Integer>();
@@ -61,14 +64,20 @@ public class ReportResources extends ReportActionSupport {
 		if (ids.size() > 0) {
 			sql.addWhere("o.opID IN (" + Strings.implode(ids, ",") + ")");
 		}
-		sql.addWhere("o.parentID IS NULL");
+		if (Strings.isEmpty(filter.getTitleName())) {
+			sql.addWhere("o.parentID IS NULL");
+		} else {
+			sql.addWhere("(o.parentID IS NULL and o.formName like '%" + Utilities.escapeQuotes(filter.getTitleName().trim())
+					+ "%') OR o.id IN (select of.parentID from operatorforms of where of.formName like '%"
+					+ Utilities.escapeQuotes(filter.getTitleName().trim()) + "%' and of.parentID IS NOT NULL)");
+		}
 		
 		if (!ReportFilterAccount.getDefaultName().equals(filter.getAccountName())){
-			sql.addWhere("a.name LIKE '%" + filter.getAccountName() + "%'");
+			sql.addWhere("a.name LIKE '%" + Utilities.escapeQuotes(filter.getAccountName()) + "%'");
 		}
 		
 		if (!Strings.isEmpty(filter.getStartsWith())) {
-			sql.addWhere("o.formName LIKE '" + filter.getStartsWith() + "%'");
+			sql.addWhere("o.formName LIKE '" + Utilities.escapeQuotes(filter.getStartsWith()) + "%'");
 		}
 		sql.addField("a.name operator");
 		sql.addField("o.id id");
@@ -180,30 +189,8 @@ public class ReportResources extends ReportActionSupport {
 			locale = permissions.getLocale();
 		}
 
-		OperatorForm resource = null;
+		OperatorForm resource = parent.getMostApplicableForm(locale);
 
-		/*
-		 * This will select the resource that matches country & language
-		 * or the first matching language
-		 * or the primary resource
-		 */
-		if (parent.getLocale().getLanguage().equals(locale.getLanguage())) {
-			resource = parent;
-		}
-		for (OperatorForm child:parent.getChildren()) {
-			boolean countryMatch = child.getLocale().getCountry().equals(locale.getCountry());
-			boolean languageMatch = child.getLocale().getLanguage().equals(locale.getLanguage());
-			if (countryMatch && languageMatch) {
-				resource = child;
-				break;
-			} else if (languageMatch && resource == null) {
-				resource = child; // first match of just language
-			}
-		}
-		if (resource == null) {
-			resource = parent;
-		}
-		
 		Downloader downloader = new Downloader(ServletActionContext.getResponse(),
 				ServletActionContext.getServletContext());
 		try {
