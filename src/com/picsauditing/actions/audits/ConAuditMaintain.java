@@ -9,7 +9,6 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
@@ -28,9 +27,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 	protected List<ContractorAuditOperator> caosSave = new ArrayList<ContractorAuditOperator>();
 
 	public void prepare() throws Exception {
-		if (!forceLogin())
-			return;
-
 		String[] ids = (String[]) ActionContext.getContext().getParameters().get("auditID");
 
 		if (ids != null && ids.length > 0) {
@@ -39,9 +35,8 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 		}
 
 		/*
-		 * This page defaults to systemEdit = true. If something is trying to
-		 * set this value, use that instead. This is for the cao editing ability
-		 * on the main audit page.
+		 * This page defaults to systemEdit = true. If something is trying to set this value, use that instead. This is
+		 * for the cao editing ability on the main audit page.
 		 */
 		String[] systemEdits = (String[]) ActionContext.getContext().getParameters().get("systemEdit");
 		if (systemEdits != null && systemEdits.length > 0) {
@@ -52,9 +47,6 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		if (button != null) {
 			if ("caoSave".equals(button)) {
 				for (ContractorAuditOperator cao : caosSave) {
@@ -66,7 +58,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							AuditStatus newStatus = cao.getStatus();
 							auditSetExpiresDate(toSave, newStatus);
 							toSave.changeStatus(newStatus, permissions);
-							
+
 							setCaoUpdatedNote(prevStatus, toSave);
 
 							caoDAO.save(toSave);
@@ -131,5 +123,5 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 	public void setCaosSave(List<ContractorAuditOperator> caosSave) {
 		this.caosSave = caosSave;
 	}
-	
+
 }

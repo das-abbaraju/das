@@ -15,7 +15,6 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -28,9 +27,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
@@ -40,6 +37,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
+	@Autowired
+	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private EmailSenderSpring emailSender;
 
@@ -57,11 +56,6 @@ public class CaoSave extends AuditActionSupport {
 	private List<ContractorAuditOperator> caoList;
 	private boolean insurance = false;
 
-	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
-
-	protected OshaAuditDAO oshaAuditDAO;
-
 	// Update flags
 	private Set<FlagCriteriaContractor> fco;
 	private FlagDataCalculator flagCalc;
@@ -71,7 +65,7 @@ public class CaoSave extends AuditActionSupport {
 			caoWorkflow = caowDAO.findByCaoID(caoID);
 
 		if (caoWorkflow == null) {
-			addActionError("Error pulling up record, please try again");
+			addActionError(getText("CaoSave.ErrorPullingUpRecord"));
 			return BLANK;
 		}
 
@@ -193,6 +187,7 @@ public class CaoSave extends AuditActionSupport {
 		AuditStatus newStatus = step.getNewStatus();
 
 		cao.changeStatus(newStatus, permissions);
+		
 		// Setting the expiration date
 		auditSetExpiresDate(cao, newStatus);
 
@@ -216,7 +211,8 @@ public class CaoSave extends AuditActionSupport {
 			if (!Strings.isEmpty(cao.getAudit().getAuditFor()))
 				summary += " for " + cao.getAudit().getAuditFor();
 			summary += " from " + prevStatus + " to " + cao.getStatus();
-			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false, Account.PicsID, null, null);
+			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
+					Account.PicsID, null, null);
 		}
 
 		caoDAO.save(cao);
@@ -332,8 +328,11 @@ public class CaoSave extends AuditActionSupport {
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
 				if (cao.getFlag() != null) {
-					if (cao.getFlag().isGreen())
-						cao.changeStatus(AuditStatus.Approved, permissions);
+					if (cao.getFlag().isGreen()) {
+						ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Approved, permissions);
+						caow.setNotes(getTextParameterized("CaoSave.AutoApprovedNote", cao.getOperator().getName()));
+						caowDAO.save(caow);
+					}
 				}
 			}
 		}
@@ -450,10 +449,6 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setAuditPercentCalculator(AuditPercentCalculator auditPercentCalculator) {
 		this.auditPercentCalculator = auditPercentCalculator;
-	}
-
-	public void setOshaAuditDAO(OshaAuditDAO oshaAuditDAO) {
-		this.oshaAuditDAO = oshaAuditDAO;
 	}
 
 	public boolean isViewCaoTable() {

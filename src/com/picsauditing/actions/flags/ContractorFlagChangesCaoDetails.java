@@ -18,24 +18,20 @@ public class ContractorFlagChangesCaoDetails extends ContractorActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		newCao = caoDao.find(id);
 		oldCao = caoDao.find(previousID);
 
 		return SUCCESS;
 	}
-	
-	public String rollback()
-	{
+
+	public String rollback() {
 		newCao = caoDao.find(id);
 		oldCao = caoDao.find(previousID);
 		newCao.changeStatus(oldCao.getStatus(), permissions);
 		caoDao.save(newCao);
-		
+
 		addActionMessage("Previous cao status reloaded");
-		
+
 		return BLANK;
 	}
 

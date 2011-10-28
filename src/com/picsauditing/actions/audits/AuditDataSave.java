@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -34,6 +33,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.Naics;
@@ -102,7 +102,7 @@ public class AuditDataSave extends AuditActionSupport {
 			boolean verifyButton = ("verify".equals(button));
 			boolean commentChanged = false;
 			boolean answerChanged = false;
-			
+
 			/*
 			 * If the `newCopy` is not set, then this is the first time the question is being answered.
 			 */
@@ -127,7 +127,7 @@ public class AuditDataSave extends AuditActionSupport {
 					if (newCopy.getAnswer() == null || !newCopy.getAnswer().equals(auditData.getAnswer()))
 						answerChanged = true;
 				}
-				
+
 				if (verifyButton) {
 					// verify mode
 					if (newCopy.isVerified()) {
@@ -153,7 +153,7 @@ public class AuditDataSave extends AuditActionSupport {
 							newCopy.setDateVerified(null);
 							newCopy.setAuditor(null);
 						}
-						
+
 						if (!checkAnswerFormat(auditData, newCopy)) {
 							auditData = newCopy;
 							return SUCCESS;
@@ -236,18 +236,17 @@ public class AuditDataSave extends AuditActionSupport {
 
 				auditCategoryRuleCache.initialize(auditRuleDAO);
 				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-				
+
 				if (tempAudit.getAuditType().isAnnualAddendum() && !toggleVerify && !commentChanged) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
 						Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
 							operators.add(caop.getOperator());
-						Set<AuditCategory> cats = builder.calculate(auditData.getAudit(), operators); 
-						
-						
-						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete) &&
-								builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+						Set<AuditCategory> cats = builder.calculate(auditData.getAudit(), operators);
+
+						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
+								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
 							cao.changeStatus(AuditStatus.Incomplete, permissions);
 							updateAudit = true;
 							break;
@@ -261,7 +260,11 @@ public class AuditDataSave extends AuditActionSupport {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getViewableOperators(permissions)) {
 						if (cao.getStatus().equals(AuditStatus.Pending) && cao.getPercentComplete() == 100) {
-							cao.changeStatus(AuditStatus.Submitted, permissions);
+							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Submitted, permissions);
+							caow.setNotes(getTextParameterized("AuditDataSave.AutoSubmittedPolicy", cao.getOperator()
+									.getName()));
+							caowDAO.save(caow);
+
 							updateAudit = true;
 							break;
 						}

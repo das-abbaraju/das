@@ -4,15 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -22,18 +18,9 @@ public class AuditOverride extends ContractorDocuments {
 	@Autowired
 	AuditDecisionTableDAO auditRuleDAO;
 
-	public AuditOverride(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
-		super(accountDao, auditDao, auditTypeDAO, caoDAO, auditTypeRuleCache);
-
-		subHeading = "Manually Add Audit";
-	}
-
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
+		subHeading = "Manually Add Audit";
 		this.findContractor();
 
 		auditTypeRuleCache.initialize(auditRuleDAO);
@@ -70,7 +57,10 @@ public class AuditOverride extends ContractorDocuments {
 			cao.setAuditColumns(permissions);
 			// This is almost always Pending
 			AuditStatus firstStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
-			cao.changeStatus(firstStatus, null);
+			ContractorAuditOperatorWorkflow caow = cao.changeStatus(firstStatus, null);
+			caow.setNotes(getTextParameterized("AuditOverride.ManuallyChangingStatus", cao.getOperator().getName()));
+			caoDAO.save(caow);
+			
 			conAudit.getOperators().add(cao);
 			conAudit.setLastRecalculation(null);
 

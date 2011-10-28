@@ -26,16 +26,17 @@ import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
 public class OshaSave extends AuditActionSupport implements Preparable {
+	@Autowired
+	private OshaAuditDAO oshaDAO;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
+
 	private static final long serialVersionUID = 2529955727521548069L;
 	private int conID;
 	private int catDataID;
 	private OshaAudit osha;
 	private File uploadFile;
 	private String uploadFileFileName;
-	@Autowired
-	private OshaAuditDAO oshaDAO;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 
 	@Override
 	public void prepare() throws Exception {
@@ -46,9 +47,6 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 	}
 
 	public String execute() throws Exception {
-		if (!forceLogin("Home.action"))
-			return LOGIN;
-
 		if (button == null) {
 			oshaDAO.clear();
 			return INPUT;

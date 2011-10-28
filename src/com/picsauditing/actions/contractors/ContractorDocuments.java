@@ -12,13 +12,11 @@ import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -27,11 +25,14 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 
 @SuppressWarnings("serial")
 public class ContractorDocuments extends ContractorActionSupport {
+	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
+	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
+	@Autowired
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
-	AuditDecisionTableDAO auditRuleDAO;
+	protected AuditDecisionTableDAO auditRuleDAO;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<DocumentTab, List<AuditType>> auditTypes;
@@ -45,18 +46,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 	protected Set<AuditType> manuallyAddAudits = null;
 
-	public ContractorDocuments(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao, AuditTypeDAO auditTypeDAO,
-			ContractorAuditOperatorDAO caoDAO, AuditTypeRuleCache auditTypeRuleCache) {
-		this.auditTypeDAO = auditTypeDAO;
-		this.caoDAO = caoDAO;
-		this.auditTypeRuleCache = auditTypeRuleCache;
-	}
-
 	@Override
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		findContractor();
 
 		auditTypeRuleCache.initialize(auditRuleDAO);
