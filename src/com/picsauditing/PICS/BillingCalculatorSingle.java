@@ -331,6 +331,9 @@ public class BillingCalculatorSingle {
 								description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
 										+ upgrade.getCurrentAmount() + ". Prorated "
 										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
+							} else if(upgrade.getCurrentAmount().floatValue() == 0.0f) {
+								description = "Upgrading to " + upgrade.getFeeClass() + ". Prorated "
+								+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
 							}
 						} else
 							upgradeAmount = BigDecimal.ZERO.setScale(2);
