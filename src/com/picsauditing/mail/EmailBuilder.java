@@ -204,17 +204,17 @@ public class EmailBuilder {
 	private Locale getUserLocale() {
 		Locale locale = null;
 
-		if (tokens.containsKey("permissions")) {
+		if (tokens.containsKey("permissions") && tokens.get("permissions") != null) {
 			Permissions permissions = (Permissions) tokens.get("permissions");
 			locale = permissions.getLocale();
 		}
 
-		if (tokens.containsKey("contractor")) {
+		if (tokens.containsKey("contractor") && tokens.get("contractor") != null) {
 			ContractorAccount contractor = (ContractorAccount) tokens.get("contractor");
 			locale = contractor.getLocale();
 		}
-		
-		if (tokens.containsKey("user")) {
+
+		if (tokens.containsKey("user") && tokens.get("user") != null) {
 			User user = (User) tokens.get("user");
 			locale = user.getLocale();
 		}
