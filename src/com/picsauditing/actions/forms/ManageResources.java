@@ -165,12 +165,14 @@ public class ManageResources extends PicsActionSupport {
 					return SUCCESS;
 				}
 			}
+			resource.setParent(parentResource);
 		}
 		
 		resource = operatorFormDAO.save(resource);
 		
-		if (id == 0)
+		if (id == 0) {
 			id = resource.getId();
+		}
 		if (parentResource != null)
 			id = parentResource.getId();
 
@@ -316,7 +318,7 @@ public class ManageResources extends PicsActionSupport {
 
 	private String saveFile(int id) throws Exception {
 		String fileName = "resource_" + id;
-		FileUtils.moveFile(file, getFtpDir(), "/files/", FileUtils.thousandize(id) + fileName, FileUtils.getExtension(fileFileName), true);
+		FileUtils.moveFile(file, getFtpDir(), "/files/" + FileUtils.thousandize(id), fileName, FileUtils.getExtension(fileFileName), false);
 		return fileName + "." + FileUtils.getExtension(fileFileName);
 	}
 
