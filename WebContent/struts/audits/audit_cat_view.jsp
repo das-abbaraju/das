@@ -106,7 +106,7 @@
 								<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 								
 								<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
-									<s:if test="title != null && title.length() > 0">
+									<s:if test="title != null && title.length() > 0 && !#hidden">
 										<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
 											<s:property value="title" escape="false"/>
 										</h4>
@@ -129,6 +129,10 @@
 									</s:else>
 									
 									<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
+										<s:set name="visible" value="false" />
+									</s:if>
+									
+									<s:if test="#hidden && mode=='ViewAll'" >
 										<s:set name="visible" value="false" />
 									</s:if>
 									
