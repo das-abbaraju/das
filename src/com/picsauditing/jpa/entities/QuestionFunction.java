@@ -81,7 +81,6 @@ public enum QuestionFunction {
 	TRIR {
 		@Override
 		public Object calculate(FunctionInput input) {
-
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("manHours"))
@@ -91,27 +90,14 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("injuries")))
 				return "Audit.missingParameter";
 			
-			BigDecimal manHours = new BigDecimal(params.get("manHours"))
-					.setScale(2);
-			BigDecimal fatalities = new BigDecimal(params.get("fatalities"))
-					.setScale(2);
-			BigDecimal lostWorkdayCases = new BigDecimal(params
-					.get("lostWorkdayCases")).setScale(2);
-			BigDecimal restrictedCases = new BigDecimal(params
-					.get("restrictedCases")).setScale(2);
-			BigDecimal injuries = new BigDecimal(params.get("injuries"))
-					.setScale(2);
-			BigDecimal totalIncidents = fatalities.add(lostWorkdayCases).add(
-					restrictedCases).add(injuries);
-
-			BigDecimal result;
-			try {
-				result = (totalIncidents.multiply(OSHA_NORMALIZER)).divide(
-						manHours, BigDecimal.ROUND_HALF_UP);
-			} catch (java.lang.ArithmeticException e) {
-				return "Audit.missingParameter";
-			}
-			return result;
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int fatalities = Integer.parseInt(params.get("fatalities"));
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
+			int injuries= Integer.parseInt(params.get("injuries"));
+			int totalCases = fatalities + lostWorkdayCases + restrictedCases + injuries;
+			
+			return calculateOSHARate(totalCases, manHours);
 		}
 	},
 	/**
@@ -127,21 +113,112 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostWorkdayCases")))
 				return "Audit.missingParameter";
 
-			BigDecimal lostWorkdayCases = new BigDecimal(params
-					.get("lostWorkdayCases")).setScale(7);
-			BigDecimal manHours = new BigDecimal(params.get("manHours"))
-					.setScale(7);
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
+			
+			return calculateOSHARate(lostWorkdayCases, manHours);
+		}
+	},
+	/**
+	 * Annual Update RWCR
+	 * LWCR  = (Number of Restricted Work Day Cases (I) / Total Man Hours) * 200,000
+	 */
+	RWCR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
 
-			BigDecimal result;
-			try {
-				result = OSHA_NORMALIZER.multiply(
-						lostWorkdayCases.divide(manHours,
-								BigDecimal.ROUND_HALF_UP)).setScale(2);
-			} catch (java.lang.ArithmeticException e) {
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("restrictedCases")))
 				return "Audit.missingParameter";
-			}
 
-			return result;
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
+			
+			return calculateOSHARate(restrictedCases, manHours);	
+		}
+	},
+	/**
+	 * Annual Update DART
+	 * LWCR  = (Lost Day Work Cases + Restricted Work Cases * 200,000) / Total Man Hours
+	 */
+	DART {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("lostWorkdayCases"))
+					|| Strings.isEmpty(params.get("restrictedCases")))
+				return "Audit.missingParameter";
+			
+			int manHours = Integer.parseInt(params.get("manHours"));			
+			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
+			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
+			
+			int totalCases = lostWorkdayCases + restrictedCases;
+			
+			return calculateOSHARate(totalCases, manHours);
+		}
+	},
+	/**
+	 * Annual Update FIR
+	 * FIR  = (Fatalities (G) / Total Man Hours) * 200,000
+	 */
+	FIR {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("fatalities")))
+				return "Audit.missingParameter";
+
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int fatalities = Integer.parseInt(params.get("fatalities"));
+			
+			return calculateOSHARate(fatalities, manHours);	
+		}
+	},
+	/**
+	 * Annual Update Severity Rate
+	 * Severity Rate  = (Lost Workdays (K) / Total Man Hours) * 200,000
+	 */
+	SEVERITY_RATE {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("lostWorkdays")))
+				return "Audit.missingParameter";
+
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
+			
+			return calculateOSHARate(lostWorkdays, manHours);	
+		}
+	},
+	/**
+	 * Annual Update Severity Rate
+	 * PICS Severity Rate  = (Lost Workdays (K) + Restricted Days (L) / Total Man Hours) * 200,000
+	 */
+	PICS_SEVERITY_RATE {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("lostWorkdays"))
+					|| Strings.isEmpty(params.get("restrictedDays")))
+				return "Audit.missingParameter";
+
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
+			int restrictedDays = Integer.parseInt(params.get("restrictedDays"));
+			int totalDays = lostWorkdays + restrictedDays;
+			
+			return calculateOSHARate(totalDays, manHours);	
 		}
 	},
 	/**
@@ -323,5 +400,20 @@ public enum QuestionFunction {
 
 		return params;
 	}
+	protected Object calculateOSHARate(int totalCases, int manHours) {
+		
+		BigDecimal cases = new BigDecimal(totalCases).setScale(7);
+		BigDecimal hours = new BigDecimal(manHours).setScale(7);
 
+		BigDecimal result;
+		try {
+			result = OSHA_NORMALIZER.multiply(
+					cases.divide(hours,
+							BigDecimal.ROUND_HALF_UP)).setScale(2);
+		} catch (java.lang.ArithmeticException e) {
+			return "Audit.missingParameter";
+		}
+
+		return result;
+	}
 }
