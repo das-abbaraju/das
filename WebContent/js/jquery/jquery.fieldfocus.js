@@ -42,51 +42,82 @@
 				me.parent().addClass('hasdata');
 		} );
 	}
+	
 	$.fn.jumpTo = function() {
 		var me = $(this);
-		var addInnerSpan;
-		addInnerSpan = function(e) {
-			if ($(me.selector).size() < 3)
+		var addInnerSpan = function(e) {
+			if ($(me.selector).size() < 3) {
 				return;
-			var hlist = [{text: 'Top', e: $(me.selector).parents('form:first'), type: 'jump-top'}];
+			}
+				
+			var hlist = [{
+				text: 'Top', 
+				e: $(me.selector).parents('form:first'), 
+				type: 'jump-top'
+			}];
 			var type = 'jump-up';
+			
 			$(me.selector).each(function(i, v){
 				var h = $(v);
+				
 				if (!h.is('.jump-header')) {
 					h.addClass('jump-header').html($('<span>').addClass('form-title').html(h.html()));
 				}
+				
 				var hTitle = h.find('.form-title').text();
-				if (hTitle == $(e).find('.form-title').text())
+				
+				if (hTitle == $(e).find('.form-title').text()) {
 					type = 'jump-current';
-				else if (type == 'jump-current')
+				} else if (type == 'jump-current') {
 					type = 'jump-down';
-				hlist.push({text: hTitle, e: h, type: type});
+				}
+				
+				hlist.push({
+					text: hTitle, 
+					e: h, 
+					type: type
+				});
 			});
-			if ($('fieldset.form.submit').size() > 0)
-				hlist.push({text: 'Bottom', e: $('fieldset.form.submit'), type: 'jump-bottom'});
+			
+			if ($('fieldset.form.submit').size() > 0) {
+				hlist.push({
+					text: 'Bottom', 
+					e: $('fieldset.form.submit'), 
+					type: 'jump-bottom'
+				});
+			}
+			
 			var headers = $('<ul>').addClass('jump-header-list');
+			
 			$.each(hlist, function(i, v) {
-				var a = $('<a>').text(v.text).addClass(v.type)
-							.click(function(e) {
-								e.preventDefault();
-								$.scrollTo(v.e, 800, {axis: 'y'});
-							});
+				var a = $('<a>').text(v.text).addClass(v.type).click(function(e) {
+					e.preventDefault();
+					
+					$.scrollTo(v.e, 800, {axis: 'y'});
+				});
+				
 				var l = $('<li>').append(a).hover(function() {
 					$(this).addClass('hover');
 				}, function() {
 					$(this).removeClass('hover');
 				});
+				
 				headers.append(l);
 			});
+			
 			$('<span>').addClass('jump-to').text('Jump To').bind('mouseenter', function() {
 				var me = $(this).addClass('hover');
 			}).bind('mouseleave', function() {
 				$(this).removeClass('hover');
 			}).append(headers).appendTo(e);
 		}
+		
+		// automatically enable jump-to in selected elements
+		if ($(this).find('span.jump-to').size() == 0) {
+			addInnerSpan(this);
+		}
+		
 		return me.live('mouseenter', function() {
-			if ($(this).find('span.jump-to').size() == 0)
-				addInnerSpan(this);
 			$(this).addClass('hover');
 		}).live('mouseleave', function() {
 			$(this).removeClass('hover');

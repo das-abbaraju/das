@@ -245,15 +245,14 @@ h2 span.jump-to {
 	float: right;
 	font-size: 80%;
 	margin-right: 5px;
-	display: none;
 	padding-right: 18px;
 	background: url(../images/arrow-360.png) no-repeat right center;
-	background-color:#012142;
 	z-index: 1005;
 }
 
-h2.hover span.jump-to {
-	display: inline;
+h2.hover span.jump-to
+{
+	background-color:#012142;
 	cursor: pointer;
 }
 

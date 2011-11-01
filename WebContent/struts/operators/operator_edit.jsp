@@ -432,7 +432,14 @@
 							</s:if>
 							<s:else>
 								<pics:permission perm="UserRolePicsOperator">
-									<p>$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="checkFee(this.value,%{operator.activationFee})"/></p>
+									<s:if test="operator.activationFee">
+										<s:set var="operator_activationFee_onchange" value="'checkFee(this.value, %{#operator.activationFee})'" />
+									</s:if>
+									<s:else>
+										<s:set var="operator_activationFee_onchange" value="'return false;'" />
+									</s:else>
+									
+									<p>$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="%{#operator_activationFee_onchange}"/></p>
 								</pics:permission>
 							</s:else>
 							
