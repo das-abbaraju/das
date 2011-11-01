@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Set;
 
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
@@ -106,6 +108,9 @@ public abstract class SubscriptionBuilder {
 
 			emailBuilder.addAllTokens(tokens);
 			emailBuilder.setToAddresses(user.getEmail());
+			
+			if (user.getAccount().isContractor())
+				emailBuilder.setContractor((ContractorAccount) user.getAccount(), OpPerms.ContractorAccounts);
 
 			email = emailBuilder.build();
 			email.setViewableById(Account.PRIVATE);
