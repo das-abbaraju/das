@@ -17,17 +17,11 @@
 <script language="javascript" type="text/javascript" src="../js/training.js"></script>
 <script language="javascript" type="text/javascript">
 $(function() {
-	
 	var CompanyList = new Array("Acme Sanitary and Sewer Service", "Acuren", "Additive Systems Inc.", "Advance Tank and Construction Co.", "Aggreko, LLC", "Air Liquide Industrial U.S. LP - IGS", "AltairStrickland Holdings, LLC", "American Civil Constructors");
 	
 	$("#Company").autocomplete({
 		source: CompanyList
 	});
-	
-	$("#btnOpenDialog").click(function() {
-		$("#dialog").dialog({autoOpen: true});
-	});
-	
 });
 </script>
 </head>
@@ -68,7 +62,6 @@ $(function() {
           <tr>
             <td align="left" colspan="2">
             	<input type="submit" id="btnLogin" value="Log In" />
-            	<input type="submit" id="btnOpenDialog" value="Open Dialog" />
             </td>
           </tr>
         </table>
