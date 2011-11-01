@@ -58,7 +58,7 @@ public class MailCron extends PicsActionSupport {
 
 			if (subscriptionID == 0 || emailSubscription == null) {
 				addActionError("You must supply a valid subscription id.");
-				return SUCCESS;
+				return ACTION_MESSAGES;
 			}
 			try {
 
