@@ -22,6 +22,7 @@ import javax.persistence.NoResultException;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
@@ -240,6 +241,8 @@ public class Cron extends PicsActionSupport {
 			emailExclusionList.add("rrideau@hcdesignworks.com");
 			emailExclusionList.add("s.perrin@larllc.com");
 			emailExclusionList.add("tfreihoff@officeworks4u.com");
+			emailExclusionList.add("Beth.Hiner@meijer.com");
+			emailExclusionList.add("aaltenburg@marathonoil.com");
 
 			sendEmailPendingAccounts();
 			// sendEmailContractorRegistrationRequest();
@@ -473,6 +476,8 @@ public class Cron extends PicsActionSupport {
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailExclusionList.add(contractor.getPrimaryContact().getEmail());
 
+				contractor.getPrimaryContact().setName(StringUtils.trimWhitespace(contractor.getPrimaryContact().getName()));
+				
 				emailBuilder.addToken("contractor", contractor);
 
 				// use the first operator
@@ -611,6 +616,8 @@ public class Cron extends PicsActionSupport {
 				emailBuilder.setToAddresses(crr.getEmail());
 				emailExclusionList.add(crr.getEmail());
 
+				crr.setName(StringUtils.trimWhitespace(crr.getName()));
+				
 				emailBuilder.addToken("contractor", crr);
 				emailBuilder.addToken("operator", crr.getRequestedBy());
 
