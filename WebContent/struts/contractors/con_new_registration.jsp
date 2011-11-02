@@ -685,12 +685,6 @@
 			<fieldset class="form submit">
 				<s:submit value="%{getText('button.Save')}" method="save" cssClass="picsbutton positive" />
 				
-				<s:if test="newContractor.contractor != null || (permissions.operatorCorporate && newContractor.id > 0) || newContractor.handledBy.toString() == 'Operator'">
-				</s:if>
-				<s:elseif test="permissions.admin && newContractor.id > 0 && newContractor.handledBy.toString() == 'PICS'">
-					<s:submit value="%{getText('RequestNewContractor.button.ReturnToOperator')}" method="returnToOperator" cssClass="picsbutton" />
-				</s:elseif>
-				
 				<s:if test="permissions.operatorCorporate && newContractor.id > 0 && newContractor.handledBy.toString() == 'Operator'">
 					<s:submit value="%{getText('RequestNewContractor.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
 				</s:if>

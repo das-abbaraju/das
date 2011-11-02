@@ -452,45 +452,6 @@ public class RequestNewContractor extends PicsActionSupport implements Preparabl
 		return SUCCESS;
 	}
 
-	public String returnToOperator() {
-		if (newContractor.getRequestedByUser() != null || Strings.isValidEmail(newContractor.getRequestedByUserOther())) {
-
-			String requestLink = "http://www.picsorganizer.com/ContractorRegistration.action?button="
-					+ "request&requestID=" + newContractor.getId();
-
-			EmailBuilder emailBuilder = new EmailBuilder();
-			emailBuilder.setTemplate(167);
-			emailBuilder.setToAddresses(newContractor.getEmail());
-			emailBuilder.setFromAddress("\"Registration Specialist\" <Registrations@picsauditing.com>");
-
-			if (hasEmailSubscription())
-				emailBuilder.setCcAddresses(newContractor.getRequestedByUser().getEmail());
-
-			emailBuilder.addToken("con", newContractor);
-			emailBuilder.addToken("op", newContractor.getRequestedBy());
-			emailBuilder.addToken("op_contact", newContractor.getRequestedByUser());
-			emailBuilder.addToken("deadline", maskDateFormat(newContractor.getDeadline()));
-			emailBuilder.addToken("link", requestLink);
-
-			try {
-				EmailQueue email = emailBuilder.build();
-				email.setPriority(30);
-				email.setViewableById(Account.PicsID);
-				emailQueueDAO.save(email);
-			} catch (Exception e) {
-				addActionError("Unable to send email notification to operator");
-				return SUCCESS;
-			}
-
-		}
-
-		newContractor.setHandledBy(WaitingOn.Operator);
-		newContractor.setAuditColumns(permissions);
-		newContractor = crrDAO.save(newContractor);
-
-		return "backToReport";
-	}
-
 	public String returnToPICS() {
 		newContractor.setHandledBy(WaitingOn.PICS);
 		newContractor.setAuditColumns(permissions);
