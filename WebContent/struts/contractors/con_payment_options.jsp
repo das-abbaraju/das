@@ -126,15 +126,15 @@
 					</s:if>
 					
 					<s:if test="contractor.newMembershipAmount > 0">
-						<li>
-							<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500">
+						<s:if test="contractor.paymentMethod.creditCard && contractor.newMembershipAmount < 500" >
+							<li>
 								<i>
 									<s:text name="ContractorPaymentOptions.CCRequired">
 										<s:param value="%{contractor.currencyCode.symbol}" />
 									</s:text>
 								</i>
-							</s:if>
-						</li>
+							</li>
+						</s:if>
 					
 						<s:if test="contractor.status.activeDemo">
 							<li>

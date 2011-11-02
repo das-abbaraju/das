@@ -100,6 +100,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			return SUCCESS;
 
 		// Setup the new variables for sending the CC to braintree
+		loadCC();
+		
+		return SUCCESS;
+	}
+	
+	private void loadCC() throws Exception {
+		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
 
 		// This is a credit card method
@@ -154,8 +161,15 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
 
 		if ("Delete".equalsIgnoreCase(button)) {
-			ccService.deleteCreditCard(contractor.getId());
-			contractor.setCcOnFile(false);
+			try {
+				ccService.deleteCreditCard(contractor.getId());
+				contractor.setCcOnFile(false);
+			} catch (Exception x) {
+				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+						new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
+				braintreeCommunicationError = true;
+				return;
+			}
 		}
 
 		// Accounting for transmission errors which result in
@@ -182,7 +196,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
 					new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
 			braintreeCommunicationError = true;
-			return SUCCESS;
+			return;
 		}
 
 		if (cc == null || cc.getCardNumber() == null) {
@@ -204,7 +218,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 
 		accountDao.save(contractor);
-		return SUCCESS;
+		return;
 	}
 
 	@Override
@@ -231,6 +245,9 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String changePaymentToCheck() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.Check);
+		accountDao.save(contractor);
+		if (contractor.isCcOnFile())
+			loadCC();
 
 		return SUCCESS;
 	}
@@ -238,13 +255,16 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String changePaymentToCC() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.CreditCard);
-
+		accountDao.save(contractor);
+		loadCC();
+		
 		return SUCCESS;
 	}
 
 	public String markCCInvalid() throws Exception {
 		findContractor();
 		contractor.setCcOnFile(false);
+		accountDao.save(contractor);
 
 		return SUCCESS;
 	}
@@ -252,6 +272,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String markCCValid() throws Exception {
 		findContractor();
 		contractor.setCcOnFile(true);
+		accountDao.save(contractor);
 
 		return SUCCESS;
 	}
