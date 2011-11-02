@@ -1,11 +1,16 @@
 package com.picsauditing.actions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -19,6 +24,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
@@ -34,9 +40,6 @@ public class ManageTranslations extends ReportActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
 		permissions.tryPermission(OpPerms.Translator);
 
 		if (localeTo == null) {
@@ -93,14 +96,22 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addWhere("t1.locale = '" + localeFrom + "'");
 		sql.addJoin("LEFT JOIN app_translation t2 ON t1.msgKey = t2.msgKey AND t2.locale = '" + localeTo + "'");
 		sql.addField("t1.msgKey");
+		sql.addField("t1.msgValue fromValue");
+		if (download) {
+			sql.addField("t2.locale");
+			sql.addField("t2.createdBy");
+			sql.addField("t2.updatedBy");
+			sql.addField("t2.creationDate");
+			sql.addField("t2.updateDate");
+		}
 		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
-		sql.addField("t1.msgValue fromValue");
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
+		
 		sql.addOrderBy("t2.updatedBy, t2.lastUsed DESC, t1.updatedBy, t1.lastUsed DESC");
 
 		if (searchType != null) {
@@ -151,6 +162,9 @@ public class ManageTranslations extends ReportActionSupport {
 		list = new ArrayList<Translation>();
 		for (BasicDynaBean row : data) {
 			list.add(new Translation(row));
+		}
+		if (download){
+			addExcelColumns();
 		}
 
 		return SUCCESS;
@@ -269,5 +283,32 @@ public class ManageTranslations extends ReportActionSupport {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	public void addExcelColumns() throws IOException {
+		excelSheet.setData(data);
+		excelSheet.buildWorkbook();
+		
+		excelSheet.addColumn(new ExcelColumn("msgKey", "msgKey"));
+		excelSheet.addColumn(new ExcelColumn("locale", "locale"));
+		excelSheet.addColumn(new ExcelColumn("toValue", "msgValue"));
+		excelSheet.addColumn(new ExcelColumn("createdBy", "createdBy"));
+		excelSheet.addColumn(new ExcelColumn("updatedBy", "updatedBy"));
+		excelSheet.addColumn(new ExcelColumn("creationDate", "creationDate"));
+		excelSheet.addColumn(new ExcelColumn("updateDate", "updateDate"));
+		excelSheet.addColumn(new ExcelColumn("toLastUsed", "lastUsed"));
+		
+		String filename = this.getClass().getSimpleName();
+		excelSheet.setName(filename);
+		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		outstream.close();
 	}
 }
