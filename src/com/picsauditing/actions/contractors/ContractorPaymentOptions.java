@@ -143,7 +143,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						responsetext.substring(0, endPos - 1);
 				} catch (Exception justUseThePlainResponseText) {
 				}
-				addActionError(errorMessage);
+				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+						new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
