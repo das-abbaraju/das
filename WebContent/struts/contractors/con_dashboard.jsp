@@ -417,7 +417,7 @@
 												<ul>
 													<s:iterator value="criteriaList.getCriteria(#datacat)" id="datacrit">
 														<li>
-															<span><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></span>
+															<span  title="<s:property value="criteriaList.getWorstFlagOperators(#datacrit)" />" ><s:property value="criteriaList.getWorstColor(#datacrit).smallIcon" escape="false"/> <s:property value="label"/></span>
 														</li>
 													</s:iterator>
 												</ul>

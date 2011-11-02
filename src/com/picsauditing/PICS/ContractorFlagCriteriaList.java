@@ -50,6 +50,34 @@ public class ContractorFlagCriteriaList {
 		return worst;
 	}
 
+	public String getWorstFlagOperators(FlagCriteria criteria) {
+		String results = "";
+		FlagData worstFlagData = null;
+		
+		for (FlagData flagData : getFlags(criteria)) {
+			if (worstFlagData == null) {
+				worstFlagData = flagData;
+			} else {
+				if (flagData.getFlag().ordinal() > worstFlagData.getFlag().ordinal()) {
+					worstFlagData = flagData;
+				}
+			}
+			
+			if (worstFlagData.getFlag().isRed())
+				break;
+		}
+
+		for (FlagData flagData : getFlags(criteria)) {
+			if (flagData.getFlag().ordinal() == worstFlagData.getFlag().ordinal()) {
+				if (results.length() > 0)
+					results +="\n";
+				results += flagData.getOperator().getName();
+			}
+		}
+
+		return results;
+	}
+
 	public List<FlagData> getFlags(FlagCriteria criteria) {
 		return criteriaMap.get(criteria);
 	}
