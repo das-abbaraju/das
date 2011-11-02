@@ -96,6 +96,7 @@ public class PaymentDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void removePaymentInvoice(PaymentAppliedToInvoice pa, User user) {
 		if (pa == null)
 			return;
@@ -113,6 +114,7 @@ public class PaymentDAO extends PicsDAO {
 		em.merge(invoice);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void removePaymentRefund(PaymentAppliedToRefund pa, User user) {
 		if (pa == null)
 			return;
