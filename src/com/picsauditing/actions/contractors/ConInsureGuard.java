@@ -61,7 +61,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		//Populating policy Maps
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy)) {
+			if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) && auditApplies(audit)) {
 				if (audit.isExpired())
 					expiredPoliciesMap.put(audit, null);
 				else {
@@ -116,6 +116,24 @@ public class ConInsureGuard extends ContractorActionSupport {
 		}
 
 		return certificates;
+	}
+	
+	private boolean auditApplies(ContractorAudit audit) {
+		if (permissions.isAdmin())
+			return true;
+
+		if (permissions.isContractor() && audit.getContractorAccount().getId() == permissions.getAccountId())
+			return true;
+		
+		if (permissions.isOperatorCorporate()) {
+			for (ContractorAuditOperator cao : audit.getOperatorsVisible()) {
+				if (cao.isVisibleTo(permissions)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public String getAuditForYear(Date effectiveDate) {
