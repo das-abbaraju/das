@@ -102,7 +102,7 @@
 				<s:text name="format.number"><s:param value="(lostWorkDays)" /></s:text>
 			</s:else>
 		</td>
-		<td><s:text name="format.number"><s:param value="(restrictedOrJobTransferDays)" /></s:text></td>
+		<td><s:text name="format.decimal"><s:param value="(restrictedOrJobTransferDays)" /></s:text></td>
 		<s:if test="type.toString().equals('OSHA') && corporate">
 			<td>
 				<s:if test="type.toString().equals('OSHA')">
