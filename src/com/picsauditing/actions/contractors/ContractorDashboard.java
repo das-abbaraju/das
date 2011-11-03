@@ -466,7 +466,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					OshaRateType.Fatalities };
 
 			prepopulateNotApplicableStats(oshaRateTypes);
-			
+
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage }) {
 				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
@@ -560,7 +560,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 				String auditFor = annualUpdate.getAuditFor();
 				auditForSet.add(auditFor);
 				for (OshaRateType rate : oshaRateTypes) {
-					put(getText(rate.getDescriptionKey()), auditFor, "N/A");
+					put(getText(rate.getDescriptionKey()), auditFor,
+							(annualUpdate.hasCaoStatus(AuditStatus.Complete)) ? "N/A" : getText("AuditStatus.Pending"));
 				}
 			}
 		}
