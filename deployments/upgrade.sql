@@ -1243,3 +1243,12 @@ update app_translation set msgValue=replace(msgValue, 'forms/form', 'Resources!d
 update app_translation set msgValue=replace(msgValue, 'Forms & Docs', 'Resources') where msgValue like '%Forms & Docs%';
 --
 
+-- PICS-3690
+insert into widget_user 
+(widgetID, userID, expanded, `column`, sortOrder, customConfig)
+select wu.widgetID, 646, wu.expanded, wu.column, wu.sortOrder, wu.customConfig
+from widget_user wu
+join widget w on w.widgetID = wu.widgetID
+where wu.userID = 616
+and wu.widgetID = 25;
+--
