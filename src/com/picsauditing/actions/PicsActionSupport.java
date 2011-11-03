@@ -77,6 +77,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	protected String output = null;
 
+	/**
+	 * This is rarely used now because of limitations with i18n on Button names. This could still be used for
+	 * non-translated pages such as PICS facing pages.
+	 */
 	protected String button = null;
 
 	/**
@@ -93,7 +97,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	protected String callback;
 
-	private User user; // Current logged in user
+	/**
+	 * Current logged in user
+	 */
+	private User user;
 	/**
 	 * TODO Kyle, please research this field and document it. Also review if we need setAccount on AccountActionSupport
 	 * Maybe we should move the account field to AccountActionSupport???
