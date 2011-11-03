@@ -11,6 +11,7 @@ public enum MultiYearScope {
 	ThreeYearsAgo("Three Years Ago"),
 	ThreeYearAverage("Three Year Average");
 
+	@Deprecated
 	private String description;
 
 	private MultiYearScope(String description) {

@@ -63,6 +63,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
@@ -461,26 +462,28 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
+			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
+					OshaRateType.Fatalities };
+
+			prepopulateNotApplicableStats(oshaRateTypes);
+			
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage }) {
 				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
 				String auditFor = findAuditFor(organizer, scope);
-				if (auditFor != null) {
+				for (OshaRateType rate : oshaRateTypes) {
+					if (auditFor != null) {
 
-					auditForSet.add(auditFor);
-
-					for (OshaRateType rate : new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
-							OshaRateType.Fatalities }) {
 						Float value = organizer.getRate(OshaType.OSHA, scope, rate);
 						if (rate.equals(OshaRateType.Fatalities)) {
 							put(getText(rate.getDescriptionKey()), auditFor, Integer.toString((value.intValue())));
 						} else {
 							put(getText(rate.getDescriptionKey()), auditFor, format(value));
 						}
-					}
 
-					put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor,
-							format(audit.getManHours()));
+						put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor,
+								format(audit.getManHours()));
+					}
 				}
 			}
 
@@ -548,6 +551,18 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			buildRateTypeSet(inheritedOperators);
+		}
+
+		private void prepopulateNotApplicableStats(OshaRateType[] oshaRateTypes) {
+			List<ContractorAudit> sortedAnnualUpdates = contractor.getSortedAnnualUpdates();
+			Collections.sort(sortedAnnualUpdates, new ContractorAuditComparator("auditFor 1"));
+			for (ContractorAudit annualUpdate : sortedAnnualUpdates) {
+				String auditFor = annualUpdate.getAuditFor();
+				auditForSet.add(auditFor);
+				for (OshaRateType rate : oshaRateTypes) {
+					put(getText(rate.getDescriptionKey()), auditFor, "N/A");
+				}
+			}
 		}
 
 		private String getFlagDescription(FlagCriteriaOperator fco) {
