@@ -15,16 +15,12 @@ import com.picsauditing.jpa.entities.WidgetUser;
 
 @SuppressWarnings("serial")
 public class Home extends ContractorActionSupport {
-
-	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
-
 	@Autowired
 	private WidgetUserDAO wdao;
 
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
 
+	public String execute() throws Exception {
 		if (permissions.isContractor()) {
 			findContractor();
 			if (!contractor.getStatus().isActiveDemo()) {
@@ -40,10 +36,14 @@ public class Home extends ContractorActionSupport {
 		}
 
 		List<WidgetUser> widgetsToShowForUser = wdao.findByUser(permissions);
+		List<Widget> usedWidgets = new ArrayList<Widget>();
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();
-
+			
+			if (usedWidgets.contains(widget))
+				continue;
+			
 			if (widget.getRequiredPermission() != null) {
 				if (!permissions.hasPermission(widget.getRequiredPermission()))
 					continue;
@@ -63,6 +63,7 @@ public class Home extends ContractorActionSupport {
 			}
 
 			column.add(widget);
+			usedWidgets.add(widget);
 		}
 
 		return SUCCESS;
