@@ -136,7 +136,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			}
 
 			if (!Strings.isEmpty(responsetext) && !response.equals("1")) {
-				String errorMessage = responsetext;
 				try {
 					int endPos = responsetext.indexOf("REFID");
 					if (endPos > 1)
@@ -274,6 +273,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 		contractor.setCcOnFile(true);
 		accountDao.save(contractor);
+		loadCC();
 
 		return SUCCESS;
 	}
