@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import org.hibernate.annotations.Type;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
@@ -64,6 +66,7 @@ public class OperatorAccount extends Account {
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
 	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Set<Integer> visibleAuditTypes = null;
+	private List<ContractorAccount> generalContractors = new ArrayList<ContractorAccount>();
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -435,7 +438,7 @@ public class OperatorAccount extends Account {
 	public void setChildOperators(List<OperatorAccount> childOperators) {
 		this.childOperators = childOperators;
 	}
-	
+
 	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "opID"), inverseJoinColumns = @JoinColumn(name = "corporateID"))
 	public List<OperatorAccount> getParentOperators() {
@@ -444,6 +447,21 @@ public class OperatorAccount extends Account {
 
 	public void setParentOperators(List<OperatorAccount> parentOperators) {
 		this.parentOperators = parentOperators;
+	}
+
+	@Transient
+	public List<ContractorAccount> getGeneralContractors() {
+		if (getId() == 43) {// Timec
+			ContractorAccountDAO contractorDAO = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+			Set<Integer> gcSet = new HashSet<Integer>();
+			gcSet.add(3);
+			return contractorDAO.findByContractorIds(gcSet);
+		}
+		return generalContractors;
+	}
+
+	public void setGeneralContractors(List<ContractorAccount> generalContractors) {
+		this.generalContractors = generalContractors;
 	}
 
 	@Transient

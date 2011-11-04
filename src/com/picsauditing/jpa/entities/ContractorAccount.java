@@ -114,6 +114,7 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
 	protected Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	protected List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
+	protected List<OperatorAccount> generalContractorOperators = new ArrayList<OperatorAccount>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -574,6 +575,39 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setAssessmentResultStages(List<AssessmentResultStage> assessmentResultStages) {
 		this.assessmentResultStages = assessmentResultStages;
+	}
+
+	@Transient
+	public List<OperatorAccount> getGeneralContractorOperators() {
+		List<OperatorAccount> gcOperators = new ArrayList<OperatorAccount>();
+		for (ContractorOperator co : getOperators()) {
+			if (co.getOperatorAccount().getGeneralContractors().size() > 0)
+				gcOperators.add(co.getOperatorAccount());
+		}
+
+		return gcOperators;
+	}
+
+	public void setGeneralContractorOperators(List<OperatorAccount> generalContractorOperators) {
+		this.generalContractorOperators = generalContractorOperators;
+	}
+
+	/**
+	 * Returns the list of all Operators related to all Associated General Contractors
+	 * 
+	 * @return
+	 */
+	@Transient
+	public Set<OperatorAccount> getGeneralContractorOperatorsRelatedOperators() {
+		Set<OperatorAccount> gcOperators = new HashSet<OperatorAccount>();
+		for (OperatorAccount o : getGeneralContractorOperators()) {
+			for(ContractorAccount c : o.getGeneralContractors()){
+				// Adding General Contractors' related facilities
+				gcOperators.addAll(c.getOperatorAccounts());
+			}
+		}
+
+		return gcOperators;
 	}
 
 	/**
