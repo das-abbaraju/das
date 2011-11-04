@@ -58,10 +58,10 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> gcOperators = contractor.getGeneralContractorOperators();
 		List<OperatorAccount> nonGCOperators = contractor.getOperatorAccounts();
 
-		for (OperatorAccount o : gcOperators) {
-			for (ContractorAccount c : o.getGeneralContractors()) {
+		for (OperatorAccount gcOp : gcOperators) {
+			for (ContractorAccount gc : gcOp.getGeneralContractors()) {
 				// Cleaning out all Operators related to the General Contractor
-				nonGCOperators.removeAll(c.getOperatorAccounts());
+				nonGCOperators.removeAll(gc.getOperatorAccounts());
 			}
 		}
 
