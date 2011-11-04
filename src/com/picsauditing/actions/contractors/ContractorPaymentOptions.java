@@ -265,6 +265,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		findContractor();
 		contractor.setCcOnFile(false);
 		accountDao.save(contractor);
+		loadCC();
 
 		return SUCCESS;
 	}
