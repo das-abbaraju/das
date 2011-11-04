@@ -29,12 +29,14 @@ public class AuditorAvailabilityDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(AuditorAvailability row) {
 		if (row != null) {
 			em.remove(row);
 		}
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int removeAll() {
 		Query q = em.createQuery("DELETE FROM AuditorAvailability");
 		return q.executeUpdate();
