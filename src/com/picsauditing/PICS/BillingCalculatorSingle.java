@@ -58,7 +58,13 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> gcOperators = contractor.getGeneralContractorOperators();
 		List<OperatorAccount> nonGCOperators = contractor.getOperatorAccounts();
 
-		nonGCOperators.removeAll(contractor.getGeneralContractorOperatorsRelatedOperators());
+		for (OperatorAccount o : gcOperators) {
+			for (ContractorAccount c : o.getGeneralContractors()) {
+				// Cleaning out all Operators related to the General Contractor
+				nonGCOperators.removeAll(c.getOperatorAccounts());
+			}
+		}
+
 		Set<OperatorAccount> gcAndNonGCOperators = new HashSet<OperatorAccount>();
 		gcAndNonGCOperators.addAll(gcOperators);
 		gcAndNonGCOperators.addAll(nonGCOperators);

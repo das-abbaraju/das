@@ -593,24 +593,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Returns the list of all Operators related to all Associated General Contractors
-	 * 
-	 * @return
-	 */
-	@Transient
-	public Set<OperatorAccount> getGeneralContractorOperatorsRelatedOperators() {
-		Set<OperatorAccount> gcOperators = new HashSet<OperatorAccount>();
-		for (OperatorAccount o : getGeneralContractorOperators()) {
-			for(ContractorAccount c : o.getGeneralContractors()){
-				// Adding General Contractors' related facilities
-				gcOperators.addAll(c.getOperatorAccounts());
-			}
-		}
-
-		return gcOperators;
-	}
-
-	/**
 	 * Returns a list of the trades in a sorted order This is needed for the struts iterator for the trade cloud
 	 */
 	@Transient
