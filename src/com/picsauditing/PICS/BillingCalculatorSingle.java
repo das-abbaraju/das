@@ -5,9 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,24 +53,11 @@ public class BillingCalculatorSingle {
 	public static final Date SUNCOR_DISCOUNT_EXPIRATION = DateBean.parseDate("2011-12-01");
 
 	public void setPayingFacilities(ContractorAccount contractor) {
-		List<OperatorAccount> gcOperators = contractor.getGeneralContractorOperators();
-		List<OperatorAccount> nonGCOperators = contractor.getOperatorAccounts();
-
-		for (OperatorAccount gcOp : gcOperators) {
-			for (ContractorAccount gc : gcOp.getGeneralContractors()) {
-				// Cleaning out all Operators related to the General Contractor
-				nonGCOperators.removeAll(gc.getOperatorAccounts());
-			}
-		}
-
-		Set<OperatorAccount> gcAndNonGCOperators = new HashSet<OperatorAccount>();
-		gcAndNonGCOperators.addAll(gcOperators);
-		gcAndNonGCOperators.addAll(nonGCOperators);
-
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
-		for (OperatorAccount o : gcAndNonGCOperators) {
-			if (o.getStatus().isActive() && !"No".equals(o.getDoContractorsPay()))
-				payingOperators.add(o);
+		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
+			OperatorAccount operator = contractorOperator.getOperatorAccount();
+			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay()))
+				payingOperators.add(operator);
 		}
 
 		if (payingOperators.size() == 1) {
@@ -346,9 +331,9 @@ public class BillingCalculatorSingle {
 								description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
 										+ upgrade.getCurrentAmount() + ". Prorated "
 										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
-							} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
+							} else if(upgrade.getCurrentAmount().floatValue() == 0.0f) {
 								description = "Upgrading to " + upgrade.getFeeClass() + ". Prorated "
-										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
+								+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
 							}
 						} else
 							upgradeAmount = BigDecimal.ZERO.setScale(2);

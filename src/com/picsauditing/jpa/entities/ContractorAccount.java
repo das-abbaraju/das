@@ -114,7 +114,6 @@ public class ContractorAccount extends Account implements JSONable {
 	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
 	protected Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	protected List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
-	protected List<OperatorAccount> generalContractorOperators = new ArrayList<OperatorAccount>();
 
 	// Transient helper methods
 	protected OshaOrganizer oshaOrganizer = null;
@@ -575,21 +574,6 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setAssessmentResultStages(List<AssessmentResultStage> assessmentResultStages) {
 		this.assessmentResultStages = assessmentResultStages;
-	}
-
-	@Transient
-	public List<OperatorAccount> getGeneralContractorOperators() {
-		List<OperatorAccount> gcOperators = new ArrayList<OperatorAccount>();
-		for (ContractorOperator co : getOperators()) {
-			if (co.getOperatorAccount().getGeneralContractors().size() > 0)
-				gcOperators.add(co.getOperatorAccount());
-		}
-
-		return gcOperators;
-	}
-
-	public void setGeneralContractorOperators(List<OperatorAccount> generalContractorOperators) {
-		this.generalContractorOperators = generalContractorOperators;
 	}
 
 	/**
