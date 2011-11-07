@@ -28,9 +28,10 @@
 		<s:include value="../actionMessages.jsp"></s:include>
 		
 		<s:form id="editNotes" enctype="multipart/form-data" method="POST">
-			<s:hidden name="id"/>
-			<s:hidden name="note.id"/>
-			<s:hidden name="embedded"/>
+			<s:hidden name="id" />
+			<s:hidden name="account" value="%{id}" />
+			<s:hidden name="note" />
+			<s:hidden name="embedded" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend"><s:text name="NoteEditor.header" /></h2>
@@ -82,27 +83,25 @@
 						<s:file name="file"></s:file>
 						
 						<s:if test="note.attachment != null">
-							<a href="NoteEditor.action?button=attachment&note.id=<s:property value="note.id"/>" target="_BLANK">
+							<a href="NoteEditor!attachment.action?note=<s:property value="note"/>" target="_BLANK">
 								<s:text name="ContractorNotes.ViewAttachment" />
 							</a>
-							<a href="NoteEditor.action?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&button=remove&embedded=<s:property value="embedded"/>" class="remove">
-								<s:text name="global.Remove" />
-							</a>
+							<s:submit method="remove" value="%{getText('button.Remove')}" cssClass="picsbutton negative" />
 						</s:if>
 					</li>
 				</ol>
 			</fieldset>
 			
 			<fieldset class="form submit">
-				<input class="picsbutton positive" name="button" type="submit" value="<s:text name="button.Save" />" />
+				<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
 				
 				<s:if test="note.id > 0">
 					<pics:permission perm="EditNotes" type="Delete">
-						<input class="picsbutton negative" name="button" type="submit" value="<s:text name="button.Hide" />" />
+						<s:submit method="hide" value="%{getText('button.Hide')}" cssClass="picsbutton negative" />
 					</pics:permission>
 				</s:if>
 				
-				<input class="picsbutton" name="button" type="button" value="<s:text name="button.Close" />" onclick="closePage();" />
+				<s:submit method="close" value="%{getText('button.Close')}" cssClass="picsbutton" onclick="closePage();" />
 			</fieldset>
 		</s:form>
 		

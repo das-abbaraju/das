@@ -71,7 +71,7 @@ function updateNotePage(accountID,button,returnType,result) {
 function noteEditor(accountID, noteID, mode, defaultCategory) {
 	var day = new Date();
 	var id = day.getTime();
-	var url = 'NoteEditor.action?id=' + accountID + '&note.id=' + noteID + '&mode=' + mode;
+	var url = 'NoteEditor.action?id=' + accountID + '&note=' + noteID + '&mode=' + mode;
 	if (defaultCategory != null)
 		url += '&note.noteCategory='+defaultCategory;
 	else

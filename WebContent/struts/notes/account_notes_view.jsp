@@ -24,7 +24,7 @@
 			
 			<s:if test="permissions.admin || permissions.userId == note.createdBy.id">
 				<pics:permission perm="EditNotes" type="Edit">
-					<a class="picsbutton" href="?id=<s:property value="id"/>&note.id=<s:property value="note.id"/>&mode=edit&embedded=<s:property value="embedded"/>">
+					<a class="picsbutton" href="?id=<s:property value="id"/>&note=<s:property value="note"/>&mode=edit&embedded=<s:property value="embedded"/>">
 						<s:text name="button.Edit" />
 					</a>
 				</pics:permission>
@@ -99,7 +99,7 @@
 		
 		<s:if test="note.attachment != null">
 			<div>
-				<a href="NoteEditor.action?button=attachment&note.id=<s:property value="note.id"/>" target="_BLANK">
+				<a href="NoteEditor!attachment.action?note=<s:property value="note"/>" target="_BLANK">
 					<s:text name="ContractorNotes.ViewAttachment" />
 				</a>
 			</div>

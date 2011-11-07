@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
@@ -26,6 +28,13 @@ import com.picsauditing.util.ReportFilterNote;
 
 @SuppressWarnings("serial")
 public class NoteEditor extends AccountActionSupport implements Preparable {
+	@Autowired
+	private AccountDAO accountDAO;
+	@Autowired
+	private NoteDAO noteDAO;
+	@Autowired
+	private EmployeeDAO employeeDAO;
+
 	private String mode = "edit";
 	private Note note;
 	private int viewableBy;
@@ -37,23 +46,10 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 	private String fileFileName;
 	private InputStream inputStream;
 
-	private AccountDAO accountDAO;
-	private NoteDAO noteDAO;
-	private EmployeeDAO employeeDAO;
-	
 	private int employeeID;
 
-	public NoteEditor(AccountDAO accountDAO, NoteDAO noteDAO, EmployeeDAO employeeDAO) {
-		this.accountDAO = accountDAO;
-		this.noteDAO = noteDAO;
-		this.employeeDAO = employeeDAO;
-	}
-
 	public void prepare() throws Exception {
-		// TODO Auto-generated method stub
-		int noteID = this.getParameter("note.id");
-		if (noteID > 0) {
-			note = noteDAO.find(noteID);
+		if (note != null) {
 			account = note.getAccount();
 			viewableBy = note.getViewableBy().getId();
 			if (viewableBy > 2) {
@@ -64,88 +60,6 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 				employeeID = note.getEmployee().getId();
 		} else {
 			note = new Note();
-		}
-	}
-
-	@Override
-	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
-
-		if (account == null)
-			account = accountDAO.find(id);
-		// Check permissions to view
-
-		if ("hide".equalsIgnoreCase(button)) {
-			permissions.tryPermission(OpPerms.EditNotes, OpType.Delete);
-			note.setStatus(NoteStatus.Hidden);
-			button = "save";
-		}
-
-		if ("remove".equals(button)) {
-			permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
-			File[] files = getFiles(note.getId());
-			for (File file : files)
-				FileUtils.deleteFile(file);
-			note.setAttachment(null);
-			button = "save";
-		}
-
-		if ("save".equalsIgnoreCase(button)) {
-			permissions.tryPermission(OpPerms.EditNotes, OpType.Edit);
-			if (note.getId() == 0) {
-				// This is a new note
-				note.setAccount(account);
-			}
-			if (viewableBy > 2)
-				note.setViewableById(viewableByOther);
-			else
-				note.setViewableById(viewableBy);
-			if (employeeID > 0) {
-				note.setEmployee(new Employee());
-				note.getEmployee().setId(employeeID);
-			} else
-				note.setEmployee(null);
-			
-			note.setAuditColumns(permissions);
-
-			noteDAO.save(note);
-
-			if (file != null) {
-				String extension = "";
-				if (fileFileName.indexOf(".") != -1) {
-					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-				}
-
-				// will fail for "" too
-				if (!FileUtils.checkFileExtension(extension)) {
-					addActionError("File type not supported.");
-					return mode;
-				}
-				// delete old files
-				File[] files = getFiles(note.getId());
-				for (File file : files)
-					FileUtils.deleteFile(file);
-
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
-						PICSFileType.note_attachment.filename(note.getId()), extension, true);
-
-				note.setAttachment(fileFileName);
-			}
-
-			addActionMessage("Successfully saved Note");
-		}
-
-		if ("attachment".equals(button)) {
-			Downloader downloader = new Downloader(ServletActionContext.getResponse(), ServletActionContext
-					.getServletContext());
-			File[] files = getFiles(note.getId());
-			if (files[0] != null) {
-				downloader.download(files[0], note.getAttachment());
-				return null;
-			} else {
-				addActionError("File not found");
-			}
 		}
 
 		if (viewableBy == 0)
@@ -159,6 +73,87 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 			if (permissions.hasGroup(959)) {
 				viewableBy = Account.EVERYONE;
 			}
+		}
+
+		if (account == null)
+			account = accountDAO.find(id);
+	}
+
+	@Override
+	public String execute() throws Exception {
+		return mode;
+	}
+
+	@RequiredPermission(value = OpPerms.EditNotes, type = OpType.Edit)
+	public String save() throws Exception {
+		if (note.getId() == 0) {
+			// This is a new note
+			note.setAccount(account);
+		}
+		if (viewableBy > 2)
+			note.setViewableById(viewableByOther);
+		else
+			note.setViewableById(viewableBy);
+		if (employeeID > 0) {
+			note.setEmployee(new Employee());
+			note.getEmployee().setId(employeeID);
+		} else
+			note.setEmployee(null);
+
+		note.setAuditColumns(permissions);
+		noteDAO.save(note);
+
+		if (file != null) {
+			String extension = "";
+			if (fileFileName.indexOf(".") != -1) {
+				extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+			}
+
+			// will fail for "" too
+			if (!FileUtils.checkFileExtension(extension)) {
+				addActionError("File type not supported.");
+				return mode;
+			}
+			// delete old files
+			File[] files = getFiles(note.getId());
+			for (File file : files)
+				FileUtils.deleteFile(file);
+
+			FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
+					PICSFileType.note_attachment.filename(note.getId()), extension, true);
+
+			note.setAttachment(fileFileName);
+			noteDAO.save(note);
+		}
+
+		addActionMessage("Successfully saved Note");
+		return mode;
+	}
+
+	@RequiredPermission(value = OpPerms.EditNotes, type = OpType.Delete)
+	public String hide() throws Exception {
+		note.setStatus(NoteStatus.Hidden);
+		return save();
+	}
+
+	@RequiredPermission(value = OpPerms.EditNotes, type = OpType.Edit)
+	public String remove() throws Exception {
+		File[] files = getFiles(note.getId());
+		for (File file : files)
+			FileUtils.deleteFile(file);
+		note.setAttachment(null);
+		return save();
+	}
+
+	public String attachment() throws Exception {
+		Downloader downloader = new Downloader(ServletActionContext.getResponse(),
+				ServletActionContext.getServletContext());
+		File[] files = getFiles(note.getId());
+		if (files[0] != null) {
+			downloader.download(files[0], note.getAttachment());
+			return null;
+		} else {
+			addActionError("File not found");
 		}
 
 		return mode;
@@ -260,15 +255,15 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
 	}
-	
+
 	public int getEmployeeID() {
 		return employeeID;
 	}
-	
+
 	public void setEmployeeID(int employeeID) {
 		this.employeeID = employeeID;
 	}
-	
+
 	public List<Employee> getEmployeeList() {
 		return employeeDAO.findByAccount(account);
 	}

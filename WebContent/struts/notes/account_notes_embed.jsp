@@ -53,7 +53,7 @@
 					</s:if>
 					<s:if test="attachment != null">
 						<br /><br />
-						<a href="NoteEditor.action?button=attachment&note.id=<s:property value="id"/>" target="_BLANK">
+						<a href="NoteEditor.action?button=attachment&note=<s:property value="id"/>" target="_BLANK">
 						<s:text name="ContractorNotes.ViewAttachment" /></a>
 					</s:if>
 				</td>

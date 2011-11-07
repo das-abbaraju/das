@@ -135,7 +135,7 @@
 					<br /><br />
 					
 					<s:if test="attachment != null">
-						<a href="NoteEditor.action?button=attachment&note.id=<s:property value="id"/>" target="_BLANK">
+						<a href="NoteEditor!attachment.action?note=<s:property value="id"/>" target="_BLANK">
 							<s:text name="ContractorNotes.ViewAttachment" />
 						</a>
 						
