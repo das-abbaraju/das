@@ -344,6 +344,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			menuItems.put(getTitle("EditEmailTemplate"), "EditEmailTemplate.action");
+			menuItems.put("Email Exclusions List", "EditEmailExclusions.action");
 		}
 
 		// add to menu in sorted order

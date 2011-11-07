@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
@@ -137,5 +139,30 @@ public class EmailQueueDAO extends PicsDAO {
 				+ "AND eq.creationDate > DATE_SUB(CURDATE(), INTERVAL " + timeframe + ")";
 		Query query = em.createNativeQuery(sql);
 		return query.getResultList();
+	}
+
+	public List<String> findEmailAddressExclusions() {
+		String sql = "SELECT DISTINCT email FROM email_exclusion ee ";
+		Query query = em.createNativeQuery(sql);
+		return query.getResultList();
+	}
+
+	public boolean findEmailAddressExclusionAlreadyExists(String email) {
+		String sql = "SELECT DISTINCT email FROM email_exclusion ee WHERE email = '" + email + "'";
+		Query query = em.createNativeQuery(sql);
+		return (query.getResultList().size() > 0);
+	}
+
+	public void addEmailAddressExclusions(String email) throws SQLException {
+		Database db = new Database();
+		String sql = "INSERT INTO email_exclusion (email,createdBy,creationDate,updatedBy,updateDate)" + " VALUES ('"
+				+ email + "', 1, NOW(), 1, NOW())";
+		db.executeInsert(sql);
+	}
+
+	public void removeEmailAddressExclusions(String email) throws SQLException {
+		Database db = new Database();
+		String sql = "DELETE FROM email_exclusion " + " WHERE email = '" + email + "'";
+		db.executeUpdate(sql);
 	}
 }

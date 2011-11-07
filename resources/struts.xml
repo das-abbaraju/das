@@ -1616,6 +1616,10 @@
 			<result>struts/mail/editTemplateList.jsp</result>
 		</action>
 
+		<action name="EditEmailExclusions" class="com.picsauditing.mail.EmailExclusion">
+			<result>struts/mail/email_exclusion.jsp</result>
+		</action>
+		
 		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount" class="com.picsauditing.actions.chart.ChartFlagCount">
 		</action>

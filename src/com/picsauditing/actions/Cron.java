@@ -126,9 +126,7 @@ public class Cron extends PicsActionSupport {
 
 	protected boolean flagsOnly = false;
 
-	private Database db = new Database();
-
-	private Set<String> emailExclusionList = new HashSet<String>();
+	private List<String> emailExclusionList = new ArrayList<String>();
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -220,29 +218,7 @@ public class Cron extends PicsActionSupport {
 		try {
 			startTask("\nSending emails to contractors pending and registration requests...");
 
-			// Exclude these from email blasts. NOT to be done very often.
-			emailExclusionList.add("Hugh.Smith@jamcorporation");
-			emailExclusionList.add("keri@mattestusa.com");
-			emailExclusionList.add("joe.derry@faulkandfoster.com");
-			emailExclusionList.add("anu@cox.ne");
-			emailExclusionList.add("alison.kelley@sveda-cranes.com");
-			emailExclusionList.add("jpackwood@e2mt.com");
-			emailExclusionList.add("Keri@MATtestUSA.com");
-			emailExclusionList.add("jene@cienv.com");
-			emailExclusionList.add("Lubin@MATtestUSA.com");
-			emailExclusionList.add("sue@cp-m.com");
-			emailExclusionList.add("tcase@coshc.com");
-			emailExclusionList.add("stacey.fallot@timken.com");
-			emailExclusionList.add("PSchooley@bmsmanagement.com");
-			emailExclusionList.add("trakfdn@sbcglobal.net");
-			emailExclusionList.add("rcorr@gessnerengineering.com");
-			emailExclusionList.add("randye@j-scommunications.com");
-			emailExclusionList.add("robert.perez@pacelabs.com");
-			emailExclusionList.add("rrideau@hcdesignworks.com");
-			emailExclusionList.add("s.perrin@larllc.com");
-			emailExclusionList.add("tfreihoff@officeworks4u.com");
-			emailExclusionList.add("Beth.Hiner@meijer.com");
-			emailExclusionList.add("aaltenburg@marathonoil.com");
+			emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
 
 			sendEmailPendingAccounts();
 			// sendEmailContractorRegistrationRequest();
