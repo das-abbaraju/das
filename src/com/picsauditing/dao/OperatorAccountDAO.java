@@ -32,6 +32,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		OperatorAccount row = find(id);
 		remove(row);
@@ -203,6 +204,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public boolean removeAllByOpID(OperatorAccount operatorAccount, String ftpDir) {
 		int opID = operatorAccount.getId();
 
@@ -241,6 +243,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void incrementContractors(int id) {
 		Query q = em.createNativeQuery("UPDATE contractor_info " +
 										"SET    needsRecalculation = IF(needsRecalculation + 1 < 127, needsRecalculation + 1, 127) " +

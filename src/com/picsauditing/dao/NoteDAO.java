@@ -129,11 +129,13 @@ public class NoteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void addPicsNote(Account account, User user, String summary) {
 		Note note = new Note(account, user, summary);
 		save(note);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void addPicsAdminNote(Account account, User user, String summary) {
 		Note note = new Note(account, user, summary);
 		save(note);

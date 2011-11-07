@@ -25,6 +25,7 @@ public class UserDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		User row = find(id);
 		remove(row);

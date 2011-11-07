@@ -186,6 +186,7 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, where, "", value, locale);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int deleteData(Class<? extends BaseTable> clazz, String where) {
 		Query query = em.createQuery("DELETE " + clazz.getName() + " t WHERE " + where);
 		return query.executeUpdate();

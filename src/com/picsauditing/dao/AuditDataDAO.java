@@ -56,6 +56,7 @@ public class AuditDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int removeDataByCategory(int auditID, int categoryID) {
 		Query query = em.createQuery("DELETE FROM AuditData d "
 				+ "WHERE d.audit.id = :auditID AND d.question.id IN (SELECT id from AuditQuestion where category.id = "

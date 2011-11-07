@@ -30,6 +30,7 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		return em.find(EmailSubscription.class, id);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		EmailSubscription row = find(id);
 		if (row != null)

@@ -9,6 +9,9 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -288,6 +291,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return where;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int deleteChildren(AuditCategoryRule rule, Permissions permissions) {
 		String where = getMoreGranularWhere(rule);
 
@@ -307,6 +311,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return query.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int deleteChildren(AuditTypeRule rule, Permissions permissions) {
 		String where = getMoreGranularWhere(rule);
 

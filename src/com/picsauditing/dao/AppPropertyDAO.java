@@ -44,6 +44,7 @@ public class AppPropertyDAO extends PicsDAO {
 		return p.getValue();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public AppProperty setProperty(String property, String value) {
 		AppProperty p = find(property);
 		if (p == null) {

@@ -8,6 +8,9 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.SearchEngine;
@@ -148,6 +151,7 @@ public class TradeDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public int updateContractorTrades(int oldTradeID, int newTradeID) {
 		Query query = em
 				.createQuery("UPDATE ContractorTrade ct SET ct.trade.id = :newTrade WHERE ct.trade.id = :oldTrade");

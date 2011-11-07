@@ -41,6 +41,7 @@ public class ContractorAuditDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(ContractorAudit row, String ftpDir) {
 		for (AuditData auditData : row.getData()) {
 			if (auditData.getQuestion().getQuestionType().startsWith("File")) {
@@ -52,15 +53,18 @@ public class ContractorAuditDAO extends PicsDAO {
 		remove(row);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id, String ftpDir) {
 		remove(find(id), ftpDir);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		ContractorAudit row = find(id);
 		remove(row);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void copy(ContractorAudit oCAudit, ContractorAccount nContractor,
 			Map<Integer, AuditData> preToPostAuditDataIdMapper) {
 		if (oCAudit != null) {

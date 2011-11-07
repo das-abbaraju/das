@@ -22,6 +22,7 @@ public class DesktopMatrixDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		DesktopMatrix row = find(id);
 		remove(row);

@@ -22,6 +22,7 @@ public class EmailTemplateDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		EmailTemplate row = find(id);
 		remove(row);

@@ -13,6 +13,8 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
@@ -258,6 +260,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		return (Long) query.getSingleResult();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void updateContractorByOperator(OperatorAccount operator) {
 		String subSelect = "";
 		if (operator.isOperator())

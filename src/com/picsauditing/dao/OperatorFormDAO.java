@@ -25,6 +25,7 @@ public class OperatorFormDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		OperatorForm row = find(id);
 		remove(row);
@@ -48,7 +49,6 @@ public class OperatorFormDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperatorForm> findTopByOpID(int opID) {
 		Query query;
 		if (opID == 0) {
@@ -60,6 +60,7 @@ public class OperatorFormDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public boolean deleteOperatorForms(int opID, String ftpDir) {
 		List<OperatorForm> opList = findByopID(opID);
 		String path = ftpDir + "/forms/";

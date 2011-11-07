@@ -21,6 +21,7 @@ public class TransactionDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		remove(find(id));
 	}

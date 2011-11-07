@@ -101,6 +101,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		ContractorAuditOperator row = find(id);
 		remove(row);
@@ -165,6 +166,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void expireAudits() throws SQLException {
 		String sql = "";
 		Database db = new Database();
@@ -206,6 +208,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		// from nightly_updates.sql to here
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void activateAuditsWithReqs() throws SQLException {
 		String sql = "";
 		Database db = new Database();

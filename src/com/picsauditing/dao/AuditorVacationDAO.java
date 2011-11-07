@@ -23,6 +23,7 @@ public class AuditorVacationDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditorVacation row = find(id);
 		remove(row);

@@ -21,6 +21,7 @@ public class AuditorScheduleDAO extends PicsDAO {
 		return o;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		AuditorSchedule row = find(id);
 		remove(row);

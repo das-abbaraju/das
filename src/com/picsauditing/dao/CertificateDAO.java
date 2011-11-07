@@ -38,6 +38,7 @@ public class CertificateDAO extends PicsDAO {
 		return em.find(Certificate.class, id);
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void remove(int id) {
 		Certificate row = find(id);
 		if (row != null)
