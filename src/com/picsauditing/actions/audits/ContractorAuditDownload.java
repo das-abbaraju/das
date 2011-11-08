@@ -34,25 +34,23 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		findConAudit();
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet(conAudit.getAuditType().getName().toString());
+		HSSFSheet sheet = wb.createSheet(conAudit.getAuditType().getName().toString().replaceAll("[\\W]", " "));
 
-		// Fonts
-		
 		// Header
 		HSSFFont boldedFont = wb.createFont();
 		boldedFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
 		HSSFCellStyle boldedStyle = wb.createCellStyle();
 		boldedStyle.setFont(boldedFont);
 		boldedStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-		
+
 		// Category
 		HSSFCellStyle boldedStyleLeft = wb.createCellStyle();
 		boldedStyleLeft.setFont(boldedFont);
-		
+
 		// Question
 		HSSFCellStyle wrapped = wb.createCellStyle();
 		wrapped.setWrapText(true);
-		
+
 		// Hyperlinks
 		HSSFFont hyperlinkFont = wb.createFont();
 		hyperlinkFont.setUnderline(HSSFFont.U_SINGLE);
