@@ -72,7 +72,6 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			if (data.size() > 0) {
 				tokens.put("data", data);
 				tokens.put("caoStatus", caoStatus);
-				tokens.put("i18nCache", I18nCache.getInstance());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

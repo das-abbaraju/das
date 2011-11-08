@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.EmailQueueDAO;
@@ -86,12 +87,18 @@ public class EmailBuilder {
 			}
 		}
 
+		Locale locale = getUserLocale();
 		String templateBody = template.getBody();
 		String templateSubject = template.getSubject();
+
+		// Include i18nCache for every email
+		if (!tokens.containsKey("i18nCache")) {
+			tokens.put("i18nCache", I18nCache.getInstance());
+			tokens.put("locale", locale);
+		}
+
 		// If we're using the default template, pull up the correct translation for the user we're sending the email to.
 		if (!edited && template.isTranslated()) {
-			Locale locale = getUserLocale();
-
 			if (template.getTranslatedBody() != null)
 				templateBody = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
 			if (template.getTranslatedSubject() != null)

@@ -97,7 +97,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		}
 
 		country = invoice.getAccount().getCountry().toString();
-		invoice.updateAmountApplied();http://localhost:8080/picsWeb2/InvoiceDetail.action?invoice.id=85858&edit=true#
+		invoice.updateAmountApplied();
+		// http://localhost:8080/picsWeb2/InvoiceDetail.action?invoice.id=85858&edit=true#
 		for (PaymentApplied ip : invoice.getPayments())
 			ip.getPayment().updateAmountApplied();
 
@@ -248,8 +249,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
-									.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
+									payment.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -438,8 +439,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		for (InvoiceItem item : this.getInvoice().getItems()) {
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (item.getInvoiceFee().isMembership()
-						&& item.getInvoiceFee().getFeeClass().equals(
-								contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
+						&& item.getInvoiceFee().getFeeClass()
+								.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
 						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel()))
 					return true;
 			}

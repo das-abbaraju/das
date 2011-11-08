@@ -57,7 +57,6 @@ public class ReportObsoleteScheduledAudits extends ReportContractorAudits {
 
 			if (obsoleteAudits.size() > 0) {
 				emailBuilder.addToken("obsoleteAudits", obsoleteAudits);
-				emailBuilder.addToken("i18nCache", I18nCache.getInstance());
 			}
 
 			EmailQueue emailQueue = emailBuilder.build();
