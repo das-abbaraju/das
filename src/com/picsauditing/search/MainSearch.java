@@ -99,7 +99,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			{
 				// if corporate then build list of contractors in their system
 				ht = searchEngine.getConIds(permissions);
-				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", startIndex, 50, false,
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", startIndex, 50, false,
 						true);
 				List<BasicDynaBean> queryList = db.select(query, true);
 				totalRows = db.getAllRows();
@@ -144,7 +144,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			}
 			else
 			{
-				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType != 'T'", 0, 10, false, false);
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", 0, 10, false, false);
 				List<BasicDynaBean> queryList = db.select(query, true);
 				totalRows = db.getAllRows();
 				if (queryList != null && queryList.size() > 0)
