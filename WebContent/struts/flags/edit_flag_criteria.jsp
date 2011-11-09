@@ -58,10 +58,10 @@ var aqvExtraParams = {
 				</s:if>
 			</li>
 			<li>
-				<s:select list="criteriaCategory" name="criteria.category" theme="form" />
+				<s:select list="criteriaCategory" name="criteria.category" theme="formhelp" />
 			</li>
 			<li>
-				<s:textfield name="criteria.displayOrder" theme="form"/>
+				<s:textfield name="criteria.displayOrder" theme="formhelp"/>
 			</li>
 			<li>
 				<s:textfield name="criteria.label" theme="formhelp" maxlength="30"/>
@@ -75,17 +75,17 @@ var aqvExtraParams = {
 		<h2>Value</h2>
 		<ol>
 			<li>
-				<s:select name="criteria.dataType" list="datatypeList" theme="form"/>
+				<s:select name="criteria.dataType" list="datatypeList" theme="formhelp"/>
 			</li>
 			<li>
-				<s:select name="criteria.comparison" list="comparisonList" theme="form"/>
+				<s:select name="criteria.comparison" list="comparisonList" theme="formhelp"/>
 			</li>
 			<li>
 				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
 				<pics:autocomplete name="criteria.defaultValue" action="AuditOptionValueAutocomplete" extraParams="aqvExtraParams" minChars="0" cacheLength="1"/>
 			</li>
 			<li>
-				<s:checkbox name="criteria.allowCustomValue" theme="form"/>
+				<s:checkbox name="criteria.allowCustomValue" theme="formhelp"/>
 			</li>
 		</ol>
 	</fieldset>
@@ -111,13 +111,13 @@ var aqvExtraParams = {
 		<h2>OSHA</h2>
 		<ol>
 			<li>
-				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" theme="form"/>
+				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" theme="formhelp"/>
 			</li>
 			<li>
-				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" listValue="description" theme="form"/>
+				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" listValue="description" theme="formhelp"/>
 			</li>
 			<li>
-				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="form"/>
+				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="formhelp"/>
 			</li>
 		</ol>
 	</fieldset>
@@ -143,13 +143,13 @@ var aqvExtraParams = {
 				be Green.</pics:fieldhelp>
 			</li>
 			<li>
-				<s:checkbox name="criteria.insurance" theme="form"/>
+				<s:checkbox name="criteria.insurance" theme="formhelp"/>
 			</li>
 			<li>
-				<s:select name="criteria.optionCode" list="optionCodeList" theme="form"/>
+				<s:select name="criteria.optionCode" list="optionCodeList" theme="formhelp"/>
 			</li>
 			<li>
-				<s:checkbox name="criteria.flaggableWhenMissing" theme="form"/>
+				<s:checkbox name="criteria.flaggableWhenMissing" theme="formhelp"/>
 			</li>
 		</ol>
 	</fieldset>
