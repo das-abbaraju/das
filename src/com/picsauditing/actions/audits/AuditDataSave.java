@@ -116,6 +116,9 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			} else {
 				// update mode
+				if (!checkAnswerFormat(auditData, newCopy))
+					return SUCCESS;
+
 				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
 				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
 				if (auditData.getComment() != null) {
