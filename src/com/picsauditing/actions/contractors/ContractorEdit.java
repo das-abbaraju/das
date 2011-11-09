@@ -13,20 +13,18 @@ import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -37,7 +35,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -46,7 +43,6 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.Subscription;
@@ -57,11 +53,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
-	private File logo = null;
-	private String logoFileName = null;
-	private File brochure = null;
-	private String brochureFileName = null;
-
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
 	@Autowired
@@ -79,17 +70,14 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
 	@Autowired
-	protected CountryDAO countryDAO;
-	@Autowired
-	protected StateDAO stateDAO;
-	@Autowired
 	protected BillingCalculatorSingle billingService;
 
+	private File logo = null;
+	private String logoFileName = null;
+	private File brochure = null;
+	private String brochureFileName = null;
+
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
-	protected Country country;
-	protected Country billingCountry;
-	protected State state;
-	protected State billingState;
 	protected int contactID;
 
 	public ContractorEdit() {
@@ -98,7 +86,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public void prepare() throws Exception {
-		getPermissions();
 		if (permissions.isLoggedIn()) {
 			int conID = 0;
 			if (permissions.isContractor())
@@ -116,30 +103,15 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
-
-			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get("country.isoCode");
-			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
-				country = countryDAO.find(countryIsos[0]);
-
-			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("billingCountry.isoCode");
-			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
-				billingCountry = countryDAO.find(billingCountryIsos[0]);
-
-			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("state.isoCode");
-			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
-				state = stateDAO.find(stateIsos[0]);
-
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("billingState.isoCode");
-			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
-				billingState = stateDAO.find(billingStateIsos[0]);
 		}
+	}
+	
+	@Before
+	public void startup() throws Exception {
+		findContractor();
 	}
 
 	public String save() throws Exception {
-		findContractor();
-		
 		String ftpDir = getFtpDir();
 
 		if (permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorAccounts, OpType.Edit)) {
@@ -167,24 +139,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				String fileName = "brochure_" + contractor.getId();
 				FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 				contractor.setBrochureFile(extension);
-			}
-
-			if (country != null && !country.equals(contractor.getCountry())) {
-				contractor.setCountry(country);
-			}
-
-			if (billingCountry != null && !"".equals(billingCountry.getIsoCode())
-					&& !billingCountry.equals(contractor.getBillingCountry())) {
-				contractor.setBillingCountry(billingCountry);
-			}
-
-			if (state != null && !state.equals(contractor.getState())) {
-				contractor.setState(state);
-			}
-
-			if (billingState != null && !"".equals(billingState.getIsoCode())
-					&& !billingState.equals(contractor.getBillingState())) {
-				contractor.setBillingState(billingState);
 			}
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
@@ -231,8 +185,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
 	public String delete() throws Exception {
-		findContractor();
-
 		Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
 		while (auditList.hasNext()) {
 			ContractorAudit cAudit = auditList.next();
@@ -262,8 +214,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@RequiredPermission(value = OpPerms.EmailOperators)
 	public String sendDeactivationEmail() throws Exception {
-		findContractor();
-		
 		Set<String> emailAddresses = new HashSet<String>();
 		if (operatorIds != null) {
 			for (int operatorID : operatorIds) {
@@ -339,8 +289,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String copyPrimary() throws Exception {
-		findContractor();
-
 		contractor.setBillingAddress(contractor.getAddress());
 		contractor.setBillingCity(contractor.getCity());
 		contractor.setBillingState(contractor.getState());
@@ -352,8 +300,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String deactivate() throws Exception {
-		findContractor();
-		
 		if (Strings.isEmpty(contractor.getReason())) {
 			addActionError(getText("ContractorEdit.error.DeactivationReason"));
 		} else {
@@ -379,8 +325,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String reactivate() throws Exception {
-		findContractor();
-		
 		contractor.setRenew(true);
 		if (contractor.isHasFreeMembership())
 			contractor.setStatus(AccountStatus.Active);
@@ -393,8 +337,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String createImportPQF() throws Exception {
-		findContractor();
-		
 		redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
 				+ contractor.getId());
 
@@ -402,8 +344,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String expireImportPQF() throws Exception {
-		findContractor();
-		
 		billingService.removeImportPQF(contractor);
 		addActionMessage(getText("ContractorEdit.message.RemovedImportPQF"));
 
@@ -438,38 +378,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	public void setOperatorIds(List<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
-	}
-
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	public State getBillingState() {
-		return billingState;
-	}
-
-	public void setBillingState(State billingState) {
-		this.billingState = billingState;
-	}
-
-	public Country getBillingCountry() {
-		return billingCountry;
-	}
-
-	public void setBillingCountry(Country billingCountry) {
-		this.billingCountry = billingCountry;
 	}
 
 	public List<Invoice> getUnpaidInvoices() {

@@ -15,11 +15,11 @@
 		
 		<script type="text/javascript">
 			function changeState(country) {
-				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), stateString: '<s:property value="contractor.state.isoCode"/>'});
+				$('#state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: "contractor.", stateString: '<s:property value="contractor.state.isoCode"/>'});
 			}
 			
 			function changeBillingState(country) {
-				$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'billingState', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
+				$('#billing_state_li').load('StateListAjax.action',{countryString: $('#contractorCountry').val(), prefix: 'contractor.billingState', stateString: '<s:property value="contractor.billingState.isoCode"/>'});
 				$('#country_display').val($('#contractorCountry option:selected').text());
 			}
 			
