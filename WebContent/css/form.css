@@ -41,6 +41,12 @@ ul.radio
 	margin: 0px;
 }
 
+ul.radio input
+{
+	float: left;
+	margin: 3px 5px 0px 0px;
+}
+
 ul.radio.inline li
 {
 	clear: none !important;
@@ -49,19 +55,9 @@ ul.radio.inline li
 	padding: 5px 5px 10px 0px !important;
 }
 
-ul.radio.inline input,
 ul.radio.inline label
 {
 	float: left !important;
-}
-
-ul.radio.inline input
-{
-	margin-right: 5px;
-}
-
-ul.radio.inline label
-{
 	line-height: 20px !important;
-	margin: 0px !important;
+	margin: 0px 5px 0px 0px !important;
 }
