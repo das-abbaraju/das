@@ -370,8 +370,15 @@ fieldset.form {
 
 											<ol>
 												<li><span class="label-txt"> <s:text
-															name="ContractorFlag.ForceFlagTo"></s:text> </span> <s:radio
-														id="forceFlag" list="unusedCoFlag" name="forceFlag" /></li>
+															name="ContractorFlag.ForceFlagTo"></s:text> </span>
+													<s:radio
+														id="forceFlag"
+														list="unusedCoFlag"
+														name="forceFlag"
+														theme="pics"
+														cssClass="inline"
+													/>
+												</li>
 												<li><span class="label-txt"> <s:text
 															name="ContractorFlag.Until"></s:text> </span> <input
 													id="forceEnd" name="forceEnd" size="10" type="text"
@@ -599,9 +606,15 @@ fieldset.form {
 																	<ol>
 																		<li><label><s:text
 																					name="ContractorFlag.ForceFlagTo"></s:text>
-																		</label> <s:radio id="flag_%{#data.id}"
-																				list="getUnusedFlagColors(#data.id)"
-																				name="forceFlag" /></li>
+																		</label>
+																		<s:radio
+																			id="flag_%{#data.id}"
+																			list="getUnusedFlagColors(#data.id)"
+																			name="forceFlag"
+																			theme="pics"
+																			cssClass="inline"
+																		/>
+																		</li>
 																		<li><label><s:text
 																					name="ContractorFlag.Until"></s:text>
 																		</label> <input

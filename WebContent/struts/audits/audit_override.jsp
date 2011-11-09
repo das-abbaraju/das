@@ -36,7 +36,14 @@
 					<ol>
 						<li>
 							<label>Audit Type:</label>
-							<s:radio name="selectedAudit" list="manuallyAddAudits" listKey="id" listValue="name"/>
+							<s:radio
+								name="selectedAudit"
+								list="manuallyAddAudits"
+								listKey="id"
+								listValue="name"
+								theme="pics"
+								cssClass="inline"
+							/>
 						</li>
 						
 						<s:if test="permissions.admin">

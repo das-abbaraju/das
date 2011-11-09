@@ -41,7 +41,12 @@
 					</li>
 					<li>
 						<label>Status:</label>
-						<s:radio list="@com.picsauditing.jpa.entities.TransactionStatus@values()" name="invoice.status"></s:radio>
+						<s:radio
+							list="@com.picsauditing.jpa.entities.TransactionStatus@values()"
+							name="invoice.status"
+							theme="pics"
+							cssClass="inline"
+						/>
 					</li>
 				</ol>
 			</fieldset>

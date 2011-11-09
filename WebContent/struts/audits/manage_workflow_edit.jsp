@@ -16,7 +16,13 @@
 				</li>
 				<li>
 					<label>Has Requirements</label>
-					<s:radio name="hasRequirements" value="workFlow.hasRequirements" list="#{true:'Yes', false:'No'}"/>
+					<s:radio
+						name="hasRequirements"
+						value="workFlow.hasRequirements"
+						list="#{true:'Yes', false:'No'}"
+						theme="pics"
+						cssClass="inline"
+					/>
 				</li>
 			</ol>
 		</fieldset>

@@ -164,7 +164,12 @@
 					</li>
 					<li>
 						<label><s:text name="global.Location" />:</label>
-						<s:radio name="conAudit.conductedOnsite" list="#{false: getText('ScheduleAudit.message.Web'), true: getText('ScheduleAudit.message.OnSite')}" />
+						<s:radio
+							name="conAudit.conductedOnsite"
+							list="#{false: getText('ScheduleAudit.message.Web'), true: getText('ScheduleAudit.message.OnSite')}"
+							theme="pics"
+							cssClass="inline"
+						/>
 					</li>
 					
 					<s:if test="conAudit.contractorAccount.webcam.id > 0">

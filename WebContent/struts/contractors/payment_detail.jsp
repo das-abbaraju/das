@@ -175,7 +175,13 @@
 								<ol id="paymentMethodList">
 									<li>
 										<label>Method:</label>
-										<s:radio name="method" onclick="changePaymentMethod(this.value)" list="#{'CreditCard':'Credit Card','Check':'Check'}"></s:radio>
+										<s:radio
+											name="method"
+											onclick="changePaymentMethod(this.value)"
+											list="#{'CreditCard':'Credit Card','Check':'Check'}"
+											theme="pics"
+											cssClass="inline"
+										/>
 									</li>
 									<li>
 										<label>Update Payment Method on Account:</label>

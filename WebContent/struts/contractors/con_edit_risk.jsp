@@ -26,11 +26,23 @@
 				<ol>
 					<li>
 						<label>Safety Risk:</label>
-						<s:radio list="riskLevelList" name="safetyRisk" value="%{contractor.safetyRisk}" />
+						<s:radio
+							list="riskLevelList"
+							name="safetyRisk"
+							value="%{contractor.safetyRisk}"
+							theme="pics"
+							cssClass="inline"
+						 />
 					</li>
 					<li>
 						<label>Product Risk:</label>
-						<s:radio list="riskLevelList" name="productRisk" value="%{contractor.productRisk}" />
+						<s:radio
+							list="riskLevelList"
+							name="productRisk"
+							value="%{contractor.productRisk}"
+							theme="pics"
+							cssClass="inline"
+						/>
 					</li>
 				</ol>
 			</fieldset>

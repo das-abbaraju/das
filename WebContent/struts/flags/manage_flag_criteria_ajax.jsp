@@ -73,7 +73,14 @@
 				<label>Default Hurdle:</label>
 				<s:if test="criteria.dataType == 'string' && criteria.question != null && criteria.question.option != null">
 					<s:if test="criteria.question.option.radio">
-						<s:radio list="criteria.question.option.questionOptions" listKey="identifier" listValue="name" name="criteria.defaultValue" />
+						<s:radio
+							list="criteria.question.option.questionOptions"
+							listKey="identifier"
+							listValue="name"
+							name="criteria.defaultValue"
+							theme="pics"
+							cssClass="inline"
+						/>
 					</s:if>
 					<s:else>
 						<s:select list="criteria.question.option.questionOptions" listKey="identifier" listValue="name" name="criteria.defaultValue" />

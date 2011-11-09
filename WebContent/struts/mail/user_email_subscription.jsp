@@ -7,4 +7,12 @@
 	<s:text name="%{subscription.getI18nKey('longDescription')}"/>
 </div>
 
-<s:radio list="subscription.supportedTimePeriods" listValue="getText(i18nKey)" id="timePeriod_%{subscription}" value="%{timePeriod}" onclick="save('%{subscription}', %{id}, this)"/>
+<s:radio
+	list="subscription.supportedTimePeriods"
+	listValue="getText(i18nKey)"
+	id="timePeriod_%{subscription}"
+	value="%{timePeriod}"
+	onclick="save('%{subscription}', %{id}, this)"
+	theme="pics"
+	cssClass="inline"
+/>

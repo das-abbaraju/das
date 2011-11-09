@@ -235,7 +235,13 @@
 																	<ol>							
 																		<li>
 																			<label>Force Flag to:</label>
-																			<s:radio id="flag_%{#data.id}" list="getUnusedFlagColors(#data.id)" name="forceFlag" />
+																			<s:radio
+																				id="flag_%{#data.id}"
+																				list="getUnusedFlagColors(#data.id)"
+																				name="forceFlag"
+																				theme="pics"
+																				cssClass="inline"
+																			/>
 																		</li> 
 																		<li> 
 																			<label>Until:</label> 

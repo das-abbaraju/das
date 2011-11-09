@@ -446,7 +446,12 @@
 					<ol>
 						<li>
 							<label><s:text name="CreditCard.Type" />:</label>
-							<s:radio list="creditCardTypes" name="ccName"/>
+							<s:radio
+								list="creditCardTypes"
+								name="ccName"
+								theme="pics"
+								cssClass="inline"
+							/>
 						</li>
 						<li>
 							<label><s:text name="CreditCard.Number" />:</label>

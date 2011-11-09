@@ -46,7 +46,12 @@
 <s:if test="!editTemplate">
 	<br />
 	<s:text name="EditEmailTemplate.ReplyTo" />:
-	<s:radio name="fromMyAddress" list="fromAddresses" ></s:radio>
+	<s:radio
+		name="fromMyAddress"
+		list="fromAddresses"
+		theme="pics"
+		cssClass="inline"
+	/>
 	<br />
 </s:if>
 
