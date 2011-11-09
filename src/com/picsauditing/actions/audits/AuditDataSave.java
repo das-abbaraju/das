@@ -145,7 +145,9 @@ public class AuditDataSave extends AuditActionSupport {
 
 					if (answerChanged) {
 						if (isAudit && !isAnnualUpdate) {
-							if (newCopy.isOK()) {
+							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+							if (question.getOkAnswer() != null
+									&& question.getOkAnswer().contains(auditData.getAnswer())) {
 								newCopy.setDateVerified(new Date());
 								newCopy.setAuditor(getUser());
 							}
@@ -179,6 +181,7 @@ public class AuditDataSave extends AuditActionSupport {
 					addActionError("This is not a valid 2007 NAICS code");
 				}
 			}
+
 			auditDataDao.save(auditData);
 
 			if (auditData.getAudit() != null) {
