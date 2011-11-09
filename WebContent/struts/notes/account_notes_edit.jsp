@@ -43,7 +43,7 @@
 					</li>
 					<li>
 						<label><s:text name="global.Category" />:</label>
-						<span style=""><s:radio list="filter.categoryList" name="note.noteCategory" /></span>
+						<s:radio list="filter.categoryList" name="note.noteCategory" theme="pics" cssClass="inline" />
 					</li>
 					
 					<s:if test="permissions.requiresOQ || permissions.requiresCompetencyReview">
@@ -55,11 +55,11 @@
 					
 					<li>
 						<label><s:text name="UserOpenNotesAjax.Priority" />:</label>
-						<s:radio list="filter.priorityList" name="note.priority" />
+						<s:radio list="filter.priorityList" name="note.priority" theme="pics" cssClass="inline" />
 					</li>
 					<li>
 						<label><s:text name="global.Status" />:</label>
-						<s:radio list="filter.statusList" name="note.status" />
+						<s:radio list="filter.statusList" name="note.status" theme="pics" cssClass="inline" />
 					</li>
 					<li>
 						<label>
@@ -71,7 +71,7 @@
 					</li>
 					<li>
 						<label><s:text name="ContractorNotes.ViewableBy" />:</label>
-						<s:radio list="viewableByList" name="viewableBy"></s:radio>
+						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" />
 						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>			
 					</li>
 					<li id="liAdditionalText">

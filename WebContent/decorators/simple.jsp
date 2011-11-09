@@ -13,6 +13,7 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=PicsActionSupport.getVersion()%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=PicsActionSupport.getVersion()%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=PicsActionSupport.getVersion()%>" />
 		
 		<script type="text/javascript" src="js/pics_main.js?v=<%=PicsActionSupport.getVersion()%>"></script>
