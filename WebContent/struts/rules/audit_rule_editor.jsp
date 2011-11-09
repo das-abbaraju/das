@@ -248,7 +248,13 @@
 							<li>
 								<label>Rule Type</label>
 								<div class="nobr">
-									<s:radio list="#{true:'Include',false:'Exclude'}" name="ruleInclude" value="rule.include"/>
+									<s:radio 
+										list="#{true:'Include',false:'Exclude'}" 
+										name="ruleInclude" 
+										value="rule.include"
+										theme="pics"
+										cssClass="inline"
+									/>
 								</div>
 								<pics:fieldhelp title="Rule Type">Include means that matching rules will include the Audit Type or Category. Use exclude if you want to remove the Type or Category when the conditions below exist.</pics:fieldhelp>
 							</li>
@@ -289,7 +295,12 @@
 								<li>
 									<label>Auto Add Audit</label>
 									<div class="nobr">
-										<s:radio list="#{false:'Auto Add',true:'Manually Added'}" name="rule.manuallyAdded"/>
+										<s:radio 
+											list="#{false:'Auto Add',true:'Manually Added'}" 
+											name="rule.manuallyAdded"
+											theme="pics"
+											cssClass="inline"
+										/>
 									</div>
 									<pics:fieldhelp title="Auto Add Audit">
 										<p>Auto Add (default) - a single audit is added to each contractor account that matches this rule.</p>
@@ -324,7 +335,13 @@
 							</s:if>
 							<li><label>Account Level</label>
 								<div class="nobr">
-									<s:radio name="ruleAccountLevel" list="#{'':'Any','Full':'Full Account','BidOnly':'Bid Only','ListOnly':'List Only'}" value="rule.accountLevel"/>
+									<s:radio 
+										name="ruleAccountLevel" 
+										list="#{'':'Any','Full':'Full Account','BidOnly':'Bid Only','ListOnly':'List Only'}" 
+										value="rule.accountLevel"
+										theme="pics"
+										cssClass="inline"
+									/>
 								</div>
 								<pics:fieldhelp title="Account Level">
 									<p>Full Account (default) - Regular paying contractor account.</p>
@@ -335,23 +352,43 @@
 							<li>
 								<label>Sole Proprietor</label>
 								<div class="nobr">
-									<s:radio name="rule.soleProprietor" list="#{'':'Any',false:'Not a Sole Proprietor',true:'Sole Proprietor'}" />
+									<s:radio 
+										name="rule.soleProprietor" 
+										list="#{'':'Any',false:'Not a Sole Proprietor',true:'Sole Proprietor'}"
+										theme="pics"
+										cssClass="inline" 
+									/>
 								</div>
 							</li>
 							<li>
 								<label>Account Type</label>
-								<s:radio name="rule.contractorType" list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}" />
+								<s:radio 
+									name="rule.contractorType" 
+									list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}"
+									theme="pics"
+									cssClass="inline" 
+								/>
 							</li>
 							<li>
 								<label>Safety Risk</label>
 								<div class="nobr">
-									<s:radio name="rule.safetyRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
+									<s:radio 
+										name="rule.safetyRisk" 
+										list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"
+										theme="pics"
+										cssClass="inline"
+									/>
 								</div>
 							</li>
 							<li>
 								<label>Product Risk</label>
 								<div class="nobr">
-									<s:radio name="rule.productRisk" list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"/>
+									<s:radio 
+										name="rule.productRisk" 
+										list="#{'':'Any','Low':'Low','Med':'Medium','High':'High'}"
+										theme="pics"
+										cssClass="inline"
+									/>
 								</div>
 							</li>
 							<li <s:if test="operatorRequired">class="required"</s:if>>

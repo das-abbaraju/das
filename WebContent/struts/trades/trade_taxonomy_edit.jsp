@@ -115,7 +115,12 @@
 				</li>
 				<li>
 					<label>Product Critical:</label>
-					<s:radio name="trade.productRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
+					<s:radio 
+						name="trade.productRiskI" 
+						list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+						theme="pics"
+						cssClass="inline"						 
+					/>
 					<br />
 					
 					<s:if test="trade.productRisk==null">
@@ -124,7 +129,12 @@
 				</li>
 				<li>
 					<label>Safety Critical:</label>
-					<s:radio name="trade.safetyRiskI" list="@com.picsauditing.jpa.entities.LowMedHigh@values()"/>
+					<s:radio 
+						name="trade.safetyRiskI" 
+						list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+						theme="pics"
+						cssClass="inline"
+					/>
 					<br />
 					<s:if test="trade.safetyRisk==null">
 						inherited from parent

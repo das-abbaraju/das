@@ -148,7 +148,12 @@
 				<span class="clearLink q_box select">
 					<s:textfield rel="Trade/true" name="filter.trade" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-					<s:radio list="#{2:getText('Filters.status.Any'),1:getText('ContractorList.label.SelfPerformed'),0:getText('ContractorList.label.SubContracted')}" name="filter.showSelfPerformedTrade"/>
+					<s:radio 
+						list="#{2:getText('Filters.status.Any'),1:getText('ContractorList.label.SelfPerformed'),0:getText('ContractorList.label.SubContracted')}" 
+						name="filter.showSelfPerformedTrade"
+						theme="pics"
+						cssClass="inline"
+					/>
 				</span>
 			</div>
 		</s:if>
@@ -269,7 +274,12 @@
 					<span class="clearLink q_box select">
 						<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
 						<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-						<s:radio list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" name="filter.showAnyOperator"/>
+						<s:radio 
+							list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+							name="filter.showAnyOperator"
+							theme="pics"
+							cssClass="inline"
+						/>
 					</span>
 				</s:else>
 			</div>
@@ -309,7 +319,12 @@
 				<span class="clearLink q_box select">
 					<s:textfield rel="Operator" name="filter.caoOperator" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-					<s:radio list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" name="filter.showAnyCAOOperator"/>
+					<s:radio 
+						list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+						name="filter.showAnyCAOOperator"
+						theme="pics"
+						cssClass="inline"
+					/>
 				</span>
 			</div>
 		</s:if>
@@ -645,7 +660,12 @@
 			<div class="filterOption">
 				<span>
 					<s:text name="ContractorAccount.billingState" />:
-					<s:radio list="#{'Activations':getText('Filters.status.Activations'),'Renewals':getText('Filters.status.Renewals'),'Upgrades':getText('Filters.status.Upgrades'),'All':getText('JS.Filters.status.All')}" name="filter.billingState" />
+					<s:radio 
+						list="#{'Activations':getText('Filters.status.Activations'),'Renewals':getText('Filters.status.Renewals'),'Upgrades':getText('Filters.status.Upgrades'),'All':getText('JS.Filters.status.All')}" 
+						name="filter.billingState"
+						theme="pics"
+						cssClass="inline" 
+					/>
 				</span>
 			</div>
 		</s:if>
@@ -976,14 +996,24 @@
 		<s:if test="filter.showCaowDetail">
 			<br clear="all" />
 			<div class="filterOption">
-				<s:radio list="filter.caowDetailList" name="filter.caowDetailLevel" />
+				<s:radio 
+					list="filter.caowDetailList" 
+					name="filter.caowDetailLevel"
+					theme="pics"
+					cssClass="inline" 
+				/>
 			</div>
 		</s:if>
 		
 		<s:if test="filter.showAuditorType && !isIndepenentAuditor()">
 			<br clear="all" />
 			<div class="filterOption">
-				<s:radio list="filter.auditorTypeList" name="filter.auditorType" />
+				<s:radio 
+					list="filter.auditorTypeList" 
+					name="filter.auditorType"
+					theme="pics"
+					cssClass="inline" 
+				/>
 			</div>
 		</s:if>
 	

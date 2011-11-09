@@ -65,7 +65,12 @@
 					<div style="height:28px;">
 						<s:text name="ContractorApproval.ChangeStatusTo" />
 						
-						<s:radio cssClass="workStatus" list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('AccountStatus.Pending')}" name="workStatus"/>
+						<s:radio 
+							list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('AccountStatus.Pending')}" 
+							name="workStatus"
+							theme="pics"
+							cssClass="workStatus inline"
+						/>
 					</div>
 					<s:text name="global.Notes" />: <s:textarea name="operatorNotes" cols="20" rows="4"/>&nbsp;&nbsp;&nbsp;&nbsp;
 					<br clear="all"/><br/>

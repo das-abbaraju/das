@@ -90,7 +90,13 @@
 									</s:if>
 									<s:elseif test="criteria.dataType == 'string'">
 										<span class="editable">
-											<s:radio list="#{'Yes':getText('YesNo.Yes'),'No':getText('YesNo.No')}" value="criteriaValue()" onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"></s:radio>
+											<s:radio 
+												list="#{'Yes':getText('YesNo.Yes'),'No':getText('YesNo.No')}" 
+												value="criteriaValue()" 
+												onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
+												theme="pics"
+												cssClass="inline" 
+											/>
 										</span>
 									</s:elseif>
 								</s:else>

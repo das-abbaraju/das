@@ -43,9 +43,11 @@
 				</div>
 		
 				<div class="filterOption">
-					<s:radio list="#{'All':getText(scope+'.status.All'),'Paid':getText(scope+'.status.Paid'),'Unpaid':getText(scope+'.status.Unpaid'),'Void':getText(scope+'.status.Void')}" 
+					<s:radio 
+						list="#{'All':getText(scope+'.status.All'),'Paid':getText(scope+'.status.Paid'),'Unpaid':getText(scope+'.status.Unpaid'),'Void':getText(scope+'.status.Void')}" 
 						name="transactionStatus" 
-						cssClass="forms"
+						theme="pics"
+						cssClass="forms inline"
 					/> 
 				</div>
 				

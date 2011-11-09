@@ -108,13 +108,25 @@
 							
 							<s:hidden name="account.id" value="%{account.id}" />
 							
-							<s:radio name="isGroup" list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" value="isGroup" />
+							<s:radio 
+								name="isGroup" 
+								list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" 
+								value="isGroup"
+								theme="pics"
+								cssClass="inline" 
+							/>
 						</div>
 						
 						<div class="filterOption">
 							<h4><s:text name="global.Status" />:</h4>
 							
-							<s:radio name="isActive" list="#{'Yes':'Active', 'No':'Inactive', '':'All'}" value="isActive" />
+							<s:radio 
+								name="isActive" 
+								list="#{'Yes':'Active', 'No':'Inactive', '':'All'}" 
+								value="isActive"
+								theme="pics"
+								cssClass="inline"
+							/>
 						</div>
 					</s:form>
 					
@@ -409,7 +421,12 @@
 							<s:if test="user.id > 0">
 								<li>
 									<label>Active:</label>
-									<s:radio list="#{'Yes':'Yes','No':'No'}" name="user.isActive"></s:radio>
+									<s:radio 
+										list="#{'Yes':'Yes','No':'No'}" 
+										name="user.isActive"
+										theme="pics"
+										cssClass="inline" 
+									/>
 								</li>
 								
 								<s:if test="permissions.isAdmin()">

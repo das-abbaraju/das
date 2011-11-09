@@ -65,7 +65,12 @@
 				<span class="clearLink q_box select">
 					<s:textfield rel="Operator" name="filter.operators" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-					<s:radio list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" name="filter.showAnyOperator"/>
+					<s:radio 
+						list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+						name="filter.showAnyOperator"
+						theme="pics"
+						cssClass="inline"
+					/>
 				</span>
 			</div>
 		</s:if>
