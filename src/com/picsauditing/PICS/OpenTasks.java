@@ -119,6 +119,10 @@ public class OpenTasks extends TranslationActionSupport {
 									needed++;
 								}
 							}
+							if (conAudit.getAuditType().getId() == AuditType.COR && conAudit.hasCaoStatus(AuditStatus.Submitted)) {
+								needed++;
+								}
+
 						}
 						if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()) {
 							if (cao.getStatus().before(AuditStatus.Submitted)) {
@@ -205,6 +209,9 @@ public class OpenTasks extends TranslationActionSupport {
 									openTasks.add(getTextParameterized("ContractorWidget.message.PQFOtherRegistry",
 											conAudit.getId()));
 								}
+							} else if (conAudit.getAuditType().getId() == AuditType.COR && conAudit.hasCaoStatus(AuditStatus.Submitted)) {
+								openTasks.add(getTextParameterized("ContractorWidget.message.ReviewCOR",
+										conAudit.getId(), auditName, showAuditFor, auditFor));
 							} else {
 								openTasks.add(getTextParameterized("ContractorWidget.message.CompleteAndSubmitAudit",
 										conAudit.getId(), auditName, showAuditFor, auditFor));
