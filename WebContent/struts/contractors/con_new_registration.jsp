@@ -33,12 +33,17 @@
 			
 			$(function() {
 				$('#notesHere').hide();
-				hideShow();
-				$('#phone').click(function() { 
-			        $.blockUI({ message: $('#phoneSubmit') }); 
-			 
-			        $('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
-			    }); 
+
+				$('#phoneContact').click(function() {
+	                $.blockUI({ message: $('#phoneSubmit') });
+	         
+	                $('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
+	            });
+				$('#emailContact').click(function() {
+					$.blockUI({ message: $('#emailSubmit') });
+				         
+					$('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);              
+	            });
 				
 				<s:if test="newContractor.notes.length() > 0">
 					show = true;
@@ -66,8 +71,8 @@
 					if(fType=='name' || fType=='phone' || fType=='taxID') var type = 'C';
 					else if(fType=='contact' || fType=='email') var type = 'U';
 					$.getJSON(
-						'RequestNewContractorAjax.action',
-						{term: term, type: type, button: 'ajaxcheck'},
+						'RequestNewContractorAjaxCheck.action',
+						{term: term, type: type},
 						function(json){
 							if(json==null)
 								return;
@@ -136,19 +141,6 @@
 					showAnim: 'fadeIn',
 					minDate: new Date()
 				});
-				$('#matchedContractor').autocomplete('ContractorSelectAjax.action', 
-					{
-						minChars: 3,
-						extraParams: {'filter.accountName': function() {return $('#matchedContractor').val();}},
-						formatResult: function(data,i,count) { return data[0]; }
-				}).result(function(event, data){
-					$('input#conID').val(data[1]);
-				});
-			
-				$('#matchedContractor').blur(function() {
-					if ($('#matchedContractor').val() == '')
-						$('input#conID').val(0);
-				});
 				
 				$('.show-address').keyup(function() {
 					if (!$(this).blank())
@@ -162,9 +154,6 @@
 				}).delegate('#toggleEmailPreview', 'click', function(e) {
 					e.preventDefault();
 					$('#email_preview').toggle();
-				}).delegate('#addToken', 'change', function(e) {
-					$('#email_body').val($('#email_body').val() + "<" + $(this).val() + ">");
-					$('#email_body').focus();
 				}).delegate('#addToNotes', 'keyup', function() {
 					if (show == false) {
 						show = true;
@@ -184,7 +173,7 @@
 				}).delegate('#getMatches', 'click', function() {
 					var data = {
 						button: 'MatchingList',
-						requestID: $('#saveContractorForm input[name=requestID]').val()
+						newContractor: $('#saveContractorForm input[name=newContractor]').val()
 					};
 				
 					$('#potentialMatches').show();
@@ -192,18 +181,6 @@
 					$('#potentialMatches').load('RequestNewContractorAjax.action', data);
 				});
 			});
-			
-			function fillNotes(){
-				var r = $('#noteReason').val();
-				if(r==0)
-					return;
-				var n = $('#addToNotes').val();
-				if(n.length > 1)
-					r = r +"\n"+ n;
-				$('#addToNotes').val(r);
-				$('#addToNotes').trigger('keyup');
-				
-			}
 			
 			function countryChanged(country) {
 				changeState(country);
@@ -216,7 +193,7 @@
 			function updateUsersList() {
 				$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#operatorsList').val(),
 					requestedUser: '<s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />',
-					requestID: '<s:property value="requestID" />'}, checkUserOther);
+					newContractor: '<s:property value="newContractor.id" />'}, checkUserOther);
 			}
 			
 			function checkUserOther() {
@@ -254,21 +231,6 @@
 			function removeAttachment(id) {
 				$('span#'+id).remove();
 			}
-			
-			function hideShow(){
-				if ($('#status :selected').text() == "Hold") {
-					$('#reasonDeclinedLi').hide();
-					$('#holdDateLi').show();
-				}
-				else if ($('#status :selected').text() == "Closed Unsuccessful"){
-					$('#holdDateLi').hide();
-					$('#reasonDeclinedLi').show();
-				}
-				else {
-					$('#reasonDeclinedLi').hide();
-					$('#holdDateLi').hide();
-				}
-			}
 		</script>
 	</head>
 	<body>
@@ -304,8 +266,7 @@
 		</s:if>
 		
 		<s:form id="saveContractorForm">
-			<s:hidden name="requestID" />
-			<s:hidden name="conID" id="conID" />
+			<s:hidden name="newContractor" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend">
@@ -326,56 +287,11 @@
 					<li>
 						<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" theme="formhelp" />
 						
-						<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
-							<input type="button" class="picsbutton" value="<s:text name="RequestNewContractor.button.ContactedByPhone" />" id="phone"/>
-						</s:if>
-						
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
 					</li>
 					<li>
 						<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" theme="formhelp" />
-						
-						<s:if test="newContractor.id > 0 && newContractor.email.length() > 0 && !permissions.operatorCorporate">
-							<input type="button" id="toggleEmailPreview" class="picsbutton" value="<s:text name="RequestNewContractor.button.EditEmail" />" />
-							
-							<table id="email_preview">
-								<tr>
-									<td>
-										<s:if test="formsViewable && attachment == null && forms.size() > 0">
-											<a href="#operatorForms" class="add fancybox" title="<s:text name="RequestNewContractor.title.AddAttachment" />">
-												<s:text name="RequestNewContractor.link.AddAttachment" />
-											</a>
-										</s:if>
-									</td>
-									<td>
-										<s:if test="formsViewable && attachment == null && forms.size() > 0">
-											<div id="attachment"></div>
-										</s:if>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<s:text name="RequestNewContractor.header.Subject" />:
-										<input id="email_subject" name="emailSubject" value="<s:property value="emailSubject" />" size="30" />
-									</td>
-									<td>
-										<s:text name="RequestNewContractor.header.Fields" />:
-										<s:select list="tokens" id="addToken"></s:select>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<s:textarea cols="120" rows="10" name="emailBody" id="email_body" cssStyle="width: 600px;"></s:textarea>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="2">
-										<s:submit value="%{getText('button.SendEmail')}" method="email" cssClass="picsbutton positive" />
-									</td>
-								</tr>
-							</table>
-						</s:if>
 						
 						<div id="think_email"></div>
 						<div id="match_email"></div>
@@ -438,17 +354,8 @@
 						<label><s:text name="ContractorRegistrationRequest.requestedBy" />:</label>
 						<s:select list="operatorsList" id="operatorsList" headerKey="0" 
 							headerValue="- %{getText('RequestNewContractor.header.SelectAnOperator')} -" 
-							name="requestedOperator" onchange="updateUsersList();" listKey="id" listValue="name" 
+							name="newContractor.requestedBy" onchange="updateUsersList();" listKey="id" listValue="name" 
 							value="%{newContractor.requestedBy.id}" />
-						
-						<s:if test="permissions.admin && newContractor.requestedBy != null">&nbsp;
-							<a href="ContractorSimulator.action<s:if test="newContractor.requestedBy.id > 0">?operatorIds=<s:property value="newContractor.requestedBy.id" /></s:if>"
-								id="contractorSimulatorLink">
-								<s:if test="newContractor.requestedBy.id > 0">Run </s:if>
-								Contractor Simulator
-							</a>
-							<br />
-						</s:if>
 						
 						<div class="fieldhelp">
 							<h3><s:text name="ContractorRegistrationRequest.requestedBy" /></h3>
@@ -457,37 +364,13 @@
 					</li>
 					<li id="loadUsersList"></li>
 					
-					<s:if test="newContractor.requestedByUser != null && newContractor.id > 0">
-						<li>
-							<label><s:text name="RequestNewContractor.label.AddToWatchlist" />:</label>
-							<s:checkbox name="newContractor.watch" />
-							
-							<div class="fieldhelp">
-								<h3>
-									<s:text name="RequestNewContractor.label.AddToWatchlist" />
-								</h3>
-								
-								<p>
-									<s:text name="RequestNewContractor.help.Watchlist">
-										<s:param value="%{newContractor.requestedByUser.name}" />
-										<s:param value="%{newContractor.name}" />
-									</s:text>
-								</p>
-							</div>
-							
-							<s:if test="!contractorWatch && newContractor.watch">
-								<div class="alert"><s:text name="RequestNewContractor.message.MissingWatchPermission" /></div>
-							</s:if>
-						</li>
-					</s:if>
-					
 					<li>
 						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" onchange="checkDate(this)" theme="formhelp" />
 					</li>
 					<li>
 						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
 					</li>
-					<li>
+					<li id="#loadTags">
 						<label><s:text name="RequestNewContractor.OperatorTags" /></label>
 						<s:optiontransferselect
 							label="Operator Tags"
@@ -537,23 +420,10 @@
 					</s:if>
 					
 					<s:if test="newContractor.id > 0">
-						<s:if test="permissions.admin">
-							<li>
-								<label><s:text name="RequestNewContractor.label.FollowUp" />:</label>
-								
-								<s:radio list="#{'PICS':'PICS','Operator':getText('global.Operator')}" name="newContractor.handledBy" />
-								
-								<div class="fieldhelp">
-									<h3><s:text name="RequestNewContractor.label.FollowUp" /></h3>
-									
-									<s:text name="ContractorRegistrationRequest.handledBy.fieldhelp" />
-								</div>
-							</li>
-						</s:if>
 						
 						<li>
 							<label><s:text name="RequestNewContractor.label.TimesContacted" />:</label>
-							<s:property value="newContractor.contactCount" />
+							<s:property value="newContractor.contactCountByEmail + newContractor.contactCountByPhone" />
 						</li>
 						<li>
 							<label><s:text name="RequestNewContractor.label.MatchesFound" />:</label>
@@ -568,15 +438,9 @@
 						<li>
 							<label><s:text name="RequestNewContractor.label.PICSContractor" />:</label>
 							
-							<s:if test="permissions.admin">
-								<s:textfield value="%{newContractor.contractor.name}" id="matchedContractor" size="20" />
-								<div class="fieldhelp">
-									<h3><s:text name="RequestNewContractor.button.ReturnToOperator" /></h3>
-									
-									<p>
-										<s:text name="RequestNewContractor.help.ReturnToOperator" />
-									</p>
-								</div>
+							<s:if test="!permissions.operatorCorporate">
+								<!-- autocomplete broken right now autocomplete name="newContractor.contractor" action="ContractorAutocomplete"/ -->
+								<s:textfield name="newContractor.contractor" />
 							</s:if>
 							
 							<s:if test="newContractor.contractor != null">
@@ -584,32 +448,8 @@
 								<s:property value="newContractor.contractor.name" /></a>
 							</s:if>
 						</li>
-					</s:if>
 					<li>
 						<label><s:text name="global.Notes" />:</label>
-						
-						<s:if test="permissions.admin">
-							<s:select headerKey="0"
-								headerValue="Select a preformatted note to add it to the Notes section"
-								list="noteReason" id="noteReason" onchange="fillNotes()"
-								cssStyle="margin-bottom: 10px;" />
-						</s:if>
-						
-						<div>
-							<s:textarea name="addToNotes" cols="30" rows="3" id="addToNotes" />
-						</div>
-						
-						<div class="fieldhelp">
-							<h3><s:text name="global.Notes" /></h3>
-							
-							<p>
-								<s:text name="RequestNewContractor.help.Notes" />
-							</p>
-						</div>
-					</li>
-					<li>
-						(<s:text name="RequestNewContractor.message.MaximumCharacters" />)<br />
-						
 						<div id="notesDiv">
 							<div id="notesHere">
 								<pre id="addHere"></pre>
@@ -620,7 +460,7 @@
 							</div>
 						</div>
 					</li>
-					
+					</s:if>
 					<s:if test="newContractor.id == 0">
 						<li>
 							<div class="info">
@@ -636,15 +476,16 @@
 					<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.label.status" /></h2>
 					
 					<ol>
-						<s:if test="permissions.admin">
+						<s:if test="!permissions.operatorCorporate">
 							<li>
 								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-								<s:select id="status" list="#{'Active':'Active', 'Hold':'Hold','Closed Successful':'Closed Successful','Closed Unsuccessful':'Closed Unsuccessful'}" name="status" onchange="hideShow()"/>
+								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="newContractor.status" onchange="hideShow()"/>
+								  
 							</li>
-							<li id = "holdDateLi">
+							<li id="holdDateLi">
 								<s:textfield id = "holdDate" name="newContractor.holdDate"	cssClass="datepicker" size="10" onchange="checkDate(this)"	theme="formhelp" />
 							</li>
-							<li id = "reasonDeclinedLi">
+							<li id="reasonDeclinedLi">
 								<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
 								
 								<p>
@@ -661,17 +502,17 @@
 						<s:else>
 							<li>
 								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-								<s:property value="newContractor.status" />
+								<s:property value="getText(newContractor.status.I18nKey)" />
 							</li>
 							
-							<s:if test="newContractor.status=='Hold'">
+							<s:if test="newContractor.status==@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
 								<li>
 									<label><s:text name="ContractorRegistrationRequest.label.holdDate" />:</label>
 									<s:property value="newContractor.holdDate" />
 								</li>
 							</s:if>
 							
-							<s:if test="newContractor.status=='Closed Unsuccessful'">
+							<s:if test="newContractor.status==@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful">
 								<li>
 									<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
 									<s:property value="newContractor.reasonForDecline" />
@@ -685,8 +526,9 @@
 			<fieldset class="form submit">
 				<s:submit value="%{getText('button.Save')}" method="save" cssClass="picsbutton positive" />
 				
-				<s:if test="permissions.operatorCorporate && newContractor.id > 0 && newContractor.handledBy.toString() == 'Operator'">
-					<s:submit value="%{getText('RequestNewContractor.button.ReturnToPICS')}" method="returnToPICS" cssClass="picsbutton" />
+				<s:if test="newContractor.id > 0 && newContractor.phone != null && newContractor.phone.length() > 0 && !permissions.operatorCorporate">
+					<input type="button" class="picsbutton" value="<s:text name="RequestNewContractor.button.ContactedByPhone" />" id="phoneContact"/>
+					<input type="button" class="picsbutton" value="<s:text name="RequestNewContractor.button.EditEmail" />" id="emailContact"/>
 				</s:if>
 			</fieldset>
 		</s:form>
@@ -735,7 +577,8 @@
 				
 				<br />
 				
-				<s:hidden name="requestID"/>
+				<s:hidden name="newContractor"/>
+				<s:hidden name="contactType" value="Phone"/>
 				
 				<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
 				
@@ -744,7 +587,27 @@
 				</p>
 				
 				<p>
-					<s:submit value="Submit" method="phone" cssClass="picsbutton positive" />
+					<s:submit value="Submit" method="contact" cssClass="picsbutton positive" />
+				</p>
+			</s:form>
+		</div>
+		<div class="blockMsg" id="emailSubmit" style="display: none">
+			<s:form>
+				<h3><s:text name = "RequestNewContractor.button.ContactedByEmail" /></h3>
+				
+				<br />
+				
+				<s:hidden name="newContractor"/>
+				<s:hidden name="contactType" value="Email"/>
+				
+				<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
+				
+				<p>
+					<s:textarea name="addToNotes" cols="30" rows="3"/>
+				</p>
+				
+				<p>
+					<s:submit value="Submit" method="contact" cssClass="picsbutton positive" />
 				</p>
 			</s:form>
 		</div>

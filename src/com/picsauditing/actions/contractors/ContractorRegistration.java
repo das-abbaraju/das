@@ -221,7 +221,6 @@ public class ContractorRegistration extends ContractorActionSupport {
 			crr.setContractor(contractor);
 			crr.setMatchCount(1);
 			crr.setAuditColumns();
-			crr.setHandledBy(WaitingOn.Operator);
 			crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
 					+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
 			requestDAO.save(crr);

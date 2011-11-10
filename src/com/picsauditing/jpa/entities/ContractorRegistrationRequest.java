@@ -19,8 +19,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private OperatorAccount requestedBy;
 	private User requestedByUser;
 	private String requestedByUserOther;
-	private WaitingOn handledBy = WaitingOn.PICS;
-	private boolean open = true;
 	private String contact;
 	private String phone;
 	private String email;
@@ -31,21 +29,19 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	private String zip;
 	private Country country;
 	private String reasonForRegistration;
-	private boolean emailFromOperator = false;
-	private String status;
+	private ContractorRegistrationRequestStatus status;
 	private String reasonForDecline;
 	private Date deadline;
 	private Date holdDate;
 	private User lastContactedBy;
 	private Date lastContactDate;
-	private int contactCount;
+	private int contactCountByEmail;
+	private int contactCountByPhone;
 	private int matchCount;
 	private String notes;
 
 	private ContractorAccount contractor;
-	// Assuming most operators want to watch their contractor after they
-	// register
-	private boolean watch = true;
+
 	private String operatorTags;
 
 	public String getName() {
@@ -83,23 +79,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	public void setRequestedByUserOther(String requestedByUserOther) {
 		this.requestedByUserOther = requestedByUserOther;
-	}
-
-	@Enumerated(EnumType.STRING)
-	public WaitingOn getHandledBy() {
-		return handledBy;
-	}
-
-	public void setHandledBy(WaitingOn handledBy) {
-		this.handledBy = handledBy;
-	}
-
-	public Boolean isOpen() {
-		return open;
-	}
-
-	public void setOpen(Boolean open) {
-		this.open = open;
 	}
 
 	public String getContact() {
@@ -194,31 +173,15 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setReasonForRegistration(String reasonForRegistration) {
 		this.reasonForRegistration = reasonForRegistration;
 	}
-
-	@Column(name = "future")
-	public boolean isEmailFromOperator() {
-		return emailFromOperator;
-	}
-
-	public void setEmailFromOperator(boolean emailFromOperator) {
-		this.emailFromOperator = emailFromOperator;
-	}
-
-	@Transient
-	public String getStatus() {
-		if (this.status == null)
-			if (isOpen())
-				if (getHoldDate() != null)
-					status = "Hold";
-				else
-					status = "Active";
-			else if (contractor != null)
-				status = "Closed Successful";
-			else
-				status = "Closed Unsuccessful";
+	@Enumerated(EnumType.STRING)
+	public ContractorRegistrationRequestStatus getStatus() {
 		return status;
 	}
 
+	public void setStatus(ContractorRegistrationRequestStatus status) {
+		this.status = status;
+	}
+	
 	public String getReasonForDecline() {
 		return reasonForDecline;
 	}
@@ -253,12 +216,21 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactDate = lastContactDate;
 	}
 
-	public int getContactCount() {
-		return contactCount;
+
+	public int getContactCountByEmail() {
+		return contactCountByEmail;
 	}
 
-	public void setContactCount(int contactCount) {
-		this.contactCount = contactCount;
+	public void setContactCountByEmail(int contactCountByEmail) {
+		this.contactCountByEmail = contactCountByEmail;
+	}
+
+	public int getContactCountByPhone() {
+		return contactCountByPhone;
+	}
+
+	public void setContactCountByPhone(int contactCountByPhone) {
+		this.contactCountByPhone = contactCountByPhone;
 	}
 
 	public int getMatchCount() {
@@ -287,14 +259,6 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.contractor = con;
 	}
 
-	public boolean isWatch() {
-		return watch;
-	}
-
-	public void setWatch(boolean watch) {
-		this.watch = watch;
-	}
-
 	public String getOperatorTags() {
 		return operatorTags;
 	}
@@ -309,12 +273,11 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	}
 
 	@Transient
-	public void contact() {
-		contactCount = contactCount + 1;
+	public void contactByEmail() {
+		contactCountByEmail++;
 	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	@Transient
+	public void contactByPhone() {
+		contactCountByPhone++;
 	}
-
 }

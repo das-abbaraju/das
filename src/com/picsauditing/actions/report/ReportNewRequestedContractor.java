@@ -102,7 +102,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.lastContactDate");
 		sql.addField("cr.contactCount");
 		sql.addField("cr.matchCount");
-		sql.addField("cr.handledBy");
 		sql.addField("cr.creationDate");
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
@@ -126,9 +125,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			getFilter().setShowOperator(true);
 
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
-				if (!filterOn(getFilter().getHandledBy()))
-					getFilter().setHandledBy("PICS");
-
 				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
 						+ permissions.getUserId());
 				sql.addWhere("(cr.state = ua.state OR cr.zip BETWEEN ua.postal_start AND ua.postal_end)");
@@ -173,11 +169,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getHandledBy())) {
-			sql.addWhere("cr.handledBy = '" + f.getHandledBy() + "'");
-			setFiltered(true);
-		}
-
 		if (filterOn(f.getConAuditorId())) {
 			sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID IN ("
 					+ Strings.implode(f.getConAuditorId()) + ")");
@@ -206,23 +197,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere(f.getCustomAPI());
 		
 		if (filterOn(f.getRequestStatus())){
-			String status = f.getRequestStatus();
-			if ("Active".equals(status)){
-				sql.addWhere("cr.open = true");
-				sql.addWhere("ISNULL(cr.holdDate)");
-			}
-			else if ("Hold".equals(status)){
-				sql.addWhere("cr.open = true");
-				sql.addWhere("!ISNULL(cr.holdDate)");
-			}
-			else if ("Closed Unsuccessful".equals(status)){
-				sql.addWhere("cr.open = false");
-				sql.addWhere("ISNULL(cr.conID)");
-			}
-			else if ("Closed Successful".equals(status)){
-				sql.addWhere("cr.open = false");
-				sql.addWhere("!ISNULL(cr.conID)");
-			}
+			//TODO: make this work
 		}
 	}
 

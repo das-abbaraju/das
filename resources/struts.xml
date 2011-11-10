@@ -417,7 +417,7 @@
 		<action name="ContractorPricing" class="com.picsauditing.actions.contractors.ContractorPricing">
 			<result>con_pricing.jsp</result>
 		</action>
-
+		<!-- - Registration Request -->
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
@@ -425,15 +425,19 @@
 				<param name="actionName">ReportNewRequestedContractor</param>
 			</result>
 		</action>
-		<action name="RequestNewContractorAjax"
-			class="com.picsauditing.actions.contractors.RequestNewContractor">
+		
+		<action name="RequestNewContractorAjaxCheck"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="ajaxCheck">
 			<result>/struts/blank.jsp</result>
-			<result name="matches">/struts/contractors/con_new_registration_matches.jsp
-			</result>
 		</action>
+		
+		<action name="RequestNewContractorMatchingList"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="matchingList">
+			<result>/struts/blank.jsp</result>
+		</action>		
 
 		<action name="OperatorUserListAjax"
-			class="com.picsauditing.actions.contractors.RequestNewContractor">
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="getUsersList">
 			<result>/struts/users/operator_users.jsp</result>
 		</action>
 
@@ -448,11 +452,9 @@
 		<!-- NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes" class="com.picsauditing.actions.notes.OperatorNotes">
 			<result>struts/notes/account_notes.jsp</result>
-			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 		<action name="ContractorNotes" class="com.picsauditing.actions.notes.ContractorNotes">
 			<result>struts/notes/account_notes.jsp</result>
-			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 		<action name="OperatorNotesAjax" class="com.picsauditing.actions.notes.OperatorNotes">
 			<result name="notes">struts/notes/account_notes_notes.jsp</result>

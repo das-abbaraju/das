@@ -78,7 +78,7 @@ $(function() {
 		<s:iterator value="data" status="stat">
 			<tr>
 				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-				<td><a href="RequestNewContractor.action?requestID=<s:property value="get('id')"/>">
+				<td><a href="RequestNewContractor.action?newContractor=<s:property value="get('id')"/>">
 					<s:property value="get('name')" /></a>
 				</td>
 				<td title="<s:property value="get('RequestedUser')"/>">
