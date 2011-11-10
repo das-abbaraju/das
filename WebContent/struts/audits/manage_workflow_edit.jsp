@@ -21,7 +21,6 @@
 						value="workFlow.hasRequirements"
 						list="#{true:'Yes', false:'No'}"
 						theme="pics"
-						cssClass="inline"
 					/>
 				</li>
 			</ol>

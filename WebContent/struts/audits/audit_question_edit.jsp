@@ -25,7 +25,6 @@
 					name="auditData.answer" 
 					value="%{#a.answer}"
 					theme="pics"
-					cssClass="inline"
 				/>
 
 				<s:if test="!isStringEmpty(#a.answer)">

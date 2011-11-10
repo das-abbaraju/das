@@ -42,7 +42,6 @@
 								listKey="id"
 								listValue="name"
 								theme="pics"
-								cssClass="inline"
 							/>
 						</li>
 						
