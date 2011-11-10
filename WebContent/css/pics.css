@@ -1145,3 +1145,15 @@ div.blockDialog {
 {
 	text-decoration: underline;
 }
+
+/* email subscriptions */
+#tab_subscriptions div
+{
+	clear: both;
+	overflow: hidden;
+}
+
+#tab_subscriptions h4
+{
+	margin-top: 10px;
+}

@@ -68,3 +68,10 @@ ul.jump-header-list {
 {
 	filter: none !important;
 }
+
+/* radio */
+
+ul.radio label
+{
+	margin-top: 4px;
+}
