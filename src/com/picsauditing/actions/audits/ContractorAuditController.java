@@ -193,7 +193,8 @@ public class ContractorAuditController extends AuditActionSupport {
 						AuditStatus.Incomplete)) {
 					if (caow.getCao().isVisible()) {
 						if (permissions.isAdmin()
-								|| (permissions.isContractor() && permissions.getAccountId() == conAudit.getContractorAccount().getId())) {
+								|| (permissions.isContractor() && permissions.getAccountId() == conAudit
+										.getContractorAccount().getId())) {
 							problems.put(caow.getCao(), caow.getNotes());
 						} else if (getViewableOperators(permissions).contains(caow.getCao())) {
 							problems.put(caow.getCao(), caow.getNotes());
@@ -360,7 +361,8 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount().intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
+											.intValue() > 450))
 								return true;
 						}
 					}
@@ -374,7 +376,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	public boolean isWillExpireSoon() {
 		return !conAudit.isExpired() && !conAudit.hasCaoStatus(AuditStatus.Complete)
 				&& !conAudit.getAuditType().isCanContractorEdit()
-				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew();
+				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew()
+				&& conAudit.getContractorAccount().willExpireSoon(30);
 	}
 
 	/**

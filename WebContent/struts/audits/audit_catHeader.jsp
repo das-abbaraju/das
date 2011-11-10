@@ -24,6 +24,7 @@
 		<div class="alert">
 			<s:text name="Audit.message.WillExpireSoon" >
 				<s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param>
+				<s:param><s:text name="conAudit.contractorAccount.paymentExpires" /></s:param>
 			</s:text>
 		</div>
 	</s:if>

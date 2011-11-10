@@ -1439,4 +1439,10 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
+
+	public boolean willExpireSoon(int daysBeforeExpiration) {
+		int daysToExpire = DateBean.getDateDifference(paymentExpires);
+		
+		return (daysToExpire <= daysBeforeExpiration);
+	}
 }
