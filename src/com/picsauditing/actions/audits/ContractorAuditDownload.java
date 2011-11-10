@@ -34,7 +34,8 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		findConAudit();
 
 		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet(conAudit.getAuditType().getName().toString().replaceAll("[\\W]", " "));
+		String auditDownloadName = conAudit.getAuditType().getName().toString().replaceAll("[^\\w\\s]", "-");
+		HSSFSheet sheet = wb.createSheet(auditDownloadName);
 
 		// Header
 		HSSFFont boldedFont = wb.createFont();
@@ -104,7 +105,8 @@ public class ContractorAuditDownload extends AuditActionSupport {
 
 		// Download
 		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + header + ".xls");
+		ServletActionContext.getResponse().setHeader("Content-Disposition",
+				"attachment; filename=" + auditDownloadName + ".xls");
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		wb.write(outstream);
 		outstream.flush();
