@@ -23,8 +23,7 @@
 			name="searchType" 
 			list="#{'list':getText('ContractorTrades.button.List'), 'tree':getText('ContractorTrades.button.Tree')}" 
 			value="'list'"
-			theme="pics"
-			cssClass="searchType inline"
+			cssClass="searchType" 
 		/>
 		
 		<div class="messages"></div>
