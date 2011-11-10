@@ -448,9 +448,11 @@
 		<!-- NOTES for CONTRACTORS and OPERATORS -->
 		<action name="OperatorNotes" class="com.picsauditing.actions.notes.OperatorNotes">
 			<result>struts/notes/account_notes.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 		<action name="ContractorNotes" class="com.picsauditing.actions.notes.ContractorNotes">
 			<result>struts/notes/account_notes.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
 		</action>
 		<action name="OperatorNotesAjax" class="com.picsauditing.actions.notes.OperatorNotes">
 			<result name="notes">struts/notes/account_notes_notes.jsp</result>

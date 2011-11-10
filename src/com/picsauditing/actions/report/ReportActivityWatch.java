@@ -184,6 +184,7 @@ public class ReportActivityWatch extends ReportAccount {
 			if (permissions.isOperatorCorporate())
 				viewableBy += " OR (n.viewableBy IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
 			sql2.addWhere(viewableBy);
+			sql2.addWhere("n.createdBy = 1");
 			sql2.addWhere("n.status != 0");
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();

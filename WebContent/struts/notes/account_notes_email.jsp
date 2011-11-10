@@ -17,6 +17,7 @@
 			<th>
 				<s:text name="EmailQueueList.header.To" />
 			</th>
+		<th><s:text name="EmailQueueList.header.Preview" /></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -43,6 +44,10 @@
 				</td>
 				<td>
 					<s:property value="toAddresses" />
+				</td>
+				<td class="center">
+					<a href="EmailQueueList!previewAjax.action?id=<s:property value="id"/>"
+						class="fancybox iframe preview" title="<s:property value="subject"/>"></a>
 				</td>
 			</tr>
 		</s:iterator>

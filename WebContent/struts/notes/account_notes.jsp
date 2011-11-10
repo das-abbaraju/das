@@ -14,6 +14,34 @@
 			var accountID = '<s:property value="id"/>';
 			var accountType = '<s:property value="account.type"/>';
 		</script>
+
+		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css" />
+		<script type="text/javascript">
+		$(function() {
+			$('.fancybox').fancybox({
+				frameWidth:  640,
+				frameHeight: 480,
+				hideOnContentClick: false
+			});
+			
+			$('#queue_table').delegate('.remove', 'click', function(e) {
+				e.preventDefault();
+				var id = $(this).closest('tr').attr('id').split('_')[1];
+				
+				if (confirm(translate('JS.EmailQueueList.confirm.DeleteEmail'))) {
+					$.ajax({
+						url: 'EmailQueueList!delete.action',
+						data: {id: id},
+						success: function() {
+							$('#tr_'+id).fadeOut();
+						}
+					});
+				}
+			});
+		});
+		</script>
+
 	</head>
 	<body>
 		<s:if test="account.contractor">
