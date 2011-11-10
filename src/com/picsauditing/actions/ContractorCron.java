@@ -48,6 +48,7 @@ import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -384,15 +385,23 @@ public class ContractorCron extends PicsActionSupport {
 
 		// Find overall flag color for this operator
 		FlagColor overallColor = FlagColor.Green;
+		String reason = "Contractor is no longer flagged on any criteria for this operator.";
 		if (co.getContractorAccount().getAccountLevel().isBidOnly()
 				|| co.getContractorAccount().getStatus().isPending()
 				|| co.getContractorAccount().getStatus().isDeleted()
-				|| co.getContractorAccount().getStatus().isDeactivated())
+				|| co.getContractorAccount().getStatus().isDeactivated()) {
 			overallColor = FlagColor.Clear;
+			reason = "Contractor no longer tracked by flags.";
+		}
 
 		for (FlagData change : changes) {
-			if (!change.getCriteria().isInsurance())
-				overallColor = FlagColor.getWorseColor(overallColor, change.getFlag());
+			if (!change.getCriteria().isInsurance()) {
+				FlagColor worst = FlagColor.getWorseColor(overallColor, change.getFlag());
+				if (worst != overallColor) {
+					reason = getFlagDataDescription(change, co.getOperatorAccount());
+				}
+				overallColor = worst;
+			}
 		}
 
 		ContractorOperator conOperator = co.getForceOverallFlag();
@@ -418,6 +427,7 @@ public class ContractorCron extends PicsActionSupport {
 			note.setAuditColumns(new User(User.SYSTEM));
 			note.setSummary("Flag color changed from " + co.getFlagColor() + " to " + overallColor + " for "
 					+ co.getOperatorAccount().getName());
+			note.setBody(reason);
 			note.setCanContractorView(true);
 			note.setViewableById(co.getOperatorAccount().getId());
 			dao.save(note);
@@ -687,6 +697,28 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
+	}
+	
+	private String getFlagDataDescription(FlagData data, OperatorAccount operator) {
+		String description = "";
+		
+		FlagCriteria fc = data.getCriteria();
+		FlagCriteriaOperator matchingFco = null;
+		ArrayList<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
+		fcos.addAll(operator.getFlagCriteria());
+		fcos.addAll(operator.getFlagCriteriaInherited());
+		for (FlagCriteriaOperator fco:fcos) {
+			if (fco.getCriteria().getId() == fc.getId()) {
+				matchingFco = fco;
+				break;
+			}
+		}
+		
+		if (matchingFco != null) {
+			description = matchingFco.getReplaceHurdle();
+		}
+		
+		return description;
 	}
 
 	public int getConID() {
