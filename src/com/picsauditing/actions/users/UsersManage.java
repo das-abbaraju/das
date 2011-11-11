@@ -330,12 +330,14 @@ public class UsersManage extends PicsActionSupport {
 		}
 
 		try {
+			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
+				user.getAccount().setPrimaryContact(user);
+
 			user.setNeedsIndexing(true);
 			user = userDAO.save(user);
 			if (!user.isGroup())
 				addActionMessage("User saved successfully.");
-			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
-				user.getAccount().setPrimaryContact(user);
+
 		} catch (ConstraintViolationException e) {
 			addActionError("That Username is already in use.  Please select another.");
 		} catch (DataIntegrityViolationException e) {
