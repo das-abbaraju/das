@@ -1255,12 +1255,12 @@ and wu.widgetID = 25;
 
 -- PICS-3709
 update app_translation 
-set msgValue = 'This {0} has been postponed because this account is set to be deactivated on {1}.'
+set msgValue = 'This account will be deactivated on {0}.'
 where id = 13080;
 update app_translation 
-set msgValue = 'Cette {0} a été reportée parce que ce compte est configuré pour être désactivé sur {1}.'
+set msgValue = 'Ce compte sera désactivé le {0}.'
 where id = 13081;
 update app_translation 
-set msgValue = 'Este {0} ha sido pospuesto debido a esta cuenta está configurada para ser desactivada en {1}.'
+set msgValue = 'Esta cuenta será desactivada en {0}.'
 where id = 91908;
 

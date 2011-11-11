@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -377,7 +378,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		return !conAudit.isExpired() && !conAudit.hasCaoStatus(AuditStatus.Complete)
 				&& !conAudit.getAuditType().isCanContractorEdit()
 				&& conAudit.getAuditType().getEditPermission() == null && !conAudit.getContractorAccount().isRenew()
-				&& conAudit.getContractorAccount().willExpireSoon(30);
+				&& conAudit.getContractorAccount().willExpireSoon(30) && permissions.isPicsEmployee();
 	}
 
 	/**
