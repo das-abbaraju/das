@@ -347,7 +347,6 @@ public class OperatorAccount extends Account {
 	 *         would contain BASF Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
-	@Deprecated
 	public List<OperatorAccount> getOperatorChildren() {
 		return operatorChildren;
 	}
@@ -356,7 +355,6 @@ public class OperatorAccount extends Account {
 		this.operatorChildren = operatorChildren;
 	}
 
-	@Deprecated
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parentID", nullable = true)
 	public OperatorAccount getParent() {
