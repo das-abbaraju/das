@@ -64,24 +64,12 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 
 		// Get certificates
 		if (permissions.isOperatorCorporate()) {
-			SelectSQL sql2 = new SelectSQL("pqfdata d");
-			sql2.addJoin("JOIN contractor_audit ca ON ca.id = d.auditID AND ca.expiresDate > NOW()");
-			sql2.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID AND atype.classType = 'Policy'");
-			sql2.addJoin("JOIN audit_question q ON q.id = d.questionID");
-			sql2.addJoin("JOIN audit_category_rule c ON c.catID = q.categoryID");
-			sql2.addField("d.auditID");
-			sql2.addField("d.answer certID");
-			sql2.addField("c.opID");
-			sql2.addWhere("q.questionType = 'FileCertificate'");
-			sql2.addWhere("q.columnHeader = 'Certificate'");
-			sql2.addWhere("q.number = 1");
-			if (permissions.isOperator())
-				sql2.addWhere("c.opID = " + permissions.getAccountId());
-			if (permissions.isCorporate())
-				sql2.addWhere("c.opID IN (" + Strings.implode(permissions.getOperatorChildren()) + ")");
+			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
+			sql.addJoin("JOIN audit_question q ON q.id = d.questionID AND q.questionType = 'FileCertificate' AND q.columnHeader = 'Certificate' AND q.number = 1");
 
-			sql.addJoin("LEFT JOIN (" + sql2.toString() + ") cert ON cert.auditID = ca.id AND cert.opID = caoaccount.id");
-			sql.addField("cert.certID");
+			sql.addField("d.answer certID");
+
+			sql.addWhere("atype.classType = 'Policy'");
 		}
 
 		sql.addGroupBy("cao.id");
