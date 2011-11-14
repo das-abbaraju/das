@@ -5,6 +5,7 @@ public enum OshaRateType implements Translatable {
 	LwcrNaics,
 	TrirAbsolute,
 	TrirNaics,
+	TrirWIA,
 	Fatalities,
 	Dart,
 	SeverityRate,

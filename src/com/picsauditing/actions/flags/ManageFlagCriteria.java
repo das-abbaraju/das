@@ -41,9 +41,9 @@ public class ManageFlagCriteria extends PicsActionSupport {
 
 	public String save() throws IOException {
 		if (criteria != null) {
-			if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
-				addActionError("Either a question or an audit type is required.");
-			}
+//			if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
+//				addActionError("Either a question or an audit type is required.");
+//			}
 
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");

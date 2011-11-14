@@ -411,8 +411,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			flagCounts.put(FlagColor.Green, 0);
 
 			for (ContractorOperator contractorOperator : getActiveOperators()) {
-				flagCounts
-						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
+				flagCounts.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
 			}
 
 			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts.entrySet().iterator();
@@ -507,6 +506,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (OperatorAccount o : inheritedOperators) {
 				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 					if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
+							|| OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())
 							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
 						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 						String auditFor = findAuditFor(organizer, scope);
@@ -521,6 +521,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 								put(operatorDisplay, auditFor, getFlagDescription(fco));
 						}
 					}
+//					if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {
+//						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
+//						String auditFor = findAuditFor(organizer, scope);
+//						String suffix = getOshaSuffix(fco.getCriteria().getOshaRateType());
+//						String operatorDisplay = getOperatorDisplay(o, suffix);
+//						if (auditFor != null) {
+//							if (getData(operatorDisplay, auditFor) != null)
+//								put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+//										+ getFlagDescription(fco));
+//						}
+//					}
 				}
 			}
 
@@ -530,6 +541,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 					auditForSet.add(entry.getKey());
 				}
 			}
+
+			// String indAverage = getText("ContractorView.ContractorDashboard.WeightedIndustryAverage");
+			// if (auditForSet.size() != 0) {
+			// auditForSet.add(indAverage);
+			// }
+			//			
+			// if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
+			// put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), indAverage,
+			// format(contractor.getWeightedIndustryAverage()));
 
 			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
 				for (OperatorAccount o : inheritedOperators) {
@@ -567,7 +587,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private String getFlagDescription(FlagCriteriaOperator fco) {
-			return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
+			if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType()))
+				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " " + format(contractor.getWeightedIndustryAverage()) + "*</nobr>";
+			else
+				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}
 
 		private void put(String k1, String k2, String v) {
@@ -611,7 +634,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private String getOshaSuffix(OshaRateType rateType) {
-			if (OshaRateType.TrirAbsolute.equals(rateType))
+			if (OshaRateType.TrirAbsolute.equals(rateType) || OshaRateType.TrirWIA.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.TRIR");
 			else if (OshaRateType.LwcrAbsolute.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.LWCR");
@@ -702,5 +725,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 		return prevStats;
 	}
-
+	
+	public String preview() throws Exception {
+		return "preview";
+	}
 }

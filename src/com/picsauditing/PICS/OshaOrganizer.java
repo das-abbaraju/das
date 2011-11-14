@@ -9,6 +9,7 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -95,7 +96,7 @@ public class OshaOrganizer {
 			return null;
 
 		PicsLogger.log("OshaOrganizer.getRate(" + type + "," + year + "," + rateType + ")");
-
+		
 		OshaAudit oshaAudit = getOshaAudit(type, year);
 		int validYear = DateBean.getCurrentYear() - 1;
 

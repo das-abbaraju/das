@@ -50,6 +50,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private String imageExtension;
 	private boolean needsIndexing;
 	private boolean selectable = true;
+	private Float naicsTRIR;
 
 	private TranslatableString name;
 	private TranslatableString name2;
@@ -489,6 +490,24 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
+	}
+
+	public Float getNaicsTRIR() {
+		return naicsTRIR;
+	}
+
+	public void setNaicsTRIR(Float naicsTRIR) {
+		this.naicsTRIR = naicsTRIR;
+	}
+	
+	@Transient
+	public Float getNaicsTRIRI() {
+		if (naicsTRIR != null)
+			return naicsTRIR;
+		else if (parent != null)
+			return parent.getNaicsTRIRI();
+		else
+			return Float.valueOf(4);
 	}
 
 }

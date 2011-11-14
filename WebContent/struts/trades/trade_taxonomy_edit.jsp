@@ -61,6 +61,11 @@
 					<s:textarea name="trade.help"></s:textarea>
 				</li>
 				<li>
+					<label>Industry Average TRIR</label>
+					<s:if test="trade.naicsTRIR == null">Inherited Value: <s:property value="trade.getNaicsTRIRI()"/><br /></s:if>
+					<s:textfield name="trade.naicsTRIR"/>
+				</li>
+				<li>
 					<label>Selectable:</label>
 					<s:checkbox name="trade.selectable"/>
 				</li>

@@ -462,6 +462,8 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 			return getRecordableTotalRate();
 		case TrirNaics:
 			return getRecordableTotalRate();
+		case TrirWIA:
+			return getRecordableTotalRate();
 		case Fatalities:
 			return (float)getFatalities();
 		case Cad7:

@@ -31,7 +31,10 @@
 		</s:if>
 		
 		<h3><s:property value="trade.name"/></h3>
-		
+		<p>
+			<s:text name="TradeTaxonomy.IndustryAverage"/>
+			<s:property value="trade.getNaicsTRIRI()" />
+		</p>
 		<p>
 			<s:text name="TradeTaxonomy.NumberOfContractors">
 				<s:param><s:property value="trade.contractorCount"/></s:param>

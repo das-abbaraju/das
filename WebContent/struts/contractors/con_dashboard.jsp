@@ -392,7 +392,16 @@
 											</tr>
 										</s:iterator>
 									</table>
-									
+									<!-- 
+									<s:if test="contractor.hasWiaCriteria()">
+										<a href="" 
+											rel="ContractorView!preview.action"
+											class="cluetip"
+											title="">
+											*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" />
+										</a>
+									</s:if>
+									 -->
 									<div class="clear"></div>
 								</div>
 							</div>

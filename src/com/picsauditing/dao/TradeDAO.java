@@ -10,7 +10,7 @@ import javax.persistence.Query;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.search.SearchEngine;
@@ -25,9 +25,9 @@ public class TradeDAO extends PicsDAO {
 		return a;
 	}
 
-	public List<Trade> findByParent(int productID) {
+	public List<Trade> findByParent(int parentID) {
 		Query query = em.createQuery("SELECT p FROM Trade p WHERE p.parent.id = ?");
-		query.setParameter(1, productID);
+		query.setParameter(1, parentID);
 		return query.getResultList();
 	}
 
@@ -149,6 +149,13 @@ public class TradeDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT ct FROM ContractorTrade ct WHERE ct.trade.id = ?");
 		query.setParameter(1, tradeID);
 		return query.getResultList();
+	}
+	
+	public List<ContractorAccount> findContractorsByTrade(int tradeID) {
+		Query query = em.createQuery("SELECT ");
+		query.setParameter(1, tradeID);
+		return query.getResultList();
+		
 	}
 
 	@Transactional(propagation = Propagation.NESTED)

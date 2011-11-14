@@ -131,7 +131,7 @@
 			</li>
 			<li>
 				<label>Osha Rate Type:</label>
-				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" listValue="description" headerKey="" headerValue=" - Osha Rate Type - "/>
+				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" headerKey="" headerValue=" - Osha Rate Type - "/>
 			</li>
 			<li>
 				<label>Multi Year Scope:</label>

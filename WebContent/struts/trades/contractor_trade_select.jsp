@@ -39,6 +39,8 @@
 			</div>
 		</s:if>
 		
+		<h5>Average TRIR: <s:property value="trade.trade.getNaicsTRIRI()"/></h5>
+		
 		<div class="trade-information">
 			<s:if test="mode == 'Edit'">
 				<s:include value="contractor_trade_edit.jsp" />

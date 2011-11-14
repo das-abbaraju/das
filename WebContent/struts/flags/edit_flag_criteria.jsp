@@ -114,7 +114,7 @@ var aqvExtraParams = {
 				<s:select name="criteria.oshaType" list="@com.picsauditing.jpa.entities.OshaType@values()" theme="formhelp"/>
 			</li>
 			<li>
-				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" listValue="description" theme="formhelp"/>
+				<s:select name="criteria.oshaRateType" list="@com.picsauditing.jpa.entities.OshaRateType@values()" theme="formhelp"/>
 			</li>
 			<li>
 				<s:select name="criteria.multiYearScope" list="@com.picsauditing.jpa.entities.MultiYearScope@values()" listValue="description" theme="formhelp"/>

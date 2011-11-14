@@ -1445,4 +1445,26 @@ public class ContractorAccount extends Account implements JSONable {
 		
 		return (daysToExpire <= daysBeforeExpiration);
 	}
+
+	@Transient
+	public float getWeightedIndustryAverage() {
+		float sum = 0;
+		int activitySum = 0;
+
+		for (ContractorTrade t : trades) {
+			sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+			activitySum += t.getActivityPercent();
+		}
+
+		return sum / activitySum;
+	}
+	
+	@Transient
+	public boolean hasWiaCriteria() {
+		for (FlagCriteriaContractor fcc : flagCriteria) {
+			if (OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
+				return true;
+		}
+		return false;
+	}
 }
