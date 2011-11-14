@@ -81,3 +81,9 @@ join useraccess ua on ua.userID = u.id
 join accounts a on u.accountID = a.id
 left join email_subscription s on u.id = s.userID and s.subscription = 'OQChanges'
 where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.requiresOQ = 1 and a.type = 'Contractor' and ua.accessType in ('ContractorAdmin','ContractorSafety');
+-- Open Tasks (new subscriptions will be sent out a month after the user is initally added)
+insert into email_subscription (id,userID,subscription,timePeriod,lastSent,permission,createdBy,updatedBy,creationDate,updateDate)
+select distinct null,u.id,'OpenTasks','Monthly',now(),null,1,1,now(),now() from users u
+join accounts a on u.accountID = a.id
+left join email_subscription s on u.id = s.userID and s.subscription = 'OpenTasks'
+where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.type = 'Contractor';

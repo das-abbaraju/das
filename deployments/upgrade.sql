@@ -1264,3 +1264,9 @@ update app_translation
 set msgValue = 'Esta cuenta será desactivada en {0}.'
 where id = 91908;
 
+-- Open Tasks
+insert into email_subscription (id,userID,subscription,timePeriod,lastSent,permission,createdBy,updatedBy,creationDate,updateDate)
+select distinct null,u.id,'OpenTasks','Monthly',null,null,1,1,now(),now() from users u
+join accounts a on u.accountID = a.id
+left join email_subscription s on u.id = s.userID and s.subscription = 'OpenTasks'
+where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.type = 'Contractor';
