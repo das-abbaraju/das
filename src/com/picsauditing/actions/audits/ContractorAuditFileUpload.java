@@ -26,6 +26,7 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	protected AuditQuestionDAO auditQuestionDAO;
 
 	protected List<AuditData> openReqs = null;
+	protected List<AuditData> closedReqs = null;
 	protected int fileID;
 
 	public String execute() throws Exception {
@@ -49,20 +50,37 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	public List<AuditData> getOpenReqs() {
 		if (openReqs == null) {
-			Set<AuditData> openReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
-			AnswerMap answerMap = auditDataDao.findAnswers(auditID);
-			Date validDate = conAudit.getValidDate();
-			for (AuditCatData auditCatData : conAudit.getCategories()) {
-				if(auditCatData.isApplies() 
-						&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
-					for (AuditCategory child : auditCatData.getCategory().getChildren()) {
-						for (AuditQuestion auditQuestion : child.getQuestions()) {
-							if (auditQuestion.isValidQuestion(validDate)) {
-								AuditData auditData = answerMap.get(auditQuestion.getId());
-								if (auditData != null) {
-									if (auditData.isHasRequirements() && 
-											(auditData.isRequirementOpen() || auditData.isWasChangedB())) {
+			loadReqs();
+		}
+		return openReqs;
+	}
+
+	public List<AuditData> getClosedReqs() {
+		if (closedReqs == null) {
+			loadReqs();
+		}
+		return closedReqs;
+	}
+	
+	private void loadReqs() {
+		Set<AuditData> openReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
+		Set<AuditData> closedReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
+		
+		AnswerMap answerMap = auditDataDao.findAnswers(auditID);
+		Date validDate = conAudit.getValidDate();
+		for (AuditCatData auditCatData : conAudit.getCategories()) {
+			if(auditCatData.isApplies() 
+					&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
+				for (AuditCategory child : auditCatData.getCategory().getChildren()) {
+					for (AuditQuestion auditQuestion : child.getQuestions()) {
+						if (auditQuestion.isValidQuestion(validDate)) {
+							AuditData auditData = answerMap.get(auditQuestion.getId());
+							if (auditData != null) {
+								if (auditData.isHasRequirements()) {
+									if (auditData.isRequirementOpen()) {
 										openReqsSet.add(auditData);
+									} else {
+										closedReqsSet.add(auditData);
 									}
 								}
 							}
@@ -70,9 +88,9 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 					}
 				}
 			}
-			openReqs = new ArrayList<AuditData>(openReqsSet);
 		}
-		return openReqs;
+		openReqs = new ArrayList<AuditData>(openReqsSet);
+		closedReqs = new ArrayList<AuditData>(closedReqsSet);
 	}
 
 	public int getFileID() {

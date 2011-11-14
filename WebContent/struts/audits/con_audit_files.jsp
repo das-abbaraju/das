@@ -98,7 +98,7 @@
 						<thead>
 							<tr>
 								<td>
-									<s:text name="Audit.header.Requirements" />
+									<s:text name="Audit.header.OpenRequirements" />
 								</td>
 							</tr>
 						</thead>
@@ -198,6 +198,60 @@
 							</tr>
 						</s:iterator>
 					</table>
+				</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td>
+					<table class="report" style="width:95%;" >
+						<thead>
+							<tr>
+								<td>
+									<s:text name="Audit.header.ClosedRequirements" />
+								</td>
+							</tr>
+						</thead>
+						
+						<s:iterator value="closedReqs" id="data">
+							<tr>
+								<td>
+									<s:if test="!isStringEmpty(question.helpText)">
+										<div class="right cluetipHolder">
+											<a class="cluetip help" rel="#cluetip_<s:property value="question.id"/>" title="<s:text name="Audit.AdditionalInformation" />"></a>
+											<div id="cluetip_<s:property value="question.id" />">
+												<s:property value="question.helpText" escape="false" />
+											</div>
+										</div>
+									</s:if>
+									
+									<s:set name="fileDesc" value="getFileDesc(#data.question)"/>
+									
+									<s:property value="#fileDesc"/>&nbsp;&nbsp;
+									
+									<s:if test="permissions.operatorCorporate || !#data.requirementOpen">
+										<s:property value="question.requirement" />
+										<s:if test="#data.dateVerified != null">
+											<br/>
+											<div class="verified-answer">
+												<img src="images/okCheck.gif" />
+												<s:text name="Audit.message.ClosedOn">
+													<s:param><s:date name="#data.dateVerified" /></s:param>
+												</s:text>
+											</div>
+										</s:if>
+									</s:if>
+									<s:else>
+										<a style="cursor:pointer;" onclick="javascript: showAuditUpload(<s:property value="conAudit.id"/>,0,'<s:property value="#fileDesc"/>',<s:property value="question.id"/>); return false;" title="<s:text name="Audit.help.UploadRequirements" />"><s:property value="question.requirement" /></a>
+									</s:else>	
+									<br/>
+									
+									<s:if test="comment.length() > 0">
+										<span class="redMain"><b><s:text name="Audit.message.SafetyProfessionalComment" />: </b><s:property value="comment" escape="false"/></span>
+									</s:if>
+								</td>
+							</tr>
+						</s:iterator>
+					</table>		
 				</td>
 			</tr>
 		</table>
