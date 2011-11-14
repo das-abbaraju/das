@@ -164,7 +164,9 @@ public class AuditPercentCalculator {
 
 				// make sure this dependent required question is visible
 				if (isRequired) {
-					if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
+					if (catData.getAudit().getEffectiveDate().before(question.getEffectiveDate()))
+						isRequired = false;
+					else if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
 						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
 						if (!question.isVisible(otherAnswer))
 							isRequired = false;
