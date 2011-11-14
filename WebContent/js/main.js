@@ -15,6 +15,8 @@
 		
 		// initialize trade preview
 		TRADE.preview.init();
+		
+		TRADE.weighted_industry_average_preview.init();
 	});
 	
 })(jQuery);
