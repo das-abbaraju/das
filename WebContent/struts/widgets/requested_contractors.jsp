@@ -15,7 +15,7 @@
 	<s:else>
 	<s:iterator value="requestedContractors">
 		<tr>
-			<td><a href="RequestNewContractor.action?requestID=<s:property value="id"/>"><s:property value="name" /></a></td>
+			<td><a href="RequestNewContractor.action?newContractor=<s:property value="id"/>"><s:property value="name" /></a></td>
 			<td>
 				<s:if test="permissions.operator">
 					<s:property value="requestedByUser == null ? requestedByUserOther : requestedByUser.name" />
@@ -40,7 +40,7 @@
 		<tbody>
 			<s:iterator value="returnedContractors">
 				<tr>
-					<td><a href="RequestNewContractor.action?requestID=<s:property value="id"/>"><s:property value="name" /></a></td>
+					<td><a href="RequestNewContractor.action?newContractor=<s:property value="id"/>"><s:property value="name" /></a></td>
 					<td><s:property value="requestedByUser == null ? requestedByUserOther : requestedByUser.name" /></td>
 					<td><nobr><s:date name="lastContactDate"/></nobr></td>
 				</tr>

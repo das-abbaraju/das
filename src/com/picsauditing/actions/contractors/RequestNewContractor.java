@@ -660,7 +660,7 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 	public String getRegistrationLink(){
 		return "http://www.picsorganizer.com/ContractorRegistration.action?button="
-        + "request&requestID=" + newContractor.getId();
+        + "request&newContractor=" + newContractor.getId();
 	}
 
 	public int getOpID() {
