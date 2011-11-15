@@ -13,14 +13,11 @@ import com.picsauditing.jpa.entities.WaitingOn;
 
 @SuppressWarnings("serial")
 public class ReportFilterNewContractor extends ReportFilterContractor {
-	protected boolean showOpen = true;
-	protected boolean showHandledBy = true;
 	protected boolean showFollowUpDate = true;
 	protected boolean showViewAll = false;
 	protected boolean showCreationDate = true;
 	protected boolean showRequestStatus = true;
 
-	protected int open = 1;
 	protected String handledBy;
 	protected Date followUpDate;
 	protected boolean viewAll = false;
@@ -33,22 +30,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.permissions = permissions;
 	}
 
-	// Show
-	public boolean isShowOpen() {
-		return showOpen;
-	}
-
-	public void setShowOpen(boolean showOpen) {
-		this.showOpen = showOpen;
-	}
-
-	public boolean isShowHandledBy() {
-		return showHandledBy;
-	}
-
-	public void setShowHandledBy(boolean showHandledBy) {
-		this.showHandledBy = showHandledBy;
-	}
 
 	public boolean isShowFollowUpDate() {
 		return showFollowUpDate;
@@ -80,15 +61,6 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setShowRequestStatus(boolean showRequestStatus) {
 		this.showRequestStatus = showRequestStatus;
-	}
-
-	// Parameters
-	public int getOpen() {
-		return open;
-	}
-
-	public void setOpen(int open) {
-		this.open = open;
 	}
 
 	public String getHandledBy() {

@@ -216,6 +216,10 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 		this.lastContactDate = lastContactDate;
 	}
 
+	@Transient
+	public int getContactCount() {
+		return contactCountByEmail + contactCountByPhone;
+	}
 
 	public int getContactCountByEmail() {
 		return contactCountByEmail;

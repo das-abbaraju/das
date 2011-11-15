@@ -423,7 +423,7 @@
 						
 						<li>
 							<label><s:text name="RequestNewContractor.label.TimesContacted" />:</label>
-							<s:property value="newContractor.contactCountByEmail + newContractor.contactCountByPhone" />
+							<s:property value="newContractor.contactCount" />
 						</li>
 						<li>
 							<label><s:text name="RequestNewContractor.label.MatchesFound" />:</label>

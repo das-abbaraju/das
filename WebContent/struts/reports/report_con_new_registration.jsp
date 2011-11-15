@@ -62,7 +62,6 @@ $(function() {
 			<td><s:text name="ContractorRegistrationRequest.requestedBy" /></td>
 			<td><a href="javascript: changeOrderBy('form1','cr.creationDate');"><s:text name="global.CreationDate" /></a></td>
 			<td><a href="javascript: changeOrderBy('form1','cr.deadline');"><s:text name="ContractorRegistrationRequest.deadline" /></a></td>
-			<td><s:text name="ReportNewRequestedContractor.label.FollowUp" /></td>
 			<td><s:text name="ReportNewRequestedContractor.label.ContactedBy" /></td>
 			<td>
 				<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');"><s:text name="ReportNewRequestedContractor.label.On" /></a>
@@ -86,7 +85,6 @@ $(function() {
 				</td>
 				<td><s:date name="get('creationDate')" /></td>
 				<td><s:date name="get('deadline')" format="MM/dd/yyyy"/></td>
-				<td><s:property value="get('handledBy')"/></td>
 				<td><s:property value="get('ContactedBy')" /></td>
 				<td><s:date name="get('lastContactDate')" format="MM/dd/yyyy"/></td>
 				<td><s:property value="get('contactCount')" /></td>

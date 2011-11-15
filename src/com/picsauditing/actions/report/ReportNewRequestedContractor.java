@@ -46,7 +46,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		getFilter().setShowProductRiskLevel(false);
 		getFilter().setShowTrade(false);
 		getFilter().setPermissions(permissions);
-		getFilter().setShowOpen(false);
 
 		buildQuery();
 		addFilterToSQL();
@@ -197,7 +196,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			sql.addWhere(f.getCustomAPI());
 		
 		if (filterOn(f.getRequestStatus())){
-			//TODO: make this work
+			sql.addWhere("cr.status = '" +f.getRequestStatus() + "'");
 		}
 	}
 
