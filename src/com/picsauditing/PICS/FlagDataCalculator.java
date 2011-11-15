@@ -280,7 +280,7 @@ public class FlagDataCalculator {
 					float hurdle2 = Float.parseFloat(hurdle.replace(",", ""));
 					if (criteria.getOshaRateType() != null) {
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirWIA)) {
-							return answer2 > con.getWeightedIndustryAverage();
+							return answer2 > con.getWeightedIndustryAverage() * hurdle2 / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
 							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;

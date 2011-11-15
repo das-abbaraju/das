@@ -98,18 +98,14 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 		} else {
 			if (insurance) {
-				addActionError(getTextParameterized(
-						"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaInsurance",
-						flagCriteriaOperator.getCriteria().getDescription(),
-						newFlag,
+				addActionError(getTextParameterized("ManageFlagCriteriaOperator.error.CannotUpdateCriteriaInsurance",
+						flagCriteriaOperator.getCriteria().getDescription(), newFlag,
 						((operatorTag != null) ? getTextParameterized(
 								"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaAndTag", operatorTag.getTag())
 								: "")));
 			} else {
-				addActionError(getTextParameterized(
-						"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaFlag",
-						flagCriteriaOperator.getCriteria().getDescription(),
-						newFlag,
+				addActionError(getTextParameterized("ManageFlagCriteriaOperator.error.CannotUpdateCriteriaFlag",
+						flagCriteriaOperator.getCriteria().getDescription(), newFlag,
 						((operatorTag != null) ? getTextParameterized(
 								"ManageFlagCriteriaOperator.error.CannotUpdateCriteriaAndTag", operatorTag.getTag())
 								: "")));
@@ -158,12 +154,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 					+ fco.getReplaceHurdle() + ", " + newFlag.toString() + " flagged";
 			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
 		} else {
-			addActionError(getTextParameterized(
-					"ManageFlagCriteriaOperator.error.FlagColorExists",
-					fco.getCriteria().getLabel(),
-					fco.getFlag(),
-					((fco.getTag() != null) ? getTextParameterized("ManageFlagCriteriaOperator.error.AndTagID", fco
-							.getTag().getId()) : "")));
+			addActionError(getTextParameterized("ManageFlagCriteriaOperator.error.FlagColorExists", fco.getCriteria()
+					.getLabel(), fco.getFlag(), ((fco.getTag() != null) ? getTextParameterized(
+					"ManageFlagCriteriaOperator.error.AndTagID", fco.getTag().getId()) : "")));
 		}
 
 		return "list";
@@ -274,7 +267,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public int getIntValue(String value) {
 		return (int) Float.parseFloat(value);
 	}
-	
+
 	public List<FlagCriteria> getAddableCriterias() {
 		List<FlagCriteriaOperator> opCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteria> addableCriteria = new ArrayList<FlagCriteria>();
@@ -415,8 +408,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 							|| (c.getTag() == null && fco.getTag() == null)) {
 						// Check hurdles for editing
 						if (edit) {
-							if (c.getCriteria().isAllowCustomValue() && c.getHurdle().equals(fco.getHurdle()))
-								return true;
+							if (c.getHurdle() != null && fco.getHurdle() != null)
+								if (c.getCriteria().isAllowCustomValue() && c.getHurdle().equals(fco.getHurdle()))
+									return true;
 						} else
 							return true;
 					}
@@ -426,7 +420,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		return false;
 	}
-	
+
 	public String bumpContractors() throws Exception {
 		operatorDao.incrementContractors(operator.getId());
 		return redirect("ManageFlagCriteriaOperator.action?id=" + operator.getId());
