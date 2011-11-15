@@ -397,8 +397,8 @@
 										<a 
 											class="weighted-industry-average"
 											href="javascript:;"
-											data-url="ContractorView!preview.action" 
-											title="test"
+											data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
+											title="Weighted Industry Average (TRIR)"
 										>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
 									</s:if>
 									
