@@ -148,6 +148,11 @@ public class AuditDataSave extends AuditActionSupport {
 
 					if (answerChanged) {
 						if (isAudit && !isAnnualUpdate) {
+							if (newCopy.isVerified()
+									&& newCopy.getAudit().getAuditType().getId() == AuditType.COR) {
+								newCopy.setDateVerified(null);
+								newCopy.setAuditor(null);
+							}
 							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 							if (question.getOkAnswer() != null
 									&& question.getOkAnswer().contains(auditData.getAnswer())) {

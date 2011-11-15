@@ -473,7 +473,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	public boolean isCanViewRequirements() {
 		if (conAudit.getAuditType().getWorkFlow().isHasRequirements())
-			return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
+			if (conAudit.getAuditType().getId() == AuditType.COR)
+				return conAudit.hasCaoStatusAfter(AuditStatus.Pending);
+			else
+				return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
 		return false;
 	}
 
