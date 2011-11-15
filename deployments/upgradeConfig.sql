@@ -32,3 +32,5 @@ insert into `audit_question_function_watcher` (`functionID`, `questionID`, `uniq
 insert into `audit_question_function` (`questionID`, `type`, `function`, `expression`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `overwrite`) values('9060','Calculation','AIR',NULL,'38586','38586','2011-09-27 15:41:20','2011-09-27 15:41:20','1');
 insert into `audit_question_function` (`questionID`, `type`, `function`, `expression`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `overwrite`) values('9062','Calculation','AFR',NULL,'38586','38586','2011-09-27 15:42:00','2011-09-27 15:42:00','1');
 
+-- PICS-2638
+update workflow set hasRequirements=1 where id=13;
