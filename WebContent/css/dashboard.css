@@ -165,3 +165,33 @@ table.report tr.hurdle td {
 {
 	float: right;
 }
+
+/* trir */
+
+.trir-popover th
+{
+	font-size: 12px;
+	font-weight: bold;
+	padding: 10px 5px;
+}
+
+.trir-popover td
+{
+	font-size: 12px;
+	padding: 5px;
+}
+
+.trir-popover .activity,
+.trir-popover .naics
+{
+	text-align: right;
+}
+
+.trir-popover .average
+{
+	color: #A84D10;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 10px 0px 0px;
+	text-align: right;
+}
