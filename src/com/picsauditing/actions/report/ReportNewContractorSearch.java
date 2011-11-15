@@ -37,6 +37,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.ReportFilterAccount;
+import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
 
 /**
@@ -194,6 +195,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 				&& (getFilter().getTrade() == null || getFilter().getTrade().length == 0)) {
 			this.addActionError(getText("NewContractorSearch.error.SelectTradeOrContractorName"));
 			return SUCCESS;
+		}
+		// Default to showing self-performed
+		if (filterOn(getFilter().getTrade()) && getFilter().getShowSelfPerformedTrade() == 2) {
+			getFilter().setShowSelfPerformedTrade(1);
 		}
 
 		buildQuery();
@@ -388,5 +393,17 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
+	}
+
+	public boolean isHasInsuranceCriteria() {
+		if (getFilter().isShowInsuranceLimits()) {
+			return filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.getDefaultAmount())
+					|| filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.getDefaultAmount())
+					|| filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.getDefaultAmount())
+					|| filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.getDefaultAmount())
+					|| filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount());
+		}
+
+		return false;
 	}
 }

@@ -52,14 +52,22 @@
 			<td><s:text name="User.phone" /></td>
 			<td><s:text name="User.email" /></td>
 			<td><s:text name="global.PrimaryAddress" /></td>
-			<td><a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');"><s:text name="NewContractorSearch.label.CityState" /></a></td>
 		</s:if>
+		<td>
+			<a href="javascript: changeOrderBy('form1','a.country, a.state, a.city, a.name');">
+				<s:text name="NewContractorSearch.label.CityState" />
+			</a>
+		</td>
 		<s:if test="showTrade">
-			<td><s:text name="Trade" /></td>
+			<td><s:text name="ContractorEdit.IndustryDetails.MainTrade" /></td>
 			<td><s:text name="ContractorAccount.tradesSelf" /></td>
 			<td><s:text name="ContractorAccount.tradesSub" /></td>
 		</s:if>
-		<td><s:text name="global.Insurance" /></td>
+		<s:if test="hasInsuranceCriteria">
+			<td>
+				<s:text name="global.Insurance" />
+			</td>
+		</s:if>
 	</tr>
 	</thead>
 	<tbody>
@@ -117,17 +125,25 @@
 					<td><s:property value="get('contactphone')"/></td>
 					<td><s:property value="get('contactemail')"/></td>
 					<td><s:property value="get('address')"/></td>
-					<td><s:property value="get('city')"/>, <s:property value="get('state')"/>
+				</s:if>
+				<td>
+					<s:property value="get('city')"/>, <s:property value="get('state')"/>
 					<s:if test="get('state') == ''">
 						<s:property value="get('country')"/>
 					</s:if>
+				</td>
+				<s:if test="showTrade">
+					<td>
+						<s:property value="get('main_trade')"/>
+					</td>
+					<td class="tradeList">
+						<s:property value="get('tradesSelf')"/>
+					</td>
+					<td class="tradeList">
+						<s:property value="get('tradesSub')"/>
 					</td>
 				</s:if>
-				<s:if test="showTrade">
-					<td><s:property value="get('main_trade')"/></td>
-					<td><s:property value="get('tradesSelf')"/></td>
-					<td><s:property value="get('tradesSub')"/></td>
-				</s:if>
+				<s:if test="hasInsuranceCriteria">
 					<td>
 						<s:if test="get('answer2074') != null">
 							<span style="font-size: 9px;">GL Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2074'))"/></span> <br/>
@@ -145,6 +161,7 @@
 							<span style="font-size: 9px;">EX Each Occurrence = <s:property value="getFormattedDollarAmount(get('answer2161'))"/></span>
 						</s:if>
 					</td>
+				</s:if>
 			</tr>
 		</s:iterator>
 	</tbody>
@@ -156,3 +173,33 @@
 
 <div class="info"><s:text name="NewContractorSearch.message.CompanyNotListed" /></div>
 </s:else>
+
+<script type="text/javascript">
+	$('td.tradeList').each(function() {
+		var trade = $(this).text().trim();
+		
+		if (trade.length > 100) {
+			var text = trade.substring(0, 100);
+			// window.console.log("Text: " + text);
+			text = text + '<a href="#" title="' + translate('JS.NewContractorSearch.ShowMore') + '" class="showMoreLink">...</a>';
+			
+			var rest = trade.substring(100, trade.length);
+			// window.console.log("Rest: " + rest);
+			rest = '<span class="hidden">' + rest + '<br /><a href="#" class="hideLink">Hide</a></span>';
+			
+			$(this).html(text + rest);
+		}
+	});
+	
+	$('td.tradeList').delegate('a.showMoreLink', 'click', function(e) {
+		e.preventDefault();
+		$(this).parent().find("span.hidden").show();
+		$(this).hide();
+	});
+	
+	$('td.tradeList').delegate('a.hideLink', 'click', function(e) {
+		e.preventDefault();
+		$(this).parent().hide();
+		$(this).parent().parent().find("a.showMoreLink").show();
+	});
+</script>

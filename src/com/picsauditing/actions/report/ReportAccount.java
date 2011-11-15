@@ -29,7 +29,6 @@ import com.picsauditing.search.SelectFilterDate;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -300,8 +299,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
 				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
 				tradeSQL.addWhere("a.id = ct.conID");
-				// TODO allow users to search for Manufacture
-				// and Activity Percent
+				// TODO allow users to search for Manufacture and Activity Percent
 				tradeSQL.addWhere("ct.activityPercent > 1");
 
 				if (f.getShowSelfPerformedTrade() == 1)
