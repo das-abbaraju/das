@@ -14,7 +14,13 @@ $(function(){
 			reloadQuestion(v);
 		});
 	});
-
+	
+	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
+		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
+			reloadQuestion(v);
+		});
+	});
+	
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {
 		e.preventDefault();
