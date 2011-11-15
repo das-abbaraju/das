@@ -62,10 +62,6 @@ public class ContractorValidator {
 			if (contractor.getState() == null || Strings.isEmpty(contractor.getState().getIsoCode())) {
 				errorMessages.addElement(getText("ContractorValidator.error.NoState"));
 			}
-			
-			if (contractor.getBillingState() == null || Strings.isEmpty(contractor.getBillingState().getIsoCode())) {
-				errorMessages.addElement(getText("ContractorValidator.error.NoBillingState"));
-			}
 		}
 
 		if (Strings.isEmpty(contractor.getPhone()))
