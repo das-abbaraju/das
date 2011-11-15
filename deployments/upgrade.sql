@@ -1213,10 +1213,6 @@ set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates hav
 where `id`='132';
 --
 
--- PICS-3547
-ALTER TABLE `auditor_vacation` 
-	ADD COLUMN `allDay` tinyint(4)   NOT NULL DEFAULT '0' after `endDate`;
-
 -- PICS-3276 Docs and Forms to Resources
 -- This upgrade needs to upgrade file names and there directory locations.
 -- This assumes that the schema upgrade has been run adding a locale and parent id to the operatorforms table
