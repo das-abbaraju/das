@@ -163,6 +163,10 @@ public class OpenTasks extends TranslationActionSupport {
 								Integer conAuditID = conAudit.getId();
 								String text = getTextParameterized("ContractorWidget.message.OpenRequirements",
 										conAuditID, auditName, showAuditFor, auditFor);
+								if (conAudit.getAuditType().getId() == AuditType.COR) {
+									text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR",
+											conAuditID, auditName, showAuditFor, auditFor);
+								}
 								if (!openReq) {
 									text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
 									openReq = true;
