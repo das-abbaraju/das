@@ -53,7 +53,7 @@ public class LoginController extends PicsActionSupport {
 			// ServletActionContext.getRequest().getSession().invalidate();
 			return SUCCESS;
 		}
-		
+
 		loadPermissions(false);
 
 		if ("logout".equals(button)) {
@@ -66,8 +66,7 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
-				redirect("Login.action?msg=Cookies are disabled on your browser. Please open your "
-						+ "browser settings and make sure cookies are enabled to log in to PICS");
+				redirect("Login.action?msg=" + getText("Login.CookiesAreDisabled"));
 			}
 
 			int adminID = permissions.getAdminID();
@@ -89,15 +88,15 @@ public class LoginController extends PicsActionSupport {
 
 			return SUCCESS;
 		}
-		
+
 		if ("confirm".equals(button)) {
 			try {
 				user = userDAO.findName(username);
 				user.setEmailConfirmedDate(new Date());
 				userDAO.save(user);
-				addActionMessage("Thank you for confirming your email address.");
+				addActionMessage(getText("Login.ConfirmedEmailAddress"));
 			} catch (Exception e) {
-				addActionError("Sorry, your account confirmation failed");
+				addActionError(getText("Login.AccountConfirmationFailed"));
 			}
 			return SUCCESS;
 		}
@@ -245,30 +244,31 @@ public class LoginController extends PicsActionSupport {
 			user = null;
 		}
 		if (user == null)
-			return "No account exists with that username";
+			return getText("Login.NoAccountExistsWithUsername");
 
 		if (Strings.isEmpty(key)) {
 			// After this point we should always have a user
 
 			if (user.getAccount().isOperatorCorporate())
 				if (!user.getAccount().getStatus().isActiveDemo())
-					return user.getAccount().getName()
-							+ " is no longer active.<br>Please contact PICS if you have any questions.";
+					return getTextParameterized("Login.NoLongerActive", user.getAccount().getName());
 
 			if (user.getAccount().isContractor() && user.getAccount().getStatus().isDeleted())
-				return user.getAccount().getName()
-						+ " has been deleted.<br>Please contact PICS if you have any questions.";
+				return getTextParameterized("Login.AccountDeleted", user.getAccount().getName());
 
 			if (user.getIsActive() != YesNo.Yes)
-				return "This account for " + user.getAccount().getName()
-						+ " is no longer active.<br>Please contact your administrator to reactivate it.";
+				return getTextParameterized("Login.AccountNotActive", user.getAccount().getName());
 
 			if (user.getLockUntil() != null && user.getLockUntil().after(new Date())) {
-				return "This account is locked because of too many failed attempts. "
-						+ "You will be able to try again in " + DateBean.prettyDate(user.getLockUntil());
+				Date now = new Date();
+				long diff = user.getLockUntil().getTime() - now.getTime();
+				int minutes = (int) (diff / (1000 * 60));
+
+				return getTextParameterized("Login.TooManyFailedAttempts", minutes);
 			}
+
 			if (Strings.isEmpty(password)) {
-				return "You must enter a password";
+				return getText("Login.MustEnterPassword");
 			}
 
 			if (!user.isEncryptedPasswordEqual(password)) {
@@ -280,23 +280,15 @@ public class LoginController extends PicsActionSupport {
 					calendar.add(Calendar.HOUR, 1);
 					user.setFailedAttempts(0);
 					user.setLockUntil(calendar.getTime());
-					return "The password is not correct and the account has now been locked. <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
-							+ user.getUsername() + "\">Click here to reset your password</a>";
+					return getTextParameterized("Login.PasswordIncorrectAccountLocked", user.getUsername());
 				}
-				return "The password is not correct. You have " + (8 - user.getFailedAttempts())
-						+ " attempts remaining before your account will be locked for one hour. "
-						+ "<a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
-						+ user.getUsername() + "\">Click here to reset your password</a>";
+
+				return getTextParameterized("Login.PasswordIncorrectAttemptsRemaining", (8 - user.getFailedAttempts()),
+						user.getUsername());
 			}
 		} else {
-			if (user.getResetHash() == null) {
-				return "Expired reset code. Try logging in below or <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
-						+ user.getUsername() + "\">Click here to send a new email</a>";
-			}
-
-			if (!user.getResetHash().equals(key)) {
-				return "Expired reset code. Try logging in below or <a href=\"http://www.picsorganizer.com/AccountRecovery.action?username="
-						+ user.getUsername() + "\">Click here to send a new email</a>";
+			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
+				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
 
@@ -350,7 +342,7 @@ public class LoginController extends PicsActionSupport {
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
-			throw new Exception("No Permissions or Default Webpages found");
+			throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 
 		redirect(url);
 		return;
