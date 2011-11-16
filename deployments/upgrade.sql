@@ -1266,3 +1266,10 @@ select distinct null,u.id,'OpenTasks','Monthly',null,null,1,1,now(),now() from u
 join accounts a on u.accountID = a.id
 left join email_subscription s on u.id = s.userID and s.subscription = 'OpenTasks'
 where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.type = 'Contractor';
+
+-- PICS-3318
+update `email_template`
+set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates have been approved or rejected by <MyName> at <MyCompanyName> for the following reasons:\r\n\r\n#foreach ( $caow in $caowList )\r\n#if ( $caow.status == \"Incomplete\" )\r\n-- ${caow.cao.audit.auditType.name} Insurance Certificates have been ${caow.status.button}ed\r\n#if ( $caow.notes.length() > 0 )because ${caow.notes}.\r\n\r\n#end\r\n#end\r\n#end\r\n\r\nPlease correct these issues and re-upload your insurance certificate to your PICS account.\r\nIf you have any specific questions about any operator''s insurance requirements, please review the Insurance Requirements documents in the Forms and Docs section. For questions, please contact ${permissions.name} at ${permissions.email}.\r\n\r\nWhen you renew any policy, please make sure that you upload the new insurance certificate to keep the information up to date.\r\n\r\nHave a great day,\r\nPICS Customer Service',
+`updatedBy`='23157',`updateDate`='2011-11-14 16:21:55'
+where `id`='132';
+--

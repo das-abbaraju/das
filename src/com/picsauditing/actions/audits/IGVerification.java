@@ -1,11 +1,13 @@
 package com.picsauditing.actions.audits;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -32,20 +34,56 @@ public class IGVerification extends ContractorActionSupport {
 	protected String body;
 	protected String subject;
 	protected EmailQueue previewEmail;
-	protected List<ContractorAuditOperator> caoList;
+
+	protected List<ContractorAuditOperatorWorkflow> caowList;
 
 	@Override
-	@RequiredPermission(value = OpPerms.AuditVerification)
-	public String execute() throws Exception {
+	public String execute() {
 		this.subHeading = "Insurance Verification";
-		buildPreviewEmail();
-
 		return SUCCESS;
 	}
 
-	public String sendEmail() throws Exception {
-		buildPreviewEmail();
+	@Before
+	@RequiredPermission(value = OpPerms.AuditVerification)
+	public void start() throws Exception {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		// Insurance Policies rejected by PICS
+		EmailTemplate template = templateDAO.find(132);
 
+		List<ContractorAuditOperator> caos = caoDAO.findByCaoStatus(1000, permissions,
+				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' "
+						+ "AND cao.audit.contractorAccount.id = " + contractor.getId(), "cao.audit.contractorAccount");
+
+		caowList = new ArrayList<ContractorAuditOperatorWorkflow>();
+
+		Map<AuditType, ContractorAuditOperatorWorkflow> mostRecentRejection = new TreeMap<AuditType, ContractorAuditOperatorWorkflow>();
+		for (ContractorAuditOperator cao : caos) {
+			AuditType auditType = cao.getAudit().getAuditType();
+
+			for (ContractorAuditOperatorWorkflow caow : cao.getCaoWorkflow()) {
+				if (mostRecentRejection.get(auditType) == null) {
+					mostRecentRejection.put(auditType, caow);
+				} else {
+					if (caow.getCreationDate().after(mostRecentRejection.get(auditType).getCreationDate()))
+						mostRecentRejection.put(auditType, caow);
+				}
+			}
+		}
+
+		for (ContractorAuditOperatorWorkflow caow : mostRecentRejection.values()) {
+			caowList.add(caow);
+		}
+
+		emailBuilder.setTemplate(template);
+		emailBuilder.addToken("caowList", caowList);
+		emailBuilder.setPermissions(permissions);
+		emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
+		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+		previewEmail = emailBuilder.build();
+	}
+
+	@RequiredPermission(value = OpPerms.AuditVerification)
+	public String sendEmail() throws Exception {
 		previewEmail.setBody(body);
 		previewEmail.setSubject(subject);
 		previewEmail.setPriority(50);
@@ -86,44 +124,7 @@ public class IGVerification extends ContractorActionSupport {
 		this.previewEmail = previewEmail;
 	}
 
-	public List<ContractorAuditOperator> getCaoList() {
-		return caoList;
-	}
-
-	public void buildPreviewEmail() throws Exception {
-		if (contractor == null)
-			findContractor();
-
-		EmailBuilder emailBuilder = new EmailBuilder();
-		EmailTemplate template = templateDAO.find(132); // Insurance Policies rejected by PICS
-		caoList = caoDAO.findByCaoStatus(1000, permissions,
-				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' "
-						+ "AND cao.audit.contractorAccount.id = " + contractor.getId(), "cao.audit.contractorAccount");
-
-		Map<AuditType, ContractorAuditOperatorWorkflow> mostRecentRejection = new TreeMap<AuditType, ContractorAuditOperatorWorkflow>();
-		for (ContractorAuditOperator cao : caoList) {
-			AuditType auditType = cao.getAudit().getAuditType();
-
-			for (ContractorAuditOperatorWorkflow caow : cao.getCaoWorkflow()) {
-				if (mostRecentRejection.get(auditType) == null) {
-					mostRecentRejection.put(auditType, caow);
-				} else {
-					if (caow.getCreationDate().after(mostRecentRejection.get(auditType).getCreationDate()))
-						mostRecentRejection.put(auditType, caow);
-				}
-			}
-		}
-
-		caoList.clear();
-		for (ContractorAuditOperatorWorkflow caow : mostRecentRejection.values()) {
-			caoList.add(caow.getCao());
-		}
-
-		emailBuilder.setTemplate(template);
-		emailBuilder.addToken("caoList", caoList);
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-		previewEmail = emailBuilder.build();
+	public List<ContractorAuditOperatorWorkflow> getCaowList() {
+		return caowList;
 	}
 }
