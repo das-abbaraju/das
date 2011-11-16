@@ -1,9 +1,7 @@
 package com.picsauditing.actions.contractors;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -307,8 +305,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 			questionLine += "* ";
 		questionLine += auditQuestion.getNumber() + ". " + auditQuestion.getName();
 
-		Chunk question = new Chunk(questionLine, questionFont);
-		questionAnswer.add(question);
+		processQuestion(questionAnswer, questionLine);
+		
 		if (answerMap.get(auditQuestion.getId()) != null) {
 			AuditData auditData = answerMap.get(auditQuestion.getId());
 			if (!Strings.isEmpty(auditData.getAnswer())) {
@@ -332,6 +330,54 @@ public class AuditPdfConverter extends AuditActionSupport {
 			}
 		}
 		document.add(questionAnswer);
+	}
+	
+	private void processQuestion(Paragraph paragraph, String question) {
+		int index;
+		String working = question;
+		
+		working = working.replaceAll("&nbsp;", " ");
+		
+		while (working.length() > 0) {
+			index = (working.indexOf("<") >= 0) ? working.indexOf("<") : working.length();
+			if (index != 0) {
+				paragraph.add(new Chunk(working.substring(0, index), questionFont));
+				working = working.substring(index, working.length());
+			}
+			if (working.length() > 0) {
+				int tagIndex = working.indexOf(">");
+				if (tagIndex >=0) {
+					String tag = working.substring(0, tagIndex + 1);
+					working=working.substring(tagIndex + 1, working.length());
+					
+					// process special tags and ignore all others
+					String lower = tag.toLowerCase();
+					lower = lower + "";
+					
+					if (tag.toLowerCase().startsWith("<br") || tag.toLowerCase().startsWith("<li")) {
+						paragraph.add(new Chunk(""));
+					} else if (tag.toLowerCase().startsWith("<a")) {
+						String ref = "";
+						int refIndex = tag.indexOf("href=\"");
+						if (refIndex >= 0) {
+							int refEndIndex = tag.indexOf("\"", refIndex + 7);
+							if (refEndIndex >= 0) {
+								ref = tag.substring(refIndex + 6, refEndIndex);
+							}
+						}
+						String text = "";
+						int endIndex = working.indexOf("</a>");
+						if (endIndex >=0) {
+							text = working.substring(0, endIndex);
+							working = working.substring(endIndex + 4, working.length());
+						}
+						Anchor anchor = new Anchor(text);
+						anchor.setReference(ref);
+						paragraph.add(anchor);
+					}
+				}
+			}
+		}
 	}
 
 	private void showOshaLogs(Document document, PdfWriter pdfWriter) throws DocumentException, IOException {
