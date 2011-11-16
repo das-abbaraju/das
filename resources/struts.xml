@@ -92,6 +92,7 @@
 
 		<action name="ExceptionAction" class="com.picsauditing.actions.ExceptionAction">
 			<result name="Exception">exception_handler.jsp</result>
+			<result name="Submitted">exception_handler_submitted.jsp</result>
 		</action>
 
 		<action name="Login" class="com.picsauditing.access.LoginController">

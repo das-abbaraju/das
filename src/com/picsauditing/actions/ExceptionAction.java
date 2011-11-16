@@ -1,8 +1,6 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -12,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
+import org.jboss.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.GridSender;
 
@@ -23,7 +23,16 @@ import com.picsauditing.mail.GridSender;
 public class ExceptionAction extends PicsActionSupport {
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private BasicDAO dao;
 
+	private Exception exception;
+	private String exceptionStack;
+	private int priority = 1;
+	private String user_message;
+	private String to_address = "errors@picsauditing.com";
+	private String from_address;
+	private String user_name;
 	private String user = "info@picsauditing.com";
 	private String password = "e3r4t5";
 
@@ -32,15 +41,23 @@ public class ExceptionAction extends PicsActionSupport {
 	public String execute() {
 		try {
 			loadPermissions();
-			Exception exception = (Exception) ActionContext.getContext().getValueStack().findValue("exception");
+
+			try {
+				ErrorLog error = new ErrorLog();
+				error.setAuditColumns(permissions);
+				error.setCategory(getException().getClass().getSimpleName());
+				error.setMessage(getExceptionStack());
+				error.setPriority(getPriority());
+				error.setStatus("Pending");
+				dao.save(error);
+			} catch (Exception e) {
+			}
 
 			HttpServletRequest request = ServletActionContext.getRequest();
 			HttpServletResponse response = ServletActionContext.getResponse();
 			HttpSession session = ServletActionContext.getRequest().getSession();
 
 			String message = "";
-			@SuppressWarnings("unused")
-			String cause = "Undetermined";
 			String stacktrace = "";
 
 			Date currentTime = new Date();
@@ -60,12 +77,7 @@ public class ExceptionAction extends PicsActionSupport {
 						message = exception.getMessage();
 					else
 						message = exception.toString();
-					if (exception.getCause() != null)
-						cause = exception.getCause().getMessage();
-
-					StringWriter sw = new StringWriter();
-					exception.printStackTrace(new PrintWriter(sw));
-					stacktrace = sw.toString();
+					stacktrace = getExceptionStack();
 				}// if
 
 				StringBuilder email = new StringBuilder();
@@ -86,7 +98,7 @@ public class ExceptionAction extends PicsActionSupport {
 					email.append("\nThe current user was NOT logged in.");
 				}
 
-				if (stacktrace.length() > 0) {
+				if (!Strings.isEmpty(stacktrace)) {
 					email.append("\n\nTrace:\n");
 					email.append(stacktrace);
 				}
@@ -125,14 +137,7 @@ public class ExceptionAction extends PicsActionSupport {
 	public String sendExceptionEmail() {
 		try {
 			loadPermissions();
-			Exception exception = (Exception) ActionContext.getContext().getValueStack().findValue("exception");
 			HttpServletRequest request = ServletActionContext.getRequest();
-
-			int priority = Integer.parseInt(request.getParameter("priority"));
-			String message = request.getParameter("user_message");
-			String to_address = request.getParameter("to_address");
-			String from_address = request.getParameter("from_address");
-			String user_name = request.getParameter("user_name");
 
 			StringBuilder email = new StringBuilder();
 			email.append("A user has reported an error on PICS\n");
@@ -141,6 +146,7 @@ public class ExceptionAction extends PicsActionSupport {
 				email.append("\nName: " + permissions.getName());
 				email.append("\nUsername: " + permissions.getUsername());
 				email.append("\nAccountID: " + permissions.getAccountId());
+				setFrom_address(permissions.getEmail());
 				if (permissions.getAdminID() > 0)
 					email.append("\nAdmin: " + permissions.getAdminID());
 				email.append("\nType: " + permissions.getAccountType());
@@ -149,15 +155,15 @@ public class ExceptionAction extends PicsActionSupport {
 				email.append("\nThe current user was NOT logged in.");
 			}
 
-			if (message != null && (!message.equals("") || !message.equals("undefined"))) {
+			if (!Strings.isEmpty(user_message)) {
 				email.append("\n\nUser Message:\n");
-				email.append(message);
+				email.append(user_message);
 				email.append("\n");
 			}
 
-			if (exception != null) {
+			if (!Strings.isEmpty(exceptionStack)) {
 				email.append("\nError Message:\n");
-				email.append("");
+				email.append(exceptionStack);
 				email.append("\n");
 			}
 			email.append("\nHeaders:");
@@ -173,10 +179,10 @@ public class ExceptionAction extends PicsActionSupport {
 			mail.setToAddresses(to_address);
 			if (permissions.isLoggedIn()) {
 				mail.setFromAddress(permissions.getEmail());
-				if (!from_address.equals("undefined"))
-					mail.setBccAddresses(from_address);
+				if (!Strings.isEmpty(getFrom_address()))
+					mail.setBccAddresses(getFrom_address());
 			} else
-				mail.setFromAddress(from_address);
+				mail.setFromAddress(getFrom_address());
 			mail.setPriority(priority * 10 + 50);
 
 			try {
@@ -189,9 +195,57 @@ public class ExceptionAction extends PicsActionSupport {
 				System.out.println(mail.getBody());
 			}
 		} catch (Exception e) {
-			return ERROR;
+			return "Exception";
 		}
 
-		return SUCCESS;
+		return "Submitted";
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception exception) {
+		this.exception = exception;
+	}
+
+	public String getExceptionStack() {
+		return exceptionStack;
+	}
+
+	public void setExceptionStack(String exceptionStack) {
+		this.exceptionStack = exceptionStack;
+	}
+
+	public int getPriority() {
+		return priority;
+	}
+
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
+
+	public String getUser_message() {
+		return user_message;
+	}
+
+	public void setUser_message(String userMessage) {
+		user_message = userMessage;
+	}
+
+	public String getFrom_address() {
+		return from_address;
+	}
+
+	public void setFrom_address(String fromAddress) {
+		from_address = fromAddress;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String userName) {
+		user_name = userName;
 	}
 }
