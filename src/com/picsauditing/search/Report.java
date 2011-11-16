@@ -3,6 +3,7 @@ package com.picsauditing.search;
 import static java.lang.Math.ceil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import com.picsauditing.util.LinkBuilder;
 @SuppressWarnings("serial")
 public class Report extends TranslationActionSupport {
 	private SelectSQL sql;
-	private List<SelectSQL> unionSql;
+	private List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
 
 	private int limit = 100;
 	private int currentPage = 1;
