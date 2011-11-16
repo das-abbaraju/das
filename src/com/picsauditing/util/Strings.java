@@ -481,7 +481,9 @@ public class Strings {
 
 		return expression.replace("|", "");
 	}
-
+	/*
+	 * TODO: We need to completely scrap this and use translations instead.
+	 */
 	public static String getPicsPhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-936-4500";
