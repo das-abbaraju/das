@@ -194,12 +194,17 @@ public class AuditBuilder {
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
 		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<OperatorAccount, ContractorAuditOperator>();
+		AuditStatus maxStatus = null;
 
 		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToCreate = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
 			cao.setVisible(caoShouldBeVisible);
+			
+			if (maxStatus == null || cao.getStatus().after(maxStatus)) {
+				maxStatus = cao.getStatus();
+			}
 
 			// add to map for comparison later
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
@@ -238,6 +243,15 @@ public class AuditBuilder {
 				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Expired, null);
 				caow.setNotes("Expiring " + conAudit.getAuditType().getName());
 				contractorAuditOperatorDAO.save(caow);
+			}
+			
+			if (maxStatus != null && (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation())) {
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(maxStatus, null);
+				if (caow != null) {
+					caow.setNotes("Syncing status of " + conAudit.getAuditType().getName().toString());
+					caow.setCreatedBy(systemUser);
+					contractorAuditOperatorDAO.save(caow);
+				}
 			}
 
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
