@@ -346,8 +346,8 @@
 						</s:if>
 					</s:iterator>
 					
-					<s:if test="oshaDisplay.hasData">
-						<%-- Statistics --%>
+					
+					<s:if test="stats.size() > 0">
 						<div class="panel_placeholder">
 							<div class="panel">
 								<div class="panel_header">
@@ -358,41 +358,44 @@
 									<s:text name="global.Statistics" />
 								</div>
 								<div class="panel_content">
-									<table class="report">
-										<thead>
-											<tr>
-												<td></td>
+									<s:iterator value="stats" var="stat">
+										<s:if test="#stat.hasData" >
+											<table class="report">
+												<thead>
+													<tr>
+														<td><s:property value="#stat.getOshaType()" /></td>
+														
+														<s:iterator value="#stat.auditForSet" id="auditFor">
+															<td>
+																<s:property value="#auditFor"/>
+															</td>
+														</s:iterator>
+													</tr>
+												</thead>
 												
-												<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
-													<td>
-														<s:property value="#auditFor"/>
-													</td>
+												<s:iterator value="#stat.rateTypeSet" id="rateType">
+													<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
+														<s:if test="#rateType.startsWith('P:')">
+															<td style="padding-left: 10px;">
+																<s:property value="#rateType.substring(2)" escape="false"/>
+															</td>
+														</s:if>
+														<s:else>
+															<td>
+																<s:property value="#rateType" escape="false"/>
+															</td>
+														</s:else>
+														
+														<s:iterator value="#stat.auditForSet" id="auditFor">
+															<td>
+																<s:property value="#stat.getData(#rateType, #auditFor)" escape="false"/>
+															</td>
+														</s:iterator>
+													</tr>
 												</s:iterator>
-											</tr>
-										</thead>
-										
-										<s:iterator value="oshaDisplay.rateTypeSet" id="rateType">
-											<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
-												<s:if test="#rateType.startsWith('P:')">
-													<td style="padding-left: 10px;">
-														<s:property value="#rateType.substring(2)" escape="false"/>
-													</td>
-												</s:if>
-												<s:else>
-													<td>
-														<s:property value="#rateType" escape="false"/>
-													</td>
-												</s:else>
-												
-												<s:iterator value="oshaDisplay.auditForSet" id="auditFor">
-													<td>
-														<s:property value="oshaDisplay.getData(#rateType, #auditFor)" escape="false"/>
-													</td>
-												</s:iterator>
-											</tr>
-										</s:iterator>
-									</table>
-									
+											</table>
+										</s:if>
+									</s:iterator>
 									<s:if test="contractor.hasWiaCriteria()">
 										<a 
 											class="weighted-industry-average"
@@ -407,7 +410,7 @@
 							</div>
 						</div>
 					</s:if>
-				
+					
 					<s:if test="criteriaList.categories.size() > 0">
 						<%-- Flaggable Data --%>
 						<div class="panel_placeholder">

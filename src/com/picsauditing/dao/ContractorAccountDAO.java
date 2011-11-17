@@ -388,5 +388,13 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createNativeQuery(sql, ContractorAccount.class);
 		return query.getResultList();
 	}
-
+	
+	public List<OperatorAccount> findPicsCountryCorporates(int conID) {
+		// finds all PICS country based corporates (excludes PICS Global and PICS PSM) 
+		String sql = "select a.*, o.* from generalcontractors gc join accounts a on a.id = gc.genID join operators o ON o.id = a.id "
+				+ "where gc.subID = " + conID + " and a.name like 'PICS%' and a.type = 'Corporate' "
+				+ "and a.id not in (4,8);";
+		Query q = em.createNativeQuery(sql, OperatorAccount.class);
+		return q.getResultList();
+	}
 }

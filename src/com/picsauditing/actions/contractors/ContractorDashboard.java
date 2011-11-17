@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -29,6 +30,7 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -94,6 +96,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
+	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -117,7 +121,28 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private Map<FlagColor, Integer> flagCounts;
 
-	private OshaDisplay oshaDisplay;
+	private List<OshaDisplay> stats;
+
+	public List<OshaDisplay> getStats() {
+		if (stats == null) {
+			stats = new ArrayList<OshaDisplay>();
+			Set<OshaType> otSet = new HashSet<OshaType>();
+			List<ContractorAudit> annualUpdates = contractor.getSortedAnnualUpdates();
+			for (ContractorAudit au : annualUpdates) {
+				for (OshaAudit oa : au.getOshas())
+					otSet.add(oa.getType());
+			}
+			for (OshaType ot : otSet) {
+				//if (!OshaType.MSHA.equals(ot))
+					stats.add(new OshaDisplay(ot));
+			}
+		}
+		return stats;
+	}
+
+	public void setStats(List<OshaDisplay> stats) {
+		this.stats = stats;
+	}
 
 	@Override
 	public String execute() throws Exception {
@@ -411,7 +436,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			flagCounts.put(FlagColor.Green, 0);
 
 			for (ContractorOperator contractorOperator : getActiveOperators()) {
-				flagCounts.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
+				flagCounts
+						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
 			}
 
 			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts.entrySet().iterator();
@@ -422,14 +448,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 		return flagCounts;
-	}
-
-	public OshaDisplay getOshaDisplay() {
-		if (oshaDisplay == null) {
-			oshaDisplay = new OshaDisplay(getActiveOperators());
-		}
-
-		return oshaDisplay;
 	}
 
 	private ContractorWatch getWatch() {
@@ -452,12 +470,23 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public class OshaDisplay {
 
+		private OshaType oshaType = OshaType.OSHA;
+
+		public OshaType getOshaType() {
+			return oshaType;
+		}
+
+		public void setOshaType(OshaType oshaType) {
+			this.oshaType = oshaType;
+		}
+
 		private Set<String> auditForSet = new LinkedHashSet<String>();
 		private Set<String> rateTypeSet = new LinkedHashSet<String>();
 
 		private Map<String, Map<String, String>> data = new HashMap<String, Map<String, String>>();
 
-		public OshaDisplay(List<ContractorOperator> contractorOperators) {
+		public OshaDisplay(OshaType oType) {
+			this.oshaType = oType;
 
 			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
@@ -468,12 +497,12 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			for (MultiYearScope scope : new MultiYearScope[] { MultiYearScope.ThreeYearsAgo,
 					MultiYearScope.TwoYearsAgo, MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage }) {
-				OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
+				OshaAudit audit = organizer.getOshaAudit(oshaType, scope);
 				String auditFor = findAuditFor(organizer, scope);
 				for (OshaRateType rate : oshaRateTypes) {
 					if (auditFor != null) {
 
-						Float value = organizer.getRate(OshaType.OSHA, scope, rate);
+						Float value = organizer.getRate(oshaType, scope, rate);
 						if (rate.equals(OshaRateType.Fatalities)) {
 							put(getText(rate.getDescriptionKey()), auditFor, Integer.toString((value.intValue())));
 						} else {
@@ -492,46 +521,39 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
-				format(contractor.getWeightedIndustryAverage()));
+				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind,
+						format(contractor.getWeightedIndustryAverage()) + "*");
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind, 
-				format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
+						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+
+			auditForSet.add(findAuditFor(organizer, MultiYearScope.ThreeYearAverage));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
-			for (ContractorOperator co : contractorOperators) {
+			for (ContractorOperator co : getActiveOperators()) {
 				inheritedOperators.add(co.getOperatorAccount().getInheritFlagCriteria());
 			}
 
 			for (OperatorAccount o : inheritedOperators) {
-				for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
-					if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
-							|| OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())
-							|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
-						MultiYearScope scope = fco.getCriteria().getMultiYearScope();
-						String auditFor = findAuditFor(organizer, scope);
-						if (auditFor != null) {
-							String suffix = getOshaSuffix(fco.getCriteria().getOshaRateType());
-							String operatorDisplay = getOperatorDisplay(o, suffix);
+				if (oshaType.equals(o.getOshaType())) {
+					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
+						if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
+								|| OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())
+								|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
+							MultiYearScope scope = fco.getCriteria().getMultiYearScope();
+							String auditFor = findAuditFor(organizer, scope);
+							if (auditFor != null) {
+								String suffix = getOshaSuffix(fco.getCriteria().getOshaRateType());
+								String operatorDisplay = getOperatorDisplay(o, suffix);
 
-							if (getData(operatorDisplay, auditFor) != null)
-								put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
-										+ getFlagDescription(fco));
-							else
-								put(operatorDisplay, auditFor, getFlagDescription(fco));
+								if (getData(operatorDisplay, auditFor) != null)
+									put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+											+ getFlagDescription(fco));
+								else
+									put(operatorDisplay, auditFor, getFlagDescription(fco));
+							}
 						}
 					}
-					// if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {
-					// MultiYearScope scope = fco.getCriteria().getMultiYearScope();
-					// String auditFor = findAuditFor(organizer, scope);
-					// String suffix = getOshaSuffix(fco.getCriteria().getOshaRateType());
-					// String operatorDisplay = getOperatorDisplay(o, suffix);
-					// if (auditFor != null) {
-					// if (getData(operatorDisplay, auditFor) != null)
-					// put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
-					// + getFlagDescription(fco));
-					// }
-					// }
 				}
 			}
 
@@ -542,29 +564,22 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 
-			// String indAverage = getText("ContractorView.ContractorDashboard.WeightedIndustryAverage");
-			// if (auditForSet.size() != 0) {
-			// auditForSet.add(indAverage);
-			// }
-			//			
-			// if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
-			// put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), indAverage,
-			// format(contractor.getWeightedIndustryAverage()));
-
 			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
 				for (OperatorAccount o : inheritedOperators) {
-					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
-						if (fco.getCriteria().getQuestion() != null
-								&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
-							String operatorDisplay = getOperatorDisplay(o, " "
-									+ getText("ContractorView.ContractorDashboard.EMR"));
-							String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
+					if (oshaType.equals(o.getOshaType())) {
+						for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
+							if (fco.getCriteria().getQuestion() != null
+									&& fco.getCriteria().getQuestion().getId() == AuditQuestion.EMR) {
+								String operatorDisplay = getOperatorDisplay(o, " "
+										+ getText("ContractorView.ContractorDashboard.EMR"));
+								String auditFor = fco.getCriteria().getMultiYearScope().getAuditFor();
 
-							if (getData(operatorDisplay, auditFor) != null)
-								put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
-										+ getFlagDescription(fco));
-							else
-								put(operatorDisplay, auditFor, getFlagDescription(fco));
+								if (getData(operatorDisplay, auditFor) != null)
+									put(operatorDisplay, auditFor, getData(operatorDisplay, auditFor) + ", "
+											+ getFlagDescription(fco));
+								else
+									put(operatorDisplay, auditFor, getFlagDescription(fco));
+							}
 						}
 					}
 				}
@@ -590,7 +605,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {
 				float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " "
-						+ format(hurdle/100*contractor.getWeightedIndustryAverage()) + "*</nobr>";
+						+ format(hurdle / 100 * contractor.getWeightedIndustryAverage()) + "</nobr>";
 			} else
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}
@@ -614,21 +629,28 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (OshaRateType ort : Arrays.asList(OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 					OshaRateType.Fatalities)) {
 				if (data.get(getText(ort.getDescriptionKey())) != null) {
+
+					// data.get(getText(ort.getDescriptionKey()))
+
 					rateTypeSet.add(getText(ort.getDescriptionKey()));
 					for (OperatorAccount operatorAccount : operators) {
-						String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(ort));
-						if (data.get(disp) != null)
-							rateTypeSet.add(disp);
+						if (oshaType.equals(operatorAccount.getOshaType())) {
+							String disp = getOperatorDisplay(operatorAccount, getOshaSuffix(ort));
+							if (data.get(disp) != null)
+								rateTypeSet.add(disp);
+						}
 					}
 				}
 			}
 			if (data.get(getText("ContractorView.ContractorDashboard.EMR")) != null) {
 				rateTypeSet.add(getText("ContractorView.ContractorDashboard.EMR"));
 				for (OperatorAccount operatorAccount : operators) {
-					String disp = getOperatorDisplay(operatorAccount, " "
-							+ getText("ContractorView.ContractorDashboard.EMR"));
-					if (data.get(disp) != null)
-						rateTypeSet.add(disp);
+					if (oshaType.equals(operatorAccount.getOshaType())) {
+						String disp = getOperatorDisplay(operatorAccount, " "
+								+ getText("ContractorView.ContractorDashboard.EMR"));
+						if (data.get(disp) != null)
+							rateTypeSet.add(disp);
+					}
 				}
 			}
 			if (data.get(getText("ContractorView.ContractorDashboard.HoursWorked")) != null)
@@ -651,7 +673,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private String findAuditFor(OshaOrganizer organizer, MultiYearScope scope) {
-			OshaAudit audit = organizer.getOshaAudit(OshaType.OSHA, scope);
+			OshaAudit audit = organizer.getOshaAudit(oshaType, scope);
 			String auditFor = "";
 			if (audit == null) {
 				auditFor = null;
