@@ -108,7 +108,7 @@
 		</script>
 	</head>
 	<body>
-		<s:if test="configEnvironment"><!-- We can remove this once we've release i18n -->
+		<s:if test="configEnvironment || i18nReady"><!-- We can remove this once we've release i18n -->
 			<ul class="locales">
 				<li>
 					<a href="?request_locale=en">English</a>

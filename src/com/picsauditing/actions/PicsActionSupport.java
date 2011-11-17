@@ -48,6 +48,7 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
 	protected static Boolean CONFIG = null;
+	protected static Boolean I18N = null;
 
 	protected static final String PLAIN_TEXT = "plain-text";
 	protected static final String ACTION_MESSAGES = "action-messages";
@@ -124,6 +125,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			CONFIG = "1".equals(propertyDAO.getProperty("PICS.config"));
 		}
 		return CONFIG;
+	}
+
+	public boolean isI18nReady() {
+		if (I18N == null) {
+			I18N = "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
+		}
+
+		return I18N;
 	}
 
 	/**
