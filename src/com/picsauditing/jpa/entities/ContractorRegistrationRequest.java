@@ -273,7 +273,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 
 	@Transient
 	public String getRequestedByUserString() {
-		return requestedByUser == null ? requestedByUserOther : requestedByUser.getName();
+		return requestedByUser == null ? getRequestedByUserOther() : requestedByUser.getName();
 	}
 
 	@Transient
@@ -284,4 +284,10 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void contactByPhone() {
 		contactCountByPhone++;
 	}
+	@Transient
+	public String getRegistrationLink(){
+		return "http://www.picsorganizer.com/ContractorRegistration.action?button="
+        + "request&requestID=" + getId();
+	}
+
 }

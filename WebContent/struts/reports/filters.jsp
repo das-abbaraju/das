@@ -98,7 +98,7 @@
 		<s:if test="filter.showRequestStatus">
 			<div class="filterOption">
 				<span><s:text name="global.Status" /> =</span>
-				<s:select cssClass="forms" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="filter.requestStatus" />
+				<s:select cssClass="forms" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="filter.requestStatus" headerKey="" headerValue="Any"/>
 			</div>
 		</s:if>
 		

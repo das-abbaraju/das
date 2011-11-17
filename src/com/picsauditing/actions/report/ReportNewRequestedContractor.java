@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletOutputStream;
 
@@ -13,6 +14,10 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AccountUserDAO;
+import com.picsauditing.dao.ContractorRegistrationRequestDAO;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
@@ -27,6 +32,10 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportNewRequestedContractor extends ReportActionSupport {
 	@Autowired
 	protected AccountUserDAO auDAO;
+	@Autowired
+	protected OperatorTagDAO operatorTagDAO;
+	@Autowired
+	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO; 
 
 	protected SelectSQL sql;
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
@@ -255,5 +264,25 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 		
 		return null;
+	}
+
+	public String getParsedTags(int id) {
+		ContractorRegistrationRequest crr = contractorRegistrationRequestDAO.find(id);
+
+		String result = "";
+		
+		String requestedTagIds = crr.getOperatorTags();
+
+		if (!Strings.isEmpty(requestedTagIds)) {
+			StringTokenizer st = new StringTokenizer(requestedTagIds, ", ");
+			while (st.hasMoreTokens()) {
+				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st
+						.nextToken()));
+				if (tag != null) {
+					result += " " + tag.getTag() + " ";
+				}
+			}
+		}
+		return result;
 	}
 }

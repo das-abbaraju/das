@@ -72,9 +72,10 @@ $(function() {
 			<s:if test="filter.open == 0">
 				<td><s:text name="ReportNewRequestedContractor.label.ClosedDate" /></td>
 			</s:if>
+			<td>Operator Tags</td>
 		</tr>
 		</thead>
-		<s:iterator value="data" status="stat">
+		<s:iterator value="data" status="stat" var="crr">
 			<tr>
 				<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 				<td><a href="RequestNewContractor.action?newContractor=<s:property value="get('id')"/>">
@@ -97,6 +98,7 @@ $(function() {
 				<s:if test="filter.open == 0">
 					<td><s:date name="getClosedDate(get('notes'))" /></td>
 				</s:if>
+				<td><s:property value="getParsedTags(get('id'))" /></td>
 			</tr>
 		</s:iterator>
 	</table>

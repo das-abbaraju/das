@@ -55,6 +55,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.FlagDataOverride;
@@ -316,6 +317,13 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
+		try {
+			startTask("\nChecking Registration Requests Hold Dates");
+			checkRegistrationRequestsHoldDates();
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}		
 
 		report.append("\n\n\nCompleted Cron Job at: ");
 		report.append(new Date().toString());
@@ -946,5 +954,16 @@ public class Cron extends PicsActionSupport {
 	private void checkSystemStatus() throws Exception {
 		ContractorCronStatistics stats = new ContractorCronStatistics(contractorAccountDAO, emailQueueDAO);
 		stats.execute();
+	}
+	private void checkRegistrationRequestsHoldDates() throws Exception{
+		List<ContractorRegistrationRequest> holdRequests = contractorRegistrationRequestDAO.findActiveByDate("status = 'Hold'");
+		Date now = new Date();
+		for (ContractorRegistrationRequest crr: holdRequests) {
+			if (crr.getHoldDate().after(now)) {
+				crr.setStatus(ContractorRegistrationRequestStatus.Active);
+				crr.setNotes(maskDateFormat(now) + " - System - hold date passed.  Request set to active \n\n" + crr.getNotes());
+			}
+				
+		}
 	}
 }

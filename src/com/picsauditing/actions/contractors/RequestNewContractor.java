@@ -87,6 +87,7 @@ public class RequestNewContractor extends PicsActionSupport {
 	private ContractorRegistrationRequest newContractor;
 	private Country country;
 	private State state;
+	private ContractorRegistrationRequestStatus status;
 
 	private int opID;
 	private String addToNotes;
@@ -111,12 +112,14 @@ public class RequestNewContractor extends PicsActionSupport {
 			if (!permissions.isPicsEmployee()) {
 				newContractor.setRequestedBy(operatorAccountDAO.find(permissions.getAccountId()));
 				newContractor.setRequestedByUser(userDAO.find(permissions.getUserId()));
+				opID = newContractor.getRequestedBy().getId();
 			}
 		}
 		else {
 			country = newContractor.getCountry();
 			state = newContractor.getState();
-			loadTags();
+			status = newContractor.getStatus();
+			opID = newContractor.getRequestedBy().getId();
 		}
 
 		return SUCCESS;
@@ -222,9 +225,18 @@ public class RequestNewContractor extends PicsActionSupport {
 		 */
 		return SUCCESS;
 	}
+	
+	public String loadTags() {
+		/*	
+		 *  (\__/)
+		*	(='.'=)
+		*	(")_(")
+		*/ 
+		return SUCCESS;
+	}
+
 
 	public String save() throws Exception {
-				
 		if (Strings.isEmpty(newContractor.getName()))
 			addActionError(getText("RequestNewContractor.error.FillContractorName"));
 		if (Strings.isEmpty(newContractor.getContact()))
@@ -262,9 +274,8 @@ public class RequestNewContractor extends PicsActionSupport {
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 		// There are errors, just exit out
         if (getActionErrors().size() > 0)
-                return SUCCESS;
+        	return SUCCESS;
         
-
 		
 		potentialMatches = runGapAnalysis(newContractor);
         if (potentialMatches.size() > 0)
@@ -274,33 +285,50 @@ public class RequestNewContractor extends PicsActionSupport {
 		newContractor.setState(state);
 
 		requestedTagIds = "";
-        if (rightAnswers != null) {
-                for (String value:rightAnswers) {
-                        if (requestedTagIds.length() > 0)
-                                requestedTagIds +=",";
-                        requestedTagIds += value;
-                }
-        }
-        newContractor.setOperatorTags(requestedTagIds);
+
+		List<Integer> requestedIds = new ArrayList<Integer>();
+		for(OperatorTag tag : requestedTags)
+			requestedIds.add(tag.getId());
+        newContractor.setOperatorTags(Strings.implode(requestedIds));
         
         if (!Strings.isEmpty(newContractor.getRequestedByUserOther()))
         	newContractor.setRequestedByUser(null);
+        
 		
 		newContractor.setAuditColumns(permissions);
 
-		if (newContractor.getStatus() != ContractorRegistrationRequestStatus.Hold)
+		if (status == ContractorRegistrationRequestStatus.Hold ) {
+			if (newContractor.getStatus() != ContractorRegistrationRequestStatus.Hold ){
+				String notes = "Request set to Hold until " + maskDateFormat(newContractor.getHoldDate());
+				newContractor.setNotes(prepend(notes, newContractor.getNotes()));
+			}	
+		}
+		else {
 			newContractor.setHoldDate(null);
+		}
+			
 		
 		if (newContractor.getId() == 0) {
 			newContractor.setStatus(ContractorRegistrationRequestStatus.Active);
+			
+			newContractor.setLastContactedBy(userDAO.find(permissions.getUserId()));
+			newContractor.setLastContactDate(new Date());
+			
+			String notes = "Sent initial contact email.";
+			newContractor.setNotes(prepend(notes, newContractor.getNotes()));
+			newContractor.contactByEmail();
+			
 			// Save the contractor before sending the email
 			newContractor = crrDAO.save(newContractor);
 			sendEmail();
 		}
-		else
+		else {
+			newContractor.setStatus(status);
+			userDAO.save(newContractor.getRequestedByUser());
 			newContractor = crrDAO.save(newContractor);
-        
-		return SUCCESS;
+		}
+		
+		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
 
 	public String contact() throws Exception {
@@ -315,6 +343,9 @@ public class RequestNewContractor extends PicsActionSupport {
 			sendEmail();
 			newContractor.contactByEmail();
 		}
+		else if ("Personal Email".equals(contactType)) {
+			newContractor.contactByEmail();
+		}
 		else
 			newContractor.contactByPhone();
 		
@@ -324,7 +355,7 @@ public class RequestNewContractor extends PicsActionSupport {
 		
 		crrDAO.save(newContractor);
 
-		return SUCCESS;
+		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
 
 	private String prepend(String note, String body) {
@@ -334,24 +365,6 @@ public class RequestNewContractor extends PicsActionSupport {
 
 		return body;
 	}
-	
-	private void loadTags() {
-		// initialize tags
-		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
-			StringTokenizer st = new StringTokenizer(newContractor
-					.getOperatorTags(), ", ");
-			while (st.hasMoreTokens()) {
-				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st
-						.nextToken()));
-				if (tag != null) {
-					requestedTags.add(tag);
-				}
-			}
-		}
-		loadOperatorTags();
-		loadRequestedTags();
-	}
-
 
 	private void sendEmail() {
 		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils
@@ -373,33 +386,17 @@ public class RequestNewContractor extends PicsActionSupport {
 			e.printStackTrace();
 		}
 	}
-
-	private void loadOperatorTags() {
-		List<OperatorTag> list = operatorTagDAO.findByOperator(newContractor.getRequestedBy().getId(), true);
-
-		operatorTags.clear();
-		// add only tags not in request
-		for (OperatorTag tag : list) {
-			boolean found = false;
-			for (OperatorTag reqTag : requestedTags) {
-				if (reqTag.getTag().equals(tag.getTag())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				operatorTags.add(tag);
-		}
-	}	
 	
 	private void loadRequestedTags() {
 		requestedTags.clear();
-
+		
+		if (newContractor == null || newContractor.getId() < 0)
+			return;
+		
 		requestedTagIds = newContractor.getOperatorTags();
 
-		if (!Strings.isEmpty(newContractor.getOperatorTags())) {
-			StringTokenizer st = new StringTokenizer(newContractor
-					.getOperatorTags(), ", ");
+		if (!Strings.isEmpty(requestedTagIds)) {
+			StringTokenizer st = new StringTokenizer(requestedTagIds, ", ");
 			while (st.hasMoreTokens()) {
 				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st
 						.nextToken()));
@@ -429,7 +426,6 @@ public class RequestNewContractor extends PicsActionSupport {
 		}
 	}
 	
-
 	public List<ContractorAccount> runGapAnalysis(
 			ContractorRegistrationRequest newContractor) {
 		List<String> terms = new ArrayList<String>();
@@ -626,7 +622,7 @@ public class RequestNewContractor extends PicsActionSupport {
 	public void setContactType(String contactType) {
 		this.contactType = contactType;
 	}
-
+	
 	public List<OperatorTag> getRequestedTags() {
 		return requestedTags;
 	}
@@ -636,7 +632,10 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	public List<OperatorTag> getOperatorTags() {
-		return operatorTags;
+		List<OperatorTag> results = operatorTagDAO.findByOperator(opID, true);
+		loadRequestedTags();
+		results.removeAll(requestedTags);
+		return results;
 	}
 
 	public void setOperatorTags(List<OperatorTag> operatorTags) {
@@ -657,10 +656,6 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	public String getDraftEmailBody() {
 		return templateDAO.find(INITIAL_EMAIL).getBody();
-	}
-	public String getRegistrationLink(){
-		return "http://www.picsorganizer.com/ContractorRegistration.action?button="
-        + "request&requestID=" + newContractor.getId();
 	}
 
 	public int getOpID() {
@@ -693,5 +688,13 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
+	}
+
+	public ContractorRegistrationRequestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ContractorRegistrationRequestStatus status) {
+		this.status = status;
 	}
 }

@@ -419,7 +419,7 @@
 		<action name="ContractorPricing" class="com.picsauditing.actions.contractors.ContractorPricing">
 			<result>con_pricing.jsp</result>
 		</action>
-		<!-- - Registration Request -->
+		<!-- - Registration Requests -->
 		<action name="RequestNewContractor"
 			class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
@@ -441,6 +441,11 @@
 		<action name="OperatorUserListAjax"
 			class="com.picsauditing.actions.contractors.RequestNewContractor" method="getUsersList">
 			<result>/struts/users/operator_users.jsp</result>
+		</action>
+		
+		<action name="OperatorTagsAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="loadTags">
+			<result>/struts/operators/op_tags.jsp</result>
 		</action>
 
 		<action name="WatchListManager" class="com.picsauditing.actions.users.WatchListManager">

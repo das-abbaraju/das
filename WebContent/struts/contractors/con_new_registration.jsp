@@ -50,7 +50,7 @@
 					$('#notesHere').show();		
 				</s:if>
 				<s:if test="newContractor.requestedByUser != null || newContractor.requestedByUserOther != null">
-					updateUsersList();
+					updateUsersAndTagsList();
 				</s:if>
 				
 				$('.fancybox').fancybox();
@@ -169,7 +169,7 @@
 				}).delegate('#newContractorCountry', 'change', function() {
 					countryChanged($(this).val());
 				}).delegate('#operatorsList', 'change', function() {
-					updateUsersList();
+					updateUsersAndTagsList();
 				}).delegate('#getMatches', 'click', function() {
 					var data = {
 						button: 'MatchingList',
@@ -190,10 +190,13 @@
 				$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>'});
 			}
 			
-			function updateUsersList() {
+			function updateUsersAndTagsList() {
 				$('#loadUsersList').load('OperatorUserListAjax.action',{opID: $('#operatorsList').val(),
 					requestedUser: '<s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />',
 					newContractor: '<s:property value="newContractor.id" />'}, checkUserOther);
+				/*$('#loadTagsList').load('OperatorTagsAjax.action',{opID: $('#operatorsList').val(),
+					requestedUser: '<s:property value="newContractor.requestedByUser == null ? 0 : newContractor.requestedByUser.id" />',
+					newContractor: '<s:property value="newContractor.id" />'}, checkUserOther);*/
 			}
 			
 			function checkUserOther() {
@@ -354,7 +357,7 @@
 						<label><s:text name="ContractorRegistrationRequest.requestedBy" />:</label>
 						<s:select list="operatorsList" id="operatorsList" headerKey="0" 
 							headerValue="- %{getText('RequestNewContractor.header.SelectAnOperator')} -" 
-							name="newContractor.requestedBy" onchange="updateUsersList();" listKey="id" listValue="name" 
+							name="newContractor.requestedBy" listKey="id" listValue="name" 
 							value="%{newContractor.requestedBy.id}" />
 						
 						<div class="fieldhelp">
@@ -362,7 +365,9 @@
 							<s:text name="ContractorRegistrationRequest.requestedBy.fieldhelp" />
 						</div>
 					</li>
-					<li id="loadUsersList"></li>
+					<li id="loadUsersList">
+						
+					</li>
 					
 					<li>
 						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" onchange="checkDate(this)" theme="formhelp" />
@@ -370,16 +375,15 @@
 					<li>
 						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
 					</li>
-					<li id="#loadTags">
+					<li id="loadTagsList">
 						<label><s:text name="RequestNewContractor.OperatorTags" /></label>
 						<s:optiontransferselect
 							label="Operator Tags"
-							name="dumbell"
+							name="operatorTags"
 							list="operatorTags"
 							listKey="id"
 							listValue="tag"
-							doubleId="rightList"
-							doubleName="rightAnswers"
+							doubleName="requestedTags"
 							doubleList="requestedTags"
 							doubleListKey="id"
 							doubleListValue="tag"
@@ -394,13 +398,13 @@
 							allowUpDownOnRight="false"
 							buttonCssClass="arrow"
 							theme="pics"
- 						/>
+						/>
 						<div class="fieldhelp">
 							<h3><s:text name="RequestNewContractor.OperatorTags" /></h3>
-							
 							<s:text name="RequestNewContractor.OperatorTags.fieldhelp" />
 						</div>
 					</li>
+					
 				</ol>
 			</fieldset>
 			
@@ -479,7 +483,7 @@
 						<s:if test="!permissions.operatorCorporate">
 							<li>
 								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="newContractor.status" onchange="hideShow()"/>
+								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="status" onchange="hideShow()"/>
 								  
 							</li>
 							<li id="holdDateLi">
@@ -508,7 +512,7 @@
 							<s:if test="newContractor.status==@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
 								<li>
 									<label><s:text name="ContractorRegistrationRequest.label.holdDate" />:</label>
-									<s:property value="newContractor.holdDate" />
+									<s:date name="newContractor.holdDate" format="MM/dd/yyyy"/>
 								</li>
 							</s:if>
 							
@@ -593,22 +597,25 @@
 		</div>
 		<div class="blockMsg" id="emailSubmit" style="display: none">
 			<s:form>
-				<h3><s:text name = "RequestNewContractor.button.ContactedByEmail" /></h3>
-				
-				<br />
-				
+				<fieldset>
 				<s:hidden name="newContractor"/>
-				<s:hidden name="contactType" value="Email"/>
 				
-				<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
-				
+				<p>
+					<h3><s:text name = "RequestNewContractor.button.ContactedByEmail" /></h3>
+				</p>
+				<p>
+					<s:select list="#{'Personal Email':'Sent a Personal Email', 'Email':'Draft Email'}" name="contactType" />
+				</p>
+				<p>
+					<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
+				</p>
 				<p>
 					<s:textarea name="addToNotes" cols="30" rows="3"/>
 				</p>
-				
 				<p>
 					<s:submit value="Submit" method="contact" cssClass="picsbutton positive" />
 				</p>
+				</fieldset>
 			</s:form>
 		</div>
 	</body>
