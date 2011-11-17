@@ -344,7 +344,7 @@
 								<%-- <s:if test="user.account.demo || user.account.admin"> --%>
 									<li>
 										<label for="user.locale">Language:</label>
-										<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" name="user.locale" listValue="getDisplayName(language)"></s:select>
+										<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" name="user.locale" listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"></s:select>
 									</li>
 								<%-- </s:if> --%>
 								

@@ -162,7 +162,7 @@
 								<s:if test="contractor.demo || configEnvironment || i18nReady">
 									<li>
 										<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
-										<s:select name="contractor.locale" listValue="getDisplayName(language)" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+										<s:select name="contractor.locale" listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 									</li>
 								</s:if>
 								
