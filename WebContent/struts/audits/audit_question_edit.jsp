@@ -174,11 +174,17 @@
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">
-			<div class="verified">
-				<s:text name="Audit.message.AnswerVerifiedOn">
-					<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
-				</s:text>
-			</div>
+			<s:if test="permissions.picsEmployee">
+			<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
+					Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+			</div></s:if>
+			<s:else>
+				<div class="verified">
+					<s:text name="Audit.message.AnswerVerifiedOn">
+						<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+					</s:text>
+				</div>	
+			</s:else>
 		</s:if>
 		
 		<s:if test="#a.hasRequirements">
