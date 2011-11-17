@@ -47,14 +47,14 @@ public class AuditFileUpload extends AuditActionSupport {
 					downloader.download(files[0], contractorAuditFile.getDescription() + "." + contractorAuditFile.getFileType());
 					return null;
 				} catch (Exception e) {
-					addActionError(getText("AuditFileUplooad.error.FailedDownload") + e.getMessage());
+					addActionError(getText("AuditFileUpload.error.FailedDownload") + e.getMessage());
 					return BLANK;
 				}
 			}
 
 			if (fileID > 0 && button.startsWith("Delete")) {
 				if (contractorAuditFile.isReviewed()) {
-					addActionError(getText("AuditFileUplooad.error.FailedRemove"));
+					addActionError(getText("AuditFileUpload.error.FailedRemove"));
 					return SUCCESS;
 				}
 				try {
@@ -62,23 +62,23 @@ public class AuditFileUpload extends AuditActionSupport {
 						FileUtils.deleteFile(oldFile);
 					fileID = 0;
 				} catch (Exception e) {
-					addActionError(getText("AuditFileUplooad.error.FailedSaved") + e.getMessage());
+					addActionError(getText("AuditFileUpload.error.FailedSaved") + e.getMessage());
 					e.printStackTrace();
 					return SUCCESS;
 				}
 				contractorAuditFileDAO.remove(contractorAuditFile);
-				addActionMessage(getText("AuditFileUplooad.message.FileRemoved"));
+				addActionMessage(getText("AuditFileUpload.message.FileRemoved"));
 				return SUCCESS;
 			}
 
 			if (button.startsWith("Save")) {
 				if (fileID == 0) {
 					if (file == null || file.length() == 0) {
-						addActionError(getText("AuditFileUplooad.error.FileMissing"));
+						addActionError(getText("AuditFileUpload.error.FileMissing"));
 						return SUCCESS;
 					}
 					if(Strings.isEmpty(fileName)) {
-						addActionError(getText("AuditFileUplooad.error.ProvideDescription"));
+						addActionError(getText("AuditFileUpload.error.ProvideDescription"));
 						file = null;
 						return SUCCESS;
 					}
@@ -92,7 +92,7 @@ public class AuditFileUpload extends AuditActionSupport {
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
-						addActionError(getText("AuditFileUplooad.error.BadExtension"));
+						addActionError(getText("AuditFileUpload.error.BadExtension"));
 						return SUCCESS;
 					}
 					if (contractorAuditFile.getId() > 0) {
@@ -115,7 +115,7 @@ public class AuditFileUpload extends AuditActionSupport {
 				if (file != null && file.length() > 0) {
 					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(fileID),
 							getFileName(fileID), extension, true);
-					addActionMessage(getTextParameterized("AuditFileUplooad.message.FileUploaded", fileFileName));
+					addActionMessage(getTextParameterized("AuditFileUpload.message.FileUploaded", fileFileName));
 				}
 			}
 		}
@@ -126,7 +126,7 @@ public class AuditFileUpload extends AuditActionSupport {
 				if (files.length > 0)
 					file = files[0];
 				if (files.length > 1)
-					addActionError(getText("AuditFileUplooad.error.TwoFiles"));
+					addActionError(getText("AuditFileUpload.error.TwoFiles"));
 			}
 		}
 
