@@ -119,7 +119,7 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (cao.getStatus() == AuditStatus.Pending || cao.getStatus() == AuditStatus.Incomplete
 								|| cao.getStatus() == AuditStatus.Resubmit) {
 							if (cao.getPercentComplete() == 100) {
-								json.put("remind", "Please submit your audits when finished.");
+								json.put("remind", getText("Audit.PleaseSubmitWhenFinished"));
 								break;
 							}
 						}
