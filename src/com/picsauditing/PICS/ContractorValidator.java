@@ -68,7 +68,7 @@ public class ContractorValidator {
 			errorMessages.addElement(getText("ContractorValidator.error.NoPhone"));
 
 		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
-			errorMessages.addElement("Please fill in the Zip field.");
+			errorMessages.addElement(getText("ContractorValidator.error.PleaseFillInZip"));
 		if (contractor.getCountry() != null && !contractor.getCountry().isUAE()
 				&& Strings.isEmpty(contractor.getTaxId())) {
 			errorMessages.addElement(getText("ContractorValidator.error.NoTaxId"));
