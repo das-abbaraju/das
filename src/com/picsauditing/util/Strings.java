@@ -27,9 +27,10 @@ public class Strings {
 		value = value.trim();
 		return value.length() == 0;
 	}
-	
+
 	/**
 	 * Are two strings equal to each other. One or both can be null. If both are null, then return true.
+	 * 
 	 * @param value1
 	 * @param value2
 	 * @return
@@ -37,13 +38,13 @@ public class Strings {
 	public static boolean isEqualNullSafe(String value1, String value2) {
 		if (value1 != null)
 			return value1.equals(value2);
-		
+
 		if (value2 != null)
 			return value2.equals(value1);
 		return true;
-		
+
 	}
-	
+
 	public static String[] convertListToArray(List<String> list) {
 		String[] array = new String[list.size()];
 		int i = 0;
@@ -189,8 +190,7 @@ public class Strings {
 	}
 
 	/**
-	 * Take an arbitrary string and return an integer if it could be an
-	 * accountID. Other wise return a 0 Examples: <br />
+	 * Take an arbitrary string and return an integer if it could be an accountID. Other wise return a 0 Examples: <br />
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
@@ -274,16 +274,13 @@ public class Strings {
 		/*
 		 * Old code for reference
 		 * 
-		 * String expression = "[A-Z0-9]+"; Pattern pattern =
-		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
-		 * pattern.matcher(name);
+		 * String expression = "[A-Z0-9]+"; Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ); Matcher
+		 * matcher = pattern.matcher(name);
 		 * 
-		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
-		 * ((found = matcher.find())) { System.out.println(matcher.group());
-		 * buf.append(matcher.group()); }
+		 * StringBuffer buf = new StringBuffer(); boolean found = false; while ((found = matcher.find())) {
+		 * System.out.println(matcher.group()); buf.append(matcher.group()); }
 		 * 
-		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
-		 * buf.toString();
+		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return buf.toString();
 		 */
 
 		// Remove all quotes
@@ -345,21 +342,6 @@ public class Strings {
 		}// if
 		return result;
 	}// isValidEmail
-
-	public static String validUserName(String username) {
-		if (Strings.isEmpty(username))
-			return "Your username cannot be empty.";
-		else if (username.length() < 3)
-			return "Your username entry is less than three characters. Please enter at least 3 characters for your username.";
-		else if (username.length() > 100)
-			return "Your username entry is longer than pics supports. Please shorten your username entry.";
-		else if (username.contains(" "))
-			return "Your username is not allowed to contain spaces. Please remove any spaces in your username entry.";
-		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
-			return "Special characters are not allowed in your username. Please use only digits, letters, @ . _ or -";
-		else
-			return "valid";
-	}
 
 	public static String formatShort(float value) {
 		if (value < 0)
@@ -481,19 +463,20 @@ public class Strings {
 
 		return expression.replace("|", "");
 	}
+
 	/*
 	 * TODO: We need to completely scrap this and use translations instead.
 	 */
 	public static String getPicsPhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-936-4500";
-		
+
 		// US and CANADA
 		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
 			return "800-506-PICS (7427)";
-		
+
 		if ("GB".equalsIgnoreCase(countryCode) || "UK".equalsIgnoreCase(countryCode))
-				return "0 845 609 1882";
+			return "0 845 609 1882";
 
 		return "949-936-4500";
 	}
@@ -508,42 +491,42 @@ public class Strings {
 	public static String getPicsMainPhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-936-4500";
-		
+
 		return "949-936-4500";
 	}
 
 	public static String getPicsTollFreePhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "800-506-PICS (7427)";
-		
+
 		return "800-506-PICS (7427)";
 	}
 
 	public static String getPicsBillingPhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "800-506-PICS x708";
-		
+
 		return "800-506-PICS x708";
 	}
 
 	public static String getPicsBillingFax(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-269-9146";
-		
+
 		return "949-269-9146";
 	}
 
 	public static String getPicsCustomerServiceFax(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-269-9177";
-		
+
 		return "949-269-9177";
 	}
 
 	public static String getPicsCustomerServicePhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-936-4598";
-		
+
 		// US and CANADA
 		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
 			return "800-506-7427 x1";
@@ -570,8 +553,9 @@ public class Strings {
 	}
 
 	/**
-	 * For computing the number of character differences between two strings Levenshtein Distance
-	 * If needed, can be optimized
+	 * For computing the number of character differences between two strings Levenshtein Distance If needed, can be
+	 * optimized
+	 * 
 	 * @param m
 	 * @param n
 	 * @return
@@ -600,16 +584,17 @@ public class Strings {
 	public static boolean isSimilarTo(String m, String n, int characterDifferenceThreshold) {
 		return (editDistance(m, n) <= characterDifferenceThreshold) ? true : false;
 	}
-	
+
 	public static boolean isSimilarTo(String m, String n) {
-		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length()))-.25) ? true : false;
+		return (editDistance(m.toLowerCase(), n.toLowerCase()) <= Math.sqrt(Math.min(m.length(), n.length())) - .25) ? true
+				: false;
 	}
-	
-	public static String formatDateLong(Date d){
+
+	public static String formatDateLong(Date d) {
 		return new DateTool().format("MMM d, yyyy", d);
 	}
 
-	public static String formatDateShort(Date d){
+	public static String formatDateShort(Date d) {
 		return new DateTool().format("MM/dd/yy", d);
 	}
 

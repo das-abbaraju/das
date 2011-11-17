@@ -233,9 +233,17 @@ public class LoginController extends PicsActionSupport {
 	 * @throws Exception
 	 */
 	private String canLogin() throws Exception {
-		String result = Strings.validUserName(username);
-		if (!result.equals("valid"))
-			return result;
+		// TODO: Move this into User-validation.xml and use struts 2 for this validation
+		if (Strings.isEmpty(username))
+			return getText("User.username.error.Empty");
+		else if (username.length() < 3)
+			return getText("User.username.error.Short");
+		else if (username.length() > 100)
+			return getText("User.username.error.Long");
+		else if (username.contains(" "))
+			return getText("User.username.error.Space");
+		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+			return getText("User.username.error.Special");
 
 		try {
 			user = userDAO.findName(username);

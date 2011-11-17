@@ -120,7 +120,7 @@ public class UsersManage extends PicsActionSupport {
 		if (!userIsGroup.isTrue() && user.getPermissions().size() == 0) {
 			addActionMessage("Please assign this user to a group or add some permissions.");
 		}
-		
+
 		for (UserAccess ua : user.getOwnedPermissions()) {
 			if (ua.getOpPerm().equals(OpPerms.ContractorAdmin)) {
 				conAdmin = true;
@@ -374,11 +374,11 @@ public class UsersManage extends PicsActionSupport {
 
 	public String move() throws Exception {
 		startup();
-		
+
 		if (user.getAccount().getUsers().size() == 1)
 			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 					+ "&msg=You Cannot Move This User As They Are The Only User On This Account");
-		
+
 		// accounts are different so we are moving to a new account
 		// user.setOwnedPermissions(null);
 		List<UserAccess> userAccessList = userAccessDAO.findByUser(user.getId());
@@ -501,9 +501,18 @@ public class UsersManage extends PicsActionSupport {
 
 		user = new User(temp, true);
 
-		String result = Strings.validUserName(user.getUsername().trim());
-		if (!result.equals("valid"))
-			addActionError(result);
+		// TODO: Move this into User-validation.xml and use struts 2 for this validation
+		String username = user.getUsername().trim();
+		if (Strings.isEmpty(username))
+			addActionError(getText("User.username.error.Empty"));
+		else if (username.length() < 3)
+			addActionError(getText("User.username.error.Short"));
+		else if (username.length() > 100)
+			addActionError(getText("User.username.error.Long"));
+		else if (username.contains(" "))
+			addActionError(getText("User.username.error.Space"));
+		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+			addActionError(getText("User.username.error.Special"));
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
 			addActionError("Please enter a valid Email address.");
@@ -854,7 +863,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 	}
-	
+
 	public String sendRecoveryEmail(User user) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -879,7 +888,7 @@ public class UsersManage extends PicsActionSupport {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
-	
+
 	public String sendActivationEmail(User user, Permissions permission) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -900,8 +909,8 @@ public class UsersManage extends PicsActionSupport {
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
-			
-			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail()); 
+
+			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}

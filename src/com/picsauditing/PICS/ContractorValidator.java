@@ -85,9 +85,19 @@ public class ContractorValidator {
 		Vector<String> errorMessages = new Vector<String>();
 
 		// Username
-		if (!Strings.validUserName(user.getUsername()).equals("valid"))
-			errorMessages.addElement(Strings.validUserName(user.getUsername()));
-		else if (!verifyUsername(user))
+		String username = user.getUsername().trim();
+		if (Strings.isEmpty(username))
+			errorMessages.addElement(getText("User.username.error.Empty"));
+		else if (username.length() < 3)
+			errorMessages.addElement(getText("User.username.error.Short"));
+		else if (username.length() > 100)
+			errorMessages.addElement(getText("User.username.error.Long"));
+		else if (username.contains(" "))
+			errorMessages.addElement(getText("User.username.error.Space"));
+		else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+			errorMessages.addElement(getText("User.username.error.Special"));
+
+		if (!verifyUsername(user))
 			errorMessages.addElement(getText("ContractorValidator.error.DuplicateUserName"));
 
 		if (Strings.isEmpty(user.getName()))
@@ -142,8 +152,8 @@ public class ContractorValidator {
 
 		if (!Strings.isEmpty(taxId) && !Strings.isEmpty(country)) {
 			if ("CA".equals(country) && taxId.length() != 15) {
-				errorMessages.add(getTextParameterized("ContractorValidator.error.InvalidBusinessNumber",
-						Strings.getPicsCustomerServicePhone("CA")));
+				errorMessages.add(getTextParameterized("ContractorValidator.error.InvalidBusinessNumber", Strings
+						.getPicsCustomerServicePhone("CA")));
 				return errorMessages;
 			} else if (!"CA".equals(country) && taxId.length() != 9) {
 				errorMessages.add(getText("ContractorValidator.error.InvalidTaxId"));
@@ -153,8 +163,8 @@ public class ContractorValidator {
 			ContractorAccount con = contractorAccountDAO.findTaxID(taxId.substring(0, 9), country);
 			if (con != null && !con.equals(contractorAccount)) {
 				if (con.getCountry().isUS())
-					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId",
-							Strings.getPicsCustomerServicePhone("US")));
+					errorMessages.add(getTextParameterized("ContractorValidator.error.DuplicateTaxId", Strings
+							.getPicsCustomerServicePhone("US")));
 			}
 		}
 
