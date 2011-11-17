@@ -7,12 +7,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -112,20 +109,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditQuestionFlagChanges = false;
 	protected boolean soleProprietership = false;
 	protected String[] accountLevel;
-	
-	// // DAOs
-	@Autowired
-	protected OperatorTagDAO operatorTagDAO;
-	@Autowired
-	protected EmailTemplateDAO emailTemplateDAO;
-	@Autowired
-	protected OperatorAccountDAO operatorAccountDAO;
-	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO;
-	@Autowired
-	protected AuditQuestionDAO auditQuestionDAO;
-	@Autowired
-	protected UserDAO userDAO;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -552,7 +535,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 			setShowCcOnFile(true);
 	}
 
-	// ///
 	public String[] getTradePerformedByList() {
 		String[] list = { getDefaultPerformedBy(), "Self Performed", "Sub Contracted" };
 		return list;
@@ -561,23 +543,27 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	public List<ContractorAccount> getContractorList() throws Exception {
 		if (permissions == null)
 			return null;
-		return contractorAccountDAO.findWhere("", permissions);
+		ContractorAccountDAO dao = (ContractorAccountDAO) SpringUtils.getBean("ContractorAccountDAO");
+		return dao.findWhere("", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		if (permissions == null)
 			return null;
-		return operatorAccountDAO.findWhere(false, "", permissions);
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		return dao.findWhere(false, "", permissions);
 	}
 
 	public List<OperatorAccount> getOperatorListWithCorporate() throws Exception {
 		if (permissions == null)
 			return null;
-		return operatorAccountDAO.findWhere(true, "", permissions);
+		OperatorAccountDAO dao = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		return dao.findWhere(true, "", permissions);
 	}
 
 	public List<User> getAuditorList() throws Exception {
-		return new AuditorCache(userDAO).getList();
+		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		return new AuditorCache(dao).getList();
 	}
 
 	public Map<Integer, WaitingOn> getWaitingOnList() throws Exception {
@@ -585,11 +571,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public List<EmailTemplate> getEmailTemplateList() throws Exception {
-		return emailTemplateDAO.findByAccountID(permissions.getAccountId(), getEmailListType());
+		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
+		return dao.findByAccountID(permissions.getAccountId(), getEmailListType());
 	}
 
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
-		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
+		OperatorTagDAO dao = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
+		return dao.findByOperator(permissions.getAccountId(), true);
 	}
 
 	public static Map<String, String> getDeactivationReasons() {
@@ -598,16 +586,16 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 		Map<String, String> deactivationReasons = new HashMap<String, String>();
 		deactivationReasons.put("ChargeBack", cache.getText("Filters.status.Deactivation.ChargeBack", locale));
-		deactivationReasons.put("Did not Complete PICS process",
-				cache.getText("Filters.status.Deactivation.DidNotCompleteProcess", locale));
-		deactivationReasons.put("Does not work for operator",
-				cache.getText("Filters.status.Deactivation.DoesNotWorkForOperator", locale));
-		deactivationReasons.put("Duplicate/Merged Account",
-				cache.getText("Filters.status.Deactivation.DuplicateMerged", locale));
-		deactivationReasons.put("Operator Exemption",
-				cache.getText("Filters.status.Deactivation.OperatorExemption", locale));
-		deactivationReasons.put("Payments not Current",
-				cache.getText("Filters.status.Deactivation.PaymentsNotCurrent", locale));
+		deactivationReasons.put("Did not Complete PICS process", cache.getText(
+				"Filters.status.Deactivation.DidNotCompleteProcess", locale));
+		deactivationReasons.put("Does not work for operator", cache.getText(
+				"Filters.status.Deactivation.DoesNotWorkForOperator", locale));
+		deactivationReasons.put("Duplicate/Merged Account", cache.getText(
+				"Filters.status.Deactivation.DuplicateMerged", locale));
+		deactivationReasons.put("Operator Exemption", cache.getText("Filters.status.Deactivation.OperatorExemption",
+				locale));
+		deactivationReasons.put("Payments not Current", cache.getText("Filters.status.Deactivation.PaymentsNotCurrent",
+				locale));
 		deactivationReasons
 				.put("Bid Only Account", cache.getText("Filters.status.Deactivation.BidOnlyAccount", locale));
 		return Collections.unmodifiableMap(deactivationReasons);
