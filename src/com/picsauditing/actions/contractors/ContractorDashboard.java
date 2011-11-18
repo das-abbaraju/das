@@ -487,8 +487,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
-			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
-					OshaRateType.Fatalities };
+			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.TrirNaics, 
+					OshaRateType.LwcrAbsolute, OshaRateType.Fatalities };
 
 			prepopulateNotApplicableStats(oshaRateTypes);
 
@@ -522,7 +522,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 
 			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null) {
-				if (contractor.hasWiaCriteria()) {
+				if (contractor.hasWiaCriteria(oshaType)) {
 					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
 							format(contractor.getWeightedIndustryAverage()) + "*");
 				} else {
@@ -545,6 +545,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 						if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
 								|| OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())
+								|| OshaRateType.TrirNaics.equals(fco.getCriteria().getOshaRateType())
 								|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
 							MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 							String auditFor = findAuditFor(organizer, scope);
@@ -612,6 +613,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 				float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " "
 						+ format(hurdle / 100 * contractor.getWeightedIndustryAverage()) + "</nobr>";
+			} else if (OshaRateType.TrirNaics.equals(fco.getCriteria().getOshaRateType())) {
+				float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
+				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " "
+						+ format(hurdle / 100 * naicsDAO.getIndustryAverage(false, contractor.getNaics())) + "</nobr>";
 			} else
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}
@@ -661,7 +666,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private String getOshaSuffix(OshaRateType rateType) {
-			if (OshaRateType.TrirAbsolute.equals(rateType) || OshaRateType.TrirWIA.equals(rateType))
+			if (OshaRateType.TrirAbsolute.equals(rateType) || OshaRateType.TrirNaics.equals(rateType) || OshaRateType.TrirWIA.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.TRIR");
 			else if (OshaRateType.LwcrAbsolute.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.LWCR");

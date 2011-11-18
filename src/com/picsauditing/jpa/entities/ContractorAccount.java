@@ -1480,6 +1480,15 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public boolean hasWiaCriteria(OshaType ot) {
+		for (FlagCriteriaContractor fcc : flagCriteria) {
+			if (ot.equals(fcc.getCriteria().getOshaType()) && OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
+				return true;
+		}
+		return false;
+	}
 
 	@Transient
 	public boolean hasSelfPerformedTrades() {
