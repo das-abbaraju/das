@@ -195,8 +195,8 @@ public class OpenTasks extends TranslationActionSupport {
 									} else if (conAudit.getAuditType().getId() == AuditType.COR) {
 										text = getTextParameterized(
 												"ContractorWidget.message.CompleteAndSubmitAudit",
-
 												conAudit.getId(), auditName, showAuditFor, auditFor);
+										text += "<br/>" + getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
 									} else {
 										text = getTextParameterized(
 												"ContractorWidget.message.PrepareForAnUpcomingAudit",
@@ -219,8 +219,10 @@ public class OpenTasks extends TranslationActionSupport {
 											conAudit.getId()));
 								}
 							} else if (conAudit.getAuditType().getId() == AuditType.COR && conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-								openTasks.add(getTextParameterized("ContractorWidget.message.ReviewCOR",
-										conAudit.getId(), auditName, showAuditFor, auditFor));
+								String text = getTextParameterized("ContractorWidget.message.ReviewCOR",
+										conAudit.getId(), auditName, showAuditFor, auditFor);
+								text += "<br/>" + getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
+								openTasks.add(text);
 							} else {
 								openTasks.add(getTextParameterized("ContractorWidget.message.CompleteAndSubmitAudit",
 										conAudit.getId(), auditName, showAuditFor, auditFor));
