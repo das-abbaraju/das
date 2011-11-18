@@ -7,6 +7,7 @@
 -- -----------------------------------------------------------------------------------------------
 
 -- PICS-3350
+/*
 UPDATE `naics` SET `trir` = 5.3, `lwcr` = 2.9 WHERE `code` = 11;
 UPDATE `naics` SET `trir` = 4.9, `lwcr` = 2.7 WHERE `code` = 111;
 UPDATE `naics` SET `trir` = 7.4, `lwcr` = 3.7 WHERE `code` = 1111;
@@ -1205,88 +1206,4 @@ UPDATE `naics` SET `trir` = 6.2, `lwcr` = 3.3 WHERE `code` = 922;
 UPDATE `naics` SET `trir` = 6.2, `lwcr` = 3.3 WHERE `code` = 9221;
 UPDATE `naics` SET `trir` = 7.8, `lwcr` = 4.3 WHERE `code` = 92214;
 UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
-
--- PICS-3318
-update `email_template`
-set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates have been approved or rejected by <MyName> at <MyCompanyName> for the following reasons:\r\n\r\n#foreach ( $cao in $caoList )\r\n#if ( $cao.status == \"Incomplete\" )\r\n#foreach ( $caow in $cao.caoWorkflow )\r\n#if ( $caow.status == \"Incomplete\" )\r\n-- ${cao.audit.auditType.name} Insurance Certificates have been ${cao.status.button}ed\r\n#if ( $caow.notes.length() > 0 )because ${caow.notes}.\r\n\r\n#end\r\n#end\r\n#end\r\n#end\r\n#end\r\n\r\nPlease correct these issues and re-upload your insurance certificate to your PICS account.\r\nIf you have any specific questions about any operator''s insurance requirements, please review the Insurance Requirements documents in the Forms and Docs section. For questions, please contact ${permissions.name} at ${permissions.email}.\r\n\r\nWhen you renew any policy, please make sure that you upload the new insurance certificate to keep the information up to date.\r\n\r\nHave a great day,\r\nPICS Customer Service',
-`updatedBy`=23157,`updateDate`=NOW()
-where `id`='132';
---
-
--- PICS-3276 Docs and Forms to Resources
--- This upgrade needs to upgrade file names and there directory locations.
--- This assumes that the schema upgrade has been run adding a locale and parent id to the operatorforms table
--- 1. Create a batch script to create new directories and execute it
--- select distinct CONCAT('mkdir files/', SUBSTRING(id, 1, 3)) from operatorforms where id>999 order by id;
-
--- 2. Create a batch script of the file rename/move and execute it
--- select CONCAT('mv forms/', file, ' files/', IF(id > 999, CONCAT(SUBSTRING(id, 1, 3), '/'), ''), CONCAT('resource_', id, '.', REVERSE(SUBSTRING_INDEX(REVERSE(file), '.', 1)))) as move_me from operatorforms order by id DESC;
-
--- 3. Execute the following script to rename the filenames and set locale in database
-update operatorforms of set of.file=CONCAT('resource_', of.id, RIGHT(of.file, INSTR(REVERSE(of.file), '.'))), locale='en';
-
--- 4. Execute the following script to update app transalations
--- remove extension
-UPDATE app_translation set msgValue=replace(msgValue, '.pdf', '') where msgValue like '%.pdf%' and msgValue not like '%.txt%';
-UPDATE app_translation set msgValue=replace(msgValue, '.doc', '') where msgValue like '%.doc%' and msgValue not like '%.txt%';
-UPDATE app_translation set msgValue=replace(msgValue, '.xls', '') where msgValue like '%.xls%' and msgValue not like '%.txt%';
-UPDATE app_translation set msgValue=replace(msgValue, '.docx', '') where msgValue like '%.docx%' and msgValue not like '%.txt%';
-UPDATE app_translation set msgValue=replace(msgValue, '.xlsx', '') where msgValue like '%.xlsx%' and msgValue not like '%.txt%';
--- update url
-update app_translation set msgValue=replace(msgValue, 'http://www.picsorganizer.com/forms/form', 'Resources!download.action?id=') where msgValue like '%http://www.picsorganizer.com/forms/form%';
-update app_translation set msgValue=replace(msgValue, 'forms/form', 'Resources!download.action?id=') where msgValue like '%forms/form%';
--- update any remaining names
-update app_translation set msgValue=replace(msgValue, 'Forms & Docs', 'Resources') where msgValue like '%Forms & Docs%';
---
-
--- PICS-3690
-insert into widget_user 
-(widgetID, userID, expanded, `column`, sortOrder, customConfig)
-select wu.widgetID, 646, wu.expanded, wu.column, wu.sortOrder, wu.customConfig
-from widget_user wu
-join widget w on w.widgetID = wu.widgetID
-where wu.userID = 616
-and wu.widgetID = 25;
---
-
--- PICS-3709
-update app_translation 
-set msgValue = 'This account will be deactivated on {0}.'
-where id = 13080;
-update app_translation 
-set msgValue = 'Ce compte sera désactivé le {0}.'
-where id = 13081;
-update app_translation 
-set msgValue = 'Esta cuenta será desactivada en {0}.'
-where id = 91908;
-
--- Open Tasks
-insert into email_subscription (id,userID,subscription,timePeriod,lastSent,permission,createdBy,updatedBy,creationDate,updateDate)
-select distinct null,u.id,'OpenTasks','Monthly',null,null,1,1,now(),now() from users u
-join accounts a on u.accountID = a.id
-left join email_subscription s on u.id = s.userID and s.subscription = 'OpenTasks'
-where s.id is null and u.isActive = 'Yes' and a.status = 'Active' and a.type = 'Contractor';
-
--- PICS-3318
-update `email_template`
-set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates have been approved or rejected by <MyName> at <MyCompanyName> for the following reasons:\r\n\r\n#foreach ( $caow in $caowList )\r\n#if ( $caow.status == \"Incomplete\" )\r\n-- ${caow.cao.audit.auditType.name} Insurance Certificates have been ${caow.status.button}ed\r\n#if ( $caow.notes.length() > 0 )because ${caow.notes}.\r\n\r\n#end\r\n#end\r\n#end\r\n\r\nPlease correct these issues and re-upload your insurance certificate to your PICS account.\r\nIf you have any specific questions about any operator''s insurance requirements, please review the Insurance Requirements documents in the Forms and Docs section. For questions, please contact ${permissions.name} at ${permissions.email}.\r\n\r\nWhen you renew any policy, please make sure that you upload the new insurance certificate to keep the information up to date.\r\n\r\nHave a great day,\r\nPICS Customer Service',
-`updatedBy`='23157',`updateDate`='2011-11-14 16:21:55'
-where `id`='132';
---
-
--- PICS-3533 Registration Request
--- Active
-update contractor_registration_request set status = 'Active' where open = 1 and ISNULL(holdDate);
-
--- Hold
-update contractor_registration_request set status = 'Hold' where open = 1 and !ISNULL(holdDate);
-
--- Closed Successful
-update contractor_registration_request set status = 'ClosedSuccessful' where open = 0 and conID  > 0;
-
--- Closed Unsucessful
-update contractor_registration_request set status = 'ClosedUnsuccessful' where open = 0 and isnull(conID);
-
--- Set the contact count
-update contractor_registration_request set contactCountByPhone = contactCount;
--- 
+*/
