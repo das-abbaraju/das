@@ -1155,8 +1155,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if (status.isPending() && membershipDate == null){
-			if(getAccountLevel().isFull())
+		if (status.isPending() && membershipDate == null) {
+			if (getAccountLevel().isFull())
 				return "Activation";
 			else
 				return "Renewal";
@@ -1444,7 +1444,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public boolean willExpireSoon(int daysBeforeExpiration) {
 		int daysToExpire = DateBean.getDateDifference(paymentExpires);
-		
+
 		return (daysToExpire <= daysBeforeExpiration);
 	}
 
@@ -1453,19 +1453,38 @@ public class ContractorAccount extends Account implements JSONable {
 		float sum = 0;
 		int activitySum = 0;
 
-		for (ContractorTrade t : trades) {
-			sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-			activitySum += t.getActivityPercent();
+		if (hasSelfPerformedTrades()) {
+			for (ContractorTrade t : trades) {
+				if (t.isSelfPerformed()) {
+					sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+					activitySum += t.getActivityPercent();
+				}
+			}
+		} else {
+			for (ContractorTrade t : trades) {
+				sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+				activitySum += t.getActivityPercent();
+			}
 		}
 
 		return sum / activitySum;
 	}
-	
+
 	@Transient
 	public boolean hasWiaCriteria() {
 		for (FlagCriteriaContractor fcc : flagCriteria) {
 			if (OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
 				return true;
+		}
+		return false;
+	}
+
+	@Transient
+	public boolean hasSelfPerformedTrades() {
+		for (ContractorTrade t : trades) {
+			if (t.isSelfPerformed()) {
+				return true;
+			}
 		}
 		return false;
 	}
