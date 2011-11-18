@@ -63,10 +63,13 @@
 							<label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
 							<s:radio
 								name="conAudit.needsCamera"
-								list="#{false: getText('ScheduleAudit.message.HasWebcam'), true: getText('ScheduleAudit.message.MailWebcam') + ': ' + conAudit.fullAddress}"
+								list="#{false: getText('ScheduleAudit.message.HasWebcam'), true: getText('ScheduleAudit.message.NoWebcam')}"
 								theme="pics"
-								cssClass="inline"
 							/>
+							
+							<p><b>*<s:text name="ScheduleAudit.message.MailWebcam" /></b></>:</p>
+							<p><s:property value="conAudit.fullAddress" /></p>
+							
 							<a class="edit" href="ScheduleAudit.action?auditID=<s:property value="conAudit.id" />"><s:text name="ScheduleAudit.link.ChangeAddress" /></a>
 						</li>
 					</s:else>
