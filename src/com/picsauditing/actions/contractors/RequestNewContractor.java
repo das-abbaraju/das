@@ -324,7 +324,6 @@ public class RequestNewContractor extends PicsActionSupport {
 		}
 		else {
 			newContractor.setStatus(status);
-			userDAO.save(newContractor.getRequestedByUser());
 			newContractor = crrDAO.save(newContractor);
 		}
 		
