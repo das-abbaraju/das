@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.BillingCalculatorSingle;
@@ -21,10 +22,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -58,6 +61,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected ContractorValidator contractorValidator;
 	@Autowired
+	protected CountryDAO countryDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
@@ -65,6 +70,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected EmailQueueDAO emailQueueDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
+	protected StateDAO stateDAO;
 	@Autowired
 	protected EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
@@ -103,9 +110,28 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					operatorIds.add(conOperator.getOperatorAccount().getId());
 				}
 			}
+
+			String[] countryIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("contractor.country.isoCode");
+			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
+				contractor.setCountry(countryDAO.find(countryIsos[0]));
+
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("contractor.billingCountry.isoCode");
+			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
+				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
+
+			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("contractor.state.isoCode");
+			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
+				contractor.setState(stateDAO.find(stateIsos[0]));
+
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("contractor.billingState.isoCode");
+			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
+				contractor.setBillingState(stateDAO.find(billingStateIsos[0]));
 		}
 	}
-	
+
 	@Before
 	public void startup() throws Exception {
 		findContractor();

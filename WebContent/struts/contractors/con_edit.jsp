@@ -140,7 +140,7 @@
 									<label><s:text name="Country" />:</label>
 									<s:select
 										list="countryList"
-										name="country.isoCode" id="contractorCountry"
+										name="contractor.country.isoCode" id="contractorCountry"
 										listKey="isoCode" listValue="name"
 										value="contractor.country.isoCode"
 										onchange="countryChanged(this.value)"
