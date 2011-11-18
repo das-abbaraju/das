@@ -6,13 +6,25 @@
 			<th>Trade Name</th>
 			<th>NAICS Average</th>
 		</tr>
-		
-		<s:iterator value="contractor.trades" var="conTrade">
-			<tr>
-				<td><s:property value="#conTrade.trade.name" /></td>
-				<td class="naics"><s:property value="#conTrade.trade.getNaicsTRIRI()" /></td>
-			</tr>
-		</s:iterator>
+
+		<s:if test="contractor.hasSelfPerformedTrades()">		
+			<s:iterator value="contractor.trades" var="conTrade">
+				<s:if test="#conTrade.isSelfPerformed()">
+					<tr>
+						<td><s:property value="#conTrade.trade.name" /></td>
+						<td class="naics"><s:property value="#conTrade.trade.getNaicsTRIRI()" /></td>
+					</tr>
+				</s:if>
+			</s:iterator>
+		</s:if>
+		<s:else>
+			<s:iterator value="contractor.trades" var="conTrade">
+					<tr>
+						<td><s:property value="#conTrade.trade.name" /></td>
+						<td class="naics"><s:property value="#conTrade.trade.getNaicsTRIRI()" /></td>
+					</tr>
+			</s:iterator>
+		</s:else>
 		
 		<tr>
 			<td colspan="3" class="average">Weighted Average: <s:property value="format(contractor.getWeightedIndustryAverage())" /></td>
