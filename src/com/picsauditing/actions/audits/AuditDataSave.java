@@ -23,7 +23,6 @@ import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -70,7 +69,6 @@ public class AuditDataSave extends AuditActionSupport {
 	public String execute() throws Exception {
 
 		AuditCatData catData;
-		boolean commentOnly = false;
 		try {
 			getUser();
 			AuditData newCopy = null;
@@ -254,7 +252,7 @@ public class AuditDataSave extends AuditActionSupport {
 						Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
 						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
 							operators.add(caop.getOperator());
-						Set<AuditCategory> cats = builder.calculate(auditData.getAudit(), operators);
+						builder.calculate(auditData.getAudit(), operators);
 
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Complete)
 								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
@@ -462,6 +460,12 @@ public class AuditDataSave extends AuditActionSupport {
 		String answer = auditData.getAnswer();
 
 		if ("ESignature".equals(questionType)) {
+			if (eSignatureName == null && eSignatureTitle == null && !Strings.isEmpty(answer) && answer.contains(" / ")) {
+				String[] esig = answer.split(" / ");
+				eSignatureName = esig[0];
+				eSignatureTitle = esig[1];
+			}
+			
 			if (Strings.isEmpty(eSignatureName)) {
 				addActionError(getText("AuditData.ESignature.name.missing"));
 			}
