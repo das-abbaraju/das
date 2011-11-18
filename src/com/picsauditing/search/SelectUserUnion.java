@@ -1,6 +1,8 @@
 package com.picsauditing.search;
 
-import com.picsauditing.access.OpPerms;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -20,7 +22,13 @@ public class SelectUserUnion extends SelectSQL {
 	 * {groupByFields<String>] [HAVING {havingClause}] [ORDER BY
 	 * {orderBys<String>} [LIMIT {limit}|LIMIT {startRow}, {limit}]
 	 */
+	@Override
 	public String toString() {
+		return toString(new ArrayList<SelectSQL>());
+	}
+
+	@Override
+	public String toString(List<SelectSQL> unionSql) {
 		PicsLogger.start("SelectSQL");
 		if (fullClause.length() > 0)
 			return fullClause;
@@ -65,6 +73,13 @@ public class SelectUserUnion extends SelectSQL {
 			if (havingClause != null && havingClause.length() > 0) {
 				sql.append("\nHAVING ");
 				sql.append(this.havingClause);
+			}
+		}
+		// do the same as above for the union
+		if (unionSql.size() > 0) {
+			for (SelectSQL union : unionSql) {
+				sql.append("\nUNION\n");
+				sql.append(union.toString());
 			}
 		}
 		if (this.orderBys.size() > 0) {
