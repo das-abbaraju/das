@@ -103,11 +103,9 @@ public class NoteDAO extends PicsDAO {
 		Query query = em.createQuery("FROM Note WHERE account.id = :accountID "
 				+ " AND (" + where + ") " + " AND (" + permWhere + ") " 
 				+ " AND (canContractorView = 1 OR account.id <> " + permissions.getAccountId() + ")"
-				+ " AND createdBy.id != :systemID "
 				+ " ORDER BY creationDate DESC");
 		query.setParameter("accountID", accountID);
 		query.setParameter("userID", permissions.getUserId());
-		query.setParameter("systemID", User.SYSTEM);
 		query.setFirstResult(firstResult);
 		query.setMaxResults(limit);
 		return query.getResultList();
