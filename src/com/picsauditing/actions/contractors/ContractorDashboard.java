@@ -133,7 +133,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					otSet.add(oa.getType());
 			}
 			for (OshaType ot : otSet) {
-				//if (!OshaType.MSHA.equals(ot))
+				if (!OshaType.MSHA.equals(ot))
 					stats.add(new OshaDisplay(ot));
 			}
 		}
@@ -515,6 +515,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 
+			String tmp = findAuditFor(organizer, MultiYearScope.ThreeYearAverage);
+			if (tmp != null)
+				auditForSet.add(tmp);
+			
 			String ind = getText("ContractorView.ContractorDashboard.Industry");
 			if (auditForSet.size() != 0) {
 				auditForSet.add(ind);
@@ -526,8 +530,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
 				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
 						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
-
-			auditForSet.add(findAuditFor(organizer, MultiYearScope.ThreeYearAverage));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : getActiveOperators()) {
