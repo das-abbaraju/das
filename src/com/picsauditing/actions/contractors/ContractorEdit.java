@@ -135,6 +135,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Before
 	public void startup() throws Exception {
 		findContractor();
+		// Billing state gets set to an empty string
+		if (contractor.getBillingState() != null && Strings.isEmpty(contractor.getBillingState().getIsoCode()))
+			contractor.setBillingState(null);
 	}
 
 	public String save() throws Exception {
@@ -168,10 +171,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
-			// Billing state gets set to an empty string
-			if (contractor.getBillingState() != null && Strings.isEmpty(contractor.getBillingState().getIsoCode())) {
-				contractor.setBillingState(null);
-			}
 
 			if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
 				// Now check if they have a product risk level
