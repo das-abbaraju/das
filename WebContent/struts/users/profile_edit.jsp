@@ -121,7 +121,7 @@
 		<div id="tab_profile">
 			<table style="width: 100%">
 				<tr>
-					<td>
+					<td style="width: 50%;">
 						<s:form id="saveProfileForm" cssClass="form">
 							<s:hidden name="url"/>
 							<s:hidden name="u" value="%{u.id}" />
