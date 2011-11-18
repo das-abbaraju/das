@@ -10,15 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -30,13 +31,16 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.MultiYearScope;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -61,13 +65,21 @@ public class ContractorAuditController extends AuditActionSupport {
 	// Policy verification (next/first buttons)
 	private boolean policy;
 
+	private int auditTypeId;
+	private AuditType auditType;
+	private Set<Integer> operatorIds = new TreeSet<Integer>();
+	private List<OperatorAccount> operators;
+	private List<AuditCategory> cats = new ArrayList<AuditCategory>();
+
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	// Import PQF
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
-	private AuditDataDAO auditDataDAO;
+	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	private AuditDecisionTableDAO auditDecisionTableDAO;
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
@@ -75,6 +87,36 @@ public class ContractorAuditController extends AuditActionSupport {
 
 		if (auditID > 0)
 			this.findConAudit();
+
+		if ("ViewAll".equals(mode) && auditTypeId != 0) {
+			contractor.setName("Sample");
+			conAudit = new ContractorAudit();
+			conAudit.setContractorAccount(contractor);
+			conAudit.setContractorAccount(contractor);
+			auditType = auditTypeDAO.find(auditTypeId);
+			conAudit.setAuditType(auditType);
+			contractor.getAudits().add(conAudit);
+
+			ContractorOperator co = new ContractorOperator();
+			co.setContractorAccount(contractor);
+
+			operators = new ArrayList<OperatorAccount>();
+			for (int id: operatorIds) {
+				OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class,
+						"id = " + id, 1).get(0);
+				operators.add(operator);
+				
+				co.setOperatorAccount(operator);
+				contractor.getOperators().add(co);
+			}
+
+			fillAuditCategories();
+
+			for (AuditCategory auditCategory : cats) {
+				addCatData(auditCategory);
+			}
+			return SUCCESS;
+		}
 
 		if (button != null) {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
@@ -219,6 +261,54 @@ public class ContractorAuditController extends AuditActionSupport {
 		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
 		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
 		return "debugCategoriesBuilder";
+	}
+
+	private void addCatData(AuditCategory category) {
+		AuditCatData catData = new AuditCatData();
+		catData.setCategory(category);
+		catData.setAudit(conAudit);
+		catData.setApplies(true);
+		catData.setOverride(false);
+		catData.setNumRequired(category.getNumRequired());
+		conAudit.getCategories().add(catData);
+
+		for (AuditCategory subCat : category.getSubCategories()) {
+			 addCatData(subCat);
+		}
+	}
+
+	private void fillAuditCategories() {
+		// We're doing this step first so categories that get added or removed
+		// manually can be caught in the next block
+
+		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
+			AuditCategory category = new AuditCategory();
+			TranslatableString t = new TranslatableString();
+			t.putTranslation("en", "Previewing Categories is not supported for this audit", false);
+			category.setName(t);
+			cats.add(category);
+			return;
+		}
+
+		auditCategoryRuleCache.initialize(auditDecisionTableDAO);
+		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
+
+		Set<AuditCategory> requiredCategories = builder.calculate(conAudit, operators);
+		for (AuditCategory category : auditType.getTopCategories()) {
+			addCategory(cats, category, requiredCategories);
+		}
+	}
+
+	private void addCategory(List<AuditCategory> list, AuditCategory category, Set<AuditCategory> requiredCategories) {
+		if (requiredCategories.contains(category)) {
+			list.add(category);
+			category.setSubCategories(new ArrayList<AuditCategory>());
+			for (AuditCategory subCategory : auditType.getCategories()) {
+				if (category.equals(subCategory.getParent())) {
+					addCategory(category.getSubCategories(), subCategory, requiredCategories);
+				}
+			}
+		}
 	}
 
 	public String importPQFYes() throws Exception {
@@ -442,4 +532,21 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setProblems(Map<ContractorAuditOperator, String> problems) {
 		this.problems = problems;
 	}
+
+	public int getAuditTypeId() {
+		return auditTypeId;
+	}
+
+	public void setAuditTypeId(int auditTypeId) {
+		this.auditTypeId = auditTypeId;
+	}
+
+	public Set<Integer> getOperatorIds() {
+		return operatorIds;
+	}
+
+	public void setOperatorIds(Set<Integer> operatorIds) {
+		this.operatorIds = operatorIds;
+	}
+
 }

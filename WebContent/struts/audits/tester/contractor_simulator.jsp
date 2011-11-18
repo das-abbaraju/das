@@ -13,6 +13,23 @@ function run() {
 	$("#categories").html("Included Categories Display Here");
 }
 
+function run2() {
+	var ref = 'AuditPrintAjax.action?mode=ViewAll&auditTypeId=1';
+	var params = $("#simulatorForm").serializeArray();
+	var i;
+	var form = document.createElement('form');
+	form.setAttribute("method", "post");
+	form.setAttribute("sction", "AuditPrintAjax.action");
+	
+	for (i=0;i<params.length;i++)
+		{
+		var name = document.forms['simulatorForm'].elements[i].name;
+		var value = document.forms['simulatorForm'].elements[i].value;
+		ref = ref + "&" + name + "=" + value;
+		}
+	window.open(ref, 'preview', 'menubar=0,scrollbars=1,resizable=1,height=700,width=640');
+}
+
 function fillCategories(auditTypeID) {
 	startThinking({div:'categories', message: "Loading Included Categories", type: "small"});
 	var params = $("#simulatorForm").serializeArray();
@@ -64,11 +81,13 @@ $(function() {
 <body>
 <h1>Contractor Simulator</h1>
 
-<form id="simulatorForm" onsubmit="return false;">
+<form id="simulatorForm" onsubmit="return false;" name="simForm" method="post" >
 <div id="search">
 <div>
 <button id="searchfilter" type="button" name="button"
 	class="picsbutton positive" onclick="run()">Run Simulation</button>
+	<input type="hidden" name="mode" value="ViewAll" />
+	<input type="hidden" name="auditTypeId" value="1" />
 </div>
 <div class="filterOption"><label>Safety Critical</label><s:select
 	list="#{'Low':'Low','Med':'Medium','High':'High'}"
@@ -76,16 +95,20 @@ $(function() {
 <div class="filterOption"><label>Product Critical</label><s:select
 	list="#{'Low':'Low','Med':'Medium','High':'High'}"
 	name="contractor.productRisk" value="'High'" /></div>
-
 <div class="filterOption"><s:checkbox name="contractor.acceptsBids" id="acceptsBids" value="false" /><label for="acceptsBids">Bid Only</label></div>
 <div class="filterOption"><s:checkbox name="contractor.soleProprietor" id="soleProprietor" value="false" /><label for="soleProprietor">Sole Proprietor</label></div>
 <div class="filterOption"><s:checkbox name="contractor.onsiteServices" id="onsite" value="true" /><label for="onsite">Onsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.offsiteServices" id="offsite" value="true" /><label for="offsite">Offsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.materialSupplier" id="supplier" value="true" /><label for="supplier">Material Supplier</label></div>
+<div>
+<button id="printPQF" type="button" name="button" value='load'
+	class="picsbutton" onclick="this.form.action='AuditPrintAjax.action'; this.form.target='_blank'; this.form.submit(); this.form.action=''; this.form.target='';" >Print PQF</button>
+</div>
 
 <div class="filterOption">Operator(s): <s:textfield id="operatorSelector" size="40" /><br />
 <s:select list="#{}" name="operatorIds" multiple="true" size="3" id="operatorSelect"  />
 </div>
+
 
 <br clear="all">
 </div>

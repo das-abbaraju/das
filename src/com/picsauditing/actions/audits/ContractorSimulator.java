@@ -42,6 +42,8 @@ public class ContractorSimulator extends PicsActionSupport {
 	@Autowired
 	private AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
+	private AuditDecisionTableDAO auditRuleDAO;
+	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
 	private AuditDecisionTableDAO auditDecisionTableDAO;
@@ -85,6 +87,7 @@ public class ContractorSimulator extends PicsActionSupport {
 
 	private void fillAuditTypes() {
 		audits = new TreeMap<AuditType, List<AuditTypeRule>>();
+		auditTypeRuleCache.initialize(auditRuleDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
 		for (AuditTypeDetail detail : builder.calculate()) {
 			AuditType auditType = detail.rule.getAuditType();
