@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Certificate;
@@ -24,6 +25,8 @@ import com.picsauditing.jpa.entities.NoteCategory;
 public class ConInsureGuard extends ContractorActionSupport {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	private ContractorAuditDAO contractorAuditDAO;
 
 	String[] certTypes = { "Current", "Expired", "Uploaded" };
 
@@ -60,7 +63,7 @@ public class ConInsureGuard extends ContractorActionSupport {
 				});
 
 		//Populating policy Maps
-		for (ContractorAudit audit : contractor.getAudits()) {
+		for (ContractorAudit audit : contractorAuditDAO.findByContractor(contractor.getId())) {
 			if (audit.getAuditType().getClassType().equals(AuditTypeClass.Policy) && auditApplies(audit)) {
 				if (audit.isExpired())
 					expiredPoliciesMap.put(audit, null);
