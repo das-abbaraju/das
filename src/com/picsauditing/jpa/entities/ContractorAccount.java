@@ -1453,21 +1453,23 @@ public class ContractorAccount extends Account implements JSONable {
 		float sum = 0;
 		int activitySum = 0;
 
-		if (hasSelfPerformedTrades()) {
-			for (ContractorTrade t : trades) {
-				if (t.isSelfPerformed()) {
+		if (trades.size() > 0) {
+			if (hasSelfPerformedTrades()) {
+				for (ContractorTrade t : trades) {
+					if (t.isSelfPerformed()) {
+						sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+						activitySum += t.getActivityPercent();
+					}
+				}
+			} else {
+				for (ContractorTrade t : trades) {
 					sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
 					activitySum += t.getActivityPercent();
 				}
 			}
-		} else {
-			for (ContractorTrade t : trades) {
-				sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-				activitySum += t.getActivityPercent();
-			}
-		}
-
-		return sum / activitySum;
+			return sum / activitySum;
+		} else
+			return 0;
 	}
 
 	@Transient
