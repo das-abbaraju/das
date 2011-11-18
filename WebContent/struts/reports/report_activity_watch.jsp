@@ -187,7 +187,7 @@ $(function() {
 											<s:param value="%{get('v1')}" />
 											<s:param>
 												<s:if test="get('v2') != null && get('v2').toString().startsWith('FlagCriteria')"><s:text name="%{get('v2')}" /></s:if>
-												<s:else><s:property value="%{get('v2')}" /></s:else>
+												<s:else><s:property value="%{get('v2')}" escapeHtml="false"/></s:else>
 											</s:param>
 											<s:param value="%{get('v3')}" />
 											<s:param value="%{@java.lang.Integer@parseInt(get('v4'))}" />
