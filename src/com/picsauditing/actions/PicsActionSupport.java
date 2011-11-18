@@ -113,7 +113,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	// PicsActionSupport file?
 	public static final String getVersion() {
 		// Released 2011-08-17
-		return "6.5";
+		return "6.6";
 	}
 
 	public boolean isShowConfigMessage() {
