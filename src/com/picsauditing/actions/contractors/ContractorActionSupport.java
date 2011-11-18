@@ -285,11 +285,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 				if (o1.getAuditType().equals(o2.getAuditType())) {
 					if (o1.getAuditFor() != null && o2.getAuditFor() != null) {
-						if (o1.getAuditType().isAnnualAddendum())
-							// Annual Update 2011 vs Annual Update 2010
-							return o2.getAuditFor().compareTo(o1.getAuditFor());
-						else
-							return o1.getAuditFor().compareTo(o2.getAuditFor());
+						if (o1.getAuditType().isAnnualAddendum()) {
+							// e.g. Annual Update 2011 vs Annual Update 2010
+							int descendingCompare = o2.getAuditFor().compareTo(o1.getAuditFor());
+							return (descendingCompare==0)?o1.getId() - o2.getId():descendingCompare;
+						} else {
+							int ascendingCompare = o1.getAuditFor().compareTo(o2.getAuditFor());
+							return (ascendingCompare==0)?o1.getId() - o2.getId():ascendingCompare;
+						} 
 					} else {
 						// Just in case
 						return o1.getId() - o2.getId();
