@@ -165,7 +165,7 @@ public class OpenTasks extends TranslationActionSupport {
 										conAuditID, auditName, showAuditFor, auditFor);
 								if (conAudit.getAuditType().getId() == AuditType.COR) {
 									text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR",
-											conAuditID, auditName, showAuditFor, auditFor);
+											conAudit.getId(), auditName, showAuditFor, auditFor);
 								}
 								if (!openReq) {
 									text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
@@ -192,6 +192,11 @@ public class OpenTasks extends TranslationActionSupport {
 												conAudit.getId(), auditName, showAuditor,
 												(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "",
 												showScheduledDate, conAudit.getScheduledDate());
+									} else if (conAudit.getAuditType().getId() == AuditType.COR) {
+										text = getTextParameterized(
+												"ContractorWidget.message.CompleteAndSubmitAudit",
+
+												conAudit.getId(), auditName, showAuditFor, auditFor);
 									} else {
 										text = getTextParameterized(
 												"ContractorWidget.message.PrepareForAnUpcomingAudit",
