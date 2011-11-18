@@ -506,8 +506,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 							put(getText(rate.getDescriptionKey()), auditFor, format(value));
 						}
 
-						put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor,
-								format(audit.getManHours()));
+						put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor, format(audit
+								.getManHours()));
 					}
 				}
 			}
@@ -515,18 +515,25 @@ public class ContractorDashboard extends ContractorActionSupport {
 			String tmp = findAuditFor(organizer, MultiYearScope.ThreeYearAverage);
 			if (tmp != null)
 				auditForSet.add(tmp);
-			
+
 			String ind = getText("ContractorView.ContractorDashboard.Industry");
 			if (auditForSet.size() != 0) {
 				auditForSet.add(ind);
 			}
 
-			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind,
-						format(contractor.getWeightedIndustryAverage()) + "*");
+			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null) {
+				if (contractor.hasWiaCriteria()) {
+					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
+							format(contractor.getWeightedIndustryAverage()) + "*");
+				} else {
+					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
+							format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
+				}
+			}
+
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
-						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(
+						true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : getActiveOperators()) {
