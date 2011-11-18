@@ -1,6 +1,12 @@
 /* trade search */
 #trade-nav
 {
+	float: left;
+	width: 50%;
+}
+
+#trade-nav
+{
 	border: 2px solid #4686BF;
 }
 
@@ -31,7 +37,9 @@
 /* trade view */
 #trade-view
 {
-	margin-left: 20px;
+	float: right;
+	position: relative;
+	width: 45%;
 }
 
 #trade-view.fullwidth
@@ -43,6 +51,8 @@
 
 #trade-view h4 {
 	left: 0px;
+	position: absolute;
+	top: -30px;
 }
 
 #trade-view ul,

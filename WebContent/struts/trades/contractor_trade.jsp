@@ -34,24 +34,6 @@ var conID = '<s:property value="id"/>';
 	</s:form>
 </s:if>
 
-<table>
-	<tr>
-		<s:if test="!permissions.operatorCorporate">
-			<td style="width: 50%;">
-				<h4>
-					<s:text name="ContractorTrades.SearchTitle" />
-				</h4>
-				<s:include value="trade_search.jsp"/>
-			</td>
-		</s:if>
-		<td>
-			<div id="trade-view"<s:if test="permissions.operatorCorporate"> class="fullwidth"</s:if>>
-				<s:include value="contractor_trade_select_trades.jsp"/>
-			</div>
-		</td>
-	</tr>
-</table>
-
 <s:if test="permissions.contractor">
 	<div class="navigationButtons">
 		<s:if test="registrationStep.done">
@@ -61,6 +43,16 @@ var conID = '<s:property value="id"/>';
 		</s:if>
 	</div>
 </s:if>
+
+<s:if test="!permissions.operatorCorporate">
+<h4><s:text name="ContractorTrades.SearchTitle" /></h4>
+<s:include value="trade_search.jsp"/>
+</s:if>
+
+<div id="trade-view" <s:if test="permissions.operatorCorporate">class="fullwidth"</s:if>>
+	<s:include value="contractor_trade_select_trades.jsp"/>
+</div>
+
 <s:include value="../contractors/registrationFooter.jsp" />
 </body>
 </html>
