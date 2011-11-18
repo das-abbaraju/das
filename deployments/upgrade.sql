@@ -1273,3 +1273,20 @@ set `body`='Hello <ContactName>,\r\n\r\nThe following insurance certificates hav
 `updatedBy`='23157',`updateDate`='2011-11-14 16:21:55'
 where `id`='132';
 --
+
+-- PICS-3533 Registration Request
+-- Active
+update contractor_registration_request set status = 'Active' where open = 1 and ISNULL(holdDate);
+
+-- Hold
+update contractor_registration_request set status = 'Hold' where open = 1 and !ISNULL(holdDate);
+
+-- Closed Successful
+update contractor_registration_request set status = 'ClosedSuccessful' where open = 0 and conID  > 0;
+
+-- Closed Unsucessful
+update contractor_registration_request set status = 'ClosedUnsuccessful' where open = 0 and isnull(conID);
+
+-- Set the contact count
+update contractor_registration_request set contactCountByPhone = contactCount;
+-- 
