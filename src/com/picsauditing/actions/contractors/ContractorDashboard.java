@@ -30,7 +30,6 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -96,8 +95,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
-	@Autowired
-	private ContractorAccountDAO contractorAccountDAO;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -631,9 +628,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			for (OshaRateType ort : Arrays.asList(OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
 					OshaRateType.Fatalities)) {
 				if (data.get(getText(ort.getDescriptionKey())) != null) {
-
-					// data.get(getText(ort.getDescriptionKey()))
-
 					rateTypeSet.add(getText(ort.getDescriptionKey()));
 					for (OperatorAccount operatorAccount : operators) {
 						if (oshaType.equals(operatorAccount.getOshaType())) {
