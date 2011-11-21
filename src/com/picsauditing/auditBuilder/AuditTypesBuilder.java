@@ -125,15 +125,19 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		//return false;
 		
 		if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
+			boolean found = false;
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (!audit.isExpired()
 						&& audit.getAuditType().equals(auditTypeRule.getDependentAuditType())
-						&& (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) || audit
-								.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))) {
-					return true;
+						&& (audit.hasCaoStatus(auditTypeRule.getDependentAuditStatus()) || 
+								audit.hasCaoStatusAfter(auditTypeRule.getDependentAuditStatus()))) {
+					found = true;
+					break;
 				}
 			}
-			return false;
+			if (!found) {
+				return false;				
+			}
 		}
 		return super.isValid(rule, contractorAnswers, opTags);
 	}
