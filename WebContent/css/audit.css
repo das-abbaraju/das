@@ -198,13 +198,7 @@ h4.groupTitle
 	margin-left: 24px;
 }
 
-.question.checkbox img.required
-{
-	left: -25px;
-	position: relative;
-}
-
-.question h3 a
+.question h3 a:hover
 {
 	text-decoration: none;
 }
@@ -215,6 +209,11 @@ h4.groupTitle
 	top: 2px;
 }
 
+.question.checkbox img.required
+{
+	left: -25px;
+	position: relative;
+}
 
 /* esignature */
 .esignature
