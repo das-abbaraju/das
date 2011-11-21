@@ -110,7 +110,7 @@ abstract public class PicsDAO {
 		return q.getResultList();
 	}
 
-	public List<? extends BaseTable> findWhere(String className, String where, int limit) {
+	public List findWhere(String className, String where, int limit) {
 		Query q = em.createQuery("FROM " + className + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
 			q.setMaxResults(limit);
