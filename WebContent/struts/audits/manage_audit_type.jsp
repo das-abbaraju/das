@@ -20,6 +20,7 @@ $(function(){
 	});
 	showFlags();
 	showRules();
+	showWorkFlowSteps();
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
@@ -38,6 +39,7 @@ $(function(){
 			$('.workflow_go').html(link);
 		} else
 			$('.workflow_go').html('');
+		showWorkFlowSteps();
 	});
 });
 
@@ -55,6 +57,14 @@ function showRules() {
 	};
 	startThinking({ div: "rules", message: "Loading Related Rules" });
 	$('#rules').load('AuditTypeRuleTableAjax.action', data);
+}
+
+function showWorkFlowSteps(){
+	var data = {
+		workFlowID: $('#save_workFlowID').val()
+	};
+	startThinking({ div: "workflow_step_area", message: "Loading Work Flow Steps" });
+	$('.workflow_step_area').load('ManageAuditType!workFlowSteps.action',data);
 }
 
 </script>
@@ -149,6 +159,9 @@ function showRules() {
 				<li><label>Workflow:</label>
 					<s:select list="workFlowList" name="workFlowID" listKey="id" listValue="name" value="auditType.workFlow.id" 
 					headerKey="0" headerValue="- Select Workflow -" />
+
+					<div class="workflow_step_area"/></div>
+					
 					<div class="workflow_go">
 						<s:if test="auditType.workFlow.id > 0">
 							<a href="ManageAuditWorkFlow.action?id=<s:property value="auditType.workFlow.id" />" class="go">Go</a>

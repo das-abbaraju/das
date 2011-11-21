@@ -1334,6 +1334,9 @@
 			<result name="top">
 				struts/audits/audit_selectType.jsp
 			</result>
+			<result name="workFlowSteps">
+				struts/audits/workflow_steps.jsp
+			</result>			
 		</action>
 
 		<action name="ManageAuditTypeAjax"

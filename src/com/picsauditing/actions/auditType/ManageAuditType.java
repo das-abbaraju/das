@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -39,6 +40,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String editPerm;
 	protected String ruleType;
 	protected int ruleID;
+	
+	protected List<WorkflowStep> steps;
 
 	private List<AuditType> auditTypes = null;
 
@@ -209,6 +212,10 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 			addActionError(e.getMessage());
 		}
 		return false;
+	}
+	
+	public String workFlowSteps(){
+		return "workFlowSteps";
 	}
 
 	protected boolean delete() {
@@ -427,4 +434,13 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	public void setRuleID(int ruleID) {
 		this.ruleID = ruleID;
 	}
+
+	public List<WorkflowStep> getSteps() {
+		if (steps == null) {
+			steps = wfDAO.getWorkFlowSteps(workFlowID);
+		}
+
+		return steps;
+	}
+	
 }
