@@ -350,30 +350,43 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
 
-		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor, conAudit
-				.getAuditType());
 
 		if (conAudit.getAuditor() != null) {
-			// There's all ready an auditor set
+			// If there's already an auditor set, get the availble slots for that auditor
 			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId(), availabilityStartDate);
-		} else if (assignments.size() > 0) {
-			// There are assignments for the contractor's location
-			if (assignments.size() > 1) {
-				// There are multiple assignments, select the schedule for all
-				// the available auditors
-				List<User> auditors = new ArrayList<User>();
-				for (UserAssignment ua : assignments)
-					auditors.add(ua.getUser());
+		} 
+		
+		if (((timeslots == null) || (timeslots.size() == 0))) {
+			// Either there's not already an auditor set, or that auditor didn't have any slots available.
+			// So, get the list of auditors that service the contractor's location.
+			List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
+					conAudit.getAuditType());
 
-				timeslots = auditorAvailabilityDAO.findAvailableLocal(availabilityStartDate, auditors);
-			} else
-				// Just select the auditor's schedule
-				timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId(),
-						availabilityStartDate);
-		} else
-			// Find the schedule for all auditors
+			if (assignments.size() > 0) {
+				// There are at least one assignment for the contractor's location
+				if (assignments.size() > 1) {
+					// There are multiple assignments, select the schedule for all
+					// the available auditors
+					List<User> auditors = new ArrayList<User>();
+					for (UserAssignment ua : assignments)
+						auditors.add(ua.getUser());
+
+					timeslots = auditorAvailabilityDAO.findAvailableLocal(availabilityStartDate, auditors);
+				} else
+					// Just select the one auditor's schedule
+					timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId(),
+							availabilityStartDate);
+			}
+		}
+			
+			
+		if (((timeslots == null) || (timeslots.size() == 0))) {
+			// Still no timeslots?  Our last resort is to find the schedule for all auditors
 			timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
-
+		}
+		
+		// Let's first try to load up availableSet with on-site timeslots.
+		// Transfer the found timeslots into the availableSet, ignoring timeslots that are already in the set, until the set has 8 or more days's worth
 		for (AuditorAvailability timeslot : timeslots) {
 			if (timeslot.isConductedOnsite(conAudit)) {
 				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
@@ -387,6 +400,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return;
 		}
 
+		// There weren't any on-site timeslots, so let's try this again with any type of timeslot.
+		// Transfer the found timeslots into the availableSet, ignoring timeslots that are already in the set, until the set has 8 or more days's worth 
 		availableSet = new AvailableSet();
 		for (AuditorAvailability timeslot : timeslots) {
 			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
