@@ -28,7 +28,7 @@ public abstract class SubscriptionBuilder {
 		EmailQueue queue = buildEmail(subscription, tokens);
 
 		if (queue != null)
-			sender.send(queue);
+			sender.sendNow(queue);
 
 		subscription.setLastSent(new Date());
 		subscriptionDAO.save(subscription);

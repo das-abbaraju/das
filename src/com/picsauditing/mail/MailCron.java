@@ -43,7 +43,7 @@ public class MailCron extends PicsActionSupport {
 
 	private static String defaultPassword = "e3r4t5";
 
-	private int limit = 2;
+	private int limit = 1;
 	private int subscriptionID = 0;
 
 	@Anonymous
