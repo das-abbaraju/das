@@ -7,7 +7,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +24,7 @@ import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditorAvailability;
@@ -40,6 +43,7 @@ import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -59,6 +63,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private String scheduledDateDay;
 	private String scheduledDateTime;
 	private Date availabilityStartDate = new Date();
+	
+	private Set<User> auditorList;
 
 	@Autowired
 	private AuditorAvailabilityDAO auditorAvailabilityDAO;
@@ -660,5 +666,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		addNote(contractor, summary, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
+	}
+	@Override
+	public Set<User> getAuditorList() {
+		// This page we only want to pull up auditors and not CSRs.
+		if (auditorList == null) {
+			auditorList = new TreeSet<User>();
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
+		}
+		return auditorList;
 	}
 }
