@@ -325,4 +325,12 @@ public class EmailBuilder {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
+	}
 }

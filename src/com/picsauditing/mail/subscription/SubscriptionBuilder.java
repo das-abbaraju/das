@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -64,8 +63,11 @@ public abstract class SubscriptionBuilder {
 			emailBuilder.setToAddresses(user.getEmail());
 
 			try {
-				if (user.getAccount().isContractor())
-					emailBuilder.setContractor((ContractorAccount) user.getAccount(), OpPerms.ContractorAccounts);
+				if (user.getAccount().isContractor()) {
+					ContractorAccount c = (ContractorAccount) user.getAccount();
+					emailBuilder.addToken("contractor", c);
+					emailBuilder.setConID(c.getId());
+				}
 			} catch (Exception e) {
 
 			}
