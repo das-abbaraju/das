@@ -9,7 +9,7 @@ from locked_iterator import LockedIterator
 logging.config.fileConfig("logging-mail.conf")
 
 SERVER = "http://%s/"
-SERVERS = ['organizer1','organizer2','organizer3','organizer4','organizer5']
+SERVERS = ['organizer1']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
@@ -159,6 +159,7 @@ class CronWorker(CronThread):
 				cronurl = self.url % (self.server_g.next(), id)
 				self.logger.debug('using url: %s' % cronurl)
 				result = urllib2.urlopen(cronurl).read()
+				self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
 				success = True
 				if success:
 					self.logger.info('Subscription %s finished successfully.' % id)
