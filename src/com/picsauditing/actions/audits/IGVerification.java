@@ -3,7 +3,9 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,8 +21,10 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
 public class IGVerification extends ContractorActionSupport {
@@ -56,22 +60,33 @@ public class IGVerification extends ContractorActionSupport {
 
 		caowList = new ArrayList<ContractorAuditOperatorWorkflow>();
 
-		Map<AuditType, ContractorAuditOperatorWorkflow> mostRecentRejection = new TreeMap<AuditType, ContractorAuditOperatorWorkflow>();
+		Set<OperatorAccount> operators = new TreeSet<OperatorAccount>();
+		Set<AuditType> auditTypes = new TreeSet<AuditType>();
+		for (ContractorAuditOperator cao : caos) {
+			operators.add(cao.getOperator());
+			auditTypes.add(cao.getAudit().getAuditType());
+		}
+
+		DoubleMap<AuditType, OperatorAccount, ContractorAuditOperatorWorkflow> recent = new DoubleMap<AuditType, OperatorAccount, ContractorAuditOperatorWorkflow>();
 		for (ContractorAuditOperator cao : caos) {
 			AuditType auditType = cao.getAudit().getAuditType();
+			OperatorAccount operator = cao.getOperator();
 
 			for (ContractorAuditOperatorWorkflow caow : cao.getCaoWorkflow()) {
-				if (mostRecentRejection.get(auditType) == null) {
-					mostRecentRejection.put(auditType, caow);
+				if (recent.get(auditType, operator) == null) {
+					recent.put(auditType, operator, caow);
 				} else {
-					if (caow.getCreationDate().after(mostRecentRejection.get(auditType).getCreationDate()))
-						mostRecentRejection.put(auditType, caow);
+					if (recent.get(auditType, operator).getCreationDate().before(caow.getCreationDate())) {
+						recent.put(auditType, operator, caow);
+					}
 				}
 			}
 		}
 
-		for (ContractorAuditOperatorWorkflow caow : mostRecentRejection.values()) {
-			caowList.add(caow);
+		for (AuditType auditType : auditTypes) {
+			for (OperatorAccount operator : operators) {
+				caowList.add(recent.get(auditType, operator));
+			}
 		}
 
 		emailBuilder.setTemplate(template);
