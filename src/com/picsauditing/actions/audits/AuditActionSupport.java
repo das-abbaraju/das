@@ -759,7 +759,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		 * category.
 		 */
 		if (category.isPolicyInformationCategory() || category.isPolicyLimitsCategory()) {
-			if (conAudit.hasCaoStatusAfter(AuditStatus.Pending) && !permissions.isAdmin())
+			if (conAudit.hasCaoStatusAfter(AuditStatus.Incomplete) && !permissions.isAdmin())
 				return false;
 		}
 
