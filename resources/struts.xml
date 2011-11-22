@@ -420,8 +420,7 @@
 			<result>con_pricing.jsp</result>
 		</action>
 		<!-- - Registration Requests -->
-		<action name="RequestNewContractor"
-			class="com.picsauditing.actions.contractors.RequestNewContractor">
+		<action name="RequestNewContractor" class="com.picsauditing.actions.contractors.RequestNewContractor">
 			<result>/struts/contractors/con_new_registration.jsp</result>
 			<result name="backToReport" type="redirectAction">
 				<param name="actionName">ReportNewRequestedContractor</param>

@@ -7,6 +7,7 @@ public class StateList extends AccountActionSupport {
 	private String countryString;
 	private String stateString;
 	private String prefix;
+	private boolean needsSuffix = true;
 
 	@Override
 	@Anonymous
@@ -37,6 +38,14 @@ public class StateList extends AccountActionSupport {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	public boolean isNeedsSuffix() {
+		return needsSuffix;
+	}
+
+	public void setNeedsSuffix(boolean needsSuffix) {
+		this.needsSuffix = needsSuffix;
 	}
 
 	public String getStatePrefix() {
