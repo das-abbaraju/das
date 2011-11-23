@@ -67,8 +67,12 @@
 								theme="pics"
 							/>
 							
-							<p><b>*<s:text name="ScheduleAudit.message.MailWebcam" /></b></>:</p>
-							<p><s:property value="conAudit.fullAddress" /></p>
+							<p>
+								<b>*<s:text name="ScheduleAudit.message.MailWebcam" /></b></>:
+							</p>
+							<p>
+								<s:property value="conAudit.fullAddress" />
+							</p>
 							
 							<a class="edit" href="ScheduleAudit.action?auditID=<s:property value="conAudit.id" />"><s:text name="ScheduleAudit.link.ChangeAddress" /></a>
 						</li>

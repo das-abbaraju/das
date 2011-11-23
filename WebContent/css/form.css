@@ -39,6 +39,7 @@ ul.radio
 {
 	list-style-type: none;
 	margin: 0px;
+	overflow: hidden;
 }
 
 ul.radio li
