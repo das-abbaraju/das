@@ -240,6 +240,16 @@ fieldset.form {
 								<s:property value="co.waitingOn" />
 							</s:param>
 						</s:text>
+						<s:if test="displayCorporate">
+							<p>
+								<s:text name="global.Locations" />:
+								<s:property value="activeOperators.size()"/>
+								
+								<s:if test="flagCounts.size() > 0">
+									(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
+								</s:if>
+							</p>
+						</s:if>
 					</div>
 					<div class="clear"></div>
 					<div style="margin-left: 10px;">
@@ -289,9 +299,9 @@ fieldset.form {
 								<s:if test="getFlagDataOverrides().size() > 0">
 									<s:iterator id="key" value="flagDataMap.keySet()">
 										<s:iterator id="data" value="flagDataMap.get(#key)">
-											<s:if test="#data.flag.redAmber || isFlagDataOverride(#data)">
+											<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
 												<s:set name="flagoverride"
-													value="%{isFlagDataOverride(#data)}" />
+													value="%{isFlagDataOverride(#data, #data.operator)}" />
 
 												<s:if test="#flagoverride != null">
 													<s:text name="ContractorFlag.ManualIndividualForceFlagInfo">
@@ -467,6 +477,7 @@ fieldset.form {
 					<thead>
 						<tr>
 							<td><s:text name="ContractorFlag.Flag"></s:text></td>
+							<s:if test="displayCorporate"><td><s:text name="ContractorFlag.Operator" /></td></s:if>
 							<td><s:text name="ContractorFlag.Description"></s:text></td>
 							<td><s:text name="ContractorFlag.Value"></s:text></td>
 							<td><s:text name="ContractorFlag.OverrideDetail"></s:text></td>
@@ -475,13 +486,15 @@ fieldset.form {
 					<tbody>
 						<s:iterator id="key" value="flagDataMap.keySet()">
 							<s:iterator id="data" value="flagDataMap.get(#key)">
-								<s:if test="#data.flag.redAmber || isFlagDataOverride(#data)">
-									<s:set name="flagoverride" value="%{isFlagDataOverride(#data)}" />
+								<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
+									<s:set name="flagoverride" value="%{isFlagDataOverride(#data, #data.operator)}" />
 
 									<tr class="<s:property value="#data.flag" />">
 										<td class="center"
-											<pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission>>
+											<s:if test="!displayCorporate"><pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission></s:if>>
 											<s:property value="#data.flag.smallIcon" escape="false" /></td>
+
+										<s:if test="displayCorporate"><td><s:property value="#data.operator.name" /></td></s:if>
 
 										<!-- Description -->
 										<td><s:set name="opCriteria"
@@ -584,108 +597,110 @@ fieldset.form {
 												</div>
 											</s:if></td>
 									</tr>
-
-									<pics:permission perm="EditForcedFlags">
-										<tr id="<s:property value="%{#data.id}" />_override"
-											class="_override_ clickable">
-											<td colspan="3">
-												<div class="override_form">
-													<form enctype="multipart/form-data" method="POST">
-														<s:hidden value="%{#data.id}" name="dataID" />
-
-														<s:if test="canForceDataFlag(#flagoverride)">
-															<s:if test="#flagoverride!=null">
-																<s:text name="ContractorFlag.SiteOverride">
-																	<s:param>
-																		<s:property value="#flagoverride.createdBy.name" />
-																	</s:param>
-																</s:text>
+									
+									<s:if test="!displayCorporate">
+										<pics:permission perm="EditForcedFlags">
+											<tr id="<s:property value="%{#data.id}" />_override"
+												class="_override_ clickable">
+												<td colspan="3">
+													<div class="override_form">
+														<form enctype="multipart/form-data" method="POST">
+															<s:hidden value="%{#data.id}" name="dataID" />
+	
+															<s:if test="canForceDataFlag(#flagoverride)">
+																<s:if test="#flagoverride!=null">
+																	<s:text name="ContractorFlag.SiteOverride">
+																		<s:param>
+																			<s:property value="#flagoverride.createdBy.name" />
+																		</s:param>
+																	</s:text>
+																</s:if>
+																<s:else>
+																	<fieldset class="form">
+																		<ol>
+																			<li><label><s:text
+																						name="ContractorFlag.ForceFlagTo"></s:text>
+																			</label>
+																			<s:radio
+																				id="flag_%{#data.id}"
+																				list="getUnusedFlagColors(#data.id)"
+																				name="forceFlag"
+																				theme="pics"
+																				cssClass="inline"
+																			/>
+																			</li>
+																			<li><label><s:text
+																						name="ContractorFlag.Until"></s:text>
+																			</label> <input
+																				id="forceEnd_<s:property value="%{#data.id}" />"
+																				name="forceEnd" size="10" type="text"
+																				class="datepicker" /></li>
+																			<li class="required"><label><s:text
+																						name="ContractorFlag.Reason"></s:text>:</label> <s:textarea
+																					name="forceNote" value="" rows="2" cols="30"
+																					cssStyle="vertical-align: top;"></s:textarea>
+																				<div class="fieldhelp">
+																					<h3>
+																						<s:text name="ContractorFlag.Reason" />
+																					</h3>
+																					<s:text name="ContractorFlag.AllFieldsRequired" />
+																				</div></li>
+																			<li><span class="label-txt"><s:text
+																						name="ContractorFlag.FileAttachment"></s:text>
+																			</span> <s:file name="file" id="%{#data.id}_file"></s:file></li>
+																			<li><s:submit type="button" name="button"
+																					method="forceIndividualFlag"
+																					onclick="return checkReason(%{#data.id})"
+																					value="%{getText('ContractorFlag.ForceIndividualFlag')}"
+																					cssClass="picsbutton positive" /> <s:if
+																					test="permissions.corporate">
+																					<s:checkbox id="overRAll_%{#data.id}"
+																						name="overrideAll" />
+																					<label
+																						for="overRAll_<s:property value="%{#data.id}"/>">
+																						<s:text name="ContractorFlag.OverrideForAllSites">
+																							<s:param>
+																								<s:property value="permissions.accountName" />
+																							</s:param>
+																						</s:text> </label>
+																					<br />
+																				</s:if></li>
+																		</ol>
+																	</fieldset>
+																</s:else>
 															</s:if>
 															<s:else>
-																<fieldset class="form">
-																	<ol>
-																		<li><label><s:text
-																					name="ContractorFlag.ForceFlagTo"></s:text>
-																		</label>
-																		<s:radio
-																			id="flag_%{#data.id}"
-																			list="getUnusedFlagColors(#data.id)"
-																			name="forceFlag"
-																			theme="pics"
-																			cssClass="inline"
-																		/>
-																		</li>
-																		<li><label><s:text
-																					name="ContractorFlag.Until"></s:text>
-																		</label> <input
-																			id="forceEnd_<s:property value="%{#data.id}" />"
-																			name="forceEnd" size="10" type="text"
-																			class="datepicker" /></li>
-																		<li class="required"><label><s:text
-																					name="ContractorFlag.Reason"></s:text>:</label> <s:textarea
-																				name="forceNote" value="" rows="2" cols="30"
-																				cssStyle="vertical-align: top;"></s:textarea>
-																			<div class="fieldhelp">
-																				<h3>
-																					<s:text name="ContractorFlag.Reason" />
-																				</h3>
-																				<s:text name="ContractorFlag.AllFieldsRequired" />
-																			</div></li>
-																		<li><span class="label-txt"><s:text
-																					name="ContractorFlag.FileAttachment"></s:text>
-																		</span> <s:file name="file" id="%{#data.id}_file"></s:file></li>
-																		<li><s:submit type="button" name="button"
-																				method="forceIndividualFlag"
-																				onclick="return checkReason(%{#data.id})"
-																				value="%{getText('ContractorFlag.ForceIndividualFlag')}"
-																				cssClass="picsbutton positive" /> <s:if
-																				test="permissions.corporate">
-																				<s:checkbox id="overRAll_%{#data.id}"
-																					name="overrideAll" />
-																				<label
-																					for="overRAll_<s:property value="%{#data.id}"/>">
-																					<s:text name="ContractorFlag.OverrideForAllSites">
-																						<s:param>
-																							<s:property value="permissions.accountName" />
-																						</s:param>
-																					</s:text> </label>
-																				<br />
-																			</s:if></li>
-																	</ol>
-																</fieldset>
+																<s:if test="#flagoverride.operator.type == 'Corporate'">
+																	<s:hidden name="overrideAll" value="true" />
+	
+																	<label><s:text
+																			name="ContractorFlag.CancelOverrideInfo"></s:text>
+																	</label>
+																	<br />
+																</s:if>
+																	&nbsp;
+																	<s:text name="ContractorFlag.ReasonCancelling"></s:text>
+																<s:textarea name="forceNote" value="" rows="2" cols="15"
+																	cssStyle="vertical-align: top;"></s:textarea>
+																<s:submit type="button" name="button"
+																	method="cancelDataOverride"
+																	onclick="return checkReason(%{#data.id})"
+																	value="%{getText('button.CancelDataOverride')}"
+																	cssClass="picsbutton positive" />
 															</s:else>
-														</s:if>
-														<s:else>
-															<s:if test="#flagoverride.operator.type == 'Corporate'">
-																<s:hidden name="overrideAll" value="true" />
-
-																<label><s:text
-																		name="ContractorFlag.CancelOverrideInfo"></s:text>
-																</label>
-																<br />
-															</s:if>
-																&nbsp;
-																<s:text name="ContractorFlag.ReasonCancelling"></s:text>
-															<s:textarea name="forceNote" value="" rows="2" cols="15"
-																cssStyle="vertical-align: top;"></s:textarea>
-															<s:submit type="button" name="button"
-																method="cancelDataOverride"
-																onclick="return checkReason(%{#data.id})"
-																value="%{getText('button.CancelDataOverride')}"
-																cssClass="picsbutton positive" />
-														</s:else>
-													</form>
-
-													<span class="override_wrap override_hide"> <a
-														href="#" class="override_wrench override_table_link"><s:text
-																name="ContractorFlag.HideForceLine"></s:text>
-													</a> </span>
-												</div> <span class="override_wrap"> <a href="#"
-													class="override_wrench override_table_link"><s:text
-															name="ContractorFlag.ShowForceLine"></s:text>
-												</a> </span></td>
-										</tr>
-									</pics:permission>
+														</form>
+	
+														<span class="override_wrap override_hide"> <a
+															href="#" class="override_wrench override_table_link"><s:text
+																	name="ContractorFlag.HideForceLine"></s:text>
+														</a> </span>
+													</div> <span class="override_wrap"> <a href="#"
+														class="override_wrench override_table_link"><s:text
+																name="ContractorFlag.ShowForceLine"></s:text>
+													</a> </span></td>
+											</tr>
+										</pics:permission>
+									</s:if>
 								</s:if>
 							</s:iterator>
 						</s:iterator>
@@ -704,6 +719,9 @@ fieldset.form {
 									<tr>
 										<td><s:text name="ContractorFlag.Flag"></s:text></td>
 										<td><s:property value="#flagData.key" /></td>
+										<s:if test="displayCorporate">
+											<td><s:text name="ContractorFlag.Operator" /></td>
+										</s:if>
 									</tr>
 								</thead>
 								<s:iterator id="data" value="#flagData.value">
@@ -716,6 +734,10 @@ fieldset.form {
 												<s:property value="getContractorAnswer(#data, true)"
 													escape="false" />
 											</s:else></td>
+										<s:if test="displayCorporate">
+											<td><s:property value="#data.operator.name"
+													escape="false" /></td>
+										</s:if>
 									</tr>
 								</s:iterator>
 							</table></td>

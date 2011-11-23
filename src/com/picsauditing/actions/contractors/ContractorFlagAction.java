@@ -72,6 +72,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	protected Map<String, List<FlagData>> flagDataMap;
 	protected Map<FlagCriteria, List<FlagDataOverride>> flagDataOverride;
 	protected ArrayListMultimap<AuditType, ContractorAuditOperator> missingAudits = null;
+	private Map<FlagColor, Integer> flagCounts;
+	private int[] operatorIds = null;
+	private boolean displayCorporate = false;
 
 	private File file;
 	private String fileContentType;
@@ -121,6 +124,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	private boolean canFindOperator() {
 		if (permissions.isOperator() || (opID == 0 && permissions.isCorporate()))
 			opID = permissions.getAccountId();
+		
+		if (permissions.isCorporate() && permissions.getAccountId() == opID) {
+			displayCorporate = true;
+		}
 
 		// can't view unrelated co links
 		if (permissions.isCorporate()) {
@@ -146,6 +153,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
 			return false;
 		}
+		
+		operatorIds = new int[getActiveOperators().size() + 1];
+		int i = 0;
+		for (ContractorOperator co1: getActiveOperators()) {
+			operatorIds[i++] = co1.getOperatorAccount().getId();
+		}
+		operatorIds[i] = opID;
+		
 		return true;
 	}
 	
@@ -295,9 +310,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		String noteText = "Removed the Forced flag for criteria " + flagData.getCriteria().getLabel() + " for "
 				+ co.getOperatorAccount().getName();
 
-		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData);
+		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData, null);
 		if (flagDataOverride != null) {
-			for (Iterator<FlagCriteria> it = getFlagDataOverrides().keySet().iterator(); it.hasNext();) {
+			for (Iterator<FlagCriteria> it = getFlagDataOverrides(null).keySet().iterator(); it.hasNext();) {
 				if (it.next().equals(flagDataOverride.getCriteria()))
 					it.remove();
 			}
@@ -482,6 +497,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Set<FlagData> flagData = co.getFlagDatas();
 
 			List<FlagData> flagDataList = new ArrayList<FlagData>(flagData);
+			
+			if (displayCorporate) {
+				for (ContractorOperator co2 : getActiveOperators()) {
+					flagDataList.addAll(co2.getFlagDatas());
+				}
+			}
+			
 			Collections.sort(flagDataList, new ByOrderCategoryLabel());
 
 			for (FlagData flagData2 : flagDataList) {
@@ -495,9 +517,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return flagDataMap;
 	}
 
-	public Map<FlagCriteria, List<FlagDataOverride>> getFlagDataOverrides() {
-		if (flagDataOverride == null)
-			flagDataOverride = flagDataOverrideDAO.findByContractorAndOperator(contractor, co.getOperatorAccount());
+	public Map<FlagCriteria, List<FlagDataOverride>> getFlagDataOverrides(OperatorAccount op) {
+		if (op == null)
+			op = co.getOperatorAccount();
+		flagDataOverride = flagDataOverrideDAO.findByContractorAndOperator(contractor, op);
 		return flagDataOverride;
 	}
 
@@ -511,12 +534,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return AmBest.financialMap.get(classValue);
 	}
 
-	public FlagDataOverride isFlagDataOverride(FlagData flagData) {
-		if (getFlagDataOverrides() != null && getFlagDataOverrides().size() > 0) {
-			List<FlagDataOverride> flOverride = getFlagDataOverrides().get(flagData.getCriteria());
+	public FlagDataOverride isFlagDataOverride(FlagData flagData, OperatorAccount op) {
+		if (op == null)
+			op = co.getOperatorAccount();
+		if (getFlagDataOverrides(op) != null && getFlagDataOverrides(op).size() > 0) {
+			List<FlagDataOverride> flOverride = getFlagDataOverrides(op).get(flagData.getCriteria());
 			if (flOverride != null && flOverride.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flOverride) {
-					if (flagDataOverride.getOperator().equals(co.getOperatorAccount()) && flagDataOverride.isInForce())
+					if (flagDataOverride.getOperator().equals(op) && flagDataOverride.isInForce())
 						return flagDataOverride;
 				}
 				if (flOverride.get(0).isInForce())
@@ -624,7 +649,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			for (String category : flagDataMap.keySet()) {
 				for (FlagData flagData : flagDataMap.get(category)) {
 					if (flagData.getFlag().equals(FlagColor.Red) || flagData.getFlag().equals(FlagColor.Amber)
-							|| isFlagDataOverride(flagData) != null) {
+							|| isFlagDataOverride(flagData, null) != null) {
 						return true;
 					}
 				}
@@ -730,7 +755,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 
 			String where = "t.audit.contractorAccount.id = " + id + " AND t.status != 'Expired' AND t.visible = 1 "
-					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id = " + opID + ")";
+					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id IN (" + Strings.implode(operatorIds, ",") + "))";
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
 					ContractorAuditOperator.class, where, 0);
 			missingAudits = ArrayListMultimap.create();
@@ -748,9 +773,18 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public Map<AuditType, FlagCriteria> getAuditTypeToFlagCriteria() {
 		Map<AuditType, FlagCriteria> result = new LinkedHashMap<AuditType, FlagCriteria>();
-		for (FlagData fd : co.getFlagDatas()) {
-			if (fd.getCriteria().getAuditType() != null)
-				result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
+		if (displayCorporate) {
+			for (ContractorOperator co1: getActiveOperators()) {
+				for (FlagData fd : co1.getFlagDatas()) {
+					if (fd.getCriteria().getAuditType() != null)
+						result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
+				}
+			}
+		} else {
+			for (FlagData fd : co.getFlagDatas()) {
+				if (fd.getCriteria().getAuditType() != null)
+					result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
+			}
 		}
 
 		return result;
@@ -758,11 +792,12 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public FlagCriteriaOperator getApplicableOperatorCriteria(FlagData fd) {
 		List<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
+		
+		OperatorAccount operator = (displayCorporate) ? fd.getOperator():co.getOperatorAccount();
 
-		for (FlagCriteriaOperator fco : co.getOperatorAccount().getFlagCriteriaInherited()) {
+		for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().equals(fd.getCriteria())
-					&& (fco.getFlag().equals(fd.getFlag()) || (isFlagDataOverride(fd) != null && fco.getFlag().equals(
-							FlagColor.Red)))) {
+					&& (fco.getFlag().equals(fd.getFlag()) || (isFlagDataOverride(fd, operator) != null))) {
 				fcos.add(fco);
 			}
 		}
@@ -783,5 +818,39 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 
 		return null;
+	}
+
+	public Map<FlagColor, Integer> getFlagCounts() {
+		if (flagCounts == null) {
+			flagCounts = new LinkedHashMap<FlagColor, Integer>();
+			flagCounts.put(FlagColor.Red, 0);
+			flagCounts.put(FlagColor.Amber, 0);
+			flagCounts.put(FlagColor.Green, 0);
+
+			for (ContractorOperator contractorOperator : getActiveOperators()) {
+				flagCounts
+						.put(contractorOperator.getFlagColor(), flagCounts.get(contractorOperator.getFlagColor()) + 1);
+			}
+
+			Iterator<Map.Entry<FlagColor, Integer>> iter = flagCounts.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry<FlagColor, Integer> entry = iter.next();
+				if (entry.getValue() <= 0)
+					iter.remove();
+			}
+		}
+		return flagCounts;
+	}
+
+	public void setFlagCounts(Map<FlagColor, Integer> flagCounts) {
+		this.flagCounts = flagCounts;
+	}
+
+	public boolean isDisplayCorporate() {
+		return displayCorporate;
+	}
+
+	public void setDisplayCorporate(boolean displayCorporate) {
+		this.displayCorporate = displayCorporate;
 	}
 }
