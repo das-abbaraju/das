@@ -25,7 +25,7 @@
 	<s:iterator value="resources" status="stat" var="resource">
 		<tr>
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
-			<td><s:property value="formName"/></td>
+			<td><a href="Resources!download.action?id=<s:property value="#resource.id" />"  target="_blank" title="<s:text name="global.ClickToView"/>"><s:property value="formName"/></a></td>
 			<td>
 				<s:iterator value="locales" status="track" var="locale">
 					<s:if test="#track.index != 0" > | </s:if>
