@@ -30,8 +30,10 @@ public class SubscriptionBuilderFactory {
 	 * Subscription Classes Missing From Here: ContractorDeactivation, ContractorAdded, ContractorFinished,
 	 * ContractorInvoices, InsuranceExpiration, AuditOpenRequirements, FinishPICSProcess, PICSSystemNotifications,
 	 * Webinar, RegistrationRequests
+	 * 
+	 * @throws MissingSubscriptionException
 	 */
-	public SubscriptionBuilder getBuilder(Subscription subscription) {
+	public SubscriptionBuilder getBuilder(Subscription subscription) throws MissingSubscriptionException {
 		switch (subscription) {
 		case ContractorAdded:
 			return contractorAdded;
@@ -55,7 +57,7 @@ public class SubscriptionBuilderFactory {
 		case OpenTasks:
 			return openTasks;
 		default:
-			return null;
+			throw new MissingSubscriptionException();
 		}
 	}
 }

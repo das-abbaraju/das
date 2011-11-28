@@ -17,6 +17,8 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.mail.subscription.MissingSubscriptionException;
+import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -41,155 +43,100 @@ public class MailCron extends PicsActionSupport {
 	@Autowired
 	private EmailSenderSpring emailSenderSpring;
 
-	private static String defaultPassword = "e3r4t5";
-
-	private int limit = 1;
 	private int subscriptionID = 0;
 
 	@Anonymous
 	public String execute() throws Exception {
-		// No authentication required since this runs as a cron job
-		AppProperty appPropSubEnable = appPropDAO.find("subscription.enable");
-		if (Boolean.parseBoolean(appPropSubEnable.getValue())) {
+		/**
+		 * Process Email Subscription
+		 */
+		AppProperty enableSubscriptions = appPropDAO.find("subscription.enable");
+		if (Boolean.parseBoolean(enableSubscriptions.getValue())) {
 			EmailSubscription emailSubscription = null;
 			if (subscriptionID > 0) {
 				emailSubscription = subscriptionDAO.find(subscriptionID);
-			}
 
-			if (subscriptionID == 0 || emailSubscription == null) {
-				addActionError("You must supply a valid subscription id.");
-				return ACTION_MESSAGES;
-			}
-			try {
+				if (emailSubscription == null) {
+					addActionError("You must supply a valid subscription id.");
+					return ACTION_MESSAGES;
+				}
 
-				// TODO: Had to do this because the old Subscription builder in the same package
-				com.picsauditing.mail.subscription.SubscriptionBuilder builder = subscriptionFactory
-						.getBuilder(emailSubscription.getSubscription());
-				if (builder != null) {
+				try {
+					SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
 					builder.sendSubscription(emailSubscription);
-				} else {
-					/**
-					 * This is if a contractor has an invalid subscription. Notify errors and continue.
-					 */
-					try {
-						EmailQueue email = new EmailQueue();
-						email.setToAddresses("errors@picsauditing.com");
-						email.setFromAddress("PICS Mailer<info@picsauditing.com>");
-						email.setSubject("Error in MailCron for userID = " + emailSubscription.getUser().getId());
-						email.setBody("User " + emailSubscription.getUser().getId() + " is subscribed to "
-								+ emailSubscription.getSubscription() + " on a " + emailSubscription.getTimePeriod()
-								+ " time period. There is no mapping for this Subscription "
-								+ "in the SubscriptionFactory.");
-						email.setCreationDate(new Date());
-						emailSenderSpring.send(email);
-					} catch (Exception notMuchWeCanDoButLogIt) {
-						System.out.println("Error sending email");
-						System.out.println(notMuchWeCanDoButLogIt);
-						notMuchWeCanDoButLogIt.printStackTrace();
-					}
-				}
+				} catch (MissingSubscriptionException e) {
+					EmailQueue email = new EmailQueue();
+					email.setToAddresses("errors@picsauditing.com");
+					email.setFromAddress("PICS Mailer<info@picsauditing.com>");
+					email.setSubject("Error in MailCron for userID = " + emailSubscription.getUser().getId());
+					email.setBody("User " + emailSubscription.getUser().getId() + " is subscribed to "
+							+ emailSubscription.getSubscription() + " on a " + emailSubscription.getTimePeriod()
+							+ " time period. There is no mapping for this Subscription "
+							+ "in the SubscriptionFactory.");
+					email.setCreationDate(new Date());
+					emailSenderSpring.send(email);
+				} catch (Exception e) {
+					StringWriter sw = new StringWriter();
+					e.printStackTrace(new PrintWriter(sw));
 
-				/**
-				 * Do normal mail NOTE: This is a copy of the else block using new spring loaded Email Sender.
-				 */
-				List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
-				if (emails.size() == 0) {
-					addActionMessage("The email queue is empty");
-					return ACTION_MESSAGES;
-				}
+					if (!isDebugging()) {
+						addActionError("Error occurred on subscription " + subscriptionID + "<br>" + e.getMessage());
+						// In case this contractor errored out while running contractor
+						// cron we bump the last recalculation date to 1 day in future.
+						emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
+						subscriptionDAO.save(emailSubscription);
 
-				for (EmailQueue email : emails) {
-					try {
-						emailSenderSpring.sendNow(email);
-					} catch (Exception e) {
-						PicsLogger.log("ERROR with MailCron: " + e.getMessage());
-						addActionError("Failed to send email: " + e.getMessage());
-					}
-				}
-				if (this.getActionErrors().size() == 0)
-					this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
-			} catch (Throwable t) {
-				StringWriter sw = new StringWriter();
-				t.printStackTrace(new PrintWriter(sw));
+						StringBuffer body = new StringBuffer();
 
-				if (!isDebugging()) {
-					addActionError("Error occurred on subscription " + subscriptionID + "<br>" + t.getMessage());
-					// In case this contractor errored out while running contractor
-					// cron
-					// we bump the last recalculation date to 1 day in future.
-					emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
-					subscriptionDAO.save(emailSubscription);
-
-					StringBuffer body = new StringBuffer();
-
-					body.append("There was an error running MailCron for id=");
-					body.append(subscriptionID);
-					body.append("\n\n");
-
-					try {
-						body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
+						body.append("There was an error running MailCron for id=");
+						body.append(subscriptionID);
 						body.append("\n\n");
-					} catch (UnknownHostException e) {
-					}
 
-					body.append(t.getStackTrace());
+						try {
+							body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
+							body.append("\n\n");
+						} catch (UnknownHostException uh) {
+						}
 
-					body.append(sw.toString());
+						body.append(e.getStackTrace());
 
-					try {
-						sendMail(body.toString(), subscriptionID);
-					} catch (Exception notMuchWeCanDoButLogIt) {
-						System.out.println("Error sending email");
-						System.out.println(notMuchWeCanDoButLogIt);
-						notMuchWeCanDoButLogIt.printStackTrace();
-					}
-				} else {
-					addActionError(sw.toString());
-				}
-			}
+						body.append(sw.toString());
 
-		} else {
-			/**
-			 * Do normal mail. Fallback method in case we have problems with the new method. We can delete this once we
-			 * are sure the new subscription system is sending mail as expected.
-			 */
-			PicsLogger.start("EmailSender");
-			AppProperty appPropLimit = appPropDAO.find("subscription.limit");
-			if (appPropLimit != null && limit == 0)
-				limit = Integer.parseInt(appPropLimit.getValue());
-
-			try {
-				List<EmailQueue> emails = emailQueueDAO.getPendingEmails(limit);
-				if (emails.size() == 0) {
-					addActionMessage("The email queue is empty");
-					return ACTION_MESSAGES;
-				}
-
-				// Get the default sender (info@pics)
-				for (EmailQueue email : emails) {
-					try {
-						emailSenderSpring.sendNow(email);
-					} catch (Exception e) {
-						PicsLogger.log("ERROR with MailCron: " + e.getMessage());
-						addActionError("Failed to send email: " + e.getMessage());
+						try {
+							sendMail(body.toString(), subscriptionID);
+						} catch (Exception notMuchWeCanDoButLogIt) {
+							System.out.println("Error sending email");
+							System.out.println(notMuchWeCanDoButLogIt);
+							notMuchWeCanDoButLogIt.printStackTrace();
+						}
+					} else {
+						addActionError(sw.toString());
 					}
 				}
-				if (this.getActionErrors().size() == 0)
-					this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
-
-			} finally {
-				PicsLogger.stop();
 			}
 		}
 
+		/**
+		 * Send mail
+		 */
+		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
+		if (emails.size() == 0) {
+			addActionMessage("The email queue is empty");
+			return ACTION_MESSAGES;
+		}
+
+		for (EmailQueue email : emails) {
+			try {
+				emailSenderSpring.sendNow(email);
+			} catch (Exception e) {
+				PicsLogger.log("ERROR with MailCron: " + e.getMessage());
+				addActionError("Failed to send email: " + e.getMessage());
+			}
+		}
+		if (this.getActionErrors().size() == 0)
+			this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
+
 		return ACTION_MESSAGES;
-	}
-
-	public int getLimit() {
-		return limit;
-	}
-
-	public void setLimit(int limit) {
 	}
 
 	public void setSubscriptionID(int subscriptionID) {
@@ -203,13 +150,13 @@ public class MailCron extends PicsActionSupport {
 	@Anonymous
 	public String listAjax() {
 		List<Integer> subs = subscriptionDAO.findSubscriptionsToSend(15);
-		output = Strings.implode(subs);
+		output = (subs.isEmpty()) ? "0" : Strings.implode(subs);
 		return PLAIN_TEXT;
 	}
 
 	private void sendMail(String message, int subscriptionID) {
 		try {
-			GridSender gridSender = new GridSender("info@picsauditing.com", defaultPassword);
+			GridSender gridSender = new GridSender();
 			EmailQueue email = new EmailQueue();
 			email.setToAddresses("errors@picsauditing.com");
 			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
