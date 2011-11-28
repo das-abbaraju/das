@@ -185,7 +185,7 @@ SCHEDULE_AUDIT = {
 						return false;
 					}
 				});
-			};
+			}
 		};
 	}
 };
