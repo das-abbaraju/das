@@ -1,10 +1,11 @@
 package com.picsauditing.actions.report;
 
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.search.SelectContractorAudit;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
-public class ReportWcbAccounts extends ReportAccount {
+public class ReportWcbAccounts extends ReportContractorAuditOperator {
 	
 	public void prepare() throws Exception {
 		super.prepare();
@@ -18,6 +19,9 @@ public class ReportWcbAccounts extends ReportAccount {
 		getFilter().setShowPrimaryInformation(false);
 		getFilter().setShowTradeInformation(false);
 		getFilter().setShowSoleProprietership(false);
+		getFilter().setShowAuditStatus(true);
+		getFilter().setAuditStatus(new AuditStatus[]{AuditStatus.Submitted});
+		
 	}
 
 	public void buildQuery() {
@@ -41,7 +45,6 @@ public class ReportWcbAccounts extends ReportAccount {
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 		sql.addJoin("JOIN pqfData p ON cao.auditID = p.auditID");
 		sql.addWhere("ca.auditTypeID in(143,144,145,146,147,148,166,167,168,169,170,261)");
-		sql.addWhere("cao.status IN('Complete','Pending','Submitted','Approved')");
 		sql.addWhere("cao.visible = 1");
 		sql.addWhere("p.questionID IN(8077,8129,8063,8070,8175,8168,8154,8161,8147,8183,8142,8089)");
 
