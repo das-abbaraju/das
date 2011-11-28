@@ -31,7 +31,7 @@
 		<li><label><s:text name="global.Location" />:</label> <s:property value="conAudit.fullAddress" /></li>
 	</s:if>
 	<s:else>
-		<li><label><s:text name="global.Location" />:</label><s:text name="ScheduleAudit.message.Internet" /> <a href="http://help.picsauditing.com/wiki/Office_Audit" class="help"><s:text name="ScheduleAudit.help.WhatIsThis" /></a></li>
+		<li><label><s:text name="global.Location" />:</label><s:text name="ScheduleAudit.message.Internet" /> <a href="http://help.picsorganizer.com/display/contractors/Implementation+Audit" class="help"><s:text name="ScheduleAudit.help.WhatIsThis" /></a></li>
 		<li><label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
 			<s:if test="conAudit.needsCamera"><s:text name="ScheduleAudit.message.MailWebcam" />: <s:property value="conAudit.fullAddress"/></s:if>
 			<s:else><s:text name="ScheduleAudit.message.HasWebcam" /></s:else>

@@ -57,7 +57,7 @@
 							<label><s:text name="global.Location" />:</label>
 							<s:text name="ScheduleAudit.message.Web" />
 							&nbsp;&nbsp;&nbsp;&nbsp;
-							<a href="http://help.picsauditing.com/wiki/Office_Audit" class="help" style="font-size: 10px" target="_BLANK"><s:text name="ScheduleAudit.help.WebAudit" /></a>
+							<a href="http://help.picsorganizer.com/display/contractors/Implementation+Audit" class="help" style="font-size: 10px" target="_BLANK"><s:text name="ScheduleAudit.help.WebAudit" /></a>
 						</li>
 						<li>
 							<label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
