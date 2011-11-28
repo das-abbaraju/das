@@ -11,6 +11,15 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		
+		<style type="text/css">
+			#auditHeader,#auditHeaderNav {
+				display: none;
+			}
+			
+			.calculatedAddress {
+			}
+		</style>
+		
 		<s:include value="../jquery.jsp"></s:include>
 		
 		<script type="text/javascript" src="https://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
@@ -18,31 +27,23 @@
 		
 		<s:if test="conAudit != null">
 			<script type="text/javascript">
-			var conID = '<s:property value="conAudit.contractorAccount.id"/>';
-			$(function() {
-				$('#verifyButton').click(function(e) {
-					e.preventDefault();
-					verifyAddress();
+				var conID = '<s:property value="conAudit.contractorAccount.id"/>';
+				
+				$(function() {
+					$('#verifyButton').click(function(e) {
+						e.preventDefault();
+						verifyAddress();
+					});
 				});
-			});
 			</script>
 		</s:if>
-		
-		<style type="text/css">
-		#auditHeader,#auditHeaderNav {
-			display: none;
-		}
-		
-		.calculatedAddress {
-		}
-		</style>
 	</head>
 	<body>
 		<s:include value="../contractors/conHeader.jsp" />
 		
 		<div class="info" style="clear:left"><s:text name="ScheduleAudit.message.EnterPrimaryRepresentative" /></div>
 		
-		<s:form onsubmit="return submitForm();">
+		<s:form cssClass="schedule-audit-form schedule-audit-address-form" onsubmit="return submitForm();">
 			<s:hidden name="auditID" />
 			
 			<fieldset class="form">

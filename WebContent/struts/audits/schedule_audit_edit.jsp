@@ -123,7 +123,7 @@
 			</a>
 		</div>
 		
-		<s:form onsubmit="return submitForm();">
+		<s:form cssClass="schedule-audit-form schedule-audit-edit-form">
 			<s:hidden name="auditID" />
 			
 			<fieldset class="form">
@@ -259,6 +259,7 @@
 				
 				<div>
 					<input type="button" id="verifyButton" class="picsbutton" value="<s:text name="ScheduleAudit.button.VerifyAddress" />" />
+					
 					<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 				</div>
 			</fieldset>

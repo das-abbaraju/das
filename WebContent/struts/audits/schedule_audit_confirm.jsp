@@ -25,7 +25,7 @@
 			<s:text name="ScheduleAudit.message.NotScheduledYet" />
 		</div>
 		
-		<s:form>
+		<s:form class="schedule-audit-form schedule-audit-confirm-form">
 			<s:hidden name="auditID" />
 			<s:hidden name="availabilitySelectedID" />
 			
