@@ -10,11 +10,25 @@
 		String username = request.getParameter("username".trim());
 		String taxId = request.getParameter("taxId");
 		String companyName = request.getParameter("companyName");
+		I18nCache cache = I18nCache.getInstance();
+		Locale locale = Locale.getDefault();
+		
 		if (!Strings.isEmpty(username)) {
-			String result = Strings.validUserName(username);
-			if (!result.equals("valid")) {
-				String msg = I18nCache.getInstance().getText("Status.Valid", Locale.getDefault());
-				%> <%= msg %> <%
+			String message = null;
+			
+			if (Strings.isEmpty(username))
+				message = cache.getText("User.username.error.Empty", locale);
+			else if (username.length() < 3)
+				message = cache.getText("User.username.error.Short", locale);
+			else if (username.length() > 100)
+				message = cache.getText("User.username.error.Long", locale);
+			else if (username.contains(" "))
+				message = cache.getText("User.username.error.Space", locale);
+			else if (!username.matches("^[a-zA-Z0-9+._@-]{3,50}$"))
+				message = cache.getText("User.username.error.Special", locale);
+			
+			if (!Strings.isEmpty(message)) {
+				%> <%= message %> <%
 				return;
 			}
 
@@ -23,12 +37,11 @@
 				userID = Integer.parseInt(request.getParameter("userID"));
 				UserDAO ud = (UserDAO) SpringUtils.getBean("UserDAO");
 				if (ud.duplicateUsername(username, userID)) {
-					String msg = I18nCache.getInstance().getText("Status.UsernameNotAvailable", 
-							Locale.getDefault(), new Object[] {username});
+					String msg = cache.getText("Status.UsernameNotAvailable", locale, new Object[] {username});
 					%><img src="images/notOkCheck.gif" title="Username is NOT available" /> <%=msg%><%
 				} else {
-					String msg = I18nCache.getInstance().getText("Status.UsernameAvailable", 
-							Locale.getDefault(), new Object[] {username});
+					String msg = cache.getText("Status.UsernameAvailable", 
+							locale, new Object[] {username});
 					%><img src="images/okCheck.gif" title="Username is available" /> <%=msg%><%
 				}
 			} catch (NumberFormatException e) {}
@@ -37,8 +50,8 @@
 		if (!Strings.isEmpty(taxId)) {
 			ContractorAccount cAccount = cAccountDAO.findTaxID(taxId, "US");
 			if (cAccount != null) {
-				String msg = I18nCache.getInstance().getText("Status.TaxIdInUse", 
-						Locale.getDefault(), new Object[] {taxId, "United States"});
+				String msg = cache.getText("Status.TaxIdInUse", 
+						locale, new Object[] {taxId, "United States"});
 				%><%=msg%><br/><%
 				} else {
 				%><%
@@ -47,8 +60,8 @@
 		if (!Strings.isEmpty(companyName)) {
 			ContractorAccount cAccount = cAccountDAO.findConID(companyName);
 			if (cAccount != null) {
-				String msg = I18nCache.getInstance().getText("Status.CompanyInUse", 
-						Locale.getDefault(), new Object[] {companyName});
+				String msg = cache.getText("Status.CompanyInUse", 
+						locale, new Object[] {companyName});
 				%><%=msg%><br/><%
 				} else {
 				%><%
