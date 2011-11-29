@@ -79,6 +79,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 					+ safetyRisk.toString());
 			contractor.setSafetyRisk(safetyRisk);
 			contractor.setSafetyRiskVerified(new Date());
+			flagClearCache();
 
 			if (oldSafety.compareTo(safetyRisk) < 0)
 				needsUpgrades = true;
@@ -89,6 +90,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 					+ productRisk.toString());
 			contractor.setProductRisk(productRisk);
 			contractor.setProductRiskVerified(new Date());
+			flagClearCache();
 
 			if (oldProduct.compareTo(productRisk) < 0)
 				needsUpgrades = true;
@@ -96,6 +98,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			// Add a product risk if it doesn't exist...?
 			noteSummary.add("set product risk level to " + productRisk.toString());
 			contractor.setProductRisk(productRisk);
+			flagClearCache();
 		}
 
 		if (noteSummary.size() > 0) {

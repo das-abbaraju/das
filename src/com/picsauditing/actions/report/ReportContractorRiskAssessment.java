@@ -119,6 +119,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
 					con.setAccountLevel(AccountLevel.Full);
 				con.setSafetyRiskVerified(new Date());
+				flagClearCache();
 			} else {
 				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
 				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
@@ -136,6 +137,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible())
 					con.setAccountLevel(AccountLevel.Full);
 				con.setProductRiskVerified(new Date());
+				flagClearCache();
 			}
 
 			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
