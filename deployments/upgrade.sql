@@ -1209,6 +1209,502 @@ UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
 */
 
 -- PICS-3852
-update email_template
-set `body` = '<!DOCTYPE HTML PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html>\n<head>\n<title>PICS - Invoice</title>\n</head>\n<body>\n<style type=\"text/css\">\nbody {\n    color: #4C4D4D;\n    background-color: white;\n    margin: 0 auto;\n    padding: 20px;\n    line-height: 24px;\n    font-family: Helvetica, Arial, sans-serif;\n    font-size: 14px;\n}\ntable td, table th {\n    vertical-align: middle;\n    font-size: 14px;\n    line-height: 1.5;\n}\ntable.allborder {\n    border-width: 1px;\n    border-collapse: collapse;\n    border-color: #333;\n    border-style: solid;\n}\ntable.allborder td, table.allborder th {\n    font-family: \"Trebuchet MS\", Verdana, Arial, Helvetica, sans-serif;\n    border-width: 1px;\n    border-color: #444;\n    border-style: solid;\n    margin: 0;\n    padding: 6px;\n}\ntable.allborder th {\n    text-align: center;\n    color: #444;\n    padding: 10px;\n    font-weight: normal;\n}\ntable.allborder th.big, table.allborder td.big {\n    font-size: 16px;\n    font-weight: bold;\n}\ntable.allborder th.center, table.allborder td.center {\n    text-align: center;\n}\ntable.allborder th.right, table.allborder td.right {\n    text-align: right;\n    float: none;\n}\ntable {\n    border-collapse: separate;\n}\na img {\n    border: 0px none;\n}\np {\n    padding-top: 1px;\n    padding-bottom: 5px;\n}\ndiv#alert {\n    background:#FBF2C9 url(http://www.picsorganizer.com/images/icon-warning.gif) no-repeat scroll 10px 10px;\n    border-bottom:2px solid #D0AE10;\n    border-top:2px solid #D0AE10;\n    margin-bottom:10px;\n    margin-top:10px;\n    padding:1em 1em 1em 5em;\n    width:86%;\n}\ndiv#info {\n    background:#DBE7F8 url(http://www.picsorganizer.com/images/icon-info.gif) no-repeat scroll 10px 10px;\n    border-bottom:2px solid #B7D2F2;\n    border-top:2px solid #B7D2F2;\n    margin-bottom:10px;\n    margin-top:10px;\n    padding:1em 1em 1em 5em;\n    width:86%;\n}\n#name {\n    margin-right: 5px;\n    font-size: 10px;\n}\n</style>\n#if($invoice.status.void)\n      <div id=\"alert\">This invoice has been CANCELED.</div>\n#elseif($invoice.status.paid)\n     <div id=\"info\">This invoice is PAID. Please keep this receipt for your records.</div>\n#elseif($invoice.overdue && ${contractor.activeB})\n    <div id=\"alert\">This invoice is currently OVERDUE!</div>    \n#end\n#if($invoice.status.unpaid && !${contractor.ccExpired})\n    <div id=\"alert\">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>    \n#elseif(${contractor.status.active} && ${contractor.ccValid} && ${contractor.paymentMethod} == \"CreditCard\" && $invoice.status.unpaid && ${contractor.ccExpired})\n    <div id=\"alert\">We currently have a ${contractor.creditCard.cardType} ending in ${contractor.creditCard.cardNumber} on file and it will be automatically charged on ${pics_dateTool.format(\"MMM d, yyyy\", $invoice.dueDate)}</div>\n#end\n      <table width=\"100%\" height=\"100%\">\n        <tbody>\n        \n        <tr>\n          <td><table width=\"100%\">\n              <tbody>\n                <tr>\n                  <td width=\"146\"><img src=\"http://www.picsorganizer.com/images/logo.gif\" height=\"146\" width=\"146\"></td>\n                  <td style=\"padding: 10px;\">#if(${contractor.country.canada})PICS <br>\r\n			100, 111 - 5 Avenue SW <br> \r\n			Suite # 124 <br>\r\n			Calgary, AB T2P 3Y6\r\n		  #else\r\n			PICS <br>\r\n			P.O. Box 51387 <br>\r\n			Irvine, CA 92619-1387\r\n		  #end\r\n                  </td>\n                  <td width=\"200\"><table class=\"allborder\" border=\"0\" cellpadding=\"4\" cellspacing=\"0\" width=\"100%\">\n                      <tbody>\n                        <tr>\n                          <th>Date</th>\n                          <th class=\"big\">Invoice #</th>\n                        </tr>\n                        <tr>\n                          <td class=\"center\">$!{pics_dateTool.format(\"MMM d, yyyy\", $invoice.creationDate)}</td>\n                          <td class=\"center\"><a href=\"http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}\">${invoice.id}</a></td>\n                        </tr>\n                      </tbody>\n                    </table></td>\n                </tr>\n              </tbody>\n            </table></td>\n        </tr>\n#if(!$invoice.status.unpaid)\n        <tr><td class=\"center\">\n          <a href=\"http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}\">Click to Pay Invoice Online</a>\n        </td></tr>\n#end\n        <tr>\n          <td style=\"padding-top: 15px;\"><table class=\"allborder\" width=\"100%\">\n              <tbody>\n                <tr>\n                  <th>Bill To</th>\n                  <th width=\"16%\">PO #</th>\n                  <th width=\"16%\">Due Date</th>\n                </tr>\n                <tr>\n                  <td>${contractor.name}<br>\n                    c/o ${billingUser.name}<br>\n                    #if($contractor.billingAddress.length() > 0 )\n                      ${contractor.billingAddress}<br>\n                      ${contractor.billingCity}, ${contractor.billingState} ${contractor.billingZip}<br>\n                    #else\n                      ${contractor.address}<br>\n                      ${contractor.city}, ${contractor.state} ${contractor.zip}\n                    #end\n                  </td>\n                  <td>$!invoice.poNumber</td>\n                  <td class=\"center\">$!{pics_dateTool.format(\"MMM d, yyyy\", $invoice.dueDate)}</td>\n                </tr>\n              </tbody>\n            </table></td>\n        </tr>\n        <tr>\n          <td style=\"padding-top: 15px;\"><table class=\"allborder\" width=\"100%\">\n              <tbody>\n                   <tr>\n                      <th colspan=\"2\">Item &amp; Description</th>\n                      <th width=\"200\">Fee Amount</th>\n                   </tr>\n                  #foreach( $itemOne in $invoice.items )\n                  <tr>\n                    <td style=\"border-right: 0pt none;\">$!{itemOne.invoiceFee.fee}</td>\n                    <td style=\"border-left: 0pt none;\">$!{itemOne.description}</td>\n                    <td class=\"right\">$${itemOne.amount} ${contractor.currencyCode}</td>\n                  </tr>\n                  #end\n                  <tr>\n                    <th colspan=\"2\" class=\"big right\">Invoice Total</th>\n                    <td class=\"big right\">$${invoice.totalAmount} ${contractor.currencyCode}</td>\n                  </tr>\n                  #foreach( $paymentOne in $invoice.payments )\n          <tr>\n                    <th colspan=\"2\" rowspan=\"2\" class=\"big right\">Payment</th>\n                    <td class=\"big right\">$${paymentOne.amount} ${contractor.currencyCode}</td>\n                  </tr>\n          <tr>\n                    <td>\n                      Date/Time: ${paymentOne.payment.creationDate}<br />\n                      #if($paymentOne.payment.paymentMethod.creditCard)\n                        Transaction ID: $!{paymentOne.payment.transactionID}<br />\n                        CC Number: $!{paymentOne.payment.ccNumber}\n                      #else\n                        Check: $!{paymentOne.payment.checkNumber}\n                      #end\n                    </td>\n                  </tr>\n          #end\n                  <tr>\n                    <th colspan=\"2\" class=\"big right\">Balance</th>\n                    <td class=\"big right\">$${invoice.balance} ${contractor.currencyCode}</td>\n                  </tr>\n              </tbody>\n            </table></td>\n        </tr>\n        <tr>\n          <td style=\"padding: 15px;\"> Comments: <br/>\n            $!{invoice.notes} <br/>\n            To view this invoice online, please go to: <a href=\"http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}\" >http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}</a>\n            <br/>\n          </td>\n        </tr>\n        <tr>\n          <td><table class=\"allborder\" width=\"100%\">\n              <tbody>\n                <tr>\n                  <th width=\"25%\">Phone#</th>\n                  <th width=\"25%\">Fax#</th>\n                  <th width=\"25%\">Email</th>\n                  <th width=\"25%\">Website</th>\n                </tr>\n                <tr>\n                  <td class=\"center\">(800) 506-PICS (7427)</td>\n                  <td class=\"center\">(949) 269-9146</td>\n                  <td class=\"center\">billing@picsauditing.com</td>\n                  <td class=\"center\">www.picsauditing.com</td>\n                </tr>\n              </tbody>\n            </table></td>\n        </tr>\n        </tbody>\n      </table>\n</body>\n</html>'
-where id = 45;
+update `email_template`
+set `body` = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>PICS - Invoice</title>
+</head>
+<body>
+<style type="text/css">
+body {
+    color: #4C4D4D;
+    background-color: white;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 24px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+table td, table th {
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 1.5;
+}
+table.allborder {
+    border-width: 1px;
+    border-collapse: collapse;
+    border-color: #333;
+    border-style: solid;
+}
+table.allborder td, table.allborder th {
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    border-width: 1px;
+    border-color: #444;
+    border-style: solid;
+    margin: 0;
+    padding: 6px;
+}
+table.allborder th {
+    text-align: center;
+    color: #444;
+    padding: 10px;
+    font-weight: normal;
+}
+table.allborder th.big, table.allborder td.big {
+    font-size: 16px;
+    font-weight: bold;
+}
+table.allborder th.center, table.allborder td.center {
+    text-align: center;
+}
+table.allborder th.right, table.allborder td.right {
+    text-align: right;
+    float: none;
+}
+table {
+    border-collapse: separate;
+}
+a img {
+    border: 0px none;
+}
+p {
+    padding-top: 1px;
+    padding-bottom: 5px;
+}
+div#alert {
+    background:#FBF2C9 url(http://www.picsorganizer.com/images/icon-warning.gif) no-repeat scroll 10px 10px;
+    border-bottom:2px solid #D0AE10;
+    border-top:2px solid #D0AE10;
+    margin-bottom:10px;
+    margin-top:10px;
+    padding:1em 1em 1em 5em;
+    width:86";
+}
+div#info {
+    background:#DBE7F8 url(http://www.picsorganizer.com/images/icon-info.gif) no-repeat scroll 10px 10px;
+    border-bottom:2px solid #B7D2F2;
+    border-top:2px solid #B7D2F2;
+    margin-bottom:10px;
+    margin-top:10px;
+    padding:1em 1em 1em 5em;
+    width:86";
+}
+#name {
+    margin-right: 5px;
+    font-size: 10px;
+}
+</style>
+#if($invoice.status.void)
+      <div id="alert">This invoice has been CANCELED.</div>
+#elseif($invoice.status.paid)
+     <div id="info">This invoice is PAID. Please keep this receipt for your records.</div>
+#elseif($invoice.overdue && ${contractor.activeB})
+    <div id="alert">This invoice is currently OVERDUE!</div>    
+#end
+#if($invoice.status.unpaid && !${contractor.ccExpired})
+    <div id="alert">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>    
+#elseif(${contractor.status.active} && ${contractor.ccValid} && ${contractor.paymentMethod} == "CreditCard" && $invoice.status.unpaid && ${contractor.ccExpired})
+    <div id="alert">We currently have a ${contractor.creditCard.cardType} ending in ${contractor.creditCard.cardNumber} on file and it will be automatically charged on ${pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</div>
+#end
+      <table width="100%" height="100%">
+        <tbody>
+        
+        <tr>
+          <td><table width="100%">
+              <tbody>
+                <tr>
+                  <td width="146" height=\"146\"><img src="http://www.picsorganizer.com/images/PICSLogo.png" alt=\"PICS Logo\" /></td>
+                  <td style="padding: 10px;">
+#if(${contractor.country.canada})
+                    PICS <br>
+                    100, 111 - 5 Avenue SW <br> 
+                    Suite # 124 <br>
+                    Calgary, AB T2P 3Y6
+#else
+                    PICS <br>
+                    P.O. Box 51387 <br>
+                    Irvine, CA 92619-1387<br>
+                    TIN: 26-3635236</td>
+#end
+                  <td width="200"><table class="allborder" border="0" cellpadding="4" cellspacing="0" width="100%">
+                      <tbody>
+                        <tr>
+                          <th>Date</th>
+                          <th class="big">Invoice #</th>
+                        </tr>
+                        <tr>
+                          <td class="center">$!{pics_dateTool.format("MMM d, yyyy", $invoice.creationDate)}</td>
+                          <td class="center"><a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}">${invoice.id}</a></td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+#if(!$invoice.status.unpaid)
+        <tr><td class="center">
+          <a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}">Click to Pay Invoice Online</a>
+        </td></tr>
+#end
+        <tr>
+          <td style="padding-top: 15px;"><table class="allborder" width="100%">
+              <tbody>
+                <tr>
+                  <th>Bill To</th>
+                  <th width="16%">PO #</th>
+                  <th width="16%">Due Date</th>
+                </tr>
+                <tr>
+                  <td>${contractor.name}<br>
+                    c/o ${billingUser.name}<br>
+                    #if($contractor.billingAddress.length() > 0 )
+                      ${contractor.billingAddress}<br>
+                      ${contractor.billingCity}, ${contractor.billingState} ${contractor.billingZip}<br>
+                    #else
+                      ${contractor.address}<br>
+                      ${contractor.city}, ${contractor.state} ${contractor.zip}
+                    #end
+                  </td>
+                  <td>$!invoice.poNumber</td>
+                  <td class="center">$!{pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        <tr>
+          <td style="padding-top: 15px;"><table class="allborder" width="100%">
+              <tbody>
+                   <tr>
+                      <th colspan="2">Item &amp; Description</th>
+                      <th width="200">Fee Amount</th>
+                   </tr>
+                  #foreach( $itemOne in $invoice.items )
+                  <tr>
+                    <td style="border-right: 0pt none;">$!{itemOne.invoiceFee.fee}</td>
+                    <td style="border-left: 0pt none;">
+                      $!{itemOne.description}
+			#if($!{itemOne.paymentExpires})
+				<span style="color: #444; font-style: italic; font-size: 10px;">
+					#if(${itemOne.invoiceFee.membership})
+						expires
+					#else
+						effective
+					#end
+					${pics_dateTool.format("MM/dd/yyyy hh:mm a", ${itemOne.paymentExpires})}
+				</span>
+			#end
+                    </td>
+                    <td class="right">$${itemOne.amount} ${contractor.currencyCode}</td>
+                  </tr>
+                  #end
+                  <tr>
+                    <th colspan="2" class="big right">Invoice Total</th>
+                    <td class="big right">$${invoice.totalAmount} ${contractor.currencyCode}</td>
+                  </tr>
+                  #foreach( $paymentOne in $invoice.payments )
+          <tr>
+                    <th colspan="2" rowspan="2" class="big right">Payment</th>
+                    <td class="big right">$${paymentOne.amount} ${contractor.currencyCode}</td>
+                  </tr>
+          <tr>
+                    <td>
+                      Date/Time: ${paymentOne.payment.creationDate}<br />
+                      #if($paymentOne.payment.paymentMethod.creditCard)
+                        Transaction ID: $!{paymentOne.payment.transactionID}<br />
+                        CC Number: $!{paymentOne.payment.ccNumber}
+                      #else
+                        Check: $!{paymentOne.payment.checkNumber}
+                      #end
+                    </td>
+                  </tr>
+          #end
+                  <tr>
+                    <th colspan="2" class="big right">Balance</th>
+                    <td class="big right">$${invoice.balance} ${contractor.currencyCode}</td>
+                  </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px;"> Comments: <br/>
+            $!{invoice.notes} <br/>
+            To view this invoice online, please go to: <a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}" >http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}</a>
+            <br/>
+          </td>
+        </tr>
+        <tr>
+          <td><table class="allborder" width="100%">
+              <tbody>
+                <tr>
+                  <th width="25%">Phone#</th>
+                  <th width="25%">Fax#</th>
+                  <th width="25%">Email</th>
+                  <th width="25%">Website</th>
+                </tr>
+                <tr>
+                  <td class="center">(800) 506-PICS (7427)</td>
+                  <td class="center">(949) 269-9146</td>
+                  <td class="center">billing@picsauditing.com</td>
+                  <td class="center">www.picsauditing.com</td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        </tbody>
+      </table>
+</body>
+</html>'
+WHERE `id` = 45;
+
+update `app_translation`
+set `msgValue` = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>PICS - Invoice</title>
+</head>
+<body>
+<style type="text/css">
+body {
+    color: #4C4D4D;
+    background-color: white;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 24px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+table td, table th {
+    vertical-align: middle;
+    font-size: 14px;
+    line-height: 1.5;
+}
+table.allborder {
+    border-width: 1px;
+    border-collapse: collapse;
+    border-color: #333;
+    border-style: solid;
+}
+table.allborder td, table.allborder th {
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    border-width: 1px;
+    border-color: #444;
+    border-style: solid;
+    margin: 0;
+    padding: 6px;
+}
+table.allborder th {
+    text-align: center;
+    color: #444;
+    padding: 10px;
+    font-weight: normal;
+}
+table.allborder th.big, table.allborder td.big {
+    font-size: 16px;
+    font-weight: bold;
+}
+table.allborder th.center, table.allborder td.center {
+    text-align: center;
+}
+table.allborder th.right, table.allborder td.right {
+    text-align: right;
+    float: none;
+}
+table {
+    border-collapse: separate;
+}
+a img {
+    border: 0px none;
+}
+p {
+    padding-top: 1px;
+    padding-bottom: 5px;
+}
+div#alert {
+    background:#FBF2C9 url(http://www.picsorganizer.com/images/icon-warning.gif) no-repeat scroll 10px 10px;
+    border-bottom:2px solid #D0AE10;
+    border-top:2px solid #D0AE10;
+    margin-bottom:10px;
+    margin-top:10px;
+    padding:1em 1em 1em 5em;
+    width:86";
+}
+div#info {
+    background:#DBE7F8 url(http://www.picsorganizer.com/images/icon-info.gif) no-repeat scroll 10px 10px;
+    border-bottom:2px solid #B7D2F2;
+    border-top:2px solid #B7D2F2;
+    margin-bottom:10px;
+    margin-top:10px;
+    padding:1em 1em 1em 5em;
+    width:86";
+}
+#name {
+    margin-right: 5px;
+    font-size: 10px;
+}
+</style>
+#if($invoice.status.void)
+      <div id="alert">This invoice has been CANCELED.</div>
+#elseif($invoice.status.paid)
+     <div id="info">This invoice is PAID. Please keep this receipt for your records.</div>
+#elseif($invoice.overdue && ${contractor.activeB})
+    <div id="alert">This invoice is currently OVERDUE!</div>    
+#end
+#if($invoice.status.unpaid && !${contractor.ccExpired})
+    <div id="alert">The Credit Card on file has Expired. Please login to your account and add a valid payment method.</div>    
+#elseif(${contractor.status.active} && ${contractor.ccValid} && ${contractor.paymentMethod} == "CreditCard" && $invoice.status.unpaid && ${contractor.ccExpired})
+    <div id="alert">We currently have a ${contractor.creditCard.cardType} ending in ${contractor.creditCard.cardNumber} on file and it will be automatically charged on ${pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</div>
+#end
+      <table width="100%" height="100%">
+        <tbody>
+        
+        <tr>
+          <td><table width="100%">
+              <tbody>
+                <tr>
+                  <td width="146" height=\"146\"><img src="http://www.picsorganizer.com/images/PICSLogo.png" alt=\"PICS Logo\" /></td>
+                  <td style="padding: 10px;">
+#if(${contractor.country.canada})
+                    PICS <br>
+                    100, 111 - 5 Avenue SW <br> 
+                    Suite # 124 <br>
+                    Calgary, AB T2P 3Y6
+#else
+                    PICS <br>
+                    P.O. Box 51387 <br>
+                    Irvine, CA 92619-1387<br>
+                    TIN: 26-3635236</td>
+#end
+                  <td width="200"><table class="allborder" border="0" cellpadding="4" cellspacing="0" width="100%">
+                      <tbody>
+                        <tr>
+                          <th>Date</th>
+                          <th class="big">Invoice #</th>
+                        </tr>
+                        <tr>
+                          <td class="center">$!{pics_dateTool.format("MMM d, yyyy", $invoice.creationDate)}</td>
+                          <td class="center"><a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}">${invoice.id}</a></td>
+                        </tr>
+                      </tbody>
+                    </table></td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+#if(!$invoice.status.unpaid)
+        <tr><td class="center">
+          <a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}">Click to Pay Invoice Online</a>
+        </td></tr>
+#end
+        <tr>
+          <td style="padding-top: 15px;"><table class="allborder" width="100%">
+              <tbody>
+                <tr>
+                  <th>Bill To</th>
+                  <th width="16%">PO #</th>
+                  <th width="16%">Due Date</th>
+                </tr>
+                <tr>
+                  <td>${contractor.name}<br>
+                    c/o ${billingUser.name}<br>
+                    #if($contractor.billingAddress.length() > 0 )
+                      ${contractor.billingAddress}<br>
+                      ${contractor.billingCity}, ${contractor.billingState} ${contractor.billingZip}<br>
+                    #else
+                      ${contractor.address}<br>
+                      ${contractor.city}, ${contractor.state} ${contractor.zip}
+                    #end
+                  </td>
+                  <td>$!invoice.poNumber</td>
+                  <td class="center">$!{pics_dateTool.format("MMM d, yyyy", $invoice.dueDate)}</td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        <tr>
+          <td style="padding-top: 15px;"><table class="allborder" width="100%">
+              <tbody>
+                   <tr>
+                      <th colspan="2">Item &amp; Description</th>
+                      <th width="200">Fee Amount</th>
+                   </tr>
+                  #foreach( $itemOne in $invoice.items )
+                  <tr>
+                    <td style="border-right: 0pt none;">$!{itemOne.invoiceFee.fee}</td>
+                    <td style="border-left: 0pt none;">
+                      $!{itemOne.description}
+			#if($!{itemOne.paymentExpires})
+				<span style="color: #444; font-style: italic; font-size: 10px;">
+					#if(${itemOne.invoiceFee.membership})
+						expires
+					#else
+						effective
+					#end
+					${pics_dateTool.format("MM/dd/yyyy hh:mm a", ${itemOne.paymentExpires})}
+				</span>
+			#end
+                    </td>
+                    <td class="right">$${itemOne.amount} ${contractor.currencyCode}</td>
+                  </tr>
+                  #end
+                  <tr>
+                    <th colspan="2" class="big right">Invoice Total</th>
+                    <td class="big right">$${invoice.totalAmount} ${contractor.currencyCode}</td>
+                  </tr>
+                  #foreach( $paymentOne in $invoice.payments )
+          <tr>
+                    <th colspan="2" rowspan="2" class="big right">Payment</th>
+                    <td class="big right">$${paymentOne.amount} ${contractor.currencyCode}</td>
+                  </tr>
+          <tr>
+                    <td>
+                      Date/Time: ${paymentOne.payment.creationDate}<br />
+                      #if($paymentOne.payment.paymentMethod.creditCard)
+                        Transaction ID: $!{paymentOne.payment.transactionID}<br />
+                        CC Number: $!{paymentOne.payment.ccNumber}
+                      #else
+                        Check: $!{paymentOne.payment.checkNumber}
+                      #end
+                    </td>
+                  </tr>
+          #end
+                  <tr>
+                    <th colspan="2" class="big right">Balance</th>
+                    <td class="big right">$${invoice.balance} ${contractor.currencyCode}</td>
+                  </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        <tr>
+          <td style="padding: 15px;"> Comments: <br/>
+            $!{invoice.notes} <br/>
+            To view this invoice online, please go to: <a href="http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}" >http://www.picsorganizer.com/InvoiceDetail.action?invoice.id=${invoice.id}</a>
+            <br/>
+          </td>
+        </tr>
+        <tr>
+          <td><table class="allborder" width="100%">
+              <tbody>
+                <tr>
+                  <th width="25%">Phone#</th>
+                  <th width="25%">Fax#</th>
+                  <th width="25%">Email</th>
+                  <th width="25%">Website</th>
+                </tr>
+                <tr>
+                  <td class="center">(800) 506-PICS (7427)</td>
+                  <td class="center">(949) 269-9146</td>
+                  <td class="center">billing@picsauditing.com</td>
+                  <td class="center">www.picsauditing.com</td>
+                </tr>
+              </tbody>
+            </table></td>
+        </tr>
+        </tbody>
+      </table>
+</body>
+</html>'
+WHERE `msgKey` = 'EmailTemplate.45.translatedBody'
+and `locale` = 'en';
+--
