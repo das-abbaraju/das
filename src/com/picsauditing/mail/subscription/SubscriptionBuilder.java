@@ -6,11 +6,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -63,6 +66,7 @@ public abstract class SubscriptionBuilder {
 			emailBuilder.setToAddresses(user.getEmail());
 
 			try {
+				// If contractor subscription send replies to CSR
 				if (user.getAccount().isContractor()) {
 					ContractorAccount c = (ContractorAccount) user.getAccount();
 					emailBuilder.addToken("contractor", c);
@@ -70,6 +74,14 @@ public abstract class SubscriptionBuilder {
 					if (c.getAuditor() != null)
 						emailBuilder.setFromAddress("\"" + c.getAuditor().getName() + "\"<" + c.getAuditor().getEmail()
 								+ ">");
+				// If operator subscription send replies to AM
+				} else if(user.getAccount().isOperatorCorporate()){
+					OperatorAccount o = (OperatorAccount) user.getAccount();
+					for(AccountUser au : o.getAccountUsers()){
+						if(au.getRole().equals(UserAccountRole.PICSAccountRep))
+							emailBuilder.setFromAddress("\"" + au.getUser().getName() + "\"<" + au.getUser().getEmail()
+									+ ">");
+					}
 				}
 			} catch (Exception e) {
 
