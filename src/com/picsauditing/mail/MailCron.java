@@ -1,11 +1,9 @@
 package com.picsauditing.mail;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -17,7 +15,6 @@ import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
-import com.picsauditing.mail.subscription.MissingSubscriptionException;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
 import com.picsauditing.util.Strings;
@@ -52,9 +49,8 @@ public class MailCron extends PicsActionSupport {
 		 */
 		AppProperty enableSubscriptions = appPropDAO.find("subscription.enable");
 		if (Boolean.parseBoolean(enableSubscriptions.getValue())) {
-			EmailSubscription emailSubscription = null;
 			if (subscriptionID > 0) {
-				emailSubscription = subscriptionDAO.find(subscriptionID);
+				EmailSubscription emailSubscription = subscriptionDAO.find(subscriptionID);
 
 				if (emailSubscription == null) {
 					addActionError("You must supply a valid subscription id.");
@@ -64,53 +60,37 @@ public class MailCron extends PicsActionSupport {
 				try {
 					SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
 					builder.sendSubscription(emailSubscription);
-				} catch (MissingSubscriptionException e) {
-					EmailQueue email = new EmailQueue();
-					email.setToAddresses("errors@picsauditing.com");
-					email.setFromAddress("PICS Mailer<info@picsauditing.com>");
-					email.setSubject("Error in MailCron for userID = " + emailSubscription.getUser().getId());
-					email.setBody("User " + emailSubscription.getUser().getId() + " is subscribed to "
-							+ emailSubscription.getSubscription() + " on a " + emailSubscription.getTimePeriod()
-							+ " time period. There is no mapping for this Subscription "
-							+ "in the SubscriptionFactory.");
-					email.setCreationDate(new Date());
-					emailSenderSpring.send(email);
 				} catch (Exception e) {
-					StringWriter sw = new StringWriter();
-					e.printStackTrace(new PrintWriter(sw));
+					try { // If emailing the error throws an exception, output to console and continue
+						if (!isDebugging()) {
+							addActionError("Error occurred on subscription " + subscriptionID + "\n" + e.getMessage());
+							// In case this contractor errored out while running contractor
+							// cron we bump the last recalculation date to 1 day in future.
+							emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
+							subscriptionDAO.save(emailSubscription);
 
-					if (!isDebugging()) {
-						addActionError("Error occurred on subscription " + subscriptionID + "<br>" + e.getMessage());
-						// In case this contractor errored out while running contractor
-						// cron we bump the last recalculation date to 1 day in future.
-						emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
-						subscriptionDAO.save(emailSubscription);
-
-						StringBuffer body = new StringBuffer();
-
-						body.append("There was an error running MailCron for id=");
-						body.append(subscriptionID);
-						body.append("\n\n");
-
-						try {
+							StringBuffer body = new StringBuffer();
+							body.append("There was an error running MailCron for subscription id=");
+							body.append(subscriptionID);
+							body.append("\n\n");
 							body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
 							body.append("\n\n");
-						} catch (UnknownHostException uh) {
+							body.append(ExceptionUtils.getStackTrace(e));
+
+							EmailQueue email = new EmailQueue();
+							email.setToAddresses("errors@picsauditing.com");
+							email.setFromAddress("PICS Mailer<info@picsauditing.com>");
+							email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
+							email.setBody(body.toString());
+							email.setCreationDate(new Date());
+							emailSenderSpring.sendNow(email);
+						} else {
+							addActionError(ExceptionUtils.getStackTrace(e));
 						}
-
-						body.append(e.getStackTrace());
-
-						body.append(sw.toString());
-
-						try {
-							sendMail(body.toString(), subscriptionID);
-						} catch (Exception notMuchWeCanDoButLogIt) {
-							System.out.println("Error sending email");
-							System.out.println(notMuchWeCanDoButLogIt);
-							notMuchWeCanDoButLogIt.printStackTrace();
-						}
-					} else {
-						addActionError(sw.toString());
+					} catch (Exception notMuchWeCanDoButLogIt) {
+						System.out.println("Error sending email");
+						System.out.println(notMuchWeCanDoButLogIt);
+						notMuchWeCanDoButLogIt.printStackTrace();
 					}
 				}
 			}
@@ -133,8 +113,8 @@ public class MailCron extends PicsActionSupport {
 				addActionError("Failed to send email: " + e.getMessage());
 			}
 		}
-		if (this.getActionErrors().size() == 0)
-			this.addActionMessage("Successfully sent " + emails.size() + " email(s)");
+		if (getActionErrors().size() == 0)
+			addActionMessage("Successfully sent " + emails.size() + " email(s)");
 
 		return ACTION_MESSAGES;
 	}
@@ -154,20 +134,4 @@ public class MailCron extends PicsActionSupport {
 		return PLAIN_TEXT;
 	}
 
-	private void sendMail(String message, int subscriptionID) {
-		try {
-			GridSender gridSender = new GridSender();
-			EmailQueue email = new EmailQueue();
-			email.setToAddresses("errors@picsauditing.com");
-			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
-			email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
-			email.setBody(message);
-			email.setCreationDate(new Date());
-			gridSender.sendMail(email);
-		} catch (Exception notMuchWeCanDoButLogIt) {
-			System.out.println("Error sending email");
-			System.out.println(notMuchWeCanDoButLogIt);
-			notMuchWeCanDoButLogIt.printStackTrace();
-		}
-	}
 }
