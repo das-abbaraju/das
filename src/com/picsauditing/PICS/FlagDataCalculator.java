@@ -152,7 +152,7 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : con.getAudits()) {
-					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired() && !ca.hasOnlyInvisibleCaos()) {
 						hasAnnualUpdate = true;
 						boolean auditIsGood = false;
 						for (ContractorAuditOperator cao : ca.getOperators()) {
