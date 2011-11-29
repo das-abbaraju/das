@@ -29,8 +29,6 @@ var ajaxUrl = 'TradeTaxonomy!tradeAjax.action?trade=';
 
 <pics:permission perm="ManageTrades" type="Edit">
 
-<s:include value="../config_environment.jsp" />
-
 <div class="clearfix">
 	<a href="#" class="add trade"><s:text name="TradeTaxonomy.AddTopLevelTrade"/></a>
 </div>
