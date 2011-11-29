@@ -6,3 +6,6 @@
 -- SEE upgrade.sql FOR NON-CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-3803
+update audit_question set uniqueCode='policyExpirationDatePlus120' where id = 2952;
+

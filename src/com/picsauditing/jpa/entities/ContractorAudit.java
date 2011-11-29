@@ -311,7 +311,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		if (auditType.getClassType() == AuditTypeClass.Policy) {
 			return daysToExpiration <= 15;
 		} else if (auditType.getId() == AuditType.COR) {
-			return daysToExpiration <= 60;
+			return daysToExpiration <= 180;
 		} else {
 			return daysToExpiration <= 90;
 		}

@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -223,6 +224,22 @@ public class AuditDataSave extends AuditActionSupport {
 					Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
 					if (!DateBean.isNullDate(expiresDate))
 						tempAudit.setExpiresDate(expiresDate);
+					// In case the answer is not a valid date we add 1 year
+					// to the policy's creation date.
+					if (tempAudit.getExpiresDate() == null) {
+						tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+					}
+					auditDao.save(tempAudit);
+				}
+				if ("policyExpirationDatePlus120".equals(auditData.getQuestion().getUniqueCode())
+						&& !StringUtils.isEmpty(auditData.getAnswer())) {
+					Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
+					if (!DateBean.isNullDate(expiresDate)) {
+						Calendar date = Calendar.getInstance();
+						date.setTime(expiresDate);
+						date.add(Calendar.DATE, 120);
+						tempAudit.setExpiresDate(date.getTime());
+					}
 					// In case the answer is not a valid date we add 1 year
 					// to the policy's creation date.
 					if (tempAudit.getExpiresDate() == null) {
