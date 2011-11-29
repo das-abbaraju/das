@@ -99,22 +99,27 @@ public class MailCron extends PicsActionSupport {
 		/**
 		 * Send mail
 		 */
-		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
-		if (emails.size() == 0) {
-			addActionMessage("The email queue is empty");
-			return ACTION_MESSAGES;
-		}
-
-		for (EmailQueue email : emails) {
-			try {
-				emailSenderSpring.sendNow(email);
-			} catch (Exception e) {
-				PicsLogger.log("ERROR with MailCron: " + e.getMessage());
-				addActionError("Failed to send email: " + e.getMessage());
+		PicsLogger.start("EmailSender");
+		try {
+			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
+			if (emails.size() == 0) {
+				addActionMessage("The email queue is empty");
+				return ACTION_MESSAGES;
 			}
+
+			for (EmailQueue email : emails) {
+				try {
+					emailSenderSpring.sendNow(email);
+				} catch (Exception e) {
+					PicsLogger.log("ERROR with MailCron: " + e.getMessage());
+					addActionError("Failed to send email: " + e.getMessage());
+				}
+			}
+			if (getActionErrors().size() == 0)
+				addActionMessage("Successfully sent " + emails.size() + " email(s)");
+		} finally {
+			PicsLogger.stop();
 		}
-		if (getActionErrors().size() == 0)
-			addActionMessage("Successfully sent " + emails.size() + " email(s)");
 
 		return ACTION_MESSAGES;
 	}
