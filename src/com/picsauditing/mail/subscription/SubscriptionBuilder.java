@@ -67,6 +67,9 @@ public abstract class SubscriptionBuilder {
 					ContractorAccount c = (ContractorAccount) user.getAccount();
 					emailBuilder.addToken("contractor", c);
 					emailBuilder.setConID(c.getId());
+					if (c.getAuditor() != null)
+						emailBuilder.setFromAddress("\"" + c.getAuditor().getName() + "\"<" + c.getAuditor().getEmail()
+								+ ">");
 				}
 			} catch (Exception e) {
 
