@@ -108,15 +108,17 @@ public class MailCron extends PicsActionSupport {
 			}
 
 			for (EmailQueue email : emails) {
-				try {
-					emailSenderSpring.sendNow(email);
-				} catch (Exception e) {
-					PicsLogger.log("ERROR with MailCron: " + e.getMessage());
-					addActionError("Failed to send email: " + e.getMessage());
-				}
+				emailSenderSpring.sendNow(email);
 			}
+
 			if (getActionErrors().size() == 0)
 				addActionMessage("Successfully sent " + emails.size() + " email(s)");
+		} catch (Exception notMuchWeCanDoButLogIt) {
+			PicsLogger.log("ERROR with MailCron: " + notMuchWeCanDoButLogIt.getMessage());
+			addActionError("Failed to send email: " + notMuchWeCanDoButLogIt.getMessage());
+			System.out.println("Error sending email");
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
 		} finally {
 			PicsLogger.stop();
 		}
