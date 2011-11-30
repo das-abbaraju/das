@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -23,8 +25,10 @@ public class ReportModel extends BaseTable implements JSONable {
 	protected String condition;
 
 	protected List<ReportModelColumn> columns = new ArrayList<ReportModelColumn>();
+	protected List<ReportModel> subModels = new ArrayList<ReportModel>();
 
-	@Column(name = "parentID", length = 11)
+	@ManyToOne
+	@JoinColumn(name = "parentID")
 	public ReportModel getParent() {
 		return parent;
 	}
@@ -51,7 +55,6 @@ public class ReportModel extends BaseTable implements JSONable {
 		this.tableAlias = tableAlias;
 	}
 
-	@Column(name = "name", length = 100)
 	public String getName() {
 		return this.name;
 	}
@@ -60,7 +63,6 @@ public class ReportModel extends BaseTable implements JSONable {
 		this.name = name;
 	}
 
-	@Column(name = "condition")
 	public String getCondition() {
 		return condition;
 	}
@@ -78,6 +80,15 @@ public class ReportModel extends BaseTable implements JSONable {
 
 	public void setColumns(List<ReportModelColumn> columns) {
 		this.columns = columns;
+	}
+
+	@OneToMany(mappedBy = "parent")
+	public List<ReportModel> getSubModels() {
+		return subModels;
+	}
+
+	public void setSubModels(List<ReportModel> subModels) {
+		this.subModels = subModels;
 	}
 
 	@Override
@@ -107,10 +118,5 @@ public class ReportModel extends BaseTable implements JSONable {
 	@Override
 	public String toString() {
 		return name + "(" + id + ")";
-	}
-
-	@Transient
-	public String getReturnType() {
-		return "report";
 	}
 }

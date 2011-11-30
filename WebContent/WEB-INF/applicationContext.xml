@@ -126,6 +126,7 @@
 
 	<bean id="ReportBuilder" class="com.picsauditing.report.ReportBuilder" />
 	<bean id="ReportModelDAO" class="com.picsauditing.dao.ReportModelDAO"/>
+	<bean id="ReportQueryDAO" class="com.picsauditing.dao.ReportQueryDAO"/>
 
 	<!--  JPA implementation -->
     <bean id="entityManagerFactory"
