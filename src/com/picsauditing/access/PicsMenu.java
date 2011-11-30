@@ -195,9 +195,7 @@ public class PicsMenu {
 		if (permissions.isAdmin())
 			subMenu.addChild("Obsolete Sched. Audits", "ObsoleteScheduledAudits.action");
 		if (permissions.hasPermission(OpPerms.AssignAudits))
-			subMenu
-					.addChild("Close Assigned Audits",
-							"ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
+			subMenu.addChild("Close Assigned Audits", "ReportCloseAuditAssignments.action?filter.auditStatus=Submitted");
 		if (permissions.hasPermission(OpPerms.OfficeAuditCalendar))
 			addChildAction(subMenu, "AuditCalendar");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
@@ -220,9 +218,11 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("PQF Verification", "PqfVerification.action?filter.status=Active"
-					+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId=" + permissions.getShadowedUserID()
-							: ""));
+			subMenu.addChild(
+					"PQF Verification",
+					"PqfVerification.action?filter.status=Active"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.conAuditorId="
+									+ permissions.getShadowedUserID() : ""));
 		if (permissions.hasPermission(OpPerms.UserZipcodeAssignment))
 			subMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
@@ -242,9 +242,11 @@ public class PicsMenu {
 			addChildAction(subMenu, "ReportPolicyList");
 		}
 		if (permissions.hasPermission(OpPerms.InsuranceVerification))
-			subMenu.addChild(getTitle("PolicyVerification"), "PolicyVerification.action"
-					+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId=" + permissions.getShadowedUserID()
-							: ""));
+			subMenu.addChild(
+					getTitle("PolicyVerification"),
+					"PolicyVerification.action"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "?filter.conAuditorId="
+									+ permissions.getShadowedUserID() : ""));
 		if (permissions.hasPermission(OpPerms.InsuranceApproval))
 			subMenu.addChild(getTitle("ReportInsuranceApproval"),
 					"ReportInsuranceApproval.action?filter.auditStatus=Complete");
@@ -281,7 +283,8 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailQueue)) {
 			subMenu.addChild(getTitle("EmailQueueList"), "EmailQueueList.action?filter.status=Pending");
-			subMenu.addChild("Email Error Report", "ReportEmailError.action");
+			if (permissions.isPicsEmployee())
+				subMenu.addChild("Email Error Report", "ReportEmailError.action");
 		}
 		if (permissions.isContractor() && permissions.hasPermission(OpPerms.ContractorSafety))
 			subMenu.addChild("Job Competency Matrix", "JobCompetencyMatrix.action");
@@ -296,9 +299,7 @@ public class PicsMenu {
 			addChildAction(subMenu, "ProfileEdit");
 		}
 		if (permissions.hasPermission(OpPerms.EditAccountDetails))
-			subMenu
-					.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?operator="
-							+ permissions.getAccountId());
+			subMenu.addChild(getTitle("FacilitiesEdit"), "FacilitiesEdit.action?operator=" + permissions.getAccountId());
 
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
@@ -344,7 +345,8 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.EmailTemplates, OpType.Edit)) {
 			menuItems.put(getTitle("EditEmailTemplate"), "EditEmailTemplate.action");
-			menuItems.put("Email Exclusions List", "EditEmailExclusions.action");
+			if (permissions.isPicsEmployee())
+				menuItems.put("Email Exclusions List", "EditEmailExclusions.action");
 		}
 
 		// add to menu in sorted order
@@ -380,11 +382,11 @@ public class PicsMenu {
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");
 		}
-		
+
 		if (permissions.isOperatorCorporate()) {
 			addChildAction(subMenu, "ReportEmployeeTraining");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER)) {
@@ -424,12 +426,9 @@ public class PicsMenu {
 			subMenu.addChild("Background Check", "QuestionAnswerSearchByAudit.action");
 
 		// Hide this menu if the operator doesn't have any required tags.
-		OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO) SpringUtils
-				.getBean("OperatorAccountDAO");
-		if (permissions.hasPermission(OpPerms.ContractorTags)
-				&& permissions.isOperatorCorporate()
-				&& !Strings.isEmpty(operatorAccountDAO.find(
-						permissions.getAccountId()).getRequiredTags()))
+		OperatorAccountDAO operatorAccountDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
+		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate()
+				&& !Strings.isEmpty(operatorAccountDAO.find(permissions.getAccountId()).getRequiredTags()))
 			addChildAction(subMenu, "ReportUntaggedContractors");
 		if (permissions.hasPermission(OpPerms.ManageTrades) && permissions.isAdmin())
 			subMenu.addChild("Contractor Trade Conflicts", "ReportContractorTradeConflict.action");
