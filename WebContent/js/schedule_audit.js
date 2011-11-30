@@ -105,7 +105,7 @@ SCHEDULE_AUDIT = {
 							if (detail.Accuracy < 8) {
 								// Submitting city, state, zip, address, and country
 								// Accepting Google's best guess on approximate matches
-								//throw("Address (" + address + ") could not be found accurately");
+								throw(translate('JS.ScheduleAudit.error.AddressNotFound', [ address ]));
 							}
 
 							$("#conAudit_latitude").val(latlong[1]);
@@ -231,6 +231,7 @@ function isVerified() {
 function unVerify() {
 	$("#conAudit_latitude").val(0);
 	$("#conAudit_longitude").val(0);
+	$("#unverifiedCheckbox").attr('checked', false);
 	$("#submitButton").hide();
 	$("#unverifiedLI").show();
 }
@@ -255,7 +256,7 @@ function verifyAddress() {
 						if (detail.Accuracy < 8) {
 							// Submitting city, state, zip, address, and country
 							// Accepting Google's best guess on approximate matches
-							//throw("Address (" + address + ") could not be found accurately");
+							throw(translate('JS.ScheduleAudit.error.AddressNotFound', [ address ]));
 						}
 
 						$("#conAudit_latitude").val(latlong[1]);
