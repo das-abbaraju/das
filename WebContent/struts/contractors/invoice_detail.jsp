@@ -391,6 +391,8 @@
 		</s:form>
 		
 		<script type="text/javascript">
+			var ccNumber = '${ccNumber}';
+			
 			$.ajax({
 				url: "BillingAddress.action?country=" + '<s:property value="country" />',
 				success: function(data){
@@ -409,7 +411,8 @@
 			
 			$('a.pay.ccValid').live('click', function(event) {
 				$(this).attr('disabled', true);
-				return confirm(translate('JS.InvoiceDetail.ConfirmCharge', [<s:property value="ccNumber" />]));
+				
+				return confirm(translate('JS.InvoiceDetail.ConfirmCharge', [ccNumber]));
 			});
 		</script>
 	</body>
