@@ -63,6 +63,8 @@ public class ResetSelenium extends PicsActionSupport {
 			t.delete(db);
 			t.table = "contractor_fee";
 			t.delete(db);
+			t.table = "email_queue";
+			t.delete(db);
 			t.table = "contractor_trade";
 			t.delete(db);
 		}
