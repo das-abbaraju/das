@@ -213,10 +213,6 @@ $(function() {
 			 }
 		});
 	});
-	
-	$('#verifyButton').live('click', function() {
-		verifyAddress();
-	});
 });
 
 function isVerified() {
