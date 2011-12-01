@@ -1,7 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;

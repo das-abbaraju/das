@@ -365,12 +365,16 @@ public class DateBean {
 		df.setLenient(false);
 
 		List<String> patterns = new ArrayList<String>();
+		// TODO Add Unixtimestap as the best option
+		// patterns.add("########");
 		patterns.add("MM-dd-yy");
 		patterns.add("MM/dd/yy");
 		patterns.add("yyyy-MM-dd");
 		patterns.add("yyyy/MM/dd");
 		patterns.add("MM-dd-yyyy");
 		patterns.add("MM/dd/yyyy");
+		patterns.add("dd/MM/yyyy");
+		patterns.add("dd-MM-yyyy");
 		Date d = null;
 		for (String pattern : patterns) {
 			try {
