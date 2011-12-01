@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<jsp:include page="/struts/jquery.jsp"/>
-<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css" />
 <title>PICS Error</title>
 </head>
 
