@@ -16,8 +16,9 @@ $(function(){
 	});
 	
 	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
-		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
+		$.each($(this).find('div.dependent-questions').text().split(','), function(i,v) {
 			reloadQuestion(v);
+			$('#node_' + v).trigger('updateDependent');
 		});
 	});
 	

@@ -121,7 +121,7 @@ public enum QuestionFunction {
 	},
 	/**
 	 * Annual Update RWCR
-	 * LWCR  = (Number of Restricted Work Day Cases (I) / Total Man Hours) * 200,000
+	 * RWCR  = (Number of Restricted Work Day Cases (I) / Total Man Hours) * 200,000
 	 */
 	RWCR {
 		@Override
@@ -162,7 +162,7 @@ public enum QuestionFunction {
 		}
 	},
 	/**
-	 * Annual Update FIR
+	 * US Annual Update Fatality Incident Rate
 	 * FIR  = (Fatalities (G) / Total Man Hours) * 200,000
 	 */
 	FIR {
@@ -181,7 +181,7 @@ public enum QuestionFunction {
 		}
 	},
 	/**
-	 * Annual Update Severity Rate
+	 * US Annual Update Severity Rate
 	 * Severity Rate  = (Lost Workdays (K) / Total Man Hours) * 200,000
 	 */
 	SEVERITY_RATE {
@@ -200,7 +200,7 @@ public enum QuestionFunction {
 		}
 	},
 	/**
-	 * Annual Update Severity Rate
+	 * US Annual Update Severity Rate
 	 * PICS Severity Rate  = (Lost Workdays (K) + Restricted Days (L) / Total Man Hours) * 200,000
 	 */
 	PICS_SEVERITY_RATE {
@@ -222,32 +222,26 @@ public enum QuestionFunction {
 		}
 	},
 	/**
-	 * Annual Update AIR
-	 * AIR = (Number of reportable injuries / Number of employees) X 100,000
+	 * UK Annual Update Incidence Frequency Rate
+	 * IFR = (fatalities + major injuries + non injuries / number of employees) X 100,000
 	 */
-	AIR {
+	IFR {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("employees"))
-					|| Strings.isEmpty(params.get("fatalities"))
+					|| Strings.isEmpty(params.get("nonMajorInjuries"))
 					|| Strings.isEmpty(params.get("majorInjuries"))
-					|| Strings.isEmpty(params.get("overThreeDays"))
-					|| Strings.isEmpty(params.get("underThreeDays"))
-					|| Strings.isEmpty(params.get("diseases"))
-					|| Strings.isEmpty(params.get("gas")))
+					|| Strings.isEmpty(params.get("fatalities")))
 				return "Audit.missingParameter";
 			
 			BigDecimal employees = new BigDecimal(params.get("employees")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
 			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
-			BigDecimal overThreeDays = new BigDecimal(params.get("overThreeDays")).setScale(7);
-			BigDecimal underThreeDays = new BigDecimal(params.get("underThreeDays")).setScale(7);
-			BigDecimal diseases = new BigDecimal(params.get("diseases")).setScale(7);
-			BigDecimal gas = new BigDecimal(params.get("gas")).setScale(7);
+			BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries")).setScale(7);
 					
-			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(overThreeDays.add(underThreeDays.add(diseases.add(gas)))));
+			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(nonMajorInjuries));
 			
 			BigDecimal result;
 			try {
@@ -260,42 +254,49 @@ public enum QuestionFunction {
 		}
 	},
 	/**
-	 * Annual Update AFR
-	 * AFR = (Number of injuries / total hours worked) x 100,000 
+	 * UK Annual Update Dangerous Occurrences Frequency Rate
+	 * DOFR = (dangerous occurrences / total hours worked) x 100,000 
 	 */	
-	AFR {
+	DOFR {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
 			if (Strings.isEmpty(params.get("totalHours"))
-					|| Strings.isEmpty(params.get("fatalities"))
-					|| Strings.isEmpty(params.get("majorInjuries"))
-					|| Strings.isEmpty(params.get("overThreeDays"))
-					|| Strings.isEmpty(params.get("underThreeDays"))
-					|| Strings.isEmpty(params.get("diseases"))
-					|| Strings.isEmpty(params.get("gas")))
+					|| Strings.isEmpty(params.get("dangerousOccurrences")))
 				return "Audit.missingParameter";
 			
 			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
-			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
-			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
-			BigDecimal overThreeDays = new BigDecimal(params.get("overThreeDays")).setScale(7);
-			BigDecimal underThreeDays = new BigDecimal(params.get("underThreeDays")).setScale(7);
-			BigDecimal diseases = new BigDecimal(params.get("diseases")).setScale(7);
-			BigDecimal gas = new BigDecimal(params.get("gas")).setScale(7);
+			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences")).setScale(7);				
 					
-			BigDecimal totalIncidents = fatalities.add(majorInjuries.add(overThreeDays.add(underThreeDays.add(diseases.add(gas)))));
-			
 			BigDecimal result;
 			try {
-				result = totalIncidents.divide(totalHours).multiply(UK_NORMALIZER).setScale(2);
+				result = dangerousOccurences.divide(totalHours).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return "Audit.missingParameter";
 			}
 			
 			return result;
 		}
+	},
+	/**
+	 *  UK Annual Update
+	 */
+	UK_INJURIES{
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+			
+			if (Strings.isEmpty(params.get("overThreeDays"))
+					|| Strings.isEmpty(params.get("underThreeDays")))
+				return "Audit.missingParameter";
+			
+			int overThreeDays = Integer.valueOf(params.get("overThreeDays"));
+			int underThreeDays = Integer.valueOf(params.get("underThreeDays"));
+			
+			return overThreeDays + underThreeDays;
+		}
+		
 	},
 	SCORE {
 		@Override
@@ -330,7 +331,7 @@ public enum QuestionFunction {
 			return "E";
 		}
 	};
-	// OSHA standard normalizer. Hours in a year * 100 employees
+	// US OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
 	
 	// UK HSE standard normalizer.

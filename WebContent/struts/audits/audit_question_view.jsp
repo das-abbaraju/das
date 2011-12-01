@@ -144,3 +144,6 @@
 		<s:property value="#q.requirement" escape="false"/>
 	</div>
 </s:if>
+<s:if test="#q.questionType == 'Calculation'">
+<div class="dependent-questions hide"><s:iterator value="#q.dependentQuestions" status="s"><s:property value="id"/><s:if test="!#s.last">,</s:if></s:iterator></div>
+</s:if>
