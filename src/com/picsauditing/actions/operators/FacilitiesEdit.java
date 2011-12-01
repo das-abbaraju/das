@@ -299,8 +299,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	// i.e.  if F1 -> Hub -> US -> Corporate
 	// then F1 needs to be linked to US and Corporate
 	private void linkChildOperatorsToAllParentAccounts(List<OperatorAccount> newFacilities) {
-		List<OperatorAccount> parents = new ArrayList<OperatorAccount>(); //= operator.getParentOperators();
-		//parents.remove(operator);
+		List<OperatorAccount> parents = new ArrayList<OperatorAccount>();
 		findParentAccounts(operator, parents);
 		for (OperatorAccount child: newFacilities) {
 			for (OperatorAccount parent: parents){
