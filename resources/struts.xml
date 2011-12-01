@@ -496,6 +496,12 @@
 		<action name="SearchAjax" class="com.picsauditing.search.MainSearch">
 			<result>struts/search.jsp</result>
 		</action>
+		
+		<!-- Dynamic Reports -->
+		<action name="ReportDynamic"
+			class="com.picsauditing.actions.report.ReportDynamic">
+			<result>struts/blank.jsp</result>
+		</action>
 
 		<!-- Contractor List -->
 		<action name="ContractorList"
