@@ -195,11 +195,20 @@ public class AuditBuilder {
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
 		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<OperatorAccount, ContractorAuditOperator>();
 		AuditStatus maxStatus = null;
+		HashSet<ContractorAuditOperator> pqfCaosToResubmit = new HashSet<ContractorAuditOperator>();
+		HashSet<ContractorAuditOperator> pqfCaosToSubmit = new HashSet<ContractorAuditOperator>();
+		HashSet<Integer> operatorsGoingVisibleIds = new HashSet<Integer>();
+
 
 		// Make sure that the caos' visibility is set correctly
-		Set<OperatorAccount> caosToCreate = caoMap.keySet();
+		Set<OperatorAccount> caosToEnsureExist = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			boolean caoShouldBeVisible = contains(caosToCreate, cao.getOperator());
+			boolean caoShouldBeVisible = contains(caosToEnsureExist, cao.getOperator());
+			
+			if (!cao.isVisible() && caoShouldBeVisible) {
+				operatorsGoingVisibleIds.add(cao.getOperator().getId());
+			}
+			
 			cao.setVisible(caoShouldBeVisible);
 			
 			if (maxStatus == null || cao.getStatus().after(maxStatus)) {
@@ -219,12 +228,13 @@ public class AuditBuilder {
 		}
 
 		// Add CAOs that don't yet exist
-		for (OperatorAccount governingBody : caosToCreate) {
+		for (OperatorAccount governingBody : caosToEnsureExist) {
 			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getOperator().equals(governingBody)) {
 					cao = cao2;
+					break;
 				}
 			}
 			if (cao == null) {
@@ -238,6 +248,7 @@ public class AuditBuilder {
 				cao.changeStatus(firstStatus, null);
 				conAudit.getOperators().add(cao);
 				conAudit.setLastRecalculation(null);
+				contractorAuditOperatorDAO.save(cao);
 			}
 			if (conAudit.isExpired()) {
 				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Expired, null);
@@ -257,26 +268,53 @@ public class AuditBuilder {
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 
-		boolean changedCao = false;
-
-		// set previous coa on coap
+		// set previous cao on caop
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
-					changedCao = true;
 					caop.setPreviousCao(prevCao);
+					if ((prevCao.getStatus().isComplete() || prevCao.getStatus().isResubmit())
+							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds.contains(cao.getOperator()
+									.getId()))) {
+						pqfCaosToResubmit.add(cao);
+					} else if (prevCao.getStatus().isSubmitted()
+							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds.contains(cao.getOperator()
+									.getId()))) {
+						pqfCaosToSubmit.add(cao);
+					}
+
 				}
 			}
 		}
 
-		// Change the status of any complete pqf to resubmit if there was a caop change
-		if (changedCao && conAudit.getAuditType().isPqf()) {
-			for (ContractorAuditOperator operator : conAudit.getOperators()) {
-				if (operator.getStatus().isComplete()) {
-					ContractorAuditOperatorWorkflow caow = operator.changeStatus(AuditStatus.Resubmit, null);
+		// Change the status of pqf caos in resubmit list to resubmit
+		// These caos are invisible->visible, pending, or totally new
+		// All operators under this cao will no longer be red flagged for missing/incomplete PQFs
+		// and will now be green flagged.  Not exactly right but at least nobody will be complaining.
+		if (conAudit.getAuditType().isPqf() && !pqfCaosToResubmit.isEmpty()) {
+			Iterator<ContractorAuditOperator> list = pqfCaosToResubmit.iterator();
+			while (list.hasNext()) {
+				ContractorAuditOperator cao = list.next();
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmit, null);
+				if (caow != null) {
 					caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
 							.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+					caow.setCreatedBy(systemUser);
+					contractorAuditOperatorDAO.save(caow);
+				}
+			}
+		}
+		// Change the status of pqf caos in submit list to submit
+		if (conAudit.getAuditType().isPqf() && !pqfCaosToSubmit.isEmpty()) {
+			Iterator<ContractorAuditOperator> list = pqfCaosToSubmit.iterator();
+			while (list.hasNext()) {
+				ContractorAuditOperator cao = list.next();
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Submitted, null);
+				if (caow != null) {
+					caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
+							.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+					caow.setCreatedBy(systemUser);
 					contractorAuditOperatorDAO.save(caow);
 				}
 			}
