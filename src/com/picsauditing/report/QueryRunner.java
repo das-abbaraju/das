@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.jboss.util.Strings;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
@@ -31,6 +32,36 @@ public class QueryRunner {
 			columns.addAll(availableFields.keySet());
 		}
 
+		if (command.getPage() > 1)
+			sql.setStartRow((command.getPage() - 1) * command.getRowsPerPage());
+		sql.setLimit(command.getRowsPerPage());
+
+		if (command.getGroupBy().size() > 0) {
+			availableFields.put("total", "count(*)");
+			columns.add("total");
+			for (SortableField field : command.getGroupBy()) {
+				String groupBy = field.field;
+				if (!columns.contains(field.field))
+					groupBy = availableFields.get(field.field);
+				if (!field.ascending)
+					groupBy += " DESC";
+				sql.addGroupBy(field.toString());
+			}
+		}
+
+		if (command.getOrderBy().size() == 0) {
+			sql.addOrderBy(defaultSort);
+		} else {
+			for (SortableField field : command.getOrderBy()) {
+				String orderBy = field.field;
+				if (!columns.contains(field.field))
+					orderBy = availableFields.get(field.field);
+				if (!field.ascending)
+					orderBy += " DESC";
+				sql.addOrderBy(orderBy);
+			}
+		}
+
 		for (String alias : availableFields.keySet()) {
 			if (columns.contains(alias)) {
 				String field = availableFields.get(alias);
@@ -38,19 +69,19 @@ public class QueryRunner {
 			}
 		}
 
-		if (command.getPage() > 1)
-			sql.setStartRow((command.getPage() - 1) * command.getRowsPerPage());
-		sql.setLimit(command.getRowsPerPage());
-
-		if (command.getOrderBy().size() == 0) {
-			sql.addOrderBy(defaultSort);
-		} else {
-			for (SortableField field : command.getOrderBy()) {
-				sql.addOrderBy(field.toString());
+		if (command.getFilters().size() > 0) {
+			String where = command.getFilterExpression();
+			if (where == null || Strings.isEmpty(where))
+				where = "0";
+			for (int i = command.getFilters().size()-1; i >= 0; i--) {
+				String filter = command.getFilters().get(i).toExpression(availableFields);
+				where = where.replace(i + "", filter);
 			}
+			sql.addWhere(where);
 		}
 
 		// We may need to move this to a class field
+		sql.setSQL_CALC_FOUND_ROWS(true);
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		allRows = db.getAllRows();
 		QueryData data = new QueryData(columns, rows);
@@ -124,5 +155,9 @@ public class QueryRunner {
 
 	public int getAllRows() {
 		return allRows;
+	}
+
+	public String getSQL() {
+		return sql.toString();
 	}
 }

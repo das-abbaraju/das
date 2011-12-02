@@ -4,8 +4,10 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.QueryBase;
 import com.picsauditing.report.QueryCommand;
 import com.picsauditing.report.QueryData;
@@ -14,18 +16,23 @@ import com.picsauditing.search.Database;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
-	private QueryBase base;
-	private QueryCommand command = new QueryCommand();
+	private Report report;
+	private boolean showSQL;
 
 	@Override
 	public String execute() throws Exception {
-		if (base == null) {
-			addActionError("Missing Base");
+		if (report.getBase() == null) {
+			addActionError("Report is Missing Base");
 			return SUCCESS;
 		}
-		QueryRunner runner = new QueryRunner(base, permissions);
+		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
 
 		Database db = new Database();
+		QueryCommand command = new QueryCommand();
+		if (report.getParameters() != null) {
+			JSONObject obj = (JSONObject) JSONValue.parse(report.getParameters());
+			command.fromJSON(obj);
+		}
 		QueryData data = runner.run(command, db);
 		JSONArray rows = new JSONArray();
 
@@ -37,9 +44,17 @@ public class ReportDynamic extends PicsActionSupport {
 			rows.add(jsonRow);
 		}
 
-		json.put("totalRows", runner.getAllRows());
+		json.put("total", runner.getAllRows());
 		json.put("data", rows);
+		if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0))
+			json.put("sql", runner.getSQL().replaceAll("\n", " "));
 		return JSON;
+	}
+
+	public String save() {
+		report.setAuditColumns(permissions);
+		dao.save(report);
+		return SUCCESS;
 	}
 
 	public String availableBases() {
@@ -58,13 +73,13 @@ public class ReportDynamic extends PicsActionSupport {
 	 * @return
 	 */
 	public String availableFields() {
-		if (base == null) {
+		if (report.getBase() == null) {
 			json.put("message", "Missing Base");
 			return JSON;
 		}
-		json.put("base", base.toString());
-		
-		QueryRunner runner = new QueryRunner(base, permissions);
+		json.put("base", report.getBase().toString());
+
+		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
 		JSONArray fields = new JSONArray();
 
 		for (String alias : runner.getAvailableFields().keySet()) {
@@ -80,20 +95,15 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	public QueryBase getBase() {
-		return base;
+	public Report getReport() {
+		return report;
 	}
 
-	public void setBase(QueryBase base) {
-		this.base = base;
+	public void setReport(Report report) {
+		this.report = report;
 	}
 
-	public QueryCommand getCommand() {
-		return command;
+	public void setShowSQL(boolean showSQL) {
+		this.showSQL = showSQL;
 	}
-
-	public void setCommand(QueryCommand command) {
-		this.command = command;
-	}
-
 }
