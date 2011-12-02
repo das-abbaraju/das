@@ -120,23 +120,6 @@ public class ReportDynamic extends PicsActionSupport {
 				field.label = label;
 			columns.add(field);
 		}
-		/*
-		 	[
-				{
-					hideable : false,
-					sortable : false,
-					renderer : function(value, metaData, record) {
-						return Ext.String
-								.format(
-										'<a href="ContractorEdit.action?id={0}">Edit</a>',
-										record.data.accountID);
-					}
-				}, {
-					text : 'Status',
-					dataIndex : 'accountStatus'
-				} ]
-
-		 */
 		return columns;
 	}
 

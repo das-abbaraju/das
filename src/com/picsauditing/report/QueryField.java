@@ -28,6 +28,12 @@ public class QueryField implements JSONAware {
 	/*
 	 * items : [ { icon : 'images/edit_pencil.png', tooltip : 'Edit', handler : function(grid, rowIndex, colIndex) { var
 	 * record = grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID); } } ]
+	 * OR
+					renderer : function(value, metaData, record) {
+						return Ext.String
+								.format(
+										'<a href="ContractorEdit.action?id={0}">Edit</a>',
+										record.data.accountID);
 	 */
 
 	@SuppressWarnings("unchecked")

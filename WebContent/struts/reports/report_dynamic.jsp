@@ -9,8 +9,8 @@
 <body>
 <h1>Dynamic Report</h1>
 
-<div id="report_extjs">
-</div>
+<div id="report_extjs"></div>
+
 <script type="text/javascript">
 Ext.onReady(function() {
 	var baseStore = Ext.create('Ext.data.Store', {
@@ -28,12 +28,11 @@ Ext.onReady(function() {
 
 	Ext.create('Ext.grid.Panel', {
 		renderTo : 'report_extjs',
-		// stripeRows : true,
 		store : baseStore,
+		// stripeRows : true,
 		// multiSelect : true,
 		// width : 800,
 		// height : 600,
-		// title : 'Contractors Report',
 		columns : <s:property value="gridColumns" escape="false" />
 	});
 });
