@@ -102,6 +102,7 @@ public class AuditBuilder {
 						audit.setAuditType(auditType);
 						audit.setAuditColumns(systemUser);
 						contractor.getAudits().add(audit);
+						conAuditDao.save(audit);
 					}
 				}
 			}

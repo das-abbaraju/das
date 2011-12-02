@@ -519,8 +519,23 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else if (cao.getAudit().getAuditType().isRenewable())
 				cao.getAudit().setExpiresDate(getAuditExpirationDate());
 		}
-		if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep())
-			cao.getAudit().setExpiresDate(getAuditExpirationDate());
+		if (!cao.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
+			if (cao.getAudit().getExpiresDate() == null) {
+				Date expirationDate = getAuditExpirationDate();
+				AuditType auditType = cao.getAudit().getAuditType();
+				if (!auditType.isRenewable() && auditType.getClassType().isPqf()) {
+					for (ContractorAudit conAudit:cao.getAudit().getContractorAccount().getAudits()) {
+						if (conAudit.getAuditType().getId() == auditType.getId() && conAudit.getExpiresDate() != null) {
+							if (conAudit.getExpiresDate().compareTo(expirationDate) <= 0) {
+								expirationDate = DateBean.getMarchOfNextYear(conAudit.getExpiresDate());
+							}
+						}
+					}
+				}
+				
+				cao.getAudit().setExpiresDate(expirationDate);
+			}
+		}
 	}
 
 	protected Date getAuditExpirationDate() {
