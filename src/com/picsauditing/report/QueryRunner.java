@@ -82,6 +82,11 @@ public class QueryRunner {
 
 		// We may need to move this to a class field
 		sql.setSQL_CALC_FOUND_ROWS(true);
+		
+		if (db == null) {
+			// Don't do anything since we're just testing things
+			return null;
+		}
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		allRows = db.getAllRows();
 		QueryData data = new QueryData(columns, rows);
@@ -158,6 +163,6 @@ public class QueryRunner {
 	}
 
 	public String getSQL() {
-		return sql.toString();
+		return sql.toString().replace("\n", " ").replace("  ", " ");
 	}
 }
