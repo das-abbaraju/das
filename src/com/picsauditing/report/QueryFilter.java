@@ -42,12 +42,12 @@ public class QueryFilter implements JSONable {
 		this.value2 = Utilities.escapeQuotes(value2);
 	}
 
-	public String toExpression(Map<String, String> availableFields) {
-		String columnName = availableFields.get(field);
+	public String toExpression(Map<String, QueryField> availableFields) {
+		String columnSQL = availableFields.get(field).sql;
 		if (field.equals("accountName"))
-			columnName = "a.nameIndex";
+			columnSQL = "a.nameIndex";
 		
-		String expression = columnName + " " + operator.getOperand() + " ";
+		String expression = columnSQL + " " + operator.getOperand() + " ";
 		switch (operator) {
 		case BeginsWith:
 			expression += "'" + value + "%'";

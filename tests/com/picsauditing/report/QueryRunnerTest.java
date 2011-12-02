@@ -17,6 +17,7 @@ public class QueryRunnerTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		permissions = new Permissions();
+		// By default create a Contractor QueryRunner
 		buildRunner(QueryBase.Contractors);
 		command = new QueryCommand();
 	}
@@ -25,18 +26,17 @@ public class QueryRunnerTest extends TestCase {
 		runner = new QueryRunner(base, permissions);
 	}
 
-	private void runner() throws SQLException {
-		runner.run(command, null);
-		sql = runner.getSQL();
+	private void runBuildQueryWithCommand() throws SQLException {
+		sql = runner.buildQuery(command).toString();
 	}
 
 	public void testAvailableFieldSize() {
-		Map<String, String> availableFields = runner.getAvailableFields();
+		Map<String, QueryField> availableFields = runner.getAvailableFields();
 		assertEquals(3, availableFields.size());
 	}
 
 	public void testSimpleContractorQuery() throws SQLException {
-		runner();
+		runBuildQueryWithCommand();
 		assertEquals("SELECT SQL_CALC_FOUND_ROWS a.id AS accountID, a.name AS accountName, a.status AS accountStatus "
 				+ "FROM accounts a JOIN contractor_info c ON a.id = c.id WHERE 1 AND (a.type='Contractor') "
 				+ "ORDER BY a.name LIMIT 100", runner.getSQL());
@@ -44,14 +44,14 @@ public class QueryRunnerTest extends TestCase {
 
 	public void testLimit() throws SQLException {
 		command.setRowsPerPage(10);
-		runner();
+		runBuildQueryWithCommand();
 		assertTrue(runner.getSQL().endsWith("LIMIT 10"));
 	}
 
 	public void testPages() throws SQLException {
 		command.setRowsPerPage(10);
 		command.setPage(2);
-		runner();
+		runBuildQueryWithCommand();
 		assertTrue(sql.endsWith("LIMIT 10, 10"));
 	}
 }

@@ -14,20 +14,20 @@ import com.picsauditing.search.SelectSQL;
 
 public class QueryRunner {
 	private SelectSQL sql = new SelectSQL();
-	private Map<String, String> availableFields = new HashMap<String, String>();
+	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
 	// private Permissions permissions;
 	private String defaultSort = null;
 	private int allRows = 0;
+	private List<String> columns;
 
 	public QueryRunner(QueryBase base, Permissions permissions) {
 		// this.permissions = permissions;
 
 		buildBase(base);
 	}
-
-	public QueryData run(QueryCommand command, Database db) throws SQLException {
-
-		List<String> columns = command.getColumns();
+	
+	public SelectSQL buildQuery(QueryCommand command) {
+		columns = command.getColumns();
 		if (columns.size() == 0) {
 			columns.addAll(availableFields.keySet());
 		}
@@ -37,12 +37,12 @@ public class QueryRunner {
 		sql.setLimit(command.getRowsPerPage());
 
 		if (command.getGroupBy().size() > 0) {
-			availableFields.put("total", "count(*)");
+			addQueryField("total", "count(*)");
 			columns.add("total");
 			for (SortableField field : command.getGroupBy()) {
 				String groupBy = field.field;
 				if (!columns.contains(field.field))
-					groupBy = availableFields.get(field.field);
+					groupBy = availableFields.get(field.field).sql;
 				if (!field.ascending)
 					groupBy += " DESC";
 				sql.addGroupBy(field.toString());
@@ -55,7 +55,7 @@ public class QueryRunner {
 			for (SortableField field : command.getOrderBy()) {
 				String orderBy = field.field;
 				if (!columns.contains(field.field))
-					orderBy = availableFields.get(field.field);
+					orderBy = availableFields.get(field.field).sql;
 				if (!field.ascending)
 					orderBy += " DESC";
 				sql.addOrderBy(orderBy);
@@ -64,7 +64,7 @@ public class QueryRunner {
 
 		for (String alias : availableFields.keySet()) {
 			if (columns.contains(alias)) {
-				String field = availableFields.get(alias);
+				String field = availableFields.get(alias).sql;
 				sql.addField(field + " AS " + alias);
 			}
 		}
@@ -83,10 +83,10 @@ public class QueryRunner {
 		// We may need to move this to a class field
 		sql.setSQL_CALC_FOUND_ROWS(true);
 		
-		if (db == null) {
-			// Don't do anything since we're just testing things
-			return null;
-		}
+		return sql;
+	}
+
+	public QueryData run(Database db) throws SQLException {
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		allRows = db.getAllRows();
 		QueryData data = new QueryData(columns, rows);
@@ -112,14 +112,25 @@ public class QueryRunner {
 			break;
 		}
 	}
+	
+	private QueryField addQueryField(String dataIndex, String sql) {
+		QueryField field = new QueryField();
+		field.sql = sql;
+		field.dataIndex = dataIndex;
+		availableFields.put(dataIndex, field);
+		return field;
+	}
 
 	private void buildAccountBase() {
 		sql = new SelectSQL();
 		sql.setFromTable("accounts a");
-		availableFields.put("accountID", "a.id");
-		availableFields.put("accountName", "a.name");
-		availableFields.put("accountStatus", "a.status");
-		availableFields.put("accountType", "a.type");
+		addQueryField("accountID", "a.id").hide();
+		QueryField accountName = addQueryField("accountName", "a.name");
+		// accountName.flex = 1;
+		accountName.width = 200;
+		accountName.renderer = new JavaScript("function(value, metaData, record) {return Ext.String.format('<a href=\"ContractorView.action?id={0}\">{1}</a>',record.data.accountID,record.data.accountName);}");
+		addQueryField("accountStatus", "a.status");
+		addQueryField("accountType", "a.type");
 		defaultSort = "a.name";
 	}
 
@@ -142,22 +153,26 @@ public class QueryRunner {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 
-		availableFields.put("auditID", "ca.id");
-		availableFields.put("auditTypeID", "ca.auditTypeID");
-		availableFields.put("auditID", "ca.id");
+		addQueryField("auditID", "ca.id");
+		addQueryField("auditTypeID", "ca.auditTypeID");
+		addQueryField("auditID", "ca.id");
 		// sql.addField("CONCAT('AuditType.',atype.id,'.name') `atype.name`");
 
-		availableFields.put("auditCreationDate", "ca.creationDate");
-		availableFields.put("auditExpiresDate", "ca.expiresDate");
-		availableFields.put("auditFor", "ca.auditFor");
+		addQueryField("auditCreationDate", "ca.creationDate");
+		addQueryField("auditExpiresDate", "ca.expiresDate");
+		addQueryField("auditFor", "ca.auditFor");
 
 		defaultSort = "ca.creationDate DESC";
 	}
 
-	public Map<String, String> getAvailableFields() {
+	public Map<String, QueryField> getAvailableFields() {
 		return availableFields;
 	}
 
+	public List<String> getColumns() {
+		return columns;
+	}
+	
 	public int getAllRows() {
 		return allRows;
 	}

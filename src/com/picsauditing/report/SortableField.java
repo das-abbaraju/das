@@ -8,12 +8,6 @@ public class SortableField implements JSONable {
 	public String field;
 	public boolean ascending = true;
 
-	public String toString() {
-		if (ascending)
-			return field;
-		return field + " DESC";
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();

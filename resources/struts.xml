@@ -500,7 +500,7 @@
 		<!-- Dynamic Reports -->
 		<action name="ReportDynamic"
 			class="com.picsauditing.actions.report.ReportDynamic">
-			<result>struts/blank.jsp</result>
+			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
 
 		<!-- Contractor List -->
