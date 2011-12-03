@@ -1,13 +1,16 @@
 package com.picsauditing.actions.report;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.FieldType;
 import com.picsauditing.report.QueryBase;
 import com.picsauditing.report.QueryCommand;
 import com.picsauditing.report.QueryData;
@@ -24,25 +27,36 @@ public class ReportDynamic extends PicsActionSupport {
 	public String execute() {
 		if (!isReportAndBaseThere())
 			return BLANK;
-		
+
 		return SUCCESS;
 	}
 
 	public String data() throws Exception {
 		if (!isReportAndBaseThere())
 			return BLANK;
-		
+
 		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
-
-		Database db = new Database();
 		runner.buildQuery(createCommandFromReportParameters());
-		QueryData data = runner.run(db);
-		JSONArray rows = new JSONArray();
+		Map<String, QueryField> availableFields = runner.getAvailableFields();
 
+		QueryData data = runner.run();
+		JSONArray rows = new JSONArray();
 		for (Map<String, Object> row : data.getData()) {
 			JSONObject jsonRow = new JSONObject();
 			for (String column : row.keySet()) {
-				jsonRow.put(column, row.get(column));
+				Object value = row.get(column);
+				if (value == null) {
+
+				} else {
+					QueryField field = availableFields.get(column);
+					if (field.isTranslated()) {
+						jsonRow.put(column, getText(field.getI18nKey(value.toString())));
+					} else if (value.getClass().equals(java.sql.Timestamp.class)) {
+						Timestamp value2 = (Timestamp) value;
+						jsonRow.put(column, value2.getTime());
+					} else
+						jsonRow.put(column, value);
+				}
 			}
 			rows.add(jsonRow);
 		}
@@ -80,10 +94,10 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		if (!isReportAndBaseThere())
 			return BLANK;
-		
+
 		json.put("base", report.getBase().toString());
 		json.put("fields", getAvailableFields());
-		
+
 		return JSON;
 	}
 
@@ -92,12 +106,14 @@ public class ReportDynamic extends PicsActionSupport {
 
 		JSONArray fields = new JSONArray();
 
-		for (String alias : runner.getAvailableFields().keySet()) {
+		for (QueryField field : runner.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
-			obj.put("name", alias);
-			String label = getText("Report." + alias);
-			if (label != null)
-				obj.put("label", label);
+			obj.put("name", field.dataIndex);
+			if (field.type != FieldType.Auto) {
+				obj.put("type", field.type.toString().toLowerCase());
+				if (field.type == FieldType.Date)
+					obj.put("dateFormat", "time");
+			}
 			fields.add(obj);
 		}
 		return fields;
@@ -105,17 +121,17 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public JSONArray getGridColumns() {
 		JSONArray columns = new JSONArray();
-		
+
 		JSONObject rowNum = new JSONObject();
 		rowNum.put("xtype", "rownumberer");
 		rowNum.put("width", 27);
 		columns.add(rowNum);
-		
+
 		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
 		runner.buildQuery(createCommandFromReportParameters());
-		
+
 		for (QueryField field : runner.getAvailableFields().values()) {
-			String label = getText("Report." + field.dataIndex);
+			String label = getText("Report.GlobalColumn." + field.dataIndex);
 			if (label != null)
 				field.label = label;
 			columns.add(field);
@@ -135,6 +151,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return true;
 	}
 
+	@Anonymous
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
 		for (QueryBase base : QueryBase.values()) {
@@ -151,7 +168,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public void setReport(Report report) {
 		this.report = report;
 	}
-	
+
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
 	}

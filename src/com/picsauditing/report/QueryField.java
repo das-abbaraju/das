@@ -20,20 +20,19 @@ public class QueryField implements JSONAware {
 	public boolean hideable = true;
 	public boolean hidden = false;
 	public int flex = 0;
+	public FieldType type = FieldType.Auto;
 	public JavaScript renderer;
 	public JavaScript editor;
 	public String label;
+	private String preTranslation;
+	private String postTranslation;
 
 	// xtype : 'actioncolumn',
 	/*
 	 * items : [ { icon : 'images/edit_pencil.png', tooltip : 'Edit', handler : function(grid, rowIndex, colIndex) { var
-	 * record = grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID); } } ]
-	 * OR
-					renderer : function(value, metaData, record) {
-						return Ext.String
-								.format(
-										'<a href="ContractorEdit.action?id={0}">Edit</a>',
-										record.data.accountID);
+	 * record = grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID); } } ] OR renderer :
+	 * function(value, metaData, record) { return Ext.String .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
+	 * record.data.accountID);
 	 */
 
 	@SuppressWarnings("unchecked")
@@ -60,11 +59,41 @@ public class QueryField implements JSONAware {
 			json.put("renderer", renderer);
 		if (renderer != null)
 			json.put("editor", editor);
+
+		if (type == FieldType.Date) {
+			json.put("xtype", "datecolumn");
+		}
 		return json.toJSONString();
 	}
 
 	public QueryField hide() {
 		this.hidden = true;
 		return this;
+	}
+
+	public QueryField type(FieldType type) {
+		this.type = type;
+		return this;
+	}
+
+	public QueryField translate(String prefix, String suffix) {
+		this.preTranslation = prefix;
+		this.postTranslation = suffix;
+		return this;
+	}
+
+	public String getI18nKey(String value) {
+		String key = value;
+		if (!Strings.isEmpty(preTranslation))
+			key = preTranslation + "." + key;
+		if (!Strings.isEmpty(postTranslation))
+			key = key + "." + postTranslation;
+		return key;
+	}
+
+	public boolean isTranslated() {
+		if (preTranslation == null && postTranslation == null)
+			return false;
+		return true;
 	}
 }

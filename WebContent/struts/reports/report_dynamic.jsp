@@ -16,7 +16,7 @@ Ext.onReady(function() {
 	var baseStore = Ext.create('Ext.data.Store', {
 		proxy : {
 			type : 'ajax',
-			url : 'ReportDynamic!data.action?<s:if test="report.id > 0">report=<s:property value="report.id"/></s:if>',
+			url : 'ReportDynamic!data.action?<s:if test="report.id > 0">report=<s:property value="report.id"/></s:if><s:else>report.base=<s:property value="report.base"/></s:else>',
 			reader : {
 				type : 'json',
 				root : 'data'

@@ -86,7 +86,8 @@ public class QueryRunner {
 		return sql;
 	}
 
-	public QueryData run(Database db) throws SQLException {
+	public QueryData run() throws SQLException {
+		Database db = new Database();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		allRows = db.getAllRows();
 		QueryData data = new QueryData(columns, rows);
@@ -150,16 +151,21 @@ public class QueryRunner {
 
 	private void buildContractorAuditBase() {
 		buildContractorBase();
+		availableFields.get("accountStatus").hide();
+		
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		// sql.addWhere("ca.expiresDate < '2020'");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 
-		addQueryField("auditID", "ca.id");
-		addQueryField("auditTypeID", "ca.auditTypeID");
-		addQueryField("auditID", "ca.id");
-		// sql.addField("CONCAT('AuditType.',atype.id,'.name') `atype.name`");
+		addQueryField("auditID", "ca.id").hide();
+		addQueryField("auditTypeID", "ca.auditTypeID").hide();
+		QueryField auditTypeName = addQueryField("auditTypeName", "ca.auditTypeID");
+		auditTypeName.translate("AuditType", "name");
+		auditTypeName.width = 180;
+		auditTypeName.renderer = new JavaScript("function(value, metaData, record) {return Ext.String.format('<a href=\"Audit.action?auditID={0}\">{1}</a>',record.data.auditID,record.data.auditTypeName);}");
 
-		addQueryField("auditCreationDate", "ca.creationDate");
-		addQueryField("auditExpiresDate", "ca.expiresDate");
+		addQueryField("auditCreationDate", "ca.creationDate").type(FieldType.Date);
+		addQueryField("auditExpiresDate", "ca.expiresDate").type(FieldType.Date);
 		addQueryField("auditFor", "ca.auditFor");
 
 		defaultSort = "ca.creationDate DESC";
