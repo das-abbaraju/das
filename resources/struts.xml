@@ -898,13 +898,18 @@
 
 		<action name="ReportContractorOperatorFlag"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportContractorOperatorFlag</param>
 			<result>/struts/reports/report_contractorOperatorFlag.jsp</result>
 		</action>
-
 		<action name="ReportContractorOperatorFlagCSV"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
+		</action>
+		<action name="ReportContractorOperatorFlagAjax"
+			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
+			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
 
 		<action name="ReportFlagChanges"
