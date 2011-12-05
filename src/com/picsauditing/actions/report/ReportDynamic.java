@@ -16,12 +16,12 @@ import com.picsauditing.report.QueryCommand;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.QueryField;
 import com.picsauditing.report.QueryRunner;
-import com.picsauditing.search.Database;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 	private Report report;
 	private boolean showSQL;
+	private int id;
 
 	@Override
 	public String execute() {
@@ -32,6 +32,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String data() throws Exception {
+		findReport();
 		if (!isReportAndBaseThere())
 			return BLANK;
 
@@ -82,6 +83,24 @@ public class ReportDynamic extends PicsActionSupport {
 			return BLANK;
 		report.setAuditColumns(permissions);
 		dao.save(report);
+		return SUCCESS;
+	}
+
+	public void findReport() {
+		loadPermissions();
+		if (permissions.isContractor())
+			id = permissions.getAccountId();
+
+		report = dao.find(Report.class, id);
+		if (report == null)
+		{
+			report = new Report();
+		}
+	}
+
+	public String delete() {
+		findReport();
+		dao.remove(report);
 		return SUCCESS;
 	}
 
@@ -172,4 +191,13 @@ public class ReportDynamic extends PicsActionSupport {
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
 	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }

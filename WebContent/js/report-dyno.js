@@ -3,9 +3,30 @@
 //Ext.require('Ext.grid.Panel');
 //Ext.require('Ext.util.Format');
 
+ReportDynamic!save.action?showSQL=true&report.base=Contractors&report.summary=testContractorReport&report.id=1&report.parameters={
+		"rowsPerPage" : 10,
+		"filters" : [ {
+			"field" : "accountName",
+			"operator" : "BeginsWith",
+			"value" : "Ancon"
+		} ],
+		"columns" : [ "accountID", "accountName", "accountStatus" ],
+		"orderBy" : [ {
+			"field" : "accountStatus",
+			"direction" : "DESC"
+		}, {
+			"field" : "accountID"
+		} ]
+	}
+ReportDynamic.action?showSQL=true&id=2
+
 var testing = {
 	"rowsPerPage" : 10,
-	"filters" : [ "foo", "bar" ],
+	"filters" : [ {
+		"field" : "accountName",
+		"operator" : "BeginsWith",
+		"value" : "Ancon"
+	} ],
 	"columns" : [ "accountID", "accountName", "accountStatus" ],
 	"orderBy" : [ {
 		"field" : "accountStatus",
