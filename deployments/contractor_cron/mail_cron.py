@@ -13,7 +13,6 @@ SERVERS = ['organizer1']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
-stats_q = Queue()
 active_servers = dict((s,False) for s in SERVERS)
 logging.info('default server setup : %s', active_servers)
 
@@ -170,7 +169,6 @@ class CronWorker(CronThread):
 			else:
 				time.sleep(self.sleeptime)
 			totaltime = time.time() - start
-			stats_q.put((id, starttime, totaltime, success, cronurl))
 			
 			running_lock.acquire()
 			try:
