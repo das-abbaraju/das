@@ -119,7 +119,7 @@ class CronPublisher(CronThread):
 						running_lock.acquire()
 						try:
 							for contractor in result.split(","):
-								if contractor not in con_running:
+								if contractor not in con_running and contractor not in self.con_q:
 									self.con_q.put(contractor)
 						finally:
 							running_lock.release() # release lock, no matter what
