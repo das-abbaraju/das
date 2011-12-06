@@ -138,7 +138,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 		Date scheduledDateInServerTime = DateBean.convertTime(scheduledDateInUserTime, permissions.getTimezone());
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss z");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 		if (conAudit.getScheduledDate() == null
 				|| !sdf.format(scheduledDateInServerTime).equals(sdf.format(conAudit.getScheduledDate()))) {
 			if (isNeedsReschedulingFee() && !feeOverride) {
