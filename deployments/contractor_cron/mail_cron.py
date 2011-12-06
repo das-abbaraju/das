@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import urllib2, time, sys, logging, logging.config, MySQLdb
+import urllib2, time, sys, logging, logging.config
 from datetime import datetime
 from threading import Thread, enumerate, Lock
 from daemon import Daemon
@@ -99,7 +99,7 @@ class CronMonitor(CronThread):
 			time.sleep(self.sleeptime)
 
 class CronPublisher(CronThread):
-	"""This thread is responsible for downloading the list of contractors and populating the queue object"""
+	"""This thread is responsible for downloading the list of Subscriptions and populating the queue object"""
 	def __init__(self, con_q,server_g):
 		super(CronPublisher, self).__init__()
 		self.con_q = con_q
@@ -110,14 +110,13 @@ class CronPublisher(CronThread):
 	def run(self):
 		while self.running:
 			running_lock.acquire()
-			self.logger.info('contractors running: %s' % con_running)
+			self.logger.info('Subscriptions running: %s' % con_running)
 			running_lock.release()
 			if self.con_q.qsize() < 5:
 				try:
 					result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
 					if result:
 						running_lock.acquire()
-						self.logger.info('contractors running: %s' % con_running)
 						try:
 							for contractor in result.split(","):
 								if contractor not in con_running:
@@ -125,11 +124,11 @@ class CronPublisher(CronThread):
 						finally:
 							running_lock.release() # release lock, no matter what
 							
-						self.logger.debug("Subscriptions waiting in the queue: %s" % self.con_q.qsize())
+						self.logger.debug("Subscriptions waiting in the queue: %s" % self.con_q)
 				except Exception, e:
 					self.logger.error(e)
 			else:
-				self.logger.info('too many contractors on the dance floor, sleeping for now.')	
+				self.logger.info('too many Subscriptions on the dance floor, sleeping for now.')	
 			time.sleep(self.sleeptime)
 
 class CronWorker(CronThread):
@@ -163,7 +162,7 @@ class CronWorker(CronThread):
 				if success:
 					self.logger.info('Subscription %s finished successfully.' % id)
 				else:
-					self.logger.warning('Error with contractor %s' % id)
+					self.logger.warning('Error with Subscription %s' % id)
 			except Exception, e:
 				self.logger.error(e)
 			else:
