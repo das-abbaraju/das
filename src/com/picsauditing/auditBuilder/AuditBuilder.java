@@ -16,11 +16,14 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditCategoryMatrixDAO;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.BaseTable;
@@ -33,6 +36,8 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class AuditBuilder {
 
@@ -52,6 +57,8 @@ public class AuditBuilder {
 	private AuditPercentCalculator auditPercentCalculator;
 
 	private User systemUser = new User(User.SYSTEM);
+	
+	private AuditDataDAO auditDataDAO;
 
 	public void buildAudits(ContractorAccount contractor) {
 		typeRuleCache.initialize(auditDecisionTableDAO);
@@ -117,7 +124,7 @@ public class AuditBuilder {
 				if (canDelete(conAudit)) {
 					iter.remove();
 					conAuditDao.remove(conAudit);
-				} else {
+				} else if (!isValidCorAudit(conAudit)) {
 					// Make sure that the caos' visibility is set correctly
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
 						if (cao.isVisible())
@@ -154,6 +161,23 @@ public class AuditBuilder {
 		}
 
 		conAuditDao.save(contractor);
+	}
+	
+	private boolean isValidCorAudit(ContractorAudit conAudit) {
+		if (conAudit.getAuditType().getId() != AuditType.COR)
+			return false;
+		
+		if (conAudit.isExpired())
+			return false;
+		
+		if (auditDataDAO == null)
+			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
+		AuditData data = auditDataDAO.findAnswerByConQuestion(conAudit.getContractorAccount().getId(), AuditQuestion.COR);
+		if (!Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
+			return false;
+		}
+
+		return true;
 	}
 
 	private boolean canDelete(ContractorAudit conAudit) {
