@@ -58,9 +58,11 @@ public class AuditOverride extends ContractorDocuments {
 			// This is almost always Pending
 			AuditStatus firstStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
 			ContractorAuditOperatorWorkflow caow = cao.changeStatus(firstStatus, null);
-			caow.setNotes(getTextParameterized("AuditOverride.ManuallyChangingStatus", cao.getOperator().getName()));
-			caoDAO.save(caow);
-			
+			if (caow != null) {
+				caow.setNotes(getTextParameterized("AuditOverride.ManuallyChangingStatus", cao.getOperator().getName()));
+				caoDAO.save(caow);
+			}
+
 			conAudit.getOperators().add(cao);
 			conAudit.setLastRecalculation(null);
 
