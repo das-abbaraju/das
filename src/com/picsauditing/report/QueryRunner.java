@@ -45,7 +45,7 @@ public class QueryRunner {
 					groupBy = availableFields.get(field.field).sql;
 				if (!field.ascending)
 					groupBy += " DESC";
-				sql.addGroupBy(field.toString());
+				sql.addGroupBy(groupBy);
 			}
 		}
 

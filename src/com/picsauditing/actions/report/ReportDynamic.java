@@ -25,6 +25,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Override
 	public String execute() {
+		findReport();
 		if (!isReportAndBaseThere())
 			return BLANK;
 
@@ -88,12 +89,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void findReport() {
 		loadPermissions();
-		if (permissions.isContractor())
-			id = permissions.getAccountId();
 
 		report = dao.find(Report.class, id);
-		if (report == null)
-		{
+		if (report == null) {
 			report = new Report();
 		}
 	}
