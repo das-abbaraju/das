@@ -173,7 +173,7 @@ public class AuditBuilder {
 		if (auditDataDAO == null)
 			auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 		AuditData data = auditDataDAO.findAnswerByConQuestion(conAudit.getContractorAccount().getId(), AuditQuestion.COR);
-		if (!Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
+		if (data != null && !Strings.isEqualNullSafe(data.getAnswer(), "Yes")) {
 			return false;
 		}
 
