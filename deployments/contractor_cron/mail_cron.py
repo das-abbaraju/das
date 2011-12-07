@@ -143,7 +143,7 @@ class CronWorker(CronThread):
 		self.logger = logging.getLogger('worker')
 	def run(self):
 		while self.running:
-			if !self.con_q.empty():
+			if not self.con_q.empty():
 				id = self.con_q.get()
 				running_lock.acquire()
 				try:
