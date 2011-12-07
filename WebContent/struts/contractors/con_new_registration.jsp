@@ -156,7 +156,9 @@
 						<s:include value="../users/operator_users.jsp" />
 					</li>
 					<li>
-						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" onchange="checkDate(this)" theme="formhelp" />
+						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" 
+							value="%{getTextParameterized('short_dates', newContractor.deadline)}" onchange="checkDate(this)"
+							theme="formhelp" />
 					</li>
 					<li>
 						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
@@ -226,11 +228,12 @@
 							</s:else>
 						</li>
 						<li>
-							<label><s:text name="RequestNewContractor.label.PICSContractor" />:</label>
+							<label>
+								<s:text name="RequestNewContractor.label.PICSContractor" />:
+							</label>
 							
 							<s:if test="!permissions.operatorCorporate">
-								<!-- autocomplete broken right now autocomplete name="newContractor.contractor" action="ContractorAutocomplete"/ -->
-								<s:textfield name="newContractor.contractor" />
+								<pics:autocomplete name="newContractor.contractor" action="ContractorsAutocomplete" />
 							</s:if>
 							
 							<s:if test="newContractor.contractor != null">
@@ -269,8 +272,8 @@
 						<s:if test="!permissions.operatorCorporate">
 							<li>
 								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="newContractor.status" onchange="hideShow()"/>
-								  
+								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
+									listValue="getText(i18nKey)" name="newContractor.status" onchange="hideShow()"/>
 							</li>
 							<li id="holdDateLi">
 								<s:textfield id = "holdDate" name="newContractor.holdDate"	cssClass="datepicker" size="10" onchange="checkDate(this)"	theme="formhelp" />
@@ -302,7 +305,7 @@
 								</li>
 							</s:if>
 							
-							<s:if test="newContractor.status==@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful">
+							<s:if test="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful.equals(newContractor.status)">
 								<li>
 									<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
 									<s:property value="newContractor.reasonForDecline" />
@@ -346,7 +349,7 @@
 										<s:property value="#stat.index + 1" />
 									</td>
 									<td>
-										<a href="#" onclick="addAttachment('<s:property value="formName" />','<s:property value="file" />'); return false;">
+										<a href="#" data-formname="<s:property value="formName" />" data-file="<s:property value="file" />" class="addForm">
 											<s:property value="formName" />
 										</a>
 									</td>

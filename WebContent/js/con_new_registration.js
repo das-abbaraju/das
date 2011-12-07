@@ -154,6 +154,22 @@ $(function() {
 			$("#requestedOther").hide();
 		}
 	});
+	
+	$("#operatorForms").delegate(".addForm", "click", function(e) {
+		e.preventDefault();
+		var formName = $(this).data("formname");
+		var filename = $(this).data("file");
+		
+		$.fancybox.close();
+		var id = filename.substring(0, filename.indexOf('.'));
+		
+		var attachment = '<span id="' + id + '"><a href="#" class="remove" onclick="removeAttachment(\'' + id
+			+ '\'); return false;">' + formName + '</a><input type="hidden" id="' + id + '_input" name="filenames" value="'
+			+ filename + '" /><br /></span>';
+		
+		$('#attachment').append(attachment);
+		$('#'+id+'_input').val(filename);
+	});
 });
 
 function countryChanged(country) {
@@ -171,18 +187,6 @@ function checkDate(input){
 		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
 		$(input).val(newDate);
 	}
-}
-
-function addAttachment(formName, filename) {
-	$.fancybox.close();
-	var id = filename.substring(0, filename.indexOf('.'));
-	
-	var attachment = '<span id="' + id + '"><a href="#" class="remove" onclick="removeAttachment(\'' + id
-		+ '\'); return false;">' + formName + '</a><input type="hidden" id="' + id + '_input" name="filenames" value="'
-		+ filename + '" /><br /></span>';
-	
-	$('#attachment').append(attachment);
-	$('#'+id+'_input').val(filename);
 }
 
 function removeAttachment(id) {

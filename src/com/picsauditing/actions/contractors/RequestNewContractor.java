@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -238,12 +237,11 @@ public class RequestNewContractor extends PicsActionSupport {
 		if (newContractor.getStatus() == ContractorRegistrationRequestStatus.Hold
 				&& newContractor.getHoldDate() == null)
 			addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
-		if ((newContractor.getStatus() == ContractorRegistrationRequestStatus.ClosedContactedSuccessful || newContractor
-				.getStatus() == ContractorRegistrationRequestStatus.ClosedSuccessful)
-				&& newContractor.getContractor() == null) {
+		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(newContractor.getStatus()) || ContractorRegistrationRequestStatus.ClosedSuccessful
+				.equals(newContractor.getStatus())) && newContractor.getContractor() == null) {
 			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		}
-		if (newContractor.getStatus() == ContractorRegistrationRequestStatus.ClosedUnsuccessful
+		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(newContractor.getStatus())
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 		// There are errors, just exit out
@@ -435,7 +433,6 @@ public class RequestNewContractor extends PicsActionSupport {
 			}
 			usedTerms = termsArray;
 			termsArray = termsArray.subList(0, termsArray.size() - 1);
-			// termsArray.subList(1, termsArray.size());
 		}
 
 		return results;
@@ -447,6 +444,16 @@ public class RequestNewContractor extends PicsActionSupport {
 		return operatorAccountDAO.findWhere(false, "", permissions);
 	}
 
+	public List<User> getUsersList() {
+		if (opID > 0)
+			return getUsersList(opID);
+		
+		if (newContractor != null && newContractor.getRequestedBy() != null)
+			return getUsersList(newContractor.getRequestedBy().getId());
+
+		return null;
+	}
+
 	public List<User> getUsersList(int accountID) {
 		List<User> usersAndSwitchTos = userDAO.findByAccountID(accountID, "Yes", "No");
 		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(accountID);
@@ -455,7 +462,7 @@ public class RequestNewContractor extends PicsActionSupport {
 		return usersAndSwitchTos;
 	}
 
-	public OperatorForm getForm() {
+	private OperatorForm getForm() {
 		if (newContractor != null && newContractor.getRequestedBy() != null) {
 			List<OperatorAccount> hierarchy = new ArrayList<OperatorAccount>();
 			hierarchy.add(newContractor.getRequestedBy());
@@ -482,44 +489,6 @@ public class RequestNewContractor extends PicsActionSupport {
 		}
 
 		return null;
-	}
-
-	public List<OperatorForm> getForms() {
-		if (forms == null) {
-			Set<OperatorForm> allForms = new HashSet<OperatorForm>();
-			Set<OperatorAccount> family = new HashSet<OperatorAccount>();
-			family.add(newContractor.getRequestedBy());
-
-			for (Facility f : newContractor.getRequestedBy().getCorporateFacilities()) {
-				if (!Account.PICS_CORPORATE.contains(f.getCorporate().getId())) {
-					for (Facility f2 : f.getCorporate().getOperatorFacilities())
-						family.add(f2.getOperator()); // Siblings
-					family.add(f.getCorporate()); // Direct parents
-				}
-			}
-
-			family.add(newContractor.getRequestedBy().getTopAccount());
-
-			for (OperatorAccount o : family) {
-				for (OperatorForm f : o.getOperatorForms()) {
-					if (f.getFormName().contains("*"))
-						allForms.add(f);
-				}
-			}
-
-			forms = new ArrayList<OperatorForm>(allForms);
-			// Sort alphabetically
-			Collections.sort(forms, new Comparator<OperatorForm>() {
-				public int compare(OperatorForm o1, OperatorForm o2) {
-					if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
-						return (o1.getFormName().compareTo(o2.getFormName()));
-
-					return o1.getAccount().getName().compareTo(o2.getAccount().getName());
-				}
-			});
-		}
-
-		return forms;
 	}
 
 	public ContractorRegistrationRequest getNewContractor() {
@@ -579,14 +548,6 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	public void setRightAnswers(List<String> rightAnswers) {
 		this.rightAnswers = rightAnswers;
-	}
-
-	public String getDraftEmailSubject() {
-		return templateDAO.find(INITIAL_EMAIL).getSubject();
-	}
-
-	public String getDraftEmailBody() {
-		return templateDAO.find(INITIAL_EMAIL).getBody();
 	}
 
 	public int getOpID() {

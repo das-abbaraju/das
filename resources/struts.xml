@@ -983,13 +983,11 @@
 			<result>struts/users/multilogin_user.jsp</result>
 		</action>
 
-		<action name="ReportAuditAnalysis"
-			class="com.picsauditing.actions.report.ReportAuditAnalysis">
+		<action name="ReportAuditAnalysis" class="com.picsauditing.actions.report.ReportAuditAnalysis">
 			<result>struts/reports/audit_analysis.jsp</result>
 		</action>
 
-		<action name="ReportCompletePQF"
-			class="com.picsauditing.actions.report.ReportCompletePQF">
+		<action name="ReportCompletePQF" class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
 		</action>
 
@@ -1002,8 +1000,7 @@
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
 
-		<action name="ReportConForcedFlagsCSV"
-			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+		<action name="ReportConForcedFlagsCSV" class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
