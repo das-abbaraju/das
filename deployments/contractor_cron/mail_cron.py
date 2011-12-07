@@ -112,14 +112,14 @@ class CronPublisher(CronThread):
 			running_lock.acquire()
 			self.logger.info('Subscriptions running: %s' % con_running)
 			running_lock.release()
-			if self.con_q.qsize() < 5:
+			if self.con_q.empty():
 				try:
 					result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
 					if result:
 						running_lock.acquire()
 						try:
 							for contractor in result.split(","):
-								if contractor not in con_running and contractor not in self.con_q:
+								if contractor not in con_running:
 									self.con_q.put(contractor)
 						finally:
 							running_lock.release() # release lock, no matter what
@@ -143,37 +143,38 @@ class CronWorker(CronThread):
 		self.logger = logging.getLogger('worker')
 	def run(self):
 		while self.running:
-			id = self.con_q.get()
-			running_lock.acquire()
-			try:
-				con_running.add(id)
-			finally:
-				running_lock.release() # release lock, no matter what
-			start = time.time()
-			starttime = datetime.now()
-			success = False
-			try:
-				self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
-				cronurl = self.url % (self.server_g.next(), id)
-				self.logger.debug('using url: %s' % cronurl)
-				result = urllib2.urlopen(cronurl).read()
-				self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
-				success = True
-				if success:
-					self.logger.info('Subscription %s finished successfully.' % id)
+			if !self.con_q.empty():
+				id = self.con_q.get()
+				running_lock.acquire()
+				try:
+					con_running.add(id)
+				finally:
+					running_lock.release() # release lock, no matter what
+				start = time.time()
+				starttime = datetime.now()
+				success = False
+				try:
+					self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
+					cronurl = self.url % (self.server_g.next(), id)
+					self.logger.debug('using url: %s' % cronurl)
+					result = urllib2.urlopen(cronurl).read()
+					self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
+					success = True
+					if success:
+						self.logger.info('Subscription %s finished successfully.' % id)
+					else:
+						self.logger.warning('Error with Subscription %s' % id)
+				except Exception, e:
+					self.logger.error(e)
 				else:
-					self.logger.warning('Error with Subscription %s' % id)
-			except Exception, e:
-				self.logger.error(e)
-			else:
-				time.sleep(self.sleeptime)
-			totaltime = time.time() - start
-			
-			running_lock.acquire()
-			try:
-				con_running.discard(id)
-			finally:
-				running_lock.release() # release lock, no matter what
+					time.sleep(self.sleeptime)
+				totaltime = time.time() - start
+				
+				running_lock.acquire()
+				try:
+					con_running.discard(id)
+				finally:
+					running_lock.release() # release lock, no matter what
 
 def main():
 	daemon = qcron("/tmp/mail_cron.pid")
