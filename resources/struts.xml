@@ -1703,8 +1703,7 @@
 			<result name="confirm">struts/audits/schedule_audit_confirm.jsp</result>
 			<result name="summary">struts/audits/schedule_audit_summary.jsp</result>
 			<result name="edit">struts/audits/schedule_audit_edit.jsp</result>
-			<result name="picker">struts/audits/schedule_audit_select_content.jsp
-			</result>
+			<result name="picker">struts/audits/schedule_audit_select_content.jsp</result>
 		</action>
 
 		<action name="AuditCalendar" class="com.picsauditing.actions.audits.AuditCalendar">
@@ -1998,16 +1997,10 @@
 		<action name="ManageEmployees"
 			class="com.picsauditing.actions.employees.ManageEmployees">
 			<result>struts/employees/manage_employees.jsp</result>
-			<result name="employees">struts/employees/manage_employees_form.jsp
-			</result>
-			<result name="roles">struts/employees/manage_employee_roles.jsp
-			</result>
-			<result name="sites">struts/employees/manage_employee_sites.jsp
-			</result>
-			<result name="getSite">struts/employees/manage_employee_sites_edit.jsp
-			</result>
-			<result name="tasks">struts/employees/manage_employee_sites_tasks.jsp
-			</result>
+			<result name="employees">struts/employees/manage_employees_form.jsp</result>
+			<result name="roles">struts/employees/manage_employee_roles.jsp</result>
+			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
+			<result name="getSite">struts/employees/manage_employee_sites_edit.jsp</result>
 		</action>
 
 		<action name="ManageEmployeesUpload"
@@ -2034,8 +2027,7 @@
 
 		<action name="EmployeePhotoStream" class="com.picsauditing.actions.employees.EmpImg">
 			<param name="button">photo</param>
-			<result name="photo" type="stream">
-			</result>
+			<result name="photo" type="stream"></result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
@@ -2053,8 +2045,7 @@
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites.jsp</result>
 			<result name="getTasks">/struts/operators/op_job_sites_tasks.jsp</result>
-			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp
-			</result>
+			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
 			<result name="editSite">/struts/operators/op_job_sites_edit.jsp</result>
 		</action>
 
@@ -2148,8 +2139,7 @@
 		<action name="ReportNewProjects"
 			class="com.picsauditing.actions.report.oq.ReportNewJobSite">
 			<result>/struts/reports/oq/report_new_job_site.jsp</result>
-			<result name="employees">/struts/reports/oq/report_new_job_site_employees.jsp
-			</result>
+			<result name="employees">/struts/reports/oq/report_new_job_site_employees.jsp</result>
 		</action>
 		
 		<action name="ReportEmployeeTraining"
@@ -2196,8 +2186,7 @@
 		<action name="ManageAssessmentResultsAjax"
 			class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
 			<result>struts/reports/oq/manage_assessment_results_form.jsp</result>
-			<result name="getEmployees">struts/reports/oq/manage_assessment_results_employees.jsp
-			</result>
+			<result name="getEmployees">struts/reports/oq/manage_assessment_results_employees.jsp</result>
 		</action>
 
 		<action name="ManageUnmappedCompanies"
@@ -2243,11 +2232,9 @@
 			class="com.picsauditing.actions.employees.ManageJobRoles">
 			<result>struts/employees/manage_roles.jsp</result>
 			<result name="role">struts/employees/manage_roles_role.jsp</result>
-			<result name="competencies">struts/employees/manage_roles_competencies.jsp
-			</result>
+			<result name="competencies">struts/employees/manage_roles_competencies.jsp</result>
 			<result name="suggest">struts/employees/role_suggest.jsp</result>
-			<result name="description">struts/employees/manage_roles_description.jsp
-			</result>
+			<result name="description">struts/employees/manage_roles_description.jsp</result>
 		</action>
 
 		<action name="RoleSuggestAjax" class="com.picsauditing.actions.employees.RoleSuggest">
