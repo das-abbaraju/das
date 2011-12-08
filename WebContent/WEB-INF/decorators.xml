@@ -3,6 +3,9 @@
 		<pattern>/*.jsp</pattern>
 		<pattern>/*.action</pattern>
 	</decorator>
+	<decorator name="mainExt" page="main_ext.jsp">
+		<pattern>/ReportDynamic.action</pattern>
+	</decorator>
 	<decorator name="simple" page="simple.jsp">
 		<pattern>/NoteEditor.action</pattern>
 		<pattern>/PrivacyPolicy.action</pattern>

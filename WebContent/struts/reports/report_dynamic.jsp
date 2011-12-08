@@ -3,8 +3,6 @@
 <html>
 <head>
 <title>Report</title>
-<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css">
-<script type="text/javascript" src="js/extjs/ext-all.js"></script>
 </head>
 <body>
 <h1>Dynamic Report</h1>

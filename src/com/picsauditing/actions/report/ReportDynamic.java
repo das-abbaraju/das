@@ -21,11 +21,9 @@ import com.picsauditing.report.QueryRunner;
 public class ReportDynamic extends PicsActionSupport {
 	private Report report;
 	private boolean showSQL;
-	private int id;
 
 	@Override
 	public String execute() {
-		findReport();
 		if (!isReportAndBaseThere())
 			return BLANK;
 
@@ -33,7 +31,6 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String data() throws Exception {
-		findReport();
 		if (!isReportAndBaseThere())
 			return BLANK;
 
@@ -87,17 +84,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public void findReport() {
-		loadPermissions();
-
-		report = dao.find(Report.class, id);
-		if (report == null) {
-			report = new Report();
-		}
-	}
-
 	public String delete() {
-		findReport();
+		if (!isReportAndBaseThere())
+			return BLANK;
 		dao.remove(report);
 		return SUCCESS;
 	}
@@ -188,14 +177,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 }
