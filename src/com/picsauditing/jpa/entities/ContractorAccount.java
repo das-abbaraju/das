@@ -54,7 +54,7 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_info")
-// See parent for @Cache rule
+// Cache is only on the operator account now, if this works.
 public class ContractorAccount extends Account implements JSONable {
 	private String taxId;
 	private String logoFile;

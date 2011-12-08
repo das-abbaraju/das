@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -28,7 +30,7 @@ import com.picsauditing.util.SpringUtils;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operators")
-// See parent for @Cache rule
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class OperatorAccount extends Account {
 
 	public static final int PicsConsortium = 4;
