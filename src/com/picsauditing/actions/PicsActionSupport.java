@@ -50,13 +50,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected static Boolean CONFIG = null;
 	protected static Boolean I18N = null;
 
-	protected static final String PLAIN_TEXT = "plain-text";
-	protected static final String ACTION_MESSAGES = "action-messages";
-	protected static final String LOGIN_AJAX = "LoginAjax";
-	protected static final String BLANK = "blank";
-	protected static final String JSON = "json";
-	protected static final String JSONP = "jsonp";
-	protected static final String CHART_XML = "chartXML";
+	public static final String PLAIN_TEXT = "plain-text";
+	public static final String ACTION_MESSAGES = "action-messages";
+	public static final String LOGIN_AJAX = "LoginAjax";
+	public static final String BLANK = "blank";
+	public static final String JSON = "json";
+	public static final String JSONP = "jsonp";
+	public static final String CHART_XML = "chartXML";
 
 	@Autowired
 	protected BasicDAO dao;
