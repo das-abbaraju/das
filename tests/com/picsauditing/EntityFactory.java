@@ -2,6 +2,8 @@ package com.picsauditing;
 
 import java.util.Locale;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -166,6 +168,19 @@ public class EntityFactory {
 		data.setQuestion(EntityFactory.makeAuditQuestion());
 		data.setAnswer(answer);
 		return data;
+	}
+
+	static public Permissions makePermission() {
+		Permissions permission = new Permissions();
+		User user = new User(counter++);
+		user.setAccount(new Account());
+		user.getAccount().setId(1100);
+		try {
+			permission.setAccountPerms(user);
+		} catch (Exception doNothing) {
+			doNothing.printStackTrace();
+		}
+		return permission;
 	}
 
 	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
