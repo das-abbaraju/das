@@ -216,7 +216,11 @@ public class PicsMenu {
 			subMenu.addChild("Assign Webcams", "AssignWebcams.action");
 		}
 		if (permissions.hasPermission(OpPerms.AuditVerification))
-			subMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
+			subMenu.addChild(
+					"Pending PQF",
+					"ReportCompletePQF.action?filter.auditStatus=Pending"
+							+ (permissions.hasGroup(User.GROUP_CSR) ? "&filter.auditorId="
+									+ permissions.getShadowedUserID() : ""));
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			subMenu.addChild(
 					"PQF Verification",

@@ -10,10 +10,12 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.SelectContractorAudit;
@@ -65,46 +67,50 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 		getFilter().setShowCcOnFile(false);
 	}
 
-	@Override
-	public String execute() throws Exception {
-		if ("SendEmail".equals(button)) {
-			if (sendMail.length > 0 && scheduledDate != null) {
-				for (int i = 0; i < sendMail.length; i++) {
-					ContractorAudit conAudit = contractorAuditDAO.find(Integer.parseInt(sendMail[i]));
+	public String sendEmail() throws Exception {
+		if (sendMail.length > 0 && scheduledDate != null) {
+			for (int i = 0; i < sendMail.length; i++) {
+				ContractorAudit conAudit = contractorAuditDAO.find(Integer.parseInt(sendMail[i]));
 
-					Date newDate = scheduledDate.get(Integer.parseInt(sendMail[i]));
-					if (newDate == null || !newDate.after(new Date())) {
-						Calendar followUpCal = Calendar.getInstance();
-						followUpCal.add(Calendar.DAY_OF_MONTH, 7);
-						conAudit.setScheduledDate(followUpCal.getTime());
-					} else {
-						conAudit.setScheduledDate(newDate);
-					}
-					try {
-						emailBuilder.setTemplate(12);
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.setConAudit(conAudit);
-						if (conAudit.getContractorAccount().getAuditor() != null)
-							emailBuilder.setFromAddress(conAudit.getContractorAccount().getAuditor());
-						EmailQueue email = emailBuilder.build();
-						email.setViewableById(Account.EVERYONE);
-						emailSender.send(email);
-
-						Note note = new Note();
-						note.setAccount(conAudit.getContractorAccount());
-						note.setAuditColumns(permissions);
-						note.setSummary("Pending PQF email sent to " + email.getToAddresses());
-						note.setNoteCategory(NoteCategory.Audits);
-						note.setViewableById(Account.EVERYONE);
-						noteDAO.save(note);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					contractorAuditDAO.save(conAudit);
+				Date newDate = scheduledDate.get(Integer.parseInt(sendMail[i]));
+				if (newDate == null || !newDate.after(new Date())) {
+					Calendar followUpCal = Calendar.getInstance();
+					followUpCal.add(Calendar.DAY_OF_MONTH, 7);
+					conAudit.setScheduledDate(followUpCal.getTime());
+				} else {
+					conAudit.setScheduledDate(newDate);
 				}
+				try {
+					emailBuilder.setTemplate(12);
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setConAudit(conAudit);
+					if (conAudit.getContractorAccount().getAuditor() != null)
+						emailBuilder.setFromAddress(conAudit.getContractorAccount().getAuditor());
+					EmailQueue email = emailBuilder.build();
+					email.setViewableById(Account.EVERYONE);
+					emailSender.send(email);
+
+					Note note = new Note();
+					note.setAccount(conAudit.getContractorAccount());
+					note.setAuditColumns(permissions);
+					note.setSummary("Pending PQF email sent to " + email.getToAddresses());
+					note.setNoteCategory(NoteCategory.Audits);
+					note.setViewableById(Account.EVERYONE);
+					noteDAO.save(note);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				contractorAuditDAO.save(conAudit);
 			}
 		}
+
+		if (!filterOn(getFilter().getAuditStatus()))
+			getFilter().setAuditStatus(new AuditStatus[] { AuditStatus.Pending });
+
+		if (permissions.hasGroup(User.GROUP_CSR) && !filterOn(getFilter().getAuditorId()))
+			getFilter().setAuditorId(new int[] { permissions.getShadowedUserID() });
+
 		return super.execute();
 	}
 
