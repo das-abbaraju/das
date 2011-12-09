@@ -57,6 +57,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				importAudit.setAuditColumns(permissions);
 				importAudit.setContractorAccount(contractor);
 				contractor.getAudits().add(importAudit);
+				auditDao.save(importAudit);
 
 				auditBuilder.buildAudits(contractor);
 				auditPercentCalculator.percentCalculateComplete(importAudit);
