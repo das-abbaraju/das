@@ -14,84 +14,78 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SmartFacilitySuggest {
-	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, Permissions permissions) throws Exception, SQLException {
-		Calendar changedSince = Calendar.getInstance();
-		changedSince.add(Calendar.MONTH, -2);
+	static private int minimumSampleSize = 50;
 
-		int count = 0;
-		Database db = new Database();
-		int zipLength = contractor.getZip().length() + 1;
-		
-		String operators = null;
-		if (permissions.isCorporate()) 
-			operators = Strings.implode(permissions.getOperatorChildren());
+	static public List<BasicDynaBean> getFirstFacility(ContractorAccount contractor, Permissions permissions)
+			throws Exception, SQLException {
 
-		while (count < 50 && zipLength > 0) {
-			// Determine Accuracy
-			zipLength--;
-			SelectSQL accuracyTest = new SelectSQL("accounts o");
-			accuracyTest.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
-			accuracyTest.addJoin("JOIN accounts c ON gc.subID = c.id");
-			accuracyTest.addWhere(String.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince.getTime())));
-			accuracyTest.addWhere("o.type = 'Operator'");
-			accuracyTest.addWhere("c.status IN ('Active', 'Pending')");
-			if (contractor.isDemo())
-				accuracyTest.addWhere("o.status in ('Active', 'Demo')");
-			else
-				accuracyTest.addWhere("o.status = 'Active'");
-			if (!Strings.isEmpty(operators))
-				accuracyTest.addWhere("o.id in (" + operators + ")");
-			accuracyTest.addField("COUNT(*) c");
-			accuracyTest.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
-
-			List<BasicDynaBean> data = db.select(accuracyTest.toString(), false);
-			count = Database.toInt(data.get(0), "c");
+		for (int zipLength = 2; zipLength >= 0; zipLength--) {
+			List<BasicDynaBean> results = createBaseQuery(contractor, permissions, zipLength, true);
+			if (isBigEnough(results))
+				return results;
 		}
 
-		SelectSQL inner1 = new SelectSQL("accounts o");
-		inner1.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
-		inner1.addJoin("JOIN accounts c ON gc.subID = c.id");
-		inner1.addWhere(String.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince.getTime())));
-		inner1.addWhere("c.status IN ('Active', 'Pending')");
-		inner1.addWhere("o.type = 'Operator'");
-		if (contractor.isDemo())
-			inner1.addWhere("o.status in ('Active', 'Demo')");
-		else
-			inner1.addWhere("o.status = 'Active'");
-		if (!Strings.isEmpty(operators))
-			inner1.addWhere("o.id in (" + operators + ")");
-		inner1.addGroupBy("o.id");
-		inner1.addField("o.id opID");
-		addFields(inner1, "o.");
-		inner1.addField("COUNT(*) total");
+		return createBaseQuery(contractor, permissions, 0, false);
+	}
 
-		SelectSQL inner2 = new SelectSQL("accounts o");
-		inner2.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
-		inner2.addJoin("JOIN accounts c ON gc.subID = c.id");
-		inner2.addWhere(String.format("gc.creationDate > '%s'", DateBean.toDBFormat(changedSince.getTime())));
-		inner2.addWhere("c.status IN ('Active', 'Pending')");
-		inner2.addWhere("o.type = 'Operator'");
-		if (contractor.isDemo())
-			inner2.addWhere("o.status in ('Active', 'Demo')");
-		else
-			inner2.addWhere("o.status = 'Active'");
-		if (!Strings.isEmpty(operators))
-			inner2.addWhere("o.id in (" + operators + ")");
-		inner2.addGroupBy("o.id");
-		inner2.addField("o.id opID");
-		addFields(inner2, "o.");
-		inner2.addField("COUNT(*)*10 total");
-		inner2.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
+	private static List<BasicDynaBean> createBaseQuery(ContractorAccount contractor, Permissions permissions,
+			int zipLength, boolean recentlyAdded) throws SQLException {
+		Database db = new Database();
 
-		SelectSQL sql = new SelectSQL("(" + inner1.toString() + " UNION " + inner2.toString() + ") t");
-		sql.addField("opID");
-		addFields(sql, "");
-		sql.addField("SUM(total) total");
+		SelectSQL sql = new SelectSQL("accounts o");
+		sql.addJoin("JOIN generalcontractors gc ON gc.genID = o.id");
+		sql.addJoin("JOIN accounts c ON gc.subID = c.id");
+		sql.addWhere("o.type = 'Operator'");
+
+		sql.addWhere("c.status IN ('Active', 'Pending')");
+		if (contractor.isDemo())
+			sql.addWhere("o.status in ('Active', 'Demo')");
+		else
+			sql.addWhere("o.status = 'Active'");
+		// a. PQF Only / a. Audited Unspecified
+		sql.addWhere("o.id NOT IN (10403,2723)");
+
+		sql.addWhere("c.country = '" + contractor.getCountry().getIsoCode() + "'");
+		if (recentlyAdded)
+			sql.addWhere("gc.creationDate > '" + getTwoMonthsAgo() + "'");
+		if (zipLength > 0)
+			sql.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
+
+		sql.addField("o.id opID");
 		sql.addGroupBy("opID");
+		sql.addField("COUNT(*) total");
 		sql.addOrderBy("total DESC");
-		sql.setLimit(10);
+
+		addCorporateRestrictions(sql, permissions);
+
+		addFields(sql, "o.");
+		sql.setLimit(25);
 
 		return db.select(sql.toString(), false);
+	}
+
+	private static void addCorporateRestrictions(SelectSQL sql, Permissions permissions) {
+		String operators = null;
+		if (permissions.isCorporate())
+			operators = Strings.implode(permissions.getOperatorChildren());
+		if (!Strings.isEmpty(operators))
+			sql.addWhere("o.id in (" + operators + ")");
+	}
+
+	private static String getTwoMonthsAgo() {
+		Calendar changedSince = Calendar.getInstance();
+		changedSince.add(Calendar.MONTH, -2);
+		return DateBean.toDBFormat(changedSince.getTime());
+	}
+
+	private static boolean isBigEnough(List<BasicDynaBean> operators) {
+		int totalContractors = 0;
+		for (BasicDynaBean operator : operators) {
+			totalContractors += Integer.parseInt(operator.get("total").toString());
+			if (totalContractors > minimumSampleSize)
+				return true;
+		}
+		return false;
 	}
 
 	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor, int limit) throws SQLException {
@@ -113,7 +107,7 @@ public class SmartFacilitySuggest {
 			sql.addOrderBy("score DESC");
 		else
 			sql.addOrderBy("a.name");
-		
+
 		addFields(sql, "a.");
 		sql.addField("(s.total*AVG(s.total)/s2.total) score");
 		sql.addField("a.id opID");
@@ -126,7 +120,7 @@ public class SmartFacilitySuggest {
 		Database db = new Database();
 		return db.select(sql.toString(), false);
 	}
-	
+
 	private static void addFields(SelectSQL sql, String alias) {
 		sql.addField(alias + "name");
 		sql.addField(alias + "dbaName");

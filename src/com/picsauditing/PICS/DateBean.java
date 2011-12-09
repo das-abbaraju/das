@@ -75,16 +75,11 @@ public class DateBean {
 		}
 	}
 
-	public static String toDBFormat(Date fromDate) throws Exception {
+	public static String toDBFormat(Date fromDate) {
 		if (fromDate == null)
 			return null;
 		SimpleDateFormat DBFormat = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			return DBFormat.format(fromDate);
-		} catch (Exception e) {
-			System.out.println("Invalid DB Date format in DateBean.toDBformat(): failed converting " + fromDate);
-			return null;
-		}
+		return DBFormat.format(fromDate);
 	}
 
 	public static String toShowFormat(Object date) throws Exception {
