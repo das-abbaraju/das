@@ -39,6 +39,16 @@ public class DateBeanTest extends TestCase {
 	}
 	
 	@Test
+	public void testDBFormat() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2001, Calendar.JANUARY, 1);
+		assertEquals("2001-01-01", DateBean.toDBFormat(cal.getTime()));
+		
+		cal.set(1, Calendar.JANUARY, 1);
+		assertEquals("0001-01-01", DateBean.toDBFormat(cal.getTime()));
+	}
+	
+	@Test
 	public void testTimeZone() throws Exception {
 		Date sourceDate = new Date(999999);
 		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
