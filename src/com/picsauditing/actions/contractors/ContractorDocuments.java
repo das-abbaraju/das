@@ -185,29 +185,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
 
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
-				if (auditTypeRule.getAuditType() != null && auditTypeRule.getAuditType().getId() == 126)
-					System.out.println(auditTypeRule.getId() + " - " + auditTypeRule.getAuditType().getId());
-			}
-			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
-				if (auditTypeRule.isInclude() && auditTypeRule.getAuditType() != null) {
-					if (!auditTypeRule.getAuditType().isAnnualAddendum()
-							&& (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded())) {
-						if (permissions.isAdmin())
-							manuallyAddAudits.add(auditTypeRule.getAuditType());
-						else if (permissions.isOperator()) {
-							if (auditTypeRule.getOperatorAccount() != null
-									&& (permissions.getCorporateParent().contains(
-											auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
-											.getOperatorAccount().getId())) {
-								manuallyAddAudits.add(auditTypeRule.getAuditType());
-							}
-						} else if (permissions.isCorporate()) {
-							if (auditTypeRule.getOperatorAccount() != null
-									&& auditTypeRule.getOperatorAccount().getId() == permissions.getAccountId()) {
-								manuallyAddAudits.add(auditTypeRule.getAuditType());
-							}
-						}
-					}
+				if (isValidManualAuditType(auditTypeRule)) {
+					manuallyAddAudits.add(auditTypeRule.getAuditType());
 				}
 			}
 		}
@@ -215,6 +194,45 @@ public class ContractorDocuments extends ContractorActionSupport {
 		return manuallyAddAudits;
 	}
 
+	private boolean isValidManualAuditType(AuditTypeRule auditTypeRule) {
+		if (!auditTypeRule.isInclude() || auditTypeRule.getAuditType() == null
+				|| auditTypeRule.getAuditType().isAnnualAddendum() || auditTypeRule.getAuditType().isExtractable()) {
+			return false;
+		}
+		
+		if (!auditTypeRule.getAuditType().isHasMultiple() && !auditTypeRule.isManuallyAdded()) {
+			return false;
+		}
+		
+		if (!auditTypeRule.getAuditType().isHasMultiple()) {
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().getId() == auditTypeRule.getAuditType().getId() && !audit.isExpired()) {
+					return false;
+				}
+			}
+		}
+		
+		if (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded()) {
+			if (permissions.isAdmin())
+				return true;
+			else if (permissions.isOperator()) {
+				if (auditTypeRule.getOperatorAccount() != null
+						&& (permissions.getCorporateParent().contains(
+								auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
+								.getOperatorAccount().getId())) {
+					return true;
+				}
+			} else if (permissions.isCorporate()) {
+				if (auditTypeRule.getOperatorAccount() != null
+						&& auditTypeRule.getOperatorAccount().getId() == permissions.getAccountId()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	public class DocumentTab implements Comparable<DocumentTab> {
 		private AuditType type;
 
