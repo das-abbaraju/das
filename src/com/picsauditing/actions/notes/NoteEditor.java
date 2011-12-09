@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -27,7 +27,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.ReportFilterNote;
 
 @SuppressWarnings("serial")
-public class NoteEditor extends AccountActionSupport implements Preparable {
+public class NoteEditor extends AccountActionSupport {
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
@@ -48,7 +48,8 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 	private int employeeID;
 
-	public void prepare() throws Exception {
+	@Before
+	public void initialize() throws Exception {
 		if (note != null) {
 			account = note.getAccount();
 			viewableBy = note.getViewableBy().getId();
@@ -64,7 +65,7 @@ public class NoteEditor extends AccountActionSupport implements Preparable {
 
 		if (viewableBy == 0)
 			viewableBy = Account.EVERYONE;
-		if (viewableByOther == 0) {
+		if (viewableByOther == 0 && viewableBy > 2) {
 			// setting default viewability to restricted to
 			viewableBy = 3;
 			viewableByOther = permissions.getAccountId();
