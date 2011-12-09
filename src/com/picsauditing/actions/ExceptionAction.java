@@ -6,14 +6,12 @@ import java.util.Enumeration;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -23,8 +21,6 @@ import com.picsauditing.mail.GridSender;
 public class ExceptionAction extends PicsActionSupport {
 	@Autowired
 	private EmailSenderSpring emailSender;
-	@Autowired
-	private BasicDAO dao;
 
 	private Exception exception;
 	private String exceptionStack;
@@ -36,53 +32,21 @@ public class ExceptionAction extends PicsActionSupport {
 	private String user = "info@picsauditing.com";
 	private String password = "e3r4t5";
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String execute() {
 		try {
 			loadPermissions();
 
-			try {
-				ErrorLog error = new ErrorLog();
-				error.setAuditColumns(permissions);
-				error.setCategory(getException().getClass().getSimpleName());
-				error.setMessage(getExceptionStack());
-				error.setPriority(getPriority());
-				error.setStatus("Pending");
-				dao.save(error);
-			} catch (Exception e) {
-			}
+			tryToSaveExceptionToDatabase();
 
-			HttpServletRequest request = ServletActionContext.getRequest();
-			HttpServletResponse response = ServletActionContext.getResponse();
-			HttpSession session = ServletActionContext.getRequest().getSession();
-
-			String message = "";
-			String stacktrace = "";
-
-			Date currentTime = new Date();
-			// if the session hasn't been alive for a second, then redirect to the home page
-			// when encountering an exception, otherwise write an email out
-			if ((currentTime.getTime() - session.getCreationTime()) < 1000) {
-				String redirectURL = "http://www.picsorganizer.com/";
-				try {
-					response.sendRedirect(redirectURL);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			if (isSessionLessThanOneSecondOld()) {
+				tryRedirectToHome();
 			} else {
-				if (exception != null) {
-					if (exception.getMessage() != null)
-						message = exception.getMessage();
-					else
-						message = exception.toString();
-					stacktrace = getExceptionStack();
-				}// if
-
+				HttpServletRequest request = ServletActionContext.getRequest();
+				
 				StringBuilder email = new StringBuilder();
 				email.append("An error occurred on PICS\n\n");
-				email.append(message);
+				email.append(createExceptionMessage());
 				email.append("\n\nServerName: " + request.getServerName());
 				email.append("\nRequestURI: " + request.getRequestURI());
 				email.append("\nQueryString: " + request.getQueryString());
@@ -98,9 +62,9 @@ public class ExceptionAction extends PicsActionSupport {
 					email.append("\nThe current user was NOT logged in.");
 				}
 
-				if (!Strings.isEmpty(stacktrace)) {
+				if (!Strings.isEmpty(exceptionStack)) {
 					email.append("\n\nTrace:\n");
-					email.append(stacktrace);
+					email.append(exceptionStack);
 				}
 				email.append("\n\n");
 				for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
@@ -133,7 +97,45 @@ public class ExceptionAction extends PicsActionSupport {
 		return "Exception";
 	}
 
-	@SuppressWarnings("unchecked")
+	private boolean isSessionLessThanOneSecondOld() {
+		HttpSession session = ServletActionContext.getRequest().getSession();
+		Date currentTime = new Date();
+		return (currentTime.getTime() - session.getCreationTime()) < 1000;
+	}
+
+	private void tryRedirectToHome() {
+		// TODO Research this and see if it's still necessary
+		try {
+			redirect("http://www.picsorganizer.com/");
+		} catch (IOException doNothing) {
+			doNothing.printStackTrace();
+		}
+	}
+
+	private String createExceptionMessage() {
+		String message = "";
+		if (exception != null) {
+			if (exception.getMessage() != null)
+				message = exception.getMessage();
+			else
+				message = exception.toString();
+		}
+		return message;
+	}
+
+	private void tryToSaveExceptionToDatabase() {
+		try {
+			ErrorLog error = new ErrorLog();
+			error.setAuditColumns(permissions);
+			error.setCategory(getException().getClass().getSimpleName());
+			error.setMessage(getExceptionStack());
+			error.setPriority(getPriority());
+			error.setStatus("Pending");
+			dao.save(error);
+		} catch (Exception e) {
+		}
+	}
+
 	public String sendExceptionEmail() {
 		try {
 			loadPermissions();
