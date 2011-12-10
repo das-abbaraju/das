@@ -136,11 +136,16 @@ public class ReportDynamic extends PicsActionSupport {
 		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
 		runner.buildQuery(createCommandFromReportParameters());
 
-		for (QueryField field : runner.getAvailableFields().values()) {
-			String label = getText("Report.GlobalColumn." + field.dataIndex);
-			if (label != null)
-				field.label = label;
-			columns.add(field);
+		for (String column : runner.getColumns()) {
+			if (runner.getAvailableFields().keySet().contains(column)) {
+				QueryField field = runner.getAvailableFields().get(column);
+				String label = getText("Report.GlobalColumn." + field.dataIndex);
+				if (label != null)
+					field.label = label;
+				else
+					field.label = "Report.GlobalColumn." + column; 
+				columns.add(field);
+			}
 		}
 		return columns;
 	}

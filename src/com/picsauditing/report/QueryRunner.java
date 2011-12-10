@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.jboss.util.Strings;
 
 import com.picsauditing.access.Permissions;
@@ -25,7 +26,7 @@ public class QueryRunner {
 
 		buildBase(base);
 	}
-	
+
 	public SelectSQL buildQuery(QueryCommand command) {
 		columns = command.getColumns();
 		if (columns.size() == 0) {
@@ -62,27 +63,38 @@ public class QueryRunner {
 			}
 		}
 
-		for (String alias : availableFields.keySet()) {
-			if (columns.contains(alias)) {
-				String field = availableFields.get(alias).sql;
-				sql.addField(field + " AS " + alias);
+		for (String column : columns) {
+			if (availableFields.keySet().contains(column)) {
+				String field = availableFields.get(column).sql;
+				sql.addField(field + " AS " + column);
 			}
 		}
 
 		if (command.getFilters().size() > 0) {
 			String where = command.getFilterExpression();
-			if (where == null || Strings.isEmpty(where))
-				where = "0";
-			for (int i = command.getFilters().size()-1; i >= 0; i--) {
-				String filter = command.getFilters().get(i).toExpression(availableFields);
-				where = where.replace(i + "", filter);
+			if (where == null || Strings.isEmpty(where)) {
+				for (int i = 0; i > command.getFilters().size(); i++) {
+					where = i + " AND ";
+				}
+				where = StringUtils.removeEnd(where, " AND ");
+			}
+
+			for (int i = command.getFilters().size() - 1; i >= 0; i--) {
+				QueryFilter queryFilter = command.getFilters().get(i);
+				String filterExp = queryFilter.toExpression(availableFields);
+
+				if (queryFilter.getOperator().equals(QueryFilterOperator.InReport))
+					// TODO: query the report sql and put down an inner query.
+					where = where.replace(i + "", filterExp);
+				else
+					where = where.replace(i + "", filterExp);
 			}
 			sql.addWhere(where);
 		}
 
 		// We may need to move this to a class field
 		sql.setSQL_CALC_FOUND_ROWS(true);
-		
+
 		return sql;
 	}
 
@@ -102,22 +114,24 @@ public class QueryRunner {
 		case Contractors:
 			buildContractorBase();
 			break;
-
+		case RegistrationRequests:
+			buildRegistrationRequestsBase();
+			break;
 		case ContractorAudits:
 			buildContractorAuditBase();
 			break;
-
+		case ContractorAuditOperators:
+			buildContractorAuditOperatorBase();
+			break;
 		default:
 			// This really shouldn't happen
 			buildAccountBase();
 			break;
 		}
 	}
-	
+
 	private QueryField addQueryField(String dataIndex, String sql) {
-		QueryField field = new QueryField();
-		field.sql = sql;
-		field.dataIndex = dataIndex;
+		QueryField field = new QueryField(dataIndex, sql);
 		availableFields.put(dataIndex, field);
 		return field;
 	}
@@ -125,14 +139,29 @@ public class QueryRunner {
 	private void buildAccountBase() {
 		sql = new SelectSQL();
 		sql.setFromTable("accounts a");
-		addQueryField("accountID", "a.id").hide();
-		QueryField accountName = addQueryField("accountName", "a.name");
-		// accountName.flex = 1;
-		accountName.width = 200;
-		accountName.renderer = new JavaScript("function(value, metaData, record) {return Ext.String.format('<a href=\"ContractorView.action?id={0}\">{1}</a>',record.data.accountID,record.data.accountName);}");
+		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+
+		addQueryField("accountID", "a.id");
+		addQueryField("accountName", "a.name");
 		addQueryField("accountStatus", "a.status");
 		addQueryField("accountType", "a.type");
-		defaultSort = "a.name";
+		addQueryField("accountPhone", "a.phone");
+		addQueryField("accountFax", "a.fax");
+		addQueryField("accountCreationDate", "a.creationDate").type(FieldType.Date);
+		addQueryField("accountAddress", "a.address");
+		addQueryField("accountCity", "a.city");
+		addQueryField("accountState", "a.state");
+		addQueryField("accountZip", "a.zip");
+		addQueryField("accountWebsite", "a.web_url");
+		addQueryField("accountDBAName", "a.dbaName");
+
+		addQueryField("accountContactUserID", "contact.id");
+		addQueryField("accountContactUserAccountID", "contact.id");
+		addQueryField("accountContactUserName", "contact.name");
+		addQueryField("accountContactUserPhone", "contact.phone");
+		addQueryField("accountContactUserEmail", "contact.email");
+
+		defaultSort = "a.nameIndex";
 	}
 
 	private void buildOperatorBase() {
@@ -147,28 +176,98 @@ public class QueryRunner {
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");
 		availableFields.remove("accountType");
+		addQueryField("contractorRiskLevel", "c.riskLevel");
+		addQueryField("contractorSafetyRisk", "c.safetyRisk");
+		addQueryField("contractorProductRisk", "c.productRisk");
+		addQueryField("contractorMainTrade", "c.main_trade");
+		addQueryField("contractorTradesSelfPerformed", "c.tradesSelf");
+		addQueryField("contractorTradesSubContracted", "c.tradesSub");
+		addQueryField("contractorScore", "c.score");
 	}
 
 	private void buildContractorAuditBase() {
 		buildContractorBase();
-		availableFields.get("accountStatus").hide();
-		
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		// sql.addWhere("ca.expiresDate < '2020'");
-		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 
-		addQueryField("auditID", "ca.id").hide();
-		addQueryField("auditTypeID", "ca.auditTypeID").hide();
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
+		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
+		sql.addWhere("atype.classType IN ( 'Audit', 'IM', 'PQF' )");
+		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
+		sql.setDistinct(true);
+
+		availableFields.get("accountStatus").hide();
+		addQueryField("auditID", "ca.id");
+		addQueryField("auditTypeID", "ca.auditTypeID");
 		QueryField auditTypeName = addQueryField("auditTypeName", "ca.auditTypeID");
 		auditTypeName.translate("AuditType", "name");
-		auditTypeName.width = 180;
-		auditTypeName.renderer = new JavaScript("function(value, metaData, record) {return Ext.String.format('<a href=\"Audit.action?auditID={0}\">{1}</a>',record.data.auditID,record.data.auditTypeName);}");
-
 		addQueryField("auditCreationDate", "ca.creationDate").type(FieldType.Date);
-		addQueryField("auditExpiresDate", "ca.expiresDate").type(FieldType.Date);
+		addQueryField("auditExpirationDate", "ca.expiresDate").type(FieldType.Date);
+		addQueryField("auditScheduledDate", "ca.expiresDate").type(FieldType.Date);
+		addQueryField("auditAssignedDate", "ca.expiresDate").type(FieldType.Date);
+		addQueryField("auditLocation", "ca.auditLocation");
 		addQueryField("auditFor", "ca.auditFor");
+		addQueryField("auditScore", "ca.score");
 
-		defaultSort = "ca.creationDate DESC";
+		addQueryField("auditTypeIsScheduled", "atype.isScheduled");
+		addQueryField("auditTypeHasAuditor", "atype.hasAuditor");
+		addQueryField("auditTypeScorable", "atype.scoreable");
+
+		addQueryField("auditorUserID", "auditor.id");
+		addQueryField("auditorUserAccountID", "auditor.accountID");
+		addQueryField("auditorUserName", "auditor.name");
+	}
+
+	private void buildContractorAuditOperatorBase() {
+		buildContractorAuditBase();
+
+		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
+		sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
+
+		addQueryField("contractorAuditOperatorID", "cao.id");
+		addQueryField("contractorAuditOperatorStatus", "cao.status");
+		addQueryField("contractorAuditOperatorStatusChangedDate", "cao.statusChangedDate").type(FieldType.Date);
+
+		addQueryField("contractorAuditOperatorAccountID", "caoAccount.id");
+		addQueryField("contractorAuditOperatorAccountName", "caoAccount.name");
+
+		defaultSort = "cao.statusChangedDate DESC";
+	}
+
+	private void buildRegistrationRequestsBase() {
+		sql = new SelectSQL();
+		sql.setFromTable("contractor_registration_request crr");
+		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
+		sql.addJoin("LEFT JOIN users u ON u.id = crr.requestedByUserID");
+		sql.addJoin("LEFT JOIN users uc ON uc.id = crr.lastContactedBy");
+		sql.addJoin("LEFT JOIN accounts con ON con.id = crr.conID");
+
+		addQueryField("requestID", "crr.id");
+		addQueryField("requestedName", "crr.name");
+		addQueryField("requestedContact", "crr.contact");
+		addQueryField("requestedPhone", "crr.phone");
+		addQueryField("requestedEmail", "crr.email");
+		addQueryField("requestedTaxID", "crr.taxID");
+		addQueryField("requestedAddress", "crr.address");
+		addQueryField("requestedCity", "crr.city");
+		addQueryField("requestedState", "crr.state");
+		addQueryField("requestedZip", "crr.zip");
+		addQueryField("requestedCountry", "crr.country");
+		addQueryField("requestedNotes", "crr.notes");
+		addQueryField("requestedByOperatorID", "op.id");
+		addQueryField("requestedByOperatorName", "op.name");
+		addQueryField("requestedByOperatorUserID", "u.id");
+		addQueryField("requestedByOperatorUserAccountID", "u.accountID");
+		addQueryField("requestedByOperatorUserName", "u.name");
+		addQueryField("requestedByOperatorUserOther", "crr.requestedByUser");
+		addQueryField("requestedDeadline", "crr.deadline");
+		addQueryField("requestedContactedByUserID", "uc.id");
+		addQueryField("requestedContactedByUserAccountID", "uc.accountID");
+		addQueryField("requestedContactedByUserName", "uc.name");
+		addQueryField("requestedLastContactedByDate", "crr.lastContactDate").type(FieldType.Date);
+		addQueryField("requestedContactCount", "crr.contactCount");
+		addQueryField("requestedMatchCount", "crr.matchCount");
+		addQueryField("requestCreationDate", "crr.creationDate").type(FieldType.Date);
+		addQueryField("requestedExistingAccountID", "con.id");
+		addQueryField("requestedExistingAccountName", "con.name");
 	}
 
 	public Map<String, QueryField> getAvailableFields() {
@@ -178,7 +277,7 @@ public class QueryRunner {
 	public List<String> getColumns() {
 		return columns;
 	}
-	
+
 	public int getAllRows() {
 		return allRows;
 	}

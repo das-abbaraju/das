@@ -1,5 +1,6 @@
 package com.picsauditing.report;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -34,6 +35,59 @@ public class QueryField implements JSONAware {
 	 * function(value, metaData, record) { return Ext.String .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
 	 * record.data.accountID);
 	 */
+
+	public QueryField(String dataIndex, String sql) {
+		this.dataIndex = dataIndex;
+		this.sql = sql;
+
+		if (StringUtils.endsWithIgnoreCase(dataIndex, "id"))
+			hide();
+		if (StringUtils.endsWithIgnoreCase(dataIndex, "name") || StringUtils.endsWithIgnoreCase(dataIndex, "website"))
+			applyRendering();
+	}
+
+	private void applyRendering() {
+		width = 200;
+		StringBuffer js = new StringBuffer();
+		String action = "";
+		String parameters = "";
+		if (StringUtils.endsWithIgnoreCase(dataIndex, "AccountName")) {
+			action = "ContractorView.action?id={0}\">{1}";
+
+			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "Name");
+			parameters = "record.data." + prefix + "ID,record.data." + dataIndex;
+		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "OperatorName")) {
+			action = "FacilitiesEdit.action?operator={0}\">{1}";
+
+			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "Name");
+			parameters = "record.data." + prefix + "ID,record.data." + dataIndex;
+		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "AuditTypeName")) {
+			width = 180;
+			action = "Audit.action?auditID={0}\">{1} {2}";
+			parameters = "record.data.auditID,record.data.auditTypeName,record.data.auditFor";
+		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "RequestedName")) {
+			action = "RequestNewContractor.action?newContractor={0}\">{1}";
+			parameters = "record.data.requestID,record.data.requestedName";
+		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "UserName")) {
+			action = "UsersManage.action?account={0}&user={1}\">{2}";
+
+			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "name");
+			parameters = "record.data." + prefix + "AccountID," + "record.data." + prefix + "ID," + "record.data."
+					+ dataIndex;
+		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "Website")) {
+			action = "http://{0}\">{0}";
+			parameters = "record.data.accountWebsite";
+		}
+		else
+			return;
+		js.append("function(value, metaData, record) {return Ext.String.format('<a href=\"");
+		js.append(action);
+		js.append("</a>',");
+		js.append(parameters);
+		js.append(");}");
+		renderer = new JavaScript(js.toString());
+
+	}
 
 	@SuppressWarnings("unchecked")
 	public String toJSONString() {
