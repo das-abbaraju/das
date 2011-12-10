@@ -14,8 +14,6 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApproval extends ReportContractorAuditOperator {
@@ -66,6 +64,8 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		if (permissions.isOperatorCorporate()) {
 			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id");
 			sql.addJoin("JOIN audit_question q ON q.id = d.questionID AND q.questionType = 'FileCertificate' AND q.columnHeader = 'Certificate' AND q.number = 1");
+			sql.addJoin("JOIN audit_category_rule acr ON q.categoryID = acr.catID");
+			sql.addWhere("acr.opID = cao.opID");
 
 			sql.addField("d.answer certID");
 
