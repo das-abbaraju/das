@@ -1,87 +1,481 @@
-#ContractorRegistration-page #main
+header
+{
+	border: 0px;
+	margin: 0px auto;
+	padding: 0px;
+	width: 960px;
+}
+
+header .chat,
+header .phone,
+header .welcome-message
+{
+	float: right;
+	margin-top: 15px;
+}
+
+header .locale-form
+{
+	float: right;
+	margin-top: 12px;
+	margin-right: 20px;
+}
+
+header .locale-form select
+{
+	padding: 3px;
+}
+
+header .chat a,
+header .phone
+{
+	color: #8fc0e0;
+	font-weight: normal;
+}
+
+header .header-menu
+{
+	background: #F5F5F5;
+	margin: 0px;
+	padding: 20px;
+}
+
+header .header-menu li
+{
+	margin: 0px;
+}
+
+footer
+{
+	background: #A5CEE9;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0), to(#94c3e2));
+	background-image: -moz-linear-gradient(top, #badbf0, #94c3e2);
+	background-image: -ms-linear-gradient(top, #badbf0, #94c3e2);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0), color-stop(100%, #94c3e2));
+	background-image: -webkit-linear-gradient(top, #badbf0, #94c3e2);
+	background-image: -o-linear-gradient(top, #badbf0, #94c3e2);
+	background-image: linear-gradient(top, #badbf0, #94c3e2);
+	background-image: linear-gradient(top, #badbf0, #94c3e2);
+	border: 0px;
+	height: 115px;
+	padding: 0px;
+}
+
+footer div.separator
+{
+	border: 0px;
+	border-top: 1px solid #FFFFFF;
+	margin: 2px 0px 0px;
+	padding: 0px;
+}
+
+footer .footer-menu
+{
+	color: #6c96b3;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 40px auto;
+	text-shadow: #FFFFFF 1px 1px 2px;
+	width: 960px;
+}
+
+footer .footer-menu li
+{
+	float: none;
+	margin-bottom: 10px;
+}
+
+footer .footer-menu a
+{
+	color: #6c96b3;
+}
+
+#Registration-page .registration,
+#RegistrationAddClientSite-page .client-site
 {
 	margin: 0px auto;
 	width: 960px;
 }
 
-#ContractorRegistration-page .registration
+/**
+ * registration header
+ */
+ 
+.registration-header section
 {
-	display: inline;
-	float: left;
-	margin: 0px 10px;
+	background: #A5CEE9;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#BFDFF3), to(#91C1E1));
+	background-image: -moz-linear-gradient(top, #BFDFF3, #91C1E1);
+	background-image: -ms-linear-gradient(top, #BFDFF3, #91C1E1);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #BFDFF3), color-stop(100%, #91C1E1));
+	background-image: -webkit-linear-gradient(top, #BFDFF3, #91C1E1);
+	background-image: -o-linear-gradient(top, #BFDFF3, #91C1E1);
+	background-image: linear-gradient(top, #BFDFF3, #91C1E1);
+	background-image: linear-gradient(top, #BFDFF3, #91C1E1);
+	border-bottom: 7px solid #7BAACA;
+	border-top: 2px solid #AEAFB2;
+	height: 100px;
+	width: auto;
+}
+
+.registration-header h1
+{
+	color: #FFFFFF;
+	font-family: Franklin Gothic Medium, Arial;
+	font-size: 40px;
+	margin: 0px auto;
 	position: relative;
+	text-shadow: #39749b 2px 2px 5px;
+	text-transform: uppercase;
+	top: 40px;
+	width: 960px;
 }
 
-.registration header
-{
-	border: 0px;
-	height: auto;
-	margin-bottom: 20px;
-	padding: 0px;
-}
-
-.registration header h1
-{
-	color: #A84D10;
-	font-size: 30px;
-	font-weight: bold;
-	margin: 10px 0px;
-}
-
-.registration header h2
-{
-	font-size: 15px;
-}
-
-/* registration form */
-
+/**
+ * registration
+ */
+ 
 .registration-form
 {
-	
+	float: left;
+}
+ 
+.registration-form .company-information,
+.registration-form .contact-information,
+.registration-form .account-information
+{
+	border: 1px solid #bbd3e3;
+	margin-top: 20px;
+	width: 588px;
+}
+
+.registration-form .company-information input,
+.registration-form .contact-information input,
+.registration-form .account-information input
+{
+	-webkit-box-shadow: inset 0px 2px 3px -1px #878787;
+	-moz-box-shadow: inset 0px 2px 3px -1px #878787;
+	box-shadow: inset 0px 2px 3px -1px #878787;
+}
+
+.registration-form section
+{
+	background: #F5F5F5;
+	margin: 2px;
+	padding: 30px 20px;
 }
 
 .registration-form h1
 {
-	font-size: 20px;
-	margin: 10px 0px;
+	background-color: rgb(197, 98, 26);
+	background-color: rgba(197, 98, 26, 0.7);
+	color: #FFFFFF;
+	font-size: 25px;
+	font-weight: bold;
+	height: 50px;
+	line-height: 50px;
+	margin: 0px 0px 20px -30px;
+	text-shadow: #a85008 2px 2px 5px;
+	width: 350px;
+}
+
+.registration-form h1 span
+{
+	background-color: rgb(197, 98, 26);
+	font-size: 25px;
+	margin: 0px 10px 0px 20px;
+	padding: 2px 12px;
 }
 
 .registration-form li
 {
-	margin-bottom: 5px;
+	overflow: hidden;
 }
 
-.registration-form label
+.registration-form input
 {
-	display: block;
 	float: left;
-	font-size: 13px;
-	line-height: 25px;
-	margin-right: 10px;
-	text-align: right;
-	width: 300px;
 }
 
-.registration-form .help-text
+.registration-form .errors
 {
-	display: none;
+	float: left;
+	margin-left: 10px;
 }
 
-.registration-form .help
+.registration-form .errors li
 {
-	color: #AAA;
-	display: block;
-	font-size: 11px;
-	left: 310px;
+	background: url(../images/registration/cross.png) no-repeat;
+	color: #C33107;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	line-height: 18px;
+	margin: 0px;
+	padding-left: 20px;
 	position: relative;
+	top: 3px;
 }
 
 .registration-form .actions
 {
-	padding-left: 310px;
+	overflow: hidden;
+}
+
+.registration-form .info-agreement
+{
+	background: url(../images/registration/info_arrow_bg_right2.png) 100% no-repeat;
+	height: 67px;
+	float: left;
+	margin: 20px 0px 20px 127px;
+	width: 330px;
 }
 
 .registration-form .actions p
+{
+	font-size: 12px;
+	line-height: 18px;
+	padding: 15px 0px;
+}
+
+.registration-form .actions a
+{
+	color: #ba6219;	
+}
+
+.registration-form .actions input
+{
+	float: left;
+	left: 22px;
+	position: relative;
+	top: 35px;
+}
+
+/* registration side bar */
+
+.registration-side-bar
+{
+	background: url(../images/registration/registration_bg.png) no-repeat;
+	float: left;
+	height: 900px;
+	width: 370px;
+}
+
+.registration-side-bar .info-join
+{
+	background: url(../images/registration/info_arrow_bg_right1.png) no-repeat;
+	height: 109px;
+	margin: 35px 0px 0px 15px;
+}
+
+.registration-side-bar .info-join h1
+{
+	color: #002D4F;
+	font-family: Franklin Gothic Medium, Arial;
+	font-size: 20px;
+	line-height: 24px;
+	position: relative;
+	top: 18px;
+}
+
+.registration-side-bar .info-qualify,
+.registration-side-bar .info-choice
+{
+	background-color: rgb(145, 192, 224);
+	background-color: rgba(145, 192, 224, 0.25);
+	padding: 10px 20px 35px;
+	margin: 45px 0px 35px 90px;
+	width: 220px;
+}
+
+.registration-side-bar .info-choice
+{
+	margin: 70px 0px 0px 10px;
+	width: 275px;
+}
+
+.registration-side-bar .info-qualify h1,
+.registration-side-bar .info-choice h1
+{
+	color: #39749b;
+	font-size: 30px;
+	font-weight: bold;
+	line-height: 33px;
+	margin: 20px 0px;
+}
+
+.registration-side-bar .info-choice ul
+{
+	list-style-type: square;
+	margin-left: 5px;
+}
+
+.registration-side-bar .info-qualify li,
+.registration-side-bar .info-choice li
+{
+	color: #76a7c9;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 10px;
+	text-shadow: #FFFFFF 1px 1px 2px;
+}
+
+.registration-side-bar .info-choice li
+{
+	font-size: 14px;
+}
+
+/* general */
+
+#Registration-page #main .alert-message,
+#RegistrationAddClientSite-page #main .alert-message,
+#RegistrationServiceEvaluation-page #main .alert-message,
+#RegistrationMakePayment-page #main .alert-message
+{
+	font-size: 14px;
+	padding: 10px 14px;
+}
+
+.registration-form li,
+.client-site-form li,
+.service-evaluation-form li,
+.make-payment-form li
+{
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+
+.service-evaluation-form li
+{
+	margin-bottom: 15px;
+}
+
+.registration-form label,
+.client-site-form label,
+.service-evaluation-form label,
+.make-payment-form label
+{
+	color: #5d5d5d;
+	display: block;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	margin: 2px 10px 0px 0px;
+	width: 120px;
+}
+
+.registration-form input,
+.client-site-form input,
+.service-evaluation-form input,
+.make-payment-form input
+{
+	border: 1px solid #878787;
+	height: 20px;
+	padding: 1px 5px;
+	width: 175px;
+}
+
+.service-evaluation-form input.checkbox
+{
+	width: auto;
+}
+
+.service-evaluation-form ul.checkbox-list,
+.service-evaluation-form ul.radio,
+.make-payment-form ul.radio
+{
+	float: left;
+}
+
+.service-evaluation-form ul.checkbox-list li,
+.service-evaluation-form ul.radio li,
+.make-payment-form ul.radio li
+{
+	margin: 0px;
+}
+
+.service-evaluation-form ul.checkbox-list input,
+.service-evaluation-form ul.radio input,
+.make-payment-form ul.radio input
+{
+	border: 0px;
+	float: left;
+	padding: 0px;
+	margin-right: 6px;
+	width: auto;
+}
+
+.service-evaluation-form ul.checkbox-list label,
+.service-evaluation-form ul.radio label,
+.make-payment-form ul.radio label
+{
+	float: left;
+	width: auto;
+}
+
+.service-evaluation-form ul.radio.inline label,
+.make-payment-form ul.radio.inline label
+{
+	padding: 3px 5px 0px 0px;
+}
+
+.registration-form select,
+.client-site-form select,
+.service-evaluation-form select,
+.make-payment-form select
+{
+	border: 1px solid #878787;
+	margin: 0px;
+	padding: 3px;
+}
+
+.registration-form p,
+.client-site-form p,
+.service-evaluation-form p,
+.make-payment-form p
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.registration-form a,
+.client-site-form a,
+.service-evaluation-form a,
+.make-payment-form a
+{
+	color: #195F91;
+}
+
+.registration-form a:hover,
+.client-site-form a:hover,
+.service-evaluation-form a:hover,
+.make-payment-form a:hover
+{
+	text-decoration: none;
+}
+
+.registration-form .help-text,
+.client-site-form .help-text,
+.service-evaluation-form .help-text,
+.make-payment-form .help-text
+{
+	display: none;
+}
+
+.registration-form .actions input,
+.client-site-form .actions input,
+.service-evaluation-form .actions input,
+.make-payment-form .actions input
+{
+	height: auto;
+	padding: 9px 20px 10px;
+	width: auto;
+}
+
+.client-site-form .actions p,
+.service-evaluation-form .actions p,
+.make-payment-form .actions p
 {
 	font-size: 12px;
 	line-height: 18px;
@@ -90,17 +484,655 @@
 
 /* popover */
 
-#ContractorRegistration-page .popover
+#Registration-page .popover
 {
-	font-size: 12px;	
+	font-size: 12px;
 }
 
-#ContractorRegistration-page .popover .inner
+#Registration-page .popover .arrow
 {
-	width: 300px;
+	left: 87px;
 }
 
-#ContractorRegistration-page .popover .inner p
+#Registration-page .popover .inner
 {
-	margin-bottom: 10px;
+	left: 72px;
+	position: absolute;
+	width: 350px;
+}
+
+#Registration-page .popover .inner .title
+{
+	display: none;
+}
+
+#Registration-page .popover .inner .content
+{
+	background: #faf3ed;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+#Registration-page .popover .inner .content p
+{
+	line-height: 18px;
+}
+
+/* registration step */
+
+.registration-step ul
+{
+	margin: 20px auto 0px;
+	width: 750px;
+}
+
+.registration-step li
+{
+	color: #cde3f2;
+	float: left;
+	font-family: Franklin Gothic Medium, Arial;
+	font-size: 20px;
+	text-align: center;
+	text-shadow: #39749b 1px 1px 4px;
+	width: 250px;
+}
+
+.registration-step li.enabled,
+.registration-step li.current
+{
+	color: #FFFFFF;
+}
+
+.registration-step li a,
+.registration-step li span,
+.registration-step li.disabled a,
+.registration-step li.disabled span
+{
+	background: #d8eaf5;
+	color: #b2d3ea;
+	display: block;
+	font-family: Franklin Gothic Medium, Arial;
+	font-size: 20px;
+	line-height: 38px;
+	margin: 0px auto 10px;
+	text-align: center;
+	text-decoration: none;
+	text-shadow: none;
+	width: 40px;
+}
+
+.registration-step li.enabled a,
+.registration-step li.enabled span
+{
+	background: #9cc7e4;
+	-webkit-box-shadow: -2px -2px 1px -1px #FFFFFF;
+	-moz-box-shadow: -2px -2px 1px -1px #FFFFFF;
+	box-shadow: -2px -2px 1px -1px #FFFFFF;
+	color: #FFFFFF;
+}
+
+.registration-step li.current a,
+.registration-step li.current span
+{
+	background: #1f4867;
+	color: #FFFFFF;
+}
+
+/* overwrites */
+
+.client-site hr.separator,
+.service-evaluation hr.separator,
+.make-payment hr.separator
+{
+	border: 0px;
+	border-top: 2px solid #878787;
+	clear: both;
+	margin: 30px 0px 20px;
+}
+
+.client-site h1,
+.service-evaluation h1,
+.make-payment h1
+{
+	color: #bb621a;
+	font-family: Franklin Gothic Medium, Arial;
+	font-size: 40px;
+	line-height: 40px;
+	margin: 35px 0px 20px;
+}
+
+.client-site-form label,
+.service-evaluation-form label,
+.make-payment-form label
+{
+	width: 350px;
+}
+
+.client-site-form .actions,
+.service-evaluation-form .actions,
+.make-payment-form .actions
+{
+	padding-left: 358px;	
+}
+
+/* add client site specific */
+.client-site-filter
+{
+	background: #fefaee;
+	height: 100px;
+	overflow: hidden;
+	margin: 0px 0px 20px;
+}
+
+.client-site-filter ul
+{
+	margin: 35px auto 0px;
+	width: 580px;
+}
+
+.client-site-filter li
+{
+	float: left;	
+}
+
+.client-site-filter .search
+{
+	margin: 5px 10px 0px 0px;
+}
+
+.client-site-filter .search label
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 16px;
+}
+
+.client-site-filter .search input
+{
+	border: 1px solid #878787;
+	height: 20px;
+	padding: 1px 5px;
+	width: 175px;
+}
+
+.client-site .client-site-left
+{
+	float: left;
+	position: relative;
+}
+
+.client-site .client-site-right
+{
+	float: right;
+	position: relative;
+}
+
+.client-site .client-site-left label,
+.client-site .client-site-right label
+{
+	line-height: 25px;
+	margin: 0px;
+	padding: 0px;
+	width: auto;
+}
+
+.client-site .client-site-left .client-site-list-container,
+.client-site .client-site-right .client-site-list-container
+{
+	padding: 20px;
+	position: relative;
+}
+
+.client-site .client-site-left .client-site-list-container
+{
+	background: #f5f5f5;
+}
+
+.client-site .client-site-left .client-site-list-container .arrow
+{
+	background: url(../images/registration/client_site_list_arrow.jpg) no-repeat;
+	height: 52px;
+	position: absolute;
+	right: -26px;
+	top: 140px;
+	width: 26px;
+}
+
+.client-site .client-site-right .client-site-list-container
+{
+	background: #ebf4f9;
+}
+
+.client-site .client-site-list
+{
+	background: #FFFFFF;
+	border: 1px solid #878787;
+	clear: both;
+	font-size: 13px;
+	height: 300px;
+	overflow-y: scroll;
+	width: 420px;
+}
+
+.client-site .client-site-list li
+{
+	line-height: 16px;
+	margin: 0px;
+}
+
+.client-site .client-site-list li a
+{
+	color: #404040;
+	display: block;
+	line-height: 23px;
+	overflow: hidden;
+	padding: 5px;
+	text-decoration: none;
+}
+
+.client-site .client-site-list li a:hover
+{
+	 background: #F5F5F5;
+	 cursor: default;
+	 font-weight: bold;
+}
+
+.client-site .client-site-list li a:hover .location
+{
+	display: none;
+}
+
+.client-site .client-site-list li a:hover .add,
+.client-site .client-site-list li a:hover .remove,
+.client-site .client-site-list li a:hover .info
+{
+	display: block;
+}
+
+.client-site .client-site-list .name
+{
+	float: left;
+	font-size: 12px;
+}
+
+.client-site .client-site-list .location
+{
+	color: #878787;
+	float: right;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.client-site .client-site-list .add,
+.client-site .client-site-list .remove,
+.client-site .client-site-list .info
+{
+	display: none;
+	float: right;
+	font-size: 11px;
+	padding: 3px 5px;
+	text-transform: uppercase;
+}
+
+.client-site .client-site-list .info
+{
+	margin-right: 5px;
+	text-transform: lowercase;
+}
+
+.client-site ul.actions
+{
+	margin: 10px auto;
+	padding: 0px;
+	width: 116px;
+}
+
+.client-site ul.actions li
+{
+	margin: 0px;
+}
+
+.client-site .client-site-list li.inspect
+{
+	
+}
+
+.client-site .client-site-list li.inspect,
+.client-site .client-site-list li.inspect a
+{
+	background: #FDF5D9;
+}
+
+.client-site .client-site-list li.inspect .client-site-info
+{
+	clear: both;
+	color: #878787;
+	display: block;
+}
+
+.client-site .client-site-list .client-site-info
+{
+	display: none;
+	font-size: 12px;
+	font-weight: normal;
+}
+
+.client-site-get-started
+{
+	float: right;
+	margin-top: 20px;
+	padding: 20px;
+	width: 430px;
+}
+
+.client-site-get-started
+{
+	padding-top: 40px;
+}
+
+.client-site-get-started section
+{
+	clear: both;
+	margin-bottom: 50px;
+}
+
+.client-site-get-started h1
+{
+	color: #A94C0F;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 26px;
+	margin: 0px;
+}
+
+.client-site-get-started h2
+{
+	color: #878787;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 14px;
+}
+
+.client-site-get-started img
+{
+	float: left;
+	margin-right: 20px;
+}
+
+.client-site-get-started img.search
+{
+	margin-top: 5px;
+}
+
+.client-site-help
+{
+	bottom: 20px;
+	left: 0px;
+	margin: 20px;
+	position: absolute;
+	text-align: center;
+	width: 415px;
+}
+
+.client-site-help h1
+{
+	color: #A94C0F;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	margin: 0px;
+}
+
+.client-site-help h2
+{
+	color: #878787;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 11px;
+}
+
+.client-site-help button
+{
+	margin: 20px 0px;
+}
+
+/* service evaluation specific */
+
+.service-evaluation label
+{
+	text-align: left;
+}
+
+/* make payment specific */
+.make-payment .membership
+{
+	margin-bottom: 30px;
+}
+
+.make-payment .membership,
+.make-payment .membership-help
+{
+	float: left;
+}
+
+.make-payment .invoice
+{
+	border: 1px solid #878787;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	margin-right: 20px;
+	width: 480px;
+}
+
+.make-payment .invoice th,
+.make-payment .invoice td
+{
+	padding: 10px 10px 9px;
+}
+
+.make-payment .invoice th
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 9px;
+}
+
+.make-payment .invoice td
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	position: relative;
+}
+
+.make-payment .invoice tbody tr:nth-child(odd) th,
+.make-payment .invoice tbody tr:nth-child(odd) td
+{
+	background: #F9F9F9;
+}
+
+.make-payment .invoice th.price,
+.make-payment .invoice td.price
+{
+	text-align: right;
+}
+
+.make-payment .invoice th + th,
+.make-payment .invoice td + td
+{
+	border-left: 1px solid #878787;
+}
+
+.make-payment .invoice td,
+.make-payment .invoice tr + tr th
+{
+	border-top: 1px solid #878787;
+}
+
+.make-payment .invoice td a.help
+{
+	position: absolute;
+	right: 5px;
+}
+
+/* data import */
+
+.data-import-form
+{
+	position: absolute;
+	right: 25px;
+	top: 4px;
+}
+
+.data-import-form input
+{
+	padding: 1px 6px;
+}
+
+.make-payment .invoice tfoot td
+{
+	font-size: 14px;
+	text-align: right;
+}
+
+.make-payment .invoice tfoot td span
+{
+	font-weight: bold;
+}
+
+.make-payment .policy
+{
+	margin: 10px 0px 0px;
+	overflow: hidden;
+}
+
+.make-payment .policy li
+{
+	float: left;
+	margin-right: 15px;
+}
+
+.make-payment .policy li a
+{
+	color: #195F91;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px; 
+}
+
+.make-payment .policy li a:hover
+{
+	text-decoration: none;
+}
+
+.make-payment .membership-help
+{
+	border: 2px solid #404040;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	display: none;
+	width: 456px;
+}
+
+.make-payment .membership-help section h1,
+.make-payment .membership-help section p
+{
+	padding: 10px;
+}
+
+.make-payment .membership-help section h1
+{
+	background: #F5F5F5;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	font-size: 22px;
+	line-height: 28px;
+	margin :0px;
+	padding: 5px 10px;
+}
+
+.make-payment .membership-help section p
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.make-payment-form .creditcard select
+{
+	margin-bottom: 5px;
+}
+
+.make-payment-form img.card
+{
+	display: block;
+	left: 360px;
+	margin: 5px 0px;
+	position: relative;
+}
+
+.make-payment-form .actions p
+{
+	width: 450px;
+}
+
+/* modal */
+
+.modal a
+{
+	color: #195F91;
+	text-decoration: none;
+}
+
+.modal .modal-header
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 36px;
+}
+
+.modal .modal-body
+{
+	height: 280px;
+	overflow-y: scroll;
+}
+
+.modal .modal-body h1,
+.modal .modal-body h2
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0px 0px 15px;
+}
+
+.modal .modal-body p
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 15px;
+}
+
+.modal .modal-body u
+{
+	display: block;
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+
+.modal .modal-body a
+{
+	text-decoration: underline;
+}
+
+.modal .modal-body a:hover
+{
+	text-decoration: none;
 }

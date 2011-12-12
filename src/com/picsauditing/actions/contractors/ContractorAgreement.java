@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class ContractorAgreement extends ContractorActionSupport {
@@ -13,18 +12,10 @@ public class ContractorAgreement extends ContractorActionSupport {
 
 	@Anonymous
 	public String execute() throws Exception {
-		if (permissions == null) {
-			/**
-			 * Block for passing in locale anonymously, for places like Email Subscriptions or Registration
-			 */
+		if (permissions == null)
 			loadPermissions();
-			User u = new User(User.SYSTEM);
-			u.setLocale(request_locale);
-			try {
-				permissions.login(u);
-			} catch (Exception e) {
-			}
-		}
+		if (request_locale != null)
+			permissions.setLocale(request_locale);
 
 		return SUCCESS;
 	}

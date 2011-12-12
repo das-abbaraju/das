@@ -2,8 +2,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <section>
-	<h1 align="center"><s:text name="ContractorPaymentOptions.ContractorAgreement" /></h1>
-	
 	<s:text name="ContractorAgreement.content">
 		<s:param value="%{@com.picsauditing.util.Strings@getPicsPhone(permissions.country)}" />
 	</s:text>

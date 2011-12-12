@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -33,9 +32,9 @@ public class ContractorPricing extends ContractorActionSupport{
 			prices.put("" + fee.getMinFacilities() + fee.getFeeClass(), fee.getAmount());
 		}
 		
-		docuGUARDNum = fees.get(FeeClass.DocuGUARD).getCurrentLevel().getMinFacilities();
-		auditGUARDNum = fees.get(FeeClass.AuditGUARD).getCurrentLevel().getMinFacilities();
-		employeeGUARDNum = fees.get(FeeClass.EmployeeGUARD).getCurrentLevel().getMinFacilities();
+		docuGUARDNum = fees.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities();
+		auditGUARDNum = fees.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities();
+		employeeGUARDNum = fees.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities();
 		
 		return SUCCESS;
 	}

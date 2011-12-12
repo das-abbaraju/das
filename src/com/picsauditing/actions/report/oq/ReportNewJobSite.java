@@ -117,7 +117,6 @@ public class ReportNewJobSite extends ReportActionSupport {
 			facilityChanger.setContractor(contractor);
 			facilityChanger.setOperator(jobSite.getOperator());
 			facilityChanger.setPermissions(permissions);
-			facilityChanger.setType(ContractorType.Onsite);
 			facilityChanger.add();
 		}
 

@@ -20,6 +20,9 @@
  * under the License.
  */
 -->
+
+<#include "/${parameters.templateDir}/pics/translate-label.ftl" />
+
 <input type="text"<#rt/>
  name="${parameters.name?default("")?html}"<#rt/>
 <#if parameters.get("size")??>
@@ -51,3 +54,7 @@
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" />
 <#include "/${parameters.templateDir}/simple/dynamic-attributes.ftl" />
 />
+
+<@s.fielderror fieldName="${parameters.name}" />
+
+<#include "/${parameters.templateDir}/pics/help.ftl" />

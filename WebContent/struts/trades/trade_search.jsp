@@ -19,12 +19,7 @@
 		</form>
 		
 		<s:text name="ContractorTrades.SearchInstructions" />
-		<s:radio 
-			name="searchType" 
-			list="#{'list':getText('ContractorTrades.button.List'), 'tree':getText('ContractorTrades.button.Tree')}" 
-			value="'list'"
-			cssClass="searchType" 
-		/>
+		<s:radio cssClass="searchType" name="searchType" list="#{'list':getText('ContractorTrades.button.List'), 'tree':getText('ContractorTrades.button.Tree')}" value="'list'" />
 		
 		<div class="messages"></div>
 		<div id="search-list"></div>

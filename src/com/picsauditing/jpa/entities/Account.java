@@ -79,9 +79,10 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean requiresCompetencyReview = false;
 	protected boolean needsIndexing = true;
 	// TODO: Do we want do default this?
-	protected boolean onsiteServices = true;
+	protected boolean onsiteServices = false;
 	protected boolean offsiteServices = false;
 	protected boolean materialSupplier = false;
+	protected boolean transportationServices;
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
 	protected Currency currencyCode = Currency.USD;
@@ -477,6 +478,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.materialSupplier = materialSupplier;
 	}
 
+	public boolean isTransportationServices() {
+		return transportationServices;
+	}
+
+	public void setTransportationServices(boolean transportationServices) {
+		this.transportationServices = transportationServices;
+	}
+
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work for an operator who does too?
 	 * 
@@ -752,6 +761,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			types.add(ContractorType.Onsite);
 		if (isOffsiteServices())
 			types.add(ContractorType.Offsite);
+		if (isTransportationServices())
+			types.add(ContractorType.Transportation);
 		return types;
 	}
 
@@ -766,6 +777,32 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 				}
 				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
 					setMaterialSupplier(true);
+				}
+			}
+		}
+	}
+	
+	public void editAccountTypes(List<ContractorType> conTypes) {
+		if (conTypes != null) {
+			boolean value = false;
+			for (ContractorType conType : ContractorType.values()) {
+				if (conTypes.contains(conType)) 
+					value = true;
+				else
+					value = false;
+				switch (conType) {
+					case Onsite:
+						setOnsiteServices(value);
+						break;
+					case Offsite:
+						setOffsiteServices(value);
+						break;
+					case Supplier:
+						setMaterialSupplier(value);
+						break;
+					case Transportation:
+						setTransportationServices(value);
+						break;
 				}
 			}
 		}

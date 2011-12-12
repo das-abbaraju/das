@@ -1,7 +1,9 @@
 package com.picsauditing.PICS;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +20,6 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -30,6 +31,8 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -54,7 +57,6 @@ public class FacilityChanger {
 	private OperatorAccount operator;
 	private Permissions permissions;
 	private User user;
-	private ContractorType type = ContractorType.Onsite;
 
 	public void add() throws Exception {
 		if (contractor == null || contractor.getId() == 0)
@@ -122,6 +124,9 @@ public class FacilityChanger {
 		if (contractor.getNeedsRecalculation() < 20)
 			contractor.incrementRecalculation(5);
 		setListOnly();
+		if (contractor.getRequestedBy() == null) {
+			contractor.setRequestedBy(findEarliestAddedOperator());
+		}
 
 		contractor.syncBalance();
 		billingService.calculateAnnualFees(contractor);
@@ -174,6 +179,12 @@ public class FacilityChanger {
 
 					contractor.syncBalance();
 					billingService.calculateAnnualFees(contractor);
+
+					// adjusting requested by to earliest added operator
+					if (contractor.getRequestedBy().equals(operator)) {
+						contractor.setRequestedBy(findEarliestAddedOperator());
+					}
+
 					contractorAccountDAO.save(contractor);
 					return true;
 				}
@@ -232,14 +243,6 @@ public class FacilityChanger {
 		user = new User(permissions.getUserId());
 	}
 
-	public ContractorType getType() {
-		return type;
-	}
-
-	public void setType(ContractorType type) {
-		this.type = type;
-	}
-
 	private void checkOQ() {
 		boolean requiresOQ = false;
 		boolean requiresCompetency = false;
@@ -278,6 +281,22 @@ public class FacilityChanger {
 			if (canBeListed)
 				contractor.setAccountLevel(AccountLevel.ListOnly);
 		}
+	}
+
+	/**
+	 * @return Returns the earliest added OperatorAccount or null if no operators are present.
+	 */
+	private OperatorAccount findEarliestAddedOperator() {
+		LinkedList<OperatorAccount> creationDateQueue = new LinkedList<OperatorAccount>(contractor
+				.getOperatorAccounts());
+		Collections.sort(creationDateQueue, new Comparator<OperatorAccount>() {
+			@Override
+			public int compare(OperatorAccount o1, OperatorAccount o2) {
+				return o1.getCreationDate().compareTo(o2.getCreationDate());
+			}
+		});
+
+		return creationDateQueue.peekFirst();
 	}
 
 }

@@ -483,13 +483,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@Override
 	public String nextStep() throws Exception {
-		redirect(ContractorRegistrationStep.Trades.getUrl(contractor.getId()));
+		redirect(ContractorRegistrationStep.Clients.getUrl());
 		return SUCCESS;
 	}
 
 	@Override
 	public String previousStep() throws Exception {
-		redirect(ContractorRegistrationStep.EditAccount.getUrl(contractor.getId()));
+		redirect(ContractorRegistrationStep.EditAccount.getUrl());
 		return SUCCESS;
 	}
 }

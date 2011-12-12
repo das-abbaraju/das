@@ -20,6 +20,7 @@
  * under the License.
  */
 -->
+
 <input type="checkbox" name="${parameters.name?html}" value="${parameters.fieldValue?html}"<#rt/>
 <#if parameters.nameValue?? && parameters.nameValue>
  checked="checked"<#rt/>
@@ -49,3 +50,7 @@
  disabled="disabled"<#rt/>
 </#if>
  /> 
+ 
+ <#include "/${parameters.templateDir}/pics/translate-label.ftl" />
+ 
+ <@s.fielderror fieldName="${parameters.name}" />

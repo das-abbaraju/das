@@ -1,0 +1,56 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+	<field name="username">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="minLength">5</param>
+			<param name="trim">true</param>
+			<message>Minimum 5 characters</message>
+		</field-validator>
+	</field>
+	<field name="name">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>Maximum 100 characters</message>
+		</field-validator>
+	</field>
+	<field name="email">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+		<field-validator type="email" short-circuit="true">
+			<message>Must provide valid email.</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="maxLength">100</param>
+			<param name="trim">true</param>
+			<message>Maximum 100 characters</message>
+		</field-validator>
+	</field>
+	<field name="phone">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+	</field>
+	<field name="password">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="minLength">5</param>
+			<param name="trim">true</param>
+			<message>Minimum 5 characters</message>
+		</field-validator>
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[user.password != user.username]]></param>
+	       <message>Cannot be username</message>
+		</field-validator>
+	</field>
+</validators>

@@ -10,14 +10,21 @@ import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
+import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -26,10 +33,15 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.jpa.entities.User;
@@ -48,6 +60,18 @@ public class BillingCalculatorSingle {
 	private AuditTypeRuleCache ruleCache;
 	@Autowired
 	private AuditDecisionTableDAO auditDAO;
+	@Autowired
+	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private InvoiceDAO invoiceDAO;
+	@Autowired
+	protected BasicDAO dao;
+	@Autowired
+	private AuditTypeDAO auditTypeDAO;
+	@Autowired
+	private AuditBuilder auditBuilder;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
 
 	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
 	public static final Date SUNCOR_DISCOUNT_EXPIRATION = DateBean.parseDate("2011-12-01");
@@ -201,15 +225,126 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.ListOnly, feeDAO);
 		}
 
-		if (contractor.getFees().containsKey(FeeClass.ImportFee)) {
-			if (importPQF) {
-				InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, payingFacilities);
-				contractor.setNewFee(newLevel, newLevel.getAmount());
+		if (importPQF) {
+			InvoiceFee newLevel = invoiceFeeDAO.find(InvoiceFee.IMPORTFEE);
+
+			if (!contractor.getFees().containsKey(FeeClass.ImportFee)) {
+				InvoiceFee currentLevel = invoiceFeeDAO.find(InvoiceFee.IMPORTFEEZEROLEVEL);
+
+				ContractorFee importConFee = new ContractorFee();
+				importConFee.setAuditColumns();
+				importConFee.setContractor(contractor);
+				importConFee.setNewLevel(newLevel);
+				importConFee.setNewAmount(newLevel.getAmount());
+				importConFee.setCurrentLevel(currentLevel);
+				importConFee.setCurrentAmount(currentLevel.getAmount());
+				importConFee.setFeeClass(FeeClass.ImportFee);
+				invoiceFeeDAO.save(importConFee);
+
+				contractor.getFees().put(FeeClass.ImportFee, importConFee);
 			} else {
-				contractor.clearNewFee(FeeClass.ImportFee, feeDAO);
+				contractor.setNewFee(newLevel, newLevel.getAmount());
 			}
+		} else if (contractor.getFees().containsKey(FeeClass.ImportFee)) {
+			contractor.clearNewFee(FeeClass.ImportFee, feeDAO);
 		}
 
+	}
+
+	public void addInvoiceToContractor(ContractorAccount contractor, Invoice i) {
+		invoiceDAO.save(i);
+
+		contractor.getInvoices().add(i);
+		contractor.syncBalance();
+		accountDao.save(contractor);
+
+		this.addNote(contractor,
+				"Created invoice for " + contractor.getCurrencyCode().getSymbol() + i.getTotalAmount(),
+				NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+	}
+
+	public Invoice createInvoice(ContractorAccount contractor) {
+		calculateAnnualFees(contractor);
+
+		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor);
+
+		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2);
+		for (InvoiceItem item : invoiceItems)
+			invoiceTotal = invoiceTotal.add(item.getAmount());
+
+		if (invoiceTotal.compareTo(BigDecimal.ZERO) == 0) {
+			return null;
+		}
+
+		Invoice invoice = new Invoice();
+		invoice.setAccount(contractor);
+		invoice.setCurrency(contractor.getCurrency());
+		invoice.setStatus(TransactionStatus.Unpaid);
+		invoice.setItems(invoiceItems);
+		invoice.setTotalAmount(invoiceTotal);
+		invoice.setAuditColumns(new User(User.SYSTEM));
+
+		if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
+			invoice.setQbSync(true);
+
+		String notes = "";
+
+		// Calculate the due date for the invoice
+		if (contractor.getBillingStatus().equals("Activation")) {
+			invoice.setDueDate(new Date());
+			InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
+			if (contractor.hasReducedActivation(activation)) {
+				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
+				notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
+						+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
+						+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee() + ". ";
+			}
+		} else if (contractor.getBillingStatus().equals("Reactivation")) {
+			invoice.setDueDate(new Date());
+		} else if (contractor.getBillingStatus().equals("Upgrade")) {
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		} else if (contractor.getBillingStatus().startsWith("Renew")) {
+			invoice.setDueDate(contractor.getPaymentExpires());
+		}
+
+		if (!contractor.getFees().get(FeeClass.BidOnly).getCurrentLevel().isFree()
+				|| !contractor.getFees().get(FeeClass.ListOnly).getCurrentLevel().isFree()) {
+			invoice.setDueDate(new Date());
+			contractor.setRenew(true);
+		}
+
+		if (invoice.getDueDate() == null)
+			// For all other statuses like (Current)
+			invoice.setDueDate(DateBean.addDays(new Date(), 30));
+
+		// Make sure the invoice isn't due within 7 days for active accounts
+		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
+			invoice.setDueDate(DateBean.addDays(new Date(), 7));
+		// End of Due date
+
+		notes += "Thank you for doing business with PICS!";
+		// AppProperty prop = appPropDao.find("invoice_comment");
+		// if (prop != null) {
+		// notes = prop.getValue();
+		// }
+		// Add the list of operators if this invoice has a membership level
+		// on it
+		boolean hasMembership = false;
+		for (InvoiceItem item : invoiceItems) {
+			if (item.getInvoiceFee().isMembership())
+				hasMembership = true;
+		}
+		if (hasMembership) {
+			notes += getOperatorsString(contractor);
+		}
+		invoice.setNotes(notes);
+
+		for (InvoiceItem item : invoiceItems) {
+			item.setInvoice(invoice);
+			item.setAuditColumns(new User(User.SYSTEM));
+		}
+
+		return invoice;
 	}
 
 	/**
@@ -484,5 +619,58 @@ public class BillingCalculatorSingle {
 		}
 
 		return false;
+	}
+
+	public boolean addImportPQF(ContractorAccount contractor, Permissions permissions) {
+		boolean hasImportPQFAudit = false;
+
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+				hasImportPQFAudit = true;
+				break;
+			}
+		}
+
+		// creating import PQF
+		if (!hasImportPQFAudit) {
+			ContractorAudit importAudit = new ContractorAudit();
+			importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
+			importAudit.setManuallyAdded(true);
+			importAudit.setAuditColumns(permissions);
+			importAudit.setContractorAccount(contractor);
+			contractor.getAudits().add(importAudit);
+
+			auditBuilder.buildAudits(contractor);
+			auditPercentCalculator.percentCalculateComplete(importAudit);
+
+			addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true,
+					Account.EVERYONE, new User(permissions.getUserId()));
+		}
+
+		contractor.setCompetitorMembership(true);
+		accountDao.save(contractor);
+
+		return false;
+	}
+
+	protected Note addNote(Account account, String newNote, NoteCategory noteCategory, LowMedHigh priority,
+			boolean canContractorView, int viewableBy, User user) {
+		return addNote(account, newNote, noteCategory, LowMedHigh.Low, true, viewableBy, user, null);
+	}
+
+	protected Note addNote(Account account, String newNote, NoteCategory category, LowMedHigh priority,
+			boolean canContractorView, int viewableBy, User user, Employee employee) {
+		Note note = new Note();
+		note.setAuditColumns();
+		note.setAccount(account);
+		note.setSummary(newNote);
+		note.setPriority(priority);
+		note.setNoteCategory(category);
+		note.setViewableById(viewableBy);
+		note.setCanContractorView(canContractorView);
+		note.setStatus(NoteStatus.Closed);
+		note.setEmployee(employee);
+		dao.save(note);
+		return note;
 	}
 }

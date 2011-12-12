@@ -1,0 +1,45 @@
+.print-page header
+{
+	background: #F5F5F5;
+	border-bottom: 1px solid #E5E5E5;
+	height: 72px;
+}
+
+.print-page a
+{
+	text-decoration: none;
+}
+
+.print-page a.print
+{
+	float: right;
+	position: relative;
+	right: 50px;
+	text-align: center;
+	top: 21px;
+	width: 75px;
+}
+
+.print-page #main
+{
+	border: 1px solid #404040;
+	margin: 0px auto;
+	padding: 20px;
+	position: relative;
+	top: 50px;
+	width: 720px;
+}
+
+@media print
+{
+	.print-page header
+	{
+		display: none;
+	}
+	
+	.print-page #main
+	{
+		border: 0px;
+		position: static;
+	}
+}

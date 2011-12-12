@@ -12,6 +12,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -34,6 +35,7 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	private Map<AuditCategory, AuditCatData> categories = new HashMap<AuditCategory, AuditCatData>();
 	private Map<Integer, AuditData> answerMap;
 	private ContractorAudit conAudit;
+	private boolean transportation;
 
 	public ContractorRegistrationServices() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
@@ -43,45 +45,15 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 	public String execute() throws Exception {
 		findContractor();
 
-		// get the categories for a contractor based on their Onsite/Offsite/Material Supplier status
-		Set<Integer> categoryIds = new HashSet<Integer>();
-		if (contractor.isOnsiteServices() || contractor.isOffsiteServices()) {
-			categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
-		}
-		if (contractor.isMaterialSupplier()) {
-			categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
-			categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
-		}
-
-		conAudit = getContractorPQF(categoryIds);
-
-		for (AuditCatData catData : conAudit.getCategories()) {
-			if (categoryIds.contains(catData.getCategory().getId())) {
-				categories.put(catData.getCategory(), catData);
-			}
-		}
-
-		// find the questions for the above categories
-		Set<Integer> questionIds = new HashSet<Integer>();
-		for (AuditCategory category : categories.keySet()) {
-			for (AuditQuestion question : category.getQuestions()) {
-				if (question.isValidQuestion(new Date())) {
-					infoQuestions.add(question);
-					questionIds.add(question.getId());
-				}
-			}
-		}
-
-		// find the answers to the questions
-		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
+		loadQuestions();
 
 		return SUCCESS;
 	}
 
 	@Override
 	public String nextStep() throws Exception {
-		execute();
-
+		loadQuestions();
+		
 		if ((contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly())
 				|| (contractor.isMaterialSupplier() && contractor.getProductRisk().equals(LowMedHigh.None))) {
 			boolean requiredQuestions = false;
@@ -107,13 +79,6 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 				LowMedHigh conSafety = LowMedHigh.Low;
 				LowMedHigh conProduct = LowMedHigh.Low;
 				LowMedHigh conProductSafety = LowMedHigh.Low;
-
-				for (ContractorTrade trade : contractor.getTrades()) {
-					if (trade.getTrade().getSafetyRiskI() != null)
-						safety = getMaxRiskLevel(safety, trade.getTrade().getSafetyRiskI());
-					if (trade.getTrade().getProductRiskI() != null)
-						product = getMaxRiskLevel(product, trade.getTrade().getProductRiskI());
-				}
 
 				for (AuditData auditData : auditList) {
 					AuditQuestion q = auditData.getQuestion();
@@ -182,8 +147,39 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 			}
 		}
 
-		redirect(getRegistrationStep().getUrl(contractor.getId()));
+		redirect(getRegistrationStep().getUrl());
 		return BLANK;
+	}
+	
+	private void loadQuestions() {
+		// get the categories for a contractor based on their Onsite/Offsite/Material Supplier status
+		Set<Integer> categoryIds = new HashSet<Integer>();
+		
+		categoryIds.add(AuditCategory.SERVICE_SAFETY_EVAL);
+		categoryIds.add(AuditCategory.BUSINESS_INTERRUPTION_EVAL);
+		categoryIds.add(AuditCategory.PRODUCT_SAFETY_EVAL);
+
+		conAudit = getContractorPQF(categoryIds);
+
+		for (AuditCatData catData : conAudit.getCategories()) {
+			if (categoryIds.contains(catData.getCategory().getId())) {
+				categories.put(catData.getCategory(), catData);
+			}
+		}
+
+		// find the questions for the above categories
+		Set<Integer> questionIds = new HashSet<Integer>();
+		for (AuditCategory category : categories.keySet()) {
+			for (AuditQuestion question : category.getQuestions()) {
+				if (question.isValidQuestion(new Date())) {
+					infoQuestions.add(question);
+					questionIds.add(question.getId());
+				}
+			}
+		}
+
+		// find the answers to the questions
+		answerMap = auditDataDAO.findAnswersByContractor(id, questionIds);
 	}
 
 	public Map<Integer, AuditData> getAnswerMap() {
@@ -342,6 +338,26 @@ public class ContractorRegistrationServices extends ContractorActionSupport {
 
 	public boolean isCanEditCategory(AuditCategory category) {
 		return true;
+	}
+
+	public boolean isTransportation() {
+		return transportation;
+	}
+
+	public void setTransportation(boolean transportation) {
+		this.transportation = transportation;
+	}
+
+	public List<AuditQuestion> getInfoQuestions() {
+		return infoQuestions;
+	}
+
+	public void setInfoQuestions(List<AuditQuestion> infoQuestions) {
+		this.infoQuestions = infoQuestions;
+	}
+
+	public void setAnswerMap(Map<Integer, AuditData> answerMap) {
+		this.answerMap = answerMap;
 	}
 
 }

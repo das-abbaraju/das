@@ -21,7 +21,9 @@ public class InvoiceFee extends BaseTable {
 	public final static int OLDLATEFEE = 55;
 	public final static int GST = 200;
 	public final static int IMPORTFEE = 340;
+	public final static int IMPORTFEEZEROLEVEL = 343;
 	private TranslatableString fee;
+	private TranslatableString description;
 	private BigDecimal amount = BigDecimal.ZERO;
 	private boolean visible = true;
 	private FeeClass feeClass;
@@ -44,6 +46,15 @@ public class InvoiceFee extends BaseTable {
 
 	public void setFee(TranslatableString fee) {
 		this.fee = fee;
+	}
+
+	@Transient
+	public TranslatableString getDescription() {
+		return description;
+	}
+
+	public void setDescription(TranslatableString description) {
+		this.description = description;
 	}
 
 	@Column(name = "defaultAmount", nullable = false)

@@ -209,7 +209,7 @@ public class ContractorRegistrationFinish extends ContractorActionSupport {
 			url = "ContractorRegistrationServices.action?id=" + contractor.getId() + "&msg="
 					+ getText("ContractorRegistrationFinish.message.SelectService");
 		} else if (contractor.getNonCorporateOperators().size() == 0) {
-			url = "ContractorFacilities.action?id=" + contractor.getId() + "&msg="
+			url = "AddClientSite.action?id=" + contractor.getId() + "&msg="
 					+ getText("ContractorRegistrationFinish.message.AddFacility");
 		} else if (!contractor.isPaymentMethodStatusValid() && contractor.isMustPayB()) {
 			url = "ContractorPaymentOptions.action?id=" + contractor.getId() + "&msg="

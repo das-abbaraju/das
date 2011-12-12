@@ -19,7 +19,7 @@
 			
 			$.extend(config, defaults, options);
 			
-			$.ajax(options);
+			return $.ajax(config);
 		}
 	};
 })(jQuery);

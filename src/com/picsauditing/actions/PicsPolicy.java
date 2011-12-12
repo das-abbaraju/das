@@ -3,26 +3,17 @@ package com.picsauditing.actions;
 import java.util.Locale;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class PicsPolicy extends PicsActionSupport {
-	Locale request_locale = Locale.US;
+	Locale request_locale;
 
 	@Anonymous
 	public String execute() {
-		if (permissions == null) {
-			/**
-			 * Block for passing in locale anonymously, for places like Email Subscriptions or Registration
-			 */
+		if (permissions == null)
 			loadPermissions();
-			User u = new User(User.SYSTEM);
-			u.setLocale(request_locale);
-			try {
-				permissions.login(u);
-			} catch (Exception e) {
-			}
-		}
+		if (request_locale != null)
+			permissions.setLocale(request_locale);
 
 		return SUCCESS;
 	}

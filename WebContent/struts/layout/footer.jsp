@@ -1,7 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+
 <footer>
 	<ul class="footer-menu">
 		<li>
-			Copyright © 2011
+			Copyright Â© 2011
 		</li>
 		<li>
 			<s:a href="http://www.picsauditing.com/">PICS</s:a>

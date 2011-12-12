@@ -20,6 +20,9 @@
  * under the License.
  */
 -->
+
+<#include "/${parameters.templateDir}/pics/translate-label.ftl" />
+ 
 <#setting number_format="#.#####">
 <select<#rt/>
  name="${parameters.name?default("")?html}"<#rt/>
@@ -95,3 +98,7 @@
 </#if>
  />
 </#if>
+
+<@s.fielderror fieldName="${parameters.name}" />
+
+<#include "/${parameters.templateDir}/pics/help.ftl" />

@@ -1,0 +1,10 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+	<field name="contractor.onsiteServices">
+		<field-validator type="fieldexpression">
+	       <param name="expression"><![CDATA[(contractor.onsiteServices || contractor.offsiteServices || contractor.materialSupplier)]]></param>
+	       <message>You must select at least one service performed.</message>
+		</field-validator>
+	</field>
+</validators>

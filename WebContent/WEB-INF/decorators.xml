@@ -3,6 +3,15 @@
 		<pattern>/*.jsp</pattern>
 		<pattern>/*.action</pattern>
 	</decorator>
+	<decorator name="registration" page="registration.jsp">
+		<pattern>/Registration.action</pattern>
+		<pattern>/RegistrationAddClientSite.action</pattern>
+		<pattern>/RegistrationServiceEvaluation.action</pattern>
+		<pattern>/RegistrationMakePayment.action</pattern>
+	</decorator>
+	<decorator name="print" page="print.jsp">
+		<pattern>/RegistrationMakePayment!printInvoice.action</pattern>
+	</decorator>
 	<decorator name="mainExt" page="main_ext.jsp">
 		<pattern>/ReportDynamic.action</pattern>
 	</decorator>

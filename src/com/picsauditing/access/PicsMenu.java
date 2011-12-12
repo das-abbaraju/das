@@ -107,7 +107,7 @@ public class PicsMenu {
 				subMenu = addSupportLink(menu);
 				addChildAction(subMenu, "ProfileEdit");
 			} else {
-				subMenu = menu.addChild(getText("ContractorRegistration.CompanyDetails.heading"),
+				subMenu = menu.addChild(getText("Registration.CompanyDetails.heading"),
 						"ContractorEdit.action");
 				addSupportLink(menu);
 			}

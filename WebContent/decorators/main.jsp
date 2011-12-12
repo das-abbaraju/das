@@ -92,7 +92,17 @@
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 		<script type="text/javascript" src="js/main_search.js"></script>
 		
-		<jsp:include page="/struts/layout/include_javascript.jsp" />
+		<script type="text/javascript" src="js/ajax.js"></script>
+		<script type="text/javascript" src="js/bootstrap/bootstrap-twipsy.js"></script>
+		<script type="text/javascript" src="js/bootstrap/bootstrap-popover.js"></script>
+		
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/audit.js"></script>
+		<script type="text/javascript" src="js/registration.js"></script>
+		<script type="text/javascript" src="js/trade.js"></script>
+		
+		<%-- struts utils --%>
+		<script type="text/javascript" src="js/utils.js"></script>
 		
 		<script type="text/javascript">
 			$(function() {
@@ -195,7 +205,7 @@
 							</span>
 						| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
 						<% } else { %>
-							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="ContractorRegistration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
+							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
 						<% } %>
 						</p>
 					</td>

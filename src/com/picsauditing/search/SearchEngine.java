@@ -31,6 +31,8 @@ public class SearchEngine {
 	protected Database db = new Database();
 	protected Permissions perm;
 
+	private static final int MAX_TERMS = 7;
+
 	public SearchEngine(Permissions perm) {
 		this.perm = perm;
 	}
@@ -303,6 +305,46 @@ public class SearchEngine {
 			sql.addWhere(sb.toString() + pb.toString());
 		} else
 			sql.addWhere(sb.toString());
+
+		return sql.toString();
+	}
+
+	public String buildNativeOperatorSearch(Permissions currPerm, List<String> terms) {
+		StringBuilder sb = new StringBuilder();
+		SelectSQL sql = new SelectSQL("accounts a");
+		sql.addField("o.*, a.*");
+		if (currPerm != null && !currPerm.isAdmin()) {
+			sql.addWhere("a.status IN ('Active','Pending')");
+		}
+
+		sql.addJoin("JOIN operators o ON a.id = o.id");
+		sql.addJoin("JOIN ref_country rc ON rc.isoCode=a.country");
+		sql.addJoin("JOIN ref_state rs on rs.isoCode=a.state");
+
+		sql.addOrderBy("a.name");
+		for (String searchTerm : terms) {
+			sb.append("(a.name LIKE '").append(searchTerm).append("%' OR a.nameIndex LIKE '").append(searchTerm)
+					.append("%' OR a.id = '").append(searchTerm).append("'");
+			sb.append(" OR a.country LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.city LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR rc.english LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR rc.spanish LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR rc.french LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.state LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR rs.english LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR rs.french LIKE '").append(searchTerm).append("%'");
+			sb.append(" OR a.zip LIKE '").append(searchTerm).append("%'");
+			sb.append(")").append(" OR ");
+		}
+		sb.setLength(sb.lastIndexOf(" OR "));
+		sql.addWhere(sb.toString());
+		sql.addWhere("a.type IN ('Operator')");
+
+		if (currPerm != null && (currPerm.isAdmin() || currPerm.getAccountStatus().isDemo())) {
+			sql.addWhere("a.status IN ('Active','Pending', 'Demo')");
+		} else {
+			sql.addWhere("a.status IN ('Active','Pending')");
+		}
 
 		return sql.toString();
 	}

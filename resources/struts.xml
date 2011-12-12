@@ -26,6 +26,10 @@
 			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
 			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
 			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
+			<interceptor name="validation" 
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
+			<interceptor name="jsonValidation" 
+				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
@@ -46,11 +50,13 @@
 				<interceptor-ref name="staticParams" />
 				<interceptor-ref name="params">
 					<param name="excludeParams">dojo\..*</param>
+					<param name="excludeParams">struts\..*</param>
 				</interceptor-ref>
 				<interceptor-ref name="conversionError" />
 				<interceptor-ref name="validation">
-					<param name="excludeMethods">input,back,cancel,browse</param>
+					<param name="excludeMethods">ajaxAdd,ajaxRemove,search,execute,input,back,cancel,browse</param>
 				</interceptor-ref>
+				<interceptor-ref name="jsonValidation"/>
 				<interceptor-ref name="workflow">
 					<param name="excludeMethods">input,back,cancel,browse</param>
 				</interceptor-ref>
@@ -292,12 +298,34 @@
 			<result>struts/contractors/contractorOperator_tags.jsp</result>
 		</action>
 
-		<action name="ContractorRegistration" class="com.picsauditing.actions.contractors.ContractorRegistration">
-			<result>struts/contractors/con_registration.jsp</result>
+		<!-- Registration -->
+		<action name="Registration" class="com.picsauditing.actions.contractors.Registration">
+			<result>struts/contractors/registration.jsp</result>
+			<result name="input">struts/contractors/registration.jsp</result>
+		</action>
+		
+		<action name="RegistrationAddClientSite"
+			class="com.picsauditing.actions.contractors.RegistrationAddClientSite">
+			<result>struts/contractors/registrationAddClientSite.jsp</result>
+			<result name="input">struts/contractors/registrationAddClientSite.jsp</result>
+			<result name="ClientSiteList">struts/contractors/registrationAddClientSiteListAjax.jsp</result>
+		</action>
+		
+		<action name="RegistrationServiceEvaluation"
+			class="com.picsauditing.actions.contractors.RegistrationServiceEvaluation">
+			<result>struts/contractors/registrationServiceEvaluation.jsp</result>
+			<result name="input">struts/contractors/registrationServiceEvaluation.jsp</result>
 		</action>
 
+		<action name="RegistrationMakePayment"
+			class="com.picsauditing.actions.contractors.RegistrationMakePayment">
+			<result>struts/contractors/registrationMakePayment.jsp</result>
+			<result name="print">struts/contractors/registrationMakePaymentPrint.jsp</result>
+		</action>
+		
 		<action name="StateListAjax" class="com.picsauditing.actions.StateList">
 			<result>struts/contractors/con_country.jsp</result>
+			<result name="registration">struts/contractors/_registrationCountryList.jsp</result>
 		</action>
 
 		<action name="ContractorValidateAjax" class="com.picsauditing.actions.contractors.ContractorValidate">
@@ -306,10 +334,6 @@
 
 		<action name="ContractorRegistrationFinish" class="com.picsauditing.actions.contractors.ContractorRegistrationFinish">
 			<result>struts/contractors/con_registration_finish.jsp</result>
-		</action>
-
-		<action name="ContractorRegistrationServices" class="com.picsauditing.actions.contractors.ContractorRegistrationServices">
-			<result>struts/contractors/con_reg_services.jsp</result>
 		</action>
 
 		<action name="ContractorFlag" class="com.picsauditing.actions.contractors.ContractorFlagAction">

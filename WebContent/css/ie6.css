@@ -206,3 +206,228 @@ a.picsbutton {
 	cursor: default;
 	color: #ababab;
 }
+
+/* REGISTRATION.CSS */
+
+/* IE6 css fixer v0.95: Tue, 06 Dec 2011 22:37:42 +0100 */
+
+/* ============================================= */
+/* safe settings                                 */
+
+/* add display:inline to floated elements */
+header .locale-form,
+.registration-form .errors,
+.registration-form .info-agreement,
+.registration-form .actions input,
+.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label,
+.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input,
+.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label,
+.registration-step li,
+.client-site .client-site-left,
+.client-site .client-site-right,
+.client-site .client-site-list .location,
+.client-site .client-site-list .add,.client-site .client-site-list .remove,.client-site .client-site-list .info,
+.client-site-get-started,
+.client-site-get-started img,
+.make-payment .policy li,
+.registration-form,.registration-form input,.registration-side-bar,.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio,.client-site-filter li,.client-site .client-site-list .name,.make-payment .membership,.make-payment .membership-help {display:inline;}
+
+/* fix negative margins */
+.registration-form h1 {position:relative; zoom:1;}
+
+/* add zoom:1 to overflow:hidden */
+.registration-form li,
+.client-site-form li,
+.service-evaluation-form li,
+.make-payment-form li,
+.client-site-filter,
+.client-site .client-site-list li a,
+.make-payment .policy,
+.registration-form li,
+.registration-form .actions {zoom:1;}
+
+/* add zoom:1 to pos:relative elements */
+.registration-header header h1,
+.registration-form .errors li,
+.registration-form .actions input,
+.registration-side-bar .info-join h1,
+.registration .companies h1,
+.registration-step,
+.client-site .client-site-left,
+.client-site .client-site-right,
+.make-payment .invoice td,
+.make-payment .invoice a.data-import-toggle,
+.make-payment-form img.card {zoom:1;}
+
+/* add overflow:visible to (submit) buttons */
+ input, button {overflow:visible;}
+
+/* STYLE.CSS */
+
+/* IE6 css fixer v0.95: Tue, 08 Nov 2011 20:11:15 +0100 */
+
+/* ============================================= */
+/* safe settings                                 */
+
+/* add display:inline to floated elements */
+.alert-message .close,
+.close,
+.modal-footer .btn {display:inline;}
+
+/* fix negative margins */
+.alert-message .close,
+.modal,
+.twipsy.above .twipsy-arrow,.popover.above .arrow,
+.twipsy.left .twipsy-arrow,.popover.left .arrow,
+.twipsy.below .twipsy-arrow,.popover.below .arrow,
+.twipsy.right .twipsy-arrow,.popover.right .arrow {position:relative; zoom:1;}
+
+/* add zoom:1 to overflow:hidden */
+.popover .inner {zoom:1;}
+
+/* add transparancy */
+.alert-message .close {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);}
+.twipsy {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);}
+.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
+.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);}
+.close {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);}
+.modal-backdrop.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
+.btn.disabled,.btn[disabled],.picsbutton.disabled,.picsbutton[disabled] {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=65);}
+.alert-message .close:hover,.close:hover {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=40);}
+.twipsy.fade.in,.modal-backdrop,.modal-backdrop.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);}
+
+
+/* add zoom:1; display:inline; to inline-block elements */
+.btn,.picsbutton {zoom:1; display:inline;}
+
+/* add transparancy */
+.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
+.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);}
+
+/* add overflow:visible to (submit) buttons */
+ input, button {overflow:visible;}
+ 
+/* FORM.CSS */
+
+/* IE6 css fixer v0.95: Tue, 08 Nov 2011 20:28:16 +0100 */
+
+/* ============================================= */
+/* safe settings                                 */
+
+/* add display:inline to floated elements */
+div.double-list-left,div.double-list-action,div.double-list-right,
+ul.radio.inline input,ul.radio.inline label {display:inline;}
+
+/* add zoom:1 to overflow:hidden */
+ul.radio.inline li {zoom:1;}
+
+/* add zoom:1 to pos:relative elements */
+div.double-list-action input.add-left,
+div.double-list-action input.add-right {zoom:1;}
+
+/* add overflow:visible to (submit) buttons */
+input, button {overflow:visible;}
+ 
+/* REGISTRATION */
+
+.registration-form h1
+{
+	background-color: rgb(197, 98, 26);
+}
+
+.registration-side-bar .info-qualify,
+.registration-side-bar .info-choice
+{
+	background-color: rgb(145, 192, 224);
+}
+
+.registration-form .info-agreement p
+{
+	position: relative;
+	right: 50px;
+}
+
+.popover
+{
+	position: absolute;
+	z-index: 9999;
+}
+
+#Registration-page .popover .arrow
+{
+	left: 287px;
+	border: 1px solid #000;
+	width: 10px;
+	z-index: 99999;
+	zoom: 1;
+}
+
+#Registration-page .popover .inner
+{
+	background: #FFFFFF;
+	border: 2px solid #404040;
+	left: 277px;
+	padding: 10px;
+	position: relative;
+	width: 350px;
+}
+
+#Registration-page .modal
+{
+	display: none;
+}
+
+#RegistrationAddClientSite-page  .double-list-left label
+{
+	display: block;
+}
+
+#RegistrationAddClientSite-page  .double-list-left
+{
+	clear: both;
+}
+
+#RegistrationAddClientSite-page .client-site-form .double-list-action
+{
+	height: 265px;
+	margin: 0px;
+	padding: 0px 20px;
+	width: 75px;
+}
+
+#RegistrationServiceEvaluation-page .service-evaluation-form ul.inline
+{
+	margin-left: 15px;
+}
+
+#RegistrationServiceEvaluation-page .service-evaluation-form ul.inline
+{
+	margin-left: 15px;
+}
+
+#RegistrationMakePayment-page .modal
+{
+	display: none;
+}
+
+#RegistrationMakePayment-page .membership
+{
+	width: 500px;
+}
+#RegistrationMakePayment-page .membership-help
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+
+#RegistrationMakePayment-page .membership table
+{
+	border-collapse:collapse;
+}
+
+#RegistrationMakePayment-page .membership table td,
+#RegistrationMakePayment-page .membership table th
+{
+	border: 1px solid #878787 !imporca;
+}

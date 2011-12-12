@@ -99,6 +99,11 @@ public class State extends BaseTranslatable implements Comparable<State>, Serial
 		return english;
 	}
 
+	@Transient
+	public String getSimpleName() {
+		return name.toString();
+	}
+
 	@Override
 	public String toString() {
 		return isoCode;

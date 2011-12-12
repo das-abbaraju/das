@@ -17,7 +17,6 @@ import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -57,7 +56,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 	public ContractorTradeAction() {
 		this.subHeading = getText("ContractorTrades.title");
-		this.currentStep = ContractorRegistrationStep.Trades;
 	}
 
 	// TODO Check the security here
@@ -296,29 +294,6 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			return (int) Math.floor((double) contractor.getTrades().size() / 2.0);
 
 		return 0;
-	}
-
-	/**
-	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
-	 */
-	@Override
-	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (contractor.getTrades().size() > 0)
-			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Trades.ordinal() + 1];
-
-		return null;
-	}
-
-	@Override
-	public String nextStep() throws Exception {
-		findContractor();
-		contractor.setTradesUpdated(new Date());
-		tradeDAO.save(contractor);
-
-		if (!getRegistrationStep().isDone())
-			this.redirect(ContractorRegistrationStep.Risk.getUrl(contractor.getId()));
-
-		return SUCCESS;
 	}
 
 	public String removeAllTradesAjax() throws Exception {

@@ -38,9 +38,9 @@
                                 id="${parameters.id?html}"<#rt/>
                         </#if>
                         <#if parameters.cssClass??>
-                                class="${parameters.cssClass?html}"<#rt/>
+                                class="${parameters.cssClass?html} errors"<#rt/>
                             <#else>
-                                class="errorMessage"<#rt/>
+                                class="errorMessage errors"<#rt/>
                         </#if>
                         <#if parameters.cssStyle??>
                                 style="${parameters.cssStyle?html}"<#rt/>
@@ -49,7 +49,7 @@
                         <#assign doneStartUlTag=true><#t/>
                     </#if><#t/>
                     <#list eValue as eEachValue><#t/>
-                        <li><span><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
+                        <li><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></li>
                     </#list><#t/>
                 </#if><#t/>
             </#list><#t/>
@@ -62,9 +62,9 @@
         <#if (eKeysSize > 0)><#t/>
         <ul<#rt/>
             <#if parameters.cssClass??>
-                    class="${parameters.cssClass?html}"<#rt/>
+                    class="${parameters.cssClass?html} errors"<#rt/>
                 <#else>
-                    class="errorMessage"<#rt/>
+                    class="errorMessage errors"<#rt/>
             </#if>
             <#if parameters.cssStyle??>
                     style="${parameters.cssStyle?html}"<#rt/>
@@ -73,7 +73,7 @@
             <#list eKeys as eKey><#t/>
                 <#assign eValue = fieldErrors[eKey]><#t/>
                 <#list eValue as eEachValue><#t/>
-                    <li><span><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></span></li>
+                    <li><#if parameters.escape>${eEachValue!?html}<#else>${eEachValue!}</#if></li>
                 </#list><#t/>
             </#list><#t/>
         </ul>

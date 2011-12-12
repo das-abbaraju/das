@@ -15,6 +15,11 @@ public class StateList extends AccountActionSupport {
 
 		return SUCCESS;
 	}
+	
+	@Anonymous
+	public String registration() throws Exception {
+		return "registration";
+	}
 
 	public String getCountryString() {
 		return countryString;

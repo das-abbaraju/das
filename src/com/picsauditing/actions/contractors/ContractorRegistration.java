@@ -232,7 +232,7 @@ public class ContractorRegistration extends ContractorActionSupport {
 		}
 
 		// Redirect to Step 2, usually Trades
-		redirect(getRegistrationStep().getUrl(contractor.getId()));
+		redirect(getRegistrationStep().getUrl());
 
 		return BLANK;
 

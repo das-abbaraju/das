@@ -13,6 +13,29 @@
 		// initialize audit question save / reset / verify
 		AUDIT.question.init();
 		
+		// registration
+		REGISTRATION.autofill_username.init();
+		
+		REGISTRATION.client_site_filter.init();
+		
+		REGISTRATION.client_site_manage.init();
+		
+		REGISTRATION.contractor_country.init();
+		
+		REGISTRATION.field_validate.init();
+		
+		REGISTRATION.help_text.init();
+		
+		REGISTRATION.language_dropdown.init();
+		
+		REGISTRATION.membership_help.init();
+		
+		REGISTRATION.modal.init();
+		
+		REGISTRATION.payment_submision.init();
+		
+		REGISTRATION.services_performed_toggle.init();
+		
 		// initialize trade preview
 		TRADE.preview.init();
 		

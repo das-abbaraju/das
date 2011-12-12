@@ -252,4 +252,10 @@ public class OperatorAccountDAO extends PicsDAO {
 										              "WHERE  gc.genID = " + id + " AND a.status = 'Active')");
 		q.executeUpdate();
 	}
+	
+	public List<OperatorAccount> nativeClientSiteSearch(String select) {
+		Query query = em.createNativeQuery(select, OperatorAccount.class);
+
+		return query.getResultList();
+	}
 }

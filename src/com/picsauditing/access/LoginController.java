@@ -33,6 +33,8 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
 
+	private static final int ONE_SECOND = 1;
+	private static final int ONE_HOUR = 3600;
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
@@ -167,7 +169,7 @@ public class LoginController extends PicsActionSupport {
 			userDAO.save(user);
 
 			Cookie cookie = new Cookie("username", username);
-			cookie.setMaxAge(3600 * 24);
+			cookie.setMaxAge(ONE_HOUR * 24);
 			getResponse().addCookie(cookie);
 
 			PicsLogger.stop();
@@ -322,8 +324,9 @@ public class LoginController extends PicsActionSupport {
 				if ("from".equals(cookiesA[i].getName())) {
 					cookieFromURL = cookiesA[i].getValue();
 					// Clear the cookie, now that we've used it once
-					Cookie fromCookie = new Cookie("from", "");
-					getResponse().addCookie(fromCookie);
+					Cookie cookie = new Cookie("from", "");
+					cookie.setMaxAge(ONE_SECOND);
+					getResponse().addCookie(cookie);
 				}
 				if ("username".equals(cookiesA[i].getName()))
 					cookieUsername = cookiesA[i].getValue();
@@ -332,6 +335,10 @@ public class LoginController extends PicsActionSupport {
 				// If they are switching users, just send them back to the Home
 				// Page
 				cookieFromURL = "";
+				// Clear the username cookie
+				Cookie cookie = new Cookie("username", "");
+				cookie.setMaxAge(ONE_SECOND);
+				getResponse().addCookie(cookie);
 			}
 
 			if (cookieFromURL.length() > 0) {
@@ -344,7 +351,7 @@ public class LoginController extends PicsActionSupport {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
-			url = step.getUrl(cAccount.getId());
+			url = step.getUrl();
 
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);

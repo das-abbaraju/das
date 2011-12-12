@@ -21,6 +21,7 @@
  */
 -->
 <#if !stack.findValue("#optiontransferselect_js_included")??><#t/>
+	<script type="text/javascript" src="<@s.url value="/js/utils.js" encode='false' includeParams='none'/>"></script>
 	<script type="text/javascript" src="<@s.url value="/js/optiontransferselect.js" encode='false' includeParams='none'/>"></script>
 	
 	<#assign temporaryVariable = stack.setValue("#optiontransferselect_js_included", "true") /><#t/>

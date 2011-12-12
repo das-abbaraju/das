@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -126,7 +127,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 						}
 					} else if (permissions.isPicsEmployee()) {
 						contractorAuditWithStatuses.put(contractorAudit, null);
-					} else if (contractorAudit.getAuditType().isCanOperatorView()){
+					} else if (contractorAudit.getAuditType().isCanOperatorView()) {
 						for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
 							if (cao.isVisibleTo(permissions)) {
 								contractorAuditWithStatuses.put(contractorAudit, cao.getStatus());
@@ -163,19 +164,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		// setup initial registration
 		if (step == ContractorRegistrationStep.Register) {
-			item = new MenuComponent(getText("ContractorRegistration.title"), "ContractorRegistration.action",
-					"conRegisterLink");
-			if (requestURL.contains("ContractorRegistration.action")) {
+			item = new MenuComponent(getText("Registration.title"), "Registration.action", "conRegisterLink");
+			if (requestURL.contains("Registration.action")) {
 				item.setCurrent(true);
 			}
 			menu.add(item);
-			menu.add(new MenuComponent(getText("ContractorTrades.title"), null, "conTradesLink")); // Trades
-			menu.add(new MenuComponent(getText("ContractorRegistrationServices.title"), null, "conServicesLink")); // Services
-																													// Performed
-			menu.add(new MenuComponent(getText("ContractorFacilities.title"), null, "conFacilitiesLink")); // Facilities
-			menu.add(new MenuComponent(getText("ContractorPaymentOptions.title"), null, "conPaymentLink")); // Payment
-																											// Options
-			menu.add(new MenuComponent(getText("ContractorRegistrationFinish.title"), null, "conConfirmLink")); // Confirm
+			menu.add(new MenuComponent(getText("RegistrationAddClientSite.title"), null, "conFacilitiesLink")); // Facilities
+			menu.add(new MenuComponent(getText("RegistrationServiceEvaluation.title"), null, "conServicesLink")); // Services
+			menu.add(new MenuComponent(getText("RegistrationMakePayment.title"), null, "conPaymentLink")); // Payment
 		} else {
 			// setup account editing
 
@@ -186,58 +182,39 @@ public class ContractorActionSupport extends AccountActionSupport {
 				item.setCurrent(true);
 			menu.add(item);
 
-			// Trades
-			MenuComponent itemTrades = new MenuComponent(getText("ContractorTrades.title"), null, "conTradesLink");
-			if (requestURL.contains("ContractorTrades.action")) {
-				itemTrades.setCurrent(true);
-			}
-			menu.add(itemTrades);
-
 			// Services
-			MenuComponent itemServices = new MenuComponent(getText("ContractorRegistrationServices.title"), null,
+			MenuComponent itemServices = new MenuComponent(getText("RegistrationServiceEvaluation.title"), null,
 					"conServicesLink");
-			if (requestURL.contains("ContractorRegistrationServices.action")) {
+			if (requestURL.contains("RegistrationServiceEvaluation.action")) {
 				itemServices.setCurrent(true);
 			}
 			menu.add(itemServices);
 
-			// Facilities
-			MenuComponent itemFacilities = new MenuComponent(getText("ContractorFacilities.title"), null,
+			// Clients
+			MenuComponent itemFacilities = new MenuComponent(getText("RegistrationAddClientSite.title"), null,
 					"conFacilitiesLink");
-			if (requestURL.contains("ContractorFacilities.action")) {
+			if (requestURL.contains("RegistrationAddClientSite.action")) {
 				itemFacilities.setCurrent(true);
 			}
 			menu.add(itemFacilities);
 
 			// Payment Options
-			MenuComponent itemPaymentOptions = new MenuComponent(getText("ContractorPaymentOptions.title"), null,
+			MenuComponent itemPaymentOptions = new MenuComponent(getText("RegistrationMakePayment.title"), null,
 					"conPaymentLink");
-			if (requestURL.contains("ContractorPaymentOptions.action")) {
+			if (requestURL.contains("RegistrationMakePayment.action")) {
 				itemPaymentOptions.setCurrent(true);
 			}
 			menu.add(itemPaymentOptions);
 
-			// Confirm
-			MenuComponent itemConfirm = new MenuComponent(getText("ContractorRegistrationFinish.title"), null,
-					"conConfirmLink");
-			if (requestURL.contains("ContractorRegistrationFinish.action")) {
-				itemConfirm.setCurrent(true);
-			}
-			menu.add(itemConfirm);
-
 			// set urls based on step
 			switch (step) {
 			case Done:
-			case Confirmation:
-				itemConfirm.setUrl("ContractorRegistrationFinish.action?id=" + id);
 			case Payment:
-				itemPaymentOptions.setUrl("ContractorPaymentOptions.action?id=" + id);
-			case Facilities:
-				itemFacilities.setUrl("ContractorFacilities.action?id=" + id);
+				itemPaymentOptions.setUrl("RegistrationMakePayment.action?id=" + id);
 			case Risk:
-				itemServices.setUrl("ContractorRegistrationServices.action?id=" + id);
-			default:
-				itemTrades.setUrl("ContractorTrades.action?id=" + id);
+				itemServices.setUrl("RegistrationServiceEvaluation.action?id=" + id);
+			case Clients:
+				itemFacilities.setUrl("RegistrationAddClientSite.action?id=" + id);
 			}
 		}
 
@@ -644,14 +621,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public String previousStep() throws Exception {
 		findContractor();
-		redirect(getPreviousRegistrationStep().getUrl(contractor.getId()));
+		redirect(getPreviousRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
 	public String nextStep() throws Exception {
 		findContractor();
 		if (getNextRegistrationStep() != null)
-			redirect(getNextRegistrationStep().getUrl(contractor.getId()));
+			redirect(getNextRegistrationStep().getUrl());
 		return SUCCESS;
 	}
 
@@ -711,4 +688,22 @@ public class ContractorActionSupport extends AccountActionSupport {
 		return value;
 	}
 
+	protected boolean redirectIfNotReadyForThisStep() throws IOException {
+		ContractorRegistrationStep highestStepReached = ContractorRegistrationStep.getStep(contractor);
+		if (highestStepReached.ordinal() < this.currentStep.ordinal()) {
+			redirect(highestStepReached.getUrl());
+			return true;
+		}
+		return false;
+	}
+
+	public int getLastStepCompleted() {
+		ContractorRegistrationStep step = ContractorRegistrationStep.getStep(contractor);
+		if (step.equals(ContractorRegistrationStep.Clients))
+			return 1;
+		else if (step.equals(ContractorRegistrationStep.Risk))
+			return 2;
+		else 
+			return 3;
+	}
 }

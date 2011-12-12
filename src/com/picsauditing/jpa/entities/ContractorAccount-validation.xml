@@ -1,0 +1,40 @@
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+	<field name="name">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+		<field-validator type="stringlength" short-circuit="true">
+			<param name="minLength">2</param>
+			<param name="trim">true</param>
+			<message>Minimum 2 characters</message>
+		</field-validator>
+	</field>
+	<field name="country">
+		<field-validator type="required" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+	</field>
+	<field name="address">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+	</field>
+	<field name="city">
+		<field-validator type="requiredstring" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+	</field>
+	<field name="state">
+		<field-validator type="required" short-circuit="true">
+			<message>Required</message>
+		</field-validator>
+	</field>
+	<field name="zip">
+		<field-validator type="fieldexpression" short-circuit="true">
+	       <param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
+	       <message>Required</message>
+		</field-validator>
+	</field>
+</validators>

@@ -65,7 +65,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 	public ContractorFacilities() {
 		this.noteCategory = NoteCategory.OperatorChanges;
-		this.currentStep = ContractorRegistrationStep.Facilities;
+		this.currentStep = ContractorRegistrationStep.Clients;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -77,7 +77,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 
 		if (contractor.getStatus().isPending()
 				&& ContractorRegistrationStep.Risk.equals(ContractorRegistrationStep.getStep(contractor)))
-			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl(contractor.getId()));
+			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl());
 
 		// Get request off of the session
 		Object request = ActionContext.getContext().getSession().get("requestID");
@@ -303,7 +303,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 				if (type.equals(ContractorType.Onsite) && contractor.isOnsiteServices()
 						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
 						|| type.equals(ContractorType.Supplier) && contractor.isMaterialSupplier()) {
-					facilityChanger.setType(type);
 					contractor.setRenew(true);
 					facilityChanger.add();
 					if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
@@ -454,7 +453,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 			return null;
 
 		if (contractor.getNonCorporateOperators().size() > 0)
-			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Facilities.ordinal() + 1];
+			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Clients.ordinal() + 1];
 
 		return null;
 	}
@@ -463,10 +462,10 @@ public class ContractorFacilities extends ContractorActionSupport {
 	public String nextStep() throws Exception {
 		findContractor();
 		if (contractor.isNeedsToIndicateCompetitor()) {
-			redirect(ContractorRegistrationStep.Facilities.getUrl(contractor.getId()));
+			redirect(ContractorRegistrationStep.Clients.getUrl());
 			return SUCCESS;
 		} else {
-			redirect(getNextRegistrationStep().getUrl(contractor.getId()));
+			redirect(getNextRegistrationStep().getUrl());
 			return SUCCESS;
 		}
 	}
