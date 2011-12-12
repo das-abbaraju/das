@@ -34,7 +34,7 @@
 	</s:if>
 	
 	<span class="phone">
-		<img src="images/phone-icon.png" alt="Call Us" />${Strings.picsPhone(permissions.country.isoCode)}
+		<img src="images/phone-icon.png" alt="Call Us" /><s:property value="@com.picsauditing.util.Strings.picsPhone(permissions.country.isoCode)" />
 	</span>
 	
 	<s:include value="/struts/layout/chat.jsp" />
