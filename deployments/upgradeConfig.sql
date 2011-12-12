@@ -6,6 +6,9 @@
 -- SEE upgrade.sql FOR NON-CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-3414 removing spaces from the msgKey in these translations
+update app_translation set msgKey = "ContractorEdit.error.BrochureFormat" where msgKey = "ContractorEdit.error.Brochure Format";
+
 -- PICS-3803
 update audit_question set uniqueCode='policyExpirationDatePlus120' where id = 2952
 
@@ -28,7 +31,7 @@ DELETE from app_translation where msgKey = 'User.email.fieldhelp';
 DELETE from app_translation where msgKey = 'User.phone.fieldhelp';
 
 -- PICS-3753
-UPDATE app_translation SET msgValue = "<p>
+UPDATE app_translation SET msgValue = '<p>
 	This is the web site of <b>PICS</b>.
 </p>
 <p>
@@ -37,7 +40,7 @@ UPDATE app_translation SET msgValue = "<p>
 	USA
 </p>
 <p>
-	We can be reached via e-mail at <a href=\"mailto:info@picsauditing.com\">info@picsauditing.com</a><br />
+	We can be reached via e-mail at <a href="mailto:info@picsauditing.com">info@picsauditing.com</a><br />
 	or you can reach us by telephone at {0}
 </p>
 
@@ -46,7 +49,7 @@ UPDATE app_translation SET msgValue = "<p>
 <p>
 	As the duly authorized representative of your company that has been delegated the task of filling out the requested
 	forms, you agree that your company will defend, indemnify and hold PICS harmless from any claim, loss, liability or
-	expense that PICS may incur relating to your company's participation in the PICS program, including any claim, loss,
+	expense that PICS may incur relating to your company''s participation in the PICS program, including any claim, loss,
 	liability or expense made by a third party accessing the information provided by your company. The sole exception to the
 	foregoing disclaimer and indemnity shall be any claim, loss, liability or expense that is attributable to the gross
 	negligence or willful misconduct of PICS. Without limiting the foregoing, your company agrees that PICS shall, in no event
@@ -54,11 +57,11 @@ UPDATE app_translation SET msgValue = "<p>
 	from or related in any way to the PICS audit and/or the use of the PICS website.
 </p>
 <p>
-	While PICS will endeavor to accurately record the information received from you into your company's account appearing
+	While PICS will endeavor to accurately record the information received from you into your company''s account appearing
 	on the PICS website, PICS shall have no responsibility for any claim, loss, liability or expense, direct, indirect or
 	consequential, arising out of or related to any errors or omissions in the information contained in the online PICS audit
 	for your company. Upon logging in or by request, your company will be provided a completed copy of any audit that PICS
-	has performed on your company as it will appear on PICS's online website. It shall be your responsibility to review the
+	has performed on your company as it will appear on PICS''s online website. It shall be your responsibility to review the
 	information contained in the completed audits for your company and to verify that the information contained in the
 	audit form is and remains complete and accurate. You further agree to promptly notify PICS of any errors or omissions in
 	the information contained in the PICS website.
@@ -73,7 +76,7 @@ dispose of the records.
 <h2>USER AGREEMENT</h2>
 
 <p>
-	You will be issued a username and password to access your company's inputed data. It is your responsibility to keep
+	You will be issued a username and password to access your company''s inputed data. It is your responsibility to keep
 	this username and password confidential and private. PICS will not share your username and password data with any
 	third party, and regardless of circumstances you cannot share your username and/or password with a third party with
 	the sole exception that the third party is contractually acting as your agent to assist you through the PICS process. Any
@@ -83,7 +86,7 @@ dispose of the records.
 <h2>PRIVACY POLICY</h2>
 
 <p>
-	PICS' privacy policy can be accessed here as well as from the payment option page <a href=\"http://www.picsorganizer.com/PrivacyPolicy.action\">(http://www.picsorganizer.com/PrivacyPolicy.action)</a>.
+	PICS'' privacy policy can be accessed here as well as from the payment option page <a href="http://www.picsorganizer.com/PrivacyPolicy.action">(http://www.picsorganizer.com/PrivacyPolicy.action)</a>.
 </p>
 
 <h2>CONFIDENTIALITY</h2>
@@ -93,18 +96,18 @@ dispose of the records.
 	entered through the PICS website.
 </p>
 <p>
-	Sensitive data is defined as the following: your company's Prequalification Form (PQF), specific Insurance information,
+	Sensitive data is defined as the following: your company''s Prequalification Form (PQF), specific Insurance information,
 	any and all data gathered during an audit (including but not limited to a Desktop Audit, Office Audit, Field Audit, Integrity
-	Management Audit, etc), EMR and OSHA data. Non-sensitive data is defined as your company's name, description of
-	services, which states you operate in and have offices in, contact information of your company's listed main point of
-	contact, your company's logo.
+	Management Audit, etc), EMR and OSHA data. Non-sensitive data is defined as your company''s name, description of
+	services, which states you operate in and have offices in, contact information of your company''s listed main point of
+	contact, your company''s logo.
 </p>
 <p>
-	PICS is a password-protected website. Your company's Sensitive and Non-sensitive data will be held behind this
+	PICS is a password-protected website. Your company''s Sensitive and Non-sensitive data will be held behind this
 	password protection.
 </p>
 <p>
-	Sensitive Data will be shared only with authorized users from operators appearing on your \"facility list\" which are linked
+	Sensitive Data will be shared only with authorized users from operators appearing on your "facility list" which are linked
 	to your account. You control which operators are linked to your account and can review any time by logging in to your
 	account. At any time you can add or remove any operator from the facility list by either calling in to Customer Service
 	({0}) or controlling it using the web interface. Any user from an operator not listed on your facility can not
@@ -120,7 +123,7 @@ dispose of the records.
 	contractor account to the approved contractor list of the operator. This generates a notification email to your primary
 	user, stating which operator added your company and when. If you do not wish to associate your account with that
 	operator, you may remove your account from their approved contractor list by contacting PICS Customer Service, in
-	which case the Operator will be notified that your company requested to be removed from the Operator's approved
+	which case the Operator will be notified that your company requested to be removed from the Operator''s approved
 	contractor list.
 </p>
 
@@ -137,7 +140,9 @@ dispose of the records.
 
 <p>
 	You agree to the terms and conditions of the contractor agreement as communicated in this document.  Any agreements outside of the terms and conditions contained herein shall be agreed to in writing and signed by both contractor and PICS representatives.  PICS copy of said agreement will be held in the PICS UPLOAD FILES category of the PQF under PICS Contractor Agreement.
-</p>" WHERE msgKey = 'ContractorAgreement.content';
+</p>' 
+WHERE msgKey = 'ContractorAgreement.content'
+and locale = 'en';
 
 -- registration/services performed -- rbeaini
 INSERT into app_translation (msgKey, locale, msgValue) values ("Registration.BecomeAMember", "en", "Become a Member of PICS Today!");
