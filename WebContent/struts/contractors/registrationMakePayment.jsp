@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:include value="/struts/contractors/registrationStep.jsp">
-	<s:param name="step_current" value="3" />
-	<s:param name="step_last" value="getLastStepCompleted()" />
-</s:include>
+<div class="registration-header">
+	<section>
+		<s:include value="/struts/contractors/registrationStep.jsp">
+			<s:param name="step_current" value="3" />
+			<s:param name="step_last" value="getLastStepCompleted()" />
+		</s:include>
+	</section>
+</div>
 
 <s:if test="hasActionErrors()">
-	<s:actionerror cssClass="action-error alert-message warning" />
+	<s:actionerror cssClass="action-error alert-message error" />
 </s:if>
 
 <div class="make-payment">
@@ -127,9 +131,6 @@
 	 			<li>
 	 				<s:a href="#" cssClass="contractor-agreement modal-link" data-title="Contractor Agreement" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
 	 			</li>
-	 			<li>
-	 				<s:a href="RegistrationMakePayment!printInvoice.action" target="_blank"><s:text name="RegistrationMakePayment.PrintTest" /></s:a>
-	 			</li>
 	 		</ul>
 	 		
 	 		<div class="modal hide fade">
@@ -153,7 +154,7 @@
 		</section>
 	</div>
 	
-	<hr class="separator" />
+	<div class="separator"></div>
 		
 	<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
 		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
@@ -217,7 +218,10 @@
 						value="Submit Payment" 
 						cssClass="btn success" 
 					/>
-					<s:text name="RegistrationMakePayment.CreditCardNote" />
+					
+					<p>
+						<s:text name="RegistrationMakePayment.CreditCardNote" />
+					</p>
 				</li>
 			</ul>
 		</section>

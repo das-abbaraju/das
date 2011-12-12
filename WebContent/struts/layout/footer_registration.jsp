@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <footer>
-	<hr />
+	<div class="separator"></div>
 	
 	<ul class="footer-menu">
 		<li>

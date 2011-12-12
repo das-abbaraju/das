@@ -1,3 +1,19 @@
+#Registration-page,
+#RegistrationAddClientSite-page,
+#RegistrationServiceEvaluation-page,
+#RegistrationMakePayment-page
+{
+	background: #94c3e2;
+}
+
+#Registration-page #container,
+#RegistrationAddClientSite-page #container,
+#RegistrationServiceEvaluation-page #container,
+#RegistrationMakePayment-page #container
+{
+	background: #FFFFFF;
+}
+
 header
 {
 	border: 0px;
@@ -12,6 +28,13 @@ header .welcome-message
 {
 	float: right;
 	margin-top: 15px;
+}
+
+header .welcome-message
+{
+	font-size: 14px;
+	line-height: 25px;
+	margin-right: 20px;
 }
 
 header .locale-form
@@ -92,7 +115,9 @@ footer .footer-menu a
 }
 
 #Registration-page .registration,
-#RegistrationAddClientSite-page .client-site
+#RegistrationAddClientSite-page .client-site,
+#RegistrationServiceEvaluation-page .service-evaluation,
+#RegistrationMakePayment-page .make-payment
 {
 	margin: 0px auto;
 	width: 960px;
@@ -334,7 +359,23 @@ footer .footer-menu a
 #RegistrationMakePayment-page #main .alert-message
 {
 	font-size: 14px;
-	padding: 10px 14px;
+	margin: 20px auto;
+	padding: 10px 15px;
+	width: 930px;
+}
+
+.alert-message .icon
+{
+	display: block;
+	float: left;
+	height: 16px;
+	margin-right: 5px;
+	width: 16px;
+}
+
+.alert-message .icon.warn
+{
+	background: url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
 }
 
 .registration-form li,
@@ -358,10 +399,12 @@ footer .footer-menu a
 {
 	color: #5d5d5d;
 	display: block;
+	float: left;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 16px;
-	font-weight: bold;
-	margin: 2px 10px 0px 0px;
+	font-size: 13px;
+	line-height: 25px;
+	margin-right: 10px;
+	text-align: right;
 	width: 120px;
 }
 
@@ -464,9 +507,13 @@ footer .footer-menu a
 }
 
 .registration-form .actions input,
+.registration-form .actions button,
 .client-site-form .actions input,
+.client-site-form .actions button,
 .service-evaluation-form .actions input,
-.make-payment-form .actions input
+.service-evaluation-form .actions button,
+.make-payment-form .actions input,
+.make-payment-form .actions button
 {
 	height: auto;
 	padding: 9px 20px 10px;
@@ -549,7 +596,7 @@ footer .footer-menu a
 .registration-step li.disabled a,
 .registration-step li.disabled span
 {
-	background: #d8eaf5;
+	background: #c8e0f1;
 	color: #b2d3ea;
 	display: block;
 	font-family: Franklin Gothic Medium, Arial;
@@ -581,7 +628,6 @@ footer .footer-menu a
 
 /* overwrites */
 
-.client-site hr.separator,
 .service-evaluation hr.separator,
 .make-payment hr.separator
 {
@@ -602,21 +648,14 @@ footer .footer-menu a
 	margin: 35px 0px 20px;
 }
 
-.client-site-form label,
 .service-evaluation-form label,
 .make-payment-form label
 {
 	width: 350px;
 }
 
-.client-site-form .actions,
-.service-evaluation-form .actions,
-.make-payment-form .actions
-{
-	padding-left: 358px;	
-}
-
 /* add client site specific */
+
 .client-site-filter
 {
 	background: #fefaee;
@@ -628,7 +667,7 @@ footer .footer-menu a
 .client-site-filter ul
 {
 	margin: 35px auto 0px;
-	width: 580px;
+	width: 590px;
 }
 
 .client-site-filter li
@@ -646,6 +685,7 @@ footer .footer-menu a
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 16px;
+	margin-right: 10px;
 }
 
 .client-site-filter .search input
@@ -793,11 +833,6 @@ footer .footer-menu a
 	margin: 0px;
 }
 
-.client-site .client-site-list li.inspect
-{
-	
-}
-
 .client-site .client-site-list li.inspect,
 .client-site .client-site-list li.inspect a
 {
@@ -821,14 +856,9 @@ footer .footer-menu a
 .client-site-get-started
 {
 	float: right;
-	margin-top: 20px;
+	margin-top: 65px;
 	padding: 20px;
 	width: 430px;
-}
-
-.client-site-get-started
-{
-	padding-top: 40px;
 }
 
 .client-site-get-started section
@@ -840,7 +870,6 @@ footer .footer-menu a
 .client-site-get-started h1
 {
 	color: #A94C0F;
-	font-family: Verdana, Geneva, sans-serif;
 	font-size: 26px;
 	margin: 0px;
 }
@@ -848,7 +877,6 @@ footer .footer-menu a
 .client-site-get-started h2
 {
 	color: #878787;
-	font-family: Verdana, Geneva, sans-serif;
 	font-size: 14px;
 }
 
@@ -876,7 +904,6 @@ footer .footer-menu a
 .client-site-help h1
 {
 	color: #A94C0F;
-	font-family: Verdana, Geneva, sans-serif;
 	font-size: 16px;
 	margin: 0px;
 }
@@ -884,7 +911,6 @@ footer .footer-menu a
 .client-site-help h2
 {
 	color: #878787;
-	font-family: Verdana, Geneva, sans-serif;
 	font-size: 11px;
 }
 
@@ -897,10 +923,56 @@ footer .footer-menu a
 
 .service-evaluation label
 {
+	margin: 20px 30px 0px 0px;
 	text-align: left;
+	width: 360px;
+}
+
+.services-list
+{
+	width: 570px;
+}
+
+.service-evaluation-form ul.checkbox-list,
+.service-evaluation-form ul.radio
+{
+	background: #eef5fb;
+	padding: 20px;
+	width: 530px;
+}
+
+.service-evaluation-form ul.checkbox-list input
+{
+	margin: 3px 6px 3px 0px;
+}
+
+.service-evaluation-form ul.checkbox-list label
+{
+	margin: 0px 0px 10px;
+	width: 510px;
+}
+
+.service-evaluation-form ul.radio label
+{
+	margin: 0px;
+}
+
+.service-evaluation-form div.separator
+{
+	background: url(../images/registration/separator_bg.png) -20px -60px no-repeat;
+	clear: both;
+	height: 10px;
+	position: relative;
+	top: 20px;
+}
+
+.service-evaluation-form .actions
+{
+	padding-left: 388px;	
 }
 
 /* make payment specific */
+
 .make-payment .membership
 {
 	margin-bottom: 30px;
@@ -912,109 +984,82 @@ footer .footer-menu a
 	float: left;
 }
 
-.make-payment .invoice
+.make-payment table
 {
-	border: 1px solid #878787;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	margin-right: 20px;
-	width: 480px;
+	margin-right: 70px;
+	width: 560px;
 }
 
-.make-payment .invoice th,
-.make-payment .invoice td
+.make-payment table th,
+.make-payment table td
 {
-	padding: 10px 10px 9px;
+	padding: 20px;
 }
 
-.make-payment .invoice th
+.make-payment table th
 {
-	color: #404040;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14px;
+	background: #eef6fb;
+	color: #002d4f;
+	font-size: 18px;
 	font-weight: bold;
-	padding-top: 9px;
+	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
-.make-payment .invoice td
+.make-payment table td
 {
-	color: #404040;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 13px;
+	background: #fcfdfe;
+	color: #5d5d5d;
+	font-size: 14px;
 	position: relative;
 }
 
-.make-payment .invoice tbody tr:nth-child(odd) th,
-.make-payment .invoice tbody tr:nth-child(odd) td
-{
-	background: #F9F9F9;
-}
-
-.make-payment .invoice th.price,
-.make-payment .invoice td.price
+.make-payment table th.price,
+.make-payment table td.price
 {
 	text-align: right;
 }
 
-.make-payment .invoice th + th,
-.make-payment .invoice td + td
+.make-payment .invoice .help
 {
-	border-left: 1px solid #878787;
-}
-
-.make-payment .invoice td,
-.make-payment .invoice tr + tr th
-{
-	border-top: 1px solid #878787;
-}
-
-.make-payment .invoice td a.help
-{
-	position: absolute;
-	right: 5px;
-}
-
-/* data import */
-
-.data-import-form
-{
-	position: absolute;
-	right: 25px;
-	top: 4px;
-}
-
-.data-import-form input
-{
-	padding: 1px 6px;
+	bottom: 2px;
+	position: relative;
+	left: 3px;
 }
 
 .make-payment .invoice tfoot td
 {
-	font-size: 14px;
+	background: #c8e0f0;
+	color: #70a7cb;
+	font-size: 24px;
+	font-weight: bold;
 	text-align: right;
+	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
 .make-payment .invoice tfoot td span
 {
-	font-weight: bold;
+	color: #5d5d5d;
+	font-size: 18px;
+	margin-right: 10px;
+	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
 .make-payment .policy
 {
-	margin: 10px 0px 0px;
+	line-height: 16px;
+	margin: 20px 0px 0px 55px;
 	overflow: hidden;
 }
 
 .make-payment .policy li
 {
 	float: left;
-	margin-right: 15px;
+	margin-right: 25px;
 }
 
 .make-payment .policy li a
 {
-	color: #195F91;
+	color: #7f96a7;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px; 
 }
@@ -1026,30 +1071,21 @@ footer .footer-menu a
 
 .make-payment .membership-help
 {
-	border: 2px solid #404040;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	display: none;
-	width: 456px;
-}
-
-.make-payment .membership-help section h1,
-.make-payment .membership-help section p
-{
-	padding: 10px;
+	background: #eef6fb;
+	width: 330px;
 }
 
 .make-payment .membership-help section h1
 {
-	background: #F5F5F5;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	font-size: 22px;
-	line-height: 28px;
-	margin :0px;
-	padding: 5px 10px;
+	background: #bedbed;
+	color: #5d5d5d;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 24px;
+	font-weight: bold;
+	margin: 30px 0px 0px -10px;
+	padding: 0px 0px 0px 20px;
+	text-shadow: #FFFFFF 1px 1px 2px;
+	width: 220px;
 }
 
 .make-payment .membership-help section p
@@ -1058,6 +1094,32 @@ footer .footer-menu a
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 18px;
+	padding: 10px;
+}
+
+/* data import */
+
+.data-import-form
+{
+	left: 150px;
+	position: absolute;
+	top: 12px;
+}
+
+.data-import-form input
+{
+	padding: 4px 10px;
+}
+
+/* billing information */
+
+.make-payment div.separator
+{
+	background: url(../images/registration/separator_bg.png) -20px -60px no-repeat;
+	clear: both;
+	height: 10px;
+	position: relative;
+	top: 20px;
 }
 
 .make-payment-form .creditcard select
@@ -1076,6 +1138,11 @@ footer .footer-menu a
 .make-payment-form .actions p
 {
 	width: 450px;
+}
+
+.make-payment-form .actions
+{
+	padding-left: 358px;
 }
 
 /* modal */

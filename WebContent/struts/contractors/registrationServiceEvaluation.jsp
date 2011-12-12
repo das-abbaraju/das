@@ -1,13 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<s:include value="/struts/contractors/registrationStep.jsp">
-	<s:param name="step_current" value="2" />
-	<s:param name="step_last" value="getLastStepCompleted()" />
-</s:include>
+<div class="registration-header">
+	<section>
+		<s:include value="/struts/contractors/registrationStep.jsp">
+			<s:param name="step_current" value="2" />
+			<s:param name="step_last" value="getLastStepCompleted()" />
+		</s:include>
+	</section>
+</div>
 
 <s:if test="hasActionErrors()">
-	<s:actionerror cssClass="action-error alert-message warning" />
+	<s:actionerror cssClass="action-error alert-message error" />
+</s:if>
+	
+<s:if test="getServicesHelpText() != ''">
+	<div class="alert-error alert-message warning">
+		<span class="icon warn"></span>
+		
+		<s:property value="getServicesHelpText()" />
+	</div>
 </s:if>
 
 <div class="service-evaluation">
@@ -15,8 +27,6 @@
 	
 		<section>
 			<h1><s:text name="RegistrationServiceEvaluation.ServicesPerformed" /></h1>
-			
-			<s:property value="getServicesHelpText()" />
 			<ul>
 				<li>
 					<label><s:text name="RegistrationServiceEvaluation.SelectServices" /></label>
@@ -102,7 +112,7 @@
 		
 		<div class="service-safety-evaluation" style="${service_safety_evaluation_display}">
 		
-			<hr class="separator" />
+			<div class="separator"></div>
 			
 			<section>
 				<h1><s:text name="RegistrationServiceEvaluation.ServiceSafety" /></h1>
@@ -146,7 +156,7 @@
 		
 		<div class="product-safety-evaluation" style="${product_safety_evaluation_display}">
 		
-			<hr class="separator" />
+			<div class="separator"></div>
 			
 			<section>
 				<h1><s:text name="RegistrationServiceEvaluation.ProductSafety" /></h1>

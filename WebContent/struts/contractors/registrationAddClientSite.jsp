@@ -22,7 +22,7 @@
 </div>
 
 <s:if test="hasActionErrors()">
-	<s:actionerror cssClass="action-error alert-message warning" />
+	<s:actionerror cssClass="action-error alert-message error" />
 </s:if>
 
 <div class="client-site">
