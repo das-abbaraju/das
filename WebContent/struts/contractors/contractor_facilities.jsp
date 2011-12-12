@@ -189,7 +189,7 @@
 
 </head>
 <body>
-<s:include value="conRegistrationHeader.jsp"></s:include>
+<s:include value="conHeader.jsp" />
 
 <s:if test="permissions.contractor && contractor.status.pendingDeactivated">
 	<s:if test="msg != null && msg.length() > 0">

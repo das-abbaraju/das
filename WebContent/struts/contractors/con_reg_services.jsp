@@ -15,8 +15,6 @@
 </head>
 <body>
 
-<s:include value="registrationHeader.jsp"></s:include>
-
 <s:if test="!isStringEmpty(output)">
 	<div class="alert"><s:property value="output" escape="false" /></div>
 </s:if>
@@ -29,6 +27,5 @@
 		<s:include value="../audits/audit_cat_view.jsp"/>
 	</s:iterator>
 </div>
-<s:include value="registrationFooter.jsp" />
 </body>
 </html>

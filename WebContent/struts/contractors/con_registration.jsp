@@ -122,8 +122,6 @@
 			</ul>
 		</s:if>
 		
-		<s:include value="registrationHeader.jsp"></s:include>
-		
 		<span class="redMain required-info"><s:text name="%{scope}.IndicatesRequiredInfo" /></span>
 		
 		<s:form method="POST" cssClass="form">
@@ -297,7 +295,5 @@
 				</div>
 			</fieldset>
 		</s:form>
-		
-		<s:include value="registrationFooter.jsp" />
 	</body>
 </html>

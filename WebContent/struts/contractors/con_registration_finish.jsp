@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<s:include value="conRegistrationHeader.jsp"></s:include>
 <s:if test="contractor.trades.size == 0">
 	<div class="error"><s:text name="ContractorRegistrationFinish.error.AddTrade" /> <a
 		href="ContractorTrades.action"><s:text name="ContractorRegistrationFinish.ClickToAddTrade" /></a></div>
@@ -128,7 +127,6 @@
 		</s:if>
 	</s:else>
 </s:else>
-<s:include value="registrationFooter.jsp" />
 </body>
 </html>
 									

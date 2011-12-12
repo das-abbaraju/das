@@ -41,7 +41,7 @@
 		</script>
 	</head>
 	<body>
-		<s:include value="conRegistrationHeader.jsp" />
+		<s:include value="conHeader.jsp" />
 		<s:include value="../actionMessages.jsp" />
 		
 		<%-- All criteria are satisfied after contractor has entered CC info --%>

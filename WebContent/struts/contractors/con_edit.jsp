@@ -67,7 +67,7 @@
 		</script>
 	</head>
 	<body>
-		<s:include value="conRegistrationHeader.jsp"></s:include>
+		<s:include value="conHeader.jsp" />
 		
 		<s:if test="permissions.admin && unpaidInvoices.size() > 0">
 			<div class="info">
@@ -464,7 +464,5 @@
 				</tr>
 			</table>
 		</s:form>
-		
-		<s:include value="registrationFooter.jsp" />
 	</body>
 </html>

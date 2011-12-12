@@ -146,6 +146,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		} else {
 			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				voidUnpaidInvoices();
+				invoiceDAO.save(invoice);
 				String canadaProcessorID = appPropertyDAO.find("brainTree.processor_id.canada").getValue();
 				paymentService.setUsProcessorID(appPropertyDAO.find("brainTree.processor_id.us").getValue());
 				paymentService.setUserName(appPropertyDAO.find("brainTree.username").getValue());
@@ -168,7 +169,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 					PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
 					payment.setQbSync(true);
 
-					invoiceDAO.save(invoice);
 					paymentDAO.save(payment);
 					invoice.updateAmountApplied();
 					billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
