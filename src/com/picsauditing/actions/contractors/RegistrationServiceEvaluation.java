@@ -2,7 +2,6 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,7 +12,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -52,7 +50,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	private String servicesHelpText = "";
 
-	private List<ContractorType> conTypes = Collections.emptyList();
+	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
 
 	public RegistrationServiceEvaluation() {
 		this.subHeading = getText("ContractorRegistrationServices.title");
