@@ -50,7 +50,6 @@ function startup() {
 	});
 	
 	$('#employeeFormDiv').delegate('#deleteEmployee', 'click', function(e) {
-		e.preventDefault();
 		return confirm(translate('JS.ManageEmployees.confirm.DeleteEmployee'));
 	});
 	
