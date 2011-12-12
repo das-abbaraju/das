@@ -47,6 +47,8 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
+	private InvoiceFeeDAO invoiceDAO;
+	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private NoteDAO noteDAO;
@@ -166,6 +168,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 					PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment.getTotalAmount());
 					payment.setQbSync(true);
 
+					invoiceDAO.save(invoice);
 					paymentDAO.save(payment);
 					invoice.updateAmountApplied();
 					billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);

@@ -37,7 +37,6 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -88,7 +87,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	protected int contactID;
 
 	public ContractorEdit() {
-		this.currentStep = ContractorRegistrationStep.EditAccount;
 		this.subHeading = "Contractor Edit";
 	}
 
@@ -111,13 +109,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 
-			String[] countryIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("contractor.country.isoCode");
+			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"contractor.country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
 				contractor.setCountry(countryDAO.find(countryIsos[0]));
 
-			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("contractor.billingCountry.isoCode");
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
 
@@ -125,8 +123,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
 				contractor.setState(stateDAO.find(stateIsos[0]));
 
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters()
-					.get("contractor.billingState.isoCode");
+			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
+					"contractor.billingState.isoCode");
 			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
 				contractor.setBillingState(stateDAO.find(billingStateIsos[0]));
 		}
@@ -338,8 +336,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			String expiresMessage = "";
 			if (contractor.getPaymentExpires().after(new Date()))
-				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
-						contractor.getPaymentExpires());
+				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires", contractor
+						.getPaymentExpires());
 			else {
 				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
 				contractor.setStatus(AccountStatus.Deactivated);
@@ -471,25 +469,5 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		return false;
-	}
-
-	/**
-	 * During Registration ConRegistration becomes ConEdit after the first step has been completed.
-	 */
-	@Override
-	public ContractorRegistrationStep getPreviousRegistrationStep() {
-		return null;
-	}
-
-	@Override
-	public String nextStep() throws Exception {
-		redirect(ContractorRegistrationStep.Clients.getUrl());
-		return SUCCESS;
-	}
-
-	@Override
-	public String previousStep() throws Exception {
-		redirect(ContractorRegistrationStep.EditAccount.getUrl());
-		return SUCCESS;
 	}
 }

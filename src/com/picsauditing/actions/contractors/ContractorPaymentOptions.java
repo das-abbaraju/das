@@ -16,7 +16,6 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -64,7 +63,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public ContractorPaymentOptions() {
 		this.subHeading = getText(String.format("%s.title", getScope()));
-		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
 	public String execute() throws Exception {
@@ -86,8 +84,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		if (newRegistration) {
-			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
-					new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
+			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", new Object[] { Strings
+					.getPicsTollFreePhone(permissions.getCountry()) }));
 		}
 
 		if ("copyBillingEmail".equals(button)) {
@@ -101,10 +99,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		// Setup the new variables for sending the CC to braintree
 		loadCC();
-		
+
 		return SUCCESS;
 	}
-	
+
 	private void loadCC() throws Exception {
 		// Setup the new variables for sending the CC to braintree
 		customer_vault_id = contractor.getIdString();
@@ -142,8 +140,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						responsetext.substring(0, endPos - 1);
 				} catch (Exception justUseThePlainResponseText) {
 				}
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
+				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
+						.getPicsTollFreePhone(permissions.getCountry()) }));
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -165,8 +163,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				ccService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-						new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
+				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
+						.getPicsTollFreePhone(permissions.getCountry()) }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -193,8 +191,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[] { Strings.getPicsTollFreePhone(permissions.getCountry()) }));
+			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
+					.getPicsTollFreePhone(permissions.getCountry()) }));
 			braintreeCommunicationError = true;
 			return;
 		}
@@ -219,15 +217,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		accountDao.save(contractor);
 		return;
-	}
-
-	@Override
-	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (permissions.isContractor() && contractor.getStatus().isPendingDeactivated()
-				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB()))
-			return ContractorRegistrationStep.Confirmation;
-
-		return null;
 	}
 
 	/** ******** DMI ******** */
@@ -257,7 +246,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		contractor.setPaymentMethod(PaymentMethod.CreditCard);
 		accountDao.save(contractor);
 		loadCC();
-		
+
 		return SUCCESS;
 	}
 

@@ -4,11 +4,10 @@ import java.util.List;
 
 public enum ContractorRegistrationStep {
 	Register, 
-	EditAccount, // FIXME deprecated - remove this
 	Clients, 
 	Risk, // a.k.a. Service Evaluation 
 	Payment, // a.k.a. Join 
-	Confirmation, // FIXME deprecated - remove this
+	Confirmation,
 	Done;
 
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
