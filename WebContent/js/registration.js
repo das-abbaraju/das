@@ -489,8 +489,16 @@
 			change: function (event) {
 				var element = $(this);
 				
-				if (element.val() == 'check') {
-					
+				if (element.val() == 'Check') {
+					$('.make-payment-form .creditcard').slideUp(400);
+					$('.make-payment-form .expiration-date').slideUp(400);
+					$('.make-payment-form .cc-note').slideUp(400);
+					$('.make-payment-form .check-note').slideDown(400);
+				} else {
+					$('.make-payment-form .creditcard').slideDown(400);
+					$('.make-payment-form .expiration-date').slideDown(400);
+					$('.make-payment-form .cc-note').slideDown(400);
+					$('.make-payment-form .check-note').slideUp(400);
 				}
 			}
 		}
@@ -506,6 +514,15 @@
 		
 		events: {
 			submit: function (event) {
+				var element = $(this);
+				var ccName = $('#transact_ccName', element);
+				
+				if (ccName.val() == 'Check') {
+					element.attr('action', 'RegistrationMakePayment!completeRegistration.action');
+					
+					console.log(element);
+				}
+				
 				$('#ccexp').val($('#expMonth').val() + $('#expYear').val());
 			}
 		}

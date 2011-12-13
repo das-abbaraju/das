@@ -363,6 +363,7 @@ footer .footer-menu a
 .registration-side-bar .info-choice li
 {
 	font-size: 14px;
+	line-height: 16px;
 }
 
 /* general */
@@ -948,7 +949,7 @@ footer .footer-menu a
 {
 	margin: 20px 30px 0px 0px;
 	text-align: left;
-	width: 360px;
+	width: 350px;
 }
 
 .services-list
@@ -961,7 +962,7 @@ footer .footer-menu a
 {
 	background: #eef5fb;
 	padding: 20px;
-	width: 530px;
+	width: 540px;
 }
 
 .service-evaluation-form ul.checkbox-list input
@@ -1016,6 +1017,7 @@ footer .footer-menu a
 .make-payment table th,
 .make-payment table td
 {
+	line-height: 20px;
 	padding: 20px;
 }
 
@@ -1124,14 +1126,15 @@ footer .footer-menu a
 
 .data-import-form
 {
-	left: 150px;
-	position: absolute;
-	top: 12px;
+	display: inline;
 }
 
 .data-import-form input
 {
+	bottom: 5px;
+	margin-left: 10px;
 	padding: 4px 10px;
+	position: relative;
 }
 
 /* billing information */
@@ -1166,6 +1169,11 @@ footer .footer-menu a
 .make-payment-form .actions
 {
 	padding-left: 358px;
+}
+
+.make-payment-form .check-note
+{
+	display: none;
 }
 
 /* modal */

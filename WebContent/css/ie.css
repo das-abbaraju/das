@@ -75,3 +75,9 @@ ul.radio label
 {
 	margin-top: 4px;
 }
+
+/* REGISTRATION */
+
+.client-site-filter ul {
+	width: 600px;
+}

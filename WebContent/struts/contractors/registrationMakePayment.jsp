@@ -141,9 +141,7 @@
 				<div class="modal-body">
 					<p><s:text name="RegistrationMakePayment.ModalBody" /></p>
 				</div>
-				<div class="modal-footer">
-					
-				</div>
+				<div class="modal-footer"></div>
 			</div>
 		</section>
 	</div>
@@ -219,8 +217,12 @@
 						cssClass="btn success" 
 					/>
 					
-					<p>
+					<p class="cc-note">
 						<s:text name="RegistrationMakePayment.CreditCardNote" />
+					</p>
+					
+					<p class="check-note">
+						<s:text name="RegistrationMakePayment.CheckNote" />
 					</p>
 				</li>
 			</ul>

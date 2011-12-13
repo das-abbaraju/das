@@ -32,6 +32,8 @@
 		
 		REGISTRATION.modal.init();
 		
+		REGISTRATION.payment_check.init();
+		
 		REGISTRATION.payment_submision.init();
 		
 		REGISTRATION.services_performed_toggle.init();
