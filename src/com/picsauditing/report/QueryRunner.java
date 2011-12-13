@@ -67,6 +67,8 @@ public class QueryRunner {
 			if (availableFields.keySet().contains(column)) {
 				String field = availableFields.get(column).sql;
 				sql.addField(field + " AS " + column);
+
+				addLeftJoins(column);
 			}
 		}
 
@@ -114,20 +116,45 @@ public class QueryRunner {
 		case Contractors:
 			buildContractorBase();
 			break;
-		case RegistrationRequests:
-			buildRegistrationRequestsBase();
-			break;
 		case ContractorAudits:
 			buildContractorAuditBase();
 			break;
 		case ContractorAuditOperators:
 			buildContractorAuditOperatorBase();
 			break;
+		case ContractorAuditOperatorWorkflows:
+			buildContractorAuditOperatorWorkflowBase();
+			break;
+		case Invoices:
+			buildInvoiceBase();
+			break;
+		case RegistrationRequests:
+			buildRegistrationRequestsBase();
+			break;
 		default:
 			// This really shouldn't happen
 			buildAccountBase();
 			break;
 		}
+	}
+
+	private void addLeftJoins(String column) {
+		if (StringUtils.endsWithIgnoreCase(column, "UserID")) {
+			if (StringUtils.startsWithIgnoreCase(column, "accountContact"))
+				sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactUserID");
+			else if (StringUtils.startsWithIgnoreCase(column, "customerService"))
+				sql.addJoin("LEFT JOIN users auditor ON cs.id = c.welcomeAuditor_id");
+			else if (StringUtils.startsWithIgnoreCase(column, "auditor"))
+				sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorUserID");
+			else if (StringUtils.startsWithIgnoreCase(column, "closingAuditor"))
+				sql.addJoin("LEFT JOIN users closingAuditor ON closingAuditor.id = ca.auditorUserID");
+			else if (StringUtils.startsWithIgnoreCase(column, "requestedByOperator"))
+				sql.addJoin("LEFT JOIN users u ON u.id = crr.requestedByUserID");
+			else if (StringUtils.startsWithIgnoreCase(column, "requestedContactedBy"))
+				sql.addJoin("LEFT JOIN users uc ON uc.id = crr.lastContactedBy");
+		} else if (StringUtils.startsWithIgnoreCase(column, "AccountID"))
+			if (StringUtils.startsWithIgnoreCase(column, "requestedExisting"))
+				sql.addJoin("LEFT JOIN accounts con ON con.id = crr.conID");
 	}
 
 	private QueryField addQueryField(String dataIndex, String sql) {
@@ -139,7 +166,6 @@ public class QueryRunner {
 	private void buildAccountBase() {
 		sql = new SelectSQL();
 		sql.setFromTable("accounts a");
-		sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 
 		addQueryField("accountID", "a.id");
 		addQueryField("accountName", "a.name");
@@ -154,6 +180,7 @@ public class QueryRunner {
 		addQueryField("accountZip", "a.zip");
 		addQueryField("accountWebsite", "a.web_url");
 		addQueryField("accountDBAName", "a.dbaName");
+		addQueryField("accountReason", "a.reason");
 
 		addQueryField("accountContactUserID", "contact.id");
 		addQueryField("accountContactUserAccountID", "contact.id");
@@ -183,6 +210,12 @@ public class QueryRunner {
 		addQueryField("contractorTradesSelfPerformed", "c.tradesSelf");
 		addQueryField("contractorTradesSubContracted", "c.tradesSub");
 		addQueryField("contractorScore", "c.score");
+		addQueryField("contractorPaymentExpires", "c.paymentExpires");
+		addQueryField("contractorCreditCardOnFile", "c.ccOnFile");
+
+		addQueryField("customerServiceUserID", "cs.id");
+		addQueryField("customerServiceUserAccountID", "cs.accountID");
+		addQueryField("customerServiceUserName", "cs.name");
 	}
 
 	private void buildContractorAuditBase() {
@@ -191,7 +224,6 @@ public class QueryRunner {
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
 		sql.addWhere("atype.classType IN ( 'Audit', 'IM', 'PQF' )");
-		sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 		sql.setDistinct(true);
 
 		availableFields.get("accountStatus").hide();
@@ -206,6 +238,8 @@ public class QueryRunner {
 		addQueryField("auditLocation", "ca.auditLocation");
 		addQueryField("auditFor", "ca.auditFor");
 		addQueryField("auditScore", "ca.score");
+		addQueryField("auditContractorConfirmation", "ca.score");
+		addQueryField("auditAuditorConfirmation", "ca.score");
 
 		addQueryField("auditTypeIsScheduled", "atype.isScheduled");
 		addQueryField("auditTypeHasAuditor", "atype.hasAuditor");
@@ -214,6 +248,10 @@ public class QueryRunner {
 		addQueryField("auditorUserID", "auditor.id");
 		addQueryField("auditorUserAccountID", "auditor.accountID");
 		addQueryField("auditorUserName", "auditor.name");
+
+		addQueryField("closingAuditorUserID", "closingAuditor.id");
+		addQueryField("closingAuditorUserAccountID", "closingAuditor.accountID");
+		addQueryField("closingAuditorUserName", "closingAuditor.name");
 	}
 
 	private void buildContractorAuditOperatorBase() {
@@ -232,13 +270,18 @@ public class QueryRunner {
 		defaultSort = "cao.statusChangedDate DESC";
 	}
 
+	private void buildContractorAuditOperatorWorkflowBase() {
+		buildContractorAuditOperatorBase();
+
+		sql.addJoin("JOIN contractor_audit_operator_workflow cao ON cao.id = caow.caoID");
+
+		addQueryField("contractorAuditOperatorWorkflowStatus", "caow.status");
+	}
+
 	private void buildRegistrationRequestsBase() {
 		sql = new SelectSQL();
 		sql.setFromTable("contractor_registration_request crr");
 		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
-		sql.addJoin("LEFT JOIN users u ON u.id = crr.requestedByUserID");
-		sql.addJoin("LEFT JOIN users uc ON uc.id = crr.lastContactedBy");
-		sql.addJoin("LEFT JOIN accounts con ON con.id = crr.conID");
 
 		addQueryField("requestID", "crr.id");
 		addQueryField("requestedName", "crr.name");
@@ -254,20 +297,29 @@ public class QueryRunner {
 		addQueryField("requestedNotes", "crr.notes");
 		addQueryField("requestedByOperatorID", "op.id");
 		addQueryField("requestedByOperatorName", "op.name");
-		addQueryField("requestedByOperatorUserID", "u.id");
-		addQueryField("requestedByOperatorUserAccountID", "u.accountID");
-		addQueryField("requestedByOperatorUserName", "u.name");
-		addQueryField("requestedByOperatorUserOther", "crr.requestedByUser");
 		addQueryField("requestedDeadline", "crr.deadline");
-		addQueryField("requestedContactedByUserID", "uc.id");
-		addQueryField("requestedContactedByUserAccountID", "uc.accountID");
-		addQueryField("requestedContactedByUserName", "uc.name");
 		addQueryField("requestedLastContactedByDate", "crr.lastContactDate").type(FieldType.Date);
 		addQueryField("requestedContactCount", "crr.contactCount");
 		addQueryField("requestedMatchCount", "crr.matchCount");
 		addQueryField("requestCreationDate", "crr.creationDate").type(FieldType.Date);
+
+		addQueryField("requestedByOperatorUserID", "u.id");
+		addQueryField("requestedByOperatorUserAccountID", "u.accountID");
+		addQueryField("requestedByOperatorUserName", "u.name");
+		addQueryField("requestedByOperatorUserOther", "crr.requestedByUser");
+
+		addQueryField("requestedContactedByUserID", "uc.id");
+		addQueryField("requestedContactedByUserAccountID", "uc.accountID");
+		addQueryField("requestedContactedByUserName", "uc.name");
+
 		addQueryField("requestedExistingAccountID", "con.id");
 		addQueryField("requestedExistingAccountName", "con.name");
+	}
+
+	private void buildInvoiceBase() {
+		buildContractorBase();
+
+		sql.addJoin("JOIN invoice i on i.accountID = c.id");
 	}
 
 	public Map<String, QueryField> getAvailableFields() {

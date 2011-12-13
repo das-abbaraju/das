@@ -66,6 +66,7 @@ public class QueryFilter implements JSONable {
 			expression += "(" + value + ")";
 			break;
 		case InReport:
+		case Exists:
 			expression += "({REPORT:" + value + "})";
 			break;
 		case Empty:
