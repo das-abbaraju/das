@@ -399,13 +399,13 @@
 				element.each(function (key, value) {
 					var html = $(this).html();
 					var label = $(this).siblings('label');
-					var input = $(this).siblings('input, select');
+					var input = $(this).siblings('input[type=text], select');
 					
 					input.attr('title', label.html().replace(':', ''));
 					input.attr('data-content', html.replace('"', "'"));
 				});
 				
-				$('input').popover({
+				$('input[type=text]').popover({
 					html: true,
 					placement: 'below',
 					trigger: 'focus'
@@ -519,8 +519,6 @@
 				
 				if (ccName.val() == 'Check') {
 					element.attr('action', 'RegistrationMakePayment!completeRegistration.action');
-					
-					console.log(element);
 				}
 				
 				$('#ccexp').val($('#expMonth').val() + $('#expYear').val());

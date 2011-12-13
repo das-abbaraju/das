@@ -735,9 +735,11 @@ footer .footer-menu a
 .client-site .client-site-left label,
 .client-site .client-site-right label
 {
+	float: none;
 	line-height: 25px;
 	margin: 0px;
 	padding: 0px;
+	text-align: left;
 	width: auto;
 }
 

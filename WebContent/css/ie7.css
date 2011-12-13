@@ -1,19 +1,57 @@
 /* REGISTRATION */
 
-.btn
+.registration-side-bar .info-qualify li, 
+.registration-side-bar .info-choice li
 {
-	width: 100px !important;
-}
-
-.client-site .double-list-action
-{
-	height: 265px;
-	margin: 0px;
-	padding: 0px 22px;
-	width: 75px;
+	color: #39749B;
 }
 
 .client-site-filter ul
 {
-	width: 610px;
+	width: 620px;
 }
+
+.client-site .actions input
+{
+	margin-top: 10px;
+}
+
+/* IE6 css fixer v0.95: Tue, 13 Dec 2011 02:49:23 +0100 */
+
+/* ============================================= */
+/* safe settings                                 */
+
+/* fix negative margins */
+.registration-form h1,
+.make-payment .membership-help section h1 {position:relative; zoom:1;}
+
+/* add zoom:1 to overflow:hidden */
+.registration-form li,
+.client-site-form li,
+.service-evaluation-form li,
+.make-payment-form li,
+.client-site-filter,
+.client-site .client-site-list li a,
+.make-payment .policy,
+.registration-form li,
+.registration-form .actions {zoom:1;}
+
+/* add zoom:1 to pos:relative elements */
+.registration-header h1,
+.registration-form .errors li,
+.registration-form .actions input,
+.registration-side-bar .info-join h1,
+.registration-step ul,
+.client-site .client-site-left,
+.client-site .client-site-right,
+.client-site .client-site-left .client-site-list-container,
+.client-site .client-site-right .client-site-list-container,
+.make-payment table td,
+.make-payment .invoice .help,
+.data-import-form input,
+.make-payment-form img.card,
+.service-evaluation-form div.separator,
+.make-payment div.separator {zoom:1;}
+
+/* add overflow:visible to (submit) buttons */
+ input, button {overflow:visible;}

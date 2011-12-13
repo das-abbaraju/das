@@ -377,57 +377,64 @@ input, button {overflow:visible;}
 	display: none;
 }
 
-#RegistrationAddClientSite-page  .double-list-left label
-{
-	display: block;
-}
+/* IE6 css fixer v0.95: Tue, 13 Dec 2011 02:49:23 +0100 */
 
-#RegistrationAddClientSite-page  .double-list-left
-{
-	clear: both;
-}
+/* ============================================= */
+/* safe settings                                 */
 
-#RegistrationAddClientSite-page .client-site-form .double-list-action
-{
-	height: 265px;
-	margin: 0px;
-	padding: 0px 20px;
-	width: 75px;
-}
+/* add display:inline to floated elements */
+header .chat,header .phone,header .welcome-message,
+header .locale-form,
+.registration-form .errors,
+.registration-form .info-agreement,
+.registration-form .actions input,
+.registration-side-bar,
+.alert-message .icon,
+.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label,
+.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input,
+.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label,
+.registration-step li,
+.client-site .client-site-left,
+.client-site .client-site-right,
+.client-site .client-site-list .name,
+.client-site .client-site-list .location,
+.client-site .client-site-list .add,.client-site .client-site-list .remove,.client-site .client-site-list .info,
+.client-site-get-started,
+.client-site-get-started img,
+.make-payment .policy li,
+.registration-form,.registration-form input,.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio,.client-site-filter li,.make-payment .membership,.make-payment .membership-help {display:inline;}
 
-#RegistrationServiceEvaluation-page .service-evaluation-form ul.inline
-{
-	margin-left: 15px;
-}
+/* fix negative margins */
+.registration-form h1,
+.make-payment .membership-help section h1 {position:relative; zoom:1;}
 
-#RegistrationServiceEvaluation-page .service-evaluation-form ul.inline
-{
-	margin-left: 15px;
-}
+/* add zoom:1 to overflow:hidden */
+.registration-form li,
+.client-site-form li,
+.service-evaluation-form li,
+.make-payment-form li,
+.client-site-filter,
+.client-site .client-site-list li a,
+.make-payment .policy,
+.registration-form li,
+.registration-form .actions {zoom:1;}
 
-#RegistrationMakePayment-page .modal
-{
-	display: none;
-}
+/* add zoom:1 to pos:relative elements */
+.registration-header h1,
+.registration-form .errors li,
+.registration-form .actions input,
+.registration-side-bar .info-join h1,
+.registration-step ul,
+.client-site .client-site-left,
+.client-site .client-site-right,
+.client-site .client-site-left .client-site-list-container,
+.client-site .client-site-right .client-site-list-container,
+.make-payment table td,
+.make-payment .invoice .help,
+.data-import-form input,
+.make-payment-form img.card,
+.service-evaluation-form div.separator,
+.make-payment div.separator {zoom:1;}
 
-#RegistrationMakePayment-page .membership
-{
-	width: 500px;
-}
-#RegistrationMakePayment-page .membership-help
-{
-	margin: 0px;
-	padding: 0px;
-}
-
-
-#RegistrationMakePayment-page .membership table
-{
-	border-collapse:collapse;
-}
-
-#RegistrationMakePayment-page .membership table td,
-#RegistrationMakePayment-page .membership table th
-{
-	border: 1px solid #878787 !imporca;
-}
+/* add overflow:visible to (submit) buttons */
+ input, button {overflow:visible;}
