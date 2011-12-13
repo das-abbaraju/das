@@ -152,7 +152,7 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : con.getAudits()) {
-					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired() && !ca.hasOnlyInvisibleCaos()) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired() && isAuditVisibleToOperator(ca,getOperator())) {
 						hasAnnualUpdate = true;
 						boolean auditIsGood = false;
 						for (ContractorAuditOperator cao : ca.getOperators()) {
@@ -334,6 +334,20 @@ public class FlagDataCalculator {
 				return true;
 			}
 		}
+	}
+	
+	private boolean isAuditVisibleToOperator(ContractorAudit ca, OperatorAccount op) {
+		for (ContractorAuditOperator cao:ca.getOperators()) {
+			if (cao.isVisible()) {
+				for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+					if (caop.getOperator().getId() == op.getId()) {
+						return true;
+					}
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {
