@@ -118,20 +118,22 @@
 				</tbody>
 	 		</table>
 	 		
-	 		<ul class="policy">
-	 			<li>
-	 				<s:a href="#" cssClass="view-pricing modal-link" data-title="View Pricing" data-url="ContractorPricing.action?con=${contractor.id}"><s:text name="RegistrationMakePayment.ViewPricing" /></s:a>
-	 			</li>
-	 			<li>
-	 				<s:a href="#" cssClass="privacy-policy modal-link" data-title="Privacy Policy" data-url="PrivacyPolicy.action"><s:text name="RegistrationMakePayment.PrivacyPolicy" /></s:a>
-	 			</li>
-	 			<li>
-	 				<s:a href="#" cssClass="refund-policy modal-link" data-title="Refund Policy" data-url="RefundPolicy.action"><s:text name="RegistrationMakePayment.RefundPolicy" /></s:a>
-	 			</li>
-	 			<li>
-	 				<s:a href="#" cssClass="contractor-agreement modal-link" data-title="Contractor Agreement" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
-	 			</li>
-	 		</ul>
+	 		<div class="policy">
+	 			<ul>
+		 			<li>
+		 				<s:a href="#" cssClass="view-pricing modal-link" data-title="View Pricing" data-url="ContractorPricing.action?con=${contractor.id}"><s:text name="RegistrationMakePayment.ViewPricing" /></s:a>
+		 			</li>
+		 			<li>
+		 				<s:a href="#" cssClass="privacy-policy modal-link" data-title="Privacy Policy" data-url="PrivacyPolicy.action"><s:text name="RegistrationMakePayment.PrivacyPolicy" /></s:a>
+		 			</li>
+		 			<li>
+		 				<s:a href="#" cssClass="refund-policy modal-link" data-title="Refund Policy" data-url="RefundPolicy.action"><s:text name="RegistrationMakePayment.RefundPolicy" /></s:a>
+		 			</li>
+		 			<li>
+		 				<s:a href="#" cssClass="contractor-agreement modal-link" data-title="Contractor Agreement" data-url="ContractorAgreement.action"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
+		 			</li>
+		 		</ul>
+	 		</div>
 	 		
 	 		<div class="modal hide fade">
 				<div class="modal-header">

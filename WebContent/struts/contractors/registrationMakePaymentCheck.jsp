@@ -15,5 +15,11 @@
 </s:if>
 
 <div class="make-payment">
-	<div><p><s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/> </p></div>
+	<h1><s:text name="RegistrationMakePayment.Check" /></h1>
+	
+	<div class="membership">
+		<p class="process-check-info">
+			<s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/>
+		</p>
+	</div>
 </div>

@@ -3,7 +3,7 @@
 #RegistrationServiceEvaluation-page,
 #RegistrationMakePayment-page
 {
-	background: #94c3e2;
+	background: #94c3e1;
 }
 
 #Registration-page #container,
@@ -972,15 +972,17 @@ footer .footer-menu a
 	margin: 3px 6px 3px 0px;
 }
 
-.service-evaluation-form ul.checkbox-list label
+.service-evaluation-form ul.checkbox-list label,
+.service-evaluation-form ul.radio label
 {
 	margin: 0px 0px 10px;
 	width: 510px;
 }
 
-.service-evaluation-form ul.radio label
+.service-evaluation-form ul.radio.inline label
 {
 	margin: 0px;
+	width: auto;
 }
 
 .service-evaluation-form div.separator
@@ -1074,14 +1076,16 @@ footer .footer-menu a
 .make-payment .policy
 {
 	line-height: 16px;
-	margin: 20px 0px 0px 55px;
+	margin: 20px 0px 0px;
 	overflow: hidden;
+	text-align: center;
+	width: 560px;
 }
 
 .make-payment .policy li
 {
-	float: left;
-	margin-right: 25px;
+	display: inline;
+	margin: 0px 10px;
 }
 
 .make-payment .policy li a
@@ -1176,6 +1180,14 @@ footer .footer-menu a
 .make-payment-form .check-note
 {
 	display: none;
+}
+
+.make-payment .process-check-info
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 18px;
 }
 
 /* modal */

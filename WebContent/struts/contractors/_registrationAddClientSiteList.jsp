@@ -7,7 +7,11 @@
 			<a href="javascript:;" data-id="${result.id}">
 				<span class="name">${result.name}</span>
 				<span class="location">
-					${result.city}, ${result.state}
+					<s:if test="#result.city != ''">
+						${result.city},
+					</s:if>
+					
+					${result.state}
 					
 					<s:if test="permissions.country != #result.country.isoCode">
 						, ${result.country.isoCode}
