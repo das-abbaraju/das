@@ -15,6 +15,8 @@
 </s:if>
 
 <div class="make-payment">
+	<div><p><s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/></p>
+		<s:form><s:submit method="changePaymentToCC" value="Change Payment Method To Credit Card"/></s:form></div>
 	<h1><s:text name="RegistrationMakePayment.Check" /></h1>
 	
 	<div class="membership">
@@ -22,4 +24,6 @@
 			<s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/>
 		</p>
 	</div>
+	
+	<s:form><s:submit method="changePaymentToCC" value="Change Payment Method To Credit Card"/></s:form>
 </div>
