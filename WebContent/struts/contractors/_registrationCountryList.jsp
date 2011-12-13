@@ -5,6 +5,9 @@
 	<s:if test="countryString == 'CA'">
 		<s:set var="label" value="'ContractorAccount.province'" />
 	</s:if>
+	<s:elseif test="countryString == 'GB'">
+		<s:set var="label" value="'ContractorAccount.county'" />
+	</s:elseif>
 	<s:else>
 		<s:set var="label" value="'ContractorAccount.state'" />
 	</s:else>

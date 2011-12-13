@@ -26,6 +26,9 @@
 <s:if test="contractor.country.isoCode == 'CA'">
 	<s:set var="state_label_display" value="'Province'" />
 </s:if>
+<s:elseif test="contractor.country.isoCode == 'GB'">
+	<s:set var="state_label_display" value="'County'" />
+</s:elseif>
 <s:else>
 	<s:set var="state_label_display" value="'State'" />
 </s:else>
