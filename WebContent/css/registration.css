@@ -127,7 +127,7 @@ footer .footer-menu a
  * registration header
  */
  
-.registration-header section
+/* .registration-header section
 {
 	background: #A5CEE9;
 	background-repeat: repeat-x;
@@ -143,6 +143,20 @@ footer .footer-menu a
 	border-top: 2px solid #AEAFB2;
 	height: 100px;
 	width: auto;
+} */
+
+.registration-header section
+{
+	background: url(../images/registration/header_edge_bg.jpg) repeat-x;
+	border-bottom: 7px solid #7BAACA;
+	border-top: 2px solid #AEAFB2;
+	height: 94px;
+}
+
+.registration-header header
+{
+	background: url(../images/registration/header_bg.jpg) no-repeat;
+	height: 94px;
 }
 
 .registration-header h1
@@ -201,7 +215,7 @@ footer .footer-menu a
 	font-weight: bold;
 	height: 50px;
 	line-height: 50px;
-	margin: 0px 0px 20px -30px;
+	margin: 0px 0px 20px -33px;
 	text-shadow: #a85008 2px 2px 5px;
 	width: 350px;
 }
@@ -281,7 +295,7 @@ footer .footer-menu a
 
 .registration-side-bar
 {
-	background: url(../images/registration/registration_bg.png) no-repeat;
+	background: url(../images/registration/bg.png) no-repeat;
 	float: left;
 	height: 900px;
 	width: 370px;
@@ -568,10 +582,19 @@ footer .footer-menu a
 
 /* registration step */
 
+.registration-header .registration-step
+{
+	background: url(../images/registration/header_step_bg.jpg) no-repeat;
+	height: 94px;
+	margin: 0px auto;
+	padding-top: 15px;
+	width: 960px;
+}
+
 .registration-step ul
 {
-	margin: 20px auto 0px;
-	width: 750px;
+	left: 144px;
+	position: relative;
 }
 
 .registration-step li
@@ -582,7 +605,7 @@ footer .footer-menu a
 	font-size: 20px;
 	text-align: center;
 	text-shadow: #39749b 1px 1px 4px;
-	width: 250px;
+	width: 232px;
 }
 
 .registration-step li.enabled,
