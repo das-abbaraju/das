@@ -375,6 +375,7 @@ footer .footer-menu a
 {
 	font-size: 14px;
 	margin: 20px auto;
+	overflow: hidden;
 	padding: 10px 15px;
 	width: 930px;
 }
@@ -384,13 +385,20 @@ footer .footer-menu a
 	display: block;
 	float: left;
 	height: 16px;
-	margin-right: 5px;
+	margin: 1px 5px 0px 0px;
 	width: 16px;
 }
 
 .alert-message .icon.warn
 {
 	background: url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
+}
+
+.alert-message p
+{
+	float: left;
+	line-height: 18px;
+	width: 900px;
 }
 
 .registration-form li,
