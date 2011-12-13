@@ -20,7 +20,7 @@ var conID = '<s:property value="id"/>';
 </style>
 </head>
 <body>
-<s:include value="conHeader.jsp" />
+<s:include value="../contractors/conHeader.jsp" />
 
 <s:if test="contractor.tradesUpdated == null && contractor.trades.size() > 0 && !permissions.operatorCorporate">
 	<s:form>

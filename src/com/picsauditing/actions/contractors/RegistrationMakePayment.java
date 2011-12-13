@@ -247,7 +247,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			permissions.setAccountPerms(getUser());
 		}
 
-		redirect(getRegistrationStep().getUrl());
+		redirect("ContractorTrades.action?id=" + contractor.getId());
 		return BLANK;
 	}
 

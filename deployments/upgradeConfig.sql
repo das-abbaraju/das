@@ -266,8 +266,9 @@ INSERT into app_translation (msgKey, locale, msgValue) values ("CreditCard.Respo
 INSERT into app_translation (msgKey, locale, msgValue) values ("CreditCard.ResponseCode.2059", "en", "Address Verification Failed");
 INSERT into app_translation (msgKey, locale, msgValue) values ("CreditCard.ResponseCode.2060", "en", "Address Verification and Card Security Code Failed");
 INSERT into app_translation (msgKey, locale, msgValue) values ("CreditCard.ResponseCode.3000", "en", "Processor network unavailable.Try Again");
+-- 
+INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorTrades.NeedsUpdating", "en", "Please select all applicable trades that apply to your company. Completing this portion of the process is very important as it will help ensure the proper risk ranking and will also allow existing/new clients to find you via your selected trades");
 -- --------------------------------------------------------
-
 -- Updating timezones and countries
 update app_translation set msgValue = 'Heure du Pacifique (US / Canada)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.US.Pacific' AND locale = 'fr';
 update app_translation set msgValue = 'Heure d''été Magadan (Asie)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.Asia.Magadan' AND locale = 'fr';
