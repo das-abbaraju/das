@@ -639,6 +639,7 @@ public class BillingCalculatorSingle {
 			importAudit.setAuditColumns(permissions);
 			importAudit.setContractorAccount(contractor);
 			contractor.getAudits().add(importAudit);
+			auditTypeDAO.save(importAudit);
 
 			auditBuilder.buildAudits(contractor);
 			auditPercentCalculator.percentCalculateComplete(importAudit);
