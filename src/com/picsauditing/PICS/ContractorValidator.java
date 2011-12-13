@@ -69,10 +69,6 @@ public class ContractorValidator {
 
 		if (contractor.getCountry() != null && !contractor.getCountry().isUAE() && Strings.isEmpty(contractor.getZip()))
 			errorMessages.addElement(getText("ContractorValidator.error.PleaseFillInZip"));
-		if (contractor.getCountry() != null && !contractor.getCountry().isUAE()
-				&& Strings.isEmpty(contractor.getTaxId())) {
-			errorMessages.addElement(getText("ContractorValidator.error.NoTaxId"));
-		}
 
 		// Onsite / Offsite / Material Supplier
 		if (contractor.getAccountTypes().isEmpty())
