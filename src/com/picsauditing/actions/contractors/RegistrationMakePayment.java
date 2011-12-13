@@ -440,6 +440,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		accountDao.save(contractor);
 		loadCC();
 
+		this.redirect("RegistrationMakePayment.action");
 		return SUCCESS;
 	}
 
