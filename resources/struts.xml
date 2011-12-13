@@ -321,6 +321,7 @@
 			class="com.picsauditing.actions.contractors.RegistrationMakePayment">
 			<result>struts/contractors/registrationMakePayment.jsp</result>
 			<result name="print">struts/contractors/registrationMakePaymentPrint.jsp</result>
+			<result name="check">struts/contractors/registrationMakePaymentCheck.jsp</result>
 		</action>
 		
 		<action name="StateListAjax" class="com.picsauditing.actions.StateList">

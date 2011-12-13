@@ -24,13 +24,13 @@
 </s:else>
 
 <s:if test="contractor.country.isoCode == 'CA'">
-	<s:set var="state_label_display" value="'Province'" />
+	<s:set var="state_label_display" value="%{getText('global.Province')}" />
 </s:if>
 <s:elseif test="contractor.country.isoCode == 'GB'">
-	<s:set var="state_label_display" value="'County'" />
+	<s:set var="state_label_display" value="%{getText('global.Country')}" />
 </s:elseif>
 <s:else>
-	<s:set var="state_label_display" value="'State'" />
+	<s:set var="state_label_display" value="%{getText('global.State')}" />
 </s:else>
 
 <div class="registration-header">
@@ -191,7 +191,7 @@
 			
 			<s:submit 
 				method="createAccount"
-				value="Get Started" 
+				key="button.GetStarted"
 				cssClass="btn success" 
 			/>
 			

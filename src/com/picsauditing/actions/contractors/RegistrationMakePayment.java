@@ -107,6 +107,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if (hasActionErrors())
 			return SUCCESS;
 
+		if(contractor.getPaymentMethod().equals(PaymentMethod.Check))
+			return "check";
+		
 		if (processPayment)
 			completeRegistration();
 
@@ -251,6 +254,12 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			permissions.setAccountPerms(getUser());
 		}
 
+		if("Check".equals(ccName) && contractor.getNewMembershipAmount().intValue() > 500){
+			contractor.setPaymentMethod(PaymentMethod.Check);
+			accountDao.save(contractor);
+			return "check";
+		}
+			
 		redirect("ContractorTrades.action?id=" + contractor.getId());
 		return BLANK;
 	}
@@ -421,16 +430,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
 					+ "&url=RegistrationMakePayment.action");
 		}
-
-		return SUCCESS;
-	}
-
-	public String changePaymentToCheck() throws Exception {
-		findContractor();
-		contractor.setPaymentMethod(PaymentMethod.Check);
-		accountDao.save(contractor);
-		if (contractor.isCcOnFile())
-			loadCC();
 
 		return SUCCESS;
 	}
