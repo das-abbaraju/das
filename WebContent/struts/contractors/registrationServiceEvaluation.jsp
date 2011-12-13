@@ -18,7 +18,7 @@
 	<div class="alert-error alert-message warning">
 		<span class="icon warn"></span>
 		
-		<s:property value="getServicesHelpText()" />
+		<s:property value="getServicesHelpText()" escape="false"/>
 	</div>
 </s:if>
 

@@ -101,19 +101,19 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			if (on + off + ms + trx == 1) {
 				if (operator.isOnsiteServices()) {
 					requireOnsite = true;
-					servicesHelpText += "Onsite Services required by " + operator.getName();
+					servicesHelpText += "Onsite Services is the only service type allowed by " + operator.getName() + "<br />";
 				}
 				if (operator.isOffsiteServices()) {
 					requireOffsite = true;
-					servicesHelpText += "Offsite Services required by " + operator.getName();
+					servicesHelpText += "Offsite Services is the only service type allowed by " + operator.getName() + "<br />";
 				}
 				if (operator.isMaterialSupplier()) {
 					requireMaterialSupplier = true;
-					servicesHelpText += "Material Supplier required by " + operator.getName();
+					servicesHelpText += "Material Supplier is the only service type allowed by " + operator.getName() + "<br />";
 				}
 				if (operator.isTransportationServices()) {
 					requireTransportation = true;
-					servicesHelpText += "Transportation Services required by " + operator.getName();
+					servicesHelpText += "Transportation Services is the only service type allowed by " + operator.getName() + "<br />";
 				}
 			}
 		}
