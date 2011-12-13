@@ -416,7 +416,7 @@
 	
 	REGISTRATION.language_dropdown = {
 		init: function () {
-			$('#Registration_request_locale').bind('change', this.events.change);
+			$('select[name=request_locale]').bind('change', this.events.change);
 		},
 		
 		events: {
