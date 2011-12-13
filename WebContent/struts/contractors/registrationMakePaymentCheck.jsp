@@ -15,6 +15,5 @@
 </s:if>
 
 <div class="make-payment">
-	<h1><s:text name="RegistrationMakePayment.Check" /></h1>
-	<div><p class="info">You selected check. Click <s:a method="changePaymentToCC">Change Payment To Credit Card</s:a> to change your payment method.</p></div>
+	<div><p><s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/> </p></div>
 </div>

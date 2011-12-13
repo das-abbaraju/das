@@ -222,7 +222,7 @@
 					</p>
 					
 					<p class="check-note">
-						<s:text name="RegistrationMakePayment.CheckNote" />
+						<s:text name="ContractorPaymentOptions.InvoiceEmail" />
 					</p>
 				</li>
 			</ul>
