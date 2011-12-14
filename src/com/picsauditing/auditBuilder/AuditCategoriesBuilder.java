@@ -40,6 +40,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerOperator = new HashMap<OperatorAccount, Set<AuditCategory>>();
 	
 	private AuditType auditType = null;
+	private OperatorAccount auditFor = null;
 
 	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
@@ -77,9 +78,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 
 		if (conAudit.getAuditType().getId() == AuditType.FIELD) { 
 			// field audits will only have caos that are manually specified (not by rules)
-			for (ContractorAuditOperator cao : conAudit.getOperators()) {
-				operators.put(cao.getOperator(), null);
-			}
+			operators.put(conAudit.getRequestingOpAccount(), null);
+			auditFor = conAudit.getRequestingOpAccount();
 		} else {
 			for (OperatorAccount operator : auditOperators) {
 				operators.put(operator, null);
@@ -176,7 +176,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				if (!caos.containsKey(governingBody))
 					caos.put(governingBody, new HashSet<OperatorAccount>());
 				// Add the operator (caop) to one and only one governingBody (cao)
-				caos.get(governingBody).add(operator);
+				if (auditType != null && auditType.getId() == AuditType.FIELD && auditFor != null) {
+					caos.get(governingBody).add(auditFor);
+					break;
+				} else {
+					caos.get(governingBody).add(operator);
+				}
 			}
 		}
 		return caos;
