@@ -96,7 +96,7 @@
 				<li>
 					<s:submit
 						method="nextStep" 
-						key="button.Save&Next"
+						key="button.SaveNext"
 						cssClass="btn success" 
 					/>
 				</li>
