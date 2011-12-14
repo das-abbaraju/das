@@ -172,9 +172,9 @@ INSERT into app_translation (msgKey, locale, msgValue) values ("Registration.PIC
 --
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Select", "en", "Select the client sites you want to work with:");
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Selected", "en", "Selected client sites:");
-INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Invitation", "en", "Get your invitation!");
-INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Requested", "en", "Add the client site that requested you.");
-INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.FindSites", "en", "Find others client sites");
+INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Invitation", "en", "Add the Client Site that asked you to join");
+INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.Requested", "en", "You can find this client site in an email or letter, which you may have received.");
+INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.FindSites", "en", "Add other Client Sites");
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.OtherSites", "en", "Select any other client sites that you are or will be working for.");
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.AddClientSites", "en", "Add Client Sites");
 --
@@ -272,6 +272,16 @@ INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorTrades
 UPDATE app_translation set msgValue='Does your company perform services that require the operation of equipment and/or machinery at your client(s) facility? ' where locale='en' and msgKey='AuditQuestion.2442.name';
 UPDATE audit_question set optionID = 170 where id = 2444;
 UPDATE audit_question set optionID = 169 where id = 7679;
+--
+INSERT into app_translation (msgKey, locale, msgValue) values ("button.Save&Next", "en", "Save & Next");
+INSERT into app_translation (msgKey, locale, msgValue) values ("button.SubmitPayment", "en", "Submit Payment");
+--
+INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.AnyOtherSites", "en", "Are there any other client sites you work for?");
+INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.SearchSuggest", "en", "Start by using the search above or using the suggest feature.");
+--
+UPDATE app_translation set msgValue="<p>The name of your company as listed on legal documents, trade certificates and licenses</p><br /><p>We'll search our database to see if your company has already been registered.</p><br /><p>If your formal name has a business number in its title, use your marketing name and list your business number as the DBA. </p>" where locale='en' and msgKey='ContractorAccount.name.fieldhelp';
+UPDATE app_translation set msgValue="Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.<br /><br /><h5>Example:</h5> 123 Main Street, Suite 100 " where locale='en' and msgKey='ContractorAccount.address.fieldhelp';
+UPDATE app_translation set msgValue="<p>Please type in your desired user name. <br />We'll let you know if it's available.</p><br /> <ul> <li>Must be at least 3 characters long</li> <li>Don't use spaces in your name</li> <li>Your email address is recommended because it's easy to remember.</li> </ul>" where locale='en' and msgKey='User.username.fieldhelp';
 -- --------------------------------------------------------
 -- Updating timezones and countries
 update app_translation set msgValue = 'Heure du Pacifique (US / Canada)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.US.Pacific' AND locale = 'fr';

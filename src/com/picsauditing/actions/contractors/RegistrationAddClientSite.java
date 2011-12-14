@@ -71,6 +71,8 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	public void ajaxAdd() throws Exception {
 		findContractor();
 		contractor.setRenew(true);
+		
+		checkServiceTypeRestrictions();
 
 		facilityChanger.setContractor(contractor);
 		facilityChanger.setPermissions(permissions);
@@ -85,6 +87,24 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		facilityChanger.setPermissions(permissions);
 		facilityChanger.setOperator(operator.getId());
 		facilityChanger.remove();
+	}
+	
+	public void checkServiceTypeRestrictions() {
+		int on = (operator.isOnsiteServices() ? 1 : 0);
+		int off = (operator.isOffsiteServices() ? 1 : 0);
+		int ms = (operator.isMaterialSupplier() ? 1 : 0);
+		int trx = (operator.isTransportationServices() ? 1 : 0);
+
+		if (on + off + ms + trx == 1) {
+			if (operator.isOnsiteServices())
+				contractor.setOnsiteServices(true);
+			if (operator.isOffsiteServices())
+				contractor.setOffsiteServices(true);
+			if (operator.isMaterialSupplier())
+				contractor.setMaterialSupplier(true);
+			if (operator.isTransportationServices())
+				contractor.setTransportationServices(true);
+		}
 	}
 
 	public String search() throws Exception {

@@ -44,8 +44,8 @@
 	
 	<div class="client-site-help" style="display: ${display_client_site_help}">
 		<section>
-			<h1>Are there any other client sites you work for?</h1>
-			<h2>Start by using the filter above or using the suggest feature.</h2>
+			<h1><s:text name="RegistrationAddClientSite.AnyOtherSites" /></h1>
+			<h2><s:text name="RegistrationAddClientSite.SearchSuggest" /></h2>
 			
 			<s:submit type="button" cssClass="btn info suggest-client-site" value="Suggest Client Sites" />
 		</section>

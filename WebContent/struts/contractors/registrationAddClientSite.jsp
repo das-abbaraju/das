@@ -36,7 +36,7 @@
 			<li class="actions">
 				<s:submit 
 					method="search" 
-					value="Search" 
+					key="button.Search" 
 					cssClass="btn info" 
 				/>
 			</li>
@@ -90,7 +90,7 @@
 				<li>
 					<s:submit
 						method="nextStep" 
-						value="Save & Next" 
+						key="button.Save&Next"
 						cssClass="btn success" 
 					/>
 				</li>

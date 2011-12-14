@@ -221,13 +221,13 @@
 				<s:submit 
 					method="previousStep"
 					type="button" 
-					value="Previous" 
+					key="button.Previous" 
 					cssClass="btn" 
 				/>
 				
 				<s:submit 
 					method="nextStep" 
-					value="Save & Next" 
+					key="button.Save&Next" 
 					cssClass="btn success" 
 				/>
 			</li>

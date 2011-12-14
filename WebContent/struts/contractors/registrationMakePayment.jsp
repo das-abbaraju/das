@@ -215,7 +215,7 @@
 				<li class="actions">
 					<s:submit 
 						method="completeRegistration" 
-						value="Submit Payment" 
+						key="button.SubmitPayment" 
 						cssClass="btn success" 
 					/>
 					
