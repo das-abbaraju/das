@@ -10,7 +10,15 @@ public enum OshaRateType implements Translatable {
 	Dart,
 	SeverityRate,
 	Cad7,
-	Neer;
+	Neer,
+	DaysAwayCases,
+	DaysAway,
+	JobTransfersCases,
+	JobTransferDays,
+	OtherRecordables,
+	LWCR,
+	Hours,
+	IFR;
 
 	public String getDescriptionKey() {
 		return getI18nKey("description");
