@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -23,6 +24,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -33,6 +35,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorFee;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
@@ -48,6 +51,8 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 public class BillingCalculatorSingle {
+	@Autowired
+	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
 	private InvoiceFeeDAO feeDAO;
 	@Autowired
@@ -263,10 +268,61 @@ public class BillingCalculatorSingle {
 				NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
 	}
 
+	/**
+	 * This can only be used on invoices which are in Unpaid status to prevent Syncing errors w/ Quickbooks.
+	 * 
+	 * @param toUpdate
+	 * @param updateWith
+	 * @param permissions
+	 */
+	public void updateInvoice(Invoice toUpdate, Invoice updateWith, Permissions permissions) throws Exception {
+		if (!toUpdate.getStatus().equals(TransactionStatus.Unpaid))
+			throw new Exception("Cannot update Invoice which is in " + toUpdate.getStatus() + " status.");
+
+		if (toUpdate.getPayments().size() > 0)
+			throw new Exception("Cannot update Invoices that already have payments applied.");
+
+		BigDecimal oldTotal = toUpdate.getTotalAmount();
+		Currency oldCurrency = toUpdate.getCurrency();
+
+		toUpdate.setAmountApplied(updateWith.getAmountApplied());
+		toUpdate.setAuditColumns(permissions);
+		toUpdate.setCurrency(updateWith.getCurrency());
+		toUpdate.setDueDate(updateWith.getDueDate());
+		Iterator<InvoiceItem> iterator = toUpdate.getItems().iterator();
+		while (iterator.hasNext()) {
+			InvoiceItem item = iterator.next();
+			iterator.remove();
+			invoiceItemDAO.remove(item);
+		}
+
+		toUpdate.getItems().addAll(updateWith.getItems());
+		updateWith.getItems().clear();
+		for (InvoiceItem item : toUpdate.getItems()) {
+			item.setInvoice(toUpdate);
+		}
+
+		toUpdate.setNotes(updateWith.getNotes());
+		toUpdate.setPaidDate(updateWith.getPaidDate());
+		toUpdate.setPoNumber(updateWith.getPoNumber());
+		toUpdate.setTotalAmount(updateWith.getTotalAmount());
+		toUpdate.setQbSync(true);
+
+		invoiceDAO.save(toUpdate);
+
+		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
+				+ " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
+				LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+	}
+
 	public Invoice createInvoice(ContractorAccount contractor) {
+		return createInvoice(contractor, contractor.getBillingStatus());
+	}
+
+	public Invoice createInvoice(ContractorAccount contractor, String billingStatus) {
 		calculateAnnualFees(contractor);
 
-		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor);
+		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus);
 
 		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2);
 		for (InvoiceItem item : invoiceItems)
@@ -290,7 +346,7 @@ public class BillingCalculatorSingle {
 		String notes = "";
 
 		// Calculate the due date for the invoice
-		if (contractor.getBillingStatus().equals("Activation")) {
+		if (billingStatus.equals("Activation")) {
 			invoice.setDueDate(new Date());
 			InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
 			if (contractor.hasReducedActivation(activation)) {
@@ -299,11 +355,11 @@ public class BillingCalculatorSingle {
 						+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
 						+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee() + ". ";
 			}
-		} else if (contractor.getBillingStatus().equals("Reactivation")) {
+		} else if (billingStatus.equals("Reactivation")) {
 			invoice.setDueDate(new Date());
-		} else if (contractor.getBillingStatus().equals("Upgrade")) {
+		} else if (billingStatus.equals("Upgrade")) {
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		} else if (contractor.getBillingStatus().startsWith("Renew")) {
+		} else if (billingStatus.startsWith("Renew")) {
 			invoice.setDueDate(contractor.getPaymentExpires());
 		}
 
@@ -361,9 +417,12 @@ public class BillingCalculatorSingle {
 	 */
 
 	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
+		return createInvoiceItems(contractor, contractor.getBillingStatus());
+	}
+
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, String billingStatus) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
-		String billingStatus = contractor.getBillingStatus();
 		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
 			return items;
 
@@ -371,7 +430,7 @@ public class BillingCalculatorSingle {
 
 		// Activations / Reactivations do not apply to bid only contractors
 		if (contractor.getAccountLevel().isFull()) {
-			if (contractor.getMembershipDate() == null) {
+			if (contractor.getMembershipDate() == null || billingStatus.equals("Activation")) {
 				// This contractor has never paid their activation fee, make
 				// them now this applies regardless if this is a new reg or
 				// renewal
@@ -466,9 +525,9 @@ public class BillingCalculatorSingle {
 								description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
 										+ upgrade.getCurrentAmount() + ". Prorated "
 										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
-							} else if(upgrade.getCurrentAmount().floatValue() == 0.0f) {
+							} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
 								description = "Upgrading to " + upgrade.getFeeClass() + ". Prorated "
-								+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
+										+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
 							}
 						} else
 							upgradeAmount = BigDecimal.ZERO.setScale(2);

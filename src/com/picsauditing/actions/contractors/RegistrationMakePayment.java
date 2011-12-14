@@ -18,6 +18,7 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
@@ -47,7 +48,7 @@ import com.picsauditing.util.log.PicsLogger;
 @SuppressWarnings("serial")
 public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
-	private InvoiceFeeDAO invoiceDAO;
+	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
@@ -83,6 +84,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private CreditCard cc;
 	private String ccName;
 
+	private Invoice invoice;
 	private boolean processPayment = false;
 	private InvoiceFee importFee;
 
@@ -107,11 +109,15 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if (hasActionErrors())
 			return SUCCESS;
 
-		if(contractor.getPaymentMethod().equals(PaymentMethod.Check))
+		if (contractor.getPaymentMethod().equals(PaymentMethod.Check))
 			return "check";
-		
-		if (processPayment)
+
+		if (processPayment){
 			completeRegistration();
+			return SUCCESS;
+		}
+
+		generateOrUpdateInvoiceIfNecessary();
 
 		return SUCCESS;
 	}
@@ -154,9 +160,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 					paymentService.setUsProcessorID(appPropertyDAO.find("brainTree.processor_id.us").getValue());
 					paymentService.setUserName(appPropertyDAO.find("brainTree.username").getValue());
 					paymentService.setPassword(appPropertyDAO.find("brainTree.password").getValue());
-
-					voidUnpaidInvoices();
-					invoiceDAO.save(invoice);
 
 					Payment payment = null;
 					try {
@@ -254,13 +257,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			permissions.setAccountPerms(getUser());
 		}
 
-		if("Check".equals(ccName) && contractor.getNewMembershipAmount().intValue() > 500){
+		if ("Check".equals(ccName) && contractor.getNewMembershipAmount().intValue() > 500) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
 			accountDao.save(contractor);
 			return "check";
 		}
-			
-		redirect("ContractorTrades.action?id=" + contractor.getId());
+
+		redirect(getRegistrationStep().getUrl());
 		return BLANK;
 	}
 
@@ -270,29 +273,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		note.setCanContractorView(true);
 		note.setViewableById(Account.PicsID);
 		noteDAO.save(note);
-	}
-
-	/**
-	 * Making sure no old unpaid invoices are on the account. The current invoice should be the active one and include
-	 * all fees.
-	 * 
-	 * @throws Exception
-	 */
-	private void voidUnpaidInvoices() throws Exception {
-		for (Invoice inv : contractor.getSortedInvoices()) {
-			if (inv.getStatus().isUnpaid()) {
-				inv.setStatus(TransactionStatus.Void);
-			}
-		}
-
-		accountDao.save(contractor);
-	}
-
-	public Invoice getInvoice() throws Exception {
-		findContractor();
-		voidUnpaidInvoices();
-		billingService.calculateAnnualFees(contractor);
-		return billingService.createInvoice(contractor);
 	}
 
 	public boolean isComplete() {
@@ -635,12 +615,16 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	public String removeImportFee() throws Exception {
 		findContractor();
 		billingService.removeImportPQF(contractor);
+		generateOrUpdateInvoiceIfNecessary();
+		loadCC();
 		return SUCCESS;
 	}
 
 	public String addImportFee() throws Exception {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
+		generateOrUpdateInvoiceIfNecessary();
+		loadCC();
 		return SUCCESS;
 	}
 
@@ -655,5 +639,31 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String getCcName() {
 		return ccName;
+	}
+
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+
+	public Invoice getInvoice() throws Exception {
+		if (invoice == null) {
+			findContractor();
+			invoice = contractor.findLastUnpaidInvoice();
+		}
+
+		return invoice;
+	}
+
+	private void generateOrUpdateInvoiceIfNecessary() throws Exception {
+		findContractor();
+		invoice = contractor.findLastUnpaidInvoice();
+		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
+		if (invoice == null) {
+			invoice = newInvoice;
+			contractor.getInvoices().add(newInvoice);
+			invoiceDAO.save(newInvoice);
+		} else if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
+			billingService.updateInvoice(invoice, newInvoice, permissions);
+		}
 	}
 }

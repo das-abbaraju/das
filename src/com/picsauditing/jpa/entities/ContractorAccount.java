@@ -1480,11 +1480,12 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public boolean hasWiaCriteria(OshaType ot) {
 		for (FlagCriteriaContractor fcc : flagCriteria) {
-			if (ot.equals(fcc.getCriteria().getOshaType()) && OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
+			if (ot.equals(fcc.getCriteria().getOshaType())
+					&& OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType()))
 				return true;
 		}
 		return false;
@@ -1498,5 +1499,20 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * @param contractor
+	 * @return Null if no unpaid invoices exist
+	 */
+	@Transient
+	public Invoice findLastUnpaidInvoice() {
+		for (Invoice invoice : getSortedInvoices()) {
+			if (invoice.getStatus().isUnpaid()) {
+				return invoice;
+			}
+		}
+
+		return null;
 	}
 }
