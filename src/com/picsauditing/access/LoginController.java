@@ -351,10 +351,7 @@ public class LoginController extends PicsActionSupport {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
-			if (step.equals(ContractorRegistrationStep.Done)&& cAccount.getTrades().size() == 0)
-				url = "ContractorTrades.action?id=" + cAccount.getId();
-			else
-				url = step.getUrl();
+			url = step.getUrl();
 
 		} else
 			url = PicsMenu.getHomePage(menu, permissions);
