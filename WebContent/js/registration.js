@@ -172,6 +172,10 @@
 							var index = $.inArray(element_name, tmp_names);
 							var content = element.closest('li');
 							
+							if ($.browser.msie) {
+								var content = content.clone();
+							}
+							
 							// update element to have remove instead of add
 							content.find('.add').replaceWith($('<span class="remove btn error">- ' + translate('JS.RegistrationAddClientSite.RemoveSite') + '</span>'));
 							
@@ -183,6 +187,10 @@
 							}
 							
 							content.show();
+							
+							if ($.browser.msie) {
+								$('.remove', content).bind('click', REGISTRATION.client_site_manage.events.remove);
+							}
 							
 							// re-enable client site add
 							element.removeClass('disable');
@@ -257,6 +265,10 @@
 							var index = $.inArray(element_name, tmp_names);
 							var content = element.closest('li');
 							
+							if ($.browser.msie) {
+								var content = content.clone();
+							}
+							
 							// update element to have remove instead of add
 							content.find('.remove').replaceWith($('<span class="add btn success">+ ' + translate('JS.RegistrationAddClientSite.AddSite') + '</span>'));
 							
@@ -268,6 +280,10 @@
 							}
 							
 							content.show();
+							
+							if ($.browser.msie) {
+								$('.add', content).bind('click', REGISTRATION.client_site_manage.events.add);
+							}
 							
 							// re-enable client site remove
 							element.removeClass('disable');

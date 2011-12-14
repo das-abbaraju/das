@@ -5,8 +5,8 @@
 </#if>
 
 <@s.if test="hasKey('${labelKey}') && '${labelKey}' != ''">
-	<label for="${parameters.id?html}"><@s.text name="${labelKey}"/>:</label>
+	<label for="${parameters.id?html}"><@s.text name="${labelKey}"/></label>
 </@s.if>
 <@s.elseif test="'${labelKey}' != ''">
-	<label for="${parameters.id?html}">${labelKey}:</label>
+	<label for="${parameters.id?html}">${labelKey}</label>
 </@s.elseif>
