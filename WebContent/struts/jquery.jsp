@@ -12,8 +12,6 @@
 <link rel="stylesheet" type="text/css" href="js/jquery/facebox/facebox.css" media="screen" />
 <link type="text/css" rel="stylesheet" href="js/jquery/cluetip/jquery.cluetip.css" media="screen">
 
-<script type="text/javascript" src="<%= request.isSecure() ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
-
 <% if (!TranslationActionSupport.getLocaleStatic().getLanguage().equals("en")) { %>
 <script type="text/javascript" src="js/jquery/jquery-ui/i18n/jquery.ui.datepicker-<%= TranslationActionSupport.getLocaleStatic().getLanguage() %>.js"></script>
 <% } %>
