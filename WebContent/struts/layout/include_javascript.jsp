@@ -18,6 +18,7 @@
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="TranslateJS.action"></script>
 
 <!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js"></script><![endif]-->
 <!--[if IE 6]><script>$('body').supersleight({shim: 'images/x.gif'});</script><![endif]-->

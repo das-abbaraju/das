@@ -1,24 +1,24 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="sitemesh-decorator" prefix="decorator"%>
-<%@ page import="java.net.InetAddress"%>
-<%@ page import="java.net.URLEncoder"%>
-<%@ page import="java.sql.Timestamp"%>
-<%@ page import="java.sql.SQLException"%>
-<%@ page import="java.util.Date"%>
-<%@ page import="java.util.Locale"%>
-<%@ page import="java.util.Set"%>
-<%@ page import="com.picsauditing.access.MenuComponent"%>
-<%@ page import="com.picsauditing.access.OpPerms"%>
-<%@ page import="com.picsauditing.access.PicsMenu"%>
-<%@ page import="com.picsauditing.access.Permissions"%>
-<%@ page import="com.picsauditing.dao.AppPropertyDAO"%>
-<%@ page import="com.picsauditing.jpa.entities.AppProperty"%>
-<%@ page import="com.picsauditing.PICS.I18nCache"%>
-<%@ page import="com.picsauditing.util.SpringUtils"%>
-<%@ page import="com.picsauditing.util.Strings"%>
-<%@ page import="com.picsauditing.util.URLUtils"%>
-<%@ page import="com.picsauditing.search.Database"%>
-<%@ page import="com.picsauditing.actions.TranslationActionSupport"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="sitemesh-decorator" prefix="decorator" %>
+<%@ page import="java.net.InetAddress" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.sql.Timestamp" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="com.picsauditing.access.MenuComponent" %>
+<%@ page import="com.picsauditing.access.OpPerms" %>
+<%@ page import="com.picsauditing.access.PicsMenu" %>
+<%@ page import="com.picsauditing.access.Permissions" %>
+<%@ page import="com.picsauditing.dao.AppPropertyDAO" %>
+<%@ page import="com.picsauditing.jpa.entities.AppProperty" %>
+<%@ page import="com.picsauditing.PICS.I18nCache" %>
+<%@ page import="com.picsauditing.util.SpringUtils" %>
+<%@ page import="com.picsauditing.util.Strings" %>
+<%@ page import="com.picsauditing.util.URLUtils" %>
+<%@ page import="com.picsauditing.search.Database" %>
+<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 
@@ -78,11 +78,11 @@
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=version%>" />
 		
-		<script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+		<jsp:include page="/struts/layout/include_javascript.jsp" />
+		
 		<script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
 		<script type="text/javascript" src="js/chrome.js"></script>
 		<script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
-		<script type="text/javascript" src="TranslateJS.action"></script>
 		<script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
 		<script type="text/javascript" src="js/jquery/jquery.form.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
@@ -91,18 +91,6 @@
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
 		<script type="text/javascript" src="js/main_search.js"></script>
-		
-		<script type="text/javascript" src="js/ajax.js"></script>
-		<script type="text/javascript" src="js/bootstrap/bootstrap-twipsy.js"></script>
-		<script type="text/javascript" src="js/bootstrap/bootstrap-popover.js"></script>
-		
-		<script type="text/javascript" src="js/main.js"></script>
-		<script type="text/javascript" src="js/audit.js"></script>
-		<script type="text/javascript" src="js/registration.js"></script>
-		<script type="text/javascript" src="js/trade.js"></script>
-		
-		<%-- struts utils --%>
-		<script type="text/javascript" src="js/utils.js"></script>
 		
 		<script type="text/javascript">
 			$(function() {

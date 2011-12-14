@@ -173,7 +173,7 @@
 							var content = element.closest('li');
 							
 							// update element to have remove instead of add
-							content.find('.add').replaceWith($('<span class="remove btn error">- Remove Site</span>'));
+							content.find('.add').replaceWith($('<span class="remove btn error">- ' + translate('JS.RegistrationAddClientSite.RemoveSite') + '</span>'));
 							
 							// append it to dom
 							if (list_elements[index] != undefined) {
@@ -258,7 +258,7 @@
 							var content = element.closest('li');
 							
 							// update element to have remove instead of add
-							content.find('.remove').replaceWith($('<span class="add btn success">+ Add Site</span>'));
+							content.find('.remove').replaceWith($('<span class="add btn success">+ ' + translate('JS.RegistrationAddClientSite.AddSite') + '</span>'));
 							
 							// append it to dom
 							if (list_elements[index] != undefined) {
