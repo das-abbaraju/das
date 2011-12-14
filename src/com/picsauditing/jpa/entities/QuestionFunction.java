@@ -232,7 +232,9 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("employees"))
 					|| Strings.isEmpty(params.get("nonMajorInjuries"))
+					|| "Audit.missingParameter".equals((params.get("nonMajorInjuries")))
 					|| Strings.isEmpty(params.get("majorInjuries"))
+					|| "Audit.missingParameter".equals((params.get("majorInjuries")))
 					|| Strings.isEmpty(params.get("fatalities")))
 				return "Audit.missingParameter";
 			
@@ -337,7 +339,7 @@ public enum QuestionFunction {
 	// UK HSE standard normalizer.
 	private static final BigDecimal UK_NORMALIZER = new BigDecimal(100000);
 
-	public abstract Object calculate(FunctionInput input);
+	public abstract Object calculate(FunctionInput input)  throws NumberFormatException;;
 
 	public static class FunctionInput {
 		private final Map<String, String> params;
