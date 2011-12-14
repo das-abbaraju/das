@@ -217,7 +217,7 @@ footer .footer-menu a
 	line-height: 50px;
 	margin: 0px 0px 20px -33px;
 	text-shadow: #a85008 2px 2px 5px;
-	width: 350px;
+	width: 450px;
 }
 
 .registration-form h1 span
@@ -275,7 +275,7 @@ footer .footer-menu a
 {
 	font-size: 12px;
 	line-height: 18px;
-	padding: 15px 0px;
+	padding: 15px 15px 0px;
 }
 
 .registration-form .actions a
