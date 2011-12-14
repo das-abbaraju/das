@@ -11,11 +11,8 @@ import com.picsauditing.jpa.entities.Country;
 public class CountryDAO extends PicsDAO {
 
 	public List<Country> findAll() {
-		Query query = em.createQuery("FROM Country t ORDER BY t.english");
+		Query query = em.createQuery("FROM Country t");
 		List<Country> list = new ArrayList<Country>();
-		list.add(em.find(Country.class, "US"));
-		list.add(em.find(Country.class, "CA"));
-		list.add(em.find(Country.class, "GB"));
 
 		List<Country> results = query.getResultList();
 		list.addAll(results);

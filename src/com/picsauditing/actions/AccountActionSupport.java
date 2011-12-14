@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
@@ -90,8 +93,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	 * Get a list of notes up to the limit, using the given where clause
 	 * 
 	 * @param where
-	 *            should be in the format of "AND field=1", can be an empty
-	 *            string
+	 *            should be in the format of "AND field=1", can be an empty string
 	 * @param limit
 	 *            ie 25
 	 * @return
@@ -164,7 +166,18 @@ public class AccountActionSupport extends PicsActionSupport {
 	}
 
 	public List<Country> getCountryList() {
-		return countryDAO.findAll();
+		List<Country> countryList = countryDAO.findAll();
+		Collections.sort(countryList, new Comparator<Country>() {
+			@Override
+			public int compare(Country o1, Country o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		countryList.add(0,countryDAO.find("GB"));
+		countryList.add(0,countryDAO.find("CA"));
+		countryList.add(0,countryDAO.find("US"));
+		
+		return countryList;
 	}
 
 	public List<State> getStateList() {
