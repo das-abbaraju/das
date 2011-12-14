@@ -49,6 +49,7 @@
 		<section>
 			<div class="client-site-left">
 				<label><s:text name="RegistrationAddClientSite.Select" /></label>
+				<a class="show-all-client-site" href="javascript:;"><s:text name="RegistrationAddClientSite.ShowAll" /></a>
 				
 				<div class="client-site-list-container">
 					<div class="arrow"></div>

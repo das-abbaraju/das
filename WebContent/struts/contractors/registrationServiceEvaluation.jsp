@@ -39,44 +39,68 @@
 								name="conTypes" 
 								id="onSite"
 								fieldValue="Onsite"
-								label="ContractorAccount.onsiteServices.withDescription" 
+								label="ContractorAccount.onsiteServices" 
 								value="requireOnsite ? true : contractor.onsiteServices" 
 								cssClass="checkbox"
 								disabled="requireOnsite" 
 							/>
+							
+							<div class="services-performed-description">
+								<p>
+									<s:text name="ContractorAccount.onsiteServices.withDescription" />
+								</p>
+							</div>
 						</li>
 						<li>
 							<s:checkbox 
 								name="conTypes" 
 								id="offSite"
 								fieldValue="Offsite"
-								label="ContractorAccount.offsiteServices.withDescription" 
+								label="ContractorAccount.offsiteServices" 
 								value="requireOffsite ? true : contractor.offsiteServices"
 								cssClass="checkbox"
 								disabled="requireOffsite" 
 							/>
+							
+							<div class="services-performed-description">
+								<p>
+									<s:text name="ContractorAccount.offsiteServices.withDescription" />
+								</p>
+							</div>
 						</li>
 						<li>
 							<s:checkbox 
 								name="conTypes" 
 								id="materialSupplier"
 								fieldValue="Supplier" 
-								label="ContractorAccount.materialSupplier.withDescription"
+								label="ContractorAccount.materialSupplier"
 								value="requireMaterialSupplier ? true : contractor.materialSupplier" 
 								cssClass="checkbox"
 								disabled="requireMaterialSupplier" 
 							/>
+							
+							<div class="services-performed-description">
+								<p>
+									<s:text name="ContractorAccount.materialSupplier.withDescription" />
+								</p>
+							</div>
 						</li>
 						<li>
 							<s:checkbox 
 								name="conTypes" 
 								id="transportation"
 								fieldValue="Transportation"
-								label="ContractorAccount.transportationServices.withDescription" 
+								label="ContractorAccount.transportationServices" 
 								value="requireTransportation ? true : contractor.transportationServices"
 								cssClass="checkbox"
 								disabled="requireTransportation" 
 							/>
+							
+							<div class="services-performed-description">
+								<p>
+									<s:text name="ContractorAccount.transportationServices.withDescription" />
+								</p>
+							</div>
 						</li>
 					</ul>
 				</li>

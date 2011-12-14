@@ -751,6 +751,15 @@ footer .footer-menu a
 	width: auto;
 }
 
+.client-site .show-all-client-site
+{
+	font-size: 13px;
+	line-height: 25px;
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+
 .client-site .client-site-left .client-site-list-container,
 .client-site .client-site-right .client-site-list-container
 {
@@ -967,6 +976,14 @@ footer .footer-menu a
 	width: 570px;
 }
 
+.services-performed-description p
+{
+	color: #BB621A;
+	font-size: 12px;
+	line-height: 16px;
+	margin: 0px 0px 15px;
+}
+
 .service-evaluation-form ul.checkbox-list,
 .service-evaluation-form ul.radio
 {
@@ -983,7 +1000,7 @@ footer .footer-menu a
 .service-evaluation-form ul.checkbox-list label,
 .service-evaluation-form ul.radio label
 {
-	margin: 0px 0px 10px;
+	margin: 0px 0px 5px;
 	width: 510px;
 }
 
