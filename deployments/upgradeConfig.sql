@@ -274,6 +274,7 @@ UPDATE audit_question set optionID = 170 where id = 2444;
 UPDATE audit_question set optionID = 169 where id = 7679;
 --
 INSERT into app_translation (msgKey, locale, msgValue) values ("button.Save&Next", "en", "Save & Next");
+INSERT into app_translation (msgKey, locale, msgValue) values ("button.SaveNext", "en", "Save & Next");
 INSERT into app_translation (msgKey, locale, msgValue) values ("button.SubmitPayment", "en", "Submit Payment");
 --
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.AnyOtherSites", "en", "Are there any other client sites you work for?");
@@ -282,6 +283,7 @@ INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddC
 UPDATE app_translation set msgValue="<p>The name of your company as listed on legal documents, trade certificates and licenses</p><br /><p>We'll search our database to see if your company has already been registered.</p><br /><p>If your formal name has a business number in its title, use your marketing name and list your business number as the DBA. </p>" where locale='en' and msgKey='ContractorAccount.name.fieldhelp';
 UPDATE app_translation set msgValue="Your company's primary address or headquarters. This should be located in the country you selected in Company Details above.<br /><br /><h5>Example:</h5> 123 Main Street, Suite 100 " where locale='en' and msgKey='ContractorAccount.address.fieldhelp';
 UPDATE app_translation set msgValue="<p>Please type in your desired user name. <br />We'll let you know if it's available.</p><br /> <ul> <li>Must be at least 3 characters long</li> <li>Don't use spaces in your name</li> <li>Your email address is recommended because it's easy to remember.</li> </ul>" where locale='en' and msgKey='User.username.fieldhelp';
+UPDATE app_translation set msgValue="Les réponses que vous avez fournies indiquent les niveaux de risque plus élevé que les évaluations que vous avez sélectionné. Nous recommandons d'augmenter votre {0}. Vous pouvez toujours continuer avec le processus d'inscription. <br /> S'il vous plaît contactez PICS avec toutes les questions." where msgKey = "ContractorRegistrationServices.message.RiskLevels" and locale='fr';
 -- --------------------------------------------------------
 -- Updating timezones and countries
 update app_translation set msgValue = 'Heure du Pacifique (US / Canada)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.US.Pacific' AND locale = 'fr';

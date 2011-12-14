@@ -583,7 +583,7 @@
 					
 					if ($.inArray(element_id, ['onSite', 'offSite']) != -1 && is_checked) {
 						service_safety_evaluation_display = true;
-					} else if($.inArray(element_id, ['materialSupplier']) != -1 && is_checked) {
+					} else if($.inArray(element_id, ['materialSupplier', 'transportation']) != -1 && is_checked) {
 						product_safety_evaluation_display = true;
 					}
 				});
