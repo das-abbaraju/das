@@ -94,11 +94,16 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 			// if empty perform default
 			searchResults = loadSearchResults();
 		} else {
-			SearchEngine searchEngine = new SearchEngine(permissions);
-			List<String> terms = searchEngine.buildTerm(searchValue, true, true);
-			String select = searchEngine.buildNativeOperatorSearch(permissions, terms);
+			// * == search for all
+			if (searchValue.equals("*")) {
+				searchResults = operatorDao.findWhere(false, null, permissions);
+			} else {
+				SearchEngine searchEngine = new SearchEngine(permissions);
+				List<String> terms = searchEngine.buildTerm(searchValue, true, true);
+				String select = searchEngine.buildNativeOperatorSearch(permissions, terms);
 
-			searchResults = operatorDao.nativeClientSiteSearch(select);
+				searchResults = operatorDao.nativeClientSiteSearch(select);
+			}
 		}
 		searchResults.removeAll(contractor.getOperatorAccounts());
 
