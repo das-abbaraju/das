@@ -1,3 +1,5 @@
+header, footer, section { display: block; }
+
 #Registration-page,
 #RegistrationAddClientSite-page,
 #RegistrationServiceEvaluation-page,

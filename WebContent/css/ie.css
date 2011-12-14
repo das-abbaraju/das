@@ -78,13 +78,6 @@ ul.radio label
 
 /* REGISTRATION */
 
-header,
-section,
-footer
-{
-	display: block;
-}
-
 .client-site-filter ul
 {
 	width: 600px;
