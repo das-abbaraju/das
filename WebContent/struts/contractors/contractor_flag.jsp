@@ -268,7 +268,7 @@ fieldset.form {
 					</div>
 					<div style="margin-left: 10px;">
 						<s:if
-							test="co.forceOverallFlag != null || getFlagDataOverrides().size() > 0">
+							test="co.forceOverallFlag != null || getFlagDataOverrides(co.operatorAccount).size() > 0">
 							<s:form
 								cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 								<s:if test="co.forceOverallFlag != null">
@@ -296,7 +296,7 @@ fieldset.form {
 									</s:text>
 								</s:if>
 
-								<s:if test="getFlagDataOverrides().size() > 0">
+								<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0">
 									<s:iterator id="key" value="flagDataMap.keySet()">
 										<s:iterator id="data" value="flagDataMap.get(#key)">
 											<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
