@@ -694,17 +694,17 @@ footer .footer-menu a
 	height: 100px;
 	overflow: hidden;
 	margin: 0px 0px 20px;
+	text-align: center;
 }
 
 .client-site-filter ul
 {
 	margin: 35px auto 0px;
-	width: 590px;
 }
 
 .client-site-filter li
 {
-	float: left;	
+	display: inline;	
 }
 
 .client-site-filter .search
@@ -899,7 +899,7 @@ footer .footer-menu a
 .client-site-get-started
 {
 	float: right;
-	margin-top: 65px;
+	margin-top: 80px;
 	padding: 20px;
 	width: 430px;
 }
@@ -914,6 +914,7 @@ footer .footer-menu a
 {
 	color: #A94C0F;
 	font-size: 26px;
+	line-height: 26px;
 	margin: 0px;
 }
 
@@ -921,6 +922,13 @@ footer .footer-menu a
 {
 	color: #878787;
 	font-size: 14px;
+	margin: 10px 0px 20px;
+}
+
+.client-site-get-started .information-container
+{
+	float: left;
+	width: 345px;
 }
 
 .client-site-get-started img

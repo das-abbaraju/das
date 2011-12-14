@@ -73,14 +73,20 @@
 			<div class="client-site-get-started" style="display: ${display_client_site_get_started}">
 				<section>
 					<img src="images/iconset_project_email.png" />
-					<h1><s:text name="RegistrationAddClientSite.Invitation" /></h1>
-					<h2><s:text name="RegistrationAddClientSite.Requested" /></h2>
+					
+					<div class="information-container">
+						<h1><s:text name="RegistrationAddClientSite.Invitation" /></h1>
+						<h2><s:text name="RegistrationAddClientSite.Requested" /></h2>
+					</div>
 				</section>
 				
 				<section>
 					<img src="images/iconset_project_search.png" class="search"/>
-					<h1><s:text name="RegistrationAddClientSite.FindSites" /></h1>
-					<h2><s:text name="RegistrationAddClientSite.OtherSites" /></h2>
+					
+					<div class="information-container">
+						<h1><s:text name="RegistrationAddClientSite.FindSites" /></h1>
+						<h2><s:text name="RegistrationAddClientSite.OtherSites" /></h2>
+					</div>
 				</section>
 			</div>
 			

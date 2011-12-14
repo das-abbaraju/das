@@ -32,6 +32,8 @@
 				
 				// suggest button in selected client sites
 				$('.client-site-right').delegate('.suggest-client-site', 'click', this.events.suggest);
+				
+				$('.show-all-client-site').bind('click', this.events.show_all);
 			}
 		},
 		
@@ -61,6 +63,21 @@
 						
 						// re-enable form submission
 						form.removeClass('disable');
+					}
+				});
+			},
+			
+			show_all: function (event) {
+				var form = $('client-site-filter');
+				
+				// send request to search method
+				var data = 'searchValue=*&method%3Asearch="Search"';
+				
+				AJAX.request({
+					url: form.attr('action'),
+					data: data,
+					success: function (data, textStatus, XMLHttpRequest) {
+						$('.client-site-left .client-site-list').replaceWith(data);
 					}
 				});
 			},
