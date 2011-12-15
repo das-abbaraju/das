@@ -285,16 +285,17 @@ public class BillingCalculatorSingle {
 		BigDecimal oldTotal = toUpdate.getTotalAmount();
 		Currency oldCurrency = toUpdate.getCurrency();
 
-		toUpdate.setAmountApplied(updateWith.getAmountApplied());
-		toUpdate.setAuditColumns(permissions);
-		toUpdate.setCurrency(updateWith.getCurrency());
-		toUpdate.setDueDate(updateWith.getDueDate());
 		Iterator<InvoiceItem> iterator = toUpdate.getItems().iterator();
 		while (iterator.hasNext()) {
 			InvoiceItem item = iterator.next();
 			iterator.remove();
 			invoiceItemDAO.remove(item);
 		}
+
+		toUpdate.setAmountApplied(updateWith.getAmountApplied());
+		toUpdate.setAuditColumns(permissions);
+		toUpdate.setCurrency(updateWith.getCurrency());
+		toUpdate.setDueDate(updateWith.getDueDate());
 
 		toUpdate.getItems().addAll(updateWith.getItems());
 		updateWith.getItems().clear();
