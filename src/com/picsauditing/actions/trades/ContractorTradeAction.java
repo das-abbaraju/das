@@ -314,6 +314,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 		contractor.setTradesUpdated(new Date());
 		tradeDAO.save(contractor);
 
+		this.redirect("ContractorTrades.action?id=" + contractor.getId());
 		return SUCCESS;
 	}
 
