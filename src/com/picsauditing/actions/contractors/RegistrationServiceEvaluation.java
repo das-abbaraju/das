@@ -13,8 +13,11 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.BillingCalculatorSingle;
+import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -23,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -36,7 +40,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
 	private AuditQuestionDAO questionDao = null;
+	@Autowired
+	private BillingCalculatorSingle billingService;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 	private Map<AuditCategory, AuditCatData> categories = new HashMap<AuditCategory, AuditCatData>();
@@ -295,8 +303,26 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			accountDao.save(contractor);
 		}
 		
+		setListOnly();
+		contractor.syncBalance();
+		billingService.calculateAnnualFees(contractor);
+		contractorAccountDAO.save(contractor);
+		
 		redirect(getRegistrationStep().getUrl());
 		return BLANK;
+	}
+	
+	private void setListOnly() {
+		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
+				&& contractor.getAccountLevel().isFull()) {
+			boolean canBeListed = true;
+			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
+				if (!conOp.getOperatorAccount().isAcceptsList())
+					canBeListed = false;
+			}
+			if (canBeListed)
+				contractor.setAccountLevel(AccountLevel.ListOnly);
+		}
 	}
 
 	public boolean validateAnswers() {
