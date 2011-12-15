@@ -157,8 +157,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		contractor.setSoleProprietor(isSoleProprietor);
 		if (isBidOnly)
 			contractor.setAccountLevel(AccountLevel.BidOnly);
-		else
-			contractor.setAccountLevel(AccountLevel.Full);
+//		else
+//			contractor.setAccountLevel(AccountLevel.Full);
 		
 		setRequiredTypes();
 
