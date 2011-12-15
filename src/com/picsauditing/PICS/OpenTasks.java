@@ -41,6 +41,15 @@ public class OpenTasks extends TranslationActionSupport {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		// check if trades need review
+		if (contractor.isNeedsTradesUpdated()) {
+			openTasks.add(getTextParameterized("ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
+		}
+		if (contractor.getTrades().size() == 0) {
+			openTasks.add(getTextParameterized("ContractorWidget.message.NoTradesSelected", contractor.getId()));
+		}
+		
 		if (!contractor.isAgreementInEffect()
 				&& (permissions.hasPermission(OpPerms.ContractorBilling)
 						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
@@ -269,14 +278,6 @@ public class OpenTasks extends TranslationActionSupport {
 						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
-		}
-
-		// check if trades need review
-		if (contractor.isNeedsTradesUpdated()) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
-		}
-		if (contractor.getTrades().size() == 0) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.NoTradesSelected", contractor.getId()));
 		}
 
 		return openTasks;

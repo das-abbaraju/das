@@ -31,7 +31,7 @@
 	<s:form id="RegistrationAddClientSiteFilter" cssClass="client-site-filter" method="GET" theme="pics">
 		<ul>
 			<li class="search">
-				<s:textfield name="searchValue" label="Enter the name or location of your client site" autofocus="autofocus" />
+				<s:textfield name="searchValue" label="%{getText('RegistrationAddClientSite.SearchInstructions')}" autofocus="autofocus" />
 			</li>
 			<li class="actions">
 				<s:submit 

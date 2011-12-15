@@ -109,7 +109,7 @@
 					<s:radio 
 						name="contractor.soleProprietor" 
 						value="false" 
-						list="#{true:'Yes', false:'No'}"
+						list="#{true:getText('YesNo.Yes'), false:getText('YesNo.No')}"
 						cssClass="inline"
 					/>
 				</li>
@@ -120,7 +120,7 @@
 						<s:radio 
 							name="contractor.accountLevel" 
 							value="contractor.accountLevel" 
-							list="#{@com.picsauditing.jpa.entities.AccountLevel@BidOnly:'Yes', @com.picsauditing.jpa.entities.AccountLevel@Full:'No'}"
+							list="#{@com.picsauditing.jpa.entities.AccountLevel@BidOnly:getText('YesNo.Yes'), @com.picsauditing.jpa.entities.AccountLevel@Full:getText('YesNo.No')}"
 							cssClass="inline" 
 						/>
 					</li>
