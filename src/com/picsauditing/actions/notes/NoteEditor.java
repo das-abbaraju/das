@@ -52,7 +52,8 @@ public class NoteEditor extends AccountActionSupport {
 	public void initialize() throws Exception {
 		if (note != null) {
 			account = note.getAccount();
-			viewableBy = note.getViewableBy().getId();
+			if (note.getViewableBy() != null)
+				viewableBy = note.getViewableBy().getId();
 			if (viewableBy > 2) {
 				viewableByOther = viewableBy;
 				viewableBy = 3;
