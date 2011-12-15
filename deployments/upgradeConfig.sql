@@ -137,6 +137,7 @@ update app_translation set msgValue = 'Heure d''été d''Anadyr (Asie)', updatedBy
 update app_translation set msgValue = 'Heure normale de Chatham (Pacifique)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.Pacific.Chatham' AND locale = 'fr';
 update app_translation set msgValue = 'Heure de Tonga (Tongatapu)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.Pacific.Tongatapu' AND locale = 'fr';
 update app_translation set msgValue = 'Heure de la Ligne Est (Kiritimati)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.Pacific.Kiritimati' AND locale = 'fr';
+
 update app_translation set msgValue = 'Pays', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorAccount.country.isoCode' and locale = 'fr';
 update app_translation set msgValue = '<p> Le siège social de votre compagnie. Cela confirmera la devise à utiliser pour votre compte PICS. </p>', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorAccount.country.isoCode.fieldhelp' and locale = 'fr';
 update app_translation set msgValue = 'Pays de l''entreprise.<br /><b>Ce champ est obligatoire.</b>', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorRegistrationRequest.country.fieldhelp' and locale = 'fr';
@@ -389,6 +390,7 @@ update app_translation set msgValue = 'Afrique du Sud', updatedBy = 24143, updat
 update app_translation set msgValue = 'Zambie', updatedBy = 24143, updateDate = NOW() where msgKey = 'Country.ZM' and locale = 'fr';
 update app_translation set msgValue = 'Zimbabwe', updatedBy = 24143, updateDate = NOW() where msgKey = 'Country.ZW' and locale = 'fr';
 update app_translation set msgValue = '<p>Veuillez sélectionner le pays dans lequel l''opérateur est situé. Cela détermine la configuration par pays héritée de PICS.</p>', updatedBy = 24143, updateDate = NOW() where msgKey = 'OperatorAccount.country.fieldhelp' and locale = 'fr';
+
 update app_translation set msgValue = 'Créer un compte', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorRegistration.button.CreateAccount' and locale = 'fr';
 update app_translation set msgValue = 'Informations sur la compagnie', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorRegistration.CompanyDetails.heading' and locale = 'fr';
 update app_translation set msgValue = 'Identification de l''entreprise', updatedBy = 24143, updateDate = NOW() where msgKey = 'ContractorRegistration.CompanyIdentification.heading' and locale = 'fr';
@@ -410,6 +412,7 @@ update app_translation set msgValue = 'vérification de la disponibilité du numér
 update app_translation set msgValue = 'vérification de la disponibilité du nom d''utilisateur ...', updatedBy = 24143, updateDate = NOW() where msgKey = 'JS.Registration.CheckingUsername' and locale = 'fr';
 update app_translation set msgValue = 'Enregistrement de Entrepreneur', updatedBy = 24143, updateDate = NOW() where msgKey = 'Subscription.ContractorRegistration.description' and locale = 'fr';
 update app_translation set msgValue = 'Ce courriel inclut une liste d''entrepreneurs qui se sont récemment enregistrés sur PICS et liés à votre compte. Vous pouvez choisir de le recevoir quotidiennement, hebdomadairement ou mensuellement. Si aucun entrepreneur ne s''est enregistré, vous ne recevrez pas de courriel.', updatedBy = 24143, updateDate = NOW() where msgKey = 'Subscription.ContractorRegistration.longDescription' and locale = 'fr';
+
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.AgreeTC', 'En cliquant sur Débuter, vous donnez votre accords avec les termes et conditions  <a href="#" class="contractor-agreement modal-link" data-title="Contractor Agreement" data-url="ContractorAgreement.action">PICS Contractor Agreement</a>.', 'fr', 24143, NOW());
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.BecomeAMember', 'Devenez membre de PICS maintenant !', 'fr', 24143, NOW());
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.CompanyDetails.heading', 'Traduction manquante', 'fr', 24143, NOW());
@@ -434,6 +437,68 @@ insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) 
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.TheContractorsChoice', 'Le Choix des entrepreneurs', 'fr', 24143, NOW());
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.UserCount', '50,000 utilisateurs courants', 'fr', 24143, NOW());
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.Why', 'Pourquoi les entrepreneurs <br />choisissent PICS?', 'fr', 24143, NOW());
+
+
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorRegistrationRequestStatus.Active', 'Actif', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorRegistrationRequestStatus.ClosedContactedSuccessful', 'Fermé et contacté avec succès', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorRegistrationRequestStatus.ClosedSuccessful', 'Fermè avec succès', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorRegistrationRequestStatus.ClosedUnsuccessful', 'Fermé sans succès', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorRegistrationRequestStatus.Hold', 'En attente', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('JS.RegistrationAddClientSite.AddSite', 'Ajouter des sites', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('JS.RegistrationAddClientSite.RemoveSite', 'Ôter des sites', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.AddClientSites', 'Ajouter des sites-clients', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.AnyOtherSites', 'Y a-t-il d''autres sites-clients pour lesquels vous travaillez ?', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.FindSites', 'Ajouter des sites-clients', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.Invitation', 'Ajouter le site-client qui vous a demandé de vous enregister', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.OtherSites', 'Ajouter tous autres sites-clients pour lesquels vous travaillez', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.Requested', 'Vous trouverez le nom sdu site-client dans un courriel ou une lettre que  vous devriez avoir reçu.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.SearchSuggest', 'Utilisez l''outil de recherche ou la fonction suggestion', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.Select', 'Sélectionnez les sites-clients pour lesquels vous voulez travaillez.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.Selected', 'Sites-clients sélectionnés', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationAddClientSite.ShowAll', 'Afficher tous', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.AnnualMembership', 'Membership annuel', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.BillingInformation', 'Informations de facturation', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.ContractorAgreement', 'Accords de l''entrepreneur', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.CreditCardNote', 'Note: Votre numéro de carte de crédit sera conservé et utilisé pour les renouvelements ou changements au compte. La personne-ressource recevra un courriel 30 jours avant toutes modifications avant un renouvellement et 7 jours avant d''être facturé. Si vous choissisez de désactiver votre compte, veuillez nous contacter au 800-506-PICS.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.ExpirationDate', 'Date d''expiration', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.MembershipHelp', 'Un professionnel de la sécurité de PICS passera en revue vos informations de préqualification tel que requis par votre site-client. Ces informations seront communiquées au site-client requérant et en fonction du résultat, vous serez  approuvés pour y travailler.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.MembershipInvoice', 'Facture de membership', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.ModalBody', '', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.ModalHeading', '', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.OneTimeFees', 'Coûts uniques', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.Price', 'Coût', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.PrintTest', 'Test d''impression', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.PrivacyPolicy', 'Politique du privé', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.RefundPolicy', 'Politique de remboursement', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.Total', 'Total', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.View Pricing', 'Afficher les coûts', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationMakePayment.ViewPricing', 'Afficher les coûts', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.BidOnly', 'Êtes-vous Soumission seulement ?', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.ProductSafety', 'Évaluation des produits et de la sécurité', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.SelectServices', 'Veuillez sélectionner <i>tous</i> les services offerts par votre compagnie. Il est normal d''en choisir plus que un.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.ServiceSafety', 'Évaluation de la sécurité des services', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.ServicesPerformed', 'Services offerts', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.SoleProprietor', 'Ête-vous un propriétaire unique sans aucun employé ? Un propriétaire unique indique que vous n''avez pas d''employés salariés ni même d''aide administrative.', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('Subscription.RegistrationRequests.description', 'Requêtes d''enregistrement', 'fr', 24143, NOW());
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate) values ('Subscription.RegistrationRequests.longDescription', 'Ce courriel vous informe en cas de changement aux requêtes d''enregistrement soumises par des utilisateurs. Vous pouvez recevoir ce courriel par événement.', 'fr', 24143, NOW());
+
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.offsiteServices.withDescription', 'Services externes: Vous offrez des services à votre client à <i>votre</i> emplacement. Par exemple: un laboratoire, un service d''entreposage, une manufacture, un services d''ingénierie ou de la maintenance.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.transportationServices.withDescription', 'Transport: Vous offrez un service de transport. Par exemple: transport de marchandise par camion ou train, navette, courrier, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.onsiteServices.withDescription', 'Services sur place: Vous offez vos services directement à un site de votre client. Par exemple: chantier, raffinerie, usine, pipeline, quai, mine, bureaux, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.materialSupplier.withDescription', 'Fournisseur de matériel: Vous fournissez, manufacturez, vendez ou distribuez un ou des produits à vos clients. Par exemple: produits chimiques, fournitures, logiciels, mobilier, consommables, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.tradesSub', 'Métiers ou services sous-contractés', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.tradesSelf', 'Métiers ou services auto-réalisés', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('ContractorAccount.transportationServices', 'Transport', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.SoleProprietor', 'Ête-vous un propriétaire unique sans aucun employé ? Un propriétaire unique indique que vous n''avez pas d''employés salariés ni même d''aide administrative.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('RegistrationServiceEvaluation.SelectServices', 'Veuillez sélectionner <i>tous</i> les services offerts par votre compagnie. Il est normal d''en choisir plus que un.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighProduct.Low', 'Faible - Eau embouteillée, équipements de bureaux, traiteur, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighProduct.Medium', 'Moyen - utilisation d''outils électriques, équipement pour entretien paysager, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighProduct.High', 'Élevé - Valves, pompes, produits chimiques, grues, équipements lourds, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighSafety.Low', 'Faible - services de livraison, de conciergerie, d''ingénierie hors-site, entretien d''ordinateurs, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighSafety.Medium', 'Moyen - Ingénierie sur place, services de sécurité, entretien paysager, services d''inspection, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('AuditOptionGroup.Low/Medium/HighSafety.High', 'Élevé - entrepreneur mécanique ou électrique, construction générale, nettoyage industriel, etc.', 'fr', 24143, NOW());
+insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('button.SaveNext', 'Sauvegarder et suivant', 'fr', 24143, NOW());
+--
 --
 
 -- PICS-4056
