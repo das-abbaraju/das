@@ -27,6 +27,7 @@ import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
@@ -52,6 +53,7 @@ public class Registration extends ContractorActionSupport {
 	private String username;
 	private String confirmPassword;
 	private int requestID;
+	private State state;
 
 	@Anonymous
 	@Override
@@ -137,6 +139,8 @@ public class Registration extends ContractorActionSupport {
 		// contractor.setState(stateDAO.find(contractor.getState().getIsoCode()));
 		// if (contractor.getCountry() != null)
 		// contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
+		if(contractor.getCountry().isHasStates() && state != null)
+			contractor.setState(state);
 		accountDao.save(contractor);
 
 		// Send the Welcome Email
@@ -172,7 +176,6 @@ public class Registration extends ContractorActionSupport {
 			dao.save(note);
 		}
 
-		// Redirect to Step 2, usually Trades
 		redirect(getRegistrationStep().getUrl());
 
 		return BLANK;
@@ -248,5 +251,13 @@ public class Registration extends ContractorActionSupport {
 
 	public boolean isUsernameInUse() {
 		return userDAO.duplicateUsername(user.getUsername(), 0);
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getState() {
+		return state;
 	}
 }

@@ -128,7 +128,7 @@
 							label="%{#state_label_display}"
 							list="getStateList(#country_value)"
 							cssClass="contractor-state"
-							name="contractor.state" 
+							name="state" 
 							listKey="isoCode" 
 							listValue="simpleName" 
 						/>

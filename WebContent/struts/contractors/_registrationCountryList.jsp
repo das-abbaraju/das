@@ -17,7 +17,7 @@
 		id="Registration_contractor_state"
 		list="getStateList(countryString)" 
 		cssClass="contractor-state"
-		name="contractor.state" 
+		name="state" 
 		listKey="isoCode" 
 		listValue="simpleName"
 		theme="pics"

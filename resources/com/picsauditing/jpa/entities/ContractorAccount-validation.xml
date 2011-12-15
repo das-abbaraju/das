@@ -26,11 +26,6 @@
 			<message>Required</message>
 		</field-validator>
 	</field>
-	<field name="state">
-		<field-validator type="required" short-circuit="true">
-			<message>Required</message>
-		</field-validator>
-	</field>
 	<field name="zip">
 		<field-validator type="fieldexpression" short-circuit="true">
 	       <param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
