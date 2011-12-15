@@ -147,12 +147,8 @@ public class Registration extends ContractorActionSupport {
 		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
 				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
 		emailBuilder.addToken("confirmLink", confirmLink);
-		emailBuilder.addToken("contractor.primaryContact.name", user.getName());
-		emailBuilder.addToken("contractor.primaryContact.username", user.getUsername());
-		emailBuilder.addToken("contractor.auditor.name", contractor.getAuditor().getName());
-		emailBuilder.addToken("contractor.auditor.phone", contractor.getAuditor().getPhone());
-		emailBuilder.addToken("contractor.auditor.fax", contractor.getAuditor().getFax());
-		emailBuilder.addToken("contractor.auditor.email", contractor.getAuditor().getEmail());
+		emailBuilder.addToken("contactName", user.getName());
+		emailBuilder.addToken("userName", user.getUsername());
 		
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(90);
