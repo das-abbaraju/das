@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class Registration extends ContractorActionSupport {
@@ -141,6 +143,17 @@ public class Registration extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
 		emailBuilder.setUser(user);
+		user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+		emailBuilder.addToken("confirmLink", confirmLink);
+		emailBuilder.addToken("contractor.primaryContact.name", user.getName());
+		emailBuilder.addToken("contractor.primaryContact.username", user.getUsername());
+		emailBuilder.addToken("contractor.auditor.name", contractor.getAuditor().getName());
+		emailBuilder.addToken("contractor.auditor.phone", contractor.getAuditor().getPhone());
+		emailBuilder.addToken("contractor.auditor.fax", contractor.getAuditor().getFax());
+		emailBuilder.addToken("contractor.auditor.email", contractor.getAuditor().getEmail());
+		
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(90);
 		emailQueue.setViewableById(Account.EVERYONE);
