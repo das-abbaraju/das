@@ -107,9 +107,9 @@
 				<li>
 					<label><s:text name="RegistrationServiceEvaluation.SoleProprietor" /></label>
 					<s:radio 
-						name="contractor.soleProprietor" 
-						value="false" 
-						list="#{true:getText('YesNo.Yes'), false:getText('YesNo.No')}"
+						name="soleProprietor" 
+						value="contractor.soleProprietor"
+						list="#{'true':getText('YesNo.Yes'), 'false':getText('YesNo.No')}"
 						cssClass="inline"
 					/>
 				</li>
@@ -118,9 +118,9 @@
 					<li>
 						<label><s:text name="RegistrationServiceEvaluation.BidOnly" /></label>
 						<s:radio 
-							name="contractor.accountLevel" 
-							value="contractor.accountLevel" 
-							list="#{@com.picsauditing.jpa.entities.AccountLevel@BidOnly:getText('YesNo.Yes'), @com.picsauditing.jpa.entities.AccountLevel@Full:getText('YesNo.No')}"
+							name="bidOnly" 
+							value="contractor.getAccountLevel().isBidOnly()" 
+							list="#{'true':getText('YesNo.Yes'), 'false':getText('YesNo.No')}"
 							cssClass="inline" 
 						/>
 					</li>

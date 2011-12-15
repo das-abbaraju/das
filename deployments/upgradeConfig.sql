@@ -287,6 +287,11 @@ UPDATE app_translation set msgValue="<p>Please type in your desired user name. <
 UPDATE app_translation set msgValue="Les réponses que vous avez fournies indiquent les niveaux de risque plus élevé que les évaluations que vous avez sélectionné. Nous recommandons d'augmenter votre {0}. Vous pouvez toujours continuer avec le processus d'inscription. <br /> S'il vous plaît contactez PICS avec toutes les questions." where msgKey = "ContractorRegistrationServices.message.RiskLevels" and locale='fr';
 --
 INSERT into app_translation (msgKey, locale, msgValue) values ("RegistrationAddClientSite.SearchInstructions", "en", "Enter the name or location of your client site");
+--
+INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorAccount.onsiteServices.withDescription", "en", "Onsite Services: You perform services at a physical location controlled by your client (examples include refineries, plants, pipelines, docks/piers, oil rig, construction sites, mines, administration buildings).");
+INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorAccount.offsiteServices.withDescription", "en", "Offsite Services:  You perform services for your client at <i>your</i> location(s) (examples of offsite locations include labs, warehouses, fabrication shops, engineering, maintenance).");
+INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorAccount.materialSupplier.withDescription", "en", "Material Supplier:  You supply, manufacture, sell, or distribute product(s) to your client (examples include chemicals, equipment, software, furniture, consumables). ");
+INSERT into app_translation (msgKey, locale, msgValue) values ("ContractorAccount.transportationServices.withDescription", "en", "Transportation Services:  You provide transportation services (examples include shuttle, courier, tanker, delivery, hauler, charter, rail).");
 -- --------------------------------------------------------
 -- Updating timezones and countries
 update app_translation set msgValue = 'Heure du Pacifique (US / Canada)', updatedBy = 24143, updateDate = NOW() WHERE msgKey = 'TimeZone.US.Pacific' AND locale = 'fr';

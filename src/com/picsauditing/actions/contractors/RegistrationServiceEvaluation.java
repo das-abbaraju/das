@@ -42,6 +42,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	private ContractorAudit conAudit;
 	private boolean showBidOnly;
 	private boolean showCompetitor;
+	private boolean isSoleProprietor;
+	private boolean isBidOnly;
 
 	private boolean requireOnsite;
 	private boolean requireOffsite;
@@ -75,10 +77,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		if (contractor.getRequestedBy() != null && !contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR))
 			showCompetitor = false;
-
-		if (!showBidOnly && contractor.getAccountLevel().isBidOnly()) {
-			contractor.setAccountLevel(AccountLevel.BidOnly);
-		}
 
 		if (!showCompetitor && contractor.getHasCanadianCompetitor() != null
 				&& contractor.getHasCanadianCompetitor().booleanValue()) {
@@ -156,6 +154,12 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	@Override
 	public String nextStep() throws Exception {
 		findContractor();
+		contractor.setSoleProprietor(isSoleProprietor);
+		if (isBidOnly)
+			contractor.setAccountLevel(AccountLevel.BidOnly);
+		else
+			contractor.setAccountLevel(AccountLevel.Full);
+		
 		setRequiredTypes();
 
 		// account for disabled checkboxes not coming though
@@ -629,5 +633,21 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	public void setServicesHelpText(String servicesHelpText) {
 		this.servicesHelpText = servicesHelpText;
+	}
+
+	public boolean isSoleProprietor() {
+		return isSoleProprietor;
+	}
+
+	public void setSoleProprietor(boolean isSoleProprietor) {
+		this.isSoleProprietor = isSoleProprietor;
+	}
+
+	public boolean isBidOnly() {
+		return isBidOnly;
+	}
+
+	public void setBidOnly(boolean isBidOnly) {
+		this.isBidOnly = isBidOnly;
 	}
 }
