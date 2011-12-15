@@ -1,11 +1,9 @@
 /********************  SIDEBOX STYLES - ie6 fixes  ************************/
-#helpbox
-{
+#helpbox {
 	right: 20px;
 }
 
-#helpbox a.liveperson-chat
-{
+#helpbox a.liveperson-chat {
 	width: 100px;
 }
 
@@ -22,7 +20,7 @@ div.caoGroup {
 	width: auto;
 }
 
-#search_box, #search_button {
+#search_box,#search_button {
 	line-height: 18px !important;
 }
 
@@ -33,12 +31,17 @@ div.caoGroup {
 /* 
  * Form fixes
  */
-fieldset.form h2.formLegend {width: 100%;}
+fieldset.form h2.formLegend {
+	width: 100%;
+}
 
-fieldset.form ol li { z-index: 1000; }
+fieldset.form ol li {
+	z-index: 1000;
+}
 
 .fieldhelp {
-	filter:progid:DXImageTransform.Microsoft.DropShadow(Color=#666666, OffX=4, OffY=4);	
+	filter: progid : DXImageTransform.Microsoft.DropShadow ( Color = #666666,
+		OffX = 4, OffY = 4 );
 }
 
 /* 
@@ -50,7 +53,7 @@ fieldset.form ol li.required {
 }
 
 .required-info {
-	background: url(../images/required.gif) no-repeat left center;	
+	background: url(../images/required.gif) no-repeat left center;
 	background-color: inherit;
 }
 
@@ -58,7 +61,7 @@ fieldset.form ol li.required {
  * Jump To Styles for form headers
  */
 ul.jump-header-list {
-	top:24px;
+	top: 24px;
 }
 
 h2.formLegend span.jump-to {
@@ -73,7 +76,7 @@ ul.jump-header-list li a.jump-top {
 ul.jump-header-list li a.jump-bottom {
 	background: url(../images/arrow-down-bottom.gif) no-repeat left center;
 }
- 
+
 ul.jump-header-list li.hover a.jump-up {
 	background: url(../images/arrow-up.gif) no-repeat left center;
 }
@@ -81,13 +84,12 @@ ul.jump-header-list li.hover a.jump-up {
 ul.jump-header-list li.hover a.jump-current {
 	background: url(../images/arrow-right.gif) no-repeat left center;
 }
- 
+
 ul.jump-header-list li.hover a.jump-down {
 	background: url(../images/arrow-down.gif) no-repeat left center;
 }
 
 /* BUTTONS */
-
 .picsbutton,a.picsbutton:visited,a.picsbutton:link {
 	margin: 0 7px 0 0;
 	border-top: 1px;
@@ -207,60 +209,10 @@ a.picsbutton {
 	color: #ababab;
 }
 
-/* REGISTRATION.CSS */
-
-/* IE6 css fixer v0.95: Tue, 06 Dec 2011 22:37:42 +0100 */
-
-/* ============================================= */
-/* safe settings                                 */
-
-/* add display:inline to floated elements */
-header .locale-form,
-.registration-form .errors,
-.registration-form .info-agreement,
-.registration-form .actions input,
-.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label,
-.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input,
-.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label,
-.registration-step li,
-.client-site .client-site-left,
-.client-site .client-site-right,
-.client-site .client-site-list .location,
-.client-site .client-site-list .add,.client-site .client-site-list .remove,.client-site .client-site-list .info,
-.client-site-get-started,
-.client-site-get-started img,
-.make-payment .policy li,
-.registration-form,.registration-form input,.registration-side-bar,.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio,.client-site-filter li,.client-site .client-site-list .name,.make-payment .membership,.make-payment .membership-help {display:inline;}
-
-/* fix negative margins */
-.registration-form h1 {position:relative; zoom:1;}
-
-/* add zoom:1 to overflow:hidden */
-.registration-form li,
-.client-site-form li,
-.service-evaluation-form li,
-.make-payment-form li,
-.client-site-filter,
-.client-site .client-site-list li a,
-.make-payment .policy,
-.registration-form li,
-.registration-form .actions {zoom:1;}
-
-/* add zoom:1 to pos:relative elements */
-.registration-header header h1,
-.registration-form .errors li,
-.registration-form .actions input,
-.registration-side-bar .info-join h1,
-.registration .companies h1,
-.registration-step,
-.client-site .client-site-left,
-.client-site .client-site-right,
-.make-payment .invoice td,
-.make-payment .invoice a.data-import-toggle,
-.make-payment-form img.card {zoom:1;}
-
 /* add overflow:visible to (submit) buttons */
- input, button {overflow:visible;}
+input,button {
+	overflow: visible;
+}
 
 /* STYLE.CSS */
 
@@ -270,43 +222,80 @@ header .locale-form,
 /* safe settings                                 */
 
 /* add display:inline to floated elements */
-.alert-message .close,
-.close,
-.modal-footer .btn {display:inline;}
+.alert-message .close,.close,.modal-footer .btn {
+	display: inline;
+}
 
 /* fix negative margins */
-.alert-message .close,
-.modal,
-.twipsy.above .twipsy-arrow,.popover.above .arrow,
-.twipsy.left .twipsy-arrow,.popover.left .arrow,
-.twipsy.below .twipsy-arrow,.popover.below .arrow,
-.twipsy.right .twipsy-arrow,.popover.right .arrow {position:relative; zoom:1;}
+.alert-message .close,.modal,.twipsy.above .twipsy-arrow,.popover.above .arrow,.twipsy.left .twipsy-arrow,.popover.left .arrow,.twipsy.below .twipsy-arrow,.popover.below .arrow,.twipsy.right .twipsy-arrow,.popover.right .arrow
+	{
+	position: relative;
+	zoom: 1;
+}
 
 /* add zoom:1 to overflow:hidden */
-.popover .inner {zoom:1;}
+.popover .inner {
+	zoom: 1;
+}
 
 /* add transparancy */
-.alert-message .close {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);}
-.twipsy {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);}
-.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
-.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);}
-.close {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);}
-.modal-backdrop.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
-.btn.disabled,.btn[disabled],.picsbutton.disabled,.picsbutton[disabled] {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=65);}
-.alert-message .close:hover,.close:hover {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=40);}
-.twipsy.fade.in,.modal-backdrop,.modal-backdrop.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);}
+.alert-message .close {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 20 );
+}
 
+.twipsy {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 80 );
+}
+
+.fade {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 0 );
+}
+
+.fade.in {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 100 );
+}
+
+.close {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 20 );
+}
+
+.modal-backdrop.fade {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 0 );
+}
+
+.btn.disabled,.btn[disabled],.picsbutton.disabled,.picsbutton[disabled]
+	{
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 65 );
+}
+
+.alert-message .close:hover,.close:hover {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 40 );
+}
+
+.twipsy.fade.in,.modal-backdrop,.modal-backdrop.fade.in {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 80 );
+}
 
 /* add zoom:1; display:inline; to inline-block elements */
-.btn,.picsbutton {zoom:1; display:inline;}
+.btn,.picsbutton {
+	zoom: 1;
+	display: inline;
+}
 
 /* add transparancy */
-.fade {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);}
-.fade.in {filter:progid:DXImageTransform.Microsoft.Alpha(opacity=100);}
+.fade {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 0 );
+}
+
+.fade.in {
+	filter: progid : DXImageTransform.Microsoft.Alpha ( opacity = 100 );
+}
 
 /* add overflow:visible to (submit) buttons */
- input, button {overflow:visible;}
- 
+input,button {
+	overflow: visible;
+}
+
 /* FORM.CSS */
 
 /* IE6 css fixer v0.95: Tue, 08 Nov 2011 20:28:16 +0100 */
@@ -315,46 +304,88 @@ header .locale-form,
 /* safe settings                                 */
 
 /* add display:inline to floated elements */
-div.double-list-left,div.double-list-action,div.double-list-right,
-ul.radio.inline input,ul.radio.inline label {display:inline;}
+div.double-list-left,div.double-list-action,div.double-list-right,ul.radio.inline input,ul.radio.inline label
+	{
+	display: inline;
+}
 
 /* add zoom:1 to overflow:hidden */
-ul.radio.inline li {zoom:1;}
+ul.radio.inline li {
+	zoom: 1;
+}
 
 /* add zoom:1 to pos:relative elements */
-div.double-list-action input.add-left,
-div.double-list-action input.add-right {zoom:1;}
+div.double-list-action input.add-left,div.double-list-action input.add-right
+	{
+	zoom: 1;
+}
 
 /* add overflow:visible to (submit) buttons */
-input, button {overflow:visible;}
- 
+input,button {
+	overflow: visible;
+}
+
 /* REGISTRATION */
 
-.registration-form h1
-{
+/* IE6 css fixer v0.95: Tue, 13 Dec 2011 02:49:23 +0100 */
+
+/* ============================================= */
+/* safe settings                                 */
+
+/* fix negative margins */
+.registration-form h1,.make-payment .membership-help section h1 {
+	position: relative;
+	zoom: 1;
+}
+
+/* add zoom:1 to overflow:hidden */
+.registration-form li,.client-site-form li,.service-evaluation-form li,.make-payment-form li,.client-site-filter,.client-site .client-site-list li a,.make-payment .policy,.registration-form li,.registration-form .actions
+	{
+	zoom: 1;
+}
+
+/* add zoom:1 to pos:relative elements */
+.registration-header h1,.registration-form .errors li,.registration-form .actions input,.registration-side-bar .info-join h1,.registration-step ul,.client-site .client-site-left,.client-site .client-site-right,.client-site .client-site-left .client-site-list-container,.client-site .client-site-right .client-site-list-container,.make-payment table td,.make-payment .invoice .help,.data-import-form input,.make-payment-form img.card,.service-evaluation-form div.separator,.make-payment div.separator
+	{
+	zoom: 1;
+}
+
+/* add overflow:visible to (submit) buttons */
+input,button {
+	overflow: visible;
+}
+
+.registration-form h1 {
 	background-color: rgb(197, 98, 26);
 }
 
-.registration-side-bar .info-qualify,
-.registration-side-bar .info-choice
-{
+.registration-side-bar .info-qualify,.registration-side-bar .info-choice
+	{
 	background-color: rgb(145, 192, 224);
 }
 
-.registration-form .info-agreement p
-{
+.registration-form .info-agreement p {
 	position: relative;
 	right: 50px;
 }
 
-.popover
-{
+.popover {
 	position: absolute;
 	z-index: 9999;
 }
 
-#Registration-page .popover .arrow
-{
+.registration-header .registration-step {
+	margin: 0px auto;
+	padding: 0px;
+	position: relative;
+	zoom: 1;
+}
+
+.registration-header .registration-step ul {
+	margin-top: 15px;
+}
+
+#Registration-page .popover .arrow {
 	left: 287px;
 	border: 1px solid #000;
 	width: 10px;
@@ -362,8 +393,7 @@ input, button {overflow:visible;}
 	zoom: 1;
 }
 
-#Registration-page .popover .inner
-{
+#Registration-page .popover .inner {
 	background: #FFFFFF;
 	border: 2px solid #404040;
 	left: 277px;
@@ -372,69 +402,67 @@ input, button {overflow:visible;}
 	width: 350px;
 }
 
-#Registration-page .modal
+#RegistrationAddClientSite-page .client-site-left .client-site-list-container,
+#RegistrationAddClientSite-page .client-site-right .client-site-list-container
+{
+	width: 420px;
+}
+
+#RegistrationAddClientSite-page .client-site-list
+{
+	position: relative;
+}
+
+.make-payment .membership
+{
+	width: 630px;
+}
+
+#Registration-page .modal,#RegistrationMakePayment-page .modal
 {
 	display: none;
 }
 
-/* IE6 css fixer v0.95: Tue, 13 Dec 2011 02:49:23 +0100 */
+#RegistrationServiceEvaluation-page .warning
+{
+	background-color: #EEDC94;
+	background-repeat: repeat-x;
+	background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
+	background-image: linear-gradient(top, #fceec1, #eedc94);
+	filter: progid : DXImageTransform.Microsoft.gradient ( startColorstr ='#fceec1', endColorstr = '#eedc94', GradientType = 0 );
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #EEDC94 #EEDC94 #E4C652;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	margin-bottom: 18px;
+	padding: 7px 14px;
+	color: #404040;
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 4px;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
 
-/* ============================================= */
-/* safe settings                                 */
+#RegistrationServiceEvaluation-page .warning .warn
+{
+	background: url(../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
+}
 
-/* add display:inline to floated elements */
-header .chat,header .phone,header .welcome-message,
-header .locale-form,
-.registration-form .errors,
-.registration-form .info-agreement,
-.registration-form .actions input,
-.registration-side-bar,
-.alert-message .icon,
-.registration-form label,.client-site-form label,.service-evaluation-form label,.make-payment-form label,
-.service-evaluation-form ul.checkbox-list input,.service-evaluation-form ul.radio input,.make-payment-form ul.radio input,
-.service-evaluation-form ul.checkbox-list label,.service-evaluation-form ul.radio label,.make-payment-form ul.radio label,
-.registration-step li,
-.client-site .client-site-left,
-.client-site .client-site-right,
-.client-site .client-site-list .name,
-.client-site .client-site-list .location,
-.client-site .client-site-list .add,.client-site .client-site-list .remove,.client-site .client-site-list .info,
-.client-site-get-started,
-.client-site-get-started img,
-.make-payment .policy li,
-.registration-form,.registration-form input,.service-evaluation-form ul.checkbox-list,.service-evaluation-form ul.radio,.make-payment-form ul.radio,.client-site-filter li,.make-payment .membership,.make-payment .membership-help {display:inline;}
+#RegistrationServiceEvaluation-page .error
+{
+	background-color: #C43C35;
+	background-repeat: repeat-x;
+	background-image: -ms-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: linear-gradient(top, #ee5f5b, #c43c35);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ee5f5b', endColorstr='#c43c35', GradientType=0);
+	color: #FFFFFF;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #C43C35 #C43C35 #882A25;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
 
-/* fix negative margins */
-.registration-form h1,
-.make-payment .membership-help section h1 {position:relative; zoom:1;}
-
-/* add zoom:1 to overflow:hidden */
-.registration-form li,
-.client-site-form li,
-.service-evaluation-form li,
-.make-payment-form li,
-.client-site-filter,
-.client-site .client-site-list li a,
-.make-payment .policy,
-.registration-form li,
-.registration-form .actions {zoom:1;}
-
-/* add zoom:1 to pos:relative elements */
-.registration-header h1,
-.registration-form .errors li,
-.registration-form .actions input,
-.registration-side-bar .info-join h1,
-.registration-step ul,
-.client-site .client-site-left,
-.client-site .client-site-right,
-.client-site .client-site-left .client-site-list-container,
-.client-site .client-site-right .client-site-list-container,
-.make-payment table td,
-.make-payment .invoice .help,
-.data-import-form input,
-.make-payment-form img.card,
-.service-evaluation-form div.separator,
-.make-payment div.separator {zoom:1;}
-
-/* add overflow:visible to (submit) buttons */
- input, button {overflow:visible;}
+.service-evaluation ul
+{
+	position: relative;
+	zoom: 1;
+}
