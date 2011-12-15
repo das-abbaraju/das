@@ -496,8 +496,8 @@ public class Cron extends PicsActionSupport {
 				// update the contractor notes
 				stampNote(contractor, newNote + emailBuilder.getSentTo(), NoteCategory.Registration);
 				if (templateID == 0) {
-					contractor.setStatus(AccountStatus.Deactivated);
-					contractorAccountDAO.save(contractor);
+//					contractor.setStatus(AccountStatus.Deactivated);
+//					contractorAccountDAO.save(contractor);
 
 					for (OperatorAccount operatorAccount : operators) {
 						if (operatorContractors.get(operatorAccount) == null)
