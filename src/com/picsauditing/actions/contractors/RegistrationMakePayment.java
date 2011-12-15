@@ -662,8 +662,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			invoice = newInvoice;
 			contractor.getInvoices().add(newInvoice);
 			invoiceDAO.save(newInvoice);
+			redirect("RegistrationMakePayment.action");
 		} else if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
 			billingService.updateInvoice(invoice, newInvoice, permissions);
+			redirect("RegistrationMakePayment.action");
 		}
 	}
 }

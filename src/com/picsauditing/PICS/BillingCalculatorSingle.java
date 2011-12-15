@@ -400,7 +400,8 @@ public class BillingCalculatorSingle {
 			item.setInvoice(invoice);
 			item.setAuditColumns(new User(User.SYSTEM));
 		}
-
+		
+		invoice.preSave();
 		return invoice;
 	}
 
