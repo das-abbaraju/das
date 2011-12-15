@@ -101,9 +101,9 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 		if (countryMatch && primaryLanguageMatch) {
 			selectedForm = this;
 		}
-		
+
 		if (selectedForm == null) {
-			for (OperatorForm child:getChildren()) {
+			for (OperatorForm child : getChildren()) {
 				countryMatch = child.getLocale().getCountry().toString().equals(loc.getCountry().toString());
 				boolean languageMatch = child.getLocale().getLanguage().toString().equals(loc.getLanguage().toString());
 				if (countryMatch && languageMatch) {
@@ -115,24 +115,24 @@ public class OperatorForm extends BaseTable implements java.io.Serializable {
 				}
 			}
 		}
-		
+
 		if (selectedForm == null) {
 			selectedForm = this;
 		}
 
 		return selectedForm;
 	}
-	
+
 	@Transient
 	public List<OperatorForm> getAllForms() {
 		ArrayList<OperatorForm> list = new ArrayList<OperatorForm>();
-		
+
 		OperatorForm parent = (getParent() != null) ? getParent() : this;
 		list.add(parent);
-		for (OperatorForm child:getChildren()) {
+		for (OperatorForm child : getChildren()) {
 			list.add(child);
 		}
-		
+
 		return list;
 	}
 }
