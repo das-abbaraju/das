@@ -322,7 +322,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			}
 			if (canBeListed)
 				contractor.setAccountLevel(AccountLevel.ListOnly);
-		}
+		} else if (contractor.getAccountLevel().isListOnly())
+			contractor.setAccountLevel(AccountLevel.Full);
 	}
 
 	public boolean validateAnswers() {
