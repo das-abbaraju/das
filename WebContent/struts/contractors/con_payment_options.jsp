@@ -473,7 +473,5 @@
 				</fieldset>
 			</form>
 		</s:if>
-		
-		<s:include value="registrationFooter.jsp" />
 	</body>
 </html>
