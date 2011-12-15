@@ -127,7 +127,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				Iterator<InvoiceItem> iterator = invoice.getItems().iterator();
 				while (iterator.hasNext()) {
 					InvoiceItem item = iterator.next();
-					if (item.getInvoiceFee().isMembership()) {
+					if (item.getInvoiceFee().isMembership() || item.getInvoiceFee().isImportFee()) {
 						if (item.getPaymentExpires() != null) {
 							membershipExpiration = item.getPaymentExpires();
 						}
@@ -139,7 +139,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 				// Re-adding Membership Items
 				for (FeeClass feeClass : contractor.getFees().keySet()) {
-					if (feeClass.isMembership() && !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
+					if ((feeClass.isMembership() || feeClass.equals(FeeClass.ImportFee))
+							&& !contractor.getFees().get(feeClass).getNewLevel().isFree()) {
 						InvoiceItem newInvoiceItem = new InvoiceItem();
 						newInvoiceItem.setInvoiceFee(contractor.getFees().get(feeClass).getNewLevel());
 						newInvoiceItem.setAmount(contractor.getFees().get(feeClass).getNewAmount());

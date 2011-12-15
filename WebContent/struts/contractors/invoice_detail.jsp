@@ -217,7 +217,7 @@
 				</tr>
 				<tr>
 					<td style="padding-top: 15px;">
-						<s:if test="edit && hasInvoiceMembershipChanged" >
+						<s:if test="edit && contractor.hasMembershipChanged" >
 							<div class="buttons right" style="padding:7px;">
 								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />&button=changeto" class="picsbutton positive">
 									<s:text name="InvoiceDetail.ChangeMembership" />

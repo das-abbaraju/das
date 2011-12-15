@@ -163,6 +163,11 @@ public class InvoiceFee extends BaseTable {
 	}
 
 	@Transient
+	public boolean isImportFee() {
+		return this.getFeeClass() == FeeClass.ImportFee;
+	}
+
+	@Transient
 	public BigDecimal getTax(BigDecimal total) {
 		if (isGST())
 			return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
