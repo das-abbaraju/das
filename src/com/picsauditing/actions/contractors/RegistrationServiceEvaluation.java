@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -94,7 +96,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		List<String> offOps = new ArrayList<String>();
 		List<String> msOps = new ArrayList<String>();
 		List<String> trxOps = new ArrayList<String>();
-		
+
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			int on = (operator.isOnsiteServices() ? 1 : 0);
 			int off = (operator.isOffsiteServices() ? 1 : 0);
@@ -120,15 +122,19 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				}
 			}
 		}
-		
+
 		if (requireOnsite)
-			servicesHelpText += "Onsite Services is the only service type allowed by " + StringUtils.join(onOps, ", ") + "<br />";
+			servicesHelpText += "Onsite Services is the only service type allowed by " + StringUtils.join(onOps, ", ")
+					+ "<br />";
 		if (requireOffsite)
-			servicesHelpText += "Offsite Services is the only service type allowed by " + StringUtils.join(offOps, ", ") + "<br />";
+			servicesHelpText += "Offsite Services is the only service type allowed by "
+					+ StringUtils.join(offOps, ", ") + "<br />";
 		if (requireMaterialSupplier)
-			servicesHelpText += "Material Supplier is the only service type allowed by " + StringUtils.join(msOps, ", ") + "<br />";
+			servicesHelpText += "Material Supplier is the only service type allowed by "
+					+ StringUtils.join(msOps, ", ") + "<br />";
 		if (requireTransportation)
-			servicesHelpText += "Transportation Services is the only service type allowed by " + StringUtils.join(trxOps, ", ") + "<br />";
+			servicesHelpText += "Transportation Services is the only service type allowed by "
+					+ StringUtils.join(trxOps, ", ") + "<br />";
 	}
 
 	public boolean conTypesOK() {
@@ -278,8 +284,17 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels", Strings.implode(
 					increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
-		// }
 
+		// Free accounts should just be activated
+		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
+			contractor.setStatus(AccountStatus.Active);
+			contractor.setAuditColumns(permissions);
+			contractor.setMembershipDate(new Date());
+			if (contractor.getBalance() == null)
+				contractor.setBalance(BigDecimal.ZERO);
+			accountDao.save(contractor);
+		}
+		
 		redirect(getRegistrationStep().getUrl());
 		return BLANK;
 	}
@@ -306,7 +321,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		for (AuditCategory cat : cats.keySet()) {
 			for (AuditQuestion q : cat.getQuestions()) {
 				if (q.isValidQuestion(new Date()))
-						questions.add(q);
+					questions.add(q);
 			}
 		}
 
@@ -449,7 +464,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				// 7661: If you fail to deliver your products on-time, can it
 				// result in a work stoppage or major
 				// business interruption for your customer?
-				// 9789: Are any of your products utilized within the critical processes 
+				// 9789: Are any of your products utilized within the critical processes
 				// of the facility? i.e. valves, pipes, cranes, chemicals, etc.
 				if (auditData.getAnswer().equals("Yes"))
 					return LowMedHigh.High;
