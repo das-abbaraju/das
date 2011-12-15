@@ -49,6 +49,7 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
+import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -344,7 +345,7 @@ public class RequestNewContractor extends PicsActionSupport {
 				emailSenderSpring.send(q);
 				OperatorForm form = getForm();
 				if (form != null)
-					addAttachments(q, form.getFile());
+					addAttachments(q, form);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -370,22 +371,25 @@ public class RequestNewContractor extends PicsActionSupport {
 		}
 	}
 
-	private void addAttachments(EmailQueue emailQueue, String filename) {
+	private void addAttachments(EmailQueue emailQueue, OperatorForm form) {
+		String filename = FileUtils.thousandize(form.getId()) + form.getFile();
+
 		try {
 			EmailAttachment attachment = new EmailAttachment();
-			File file = new File(getFtpDir() + "/forms/" + filename);
+
+			File file = new File(getFtpDir() + "/files/" + filename);
 
 			byte[] bytes = new byte[(int) file.length()];
 			FileInputStream fis = new FileInputStream(file);
 			fis.read(bytes);
 
-			attachment.setFileName(getFtpDir() + "/forms/" + filename);
+			attachment.setFileName(getFtpDir() + "/files/" + filename);
 			attachment.setContent(bytes);
 			attachment.setFileSize((int) file.length());
 			attachment.setEmailQueue(emailQueue);
 			attachmentDAO.save(attachment);
 		} catch (Exception e) {
-			System.out.println("Unable to open file: /forms/" + filename);
+			System.out.println("Unable to open file: /files/" + filename);
 		}
 	}
 
