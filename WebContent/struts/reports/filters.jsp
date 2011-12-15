@@ -372,7 +372,7 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:select id="form1_auditStatus" list="filter.auditStatusList" cssClass="forms" name="filter.auditStatus" multiple="true" size="5" />
+					<s:select id="form1_auditStatus" list="filter.auditStatusList" listValue="%{getText(i18nKey)}" cssClass="forms" name="filter.auditStatus" multiple="true" size="5" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
