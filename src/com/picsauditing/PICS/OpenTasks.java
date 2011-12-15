@@ -43,13 +43,13 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 		
 		// check if trades need review
-		if (contractor.isNeedsTradesUpdated()) {
-			openTasks.add(getTextParameterized("ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
-		}
 		if (contractor.getTrades().size() == 0) {
 			openTasks.add(getTextParameterized("ContractorWidget.message.NoTradesSelected", contractor.getId()));
 		}
-		
+		if (contractor.isNeedsTradesUpdated()) {
+			openTasks.add(getTextParameterized("ContractorWidget.message.NeedsTradesUpdated", contractor.getId()));
+		}
+
 		if (!contractor.isAgreementInEffect()
 				&& (permissions.hasPermission(OpPerms.ContractorBilling)
 						|| permissions.hasPermission(OpPerms.ContractorAdmin) || permissions

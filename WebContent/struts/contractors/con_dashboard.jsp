@@ -445,6 +445,27 @@
 				</td>
 				<td width="15px"></td>
 				<td style="vertical-align:top; width: 48%">
+					<%-- Open Tasks --%>
+					<s:if test="permissions.admin || permissions.contractor">
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									<s:text name="Widget.6.caption"/>
+								</div>
+								<div class="panel_content" id="con_tasks">
+									<div class="inprogress"></div>
+									
+									<script type="text/javascript">
+										$(function() {
+											$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
+										});
+									</script>
+								</div>
+							</div>
+						</div>
+					</s:if>
+
+				
 					<%-- Contractor Info --%>
 					<div class="panel_placeholder">
 						<div class="panel">
@@ -682,26 +703,6 @@
 							</div>
 						</div>
 					</div>
-					
-					<s:if test="permissions.admin || permissions.contractor">
-						<%-- Open Tasks --%>
-						<div class="panel_placeholder">
-							<div class="panel">
-								<div class="panel_header">
-									<s:text name="Widget.6.caption"/>
-								</div>
-								<div class="panel_content" id="con_tasks">
-									<div class="inprogress"></div>
-									
-									<script type="text/javascript">
-										$(function() {
-											$('#con_tasks').load('ContractorTasksAjax.action?id=<s:property value="id"/>');
-										});
-									</script>
-								</div>
-							</div>
-						</div>
-					</s:if>
 					
 					<div class="panel_placeholder">
 						<div class="panel">

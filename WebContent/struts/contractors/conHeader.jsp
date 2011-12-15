@@ -269,7 +269,7 @@ function loadStatus(caoID){
 			</s:if>
 			<s:else>
 				<li>
-					<a class="dropdown" href="Home.action" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
+					<a class="dropdown" href="ContractorView.action" onmouseover="cssdropdown.dropit(this, event, 'contractorSubMenu')">
 						<s:text name="ContractorView.title" />
 					</a>
 				</li>

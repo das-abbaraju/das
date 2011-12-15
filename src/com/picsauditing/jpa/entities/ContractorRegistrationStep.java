@@ -53,7 +53,7 @@ public enum ContractorRegistrationStep {
 			return "RegistrationMakePayment.action";
 		case Done:
 		default:
-			return "Home.action";
+			return "ContractorView.action";
 
 		}
 	}

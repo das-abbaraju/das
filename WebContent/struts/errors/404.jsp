@@ -1,4 +1,5 @@
-<jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
+<jsp:useBean id="permissions"
+	class="com.picsauditing.access.Permissions" scope="session" />
 <html>
 <head>
 <link rel="stylesheet" type="text/css" media="screen"
@@ -19,7 +20,11 @@ know</a>.</div>
 <p>
 <%
 	if (permissions.isLoggedIn()) {
-%> <a href="Home.action"> <%
+		if (permissions.isContractor()) {
+%> <a href="ContractorView.action"> <%
+ 	} else {
+ %> <a href="Home.action"> <%
+ 	}
  	} else {
  %> <a href="Login.action"> <%
  	}

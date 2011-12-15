@@ -30,6 +30,8 @@ public class PicsMenu {
 	 */
 	static public String getHomePage(MenuComponent menu, Permissions permissions) {
 
+		if (permissions.isContractor())
+			return "ContractorView.action";
 		if (permissions.hasPermission(OpPerms.Dashboard))
 			return "Home.action";
 
