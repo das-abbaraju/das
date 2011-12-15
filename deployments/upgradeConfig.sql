@@ -435,3 +435,35 @@ insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) 
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.UserCount', '50,000 utilisateurs courants', 'fr', 24143, NOW());
 insert into app_translation (msgKey, msgValue, locale, createdBy, creationDate) values ('Registration.Why', 'Pourquoi les entrepreneurs <br />choisissent PICS?', 'fr', 24143, NOW());
 --
+
+-- PICS-4056
+-- remove extensions in questions
+UPDATE app_translation set msgValue=replace(msgValue, '.docx', '') where msgValue like '%.docx%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.xlsx', '') where msgValue like '%.xlsx%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.pptx', '') where msgValue like '%.pptx%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.pdf', '') where msgValue like '%.pdf%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.doc', '') where msgValue like '%.doc%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.xls', '') where msgValue like '%.xls%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.ppt', '') where msgValue like '%.ppt%' and msgValue like '%forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, '.zip', '') where msgValue like '%.zip%' and msgValue like '%forms/form%';
+-- remove absolute url in questions
+UPDATE app_translation set msgValue=replace(msgValue, 'http://www.picsorganizer.com/forms/form', 'forms/form') where msgValue like '%http://www.picsorganizer.com/forms/form%';
+UPDATE app_translation set msgValue=replace(msgValue, 'https://www.picsorganizer.com/forms/form', 'forms/form') where msgValue like '%https://www.picsorganizer.com/forms/form%';
+-- existing url in questions
+update app_translation set msgValue=replace(msgValue, 'forms/form', 'Resources!download.action?id=') where msgValue like '%forms/form%';
+-- update any existing references in translations
+update app_translation set msgValue=replace(msgValue, 'Forms & Docs', 'Resources') where msgValue like '%Forms & Docs%';
+-- remove extensions in email templates
+UPDATE email_template set body=replace(body, '.docx', '') where body like '%.docx%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.xlsx', '') where body like '%.xlsx%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.pptx', '') where body like '%.pptx%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.pdf', '') where body like '%.pdf%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.doc', '') where body like '%.doc%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.xls', '') where body like '%.xls%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.ppt', '') where body like '%.ppt%' and body like '%forms/form%';
+UPDATE email_template set body=replace(body, '.zip', '') where body like '%.zip%' and body like '%forms/form%';
+-- update url in email templates
+update email_template set body=replace(body, 'forms/form', 'Resources!download.action?id=') where body like '%forms/form%';
+-- update any remaining names in email templates
+update email_template set body=replace(body, 'Forms & Docs', 'Resources') where body like '%Forms & Docs%';
+--
