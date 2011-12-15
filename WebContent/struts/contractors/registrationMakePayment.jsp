@@ -219,10 +219,6 @@
 						cssClass="btn success" 
 					/>
 					
-					<p class="cc-note">
-						<s:text name="RegistrationMakePayment.CreditCardNote" />
-					</p>
-					
 					<p class="check-note">
 						<s:text name="ContractorPaymentOptions.InvoiceEmail" />
 					</p>
