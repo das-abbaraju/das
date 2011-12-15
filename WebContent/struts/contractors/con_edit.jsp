@@ -388,8 +388,11 @@
 										<s:elseif test="#conType.toString() == 'Offsite'">
 											<s:checkbox name="contractor.offsiteServices" /><s:property value="#conType.type" />
 										</s:elseif>
-										<s:else>
+										<s:elseif test="#conType.toString() == 'Supplier'">
 											<s:checkbox name="contractor.materialSupplier" /><s:property value="#conType.type" />
+										</s:elseif>
+										<s:else>
+											<s:checkbox name="contractor.transportationServices" /><s:property value="#conType.type" />
 										</s:else>
 									</s:iterator>
 									
