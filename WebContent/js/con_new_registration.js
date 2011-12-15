@@ -145,14 +145,13 @@ $(function() {
 		$('#potentialMatches').show();
 		$('#potentialMatches').append('<img src="images/ajax_process.gif" style="border: none;" />');
 		$('#potentialMatches').load('RequestNewContractorAjax.action', data);
-	});
-	
-	$("#loadUsersList").delegate("#requestedUser", "change", function(e) {
-		if ($(this).val() == 0) {
-			$("#requestedOther").show();
-		} else {
-			$("#requestedOther").hide();
-		}
+	}).delegate("#requestedUser", "change", function(e) {
+		checkUserOther($(this).val());
+	}).delegate("#operatorsList", "change", function() {
+		$('#loadUsersList').load('OperatorUserListAjax.action',
+				{opID: $(this).val(), newContractor: newContractor}, function() {
+			checkUserOther(opID);
+		});
 	});
 	
 	$("#operatorForms").delegate(".addForm", "click", function(e) {
@@ -171,6 +170,13 @@ $(function() {
 		$('#'+id+'_input').val(filename);
 	});
 });
+
+function checkUserOther(userID) {
+	if (!userID)
+		$("#requestedOther").show();
+	else
+		$("#requestedOther").hide();
+}
 
 function countryChanged(country) {
 	changeState(country);

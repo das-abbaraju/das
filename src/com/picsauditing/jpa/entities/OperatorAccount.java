@@ -33,6 +33,7 @@ public class OperatorAccount extends Account {
 	public static final int PicsConsortium = 4;
 	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
+	public static final int SALES = 23325;
 
 	private OperatorAccount parent;
 

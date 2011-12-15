@@ -5,7 +5,7 @@
 	<s:text name="ContractorRegistrationRequest.requestedByUser" />:
 </label>
 
-<s:select list="usersList" listKey="id" listValue="name" id="requestedUser"
+<s:select list="getUsersList(opID)" listKey="id" listValue="name" id="requestedUser"
 	name="newContractor.requestedByUser" value="%{newContractor.requestedByUser.id}"
 	headerKey="0" headerValue="- %{getText('RequestNewContractor.Other')} -" />
 	

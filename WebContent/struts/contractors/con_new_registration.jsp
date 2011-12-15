@@ -152,12 +152,10 @@
 							<s:text name="ContractorRegistrationRequest.requestedBy.fieldhelp" />
 						</div>
 					</li>
-					<li id="loadUsersList">
-						<s:include value="../users/operator_users.jsp" />
-					</li>
+					<li id="loadUsersList"></li>
 					<li>
 						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" 
-							value="%{getTextParameterized('short_dates', newContractor.deadline)}" onchange="checkDate(this)"
+							value="%{newContractor.deadline != null ? getTextParameterized('short_dates', newContractor.deadline) : ''}" onchange="checkDate(this)"
 							theme="formhelp" />
 					</li>
 					<li>
@@ -273,7 +271,7 @@
 							<li>
 								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
 								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
-									listValue="getText(i18nKey)" name="newContractor.status" onchange="hideShow()"/>
+									listValue="getText(i18nKey)" name="status" onchange="hideShow()"/>
 							</li>
 							<li id="holdDateLi">
 								<s:textfield id = "holdDate" name="newContractor.holdDate"	cssClass="datepicker" size="10" onchange="checkDate(this)"	theme="formhelp" />
@@ -298,14 +296,14 @@
 								<s:property value="getText(newContractor.status.I18nKey)" />
 							</li>
 							
-							<s:if test="newContractor.status==@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
+							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
 								<li>
 									<label><s:text name="ContractorRegistrationRequest.label.holdDate" />:</label>
 									<s:date name="newContractor.holdDate" format="MM/dd/yyyy"/>
 								</li>
 							</s:if>
 							
-							<s:if test="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful.equals(newContractor.status)">
+							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful">
 								<li>
 									<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
 									<s:property value="newContractor.reasonForDecline" />
@@ -414,6 +412,16 @@
 			var show = false;
 			var chooseADate = '<s:text name="javascript.ChooseADate" />';
 			var name ='<s:property value="permissions.name" />'; 
+			var newContractor = '<s:property value="newContractor.id" />';
+			
+			<s:if test="permissions.operatorCorporate">
+				$("#loadUsersList").load("OperatorUserListAjax.action",
+						{opID: '<s:property value="permissions.accountId" />'},
+						function() {
+							checkUserOther(<s:property value="permissions.userId" />);
+						}	
+				);
+			</s:if>
 			
 			<s:if test="newContractor.notes.length() > 0">
 				show = true;

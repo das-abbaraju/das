@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -48,7 +49,6 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SearchEngine;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -75,6 +75,8 @@ public class RequestNewContractor extends PicsActionSupport {
 	protected EmailAttachmentDAO attachmentDAO;
 	@Autowired
 	protected OperatorTagDAO operatorTagDAO;
+	@Autowired
+	protected EmailSenderSpring emailSenderSpring;
 
 	protected String requestedTagIds;
 	protected List<String> rightAnswers;
@@ -84,6 +86,7 @@ public class RequestNewContractor extends PicsActionSupport {
 	protected List<OperatorTag> operatorTags = new ArrayList<OperatorTag>(); // available tags of the operator
 
 	private ContractorRegistrationRequest newContractor;
+	private ContractorRegistrationRequestStatus status;
 
 	private int opID;
 	private String addToNotes;
@@ -111,6 +114,7 @@ public class RequestNewContractor extends PicsActionSupport {
 				opID = newContractor.getRequestedBy().getId();
 			}
 		} else {
+			status = newContractor.getStatus();
 			opID = newContractor.getRequestedBy().getId();
 		}
 
@@ -119,6 +123,7 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String ajaxCheck() throws Exception {
+
 		SearchEngine searchEngine = new SearchEngine(permissions);
 		List<BasicDynaBean> matches = newGap(searchEngine, term, type);
 		if (matches != null && !matches.isEmpty()) // results
@@ -217,15 +222,13 @@ public class RequestNewContractor extends PicsActionSupport {
 			addActionError(getText("RequestNewContractor.error.SelectRequestedByAccount"));
 		if (newContractor.getRequestedByUser() == null && Strings.isEmpty(newContractor.getRequestedByUserOther()))
 			addActionError(getText("RequestNewContractor.error.SelectRequestedUser"));
-
-		if (newContractor.getCountry() == null) {
+		if (newContractor.getCountry() == null)
 			addActionError(getText("RequestNewContractor.error.SelectCountry"));
-		} else if (newContractor.getCountry().getIsoCode().equals("US")
+		else if (newContractor.getCountry().getIsoCode().equals("US")
 				|| newContractor.getCountry().getIsoCode().equals("CA")) {
 			if (newContractor.getState() == null || Strings.isEmpty(newContractor.getState().getIsoCode()))
 				addActionError(getText("RequestNewContractor.error.SelectState"));
 		}
-
 		if (Strings.isEmpty(newContractor.getPhone()))
 			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
 		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
@@ -237,11 +240,11 @@ public class RequestNewContractor extends PicsActionSupport {
 		if (newContractor.getStatus() == ContractorRegistrationRequestStatus.Hold
 				&& newContractor.getHoldDate() == null)
 			addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
-		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(newContractor.getStatus()) || ContractorRegistrationRequestStatus.ClosedSuccessful
-				.equals(newContractor.getStatus())) && newContractor.getContractor() == null) {
+		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(status) || ContractorRegistrationRequestStatus.ClosedSuccessful
+				.equals(status)) && newContractor.getContractor() == null) {
 			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		}
-		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(newContractor.getStatus())
+		if (status == ContractorRegistrationRequestStatus.ClosedUnsuccessful
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 		// There are errors, just exit out
@@ -264,7 +267,7 @@ public class RequestNewContractor extends PicsActionSupport {
 
 		newContractor.setAuditColumns(permissions);
 
-		if (ContractorRegistrationRequestStatus.Hold.equals(newContractor.getStatus())) {
+		if (status == ContractorRegistrationRequestStatus.Hold) {
 			if (newContractor.getStatus() != ContractorRegistrationRequestStatus.Hold) {
 				String notes = "Request set to Hold until " + maskDateFormat(newContractor.getHoldDate());
 				newContractor.setNotes(prepend(notes, newContractor.getNotes()));
@@ -287,6 +290,7 @@ public class RequestNewContractor extends PicsActionSupport {
 			newContractor = crrDAO.save(newContractor);
 			sendEmail();
 		} else {
+			newContractor.setStatus(status);
 			newContractor = crrDAO.save(newContractor);
 		}
 
@@ -327,22 +331,23 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	private void sendEmail() {
-		EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
-		EmailBuilder email = new EmailBuilder();
-		email.setToAddresses(newContractor.getEmail());
+		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
+			EmailBuilder email = new EmailBuilder();
+			email.setToAddresses(newContractor.getEmail());
 
-		email.setFromAddress("info@picsauditing.com");
+			email.setFromAddress("info@picsauditing.com");
 
-		email.setTemplate(INITIAL_EMAIL);
-		email.addToken("newContractor", newContractor);
-		try {
-			EmailQueue q = email.build();
-			emailSender.send(q);
-			OperatorForm form = getForm();
-			if (form != null)
-				addAttachments(q, form.getFile());
-		} catch (IOException e) {
-			e.printStackTrace();
+			email.setTemplate(INITIAL_EMAIL);
+			email.addToken("newContractor", newContractor);
+			try {
+				EmailQueue q = email.build();
+				emailSenderSpring.send(q);
+				OperatorForm form = getForm();
+				if (form != null)
+					addAttachments(q, form.getFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -433,6 +438,7 @@ public class RequestNewContractor extends PicsActionSupport {
 			}
 			usedTerms = termsArray;
 			termsArray = termsArray.subList(0, termsArray.size() - 1);
+			// termsArray.subList(1, termsArray.size());
 		}
 
 		return results;
@@ -444,16 +450,6 @@ public class RequestNewContractor extends PicsActionSupport {
 		return operatorAccountDAO.findWhere(false, "", permissions);
 	}
 
-	public List<User> getUsersList() {
-		if (opID > 0)
-			return getUsersList(opID);
-		
-		if (newContractor != null && newContractor.getRequestedBy() != null)
-			return getUsersList(newContractor.getRequestedBy().getId());
-
-		return null;
-	}
-
 	public List<User> getUsersList(int accountID) {
 		List<User> usersAndSwitchTos = userDAO.findByAccountID(accountID, "Yes", "No");
 		List<User> switchTos = userSwitchDAO.findUsersBySwitchToAccount(accountID);
@@ -462,7 +458,7 @@ public class RequestNewContractor extends PicsActionSupport {
 		return usersAndSwitchTos;
 	}
 
-	private OperatorForm getForm() {
+	public OperatorForm getForm() {
 		if (newContractor != null && newContractor.getRequestedBy() != null) {
 			List<OperatorAccount> hierarchy = new ArrayList<OperatorAccount>();
 			hierarchy.add(newContractor.getRequestedBy());
@@ -489,6 +485,44 @@ public class RequestNewContractor extends PicsActionSupport {
 		}
 
 		return null;
+	}
+
+	public List<OperatorForm> getForms() {
+		if (forms == null) {
+			Set<OperatorForm> allForms = new HashSet<OperatorForm>();
+			Set<OperatorAccount> family = new HashSet<OperatorAccount>();
+			family.add(newContractor.getRequestedBy());
+
+			for (Facility f : newContractor.getRequestedBy().getCorporateFacilities()) {
+				if (!Account.PICS_CORPORATE.contains(f.getCorporate().getId())) {
+					for (Facility f2 : f.getCorporate().getOperatorFacilities())
+						family.add(f2.getOperator()); // Siblings
+					family.add(f.getCorporate()); // Direct parents
+				}
+			}
+
+			family.add(newContractor.getRequestedBy().getTopAccount());
+
+			for (OperatorAccount o : family) {
+				for (OperatorForm f : o.getOperatorForms()) {
+					if (f.getFormName().contains("*"))
+						allForms.add(f);
+				}
+			}
+
+			forms = new ArrayList<OperatorForm>(allForms);
+			// Sort alphabetically
+			Collections.sort(forms, new Comparator<OperatorForm>() {
+				public int compare(OperatorForm o1, OperatorForm o2) {
+					if (o1.getAccount().getName().compareTo(o2.getAccount().getName()) == 0)
+						return (o1.getFormName().compareTo(o2.getFormName()));
+
+					return o1.getAccount().getName().compareTo(o2.getAccount().getName());
+				}
+			});
+		}
+
+		return forms;
 	}
 
 	public ContractorRegistrationRequest getNewContractor() {
@@ -550,6 +584,14 @@ public class RequestNewContractor extends PicsActionSupport {
 		this.rightAnswers = rightAnswers;
 	}
 
+	public String getDraftEmailSubject() {
+		return templateDAO.find(INITIAL_EMAIL).getSubject();
+	}
+
+	public String getDraftEmailBody() {
+		return templateDAO.find(INITIAL_EMAIL).getBody();
+	}
+
 	public int getOpID() {
 		return opID;
 	}
@@ -580,5 +622,13 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	public void setRequestID(int requestID) {
 		this.requestID = requestID;
+	}
+
+	public ContractorRegistrationRequestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(ContractorRegistrationRequestStatus status) {
+		this.status = status;
 	}
 }
