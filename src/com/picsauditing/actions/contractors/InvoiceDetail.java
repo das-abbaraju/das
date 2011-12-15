@@ -155,6 +155,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					}
 				}
 
+				invoice.setQbSync(true);
+				invoice.updateAmount();
+				invoice.updateAmountApplied();
 				invoiceDAO.save(invoice);
 
 				addNote("Changed Membership Level", "Changed invoice from " + Strings.implode(removedItemNames, ", ")
