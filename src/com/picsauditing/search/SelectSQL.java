@@ -60,11 +60,13 @@ public class SelectSQL {
 		}
 
 		if (whereClause.size() > 0) {
-			sql.append("\nWHERE 1");
+			sql.append("\nWHERE ");
+			boolean needAnd = false;
 			for (String whereSQL : this.whereClause) {
-				sql.append("\n AND (");
-				sql.append(whereSQL);
-				sql.append(") ");
+				if (needAnd)
+					sql.append("\n AND ");
+				sql.append("(").append(whereSQL).append(") ");
+				needAnd = true;
 			}
 		}
 		if (this.groupByFields.size() > 0) {
@@ -136,8 +138,12 @@ public class SelectSQL {
 	}
 
 	public void addWhere(String whereClause) {
-		if (!Strings.isEmpty(whereClause))
-			this.whereClause.add(whereClause);
+		if (Strings.isEmpty(whereClause))
+			return;
+
+		if (whereClause.trim().equals("1"))
+			return;
+		this.whereClause.add(whereClause);
 	}
 
 	public void addGroupBy(String groupBy) {
