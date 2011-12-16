@@ -95,10 +95,6 @@
 	<body>
 		<s:include value="conHeader.jsp"/>
 		
-		<s:if test="permissions.contractor">
-			<div class="info"><s:text name="ContractorView.Description" /></div>
-		</s:if>
-		
 		<s:if test="permissions.admin">
 			<s:if test="contractor.hasPastDueInvoice()">
 				<div class="alert"><s:text name="ContractorView.HasPastDueInvoice" /></div>
