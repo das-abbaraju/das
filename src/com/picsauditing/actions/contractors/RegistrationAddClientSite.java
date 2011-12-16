@@ -69,6 +69,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	}
 
 	public void ajaxAdd() throws Exception {
+		long start = System.currentTimeMillis();
 		findContractor();
 		contractor.setRenew(true);
 		
@@ -78,15 +79,20 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		facilityChanger.setPermissions(permissions);
 		facilityChanger.setOperator(operator.getId());
 		facilityChanger.add();
+		long end = System.currentTimeMillis();
+		System.out.println("Add Execution Time: "+(end-start)+"ms");
 	}
 
 	public void ajaxRemove() throws Exception {
+		long start = System.currentTimeMillis();
 		findContractor();
 
 		facilityChanger.setContractor(contractor);
 		facilityChanger.setPermissions(permissions);
 		facilityChanger.setOperator(operator.getId());
 		facilityChanger.remove();
+		long end = System.currentTimeMillis();
+		System.out.println("Remove Execution Time: "+(end-start)+"ms");
 	}
 	
 	public void checkServiceTypeRestrictions() {

@@ -304,6 +304,11 @@
 			<result name="input">struts/contractors/registration.jsp</result>
 		</action>
 		
+		<action name="ContractorRegistration" class="com.picsauditing.actions.contractors.Registration">
+			<result>struts/contractors/registration.jsp</result>
+			<result name="input">struts/contractors/registration.jsp</result>
+		</action>
+		
 		<action name="RegistrationAddClientSite"
 			class="com.picsauditing.actions.contractors.RegistrationAddClientSite">
 			<result>struts/contractors/registrationAddClientSite.jsp</result>
