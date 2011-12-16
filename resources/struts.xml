@@ -531,6 +531,7 @@
 		<action name="ReportDynamic"
 			class="com.picsauditing.actions.report.ReportDynamic">
 			<result>struts/reports/report_dynamic.jsp</result>
+			<result name="list">struts/reports/report_dynamic.jsp</result>
 		</action>
 
 		<!-- Contractor List -->
