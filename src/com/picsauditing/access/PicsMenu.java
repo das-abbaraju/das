@@ -72,7 +72,6 @@ public class PicsMenu {
 				// Don't show for insurance only users
 				if (!permissions.isInsuranceOnlyContractorUser()) {
 					subMenu = menu.addChild(getText("global.Company"));
-					subMenu.addChild(getText("menu.Contractor.OurProfile"), "ContractorView.action");
 					subMenu.addChild(getText("menu.Contractor.WhereWeWork"), "ContractorFacilities.action");
 					subMenu.addChild(getText("menu.Contractor.ActivityLog"), "ContractorNotes.action");
 				}
