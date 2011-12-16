@@ -19,6 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.search.IndexOverrideWeight;
@@ -59,6 +60,7 @@ public class Employee extends AbstractIndexableTable {
 	List<EmployeeSite> employeeSites = new ArrayList<EmployeeSite>();
 	Set<EmployeeQualification> employeeQualifications = new HashSet<EmployeeQualification>();
 	List<AssessmentResult> assessmentResults = new ArrayList<AssessmentResult>();
+	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 
 	@IndexableField(type = IndexValueType.CLEANSTRING, weight = 4)
 	public String getFirstName() {
@@ -298,6 +300,16 @@ public class Employee extends AbstractIndexableTable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	@OneToMany(mappedBy = "employee")
+	@Where(clause = "expiresDate > NOW() OR expiresDate IS NULL")
+	public List<ContractorAudit> getAudits() {
+		return this.audits;
+	}
+
+	public void setAudits(List<ContractorAudit> audits) {
+		this.audits = audits;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -24,6 +24,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
@@ -40,6 +42,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	private AuditType auditType;
 	private ContractorAccount contractorAccount;
+	private Employee employee;
 	private Date expiresDate;
 	private Date effectiveDate;
 	private User auditor;
@@ -95,6 +98,17 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setContractorAccount(ContractorAccount contractor) {
 		this.contractorAccount = contractor;
+	}
+
+	@ManyToOne
+	@NotFound(action=NotFoundAction.IGNORE)
+	@JoinColumn(name = "employeeID")
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
 	}
 
 	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.ALL })
