@@ -16,6 +16,11 @@ import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 
+/**
+ * TODO class refactoring This class is probably going to get quite large. Our intention was never to have all of it in
+ * a single class. but until we write this out it was hard to see how to layout the class. In other words, we expect
+ * there to be class refactoring later on.
+ */
 public class QueryRunner {
 	private SelectSQL sql = new SelectSQL();
 	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
@@ -234,9 +239,6 @@ public class QueryRunner {
 
 		joinToUser("accountContact", "a.contactID");
 
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-		sql.addWhere("1 " + permQuery.toString());
-
 		defaultSort = "a.nameIndex";
 	}
 
@@ -317,7 +319,6 @@ public class QueryRunner {
 		addQueryField("requestedByOperatorName", "op.name");
 
 		joinToUser("requestedBy", "crr.requestedByUserID");
-		addQueryField("requestedByOperatorUserOther", "crr.requestedByUser");
 		joinToUser("contactedBy", "crr.lastContactedBy");
 
 		joinToAccount("requestedExisting", "crr.conID");
@@ -346,6 +347,9 @@ public class QueryRunner {
 		addQueryField("contractorPayingFacilities", "c.payingFacilities");
 
 		joinToUser("customerService", "c.welcomeAuditor_id");
+		
+		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
+		sql.addWhere("1 " + permQuery.toString());
 	}
 
 	private void buildEmailSubscriptionBase() {
@@ -521,9 +525,7 @@ public class QueryRunner {
 		addQueryField("contractorAuditOperatorWorkflowStatus", "caow.status");
 
 		addQueryField("auditOperatorWorkflowStatus", "caow.status");
-		addQueryField("auditOperatorWorkflowCreatedByUserID", "caowu.id");
-		addQueryField("auditOperatorWorkflowCreatedByUserAccountID", "caowu.accountID");
-		addQueryField("auditOperatorWorkflowCreatedByUserName", "caowu.name");
+		joinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	}
 
 	private void joinToAccount(String joinAlias, String foreignKey) {
