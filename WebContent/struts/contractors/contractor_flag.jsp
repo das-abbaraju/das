@@ -90,7 +90,8 @@ fieldset.form {
 				$('.datepicker').datepicker({
 					changeMonth: true,
 					changeYear:true,
-					yearRange: '1940:'+ (new Date().getFullYear()+5),
+					minDate: new Date(),
+					yearRange: (new Date().getFullYear()) +':'+ (new Date().getFullYear()+5),
 					showOn: 'both',
 					buttonImage: 'images/icon_calendar.gif',
 					buttonImageOnly: true,
