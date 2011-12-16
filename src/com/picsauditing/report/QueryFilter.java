@@ -9,8 +9,9 @@ import com.picsauditing.jpa.entities.JSONable;
 
 public class QueryFilter implements JSONable {
 	private String field;
-	private QueryFilterOperator operator;
 	private boolean not = false;
+	private QueryFilterOperator operator;
+	private String field2;
 	private String value;
 	private String value2;
 
@@ -47,6 +48,11 @@ public class QueryFilter implements JSONable {
 		if (field.equals("accountName"))
 			columnSQL = "a.nameIndex";
 		
+		// TODO: Apply field to field comparisons
+		// TODO: for dates, think about NOW() and CURDATE(), and intervals from there (i.e. 30 days after, 2 weeks before)
+		// TODO: for boolean, think about 'true' and 'false'
+		// TODO: for users, think about user group vs user individuals
+		
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		switch (operator) {
 		case BeginsWith:
@@ -66,7 +72,6 @@ public class QueryFilter implements JSONable {
 			expression += "(" + value + ")";
 			break;
 		case InReport:
-		case Exists:
 			expression += "({REPORT:" + value + "})";
 			break;
 		case Empty:
@@ -85,6 +90,14 @@ public class QueryFilter implements JSONable {
 
 	public void setField(String field) {
 		this.field = field;
+	}
+
+	public String getField2() {
+		return field2;
+	}
+
+	public void setField2(String field2) {
+		this.field2 = field2;
 	}
 
 	public QueryFilterOperator getOperator() {

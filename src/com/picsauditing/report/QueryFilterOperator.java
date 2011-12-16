@@ -12,7 +12,6 @@ public enum QueryFilterOperator {
 	BeginsWith("LIKE"),
 	EndsWith("LIKE"),
 	Contains("LIKE"),
-	Exists("Exists"),
 	Empty("IS NULL");
 	private String operand;
 

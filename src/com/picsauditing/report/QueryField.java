@@ -15,6 +15,7 @@ public class QueryField implements JSONAware {
 	 * aka field or alias
 	 */
 	public String dataIndex;
+	public String aggregation;
 	public String sql;
 	public String requireJoin;
 	public int width = 0;

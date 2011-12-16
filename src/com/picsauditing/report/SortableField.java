@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.JSONable;
 
 public class SortableField implements JSONable {
 	public String field;
+	public String aggregation;
 	public boolean ascending = true;
 
 	@SuppressWarnings("unchecked")

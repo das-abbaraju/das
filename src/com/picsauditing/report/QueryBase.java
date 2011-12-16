@@ -4,10 +4,17 @@ public enum QueryBase {
 	Accounts,
 	Contractors,
 	Operators,
-	Users,
+	Resources,
 	ContractorAudits,
 	ContractorAuditOperators,
 	ContractorAuditOperatorWorkflows,
+	EmailExclusions,
+	Emails,
+	EmailSubscriptions,
+	Employees,
 	Invoices,
-	RegistrationRequests;
+	RegistrationRequests,
+	Users,
+	ExceptionLogs,
+	EmployeeAssessments, ContractorTrades;
 }
