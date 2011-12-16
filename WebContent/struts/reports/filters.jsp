@@ -291,7 +291,7 @@
 				<span class="q_status_none"><s:text name="JS.Filters.status.None" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+					<s:textfield rel="Operator" name="filter.excludeOperators" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
