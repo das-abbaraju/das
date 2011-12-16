@@ -217,12 +217,16 @@ public class RequestNewContractor extends PicsActionSupport {
 	public String save() throws Exception {
 		if (Strings.isEmpty(newContractor.getName()))
 			addActionError(getText("RequestNewContractor.error.FillContractorName"));
+
 		if (Strings.isEmpty(newContractor.getContact()))
 			addActionError(getText("RequestNewContractor.error.FillContactName"));
+
 		if (newContractor.getRequestedBy() == null)
 			addActionError(getText("RequestNewContractor.error.SelectRequestedByAccount"));
+
 		if (newContractor.getRequestedByUser() == null && Strings.isEmpty(newContractor.getRequestedByUserOther()))
 			addActionError(getText("RequestNewContractor.error.SelectRequestedUser"));
+
 		if (newContractor.getCountry() == null)
 			addActionError(getText("RequestNewContractor.error.SelectCountry"));
 		else if (newContractor.getCountry().getIsoCode().equals("US")
@@ -230,22 +234,27 @@ public class RequestNewContractor extends PicsActionSupport {
 			if (newContractor.getState() == null || Strings.isEmpty(newContractor.getState().getIsoCode()))
 				addActionError(getText("RequestNewContractor.error.SelectState"));
 		}
+
 		if (Strings.isEmpty(newContractor.getPhone()))
 			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
+
 		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
 			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
+
 		if (newContractor.getDeadline() == null)
 			addActionError(getText("RequestNewContractor.error.SelectDeadline"));
+
 		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
 			addActionError(getText("RequestNewContractor.error.EnterRegistrationReason"));
-		if (newContractor.getStatus() == ContractorRegistrationRequestStatus.Hold
-				&& newContractor.getHoldDate() == null)
+
+		if (ContractorRegistrationRequestStatus.Hold.equals(status) && newContractor.getHoldDate() == null)
 			addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
+
 		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(status) || ContractorRegistrationRequestStatus.ClosedSuccessful
 				.equals(status)) && newContractor.getContractor() == null) {
 			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		}
-		if (status == ContractorRegistrationRequestStatus.ClosedUnsuccessful
+		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(status)
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 		// There are errors, just exit out
