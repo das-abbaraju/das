@@ -105,4 +105,33 @@ public class AuditBuilderTest extends TestCase {
 		contractor1.setOnsiteServices(true);
 		contractor1.setMaterialSupplier(true);
 	}
+	
+	public void testAuditTypes() {
+		AuditTypeRule rule;
+		ContractorAccount contractor;
+
+		// clear out old rules
+		typeRules.clear();
+		typeRuleCache.clear();
+		
+		// create rules
+		rule = new AuditTypeRule();
+		rule.setAuditType(EntityFactory.makeAuditType(50));
+		typeRules.add(rule);
+		
+		// initialize cache
+		typeRuleCache.initialize(typeRules);
+		
+		// initialize contractor
+		contractor = EntityFactory.makeContractor();
+		EntityFactory.addContractorOperator(contractor1, EntityFactory.makeOperator());
+
+		
+		// typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor1);
+		// Now we should have 1 audit and 2 categories for the single operator
+		auditTypes = typeBuilder.calculate();
+
+		assertEquals(1, auditTypes.size()); // should get
+
+	}
 }

@@ -70,6 +70,7 @@ public class EntityFactory {
 		contractor.setSafetyRisk(LowMedHigh.Med);
 		contractor.setProductRisk(LowMedHigh.Med);
 		contractor.setCountry(new Country("US"));
+		contractor.setOnsiteServices(true);
 		return contractor;
 	}
 
