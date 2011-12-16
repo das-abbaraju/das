@@ -43,7 +43,7 @@
 		<s:form cssClass="locale-form">
 			<s:select
 				label=""
-				list="#{'en': 'English', 'fr': 'Francais', 'es': 'Spanish'}"
+				list="#{'en': 'English', 'fr': 'Français', 'es': 'Español'}"
 				name="request_locale"
 				value="locale"
 			/>
