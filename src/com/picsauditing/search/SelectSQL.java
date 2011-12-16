@@ -3,7 +3,7 @@ package com.picsauditing.search;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.picsauditing.util.log.PicsLogger;
+import com.picsauditing.util.Strings;
 
 public class SelectSQL {
 	protected String fromTable;
@@ -36,7 +36,6 @@ public class SelectSQL {
 	}
 
 	public String toString(List<SelectSQL> unionSql) {
-		PicsLogger.start("SelectSQL");
 		if (fullClause.length() > 0)
 			return fullClause;
 
@@ -76,7 +75,7 @@ public class SelectSQL {
 				sql.append(this.havingClause);
 			}
 		}
-		
+
 		// do the same as above for the union
 		if (unionSql.size() > 0) {
 			for (SelectSQL union : unionSql) {
@@ -97,8 +96,6 @@ public class SelectSQL {
 			}
 			sql.append(this.limit);
 		}
-		PicsLogger.log(sql.toString());
-		PicsLogger.stop();
 		return sql.toString();
 	}
 
@@ -139,12 +136,12 @@ public class SelectSQL {
 	}
 
 	public void addWhere(String whereClause) {
-		if (whereClause != null && whereClause.length() > 0)
+		if (!Strings.isEmpty(whereClause))
 			this.whereClause.add(whereClause);
 	}
 
 	public void addGroupBy(String groupBy) {
-		if (groupBy != null && groupBy.length() > 0)
+		if (!Strings.isEmpty(groupBy))
 			this.groupByFields.add(groupBy);
 	}
 
