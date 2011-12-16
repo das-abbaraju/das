@@ -24,11 +24,8 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -402,18 +399,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		return null;
 	}
 
-	/** ******** DMI ******** */
-	public String importPQF() throws Exception {
-		findContractor();
-
-		if (!isHasPQFImportAudit()) {
-			this.redirect("CreateImportPQFAudit.action?id=" + contractor.getId()
-					+ "&url=RegistrationMakePayment.action");
-		}
-
-		return SUCCESS;
-	}
-
 	public String changePaymentToCC() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -585,19 +570,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		this.braintreeCommunicationError = braintreeCommunicationError;
 	}
 
-	public boolean isHasPQFImportAudit() {
-		for (ContractorAudit ca : contractor.getAudits()) {
-			if (ca.getAuditType().getId() == AuditType.IMPORT_PQF)
-				return true;
-		}
-
-		return false;
-	}
-
-	public InvoiceFee getImportFeeForTranslation() {
-		return invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-	}
-
 	public boolean isProcessPayment() {
 		return processPayment;
 	}
@@ -616,7 +588,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.removeImportPQF(contractor);
 		generateOrUpdateInvoiceIfNecessary();
-		loadCC();
 		return SUCCESS;
 	}
 
@@ -624,7 +595,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
 		generateOrUpdateInvoiceIfNecessary();
-		loadCC();
 		return SUCCESS;
 	}
 
