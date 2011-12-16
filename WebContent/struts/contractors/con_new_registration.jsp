@@ -239,18 +239,20 @@
 								<s:property value="newContractor.contractor.name" /></a>
 							</s:if>
 						</li>
-					<li>
-						<label><s:text name="global.Notes" />:</label>
-						<div id="notesDiv">
-							<div id="notesHere">
-								<pre id="addHere"></pre>
-								
-								<s:if test="newContractor.notes.length() > 0">
-									<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
-								</s:if>
+						<li>
+							<label><s:text name="global.Notes" />:</label>
+							<div id="notesDiv">
+								<div id="notesHere">
+									<pre id="addHere"></pre>
+									
+									<s:if test="newContractor.notes.length() > 0">
+										<pre id="notesPreview">
+											<s:property value="newContractor.notes" />
+										</pre>
+									</s:if>
+								</div>
 							</div>
-						</div>
-					</li>
+						</li>
 					</s:if>
 					<s:if test="newContractor.id == 0">
 						<li>
@@ -425,7 +427,10 @@
 			
 			<s:if test="newContractor.notes.length() > 0">
 				show = true;
-				$('#notesHere').show();		
+
+				$(function() {
+					$('#notesHere').show();
+				});
 			</s:if>
 			
 			function changeState(country) {
