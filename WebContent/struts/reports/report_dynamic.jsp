@@ -13,6 +13,8 @@
 <div id="report_extjs">
 </div>
 
+<a href="ReportDynamic!data.action?report=<s:property value="report.id"/>" target="reportData">See JSON Data</a>
+
 <script type="text/javascript">
 Ext.onReady(function() {
 	var baseStore = Ext.create('Ext.data.Store', {
