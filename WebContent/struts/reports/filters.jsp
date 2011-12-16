@@ -284,6 +284,31 @@
 				</s:else>
 			</div>
 		</s:if>
+		
+		<s:if test="filter.showExcludeOperators">
+			<div class="filterOption">
+				<a href="#" class="filterBox"><s:text name="ReportNewRequestedContractor.ExcludeOperators" /></a> =
+				<span class="q_status_none"><s:text name="JS.Filters.status.None" /></span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+		</s:if>
+		
+		<s:if test="filter.showOperatorTags">
+			<div class="filterOption">
+				<a href="#" class="filterBox"><s:text name="Filters.header.Tag" /></a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:select list="filter.operatorTagsList" cssClass="forms" name="filter.operatorTags" listKey="id" 
+						listValue="%{operator.name + ': ' + tag}" multiple="true" size="5" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+		</s:if>
 	
 		<s:if test="filter.showWaCategories">
 			<br clear="all" />

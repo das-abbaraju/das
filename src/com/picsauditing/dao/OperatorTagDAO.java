@@ -62,4 +62,8 @@ public class OperatorTagDAO extends PicsDAO {
 		return query.getResultList();
 	}
 	
+	public List<OperatorTag> findAll() {
+		Query query = em.createQuery("FROM OperatorTag o");
+		return query.getResultList();
+	}
 }

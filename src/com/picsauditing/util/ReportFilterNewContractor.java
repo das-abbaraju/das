@@ -1,12 +1,16 @@
 package com.picsauditing.util;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
@@ -17,6 +21,8 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showViewAll = false;
 	protected boolean showCreationDate = true;
 	protected boolean showRequestStatus = true;
+	protected boolean showExcludeOperators = false;
+	protected boolean showOperatorTags = false;
 
 	protected String handledBy;
 	protected Date followUpDate;
@@ -24,12 +30,13 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected Date creationDate1;
 	protected Date creationDate2;
 	protected String requestStatus = "Active";
+	protected int[] excludeOperators;
+	protected int[] operatorTags;
 
 	@Override
 	public void setPermissions(Permissions permissions) {
 		this.permissions = permissions;
 	}
-
 
 	public boolean isShowFollowUpDate() {
 		return showFollowUpDate;
@@ -54,13 +61,29 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	public void setShowCreationDate(boolean showCreationDate) {
 		this.showCreationDate = showCreationDate;
 	}
-	
+
 	public boolean isShowRequestStatus() {
 		return showRequestStatus;
 	}
 
 	public void setShowRequestStatus(boolean showRequestStatus) {
 		this.showRequestStatus = showRequestStatus;
+	}
+
+	public boolean isShowExcludeOperators() {
+		return showExcludeOperators;
+	}
+
+	public void setShowExcludeOperators(boolean showExcludeOperators) {
+		this.showExcludeOperators = showExcludeOperators;
+	}
+
+	public boolean isShowOperatorTags() {
+		return showOperatorTags;
+	}
+
+	public void setShowOperatorTags(boolean showOperatorTags) {
+		this.showOperatorTags = showOperatorTags;
 	}
 
 	public String getHandledBy() {
@@ -111,6 +134,22 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.requestStatus = requestStatus;
 	}
 
+	public int[] getExcludeOperators() {
+		return excludeOperators;
+	}
+
+	public void setExcludeOperators(int[] excludeOperators) {
+		this.excludeOperators = excludeOperators;
+	}
+
+	public int[] getOperatorTags() {
+		return operatorTags;
+	}
+
+	public void setOperatorTags(int[] operatorTags) {
+		this.operatorTags = operatorTags;
+	}
+
 	// Lists
 	public WaitingOn[] getHandledByList() throws Exception {
 		return new WaitingOn[] { WaitingOn.PICS, WaitingOn.Operator };
@@ -139,4 +178,22 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		return stateDAO.findAll();
 	}
- }
+	
+	public List<OperatorTag> getOperatorTagsList() {
+		OperatorTagDAO tagDAO = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
+		
+		List<OperatorTag> tags = tagDAO.findAll();
+		Collections.sort(tags, new Comparator<OperatorTag>() {
+			@Override
+			public int compare(OperatorTag o1, OperatorTag o2) {
+				if (o1.getOperator().getName().equals(o2.getOperator().getName())) {
+					return o1.getTag().compareTo(o2.getTag());
+				}
+				
+				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
+			}
+		});
+		
+		return tags;
+	}
+}

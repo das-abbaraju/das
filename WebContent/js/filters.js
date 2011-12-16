@@ -88,10 +88,15 @@ $(function() {
 				status_text += ', ';
 			status_text += $(this).text();
 		});
-		if(status_text=='')
-			status_text = translate('JS.Filters.status.All');
+		if(status_text=='') {
+			if ($(this).closest('.filterOption').find('.q_status_none').length == 0)
+				status_text = translate('JS.Filters.status.All');
+			else
+				status_text = translate('JS.Filters.status.None');
+		}
 
 		$(this).closest('.filterOption').find('.q_status').text(status_text);
+		$(this).closest('.filterOption').find('.q_status_none').text(status_text);
 	});
 
 	$('body').delegate('.filterOption span.textfield', 'updateQuery', function() {

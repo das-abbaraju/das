@@ -35,7 +35,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	@Autowired
 	protected OperatorTagDAO operatorTagDAO;
 	@Autowired
-	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO; 
+	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 
 	protected SelectSQL sql;
 	protected ReportFilterNewContractor filter = new ReportFilterNewContractor();
@@ -131,6 +131,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (permissions.isPicsEmployee()) {
 			getFilter().setShowViewAll(true);
 			getFilter().setShowOperator(true);
+			getFilter().setShowExcludeOperators(true);
+			getFilter().setShowOperatorTags(true);
 
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
@@ -203,16 +205,24 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
 			sql.addWhere(f.getCustomAPI());
+
+		if (filterOn(f.getRequestStatus())) {
+			sql.addWhere("cr.status = '" + f.getRequestStatus() + "'");
+		}
+
+		if (filterOn(f.getExcludeOperators())) {
+			sql.addWhere("cr.requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
+		}
 		
-		if (filterOn(f.getRequestStatus())){
-			sql.addWhere("cr.status = '" +f.getRequestStatus() + "'");
+		if (filterOn(f.getOperatorTags())) {
+			sql.addWhere("cr.operatorTags REGEXP '" + Strings.implode(f.getOperatorTags(), "|") + "'");
 		}
 	}
 
 	public ReportFilterNewContractor getFilter() {
 		return filter;
 	}
-	
+
 	protected void addExcelColumns() {
 		excelSheet.setData(data);
 
@@ -228,22 +238,32 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("Country", getText("ContractorRegistrationRequest.country")));
 
 		if (!permissions.isOperatorCorporate()) {
-			excelSheet.addColumn(new ExcelColumn("RequestedByID", getText("ContractorRegistrationRequest.requestedBy"), ExcelCellType.Integer));
-			excelSheet.addColumn(new ExcelColumn("RequestedUser", getText("ContractorRegistrationRequest.requestedByUser")));
-			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther", getText("ContractorRegistrationRequest.requestedByUserOther")));
+			excelSheet.addColumn(new ExcelColumn("RequestedByID", getText("ContractorRegistrationRequest.requestedBy"),
+					ExcelCellType.Integer));
+			excelSheet.addColumn(new ExcelColumn("RequestedUser",
+					getText("ContractorRegistrationRequest.requestedByUser")));
+			excelSheet.addColumn(new ExcelColumn("RequestedByUserOther",
+					getText("ContractorRegistrationRequest.requestedByUserOther")));
 		}
 
-		excelSheet.addColumn(new ExcelColumn("deadline", getText("ContractorRegistrationRequest.deadline"), ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("deadline", getText("ContractorRegistrationRequest.deadline"),
+				ExcelCellType.Date));
 
 		if (permissions.isOperatorCorporate())
-			excelSheet.addColumn(new ExcelColumn("ContactedBy", getText("ContractorRegistrationRequest.lastContactedBy")));
+			excelSheet.addColumn(new ExcelColumn("ContactedBy",
+					getText("ContractorRegistrationRequest.lastContactedBy")));
 		else
-			excelSheet.addColumn(new ExcelColumn("ContactedByID", getText("ContractorRegistrationRequest.lastContactedBy")));
+			excelSheet.addColumn(new ExcelColumn("ContactedByID",
+					getText("ContractorRegistrationRequest.lastContactedBy")));
 
-		excelSheet.addColumn(new ExcelColumn("lastContactDate", getText("ContractorRegistrationRequest.lastContactedDate"), ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("contactCount", getText("ContractorRegistrationRequest.contactCount"), ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("matchCount", getText("ContractorRegistrationRequest.matchCount"), ExcelCellType.Integer));
-		excelSheet.addColumn(new ExcelColumn("conID", getText("ContractorRegistrationRequest.contractor"), ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("lastContactDate",
+				getText("ContractorRegistrationRequest.lastContactedDate"), ExcelCellType.Date));
+		excelSheet.addColumn(new ExcelColumn("contactCount", getText("ContractorRegistrationRequest.contactCount"),
+				ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("matchCount", getText("ContractorRegistrationRequest.matchCount"),
+				ExcelCellType.Integer));
+		excelSheet.addColumn(new ExcelColumn("conID", getText("ContractorRegistrationRequest.contractor"),
+				ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("contractorName", getText("global.ContractorName")));
 		excelSheet.addColumn(new ExcelColumn("Notes", getText("global.Notes")));
 	}
@@ -255,14 +275,14 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 	public Date getClosedDate(String notes) throws Exception {
 		String[] lines = notes.split("\r\n");
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		
+
 		for (String line : lines) {
 			if (line.contains("Closed the request.")) {
 				String[] pieces = line.split(" - ");
 				return sdf.parse(pieces[0]);
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -270,14 +290,13 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		ContractorRegistrationRequest crr = contractorRegistrationRequestDAO.find(id);
 
 		String result = "";
-		
+
 		String requestedTagIds = crr.getOperatorTags();
 
 		if (!Strings.isEmpty(requestedTagIds)) {
 			StringTokenizer st = new StringTokenizer(requestedTagIds, ", ");
 			while (st.hasMoreTokens()) {
-				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st
-						.nextToken()));
+				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st.nextToken()));
 				if (tag != null) {
 					result += " " + tag.getTag() + " ";
 				}
