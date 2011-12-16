@@ -89,15 +89,12 @@ public class SmartFacilitySuggest {
 	}
 
 	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor, int limit) throws SQLException {
-		SelectSQL ops = new SelectSQL("generalcontractors");
-		ops.addField("genID");
-		ops.addWhere("subID = " + contractor.getId());
-
+		String opIDs = Strings.implodeIDs(contractor.getOperatorAccounts());
 		SelectSQL sql = new SelectSQL("stats_gco_count s");
 		sql.addJoin("JOIN accounts a ON s.opID2 = a.id");
 		sql.addJoin("JOIN stats_gco_count s2 ON s2.opID = s.opID2 AND s2.opID2 IS NULL");
-		sql.addWhere("s.opID IN (" + ops.toString() + ")");
-		sql.addWhere("s.opID2 NOT IN (" + ops.toString() + ")");
+		sql.addWhere("s.opID IN (" + opIDs + ")");
+		sql.addWhere("s.opID2 NOT IN (" + opIDs + ")");
 		if (contractor.getStatus() == AccountStatus.Active || contractor.getStatus() == AccountStatus.Pending)
 			sql.addWhere("a.status = 'Active'");
 		else if (contractor.getStatus() == AccountStatus.Demo)

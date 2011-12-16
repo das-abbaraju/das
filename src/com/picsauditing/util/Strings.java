@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.velocity.tools.generic.DateTool;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
 
@@ -129,6 +130,18 @@ public class Strings {
 		return implode(collection, ",");
 	}
 
+	public static String implodeIDs(Collection<? extends BaseTable> collection) {
+		if (collection == null)
+			return "";
+		StringBuffer buffer = new StringBuffer();
+		for (BaseTable o : collection) {
+			if (buffer.length() > 0)
+				buffer.append(",");
+			buffer.append(o.getId());
+		}
+		return buffer.toString();
+	}
+	
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
