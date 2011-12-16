@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
@@ -9,6 +11,7 @@ import org.json.simple.JSONValue;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.FieldType;
 import com.picsauditing.report.QueryBase;
@@ -30,7 +33,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String data() throws Exception {
+	public String data() {
 		if (!isReportAndBaseThere())
 			return BLANK;
 
@@ -38,30 +41,38 @@ public class ReportDynamic extends PicsActionSupport {
 		runner.buildQuery(createCommandFromReportParameters());
 		Map<String, QueryField> availableFields = runner.getAvailableFields();
 
-		QueryData data = runner.run();
-		JSONArray rows = new JSONArray();
-		for (Map<String, Object> row : data.getData()) {
-			JSONObject jsonRow = new JSONObject();
-			for (String column : row.keySet()) {
-				Object value = row.get(column);
-				if (value == null) {
+		try {
+			QueryData data = runner.run();
+			JSONArray rows = new JSONArray();
+			for (Map<String, Object> row : data.getData()) {
+				JSONObject jsonRow = new JSONObject();
+				for (String column : row.keySet()) {
+					Object value = row.get(column);
+					if (value == null) {
 
-				} else {
-					QueryField field = availableFields.get(column);
-					if (field.isTranslated()) {
-						jsonRow.put(column, getText(field.getI18nKey(value.toString())));
-					} else if (value.getClass().equals(java.sql.Timestamp.class)) {
-						Timestamp value2 = (Timestamp) value;
-						jsonRow.put(column, value2.getTime());
-					} else
-						jsonRow.put(column, value);
+					} else {
+						QueryField field = availableFields.get(column);
+						if (field.isTranslated()) {
+							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
+						} else if (value.getClass().equals(java.sql.Timestamp.class)) {
+							Timestamp value2 = (Timestamp) value;
+							jsonRow.put(column, value2.getTime());
+						} else
+							jsonRow.put(column, value);
+					}
 				}
+				rows.add(jsonRow);
 			}
-			rows.add(jsonRow);
-		}
 
-		json.put("total", runner.getAllRows());
-		json.put("data", rows);
+			json.put("success", true);
+			json.put("total", runner.getAllRows());
+			json.put("data", rows);
+		} catch (SQLException e) {
+			json.put("success", false);
+			json.put("message", e.getMessage());
+			showSQL = true;
+			System.out.println("Error in Dynamic Report Query: " + runner.getSQL());
+		}
 		if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0))
 			json.put("sql", runner.getSQL().replaceAll("\n", " "));
 		return JSON;
@@ -184,4 +195,7 @@ public class ReportDynamic extends PicsActionSupport {
 		this.showSQL = showSQL;
 	}
 
+	public List<? extends BaseTable> getAvailableReports() {
+		return dao.findWhere(Report.class, "id > 0", 100);
+	}
 }
