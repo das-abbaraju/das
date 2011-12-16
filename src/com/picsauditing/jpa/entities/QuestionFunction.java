@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -247,7 +248,7 @@ public enum QuestionFunction {
 			
 			BigDecimal result;
 			try {
-				result = totalIncidents.divide(employees).multiply(UK_NORMALIZER).setScale(2);
+				result = totalIncidents.divide(employees, 7, RoundingMode.HALF_UP).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return "Audit.missingParameter";
 			}
@@ -273,7 +274,7 @@ public enum QuestionFunction {
 					
 			BigDecimal result;
 			try {
-				result = dangerousOccurences.divide(totalHours).multiply(UK_NORMALIZER).setScale(2);
+				result = dangerousOccurences.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return "Audit.missingParameter";
 			}
@@ -411,7 +412,7 @@ public enum QuestionFunction {
 		BigDecimal result;
 		try {
 			result = OSHA_NORMALIZER.multiply(
-					cases.divide(hours,
+					cases.divide(hours,7,
 							BigDecimal.ROUND_HALF_UP)).setScale(2);
 		} catch (java.lang.ArithmeticException e) {
 			return "Audit.missingParameter";
