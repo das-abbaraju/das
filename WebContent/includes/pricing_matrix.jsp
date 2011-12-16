@@ -18,7 +18,9 @@ $(document).ready(function() {
 
 <h2><s:text name="ContractorPricing.MatrixTitle" /></h2>
 <p>
-	<s:text name="ContractorPricing.Description"></s:text>
+	<s:if test="con != null">
+		<s:text name="ContractorPricing.Description"></s:text>
+	</s:if>
 </p>
 
 <table class="report center"
