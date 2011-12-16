@@ -2072,6 +2072,11 @@
 			<result>struts/employees/employee_assessment_results.jsp</result>
 		</action>
 
+		<action name="EmployeeDashboard"
+			class="com.picsauditing.actions.employees.EmployeeDashboard">
+			<result>struts/employees/employee_dashboard.jsp</result>
+		</action>
+
 		<action name="ManageProjects"
 			class="com.picsauditing.actions.operators.ManageJobSites">
 			<result>/struts/operators/op_job_sites.jsp</result>
