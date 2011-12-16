@@ -1,13 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 <html>
 <head>
-<title>Report</title>
+<title><s:property value="report.summary"/></title>
 </head>
 <body>
-<h1>Dynamic Report</h1>
+| <s:iterator value="availableReports"><a href="?report=<s:property value="id"/>"><s:property value="summary"/></a> | </s:iterator>
 
-<div id="report_extjs"></div>
+<h1><s:property value="report.summary"/></h1>
+
+<div id="report_extjs">
+</div>
 
 <script type="text/javascript">
 Ext.onReady(function() {
@@ -27,14 +31,15 @@ Ext.onReady(function() {
 	Ext.create('Ext.grid.Panel', {
 		renderTo : 'report_extjs',
 		store : baseStore,
-		// stripeRows : true,
-		// multiSelect : true,
-		// width : 800,
-		// height : 600,
 		columns : <s:property value="gridColumns" escape="false" />
 	});
 });
 </script>
+
+<%
+/*
+*/
+%>
 
 </body>
 </html>
