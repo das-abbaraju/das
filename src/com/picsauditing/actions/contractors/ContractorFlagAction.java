@@ -762,13 +762,27 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
-				AuditType auditType = cao.getAudit().getAuditType();
-				if (auditTypeToFlagCriteria.get(auditType) != null
-						&& auditTypeToFlagCriteria.get(auditType).getRequiredStatus() != cao.getStatus())
-					missingAudits.put(auditType, cao);
+				addCaoToMissingAudits(cao,  auditTypeToFlagCriteria);
 			}
 		}
 		return missingAudits;
+	}
+	
+	private void addCaoToMissingAudits(ContractorAuditOperator cao, Map<AuditType, FlagCriteria> auditTypeToFlagCriteria) {
+		AuditType auditType = cao.getAudit().getAuditType();
+		
+		if (auditTypeToFlagCriteria.get(auditType) == null
+				|| auditTypeToFlagCriteria.get(auditType).getRequiredStatus() == cao.getStatus()) {
+			return;
+		}
+		
+		for (ContractorAuditOperator aCao:missingAudits.get(auditType)) {
+			if (aCao.getAudit().getId() == cao.getAudit().getId()) {
+				return;
+			}
+		}
+		
+		missingAudits.put(auditType, cao);
 	}
 
 	public Map<AuditType, FlagCriteria> getAuditTypeToFlagCriteria() {
