@@ -16,6 +16,7 @@ public class QueryField implements JSONAware {
 	 */
 	public String dataIndex;
 	public String sql;
+	public String requireJoin;
 	public int width = 0;
 	public boolean sortable = true;
 	public boolean hideable = true;
@@ -77,8 +78,7 @@ public class QueryField implements JSONAware {
 		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "Website")) {
 			action = "http://{0}\">{0}";
 			parameters = "record.data.accountWebsite";
-		}
-		else
+		} else
 			return;
 		js.append("function(value, metaData, record) {return Ext.String.format('<a href=\"");
 		js.append(action);
@@ -136,6 +136,11 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
+	public QueryField requireJoin(String joinAlias) {
+		this.requireJoin = joinAlias;
+		return this;
+	}
+
 	public String getI18nKey(String value) {
 		String key = value;
 		if (!Strings.isEmpty(preTranslation))
@@ -150,4 +155,9 @@ public class QueryField implements JSONAware {
 			return false;
 		return true;
 	}
+
+	public boolean requiresJoin() {
+		return !Strings.isEmpty(requireJoin);
+	}
+
 }
