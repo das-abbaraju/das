@@ -132,7 +132,7 @@
 							</span>
 						| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
 						<% } else { %>
-							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="ContractorRegistration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
+							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
 						<% } %>
 						</p>
 					</td>
