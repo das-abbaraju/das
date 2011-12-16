@@ -334,7 +334,7 @@
 						var state_element = $('.registration-form li.state');
 						var zip_element = $('.registration-form li.zip');
 						
-						if (data.trim() == '') {
+						if ($.trim(data) == '') {
 							state_element.slideUp(400);
 						} else {
 							state_element.html(data);
