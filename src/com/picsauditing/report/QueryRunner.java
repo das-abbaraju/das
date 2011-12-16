@@ -1,8 +1,10 @@
 package com.picsauditing.report;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,29 +40,46 @@ public class QueryRunner {
 
 	public QueryData run() throws SQLException {
 		Database db = new Database();
+		long queryTime = Calendar.getInstance().getTimeInMillis();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		allRows = db.getAllRows();
 		QueryData data = new QueryData(columns, rows);
+		if (queryTime > 1000) {
+			System.out.println("Slow Query: " + sql.toString());
+			System.out.println("Time to query: " + queryTime + " ms");
+		}
 		return data;
 	}
 
 	public SelectSQL buildQuery(QueryCommand command) {
-		columns = command.getColumns();
-		if (columns.size() == 0) {
-			columns.addAll(availableFields.keySet());
-		}
-
+		addColumns(command);
 		addLeftJoins();
-		addRuntimeFilters(command);
 
 		addGroupBy(command);
 		addOrderBy(command);
 		addLimits(command);
 
+		addRuntimeFilters(command);
+
 		// We may need to move this to a class field
 		sql.setSQL_CALC_FOUND_ROWS(true);
 
 		return sql;
+	}
+
+	private void addColumns(QueryCommand command) {
+		columns = command.getColumns();
+		if (columns.size() == 0) {
+			columns.addAll(availableFields.keySet());
+		}
+
+		Iterator<String> iterator = columns.iterator();
+		while (iterator.hasNext()) {
+			String column = iterator.next();
+			if (!availableFields.containsKey(column))
+				iterator.remove();
+		}
 	}
 
 	private void addRuntimeFilters(QueryCommand command) {
@@ -96,7 +115,9 @@ public class QueryRunner {
 				QueryField availableField = availableFields.get(column);
 				if (availableField.requiresJoin()) {
 					if (!addedJoins.contains(availableField.requireJoin)) {
+						// System.out.println("adding " + availableField.requireJoin);
 						sql.addJoin(this.joins.get(availableField.requireJoin));
+						addedJoins.add(availableField.requireJoin);
 					}
 				}
 				String field = availableField.sql;
@@ -232,7 +253,7 @@ public class QueryRunner {
 		addQueryField("accountState", "a.state");
 		addQueryField("accountZip", "a.zip");
 		addQueryField("accountCountry", "a.country");
-		addQueryField("accountWebsite", "a.web_url");
+		addQueryField("accountWebsite", "a.web_url").addRenderer("http://{0}\">{0}", new String[] { "accountWebsite" });
 		addQueryField("accountDBAName", "a.dbaName");
 		addQueryField("accountNameIndex", "a.nameIndex");
 		addQueryField("accountReason", "a.reason");
@@ -296,7 +317,9 @@ public class QueryRunner {
 		sql.setFromTable("contractor_registration_request crr");
 
 		addQueryField("requestID", "crr.id");
-		addQueryField("requestedName", "crr.name");
+
+		addQueryField("requestedName", "crr.name").addRenderer("RequestNewContractor.action?newContractor={0}\">{1}",
+				new String[] { "requestID", "requestedName" });
 		addQueryField("requestedContact", "crr.contact");
 		addQueryField("requestedPhone", "crr.phone");
 		addQueryField("requestedEmail", "crr.email");
@@ -316,7 +339,8 @@ public class QueryRunner {
 
 		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
 		addQueryField("requestedByOperatorID", "op.id");
-		addQueryField("requestedByOperatorName", "op.name");
+		addQueryField("requestedByOperatorName", "op.name").addRenderer("FacilitiesEdit.action?operator={0}\">{1}",
+				new String[] { "requestedByOperatorID", "requestedByOperatorID" });
 
 		joinToUser("requestedBy", "crr.requestedByUserID");
 		joinToUser("contactedBy", "crr.lastContactedBy");
@@ -326,6 +350,10 @@ public class QueryRunner {
 
 	private void buildContractorBase() {
 		buildAccountBase();
+
+		this.availableFields.get("accountName").addRenderer("ContractorView.action?id={0}\">{1}",
+				new String[] { "accountID", "accountName" });
+
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");
 		availableFields.remove("accountType");
@@ -347,7 +375,7 @@ public class QueryRunner {
 		addQueryField("contractorPayingFacilities", "c.payingFacilities");
 
 		joinToUser("customerService", "c.welcomeAuditor_id");
-		
+
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
 	}
@@ -417,16 +445,16 @@ public class QueryRunner {
 	private void buildContractorAuditBase() {
 		buildContractorBase();
 
-		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		sql.addJoin("JOIN audit_type atype ON atype.id = ca.auditTypeID");
-		sql.addWhere("atype.classType IN ( 'Audit', 'IM', 'PQF' )");
-		sql.setDistinct(true);
+		// I don't think this should be in the AuditBase
+		// sql.addWhere("atype.classType IN ( 'Audit', 'IM', 'PQF' )");
+		// We shouldn't need this
+		// sql.setDistinct(true);
 
-		availableFields.get("accountStatus").hide();
+		// Why?
+		// availableFields.get("accountStatus").hide();
+
+		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		addQueryField("auditID", "ca.id");
-		addQueryField("auditTypeID", "ca.auditTypeID");
-		QueryField auditTypeName = addQueryField("auditTypeName", "ca.auditTypeID");
-		auditTypeName.translate("AuditType", "name");
 		addQueryField("auditCreationDate", "ca.creationDate").type(FieldType.Date);
 		addQueryField("auditExpirationDate", "ca.expiresDate").type(FieldType.Date);
 		addQueryField("auditScheduledDate", "ca.scheduledDate").type(FieldType.Date);
@@ -439,15 +467,25 @@ public class QueryRunner {
 		addQueryField("auditContractorConfirmation", "ca.contractorConfirm");
 		addQueryField("auditAuditorConfirmation", "ca.auditorConfirm");
 
-		addQueryField("auditTypeClassType", "atype.classType");
-		addQueryField("auditTypeIsScheduled", "atype.isScheduled");
-		addQueryField("auditTypeHasAuditor", "atype.hasAuditor");
-		addQueryField("auditTypeScorable", "atype.scoreable");
+		{
+			addQueryField("auditTypeID", "ca.auditTypeID");
+			QueryField auditTypeName = addQueryField("auditTypeName", "ca.auditTypeID");
+			auditTypeName.translate("AuditType", "name");
+			auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", "auditTypeName",
+					"auditFor" });
+
+			sql.addJoin("JOIN audit_type auditType ON auditType.id = ca.auditTypeID");
+			addQueryField("auditTypeClassType", "auditType.classType");
+			addQueryField("auditTypeIsScheduled", "auditType.isScheduled");
+			addQueryField("auditTypeHasAuditor", "auditType.hasAuditor");
+			addQueryField("auditTypeScorable", "auditType.scoreable");
+		}
 
 		joinToUser("auditor", "ca.auditorID");
 		joinToUser("closingAuditor", "ca.closingAuditorID");
 
-		defaultSort = "ca.creationDate DESC";
+		// Removing this speeds this report up dramatically
+		// defaultSort = "ca.creationDate DESC";
 	}
 
 	private void buildContractorTradeBase() {
@@ -497,7 +535,7 @@ public class QueryRunner {
 		addQueryField("assessmentTestQualificationMethod", "test.qualificationMethod");
 
 		addQueryField("assessmentCenterName", "center.name");
-		
+
 		defaultSort = "cao.statusChangedDate DESC";
 	}
 
@@ -511,11 +549,9 @@ public class QueryRunner {
 		addQueryField("auditOperatorVisible", "cao.visible");
 		addQueryField("auditOperatorPercentComplete", "cao.percentComplete");
 
-		sql.addJoin("JOIN accounts caoAccount ON cao.opID = caoAccount.id");
-		addQueryField("auditOperatorAccountID", "caoAccount.id");
-		addQueryField("auditOperatorAccountName", "caoAccount.name");
+		joinToAccount("caoAccount", "cao.opID");
 
-		defaultSort = "cao.statusChangedDate DESC";
+		// defaultSort = "cao.statusChangedDate DESC";
 	}
 
 	private void buildContractorAuditOperatorWorkflowBase() {
@@ -538,7 +574,9 @@ public class QueryRunner {
 		joins.put(joinAlias, "LEFT JOIN users " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
 		addQueryField(joinAlias + "AccountID", joinAlias + ".accountID").requireJoin(joinAlias);
-		addQueryField(joinAlias + "Name", joinAlias + ".name").requireJoin(joinAlias);
+		addQueryField(joinAlias + "Name", joinAlias + ".name").requireJoin(joinAlias).addRenderer(
+				"UsersManage.action?user={0}\">{1}", new String[] { joinAlias + "ID", joinAlias + "Name" });
+
 		addQueryField(joinAlias + "Phone", joinAlias + ".phone").requireJoin(joinAlias);
 		addQueryField(joinAlias + "Email", joinAlias + ".email").requireJoin(joinAlias);
 	}

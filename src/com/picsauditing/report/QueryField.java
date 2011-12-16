@@ -44,50 +44,6 @@ public class QueryField implements JSONAware {
 
 		if (StringUtils.endsWithIgnoreCase(dataIndex, "id"))
 			hide();
-		if (StringUtils.endsWithIgnoreCase(dataIndex, "name") || StringUtils.endsWithIgnoreCase(dataIndex, "website"))
-			applyRendering();
-	}
-
-	private void applyRendering() {
-		width = 200;
-		StringBuffer js = new StringBuffer();
-		String action = "";
-		String parameters = "";
-		if (StringUtils.endsWithIgnoreCase(dataIndex, "AccountName")) {
-			action = "ContractorView.action?id={0}\">{1}";
-
-			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "Name");
-			parameters = "record.data." + prefix + "ID,record.data." + dataIndex;
-		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "OperatorName")) {
-			action = "FacilitiesEdit.action?operator={0}\">{1}";
-
-			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "Name");
-			parameters = "record.data." + prefix + "ID,record.data." + dataIndex;
-		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "AuditTypeName")) {
-			width = 180;
-			action = "Audit.action?auditID={0}\">{1} {2}";
-			parameters = "record.data.auditID,record.data.auditTypeName,record.data.auditFor";
-		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "RequestedName")) {
-			action = "RequestNewContractor.action?newContractor={0}\">{1}";
-			parameters = "record.data.requestID,record.data.requestedName";
-		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "UserName")) {
-			action = "UsersManage.action?account={0}&user={1}\">{2}";
-
-			String prefix = StringUtils.removeEndIgnoreCase(dataIndex, "name");
-			parameters = "record.data." + prefix + "AccountID," + "record.data." + prefix + "ID," + "record.data."
-					+ dataIndex;
-		} else if (StringUtils.endsWithIgnoreCase(dataIndex, "Website")) {
-			action = "http://{0}\">{0}";
-			parameters = "record.data.accountWebsite";
-		} else
-			return;
-		js.append("function(value, metaData, record) {return Ext.String.format('<a href=\"");
-		js.append(action);
-		js.append("</a>',");
-		js.append(parameters);
-		js.append(");}");
-		renderer = new JavaScript(js.toString());
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -110,7 +66,7 @@ public class QueryField implements JSONAware {
 
 		if (flex > 0)
 			json.put("flex", flex);
-		if (renderer != null)
+		if (renderer != null && renderer.toJSONString().length() > 0)
 			json.put("renderer", renderer);
 		if (renderer != null)
 			json.put("editor", editor);
@@ -137,6 +93,12 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
+	public QueryField addRenderer(String action, String[] parameters) {
+		this.width = 200;
+		this.renderer = new Renderer(action, parameters);
+		return this;
+	}
+	
 	public QueryField requireJoin(String joinAlias) {
 		this.requireJoin = joinAlias;
 		return this;
