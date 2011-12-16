@@ -141,9 +141,9 @@ public class QueryRunner {
 	private void addLeftJoins(String column) {
 		if (StringUtils.endsWithIgnoreCase(column, "UserID")) {
 			if (StringUtils.startsWithIgnoreCase(column, "accountContact"))
-				sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactUserID");
+				sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
 			else if (StringUtils.startsWithIgnoreCase(column, "customerService"))
-				sql.addJoin("LEFT JOIN users auditor ON cs.id = c.welcomeAuditor_id");
+				sql.addJoin("LEFT JOIN users customerService ON customerService.id = c.welcomeAuditor_id");
 			else if (StringUtils.startsWithIgnoreCase(column, "auditor"))
 				sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorUserID");
 			else if (StringUtils.startsWithIgnoreCase(column, "closingAuditor"))
@@ -213,9 +213,9 @@ public class QueryRunner {
 		addQueryField("contractorPaymentExpires", "c.paymentExpires");
 		addQueryField("contractorCreditCardOnFile", "c.ccOnFile");
 
-		addQueryField("customerServiceUserID", "cs.id");
-		addQueryField("customerServiceUserAccountID", "cs.accountID");
-		addQueryField("customerServiceUserName", "cs.name");
+		addQueryField("customerServiceUserID", "customerService.id");
+		addQueryField("customerServiceUserAccountID", "customerService.accountID");
+		addQueryField("customerServiceUserName", "customerService.name");
 	}
 
 	private void buildContractorAuditBase() {
