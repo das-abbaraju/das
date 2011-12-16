@@ -141,20 +141,20 @@ public class QueryRunner {
 	private void addLeftJoins(String column) {
 		if (StringUtils.endsWithIgnoreCase(column, "UserID")) {
 			if (StringUtils.startsWithIgnoreCase(column, "accountContact"))
-				sql.addJoin("LEFT JOIN users contact ON contact.id = a.contactID");
+				sql.addJoin("LEFT JOIN users accountContact ON accountContact.id = a.contactID");
 			else if (StringUtils.startsWithIgnoreCase(column, "customerService"))
 				sql.addJoin("LEFT JOIN users customerService ON customerService.id = c.welcomeAuditor_id");
 			else if (StringUtils.startsWithIgnoreCase(column, "auditor"))
-				sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorUserID");
+				sql.addJoin("LEFT JOIN users auditor ON auditor.id = ca.auditorID");
 			else if (StringUtils.startsWithIgnoreCase(column, "closingAuditor"))
-				sql.addJoin("LEFT JOIN users closingAuditor ON closingAuditor.id = ca.auditorUserID");
+				sql.addJoin("LEFT JOIN users closingAuditor ON closingAuditor.id = ca.closingAuditorID");
 			else if (StringUtils.startsWithIgnoreCase(column, "requestedByOperator"))
 				sql.addJoin("LEFT JOIN users u ON u.id = crr.requestedByUserID");
 			else if (StringUtils.startsWithIgnoreCase(column, "requestedContactedBy"))
 				sql.addJoin("LEFT JOIN users uc ON uc.id = crr.lastContactedBy");
-		} else if (StringUtils.startsWithIgnoreCase(column, "AccountID"))
+		} else if (StringUtils.endsWithIgnoreCase(column, "AccountID"))
 			if (StringUtils.startsWithIgnoreCase(column, "requestedExisting"))
-				sql.addJoin("LEFT JOIN accounts con ON con.id = crr.conID");
+				sql.addJoin("LEFT JOIN accounts requestedExisting ON requestedExisting.id = crr.conID");
 	}
 
 	private QueryField addQueryField(String dataIndex, String sql) {
@@ -182,11 +182,11 @@ public class QueryRunner {
 		addQueryField("accountDBAName", "a.dbaName");
 		addQueryField("accountReason", "a.reason");
 
-		addQueryField("accountContactUserID", "contact.id");
-		addQueryField("accountContactUserAccountID", "contact.id");
-		addQueryField("accountContactUserName", "contact.name");
-		addQueryField("accountContactUserPhone", "contact.phone");
-		addQueryField("accountContactUserEmail", "contact.email");
+		addQueryField("accountContactUserID", "accountContact.id");
+		addQueryField("accountContactUserAccountID", "accountContact.id");
+		addQueryField("accountContactUserName", "accountContact.name");
+		addQueryField("accountContactUserPhone", "accountContact.phone");
+		addQueryField("accountContactUserEmail", "accountContact.email");
 
 		defaultSort = "a.nameIndex";
 	}
@@ -252,6 +252,8 @@ public class QueryRunner {
 		addQueryField("closingAuditorUserID", "closingAuditor.id");
 		addQueryField("closingAuditorUserAccountID", "closingAuditor.accountID");
 		addQueryField("closingAuditorUserName", "closingAuditor.name");
+		
+		defaultSort = "ca.creationDate DESC";
 	}
 
 	private void buildContractorAuditOperatorBase() {
@@ -312,8 +314,8 @@ public class QueryRunner {
 		addQueryField("requestedContactedByUserAccountID", "uc.accountID");
 		addQueryField("requestedContactedByUserName", "uc.name");
 
-		addQueryField("requestedExistingAccountID", "con.id");
-		addQueryField("requestedExistingAccountName", "con.name");
+		addQueryField("requestedExistingAccountID", "requestedExisting.id");
+		addQueryField("requestedExistingAccountName", "requestedExisting.name");
 	}
 
 	private void buildInvoiceBase() {
