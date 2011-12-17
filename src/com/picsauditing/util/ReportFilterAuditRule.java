@@ -19,8 +19,8 @@ public class ReportFilterAuditRule extends ReportFilter {
 	protected Trade trade;
 
 	protected String contractorType = null;
-	protected LowMedHigh safetyRisk;
-	protected LowMedHigh productRisk;
+	protected int safetyRisk;
+	protected int productRisk;
 	protected Boolean soleProprietor;
 
 	protected Date checkDate = null;
@@ -87,19 +87,19 @@ public class ReportFilterAuditRule extends ReportFilter {
 		this.checkDate = DateBean.parseDate(checkDate);
 	}
 
-	public LowMedHigh getSafetyRisk() {
+	public int getSafetyRisk() {
 		return safetyRisk;
 	}
 
-	public void setSafetyRisk(LowMedHigh safetyRisk) {
+	public void setSafetyRisk(int safetyRisk) {
 		this.safetyRisk = safetyRisk;
 	}
 
-	public LowMedHigh getProductRisk() {
+	public int getProductRisk() {
 		return productRisk;
 	}
 
-	public void setProductRisk(LowMedHigh productRisk) {
+	public void setProductRisk(int productRisk) {
 		this.productRisk = productRisk;
 	}
 

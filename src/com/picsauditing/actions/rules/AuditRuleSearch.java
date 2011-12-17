@@ -47,11 +47,11 @@ public class AuditRuleSearch extends ReportActionSupport {
 		if (filterOn(filter.getContractorType())) {
 			sql.addWhere("a_search.contractorType = '" + filter.getContractorType() + "'");
 		}
-		if (filter.getSafetyRisk() != null) {
-			sql.addWhere("a_search.safetyRisk = " + filter.getSafetyRisk());
+		if (filter.getSafetyRisk() > 0) {
+			sql.addWhere("a_search.safetyRisk = '" + LowMedHigh.getMap().get(filter.getSafetyRisk()) + "'");
 		}
-		if (filter.getProductRisk() != null) {
-			sql.addWhere("a_search.productRisk = " + filter.getProductRisk());
+		if (filter.getProductRisk() > 0) {
+			sql.addWhere("a_search.productRisk = '" + LowMedHigh.getMap().get(filter.getProductRisk()) + "'");
 		}
 		if (filter.getOpID() > 0) {
 			sql.addWhere("op.id = " + filter.getOpID());

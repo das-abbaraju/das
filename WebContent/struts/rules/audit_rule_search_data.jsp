@@ -38,7 +38,10 @@
 					Tag
 				</td>
 				<td>
-					Risk
+					Safety Risk
+				</td>
+				<td>
+					Product Risk
 				</td>
 				<td>
 					Type
@@ -100,7 +103,10 @@
 						<s:property value="get('tag')"/>
 					</td>
 					<td>
-						<s:property value="get('risk') > 0 ? getRisk(get('risk')) : '*'"/>
+						<s:property value="get('safetyRisk')"/>
+					</td>
+					<td>
+						<s:property value="get('productRisk')"/>
 					</td>
 					<td>
 						<s:property value="get('con_type')"/>
