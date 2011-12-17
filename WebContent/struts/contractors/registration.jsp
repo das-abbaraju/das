@@ -33,6 +33,10 @@
 	<s:set var="state_label_display" value="%{getText('global.State')}" />
 </s:else>
 
+<s:if test="hasActionErrors()">
+	<s:actionerror cssClass="action-error alert-message error" />
+</s:if>
+
 <div class="registration-header">
 	<section>
 		<header>

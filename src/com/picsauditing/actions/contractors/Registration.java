@@ -58,11 +58,23 @@ public class Registration extends ContractorActionSupport {
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
+		loadPermissions(false);
+		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
+			return SUCCESS;
+		}
+
 		return SUCCESS;
 	}
 
 	@Anonymous
 	public String createAccount() throws Exception {
+		loadPermissions(false);
+		if (permissions.isLoggedIn() && !permissions.isDeveloperEnvironment()) {
+			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
+			return SUCCESS;
+		}
+		
 		contractor.setType("Contractor");
 		if (contractor.getName().contains("^^^")) {
 			contractor.setStatus(AccountStatus.Demo);
@@ -139,7 +151,7 @@ public class Registration extends ContractorActionSupport {
 		// contractor.setState(stateDAO.find(contractor.getState().getIsoCode()));
 		// if (contractor.getCountry() != null)
 		// contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
-		if(contractor.getCountry().isHasStates() && state != null)
+		if (contractor.getCountry().isHasStates() && state != null)
 			contractor.setState(state);
 		accountDao.save(contractor);
 
@@ -153,7 +165,7 @@ public class Registration extends ContractorActionSupport {
 		emailBuilder.addToken("confirmLink", confirmLink);
 		emailBuilder.addToken("contactName", user.getName());
 		emailBuilder.addToken("userName", user.getUsername());
-		
+
 		EmailQueue emailQueue = emailBuilder.build();
 		emailQueue.setPriority(90);
 		emailQueue.setViewableById(Account.EVERYONE);
