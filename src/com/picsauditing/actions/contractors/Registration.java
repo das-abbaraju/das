@@ -74,6 +74,7 @@ public class Registration extends ContractorActionSupport {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
+		permissions = null;
 		
 		contractor.setType("Contractor");
 		if (contractor.getName().contains("^^^")) {
