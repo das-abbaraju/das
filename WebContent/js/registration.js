@@ -551,7 +551,7 @@
 				var ccName = $('#transact_ccName', element);
 				
 				if (ccName.val() == 'Check') {
-					element.attr('action', 'RegistrationMakePayment!completeRegistration.action');
+					element.attr('action', 'RegistrationMakePayment.action');
 				}
 				
 				$('#ccexp').val($('#expMonth').val() + $('#expYear').val());

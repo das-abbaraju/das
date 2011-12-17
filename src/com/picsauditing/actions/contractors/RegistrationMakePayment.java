@@ -100,21 +100,19 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	public String execute() throws Exception {
 		findContractor();
 		if (redirectIfNotReadyForThisStep())
-			return SUCCESS;
+			return BLANK;
+
+		if (!processPayment && generateOrUpdateInvoiceIfNecessary())
+			return BLANK;
 
 		loadCC();
 		if (hasActionErrors())
 			return SUCCESS;
 
-		if (contractor.getPaymentMethod().equals(PaymentMethod.Check))
-			return "check";
-
-		if (processPayment){
+		if (processPayment) {
 			completeRegistration();
-			return SUCCESS;
+			return BLANK;
 		}
-
-		generateOrUpdateInvoiceIfNecessary();
 
 		return SUCCESS;
 	}
@@ -139,7 +137,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (!url.isEmpty()) {
 			ServletActionContext.getResponse().sendRedirect(url);
-			return SUCCESS;
+			return BLANK;
 		}
 
 		if (contractor.isHasFreeMembership()) {
@@ -257,7 +255,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		if ("Check".equals(ccName) && contractor.getNewMembershipAmount().intValue() > 500) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
 			accountDao.save(contractor);
-			return "check";
+			return SUCCESS;
 		}
 
 		redirect(getRegistrationStep().getUrl());
@@ -406,7 +404,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		loadCC();
 
 		this.redirect("RegistrationMakePayment.action");
-		return SUCCESS;
+		return BLANK;
 	}
 
 	/** ******** BrainTree Getters/Setters ******** */
@@ -588,14 +586,14 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		billingService.removeImportPQF(contractor);
 		generateOrUpdateInvoiceIfNecessary();
-		return SUCCESS;
+		return BLANK;
 	}
 
 	public String addImportFee() throws Exception {
 		findContractor();
 		billingService.addImportPQF(contractor, permissions);
 		generateOrUpdateInvoiceIfNecessary();
-		return SUCCESS;
+		return BLANK;
 	}
 
 	public String printInvoice() throws Exception {
@@ -624,7 +622,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		return invoice;
 	}
 
-	private void generateOrUpdateInvoiceIfNecessary() throws Exception {
+	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
 		findContractor();
 		invoice = contractor.findLastUnpaidInvoice();
 		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
@@ -633,9 +631,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.getInvoices().add(newInvoice);
 			invoiceDAO.save(newInvoice);
 			redirect("RegistrationMakePayment.action");
+			return true;
 		} else if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
 			billingService.updateInvoice(invoice, newInvoice, permissions);
 			redirect("RegistrationMakePayment.action");
+			return true;
 		}
+
+		return false;
 	}
 }

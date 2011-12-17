@@ -15,8 +15,18 @@
 </s:if>
 
 <div class="make-payment">
-	<h1><s:text name="RegistrationMakePayment.MembershipInvoice" /></h1>
-	
+	<s:if test="contractor.paymentMethod.check">
+		<h1><s:text name="RegistrationMakePayment.Check" /></h1>
+		<div class="membership">
+			<p class="process-check-info alert-message">
+				<s:text name="ContractorRegistrationFinish.FullAccessOnPayment"/>
+			</p>
+		</div>
+	</s:if>
+	<s:else>
+		<h1><s:text name="RegistrationMakePayment.MembershipInvoice" /></h1>
+	</s:else>
+
 	<div class="membership">
 		<section>
 			<table class="invoice" cellpadding="0" cellspacing="0" border="0">
@@ -155,75 +165,77 @@
 	</div>
 	
 	<div class="separator"></div>
-		
-	<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
-		<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
-	<%-- <s:form action="RegistrationMakePayment" cssClass="make-payment-form" theme="pics"> --%>
-		<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
-		<%-- We must do it this way, or we are not PCI compliant --%>
-		<s:hidden name="hash"></s:hidden>
-		<s:hidden name="key_id"></s:hidden>
-		<s:hidden name="orderid"></s:hidden>
-		<s:hidden name="amount"></s:hidden>
-		<s:hidden name="time"></s:hidden>
-		<s:hidden name="company"></s:hidden>
-		<s:hidden name="customer_vault_id"></s:hidden>
-				
-		<s:if test="cc == null">
-			<input type="hidden" name="customer_vault" value="add_customer"/>
-		</s:if>
-		<s:else>
-			<input type="hidden" name="customer_vault" value="update_customer"/>
-		</s:else>
-		
-		<section>
-			<h1><s:text name="RegistrationMakePayment.BillingInformation" /></h1>
+	
+	<s:if test="contractor.paymentMethod.creditCard">
+		<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
+			<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
+		<%-- <s:form action="RegistrationMakePayment" cssClass="make-payment-form" theme="pics"> --%>
+			<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
+			<%-- We must do it this way, or we are not PCI compliant --%>
+			<s:hidden name="hash"></s:hidden>
+			<s:hidden name="key_id"></s:hidden>
+			<s:hidden name="orderid"></s:hidden>
+			<s:hidden name="amount"></s:hidden>
+			<s:hidden name="time"></s:hidden>
+			<s:hidden name="company"></s:hidden>
+			<s:hidden name="customer_vault_id"></s:hidden>
+					
+			<s:if test="cc == null">
+				<input type="hidden" name="customer_vault" value="add_customer"/>
+			</s:if>
+			<s:else>
+				<input type="hidden" name="customer_vault" value="update_customer"/>
+			</s:else>
 			
-			<ul>
-				<li>
-					<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
-				</li>
-				<li class="creditcard">
-					<s:textfield label="CreditCard.Number" name="ccnumber" />
-					
-					<img src="images/creditcard.png" class="card" />
-				</li>
-				<li class="expiration-date">
-					<label><s:text name="RegistrationMakePayment.ExpirationDate" /></label>
-					
-					<s:select 
-						id="expMonth"
-						headerKey="" 
-						headerValue="- %{getText('ReportCsrActivity.label.Month')} -"
-						listKey="number" 
-						listValue="%{getText(i18nKey)}" 
-						list="@com.picsauditing.jpa.entities.Month@values()"
-						name="ccexpmonth"
-						theme="simple" 
-					/>
-					<s:select 
-						id="expYear" 
-						headerKey="" 
-						headerValue="- %{getText('ReportCsrActivity.label.Year')} -"
-						list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}"
-						name="ccexpyear"
-						theme="simple" 
-					/>
-					
-					<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" theme="simple" />
-				</li>
-				<li class="actions">
-					<s:submit 
-						method="completeRegistration" 
-						key="button.SubmitPayment" 
-						cssClass="btn success" 
-					/>
-					
-					<p class="check-note">
-						<s:text name="ContractorPaymentOptions.InvoiceEmail" />
-					</p>
-				</li>
-			</ul>
-		</section>
-	</s:form>
+			<section>
+				<h1><s:text name="RegistrationMakePayment.BillingInformation" /></h1>
+				
+				<ul>
+					<li>
+						<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
+					</li>
+					<li class="creditcard">
+						<s:textfield label="CreditCard.Number" name="ccnumber" />
+						
+						<img src="images/creditcard.png" class="card" />
+					</li>
+					<li class="expiration-date">
+						<label><s:text name="RegistrationMakePayment.ExpirationDate" /></label>
+						
+						<s:select 
+							id="expMonth"
+							headerKey="" 
+							headerValue="- %{getText('ReportCsrActivity.label.Month')} -"
+							listKey="number" 
+							listValue="%{getText(i18nKey)}" 
+							list="@com.picsauditing.jpa.entities.Month@values()"
+							name="ccexpmonth"
+							theme="simple" 
+						/>
+						<s:select 
+							id="expYear" 
+							headerKey="" 
+							headerValue="- %{getText('ReportCsrActivity.label.Year')} -"
+							list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}"
+							name="ccexpyear"
+							theme="simple" 
+						/>
+						
+						<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" theme="simple" />
+					</li>
+					<li class="actions">
+						<s:submit 
+							method="completeRegistration" 
+							key="button.SubmitPayment" 
+							cssClass="btn success" 
+						/>
+						
+						<p class="check-note">
+							<s:text name="ContractorPaymentOptions.InvoiceEmail" />
+						</p>
+					</li>
+				</ul>
+			</section>
+		</s:form>
+	</s:if>
 </div>
