@@ -19,6 +19,7 @@ import com.picsauditing.report.QueryCommand;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.QueryField;
 import com.picsauditing.report.QueryRunner;
+import com.picsauditing.report.SortableField;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -147,14 +148,18 @@ public class ReportDynamic extends PicsActionSupport {
 		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
 		runner.buildQuery(createCommandFromReportParameters());
 
-		for (String column : runner.getColumns()) {
+		for (SortableField column : runner.getColumns()) {
 			if (runner.getAvailableFields().keySet().contains(column)) {
 				QueryField field = runner.getAvailableFields().get(column);
-				String label = getText("Report.GlobalColumn." + field.dataIndex);
+				String label = getText("Report." + field.dataIndex);
 				if (label != null)
 					field.label = label;
-				else
-					field.label = "Report.GlobalColumn." + column; 
+				else {
+					field.label = "Report." + column.field;
+					if (column.function != null) {
+						field.label += "." + column.function.toString();
+					}
+				}
 				columns.add(field);
 			}
 		}

@@ -1,11 +1,16 @@
 package com.picsauditing.report;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.json.simple.JSONObject;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.util.Strings;
 
 public class QueryFilter implements JSONable {
 	private String field;
@@ -44,15 +49,22 @@ public class QueryFilter implements JSONable {
 	}
 
 	public String toExpression(Map<String, QueryField> availableFields) {
-		String columnSQL = availableFields.get(field).sql;
+		QueryField queryField = availableFields.get(field);
+		String columnSQL = queryField.sql;
 		if (field.equals("accountName"))
 			columnSQL = "a.nameIndex";
-		
+		if (queryField.type.equals(FieldType.Date)) {
+			String expression = columnSQL + " " + operator.getOperand() + " '";
+			QueryDateParameter parameter = new QueryDateParameter(value);
+			return expression + DateBean.toDBFormat(parameter.getTime()) + "'";
+		}
+
 		// TODO: Apply field to field comparisons
-		// TODO: for dates, think about NOW() and CURDATE(), and intervals from there (i.e. 30 days after, 2 weeks before)
+		// TODO: for dates, think about NOW() and CURDATE(), and intervals from there (i.e. 30 days after, 2 weeks
+		// before)
 		// TODO: for boolean, think about 'true' and 'false'
 		// TODO: for users, think about user group vs user individuals
-		
+
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		switch (operator) {
 		case BeginsWith:

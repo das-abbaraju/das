@@ -30,7 +30,7 @@ public class QueryRunner {
 	private Permissions permissions;
 	private String defaultSort = null;
 	private int allRows = 0;
-	private List<String> columns;
+	private List<SortableField> columns;
 
 	public QueryRunner(QueryBase base, Permissions permissions) {
 		this.permissions = permissions;
@@ -53,10 +53,12 @@ public class QueryRunner {
 	}
 
 	public SelectSQL buildQuery(QueryCommand command) {
-		addColumns(command);
+		prefillColumns(command);
+		addGroupBy(command);
+		
+		removeObsoleteColumns(command);
 		addLeftJoins();
 
-		addGroupBy(command);
 		addOrderBy(command);
 		addLimits(command);
 
@@ -68,16 +70,23 @@ public class QueryRunner {
 		return sql;
 	}
 
-	private void addColumns(QueryCommand command) {
+	private void prefillColumns(QueryCommand command) {
 		columns = command.getColumns();
 		if (columns.size() == 0) {
-			columns.addAll(availableFields.keySet());
+			columns.clear();
+			for (String fieldName : availableFields.keySet()) {
+				SortableField column = new SortableField();
+				column.field = fieldName;
+				columns.add(column);
+			}
 		}
+	}
 
-		Iterator<String> iterator = columns.iterator();
+	private void removeObsoleteColumns(QueryCommand command) {
+		Iterator<SortableField> iterator = columns.iterator();
 		while (iterator.hasNext()) {
-			String column = iterator.next();
-			if (!availableFields.containsKey(column))
+			SortableField column = iterator.next();
+			if (!availableFields.containsKey(column.field))
 				iterator.remove();
 		}
 	}
@@ -88,31 +97,32 @@ public class QueryRunner {
 
 		String where = command.getFilterExpression();
 		if (where == null || Strings.isEmpty(where)) {
+			where = "";
 			// TODO: Apply aggregation for the columns
-			for (int i = 0; i > command.getFilters().size(); i++) {
-				where = i + " AND ";
+			for (int i = 0; i < command.getFilters().size(); i++) {
+				where += "{" + i + "} AND ";
 			}
 			where = StringUtils.removeEnd(where, " AND ");
 		}
 
-		for (int i = command.getFilters().size() - 1; i >= 0; i--) {
+		for (int i = 0; i < command.getFilters().size(); i++) {
 			QueryFilter queryFilter = command.getFilters().get(i);
 			String filterExp = queryFilter.toExpression(availableFields);
 
 			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport))
 				// TODO: query the report sql and put down an inner query.
-				where = where.replace(i + "", filterExp);
+				where = where.replace("{" + i + "}", filterExp);
 			else
-				where = where.replace(i + "", filterExp);
+				where = where.replace("{" + i + "}", filterExp);
 		}
 		sql.addWhere(where);
 	}
 
 	private void addLeftJoins() {
 		Set<String> addedJoins = new HashSet<String>();
-		for (String column : columns) {
-			if (availableFields.keySet().contains(column)) {
-				QueryField availableField = availableFields.get(column);
+		for (SortableField column : columns) {
+			if (availableFields.keySet().contains(column.field)) {
+				QueryField availableField = availableFields.get(column.field);
 				if (availableField.requiresJoin()) {
 					if (!addedJoins.contains(availableField.requireJoin)) {
 						// System.out.println("adding " + availableField.requireJoin);
@@ -120,10 +130,7 @@ public class QueryRunner {
 						addedJoins.add(availableField.requireJoin);
 					}
 				}
-				String field = availableField.sql;
-				sql.addField(field + " AS " + column);
-
-				// TODO: Apply aggregation for the columns
+				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
 				// TODO: Think about case, boolean and calculated fields
 			}
 		}
@@ -153,19 +160,22 @@ public class QueryRunner {
 		if (command.getGroupBy().size() == 0)
 			return;
 
-		addQueryField("total", "count(*)");
-		columns.add("total");
 		for (SortableField field : command.getGroupBy()) {
-			// TODO: Apply aggregation for the columns
 			// TODO: Create HAVING logic
-
-			String groupBy = field.field;
-			if (!columns.contains(field.field))
-				groupBy = availableFields.get(field.field).sql;
-			if (!field.ascending)
-				groupBy += " DESC";
+			
+			String groupBy = field.toSQL(availableFields);
 			sql.addGroupBy(groupBy);
 		}
+		
+		addTotalField();
+	}
+	
+	private void addTotalField() {
+		addQueryField("total", null);
+		SortableField total = new SortableField();
+		total.field = "total";
+		total.function = QueryFunction.Count;
+		columns.add(total);
 	}
 
 	private void addLimits(QueryCommand command) {
@@ -515,9 +525,9 @@ public class QueryRunner {
 		addQueryField("invoiceID", "i.id");
 		addQueryField("invoiceAmountApplied", "i.amountApplied");
 		addQueryField("invoiceTotalAmount", "i.totalAmount");
-		addQueryField("invoiceDueDate", "i.dueDate");
+		addQueryField("invoiceDueDate", "i.dueDate").type(FieldType.Date);
 		addQueryField("invoiceStatus", "i.status");
-		addQueryField("invoiceCreationDate", "i.creationDate");
+		addQueryField("invoiceCreationDate", "i.creationDate").type(FieldType.Date);
 		addQueryField("invoiceTableType", "i.tableType");
 	}
 
@@ -585,7 +595,7 @@ public class QueryRunner {
 		return availableFields;
 	}
 
-	public List<String> getColumns() {
+	public List<SortableField> getColumns() {
 		return columns;
 	}
 

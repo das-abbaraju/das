@@ -10,11 +10,11 @@ import org.apache.commons.beanutils.BasicDynaBean;
 public class QueryData {
 	private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
-	public QueryData(List<String> columns, List<BasicDynaBean> rows) {
+	public QueryData(List<SortableField> columns, List<BasicDynaBean> rows) {
 		for (BasicDynaBean dynaBean : rows) {
 			Map<String, Object> row = new HashMap<String, Object>();
-			for (String column : columns) {
-				row.put(column, dynaBean.get(column));
+			for (SortableField column : columns) {
+				row.put(column.field, dynaBean.get(column.field));
 			}
 			data.add(row);
 		}

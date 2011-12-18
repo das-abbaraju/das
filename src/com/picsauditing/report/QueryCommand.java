@@ -11,17 +11,17 @@ import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.JSONUtilities;
 
 public class QueryCommand implements JSONable {
-	private List<String> columns = new ArrayList<String>();
-	private List<SortableField> orderBy = new ArrayList<SortableField>();
+	private List<SortableField> columns = new ArrayList<SortableField>();
 	private List<SortableField> groupBy = new ArrayList<SortableField>();
+	private List<SortableField> orderBy = new ArrayList<SortableField>();
 
 	// 1 = Name LIKE 'Trevor%'
 	// 2 =
 	private List<QueryFilter> filters = new ArrayList<QueryFilter>();
 	/**
-	 * (0 OR 1) AND 2 AND (3 OR 4)
+	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
 	 */
-	private String filterExpression = "0";
+	private String filterExpression;
 	private int page = 1;
 	private int rowsPerPage = 100;
 
@@ -33,11 +33,11 @@ public class QueryCommand implements JSONable {
 		fromJSON(obj);
 	}
 
-	public List<String> getColumns() {
+	public List<SortableField> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<String> columns) {
+	public void setColumns(List<SortableField> columns) {
 		this.columns = columns;
 	}
 
@@ -88,8 +88,9 @@ public class QueryCommand implements JSONable {
 	}
 
 	public void setRowsPerPage(int rowsPerPage) {
-		if (rowsPerPage == 0)
-			this.rowsPerPage = 100;
+		if (rowsPerPage <= 0)
+			// TODO Set to 10 while we're testing...before release, bump it to 100
+			this.rowsPerPage = 10;
 		else
 			this.rowsPerPage = rowsPerPage;
 	}
@@ -107,7 +108,6 @@ public class QueryCommand implements JSONable {
 		return json;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
@@ -125,31 +125,24 @@ public class QueryCommand implements JSONable {
 			}
 		}
 
-		JSONArray columnsObj = (JSONArray) json.get("columns");
-		this.columns.clear();
-		if (columnsObj != null)
-			this.columns.addAll(columnsObj);
-
-		JSONArray orderByObjs = (JSONArray) json.get("orderBy");
-		this.orderBy.clear();
-		if (orderByObjs != null) {
-			for (Object orderByObj : orderByObjs) {
-				SortableField field = new SortableField();
-				field.fromJSON((JSONObject) orderByObj);
-				orderBy.add(field);
-			}
-		}
-
-		JSONArray groupByObjs = (JSONArray) json.get("groupBy");
-		this.groupBy.clear();
-		if (groupByObjs != null) {
-			for (Object groupByObj : groupByObjs) {
-				SortableField field = new SortableField();
-				field.fromJSON((JSONObject) groupByObj);
-				groupBy.add(field);
-			}
-		}
-
+		this.columns = parseSortableFieldList(json.get("columns"));
+		this.orderBy = parseSortableFieldList(json.get("orderBy"));
+		this.groupBy = parseSortableFieldList(json.get("groupBy"));
 	}
 
+	private List<SortableField> parseSortableFieldList(Object obj) {
+		List<SortableField> fields = new ArrayList<SortableField>();
+
+		if (obj == null)
+			return fields;
+
+		JSONArray fieldArray = (JSONArray) obj;
+		for (Object fieldObj : fieldArray) {
+			SortableField field = new SortableField();
+			field.fromJSON((JSONObject) fieldObj);
+			fields.add(field);
+		}
+
+		return fields;
+	}
 }
