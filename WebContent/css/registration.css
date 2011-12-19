@@ -1146,17 +1146,18 @@ footer .footer-menu a
 {
 	background: #bedbed;
 	color: #5d5d5d;
+	float: left;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 24px;
 	font-weight: bold;
 	margin: 30px 0px 0px -10px;
-	padding: 0px 0px 0px 20px;
+	padding: 0px 20px 0px 20px;
 	text-shadow: #FFFFFF 1px 1px 2px;
-	width: 220px;
 }
 
 .make-payment .membership-help section p
 {
+	clear: both;
 	color: #404040;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
