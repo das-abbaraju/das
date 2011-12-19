@@ -2,9 +2,7 @@ package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +48,10 @@ public class IGVerification extends ContractorActionSupport {
 	@Before
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public void start() throws Exception {
+		if (contractor != null) {
+			id = contractor.getId();
+		}
+
 		EmailBuilder emailBuilder = new EmailBuilder();
 		// Insurance Policies rejected by PICS
 		EmailTemplate template = templateDAO.find(132);
