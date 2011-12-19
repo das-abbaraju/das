@@ -316,7 +316,10 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		AuditTypeDAO auditTypeDAO = (AuditTypeDAO) SpringUtils.getBean("AuditTypeDAO");
 		List<AuditType> list = new ArrayList<AuditType>();
 		for (AuditType aType : auditTypeDAO.findAll()) {
-			if (!aType.isAnnualAddendum() && (aType.getClassType().equals(AuditTypeClass.Audit)  || aType.getClassType().equals(AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
+			if (!aType.isAnnualAddendum()
+					&& (aType.getClassType().equals(AuditTypeClass.Audit)
+							|| aType.getClassType().equals(AuditTypeClass.Employee) || aType.getClassType().equals(
+							AuditTypeClass.IM)) && permissions.canSeeAudit(aType))
 				list.add(aType);
 		}
 		Collections.sort(list, null);

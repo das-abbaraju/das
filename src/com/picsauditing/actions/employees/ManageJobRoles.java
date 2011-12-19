@@ -48,6 +48,7 @@ public class ManageJobRoles extends PicsActionSupport {
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
 	private int auditID;
+	private int id;
 
 	@Before
 	public void startup() throws Exception {
@@ -58,6 +59,9 @@ public class ManageJobRoles extends PicsActionSupport {
 			if (permissions.getAccountId() != account.getId())
 				permissions.tryPermission(OpPerms.AllOperators);
 		}
+
+		if (id > 0)
+			account = accountDAO.find(id);
 
 		if (role != null && role.getAccount() != null)
 			account = role.getAccount();
@@ -189,6 +193,14 @@ public class ManageJobRoles extends PicsActionSupport {
 
 	public void setAuditID(int auditID) {
 		this.auditID = auditID;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public List<JobRole> getJobRoles() {

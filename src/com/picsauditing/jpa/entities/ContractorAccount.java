@@ -1005,7 +1005,8 @@ public class ContractorAccount extends Account implements JSONable {
 				AuditType auditType = detail.rule.getAuditType();
 				if (auditType == null)
 					continue;
-				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
+				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
+						|| auditType.getClassType().isIm())
 					employeeAudits = true;
 				if (auditType.getId() == AuditType.HSE_COMPETENCY)
 					hseCompetency = true;

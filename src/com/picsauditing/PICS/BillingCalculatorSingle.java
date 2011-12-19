@@ -135,7 +135,8 @@ public class BillingCalculatorSingle {
 				auditGUARD = true;
 			if (auditType.getClassType().equals(AuditTypeClass.Policy))
 				insureGUARD = true;
-			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isIm())
+			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
+					|| auditType.getClassType().isEmployee())
 				employeeAudits = true;
 			if (auditType.getId() == AuditType.HSE_COMPETENCY)
 				hseCompetency = true;
