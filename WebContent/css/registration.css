@@ -946,12 +946,13 @@ footer .footer-menu a
 
 .client-site-help
 {
-	bottom: 20px;
-	left: 0px;
-	margin: 20px;
+	background: #FFFFFF;
+	bottom: 21px;
+	left: 21px;
+	margin: 0px;
 	position: absolute;
 	text-align: center;
-	width: 415px;
+	width: 403px;
 }
 
 .client-site-help h1
