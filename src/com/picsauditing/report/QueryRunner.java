@@ -12,8 +12,12 @@ import java.util.Set;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.util.Strings;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
@@ -31,9 +35,11 @@ public class QueryRunner {
 	private String defaultSort = null;
 	private int allRows = 0;
 	private List<SortableField> columns;
+	private BasicDAO dao;
 
-	public QueryRunner(QueryBase base, Permissions permissions) {
+	public QueryRunner(QueryBase base, Permissions permissions, BasicDAO dao) {
 		this.permissions = permissions;
+		this.dao = dao;
 
 		buildBase(base);
 	}
@@ -52,7 +58,7 @@ public class QueryRunner {
 		return data;
 	}
 
-	public SelectSQL buildQuery(QueryCommand command) {
+	public SelectSQL buildQuery(QueryCommand command, boolean subQuery) {
 		prefillColumns(command);
 		addGroupBy(command);
 		
@@ -62,12 +68,14 @@ public class QueryRunner {
 		addLeftJoins();
 
 		addOrderBy(command);
-		addLimits(command);
+
+		if (!subQuery) {
+			// We may need to move this to a class field
+			sql.setSQL_CALC_FOUND_ROWS(true);
+			addLimits(command);
+		}
 
 		addRuntimeFilters(command);
-
-		// We may need to move this to a class field
-		sql.setSQL_CALC_FOUND_ROWS(true);
 
 		return sql;
 	}
@@ -100,7 +108,6 @@ public class QueryRunner {
 		String where = command.getFilterExpression();
 		if (where == null || Strings.isEmpty(where)) {
 			where = "";
-			// TODO: Apply aggregation for the columns
 			for (int i = 0; i < command.getFilters().size(); i++) {
 				where += "{" + i + "} AND ";
 			}
@@ -109,13 +116,17 @@ public class QueryRunner {
 
 		for (int i = 0; i < command.getFilters().size(); i++) {
 			QueryFilter queryFilter = command.getFilters().get(i);
-			String filterExp = queryFilter.toExpression(availableFields);
 
-			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport))
-				// TODO: query the report sql and put down an inner query.
-				where = where.replace("{" + i + "}", filterExp);
-			else
-				where = where.replace("{" + i + "}", filterExp);
+			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport)) {
+				Report subReport = dao.find(Report.class, Integer.parseInt(queryFilter.getValue()));
+				QueryRunner subRunner = new QueryRunner(subReport.getBase(), permissions, dao);
+				QueryCommand subCommand = createCommandFromReportParameters(subReport);
+				SelectSQL subSql = subRunner.buildQuery(subCommand, true);
+				queryFilter.setValue(subSql.toString());
+			}
+
+			String filterExp = queryFilter.toExpression(availableFields);
+			where = where.replace("{" + i + "}", filterExp);
 		}
 		sql.addWhere(where);
 	}
@@ -133,7 +144,7 @@ public class QueryRunner {
 					}
 				}
 				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
-				// TODO: Think about case, boolean and calculated fields
+				// TODO: Think about case and calculated fields
 			}
 		}
 	}
@@ -145,8 +156,7 @@ public class QueryRunner {
 		}
 
 		for (SortableField field : command.getOrderBy()) {
-			// TODO: Apply aggregation for the columns
-			// TODO: Think about allowing a 'float values to top' feature for each row (i.e. case when id = 0 then 1
+			// TODO: Think about allowing a 'float values to top' feature for each row (i.e. case when [exp] then 1
 			// else 2 end)
 
 			String orderBy = field.field;
@@ -624,13 +634,24 @@ public class QueryRunner {
 
 	private void leftJoinToUser(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN users " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
-		addQueryField(joinAlias + "AccountID", joinAlias + ".accountID").requireJoin(joinAlias);
-		addQueryField(joinAlias + "Name", joinAlias + ".name").requireJoin(joinAlias).addRenderer(
-				"UsersManage.action?user={0}\">{1}", new String[] { joinAlias + "ID", joinAlias + "Name" });
+		addQueryField(joinAlias + "UserID", joinAlias + ".id").requireJoin(joinAlias);
+		addQueryField(joinAlias + "UserAccountID", joinAlias + ".accountID").requireJoin(joinAlias);
+		addQueryField(joinAlias + "UserName", joinAlias + ".name").requireJoin(joinAlias).addRenderer(
+				"UsersManage.action?user={0}\">{1}", new String[] { joinAlias + "UserID", joinAlias + "UserName" });
 
 		addQueryField(joinAlias + "Phone", joinAlias + ".phone").requireJoin(joinAlias);
 		addQueryField(joinAlias + "Email", joinAlias + ".email").requireJoin(joinAlias);
+	}
+
+	public QueryCommand createCommandFromReportParameters(Report report) {
+		QueryCommand command = new QueryCommand();
+		if (report.getParameters() != null) {
+			JSONObject obj = (JSONObject) JSONValue.parse(report.getParameters());
+			if (obj != null) {
+				command.fromJSON(obj);
+			}
+		}
+		return command;
 	}
 
 	public Map<String, QueryField> getAvailableFields() {

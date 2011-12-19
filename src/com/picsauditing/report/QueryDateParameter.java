@@ -21,7 +21,7 @@ public class QueryDateParameter {
 		}
 
 		boolean plusTime = true;
-		if ("-".equals(value.charAt(0))) {
+		if ('-' == value.charAt(0)) {
 			plusTime = false;
 			value = value.substring(1);
 		}

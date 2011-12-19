@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
@@ -38,8 +37,8 @@ public class ReportDynamic extends PicsActionSupport {
 		if (!isReportAndBaseThere())
 			return BLANK;
 
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
-		runner.buildQuery(createCommandFromReportParameters());
+		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
+		runner.buildQuery(runner.createCommandFromReportParameters(report), false);
 		Map<String, QueryField> availableFields = runner.getAvailableFields();
 
 		try {
@@ -79,19 +78,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	private QueryCommand createCommandFromReportParameters() {
-		QueryCommand command = new QueryCommand();
-		if (report.getParameters() != null) {
-			JSONObject obj = (JSONObject) JSONValue.parse(report.getParameters());
-			if (obj != null) {
-				command.fromJSON(obj);
-				report.setParameters(command.toJSON(true).toJSONString());
-				save();
-			}
-		}
-		return command;
-	}
-
 	public String save() {
 		if (!isReportAndBaseThere())
 			return BLANK;
@@ -124,7 +110,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public JSONArray getAvailableFields() {
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
+		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
 
 		JSONArray fields = new JSONArray();
 
@@ -149,8 +135,8 @@ public class ReportDynamic extends PicsActionSupport {
 		rowNum.put("width", 27);
 		columns.add(rowNum);
 
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions);
-		runner.buildQuery(createCommandFromReportParameters());
+		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
+		runner.buildQuery(runner.createCommandFromReportParameters(report), false);
 
 		for (SortableField column : runner.getColumns()) {
 			if (runner.getAvailableFields().keySet().contains(column.field)) {

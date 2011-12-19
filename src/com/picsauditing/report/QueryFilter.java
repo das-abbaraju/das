@@ -2,6 +2,7 @@ package com.picsauditing.report;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
@@ -10,8 +11,6 @@ import com.picsauditing.jpa.entities.JSONable;
 
 public class QueryFilter implements JSONable {
 	private String field;
-
-	// TODO: Think about aggregates and functions here as well
 	private boolean not = false;
 	private QueryFilterOperator operator;
 	private String field2;
@@ -67,13 +66,13 @@ public class QueryFilter implements JSONable {
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		String wrappedValue = null;
 
-		if (value == null && field2 != null) {
+		if (StringUtils.isEmpty(value) && field2 != null) {
 			QueryField queryField2 = availableFields.get(field2);
 			String columnSQL2 = queryField2.sql;
 			wrappedValue = columnSQL2;
 		}
 
-		if (value != null) {
+		if (!StringUtils.isEmpty(value)) {
 			switch (operator) {
 			case BeginsWith:
 				wrappedValue = "'" + value + "%'";
@@ -88,11 +87,9 @@ public class QueryFilter implements JSONable {
 				wrappedValue = "'" + value + "' AND '" + value2 + "'";
 				break;
 			case In:
+			case InReport:
 				// this only supports numbers, no strings or dates
 				wrappedValue = "(" + value + ")";
-				break;
-			case InReport:
-				wrappedValue = "({REPORT:" + value + "})";
 				break;
 			case Empty:
 				break;
