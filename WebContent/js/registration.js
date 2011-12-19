@@ -436,12 +436,11 @@
 					
 					input.attr('title', label.html().replace(':', ''));
 					input.attr('data-content', html.replace('"', "'"));
-				});
-				
-				$('input[type=text]').popover({
-					html: true,
-					placement: 'below',
-					trigger: 'focus'
+					input.popover({
+						html: true,
+						placement: 'below',
+						trigger: 'focus'
+					});
 				});
 			}
 		}	
