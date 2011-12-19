@@ -387,11 +387,7 @@ public class PicsMenu {
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");
 		}
-
-		if (permissions.isOperatorCorporate()) {
-			addChildAction(subMenu, "ReportEmployeeTraining");
-		}
-
+		
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER)) {
