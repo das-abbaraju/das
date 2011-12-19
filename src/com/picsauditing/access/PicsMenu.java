@@ -67,7 +67,7 @@ public class PicsMenu {
 			// Don't show a menu for Contractors, they will use their sub menu
 			// for now
 			if (permissions.getAccountStatus().isActiveDemo()) {
-				subMenu = menu.addChild(getText("global.Home"), "Home.action");
+				subMenu = menu.addChild(getText("global.Home"), "ContractorView.action");
 
 				// Don't show for insurance only users
 				if (!permissions.isInsuranceOnlyContractorUser()) {
