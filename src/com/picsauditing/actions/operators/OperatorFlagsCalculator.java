@@ -333,7 +333,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				+ (op.getStatus().isDemo() ? ",'Demo'" : "") + ")");
 		sql.addJoin("JOIN contractor_info c ON c.id = fcc.conID");
 		sql.addJoin("JOIN generalcontractors gc ON gc.subID = fcc.conID AND gc.genID IN (" + Strings.implode(children)
-				+ ")");
+				+ ") AND gc.workStatus ='Y'");
 		// Get flag overrides set by operator/corporate or operator parents
 		// -- don't roll up operator flag overrides to corporate
 		sql.addJoin("LEFT JOIN flag_data_override fdo ON fdo.conID = fcc.conID AND fdo.opID IN ("
