@@ -345,7 +345,7 @@ fieldset.form {
 						<br />
 
 						<pics:permission perm="EditForcedFlags">
-							<s:if test="canForceOverallFlag(co.forceOverallFlag)">
+							<s:if test="canForceOverallFlag(co.forceOverallFlag) && co.forceOverallFlag.operatorAccount.type == 'Corporate' && isDisplayCorporate()">
 								<s:form
 									cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 									<br />
@@ -407,11 +407,7 @@ fieldset.form {
 												<li><span class="label-txt"> <s:text
 															name="ContractorFlag.FileAttachment"></s:text> </span> <s:file
 														name="file" id="%{id}"></s:file></li>
-												<li><s:submit type="button" name="button"
-														method="forceOverallFlag"
-														value="%{getText('button.ForceOverrideFlag')}"
-														cssClass="picsbutton positive" /></li>
-												<li><s:if test="permissions.corporate">
+												<li><s:if test="permissions.corporate && !displayCorporate">
 														<s:checkbox id="overRAll_main" name="overrideAll" />
 														<label for="overRAll_main"> <s:text
 																name="ContractorFlag.OverrideForAllSites">
@@ -420,7 +416,12 @@ fieldset.form {
 																</s:param>
 															</s:text> </label>
 														<br />
-													</s:if></li>
+													</s:if>
+												</li>
+												<li><s:submit type="button" name="button"
+														method="forceOverallFlag"
+														value="%{getText('button.ForceOverrideFlag')}"
+														cssClass="picsbutton positive" /></li>
 											</ol>
 										</fieldset>
 									</s:form>
@@ -653,23 +654,21 @@ fieldset.form {
 																			<li><span class="label-txt"><s:text
 																						name="ContractorFlag.FileAttachment"></s:text>
 																			</span> <s:file name="file" id="%{#data.id}_file"></s:file></li>
-																			<li><s:submit type="button" name="button"
-																					method="forceIndividualFlag"
-																					onclick="return checkReason(%{#data.id})"
-																					value="%{getText('ContractorFlag.ForceIndividualFlag')}"
-																					cssClass="picsbutton positive" /> <s:if
-																					test="permissions.corporate">
-																					<s:checkbox id="overRAll_%{#data.id}"
-																						name="overrideAll" />
-																					<label
-																						for="overRAll_<s:property value="%{#data.id}"/>">
+																			<li><s:if test="permissions.corporate && !displayCorporate">
+																					<s:checkbox id="overRAll_%{#data.id}" name="overrideAll" />
+																					<label for="overRAll_<s:property value="%{#data.id}"/>">
 																						<s:text name="ContractorFlag.OverrideForAllSites">
 																							<s:param>
 																								<s:property value="permissions.accountName" />
 																							</s:param>
-																						</s:text> </label>
-																					<br />
+																						</s:text>
+																					</label>
 																				</s:if></li>
+																			<li><s:submit type="button" name="button"
+																					method="forceIndividualFlag"
+																					onclick="return checkReason(%{#data.id})"
+																					value="%{getText('ContractorFlag.ForceIndividualFlag')}"
+																					cssClass="picsbutton positive" /> </li>
 																		</ol>
 																	</fieldset>
 																</s:else>
