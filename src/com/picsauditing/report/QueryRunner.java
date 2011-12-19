@@ -56,6 +56,8 @@ public class QueryRunner {
 		prefillColumns(command);
 		addGroupBy(command);
 		
+		// TODO: Do we want to allow them to DISTINCT their data?  
+		
 		removeObsoleteColumns(command);
 		addLeftJoins();
 
@@ -198,6 +200,15 @@ public class QueryRunner {
 		case ContractorAudits:
 			buildContractorAuditBase();
 			break;
+		case ContractorAuditData:
+			buildContractorAuditDataBase();
+			break;
+		case ContractorAuditFlagCriteriaData:
+			buildContractorAuditFlagCriteriaDataBase();
+			break;
+		case ContractorOshaAuditData:
+			buildContractorOshaAuditDataBase();
+			break;
 		case ContractorAuditOperators:
 			buildContractorAuditOperatorBase();
 			break;
@@ -268,7 +279,7 @@ public class QueryRunner {
 		addQueryField("accountNameIndex", "a.nameIndex");
 		addQueryField("accountReason", "a.reason");
 
-		joinToUser("accountContact", "a.contactID");
+		leftJoinToUser("accountContact", "a.contactID");
 
 		defaultSort = "a.nameIndex";
 	}
@@ -352,10 +363,10 @@ public class QueryRunner {
 		addQueryField("requestedByOperatorName", "op.name").addRenderer("FacilitiesEdit.action?operator={0}\">{1}",
 				new String[] { "requestedByOperatorID", "requestedByOperatorID" });
 
-		joinToUser("requestedBy", "crr.requestedByUserID");
-		joinToUser("contactedBy", "crr.lastContactedBy");
+		leftJoinToUser("requestedBy", "crr.requestedByUserID");
+		leftJoinToUser("contactedBy", "crr.lastContactedBy");
 
-		joinToAccount("requestedExisting", "crr.conID");
+		leftJoinToAccount("requestedExisting", "crr.conID");
 	}
 
 	private void buildContractorBase() {
@@ -384,7 +395,7 @@ public class QueryRunner {
 		addQueryField("contractorMustPay", "c.mustPay");
 		addQueryField("contractorPayingFacilities", "c.payingFacilities");
 
-		joinToUser("customerService", "c.welcomeAuditor_id");
+		leftJoinToUser("customerService", "c.welcomeAuditor_id");
 
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 		sql.addWhere("1 " + permQuery.toString());
@@ -491,8 +502,8 @@ public class QueryRunner {
 			addQueryField("auditTypeScorable", "auditType.scoreable");
 		}
 
-		joinToUser("auditor", "ca.auditorID");
-		joinToUser("closingAuditor", "ca.closingAuditorID");
+		leftJoinToUser("auditor", "ca.auditorID");
+		leftJoinToUser("closingAuditor", "ca.closingAuditorID");
 
 		// Removing this speeds this report up dramatically
 		// defaultSort = "ca.creationDate DESC";
@@ -559,7 +570,7 @@ public class QueryRunner {
 		addQueryField("auditOperatorVisible", "cao.visible");
 		addQueryField("auditOperatorPercentComplete", "cao.percentComplete");
 
-		joinToAccount("caoAccount", "cao.opID");
+		leftJoinToAccount("caoAccount", "cao.opID");
 
 		// defaultSort = "cao.statusChangedDate DESC";
 	}
@@ -568,19 +579,50 @@ public class QueryRunner {
 		buildContractorAuditOperatorBase();
 
 		sql.addJoin("JOIN contractor_audit_operator_workflow cao ON cao.id = caow.caoID");
-		addQueryField("contractorAuditOperatorWorkflowStatus", "caow.status");
 
 		addQueryField("auditOperatorWorkflowStatus", "caow.status");
-		joinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
+		addQueryField("auditOperatorWorkflowCreationDate", "caow.creationDate");
+		leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	}
 
-	private void joinToAccount(String joinAlias, String foreignKey) {
+	private void buildContractorAuditDataBase() {
+		buildContractorAuditOperatorBase();
+
+		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
+
+		addQueryField("auditDataAnswer", "pd.answer");
+		addQueryField("auditDataDateVerified", "pd.dateVerified").type(FieldType.Date);
+		addQueryField("auditDataQuestionID", "pd.questionID");
+		QueryField auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID");
+		auditDataQuestion.translate("AuditQuestion", "name");
+		addQueryField("auditDataUpdateDate", "pd.updateDate");
+	}
+
+	private void buildContractorAuditFlagCriteriaDataBase() {
+		buildContractorAuditOperatorBase();
+
+		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
+
+		addQueryField("auditDataAnswer", "pd.answer");
+		addQueryField("auditDataDateVerified", "pd.dateVerified").type(FieldType.Date);
+	}
+
+	private void buildContractorOshaAuditDataBase() {
+		buildContractorAuditOperatorBase();
+
+		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
+
+		addQueryField("auditDataAnswer", "pd.answer");
+		addQueryField("auditDataDateVerified", "pd.dateVerified").type(FieldType.Date);
+	}
+
+	private void leftJoinToAccount(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN accounts " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
 		addQueryField(joinAlias + "Name", joinAlias + ".name").requireJoin(joinAlias);
 	}
 
-	private void joinToUser(String joinAlias, String foreignKey) {
+	private void leftJoinToUser(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN users " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
 		addQueryField(joinAlias + "AccountID", joinAlias + ".accountID").requireJoin(joinAlias);

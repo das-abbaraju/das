@@ -1,19 +1,17 @@
 package com.picsauditing.report;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.util.Strings;
 
 public class QueryFilter implements JSONable {
 	private String field;
+
+	// TODO: Think about aggregates and functions here as well
 	private boolean not = false;
 	private QueryFilterOperator operator;
 	private String field2;
@@ -24,9 +22,10 @@ public class QueryFilter implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
 		json.put("field", field);
-		json.put("operator", operator);
+		json.put("operator", operator.toString());
 		if (not)
 			json.put("not", "NOT");
+		json.put("field2", field2);
 		json.put("value", value);
 		json.put("value2", value2);
 		return json;
@@ -42,6 +41,8 @@ public class QueryFilter implements JSONable {
 		String not = (String) json.get("not");
 		if (not != null)
 			this.not = true;
+		this.field2 = (String) json.get("field2");
+		this.field2 = Utilities.escapeQuotes(field2);
 		this.value = (String) json.get("value");
 		this.value = Utilities.escapeQuotes(value);
 		this.value2 = (String) json.get("value2");
@@ -59,39 +60,49 @@ public class QueryFilter implements JSONable {
 			return expression + DateBean.toDBFormat(parameter.getTime()) + "'";
 		}
 
-		// TODO: Apply field to field comparisons
 		// TODO: for dates, think about NOW() and CURDATE(), and intervals from there (i.e. 30 days after, 2 weeks
 		// before)
-		// TODO: for boolean, think about 'true' and 'false'
 		// TODO: for users, think about user group vs user individuals
 
 		String expression = columnSQL + " " + operator.getOperand() + " ";
-		switch (operator) {
-		case BeginsWith:
-			expression += "'" + value + "%'";
-			break;
-		case EndsWith:
-			expression += "'%" + value + "'";
-			break;
-		case Contains:
-			expression += "'%" + value + "%'";
-			break;
-		case Between:
-			expression += "'" + value + "' AND '" + value2 + "'";
-			break;
-		case In:
-			// this only supports numbers, no strings or dates
-			expression += "(" + value + ")";
-			break;
-		case InReport:
-			expression += "({REPORT:" + value + "})";
-			break;
-		case Empty:
-			break;
-		default:
-			expression += "'" + value + "'";
-			break;
+		String wrappedValue = null;
+
+		if (value == null && field2 != null) {
+			QueryField queryField2 = availableFields.get(field2);
+			String columnSQL2 = queryField2.sql;
+			wrappedValue = columnSQL2;
 		}
+
+		if (value != null) {
+			switch (operator) {
+			case BeginsWith:
+				wrappedValue = "'" + value + "%'";
+				break;
+			case EndsWith:
+				wrappedValue = "'%" + value + "'";
+				break;
+			case Contains:
+				wrappedValue = "'%" + value + "%'";
+				break;
+			case Between:
+				wrappedValue = "'" + value + "' AND '" + value2 + "'";
+				break;
+			case In:
+				// this only supports numbers, no strings or dates
+				wrappedValue = "(" + value + ")";
+				break;
+			case InReport:
+				wrappedValue = "({REPORT:" + value + "})";
+				break;
+			case Empty:
+				break;
+			default:
+				wrappedValue = "'" + value + "'";
+				break;
+			}
+		}
+
+		expression += wrappedValue;
 
 		return expression;
 	}

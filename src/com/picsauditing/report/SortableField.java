@@ -18,7 +18,7 @@ public class SortableField implements JSONable {
 		JSONObject json = new JSONObject();
 		json.put("field", field);
 		if (function != null) {
-			json.put("function", function);
+			json.put("function", function.toString());
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
@@ -45,6 +45,8 @@ public class SortableField implements JSONable {
 
 	public String toSQL(Map<String, QueryField> availableFields) {
 		String fieldSQL = availableFields.get(field).sql;
+		if (function == null)
+			return fieldSQL;
 		switch (function) {
 		case Format:
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
@@ -56,7 +58,7 @@ public class SortableField implements JSONable {
 			else
 				return "COUNT(" + fieldSQL + ")";
 		}
-		return null;
+		return fieldSQL;
 	}
 
 	private String includeDirection(String sql) {

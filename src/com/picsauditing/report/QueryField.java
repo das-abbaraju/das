@@ -15,7 +15,6 @@ public class QueryField implements JSONAware {
 	 * aka field or alias
 	 */
 	public String dataIndex;
-	public String aggregation;
 	public String sql;
 	public String requireJoin;
 	public int width = 0;
@@ -98,7 +97,7 @@ public class QueryField implements JSONAware {
 		this.renderer = new Renderer(action, parameters);
 		return this;
 	}
-	
+
 	public QueryField requireJoin(String joinAlias) {
 		this.requireJoin = joinAlias;
 		return this;

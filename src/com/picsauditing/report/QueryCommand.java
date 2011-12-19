@@ -102,9 +102,10 @@ public class QueryCommand implements JSONable {
 			json.put("rowsPerPage", rowsPerPage);
 		json.put("page", page);
 		json.put("filterExpression", filterExpression);
-		json.put("filters", filters);
-		json.put("columns", columns);
+		json.put("filters", JSONUtilities.convertFromList(filters));
+		json.put("columns", JSONUtilities.convertFromList(columns));
 		json.put("orderBy", JSONUtilities.convertFromList(orderBy));
+		json.put("groupBy", JSONUtilities.convertFromList(groupBy));
 		return json;
 	}
 
@@ -115,19 +116,29 @@ public class QueryCommand implements JSONable {
 		this.page = JSONUtilities.convertToInteger(json, "page");
 
 		this.filterExpression = (String) json.get("filterExpression");
-		JSONArray filterListObjs = (JSONArray) json.get("filters");
-		this.filters.clear();
-		if (filterListObjs != null) {
-			for (Object filterListObj : filterListObjs) {
-				QueryFilter filter = new QueryFilter();
-				filter.fromJSON((JSONObject) filterListObj);
-				filters.add(filter);
-			}
-		}
 
+		this.filters = parseQueryFilterList(json.get("filters"));
 		this.columns = parseSortableFieldList(json.get("columns"));
 		this.orderBy = parseSortableFieldList(json.get("orderBy"));
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
+	}
+
+	private List<QueryFilter> parseQueryFilterList(Object obj) {
+		List<QueryFilter> filters = new ArrayList<QueryFilter>();
+
+		if (obj == null)
+			return filters;
+
+		JSONArray filterArray = (JSONArray) obj;
+		for (Object filterObj : filterArray) {
+			QueryFilter filter = new QueryFilter();
+			if (filterObj instanceof JSONObject) {
+				filter.fromJSON((JSONObject) filterObj);
+			}
+			filters.add(filter);
+		}
+
+		return filters;
 	}
 
 	private List<SortableField> parseSortableFieldList(Object obj) {
@@ -139,7 +150,11 @@ public class QueryCommand implements JSONable {
 		JSONArray fieldArray = (JSONArray) obj;
 		for (Object fieldObj : fieldArray) {
 			SortableField field = new SortableField();
-			field.fromJSON((JSONObject) fieldObj);
+			if (fieldObj instanceof JSONObject) {
+				field.fromJSON((JSONObject) fieldObj);
+			} else {
+				field.field = (String) fieldObj;
+			}
 			fields.add(field);
 		}
 

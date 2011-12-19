@@ -83,7 +83,11 @@ public class ReportDynamic extends PicsActionSupport {
 		QueryCommand command = new QueryCommand();
 		if (report.getParameters() != null) {
 			JSONObject obj = (JSONObject) JSONValue.parse(report.getParameters());
-			command.fromJSON(obj);
+			if (obj != null) {
+				command.fromJSON(obj);
+				report.setParameters(command.toJSON(true).toJSONString());
+				save();
+			}
 		}
 		return command;
 	}
@@ -149,8 +153,8 @@ public class ReportDynamic extends PicsActionSupport {
 		runner.buildQuery(createCommandFromReportParameters());
 
 		for (SortableField column : runner.getColumns()) {
-			if (runner.getAvailableFields().keySet().contains(column)) {
-				QueryField field = runner.getAvailableFields().get(column);
+			if (runner.getAvailableFields().keySet().contains(column.field)) {
+				QueryField field = runner.getAvailableFields().get(column.field);
 				String label = getText("Report." + field.dataIndex);
 				if (label != null)
 					field.label = label;

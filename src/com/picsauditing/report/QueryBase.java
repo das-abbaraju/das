@@ -2,19 +2,23 @@ package com.picsauditing.report;
 
 public enum QueryBase {
 	Accounts,
-	Contractors,
-	Operators,
-	Resources,
 	ContractorAudits,
+	ContractorAuditData,
+	ContractorAuditFlagCriteriaData,
 	ContractorAuditOperators,
 	ContractorAuditOperatorWorkflows,
+	ContractorOshaAuditData,
+	Contractors,
+	ContractorTrades,
 	EmailExclusions,
 	Emails,
 	EmailSubscriptions,
+	EmployeeAssessments,
 	Employees,
-	Invoices,
-	RegistrationRequests,
-	Users,
 	ExceptionLogs,
-	EmployeeAssessments, ContractorTrades;
+	Invoices,
+	Operators,
+	RegistrationRequests,
+	Resources,
+	Users;
 }
