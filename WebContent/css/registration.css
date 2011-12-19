@@ -800,6 +800,27 @@ footer .footer-menu a
 	width: 420px;
 }
 
+.client-site .client-site-list.loading
+{
+	filter:alpha(opacity=40);
+	-khtml-opacity:0.4;
+	-moz-opacity:0.4;
+	opacity:0.4;
+}
+
+/* loading icon for client site search */
+.client-site span.loading
+{
+	background: url(../images/loading.gif);
+	display: block;
+	height: 75px;
+	left: 50%;
+	margin: -37px 0px 0px -37px;
+	position: absolute;
+	top: 50%;
+	width: 75px;
+}
+
 .client-site .client-site-list li
 {
 	line-height: 16px;

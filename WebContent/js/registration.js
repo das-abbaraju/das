@@ -54,11 +54,18 @@
 				
 				// send request to search method
 				var data = form.serialize() + '&method%3Asearch="Search"';
+				var list = $('.client-site-left .client-site-list');
+				
+				// loading icon
+				list.addClass('loading');
+				list.closest('.client-site-list-container').append('<span class="loading"></span>');
 				
 				AJAX.request({
 					url: form.attr('action'),
 					data: data,
 					success: function (data, textStatus, XMLHttpRequest) {
+						list.siblings('span.loading').remove();
+						
 						$('.client-site-left .client-site-list').replaceWith(data);
 						
 						// re-enable form submission
@@ -72,12 +79,19 @@
 				
 				// send request to search method
 				var data = 'searchValue=*&method%3Asearch="Search"';
+				var list = $('.client-site-left .client-site-list');
+				
+				// loading icon
+				list.addClass('loading');
+				list.closest('.client-site-list-container').append('<span class="loading"></span>');
 				
 				AJAX.request({
 					url: form.attr('action'),
 					data: data,
 					success: function (data, textStatus, XMLHttpRequest) {
-						$('.client-site-left .client-site-list').replaceWith(data);
+						list.siblings('span.loading').remove();
+						
+						list.replaceWith(data);
 					}
 				});
 			},
@@ -102,10 +116,18 @@
 					'method:search': 'Search'
 				};
 				
+				var list = $('.client-site-left .client-site-list');
+				
+				// loading icon
+				list.addClass('loading');
+				list.closest('.client-site-list-container').append('<span class="loading"></span>');
+				
 				AJAX.request({
 					url: form.attr('action'),
 					data: data,
 					success: function (data, textStatus, XMLHttpRequest) {
+						list.siblings('span.loading').remove();
+						
 						$('.client-site-left .client-site-list').replaceWith(data);
 						
 						// re-enable form submission
