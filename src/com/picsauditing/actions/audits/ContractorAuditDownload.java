@@ -224,6 +224,10 @@ public class ContractorAuditDownload extends AuditActionSupport {
 	 * @param average
 	 */
 	private void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
+		if (oshaAudit == null || average == null) {
+			return;
+		}
+		
 		OshaType type = oshaAudit.getType();
 		boolean osha = OshaType.OSHA.equals(type);
 		boolean cohs = OshaType.COHS.equals(type);
