@@ -129,7 +129,7 @@
 		</section>
 		
 		<%-- service safety evaluation display toggle --%>
-		<s:if test="contractor.onsiteServices || contractor.offsiteServices || contractor.transportationServices || requireOnsite || requireOffsite || requireTransportation">
+		<s:if test="contractor.onsiteServices || contractor.offsiteServices || requireOnsite || requireOffsite">
 			<s:set var="service_safety_evaluation_display" value="" /> 
 		</s:if>
 		<s:else>
@@ -173,7 +173,7 @@
 		</div>
 		
 		<%-- product safety evaluation display toggle --%>
-		<s:if test="contractor.materialSupplier">
+		<s:if test="contractor.materialSupplier || contractor.transportationServices">
 			<s:set var="product_safety_evaluation_display" value="" /> 
 		</s:if>
 		<s:else>
