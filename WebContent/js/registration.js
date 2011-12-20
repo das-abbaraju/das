@@ -463,6 +463,28 @@
 						placement: 'below',
 						trigger: 'focus'
 					});
+					
+					// ie specific js to shim select menus
+					if ($.browser.msie && $.browser.version == 6) {
+						input.bind('focus', function () {
+							var container = $('.popover:last');
+							var element = $('.inner', container);
+							var offset = element.offset();
+							var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
+							
+							shim.css({
+								'height': element.height(),
+								'left': offset.left,
+								'position': 'absolute',
+								'top': offset.top,
+								'width': element.width()
+							}).prependTo('body');
+						});
+						
+						input.blur('blur', function () {
+							$('iframe.shim:first').remove();
+						});
+					}
 				});
 			}
 		}	

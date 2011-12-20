@@ -360,8 +360,18 @@ input,button {
 }
 
 .registration-side-bar .info-qualify,.registration-side-bar .info-choice
-	{
+{
 	background-color: rgb(145, 192, 224);
+}
+
+.registration-side-bar .info-qualify li,
+.registration-side-bar .info-choice li
+{
+	color: #39749B;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 10px;
+	text-shadow: #FFFFFF 1px 1px 2px;
 }
 
 .registration-form .info-agreement p {
@@ -386,20 +396,22 @@ input,button {
 }
 
 #Registration-page .popover .arrow {
-	left: 287px;
-	border: 1px solid #000;
+	left: 257px;
 	width: 10px;
 	z-index: 99999;
-	zoom: 1;
 }
 
 #Registration-page .popover .inner {
 	background: #FFFFFF;
 	border: 2px solid #404040;
-	left: 277px;
-	padding: 10px;
+	left: 247px;
 	position: relative;
 	width: 350px;
+}
+
+#Registration-page .popover .inner .content
+{
+	padding: 7px;
 }
 
 #RegistrationAddClientSite-page .client-site-left .client-site-list-container,
