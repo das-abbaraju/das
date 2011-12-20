@@ -46,6 +46,7 @@ public class NoteEditor extends AccountActionSupport {
 	private InputStream inputStream;
 
 	private int employeeID;
+	public static int RESTRICTED_TO = 3;
 
 	@Override
 	public String execute() throws Exception {
@@ -54,9 +55,9 @@ public class NoteEditor extends AccountActionSupport {
 				viewableBy = note.getViewableBy().getId();
 			}
 			
-			if (viewableBy > 2) {
+			if (viewableBy > Account.PRIVATE) {
 				viewableByOther = viewableBy;
-				viewableBy = 3;
+				viewableBy = RESTRICTED_TO;
 			} else {
 				viewableBy = Account.EVERYONE;
 			}
@@ -72,7 +73,7 @@ public class NoteEditor extends AccountActionSupport {
 			note.setAccount(account);
 		}
 		
-		if (viewableByOther > 0 && viewableBy > 2)
+		if (viewableByOther > Account.NONE && viewableBy > Account.PRIVATE)
 			viewableBy = viewableByOther;
 		
 		note.setViewableBy(new Account());
@@ -87,11 +88,11 @@ public class NoteEditor extends AccountActionSupport {
 		note.setAuditColumns(permissions);
 		noteDAO.save(note);
 		
-		if (viewableBy > 2) {
+		if (viewableBy > Account.PRIVATE) {
 			viewableByOther = viewableBy;
-			viewableBy = 3;
+			viewableBy = RESTRICTED_TO;
 		} else {
-			viewableByOther = 0;
+			viewableByOther = Account.NONE;
 		}
 
 		if (file != null) {
