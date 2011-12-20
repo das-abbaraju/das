@@ -73,54 +73,55 @@ import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class Cron extends PicsActionSupport {
-
 	static protected User system = new User(User.SYSTEM);
 	@Autowired
-	protected OperatorAccountDAO operatorDAO = null;
+	protected AppPropertyDAO appPropDao;
 	@Autowired
-	protected UserDAO userDAO = null;
+	private AuditDataDAO auditDataDAO;
 	@Autowired
-	protected AppPropertyDAO appPropDao = null;
+	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
-	protected AuditBuilder auditBuilder = null;
+	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
-	protected ContractorAuditDAO contractorAuditDAO = null;
+	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
 	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO = null;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
-	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO = null;
+	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 	@Autowired
-	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO = null;
+	private EmailQueueDAO emailQueueDAO;
 	@Autowired
-	protected NoteDAO noteDAO = null;
+	private FlagDataOverrideDAO flagDataOverrideDAO;
 	@Autowired
-	protected InvoiceDAO invoiceDAO = null;
-	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
-	@Autowired
-	private EbixLoader ebixLoader;
+	protected InvoiceDAO invoiceDAO;
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private InvoiceItemDAO invoiceItemDAO;
 	@Autowired
-	private FlagDataOverrideDAO flagDataOverrideDAO;
+	protected OperatorAccountDAO operatorDAO;
 	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
+	protected NoteDAO noteDAO;
 	@Autowired
-	private IndexerEngine indexer;
+	protected UserDAO userDAO;
+
+	@Autowired
+	protected AuditBuilder auditBuilder;
+	@Autowired
+	protected AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private EbixLoader ebixLoader;
+	@Autowired
+	private EmailBuilder emailBuilder;
 	@Autowired
 	private EmailSenderSpring emailSender;
 	@Autowired
-	private EmailQueueDAO emailQueueDAO;
-	@Autowired
-	EmailBuilder emailBuilder;
+	private IndexerEngine indexer;
 
 	protected long startTime = 0L;
 	StringBuffer report = null;
@@ -709,7 +710,6 @@ public class Cron extends PicsActionSupport {
 
 	public void sendDelinquentContractorsEmail() throws Exception {
 		List<Invoice> invoices = contractorAccountDAO.findDelinquentContractors();
-		AuditDataDAO auditDataDAO = (AuditDataDAO) SpringUtils.getBean("AuditDataDAO");
 		Map<ContractorAccount, Set<String>> cMap = new TreeMap<ContractorAccount, Set<String>>();
 		Map<ContractorAccount, Integer> templateMap = new TreeMap<ContractorAccount, Integer>();
 
@@ -877,7 +877,6 @@ public class Cron extends PicsActionSupport {
 		}
 
 		// Adding AM specific tokens to email and sending to AM
-		EmailQueueDAO emailQueueDAO = (EmailQueueDAO) SpringUtils.getBean("EmailQueueDAO");
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(55);
 		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
