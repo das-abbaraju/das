@@ -50,17 +50,15 @@ public class NoteEditor extends AccountActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		if (note != null) {
-			if (note.getViewableBy() != null) {
-				viewableBy = note.getViewableBy().getId();
-			}
-			
-			if (viewableBy > Account.PRIVATE) {
-				viewableByOther = viewableBy;
-				viewableBy = RESTRICTED_TO;
-			} else {
-				viewableBy = Account.EVERYONE;
-			}
+		if (note != null && note.getViewableBy() != null) {
+			viewableBy = note.getViewableBy().getId();
+		}
+
+		if (viewableBy > Account.PRIVATE) {
+			viewableByOther = viewableBy;
+			viewableBy = RESTRICTED_TO;
+		} else if (viewableBy == 0) {
+			viewableBy = Account.EVERYONE;
 		}
 
 		return mode;
@@ -72,13 +70,19 @@ public class NoteEditor extends AccountActionSupport {
 			// This is a new note
 			note.setAccount(account);
 		}
-		
-		if (viewableByOther > Account.NONE && viewableBy > Account.PRIVATE)
+
+		if (viewableBy == RESTRICTED_TO) {
+			if (viewableByOther <= RESTRICTED_TO) {
+				addActionError("Please select an account to restrict the note to.");
+				return mode;
+			}
+			
 			viewableBy = viewableByOther;
-		
+		}
+
 		note.setViewableBy(new Account());
 		note.getViewableBy().setId(viewableBy);
-		
+
 		if (employeeID > 0) {
 			note.setEmployee(new Employee());
 			note.getEmployee().setId(employeeID);
@@ -87,7 +91,7 @@ public class NoteEditor extends AccountActionSupport {
 
 		note.setAuditColumns(permissions);
 		noteDAO.save(note);
-		
+
 		if (viewableBy > Account.PRIVATE) {
 			viewableByOther = viewableBy;
 			viewableBy = RESTRICTED_TO;
