@@ -23,11 +23,11 @@ public class QueryCommandTest extends TestCase {
 	}
 
 	private void buildRunner(QueryBase base) {
-		runner = new QueryRunner(base, permissions);
+		runner = new QueryRunner(base, permissions, null);
 	}
 
 	private void runBuildQueryWithCommand() throws SQLException {
-		sql = runner.buildQuery(command).toString();
+		sql = runner.buildQuery(command, false).toString();
 	}
 
 	public void testAvailableFieldSize() {

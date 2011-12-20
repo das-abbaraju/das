@@ -62,8 +62,6 @@ public class QueryRunner {
 		prefillColumns(command);
 		addGroupBy(command);
 		
-		// TODO: Do we want to allow them to DISTINCT their data?  
-		
 		removeObsoleteColumns(command);
 		addLeftJoins();
 
@@ -144,7 +142,8 @@ public class QueryRunner {
 					}
 				}
 				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
-				// TODO: Think about case and calculated fields
+				// TODO: Think about case/if (IF function or CASE statement) and 
+				// calculated fields (2 fields coming out with a result)
 			}
 		}
 	}
@@ -156,8 +155,7 @@ public class QueryRunner {
 		}
 
 		for (SortableField field : command.getOrderBy()) {
-			// TODO: Think about allowing a 'float values to top' feature for each row (i.e. case when [exp] then 1
-			// else 2 end)
+			// TODO: 'float values to top' feature (i.e. case when [exp] then 1 else 2 end)
 
 			String orderBy = field.field;
 			if (!columns.contains(field.field))
@@ -256,7 +254,6 @@ public class QueryRunner {
 			buildRegistrationRequestsBase();
 			break;
 		default:
-			// This really shouldn't happen
 			buildAccountBase();
 			break;
 		}
@@ -308,11 +305,8 @@ public class QueryRunner {
 		addQueryField("emailCreationDate", "eq.creationDate");
 		addQueryField("emailSentDate", "eq.sentDate");
 
-		addQueryField("emailContractorAccountID", "con.id");
-		addQueryField("emailContractorAccountName", "con.name");
-
-		addQueryField("emailTemplateID", "et.id");
-		addQueryField("emailTemplateName", "et.templateName");
+		leftJoinToAccount("con", "emailContractor");
+		leftJoinToEmailTemplate("et", "emailTemplate");
 
 		defaultSort = "eq.priority DESC, eq.emailID";
 	}
@@ -476,14 +470,6 @@ public class QueryRunner {
 	private void buildContractorAuditBase() {
 		buildContractorBase();
 
-		// I don't think this should be in the AuditBase
-		// sql.addWhere("atype.classType IN ( 'Audit', 'IM', 'PQF' )");
-		// We shouldn't need this
-		// sql.setDistinct(true);
-
-		// Why?
-		// availableFields.get("accountStatus").hide();
-
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
 		addQueryField("auditID", "ca.id");
 		addQueryField("auditCreationDate", "ca.creationDate").type(FieldType.Date);
@@ -514,9 +500,6 @@ public class QueryRunner {
 
 		leftJoinToUser("auditor", "ca.auditorID");
 		leftJoinToUser("closingAuditor", "ca.closingAuditorID");
-
-		// Removing this speeds this report up dramatically
-		// defaultSort = "ca.creationDate DESC";
 	}
 
 	private void buildContractorTradeBase() {
@@ -581,8 +564,6 @@ public class QueryRunner {
 		addQueryField("auditOperatorPercentComplete", "cao.percentComplete");
 
 		leftJoinToAccount("caoAccount", "cao.opID");
-
-		// defaultSort = "cao.statusChangedDate DESC";
 	}
 
 	private void buildContractorAuditOperatorWorkflowBase() {
@@ -641,6 +622,12 @@ public class QueryRunner {
 
 		addQueryField(joinAlias + "Phone", joinAlias + ".phone").requireJoin(joinAlias);
 		addQueryField(joinAlias + "Email", joinAlias + ".email").requireJoin(joinAlias);
+	}
+
+	private void leftJoinToEmailTemplate(String joinAlias, String foreignKey) {
+		joins.put(joinAlias, "LEFT JOIN email_template " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
+		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
+		addQueryField(joinAlias + "Name", joinAlias + ".templateName").requireJoin(joinAlias);
 	}
 
 	public QueryCommand createCommandFromReportParameters(Report report) {

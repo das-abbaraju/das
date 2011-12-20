@@ -11,7 +11,7 @@ public class QueryDateParameter {
 	public QueryDateParameter(String value) {
 		if (Strings.isEmpty(value))
 			return;
-
+		
 		value = value.trim();
 
 		if (value.matches("[0-9]+")) {
@@ -44,6 +44,8 @@ public class QueryDateParameter {
 			return Calendar.YEAR;
 		if (period == 'm')
 			return Calendar.MONTH;
+		if (period == 'd')
+			return Calendar.DAY_OF_MONTH;
 		if (period == 'w')
 			return Calendar.WEEK_OF_YEAR;
 		if (period == 'h')

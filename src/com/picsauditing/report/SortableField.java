@@ -48,15 +48,22 @@ public class SortableField implements JSONable {
 		if (function == null)
 			return fieldSQL;
 		switch (function) {
-		case Format:
-			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
-		case Sum:
-			return "SUM(" + fieldSQL + ")";
 		case Count:
 			if (fieldSQL == null)
 				return "COUNT(*)";
 			else
 				return "COUNT(" + fieldSQL + ")";
+		case Format:
+			availableFields.get(field).type = FieldType.String;
+			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
+		case Max:
+			return "MAX(" + fieldSQL + ")";
+		case Min:
+			return "MIN(" + fieldSQL + ")";
+		case Round:
+			return "ROUND(" + fieldSQL + ")";
+		case Sum:
+			return "SUM(" + fieldSQL + ")";
 		}
 		return fieldSQL;
 	}
