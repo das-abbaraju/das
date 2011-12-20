@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -48,41 +47,21 @@ public class NoteEditor extends AccountActionSupport {
 
 	private int employeeID;
 
-	@Before
-	public void initialize() throws Exception {
+	@Override
+	public String execute() throws Exception {
 		if (note != null) {
-			account = note.getAccount();
-			if (note.getViewableBy() != null)
+			if (note.getViewableBy() != null) {
 				viewableBy = note.getViewableBy().getId();
+			}
+			
 			if (viewableBy > 2) {
 				viewableByOther = viewableBy;
 				viewableBy = 3;
-			}
-			if (note.getEmployee() != null)
-				employeeID = note.getEmployee().getId();
-		} else {
-			note = new Note();
-		}
-
-		if (viewableBy == 0)
-			viewableBy = Account.EVERYONE;
-		if (viewableByOther == 0 && viewableBy > 2) {
-			// setting default viewability to restricted to
-			viewableBy = 3;
-			viewableByOther = permissions.getAccountId();
-
-			// If user is a member of the PICS CSR group
-			if (permissions.hasGroup(959)) {
+			} else {
 				viewableBy = Account.EVERYONE;
 			}
 		}
 
-		if (account == null)
-			account = accountDAO.find(id);
-	}
-
-	@Override
-	public String execute() throws Exception {
 		return mode;
 	}
 
@@ -92,10 +71,13 @@ public class NoteEditor extends AccountActionSupport {
 			// This is a new note
 			note.setAccount(account);
 		}
-		if (viewableBy > 2)
-			note.setViewableById(viewableByOther);
-		else
-			note.setViewableById(viewableBy);
+		
+		if (viewableByOther > 0 && viewableBy > 2)
+			viewableBy = viewableByOther;
+		
+		note.setViewableBy(new Account());
+		note.getViewableBy().setId(viewableBy);
+		
 		if (employeeID > 0) {
 			note.setEmployee(new Employee());
 			note.getEmployee().setId(employeeID);
@@ -104,6 +86,13 @@ public class NoteEditor extends AccountActionSupport {
 
 		note.setAuditColumns(permissions);
 		noteDAO.save(note);
+		
+		if (viewableBy > 2) {
+			viewableByOther = viewableBy;
+			viewableBy = 3;
+		} else {
+			viewableByOther = 0;
+		}
 
 		if (file != null) {
 			String extension = "";

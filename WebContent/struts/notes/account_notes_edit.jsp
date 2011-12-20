@@ -72,7 +72,7 @@
 					<li>
 						<label><s:text name="ContractorNotes.ViewableBy" />:</label>
 						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" />
-						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"></s:select>			
+						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" headerKey="0" headerValue="- Operator/Corporate -" />
 					</li>
 					<li id="liAdditionalText">
 						<label><s:text name="NoteEditor.AdditionalText" />:</label>
