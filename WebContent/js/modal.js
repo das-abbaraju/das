@@ -11,7 +11,7 @@
 	MODAL.Modal = function(options) {
 		// default configuration
 		var defaults = {
-			modal_id: 'boostrap_modal',
+			modal_id: 'bootstrap_modal',
 			modal_class: 'modal',
 			modal_link_class: 'modal-link',
 			backdrop: true,

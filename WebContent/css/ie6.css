@@ -368,10 +368,11 @@ input,button {
 .registration-side-bar .info-choice li
 {
 	color: #39749B;
-	font-size: 18px;
-	font-weight: bold;
-	margin: 10px;
-	text-shadow: #FFFFFF 1px 1px 2px;
+}
+
+.registration-form .info-agreement
+{
+	margin-left: 63px;
 }
 
 .registration-form .info-agreement p {

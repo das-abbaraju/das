@@ -472,6 +472,7 @@
 							var offset = element.offset();
 							var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
 							
+							// paste shim
 							shim.css({
 								'height': element.height(),
 								'left': offset.left,
@@ -481,6 +482,7 @@
 							}).prependTo('body');
 						});
 						
+						// add blur event to destroy iframe
 						input.blur('blur', function () {
 							$('iframe.shim:first').remove();
 						});
@@ -546,6 +548,27 @@
 								title: title,
 								content: data
 							});
+							
+							// ie specific js to shim select menus
+							if ($.browser.msie && $.browser.version == 6) {
+								var element = $('#bootstrap_modal');
+								var offset = element.offset();
+								var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
+								
+								// paste shim
+								shim.css({
+									'height': element.height(),
+									'left': offset.left,
+									'position': 'absolute',
+									'top': offset.top,
+									'width': element.width()
+								}).prependTo('body');
+								
+								// add event to destroy shim after modal closes
+								element.bind('hide', function () {
+									shim.remove();
+								});
+							}
 						}
 					});
 				});
