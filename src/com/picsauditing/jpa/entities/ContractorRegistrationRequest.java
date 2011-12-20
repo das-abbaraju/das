@@ -173,7 +173,9 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setReasonForRegistration(String reasonForRegistration) {
 		this.reasonForRegistration = reasonForRegistration;
 	}
+
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	public ContractorRegistrationRequestStatus getStatus() {
 		return status;
 	}
@@ -181,7 +183,7 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void setStatus(ContractorRegistrationRequestStatus status) {
 		this.status = status;
 	}
-	
+
 	public String getReasonForDecline() {
 		return reasonForDecline;
 	}
@@ -280,14 +282,15 @@ public class ContractorRegistrationRequest extends BaseTable implements java.io.
 	public void contactByEmail() {
 		contactCountByEmail++;
 	}
+
 	@Transient
 	public void contactByPhone() {
 		contactCountByPhone++;
 	}
+
 	@Transient
-	public String getRegistrationLink(){
-		return "http://www.picsorganizer.com/Registration.action?button="
-        + "request&requestID=" + getId();
+	public String getRegistrationLink() {
+		return "http://www.picsorganizer.com/Registration.action?button=" + "request&requestID=" + getId();
 	}
 
 }

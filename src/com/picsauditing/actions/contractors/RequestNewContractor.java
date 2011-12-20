@@ -254,9 +254,14 @@ public class RequestNewContractor extends PicsActionSupport {
 				.equals(status)) && newContractor.getContractor() == null) {
 			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		}
+		
 		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(status)
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
+		
+		if (status == null)
+			addActionError(getText("RequestNewContractor.error.StatusMissing"));
+		
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
