@@ -1,7 +1,6 @@
 package com.picsauditing.report;
 
 import java.sql.SQLException;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -28,18 +27,6 @@ public class QueryCommandTest extends TestCase {
 
 	private void runBuildQueryWithCommand() throws SQLException {
 		sql = runner.buildQuery(command, false).toString();
-	}
-
-	public void testAvailableFieldSize() {
-		Map<String, QueryField> availableFields = runner.getAvailableFields();
-		assertEquals(3, availableFields.size());
-	}
-
-	public void testSimpleContractorQuery() throws SQLException {
-		runBuildQueryWithCommand();
-		assertEquals("SELECT SQL_CALC_FOUND_ROWS a.id AS accountID, a.name AS accountName, a.status AS accountStatus "
-				+ "FROM accounts a JOIN contractor_info c ON a.id = c.id WHERE 1 AND (a.type='Contractor') "
-				+ "ORDER BY a.name LIMIT 100", runner.getSQL());
 	}
 
 	public void testLimit() throws SQLException {
