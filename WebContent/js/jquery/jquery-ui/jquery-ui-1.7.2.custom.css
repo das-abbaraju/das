@@ -1074,7 +1074,7 @@
 .ui-datepicker {
 	width: 17em;
 	padding: .2em .2em 0;
-	z-index: 9999
+	z-index: 9999 !important;
 }
 
 .ui-datepicker .ui-datepicker-header {
