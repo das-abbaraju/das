@@ -41,6 +41,7 @@ import com.picsauditing.util.Strings;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends AbstractIndexableTable implements Comparable<Account>, JSONable {
 
+	static public int NONE = 0;
 	static public int EVERYONE = 1;
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
