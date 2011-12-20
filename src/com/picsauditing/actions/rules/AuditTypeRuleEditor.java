@@ -3,6 +3,8 @@ package com.picsauditing.actions.rules;
 import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +14,7 @@ import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 
 @SuppressWarnings("serial")
@@ -35,8 +38,8 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 		if (ruleID > 0)
 			rule = dao.findAuditTypeRule(ruleID);
 	}
-	
-	public String dependentAuditStatusSelect(){
+
+	public String dependentAuditStatusSelect() {
 		return "dependentAuditStatusSelect";
 	}
 
@@ -160,5 +163,16 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	public void setRuleDependentAuditTypeId(Integer ruleDependentAuditTypeId) {
 		this.ruleDependentAuditTypeId = ruleDependentAuditTypeId;
+	}
+
+	public Map<String, String> getAccountTypeList() {
+		Map<String, String> map = new TreeMap<String, String>();
+		map.put("", "Any");
+		
+		for (ContractorType type : ContractorType.values()) {
+			map.put(type.name(), type.getType());
+		}
+		
+		return map;
 	}
 }

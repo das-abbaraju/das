@@ -362,11 +362,11 @@
 							</li>
 							<li>
 								<label>Account Type</label>
-								<s:radio 
-									name="rule.contractorType" 
-									list="#{'':'Any','Onsite':'Onsite Services','Offsite':'Offsite Services','Supplier':'Material Supplier'}"
+								<s:radio
+									name="rule.contractorType"
+									list="accountTypeList"
 									theme="pics"
-									cssClass="inline" 
+									cssClass="inline"
 								/>
 							</li>
 							<li>
