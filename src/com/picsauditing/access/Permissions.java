@@ -529,7 +529,6 @@ public class Permissions implements Serializable {
 		return visibleAuditTypes;
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
 		if (this.hasPermission(OpPerms.AuditRuleAdmin))
 			return true;

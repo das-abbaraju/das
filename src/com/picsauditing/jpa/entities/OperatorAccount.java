@@ -388,7 +388,7 @@ public class OperatorAccount extends Account {
 		this.contractorOperators = contractorOperators;
 	}
 
-	@OneToMany(mappedBy = "operator")
+	@OneToMany(mappedBy = "operator", cascade =  { CascadeType.ALL })
 	public List<OperatorTag> getTags() {
 		return tags;
 	}
