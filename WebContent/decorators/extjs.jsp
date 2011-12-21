@@ -12,7 +12,7 @@
 		
 		<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css">
 		
-		<script type="text/javascript" src="js/extjs/ext-all.js"></script>
+		<script type="text/javascript" src="js/extjs/bootstrap.js"></script>
 		
 		<decorator:head />
 	</head>

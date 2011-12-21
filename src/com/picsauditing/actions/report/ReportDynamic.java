@@ -31,6 +31,11 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return SUCCESS;
 	}
+	
+	public String list()
+	{
+		return "list";
+	}
 
 	public String data() {
 		if (!isReportAndBaseThere())
