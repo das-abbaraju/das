@@ -135,6 +135,10 @@ public class OperatorTag extends BaseTable {
 
 	@Transient
 	public String getContractorNames() {
-		return Strings.implode(contractorTags);
+		List<ContractorAccount> contractors = new ArrayList<ContractorAccount>();
+		for(ContractorTag contractorTag : contractorTags)
+			contractors.add(contractorTag.getContractor());
+		
+		return Strings.implode(contractors);
 	}
 }

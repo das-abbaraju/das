@@ -9,7 +9,8 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-		
+		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+
 		<s:include value="../jquery.jsp"/>
 		<script type="text/javascript" src="js/operator_tags.js"></script>
 	</head>
@@ -169,25 +170,19 @@
 										</pics:permission>
 										
 										<s:if test="permissions.isCanAddRuleForOperator(operator) || permissions.hasPermission('ManageAudits')">
-											<td id="${id}">
+											<td>
 												<s:if test="permissions.isCanAddRuleForOperator(operator)">
 													<s:if test="!auditTypeRules.empty">
-														<p>
-															<a href="#" class="edit editAuditTypeRules">Audit Type Rules</a>
-														</p>
+														<a href="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit picsbutton">Edit Audit Rules</a>
 													</s:if>
 													
 													<s:if test="!auditCategoryRules.empty">
-														<p>
-															<a href="#" class="edit editCategoryTypeRules">Category Rules</a>
-														</p>
+														<a href="CategoryRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit picsbutton">Edit Category Rules</a>
 													</s:if>
 												</s:if>
 												
 												<s:if test="permissions.hasPermission('ManageAudits') && !operatorFlagCriteria.empty">
-													<p>
-														<a href="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="edit">Operator Flag Criteria</a>
-													</p>
+													<a rel="facebox" href="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="edit picsbutton">Edit Flag Criteria</a>
 												</s:if>
 											</td>
 										</s:if>
