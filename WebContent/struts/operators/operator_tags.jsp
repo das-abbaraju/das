@@ -102,26 +102,27 @@
 												</s:if>
 											</s:if>
 										</pics:permission>
-										
-										<td>
-											<s:property value="tag"/>
-										</td>
-										<td class="center">
-											<s:if test="active">
-												<s:text name="YesNo.Yes" />
-											</s:if>
-											<s:else>
-												<s:text name="YesNo.No" />
-											</s:else>
-										</td>
-										<td class="center">
-											<s:if test="visibleToContractor">
-												<s:text name="YesNo.Yes" />
-											</s:if>
-											<s:else>
-												<s:text name="YesNo.No" />
-											</s:else>
-										</td>
+										<s:else>
+											<td>
+												<s:property value="tag"/>
+											</td>
+											<td class="center">
+												<s:if test="active">
+													<s:text name="YesNo.Yes" />
+												</s:if>
+												<s:else>
+													<s:text name="YesNo.No" />
+												</s:else>
+											</td>
+											<td class="center">
+												<s:if test="visibleToContractor">
+													<s:text name="YesNo.Yes" />
+												</s:if>
+												<s:else>
+													<s:text name="YesNo.No" />
+												</s:else>
+											</td>
+										</s:else>
 										
 										<pics:permission perm="ContractorTags" type="Delete">
 											<s:if test="#globalOperator.corporate && operator.id != permissions.accountId">
