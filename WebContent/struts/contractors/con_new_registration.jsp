@@ -245,9 +245,9 @@
 								<div id="notesHere">
 									<pre id="addHere"></pre>
 									
-									<s:if test="newContractor.notes.length() > 0">
+									<s:if test="newContractor.notes.trim().length() > 0">
 										<pre id="notesPreview">
-											<s:property value="newContractor.notes" />
+											<s:property value="newContractor.notes.trim()" />
 										</pre>
 									</s:if>
 								</div>
@@ -409,33 +409,40 @@
 		</div>
 		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-		<script type="text/javascript" src="js/con_new_registration.js"></script>
 		<script type="text/javascript">
 			var show = false;
 			var chooseADate = '<s:text name="javascript.ChooseADate" />';
 			var name ='<s:property value="permissions.name" />'; 
 			var newContractor = '<s:property value="newContractor.id" />';
-			
-			<s:if test="permissions.operatorCorporate">
-				$("#loadUsersList").load("OperatorUserListAjax.action",
-						{opID: '<s:property value="permissions.accountId" />'},
-						function() {
-							checkUserOther(<s:property value="permissions.userId" />);
-						}	
-				);
-			</s:if>
-			
-			<s:if test="newContractor.notes.length() > 0">
-				show = true;
 
-				$(function() {
+			$(function() {
+				if ($('#operatorsList').val() > 0) {
+					var user = 0;
+					<s:if test="newContractor.requestedByUser.id > 0">
+						user = '<s:property value="newContractor.requestedByUser.id" />';
+					</s:if>
+					<s:elseif test="permissions.operator">
+						user = '<s:property value="permissions.userId" />';
+					</s:elseif>
+					
+					$("#loadUsersList").load("OperatorUserListAjax.action",
+						{opID: $('#operatorsList').val(), newContractor: newContractor},
+						function() {
+							checkUserOther(user);
+						}
+					);
+				}
+
+				<s:if test="newContractor.notes.length() > 0">
+					show = true;
 					$('#notesHere').show();
-				});
-			</s:if>
+				</s:if>
+			});
 			
 			function changeState(country) {
 				$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>', needsSuffix: false, prefix: 'newContractor.'});
 			}
 		</script>
+		<script type="text/javascript" src="js/con_new_registration.js"></script>
 	</body>
 </html>
