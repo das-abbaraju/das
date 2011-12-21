@@ -44,33 +44,33 @@
 	<ul>
 		<li class="${step_1}">
 			<s:if test="#step_1 == 'enabled'">
-				<s:a action="RegistrationAddClientSite">1</s:a>
+				<s:a action="RegistrationAddClientSite"><s:text name="Number.1"/></s:a>
 			</s:if>
 			<s:else>
-				<span>1</span>
+				<span><s:text name="Number.1"/></span>
 			</s:else>
 			
-			Add Client Sites
+			<s:text name="RegistrationAddClientSite.AddClientSites"/>
 		</li>
 		<li class="${step_2}">
 			<s:if test="#step_2 == 'enabled'">
-				<s:a action="RegistrationServiceEvaluation">2</s:a>
+				<s:a action="RegistrationServiceEvaluation"><s:text name="Number.2"/></s:a>
 			</s:if>
 			<s:else>
-				<span>2</span>
+				<span><s:text name="Number.2"/></span>
 			</s:else>
 			
-			Service Evaluation
+			<s:text name="Registration.ServiceEvaluation"/>
 		</li>
 		<li class="${step_3}">
 			<s:if test="#step_3 == 'enabled'">
-				<s:a action="RegistrationMakePayment">3</s:a>
+				<s:a action="RegistrationMakePayment"><s:text name="Number.3"/></s:a>
 			</s:if>
 			<s:else>
-				<span>3</span>
+				<span><s:text name="Number.3"/></span>
 			</s:else>
 			
-			Join
+			<s:text name="Registration.Join"/>
 		</li>
 	</ul>
 </div>
