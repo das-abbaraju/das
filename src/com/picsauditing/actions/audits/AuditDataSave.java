@@ -102,21 +102,25 @@ public class AuditDataSave extends AuditActionSupport {
 			boolean commentChanged = false;
 			boolean answerChanged = false;
 
+			AuditQuestion dataQuestion = questionDao.find(auditData.getQuestion().getId());
+			dataQuestion.setCategory(dataQuestion.getCategory()); // get by lazy load
+			auditData.setQuestion(dataQuestion);
+
 			/*
 			 * If the `newCopy` is not set, then this is the first time the question is being answered.
 			 */
 			if (newCopy == null) {
 				// insert mode
-				AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-				auditData.setQuestion(question);
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
 				auditData.setAudit(audit);
 				if (!checkAnswerFormat(auditData, null))
 					return SUCCESS;
 			} else {
 				// update mode
-				if (!checkAnswerFormat(auditData, newCopy))
+				if (!checkAnswerFormat(auditData, newCopy)) {
+					
 					return SUCCESS;
+				}
 
 				boolean isAudit = newCopy.getAudit().getAuditType().getClassType().isAudit();
 				boolean isAnnualUpdate = newCopy.getAudit().getAuditType().isAnnualAddendum();
