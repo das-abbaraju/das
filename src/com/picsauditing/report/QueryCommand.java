@@ -14,6 +14,7 @@ public class QueryCommand implements JSONable {
 	private List<SortableField> columns = new ArrayList<SortableField>();
 	private List<SortableField> groupBy = new ArrayList<SortableField>();
 	private List<SortableField> orderBy = new ArrayList<SortableField>();
+	private SortableField having;
 
 	// 1 = Name LIKE 'Trevor%'
 	// 2 =
@@ -55,6 +56,14 @@ public class QueryCommand implements JSONable {
 
 	public void setGroupBy(List<SortableField> groupBy) {
 		this.groupBy = groupBy;
+	}
+
+	public SortableField getHaving() {
+		return having;
+	}
+
+	public void setHaving(SortableField having) {
+		this.having = having;
 	}
 
 	public List<QueryFilter> getFilters() {
@@ -106,6 +115,7 @@ public class QueryCommand implements JSONable {
 		json.put("columns", JSONUtilities.convertFromList(columns));
 		json.put("orderBy", JSONUtilities.convertFromList(orderBy));
 		json.put("groupBy", JSONUtilities.convertFromList(groupBy));
+		json.put("having", having);
 		return json;
 	}
 
@@ -121,6 +131,7 @@ public class QueryCommand implements JSONable {
 		this.columns = parseSortableFieldList(json.get("columns"));
 		this.orderBy = parseSortableFieldList(json.get("orderBy"));
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
+		this.having = (SortableField) json.get("having");
 	}
 
 	private List<QueryFilter> parseQueryFilterList(Object obj) {

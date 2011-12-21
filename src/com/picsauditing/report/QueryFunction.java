@@ -1,5 +1,5 @@
 package com.picsauditing.report;
 
 public enum QueryFunction {
-	Count, Format, Max, Min, Round, Sum;
+	Average, Count, CountDistinct, Format, Lower, Max, Min, Month, Round, Sum, Upper, Year;
 }

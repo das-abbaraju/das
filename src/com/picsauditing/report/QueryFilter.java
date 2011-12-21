@@ -59,9 +59,7 @@ public class QueryFilter implements JSONable {
 			return expression + DateBean.toDBFormat(parameter.getTime()) + "'";
 		}
 
-		// TODO: for dates, think about NOW() and CURDATE(), and intervals from there (i.e. 30 days after, 2 weeks
-		// before)
-		// TODO: for users, think about user group vs user individuals
+		// TODO: Current logic can compare intervals and now as timestamps. It does not cover days, months, or years.
 
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		String wrappedValue = null;

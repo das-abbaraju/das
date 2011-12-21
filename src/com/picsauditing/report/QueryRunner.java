@@ -61,7 +61,8 @@ public class QueryRunner {
 	public SelectSQL buildQuery(QueryCommand command, boolean subQuery) {
 		prefillColumns(command);
 		addGroupBy(command);
-		
+		addHaving(command);
+
 		removeObsoleteColumns(command);
 		addLeftJoins();
 
@@ -142,7 +143,7 @@ public class QueryRunner {
 					}
 				}
 				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
-				// TODO: Think about case/if (IF function or CASE statement) and 
+				// TODO: Think about case/if (IF function or CASE statement) and
 				// calculated fields (2 fields coming out with a result)
 			}
 		}
@@ -171,15 +172,23 @@ public class QueryRunner {
 			return;
 
 		for (SortableField field : command.getGroupBy()) {
-			// TODO: Create HAVING logic
-			
 			String groupBy = field.toSQL(availableFields);
 			sql.addGroupBy(groupBy);
 		}
-		
+
 		addTotalField();
 	}
-	
+
+	private void addHaving(QueryCommand command) {
+		if (command.getHaving() == null)
+			return;
+
+		String having = command.getHaving().toSQL(availableFields);
+		sql.setHavingClause(having);
+
+		addTotalField();
+	}
+
 	private void addTotalField() {
 		addQueryField("total", null);
 		SortableField total = new SortableField();
@@ -211,12 +220,6 @@ public class QueryRunner {
 		case ContractorAuditData:
 			buildContractorAuditDataBase();
 			break;
-		case ContractorAuditFlagCriteriaData:
-			buildContractorAuditFlagCriteriaDataBase();
-			break;
-		case ContractorOshaAuditData:
-			buildContractorOshaAuditDataBase();
-			break;
 		case ContractorAuditOperators:
 			buildContractorAuditOperatorBase();
 			break;
@@ -228,6 +231,12 @@ public class QueryRunner {
 			break;
 		case Users:
 			buildUserBase();
+			break;
+		case UserGroups:
+			buildUserGroupBase();
+			break;
+		case UserAssignments:
+			buildUserAssignmentBase();
 			break;
 		case Emails:
 			buildEmailBase();
@@ -249,6 +258,9 @@ public class QueryRunner {
 			break;
 		case Invoices:
 			buildInvoiceBase();
+			break;
+		case InvoiceItems:
+			buildInvoiceItemBase();
 			break;
 		case RegistrationRequests:
 			buildRegistrationRequestsBase();
@@ -285,6 +297,10 @@ public class QueryRunner {
 		addQueryField("accountDBAName", "a.dbaName");
 		addQueryField("accountNameIndex", "a.nameIndex");
 		addQueryField("accountReason", "a.reason");
+		addQueryField("accountOnsite", "a.onsiteServices");
+		addQueryField("accountOffsite", "a.offsiteServices");
+		addQueryField("accountTransportation", "a.transportationServices");
+		addQueryField("accountMaterialSupplier", "a.materialSupplier");
 
 		leftJoinToUser("accountContact", "a.contactID");
 
@@ -305,7 +321,7 @@ public class QueryRunner {
 		addQueryField("emailCreationDate", "eq.creationDate");
 		addQueryField("emailSentDate", "eq.sentDate");
 
-		leftJoinToAccount("con", "emailContractor");
+		leftJoinToAccount("emailContractor", "eq.conID");
 		leftJoinToEmailTemplate("et", "emailTemplate");
 
 		defaultSort = "eq.priority DESC, eq.emailID";
@@ -398,6 +414,7 @@ public class QueryRunner {
 		addQueryField("contractorRenew", "c.renew");
 		addQueryField("contractorMustPay", "c.mustPay");
 		addQueryField("contractorPayingFacilities", "c.payingFacilities");
+		addQueryField("contractorMembershipDate", "c.membershipDate");
 
 		leftJoinToUser("customerService", "c.welcomeAuditor_id");
 
@@ -467,6 +484,27 @@ public class QueryRunner {
 		addQueryField("userLastLogin", "u.lastLogin");
 	}
 
+	private void buildUserAssignmentBase() {
+		buildUserBase();
+		sql.addJoin("JOIN user_assignment ua ON ua.userID = u.id");
+
+		addQueryField("userAssignedCountry", "ua.country");
+		addQueryField("userAssignedState", "ua.state");
+		addQueryField("userAssignedPostalStart", "ua.postal_start");
+		addQueryField("userAssignedPostalEnd", "ua.postal_end");
+		addQueryField("userAssignedType", "ua.assignmentType");
+
+		joinToAuditType("userAssignedAuditType", "ua.auditTypeID");
+		leftJoinToAccount("contractorAccount", "ua.conID");
+	}
+
+	private void buildUserGroupBase() {
+		buildUserBase();
+		sql.addJoin("JOIN usergroup ug ON u.id = ug.userID");
+
+		leftJoinToUser("grp", "ug.groupID");
+	}
+
 	private void buildContractorAuditBase() {
 		buildContractorBase();
 
@@ -484,19 +522,9 @@ public class QueryRunner {
 		addQueryField("auditContractorConfirmation", "ca.contractorConfirm");
 		addQueryField("auditAuditorConfirmation", "ca.auditorConfirm");
 
-		{
-			addQueryField("auditTypeID", "ca.auditTypeID");
-			QueryField auditTypeName = addQueryField("auditTypeName", "ca.auditTypeID");
-			auditTypeName.translate("AuditType", "name");
-			auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", "auditTypeName",
-					"auditFor" });
-
-			sql.addJoin("JOIN audit_type auditType ON auditType.id = ca.auditTypeID");
-			addQueryField("auditTypeClassType", "auditType.classType");
-			addQueryField("auditTypeIsScheduled", "auditType.isScheduled");
-			addQueryField("auditTypeHasAuditor", "auditType.hasAuditor");
-			addQueryField("auditTypeScorable", "auditType.scoreable");
-		}
+		QueryField auditTypeName = joinToAuditType("auditType", "ca.auditTypeID");
+		auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", "auditTypeName",
+				"auditFor" });
 
 		leftJoinToUser("auditor", "ca.auditorID");
 		leftJoinToUser("closingAuditor", "ca.closingAuditorID");
@@ -524,7 +552,7 @@ public class QueryRunner {
 	private void buildInvoiceBase() {
 		buildContractorBase();
 
-		sql.addJoin("JOIN invoice i on i.accountID = c.id");
+		sql.addJoin("JOIN invoice i on i.accountID = a.id");
 
 		addQueryField("invoiceID", "i.id");
 		addQueryField("invoiceAmountApplied", "i.amountApplied");
@@ -533,6 +561,14 @@ public class QueryRunner {
 		addQueryField("invoiceStatus", "i.status");
 		addQueryField("invoiceCreationDate", "i.creationDate").type(FieldType.Date);
 		addQueryField("invoiceTableType", "i.tableType");
+	}
+
+	private void buildInvoiceItemBase() {
+		buildInvoiceBase();
+
+		sql.addJoin("JOIN invoice_item ii on ii.invoiceID = i.id");
+
+		addQueryField("invoiceItemPaymentExpires", "ii.paymentExpires");
 	}
 
 	private void buildEmployeeAssessmentBase() {
@@ -549,8 +585,6 @@ public class QueryRunner {
 		addQueryField("assessmentTestQualificationMethod", "test.qualificationMethod");
 
 		addQueryField("assessmentCenterName", "center.name");
-
-		defaultSort = "cao.statusChangedDate DESC";
 	}
 
 	private void buildContractorAuditOperatorBase() {
@@ -572,6 +606,7 @@ public class QueryRunner {
 		sql.addJoin("JOIN contractor_audit_operator_workflow cao ON cao.id = caow.caoID");
 
 		addQueryField("auditOperatorWorkflowStatus", "caow.status");
+		addQueryField("auditOperatorWorkflowPreviousStatus", "caow.previousStatus");
 		addQueryField("auditOperatorWorkflowCreationDate", "caow.creationDate");
 		leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	}
@@ -589,28 +624,25 @@ public class QueryRunner {
 		addQueryField("auditDataUpdateDate", "pd.updateDate");
 	}
 
-	private void buildContractorAuditFlagCriteriaDataBase() {
-		buildContractorAuditOperatorBase();
+	private QueryField joinToAuditType(String joinAlias, String foreignKey) {
+		sql.addJoin("JOIN audit_type " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
+		addQueryField(joinAlias + "ID", foreignKey);
+		QueryField auditTypeName = addQueryField(joinAlias + "Name", foreignKey);
+		auditTypeName.translate("AuditType", "name");
 
-		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
+		addQueryField(joinAlias + "ClassType", joinAlias + ".classType");
+		addQueryField(joinAlias + "IsScheduled", joinAlias + ".isScheduled");
+		addQueryField(joinAlias + "HasAuditor", joinAlias + ".hasAuditor");
+		addQueryField(joinAlias + "Scorable", joinAlias + ".scoreable");
 
-		addQueryField("auditDataAnswer", "pd.answer");
-		addQueryField("auditDataDateVerified", "pd.dateVerified").type(FieldType.Date);
-	}
-
-	private void buildContractorOshaAuditDataBase() {
-		buildContractorAuditOperatorBase();
-
-		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
-
-		addQueryField("auditDataAnswer", "pd.answer");
-		addQueryField("auditDataDateVerified", "pd.dateVerified").type(FieldType.Date);
+		return auditTypeName;
 	}
 
 	private void leftJoinToAccount(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN accounts " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
 		addQueryField(joinAlias + "Name", joinAlias + ".name").requireJoin(joinAlias);
+		addQueryField(joinAlias + "Status", joinAlias + ".status").requireJoin(joinAlias);
 	}
 
 	private void leftJoinToUser(String joinAlias, String foreignKey) {

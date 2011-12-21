@@ -195,30 +195,3 @@ public class ReportDynamic extends PicsActionSupport {
 		return dao.findWhere(Report.class, "id > 0", 100);
 	}
 }
-
-/*
-{"total":97,"data":
-	 [
-	  {"total":1, "invoiceCreationDate":"12\/2003","invoiceTotalAmount":499.00},
-	  {"total":1, "invoiceCreationDate":"01\/2004","invoiceTotalAmount":5000.00},
-	  {"total":16,"invoiceCreationDate":"02\/2004","invoiceTotalAmount":11378.00},
-	  {"total":5, "invoiceCreationDate":"03\/2004","invoiceTotalAmount":6742.00},
-	  {"total":8, "invoiceCreationDate":"04\/2004","invoiceTotalAmount":3888.00},
-	  {"total":4, "invoiceCreationDate":"05\/2004","invoiceTotalAmount":1234.00},
-	  {"total":7, "invoiceCreationDate":"06\/2004","invoiceTotalAmount":3186.99},
-	  {"total":18,"invoiceCreationDate":"07\/2004","invoiceTotalAmount":10683.00},
-	  {"total":14,"invoiceCreationDate":"08\/2004","invoiceTotalAmount":5586.00},
-	  {"total":12,"invoiceCreationDate":"09\/2004","invoiceTotalAmount":4389.00},
-	  {"total":25,"invoiceCreationDate":"10\/2004","invoiceTotalAmount":8624.00},
-	  {"total":13,"invoiceCreationDate":"11\/2004","invoiceTotalAmount":4988.00},
-	  {"total":18,"invoiceCreationDate":"12\/2004","invoiceTotalAmount":6858.00},
-	  {"total":20,"invoiceCreationDate":"01\/2005","invoiceTotalAmount":7833.00},
-	  {"total":19,"invoiceCreationDate":"02\/2005","invoiceTotalAmount":7127.00},
-	  {"total":18,"invoiceCreationDate":"03\/2005","invoiceTotalAmount":7315.00},
-	  {"total":17,"invoiceCreationDate":"04\/2005","invoiceTotalAmount":6335.00},
-	  {"total":7, "invoiceCreationDate":"05\/2005","invoiceTotalAmount":2644.00},
-	  {"total":9, "invoiceCreationDate":"06\/2005","invoiceTotalAmount":5735.00},
-	  {"total":17,"invoiceCreationDate":"07\/2005","invoiceTotalAmount":10775.00}
-	 ],
-"success":true}
-*/

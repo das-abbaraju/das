@@ -48,22 +48,33 @@ public class SortableField implements JSONable {
 		if (function == null)
 			return fieldSQL;
 		switch (function) {
+		case Average:
+			return "AVG(" + fieldSQL + ")";
 		case Count:
 			if (fieldSQL == null)
 				return "COUNT(*)";
 			else
 				return "COUNT(" + fieldSQL + ")";
+		case CountDistinct:
+			return "COUNT(DISTINCT " + fieldSQL + ")";
 		case Format:
-			availableFields.get(field).type = FieldType.String;
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
+		case Lower:
+			return "LOWER(" + fieldSQL + ")";
 		case Max:
 			return "MAX(" + fieldSQL + ")";
 		case Min:
 			return "MIN(" + fieldSQL + ")";
+		case Month:
+			return "MONTH(" + fieldSQL + ")";
 		case Round:
 			return "ROUND(" + fieldSQL + ")";
 		case Sum:
 			return "SUM(" + fieldSQL + ")";
+		case Upper:
+			return "UPPER(" + fieldSQL + ")";
+		case Year:
+			return "YEAR(" + fieldSQL + ")";
 		}
 		return fieldSQL;
 	}
