@@ -254,14 +254,14 @@ public class RequestNewContractor extends PicsActionSupport {
 				.equals(status)) && newContractor.getContractor() == null) {
 			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
 		}
-		
+
 		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(status)
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
-		
-		if (status == null)
+
+		if (status == null && newContractor.getId() > 0)
 			addActionError(getText("RequestNewContractor.error.StatusMissing"));
-		
+
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
@@ -309,7 +309,8 @@ public class RequestNewContractor extends PicsActionSupport {
 			newContractor = crrDAO.save(newContractor);
 		}
 
-		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
+		addActionMessage(getText("RequestNewContractor.SuccessfullySaved"));
+		return SUCCESS;
 	}
 
 	public String contact() throws Exception {
