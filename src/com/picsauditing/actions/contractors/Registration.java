@@ -97,6 +97,7 @@ public class Registration extends ContractorActionSupport {
 			contractor.getFees().put(feeClass, newConFee);
 		}
 
+		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));
 		contractor.setNameIndex();
@@ -106,7 +107,6 @@ public class Registration extends ContractorActionSupport {
 		contractor.setNaicsValid(false);
 		accountDao.save(contractor);
 
-		user.setPhone(contractor.getPhone());
 		user.setActive(true);
 		user.setAccount(contractor);
 		user.setTimezone(contractor.getTimezone());
