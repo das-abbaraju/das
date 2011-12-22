@@ -1,8 +1,10 @@
 function loadPreview() {
 	function fixEvent(k, event) {
 		event.start = new Date(event.start);
-		if (event.end)
+		
+		if (event.end) {
 			event.end = new Date(event.end);
+		}
 	}
 	
 	function clearForm() {
@@ -19,38 +21,57 @@ function loadPreview() {
 	}
 
 	var sources = [
-			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Holiday', start: start.getTime(), end: end.getTime()}, 
-					function(json) { 
-						$.each(json.events, fixEvent);
-						callback(json.events); 
-					} 
-				);
-			},
-			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Vacation', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-					function(json) { 
-						$.each(json.events, fixEvent);
-						callback(json.events); 
-					} 
-				);
-			},
-			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Audit', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-					function(json) { 
-						$.each(json.events, fixEvent);
-						callback(json.events); 
-					} 
-				);				
-			},
-			function(start, end, callback) {
-				$.getJSON('MyScheduleJSON.action', {button:'json', type: 'Availability', start: start.getTime(), end: end.getTime(), currentUserID: $('#currentUserID').val()}, 
-					function(json) { 
-						$.each(json.events, fixEvent);
-						callback(json.events); 
-					} 
-				);				
-			}	
+		function(start, end, callback) {
+			$.getJSON('MyScheduleJSON.action', {
+				button:'json', 
+				type: 'Holiday', 
+				start: start.getTime(), 
+				end: end.getTime()
+			}, function(json) { 
+					$.each(json.events, fixEvent);
+					callback(json.events); 
+				} 
+			);
+		},
+		function(start, end, callback) {
+			$.getJSON('MyScheduleJSON.action', {
+				button:'json', 
+				type: 'Vacation', 
+				start: start.getTime(), 
+				end: end.getTime(), 
+				currentUserID: $('#currentUserID').val()
+			}, function(json) { 
+					$.each(json.events, fixEvent);
+					callback(json.events); 
+				} 
+			);
+		},
+		function(start, end, callback) {
+			$.getJSON('MyScheduleJSON.action', {
+				button:'json', 
+				type: 'Audit', 
+				start: start.getTime(), 
+				end: end.getTime(), 
+				currentUserID: $('#currentUserID').val()
+			}, function(json) { 
+					$.each(json.events, fixEvent);
+					callback(json.events); 
+				} 
+			);				
+		},
+		function(start, end, callback) {
+			$.getJSON('MyScheduleJSON.action', {
+				button:'json', 
+				type: 'Availability', 
+				start: start.getTime(), 
+				end: end.getTime(), 
+				currentUserID: $('#currentUserID').val()
+			}, function(json) { 
+					$.each(json.events, fixEvent);
+					callback(json.events); 
+				} 
+			);			
+		}	
 	];
 
 	var buttons = {
@@ -64,6 +85,7 @@ function loadPreview() {
 				start = new Date($dialog.find('[name="startDate"]').val() + " " + $dialog.find('[name="startTime"]').val());
 				end = new Date($dialog.find('[name="endDate"]').val() + " " + $dialog.find('[name="endTime"]').val());
 			}
+			
 			var data = {
 				'calEvent.id': $dialog.find('[name="id"]').val(),
 				'calEvent.title':$dialog.find('[name="title"]').val(),
@@ -72,16 +94,23 @@ function loadPreview() {
 				'currentUserID': $('#currentUserID').val()
 			};
 
-			if (!isNaN(start))
+			if (!isNaN(start)) {
 				data['calEvent.start'] = start.getTime();
-			if (!isNaN(end))
+			}
+				
+			if (!isNaN(end)) {
 				data['calEvent.end'] = end.getTime();
+			}
 
-			$.getJSON('MyScheduleJSON.action', data,
-				function(json) {
-					$.gritter.add({title:json.title, text:json.output});
+			$.getJSON('MyScheduleJSON.action', data, function(json) {
+					$.gritter.add({
+						title: json.title, 
+						htext: json.output
+					});
+					
 					if (json.calEvent) {
 						fixEvent(null, json.calEvent);
+						
 						if (json.update){
 							var event = $calendar.fullCalendar('clientEvents', json.calEvent.id)[0];
 							event.start = json.calEvent.start;
@@ -90,9 +119,9 @@ function loadPreview() {
 							event.className = json.calEvent.className;
 							event.owner = json.calEvent.owner;
 							$calendar.fullCalendar('updateEvent', event);
-						}
-						else
+						} else {
 							$calendar.fullCalendar('renderEvent', json.calEvent);
+						}
 					}
 						
 					$dialog.dialog('close');
@@ -101,22 +130,37 @@ function loadPreview() {
 		},
 		Delete: function() {
 			var calID = $dialog.find('[name="id"]').val();
-			if (calID == 0)
+			
+			if (calID == 0) {
 				return;
+			}
+			
 			var type = $dialog.find('[name="type"]').val();
-			$.getJSON('MyScheduleJSON.action',
-				{button: 'delete',type: type, 'calEvent.id': calID, 'currentUserID': $('#currentUserID').val()},
-				function(json) {
-					$.gritter.add({title:json.title, text:json.output});
+			
+			$.getJSON('MyScheduleJSON.action', {
+				button: 'delete',
+				type: type, 
+				'calEvent.id': calID, 
+				'currentUserID': $('#currentUserID').val()
+			}, function(json) {
+					$.gritter.add({
+						title: json.title, 
+						text: json.output
+					});
+					
 					if (json.calEvent) {
-						if (json.deleted)
+						if (json.deleted) {
 							$calendar.fullCalendar('removeEvents', json.calEvent.id);
+						}
 					}
+					
 					$dialog.dialog('close');
 				}
 			);
 		},
-		Cancel: function() { $dialog.dialog('close'); }
+		Cancel: function() {
+			$dialog.dialog('close');
+		}
 	};
 
 	$dialog = $('#vacation_form').dialog({
@@ -125,6 +169,7 @@ function loadPreview() {
 		modal: true,
 		open: function() {
 			$('.datepicker').datepicker();
+			
 			$('.time').timeEntry({
 				ampmPrefix: ' ',
 				defaultTime: new Date('12:00 AM'),
@@ -141,64 +186,87 @@ function loadPreview() {
 			right: 'month,agendaWeek,agendaDay'
 		},
 		loading: function(isLoading, view) {
-				if(isLoading)
-					startThinking( {div: 'thinkingDiv', message: 'Fetching Calendar Events' } );
-				else
-					stopThinking ( {div: 'thinkingDiv' } );
-			},
+			if(isLoading) {
+				startThinking({
+					div: 'thinkingDiv', message: 'Fetching Calendar Events'
+				});
+			} else {
+				stopThinking({
+					div: 'thinkingDiv'
+				});
+			}
+		},
 		eventClick: function(calEvent, jsEvent, view) {
-				if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Audit')
-					return;
-				if (!hasHoliday && getType(calEvent) == 'Holiday')
-					return;
-				var allDayCB = $dialog.find('#all-day');
-				if (calEvent.allDay && !allDayCB.is(':checked')) 
-					allDayCB.click();
-				else if (!calEvent.allDay && allDayCB.is(':checked'))
-					allDayCB.click();
+			if (getType(calEvent) == 'Availability' || getType(calEvent) == 'Audit') {
+				return;
+			}
+			
+			if (!hasHoliday && getType(calEvent) == 'Holiday') {
+				return;
+			}
+			
+			var allDayCB = $dialog.find('#all-day');
+			
+			if (calEvent.allDay && !allDayCB.is(':checked')) { 
+				allDayCB.click();
+			} else if (!calEvent.allDay && allDayCB.is(':checked')) {
+				allDayCB.click();
+			}
 
-				clearForm();
-				$dialog.find('[name="id"]').val(getId(calEvent));
-				$dialog.find('[name="type"]').val(getType(calEvent));
-				$dialog.find('[name="title"]').val(calEvent.title);
-				$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(calEvent.start,'MM/dd/yyyy'));
-				$dialog.find('[name="startTime"]').val($.fullCalendar.formatDate(calEvent.start, 'hh:mm TT'));
-				if (!calEvent.allDay) {
-					$dialog.find('[name="endDate"]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
-					$dialog.find('[name="endTime"]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
-				}
-				$dialog.dialog('option', 'buttons', {'Save':buttons.Save, 'Delete':buttons.Delete, 'Cancel':buttons.Cancel});
-				$dialog.dialog('open');
-			},
+			clearForm();
+			
+			$dialog.find('[name="id"]').val(getId(calEvent));
+			$dialog.find('[name="type"]').val(getType(calEvent));
+			$dialog.find('[name="title"]').val(calEvent.title);
+			$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(calEvent.start,'MM/dd/yyyy'));
+			$dialog.find('[name="startTime"]').val($.fullCalendar.formatDate(calEvent.start, 'hh:mm TT'));
+			
+			if (!calEvent.allDay) {
+				$dialog.find('[name="endDate"]').val($.fullCalendar.formatDate(calEvent.end,'MM/dd/yyyy'));
+				$dialog.find('[name="endTime"]').val($.fullCalendar.formatDate(calEvent.end, 'hh:mm TT'));
+			}
+			
+			$dialog.dialog('option', 'buttons', {
+				Save: buttons.Save, 
+				Delete: buttons.Delete, 
+				Cancel: buttons.Cancel
+			});
+			
+			$dialog.dialog('open');
+		},
 		eventRender: function (calEvent, element, view) {
-				if (getType(calEvent) == 'Audit') {
-					$(element)
-						.attr({rel: 'AuditQuickAjax.action?auditID='+getId(calEvent)})
-						.cluetip({
-							sticky: true,
-							clickThrough: true,
-							positionBy: 'mouse',
-							ajaxCache: true,
-							closeText: "<img src='images/cross.png' width='16' height='16'>",
-							arrows: true,
-							dropShadow: false,
-							cluetipClass: 'jtip',
-							activation: 'click',
-							ajaxProcess: function(data) {
-								data = $(data).not('meta, link, title');
-								return data;
-							}
-						}
-					);
-				}
-			},
+			if (getType(calEvent) == 'Audit') {
+				$(element).attr({rel: 'AuditQuickAjax.action?auditID=' + getId(calEvent)});
+				
+				$(element).cluetip({
+					sticky: true,
+					clickThrough: true,
+					positionBy: 'mouse',
+					ajaxCache: true,
+					closeText: "<img src='images/cross.png' width='16' height='16'>",
+					arrows: true,
+					dropShadow: false,
+					cluetipClass: 'jtip',
+					activation: 'click',
+					ajaxProcess: function (data) {
+						data = $(data).not('meta, link, title');
+						
+						return data;
+					}
+				});
+			}
+		},
 		dayClick: function(dayDate, view) {
-				clearForm();
-				$dialog.find('[name="id"]').val(0);
-				$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
-				$dialog.dialog('option', 'buttons', {'Save':buttons.Save, 'Cancel':buttons.Cancel});
-				$dialog.dialog('open');
-			},
+			clearForm();
+			
+			$dialog.find('[name="id"]').val(0);
+			$dialog.find('[name="startDate"]').val($.fullCalendar.formatDate(dayDate,'MM/dd/yyyy'));
+			$dialog.dialog('option', 'buttons', {
+				Save: buttons.Save, 
+				Cancel: buttons.Cancel
+			});
+			$dialog.dialog('open');
+		},
 		eventSources: sources
 	});
 	
@@ -209,35 +277,48 @@ function loadPreview() {
 
 function loadSched() {
 	function saveEvent(calEvent, element, $cal) {
-		var one_minute = 1000*60;
-		$.getJSON('MyScheduleJSON.action', 
-			{ 
+		var one_minute = 1000 * 60;
+		
+		$.getJSON('MyScheduleJSON.action', { 
 				button:'saveSchedule',
 				currentUserID: $('#currentUserID').val(),
 				'schedEvent.id': calEvent.id == null ? 0 : calEvent.id, 
 				'schedEvent.weekDay': calEvent.start.getDay(),
 				'schedEvent.startTime': calEvent.start.getHours() * 60 + calEvent.start.getMinutes(), 
 				'schedEvent.duration': (calEvent.end.getTime() - calEvent.start.getTime()) / one_minute
-			},
-			function(response) {
-				$.gritter.add({title: response.title, text:response.output});
+			}, function(response) {
+				$.gritter.add({
+					title: response.title, 
+					text: response.output
+				});
+				
 				$calendar.weekCalendar("removeUnsavedEvents");
-				if (response.schedEvent)
+				
+				if (response.schedEvent) {
 					$calendar.weekCalendar("updateEvent", fixEvent(response.schedEvent));
+				}
 			}
 		);
 	}
 
 	function fixEvent(v) {
 		var start = new Date();
+		
 		start.setDate(start.getDate() - (start.getDay() - v.weekDay));
 		start.setHours(0);
 		start.setMinutes(0);
 		start.setSeconds(0);
 		start.setMinutes(v.startTime);
+		
 		var end = new Date(start);
+		
 		end.setMinutes(start.getMinutes() + v.duration);
-		return { id:v.id, start:start, end:end };
+		
+		return {
+			id: v.id, 
+			start: start,
+			end: end
+		};
 	}
 	
 	var date = new Date();
@@ -255,40 +336,51 @@ function loadSched() {
 		buttons: false,
 		newEventText: '',
 		data: function(start, end, callback) {
-			$.getJSON('MyScheduleJSON.action',
-					{button:'json', type:'weekly', currentUserID: $('#currentUserID').val()},
-					function(json) {
-						events = new Array(json.events.length);
-						$.each(json.events, function(k,v){
-							events[k] = fixEvent(v);
-						});
-						callback(events);
-					}
-			);
+			$.getJSON('MyScheduleJSON.action', {
+				button: 'json', 
+				type: 'weekly', 
+				currentUserID: $('#currentUserID').val()
+			}, function(json) {
+				events = new Array(json.events.length);
+				
+				$.each(json.events, function(k,v){
+					events[k] = fixEvent(v);
+				});
+				
+				callback(events);
+			});
 		},
-		resizable: function(calEvent, eventElement) {return false;},
-		draggable: function(calEvent, eventElement) {return false;},
+		resizable: function (calEvent, eventElement) {
+			return false;
+		},
+		draggable: function (calEvent, eventElement) {
+			return false;
+		},
 		eventNew: saveEvent,
-		eventClick: function(calEvent, element) {
-				if (confirm("Do you want to delete this timeslot?")){
-					$.getJSON('MyScheduleJSON.action',
-						{	
-							button:'deleteSchedule',
-							'schedEvent.id':calEvent.id,
-							currentUserID: $('#currentUserID').val()
-						},
-						function(json) {
-								$.gritter.add({title: json.title, text:json.output});
-								if (json.deleted)
-									$('#cal_sched').weekCalendar('removeEvent',calEvent.id);
-							}
-					);
-				}
+		eventClick: function (calEvent, element) {
+			if (confirm("Do you want to delete this timeslot?")) {
+				$.getJSON('MyScheduleJSON.action', {
+					button:'deleteSchedule',
+					'schedEvent.id':calEvent.id,
+					currentUserID: $('#currentUserID').val()
+				}, function(json) {
+					$.gritter.add({
+						title: json.title, 
+						text: json.output
+					});
+					
+					if (json.deleted) {
+						$('#cal_sched').weekCalendar('removeEvent', calEvent.id);
+					}
+				});
 			}
+		}
 	});
 
 	$calendar.find('.today').removeClass('today');
-	$calendar.find('.day-column.day-6, .day-column.day-7').css({'background-color':'#dedede'});
+	$calendar.find('.day-column.day-6, .day-column.day-7').css({
+		'background-color':'#dedede'
+	});
 	
 	$('#currentUserID').change(function(){
 		$calendar.weekCalendar('refresh');
@@ -296,18 +388,31 @@ function loadSched() {
 	});
 }
 
-$(function(){
+$(function () {
 	var tabMap = {
-		preview:   {loaded: false, load: loadPreview, refresh: function(){$('#cal_vacat').fullCalendar('refetchEvents');}},
-		aschedule: {loaded: false, load: loadSched, refresh: function(){$('#cal_sched').weekCalendar('refresh');}}
+		preview:   {
+			loaded: false, 
+			load: loadPreview, 
+			refresh: function () {
+				$('#cal_vacat').fullCalendar('refetchEvents');
+			}
+		},
+		aschedule: {
+			loaded: false, 
+			load: loadSched, 
+			refresh: function () {
+				$('#cal_sched').weekCalendar('refresh');
+			}
+		}
 	};
 
 	$('#schedule_tabs').bind('tabsshow', function(event, ui) {
 	    if (!tabMap[ui.panel.id].loaded) {
 	    	tabMap[ui.panel.id].load();
 	    	tabMap[ui.panel.id].loaded = true;
-	    } else
+	    } else {
 	    	tabMap[ui.panel.id].refresh();
+	    }
 	});
 
 	$("#schedule_tabs").tabs();
