@@ -259,7 +259,7 @@ public class RequestNewContractor extends PicsActionSupport {
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 
-		if (status == null && newContractor.getId() > 0)
+		if (status == null && newContractor.getStatus() == null)
 			addActionError(getText("RequestNewContractor.error.StatusMissing"));
 
 		// There are errors, just exit out
@@ -305,7 +305,9 @@ public class RequestNewContractor extends PicsActionSupport {
 			newContractor = crrDAO.save(newContractor);
 			sendEmail();
 		} else {
-			newContractor.setStatus(status);
+			if (status != null)
+				newContractor.setStatus(status);
+			
 			newContractor = crrDAO.save(newContractor);
 		}
 
