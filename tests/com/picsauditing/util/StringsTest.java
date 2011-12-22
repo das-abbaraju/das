@@ -33,18 +33,17 @@ public class StringsTest extends TestCase {
 		super(name);
 	}
 
-	public void testEmail() {
-		try {
-			Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
-			System.out.println(addresses.toString());
-			addresses = InternetAddress.parse("tallred@picsauditing.com, kn@pics.com");
-			System.out.println(addresses.toString());
-			addresses = InternetAddress.parse("Trevor <tallred@picsauditing.com>");
-			System.out.println(addresses.toString());
-		} catch (AddressException e) {
-			// TODO Auto-generated catch block
-			fail();
-		}
+	public void testEmail() throws AddressException {
+		// FIXME Why is this test here in StringsTest? -- Craig Jones
+		Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
+		assertEquals("tallred@picsauditing.com", addresses[0].toString());
+
+		addresses = InternetAddress.parse("tallred@picsauditing.com, kn@pics.com");
+		assertEquals("tallred@picsauditing.com", addresses[0].toString());
+		assertEquals("kn@pics.com", addresses[1].toString());
+		
+		addresses = InternetAddress.parse("Trevor <tallred@picsauditing.com>");
+		assertEquals("Trevor <tallred@picsauditing.com>", addresses[0].toString());
 	}
 
 	public void testInsertSpaceNull() {
@@ -60,6 +59,7 @@ public class StringsTest extends TestCase {
 	}
 
 	public void testArray() {
+		// FIXME What is the purpose of this test? -- Craig Jones
 		List<String> list = new ArrayList<String>();
 		list.add("Hello");
 		addString(list);
@@ -72,6 +72,7 @@ public class StringsTest extends TestCase {
 	}
 
 	public void testString() {
+		// FIXME What is the purpose of this test? -- Craig Jones
 		String color = "Green";
 		color = changeColor(color);
 		assertEquals("Red", color);
@@ -83,10 +84,28 @@ public class StringsTest extends TestCase {
 	}
 
 	@Test
-	public void testHash() {
+	public void testHash_sha1Algorithm() {
+		// Known SHA-1 encoding taken from http://en.wikipedia.org/wiki/SHA-1#Example_hashes
+		assertEquals("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",Strings.hash("The quick brown fox jumps over the lazy dog"));
+		assertEquals("de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3",Strings.hash("The quick brown fox jumps over the lazy cog"));
+		assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709",Strings.hash(""));
+	}
+
+	/**
+	 * In the following assertions, the expected value is taken for granted. The point of this test is
+	 * demonstrate a common way that the hash method is used for passwords, by adding a numeric seed to the end of the
+	 * password before encoding it.
+	 */
+	@Test
+	public void testHash_passwordPlusSeed() {
+		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60",Strings.hash("@Irvine1" + 2357));
+		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60",Strings.hash("@Irvine12357"));
+	}
+
+	@Test
+	public void testHash_equals() {
 		String source = "mypassword";
 		String source2 = "mypassword";
-		System.out.println(Strings.hash("@Irvine1" + 2357));
 
 		// Checking the two hashes are equal
 		assertTrue(Strings.hash(source).equals(Strings.hash(source2)));
@@ -96,16 +115,6 @@ public class StringsTest extends TestCase {
 		assertFalse(Strings.hash(source).equals("mypasswor"));
 		assertFalse(Strings.hash(source).equals("ypassword"));
 
-		// Old hash function -- updated to SHA1
-		// assertTrue(Strings.hash("").length() == 28);
-		// Zero-length strings should be encoded
-		assertTrue(Strings.hash("").length() == 40);
-
-		// Strings longer than 28 bytes (size of return hash) should be encoded
-		// assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length()
-		// == 28);
-		// Strings longer than 40 bytes (size of return hash) should be encoded
-		assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length() == 40);
 		// Check appended seeds are equal
 		int val = 121314;
 		int val2 = 121314;
@@ -113,63 +122,17 @@ public class StringsTest extends TestCase {
 	}
 
 	@Test
-	public void testSQL() {
-		SelectUserUnion sql = new SelectUserUnion();
-		// System.out.println(sql.toString());
-		sql.addField("u.id");
-		sql.addField("u.username");
-		sql.addField("u.name");
-		sql.addField("u.accountID");
-		sql.addField("a.name");
-		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
+	public void testHash_length() {
+		// Old hash function -- updated to SHA1
+		// assertEquals(28,Strings.hash("").length());
+		// Zero-length strings should be encoded
+		assertEquals(40,Strings.hash("").length());
 
-		sql.addWhere("u.isActive = 'Yes'");
-		sql.addOrderBy("u.name");
-		sql.setLimit(100);
-		// System.out.println(sql.toString());
-		sql.toString();
-	}
-
-	@Test
-	public void testNotes() throws Exception {
-		String noteText = FileUtils.readFile("tests/test_notes.txt");
-
-		BufferedReader reader = new BufferedReader(new StringReader(noteText));
-
-		String line;
-		List<Note> notes = new Vector<Note>();
-		List<Note> thisSet = new Vector<Note>();
-		List<List<Note>> badNotes = new Vector<List<Note>>();
-
-		while ((line = reader.readLine()) != null) {
-			Note note = new Note();
-			note.setOriginalText(line);
-			notes.add(note);
-		}
-
-		for (Note note : notes) {
-			try {
-
-				note.convertNote();
-
-				if (thisSet.size() > 1) {
-					badNotes.add(new Vector<Note>(thisSet));
-				}
-				thisSet.clear();
-				thisSet.add(note);
-			} catch (Exception e) {
-				thisSet.add(note);
-			}
-		}
-
-		for (List<Note> badSet : badNotes) {
-			System.out.println("================================");
-			for (Note note : badSet) {
-				System.out.println(note.getOriginalText());
-			}
-			System.out.println("================================");
-		}
-
+		// Strings longer than 28 bytes (size of return hash) should be encoded
+		// assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length()
+		// == 28);
+		// Strings longer than 40 bytes (size of return hash) should be encoded
+		assertEquals(40,Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length());
 	}
 
 	@Test
@@ -227,7 +190,6 @@ public class StringsTest extends TestCase {
 
 		StringBuffer buf = new StringBuffer();
 		while (matcher.find()) {
-			System.out.println(matcher.group());
 			buf.append(matcher.group());
 		}
 
@@ -375,11 +337,5 @@ public class StringsTest extends TestCase {
 		assertTrue(Strings.isEqualNullSafe("foobar", "foobar"));
 	}
 
-	public void testEmployeePicsNumber() {
-		Employee employee = new Employee();
-		employee.setId(943148);
-		String value = EmployeeDAO.generatePicsNumber(employee);
-		System.out.println(value);
-	}
 
 }
