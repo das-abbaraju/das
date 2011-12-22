@@ -3,6 +3,7 @@ package com.picsauditing.report;
 import java.util.Date;
 
 import com.ibm.icu.util.Calendar;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
 public class QueryDateParameter {
@@ -11,7 +12,7 @@ public class QueryDateParameter {
 	public QueryDateParameter(String value) {
 		if (Strings.isEmpty(value))
 			return;
-		
+
 		value = value.trim();
 
 		if (value.matches("[0-9]+")) {
@@ -27,15 +28,24 @@ public class QueryDateParameter {
 		}
 
 		char period = value.charAt(value.length() - 1);
-		value = value.substring(0, value.length() - 1);
-		int amount = Integer.parseInt(value);
+		String valueWithoutPeriod = value.substring(0, value.length() - 1);
+		Calendar cal = Calendar.getInstance();
 
-		if (!plusTime) {
-			amount *= -1;
+		try {
+			int amount = Integer.parseInt(valueWithoutPeriod);
+
+			if (!plusTime) {
+				amount *= -1;
+			}
+			cal.add(convertPeriod(period), amount);
+
+		} catch (NumberFormatException nfe) {
+			Date parsedDate = DateBean.parseDate(value);
+			if (parsedDate != null) {
+				cal.setTime(parsedDate);
+			}
 		}
 
-		Calendar cal = Calendar.getInstance();
-		cal.add(convertPeriod(period), amount);
 		date = cal.getTime();
 	}
 

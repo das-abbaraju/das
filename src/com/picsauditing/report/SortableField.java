@@ -57,6 +57,8 @@ public class SortableField implements JSONable {
 				return "COUNT(" + fieldSQL + ")";
 		case CountDistinct:
 			return "COUNT(DISTINCT " + fieldSQL + ")";
+		case Date:
+			return "DATE(" + fieldSQL + ")";
 		case Format:
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
 		case Lower:

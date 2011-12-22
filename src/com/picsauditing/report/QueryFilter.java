@@ -10,10 +10,10 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
 
 public class QueryFilter implements JSONable {
-	private String field;
+	private SortableField field;
 	private boolean not = false;
 	private QueryFilterOperator operator;
-	private String field2;
+	private SortableField field2;
 	private String value;
 	private String value2;
 
@@ -33,15 +33,35 @@ public class QueryFilter implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		this.field = (String) json.get("field");
+		
+		Object fieldObj = json.get("field");
+		if (fieldObj != null) {
+			this.field = new SortableField();
+
+			if (fieldObj instanceof JSONObject) {
+				this.field.fromJSON((JSONObject) fieldObj);
+			} else {
+				field.field = (String) fieldObj;
+			}
+		}
 		this.operator = QueryFilterOperator.valueOf(json.get("operator").toString());
 
 		this.not = false;
 		String not = (String) json.get("not");
 		if (not != null)
 			this.not = true;
-		this.field2 = (String) json.get("field2");
-		this.field2 = Utilities.escapeQuotes(field2);
+		
+		Object field2Obj = json.get("field2");
+		if (field2Obj != null) {
+			this.field2 = new SortableField();
+
+			if (field2Obj instanceof JSONObject) {
+				this.field2.fromJSON((JSONObject) field2Obj);
+			} else {
+				field2.field = (String) field2Obj;
+			}
+		}
+
 		this.value = (String) json.get("value");
 		this.value = Utilities.escapeQuotes(value);
 		this.value2 = (String) json.get("value2");
@@ -49,24 +69,22 @@ public class QueryFilter implements JSONable {
 	}
 
 	public String toExpression(Map<String, QueryField> availableFields) {
-		QueryField queryField = availableFields.get(field);
-		String columnSQL = queryField.sql;
-		if (field.equals("accountName"))
+		QueryField queryField = availableFields.get(field.field);
+		String columnSQL = field.toSQL(availableFields);
+		if (field.field.equals("accountName"))
 			columnSQL = "a.nameIndex";
 		if (queryField.type.equals(FieldType.Date)) {
-			String expression = columnSQL + " " + operator.getOperand() + " '";
 			QueryDateParameter parameter = new QueryDateParameter(value);
-			return expression + DateBean.toDBFormat(parameter.getTime()) + "'";
+			value = DateBean.toDBFormat(parameter.getTime());
+			QueryDateParameter parameter2 = new QueryDateParameter(value2);
+			value2 = DateBean.toDBFormat(parameter2.getTime());
 		}
-
-		// TODO: Current logic can compare intervals and now as timestamps. It does not cover days, months, or years.
 
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		String wrappedValue = null;
 
-		if (StringUtils.isEmpty(value) && field2 != null) {
-			QueryField queryField2 = availableFields.get(field2);
-			String columnSQL2 = queryField2.sql;
+		if (StringUtils.isEmpty(value) && field2.field != null) {
+			String columnSQL2 = field2.toSQL(availableFields);
 			wrappedValue = columnSQL2;
 		}
 
@@ -102,19 +120,19 @@ public class QueryFilter implements JSONable {
 		return expression;
 	}
 
-	public String getField() {
+	public SortableField getField() {
 		return field;
 	}
 
-	public void setField(String field) {
+	public void setField(SortableField field) {
 		this.field = field;
 	}
 
-	public String getField2() {
+	public SortableField getField2() {
 		return field2;
 	}
 
-	public void setField2(String field2) {
+	public void setField2(SortableField field2) {
 		this.field2 = field2;
 	}
 

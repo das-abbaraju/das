@@ -64,7 +64,7 @@ public class QueryRunner {
 		addHaving(command);
 
 		removeObsoleteColumns(command);
-		addLeftJoins();
+		addLeftJoins(command);
 
 		addOrderBy(command);
 
@@ -101,8 +101,11 @@ public class QueryRunner {
 	}
 
 	private void addRuntimeFilters(QueryCommand command) {
-		if (command.getFilters().size() == 0)
+		if (command.getFilters().size() == 0) {
+			if (command.getDeveloperInjectedFilters() != null)
+				sql.addWhere(command.getDeveloperInjectedFilters());
 			return;
+		}
 
 		String where = command.getFilterExpression();
 		if (where == null || Strings.isEmpty(where)) {
@@ -127,17 +130,17 @@ public class QueryRunner {
 			String filterExp = queryFilter.toExpression(availableFields);
 			where = where.replace("{" + i + "}", filterExp);
 		}
-		sql.addWhere(where);
+		if (command.getDeveloperInjectedFilters() != null)
+			sql.addWhere(command.getDeveloperInjectedFilters());
 	}
 
-	private void addLeftJoins() {
+	private void addLeftJoins(QueryCommand command) {
 		Set<String> addedJoins = new HashSet<String>();
 		for (SortableField column : columns) {
 			if (availableFields.keySet().contains(column.field)) {
 				QueryField availableField = availableFields.get(column.field);
 				if (availableField.requiresJoin()) {
 					if (!addedJoins.contains(availableField.requireJoin)) {
-						// System.out.println("adding " + availableField.requireJoin);
 						sql.addJoin(this.joins.get(availableField.requireJoin));
 						addedJoins.add(availableField.requireJoin);
 					}
@@ -147,17 +150,21 @@ public class QueryRunner {
 				// calculated fields (2 fields coming out with a result)
 			}
 		}
+		if (command.getDeveloperInjectedJoins() != null)
+			sql.addJoin(command.getDeveloperInjectedJoins());
+		if (command.getDeveloperInjectedColumns() != null)
+			sql.addField(command.getDeveloperInjectedColumns());
 	}
 
 	private void addOrderBy(QueryCommand command) {
 		if (command.getOrderBy().size() == 0) {
+			if (command.getDeveloperInjectedOrderBy() != null)
+				sql.addOrderBy(command.getDeveloperInjectedOrderBy());
 			sql.addOrderBy(defaultSort);
 			return;
 		}
 
 		for (SortableField field : command.getOrderBy()) {
-			// TODO: 'float values to top' feature (i.e. case when [exp] then 1 else 2 end)
-
 			String orderBy = field.field;
 			if (!columns.contains(field.field))
 				orderBy = availableFields.get(field.field).sql;
@@ -165,11 +172,16 @@ public class QueryRunner {
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);
 		}
+		if (command.getDeveloperInjectedOrderBy() != null)
+			sql.addOrderBy(command.getDeveloperInjectedOrderBy());
 	}
 
 	private void addGroupBy(QueryCommand command) {
-		if (command.getGroupBy().size() == 0)
+		if (command.getGroupBy().size() == 0) {
+			if (command.getDeveloperInjectedGroupBy() != null)
+				sql.addOrderBy(command.getDeveloperInjectedGroupBy());
 			return;
+		}
 
 		for (SortableField field : command.getGroupBy()) {
 			String groupBy = field.toSQL(availableFields);
@@ -177,6 +189,8 @@ public class QueryRunner {
 		}
 
 		addTotalField();
+		if (command.getDeveloperInjectedGroupBy() != null)
+			sql.addOrderBy(command.getDeveloperInjectedGroupBy());
 	}
 
 	private void addHaving(QueryCommand command) {

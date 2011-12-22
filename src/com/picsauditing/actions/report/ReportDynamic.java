@@ -79,8 +79,14 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			System.out.println("Error : " + e.getMessage());
 		}
-		if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0))
+		if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
 			json.put("sql", runner.getSQL().replaceAll("\n", " "));
+			json.put("base", report.getBase());
+			json.put("command", report.getParameters());
+		}
+		
+		save();
+		
 		return JSON;
 	}
 
