@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,10 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountUser;
-import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
@@ -291,4 +292,14 @@ public abstract class AuditRuleActionSupport<T extends AuditRule> extends PicsAc
 		this.ruleInclude = ruleInclude;
 	}
 
+	public Map<String, String> getAccountTypeList() {
+		Map<String, String> map = new TreeMap<String, String>();
+		map.put("", "Any");
+		
+		for (ContractorType type : ContractorType.values()) {
+			map.put(type.name(), type.getType());
+		}
+		
+		return map;
+	}
 }
