@@ -59,6 +59,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private int availabilitySelectedID;
 	private boolean confirmed = false;
 	private boolean feeOverride = false;
+	private boolean readInstructions = false;
 
 	private String scheduledDateDay;
 	private String scheduledDateTime;
@@ -233,6 +234,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		if (availabilitySelected == null) {
 			addActionError(getText("ScheduleAudit.message.TimeSlotNotAvailable"));
 			return "select";
+		}
+		
+		if (!readInstructions) {
+			addActionError(getText("ScheduleAudit.message.AcknowledgeInstructions"));
+			return "confirm";
 		}
 
 		if (!confirmed) {
@@ -441,6 +447,14 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public void setConfirmed(boolean confirmed) {
 		this.confirmed = confirmed;
+	}
+
+	public boolean isReadInstructions() {
+		return readInstructions;
+	}
+
+	public void setReadInstructions(boolean readInstructions) {
+		this.readInstructions = readInstructions;
 	}
 
 	public boolean isFeeOverride() {

@@ -96,6 +96,10 @@
 			<fieldset class="form submit">
 				<div>
 					<ol>
+						<li>
+							<s:checkbox name="readInstructions" />
+							<s:text name="ScheduleAudit.message.ReadInstructions" />
+						</li>
 						<li><s:checkbox name="confirmed" />
 							<s:text name="ScheduleAudit.message.ConfirmMessage">
 								<s:param><s:date name="lastCancellationTime" format="MMMMM d, yyyy, h:mm a" /></s:param>
