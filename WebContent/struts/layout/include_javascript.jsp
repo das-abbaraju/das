@@ -2,7 +2,15 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.4.min.js">\x3C/script>')</script>
 		
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+<%--
+Note: 1.7.2 version affects the website in the followings ways, upgrading jquery.ui may effect the following
+
+- Including multiple jquery.ui will break plugins 
+- UI calendar z-index
+- MySchedule calendar plugin
+
+--%>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		
 <script type="text/javascript" src="js/ajax.js"></script>
 <script type="text/javascript" src="js/bootstrap/bootstrap-twipsy.js"></script>
