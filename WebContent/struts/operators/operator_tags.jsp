@@ -173,16 +173,16 @@
 											<td>
 												<s:if test="permissions.isCanAddRuleForOperator(operator)">
 													<s:if test="!auditTypeRules.empty">
-														<a href="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit picsbutton">Edit Audit Rules</a>
+														<a href="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit btn">Audit Rules</a>
 													</s:if>
 													
 													<s:if test="!auditCategoryRules.empty">
-														<a href="CategoryRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit picsbutton">Edit Category Rules</a>
+														<a href="CategoryRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit btn">Category Rules</a>
 													</s:if>
 												</s:if>
 												
 												<s:if test="permissions.hasPermission('ManageAudits') && !operatorFlagCriteria.empty">
-													<a rel="facebox" href="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="edit picsbutton">Edit Flag Criteria</a>
+													<a rel="facebox" href="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="edit btn">Flag Criteria</a>
 												</s:if>
 											</td>
 										</s:if>
