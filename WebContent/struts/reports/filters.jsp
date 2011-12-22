@@ -225,7 +225,7 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:select list="#{'Onsite':getText('ContractorType.Onsite'), 'Offsite':getText('ContractorType.Offsite'), 'Material Supplier':getText('ContractorType.Material')}" cssClass="forms" name="filter.service" multiple="true" size="3" />
+					<s:select list="#{'Onsite':getText('ContractorType.Onsite'), 'Offsite':getText('ContractorType.Offsite'), 'Transportation':getText('ContractorType.Transportation'), 'Material Supplier':getText('ContractorType.Material')}" cssClass="forms" name="filter.service" multiple="true" size="3" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
