@@ -390,6 +390,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 					clauses.add("a.onsiteServices = 1");
 				else if ("Offsite".equals(service))
 					clauses.add("a.offsiteServices = 1");
+				else if ("Transportation".equals(service))
+					clauses.add("a.transportationServices = 1");
 				else if ("Material Supplier".equals(service))
 					clauses.add("a.materialSupplier = 1");
 			}
