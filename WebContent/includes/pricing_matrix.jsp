@@ -16,10 +16,10 @@ $(document).ready(function() {
 });
 </script>
 
-<h2><s:text name="ContractorPricing.MatrixTitle" /></h2>
+<h2 style="text-align: center;"><s:text name="ContractorPricing.MatrixTitle" /></h2>
 <p>
 	<s:if test="con != null">
-		<s:text name="ContractorPricing.Description"></s:text>
+		<p style="text-align: center;"><s:text name="ContractorPricing.Description"></s:text></p>
 	</s:if>
 </p>
 
@@ -145,7 +145,7 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
-<p class="redMain">
+<p class="redMain" style="text-align: center;">
 	<s:text name="ContractorPricing.ActivationFee">
 	<s:param><s:property value="%{con.currencyCode.symbol}" /></s:param>
 	<s:param><s:property value="getPrice('1Activation')"/></s:param>
