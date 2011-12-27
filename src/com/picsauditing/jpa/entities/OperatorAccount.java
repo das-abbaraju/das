@@ -34,6 +34,7 @@ public class OperatorAccount extends Account {
 	public static final int PICSPSM = 8;
 	public static final int SUNCOR = 10566;
 	public static final int SALES = 23325;
+	public static final int CINTAS = 17144;
 
 	private OperatorAccount parent;
 
@@ -217,7 +218,7 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isAcceptsList() {
-		return this.isDescendantOf(OperatorAccount.SUNCOR);
+		return this.isDescendantOf(OperatorAccount.SUNCOR) || this.isDescendantOf(OperatorAccount.CINTAS);
 	}
 
 	@ManyToOne
