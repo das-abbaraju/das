@@ -131,7 +131,7 @@ public class ContractorRegistrationStepTest {
 		assertEquals("RegistrationAddClientSite.action", ContractorRegistrationStep.Clients.getUrl());
 		assertEquals("RegistrationServiceEvaluation.action", ContractorRegistrationStep.Risk.getUrl());
 		assertEquals("RegistrationMakePayment.action", ContractorRegistrationStep.Payment.getUrl());
-		assertEquals("Home.action", ContractorRegistrationStep.Done.getUrl());
+		assertEquals("ContractorView.action", ContractorRegistrationStep.Done.getUrl());
 	}
 
 	@Test

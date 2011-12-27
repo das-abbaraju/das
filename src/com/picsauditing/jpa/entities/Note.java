@@ -136,13 +136,13 @@ public class Note extends BaseTable implements java.io.Serializable {
 	public void setFollowupDate(Date followupDate) {
 		this.followupDate = followupDate;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "employeeID")
 	public Employee getEmployee() {
 		return employee;
 	}
-	
+
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
 	}
@@ -212,7 +212,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 		// System.out.println(oldNote);
 
 		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
-		Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ);
+		Pattern pattern = Pattern.compile(expression, Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(getOriginalText());
 		if (matcher.find()) {
 
@@ -251,9 +251,9 @@ public class Note extends BaseTable implements java.io.Serializable {
 				return false;
 			}
 
-//			if (who != null && who.trim().length() > 0) {
-//				setUserName(who);
-//			}
+			// if (who != null && who.trim().length() > 0) {
+			// setUserName(who);
+			// }
 
 			if (what == null || what.trim().length() == 0) {
 				return false;

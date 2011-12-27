@@ -48,8 +48,11 @@ public class NoteTest {
 		assertEquals("Any note with a line break (carriage return) within the first 99 characters", note.getSummary());
 		// FIXME I wrote these tests to explore how notes work. (I was just curious.) I don't understand why the
 		// following assertion is not true. -- Craig Jones 12/22/2011
+		
+		// "the dot will not match a newline character by default." -- http://www.regular-expressions.info/dot.html
+		// Updated Note.convertNote() method to use Pattern.DOTALL flag instead of Pattern.CANON_EQ
 		assertEquals(
-				" will take the first line to be interpreted as the summary and the rest will be the body of the note.",
+				" will take the first line to be interpreted as the summary and the rest will be the body of the note.\n",
 				note.getBody());
 	}
 
