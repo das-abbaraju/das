@@ -119,6 +119,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String completeRegistration() throws Exception {
 		findContractor();
+		if (redirectIfNotReadyForThisStep())
+			return BLANK;
+
 		Invoice invoice = getInvoice();
 
 		auditBuilder.buildAudits(contractor);
@@ -625,14 +628,17 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
 		findContractor();
 		invoice = contractor.findLastUnpaidInvoice();
-		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
 		if (invoice == null) {
-			invoice = newInvoice;
-			contractor.getInvoices().add(newInvoice);
-			invoiceDAO.save(newInvoice);
+			invoice = billingService.createInvoice(contractor);
+			contractor.getInvoices().add(invoice);
+			invoiceDAO.save(invoice);
+			accountDao.save(contractor);
 			redirect("RegistrationMakePayment.action");
 			return true;
-		} else if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
+		}
+		
+		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
+		if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
 			billingService.updateInvoice(invoice, newInvoice, permissions);
 			redirect("RegistrationMakePayment.action");
 			return true;

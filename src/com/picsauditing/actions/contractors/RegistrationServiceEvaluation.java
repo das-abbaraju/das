@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
-import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -71,7 +70,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 	public String execute() throws Exception {
 		findContractor();
-
 		if (redirectIfNotReadyForThisStep())
 			return SUCCESS;
 
@@ -168,6 +166,9 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	@Override
 	public String nextStep() throws Exception {
 		findContractor();
+		if (redirectIfNotReadyForThisStep())
+			return BLANK;
+
 		contractor.setSoleProprietor(isSoleProprietor);
 		if (isBidOnly)
 			contractor.setAccountLevel(AccountLevel.BidOnly);
@@ -295,6 +296,11 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 					increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
 
+		setListOnly();
+		contractor.syncBalance();
+		billingService.calculateAnnualFees(contractor);
+		contractorAccountDAO.save(contractor);
+
 		// Free accounts should just be activated
 		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
 			contractor.setStatus(AccountStatus.Active);
@@ -304,12 +310,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				contractor.setBalance(BigDecimal.ZERO);
 			accountDao.save(contractor);
 		}
-		
-		setListOnly();
-		contractor.syncBalance();
-		billingService.calculateAnnualFees(contractor);
-		contractorAccountDAO.save(contractor);
-		
+
 		redirect(getRegistrationStep().getUrl());
 		return BLANK;
 	}
