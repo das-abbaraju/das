@@ -63,6 +63,44 @@ public class Registration extends ContractorActionSupport {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
+		
+
+		if ("request".equalsIgnoreCase(button)) {
+			// check for basic rID...?
+			if (getParameter("rID") > 0)
+				requestID = getParameter("rID");
+			// Check for new requestID
+			if (requestID == 0)
+				requestID = getParameter("requestID");
+
+			if (requestID > 0) {
+				// Set the session variable
+				ActionContext.getContext().getSession().put("requestID", requestID);
+				ContractorRegistrationRequest crr = requestDAO.find(requestID);
+
+				if (crr.getContractor() == null) {
+					contractor = new ContractorAccount();
+					contractor.setName(crr.getName());
+					contractor.setPhone(crr.getPhone());
+					contractor.setTaxId(crr.getTaxID());
+					contractor.setAddress(crr.getAddress());
+					contractor.setCity(crr.getCity());
+					contractor.setZip(crr.getZip());
+					contractor.setCountry(crr.getCountry());
+					contractor.setState(crr.getState());
+					contractor.setRequestedBy(crr.getRequestedBy());
+					contractor.setTaxId(crr.getTaxID());
+
+					user = new User();
+					user.setName(crr.getContact());
+					user.setEmail(crr.getEmail());
+					user.setPhone(crr.getPhone());
+				} else {
+					addActionError(getText("ContractorRegistration.error.AlreadyRegistered"));
+					return SUCCESS;
+				}
+			}
+		}
 
 		return SUCCESS;
 	}
