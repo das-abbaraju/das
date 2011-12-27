@@ -1,9 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ContractorRegistrationStepTest {
@@ -23,60 +24,68 @@ public class ContractorRegistrationStepTest {
 	@Test
 	public void testGetStep_null() {
 		assertNull(contractor);
-		assertEquals(ContractorRegistrationStep.Register,ContractorRegistrationStep.getStep(contractor)); 
-	}	
+		assertEquals(ContractorRegistrationStep.Register, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_empty() {
 		contractor = new ContractorAccount();
-		assertEquals(ContractorRegistrationStep.Register,ContractorRegistrationStep.getStep(contractor)); 
-	}	
+		assertEquals(ContractorRegistrationStep.Register, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_hasId() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
-		assertEquals(ContractorRegistrationStep.Clients,ContractorRegistrationStep.getStep(contractor)); 
-	}	
+		assertEquals(ContractorRegistrationStep.Clients, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_demo() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
 		contractor.setStatus(AccountStatus.Demo);
-		assertEquals(ContractorRegistrationStep.Done,ContractorRegistrationStep.getStep(contractor)); 
-	}	
+		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_active() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
 		contractor.setStatus(AccountStatus.Active);
-		assertEquals(ContractorRegistrationStep.Done,ContractorRegistrationStep.getStep(contractor)); 
-	}	
+		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_pending() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
 		contractor.setStatus(AccountStatus.Pending);
-		assertEquals(ContractorRegistrationStep.Clients,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Clients, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_isMaterialSupplier() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
 		contractor.setMaterialSupplier(true);
 		contractor.setProductRisk(LowMedHigh.None);
-		addOperator(888);  // anything but SUNCOR
+		addOperator(888); // anything but SUNCOR
 
-		assertEquals(ContractorRegistrationStep.Risk,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_isMaterialSupplierOnly() {
 		contractor = new ContractorAccount();
 		contractor.setId(999);
 		contractor.setSafetyRisk(LowMedHigh.None);
-		addOperator(888);  // anything but SUNCOR
+		addOperator(888); // anything but SUNCOR
 
 		assertFalse(contractor.isMaterialSupplierOnly());
-		assertEquals(ContractorRegistrationStep.Risk,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_multipleContractorTypes() {
 		contractor = new ContractorAccount();
@@ -84,26 +93,11 @@ public class ContractorRegistrationStepTest {
 		contractor.setSafetyRisk(LowMedHigh.None);
 		contractor.getAccountTypes().add(ContractorType.Supplier);
 		contractor.getAccountTypes().add(ContractorType.Onsite);
-		addOperator(888);  // anything but SUNCOR
+		addOperator(888); // anything but SUNCOR
 		assertFalse(contractor.isMaterialSupplierOnly());
-		assertEquals(ContractorRegistrationStep.Risk,ContractorRegistrationStep.getStep(contractor));
-	}	
-	@Test
-	public void testGetStep_needsToIndicateCompetitor() {
-		contractor = new ContractorAccount();
-		contractor.setId(999);
-		contractor.setSafetyRisk(LowMedHigh.None);
-		contractor.setCompetitorMembership(Boolean.TRUE);
-		
-		
-		OperatorAccount suncor = addOperator(OperatorAccount.SUNCOR);
-		OperatorAccount oa = addOperator(888);
-		oa.setParent(suncor);
-		
-		contractor.setRequestedBy(oa);
-		
-		assertEquals(ContractorRegistrationStep.Clients,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Risk, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_needsPayment() {
 		contractor = new ContractorAccount();
@@ -111,10 +105,11 @@ public class ContractorRegistrationStepTest {
 		contractor.setSafetyRisk(LowMedHigh.Low);
 		contractor.setProductRisk(LowMedHigh.Low);
 		contractor.setPayingFacilities(1);
-		addOperator(888);  // anything but SUNCOR
+		addOperator(888); // anything but SUNCOR
 
-		assertEquals(ContractorRegistrationStep.Payment,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Payment, ContractorRegistrationStep.getStep(contractor));
+	}
+
 	@Test
 	public void testGetStep_done() {
 		contractor = new ContractorAccount();
@@ -123,18 +118,20 @@ public class ContractorRegistrationStepTest {
 		contractor.setProductRisk(LowMedHigh.Low);
 		contractor.setPayingFacilities(1);
 		contractor.setCcOnFile(true);
-		addOperator(888);  // anything but SUNCOR
+		// Process changed for new contractor registration
+		contractor.setStatus(AccountStatus.Active);
+		addOperator(888); // anything but SUNCOR
 
-		assertEquals(ContractorRegistrationStep.Done,ContractorRegistrationStep.getStep(contractor));
-	}	
+		assertEquals(ContractorRegistrationStep.Done, ContractorRegistrationStep.getStep(contractor));
+	}
 
 	@Test
 	public void testGetUrl() {
-		assertEquals("Registration.action",ContractorRegistrationStep.Register.getUrl());
-		assertEquals("RegistrationAddClientSite.action",ContractorRegistrationStep.Clients.getUrl());
-		assertEquals("RegistrationServiceEvaluation.action",ContractorRegistrationStep.Risk.getUrl());
-		assertEquals("RegistrationMakePayment.action",ContractorRegistrationStep.Payment.getUrl());
-		assertEquals("Home.action",ContractorRegistrationStep.Done.getUrl());
+		assertEquals("Registration.action", ContractorRegistrationStep.Register.getUrl());
+		assertEquals("RegistrationAddClientSite.action", ContractorRegistrationStep.Clients.getUrl());
+		assertEquals("RegistrationServiceEvaluation.action", ContractorRegistrationStep.Risk.getUrl());
+		assertEquals("RegistrationMakePayment.action", ContractorRegistrationStep.Payment.getUrl());
+		assertEquals("Home.action", ContractorRegistrationStep.Done.getUrl());
 	}
 
 	@Test
