@@ -395,7 +395,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	public ContractorRegistrationStep getNextRegistrationStep() {
 		if (permissions.isContractor() && contractor.getStatus().isPendingDeactivated()
 				&& (contractor.isPaymentMethodStatusValid() || !contractor.isMustPayB()))
-			return ContractorRegistrationStep.Confirmation;
+			return ContractorRegistrationStep.Done;
 
 		return null;
 	}

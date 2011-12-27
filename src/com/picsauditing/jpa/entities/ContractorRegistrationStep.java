@@ -7,7 +7,6 @@ public enum ContractorRegistrationStep {
 	Clients, 
 	Risk, // a.k.a. Service Evaluation 
 	Payment, // a.k.a. Join 
-	Confirmation,
 	Done;
 
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
