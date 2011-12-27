@@ -12,7 +12,7 @@
 		<pattern>/Registration.action</pattern>
 		<pattern>/RegistrationAddClientSite.action</pattern>
 		<pattern>/RegistrationServiceEvaluation.action</pattern>
-		<pattern>/RegistrationMakePayment*.action</pattern>
+		<pattern>/RegistrationMakePayment.action</pattern>
 	</decorator>
 	<decorator name="print" page="print.jsp">
 		<pattern>/RegistrationMakePayment!printInvoice.action</pattern>
