@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditorVacation;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Geo;
+import com.picsauditing.util.Location;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
@@ -258,7 +259,11 @@ public class AuditScheduleBuilder {
 							availability.setStartDate(proposedStartTime.getTime());
 							availability.setDuration(schedule.getDuration());
 
-							if (nextAudit == null && previousAudit == null) {
+							if (
+									(nextAudit == null && previousAudit == null) ||
+									(nextAudit == null && previousAudit.getLocation().equals(new Location(0,0,0))) ||
+									(previousAudit == null && nextAudit.getLocation().equals(new Location(0,0,0)))
+							){
 								availability.setLocation(user.getLocation());
 								availability.setMaxDistance(100);
 							} else if (nextAudit == null) {
@@ -266,8 +271,7 @@ public class AuditScheduleBuilder {
 							} else if (previousAudit == null) {
 								availability.setLocation(nextAudit.getLocation());
 							} else {
-								availability.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit
-										.getLocation()));
+								availability.setLocation(Geo.middle(previousAudit.getLocation(), nextAudit.getLocation()));
 							}
 
 							availability.setOnsiteOnly(onsiteOnly);

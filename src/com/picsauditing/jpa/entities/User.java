@@ -481,12 +481,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 			return null;
 
 		switch (id) {
-		case 9556: // Austin Hatch
 		case 938: // Jake Fazeli
 		case 34065: // Phillip Laraway
 		case 1725: // Royce Burnett
 		case 9463: // Tiffany Homayounshad
-		case 11503: // Gary Rogers
+		case 11503: //Gary Rogers
+		case 38048: //Chad Frost
+		case 38050: //George Megress
+		case 42203: //Preston Case
+		case 50555: //John Van Haaren
 			// Houston Employees
 			return new Location(29.769f, -95.3527f);
 		default:
