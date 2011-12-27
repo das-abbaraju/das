@@ -260,7 +260,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							paymentDAO.save(payment);
 							billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Paid);
 							invoice.updateAmountApplied();
-							contractor.syncBalance();
 
 							// Activate the contractor
 							billingService.activateContractor(contractor, invoice);
