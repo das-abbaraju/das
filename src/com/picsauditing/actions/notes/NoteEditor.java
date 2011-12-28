@@ -81,7 +81,7 @@ public class NoteEditor extends AccountActionSupport {
 		}
 
 		note.setViewableBy(new Account());
-		note.getViewableBy().setId(viewableBy);
+		note.getViewableBy().setId((viewableBy==0)?1:viewableBy);
 
 		if (employeeID > 0) {
 			note.setEmployee(new Employee());
