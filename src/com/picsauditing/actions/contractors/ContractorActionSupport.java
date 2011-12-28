@@ -265,11 +265,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 						if (o1.getAuditType().isAnnualAddendum()) {
 							// e.g. Annual Update 2011 vs Annual Update 2010
 							int descendingCompare = o2.getAuditFor().compareTo(o1.getAuditFor());
-							return (descendingCompare==0)?o1.getId() - o2.getId():descendingCompare;
+							return (descendingCompare == 0) ? o1.getId() - o2.getId() : descendingCompare;
 						} else {
 							int ascendingCompare = o1.getAuditFor().compareTo(o2.getAuditFor());
-							return (ascendingCompare==0)?o1.getId() - o2.getId():ascendingCompare;
-						} 
+							return (ascendingCompare == 0) ? o1.getId() - o2.getId() : ascendingCompare;
+						}
 					} else {
 						// Just in case
 						return o1.getId() - o2.getId();
@@ -360,7 +360,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 
 			if (subMenu.getChildren().size() > 0) {
-				subMenu.addChild(getText("ContractorActionSupport.ManageCertificates"), "ConInsureGUARD.action?id=" + contractor.getId());
+				subMenu.addChild(getText("ContractorActionSupport.ManageCertificates"), "ConInsureGUARD.action?id="
+						+ contractor.getId());
 
 				if (permissions.hasPermission(OpPerms.AuditVerification))
 					subMenu.addChild(getText("ContractorActionSupport.InsuranceVerification"),
@@ -690,7 +691,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	protected boolean redirectIfNotReadyForThisStep() throws IOException {
 		ContractorRegistrationStep highestStepReached = ContractorRegistrationStep.getStep(contractor);
-		if (highestStepReached.ordinal() < this.currentStep.ordinal()) {
+		if (highestStepReached.ordinal() < this.currentStep.ordinal()
+				|| highestStepReached == ContractorRegistrationStep.Done) {
 			redirect(highestStepReached.getUrl());
 			return true;
 		}
@@ -703,7 +705,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			return 1;
 		else if (step.equals(ContractorRegistrationStep.Risk))
 			return 2;
-		else 
+		else
 			return 3;
 	}
 }
