@@ -388,7 +388,7 @@ public class QueryRunner {
 		addQueryField("requestedZip", "crr.zip");
 		addQueryField("requestedCountry", "crr.country");
 		addQueryField("requestedNotes", "crr.notes");
-		addQueryField("requestedDeadline", "crr.deadline");
+		addQueryField("requestedDeadline", "crr.deadline").type(FieldType.Date);
 		addQueryField("requestedLastContactedByDate", "crr.lastContactDate").type(FieldType.Date);
 		addQueryField("requestedContactCount", "crr.contactCount");
 		addQueryField("requestedMatchCount", "crr.matchCount");
@@ -398,7 +398,7 @@ public class QueryRunner {
 		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
 		addQueryField("requestedByOperatorID", "op.id");
 		addQueryField("requestedByOperatorName", "op.name").addRenderer("FacilitiesEdit.action?operator={0}\">{1}",
-				new String[] { "requestedByOperatorID", "requestedByOperatorID" });
+				new String[] { "requestedByOperatorID", "requestedByOperatorName" });
 
 		leftJoinToUser("requestedBy", "crr.requestedByUserID");
 		leftJoinToUser("contactedBy", "crr.lastContactedBy");
@@ -409,8 +409,8 @@ public class QueryRunner {
 	private void buildContractorBase() {
 		buildAccountBase();
 
-		this.availableFields.get("accountName").addRenderer("ContractorView.action?id={0}\">{1}",
-				new String[] { "accountID", "accountName" });
+		availableFields.get("accountName").addRenderer(new Renderer("ContractorView.action?id={0}\">{1}",
+				new String[] { "accountID", "accountName" }));
 
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");

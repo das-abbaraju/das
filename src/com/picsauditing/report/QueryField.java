@@ -93,6 +93,11 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
+	public QueryField addRenderer(Renderer renderer) {
+		this.renderer = renderer;
+		return this;
+	}
+
 	public QueryField addRenderer(String action, String[] parameters) {
 		this.width = 200;
 		this.renderer = new Renderer(action, parameters);

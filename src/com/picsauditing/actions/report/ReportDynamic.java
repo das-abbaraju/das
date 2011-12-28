@@ -59,6 +59,9 @@ public class ReportDynamic extends PicsActionSupport {
 						QueryField field = availableFields.get(column);
 						if (field.isTranslated()) {
 							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
+						} else if (value.getClass().equals(java.sql.Date.class)) {
+							java.sql.Date value2 = (java.sql.Date) value;
+							jsonRow.put(column, value2.getTime());
 						} else if (value.getClass().equals(java.sql.Timestamp.class)) {
 							Timestamp value2 = (Timestamp) value;
 							jsonRow.put(column, value2.getTime());
