@@ -36,12 +36,14 @@ public class QueryRunner {
 	private int allRows = 0;
 	private List<SortableField> columns;
 	private BasicDAO dao;
+	private Report report;
 
-	public QueryRunner(QueryBase base, Permissions permissions, BasicDAO dao) {
+	public QueryRunner(Report report, Permissions permissions, BasicDAO dao) {
 		this.permissions = permissions;
 		this.dao = dao;
-
-		buildBase(base);
+		this.report = report;
+		
+		buildBase(report.getBase());
 	}
 
 	public QueryData run() throws SQLException {
@@ -58,7 +60,13 @@ public class QueryRunner {
 		return data;
 	}
 
-	public SelectSQL buildQuery(QueryCommand command, boolean subQuery) {
+	public SelectSQL buildQuery(boolean subQuery) {
+		QueryCommand command = createCommandFromReportParameters(report.getParameters());
+		QueryCommand devCommand = createCommandFromReportParameters(report.getDevParams());
+		
+		// TODO: merge commands
+//		command = mergeCommands(command, devCommand);
+		
 		prefillColumns(command);
 		addGroupBy(command);
 		addHaving(command);
@@ -78,9 +86,14 @@ public class QueryRunner {
 
 		return sql;
 	}
+	
+//	private QueryCommand mergeCommands(QueryCommand command, QueryCommand devCommand) {
+//		List<Sortable>command.getColumns()
+//	}
 
 	private void prefillColumns(QueryCommand command) {
-		columns = command.getColumns();
+		if (columns == null || columns.isEmpty())
+			columns = command.getColumns();
 		if (columns.size() == 0) {
 			columns.clear();
 			for (String fieldName : availableFields.keySet()) {
@@ -102,8 +115,6 @@ public class QueryRunner {
 
 	private void addRuntimeFilters(QueryCommand command) {
 		if (command.getFilters().size() == 0) {
-			if (command.getDeveloperInjectedFilters() != null)
-				sql.addWhere(command.getDeveloperInjectedFilters());
 			return;
 		}
 
@@ -121,17 +132,14 @@ public class QueryRunner {
 
 			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport)) {
 				Report subReport = dao.find(Report.class, Integer.parseInt(queryFilter.getValue()));
-				QueryRunner subRunner = new QueryRunner(subReport.getBase(), permissions, dao);
-				QueryCommand subCommand = createCommandFromReportParameters(subReport);
-				SelectSQL subSql = subRunner.buildQuery(subCommand, true);
+				QueryRunner subRunner = new QueryRunner(subReport, permissions, dao);
+				SelectSQL subSql = subRunner.buildQuery(true);
 				queryFilter.setValue(subSql.toString());
 			}
 
 			String filterExp = queryFilter.toExpression(availableFields);
 			where = where.replace("{" + i + "}", filterExp);
 		}
-		if (command.getDeveloperInjectedFilters() != null)
-			sql.addWhere(command.getDeveloperInjectedFilters());
 	}
 
 	private void addLeftJoins(QueryCommand command) {
@@ -150,16 +158,10 @@ public class QueryRunner {
 				// calculated fields (2 fields coming out with a result)
 			}
 		}
-		if (command.getDeveloperInjectedJoins() != null)
-			sql.addJoin(command.getDeveloperInjectedJoins());
-		if (command.getDeveloperInjectedColumns() != null)
-			sql.addField(command.getDeveloperInjectedColumns());
 	}
 
 	private void addOrderBy(QueryCommand command) {
 		if (command.getOrderBy().size() == 0) {
-			if (command.getDeveloperInjectedOrderBy() != null)
-				sql.addOrderBy(command.getDeveloperInjectedOrderBy());
 			sql.addOrderBy(defaultSort);
 			return;
 		}
@@ -172,14 +174,10 @@ public class QueryRunner {
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);
 		}
-		if (command.getDeveloperInjectedOrderBy() != null)
-			sql.addOrderBy(command.getDeveloperInjectedOrderBy());
 	}
 
 	private void addGroupBy(QueryCommand command) {
 		if (command.getGroupBy().size() == 0) {
-			if (command.getDeveloperInjectedGroupBy() != null)
-				sql.addOrderBy(command.getDeveloperInjectedGroupBy());
 			return;
 		}
 
@@ -189,8 +187,6 @@ public class QueryRunner {
 		}
 
 		addTotalField();
-		if (command.getDeveloperInjectedGroupBy() != null)
-			sql.addOrderBy(command.getDeveloperInjectedGroupBy());
 	}
 
 	private void addHaving(QueryCommand command) {
@@ -291,6 +287,13 @@ public class QueryRunner {
 		return field;
 	}
 
+	private QueryField replaceQueryField(String source, String target) {
+		QueryField field = availableFields.remove(source);
+		field.dataIndex = target;
+		availableFields.put(target, field);
+		return field;
+	}
+
 	private void buildAccountBase() {
 		sql = new SelectSQL();
 		sql.setFromTable("accounts a");
@@ -345,7 +348,7 @@ public class QueryRunner {
 		sql = new SelectSQL();
 		sql.setFromTable("emailExclusions ee");
 
-		addQueryField("EmailExcluded", "ee.email");
+		addQueryField("emailExcluded", "ee.email");
 
 		defaultSort = "ee.email";
 	}
@@ -412,6 +415,7 @@ public class QueryRunner {
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");
 		availableFields.remove("accountType");
+		replaceQueryField("accountName", "contractorName");
 		addQueryField("contractorRiskLevel", "c.riskLevel");
 		addQueryField("contractorSafetyRisk", "c.safetyRisk");
 		addQueryField("contractorProductRisk", "c.productRisk");
@@ -440,8 +444,8 @@ public class QueryRunner {
 		buildAccountBase();
 		sql.addJoin("JOIN email_subscription es ON es.userID = u.id");
 
-		addQueryField("EmailSubscription", "es.subscription");
-		addQueryField("EmailSubscriptionTimePeriod", "es.timePeriod");
+		addQueryField("emailSubscription", "es.subscription");
+		addQueryField("emailSubscriptionTimePeriod", "es.timePeriod");
 	}
 
 	private void buildEmployeeBase() {
@@ -468,6 +472,7 @@ public class QueryRunner {
 		buildAccountBase();
 		sql.addJoin("JOIN operators o ON a.id = o.id");
 		sql.addWhere("a.type IN ('Operator','Corporate')");
+		replaceQueryField("accountName", "operatorName");
 		availableFields.remove("accountType");
 	}
 
@@ -662,7 +667,6 @@ public class QueryRunner {
 	private void leftJoinToUser(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN users " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "UserID", joinAlias + ".id").requireJoin(joinAlias);
-		addQueryField(joinAlias + "UserAccountID", joinAlias + ".accountID").requireJoin(joinAlias);
 		addQueryField(joinAlias + "UserName", joinAlias + ".name").requireJoin(joinAlias).addRenderer(
 				"UsersManage.action?user={0}\">{1}", new String[] { joinAlias + "UserID", joinAlias + "UserName" });
 
@@ -676,10 +680,13 @@ public class QueryRunner {
 		addQueryField(joinAlias + "Name", joinAlias + ".templateName").requireJoin(joinAlias);
 	}
 
-	public QueryCommand createCommandFromReportParameters(Report report) {
+	public QueryCommand createCommandFromReportParameters(String parameters) {
+		if (StringUtils.isEmpty(parameters))
+			return null;
+			
 		QueryCommand command = new QueryCommand();
-		if (report.getParameters() != null) {
-			JSONObject obj = (JSONObject) JSONValue.parse(report.getParameters());
+		if (parameters != null) {
+			JSONObject obj = (JSONObject) JSONValue.parse(parameters);
 			if (obj != null) {
 				command.fromJSON(obj);
 			}

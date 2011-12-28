@@ -20,6 +20,7 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private Account sharedWith;
+	private String devParams;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -54,6 +55,14 @@ public class Report extends BaseTable {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+
+	public String getDevParams() {
+		return devParams;
+	}
+
+	public void setDevParams(String devParams) {
+		this.devParams = devParams;
 	}
 
 	@ManyToOne

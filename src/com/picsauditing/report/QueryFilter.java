@@ -15,7 +15,6 @@ public class QueryFilter implements JSONable {
 	private QueryFilterOperator operator;
 	private SortableField field2;
 	private String value;
-	private String value2;
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
@@ -26,7 +25,6 @@ public class QueryFilter implements JSONable {
 			json.put("not", "NOT");
 		json.put("field2", field2);
 		json.put("value", value);
-		json.put("value2", value2);
 		return json;
 	}
 
@@ -64,8 +62,6 @@ public class QueryFilter implements JSONable {
 
 		this.value = (String) json.get("value");
 		this.value = Utilities.escapeQuotes(value);
-		this.value2 = (String) json.get("value2");
-		this.value2 = Utilities.escapeQuotes(value2);
 	}
 
 	public String toExpression(Map<String, QueryField> availableFields) {
@@ -76,8 +72,6 @@ public class QueryFilter implements JSONable {
 		if (queryField.type.equals(FieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			value = DateBean.toDBFormat(parameter.getTime());
-			QueryDateParameter parameter2 = new QueryDateParameter(value2);
-			value2 = DateBean.toDBFormat(parameter2.getTime());
 		}
 
 		String expression = columnSQL + " " + operator.getOperand() + " ";
@@ -98,9 +92,6 @@ public class QueryFilter implements JSONable {
 				break;
 			case Contains:
 				wrappedValue = "'%" + value + "%'";
-				break;
-			case Between:
-				wrappedValue = "'" + value + "' AND '" + value2 + "'";
 				break;
 			case In:
 			case InReport:

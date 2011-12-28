@@ -26,12 +26,6 @@ public class QueryCommand implements JSONable {
 	private int page = 1;
 	private int rowsPerPage = 100;
 
-	private String developerInjectedColumns;
-	private String developerInjectedJoins;
-	private String developerInjectedFilters;
-	private String developerInjectedGroupBy;
-	private String developerInjectedOrderBy;
-	
 	public QueryCommand() {
 	}
 
@@ -110,46 +104,6 @@ public class QueryCommand implements JSONable {
 			this.rowsPerPage = rowsPerPage;
 	}
 
-	public String getDeveloperInjectedColumns() {
-		return developerInjectedColumns;
-	}
-
-	public void setDeveloperInjectedColumns(String developerInjectedColumns) {
-		this.developerInjectedColumns = developerInjectedColumns;
-	}
-
-	public String getDeveloperInjectedJoins() {
-		return developerInjectedJoins;
-	}
-
-	public void setDeveloperInjectedJoins(String developerInjectedJoins) {
-		this.developerInjectedJoins = developerInjectedJoins;
-	}
-
-	public String getDeveloperInjectedFilters() {
-		return developerInjectedFilters;
-	}
-
-	public void setDeveloperInjectedFilters(String developerInjectedFilters) {
-		this.developerInjectedFilters = developerInjectedFilters;
-	}
-
-	public String getDeveloperInjectedGroupBy() {
-		return developerInjectedGroupBy;
-	}
-
-	public void setDeveloperInjectedGroupBy(String developerInjectedGroupBy) {
-		this.developerInjectedGroupBy = developerInjectedGroupBy;
-	}
-
-	public String getDeveloperInjectedOrderBy() {
-		return developerInjectedOrderBy;
-	}
-
-	public void setDeveloperInjectedOrderBy(String developerInjectedOrderBy) {
-		this.developerInjectedOrderBy = developerInjectedOrderBy;
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
@@ -162,11 +116,6 @@ public class QueryCommand implements JSONable {
 		json.put("orderBy", JSONUtilities.convertFromList(orderBy));
 		json.put("groupBy", JSONUtilities.convertFromList(groupBy));
 		json.put("having", having);
-		json.put("developerInjectedColumns", developerInjectedColumns);
-		json.put("developerInjectedJoins", developerInjectedJoins);
-		json.put("developerInjectedFilters", developerInjectedFilters);
-		json.put("developerInjectedGroupBy", developerInjectedGroupBy);
-		json.put("developerInjectedOrderBy", developerInjectedOrderBy);
 
 		return json;
 	}
@@ -184,11 +133,6 @@ public class QueryCommand implements JSONable {
 		this.orderBy = parseSortableFieldList(json.get("orderBy"));
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
 		this.having = (SortableField) json.get("having");
-		this.developerInjectedColumns = (String) json.get("developerInjectedColumns");
-		this.developerInjectedJoins = (String) json.get("developerInjectedJoins");
-		this.developerInjectedFilters = (String) json.get("developerInjectedFilters");
-		this.developerInjectedGroupBy = (String) json.get("developerInjectedGroupBy");
-		this.developerInjectedOrderBy = (String) json.get("developerInjectedOrderBy");
 	}
 
 	private List<QueryFilter> parseQueryFilterList(Object obj) {

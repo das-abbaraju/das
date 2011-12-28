@@ -20,6 +20,7 @@ public class QueryField implements JSONAware {
 	public int width = 0;
 	public boolean sortable = true;
 	public boolean hideable = true;
+	public boolean isDefault = false;
 	public boolean hidden = false;
 	public int flex = 0;
 	public FieldType type = FieldType.Auto;

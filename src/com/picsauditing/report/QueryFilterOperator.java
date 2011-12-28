@@ -6,7 +6,6 @@ public enum QueryFilterOperator {
 	LessThan("<"),
 	GreaterThanOrEquals(">="),
 	LessThanOrEquals("<="),
-	Between("BETWEEN"),
 	In("IN"),
 	InReport("IN"),
 	BeginsWith("LIKE"),

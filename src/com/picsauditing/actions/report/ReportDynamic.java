@@ -41,8 +41,9 @@ public class ReportDynamic extends PicsActionSupport {
 		if (!isReportAndBaseThere())
 			return BLANK;
 
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
-		runner.buildQuery(runner.createCommandFromReportParameters(report), false);
+		QueryRunner runner = new QueryRunner(report, permissions, dao);
+		runner.buildQuery(false);
+
 		Map<String, QueryField> availableFields = runner.getAvailableFields();
 
 		try {
@@ -85,8 +86,6 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("command", report.getParameters());
 		}
 		
-		save();
-		
 		return JSON;
 	}
 
@@ -122,7 +121,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public JSONArray getAvailableFields() {
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
+		QueryRunner runner = new QueryRunner(report, permissions, dao);
 
 		JSONArray fields = new JSONArray();
 
@@ -147,8 +146,8 @@ public class ReportDynamic extends PicsActionSupport {
 		rowNum.put("width", 27);
 		columns.add(rowNum);
 
-		QueryRunner runner = new QueryRunner(report.getBase(), permissions, dao);
-		runner.buildQuery(runner.createCommandFromReportParameters(report), false);
+		QueryRunner runner = new QueryRunner(report, permissions, dao);
+		runner.buildQuery(false);
 
 		for (SortableField column : runner.getColumns()) {
 			if (runner.getAvailableFields().keySet().contains(column.field)) {
