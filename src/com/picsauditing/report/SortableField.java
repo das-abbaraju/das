@@ -12,6 +12,8 @@ public class SortableField implements JSONable {
 	public QueryFunction function = null;
 	public String option;
 	public boolean ascending = true;
+	// We are thinking about adding the render field to support custom renderers per report
+	public String renderer = null;
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
@@ -60,6 +62,7 @@ public class SortableField implements JSONable {
 		case Date:
 			return "DATE(" + fieldSQL + ")";
 		case Format:
+			availableFields.get(field).type = FieldType.String;
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
 		case Lower:
 			return "LOWER(" + fieldSQL + ")";
