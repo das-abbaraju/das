@@ -2,7 +2,6 @@ package com.picsauditing.actions.report;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletOutputStream;
 
@@ -15,9 +14,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
-import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.search.SelectFilterDate;
@@ -32,8 +28,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 public class ReportNewRequestedContractor extends ReportActionSupport {
 	@Autowired
 	protected AccountUserDAO auDAO;
-	@Autowired
-	protected OperatorTagDAO operatorTagDAO;
 	@Autowired
 	protected ContractorRegistrationRequestDAO contractorRegistrationRequestDAO;
 
@@ -86,6 +80,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addJoin("LEFT JOIN users u ON u.id = cr.requestedByUserID");
 		sql.addJoin("LEFT JOIN users uc ON uc.id = cr.lastContactedBy");
 		sql.addJoin("LEFT JOIN accounts con ON con.id = cr.conID");
+		sql.addJoin("LEFT JOIN operator_tag ot ON FIND_IN_SET(ot.id, cr.operatorTags) > 0");
 
 		sql.addField("cr.id");
 		sql.addField("cr.name");
@@ -114,6 +109,9 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
+		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
+		
+		sql.addGroupBy("cr.id");
 
 		orderByDefault = "cr.deadline, cr.name";
 
@@ -213,9 +211,18 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (filterOn(f.getExcludeOperators())) {
 			sql.addWhere("cr.requestedByID NOT IN (" + Strings.implode(f.getExcludeOperators()) + ")");
 		}
-		
+
 		if (filterOn(f.getOperatorTags())) {
-			sql.addWhere("cr.operatorTags REGEXP '" + Strings.implode(f.getOperatorTags(), "|") + "'");
+			StringBuilder where = new StringBuilder();
+			
+			for (int i = 0; i < f.getOperatorTags().length; i++) {
+				if (i > 0)
+					where.append(" OR ");
+				
+				where.append("(FIND_IN_SET(" + f.getOperatorTags()[i] + ", cr.operatorTags) > 0)");
+			}
+			
+			sql.addWhere(where.toString());
 		}
 	}
 
@@ -266,6 +273,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 				ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("contractorName", getText("global.ContractorName")));
 		excelSheet.addColumn(new ExcelColumn("Notes", getText("global.Notes")));
+		excelSheet.addColumn(new ExcelColumn("operatorTags", getText("RequestNewContractor.OperatorTags")));
 	}
 
 	public boolean isAmSales() {
@@ -284,24 +292,5 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		return null;
-	}
-
-	public String getParsedTags(int id) {
-		ContractorRegistrationRequest crr = contractorRegistrationRequestDAO.find(id);
-
-		String result = "";
-
-		String requestedTagIds = crr.getOperatorTags();
-
-		if (!Strings.isEmpty(requestedTagIds)) {
-			StringTokenizer st = new StringTokenizer(requestedTagIds, ", ");
-			while (st.hasMoreTokens()) {
-				OperatorTag tag = operatorTagDAO.find(Integer.parseInt(st.nextToken()));
-				if (tag != null) {
-					result += " " + tag.getTag() + " ";
-				}
-			}
-		}
-		return result;
 	}
 }
