@@ -50,7 +50,7 @@ import com.picsauditing.util.Strings;
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	// TODO Move this to a common location
-	static final public String GOOGLE_API_KEY = "ABQIAAAAgozVvI8r_S5nN6njMJJ7aBTTvY0m40rW8_sKxH-4kQuUdYdvuxQdivgdKinXBN5YPCA6h_z5hoeBaA";
+	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
 	static final public String DATE_FORMAT = "yyyyMMddHHmm";
 
 	private AvailableSet availableSet = new AvailableSet();
