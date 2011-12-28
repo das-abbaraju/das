@@ -10,15 +10,15 @@ import org.json.simple.JSONValue;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.JSONUtilities;
 
-public class QueryCommand implements JSONable {
-	private List<SortableField> columns = new ArrayList<SortableField>();
-	private List<SortableField> groupBy = new ArrayList<SortableField>();
-	private List<SortableField> orderBy = new ArrayList<SortableField>();
-	private SortableField having;
+public class SimpleReportDefinition implements JSONable {
+	private List<SimpleReportField> columns = new ArrayList<SimpleReportField>();
+	private List<SimpleReportField> groupBy = new ArrayList<SimpleReportField>();
+	private List<SimpleReportField> orderBy = new ArrayList<SimpleReportField>();
+	private SimpleReportField having;
 
 	// 1 = Name LIKE 'Trevor%'
 	// 2 =
-	private List<QueryFilter> filters = new ArrayList<QueryFilter>();
+	private List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
 	/**
 	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
 	 */
@@ -26,51 +26,51 @@ public class QueryCommand implements JSONable {
 	private int page = 1;
 	private int rowsPerPage = 100;
 
-	public QueryCommand() {
+	public SimpleReportDefinition() {
 	}
 
-	public QueryCommand(String json) {
+	public SimpleReportDefinition(String json) {
 		JSONObject obj = (JSONObject) JSONValue.parse(json);
 		fromJSON(obj);
 	}
 
-	public List<SortableField> getColumns() {
+	public List<SimpleReportField> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<SortableField> columns) {
+	public void setColumns(List<SimpleReportField> columns) {
 		this.columns = columns;
 	}
 
-	public List<SortableField> getOrderBy() {
+	public List<SimpleReportField> getOrderBy() {
 		return orderBy;
 	}
 
-	public void setOrderBy(List<SortableField> orderBy) {
+	public void setOrderBy(List<SimpleReportField> orderBy) {
 		this.orderBy = orderBy;
 	}
 
-	public List<SortableField> getGroupBy() {
+	public List<SimpleReportField> getGroupBy() {
 		return groupBy;
 	}
 
-	public void setGroupBy(List<SortableField> groupBy) {
+	public void setGroupBy(List<SimpleReportField> groupBy) {
 		this.groupBy = groupBy;
 	}
 
-	public SortableField getHaving() {
+	public SimpleReportField getHaving() {
 		return having;
 	}
 
-	public void setHaving(SortableField having) {
+	public void setHaving(SimpleReportField having) {
 		this.having = having;
 	}
 
-	public List<QueryFilter> getFilters() {
+	public List<SimpleReportFilter> getFilters() {
 		return filters;
 	}
 
-	public void setFilters(List<QueryFilter> filters) {
+	public void setFilters(List<SimpleReportFilter> filters) {
 		this.filters = filters;
 	}
 
@@ -132,18 +132,18 @@ public class QueryCommand implements JSONable {
 		this.columns = parseSortableFieldList(json.get("columns"));
 		this.orderBy = parseSortableFieldList(json.get("orderBy"));
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
-		this.having = (SortableField) json.get("having");
+		this.having = (SimpleReportField) json.get("having");
 	}
 
-	private List<QueryFilter> parseQueryFilterList(Object obj) {
-		List<QueryFilter> filters = new ArrayList<QueryFilter>();
+	private List<SimpleReportFilter> parseQueryFilterList(Object obj) {
+		List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
 
 		if (obj == null)
 			return filters;
 
 		JSONArray filterArray = (JSONArray) obj;
 		for (Object filterObj : filterArray) {
-			QueryFilter filter = new QueryFilter();
+			SimpleReportFilter filter = new SimpleReportFilter();
 			if (filterObj instanceof JSONObject) {
 				filter.fromJSON((JSONObject) filterObj);
 			}
@@ -153,15 +153,15 @@ public class QueryCommand implements JSONable {
 		return filters;
 	}
 
-	private List<SortableField> parseSortableFieldList(Object obj) {
-		List<SortableField> fields = new ArrayList<SortableField>();
+	private List<SimpleReportField> parseSortableFieldList(Object obj) {
+		List<SimpleReportField> fields = new ArrayList<SimpleReportField>();
 
 		if (obj == null)
 			return fields;
 
 		JSONArray fieldArray = (JSONArray) obj;
 		for (Object fieldObj : fieldArray) {
-			SortableField field = new SortableField();
+			SimpleReportField field = new SimpleReportField();
 			if (fieldObj instanceof JSONObject) {
 				field.fromJSON((JSONObject) fieldObj);
 			} else {

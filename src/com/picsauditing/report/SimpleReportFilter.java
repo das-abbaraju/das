@@ -9,11 +9,11 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
 
-public class QueryFilter implements JSONable {
-	private SortableField field;
+public class SimpleReportFilter implements JSONable {
+	private SimpleReportField field;
 	private boolean not = false;
 	private QueryFilterOperator operator;
-	private SortableField field2;
+	private SimpleReportField field2;
 	private String value;
 
 	@SuppressWarnings("unchecked")
@@ -34,7 +34,7 @@ public class QueryFilter implements JSONable {
 		
 		Object fieldObj = json.get("field");
 		if (fieldObj != null) {
-			this.field = new SortableField();
+			this.field = new SimpleReportField();
 
 			if (fieldObj instanceof JSONObject) {
 				this.field.fromJSON((JSONObject) fieldObj);
@@ -51,7 +51,7 @@ public class QueryFilter implements JSONable {
 		
 		Object field2Obj = json.get("field2");
 		if (field2Obj != null) {
-			this.field2 = new SortableField();
+			this.field2 = new SimpleReportField();
 
 			if (field2Obj instanceof JSONObject) {
 				this.field2.fromJSON((JSONObject) field2Obj);
@@ -111,19 +111,19 @@ public class QueryFilter implements JSONable {
 		return expression;
 	}
 
-	public SortableField getField() {
+	public SimpleReportField getField() {
 		return field;
 	}
 
-	public void setField(SortableField field) {
+	public void setField(SimpleReportField field) {
 		this.field = field;
 	}
 
-	public SortableField getField2() {
+	public SimpleReportField getField2() {
 		return field2;
 	}
 
-	public void setField2(SortableField field2) {
+	public void setField2(SimpleReportField field2) {
 		this.field2 = field2;
 	}
 

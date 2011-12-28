@@ -7,28 +7,31 @@ import junit.framework.TestCase;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Report;
 
 public class QueryRunnerTest extends TestCase {
 
 	private Permissions permissions;
 	private QueryRunner runner;
-	private QueryCommand command;
+	private SimpleReportDefinition command;
 	private String sql;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		permissions = EntityFactory.makePermission();
 		// By default create a Contractor QueryRunner
-		buildRunner(QueryBase.Contractors);
-		command = new QueryCommand();
+		Report report = new Report();
+		report.setBase(QueryBase.Contractors);
+		buildRunner(report);
+		command = new SimpleReportDefinition();
 	}
 
-	private void buildRunner(QueryBase base) {
-		runner = new QueryRunner(base, permissions, null);
+	private void buildRunner(Report report) {
+		runner = new QueryRunner(report, permissions, null);
 	}
 
-	private void runBuildQueryWithCommand() throws SQLException {
-		sql = runner.buildQuery(command, false).toString();
+	private void runBuildQueryWithDefinition() throws SQLException {
+		sql = runner.buildQuery(false).toString();
 	}
 
 	public void testAvailableFieldSize() {
@@ -37,7 +40,7 @@ public class QueryRunnerTest extends TestCase {
 	}
 
 	public void testSimpleContractorQuery() throws SQLException {
-		runBuildQueryWithCommand();
+		runBuildQueryWithDefinition();
 		assertEquals("SELECT SQL_CALC_FOUND_ROWS customerService.id AS customerServiceUserID, " +
 				"customerService.phone AS customerServicePhone, " +
 				"accountContact.accountID AS accountContactUserAccountID, a.zip AS accountZip, " +
@@ -69,14 +72,14 @@ public class QueryRunnerTest extends TestCase {
 
 	public void testLimit() throws SQLException {
 		command.setRowsPerPage(10);
-		runBuildQueryWithCommand();
+		runBuildQueryWithDefinition();
 		assertTrue(runner.getSQL().endsWith("LIMIT 10"));
 	}
 
 	public void testPages() throws SQLException {
 		command.setRowsPerPage(10);
 		command.setPage(2);
-		runBuildQueryWithCommand();
+		runBuildQueryWithDefinition();
 		assertTrue(sql.endsWith("LIMIT 10, 10"));
 	}
 }

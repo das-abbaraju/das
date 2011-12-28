@@ -17,7 +17,7 @@ import com.picsauditing.report.QueryBase;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.QueryField;
 import com.picsauditing.report.QueryRunner;
-import com.picsauditing.report.SortableField;
+import com.picsauditing.report.SimpleReportField;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -152,7 +152,7 @@ public class ReportDynamic extends PicsActionSupport {
 		QueryRunner runner = new QueryRunner(report, permissions, dao);
 		runner.buildQuery(false);
 
-		for (SortableField column : runner.getColumns()) {
+		for (SimpleReportField column : runner.getColumns()) {
 			if (runner.getAvailableFields().keySet().contains(column.field)) {
 				QueryField field = runner.getAvailableFields().get(column.field);
 				String label = getText("Report." + field.dataIndex);

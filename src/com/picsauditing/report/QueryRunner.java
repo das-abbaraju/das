@@ -34,7 +34,7 @@ public class QueryRunner {
 	private Permissions permissions;
 	private String defaultSort = null;
 	private int allRows = 0;
-	private List<SortableField> columns;
+	private List<SimpleReportField> columns;
 	private BasicDAO dao;
 	private Report report;
 
@@ -42,7 +42,7 @@ public class QueryRunner {
 		this.permissions = permissions;
 		this.dao = dao;
 		this.report = report;
-		
+
 		buildBase(report.getBase());
 	}
 
@@ -61,74 +61,69 @@ public class QueryRunner {
 	}
 
 	public SelectSQL buildQuery(boolean subQuery) {
-		QueryCommand command = createCommandFromReportParameters(report.getParameters());
-		QueryCommand devCommand = createCommandFromReportParameters(report.getDevParams());
-		
-		// TODO: merge commands
-//		command = mergeCommands(command, devCommand);
-		
-		prefillColumns(command);
-		addGroupBy(command);
-		addHaving(command);
+		SimpleReportDefinition definition = createDefinitionFromReportParameters(report.getParameters());
+		SimpleReportDefinition devDefinition = createDefinitionFromReportParameters(report.getDevParams());
 
-		removeObsoleteColumns(command);
-		addLeftJoins(command);
+		// TODO: merge definitions
 
-		addOrderBy(command);
+		prefillColumns(definition);
+		addGroupBy(definition);
+		addHaving(definition);
+
+		removeObsoleteColumns();
+		addLeftJoins();
+
+		addOrderBy(definition);
 
 		if (!subQuery) {
 			// We may need to move this to a class field
 			sql.setSQL_CALC_FOUND_ROWS(true);
-			addLimits(command);
+			addLimits(definition);
 		}
 
-		addRuntimeFilters(command);
+		addRuntimeFilters(definition);
 
 		return sql;
 	}
-	
-//	private QueryCommand mergeCommands(QueryCommand command, QueryCommand devCommand) {
-//		List<Sortable>command.getColumns()
-//	}
 
-	private void prefillColumns(QueryCommand command) {
+	private void prefillColumns(SimpleReportDefinition definition) {
 		if (columns == null || columns.isEmpty())
-			columns = command.getColumns();
+			columns = definition.getColumns();
 		if (columns.size() == 0) {
 			columns.clear();
 			for (String fieldName : availableFields.keySet()) {
-				SortableField column = new SortableField();
+				SimpleReportField column = new SimpleReportField();
 				column.field = fieldName;
 				columns.add(column);
 			}
 		}
 	}
 
-	private void removeObsoleteColumns(QueryCommand command) {
-		Iterator<SortableField> iterator = columns.iterator();
+	private void removeObsoleteColumns() {
+		Iterator<SimpleReportField> iterator = columns.iterator();
 		while (iterator.hasNext()) {
-			SortableField column = iterator.next();
+			SimpleReportField column = iterator.next();
 			if (!availableFields.containsKey(column.field))
 				iterator.remove();
 		}
 	}
 
-	private void addRuntimeFilters(QueryCommand command) {
-		if (command.getFilters().size() == 0) {
+	private void addRuntimeFilters(SimpleReportDefinition definition) {
+		if (definition.getFilters().size() == 0) {
 			return;
 		}
 
-		String where = command.getFilterExpression();
+		String where = definition.getFilterExpression();
 		if (where == null || Strings.isEmpty(where)) {
 			where = "";
-			for (int i = 0; i < command.getFilters().size(); i++) {
+			for (int i = 0; i < definition.getFilters().size(); i++) {
 				where += "{" + i + "} AND ";
 			}
 			where = StringUtils.removeEnd(where, " AND ");
 		}
 
-		for (int i = 0; i < command.getFilters().size(); i++) {
-			QueryFilter queryFilter = command.getFilters().get(i);
+		for (int i = 0; i < definition.getFilters().size(); i++) {
+			SimpleReportFilter queryFilter = definition.getFilters().get(i);
 
 			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport)) {
 				Report subReport = dao.find(Report.class, Integer.parseInt(queryFilter.getValue()));
@@ -142,9 +137,9 @@ public class QueryRunner {
 		}
 	}
 
-	private void addLeftJoins(QueryCommand command) {
+	private void addLeftJoins() {
 		Set<String> addedJoins = new HashSet<String>();
-		for (SortableField column : columns) {
+		for (SimpleReportField column : columns) {
 			if (availableFields.keySet().contains(column.field)) {
 				QueryField availableField = availableFields.get(column.field);
 				if (availableField.requiresJoin()) {
@@ -160,13 +155,13 @@ public class QueryRunner {
 		}
 	}
 
-	private void addOrderBy(QueryCommand command) {
-		if (command.getOrderBy().size() == 0) {
+	private void addOrderBy(SimpleReportDefinition definition) {
+		if (definition.getOrderBy().size() == 0) {
 			sql.addOrderBy(defaultSort);
 			return;
 		}
 
-		for (SortableField field : command.getOrderBy()) {
+		for (SimpleReportField field : definition.getOrderBy()) {
 			String orderBy = field.field;
 			if (!columns.contains(field.field))
 				orderBy = availableFields.get(field.field).sql;
@@ -176,12 +171,12 @@ public class QueryRunner {
 		}
 	}
 
-	private void addGroupBy(QueryCommand command) {
-		if (command.getGroupBy().size() == 0) {
+	private void addGroupBy(SimpleReportDefinition definition) {
+		if (definition.getGroupBy().size() == 0) {
 			return;
 		}
 
-		for (SortableField field : command.getGroupBy()) {
+		for (SimpleReportField field : definition.getGroupBy()) {
 			String groupBy = field.toSQL(availableFields);
 			sql.addGroupBy(groupBy);
 		}
@@ -189,11 +184,11 @@ public class QueryRunner {
 		addTotalField();
 	}
 
-	private void addHaving(QueryCommand command) {
-		if (command.getHaving() == null)
+	private void addHaving(SimpleReportDefinition definition) {
+		if (definition.getHaving() == null)
 			return;
 
-		String having = command.getHaving().toSQL(availableFields);
+		String having = definition.getHaving().toSQL(availableFields);
 		sql.setHavingClause(having);
 
 		addTotalField();
@@ -201,16 +196,16 @@ public class QueryRunner {
 
 	private void addTotalField() {
 		addQueryField("total", null);
-		SortableField total = new SortableField();
+		SimpleReportField total = new SimpleReportField();
 		total.field = "total";
 		total.function = QueryFunction.Count;
 		columns.add(total);
 	}
 
-	private void addLimits(QueryCommand command) {
-		if (command.getPage() > 1)
-			sql.setStartRow((command.getPage() - 1) * command.getRowsPerPage());
-		sql.setLimit(command.getRowsPerPage());
+	private void addLimits(SimpleReportDefinition definition) {
+		if (definition.getPage() > 1)
+			sql.setStartRow((definition.getPage() - 1) * definition.getRowsPerPage());
+		sql.setLimit(definition.getRowsPerPage());
 	}
 
 	private void buildBase(QueryBase base) {
@@ -409,8 +404,8 @@ public class QueryRunner {
 	private void buildContractorBase() {
 		buildAccountBase();
 
-		availableFields.get("accountName").addRenderer(new Renderer("ContractorView.action?id={0}\">{1}",
-				new String[] { "accountID", "accountName" }));
+		availableFields.get("accountName").addRenderer(
+				new Renderer("ContractorView.action?id={0}\">{1}", new String[] { "accountID", "accountName" }));
 
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");
@@ -680,25 +675,25 @@ public class QueryRunner {
 		addQueryField(joinAlias + "Name", joinAlias + ".templateName").requireJoin(joinAlias);
 	}
 
-	public QueryCommand createCommandFromReportParameters(String parameters) {
+	public SimpleReportDefinition createDefinitionFromReportParameters(String parameters) {
 		if (StringUtils.isEmpty(parameters))
 			return null;
-			
-		QueryCommand command = new QueryCommand();
+
+		SimpleReportDefinition definition = new SimpleReportDefinition();
 		if (parameters != null) {
 			JSONObject obj = (JSONObject) JSONValue.parse(parameters);
 			if (obj != null) {
-				command.fromJSON(obj);
+				definition.fromJSON(obj);
 			}
 		}
-		return command;
+		return definition;
 	}
 
 	public Map<String, QueryField> getAvailableFields() {
 		return availableFields;
 	}
 
-	public List<SortableField> getColumns() {
+	public List<SimpleReportField> getColumns() {
 		return columns;
 	}
 

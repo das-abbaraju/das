@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
-public class SortableField implements JSONable {
+public class SimpleReportField implements JSONable {
 	public String field;
 	public QueryFunction function = null;
 	public String option;
