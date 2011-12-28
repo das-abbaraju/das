@@ -60,7 +60,7 @@ public class QueryRunner {
 		return data;
 	}
 
-	public SelectSQL buildQuery(boolean subQuery) {
+	public SelectSQL buildQueryWithoutLimits() {
 		SimpleReportDefinition definition = createDefinitionFromReportParameters(report.getParameters());
 		SimpleReportDefinition devDefinition = createDefinitionFromReportParameters(report.getDevParams());
 
@@ -71,29 +71,35 @@ public class QueryRunner {
 		addHaving(definition);
 
 		removeObsoleteColumns();
-		addLeftJoins();
+		addColumns();
 
 		addOrderBy(definition);
-
-		if (!subQuery) {
-			// We may need to move this to a class field
-			sql.setSQL_CALC_FOUND_ROWS(true);
-			addLimits(definition);
-		}
-
 		addRuntimeFilters(definition);
+
+		return sql;
+	}
+	
+	public SelectSQL buildQuery() {
+		buildQueryWithoutLimits();
+
+		// We may need to move this to a class field
+		sql.setSQL_CALC_FOUND_ROWS(true);
+		SimpleReportDefinition definition = createDefinitionFromReportParameters(report.getParameters());
+		addLimits(definition);
 
 		return sql;
 	}
 
 	private void prefillColumns(SimpleReportDefinition definition) {
-		if (columns == null || columns.isEmpty())
+		if (columns == null || columns.isEmpty()) {
 			columns = definition.getColumns();
+		}
+		
 		if (columns.size() == 0) {
 			columns.clear();
 			for (String fieldName : availableFields.keySet()) {
 				SimpleReportField column = new SimpleReportField();
-				column.field = fieldName;
+				column.setQueryField(availableFields.get(fieldName));
 				columns.add(column);
 			}
 		}
@@ -128,7 +134,7 @@ public class QueryRunner {
 			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport)) {
 				Report subReport = dao.find(Report.class, Integer.parseInt(queryFilter.getValue()));
 				QueryRunner subRunner = new QueryRunner(subReport, permissions, dao);
-				SelectSQL subSql = subRunner.buildQuery(true);
+				SelectSQL subSql = subRunner.buildQueryWithoutLimits();
 				queryFilter.setValue(subSql.toString());
 			}
 
@@ -137,20 +143,28 @@ public class QueryRunner {
 		}
 	}
 
-	private void addLeftJoins() {
+	private void addColumns() {
 		Set<String> addedJoins = new HashSet<String>();
 		for (SimpleReportField column : columns) {
 			if (availableFields.keySet().contains(column.field)) {
 				QueryField availableField = availableFields.get(column.field);
-				if (availableField.requiresJoin()) {
-					if (!addedJoins.contains(availableField.requireJoin)) {
-						sql.addJoin(this.joins.get(availableField.requireJoin));
-						addedJoins.add(availableField.requireJoin);
-					}
-				}
+				// TODO figure out if this is the best spot
+				column.setQueryField(availableField);
+
+				addLeftJoins(addedJoins, availableField);
+
 				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
 				// TODO: Think about case/if (IF function or CASE statement) and
 				// calculated fields (2 fields coming out with a result)
+			}
+		}
+	}
+
+	private void addLeftJoins(Set<String> addedJoins, QueryField availableField) {
+		if (availableField.requiresJoin()) {
+			if (!addedJoins.contains(availableField.requireJoin)) {
+				sql.addJoin(this.joins.get(availableField.requireJoin));
+				addedJoins.add(availableField.requireJoin);
 			}
 		}
 	}
@@ -404,13 +418,12 @@ public class QueryRunner {
 	private void buildContractorBase() {
 		buildAccountBase();
 
-		availableFields.get("accountName").addRenderer(
-				new Renderer("ContractorView.action?id={0}\">{1}", new String[] { "accountID", "accountName" }));
-
 		sql.addJoin("JOIN contractor_info c ON a.id = c.id");
 		sql.addWhere("a.type='Contractor'");
 		availableFields.remove("accountType");
 		replaceQueryField("accountName", "contractorName");
+		availableFields.get("contractorName").addRenderer(
+				new Renderer("ContractorView.action?id={0}\">{1}", new String[] { "accountID", "contractorName" }));
 		addQueryField("contractorRiskLevel", "c.riskLevel");
 		addQueryField("contractorSafetyRisk", "c.safetyRisk");
 		addQueryField("contractorProductRisk", "c.productRisk");

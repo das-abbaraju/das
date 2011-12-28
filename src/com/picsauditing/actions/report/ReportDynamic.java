@@ -31,9 +31,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return SUCCESS;
 	}
-	
-	public String list()
-	{
+
+	public String list() {
 		return "list";
 	}
 
@@ -42,7 +41,7 @@ public class ReportDynamic extends PicsActionSupport {
 			return BLANK;
 
 		QueryRunner runner = new QueryRunner(report, permissions, dao);
-		runner.buildQuery(false);
+		runner.buildQuery();
 
 		Map<String, QueryField> availableFields = runner.getAvailableFields();
 
@@ -88,7 +87,7 @@ public class ReportDynamic extends PicsActionSupport {
 			json.put("base", report.getBase());
 			json.put("command", report.getParameters());
 		}
-		
+
 		return JSON;
 	}
 
@@ -133,6 +132,21 @@ public class ReportDynamic extends PicsActionSupport {
 			obj.put("name", field.dataIndex);
 			if (field.type != FieldType.Auto) {
 				obj.put("type", field.type.toString().toLowerCase());
+			}
+			fields.add(obj);
+		}
+		return fields;
+	}
+
+	public JSONArray getStoreFields() {
+		JSONArray fields = new JSONArray();
+
+		for (SimpleReportField column : getIncludedFields()) {
+			QueryField field = column.getQueryField();
+			JSONObject obj = new JSONObject();
+			obj.put("name", field.dataIndex);
+			if (field.type != FieldType.Auto) {
+				obj.put("type", field.type.toString().toLowerCase());
 				if (field.type == FieldType.Date)
 					obj.put("dateFormat", "time");
 			}
@@ -142,32 +156,33 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public JSONArray getGridColumns() {
-		JSONArray columns = new JSONArray();
+		JSONArray fields = new JSONArray();
 
 		JSONObject rowNum = new JSONObject();
 		rowNum.put("xtype", "rownumberer");
 		rowNum.put("width", 27);
-		columns.add(rowNum);
+		fields.add(rowNum);
 
-		QueryRunner runner = new QueryRunner(report, permissions, dao);
-		runner.buildQuery(false);
-
-		for (SimpleReportField column : runner.getColumns()) {
-			if (runner.getAvailableFields().keySet().contains(column.field)) {
-				QueryField field = runner.getAvailableFields().get(column.field);
-				String label = getText("Report." + field.dataIndex);
-				if (label != null)
-					field.label = label;
-				else {
-					field.label = "Report." + column.field;
-					if (column.function != null) {
-						field.label += "." + column.function.toString();
-					}
+		for (SimpleReportField column : getIncludedFields()) {
+			QueryField field = column.getQueryField();
+			String label = getText("Report." + field.dataIndex);
+			if (label != null)
+				field.label = label;
+			else {
+				field.label = "?" + field.dataIndex;
+				if (field.dataIndex != null && column.function != null) {
+					field.label += "." + column.function.toString();
 				}
-				columns.add(field);
 			}
+			fields.add(field);
 		}
-		return columns;
+		return fields;
+	}
+
+	private List<SimpleReportField> getIncludedFields() {
+		QueryRunner runner = new QueryRunner(report, permissions, dao);
+		runner.buildQuery();
+		return runner.getColumns();
 	}
 
 	private boolean isReportAndBaseThere() {

@@ -14,6 +14,16 @@ public class SimpleReportField implements JSONable {
 	public boolean ascending = true;
 	// We are thinking about adding the render field to support custom renderers per report
 	public String renderer = null;
+	private QueryField queryField;
+
+	public QueryField getQueryField() {
+		return queryField;
+	}
+
+	public void setQueryField(QueryField queryField) {
+		this.field = queryField.dataIndex;
+		this.queryField = queryField;
+	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {

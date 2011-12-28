@@ -20,7 +20,8 @@
 		<script type="text/javascript">
 			var reportID = '<s:property value="report.id"/>';
 			var reportURL = 'ReportDynamic!data.action?<s:if test="report.id > 0">report=<s:property value="report.id"/></s:if><s:else>report.base=<s:property value="report.base"/></s:else>';
-			var storeFields = <s:property value="availableFields" escape="false" />;
+			var availableFields = <s:property value="availableFields" escape="false" />;
+			var storeFields = <s:property value="storeFields" escape="false" />;
 			var gridColumns = <s:property value="gridColumns" escape="false" />;
 			
 			var reportMenu = [];
