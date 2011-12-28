@@ -9,7 +9,7 @@ public class SelectSQL {
 	protected String fromTable;
 	protected ArrayList<String> whereClause = new ArrayList<String>();
 	protected ArrayList<String> groupByFields = new ArrayList<String>();
-	protected String havingClause = "";
+	protected ArrayList<String> havingClause = new ArrayList<String>();
 	protected ArrayList<String> fields = new ArrayList<String>();
 	protected ArrayList<String> joinClause = new ArrayList<String>();
 	protected ArrayList<String> orderBys = new ArrayList<String>();
@@ -72,12 +72,19 @@ public class SelectSQL {
 		if (this.groupByFields.size() > 0) {
 			sql.append("\nGROUP BY ");
 			sql.append(this.combineArray(this.groupByFields));
-			if (havingClause != null && havingClause.length() > 0) {
-				sql.append("\nHAVING ");
-				sql.append(this.havingClause);
-			}
 		}
 
+		if (havingClause.size() > 0) {
+			sql.append("\nHAVING ");
+			boolean needAnd = false;
+			for (String havingSQL : this.havingClause) {
+				if (needAnd)
+					sql.append("\n AND ");
+				sql.append("(").append(havingSQL).append(") ");
+				needAnd = true;
+			}
+		}
+		
 		// do the same as above for the union
 		if (unionSql.size() > 0) {
 			for (SelectSQL union : unionSql) {
@@ -151,8 +158,13 @@ public class SelectSQL {
 			this.groupByFields.add(groupBy);
 	}
 
-	public void setHavingClause(String havingClause) {
-		this.havingClause = havingClause;
+	public void addHaving(String havingClause) {
+		if (Strings.isEmpty(havingClause))
+			return;
+
+		if (havingClause.trim().equals("1"))
+			return;
+		this.havingClause.add(havingClause);
 	}
 
 	/**

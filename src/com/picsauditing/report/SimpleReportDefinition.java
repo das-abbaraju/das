@@ -14,7 +14,7 @@ public class SimpleReportDefinition implements JSONable {
 	private List<SimpleReportField> columns = new ArrayList<SimpleReportField>();
 	private List<SimpleReportField> groupBy = new ArrayList<SimpleReportField>();
 	private List<SimpleReportField> orderBy = new ArrayList<SimpleReportField>();
-	private SimpleReportField having;
+	private List<SimpleReportField> having = new ArrayList<SimpleReportField>();
 
 	// 1 = Name LIKE 'Trevor%'
 	// 2 =
@@ -58,11 +58,11 @@ public class SimpleReportDefinition implements JSONable {
 		this.groupBy = groupBy;
 	}
 
-	public SimpleReportField getHaving() {
+	public List<SimpleReportField> getHaving() {
 		return having;
 	}
 
-	public void setHaving(SimpleReportField having) {
+	public void setHaving(List<SimpleReportField> having) {
 		this.having = having;
 	}
 
@@ -115,7 +115,7 @@ public class SimpleReportDefinition implements JSONable {
 		json.put("columns", JSONUtilities.convertFromList(columns));
 		json.put("orderBy", JSONUtilities.convertFromList(orderBy));
 		json.put("groupBy", JSONUtilities.convertFromList(groupBy));
-		json.put("having", having);
+		json.put("having", JSONUtilities.convertFromList(having));
 
 		return json;
 	}
@@ -132,7 +132,7 @@ public class SimpleReportDefinition implements JSONable {
 		this.columns = parseSortableFieldList(json.get("columns"));
 		this.orderBy = parseSortableFieldList(json.get("orderBy"));
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
-		this.having = (SimpleReportField) json.get("having");
+		this.having = parseSortableFieldList(json.get("having"));
 	}
 
 	private List<SimpleReportFilter> parseQueryFilterList(Object obj) {

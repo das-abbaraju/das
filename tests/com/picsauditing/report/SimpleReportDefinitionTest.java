@@ -29,7 +29,7 @@ public class SimpleReportDefinitionTest extends TestCase {
 	}
 
 	private void runBuildQueryWithDefinition() throws SQLException {
-		sql = runner.buildQuery(false).toString();
+		sql = runner.buildQuery().toString();
 	}
 
 	public void testLimit() throws SQLException {

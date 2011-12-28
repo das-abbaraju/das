@@ -28,7 +28,7 @@ public class ManageMultiUser extends ReportActionSupport {
 		sql.addWhere("l.loginDate > SUBDATE(now(), INTERVAL 3 MONTH )");
 		sql.addWhere("l.adminID is NULL");
 		sql.addGroupBy("u.id");
-		sql.setHavingClause("count(DISTINCT l.remoteAddress) > 3");
+		sql.addHaving("count(DISTINCT l.remoteAddress) > 3");
 
 		this.run(sql);
 		return SUCCESS;

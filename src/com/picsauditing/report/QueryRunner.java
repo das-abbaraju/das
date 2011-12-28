@@ -64,7 +64,7 @@ public class QueryRunner {
 		SimpleReportDefinition definition = createDefinitionFromReportParameters(report.getParameters());
 		SimpleReportDefinition devDefinition = createDefinitionFromReportParameters(report.getDevParams());
 
-		// TODO: merge definitions
+		definition = mergeDefinition(definition, devDefinition);
 
 		prefillColumns(definition);
 		addGroupBy(definition);
@@ -78,7 +78,7 @@ public class QueryRunner {
 
 		return sql;
 	}
-	
+
 	public SelectSQL buildQuery() {
 		buildQueryWithoutLimits();
 
@@ -90,11 +90,29 @@ public class QueryRunner {
 		return sql;
 	}
 
+	private SimpleReportDefinition mergeDefinition(SimpleReportDefinition definition,
+			SimpleReportDefinition devDefinition) {
+		if (!devDefinition.getColumns().isEmpty())
+			definition.getColumns().addAll(devDefinition.getColumns());
+		if (!devDefinition.getGroupBy().isEmpty())
+			definition.getGroupBy().addAll(devDefinition.getGroupBy());
+		if (!devDefinition.getOrderBy().isEmpty())
+			definition.getOrderBy().addAll(devDefinition.getOrderBy());
+		if (!devDefinition.getHaving().isEmpty())
+			definition.getHaving().addAll(devDefinition.getHaving());
+		if (!devDefinition.getFilters().isEmpty())
+			definition.getFilters().addAll(devDefinition.getFilters());
+		if (devDefinition.getFilterExpression() != null)
+			definition.setFilterExpression(definition.getFilterExpression() + " AND " + devDefinition.getFilterExpression());
+
+		return definition;
+	}
+
 	private void prefillColumns(SimpleReportDefinition definition) {
 		if (columns == null || columns.isEmpty()) {
 			columns = definition.getColumns();
 		}
-		
+
 		if (columns.size() == 0) {
 			columns.clear();
 			for (String fieldName : availableFields.keySet()) {
@@ -199,13 +217,14 @@ public class QueryRunner {
 	}
 
 	private void addHaving(SimpleReportDefinition definition) {
-		if (definition.getHaving() == null)
+		if (definition.getHaving().size() == 0) {
 			return;
+		}
 
-		String having = definition.getHaving().toSQL(availableFields);
-		sql.setHavingClause(having);
-
-		addTotalField();
+		for (SimpleReportField field : definition.getHaving()) {
+			String having = field.toSQL(availableFields);
+			sql.addHaving(having);
+		}
 	}
 
 	private void addTotalField() {

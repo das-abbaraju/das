@@ -70,11 +70,19 @@ public class SelectUserUnion extends SelectSQL {
 		if (this.groupByFields.size() > 0) {
 			sql.append("\nGROUP BY ");
 			sql.append(this.combineArray(this.groupByFields));
-			if (havingClause != null && havingClause.length() > 0) {
-				sql.append("\nHAVING ");
-				sql.append(this.havingClause);
+		}
+
+		if (havingClause.size() > 0) {
+			sql.append("\nHAVING ");
+			boolean needAnd = false;
+			for (String havingSQL : this.havingClause) {
+				if (needAnd)
+					sql.append("\n AND ");
+				sql.append("(").append(havingSQL).append(") ");
+				needAnd = true;
 			}
 		}
+		
 		// do the same as above for the union
 		if (unionSql.size() > 0) {
 			for (SelectSQL union : unionSql) {

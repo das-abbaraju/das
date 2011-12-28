@@ -40,7 +40,7 @@ public class SelectSQLTest extends TestCase {
 	public void testHaving() {
 		builder.addField("field1");
 		builder.addField("count(*) as total");
-		builder.setHavingClause("count(*) > 1");
+		builder.addHaving("count(*) > 1");
 		
 		// No HAVING without a GROUP BY
 		assertEquals("SELECT field1, count(*) as total\nFROM my_table", builder.toString());
