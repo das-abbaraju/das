@@ -1,13 +1,59 @@
 Ext.application({
 	name: 'PICS',
 	
-	//autoCreateViewport: true,
 	launch: function() {
+		var baseStore = Ext.create('Ext.data.Store', {
+			proxy : {
+				type : 'ajax',
+				url : reportURL,
+				reader : {
+					type : 'json',
+					root : 'data'
+				}
+			},
+			autoLoad : true,
+			fields : storeFields
+		});
+		
+		// Configuration
+
+		Ext.define('PICS.view.ui.ReportGrid', {
+			extend: 'Ext.grid.Panel',
+			alias: ['widget.reportgrid'],
+			store : baseStore,
+			columns : gridColumns
+		});
+
+		Ext.define('PICS.view.ui.ReportOptions', {
+			extend: 'Ext.panel.Panel',
+			alias: ['widget.reportoptions'],
+		    layout: {
+		    	type: 'accordion'
+		    },
+		    collapsed: true,
+		    collapsible: true,
+		    resizable: {
+		    	handles: 'e'
+		    },
+		    title: 'Report Options',
+		    items: [{
+		    	title: 'Columns'
+		    }, {
+		    	title: 'Filters'
+		    }, {
+		    	title: 'Sort'
+		    }, {
+		    	title: 'Share'
+		    }, {
+		    	title: 'Save',
+		    	html: '<a href="ReportDynamic!data.action?report=' + reportID + '" target="reportData">See JSON Data</a>'
+		    }]
+		});
+
 		Ext.create('Ext.container.Viewport', {
 			title: 'Main',
 			layout: {
-				type: 'border',
-				padding: 5
+				type: 'border'
 			},
 			items: [{
 				id: 'header',
@@ -20,70 +66,23 @@ Ext.application({
 				id: 'content',
                 region: 'center',
                 layout: {
-                	type: 'vbox',
-                	align: 'stretch'
+                	type: 'border',
                 },
-                bodyPadding: 5,
 				items: [{
-					border: false,
-					height: 50,
-					html: '<h1>Reports</h1>'
+					id: 'aside',
+					region: 'west',
+					width: 300,
+					xtype: 'reportoptions'
 				}, {
-					layout: {
-	                	type: 'vbox',
-	                	align: 'stretch'
-	                },
-					bodyPadding: 5,
-					collapsible: true,
-					height: 200,
-					title: 'Search',
+					region: 'center',
+					xtype: 'tabpanel',
+					title: 'Recently Added Contractors',
 					items: [{
-						xtype: 'fieldcontainer',
-						layout: 'hbox',
-						defaults: {
-							height: 22,
-							labelWidth: 'auto',
-							margin: '0 10 0 0'
-						},
-						items: [{
-							xtype: 'textfield',
-							fieldLabel: 'Company Name',
-							name: 'theField'
-						}, {
-							xtype: 'textfield',
-							fieldLabel: 'Status',
-							name: 'theField'
-						}, {
-							xtype: 'textfield',
-							fieldLabel: 'Account Level',
-							name: 'theField'
-						}]
+						title: 'Grid',
+						xtype: 'reportgrid'
 					}, {
-						xtype: 'fieldcontainer',
-						layout: 'hbox',
-						defaults: {
-							height: 22,
-							labelWidth: 'auto',
-							margin: '0 10 0 0'
-						},
-						items: [{
-							xtype: 'textfield',
-							fieldLabel: 'Name',
-							name: 'theField'
-						}, {
-							xtype: 'textfield',
-							fieldLabel: 'Name',
-							name: 'theField'
-						}, {
-							xtype: 'textfield',
-							fieldLabel: 'Name',
-							name: 'theField'
-						}]
+						title: 'Chart'
 					}]
-				}, {
-					bodyPadding: 5,
-					border: false,
-					html: 'list'
 				}],
 				dockedItems: [{
 					xtype: 'toolbar',
@@ -285,56 +284,72 @@ Ext.application({
         			}, {
         				text: 'Reports',
         				menu: {
-        					items: [{
-        						text: 'Audit Analysis'
-        					}, {
-        						text: 'CSR Tracking'
-        					}, {
-        						text: 'CSR Contractor Count'
-        					}, {
-        						text: 'CSR Policies Status Count'
-        					}, {
-        						text: 'Audit Rule History'
-        					}, {
-        						text: 'Contractor Licenses'
-        					}, {
-        						text: 'Contractor Score'
-        					}, {
-        						text: 'EMR Rates Graph'
-        					}, {
-        						text: 'EMR Rates Report'
-        					}, {
-        						text: 'Incidence Rates Graph'
-        					}, {
-        						text: 'Incidence Rates Report'
-        					}, {
-        						text: 'Contractor Trade Conflicts'
-        					}, {
-        						text: 'User Multi-Login'
-        					}, {
-        						text: 'User Search'
-        					}, {
-        						text: 'Washington Audit'
-        					}, {
-        						text: 'Employee List'
-        					}, {
-        						text: 'Flag Changes'
-        					}, {
-        						text: 'Assessment Tests'
-        					}, {
-        						text: 'Report WCB Accounts'
-        					}]
+        					items: reportMenu
         				}
         			}]
 				}]
 			}, {
 				id: 'footer',
-				xtype: 'box',
+				xtype: 'toolbar',
 				region: 'south',
-				height: 100,
+				height: 30,
 				border: false,
-				html: '<footer><ul><li>Footer</li></ul></footer>'
+				html: '&copy; 2012'
 			}]
 		});
 	}
 });
+
+/*{
+layout: {
+	type: 'vbox',
+	align: 'stretch'
+},
+bodyPadding: 5,
+collapsible: true,
+height: 200,
+title: 'Search',
+items: [{
+	xtype: 'fieldcontainer',
+	layout: 'hbox',
+	defaults: {
+		height: 22,
+		labelWidth: 'auto',
+		margin: '0 10 0 0'
+	},
+	items: [{
+		xtype: 'textfield',
+		fieldLabel: 'Company Name',
+		name: 'theField'
+	}, {
+		xtype: 'textfield',
+		fieldLabel: 'Status',
+		name: 'theField'
+	}, {
+		xtype: 'textfield',
+		fieldLabel: 'Account Level',
+		name: 'theField'
+	}]
+}, {
+	xtype: 'fieldcontainer',
+	layout: 'hbox',
+	defaults: {
+		height: 22,
+		labelWidth: 'auto',
+		margin: '0 10 0 0'
+	},
+	items: [{
+		xtype: 'textfield',
+		fieldLabel: 'Name',
+		name: 'theField'
+	}, {
+		xtype: 'textfield',
+		fieldLabel: 'Name',
+		name: 'theField'
+	}, {
+		xtype: 'textfield',
+		fieldLabel: 'Name',
+		name: 'theField'
+	}]
+}]
+},*/
