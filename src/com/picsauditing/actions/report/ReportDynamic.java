@@ -40,6 +40,8 @@ public class ReportDynamic extends PicsActionSupport {
 		if (!isReportAndBaseThere())
 			return BLANK;
 
+		// TODO: (mdo) Think about UNION. Do we want to allow users the ability to merge two like reports?
+		
 		QueryRunner runner = new QueryRunner(report, permissions, dao);
 		runner.buildQuery();
 

@@ -109,6 +109,11 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
+	public QueryField makeDefault() {
+		this.isDefault = true;
+		return this;
+	}
+
 	public String getI18nKey(String value) {
 		String key = value;
 		if (!Strings.isEmpty(preTranslation))

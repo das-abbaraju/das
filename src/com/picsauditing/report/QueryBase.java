@@ -6,6 +6,7 @@ public enum QueryBase {
 	ContractorAuditData,
 	ContractorAuditOperators,
 	ContractorAuditOperatorWorkflows,
+	ContractorFees,
 	Contractors,
 	ContractorTrades,
 	EmailExclusions,
