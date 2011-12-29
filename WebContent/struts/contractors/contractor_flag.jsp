@@ -493,7 +493,7 @@ fieldset.form {
 
 									<tr class="<s:property value="#data.flag" />">
 										<td class="center"
-											<s:if test="!displayCorporate"><pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission></s:if>>
+											<pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission>>
 											<s:property value="#data.flag.smallIcon" escape="false" /></td>
 
 										<s:if test="displayCorporate"><td><s:property value="#data.operator.name" /></td></s:if>
@@ -604,11 +604,10 @@ fieldset.form {
 											</s:if></td>
 									</tr>
 									
-									<s:if test="!displayCorporate">
 										<pics:permission perm="EditForcedFlags">
 											<tr id="<s:property value="%{#data.id}" />_override"
 												class="_override_ clickable">
-												<td colspan="3">
+												<td <s:if test="displayCorporate">colspan="4"</s:if><s:else>colspan="3"</s:else>>
 													<div class="override_form">
 														<form enctype="multipart/form-data" method="POST">
 															<s:hidden value="%{#data.id}" name="dataID" />
@@ -704,7 +703,6 @@ fieldset.form {
 													</a> </span></td>
 											</tr>
 										</pics:permission>
-									</s:if>
 								</s:if>
 							</s:iterator>
 						</s:iterator>
