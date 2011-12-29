@@ -10,9 +10,9 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		
-		<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css">
+		<link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-all.css">
 		
-		<script type="text/javascript" src="js/extjs/bootstrap.js"></script>
+		<script type="text/javascript" src="js/pics/bootstrap.js"></script>
 		
 		<decorator:head />
 	</head>

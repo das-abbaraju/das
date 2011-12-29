@@ -38,6 +38,6 @@
 			</s:iterator>
 		</script>
 	
-		<script type="text/javascript" src="js/extjs/app.js"></script>
+		<script type="text/javascript" src="js/pics/app.js"></script>
 	</body>
 </html>
