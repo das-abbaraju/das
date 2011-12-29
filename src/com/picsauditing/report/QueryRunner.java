@@ -92,19 +92,21 @@ public class QueryRunner {
 
 	private SimpleReportDefinition mergeDefinition(SimpleReportDefinition definition,
 			SimpleReportDefinition devDefinition) {
-		if (!devDefinition.getColumns().isEmpty())
-			definition.getColumns().addAll(devDefinition.getColumns());
-		if (!devDefinition.getGroupBy().isEmpty())
-			definition.getGroupBy().addAll(devDefinition.getGroupBy());
-		if (!devDefinition.getOrderBy().isEmpty())
-			definition.getOrderBy().addAll(devDefinition.getOrderBy());
-		if (!devDefinition.getHaving().isEmpty())
-			definition.getHaving().addAll(devDefinition.getHaving());
-		if (!devDefinition.getFilters().isEmpty())
-			definition.getFilters().addAll(devDefinition.getFilters());
-		if (devDefinition.getFilterExpression() != null)
-			definition.setFilterExpression(definition.getFilterExpression() + " AND "
-					+ devDefinition.getFilterExpression());
+		if (devDefinition != null) {
+			if (!devDefinition.getColumns().isEmpty())
+				definition.getColumns().addAll(devDefinition.getColumns());
+			if (!devDefinition.getGroupBy().isEmpty())
+				definition.getGroupBy().addAll(devDefinition.getGroupBy());
+			if (!devDefinition.getOrderBy().isEmpty())
+				definition.getOrderBy().addAll(devDefinition.getOrderBy());
+			if (!devDefinition.getHaving().isEmpty())
+				definition.getHaving().addAll(devDefinition.getHaving());
+			if (!devDefinition.getFilters().isEmpty())
+				definition.getFilters().addAll(devDefinition.getFilters());
+			if (devDefinition.getFilterExpression() != null)
+				definition.setFilterExpression(definition.getFilterExpression() + " AND "
+						+ devDefinition.getFilterExpression());
+		}
 
 		return definition;
 	}
@@ -707,7 +709,7 @@ public class QueryRunner {
 	}
 
 	private QueryField joinToAuditType(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN audit_type " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
+		joins.put(joinAlias, "JOIN audit_type " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", foreignKey).requireJoin(joinAlias).makeDefault();
 		QueryField auditTypeName = addQueryField(joinAlias + "Name", foreignKey);
 		auditTypeName.translate("AuditType", "name").requireJoin(joinAlias).makeDefault();
@@ -721,14 +723,14 @@ public class QueryRunner {
 	}
 
 	private void joinToContractorWatch(String joinAlias, String foreignKey) {
-		sql.addJoin("LEFT JOIN contractor_watch " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
+		joins.put(joinAlias, "LEFT JOIN contractor_watch " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
 
 		addQueryField(joinAlias + "ContractorID", foreignKey).requireJoin(joinAlias).makeDefault();
 		addQueryField(joinAlias + "UserID", joinAlias + ".userID").requireJoin(joinAlias).makeDefault();
 	}
 
 	private void leftJoinToEmailQueue(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN email_queue " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
+		joins.put(joinAlias, "JOIN email_queue " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
 		addQueryField(joinAlias + "ContractorID", foreignKey).requireJoin(joinAlias).makeDefault();
 
 		addQueryField(joinAlias + "CreationDate", joinAlias + ".creationDate").requireJoin(joinAlias).makeDefault()
@@ -743,7 +745,7 @@ public class QueryRunner {
 	}
 
 	private void joinToFacilities(String joinAlias, String tableKey, String foreignKey) {
-		sql.addJoin("LEFT JOIN facilities " + joinAlias + " ON " + joinAlias + "." + tableKey + " = " + foreignKey);
+		joins.put(joinAlias, "LEFT JOIN facilities " + joinAlias + " ON " + joinAlias + "." + tableKey + " = " + foreignKey);
 
 		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID").requireJoin(joinAlias).makeDefault();
 		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID").requireJoin(joinAlias).makeDefault();
@@ -753,7 +755,7 @@ public class QueryRunner {
 	}
 
 	private void joinToFlagCriteriaContractor(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN flag_criteria_contractor " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
+		joins.put(joinAlias, "JOIN flag_criteria_contractor " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
 		addQueryField(joinAlias + "ContractorID", foreignKey).makeDefault();
 
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
@@ -762,7 +764,7 @@ public class QueryRunner {
 	}
 
 	private void joinToGeneralContractor(String joinAlias, String tableKey, String foreignKey) {
-		sql.addJoin("LEFT JOIN generalcontractor " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
+		joins.put(joinAlias, "LEFT JOIN generalcontractors " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
 				+ foreignKey);
 
 		addQueryField(joinAlias + "ContractorID", joinAlias + ".subID").requireJoin(joinAlias).makeDefault();
@@ -775,14 +777,14 @@ public class QueryRunner {
 	}
 
 	private void joinToInvoiceFee(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN invoice_fee " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
+		joins.put(joinAlias, "JOIN invoice_fee " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias).makeDefault();
 		addQueryField(joinAlias + "MaxFacilities", joinAlias + ".maxFacilities").requireJoin(joinAlias).makeDefault();
 	}
 
 	private void joinToLoginLog(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN loginlog " + joinAlias + " ON " + joinAlias + ".userID = " + foreignKey);
+		joins.put(joinAlias, "JOIN loginlog " + joinAlias + " ON " + joinAlias + ".userID = " + foreignKey);
 		addQueryField(joinAlias + "UserID", foreignKey).requireJoin(joinAlias).makeDefault();
 
 		addQueryField(joinAlias + "AdminID", joinAlias + ".adminID").requireJoin(joinAlias).makeDefault();
@@ -791,7 +793,7 @@ public class QueryRunner {
 	}
 
 	private void joinToOshaAudit(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN osha_audit " + joinAlias + " ON " + joinAlias + ".auditID = " + foreignKey);
+		joins.put(joinAlias, "JOIN osha_audit " + joinAlias + " ON " + joinAlias + ".auditID = " + foreignKey);
 		addQueryField(joinAlias + "ContractorID", foreignKey).requireJoin(joinAlias).makeDefault();
 
 		addQueryField(joinAlias + "ID", joinAlias + ".id").requireJoin(joinAlias);
@@ -808,7 +810,7 @@ public class QueryRunner {
 	}
 
 	private void joinToNAICS(String joinAlias, String foreignKey) {
-		sql.addJoin("JOIN naics " + joinAlias + " ON " + joinAlias + ".code = " + foreignKey);
+		joins.put(joinAlias, "JOIN naics " + joinAlias + " ON " + joinAlias + ".code = " + foreignKey);
 		addQueryField(joinAlias + "Code", foreignKey).requireJoin(joinAlias).makeDefault();
 
 		addQueryField(joinAlias + "TRIR", joinAlias + ".trir").requireJoin(joinAlias);
