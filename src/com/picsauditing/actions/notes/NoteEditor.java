@@ -57,8 +57,13 @@ public class NoteEditor extends AccountActionSupport {
 		if (viewableBy > Account.PRIVATE) {
 			viewableByOther = viewableBy;
 			viewableBy = RESTRICTED_TO;
-		} else if (viewableBy == 0) {
+		} else if (viewableBy == Account.NONE) {
 			viewableBy = Account.EVERYONE;
+		}
+
+		if (permissions.hasPermission(OpPerms.Billing) || permissions.isOperatorCorporate()) {
+			viewableBy = RESTRICTED_TO;
+			viewableByOther = permissions.getTopAccountID();
 		}
 
 		return mode;
@@ -76,12 +81,12 @@ public class NoteEditor extends AccountActionSupport {
 				addActionError("Please select an account to restrict the note to.");
 				return mode;
 			}
-			
+
 			viewableBy = viewableByOther;
 		}
 
 		note.setViewableBy(new Account());
-		note.getViewableBy().setId((viewableBy==0)?1:viewableBy);
+		note.getViewableBy().setId((viewableBy == Account.NONE) ? Account.EVERYONE : viewableBy);
 
 		if (employeeID > 0) {
 			note.setEmployee(new Employee());
