@@ -147,7 +147,7 @@
 									</div>
 								</s:if>
 								
-								<s:if test="contractor.acceptsBids">
+								<s:if test="contractor.accountLevel.bidOnly">
 									<s:if test="canUpgrade">
 										<div class="info">
 											<s:text name="ContractorView.BidOnlyUpgrade" />
@@ -324,13 +324,6 @@
 															<s:date name="effectiveDate" format="MMM yyyy" />
 														</s:else>
 													</a>
-													
-													<s:if test="key == getText('global.InsureGUARD')">
-														<s:property value="getSynopsis(co.operatorAccount)"/>
-													</s:if>
-													<s:else>
-														<s:property value="synopsis"/>
-													</s:else>
 												</li>
 											</s:iterator>
 										</ul>

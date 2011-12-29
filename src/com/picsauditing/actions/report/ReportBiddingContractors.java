@@ -14,6 +14,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -79,7 +80,7 @@ public class ReportBiddingContractors extends ReportAccount {
 	}
 
 	public String upgrade() throws Exception {
-		contractor.setAcceptsBids(false);
+		contractor.setAccountLevel(AccountLevel.Full);
 		contractor.setRenew(true);
 
 		auditBuilderController.buildAudits(contractor);

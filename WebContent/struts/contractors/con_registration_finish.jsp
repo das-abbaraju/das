@@ -50,7 +50,7 @@
 						<s:if test="contractor.safetyRisk.toString().equals('None')">
 						<s:text name="ContractorRegistrationFinish.RiskLevel"><s:param><s:property value="contractor.safetyRisk"/></s:param></s:text>	<br/>
 						</s:if>
-						<s:if test="contractor.acceptsBids">
+						<s:if test="contractor.accountLevel.bidOnly">
 							<s:text name="ContractorRegistrationFinish.BidOnly" />: <br clear="all"/>
 							<ul>
 								<s:iterator value="contractor.audits">

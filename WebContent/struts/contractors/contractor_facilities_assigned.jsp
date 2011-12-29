@@ -18,7 +18,7 @@
 <s:else>
 <label><s:text name="%{scope}.ContractorFacilities.NumberOfLinkedFacilities" />:</label> <s:property value="currentOperators.size()" /><br />
 <s:if test="permissions.contractor || permissions.admin">
-	<s:if test="contractor.acceptsBids">
+	<s:if test="contractor.accountLevel.bidOnly">
 		<b><s:text name="ContractorFacilities.UpgradeFeeIncrease" /></b>.<br />
 	</s:if>
 

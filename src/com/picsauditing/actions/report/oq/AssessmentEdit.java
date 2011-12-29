@@ -109,7 +109,6 @@ public class AssessmentEdit extends AccountActionSupport implements Preparable {
 					}
 
 					center.setQbSync(false);
-					center.setAcceptsBids(false);
 					center.setRequiresOQ(false);
 					center.setRequiresCompetencyReview(false);
 				}

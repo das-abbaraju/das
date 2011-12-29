@@ -21,7 +21,7 @@
 			</div>
 		</s:if>
 		
-		<s:if test="contractor.acceptsBids">
+		<s:if test="contractor.accountLevel.bidOnly">
 			<div class="alert">
 				<s:text name="ContractorView.BidOnlyUpgradeAlert" />
 			</div>

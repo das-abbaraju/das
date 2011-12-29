@@ -89,7 +89,7 @@
 			</div>
 		</s:if>
 		
-		<s:if test="contractor.acceptsBids">
+		<s:if test="contractor.accountLevel.bidOnly">
 			<div class="alert">
 				This is a Bid Only Contractor Account.
 			</div>

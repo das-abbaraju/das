@@ -26,6 +26,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -127,7 +128,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 
 				FlagCriteriaContractor fcc = new FlagCriteriaContractor();
 				fcc.setAnswer(f.get("answer").toString());
-				
+
 				if (f.get("answer2") != null)
 					fcc.setAnswer2(f.get("answer2").toString());
 
@@ -143,7 +144,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 				ContractorAccount contractor = new ContractorAccount(Database.toInt(row, "conID"));
 				contractor.setName(row.get("contractor_name").toString());
 
-				contractor.setAcceptsBids(Database.toBoolean(row, "acceptsBids"));
+				if (Database.toBoolean(row, "acceptsBids"))
+					contractor.setAccountLevel(AccountLevel.BidOnly);
 				contractor.setAudits(auditMap.get(contractor.getId()));
 				contractor.setNaics(new Naics());
 				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));
@@ -444,7 +446,8 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			for (BasicDynaBean row : results) {
 				ContractorAccount contractor = new ContractorAccount(Database.toInt(row, "conID"));
 				contractor.setName(row.get("contractor_name").toString());
-				contractor.setAcceptsBids(Database.toBoolean(row, "acceptsBids"));
+				if (Database.toBoolean(row, "acceptsBids"))
+					contractor.setAccountLevel(AccountLevel.BidOnly);
 				contractor.setAudits(auditMap.get(contractor.getId()));
 				contractor.setNaics(new Naics());
 				contractor.getNaics().setLwcr(Database.toFloat(row, "lwcr"));

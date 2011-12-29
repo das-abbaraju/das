@@ -260,7 +260,7 @@ fieldset.form {
 									<s:property value="co.contractorAccount.status" />
 								</s:param>
 								<s:param>
-									<s:if test="co.contractorAccount.acceptsBids">
+									<s:if test="co.contractorAccount.accountLevel.bidOnly">
 										<s:text name="ContractorFlag.BidOnly"></s:text>
 									</s:if>
 								</s:param>

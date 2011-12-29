@@ -1389,20 +1389,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	@Deprecated
-	public boolean isAcceptsBids() {
-		return false;
-	}
-
-	@Transient
-	@Deprecated
-	public void setAcceptsBids(boolean acceptsBids) {
-		// If we're setting bid only to false, it means
-		// to upgrade the contractor
-		accountLevel = acceptsBids ? AccountLevel.BidOnly : AccountLevel.Full;
-	}
-
-	@Transient
 	public BigDecimal getNewMembershipAmount() {
 		BigDecimal newTotal = BigDecimal.ZERO;
 		for (ContractorFee fee : fees.values()) {
