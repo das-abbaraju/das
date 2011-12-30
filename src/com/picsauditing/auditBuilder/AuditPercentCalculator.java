@@ -1,6 +1,7 @@
 package com.picsauditing.auditBuilder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -177,6 +178,7 @@ public class AuditPercentCalculator {
 					requiredCount++;
 
 				if (answer != null) {
+					boolean includeAnswerCalculation = isIncludeAnswerCalculation(answer);
 					if (answer.isAnswered()) {
 						if (catData.getAudit().getAuditType().isScoreable()) {
 							if (answer.isScoreApplies()) {
@@ -185,13 +187,15 @@ public class AuditPercentCalculator {
 							}
 						}
 
-						answeredCount++;
-						if (isRequired)
-							requiredAnsweredCount++;
+						if (includeAnswerCalculation) {
+							answeredCount++;
+							if (isRequired)
+								requiredAnsweredCount++;
+						}
 					}
 
 					if (answer.getQuestion().isHasRequirement()) {
-						if (answer.isOK())
+						if (answer.isOK() && includeAnswerCalculation)
 							verifiedCount++;
 					} else {
 						if (isRequired) {
@@ -361,6 +365,23 @@ public class AuditPercentCalculator {
 		if (conAudit.getAuditType().getScoreType() == ScoreType.Weighted) {
 			calculateWeightedScore(conAudit);
 		}
+	}
+
+	private boolean isIncludeAnswerCalculation(AuditData answer) {
+		if (answer != null && answer.isAnswered()) {
+			if (answer.getQuestion().getId() == AuditQuestion.MANUAL_PQF) {
+				Calendar currentDate = Calendar.getInstance();
+				Calendar answerUpdateDate = Calendar.getInstance();
+				answerUpdateDate.setTime(answer.getUpdateDate());
+
+				// TODO - find a better way to check whether to include the safety manual comment
+				if (answer.isCommentLength() && answerUpdateDate.get(Calendar.YEAR) < currentDate.get(Calendar.YEAR)) {
+					return false; 
+				}
+			}
+		}
+
+		return true;
 	}
 
 	private void calculateWeightedScore(ContractorAudit ca) {
