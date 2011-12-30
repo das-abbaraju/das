@@ -172,7 +172,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 						if (!linked) {
 							if (contractor.isOnsiteServices() && opToAdd.isOnsiteServices()
 									|| contractor.isOffsiteServices() && opToAdd.isOffsiteServices()
-									|| contractor.isMaterialSupplier() && opToAdd.isMaterialSupplier())
+									|| contractor.isMaterialSupplier() && opToAdd.isMaterialSupplier()
+									|| contractor.isTransportationServices() && opToAdd.isTransportationServices()
+								)
 								searchResults.add(opToAdd);
 						}
 					}
