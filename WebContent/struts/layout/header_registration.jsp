@@ -15,8 +15,7 @@
 </s:else>
 
 <header>
-	<s:url action="Home" var="home_url" />
-	<a href="${home_url}" class="logo"><img src="images/logo_sm.png" alt="Home" /></a>
+	<img src="images/logo_sm.png" alt="Home" class="logo" />
 	
 	<ul class="header-menu">
 		<li>
