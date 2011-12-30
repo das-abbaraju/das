@@ -160,8 +160,9 @@ public class QueryRunner {
 			}
 
 			String filterExp = queryFilter.toExpression(availableFields);
-			where = where.replace("{" + i + "}", filterExp);
+			where = where.replace("{" + i + "}", "(" + filterExp + ")");
 		}
+		sql.addWhere(where);
 	}
 
 	private void addColumns() {
