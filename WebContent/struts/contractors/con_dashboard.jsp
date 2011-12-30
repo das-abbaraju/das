@@ -521,6 +521,7 @@
 									<s:if test="contractor.isOnsiteServices()"><s:text name="ContractorAccount.onsiteServices" /></s:if>
 									<s:if test="contractor.isOffsiteServices()">, <s:text name="ContractorAccount.offsiteServices" /></s:if>
 									<s:if test="contractor.isMaterialSupplier()">, <s:text name="ContractorAccount.supplier" /></s:if>
+									<s:if test="contractor.isTransportationServices()">, <s:text name="ContractorAccount.transportationServices" /></s:if>
 								</p>
 								
 								<s:if test="hasOperatorTags">
