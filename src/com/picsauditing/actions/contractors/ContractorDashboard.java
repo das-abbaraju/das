@@ -277,7 +277,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-
+		
 		if (opID == 0 && permissions.isOperatorCorporate())
 			opID = permissions.getAccountId();
 
@@ -411,8 +411,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isCanUpgrade() {
 		if (permissions.isContractor())
 			return true;
+		
 		if (permissions.seesAllContractors())
 			return true;
+		
 		if (permissions.isOperator() && permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
 			return true;
 
@@ -717,10 +719,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isHasOperatorTags() {
 		if (permissions.hasPermission(OpPerms.ContractorTags))
 			return true;
+		
 		if (permissions.hasGroup(959))
 			return true;
+		
 		if (permissions.isContractor())
 			return true;
+		
 		return false;
 	}
 
@@ -757,7 +762,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 		return prevStats;
 	}
-
+	
+	public List<ContractorTag> getTagsViewableByUser() {
+		if (permissions.isOperator()) {
+			List<ContractorTag> tags = new ArrayList<ContractorTag>(contractor.getOperatorTags());
+			Iterator<ContractorTag> iterator = tags.iterator();
+			while (iterator.hasNext()) {
+				int id = iterator.next().getTag().getOperator().getId();
+				if (permissions.getAccountId() != id && !permissions.getCorporateParent().contains(id)) {
+					iterator.remove();
+				}
+			}
+			
+			return tags;
+		}
+		
+		return contractor.getOperatorTags();
+	}
+	
 	public String preview() throws Exception {
 		return "preview";
 	}

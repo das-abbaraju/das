@@ -223,7 +223,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 	 * @param oshaAudit
 	 * @param average
 	 */
-	private void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
+	/* Testable */ void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
 		if (oshaAudit == null || average == null) {
 			return;
 		}
@@ -366,7 +366,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		}
 	}
 
-	private class SheetStatus {
+	/* Testable */ class SheetStatus {
 		public HSSFSheet sheet;
 		public int rownum;
 		// Common

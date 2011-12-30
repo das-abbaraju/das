@@ -1,8 +1,12 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -72,8 +76,10 @@ public class ReportAccountAudits extends ReportAccount {
 		if (permissions.isOperatorCorporate()) {
 			sql.addField("gc.waitingOn");
 			if (download) {
+				List<Integer> accountIds = new ArrayList<Integer>(permissions.getCorporateParent());
+				accountIds.add(permissions.getAccountId());
 				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
-				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID = " + permissions.getAccountId());
+				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID IN (" + Strings.implode(accountIds) + ") ");
 				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
 			}
 		}

@@ -68,12 +68,12 @@ $(document).ready(function() {
 		<br />
 		<s:if test="contractor.operatorTags.size() > 0">
 		<label>Operator Tags:</label> 
-		<s:iterator value="contractor.operatorTags">
+		<s:iterator value="tagsViewableByUser">
 			<s:if test="permissions.admin">
 				<s:property value="tag.tag"/> - <s:property value="tag.operator.name"/> <br/>
-			</s:if>
-			<s:if test="permissions.operator && permissions.accountId == tag.operator.id">
-				<s:property value="tag.tag"/><br/> 
+			</s:if>			
+			<s:if test="permissions.operator">
+				<s:property value="tag.tag"/> <br/>	
 			</s:if>
 		</s:iterator>
 		<br />
