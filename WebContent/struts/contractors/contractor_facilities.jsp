@@ -234,7 +234,7 @@
 						<s:textfield cssClass="forms clearable" name="operator.name" onchange="runSearch()"/>
 					</nobr>
 					<nobr><s:text name="global.Location" />: 
-						<s:select cssClass="forms clearable" list="stateList" 
+						<s:select cssClass="forms clearable" list="getStateList('US|CA')" 
 							onchange="runSearch()" name="state" listKey="isoCode" listValue="english" 
 							headerKey="" headerValue="- State or Province -"></s:select>
 					</nobr>
