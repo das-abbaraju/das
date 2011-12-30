@@ -63,9 +63,7 @@
 					</li>
 					<li>
 						<label>
-							<s:text name="NoteEditor.CanView">
-								<s:param><s:property value="account.type"/> </s:param>
-							</s:text>
+							<s:text name="NoteEditor.CanView" />
 						</label>
 						<s:checkbox name="note.canContractorView"></s:checkbox>
 					</li>
