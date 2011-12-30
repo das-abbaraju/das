@@ -428,10 +428,10 @@
 							<label>Contractor Activation Fee:</label>
 							
 							<s:if test="activationFeeOperator.id != operator.id">
-								$<s:property value="activationFeeOperator.activationFee" />&nbsp;&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?operator=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
+								${operator.currency.symbol}${activationFeeOperator.activationFee}&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?operator=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
 							</s:if>
 							<s:else>
-								<pics:permission perm="UserRolePicsOperator">
+								<s:if test="permissions.hasPermission('UserRolePicsOperator')">
 									<s:if test="operator.activationFee">
 										<s:set var="operator_activationFee_onchange" value="'checkFee(this.value, %{#operator.activationFee})'" />
 									</s:if>
@@ -439,8 +439,11 @@
 										<s:set var="operator_activationFee_onchange" value="'return false;'" />
 									</s:else>
 									
-									<p>$ <s:textfield id="opActivationFee" name="operator.activationFee" onchange="%{#operator_activationFee_onchange}"/></p>
-								</pics:permission>
+									<p>${operator.currency.symbol} <s:textfield id="opActivationFee" name="operator.activationFee" onchange="%{#operator_activationFee_onchange}"/></p>
+								</s:if>
+								<s:else>
+									${operator.currency.symbol}${activationFeeOperator.activationFee}
+								</s:else>
 							</s:else>
 							
 							<pics:fieldhelp title="Contractor Activation Fee">

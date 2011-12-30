@@ -36,18 +36,13 @@ import org.hibernate.annotations.Sort;
 import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.auditBuilder.AuditTypesBuilder;
-import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -847,13 +842,13 @@ public class ContractorAccount extends Account implements JSONable {
 							foundListOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
 									getPayingFacilities());
-							setCurrentFee(fee);
+							setCurrentFee(fee, fee.getAmount());
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)
 								&& !foundBidOnlyMembership) {
 							foundBidOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
 									getPayingFacilities());
-							setCurrentFee(fee);
+							setCurrentFee(fee, fee.getAmount());
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)
 								&& !foundDocuGUARDMembership) {
 							foundDocuGUARDMembership = true;
@@ -868,9 +863,9 @@ public class ContractorAccount extends Account implements JSONable {
 								// paid legacy DocuGUARD fee.
 								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
 										.getPayingFacilities());
-								setCurrentFee(fee);
+								setCurrentFee(fee, fee.getAmount());
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee());
+								setCurrentFee(invoiceItem.getInvoiceFee(), invoiceItem.getInvoiceFee().getAmount());
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -885,9 +880,13 @@ public class ContractorAccount extends Account implements JSONable {
 							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
 								InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.AuditGUARD,
 										invoiceItem.getInvoiceFee());
-								setCurrentFee(fee);
+								BigDecimal currentAmount = FeeClass.AuditGUARD.getAdjustedFeeAmountIfNecessary(this,
+										fee);
+								setCurrentFee(fee, currentAmount);
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee());
+								BigDecimal currentAmount = FeeClass.AuditGUARD.getAdjustedFeeAmountIfNecessary(this,
+										invoiceItem.getInvoiceFee());
+								setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 							}
 
 							// Old AuditGUARD included DocuGUARD fee
@@ -896,16 +895,20 @@ public class ContractorAccount extends Account implements JSONable {
 								foundDocuGUARDMembership = true;
 								InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.DocuGUARD,
 										invoiceItem.getInvoiceFee());
-								setCurrentFee(fee);
+								setCurrentFee(fee, fee.getAmount());
 							}
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
 								&& !foundInsureGUARDMembership) {
 							foundInsureGUARDMembership = true;
-							setCurrentFee(invoiceItem.getInvoiceFee());
+							BigDecimal currentAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(this,
+									invoiceItem.getInvoiceFee());
+							setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.EmployeeGUARD)
 								&& !foundEmployeeGUARDMembership) {
 							foundEmployeeGUARDMembership = true;
-							setCurrentFee(invoiceItem.getInvoiceFee());
+							BigDecimal currentAmount = FeeClass.EmployeeGUARD.getAdjustedFeeAmountIfNecessary(this,
+									invoiceItem.getInvoiceFee());
+							setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 						}
 
 						if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
@@ -927,7 +930,7 @@ public class ContractorAccount extends Account implements JSONable {
 							&& getFees().containsKey(FeeClass.ImportFee)) {
 						InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 						foundImportPQFFee = true;
-						setCurrentFee(fee);
+						setCurrentFee(fee, fee.getAmount());
 					}
 				}
 
@@ -962,9 +965,9 @@ public class ContractorAccount extends Account implements JSONable {
 		this.getFees().get(feeClass).setCurrentAmount(BigDecimal.ZERO);
 	}
 
-	private void setCurrentFee(InvoiceFee fee) {
+	private void setCurrentFee(InvoiceFee fee, BigDecimal amount) {
 		this.getFees().get(fee.getFeeClass()).setCurrentLevel(fee);
-		this.getFees().get(fee.getFeeClass()).setCurrentAmount(getDiscountedAmount(fee));
+		this.getFees().get(fee.getFeeClass()).setCurrentAmount(amount);
 	}
 
 	@Transient
@@ -977,54 +980,6 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setNewFee(InvoiceFee fee, BigDecimal amount) {
 		this.getFees().get(fee.getFeeClass()).setNewLevel(fee);
 		this.getFees().get(fee.getFeeClass()).setNewAmount(amount);
-	}
-
-	private BigDecimal getDiscountedAmount(InvoiceFee fee) {
-		if (fee.getFeeClass().equals(FeeClass.AuditGUARD)) {
-			if (this.getPayingFacilities() == 1) {
-				Date now = new Date();
-				if (BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(now)) {
-					for (ContractorOperator contractorOperator : this.getNonCorporateOperators()) {
-						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							return new BigDecimal(299).setScale(2);
-						}
-					}
-				}
-			}
-		} else if (fee.getFeeClass().equals(FeeClass.EmployeeGUARD)) {
-			AuditTypeRuleCache ruleCache = (AuditTypeRuleCache) SpringUtils.getBean("AuditTypeRuleCache");
-			AuditDecisionTableDAO auditDAO = (AuditDecisionTableDAO) SpringUtils.getBean("AuditDecisionTableDAO");
-			ruleCache.initialize(auditDAO);
-			AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, this);
-
-			boolean employeeAudits = false;
-			boolean oq = false;
-			boolean hseCompetency = false;
-
-			for (AuditTypeDetail detail : builder.calculate()) {
-				AuditType auditType = detail.rule.getAuditType();
-				if (auditType == null)
-					continue;
-				if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
-						|| auditType.getClassType().isIm())
-					employeeAudits = true;
-				if (auditType.getId() == AuditType.HSE_COMPETENCY)
-					hseCompetency = true;
-			}
-
-			for (ContractorOperator co : this.getOperators()) {
-				if (co.getOperatorAccount().isRequiresOQ())
-					oq = true;
-			}
-
-			if (!hseCompetency && (employeeAudits || oq))
-				return BigDecimal.ZERO;
-		}
-
-		/*
-		 * DocuGUARD (including Bid/List only) and InsureGUARD don't have any custom pricing (for now)
-		 */
-		return fee.getAmount();
 	}
 
 	@Transient
@@ -1504,5 +1459,16 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return null;
+	}
+
+	@Transient
+	public boolean isAssociatedExclusivelyWith(int operatorOrTopCorporateID) {
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			if (operator.getId() != operatorOrTopCorporateID
+					&& operator.getTopAccount().getId() != operatorOrTopCorporateID)
+				return false;
+		}
+
+		return true;
 	}
 }
