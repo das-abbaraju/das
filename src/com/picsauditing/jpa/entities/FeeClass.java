@@ -141,6 +141,7 @@ public enum FeeClass implements Translatable {
 		return getI18nKey() + "." + property;
 	}
 	
+	// TODO: Delete this when exclusion dates expire
 	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer,Date> exclusions) {
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			// do I have an operator outside the exclusions list?
