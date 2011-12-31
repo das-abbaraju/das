@@ -31,10 +31,7 @@ public enum FeeClass implements Translatable {
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 
-			if (isAllExclusionsApplicable(contractor, exclusions))
-				return true;
-
-			return false;
+			return isAllExclusionsApplicable(contractor, exclusions);
 		}
 
 		@Override
