@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
@@ -24,13 +26,12 @@ public enum FeeClass implements Translatable {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
 				return false;
 
-			if (new Date().before(BASFInsureGUARDPricingEffectiveDate)
-					&& contractor.isAssociatedExclusivelyWith(OperatorAccount.BASF))
-				return true;
+			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
+			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 
-			if (new Date().before(AIAndOldcasteInsureGUARDPricingEffectiveDate)
-					&& (contractor.isAssociatedExclusivelyWith(OperatorAccount.AI) || contractor
-							.isAssociatedExclusivelyWith(OperatorAccount.Oldcastle)))
+			if (isAllExclusionsApplicable(contractor, exclusions))
 				return true;
 
 			return false;
@@ -44,7 +45,7 @@ public enum FeeClass implements Translatable {
 				}
 			}
 
-			return new BigDecimal(299).setScale(2);
+			return new BigDecimal(49).setScale(2);
 		}
 	},
 	AuditGUARD {
@@ -138,5 +139,19 @@ public enum FeeClass implements Translatable {
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+	
+	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer,Date> exclusions) {
+		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+			// do I have an operator outside the exclusions list?
+			if(!exclusions.containsKey(operator.getTopAccount().getId()))
+				return false;
+			// is it time to start charging this operator for insureguard?
+			else if(new Date().after(exclusions.get(operator.getTopAccount().getId()))) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -1461,14 +1461,4 @@ public class ContractorAccount extends Account implements JSONable {
 		return null;
 	}
 
-	@Transient
-	public boolean isAssociatedExclusivelyWith(int operatorOrTopCorporateID) {
-		for (OperatorAccount operator : getOperatorAccounts()) {
-			if (operator.getId() != operatorOrTopCorporateID
-					&& operator.getTopAccount().getId() != operatorOrTopCorporateID)
-				return false;
-		}
-
-		return true;
-	}
 }
