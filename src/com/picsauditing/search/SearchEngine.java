@@ -31,8 +31,6 @@ public class SearchEngine {
 	protected Database db = new Database();
 	protected Permissions perm;
 
-	private static final int MAX_TERMS = 7;
-
 	public SearchEngine(Permissions perm) {
 		this.perm = perm;
 	}
@@ -133,7 +131,7 @@ public class SearchEngine {
 
 		if (terms == null)
 			return null;
-		
+
 		if (currPerm != null && currPerm.isOperatorCorporate())
 			sql.append("rName,");
 		sql.append("foreignKey");
@@ -148,21 +146,22 @@ public class SearchEngine {
 		}
 
 		sql.append("\n FROM ( ");
-		
+
 		// build the inner search query (for the first term)
 		StringBuilder innerSql = new StringBuilder();
-	
-		innerSql.append(" SELECT i1.foreignKey AS foreignKey, i1.indexType AS indexType, i1.value AS i1value, i1.weight AS i1weight, t.total AS ttotal, v1.total AS v1total ")
-				.append(" FROM ")
-				.append(" ").append(indexTable).append(" i1 ")
-				.append(" LEFT JOIN ").append(indexStats).append(" t ON i1.indexType = t.indexType AND t.value IS NULL \n")
-				.append(" LEFT JOIN ").append(indexStats).append(" v1 ON v1.indexType IS NULL AND i1.value = v1.value ")
-				.append(" WHERE 1 ")
-				.append(" AND (i1.value LIKE '" + terms.get(0) + "%') ");
+
+		innerSql
+				.append(
+						" SELECT i1.foreignKey AS foreignKey, i1.indexType AS indexType, i1.value AS i1value, i1.weight AS i1weight, t.total AS ttotal, v1.total AS v1total ")
+				.append(" FROM ").append(" ").append(indexTable).append(" i1 ").append(" LEFT JOIN ")
+				.append(indexStats).append(" t ON i1.indexType = t.indexType AND t.value IS NULL \n").append(
+						" LEFT JOIN ").append(indexStats)
+				.append(" v1 ON v1.indexType IS NULL AND i1.value = v1.value ").append(" WHERE 1 ").append(
+						" AND (i1.value LIKE '" + terms.get(0) + "%') ");
 
 		if (!Strings.isEmpty(extraWhere))
 			innerSql.append("\n AND (").append(extraWhere).append(") ");
-		
+
 		// build inner wrapper for header and footer
 		StringBuilder wrapperHeader = new StringBuilder();
 		StringBuilder wrapperFooter = new StringBuilder();
@@ -174,21 +173,21 @@ public class SearchEngine {
 
 			if (i != terms.size()) {
 				String startString = wrapperHeader.toString();
-				
-				wrapperHeader = new StringBuilder().append("select ").append(tTerm).append(".*, ")
-												   .append(iTerm).append(".weight AS ").append(iTerm).append("weight, ")
-												   .append(vTerm).append(".total AS ").append(vTerm).append("total ");
+
+				wrapperHeader = new StringBuilder().append("select ").append(tTerm).append(".*, ").append(iTerm)
+						.append(".weight AS ").append(iTerm).append("weight, ").append(vTerm).append(".total AS ")
+						.append(vTerm).append("total ");
 				wrapperHeader.append(" FROM ( \n").append(startString);
 			}
 
 			wrapperFooter.append(") ").append(tTerm);
-			wrapperFooter.append("\n JOIN ").append(indexTable).append(" ").append(iTerm)
-						 .append(" ON ").append(tTerm).append(".indexType = ").append(iTerm).append(".indexType ")
-						 .append(" AND ").append(tTerm).append(".foreignKey = ").append(iTerm).append(".foreignKey ")
-						 .append(" AND ").append(iTerm).append(".value LIKE '").append(terms.get(i)).append("%'\n");
-			wrapperFooter.append("\n JOIN ").append(indexStats).append(" ").append(vTerm)
-						 .append(" ON ").append(vTerm).append(".indexType IS NULL ")
-						 .append(" AND ").append(iTerm).append(".value = ").append(vTerm).append(".value ");
+			wrapperFooter.append("\n JOIN ").append(indexTable).append(" ").append(iTerm).append(" ON ").append(tTerm)
+					.append(".indexType = ").append(iTerm).append(".indexType ").append(" AND ").append(tTerm).append(
+							".foreignKey = ").append(iTerm).append(".foreignKey ").append(" AND ").append(iTerm)
+					.append(".value LIKE '").append(terms.get(i)).append("%'\n");
+			wrapperFooter.append("\n JOIN ").append(indexStats).append(" ").append(vTerm).append(" ON ").append(vTerm)
+					.append(".indexType IS NULL ").append(" AND ").append(iTerm).append(".value = ").append(vTerm)
+					.append(".value ");
 		}
 
 		// concat all the values so far
@@ -198,55 +197,64 @@ public class SearchEngine {
 
 		if (currPerm != null) {
 			if (currPerm.isCorporate()) {
-				sql.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
-						.append("((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =")
-						.append(currPerm.getAccountId()).append(')');
-				sql.append("\nUNION\n")
-						.append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
-						.append(currPerm.getAccountId()).append(")) AS acc on a.id = acc.id AND a.status IN ('Active','Pending')\n)\n");
+				sql.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n").append(
+						"((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =").append(
+						currPerm.getAccountId()).append(')');
+				sql
+						.append("\nUNION\n")
+						.append(
+								"(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
+						.append(currPerm.getAccountId()).append(
+								")) AS acc on a.id = acc.id AND a.status IN ('Active','Pending')\n)\n");
 				if (fullSearch) {
-					sql.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN ('Active','Pending'))\n");
+					sql
+							.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN ('Active','Pending'))\n");
 				} else {
-					sql.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
-							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
-							.append(currPerm.getAccountId())
-							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN ('Active','Pending'))\n");
+					sql
+							.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
+							.append(
+									"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append(currPerm.getAccountId()).append(
+									" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN ('Active','Pending'))\n");
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
 							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n"
-									+ "((select f.opID id FROM facilities f WHERE f.corporateID =")
-							.append(currPerm.getAccountId())
-							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
-							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
+									+ "((select f.opID id FROM facilities f WHERE f.corporateID =").append(
+							currPerm.getAccountId()).append(
+							")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =").append(
+							currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
-					sql.append(
-							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
-									+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
+					sql
+							.append(
+									"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
+											+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
 							.append(currPerm.getAccountId())
 							.append(")\n")
-							.append("UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
+							.append(
+									"UNION\n(select gc.subID FROM generalcontractors gc JOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId()).append(")\n) AS rE on e.accountID = rE.id)\n");
 				}
 				sql.append(") AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			} else if (currPerm.isOperator()) {
-				sql.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n")
-						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =")
-						.append(currPerm.getAccountId())
-						.append(") AS acc ON a.id = acc.id WHERE a.status IN ('Active','Pending') )");
+				sql.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n").append(
+						"(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =").append(
+						currPerm.getAccountId()).append(
+						") AS acc ON a.id = acc.id WHERE a.status IN ('Active','Pending') )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
-					sql.append(
-							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
+					sql
+							.append(
+									"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
 							.append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
 							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN "
-									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
-							.append(currPerm.getAccountId()).append(")");
+									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =").append(
+							currPerm.getAccountId()).append(")");
 				}
 				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			}
@@ -255,12 +263,10 @@ public class SearchEngine {
 		sql.append("\nGROUP BY foreignKey, indexType");
 		if (buildCommon) {
 			sql.append("\nORDER BY foreignKey");
-		}
-		else
-		{
+		} else {
 			sql.append("\nORDER BY m DESC, score, foreignKey");
 		}
-		if (limit != null){
+		if (limit != null) {
 			sql.append("\nLIMIT ");
 
 			if (start != null) {
@@ -272,7 +278,7 @@ public class SearchEngine {
 
 		PicsLogger.log(sql.toString());
 		PicsLogger.stop();
-		
+
 		return sql.toString();
 	}
 
@@ -318,8 +324,8 @@ public class SearchEngine {
 		}
 
 		sql.addJoin("JOIN operators o ON a.id = o.id");
-		sql.addJoin("JOIN ref_country rc ON rc.isoCode=a.country");
-		sql.addJoin("JOIN ref_state rs on rs.isoCode=a.state");
+		sql.addJoin("LEFT JOIN ref_country rc ON rc.isoCode=a.country");
+		sql.addJoin("LEFT JOIN ref_state rs on rs.isoCode=a.state");
 
 		sql.addOrderBy("a.name");
 		for (String searchTerm : terms) {
@@ -407,8 +413,8 @@ public class SearchEngine {
 		fullQuery.append("(SELECT '").append(0).append(commonSql).append(terms.get(0)).append("%'").append(commonEnd);
 		for (int i = 1; i < terms.size(); i++) {
 			fullQuery.append("\nUnion\n");
-			fullQuery.append("(SELECT '").append(i).append(commonSql).append(terms.get(i)).append("%'")
-					.append(commonEnd);
+			fullQuery.append("(SELECT '").append(i).append(commonSql).append(terms.get(i)).append("%'").append(
+					commonEnd);
 		}
 		fullQuery.append(" ORDER BY t");
 		if (onlyValid)

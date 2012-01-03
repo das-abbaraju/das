@@ -17,6 +17,7 @@ public class ContractorPricing extends ContractorActionSupport {
 	private int id;
 	private int employeeGUARDNum;
 	private int docuGUARDNum;
+	private int insureGUARDNum;
 	private int auditGUARDNum;
 	private Map<FeeClass, ContractorFee> fees;
 
@@ -28,13 +29,14 @@ public class ContractorPricing extends ContractorActionSupport {
 		if (con != null) {
 			fees = con.getFees();
 			docuGUARDNum = fees.get(FeeClass.DocuGUARD).getNewLevel().getMinFacilities();
+			insureGUARDNum = fees.get(FeeClass.InsureGUARD).getNewLevel().getMinFacilities();
 			auditGUARDNum = fees.get(FeeClass.AuditGUARD).getNewLevel().getMinFacilities();
 			employeeGUARDNum = fees.get(FeeClass.EmployeeGUARD).getNewLevel().getMinFacilities();
 		}
 
 		@SuppressWarnings("unchecked")
 		List<InvoiceFee> list = (List<InvoiceFee>) dao.findWhere(InvoiceFee.class,
-				"visible=1 and feeClass in ('AuditGUARD','DocuGUARD','EmployeeGUARD', 'Activation')", 0);
+				"visible=1 and feeClass in ('AuditGUARD','InsureGUARD','DocuGUARD','EmployeeGUARD', 'Activation')", 0);
 		for (InvoiceFee fee : ((List<InvoiceFee>) list)) {
 			prices.put("" + fee.getMinFacilities() + fee.getFeeClass(), fee.getAmount());
 		}
@@ -76,6 +78,14 @@ public class ContractorPricing extends ContractorActionSupport {
 
 	public int getAuditGUARDNum() {
 		return auditGUARDNum;
+	}
+
+	public int getInsureGUARDNum() {
+		return insureGUARDNum;
+	}
+
+	public void setInsureGUARDNum(int insureGUARDNum) {
+		this.insureGUARDNum = insureGUARDNum;
 	}
 
 }

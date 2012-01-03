@@ -6,10 +6,12 @@
 $(document).ready(function() {
 	
 	var docuGUARDNum = '<s:property value="docuGUARDNum" />';
+	var insureGUARDNum = '<s:property value="insureGUARDNum" />';
 	var auditGUARDNum = '<s:property value="auditGUARDNum" />';
 	var employeeGUARDNum = '<s:property value="employeeGUARDNum" />';
 	
 	$('#'+docuGUARDNum+'DocuGUARD').css({'background-color':'#FFFF12'});
+	$('#'+insureGUARDNum+'InsureGUARD').css({'background-color':'#FFFF12'});
 	$('#'+auditGUARDNum+'AuditGUARD').css({'background-color':'#FFFF12'});
 	$('#'+employeeGUARDNum+'EmployeeGUARD').css({'background-color':'#FFFF12'});
 	
@@ -32,13 +34,15 @@ $(document).ready(function() {
 				<s:text name="global.Operators" />
 			</td>
 			<td class="center" style="background-color: #79b7e0">
-				<s:text name="global.DocuGUARD"></s:text><br />
+				<s:text name="global.DocuGUARD"></s:text>
+			</td>
+			<td class="center" style="background-color: #838486">
 				<s:text name="global.InsureGUARD"></s:text>
 			</td>
 			<td class="center" style="background-color: #a75025">
 				<s:text name="global.AuditGUARD"></s:text>
 			</td>
-			<td class="center" style="background-color: #838486">
+			<td class="center" style="background-color: #79b7e0">
 				<s:text name="global.EmployeeGUARD"></s:text>
 			</td>
 		</tr>
@@ -50,6 +54,9 @@ $(document).ready(function() {
 			</td>
 			<td class="center" id="1DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1DocuGUARD')"/>
+			</td>
+			<td class="center" id="1InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1InsureGUARD')"/>
 			</td>
 			<td class="center" id="1auditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1AuditGUARD')"/>
@@ -65,6 +72,9 @@ $(document).ready(function() {
 			<td class="center" id="2DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2DocuGUARD')"/>
 			</td>
+			<td class="center" id="2InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2InsureGUARD')"/>
+			</td>
 			<td class="center" id="2AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2AuditGUARD')"/>
 			</td>
@@ -78,6 +88,9 @@ $(document).ready(function() {
 			</td>
 			<td class="center" id="5DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5DocuGUARD')"/>
+			</td>
+			<td class="center" id="5InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5InsureGUARD')"/>
 			</td>
 			<td class="center" id="5AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5AuditGUARD')"/>
@@ -93,6 +106,9 @@ $(document).ready(function() {
 			<td class="center" id="9DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9DocuGUARD')"/>
 			</td>
+			<td class="center" id="9InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9InsureGUARD')"/>
+			</td>
 			<td class="center" id="9AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9AuditGUARD')"/>
 			</td>
@@ -106,6 +122,9 @@ $(document).ready(function() {
 			</td>
 			<td class="center" id="13DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13DocuGUARD')"/>
+			</td>
+			<td class="center" id="13InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13InsureGUARD')"/>
 			</td>
 			<td class="center" id="13AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13AuditGUARD')"/>
@@ -121,6 +140,9 @@ $(document).ready(function() {
 			<td class="center" id="20DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20DocuGUARD')"/>
 			</td>
+			<td class="center" id="20InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20InsureGUARD')"/>
+			</td>
 			<td class="center" id="20AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20AuditGUARD')"/>
 			</td>
@@ -134,6 +156,9 @@ $(document).ready(function() {
 			</td>
 			<td class="center" id="50DocuGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50DocuGUARD')"/>
+			</td>
+			<td class="center" id="50InsureGUARD">
+				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50InsureGUARD')"/>
 			</td>
 			<td class="center" id="50AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50AuditGUARD')"/>
