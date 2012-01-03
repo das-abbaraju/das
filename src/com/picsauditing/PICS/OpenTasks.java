@@ -179,6 +179,9 @@ public class OpenTasks extends TranslationActionSupport {
 								if (!openReq) {
 									text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
 									openReq = true;
+									if (conAudit.getAuditType().isDesktop()) {
+										text += "<br/>" + getText("ContractorWidget.message.ManualAuditNote");
+									}
 								}
 								openTasks.add(text);
 							}
@@ -213,6 +216,9 @@ public class OpenTasks extends TranslationActionSupport {
 												conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
 												conAudit.getScheduledDate(), showAuditor,
 												(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
+										if (conAudit.getAuditType().isImplementation()) {
+											text +=  "<br/>" + getText("ContractorWidget.message.ImplementationAuditNote");
+										}
 									}
 								}
 								openTasks.add(text);
