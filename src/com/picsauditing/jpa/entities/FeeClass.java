@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
@@ -27,7 +26,7 @@ public enum FeeClass implements Translatable {
 				return false;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
-			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 
@@ -50,7 +49,7 @@ public enum FeeClass implements Translatable {
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			if (contractor.getPayingFacilities() == 1) {
 				Date now = new Date();
-				if (BillingCalculatorSingle.CONTRACT_RENEWAL_BASF.after(now)) {
+				if (BASFInsureGUARDAndAuditGUARDPricingEffectiveDate.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
 							return new BigDecimal(299).setScale(2);
@@ -108,7 +107,7 @@ public enum FeeClass implements Translatable {
 	GST,
 	Misc;
 
-	private static final Date BASFInsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
+	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
 	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 
 	public boolean isPaymentExpiresNeeded() {

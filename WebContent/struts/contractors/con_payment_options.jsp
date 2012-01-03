@@ -169,15 +169,6 @@
 									</s:iterator>
 								</table>
 								
-								<s:if test="suncorDiscount.amount != 0">
-									<li>
-										<label><s:text name="ContractorPaymentOptions.SuncorDiscount"/>:</label>
-										<s:property value="contractor.currencyCode.symbol" />
-										<s:property value="suncorDiscount.amount"/>
-										<s:property value="contractor.currencyCode" />
-									</li>
-								</s:if>
-								
 								<s:if test="contractor.currencyCode.canada">
 									<li>
 										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
@@ -188,7 +179,7 @@
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
 										<s:property value="contractor.currencyCode.symbol" />
-										<s:property value="contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount"/>
+										<s:property value="contractor.newMembershipAmount+gstFee.amount"/>
 										<s:property value="contractor.currencyCode" />
 									</li>
 								</s:if>
@@ -196,7 +187,7 @@
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
 										<s:property value="contractor.currencyCode.symbol" />
-										<s:property value="contractor.newMembershipAmount+suncorDiscount.amount"/>
+										<s:property value="contractor.newMembershipAmount"/>
 										<s:property value="contractor.currencyCode" />
 									</li>
 								</s:else>
@@ -262,15 +253,6 @@
 									</li>
 								</s:if>
 								
-								<s:if test="suncorDiscount.amount != 0">
-									<li>
-										<label><s:text name="ContractorPaymentOptions.SuncorDiscount"/>:</label>
-										<s:property value="contractor.currencyCode.symbol" />
-										<s:property value="suncorDiscount.amount"/>
-										<s:property value="contractor.currencyCode" />
-									</li>
-								</s:if>
-								
 								<s:if test="contractor.currencyCode.canada">
 									<li>
 										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
@@ -281,7 +263,7 @@
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
 										<s:property value="contractor.currencyCode.symbol"/>
-										<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+suncorDiscount.amount+importFee.amount"/>
+										<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+importFee.amount"/>
 										<s:property value="contractor.currencyCode" />
 									</li>
 								</s:if>
@@ -289,7 +271,7 @@
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
 										<s:property value="contractor.currencyCode.symbol"/>
-										<s:property value="activationFee.amount+contractor.newMembershipAmount+suncorDiscount.amount+importFee.amount"/>
+										<s:property value="activationFee.amount+contractor.newMembershipAmount+importFee.amount"/>
 										<s:property value="contractor.currencyCode" />
 									</li>
 								</s:else>

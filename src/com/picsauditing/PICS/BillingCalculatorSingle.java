@@ -78,9 +78,6 @@ public class BillingCalculatorSingle {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
-	public static final Date CONTRACT_RENEWAL_BASF = DateBean.parseDate("2012-01-01");
-	public static final Date SUNCOR_DISCOUNT_EXPIRATION = DateBean.parseDate("2011-12-01");
-
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
@@ -430,9 +427,6 @@ public class BillingCalculatorSingle {
 			}
 		}
 
-		List<InvoiceItem> discounts = getDiscountItems(contractor);
-		items.addAll(discounts);
-
 		return items;
 	}
 
@@ -579,73 +573,6 @@ public class BillingCalculatorSingle {
 		Collections.sort(operatorsString);
 
 		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
-	}
-
-	public List<InvoiceItem> getDiscountItems(ContractorAccount contractor) {
-		List<InvoiceItem> discounts = new ArrayList<InvoiceItem>();
-
-		// Suncor First Year Registration
-		if (!contractor.getFees().get(FeeClass.AuditGUARD).getNewLevel().isFree()
-				&& contractor.getRequestedBy() != null
-				&& contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
-				&& Boolean.TRUE.equals(contractor.getHasCanadianCompetitor())
-				&& new Date().before(SUNCOR_DISCOUNT_EXPIRATION)) {
-			// Safety check to make sure discount hasn't already been applied
-
-			InvoiceFee suncorDiscount = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, contractor
-					.getPayingFacilities());
-			if (!isHasDiscountBeenApplied(contractor, suncorDiscount)) {
-				InvoiceItem invoiceItem = new InvoiceItem();
-				invoiceItem.setInvoiceFee(suncorDiscount);
-
-				// Registration date by June 30: Discount $200
-				// Registration date by July 31: Discount $180
-				// Registration date by Aug 31: Discount $160
-				// Registration date by Sept 30: Discount $140
-				// Registration date by Oct 31: Discount $120
-				// Registration date by Nov 30: Discount $100
-
-				// Calculating discount based off the day of invoice creation
-				BigDecimal discountAmount = BigDecimal.ZERO.setScale(2);
-				Date today = new Date();
-
-				if (today.before(DateBean.parseDate("2011-07-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-200.00));
-				else if (today.after(DateBean.parseDate("2011-07-01"))
-						&& today.before(DateBean.parseDate("2011-08-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-180.00));
-				else if (today.after(DateBean.parseDate("2011-08-01"))
-						&& today.before(DateBean.parseDate("2011-09-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-160.00));
-				else if (today.after(DateBean.parseDate("2011-09-01"))
-						&& today.before(DateBean.parseDate("2011-10-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-140.00));
-				else if (today.after(DateBean.parseDate("2011-10-01"))
-						&& today.before(DateBean.parseDate("2011-11-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-120.00));
-				else if (today.after(DateBean.parseDate("2011-11-01"))
-						&& today.before(DateBean.parseDate("2011-12-01")))
-					discountAmount = discountAmount.add(new BigDecimal(-100.00));
-
-				invoiceItem.setAmount(discountAmount);
-				discounts.add(invoiceItem);
-			}
-		}
-
-		return discounts;
-	}
-
-	private boolean isHasDiscountBeenApplied(ContractorAccount contractor, InvoiceFee discount) {
-		for (Invoice i : contractor.getInvoices()) {
-			if (!i.getStatus().isVoid()) {
-				for (InvoiceItem ii : i.getItems()) {
-					if (ii.getInvoiceFee().equals(discount))
-						return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	public void performInvoiceStatusChangeActions(Invoice invoice, TransactionStatus newStatus) {

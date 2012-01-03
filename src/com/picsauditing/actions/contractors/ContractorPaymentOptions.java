@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
@@ -18,7 +17,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
@@ -29,8 +27,6 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorPaymentOptions extends ContractorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
-	private BillingCalculatorSingle billingService;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -53,7 +49,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
 	private InvoiceFee importFee;
-	private InvoiceFee suncorDiscount;
 
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
@@ -486,7 +481,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				}
 
 				total = total.add(getActivationFee().getAmount());
-				total = total.add(getSuncorDiscount().getAmount());
 				gstFee.setAmount(gstFee.getTax(total));
 			}
 		}
@@ -509,22 +503,6 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		}
 
 		return importFee;
-	}
-
-	public InvoiceFee getSuncorDiscount() {
-		if (suncorDiscount == null) {
-			suncorDiscount = new InvoiceFee();
-
-			List<InvoiceItem> discounts = billingService.getDiscountItems(contractor);
-			for (InvoiceItem discount : discounts) {
-				if (discount.getInvoiceFee().getFeeClass().equals(FeeClass.SuncorDiscount)) {
-					suncorDiscount = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.SuncorDiscount, 1);
-					suncorDiscount.setAmount(discount.getAmount());
-				}
-			}
-		}
-
-		return suncorDiscount;
 	}
 
 	public InvoiceFee getImportFeeForTranslation() {
