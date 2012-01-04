@@ -865,6 +865,7 @@ public class ContractorAccount extends Account implements JSONable {
 										this.getPayingFacilities());
 								setCurrentFee(newDocuGUARDFee, newDocuGUARDFee.getAmount());
 
+								foundInsureGUARDMembership = true;
 								InvoiceFee newInsureGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(
 										FeeClass.InsureGUARD, this.getPayingFacilities());
 								setCurrentFee(newInsureGUARDFee, newInsureGUARDFee.getAmount());
