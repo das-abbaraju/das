@@ -345,7 +345,7 @@ fieldset.form {
 						<br />
 
 						<pics:permission perm="EditForcedFlags">
-							<s:if test="canForceOverallFlag(co.forceOverallFlag) && co.forceOverallFlag.operatorAccount.type == 'Corporate' && isDisplayCorporate()">
+							<s:if test="canForceOverallFlag(co.forceOverallFlag)">
 								<s:form
 									cssStyle="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
 									<br />

@@ -45,6 +45,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -293,7 +294,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		flagOverride.setForceflag(forceFlag);
 		flagOverride.setForceEnd(forceEnd);
 		flagOverride.setCriteria(flagData.getCriteria());
-		flagOverride.setAuditColumns(permissions);
+		flagOverride.setAuditColumns(new User(permissions.getUserId()));
 		flagDataOverrideDAO.save(flagOverride);
 
 		String noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
