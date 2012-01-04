@@ -17,6 +17,7 @@ public class QueryField implements JSONAware {
 	public String dataIndex;
 	public String sql;
 	public String requireJoin;
+	public FilterType filterType;
 	public int width = 0;
 	public boolean sortable = true;
 	public boolean hideable = true;
@@ -38,9 +39,21 @@ public class QueryField implements JSONAware {
 	 * record.data.accountID);
 	 */
 
-	public QueryField(String dataIndex, String sql) {
+	public QueryField(String dataIndex, String sql, FilterType filterType) {
+		this(dataIndex, sql, filterType, null, false);
+	}
+
+	public QueryField(String dataIndex, String sql, FilterType filterType, String requireJoin, boolean isDefault) {
 		this.dataIndex = dataIndex;
 		this.sql = sql;
+		this.filterType = filterType;
+		this.requireJoin = requireJoin;
+		this.isDefault = isDefault;
+		
+		if (filterType == FilterType.Date)
+		{
+			type = FieldType.Date;
+		}
 
 		if (StringUtils.endsWithIgnoreCase(dataIndex, "id"))
 			hide();

@@ -111,13 +111,18 @@ public class SimpleReportDefinition implements JSONable {
 			json.put("rowsPerPage", rowsPerPage);
 		if (page > 1)
 			json.put("page", page);
-		json.put("filterExpression", filterExpression);
-		json.put("filters", JSONUtilities.convertFromList(filters));
-		json.put("columns", JSONUtilities.convertFromList(columns));
+		if (filterExpression != null)
+			json.put("filterExpression", filterExpression);
+		if (filters.size() > 0)
+			json.put("filters", JSONUtilities.convertFromList(filters));
+		if (columns.size() > 0)
+			json.put("columns", JSONUtilities.convertFromList(columns));
 		if (orderBy.size() > 0)
 			json.put("orderBy", JSONUtilities.convertFromList(orderBy));
-		json.put("groupBy", JSONUtilities.convertFromList(groupBy));
-		json.put("having", JSONUtilities.convertFromList(having));
+		if (groupBy.size() > 0)
+			json.put("groupBy", JSONUtilities.convertFromList(groupBy));
+		if (having.size() > 0)
+			json.put("having", JSONUtilities.convertFromList(having));
 
 		return json;
 	}

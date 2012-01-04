@@ -41,6 +41,8 @@ public class ReportDynamic extends PicsActionSupport {
 			return BLANK;
 
 		// TODO: (mdo) Think about UNION. Do we want to allow users the ability to merge two like reports?
+		// TODO: URL:http://localhost:8080/picsWeb2/ReportDynamic!data.action?report=2&_dc=1325633762201&page=893&start=22300&limit=25
+		// find a way to accept this as data.
 		
 		QueryRunner runner = new QueryRunner(report, permissions, dao);
 		runner.buildQuery();
