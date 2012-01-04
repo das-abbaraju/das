@@ -120,16 +120,17 @@ public class FacilityChanger {
 		}
 
 		contractor.setLastUpgradeDate(new Date());
+		setListOnly();
+		contractorAccountDAO.save(contractor);
+
 		checkOQ();
+
 		if (contractor.getNeedsRecalculation() < 20)
 			contractor.incrementRecalculation(5);
-		setListOnly();
 		if (contractor.getRequestedBy() == null) {
 			contractor.setRequestedBy(findEarliestAddedOperator());
 		}
 
-		contractor.syncBalance();
-		billingService.calculateAnnualFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
 
