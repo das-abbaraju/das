@@ -594,18 +594,18 @@ public class QueryRunner {
 		buildContractorBase();
 
 		sql.addJoin("JOIN contractor_audit ca ON ca.conID = a.id");
-		addQueryField("auditID", "ca.id", filterType, true);
-		addQueryField("auditCreationDate", "ca.creationDate", filterType).type(FieldType.Date);
-		addQueryField("auditExpirationDate", "ca.expiresDate", filterType).type(FieldType.Date);
-		addQueryField("auditScheduledDate", "ca.scheduledDate", filterType).type(FieldType.Date);
-		addQueryField("auditAssignedDate", "ca.assignedDate", filterType).type(FieldType.Date);
-		addQueryField("auditLocation", "ca.auditLocation", filterType);
-		addQueryField("auditFor", "ca.auditFor", filterType, true);
-		addQueryField("auditScore", "ca.score", filterType);
-		addQueryField("auditAuditorID", "ca.auditorID", filterType);
-		addQueryField("auditClosingAuditorID", "ca.closingAuditorID", filterType);
-		addQueryField("auditContractorConfirmation", "ca.contractorConfirm", filterType);
-		addQueryField("auditAuditorConfirmation", "ca.auditorConfirm", filterType);
+		addQueryField("auditID", "ca.id", FilterType.Number, true);
+		addQueryField("auditCreationDate", "ca.creationDate", FilterType.Date);
+		addQueryField("auditExpirationDate", "ca.expiresDate", FilterType.Date);
+		addQueryField("auditScheduledDate", "ca.scheduledDate", FilterType.Date);
+		addQueryField("auditAssignedDate", "ca.assignedDate", FilterType.Date);
+		addQueryField("auditLocation", "ca.auditLocation", FilterType.String);
+		addQueryField("auditFor", "ca.auditFor", FilterType.String, true);
+		addQueryField("auditScore", "ca.score", FilterType.Number);
+		addQueryField("auditAuditorID", "ca.auditorID", FilterType.Number);
+		addQueryField("auditClosingAuditorID", "ca.closingAuditorID", FilterType.Number);
+		addQueryField("auditContractorConfirmation", "ca.contractorConfirm", FilterType.Date);
+		addQueryField("auditAuditorConfirmation", "ca.auditorConfirm", FilterType.Date);
 
 		QueryField auditTypeName = joinToAuditType("auditType", "ca.auditTypeID");
 		auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", "auditTypeName",
@@ -625,15 +625,15 @@ public class QueryRunner {
 		sql.addJoin("contractor_trade child ON child.conID = a.id");
 		sql.addJoin("ref_trade tChild ON tChild.id = child.tradeID");
 
-		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", filterType, true);
+		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Number, true);
 		contractorTradeParentID.translate("Trade", "name");
-		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", filterType);
-		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", filterType);
+		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", FilterType.Number);
+		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", FilterType.Number);
 
-		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", filterType, true);
+		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Number, true);
 		contractorTradeChildID.translate("Trade", "name");
-		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", filterType);
-		addQueryField("contractorTradeChildIndexEnd", "tChild.indexEnd", filterType);
+		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", FilterType.Number);
+		addQueryField("contractorTradeChildIndexEnd", "tChild.indexEnd", FilterType.Number);
 	}
 
 	private void buildContractorFeeBase() {
@@ -641,8 +641,8 @@ public class QueryRunner {
 
 		sql.addJoin("contractor_fee cf ON cf.conID = a.id");
 
-		addQueryField("contractorFeeCurrentAmount", "cf.currentAmount", filterType, true);
-		addQueryField("contractorFeeNewAmount", "cf.newAmount", filterType);
+		addQueryField("contractorFeeCurrentAmount", "cf.currentAmount", FilterType.Number, true);
+		addQueryField("contractorFeeNewAmount", "cf.newAmount", FilterType.Number);
 
 		joinToInvoiceFee("contractorFee", "cf.newLevel");
 	}
@@ -652,13 +652,13 @@ public class QueryRunner {
 
 		sql.addJoin("JOIN invoice i on i.accountID = a.id");
 
-		addQueryField("invoiceID", "i.id", filterType, true);
-		addQueryField("invoiceAmountApplied", "i.amountApplied", filterType);
-		addQueryField("invoiceTotalAmount", "i.totalAmount", filterType, true);
-		addQueryField("invoiceDueDate", "i.dueDate", filterType).type(FieldType.Date);
-		addQueryField("invoiceStatus", "i.status", filterType);
-		addQueryField("invoiceCreationDate", "i.creationDate", filterType).type(FieldType.Date);
-		addQueryField("invoiceTableType", "i.tableType", filterType);
+		addQueryField("invoiceID", "i.id", FilterType.Number, true);
+		addQueryField("invoiceAmountApplied", "i.amountApplied", FilterType.Number);
+		addQueryField("invoiceTotalAmount", "i.totalAmount", FilterType.Number, true);
+		addQueryField("invoiceDueDate", "i.dueDate", FilterType.Date);
+		addQueryField("invoiceStatus", "i.status", FilterType.Enum);
+		addQueryField("invoiceCreationDate", "i.creationDate", FilterType.Date);
+		addQueryField("invoiceTableType", "i.tableType", FilterType.String);
 	}
 
 	private void buildInvoiceItemBase() {
@@ -666,8 +666,8 @@ public class QueryRunner {
 
 		sql.addJoin("JOIN invoice_item ii on ii.invoiceID = i.id");
 
-		addQueryField("invoiceItemPaymentExpires", "ii.paymentExpires", filterType, true);
-		addQueryField("invoiceItemAmount", "ii.amount", filterType, true);
+		addQueryField("invoiceItemPaymentExpires", "ii.paymentExpires", FilterType.Date, true);
+		addQueryField("invoiceItemAmount", "ii.amount", FilterType.Number, true);
 
 		joinToInvoiceFee("invoiceItemFee", "ii.feeID");
 	}
@@ -679,24 +679,24 @@ public class QueryRunner {
 		sql.addJoin("assessment_test test ON test.id = ar.assessmentTestID");
 		sql.addJoin("accounts center ON center.id = test.assessmentCenterID");
 
-		addQueryField("assessmentResultExpirationDate", "ar.expirationDate", filterType);
+		addQueryField("assessmentResultExpirationDate", "ar.expirationDate", FilterType.Date);
 
-		addQueryField("assessmentTestDescription", "test.description", filterType, true);
-		addQueryField("assessmentTestQualificationType", "test.qualificationType", filterType, true);
-		addQueryField("assessmentTestQualificationMethod", "test.qualificationMethod", filterType);
+		addQueryField("assessmentTestDescription", "test.description", FilterType.String, true);
+		addQueryField("assessmentTestQualificationType", "test.qualificationType", FilterType.String, true);
+		addQueryField("assessmentTestQualificationMethod", "test.qualificationMethod", FilterType.String);
 
-		addQueryField("assessmentCenterName", "center.name", filterType);
+		addQueryField("assessmentCenterName", "center.name", FilterType.String);
 	}
 
 	private void buildContractorAuditOperatorBase() {
 		buildContractorAuditBase();
 
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
-		addQueryField("auditOperatorID", "cao.id", filterType, true);
-		addQueryField("auditOperatorStatus", "cao.status", filterType, true);
-		addQueryField("auditOperatorStatusChangedDate", "cao.statusChangedDate", filterType).type(FieldType.Date);
-		addQueryField("auditOperatorVisible", "cao.visible", filterType);
-		addQueryField("auditOperatorPercentComplete", "cao.percentComplete", filterType, true);
+		addQueryField("auditOperatorID", "cao.id", FilterType.Number, true);
+		addQueryField("auditOperatorStatus", "cao.status", FilterType.Enum, true);
+		addQueryField("auditOperatorStatusChangedDate", "cao.statusChangedDate", FilterType.Date);
+		addQueryField("auditOperatorVisible", "cao.visible", FilterType.Boolean);
+		addQueryField("auditOperatorPercentComplete", "cao.percentComplete", FilterType.Number, true);
 
 		leftJoinToAccount("caoAccount", "cao.opID");
 	}
@@ -706,9 +706,9 @@ public class QueryRunner {
 
 		sql.addJoin("JOIN contractor_audit_operator_workflow cao ON cao.id = caow.caoID");
 
-		addQueryField("auditOperatorWorkflowStatus", "caow.status", filterType, true);
-		addQueryField("auditOperatorWorkflowPreviousStatus", "caow.previousStatus", filterType, true);
-		addQueryField("auditOperatorWorkflowCreationDate", "caow.creationDate", filterType, true);
+		addQueryField("auditOperatorWorkflowStatus", "caow.status", FilterType.Enum, true);
+		addQueryField("auditOperatorWorkflowPreviousStatus", "caow.previousStatus", FilterType.Enum, true);
+		addQueryField("auditOperatorWorkflowCreationDate", "caow.creationDate", FilterType.Date, true);
 		leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	}
 
@@ -717,24 +717,24 @@ public class QueryRunner {
 
 		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
 
-		addQueryField("auditDataAnswer", "pd.answer", filterType, true);
-		addQueryField("auditDataDateVerified", "pd.dateVerified", filterType).type(FieldType.Date);
-		addQueryField("auditDataQuestionID", "pd.questionID", filterType);
-		QueryField auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID", filterType, true);
+		addQueryField("auditDataAnswer", "pd.answer", FilterType.String, true);
+		addQueryField("auditDataDateVerified", "pd.dateVerified", FilterType.Date);
+		addQueryField("auditDataQuestionID", "pd.questionID", FilterType.Number);
+		QueryField auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID", FilterType.String, true);
 		auditDataQuestion.translate("AuditQuestion", "name");
-		addQueryField("auditDataUpdateDate", "pd.updateDate", filterType).type(FieldType.Date);
+		addQueryField("auditDataUpdateDate", "pd.updateDate", FilterType.Date);
 	}
 
 	private QueryField joinToAuditType(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "JOIN audit_type " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "ID", foreignKey, filterType, joinAlias, true);
-		QueryField auditTypeName = addQueryField(joinAlias + "Name", foreignKey, filterType, joinAlias, true);
+		addQueryField(joinAlias + "ID", foreignKey, FilterType.Number, joinAlias, true);
+		QueryField auditTypeName = addQueryField(joinAlias + "Name", foreignKey, FilterType.String, joinAlias, true);
 		auditTypeName.translate("AuditType", "name");
 
-		addQueryField(joinAlias + "ClassType", joinAlias + ".classType", filterType, joinAlias);
-		addQueryField(joinAlias + "IsScheduled", joinAlias + ".isScheduled", filterType, joinAlias);
-		addQueryField(joinAlias + "HasAuditor", joinAlias + ".hasAuditor", filterType, joinAlias);
-		addQueryField(joinAlias + "Scorable", joinAlias + ".scoreable", filterType, joinAlias);
+		addQueryField(joinAlias + "ClassType", joinAlias + ".classType", FilterType.Enum, joinAlias);
+		addQueryField(joinAlias + "IsScheduled", joinAlias + ".isScheduled", FilterType.Boolean, joinAlias);
+		addQueryField(joinAlias + "HasAuditor", joinAlias + ".hasAuditor", FilterType.Boolean, joinAlias);
+		addQueryField(joinAlias + "Scorable", joinAlias + ".scoreable", FilterType.Boolean, joinAlias);
 
 		return auditTypeName;
 	}
@@ -742,31 +742,29 @@ public class QueryRunner {
 	private void joinToContractorWatch(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN contractor_watch " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
 
-		addQueryField(joinAlias + "ContractorID", foreignKey, filterType, joinAlias, true);
-		addQueryField(joinAlias + "UserID", joinAlias + ".userID", filterType, joinAlias, true);
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "UserID", joinAlias + ".userID", FilterType.Number, joinAlias, true);
 	}
 
 	private void leftJoinToEmailQueue(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "JOIN email_queue " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
-		addQueryField(joinAlias + "ContractorID", foreignKey, filterType, joinAlias, true);
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
 
-		addQueryField(joinAlias + "CreationDate", joinAlias + ".creationDate", filterType, joinAlias, true).type(
-				FieldType.Date);
-		addQueryField(joinAlias + "SentDate", joinAlias + ".sentDate", filterType, joinAlias, true)
-				.type(FieldType.Date);
-		addQueryField(joinAlias + "CreatedBy", joinAlias + ".createdBy", filterType, joinAlias);
-		addQueryField(joinAlias + "ViewableBy", joinAlias + ".viewableBy", filterType, joinAlias);
-		addQueryField(joinAlias + "Subject", joinAlias + ".subject", filterType, joinAlias);
-		addQueryField(joinAlias + "TemplateID", joinAlias + ".templateID", filterType, joinAlias);
-		addQueryField(joinAlias + "Status", joinAlias + ".status", filterType, joinAlias);
+		addQueryField(joinAlias + "CreationDate", joinAlias + ".creationDate", FilterType.Date, joinAlias, true);
+		addQueryField(joinAlias + "SentDate", joinAlias + ".sentDate", FilterType.Date, joinAlias, true);
+		addQueryField(joinAlias + "CreatedBy", joinAlias + ".createdBy", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "ViewableBy", joinAlias + ".viewableBy", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "Subject", joinAlias + ".subject", FilterType.String, joinAlias);
+		addQueryField(joinAlias + "TemplateID", joinAlias + ".templateID", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "Status", joinAlias + ".status", FilterType.Enum, joinAlias);
 	}
 
 	private void joinToFacilities(String joinAlias, String tableKey, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN facilities " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
 				+ foreignKey);
 
-		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID", filterType, joinAlias, true);
-		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID", filterType, joinAlias, true);
+		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID", FilterType.Number, joinAlias, true);
 
 		leftJoinToAccount("operatorChild", joinAlias + ".opID");
 		leftJoinToAccount("corporateParent", joinAlias + ".corporateID");
