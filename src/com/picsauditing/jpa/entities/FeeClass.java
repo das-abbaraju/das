@@ -129,22 +129,24 @@ public enum FeeClass implements Translatable {
 
 	@Override
 	public String getI18nKey() {
-		return this.getClass().getSimpleName() + "." + this.name();
+		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
+				.getSimpleName())
+				+ "." + this.toString();
 	}
 
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}
-	
+
 	// TODO: Delete this when exclusion dates expire
-	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer,Date> exclusions) {
+	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer, Date> exclusions) {
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			// do I have an operator outside the exclusions list?
-			if(!exclusions.containsKey(operator.getTopAccount().getId()))
+			if (!exclusions.containsKey(operator.getTopAccount().getId()))
 				return false;
 			// is it time to start charging this operator for insureguard?
-			else if(new Date().after(exclusions.get(operator.getTopAccount().getId()))) {
+			else if (new Date().after(exclusions.get(operator.getTopAccount().getId()))) {
 				return false;
 			}
 		}
