@@ -861,9 +861,13 @@ public class ContractorAccount extends Account implements JSONable {
 								// same, set fee level based on current
 								// number of paying facilities if contractor
 								// paid legacy DocuGUARD fee.
-								InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, this
-										.getPayingFacilities());
-								setCurrentFee(fee, fee.getAmount());
+								InvoiceFee newDocuGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
+										this.getPayingFacilities());
+								setCurrentFee(newDocuGUARDFee, newDocuGUARDFee.getAmount());
+
+								InvoiceFee newInsureGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(
+										FeeClass.InsureGUARD, this.getPayingFacilities());
+								setCurrentFee(newInsureGUARDFee, newInsureGUARDFee.getAmount());
 							} else {
 								setCurrentFee(invoiceItem.getInvoiceFee(), invoiceItem.getInvoiceFee().getAmount());
 							}
@@ -889,13 +893,18 @@ public class ContractorAccount extends Account implements JSONable {
 								setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 							}
 
-							// Old AuditGUARD included DocuGUARD fee
+							// Old AuditGUARD included DocuGUARD fee & InsureGUARD fee
 							// For legacy compliance
 							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
 								foundDocuGUARDMembership = true;
-								InvoiceFee fee = feeDAO.findMembershipByLegacyAuditGUARDID(FeeClass.DocuGUARD,
-										invoiceItem.getInvoiceFee());
-								setCurrentFee(fee, fee.getAmount());
+								InvoiceFee newDocuGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
+										FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
+								setCurrentFee(newDocuGUARDfee, newDocuGUARDfee.getAmount());
+
+								foundInsureGUARDMembership = true;
+								InvoiceFee newInsureGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
+										FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
+								setCurrentFee(newInsureGUARDfee, newInsureGUARDfee.getAmount());
 							}
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
 								&& !foundInsureGUARDMembership) {
