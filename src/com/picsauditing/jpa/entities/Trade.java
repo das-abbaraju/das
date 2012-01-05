@@ -40,9 +40,11 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	private Trade parent = TOP;
 	private Boolean product;
 	private Boolean service;
+	private Boolean transportation;
 	private Boolean psmApplies;
 	private LowMedHigh productRisk;
 	private LowMedHigh safetyRisk;
+	private LowMedHigh transportationRisk;
 	private int indexLevel;
 	private int indexStart;
 	private int indexEnd;
@@ -128,6 +130,32 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			this.service = service;
 	}
 
+	public Boolean getTransportation() {
+		return transportation;
+	}
+
+	public void setTransportation(Boolean transportation) {
+		this.transportation = transportation;
+	}
+
+	@Transient
+	public boolean getTransportationI() {
+		if (transportation == null) {
+			if (Objects.equal(parent, TOP))
+				return false;
+			else
+				return parent.getTransportationI();
+		}
+		return service;
+	}
+
+	public void setTransportationI(Boolean transportation) {
+		if (!Objects.equal(parent, TOP) && transportation == parent.getTransportationI())
+			this.service = null;
+		else
+			this.transportation = transportation;
+	}
+
 	public Boolean getPsmApplies() {
 		return psmApplies;
 	}
@@ -204,6 +232,32 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			this.safetyRisk = null;
 		else
 			this.safetyRisk = safetyRisk;
+	}
+
+	public LowMedHigh getTransportationRisk() {
+		return transportationRisk;
+	}
+
+	public void setTransportationRisk(LowMedHigh transportationRisk) {
+		this.transportationRisk = transportationRisk;
+	}
+
+	@Transient
+	public LowMedHigh getTransportationRiskI() {
+		if (transportationRisk == null) {
+			if (Objects.equal(parent, TOP))
+				return LowMedHigh.Low;
+			else
+				return parent.getTransportationRiskI();
+		}
+		return transportationRisk;
+	}
+
+	public void setTransportationRiskI(LowMedHigh transportationRisk) {
+		if (!Objects.equal(parent, TOP) && transportationRisk == parent.getTransportationRiskI())
+			this.transportationRisk = null;
+		else
+			this.transportationRisk = transportationRisk;
 	}
 
 	public int getIndexLevel() {
@@ -499,7 +553,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public void setNaicsTRIR(Float naicsTRIR) {
 		this.naicsTRIR = naicsTRIR;
 	}
-	
+
 	@Transient
 	public Float getNaicsTRIRI() {
 		if (naicsTRIR != null)
@@ -509,5 +563,4 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 		else
 			return Float.valueOf(4);
 	}
-
 }
