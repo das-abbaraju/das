@@ -537,7 +537,7 @@
 				$('.modal-link').bind('click', function (event) {
 					event.preventDefault();
 					
-					var title = $(this).attr('data-title');
+					var title = $(this).text();
 					var url = $(this).attr('data-url');
 					var content = '';
 					
