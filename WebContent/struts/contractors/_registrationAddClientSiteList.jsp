@@ -47,7 +47,7 @@
 			<h1><s:text name="RegistrationAddClientSite.AnyOtherSites" /></h1>
 			<h2><s:text name="RegistrationAddClientSite.SearchSuggest" /></h2>
 			
-			<s:submit type="button" cssClass="btn info suggest-client-site" value="Suggest Client Sites" />
+			<s:submit type="button" cssClass="btn info suggest-client-site" value="%{getText('RegistrationAddClientSite.SuggestClientSites')}" />
 		</section>
 	</div>
 </s:if>
