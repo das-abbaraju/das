@@ -52,6 +52,7 @@ public class CaoSave extends AuditActionSupport {
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
+
 	// Insurance Policies
 	private List<ContractorAuditOperator> caoList;
 	private boolean insurance = false;
