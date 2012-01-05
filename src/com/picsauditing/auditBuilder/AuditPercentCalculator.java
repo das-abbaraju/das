@@ -207,6 +207,8 @@ public class AuditPercentCalculator {
 							// to increment the count so we can close it.
 							else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
 								verifiedCount++;
+							} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217) {
+								verifiedCount++;
 							} else if (catData.getAudit().getAuditType().isPqf()) {
 								boolean needsVerification = false;
 								for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
@@ -223,8 +225,6 @@ public class AuditPercentCalculator {
 								// verification but still required then we
 								// should increase the verifiedCount so we can
 								// close it
-							} else if (question.getId() == 2447 || question.getId() == 2448) {
-								verifiedCount++;
 							} else if (!catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
 								// For audits without the submitted step we
 								// don't have to verify the questions
