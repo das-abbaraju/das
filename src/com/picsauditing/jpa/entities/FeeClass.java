@@ -25,6 +25,10 @@ public enum FeeClass implements Translatable {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
 				return false;
 
+			if (contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
+					&& contractor.getBillingStatus() != "Renewal")
+				return true;
+
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
@@ -107,6 +111,7 @@ public enum FeeClass implements Translatable {
 	GST,
 	Misc;
 
+	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
 	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 
