@@ -302,7 +302,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String maskDateFormat(Date date) {
 		try {
-			DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+			DateFormat dateFormat = new SimpleDateFormat(getText("date.short"));
 			return dateFormat.format(date);
 		} catch (Exception e) {
 			return null;
@@ -314,7 +314,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public Date parseDate(String date) {
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat(getText("date.short"));
 
 		try {
 			return sdf.parse(date);

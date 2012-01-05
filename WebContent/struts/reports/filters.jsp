@@ -750,8 +750,11 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box textfield">
-					<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate1" name="filter.creationDate1" />
-					<s:text name="Filters.label.To" />:<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate2" name="filter.creationDate2" />
+					<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate1" name="filter.creationDate1"
+						value="%{maskDateFormat(filter.creationDate1)}" />
+					<s:text name="Filters.label.To" />:
+					<s:textfield cssClass="forms datepicker" size="10" id="form1_creationDate2" name="filter.creationDate2"
+						value="%{maskDateFormat(filter.creationDate2)}" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
