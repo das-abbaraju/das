@@ -103,7 +103,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("uc.name AS ContactedBy");
 		sql.addField("uc.id AS ContactedByID");
 		sql.addField("cr.lastContactDate");
-		sql.addField("cr.contactCount");
+		sql.addField("(cr.contactCountByEmail + cr.contactCountByPhone) AS contactCount");
 		sql.addField("cr.matchCount");
 		sql.addField("cr.creationDate");
 		sql.addField("con.id AS conID");
