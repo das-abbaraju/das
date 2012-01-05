@@ -3,6 +3,6 @@
 <validators>
 	<validator type="expression"> 
 	    <param name="expression"><![CDATA[!contractor.operatorAccounts.empty]]></param> 
-	    <message>You must select a Client facility.</message> 
+	    <message>JS.Validation.SelectClientFacility</message> 
 	</validator>
 </validators>

@@ -4,7 +4,7 @@
 	<field name="contractor.onsiteServices">
 		<field-validator type="fieldexpression">
 	       <param name="expression"><![CDATA[(contractor.onsiteServices || contractor.offsiteServices || contractor.materialSupplier)]]></param>
-	       <message>You must select at least one service performed.</message>
+	       <message>JS.Validation.SelectService</message>
 		</field-validator>
 	</field>
 </validators>
