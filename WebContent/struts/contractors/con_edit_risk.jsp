@@ -44,6 +44,16 @@
 							cssClass="inline"
 						/>
 					</li>
+					<li>
+						<label>Transportation Risk:</label>
+						<s:radio
+							list="riskLevelList"
+							name="transportationRisk"
+							value="%{contractor.transportationRisk}"
+							theme="pics"
+							cssClass="inline"
+						/>
+					</li>
 				</ol>
 			</fieldset>
 			

@@ -25,6 +25,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
+	protected LowMedHigh transportationRisk;
 
 	public ContractorEditRiskLevel() {
 		noteCategory = NoteCategory.RiskRanking;
@@ -57,6 +58,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		List<String> noteSummary = new ArrayList<String>();
 		LowMedHigh oldSafety = contractor.getSafetyRisk();
 		LowMedHigh oldProduct = contractor.getProductRisk();
+		LowMedHigh oldTransportation = contractor.getTransportationRisk();
 		boolean needsUpgrades = false;
 
 		if (contractor.getAccountLevel().isListOnly()) {
@@ -101,6 +103,21 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			flagClearCache();
 		}
 
+		if (transportationRisk != null && !contractor.getTransportationRisk().equals(transportationRisk)) {
+			noteSummary.add("changed the transportation risk level from " + oldTransportation.toString() + " to "
+					+ transportationRisk.toString());
+			contractor.setTransportationRisk(transportationRisk);
+			contractor.setTransportationRiskVerified(new Date());
+			flagClearCache();
+
+			if (oldTransportation.compareTo(transportationRisk) < 0)
+				needsUpgrades = true;
+		} else if (contractor.getTransportationRisk() == null && transportationRisk != null) {
+			noteSummary.add("set transportation risk level to " + transportationRisk.toString());
+			contractor.setTransportationRisk(transportationRisk);
+			flagClearCache();
+		}
+
 		if (noteSummary.size() > 0) {
 			Note note = new Note();
 			note.setAccount(contractor);
@@ -112,7 +129,10 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			noteDAO.save(note);
 		}
 
-		if (!safetyRisk.equals(oldSafety) || (productRisk != null && !productRisk.equals(oldProduct))) {
+		if (!safetyRisk.equals(oldSafety) || 
+				(productRisk != null && !productRisk.equals(oldProduct)) ||
+				(transportationRisk != null && !transportationRisk.equals(oldTransportation))
+			) {
 			// If contractor risk level being raised, stamp the last upgrade date
 			if (needsUpgrades)
 				contractor.setLastUpgradeDate(new Date());
@@ -141,6 +161,14 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		this.productRisk = productRisk;
 	}
 
+	public LowMedHigh getTransportationRisk() {
+		return transportationRisk;
+	}
+
+	public void setTransportationRisk(LowMedHigh transportationRisk) {
+		this.transportationRisk = transportationRisk;
+	}
+
 	private boolean isListOnlyEligibleForNewProductRisk(LowMedHigh newProductRisk) {
 		// Low Risk Material Supplier Only
 		if (contractor.isMaterialSupplierOnly() && newProductRisk.equals(LowMedHigh.Low))
@@ -154,4 +182,5 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			return true;
 		return false;
 	}
+
 }

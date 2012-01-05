@@ -260,6 +260,13 @@
 									</li>
 								</s:if>
 								
+								<s:if test="contractor.transportationServices && contractor.transportationRisk != null">
+									<li>
+										<label><s:text name="global.TransportationRisk" />:</label>
+										<s:text name="%{contractor.transportationRisk.i18nKey}" />
+									</li>
+								</s:if>
+								
 								<li>
 									<label><s:text name="ContractorEdit.IndustryDetails.RequestedBy"/>:</label>
 									<s:property value="contractor.requestedBy.name"/>
