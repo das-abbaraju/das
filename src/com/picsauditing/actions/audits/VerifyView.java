@@ -70,7 +70,9 @@ public class VerifyView extends ContractorActionSupport {
 				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
 				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
 				for (AuditData ad : temp) {
-					pqfQuestions.put(ad.getQuestion().getId(), ad);
+					if (ad.getAudit().isCategoryApplicable(ad.getQuestion().getCategory().getId())) {
+						pqfQuestions.put(ad.getQuestion().getId(), ad);
+					}
 				}
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
@@ -99,8 +101,7 @@ public class VerifyView extends ContractorActionSupport {
 					int categoryID = d.getQuestion().getCategory().getId();
 					if (categoryID != AuditCategory.CITATIONS
 							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-									.getQuestion().getId() >= 3565
-									&& d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
+									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
 						if (!needsEmr)
 							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
 									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
@@ -135,8 +136,8 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		});
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
-				57, 103, 104, 123, 124, 125));
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
+				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
 		return SUCCESS;
 	}
 
