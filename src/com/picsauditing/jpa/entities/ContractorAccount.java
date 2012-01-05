@@ -72,6 +72,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date safetyRiskVerified;
 	private LowMedHigh productRisk = LowMedHigh.None;
 	private Date productRiskVerified;
+	private LowMedHigh transportationRisk = LowMedHigh.None;
+	private Date transportationRiskVerified;
 	private Date viewedFacilities;
 	private Float emrAverage;
 	private Float trirAverage;
@@ -328,6 +330,24 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setProductRiskVerified(Date productRiskVerified) {
 		this.productRiskVerified = productRiskVerified;
+	}
+
+	@Column(nullable = false)
+	public LowMedHigh getTransportationRisk() {
+		return transportationRisk;
+	}
+
+	public void setTransportationRisk(LowMedHigh transportationRisk) {
+		this.transportationRisk = transportationRisk;
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getTransportationRiskVerified() {
+		return transportationRiskVerified;
+	}
+
+	public void setTransportationRiskVerified(Date transportationRiskVerified) {
+		this.transportationRiskVerified = transportationRiskVerified;
 	}
 
 	@Column(name = "emrAverage")
@@ -1470,5 +1490,4 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return null;
 	}
-
 }
