@@ -262,11 +262,11 @@
 				<s:form id="UserSave">
 					<s:if test="user.locked">
 						<div class="alert">This user account is locked.
-							<pics:permission perm="EditAccountDetails">
+							<s:if test="permissions.admin">
 								<span title="<s:text name="UsersManage.help.Unlock" />Press this button to unlock this user's account">
 									<s:submit method="unlock" cssClass="picsbutton negative" value="%{getText(scope + '.button.UnlockThisAccount')}" />
 								</span>
-							</pics:permission>
+							</s:if>
 						</div>
 					</s:if>
 					
