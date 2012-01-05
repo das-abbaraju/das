@@ -146,7 +146,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 			else
 				return parent.getTransportationI();
 		}
-		return service;
+		return transportation;
 	}
 
 	public void setTransportationI(Boolean transportation) {

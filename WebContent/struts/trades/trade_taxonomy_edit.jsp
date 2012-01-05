@@ -111,6 +111,14 @@
 					</s:if>
 				</li>
 				<li>
+					<label>Is Transportation:</label>
+					<s:checkbox name="trade.transportationI" />
+					
+					<s:if test="trade.transportation == null">
+						inherited from parent
+					</s:if>
+				</li>
+				<li>
 					<label>PSM Applies:</label>
 					<s:checkbox name="trade.psmAppliesI" />
 					
@@ -142,6 +150,19 @@
 					/>
 					<br />
 					<s:if test="trade.safetyRisk==null">
+						inherited from parent
+					</s:if>
+				</li>
+				<li>
+					<label>Transportation Critical:</label>
+					<s:radio 
+						name="trade.transportationRiskI" 
+						list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+						theme="pics"
+						cssClass="inline"
+					/>
+					<br />
+					<s:if test="trade.transportationRisk==null">
 						inherited from parent
 					</s:if>
 				</li>
