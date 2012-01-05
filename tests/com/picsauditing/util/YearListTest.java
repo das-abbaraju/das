@@ -1,107 +1,118 @@
 package com.picsauditing.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.util.Calendar;
+
+import org.junit.Test;
+
 import com.picsauditing.jpa.entities.MultiYearScope;
 
-import junit.framework.TestCase;
+public class YearListTest {
 
-public class YearListTest extends TestCase {
+	private YearList yearList = new YearList();
 
-	protected void setUp() throws Exception {
-		super.setUp();
+	private void setBaseDate(int year, int month) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, 1);
+		yearList.setToday(cal.getTime());
 	}
 
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	private void assertIntEquals(int expected, Integer actual) {
+		assertNotNull(actual);
+		assertEquals(expected, actual.intValue());
 	}
-	public void testReduceToThreeHighest_5() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
-		yearList.add(2001);
-		yearList.add(2000);
+
+	@Test
+	public void testMostStraightForwardUseCase() throws Exception {
+		setBaseDate(2010, Calendar.JULY);
+		yearList.add(2009);
+		yearList.add(2008);
+		yearList.add(2007);
+
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2008, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertIntEquals(2007, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
+	}
+
+	@Test
+	public void testTwoYearBiggerGap() throws Exception {
+		setBaseDate(2010, Calendar.JULY);
+		yearList.add(2009);
+		yearList.add(2006);
+
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertNull(yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertNull(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
+	}
+
+	@Test
+	public void testSingleYearRelativeTo2010July() throws Exception {
+		setBaseDate(2010, Calendar.JULY);
+		yearList.add(2008);
+
+		assertNull(yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2008, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertNull(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
+	}
+
+	@Test
+	public void testDuringQ1BeforeSubmission() throws Exception {
+		setBaseDate(2012, Calendar.JANUARY);
+		yearList.add(2010);
+		yearList.add(2009);
+		yearList.add(2008);
+
+		assertIntEquals(2010, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertIntEquals(2008, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
+	}
+
+	@Test
+	public void testDuringQ1AfterSubmission_4years() throws Exception {
+		setBaseDate(2012, Calendar.FEBRUARY);
 		yearList.add(2011);
 		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(3,yearList.size());
-		assertEquals(2004,yearList.get(0).intValue());
-		assertEquals(2010,yearList.get(1).intValue());
-		assertEquals(2011,yearList.get(2).intValue());
-		
+		yearList.add(2009);
+		yearList.add(2008);
+
+		assertIntEquals(2011, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2010, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
 	}
-	public void testReduceToThreeHighest_3() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
+
+	@Test
+	public void testDuringQ1AfterSubmission_WithGap() throws Exception {
+		setBaseDate(2012, Calendar.FEBRUARY);
 		yearList.add(2011);
 		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(3,yearList.size());
-		assertEquals(2004,yearList.get(0).intValue());
-		assertEquals(2010,yearList.get(1).intValue());
-		assertEquals(2011,yearList.get(2).intValue());
-		
+		yearList.add(2008);
+
+		assertIntEquals(2011, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2010, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertNull(yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
 	}
-	public void testReduceToThreeHighest_2() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
+	@Test
+	public void testDuringQ2NeverSubmitted() throws Exception {
+		setBaseDate(2012, Calendar.APRIL);
 		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(2,yearList.size());
-		assertEquals(2004,yearList.get(0).intValue());
-		assertEquals(2010,yearList.get(1).intValue());
-		
+		yearList.add(2009);
+
+		assertNull(yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertIntEquals(2010, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
 	}
-	public void testReduceToThreeHighest_1() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(1,yearList.size());
-		assertEquals(2004,yearList.get(0).intValue());
-		
-	}
-	public void testReduceToThreeHighest_Empty() throws Exception {
-		YearList yearList = new YearList();
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(0,yearList.size());
-	}
-	public void testGetYearForScope_OverThreeYears() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
+	@Test
+	public void testDuringQ2AfterSubmission_WithGap() throws Exception {
+		setBaseDate(2012, Calendar.APRIL);
 		yearList.add(2011);
-		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(3,yearList.size());
-		assertEquals(2011,yearList.getYearForScope(MultiYearScope.LastYearOnly));
-		assertEquals(2010,yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
-		assertEquals(2004,yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.ThreeYearAverage));
-	}
-	public void testGetYearForScope_OverTwoYears() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2004);
-		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(2,yearList.size());
-		assertEquals(2010,yearList.getYearForScope(MultiYearScope.LastYearOnly));
-		assertEquals(2004,yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.ThreeYearAverage));
-	}
-	public void testGetYearForScope_OverOneYear() throws Exception {
-		YearList yearList = new YearList();
-		yearList.add(2010);
-		
-		yearList.reduceToThreeHighest();
-		assertEquals(1,yearList.size());
-		assertEquals(2010,yearList.getYearForScope(MultiYearScope.LastYearOnly));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
-		assertEquals(0,yearList.getYearForScope(MultiYearScope.ThreeYearAverage));
+		yearList.add(2009);
+
+		assertIntEquals(2011, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		assertNull(yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		assertIntEquals(2009, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
 	}
 
 }

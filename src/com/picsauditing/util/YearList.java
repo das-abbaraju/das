@@ -1,6 +1,8 @@
 package com.picsauditing.util;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -8,17 +10,21 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
- * A utility class that simply helps to keep track of a list of years (e.g. for
- * determining the last three years that contribute to a three year average,
- * which may not be contiguous)
+ * A utility class that simply helps to keep track of a list of years (e.g. for determining the last three years that
+ * contribute to a three year average, which may not be contiguous)
  */
 public class YearList {
 	List<Integer> yearList;
-	
+	Date referenceDate = new Date();
+
 	public YearList() {
 		super();
-		
+
 		yearList = new ArrayList<Integer>();
+	}
+
+	public void setToday(Date referenceDate) {
+		this.referenceDate = referenceDate;
 	}
 
 	/**
@@ -28,47 +34,61 @@ public class YearList {
 
 	public void add(Integer year) {
 		yearList.add(year);
-		
+		reduceToThreeHighest();
 	}
+
 	public void add(String year) {
-		yearList.add(new Integer(year));
-		
+		add(new Integer(year));
 	}
-	public void reduceToThreeHighest() {
+
+	private void reduceToThreeHighest() {
 		Collections.sort(yearList);
 		if (yearList.size() > 3) {
 			yearList = yearList.subList(yearList.size() - 3, yearList.size());
 		}
 	}
+
 	public boolean contains(Integer year) {
 		return yearList.contains(year);
 	}
+
 	public boolean contains(String year) {
 		return yearList.contains(new Integer(year));
 	}
-	public int getYearForScope(MultiYearScope scope) {
-		int yearOffset = 9999;
+
+	public Integer getYearForScope(MultiYearScope scope) {
+		int lastYear = referenceYear() - 1;
+
+		if (!yearList.contains(lastYear)) {
+			if (isGracePeriod() && yearList.contains(lastYear - 1))
+				lastYear--;
+		}
+
 		if (scope == MultiYearScope.LastYearOnly) {
-			yearOffset = 1;
-		} else if (scope == MultiYearScope.TwoYearsAgo) { 
-			yearOffset = 2;
-		} else if (scope == MultiYearScope.ThreeYearsAgo) { 
-			yearOffset = 3;
+			return (yearList.contains(lastYear)) ? lastYear : null;
 		}
-		
-		int yearIndex = yearList.size()-yearOffset;
-		if (yearIndex >= 0) {
-			return yearList.get(yearIndex);
+		if (scope == MultiYearScope.TwoYearsAgo) {
+			return (yearList.contains(lastYear - 1)) ? lastYear - 1 : null;
 		}
-		return 0;
-	}
-	public int size() {
-		return yearList.size();
-	}
-	public Integer get(int i) {
-		return (Integer)yearList.get(i);
+		if (scope == MultiYearScope.ThreeYearsAgo) {
+			return (yearList.contains(lastYear - 2)) ? lastYear - 2 : null;
+		}
+
+		return null;
 	}
 
+	private boolean isGracePeriod() {
+		Calendar cal2 = Calendar.getInstance();
+		cal2.setTime(referenceDate);
+		boolean isGracePeriod = cal2.get(Calendar.MONTH) < Calendar.APRIL;
+		return isGracePeriod;
+	}
 
+	private int referenceYear() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(referenceDate);
+		int referenceYear = cal.get(Calendar.YEAR);
+		return referenceYear;
+	}
 
 }
