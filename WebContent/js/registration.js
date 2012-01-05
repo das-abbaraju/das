@@ -418,7 +418,7 @@
 								var html = '<ul class="errors">';
 								
 								$.each(field_errors, function (i, value) {
-									html += '<li>' + value + '</li>';
+									html += '<li>' + translate(value) + '</li>';
 								})
 								
 								html += '</ul>';
