@@ -104,7 +104,7 @@
 		<div class="company-information">
 			<section>
 				<h1>
-					<span>1</span>
+					<span><s:text name="Number.1" /></span>
 					<s:text name="Registration.CompanyInformation" />
 				</h1>
 				
@@ -147,7 +147,7 @@
 		<div class="contact-information">
 			<section>
 				<h1>
-					<span>2</span>
+					<span><s:text name="Number.2" /></span>
 					<s:text name="Registration.ContactInformation" />
 				</h1>
 				
@@ -168,7 +168,7 @@
 		<div class="account-information">
 			<section>
 				<h1>
-					<span>3</span>
+					<span><s:text name="Number.3" /></span>
 					<s:text name="Registration.AccountInformation" />
 				</h1>
 				
