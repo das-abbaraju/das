@@ -5,7 +5,7 @@
 	<div class="separator"></div>
 	
 	<ul class="footer-menu">
-		<li>Copyright © 2011 PICS.</li>
-		<li>All Rights Reserved.</li>
+		<li><s:text name="global.PICSCopyright" /></li>
+		<li><s:text name="global.AllRightsReserved" /></li>
 	</ul>
 </footer>
