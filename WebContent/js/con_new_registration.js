@@ -7,8 +7,6 @@ $(function() {
 		$("#requestedOther").hide();
 	}
 	
-	$('#notesHere').hide();
-
 	$('#phoneContact').click(function() {
         $.blockUI({ message: $('#phoneSubmit') });
  
@@ -123,11 +121,6 @@ $(function() {
 		e.preventDefault();
 		$('#email_preview').toggle();
 	}).delegate('#addToNotes', 'keyup', function() {
-		if (show == false) {
-			show = true;
-			$('#notesHere').show();
-		}
-		
 		var d = new Date();
 		var dateString = (d.getMonth() + 1 < 10 ? "0" : "") + (d.getMonth() + 1) + "/" + (d.getDate() < 10 ? "0" : "") + (d.getDate()) + "/" + d.getFullYear();
 		$('#addHere').html(dateString + " - " + name + " - " + $(this).val() + "\n\n");

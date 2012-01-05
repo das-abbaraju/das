@@ -210,7 +210,6 @@
 					</s:if>
 					
 					<s:if test="newContractor.id > 0">
-						
 						<li>
 							<label><s:text name="RequestNewContractor.label.TimesContacted" />:</label>
 							<s:property value="newContractor.contactCount" />
@@ -240,15 +239,14 @@
 							</s:if>
 						</li>
 						<li>
-							<label><s:text name="global.Notes" />:</label>
+							<label>
+								<s:text name="global.Notes" />:
+							</label>
 							<div id="notesDiv">
 								<div id="notesHere">
 									<pre id="addHere"></pre>
-									
-									<s:if test="newContractor.notes.trim().length() > 0">
-										<pre id="notesPreview">
-											<s:property value="newContractor.notes.trim()" />
-										</pre>
+									<s:if test="newContractor.notes.length() > 0">
+										<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
 									</s:if>
 								</div>
 							</div>
@@ -410,7 +408,6 @@
 		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 		<script type="text/javascript">
-			var show = false;
 			var chooseADate = '<s:text name="javascript.ChooseADate" />';
 			var name ='<s:property value="permissions.name" />'; 
 			var newContractor = '<s:property value="newContractor.id" />';
@@ -432,11 +429,6 @@
 						}
 					);
 				}
-
-				<s:if test="newContractor.notes.length() > 0">
-					show = true;
-					$('#notesHere').show();
-				</s:if>
 			});
 			
 			function changeState(country) {

@@ -87,7 +87,7 @@ public class RequestNewContractor extends PicsActionSupport {
 	protected List<OperatorTag> operatorTags = new ArrayList<OperatorTag>(); // available tags of the operator
 
 	private ContractorRegistrationRequest newContractor;
-	private ContractorRegistrationRequestStatus status;
+	private ContractorRegistrationRequestStatus status = ContractorRegistrationRequestStatus.Active;
 
 	private int opID;
 	private String addToNotes;
@@ -206,11 +206,9 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	public String loadTags() {
-		/*	
-		 *  (\__/)
-		*	(='.'=)
-		*	(")_(")
-		*/ 
+		/*
+		 * (\__/) (='.'=) (")_(")
+		 */
 		return SUCCESS;
 	}
 
@@ -259,7 +257,7 @@ public class RequestNewContractor extends PicsActionSupport {
 				&& Strings.isEmpty(newContractor.getReasonForDecline()))
 			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
 
-		if (status == null && newContractor.getStatus() == null)
+		if (newContractor.getId() > 0 && status == null && newContractor.getStatus() == null)
 			addActionError(getText("RequestNewContractor.error.StatusMissing"));
 
 		// There are errors, just exit out
@@ -285,7 +283,7 @@ public class RequestNewContractor extends PicsActionSupport {
 		if (status == ContractorRegistrationRequestStatus.Hold) {
 			if (newContractor.getStatus() != ContractorRegistrationRequestStatus.Hold) {
 				String notes = "Request set to Hold until " + maskDateFormat(newContractor.getHoldDate());
-				newContractor.setNotes(prepend(notes, newContractor.getNotes()));
+				prependToRequestNotes(notes);
 			}
 		} else {
 			newContractor.setHoldDate(null);
@@ -298,7 +296,7 @@ public class RequestNewContractor extends PicsActionSupport {
 			newContractor.setLastContactDate(new Date());
 
 			String notes = "Sent initial contact email.";
-			newContractor.setNotes(prepend(notes, newContractor.getNotes()));
+			prependToRequestNotes(notes);
 			newContractor.contactByEmail();
 
 			// Save the contractor before sending the email
@@ -307,7 +305,11 @@ public class RequestNewContractor extends PicsActionSupport {
 		} else {
 			if (status != null)
 				newContractor.setStatus(status);
-			
+
+			if (ContractorRegistrationRequestStatus.ClosedContactedSuccessful == newContractor.getStatus()) {
+				prependToRequestNotes("Successfully Contacted and Closed");
+			}
+
 			newContractor = crrDAO.save(newContractor);
 		}
 
@@ -331,7 +333,7 @@ public class RequestNewContractor extends PicsActionSupport {
 		} else
 			newContractor.contactByPhone();
 
-		newContractor.setNotes(prepend(notes, newContractor.getNotes()));
+		prependToRequestNotes(notes);
 		newContractor.setLastContactedBy(new User(permissions.getUserId()));
 		newContractor.setLastContactDate(new Date());
 
@@ -340,12 +342,10 @@ public class RequestNewContractor extends PicsActionSupport {
 		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
 
-	private String prepend(String note, String body) {
-		if (note != null)
-			return maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
-					+ (body != null ? body : "");
-
-		return body;
+	private void prependToRequestNotes(String note) {
+		if (newContractor != null && note != null)
+			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
+					+ (newContractor.getNotes() != null ? newContractor.getNotes() : ""));
 	}
 
 	private void sendEmail() {
