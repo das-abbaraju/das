@@ -134,7 +134,6 @@ public class ContractorAuditDAO extends PicsDAO {
 			hql += " WHERE " + where;
 		if (orderBy.length() > 0)
 			hql += " ORDER BY " + orderBy;
-		System.out.println("compiling: " + hql);
 		Query query = em.createQuery(hql);
 		query.setMaxResults(limit);
 		return query.getResultList();
