@@ -105,6 +105,9 @@ public class RequestNewContractor extends PicsActionSupport {
 	private int requestID;
 
 	private static final int INITIAL_EMAIL = 83;
+	public static final String PERSONAL_EMAIL = "Personal Email";
+	public static final String DRAFT_EMAIL = "Email";
+	public static final String PHONE = "Phone";
 
 	public String execute() {
 		if (newContractor == null || newContractor.getId() == 0) {
@@ -206,9 +209,11 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	public String loadTags() {
-		/*
-		 * (\__/) (='.'=) (")_(")
-		 */
+		/*	
+		 *  (\__/)
+		*	(='.'=)
+		*	(")_(")
+		*/ 
 		return SUCCESS;
 	}
 
@@ -320,17 +325,17 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	public String contact() throws Exception {
-		if (Strings.isEmpty(addToNotes)) {
+		if (Strings.isEmpty(addToNotes) && !PERSONAL_EMAIL.equals(contactType)) {
 			addActionError(getText("RequestNewContractor.error.EnterAdditionalNotes"));
 			return SUCCESS;
 		}
 
 		String notes = "Contacted by " + contactType + ": " + addToNotes;
 
-		if ("Email".equals(contactType)) {
+		if (DRAFT_EMAIL.equals(contactType)) {
 			sendEmail();
 			newContractor.contactByEmail();
-		} else if ("Personal Email".equals(contactType)) {
+		} else if (PERSONAL_EMAIL.equals(contactType)) {
 			newContractor.contactByEmail();
 		} else
 			newContractor.contactByPhone();

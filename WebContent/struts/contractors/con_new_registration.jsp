@@ -369,7 +369,7 @@
 				<br />
 				
 				<s:hidden name="newContractor"/>
-				<s:hidden name="contactType" value="Phone"/>
+				<s:hidden name="contactType" value="%{@com.picsauditing.actions.contractors.RequestNewContractor@PHONE}"/>
 				
 				<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
 				
@@ -391,7 +391,8 @@
 					<h3><s:text name = "RequestNewContractor.button.ContactedByEmail" /></h3>
 				</p>
 				<p>
-					<s:select list="#{'Personal Email':'Sent a Personal Email', 'Email':'Draft Email'}" name="contactType" />
+					<s:select list="#{@com.picsauditing.actions.contractors.RequestNewContractor@PERSONAL_EMAIL:'Sent a Personal Email',
+						@com.picsauditing.actions.contractors.RequestNewContractor@DRAFT_EMAIL:'Draft Email'}" name="contactType" />
 				</p>
 				<p>
 					<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
