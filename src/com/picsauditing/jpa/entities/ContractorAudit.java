@@ -31,6 +31,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
@@ -349,14 +350,20 @@ public class ContractorAudit extends AbstractIndexableTable {
 		if (this.auditType.isDesktop() && effectiveDate != null) {
 			return effectiveDate;
 		}
-		for (ContractorAuditOperator cao : operators) {
-			if (cao.getStatus().equals(AuditStatus.Complete))
-				return cao.getStatusChangedDate();
+		
+		if (!AuditBuilder.canadianProvinces.contains(auditType.getId())) {
+
+			for (ContractorAuditOperator cao : operators) {
+				if (cao.getStatus().equals(AuditStatus.Complete))
+					return cao.getStatusChangedDate();
+			}
+
+			for (ContractorAuditOperator cao : operators) {
+				if (cao.getStatus().after(AuditStatus.Incomplete))
+					return cao.getStatusChangedDate();
+			}
 		}
-		for (ContractorAuditOperator cao : operators) {
-			if (cao.getStatus().after(AuditStatus.Incomplete))
-				return cao.getStatusChangedDate();
-		}
+		
 		return creationDate;
 	}
 
