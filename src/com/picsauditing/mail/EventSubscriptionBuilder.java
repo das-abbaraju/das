@@ -162,6 +162,10 @@ public class EventSubscriptionBuilder {
 		result.add(Calendar.MINUTE, 10);
 		return now.after(result);
 	}
+	
+	public static void sendContractorEmailForExpiringCertificatesIfNecessary(ContractorAccount contractor) {
+		
+	}
 
 	private static void sendSystemStatusEmail(EmailSubscription subscription, ContractorCronStatistics stats) {
 		EmailBuilder email = new EmailBuilder();
