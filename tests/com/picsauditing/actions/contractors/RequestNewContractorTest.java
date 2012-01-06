@@ -66,12 +66,26 @@ public class RequestNewContractorTest {
 		assertEquals(1, newContractor.getContactCountByEmail());
 		assertEquals(1, newContractor.getContactCount());
 	}
+	
+	@Test
+	public void testContactByPhoneMissingNotes() throws Exception {
+		contactType = PHONE;
+		
+		assertTrue(Strings.isEmpty(addToNotes));
+		
+		checkNotesAndIncrementContactCount();
+		
+		assertFalse(successful);
+		assertEquals(0, newContractor.getContactCountByPhone());
+		assertEquals(0, newContractor.getContactCount());
+	}
 
 	@Test
 	public void testContactByPhone() {
 		contactType = PHONE;
+		addToNotes = "Testing";
 		
-		assertTrue(Strings.isEmpty(addToNotes));
+		assertFalse(Strings.isEmpty(addToNotes));
 		
 		checkNotesAndIncrementContactCount();
 		
@@ -81,7 +95,7 @@ public class RequestNewContractorTest {
 	}
 	
 	private void checkNotesAndIncrementContactCount() {
-		if (Strings.isEmpty(addToNotes) && EMAIL.equals(contactType)) {
+		if (Strings.isEmpty(addToNotes) && !PERSONAL.equals(contactType)) {
 			successful = false;
 			return;
 		}
