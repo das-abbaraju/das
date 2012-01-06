@@ -31,7 +31,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "employee")
-@IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 4) })
+@IndexableOverride(overrides = { @IndexOverrideWeight(methodName = "getId", weight = 3) })
 public class Employee extends AbstractIndexableTable {
 
 	private String firstName;
