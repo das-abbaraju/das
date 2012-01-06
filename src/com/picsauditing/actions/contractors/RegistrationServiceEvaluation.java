@@ -130,17 +130,17 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		}
 
 		if (requireOnsite)
-			servicesHelpText += "Onsite Services is the only service type allowed by " + StringUtils.join(onOps, ", ")
-					+ "<br />";
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Onsite.getI18nKey("type")), StringUtils.join(onOps, ", "));
 		if (requireOffsite)
-			servicesHelpText += "Offsite Services is the only service type allowed by "
-					+ StringUtils.join(offOps, ", ") + "<br />";
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Offsite.getI18nKey("type")), StringUtils.join(offOps, ", "));
 		if (requireMaterialSupplier)
-			servicesHelpText += "Material Supplier is the only service type allowed by "
-					+ StringUtils.join(msOps, ", ") + "<br />";
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Supplier.getI18nKey("type")), StringUtils.join(msOps, ", "));
 		if (requireTransportation)
-			servicesHelpText += "Transportation Services is the only service type allowed by "
-					+ StringUtils.join(trxOps, ", ") + "<br />";
+			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey("type")), StringUtils.join(trxOps, ", "));
 	}
 
 	public boolean conTypesOK() {
@@ -174,7 +174,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractor.setAccountLevel(AccountLevel.BidOnly);
 		else if (contractor.getAccountLevel().equals(AccountLevel.BidOnly))
 			contractor.setAccountLevel(AccountLevel.Full);
-		
+
 		setRequiredTypes();
 
 		// account for disabled checkboxes not coming though
@@ -223,7 +223,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		// }
 		// }
 		// }
-		//		
+		//
 		// if (!requiredQuestions) {
 		// addActionError(getText("ContractorRegistrationServices.error.AnswerAll"));
 		// return SUCCESS;
@@ -292,8 +292,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
 						productAssessment));
 
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels", Strings.implode(
-					increases, getText("ContractorRegistrationServices.message.AndYours")));
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
+					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
 
 		setListOnly();
@@ -314,7 +314,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		redirect(getRegistrationStep().getUrl());
 		return BLANK;
 	}
-	
+
 	private void setListOnly() {
 		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
 				&& contractor.getAccountLevel().isFull()) {
