@@ -330,7 +330,7 @@ public class RequestNewContractor extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		String notes = "Contacted by " + contactType + ": " + addToNotes;
+		String notes = "Contacted by " + contactType + (PERSONAL_EMAIL.equals(contactType) ? "" : ": " + addToNotes);
 
 		if (DRAFT_EMAIL.equals(contactType)) {
 			sendEmail();
