@@ -595,46 +595,66 @@ public class BillingCalculatorSingle {
 	}
 
 	public boolean removeImportPQF(ContractorAccount contractor) {
+		boolean removedImportPQF = false;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
 				audit.setExpiresDate(new Date());
 				conAuditDao.save(audit);
-				return true;
+				removedImportPQF = true;
 			}
 		}
 
-		return false;
+		calculateAnnualFees(contractor);
+		accountDao.save(contractor);
+		return removedImportPQF;
 	}
 
-	public boolean addImportPQF(ContractorAccount contractor, Permissions permissions) {
-		boolean hasImportPQFAudit = false;
+	public void addImportPQF(ContractorAccount contractor, Permissions permissions) {
+		List<ContractorAudit> importPQFs = conAuditDao.findWhere(100, "contractorAccount.id = " + contractor.getId()
+				+ " AND auditType.id = " + AuditType.IMPORT_PQF, "");
 
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
-				hasImportPQFAudit = true;
-				break;
-			}
+		if (importPQFs.isEmpty()) {
+			createNewImportPQF(contractor, permissions);
+		} else if (!hasActiveImportPQF(importPQFs)) {
+			activateExpiredImportPQF(importPQFs);
 		}
 
-		// creating import PQF
-		if (!hasImportPQFAudit) {
-			ContractorAudit importAudit = new ContractorAudit();
-			importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
-			importAudit.setManuallyAdded(true);
-			importAudit.setAuditColumns(permissions);
-			importAudit.setContractorAccount(contractor);
-			contractor.getAudits().add(importAudit);
-			auditTypeDAO.save(importAudit);
-
-			auditBuilder.buildAudits(contractor);
-			auditPercentCalculator.percentCalculateComplete(importAudit);
-
-			addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true,
-					Account.EVERYONE, new User(permissions.getUserId()));
-		}
-
+		calculateAnnualFees(contractor);
 		contractor.setCompetitorMembership(true);
 		accountDao.save(contractor);
+	}
+
+	private void createNewImportPQF(ContractorAccount contractor, Permissions permissions) {
+		ContractorAudit importAudit = new ContractorAudit();
+		importAudit.setAuditType(auditTypeDAO.find(AuditType.IMPORT_PQF));
+		importAudit.setManuallyAdded(true);
+		importAudit.setAuditColumns(permissions);
+		importAudit.setContractorAccount(contractor);
+		contractor.getAudits().add(importAudit);
+		auditTypeDAO.save(importAudit);
+
+		auditBuilder.buildAudits(contractor);
+		auditPercentCalculator.percentCalculateComplete(importAudit);
+
+		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE,
+				new User(permissions.getUserId()));
+	}
+
+	private void activateExpiredImportPQF(List<ContractorAudit> importPQFs) {
+		for (ContractorAudit importPQF : importPQFs) {
+			if (importPQF.isExpired()) {
+				importPQF.setExpiresDate(null);
+			}
+
+			return;
+		}
+	}
+
+	private boolean hasActiveImportPQF(List<ContractorAudit> importPQFs) {
+		for (ContractorAudit importPQF : importPQFs) {
+			if (!importPQF.isExpired())
+				return true;
+		}
 
 		return false;
 	}
