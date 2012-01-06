@@ -28,7 +28,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
-import com.picsauditing.actions.report.ReportObsoleteScheduledAudits;
+import com.picsauditing.actions.report.ReportCancelledScheduledAudits;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -304,13 +304,6 @@ public class Cron extends PicsActionSupport {
 			handleException(t);
 		}
 
-		try {
-			startTask("\nSending Report Email to Auditors about Obsolete Scheduled Audits...");
-			sendObsoleteScheduleAuditEmail();
-			endTask();
-		} catch (Throwable t) {
-			handleException(t);
-		}
 		try {
 			startTask("\nChecking System Status");
 			checkSystemStatus();
@@ -900,13 +893,6 @@ public class Cron extends PicsActionSupport {
 		email.setPriority(30);
 		email.setViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
-	}
-
-	public void sendObsoleteScheduleAuditEmail() throws Exception {
-		ReportObsoleteScheduledAudits rosa = new ReportObsoleteScheduledAudits();
-		rosa.prepare();
-		rosa.button = "Email Report";
-		rosa.execute();
 	}
 
 	public void clearForceFlags() {

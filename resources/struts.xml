@@ -1286,16 +1286,16 @@
 			<result>struts/audits/addRemoveCategoryData.jsp</result>
 		</action>
 
-		<action name="ObsoleteScheduledAudits"
-			class="com.picsauditing.actions.report.ReportObsoleteScheduledAudits">
+		<action name="CancelledScheduledAudits"
+			class="com.picsauditing.actions.report.ReportCancelledScheduledAudits">
 			<param name="filter.allowMailReport">true</param>
 			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">ObsoleteScheduledAudits</param>
-			<result>struts/reports/obsolete_scheduled_audits.jsp</result>
+			<param name="filter.destinationAction">CancelledScheduledAudits</param>
+			<result>struts/reports/cancelled_scheduled_audits.jsp</result>
 		</action>
-		<action name="ObsoleteScheduledAuditsAjax"
-			class="com.picsauditing.actions.report.ReportObsoleteScheduledAudits">
-			<result>struts/reports/obsolete_scheduled_audits_data.jsp</result>
+		<action name="CancelledScheduledAuditsAjax"
+			class="com.picsauditing.actions.report.ReportCancelledScheduledAudits">
+			<result>struts/reports/cancelled_scheduled_audits_data.jsp</result>
 		</action>
 
 		<action name="AuditDownload"

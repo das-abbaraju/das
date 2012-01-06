@@ -15,6 +15,8 @@
 			<td><a href="?orderBy=a.name ASC">Contractor</a></td>
 			<td>Document Type</td>
 			<td><a href="?orderBy=auditor.name ASC">Auditor</a></td>
+			<td>Scheduled Date</td>
+			<td>Audit Location</td>
 		</tr>
 	</thead>
 	<s:iterator value="data">
@@ -22,6 +24,9 @@
 			<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /> <s:property value="get('auditFor')"/></a></td>
 			<td><s:property value="get('auditor_name')"/></td>
+			<td><s:date name="get('scheduledDate')" format="MMM d, yyyy hh:mm a" /></td>
+			<td><s:property value="get('auditLocation')" />
+			</td>
 		</tr>
 	</s:iterator>
 </table>
