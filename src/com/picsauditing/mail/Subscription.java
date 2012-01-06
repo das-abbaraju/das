@@ -1,6 +1,7 @@
 package com.picsauditing.mail;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.jpa.entities.TranslatableString;
 
@@ -34,13 +35,16 @@ public enum Subscription implements Translatable {
 			OpPerms.ViewTrialAccounts, false, false, false, true, false),
 	Webinar(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
 			false),
-	// Please use nightly_updates.sql for controling opt-out subscription inserts
+	// Please use nightly_updates.sql for controlling opt-out subscription inserts
 	OpenTasks(168, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly }, false,
-			true, false),
+			true, false, Account.PicsID),
 	RegistrationRequests(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
 			true, false, false),
-	EmailCronFailure(181, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false, true),
-	ContractorCronFailure(182, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false, true);
+	EmailCronFailure(181, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
+			false, false, true),
+	ContractorCronFailure(182,
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false,
+			true);
 
 	private int templateID;
 	private TranslatableString description;
@@ -52,7 +56,9 @@ public enum Subscription implements Translatable {
 	private boolean requiredForAdmin = true;
 	private OpPerms requiredPerms = null;
 	private boolean requiresOQ = false;
+	private int viewableBy = Account.PRIVATE;
 
+	// TODO: Telescoping constructors
 	Subscription(int templateID, boolean requiredForOperator, boolean requiredForContractor, boolean requiredForAdmin) {
 		this.templateID = templateID;
 		this.requiredForOperator = requiredForOperator;
@@ -75,6 +81,15 @@ public enum Subscription implements Translatable {
 		this.requiredForOperator = requiredForOperator;
 		this.requiredForContractor = requiredForContractor;
 		this.requiredForAdmin = requiredForAdmin;
+	}
+
+	Subscription(int templateID, SubscriptionTimePeriod[] supportedTimePeriods, boolean requiredForOperator,
+			boolean requiredForContractor, boolean requiredForAdmin, int viewableBy) {
+		this.supportedTimePeriods = supportedTimePeriods;
+		this.requiredForOperator = requiredForOperator;
+		this.requiredForContractor = requiredForContractor;
+		this.requiredForAdmin = requiredForAdmin;
+		this.viewableBy = viewableBy;
 	}
 
 	Subscription(int templateID, SubscriptionTimePeriod[] supportedTimePeriods, boolean requiredForOperator,
@@ -140,6 +155,14 @@ public enum Subscription implements Translatable {
 
 	public boolean isRequiresOQ() {
 		return requiresOQ;
+	}
+
+	public void setViewableBy(int viewableBy) {
+		this.viewableBy = viewableBy;
+	}
+
+	public int getViewableBy() {
+		return viewableBy;
 	}
 
 	@Override

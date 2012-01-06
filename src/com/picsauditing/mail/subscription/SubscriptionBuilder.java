@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.EmailSubscriptionDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -74,11 +73,11 @@ public abstract class SubscriptionBuilder {
 					if (c.getAuditor() != null)
 						emailBuilder.setFromAddress("\"" + c.getAuditor().getName() + "\"<" + c.getAuditor().getEmail()
 								+ ">");
-				// If operator subscription send replies to AM
-				} else if(user.getAccount().isOperatorCorporate()){
+					// If operator subscription send replies to AM
+				} else if (user.getAccount().isOperatorCorporate()) {
 					OperatorAccount o = (OperatorAccount) user.getAccount();
-					for(AccountUser au : o.getAccountUsers()){
-						if(au.getRole().equals(UserAccountRole.PICSAccountRep))
+					for (AccountUser au : o.getAccountUsers()) {
+						if (au.getRole().equals(UserAccountRole.PICSAccountRep))
 							emailBuilder.setFromAddress("\"" + au.getUser().getName() + "\"<" + au.getUser().getEmail()
 									+ ">");
 					}
@@ -88,7 +87,8 @@ public abstract class SubscriptionBuilder {
 			}
 
 			EmailQueue email = emailBuilder.build();
-			email.setViewableById(Account.PRIVATE);
+			// TODO: Make this solution more extensible
+			email.setViewableById(subscription.getSubscription().getViewableBy());
 			email.setCreatedBy(user);
 
 			return email;
