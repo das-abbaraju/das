@@ -113,9 +113,13 @@ public class AuditFileUpload extends AuditActionSupport {
 				fileID = contractorAuditFile.getId();
 
 				if (file != null && file.length() > 0) {
-					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(fileID),
-							getFileName(fileID), extension, true);
-					addActionMessage(getTextParameterized("AuditFileUpload.message.FileUploaded", fileFileName));
+					try {
+						FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(fileID),
+								getFileName(fileID), extension, true);
+						addActionMessage(getTextParameterized("AuditFileUpload.message.FileUploaded", fileFileName));
+					} catch (Exception e) {
+						addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
+					}
 				}
 			}
 		}

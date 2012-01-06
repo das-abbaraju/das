@@ -274,26 +274,30 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		auditDataDao.save(auditData);
 		dataID = auditData.getId();
 
-		if (copyDataID > 0) {
-			FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
-					extension, true);
-			addActionMessage(getText("AuditDataUpload.message.CopySuccess"));
-		} else {
-			FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
-					extension, true);
-			addActionMessage(this.getTextParameterized("AuditDataUpload.message.UploadSuccess", fileFileName));
+		try {
+			if (copyDataID > 0) {
+				FileUtils.copyFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
+						extension, true);
+				addActionMessage(getText("AuditDataUpload.message.CopySuccess"));
+			} else {
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(dataID), getFileName(dataID),
+						extension, true);
+				addActionMessage(this.getTextParameterized("AuditDataUpload.message.UploadSuccess", fileFileName));
 
-			if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF && extension.toLowerCase().equals("pdf")) {
-				ImportPqf importer = getImportPqf();
-				if (importer != null) {
-					ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
-					if (pqfAudit != null) {
-						File[] files = getFiles(dataID);
-						importer.calculate(pqfAudit, files[0]);
-						debugLog = importer.getLog();
+				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF && extension.toLowerCase().equals("pdf")) {
+					ImportPqf importer = getImportPqf();
+					if (importer != null) {
+						ContractorAudit pqfAudit = getPqfAudit(conAudit.getContractorAccount(), importer.getAuditType());
+						if (pqfAudit != null) {
+							File[] files = getFiles(dataID);
+							importer.calculate(pqfAudit, files[0]);
+							debugLog = importer.getLog();
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
 		}
 
 		if (dataID > 0) {

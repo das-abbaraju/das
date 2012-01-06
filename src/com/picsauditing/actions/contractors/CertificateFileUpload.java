@@ -137,9 +137,13 @@ public class CertificateFileUpload extends ContractorActionSupport {
 				certID = certificate.getId();
 
 				if (file != null && file.length() > 0) {
-					FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID),
-							getFileName(certID), extension, true);
-					addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+					try {
+						FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(certID),
+								getFileName(certID), extension, true);
+						addActionMessage("Successfully uploaded <b>" + fileFileName + "</b> file");
+					} catch (Exception x) {
+						addActionError(getText("AuditDataUpload.error.FailedSavingFile") + fileFileName);
+					}
 				}
 
 				if (questionID > 0 && auditID > 0) {
