@@ -102,7 +102,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@ManyToOne
-	@NotFound(action=NotFoundAction.IGNORE)
+	@NotFound(action = NotFoundAction.IGNORE)
 	@JoinColumn(name = "employeeID")
 	public Employee getEmployee() {
 		return employee;
@@ -347,23 +347,19 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	@Transient
 	public Date getEffectiveDateLabel() {
-		if (this.auditType.isDesktop() && effectiveDate != null) {
+		if (auditType.isPqf()) {
+			// We normally don't call getEffectiveDateLabel() for PQF
+			return new Date();
+		}
+		if (auditType.isAnnualAddendum()) {
+			// We normally don't call getEffectiveDateLabel() for Annual Update
+			Calendar cal = Calendar.getInstance();
+			cal.set(Integer.parseInt(auditFor), Calendar.JANUARY, 1);
+			return cal.getTime();
+		}
+		if (effectiveDate != null) {
 			return effectiveDate;
 		}
-		
-		if (!AuditBuilder.canadianProvinces.contains(auditType.getId())) {
-
-			for (ContractorAuditOperator cao : operators) {
-				if (cao.getStatus().equals(AuditStatus.Complete))
-					return cao.getStatusChangedDate();
-			}
-
-			for (ContractorAuditOperator cao : operators) {
-				if (cao.getStatus().after(AuditStatus.Incomplete))
-					return cao.getStatusChangedDate();
-			}
-		}
-		
 		return creationDate;
 	}
 
