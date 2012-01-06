@@ -25,7 +25,8 @@ public enum FeeClass implements Translatable {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
 				return false;
 
-			if (contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
+			if (contractor.getLastUpgradeDate() != null
+					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
 					&& contractor.getBillingStatus() != "Renewal")
 				return true;
 
