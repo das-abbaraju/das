@@ -307,7 +307,9 @@ public class RequestNewContractor extends PicsActionSupport {
 				newContractor.setStatus(status);
 
 			if (ContractorRegistrationRequestStatus.ClosedContactedSuccessful == newContractor.getStatus()) {
-				prependToRequestNotes("Successfully Contacted and Closed");
+				prependToRequestNotes("Contacted Closed Successful with contractor in PICS System.");
+			} else if (ContractorRegistrationRequestStatus.ClosedSuccessful == newContractor.getStatus()) {
+				prependToRequestNotes("Closed Successful with contractor in PICS System.");
 			}
 
 			newContractor = crrDAO.save(newContractor);
