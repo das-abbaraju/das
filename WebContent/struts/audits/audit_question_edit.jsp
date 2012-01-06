@@ -146,10 +146,6 @@
 						<s:textfield name="ESignatureTitle" />
 					</div>
 					
-					<div class="ip">
-						<span><s:text name="Login.IPAddress" />: ${IP}</span>
-					</div>
-					
 					<s:submit type="button" value="Sign" cssClass="question-save" />
 				</div>
 				
