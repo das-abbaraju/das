@@ -309,11 +309,6 @@ public class VerifyView extends ContractorActionSupport {
 					if (t.getAuditType().isPqf()
 							&& (t.hasCaoStatus(AuditStatus.Submitted) || t.hasCaoStatus(AuditStatus.Resubmitted) || t
 									.hasCaoStatus(AuditStatus.Incomplete))) {
-						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
-							if (cao.getPercentComplete() < 100)
-								return false;
-						}
-
 						return true;
 					} else if (t.getAuditType().isAnnualAddendum())
 						return true;

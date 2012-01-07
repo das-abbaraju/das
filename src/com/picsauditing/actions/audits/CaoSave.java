@@ -273,6 +273,8 @@ public class CaoSave extends AuditActionSupport {
 			if (step.getNewStatus().isSubmittedResubmitted()) {
 				if (cao.getPercentComplete() < 100)
 					addActionError("Please complete all required questions" + forString);
+				if (cao.getAudit().getAuditType().isPqf() && cao.getPercentVerified() == 100)
+					step.setNewStatus(AuditStatus.Complete);
 			}
 		}
 
