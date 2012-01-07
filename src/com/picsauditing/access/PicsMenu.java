@@ -367,7 +367,6 @@ public class PicsMenu {
 			subMenu.addChild("Page Logging", "PageLogger.action");
 			subMenu.addChild("Clear Cache", "ClearCache.action");
 			subMenu.addChild("Cache Statistics", "CacheStatistics.action");
-			subMenu.addChild("Cron", "Cron.action");
 			subMenu.addChild("Contractor Cron", "ContractorCron.action");
 			subMenu.addChild("Con/Op Flag Differences", "ContractorFlagDifference.action");
 			subMenu.addChild("Mail Cron", "MailCron.action");
