@@ -96,7 +96,6 @@ public class ContractorAuditDAO extends PicsDAO {
 		save(oCAudit);
 	}
 
-	
 	public List<ContractorAudit> findByContractor(int conID) {
 		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = ? "
 				+ "ORDER BY auditTypeID");
@@ -167,19 +166,20 @@ public class ContractorAuditDAO extends PicsDAO {
 	 * 
 	 * @return
 	 */
-	public List<ContractorAudit> findExpiredCertificates() {
+	public List<ContractorAudit> findExpiredCertificates(int offset) {
 		SelectSQL sql = new SelectSQL("contractor_audit ca");
 		sql.addField("ca.*");
 		sql.addJoin("JOIN audit_type aty ON ca.auditTypeID = aty.id");
 		sql.addJoin("JOIN contractor_audit_operator cao ON ca.id = cao.auditID");
 		sql.addWhere("aty.classType = 'Policy'");
 		sql.addWhere("(cao.status = 'Pending' AND cao.visible = 1)");
-		sql.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
-				+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, CURDATE(), :After7))");
+		sql
+				.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
+						+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, CURDATE(), :After7))");
 		sql.addOrderBy("ca.id");
-
 		Query query = em.createNativeQuery(sql.toString(), ContractorAudit.class);
 		query.setMaxResults(100);
+		query.setFirstResult(offset);
 
 		// today's date
 		Calendar calendar1 = Calendar.getInstance();

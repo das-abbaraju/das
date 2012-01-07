@@ -28,7 +28,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
-import com.picsauditing.actions.report.ReportCancelledScheduledAudits;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -382,26 +381,32 @@ public class Cron extends PicsActionSupport {
 	}
 
 	public void sendEmailExpiredCertificates() throws Exception {
-		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates();
-		Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
+		int offset = 0;
+		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates(offset);
+		while (!cList.isEmpty()) {
+			Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
 
-		for (ContractorAudit cAudit : cList) {
-			if (cAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-					&& cAudit.getCurrentOperators().size() > 0)
-				policies.add(cAudit.getContractorAccount());
-		}
-		for (ContractorAccount policy : policies) {
-			emailBuilder.clear();
-			emailBuilder.setTemplate(10); // Certificate Expiration
-			emailBuilder.setPermissions(permissions);
-			emailBuilder.setContractor(policy, OpPerms.ContractorInsurance);
-			emailBuilder.addToken("policies", policy);
-			EmailQueue email = emailBuilder.build();
-			email.setPriority(30);
-			email.setViewableById(Account.EVERYONE);
-			emailQueueDAO.save(email);
+			for (ContractorAudit cAudit : cList) {
+				if (cAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
+						&& cAudit.getCurrentOperators().size() > 0)
+					policies.add(cAudit.getContractorAccount());
+			}
+			for (ContractorAccount policy : policies) {
+				emailBuilder.clear();
+				emailBuilder.setTemplate(10); // Certificate Expiration
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setContractor(policy, OpPerms.ContractorInsurance);
+				emailBuilder.addToken("policies", policy);
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(30);
+				email.setViewableById(Account.EVERYONE);
+				emailQueueDAO.save(email);
 
-			stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
+				stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
+			}
+
+			offset += cList.size();
+			cList = contractorAuditDAO.findExpiredCertificates(offset);
 		}
 	}
 
