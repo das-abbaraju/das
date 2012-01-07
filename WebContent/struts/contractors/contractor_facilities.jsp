@@ -236,7 +236,7 @@
 					<nobr><s:text name="global.Location" />: 
 						<s:select cssClass="forms clearable" list="getStateList('US|CA')" 
 							onchange="runSearch()" name="state" listKey="isoCode" listValue="english" 
-							headerKey="" headerValue="- State or Province -"></s:select>
+							headerKey="" headerValue="- %{getText('ContractorFacilities.StateOrProvince')} -"></s:select>
 					</nobr>
 				</div>
 			</div>
