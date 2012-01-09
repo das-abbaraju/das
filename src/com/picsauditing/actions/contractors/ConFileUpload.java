@@ -7,8 +7,7 @@ import java.io.InputStream;
 import org.apache.struts2.ServletActionContext;
 
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 
@@ -16,12 +15,8 @@ public class ConFileUpload extends ContractorActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;
 	private InputStream inputStream;
 
-	public ConFileUpload(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao) {
-	}
-
+	@Anonymous
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
 		limitedView = true;
 		this.findContractor();
 
