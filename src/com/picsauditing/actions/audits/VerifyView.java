@@ -98,24 +98,27 @@ public class VerifyView extends ContractorActionSupport {
 				annualUpdates.add(conAudit);
 
 				for (AuditData d : conAudit.getData()) {
-					int categoryID = d.getQuestion().getCategory().getId();
-					if (categoryID != AuditCategory.CITATIONS
-							|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-									.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
-						if (!needsEmr)
-							needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
-									|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+					if (d.getAudit().isCategoryApplicable(d.getQuestion().getCategory().getId())) {
+						int categoryID = d.getQuestion().getCategory().getId();
+						if (categoryID != AuditCategory.CITATIONS
+								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
+										.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d
+										.isAnswered()))) {
+							if (!needsEmr)
+								needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
+										|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
 
-						Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
+							Map<Integer, AuditData> inner = emrs.get(d.getQuestion());
 
-						if (inner == null) {
-							inner = new TreeMap<Integer, AuditData>();
-							for (ContractorAudit ca : annualUpdates)
-								inner.put(ca.getId(), null);
-							emrs.put(d.getQuestion(), inner);
+							if (inner == null) {
+								inner = new TreeMap<Integer, AuditData>();
+								for (ContractorAudit ca : annualUpdates)
+									inner.put(ca.getId(), null);
+								emrs.put(d.getQuestion(), inner);
+							}
+
+							inner.put(conAudit.getId(), d);
 						}
-
-						inner.put(conAudit.getId(), d);
 					}
 				}
 			}
