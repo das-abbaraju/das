@@ -221,8 +221,8 @@ public class Cron extends PicsActionSupport {
 
 			emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
 
-			sendEmailPendingAccounts();
-			// sendEmailContractorRegistrationRequest();
+			// sendEmailPendingAccounts();
+			sendEmailContractorRegistrationRequest();
 
 			emailExclusionList.clear();
 
@@ -447,11 +447,11 @@ public class Cron extends PicsActionSupport {
 
 	private void runAccountEmailBlast(List<ContractorAccount> list, int templateID, String newNote)
 			throws EmailException, IOException {
-		Map<OperatorAccount, List<ContractorAccount>> operatorContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
+		Map<OperatorAccount, List<ContractorAccount>> clientSiteContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
 		for (ContractorAccount contractor : list) {
 			if (!emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
-				List<OperatorAccount> operators = contractor.getOperatorAccounts();
+				List<OperatorAccount> clientSites = contractor.getOperatorAccounts();
 
 				emailBuilder.clear();
 
@@ -464,11 +464,11 @@ public class Cron extends PicsActionSupport {
 
 				emailBuilder.addToken("contractor", contractor);
 
-				// use the first operator
-				if (!operators.isEmpty()) {
-					OperatorAccount operator = operators.get(0);
+				// use the first client site
+				if (!clientSites.isEmpty()) {
+					OperatorAccount clientSite = clientSites.get(0);
 
-					emailBuilder.addToken("operator", operator);
+					emailBuilder.addToken("clientSite", clientSite);
 					if (templateID == 0)
 						emailBuilder.setTemplate(201);
 					else
@@ -495,33 +495,30 @@ public class Cron extends PicsActionSupport {
 				// update the contractor notes
 				stampNote(contractor, newNote + emailBuilder.getSentTo(), NoteCategory.Registration);
 				if (templateID == 0) {
-//					contractor.setStatus(AccountStatus.Deactivated);
-//					contractorAccountDAO.save(contractor);
+					for (OperatorAccount clientSite : clientSites) {
+						if (clientSiteContractors.get(clientSite) == null)
+							clientSiteContractors.put(clientSite, new ArrayList<ContractorAccount>());
 
-					for (OperatorAccount operatorAccount : operators) {
-						if (operatorContractors.get(operatorAccount) == null)
-							operatorContractors.put(operatorAccount, new ArrayList<ContractorAccount>());
-
-						operatorContractors.get(operatorAccount).add(contractor);
+						clientSiteContractors.get(clientSite).add(contractor);
 					}
 				}
 			}
 		}
 
-		// send emails out to all operator facilities whose contractors these were for
-		for (OperatorAccount operator : operatorContractors.keySet()) {
-			List<ContractorAccount> contractors = operatorContractors.get(operator);
+		// send emails out to all client sites whose contractors these were for
+		for (OperatorAccount clientSite : clientSiteContractors.keySet()) {
+			List<ContractorAccount> contractors = clientSiteContractors.get(clientSite);
 
-			if (operator.getPrimaryContact() != null
-					&& !emailExclusionList.contains(operator.getPrimaryContact().getEmail())) {
+			if (clientSite.getPrimaryContact() != null
+					&& !emailExclusionList.contains(clientSite.getPrimaryContact().getEmail())) {
 				emailBuilder.clear();
 
 				emailBuilder.setPermissions(permissions);
-				emailBuilder.setToAddresses(operator.getPrimaryContact().getEmail());
-				emailExclusionList.add(operator.getPrimaryContact().getEmail());
+				emailBuilder.setToAddresses(clientSite.getPrimaryContact().getEmail());
+				emailExclusionList.add(clientSite.getPrimaryContact().getEmail());
 
-				emailBuilder.addToken("operator", operator);
-				emailBuilder.addToken("user", operator.getPrimaryContact());
+				emailBuilder.addToken("clientSite", clientSite);
+				emailBuilder.addToken("user", clientSite.getPrimaryContact());
 				emailBuilder.addToken("contractors", contractors);
 				emailBuilder.setTemplate(203);
 
@@ -531,157 +528,158 @@ public class Cron extends PicsActionSupport {
 				emailQueueDAO.save(email);
 
 				// update the notes
-				stampNote(operator,
-						"Contractor Pending Account expired and has been deactivated. Operator was notified at this address: "
+				stampNote(clientSite,
+						"Contractor Pending Account expired and has been deactivated. Client site was notified at this address: "
 								+ emailBuilder.getSentTo(), NoteCategory.Registration);
 			}
 		}
 	}
 
 	private void sendEmailContractorRegistrationRequest() throws Exception {
-		// SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-		//
-		// // ignore all email accounts that have been sent a pending email within the last month
-		// List<String> emailsAlreadySent = emailQueueDAO.findPendingActivationEmails("1 MONTH");
-		// emailExclusionList.addAll(emailsAlreadySent);
-		//
-		// String exclude = Strings.implode(emailExclusionList, "', '");
-		// String where = "c.email NOT IN ('" + exclude + "') AND ";
-		//
-		// String whereWeek1 = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
-		// String whereWeek2 = where
-		// + "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 1 WEEK)";
-		// String whereWeek3 = where
-		// + "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 2 WEEK)";
-		// String whereWeek4 = where
-		// + "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 3 WEEK)";
-		// String whereWeek6 = where
-		// + "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 5 WEEK)";
-		//
-		// String reminderNote = sdf.format(new Date()) +
-		// " - Email has been sent to remind contractor to register.\n\n";
-		// String finalReminderNote = sdf.format(new Date())
-		// + " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
-		// String expirationNote = sdf.format(new Date()) + " - Registration request has expired.\n\n";
-		//
-		// // First notification: 3 days
-		// List<ContractorRegistrationRequest> crrList1 = contractorRegistrationRequestDAO.findActiveByDate(whereWeek1);
-		// runCRREmailBlast(crrList1, 189, reminderNote);
-		//
-		// // 1st reminder: 1 week 3 days
-		// List<ContractorRegistrationRequest> crrList2 = contractorRegistrationRequestDAO.findActiveByDate(whereWeek2);
-		// runCRREmailBlast(crrList2, 190, reminderNote);
-		//
-		// // 2nd reminder: 2 weeks 3 days
-		// List<ContractorRegistrationRequest> crrList3 = contractorRegistrationRequestDAO.findActiveByDate(whereWeek3);
-		// runCRREmailBlast(crrList3, 192, reminderNote);
-		//
-		// // final reminder: 3 weeks 3 days
-		// List<ContractorRegistrationRequest> crrList4 = contractorRegistrationRequestDAO.findActiveByDate(whereWeek4);
-		// runCRREmailBlast(crrList4, 193, finalReminderNote);
-		//
-		// // Closing the registration requests.
-		// List<ContractorRegistrationRequest> crrClosing =
-		// contractorRegistrationRequestDAO.findActiveByDate(whereWeek6);
-		// runCRREmailBlast(crrClosing, 0, expirationNote);
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+		// ignore all email accounts that have been sent a pending email within the last month
+		List<String> emailsAlreadySent = emailQueueDAO.findPendingActivationEmails("1 MONTH");
+		emailExclusionList.addAll(emailsAlreadySent);
+
+		String exclude = Strings.implode(emailExclusionList, "', '");
+		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND ";
+
+		String where3Days = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
+		String where1Week3Days = where
+				+ "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 1 WEEK)";
+		String where2Weeks3Days = where
+				+ "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 2 WEEK)";
+		String where3Weeks3Days = where
+				+ "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 3 WEEK)";
+		String where5Weeks3Days = where
+				+ "DATE(c.creationDate) = DATE_SUB(DATE_SUB(CURDATE(),INTERVAL 3 DAY),INTERVAL 5 WEEK)";
+
+		String reminderNote = sdf.format(new Date()) + " - Email has been sent to remind contractor to register.\n\n";
+		String finalReminderNote = sdf.format(new Date())
+				+ " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
+		String expirationNote = sdf.format(new Date()) + " - Registration request has expired.\n\n";
+
+		// First notification: 3 days
+		List<ContractorRegistrationRequest> crrList3Days = contractorRegistrationRequestDAO
+				.findActiveByDate(where3Days);
+		runCRREmailBlast(crrList3Days, 211, reminderNote);
+
+		// 1st reminder: 1 week 3 days
+		List<ContractorRegistrationRequest> crrList1Week3Days = contractorRegistrationRequestDAO
+				.findActiveByDate(where1Week3Days);
+		runCRREmailBlast(crrList1Week3Days, 212, reminderNote);
+
+		// 2nd reminder: 2 weeks 3 days
+		List<ContractorRegistrationRequest> crrList2Weeks3Days = contractorRegistrationRequestDAO
+				.findActiveByDate(where2Weeks3Days);
+		runCRREmailBlast(crrList2Weeks3Days, 214, reminderNote);
+
+		// final reminder: 3 weeks 3 days
+		List<ContractorRegistrationRequest> crrList3Weeks3Days = contractorRegistrationRequestDAO
+				.findActiveByDate(where3Weeks3Days);
+		runCRREmailBlast(crrList3Weeks3Days, 216, finalReminderNote);
+
+		// Closing the registration requests.
+		List<ContractorRegistrationRequest> crrClosingList5Weeks3Days = contractorRegistrationRequestDAO
+				.findActiveByDate(where5Weeks3Days);
+		runCRREmailBlast(crrClosingList5Weeks3Days, 217, expirationNote);
 	}
 
 	private void runCRREmailBlast(List<ContractorRegistrationRequest> list, int templateID, String newNote)
 			throws IOException {
-		// Map<User, List<ContractorRegistrationRequest>> operatorContractors = new HashMap<User,
-		// List<ContractorRegistrationRequest>>();
-		//
-		// for (ContractorRegistrationRequest crr : list) {
-		// if (!emailExclusionList.contains(crr.getEmail())) {
-		// emailBuilder.clear();
-		//
-		// if (templateID == 0)
-		// emailBuilder.setTemplate(204);
-		// else
-		// emailBuilder.setTemplate(templateID);
-		//
-		// emailBuilder.setPermissions(permissions);
-		// emailBuilder.setToAddresses(crr.getEmail());
-		// emailExclusionList.add(crr.getEmail());
-		//
-		// crr.setName(StringUtils.trimWhitespace(crr.getName()));
-		//
-		// emailBuilder.addToken("contractor", crr);
-		// emailBuilder.addToken("operator", crr.getRequestedBy());
-		//
-		// // try to find the operator user responsible for this request
-		// User operatorUser = crr.getRequestedByUser();
-		// for (int i = 1; operatorUser == null; i++) {
-		// if (i == 1)
-		// operatorUser = userDAO.findByNameAndAccount(crr.getRequestedByUserOther(), crr.getRequestedBy()
-		// .getId());
-		// if (i == 2)
-		// operatorUser = userDAO.findByName(crr.getRequestedByUserOther());
-		// if (i == 3)
-		// operatorUser = crr.getRequestedBy().getPrimaryContact();
-		// }
-		//
-		// emailBuilder.addToken("user", operatorUser.getName());
-		// Calendar cal = Calendar.getInstance();
-		// if (templateID != 193) {
-		// cal.setTime(crr.getCreationDate());
-		// cal.add(Calendar.DAY_OF_MONTH, 3);
-		// cal.add(Calendar.WEEK_OF_YEAR, 3);
-		// } else {
-		// cal.add(Calendar.WEEK_OF_YEAR, 2);
-		// }
-		// emailBuilder.addToken("date", cal.getTime());
-		//
-		// EmailQueue email = emailBuilder.build();
-		// email.setPriority(20);
-		// email.setViewableById(Account.EVERYONE);
-		// emailQueueDAO.save(email);
-		//
-		// // update the registration request
-		// String notes = crr.getNotes();
-		// crr.setContactCount(crr.getContactCount() + 1);
-		// notes = newNote + notes;
-		// crr.setNotes(notes);
-		// if (templateID == 0) {
-		// crr.setOpen(false);
-		// crr.setReasonForDecline("Registration Request has expired");
-		//
-		// if (operatorContractors.get(operatorUser) == null)
-		// operatorContractors.put(operatorUser, new ArrayList<ContractorRegistrationRequest>());
-		//
-		// operatorContractors.get(operatorUser).add(crr);
-		// }
-		// contractorRegistrationRequestDAO.save(crr);
-		// }
-		// }
-		//
-		// // send emails out to all operator facilities whose contractors these were for
-		// for (User operatorUser : operatorContractors.keySet()) {
-		// List<ContractorRegistrationRequest> contractors = operatorContractors.get(operatorUser);
-		//
-		// if (!emailExclusionList.contains(operatorUser.getEmail())) {
-		// emailBuilder.clear();
-		//
-		// emailBuilder.setPermissions(permissions);
-		// emailBuilder.setToAddresses(operatorUser.getEmail());
-		// emailExclusionList.add(operatorUser.getEmail());
-		//
-		// emailBuilder.addToken("operator", operatorUser.getAccount());
-		// emailBuilder.addToken("user", operatorUser);
-		// emailBuilder.addToken("contractors", contractors);
-		// emailBuilder.setTemplate(205);
-		//
-		// EmailQueue email = emailBuilder.build();
-		// email.setPriority(20);
-		// email.setViewableById(Account.EVERYONE);
-		// emailQueueDAO.save(email);
-		//
-		// // update the notes
-		// stampNote(operatorUser.getAccount(),
-		// "Contractor Registration Request expired and has been closed. Operator was notified at this address: "
-		// + emailBuilder.getSentTo(), NoteCategory.Registration);
-		// }
-		// }
+		Map<User, List<ContractorRegistrationRequest>> clientSiteContractors = new HashMap<User, List<ContractorRegistrationRequest>>();
+
+		for (ContractorRegistrationRequest crr : list) {
+			if (!emailExclusionList.contains(crr.getEmail())) {
+				emailBuilder.clear();
+
+				if ((templateID == 212 || templateID == 214) && crr.getDeadline().before(new Date()))
+					templateID++;
+				emailBuilder.setTemplate(templateID);
+
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setToAddresses(crr.getEmail());
+				emailExclusionList.add(crr.getEmail());
+
+				crr.setName(StringUtils.trimWhitespace(crr.getName()));
+
+				emailBuilder.addToken("contractor", crr);
+				emailBuilder.addToken("clientSite", crr.getRequestedBy());
+
+				// try to find the client site user responsible for this request
+				User clientSiteUser = crr.getRequestedByUser();
+				for (int i = 1; clientSiteUser == null || i > 4; i++) {
+					if (i == 1)
+						clientSiteUser = userDAO.findByNameAndAccount(crr.getRequestedByUserOther(), crr
+								.getRequestedBy().getId());
+					if (i == 2)
+						clientSiteUser = userDAO.findByName(crr.getRequestedByUserOther());
+					if (i == 3)
+						clientSiteUser = crr.getRequestedBy().getPrimaryContact();
+					if (i == 4)
+						clientSiteUser = new User(crr.getRequestedByUserOther());
+				}
+
+				emailBuilder.addToken("user", clientSiteUser);
+				Calendar cal = Calendar.getInstance();
+				if (templateID != 216) {
+					cal.setTime(crr.getCreationDate());
+					cal.add(Calendar.DAY_OF_MONTH, 3);
+					cal.add(Calendar.WEEK_OF_YEAR, 3);
+				} else {
+					cal.add(Calendar.WEEK_OF_YEAR, 2);
+				}
+				emailBuilder.addToken("date", cal.getTime());
+
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(20);
+				email.setViewableById(Account.EVERYONE);
+				emailQueueDAO.save(email);
+
+				// update the registration request
+				String notes = crr.getNotes();
+				crr.contactByEmail();
+				crr.setLastContactDate(new Date());
+				notes = newNote + notes;
+				crr.setNotes(notes);
+				if (templateID == 217) {
+					if (clientSiteContractors.get(clientSiteUser) == null)
+						clientSiteContractors.put(clientSiteUser, new ArrayList<ContractorRegistrationRequest>());
+
+					clientSiteContractors.get(clientSiteUser).add(crr);
+				}
+				contractorRegistrationRequestDAO.save(crr);
+			}
+		}
+
+		// send emails out to all client sites whose contractors these were for
+		for (User clientSiteUser : clientSiteContractors.keySet()) {
+			List<ContractorRegistrationRequest> contractors = clientSiteContractors.get(clientSiteUser);
+
+			if (clientSiteUser != null && !emailExclusionList.contains(clientSiteUser.getEmail())) {
+				emailBuilder.clear();
+
+				emailBuilder.setPermissions(permissions);
+				emailBuilder.setToAddresses(clientSiteUser.getEmail());
+				emailExclusionList.add(clientSiteUser.getEmail());
+
+				emailBuilder.addToken("clientSite", clientSiteUser.getAccount());
+				emailBuilder.addToken("user", clientSiteUser);
+				emailBuilder.addToken("contractors", contractors);
+				emailBuilder.setTemplate(218);
+
+				EmailQueue email = emailBuilder.build();
+				email.setPriority(20);
+				email.setViewableById(Account.EVERYONE);
+				emailQueueDAO.save(email);
+
+				// update the notes
+				stampNote(clientSiteUser.getAccount(),
+						"Contractor Registration Request expired and has been closed. Client site was notified at this address: "
+								+ emailBuilder.getSentTo(), NoteCategory.Registration);
+			}
+		}
 	}
 
 	public void runIndexer() throws Exception {
