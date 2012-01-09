@@ -169,7 +169,6 @@
 	<s:if test="contractor.paymentMethod.creditCard">
 		<s:form action="https://secure.braintreepaymentgateway.com/api/transact.php" cssClass="make-payment-form" theme="pics">
 			<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
-		<%-- <s:form action="RegistrationMakePayment" cssClass="make-payment-form" theme="pics"> --%>
 			<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
 			<%-- We must do it this way, or we are not PCI compliant --%>
 			<s:hidden name="hash"></s:hidden>
@@ -232,7 +231,7 @@
 						
 						<div class="processing">
 							<img src="images/loading.gif" />
-							<p>Processing Payment - Please wait.</p> 
+							<p><s:text name="RegistrationMakePayment.Processing" /></p> 
 						</div>
 						
 						<p class="check-note">
