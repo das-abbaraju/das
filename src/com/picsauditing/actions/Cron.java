@@ -543,7 +543,7 @@ public class Cron extends PicsActionSupport {
 		emailExclusionList.addAll(emailsAlreadySent);
 
 		String exclude = Strings.implode(emailExclusionList, "', '");
-		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND ";
+		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND c.creationDate > '2011-12-30' AND ";
 
 		String where3Days = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String where1Week3Days = where
