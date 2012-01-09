@@ -221,7 +221,7 @@ public class Cron extends PicsActionSupport {
 
 			emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
 
-			// sendEmailPendingAccounts();
+			sendEmailPendingAccounts();
 			sendEmailContractorRegistrationRequest();
 
 			emailExclusionList.clear();
