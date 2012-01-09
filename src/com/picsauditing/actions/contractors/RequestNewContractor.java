@@ -351,8 +351,8 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	private void prependToRequestNotes(String note) {
 		if (newContractor != null && note != null)
-			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note + "\n\n"
-					+ (newContractor.getNotes() != null ? newContractor.getNotes() : ""));
+			newContractor.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + note
+					+ (newContractor.getNotes() != null ? "\n\n" + newContractor.getNotes() : ""));
 	}
 
 	private void sendEmail() {
