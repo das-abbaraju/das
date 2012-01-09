@@ -7,6 +7,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,8 +30,8 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 	@Anonymous
 	public String execute() throws Exception {
 		contractor = accountDao.find(id);
-		if (contractor != null) {
 		
+		if (contractor != null) {
 			/*
 			File logo = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
 			String fName = contractor.getLogoFile();
@@ -46,7 +47,6 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			*/
 	    
 			json.put("name", contractor.getName());
-			//json.put("image", getFtpDir() + "/logos/" + contractor.getLogoFile());
 			json.put("address", contractor.getAddress() + "<br />" +
 								contractor.getCity() + ", " +
 								contractor.getState().toString() + " " +
@@ -56,8 +56,8 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			json.put("description", contractor.getDescription());
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
-			json.put("logoFileName", contractor.getLogoFile());
-			//json.put("image", encodedImage.toString());
+			json.put("logo", ServletActionContext.getRequest().getContextPath() + "/ContractorLogo.action?id=" + contractor.getId());
+			
 			return JSON;
 		}
 		
