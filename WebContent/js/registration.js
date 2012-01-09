@@ -616,6 +616,8 @@
 				var element = $(this);
 				var ccName = $('#transact_ccName', element);
 				
+				element.find('.processing').show();
+				
 				if (ccName.val() == 'Check') {
 					element.attr('action', 'RegistrationMakePayment.action');
 				}

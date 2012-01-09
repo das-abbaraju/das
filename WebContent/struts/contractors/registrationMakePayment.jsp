@@ -230,6 +230,11 @@
 							cssClass="btn success" 
 						/>
 						
+						<div class="processing">
+							<img src="images/loading.gif" />
+							<p>Processing Payment - Please wait.</p> 
+						</div>
+						
 						<p class="check-note">
 							<s:text name="ContractorPaymentOptions.InvoiceEmail" />
 						</p>
