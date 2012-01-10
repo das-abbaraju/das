@@ -29,6 +29,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
@@ -188,14 +189,22 @@ public class CaoSave extends AuditActionSupport {
 		AuditStatus newStatus = step.getNewStatus();
 
 		cao.changeStatus(newStatus, permissions);
+		// TODO Are we actually saving this new CAOW?
 		
-		// Setting the expiration date
+		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
+				&& cao.getPercentVerified() == 100) {
+			ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, permissions);
+			caow.setNotes("Auto completed based previously completed verification");
+			caow.setAuditColumns(new User(User.SYSTEM));
+			// caowDAO.save(caow);
+		}
+
 		auditSetExpiresDate(cao, newStatus);
 
 		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Incomplete))
 			updateFlag(cao);
 
-		// we need handle the PQF specific's
+		// we need to handle the PQF specific's
 		if (insurance) {
 			ContractorAccount con = cao.getAudit().getContractorAccount();
 			con.incrementRecalculation();
@@ -273,8 +282,6 @@ public class CaoSave extends AuditActionSupport {
 			if (step.getNewStatus().isSubmittedResubmitted()) {
 				if (cao.getPercentComplete() < 100)
 					addActionError("Please complete all required questions" + forString);
-				if (cao.getAudit().getAuditType().isPqf() && cao.getPercentVerified() == 100)
-					step.setNewStatus(AuditStatus.Complete);
 			}
 		}
 
