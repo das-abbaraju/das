@@ -1,12 +1,5 @@
 package com.picsauditing.actions.contractors;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.codec.binary.Base64;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +8,6 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.util.ImageUtil;
 
 @SuppressWarnings("serial")
 public class ContractorSummaryExternal extends PicsActionSupport {
@@ -32,31 +24,20 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 		contractor = accountDao.find(id);
 		
 		if (contractor != null) {
-			/*
-			File logo = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
-			String fName = contractor.getLogoFile();
-			String ext = fName.substring(fName.lastIndexOf(".") + 1);
-			
-			BufferedImage img = ImageUtil.createBufferedImage(logo);
-			img = ImageUtil.resize(img, 150, 150, true);
-	
-			ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-			ImageIO.write(img, ext, bStream);
-			Base64 base64 = new Base64();
-			byte[] encodedImage = base64.encode(bStream.toByteArray());
-			*/
-	    
+		    String requestHost = this.getRequestHost();
+		    
 			json.put("name", contractor.getName());
-			json.put("address", contractor.getAddress() + "<br />" +
-								contractor.getCity() + ", " +
-								contractor.getState().toString() + " " +
-								contractor.getZip() + "<br />" +
-								contractor.getCountry().toString()
-					);
+			json.put("address", 
+		        contractor.getAddress() + "<br />" +
+				contractor.getCity() + ", " +
+				contractor.getState().toString() + " " +
+				contractor.getZip() + "<br />" +
+				contractor.getCountry().toString()
+			);
 			json.put("description", contractor.getDescription());
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
-			json.put("logo", ServletActionContext.getRequest().getContextPath() + "/ContractorLogo.action?id=" + contractor.getId());
+			json.put("logo", requestHost + "/ContractorLogo.action?id=" + contractor.getId());
 			
 			return JSON;
 		}

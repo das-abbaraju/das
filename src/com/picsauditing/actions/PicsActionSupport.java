@@ -323,6 +323,20 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
+	public String getRequestHost()
+	{
+	    // generate requestHost for logo path definition
+        String requestURL = getRequestURL().toString();
+        String requestURI = getRequestURI();
+        String requestHost = requestURL.replace(requestURI, "");
+        
+        return requestHost;
+	}
+	
+	public String getRequestString() {
+        return requestURL;
+    }
+	
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
@@ -330,7 +344,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
-
+	
 	public String getIP() {
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
@@ -476,10 +490,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public void setRequest(Map arg0) {
 		if (requestURL == null)
 			requestURL = ServletActionContext.getRequest().getRequestURL().toString();
-	}
-
-	public String getRequestString() {
-		return requestURL;
 	}
 
 	public String redirect(String url) throws IOException {
