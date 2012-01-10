@@ -126,6 +126,17 @@ public class ContractorAuditController extends AuditActionSupport {
 					if (auditCatData != null) {
 						auditCatData.setApplies(true);
 						auditCatData.setOverride(true);
+						for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
+							AuditCatData childCatData = getCategories().get(childCategory);
+							if (childCatData == null) {
+								childCatData = new AuditCatData();
+								childCatData.setAuditColumns(permissions);
+								childCatData.setAudit(conAudit);
+								conAudit.getCategories().add(childCatData);
+							}
+							childCatData.setApplies(true);
+							childCatData.setOverride(true);	
+						}
 						auditDao.save(auditCatData);
 					}
 					conAudit.setLastRecalculation(null);
@@ -138,6 +149,13 @@ public class ContractorAuditController extends AuditActionSupport {
 					if (auditCatData != null) {
 						auditCatData.setApplies(false);
 						auditCatData.setOverride(true);
+						for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
+							AuditCatData childCatData = getCategories().get(childCategory);
+							if (childCatData != null) {
+								childCatData.setApplies(false);
+								childCatData.setOverride(true);	
+							}
+						}
 						auditDao.save(auditCatData);
 					}
 					conAudit.setLastRecalculation(null);
