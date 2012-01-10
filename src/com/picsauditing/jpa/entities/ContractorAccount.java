@@ -85,6 +85,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private boolean soleProprietor;
 	private Boolean competitorMembership;
 	private Boolean hasCanadianCompetitor;
+	private boolean showInDirectory = true;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
 	private Date paymentExpires;
@@ -1362,6 +1363,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public Boolean getHasCanadianCompetitor() {
 		return hasCanadianCompetitor;
+	}
+
+	public boolean isShowInDirectory() {
+		return showInDirectory;
+	}
+
+	public void setShowInDirectory(boolean showInDirectory) {
+		this.showInDirectory = showInDirectory;
 	}
 
 	@Enumerated(EnumType.STRING)

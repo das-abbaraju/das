@@ -279,23 +279,29 @@
 							
 							<ol>
 								<li>
-									<label><s:text name="ContractorEdit.CompanyIdentification.WebURL"/>:</label> 
-									<s:textfield name="contractor.webUrl" size="35" /></li>
-								<li>
-									<label><s:text name="ContractorEdit.CompanyIdentification.CompanyLogo"/>:</label>
-									<s:file name="logo" size="35" />
+									<label>
+										<s:text name="ContractorEdit.CompanyIdentification.WebURL"/>:
+									</label> 
+									<s:textfield name="contractor.webUrl" size="35" />
 								</li>
 								<li>
-									<label>&nbsp</label>
+									<label>
+										<s:text name="ContractorEdit.CompanyIdentification.CompanyLogo"/>:
+									</label>
+									<s:file name="logo" size="35" label="Testing" />
+									<br />
 									(Allowed formats: jpg, gif, png)
 								</li>
 								<li>
-									<label><s:text name="ContractorEdit.CompanyIdentification.CompanyBrochure"/>:</label>
+									<label>
+										<s:text name="ContractorEdit.CompanyIdentification.CompanyBrochure"/>:
+									</label>
 									<s:file name="brochure" size="35" />
+									<br />
+									(Allowed formats: pdf, doc, jpg, gif, png)
 								</li>
 								<li>
-									<label>&nbsp</label>
-									(Allowed formats: pdf, doc, jpg, gif, png)
+									<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
 								</li>
 								<li>
 									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
