@@ -1492,12 +1492,12 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isEligbleForImportPQF() {
+	public boolean isEligibleForImportPQF() {
 		// This list is empty because currently Import PQF is not enabled for any Operators
-		List<Integer> importPQFEligbleOperators = new ArrayList<Integer>();
+		List<Integer> importPQFEligibleOperators = new ArrayList<Integer>();
 
 		for (OperatorAccount operator : getOperatorAccounts())
-			if (importPQFEligbleOperators.contains(operator.getTopAccount()))
+			if (importPQFEligibleOperators.contains(operator.getTopAccount()))
 				return true;
 
 		return false;
