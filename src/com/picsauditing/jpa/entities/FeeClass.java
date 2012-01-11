@@ -37,17 +37,6 @@ public enum FeeClass implements Translatable {
 
 			return isAllExclusionsApplicable(contractor, exclusions);
 		}
-
-		@Override
-		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-			for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-				if (operator.getTopAccount().getId() != OperatorAccount.BASF) {
-					return fee.getAmount();
-				}
-			}
-
-			return new BigDecimal(49).setScale(2);
-		}
 	},
 	AuditGUARD {
 		@Override
@@ -108,7 +97,6 @@ public enum FeeClass implements Translatable {
 	WebcamFee,
 	ExpediteFee,
 	ImportFee,
-	SuncorDiscount,
 	GST,
 	Misc;
 
