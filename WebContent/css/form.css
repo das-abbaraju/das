@@ -72,3 +72,37 @@ ul.radio.inline label
 	line-height: 20px !important;
 	margin: 0px 5px 0px 0px !important;
 }
+
+/* Table */
+
+.table
+{
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.table th,
+.table td
+{
+	border: 1px solid #DDDDDD;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 18px;
+	padding: 10px 10px 9px;
+}
+
+.table th
+{
+	font-weight: bold;
+	text-align: center;
+}
+
+.table td
+{
+	vertical-align: middle;
+}
+
+.table .odd td
+{
+	background-color: #F5F5F5;
+}

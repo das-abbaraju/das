@@ -1157,3 +1157,84 @@ div.blockDialog {
 {
 	margin-top: 10px;
 }
+
+/* OperatorTags.action */
+
+#operatorTagForm .tag-info
+{
+	margin: 30px 0px;
+}
+
+#operatorTagForm .tag-info ul
+{
+	margin-left: 20px;
+}
+
+#operatorTagForm .table td.tag-id
+{
+	font-weight: bold;
+	text-align: right;
+}
+
+#operatorTagForm .table td.tag-name
+{
+	width: 45%;
+}
+
+#operatorTagForm .table td.tag-name span.info
+{
+	float: right;
+	padding: 2px 6px;
+}
+
+#operatorTagForm .table td.visible-client-site,
+#operatorTagForm .table td.visible-contractor,
+#operatorTagForm .table td.inherit-client-site
+{
+	text-align: center;
+}
+
+#operatorTagForm .table input
+{
+	height: 20px;
+	padding: 0px 3px;
+	width: 250px;
+}
+
+#operatorTagForm .table .actions a
+{
+	text-decoration: none;
+}
+
+#operatorTagForm .table td.add-new-tag
+{
+	background-color: #FFF6D9;
+	font-weight: bold;
+}
+
+#operatorTagForm .table td.add-new-tag span
+{
+	display: block;
+	margin-bottom: 10px;
+}
+
+#operatorTagForm .btn
+{
+	margin: 0px;
+}
+
+#operatorTagForm .table .btn
+{
+	margin-right: 5px;
+}
+
+#operatorTagForm ul.actions
+{
+	list-style: none;
+	margin: 20px 0px;
+}
+
+.operator-tag-modal table
+{
+	margin: 0px !important;
+}

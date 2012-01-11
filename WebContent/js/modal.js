@@ -15,8 +15,10 @@
 			modal_class: 'modal',
 			modal_link_class: 'modal-link',
 			backdrop: true,
+			height: 'auto',
 			keyboard: true,
-			show: false
+			show: false,
+			width: 560
 		};
 		
 		// extend configuration
@@ -36,7 +38,7 @@
 		_createModal: function() {
 			var config = this.config;
 			
-			var modal = $('<div id="' + config.modal_id + '" class="modal" style="display: none;">');
+			var modal = $('<div id="' + config.modal_id + '" class="' + config.modal_class + '" style="display: none;">');
 			var modal_header = $('<div class="modal-header"><a href="#" class="close">&#215;</a><h3></h3></div>');
 			var modal_body = $('<div class="modal-body">');
 			var modal_footer = $('<div class="modal-footer">');
@@ -50,11 +52,26 @@
 				// bind custom init event to the modal element
 				$('#' + config.modal_id).bind('init', this, function(event, options) {
 					var modal = options.modal;
+					var modal_header = modal.find('.modal-header');
+					var modal_body = modal.find('.modal-body');
+					
+					
 					var title = options.title;
 					var content = options.content;
 					
-					modal.find('.modal-header h3').html(title);
-					modal.find('.modal-body').html(content);
+					modal_header.find('h3').html(title);
+					modal_body.html(content);
+					
+					modal.css({
+					    marginLeft: '-' + (config.width / 2) + 'px',
+					    marginTop: '-' + ((config.height / 2) + 50) + 'px',
+					    width: config.width
+					});
+					
+					modal_body.css({
+					    height: config.height,
+					    overflowY: 'auto'
+					});
 					
 					modal.modal('show');
 				});

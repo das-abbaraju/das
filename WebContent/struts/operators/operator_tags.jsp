@@ -12,6 +12,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 
 		<s:include value="../jquery.jsp"/>
+		
 		<script type="text/javascript" src="js/operator_tags.js"></script>
 	</head>
 	<body>
@@ -24,212 +25,187 @@
 			<h1><s:text name="OperatorTags.title.DefineContractorTags" /></h1>
 		</s:else>
 		
-		<a href="OperatorTags.action?id=<s:property value="id" />"><s:text name="button.Refresh" /></a>
-		<div id="warnConfirm"></div>
+		<s:url action="OperatorTags.action" var="action">
+			<s:param name="id" value="%{id}" />
+		</s:url>
 		
-		<table>
-			<tr>
-				<td>
-					<div id="tagListDiv">
-						<s:form id="operatorTagForm">
-							<s:hidden name="id" />
+		<s:form id="operatorTagForm" action="%{#action}">
+			<s:hidden name="id" />
+			
+			<div class="tag-info">
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+				<ul>
+					<li>Is client site visible: something</li>
+					<li>Is contractor visible: else</li>
+					<li>Is inherited: here</li>
+				</ul>
+			</div>
+			
+			<table class="table">
+				<thead>
+					<tr>
+						<th class="id tag-id">
+							<%-- <s:text name="OperatorTags.header.TagID" /> --%>
+							ID
+						</th>
+						
+						<th class="tag-name">
+							<%-- <s:text name="OperatorTags.header.TagName" /> --%>
+							Name
+						</th>
+						
+						<th class="visible-client-site">
+							<%-- <s:text name="OperatorTags.header.VisibleTo">
+								<s:param value="%{getText('global.Operator')}" />
+							</s:text> --%>
+							Is client site visible
+						</th>
+						
+						<th class="visible-contractor">
+							<%-- <s:text name="OperatorTags.header.VisibleTo">
+								<s:param value="%{getText('global.Contractors')}" />
+							</s:text> --%>
+							Is contractor visible
+						</th>
+						
+						<th class="inherit-client-site">
+							<%-- <s:text name="OperatorTags.header.UsableBySites" /> --%>
+							Is inherited
+						</th>
+						
+						<s:if test="permissions.hasPermission('ContractorTags', 'Delete') 
+							|| permissions.isCanAddRuleForOperator(operator) 
+							|| permissions.hasPermission('ManageAudits')">
+							<th class="actions">
+								Actions
+							</th>
+						</s:if>
+					</tr>
+				</thead>
+				
+				<s:set var="globalOperator" value="operator" />
+				
+				<s:iterator value="tags" var="tag" status="rowstatus">
+					<tr class="<s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
+						<td class="id tag-id">
+							<s:property value="id" />
 							
-							<table class="report">
-								<thead>
-									<tr>
-										<th>
-											<s:text name="OperatorTags.header.TagID" />
-										</th>
-										<th>
-											<s:text name="OperatorTags.header.TagName" />
-										</th>
-										<th>
-											<s:text name="OperatorTags.header.VisibleTo">
-												<s:param value="%{getText('global.Operator')}" />
-											</s:text>
-										</th>
-										<th>
-											<s:text name="OperatorTags.header.VisibleTo">
-												<s:param value="%{getText('global.Contractors')}" />
-											</s:text>
-										</th>
-										
-										<s:if test="operator.corporate">
-											<th>
-												<s:text name="OperatorTags.header.UsableBySites" />
-											</th>
-										</s:if>
-										
-										<pics:permission perm="ContractorTags" type="Delete">
-											<th>
-												<s:text name="button.Remove" />
-											</th>
-										</pics:permission>
-										
-										<s:if test="permissions.isCanAddRuleForOperator(operator) || permissions.hasPermission('ManageAudits')">
-											<th>
-												<s:text name="button.Edit" />
-											</th>
-										</s:if>
-									</tr>
-								</thead>
-								
-								<s:set var="globalOperator" value="operator" />
-								
-								<s:iterator value="tags" status="rowstatus">
-									<s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
-									
-									<tr>
-										<td class="right">
-											<s:property value="id" />
-										</td>
-										
-										<pics:permission perm="ContractorTags" type="Edit">
-											<s:if test="operator.id == permissions.accountId">
-												<td>
-													<s:textfield name="tags[%{#rowstatus.index}].tag" value="%{tag}" />
-												</td>
-												<td>
-													<s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" />
-												</td>
-												<td>
-													<s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" />
-												</td>
-												
-												<s:if test="operator.corporate">
-													<td>
-														<s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" />
-													</td>
-												</s:if>
-											</s:if>
-										</pics:permission>
-										<s:else>
-											<td>
-												<s:property value="tag"/>
-											</td>
-											<td class="center">
-												<s:if test="active">
-													<s:text name="YesNo.Yes" />
-												</s:if>
-												<s:else>
-													<s:text name="YesNo.No" />
-												</s:else>
-											</td>
-											<td class="center">
-												<s:if test="visibleToContractor">
-													<s:text name="YesNo.Yes" />
-												</s:if>
-												<s:else>
-													<s:text name="YesNo.No" />
-												</s:else>
-											</td>
-										</s:else>
-										
-										<pics:permission perm="ContractorTags" type="Delete">
-											<s:if test="#globalOperator.corporate && operator.id != permissions.accountId">
-												<s:if test="operator.id != permissions.accountId">
-													<td>
-														<s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" disabled="true"/>
-													</td>
-												</s:if>
-												<s:else>
-													<td>
-														<s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" />
-													</td>
-												</s:else>
-											</s:if>
-											
-											<s:if test="operator.id != permissions.accountId">
-												<td>
-													<p title="<s:text name="OperatorTags.TagBelongsToAnotherOperator"><s:param value="operator"/></s:text>">
-														<s:text name="OperatorTags.message.CannotRemove" />
-													</p>
-												</td>
-											</s:if>
-											<s:elseif test="!auditTypeRules.empty || !auditCategoryRules.empty || !operatorFlagCriteria.empty">
-												<td>
-													<p title="<s:text name="OperatorTags.TagInUseByConfig"/>">
-														<s:text name="OperatorTags.message.CannotRemove" />
-													</p>
-												</td>
-											</s:elseif>
-											<s:elseif test="!contractorTags.empty">
-												<td>
-													<p title="<s:text name="OperatorTags.TagAppliedToContractors">
-																<s:param value="contractorNames"/>
-															  </s:text>">
-														<s:text name="OperatorTags.message.CannotRemove" />
-													</p>
-												</td>
-											</s:elseif>
-											<s:else>
-												<td>
-													<a href="#" class="checkRemove" rel="<s:property value="id" />"><s:text name="button.Remove" /></a>
-												</td>
-											</s:else>
-										</pics:permission>
-										
-										<s:if test="permissions.isCanAddRuleForOperator(operator) || permissions.hasPermission('ManageAudits')">
-											<td>
-												<s:if test="permissions.isCanAddRuleForOperator(operator)">
-													<s:if test="!auditTypeRules.empty">
-														<a href="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit btn">Audit Rules</a>
-													</s:if>
-													
-													<s:if test="!auditCategoryRules.empty">
-														<a href="CategoryRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" rel="facebox" class="edit btn">Category Rules</a>
-													</s:if>
-												</s:if>
-												
-												<s:if test="permissions.hasPermission('ManageAudits') && !operatorFlagCriteria.empty">
-													<a rel="facebox" href="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="edit btn">Flag Criteria</a>
-												</s:if>
-											</td>
-										</s:if>
-									</tr>
-								</s:iterator>
-								
-								<s:if test="permissions.operatorCorporate">
-									<pics:permission perm="ContractorTags" type="Edit">
-										<tr>
-											<td>
-												<s:text name="OperatorTags.label.New" />
-											</td>
-											<td>
-												<s:textfield name="tags[%{tags.size}].tag" value="%{tag}" />
-											</td>
-											<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">
-												<s:text name="OperatorTags.label.AddNewTag" />
-											</td>
-										</tr>
-									</pics:permission>
+							<s:hidden name="tags[%{#rowstatus.index}].id" value="%{id}" />
+						</td>
+						
+						<%-- edit mode --%>
+						<s:if test="permissions.hasPermission('ContractorTags', 'Edit') && operator.id == permissions.accountId">
+							<td class="tag-name">
+								<s:textfield name="tags[%{#rowstatus.index}].tag" value="%{tag}" />
+							</td>
+							<td class="visible-client-site">
+								<s:checkbox name="tags[%{#rowstatus.index}].active" value="%{active}" />
+							</td>
+							<td class="visible-contractor">
+								<s:checkbox name="tags[%{#rowstatus.index}].visibleToContractor" value="%{visibleToContractor}" />
+							</td>
+							<td class="inherit-client-site">
+								<s:if test="operator.corporate">
+									<s:checkbox name="tags[%{#rowstatus.index}].inheritable" value="%{inheritable}" />
 								</s:if>
 								<s:else>
-									<tr>
-										<td>
-											<s:text name="OperatorTags.label.New" />
-										</td>
-										<td>
-											<s:textfield name="tags[%{tags.size}].tag" value="%{tag}" />
-										</td>
-										<td colspan="<s:property value="operator.corporate ? 4 : 3"/>">
-											<s:text name="OperatorTags.label.AddNewTag" />
-										</td>
-									</tr>
+									<img src="images/registration/cross.png" />
 								</s:else>
-							</table>
+							</td>
+						</s:if>
 						
-							<div>
-								<s:submit method="save" value="%{getText('button.Save')}" cssClass="picsbutton positive" />
-							</div>
-						</s:form>
-					</div>
-				</td>
-				<td>&nbsp;</td>
-				<td>
-					<div id="rules"></div>
-				</td>
-			</tr>
-		</table>
+						<%-- view mode --%>
+						<s:else>
+							<td class="tag-name">
+								<s:property value="#tag.tag" />
+							</td>
+							<td class="visible-client-site">
+								<s:if test="#tag.active">
+									<img src="images/registration/check.png" />
+								</s:if>
+								<s:else>
+									<img src="images/registration/cross.png" />
+								</s:else>
+							</td>
+							<td class="visible-contractor">
+								<s:if test="#tag.visibleToContractor">
+									<img src="images/registration/check.png" />
+								</s:if>
+								<s:else>
+									<img src="images/registration/cross.png" />
+								</s:else>
+							</td>
+							<td class="inherit-client-site">
+								<s:if test="#tag.operator.id != #globalOperator.id">
+									<img src="images/registration/check.png" />
+								</s:if>
+								<s:else>
+									<img src="images/registration/cross.png" />
+								</s:else>
+							</td>
+						</s:else>
+						
+						<s:if test="permissions.hasPermission('ManageAudits')
+							|| permissions.hasPermission('ContractorTags') 
+							|| permissions.isCanAddRuleForOperator(operator)">
+							<td class="actions">
+								<%-- Allow deletion for tags defined on 'this' operator by the current operator or pics admin --%>
+								<s:if test="#tag.operator.id == #globalOperator.id
+									&& (permissions.hasPermission('ContractorTags', 'Delete') || permissions.isCanAddRuleForOperator(operator))
+									&& contractorTags.empty 
+									&& auditTypeRules.empty 
+									&& auditCategoryRules.empty 
+									&& operatorFlagCriteria.empty">
+									<a href="javascript:;" class="checkRemove btn error" rel="<s:property value="id" />"><s:text name="button.Remove" /></a>
+								</s:if>
+								<s:else>
+									<s:if test="#tag.operator.id != #globalOperator.id">
+										<span class="btn info" title="<s:text name="OperatorTags.TagBelongsToAnotherOperator"><s:param value="operator"/></s:text>">Info</span>
+									</s:if>
+									<s:elseif test="!auditTypeRules.empty || !auditCategoryRules.empty || !operatorFlagCriteria.empty">
+										<span class="btn info" title="<s:text name="OperatorTags.TagInUseByConfig"/>">Info</span>
+									</s:elseif>
+									<s:elseif test="!contractorTags.empty">
+										<span class="btn info" title="<s:text name="OperatorTags.TagAppliedToContractors"><s:param value="contractorNames"/></s:text>">Info</span>
+									</s:elseif>
+								</s:else>
+								
+								<s:if test="#tag.operator.id == #globalOperator.id">
+									<s:if test="permissions.isCanAddRuleForOperator(operator)">
+										<s:if test="!auditTypeRules.empty">
+											<a data-url="AuditTypeRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" class="modal-link btn">Audit Rules</a>
+										</s:if>
+										
+										<s:if test="!auditCategoryRules.empty">
+											<a data-url="CategoryRuleTableAjax.action?comparisonRule.tag.id=${id}&button=tags" class="modal-link btn">Category Rules</a>
+										</s:if>
+									</s:if>
+									
+									<s:if test="permissions.hasPermission('ManageAudits') && !operatorFlagCriteria.empty">
+										<a data-url="ManageFlagCriteriaOperator.action?id=<s:property value="operatorFlagCriteria.get(0).operator.id" />" class="modal-link btn">Flag Criteria</a>
+									</s:if>
+								</s:if>
+							</td>
+						</s:if>
+					</tr>
+				</s:iterator>
+				
+				<tfoot>
+					<tr>
+						<td colspan="6" class="add-new-tag">
+							<span><s:text name="OperatorTags.label.AddNewTag" />:</span>
+							<s:textfield name="tags[%{tags.size}].tag" />
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		
+			<ul class="actions">
+				<li>
+					<s:submit method="save" value="Save Changes" cssClass="btn success" />
+				</li>
+			</ul>
+		</s:form>
 	</body>
 </html>
