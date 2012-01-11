@@ -622,15 +622,20 @@ font-weight:bold;
 text-decoration:none;
 }
 /** END Category Header+Footer Navigation **/
+
 /** Audit SideNav **/
-ul.vert-toolbar  {
+
+ul.vert-toolbar
+{
 	list-style: none;	
 	width: 260px;
 	background-color: #F6F6F0;
 	border-bottom: 2px solid #bcbcbc;
 	margin: 0 30px 20px 0;
 }
-ul.vert-toolbar li {
+
+ul.vert-toolbar li
+{
 	font-size:14px;
 	color: #012142;
 	border-top: 1px solid #fff;
@@ -638,84 +643,109 @@ ul.vert-toolbar li {
 	position: relative;
 	line-height: 16px;
 }
-ul.vert-toolbar li .cat-percent {
+
+ul.vert-toolbar li .cat-percent
+{
 	position: absolute;
 	right:5px;
 	color: #AEAEAE;
 }
-ul.vert-toolbar li a {
+
+ul.vert-toolbar li a
+{
 	display: block;
 	width: 88%;
 	text-decoration: none;
 	padding: 12px;
 }
-ul#toolbar li a {
-	padding-left: 20px;
-}
-ul#toolbar li a.excel {
-	margin-left: 5px;
-}
-ul.vert-toolbar li a:link {
+
+ul.vert-toolbar li a:link
+{
 	text-decoration: none;
 }
-ul.vert-toolbar li.current {
+
+ul.vert-toolbar li a.hist-category
+{
+	overflow: hidden;
+}
+
+ul.vert-toolbar li a.hist-category .category-name
+{
+	float: left;
+	width: 190px;
+}
+
+ul.vert-toolbar li.current
+{
 	background: #5D9BCE;
 	color: #fff;
 }
 
-ul.vert-toolbar li.current:hover {
+ul.vert-toolbar li.current:hover
+{
 	background: #5D9BCE;
 	color: #fff;
 }
 
-ul.vert-toolbar li.current a {
+ul.vert-toolbar li.current a
+{
 	color: #fff;
 	text-decoration: none;
 }
 
-ul.vert-toolbar li.current a.hist-category {
+ul.vert-toolbar li.current a.hist-category
+{
 	color: #fff;
 }
 
-ul.vert-toolbar li.current a.hist-category:hover {
+ul.vert-toolbar li.current a.hist-category:hover
+{
 	color: #fff;
 }
 
-ul.vert-toolbar ul.subcat-list li a {
+ul.vert-toolbar ul.subcat-list li a
+{
 	padding: 4px 12px;
 	color: #012142;
 }
-ul.vert-toolbar a:hover {
+
+ul.vert-toolbar a:hover
+{
 	cursor: pointer;
 }
-ul.subcat-list {
-	list-style: none;
-}
-ul.subcat-list li {
-	border: none;
-	font-size: 12px;
-}
-ul.vert-toolbar div.subcat {
+
+ul.vert-toolbar div.subcat
+{
 	display: none;
 	background-color: #E7E6E2;
 	color: #012142;
 	padding: 5px 0 5px 0;
 }
-ul.vert-toolbar li.current div.subcat {
+
+ul.vert-toolbar li.current div.subcat
+{
 	display: block;
 	border-top: 1px solid #C3C3C3;
 }
-ul.vert-toolbar li.hover {
+
+ul.vert-toolbar li.hover
+{
 	background-color: #e7e7e0;
 	border-bottom: 1px solid #ababab;
 }
-ul.vert-toolbar li.hover a {
+
+ul.vert-toolbar li.hover a
+{
 	color: #012142;
 }
-ul.vert-toolbar li.hover a:hover {
+
+ul.vert-toolbar li.hover a:hover
+{
 	color: rgb(168, 77, 16);
 }
-ul.vert-toolbar li.head {
+
+ul.vert-toolbar li.head
+{
 	padding: 14px 0 12px 10px;
 	background-color: #A84D10;
 	font-size: 18px;
@@ -723,33 +753,66 @@ ul.vert-toolbar li.head {
 	color: #fff;
 	border: 0;
 }
-ul.vert-toolbar li.head .hidden-button{
+
+ul.vert-toolbar li.head .hidden-button
+{
 	cursor: pointer;
 	display:none;
 	font-size: 0.5em;
 	position: absolute;
 	right:5px;
 }
-ul.vert-toolbar li.hover .hidden-button {
+
+ul.vert-toolbar li.hover .hidden-button
+{
 	display: inline;
 }
-div.addLink{
+
+ul.vert-toolbar .currSub
+{
+	background: #ddd;
+}
+
+ul#toolbar li a
+{
+	padding-left: 20px;
+}
+
+ul#toolbar li a.excel
+{
+	margin-left: 5px;
+}
+
+ul.subcat-list
+{
+	list-style: none;
+}
+
+ul.subcat-list li
+{
+	border: none;
+	font-size: 12px;
+}
+
+div.addLink
+{
 	float: right;
 	padding: 10px 5px 0px 0px;
 	color: #012142;
-}	
-div.addLink.hover{
+}
+
+div.addLink.hover
+{
 	float: right;
 	padding: 10px 5px 0px 0px;	
 	text-decoration: underline;
 	cursor: pointer;
 	color: #A84D10;
 }
-#nacatlist{
+
+#nacatlist
+{
 	display: none;
-}
-ul.vert-toolbar .currSub{
-	background: #ddd;
 }
 
 /*** Next/Done button ***/
