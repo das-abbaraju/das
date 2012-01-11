@@ -1,6 +1,5 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -61,12 +60,6 @@ public class AuditBuilder {
 	
 	private AuditDataDAO auditDataDAO;
 	
-	// TODO: remove ASAP (1/6/2012)
-	// this is a set of integers for the different Canadian Provinces with WCBs
-	public static final Set<Integer> canadianProvinces = new HashSet<Integer>(Arrays.asList(new Integer[]{145, 146, 143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
-
-	// TODO: remove this (1/6/2012)
-	@SuppressWarnings("deprecation")
 	public void buildAudits(ContractorAccount contractor) {
 		typeRuleCache.initialize(auditDecisionTableDAO);
 		categoryRuleCache.initialize(auditDecisionTableDAO);
@@ -104,20 +97,6 @@ public class AuditBuilder {
 								if (!conAudit.isExpired() && !conAudit.willExpireSoon())
 									// The audit is still valid for a number of days dependent on its type
 									found = true;
-								
-								// TODO: remove this (1/6/2012)
-								// this is setting found to false to "trick" the system into thinking that the 2012
-								// WCBs need to be generated.
-								if (canadianProvinces.contains(auditType
-										.getId())) {
-									if (conAudit.getCreationDate().getYear() == 111
-											|| (conAudit.getEffectiveDate() != null && conAudit
-													.getEffectiveDate()
-													.getYear() == 111)) {
-										found = false;
-									}
-								}
-
 							}
 						}
 					}
