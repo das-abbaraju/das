@@ -97,6 +97,7 @@ public enum FeeClass implements Translatable {
 	WebcamFee,
 	ExpediteFee,
 	ImportFee,
+	SuncorDiscount,
 	GST,
 	Misc;
 
