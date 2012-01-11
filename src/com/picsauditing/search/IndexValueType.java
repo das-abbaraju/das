@@ -8,12 +8,12 @@ import java.util.List;
 import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.IsoCode;
 import com.picsauditing.jpa.entities.TranslatableString;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.util.IndexObject;
 import com.picsauditing.util.Strings;
 
 /**
- * Extensible enum handling how to treat retrieving the value from a method that
- * is to be indexed
+ * Extensible enum handling how to treat retrieving the value from a method that is to be indexed
  * 
  * @author David Tomberlin
  * 
@@ -24,10 +24,12 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				indexValues.add(new IndexObject(strResult, weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					indexValues.add(new IndexObject(strResult, weight));
+				}
 			}
 
 			return indexValues;
@@ -37,13 +39,16 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				String[] strArray = strResult.replaceAll(NAME_REGEX, " ").split("\\s+");
-				for (String str : strArray) {
-					if (!Strings.isEmpty(str))
-						indexValues.add(new IndexObject(str, weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					strResult = normalize(strResult);
+					String[] strArray = strResult.replaceAll(NAME_REGEX, " ").split("\\s+");
+					for (String str : strArray) {
+						if (!Strings.isEmpty(str))
+							indexValues.add(new IndexObject(str, weight));
+					}
 				}
 			}
 
@@ -54,10 +59,13 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				indexValues.add(new IndexObject(strResult.replaceAll(NAME_REGEX, ""), weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					strResult = normalize(strResult);
+					indexValues.add(new IndexObject(strResult.replaceAll(NAME_REGEX, ""), weight));
+				}
 			}
 
 			return indexValues;
@@ -83,12 +91,15 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				strResult = com.picsauditing.util.Strings.stripPhoneNumber(strResult);
-				if (strResult.length() >= 10 && !strResult.matches("\\W"))
-					indexValues.add(new IndexObject(strResult.replaceAll(NAME_REGEX, ""), weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					strResult = com.picsauditing.util.Strings.stripPhoneNumber(strResult);
+					if (strResult.length() >= 10 && !strResult.matches("\\W"))
+						strResult = normalize(strResult);
+						indexValues.add(new IndexObject(strResult.replaceAll(NAME_REGEX, ""), weight));
+				}
 			}
 
 			return indexValues;
@@ -98,10 +109,13 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				indexValues.add(new IndexObject(strResult.replaceAll(URL_REGEX, ""), weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					strResult = normalize(strResult);
+					indexValues.add(new IndexObject(strResult.replaceAll(URL_REGEX, ""), weight));
+				}
 			}
 
 			return indexValues;
@@ -111,13 +125,15 @@ public enum IndexValueType {
 		@Override
 		public List<IndexObject> getIndexValues(Indexable record, Method method, int weight) {
 			List<IndexObject> indexValues = new ArrayList<IndexObject>();
-			String strResult = getString(getValue(method, record));
+			List<String> strList = getString(getValue(method, record));
 
-			if (!Strings.isEmpty(strResult)) {
-				String[] strArray = strResult.split("@");
-				for (String str : strArray) {
-					if (!Strings.isEmpty(str))
-						indexValues.add(new IndexObject(str.replaceAll("\\W", ""), weight));
+			for (String strResult : strList) {
+				if (!Strings.isEmpty(strResult)) {
+					String[] strArray = strResult.split("@");
+					for (String str : strArray) {
+						if (!Strings.isEmpty(str))
+							indexValues.add(new IndexObject(str.replaceAll("\\W", ""), weight));
+					}
 				}
 			}
 
@@ -145,11 +161,38 @@ public enum IndexValueType {
 		return result;
 	}
 
-	static String getString(Object o) {
+	static List<String> getString(Object o) {
+		List<String> stringList = new ArrayList<String>();
 		if (o instanceof TranslatableString) {
-			return o.toString() == null ? null : o.toString().toUpperCase();
-		} else
-			return o == null ? null : String.valueOf(o).toUpperCase();
+			TranslatableString translatable = (TranslatableString) o;
+			ArrayList<Translation> translations = new ArrayList<Translation>();
+			translations.addAll(translatable.getTranslations());
+
+			for (Translation translation : translations) {
+				stringList.add(translation.getValue().toUpperCase());
+			}
+
+		} else {
+			if (o != null) {
+				stringList.add(String.valueOf(o).toUpperCase());
+			}
+		}
+		return stringList;
+	}
+
+	static String normalize(String s) {
+		s = s.replaceAll("[ËÈÍÎ]", "e");
+		s = s.replaceAll("[˚˘]", "u");
+		s = s.replaceAll("[ÔÓ]", "i");
+		s = s.replaceAll("[‡‚]", "a");
+		s = s.replaceAll("‘", "o");
+
+		s = s.replaceAll("[»… À]", "E");
+		s = s.replaceAll("[€Ÿ]", "U");
+		s = s.replaceAll("[œŒ]", "I");
+		s = s.replaceAll("[¿¬]", "A");
+		s = s.replaceAll("‘", "O");
+		return s;
 	}
 
 	public abstract List<IndexObject> getIndexValues(Indexable record, Method method, int weight);
