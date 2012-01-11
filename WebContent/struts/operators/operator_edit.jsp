@@ -431,7 +431,7 @@
 								${operator.currency.symbol}${activationFeeOperator.activationFee}&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?operator=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
 							</s:if>
 							<s:else>
-								<s:if test="permissions.hasPermission('UserRolePicsOperator')">
+								<pics:permission perm="UserRolePicsOperator">
 									<s:if test="operator.activationFee">
 										<s:set var="operator_activationFee_onchange" value="'checkFee(this.value, %{#operator.activationFee})'" />
 									</s:if>
@@ -440,10 +440,10 @@
 									</s:else>
 									
 									<p>${operator.currency.symbol} <s:textfield id="opActivationFee" name="operator.activationFee" onchange="%{#operator_activationFee_onchange}"/></p>
-								</s:if>
-								<s:else>
+								</pics:permission>
+								<pics:permission negativeCheck="true" perm="UserRolePicsOperator">
 									${operator.currency.symbol}${activationFeeOperator.activationFee}
-								</s:else>
+								</pics:permission>
 							</s:else>
 							
 							<pics:fieldhelp title="Contractor Activation Fee">

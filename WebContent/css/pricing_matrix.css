@@ -1,0 +1,32 @@
+.center
+{
+	text-align: center;
+	white-space: nowrap !important;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 4px !important;
+}
+
+.darkblue
+{
+	background-color: #062541 !important;
+	padding: 4px !important;
+}
+
+.lightblue
+{
+	background-color: #79b7e0 !important;
+	padding: 4px !important;
+}
+
+.grey
+{
+	background-color: #838486 !important;
+	padding: 4px !important;
+}
+
+.brown
+{
+	background-color: #a75025 !important;
+	padding: 4px !important;
+}

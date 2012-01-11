@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
+<link rel="stylesheet" type="text/css" media="screen" href="css/pricing_matrix.css" />
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -18,31 +19,29 @@ $(document).ready(function() {
 });
 </script>
 
-<h2 style="text-align: center;"><s:text name="ContractorPricing.MatrixTitle" /></h2>
+<h2 class="center"><s:text name="ContractorPricing.MatrixTitle" /></h2>
 <p>
 	<s:if test="con != null">
-		<p style="text-align: center;"><s:text name="ContractorPricing.Description"></s:text></p>
+		<p class="center"><s:text name="ContractorPricing.Description"></s:text></p>
 	</s:if>
 </p>
 
-<table class="report center"
-	style="margin-left: auto; margin-right: auto;">
-
+<table class="report center">
 	<thead>
 		<tr>
-			<td class="center" style="background-color: #062541">
+			<td class="darkblue">
 				<s:text name="global.Operators" />
 			</td>
-			<td class="center" style="background-color: #79b7e0">
+			<td class="lightblue">
 				<s:text name="global.DocuGUARD"></s:text>
 			</td>
-			<td class="center" style="background-color: #838486">
+			<td class="grey">
 				<s:text name="global.InsureGUARD"></s:text>
 			</td>
-			<td class="center" style="background-color: #a75025">
+			<td class="brown">
 				<s:text name="global.AuditGUARD"></s:text>
 			</td>
-			<td class="center" style="background-color: #79b7e0">
+			<td class="lightblue">
 				<s:text name="global.EmployeeGUARD"></s:text>
 			</td>
 		</tr>
@@ -170,7 +169,7 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
-<p class="redMain" style="text-align: center;">
+<p class="redMain center">
 	<s:text name="ContractorPricing.ActivationFee">
 	<s:param><s:property value="%{con.currencyCode.symbol}" /></s:param>
 	<s:param><s:property value="getPrice('1Activation')"/></s:param>
