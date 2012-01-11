@@ -25,11 +25,11 @@
 			<h1><s:text name="OperatorTags.title.DefineContractorTags" /></h1>
 		</s:else>
 		
-		<s:url action="OperatorTags.action" var="action">
+		<s:url action="OperatorTags.action" var="operator_form_action">
 			<s:param name="id" value="%{id}" />
 		</s:url>
 		
-		<s:form id="operatorTagForm" action="%{#action}">
+		<s:form id="operatorTagForm">
 			<s:hidden name="id" />
 			
 			<div class="tag-info">
