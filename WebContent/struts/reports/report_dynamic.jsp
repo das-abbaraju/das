@@ -4,7 +4,6 @@
 <html>
 	<head>
 		<title><s:property value="report.summary"/></title>
-		<script type="text/javascript" src="js/pics/extjs/ext-all-debug-w-comments.js"></script>
 		
 		<style>
 

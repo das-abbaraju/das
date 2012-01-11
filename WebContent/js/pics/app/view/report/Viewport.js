@@ -4,17 +4,18 @@ Ext.define('PICS.view.report.Viewport', {
     layout : 'border',
     
     requires: [
-       'PICS.view.main.Header',
-       'PICS.view.main.Menu',
+       'PICS.view.layout.Header',
+       'PICS.view.layout.Menu',
        'PICS.view.report.FilterPanel',
-       'PICS.view.main.Footer'
+       'PICS.view.report.Grid',
+       'PICS.view.layout.Footer'
     ],
     
     title: 'Main',
     
     initComponent: function () {
         this.items = [{
-            xtype: 'header'
+            xtype: 'layoutheader'
         }, {
             region: 'center',
             layout: 'border',
@@ -22,14 +23,14 @@ Ext.define('PICS.view.report.Viewport', {
             id: 'main',
             
             dockedItems: [{
-                xtype: 'menu',
+                xtype: 'layoutmenu',
                 
                 dock: 'top',
                 height: 30
             }],
             
             items: [{
-                xtype: 'filterpanel',
+                xtype: 'reportfilterpanel',
                 
                 region: 'west',
                 
@@ -43,14 +44,13 @@ Ext.define('PICS.view.report.Viewport', {
                 title: 'Recently Added Contractors',
                 
                 items: [{
-                    title: 'Grid',
                     xtype: 'reportgrid'
                 }, {
                     title: 'Chart'
                 }]
             }]
         }, {
-            xtype: 'footer'
+            xtype: 'layoutfooter'
         }];
         
         this.callParent();

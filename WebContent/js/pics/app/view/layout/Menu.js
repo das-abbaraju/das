@@ -1,5 +1,5 @@
 Ext.define('PICS.view.layout.Menu', {
-    require: 'Ext.toolbar.Toolbar',
+    extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutmenu'],
     
     items: [{
@@ -200,5 +200,8 @@ Ext.define('PICS.view.layout.Menu', {
         menu: {
             items: reportMenu
         }
+    }, {
+        text: 'See JSON Data',
+        url: 'ReportDynamic!data.action?report=' + reportID
     }]
 });

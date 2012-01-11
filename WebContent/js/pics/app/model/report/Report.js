@@ -1,9 +1,7 @@
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
 
-    fields : storeFields
-    
-    autoLoad : true,
+    fields : storeFields,
     
     proxy : {
         type : 'ajax',
