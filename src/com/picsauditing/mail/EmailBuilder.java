@@ -211,17 +211,19 @@ public class EmailBuilder {
 	private Locale getUserLocale() {
 		Locale locale = null;
 
-		if (tokens.containsKey("permissions") && tokens.get("permissions") != null && tokens.get("permissions") instanceof ContractorAccount) {
+		if (tokens.containsKey("permissions") && tokens.get("permissions") != null
+				&& tokens.get("permissions") instanceof Permissions) {
 			Permissions permissions = (Permissions) tokens.get("permissions");
 			locale = permissions.getLocale();
 		}
 
-		if (tokens.containsKey("contractor") && tokens.get("contractor") != null && tokens.get("contractor") instanceof ContractorAccount) {
+		if (tokens.containsKey("contractor") && tokens.get("contractor") != null
+				&& tokens.get("contractor") instanceof ContractorAccount) {
 			ContractorAccount contractor = (ContractorAccount) tokens.get("contractor");
 			locale = contractor.getLocale();
 		}
 
-		if (tokens.containsKey("user") && tokens.get("user") != null && tokens.get("user") instanceof ContractorAccount) {
+		if (tokens.containsKey("user") && tokens.get("user") != null && tokens.get("user") instanceof User) {
 			User user = (User) tokens.get("user");
 			locale = user.getLocale();
 		}
