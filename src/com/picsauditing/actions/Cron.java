@@ -451,7 +451,7 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorAccount contractor : list) {
 			if (!emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
-				OperatorAccount requestedByClientSite = contractor.getRequestedBy();
+				List<OperatorAccount> clientSites = contractor.getOperatorAccounts();
 
 				emailBuilder.clear();
 
@@ -464,8 +464,11 @@ public class Cron extends PicsActionSupport {
 
 				emailBuilder.addToken("contractor", contractor);
 
-				if (requestedByClientSite != null) {
-					emailBuilder.addToken("clientSite", requestedByClientSite);
+				// use the first client site
+				if (!clientSites.isEmpty()) {
+					OperatorAccount clientSite = clientSites.get(0);
+
+					emailBuilder.addToken("clientSite", clientSite);
 					if (templateID == 0)
 						emailBuilder.setTemplate(201);
 					else
@@ -492,10 +495,12 @@ public class Cron extends PicsActionSupport {
 				// update the contractor notes
 				stampNote(contractor, newNote + emailBuilder.getSentTo(), NoteCategory.Registration);
 				if (templateID == 0) {
-					if (clientSiteContractors.get(requestedByClientSite) == null)
-						clientSiteContractors.put(requestedByClientSite, new ArrayList<ContractorAccount>());
+					for (OperatorAccount clientSite : clientSites) {
+						if (clientSiteContractors.get(clientSite) == null)
+							clientSiteContractors.put(clientSite, new ArrayList<ContractorAccount>());
 
-					clientSiteContractors.get(requestedByClientSite).add(contractor);
+						clientSiteContractors.get(clientSite).add(contractor);
+					}
 				}
 			}
 		}
@@ -604,8 +609,17 @@ public class Cron extends PicsActionSupport {
 
 				// try to find the client site user responsible for this request
 				User clientSiteUser = crr.getRequestedByUser();
-				if (clientSiteUser == null)
-					clientSiteUser = new User(crr.getRequestedByUserOther());
+				for (int i = 1; clientSiteUser == null || i > 4; i++) {
+					if (i == 1)
+						clientSiteUser = userDAO.findByNameAndAccount(crr.getRequestedByUserOther(), crr
+								.getRequestedBy().getId());
+					if (i == 2)
+						clientSiteUser = userDAO.findByName(crr.getRequestedByUserOther());
+					if (i == 3)
+						clientSiteUser = crr.getRequestedBy().getPrimaryContact();
+					if (i == 4)
+						clientSiteUser = new User(crr.getRequestedByUserOther());
+				}
 
 				emailBuilder.addToken("user", clientSiteUser);
 				Calendar cal = Calendar.getInstance();
@@ -643,8 +657,7 @@ public class Cron extends PicsActionSupport {
 		for (User clientSiteUser : clientSiteContractors.keySet()) {
 			List<ContractorRegistrationRequest> contractors = clientSiteContractors.get(clientSiteUser);
 
-			if (clientSiteUser != null && clientSiteUser.getEmail() != null
-					&& !emailExclusionList.contains(clientSiteUser.getEmail())) {
+			if (clientSiteUser != null && !emailExclusionList.contains(clientSiteUser.getEmail())) {
 				emailBuilder.clear();
 
 				emailBuilder.setPermissions(permissions);
