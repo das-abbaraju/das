@@ -26,7 +26,7 @@ public class OpenTasks extends TranslationActionSupport {
 	/**
 	 * Restricts Open Tasks based on user permissions and viewed contractor account.
 	 * 
-	 * @param contractor
+	 * @param contractor 
 	 * @param user
 	 * @return
 	 */
@@ -263,7 +263,7 @@ public class OpenTasks extends TranslationActionSupport {
 		return openReq;
 	}
 
-	private boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
+	/* testable */boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
 		int needed = 0;
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -278,8 +278,7 @@ public class OpenTasks extends TranslationActionSupport {
 							}
 						} else if (cao.getStatus().before(AuditStatus.Submitted)
 								|| cao.getStatus() == AuditStatus.Resubmit
-								|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire() && !cao
-										.getStatus().isComplete())) {
+								|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire() && !cao.getStatus().isComplete())) {
 							needed++;
 						}
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
@@ -287,9 +286,10 @@ public class OpenTasks extends TranslationActionSupport {
 							needed++;
 						}
 					}
-					if (conAudit.getAuditType().getId() == AuditType.COR && conAudit.hasCaoStatus(AuditStatus.Submitted)) {
+					if (conAudit.getAuditType().getId() == AuditType.COR
+							&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 						needed++;
-						}
+					}
 
 				}
 				if (permissions.hasPermission(OpPerms.ContractorInsurance) || user.getAccount().isAdmin()) {

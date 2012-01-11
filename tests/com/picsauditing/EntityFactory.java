@@ -172,16 +172,24 @@ public class EntityFactory {
 	}
 
 	static public Permissions makePermission() {
+		User user = makeUser();
+		return makePermission(user);
+	}
+	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
+		try {
+			permission.setAccountPerms(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return permission;
+	}
+
+	static public User makeUser() {
 		User user = new User(counter++);
 		user.setAccount(new Account());
 		user.getAccount().setId(1100);
-		try {
-			permission.setAccountPerms(user);
-		} catch (Exception doNothing) {
-			doNothing.printStackTrace();
-		}
-		return permission;
+		return user;
 	}
 
 	static public EmailSubscription makeEmailSubscription(User user, Subscription subscription,
