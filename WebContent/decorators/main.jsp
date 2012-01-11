@@ -377,8 +377,7 @@
 			%>
 			<div id="footermain">
 				<div id="footercontent">
-					Copyright &copy; 2011
-					<a href="http://www.picsauditing.com/" class="footer">PICS</a> |
+					<a href="http://www.picsauditing.com/" class="footer"><%=i18nCache.getText("global.PICSCopyright", locale) %></a> |
 					<a href="Contact.action" class="footer"><%=i18nCache.getText("Footer.Contact", locale) %></a> |
 					<a href="PrivacyPolicy.action" rel="facebox" class="footer"><%=i18nCache.getText("Footer.Privacy", locale) %></a>  
 				</div>
