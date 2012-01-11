@@ -938,10 +938,10 @@ public class Cron extends PicsActionSupport {
 
 	private void checkRegistrationRequestsHoldDates() throws Exception {
 		List<ContractorRegistrationRequest> holdRequests = contractorRegistrationRequestDAO
-				.findActiveByDate("status = 'Hold'");
+				.findWhere("c.status = 'Hold'");
 		Date now = new Date();
 		for (ContractorRegistrationRequest crr : holdRequests) {
-			if (crr.getHoldDate().after(now)) {
+			if (now.after(crr.getHoldDate())) {
 				crr.setStatus(ContractorRegistrationRequestStatus.Active);
 				crr.setNotes(maskDateFormat(now) + " - System - hold date passed.  Request set to active \n\n"
 						+ crr.getNotes());
