@@ -31,7 +31,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
