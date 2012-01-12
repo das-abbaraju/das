@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -17,7 +16,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class OperatorTags extends OperatorActionSupport implements Preparable {
+public class OperatorTags extends OperatorActionSupport {
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
@@ -33,42 +32,20 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	private String ruleType;
 
 	@Override
-	public void prepare() throws Exception {
-		findOperator();
-		tags = operatorTagDAO.findByOperator(id, false);
-	}
-
-	@Override
 	@RequiredPermission(value = OpPerms.ContractorTags)
 	public String execute() throws Exception {
+		findOperator();
+		tags = operatorTagDAO.findByOperator(id, false);
 		this.subHeading = getText("OperatorTags.title");
-
-		if ("removeNum".equalsIgnoreCase(button)) {
-			result = conTagDAO.numberInUse(tagID);
-		}
-		// Removing tags, might be in use
-		if ("Remove Tag".equalsIgnoreCase(button)) {
-			// If tag is in use (result > 0 ) then we have to delete them
-			// from con_tag as well
-			// have to delete first else can't find the row
-			if (result != 0) {
-				List<ContractorTag> tagsRemoving = conTagDAO.getTagsByTagID(tagID);
-				for (ContractorTag tag : tagsRemoving)
-					conTagDAO.remove(tag);
-			}
-
-			OperatorTag t = operatorTagDAO.find(tagID);
-			tags.remove(t);
-			operatorTagDAO.remove(t);
-
-			redirect("OperatorTags.action");
-		}
 
 		return SUCCESS;
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Edit)
-	public String save() {
+	public String save() throws Exception {
+		findOperator();
+		tags = operatorTagDAO.findByOperator(id, false);
+
 		for (OperatorTag tag : tags) {
 			if (tag != null) {
 				if (tag.getId() == 0) {
@@ -95,6 +72,30 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 			addActionMessage(getText("OperatorTags.message.SuccessfullySaved", new Object[] { (Integer) tags.size() }));
 
 		tags = operatorTagDAO.findByOperator(id, false);
+
+		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Delete)
+	public String remove() throws Exception {
+		findOperator();
+		tags = operatorTagDAO.findByOperator(id, false);
+
+		// Removing tags, might be in use
+		// If tag is in use (result > 0 ) then we have to delete them
+		// from con_tag as well
+		// have to delete first else can't find the row
+		int numberOfContractorsTagged = conTagDAO.numberInUse(tagID);
+
+		if (numberOfContractorsTagged > 0) {
+			List<ContractorTag> tagsRemoving = conTagDAO.getTagsByTagID(tagID);
+			for (ContractorTag tag : tagsRemoving)
+				conTagDAO.remove(tag);
+		}
+
+		OperatorTag t = operatorTagDAO.find(tagID);
+		tags.remove(t);
+		operatorTagDAO.remove(t);
 
 		return SUCCESS;
 	}

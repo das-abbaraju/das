@@ -25,10 +25,6 @@
 			<h1><s:text name="OperatorTags.title.DefineContractorTags" /></h1>
 		</s:else>
 		
-		<s:url action="OperatorTags.action" var="operator_form_action">
-			<s:param name="id" value="%{id}" />
-		</s:url>
-		
 		<s:form id="operatorTagForm">
 			<s:hidden name="id" />
 			
@@ -157,7 +153,7 @@
 									&& auditTypeRules.empty 
 									&& auditCategoryRules.empty 
 									&& operatorFlagCriteria.empty">
-									<a href="javascript:;" class="checkRemove btn error" rel="<s:property value="id" />"><s:text name="button.Remove" /></a>
+									<a href="OperatorTags.action?id=${globalOperator.id}&tagID=${id}&button=removeNum" class="btn error" rel=""><s:text name="button.Remove" /></a>
 								</s:if>
 								<s:else>
 									<s:if test="#tag.operator.id != #globalOperator.id">
