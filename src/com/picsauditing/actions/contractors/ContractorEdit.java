@@ -36,6 +36,8 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -212,29 +214,21 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
 	public String delete() throws Exception {
-		Iterator<ContractorAudit> auditList = contractor.getAudits().iterator();
-		while (auditList.hasNext()) {
-			ContractorAudit cAudit = auditList.next();
-			if (!cAudit.hasCaoStatusAfter(AuditStatus.Pending)) {
-				auditList.remove();
-				auditDao.remove(cAudit);
+		for (ContractorAudit audit : contractor.getAudits()) {
+			for (ContractorAuditOperator cao : audit.getOperators()) {
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Expired, permissions);
+				auditDao.save(caow);
+				auditDao.save(cao);
 			}
 		}
 
-		if (contractor.getAudits().size() > 0) {
-			addActionError(getText("ContractorEdit.error.CannotRemoveAudits"));
-			return SUCCESS;
+		for (User user : contractor.getUsers()) {
+			user.setActive(false);
+			userDAO.save(user);
 		}
 
-		Iterator<User> userList = contractor.getUsers().iterator();
-
-		while (userList.hasNext()) {
-			User user = userList.next();
-			userList.remove();
-			userDAO.remove(user);
-		}
-
-		accountDao.remove(contractor, getFtpDir());
+		contractor.setStatus(AccountStatus.Deleted);
+		accountDao.save(contractor);
 
 		return "ConList";
 	}

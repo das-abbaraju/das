@@ -413,7 +413,6 @@ public class UsersManage extends PicsActionSupport {
 	public String delete() throws Exception {
 		startup();
 		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
-		String message = "Cannot remove users who performed some actions in the system. Please inactivate them.";
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -421,33 +420,10 @@ public class UsersManage extends PicsActionSupport {
 						+ ". Please switch the primary user of this account and then attempt to delete them.");
 				return SUCCESS;
 			}
-			if (!userDAO.canRemoveUser("ContractorAudit", user.getId(), null)) {
-				addActionError(message);
-				return SUCCESS;
-			}
-			if (!userDAO.canRemoveUser("ContractorAuditOperator", user.getId(), null)) {
-				addActionError(message);
-				return SUCCESS;
-			}
-			if (!userDAO.canRemoveUser("AuditData", user.getId(), null)) {
-				addActionError(message);
-				return SUCCESS;
-			}
-			if (!userDAO.canRemoveUser("ContractorOperator", user.getId(), null)) {
-				addActionError(message);
-				return SUCCESS;
-			}
-			if (!userDAO.canRemoveUser("ContractorRegistrationRequest", user.getId(), "t.requestedByUser.id = :userID")) {
-				addActionError(message);
-				return SUCCESS;
-			}
-			if (!userDAO.canRemoveUser("UserAccess", user.getId(), "t.grantedBy.id = :userID")) {
-				addActionError(message);
-				return SUCCESS;
-			}
 		}
 
-		userDAO.remove(user);
+		user.setActive(false);
+		userDAO.save(user);
 		addActionMessage("Successfully removed "
 				+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
 		user = null;
