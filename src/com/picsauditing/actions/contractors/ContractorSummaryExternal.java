@@ -1,6 +1,10 @@
 package com.picsauditing.actions.contractors;
 
-import org.apache.struts2.ServletActionContext;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,7 +41,23 @@ public class ContractorSummaryExternal extends PicsActionSupport {
 			json.put("description", contractor.getDescription());
 			json.put("phone", contractor.getPhone());
 			json.put("website", contractor.getWebUrl());
-			json.put("logo", requestHost + "/ContractorLogo.action?id=" + contractor.getId());
+			
+			File logo_file = new File(getFtpDir() + "/logos/" + contractor.getLogoFile());
+			
+			// if the logo exists calculate width and height to be passed in the json request
+			if (logo_file.exists()) {
+			    BufferedImage image = ImageIO.read(logo_file);
+	            
+	            int logo_height = image.getHeight();
+	            int logo_width = image.getWidth();
+	            
+	            // generate url to contractor logo stream - since file path is not public
+			    json.put("logo", requestHost + "/ContractorLogo.action?id=" + contractor.getId());
+			    json.put("logo_height", logo_height);
+			    json.put("logo_width", logo_width);
+			} else {
+			    json.put("logo", null);
+			}
 			
 			return JSON;
 		}
