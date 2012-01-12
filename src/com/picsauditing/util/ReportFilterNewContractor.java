@@ -9,6 +9,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.StateDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.State;
@@ -23,6 +24,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected boolean showRequestStatus = true;
 	protected boolean showExcludeOperators = false;
 	protected boolean showOperatorTags = false;
+	protected boolean showMarketingUsers = false;
 
 	protected String handledBy;
 	protected Date followUpDate;
@@ -32,6 +34,7 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 	protected String requestStatus = "Active";
 	protected int[] excludeOperators;
 	protected int[] operatorTags;
+	protected int[] marketingUsers;
 
 	@Override
 	public void setPermissions(Permissions permissions) {
@@ -84,6 +87,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 
 	public void setShowOperatorTags(boolean showOperatorTags) {
 		this.showOperatorTags = showOperatorTags;
+	}
+
+	public boolean isShowMarketingUsers() {
+		return showMarketingUsers;
+	}
+
+	public void setShowMarketingUsers(boolean showMarketingUsers) {
+		this.showMarketingUsers = showMarketingUsers;
 	}
 
 	public String getHandledBy() {
@@ -150,6 +161,14 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		this.operatorTags = operatorTags;
 	}
 
+	public int[] getMarketingUsers() {
+		return marketingUsers;
+	}
+
+	public void setMarketingUsers(int[] marketingUsers) {
+		this.marketingUsers = marketingUsers;
+	}
+
 	// Lists
 	public WaitingOn[] getHandledByList() throws Exception {
 		return new WaitingOn[] { WaitingOn.PICS, WaitingOn.Operator };
@@ -178,10 +197,10 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 		StateDAO stateDAO = (StateDAO) SpringUtils.getBean("StateDAO");
 		return stateDAO.findAll();
 	}
-	
+
 	public List<OperatorTag> getOperatorTagsList() {
 		OperatorTagDAO tagDAO = (OperatorTagDAO) SpringUtils.getBean("OperatorTagDAO");
-		
+
 		List<OperatorTag> tags = tagDAO.findAll();
 		Collections.sort(tags, new Comparator<OperatorTag>() {
 			@Override
@@ -189,11 +208,16 @@ public class ReportFilterNewContractor extends ReportFilterContractor {
 				if (o1.getOperator().getName().equals(o2.getOperator().getName())) {
 					return o1.getTag().compareTo(o2.getTag());
 				}
-				
+
 				return o1.getOperator().getName().compareTo(o2.getOperator().getName());
 			}
 		});
-		
+
 		return tags;
+	}
+
+	public List<User> getMarketingUsersList() {
+		UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+		return userDAO.findByGroup(User.GROUP_MARKETING);
 	}
 }

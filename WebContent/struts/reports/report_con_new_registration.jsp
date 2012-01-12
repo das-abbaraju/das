@@ -5,53 +5,19 @@
 		<title>
 			<s:text name="ReportNewRequestedContractor.title" />
 		</title>
-		
 		<s:include value="reportHeader.jsp" />
-		
-		<script type="text/javascript">
-			$(function() {
-				$('#content').delegate('a.excel', 'click', function(e) {
-					e.preventDefault();
-					var num = $(this).attr('rel');
-					
-					var confirmed = false;
-					if (num > 500)
-						confirmed = confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));
-					else
-						confirmed = true;
-					
-					if (confirmed) {
-						newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
-						popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
-					}
-				});
-				
-				$('#test').delegate('.excelUpload', 'click', function(e) {
-					e.preventDefault();
-					
-					var url = 'ReportNewReqConImport.action';
-					var title = 'Upload';
-					var pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
-					fileUpload = window.open(url,title,pars);
-					fileUpload.focus();
-				});
-			});
-		</script>
 	</head>
 	<body>
 		<h1>
 			<s:text name="ReportNewRequestedContractor.title" />
 		</h1>
-		
 		<s:include value="filters.jsp" />
-		
 		<div class="right">
 			<a class="excel" rel="<s:property value="report.allRows" />" href="#" 
 				title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>">
 				<s:text name="global.Download" />
 			</a>
 		</div>
-		
 		<form id="test" action="ReportNewRequestedContractorImport.action" method="post">
 			<div style="padding: 5px;">
 				<a href="RequestNewContractor.action" class="add">
@@ -64,12 +30,10 @@
 				</s:if>
 			</div>
 		</form>
-		
 		<s:if test="data.size > 0">
 			<div>
 				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 			</div>
-			
 			<table class="report">
 				<thead>
 					<tr>
@@ -171,5 +135,34 @@
 		<div>
 			<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 		</div>
+		<script type="text/javascript">
+			$(function() {
+				$('#content').delegate('a.excel', 'click', function(e) {
+					e.preventDefault();
+					var num = $(this).attr('rel');
+					
+					var confirmed = false;
+					if (num > 500)
+						confirmed = confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));
+					else
+						confirmed = true;
+					
+					if (confirmed) {
+						newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
+						popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
+					}
+				});
+				
+				$('#test').delegate('.excelUpload', 'click', function(e) {
+					e.preventDefault();
+					
+					var url = 'ReportNewReqConImport.action';
+					var title = 'Upload';
+					var pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
+					fileUpload = window.open(url,title,pars);
+					fileUpload.focus();
+				});
+			});
+		</script>
 	</body>
 </html>

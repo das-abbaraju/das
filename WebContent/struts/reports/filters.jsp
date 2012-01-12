@@ -463,6 +463,34 @@
 			</div>
 		</s:if>
 		
+		<s:if test="filter.showMarketingUsers">
+			<div class="filterOption">
+				<a href="#" class="filterBox">
+					<s:text name="global.Sales" />
+				</a>
+				=
+				<span class="q_status">
+					<s:text name="JS.Filters.status.All" />
+				</span>
+				<br />
+				<span class="clearLink q_box select">
+					<s:select
+						name="filter.marketingUsers"
+						cssClass="forms"
+						list="filter.marketingUsersList"
+						listKey="id"
+						listValue="name"
+						multiple="true"
+						size="5"
+						id="form1_conAuditorId"
+					/>
+					<a class="clearLink" href="#">
+						<s:text name="Filters.status.Clear" />
+					</a>
+				</span>
+			</div>
+		</s:if>
+		
 		<s:if test="filter.showPolicyChangedDate">
 			<br clear="all" />
 			<div class="filterOption">

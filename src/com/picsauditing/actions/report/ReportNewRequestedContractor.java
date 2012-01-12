@@ -110,14 +110,12 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("con.name AS contractorName");
 		sql.addField("cr.notes AS Notes");
 		sql.addField("GROUP_CONCAT(ot.tag SEPARATOR ', ') AS operatorTags");
-		
+
 		sql.addGroupBy("cr.id");
 
 		orderByDefault = "cr.deadline, cr.name";
 
 		if (permissions.isOperatorCorporate()) {
-			getFilter().setShowConAuditor(true);
-
 			if (permissions.isCorporate()) {
 				getFilter().setShowOperator(true);
 				sql.addWhere("op.id IN (" + Strings.implode(permissions.getOperatorChildren()) + ","
@@ -127,6 +125,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		if (permissions.isPicsEmployee()) {
+			getFilter().setShowMarketingUsers(true);
 			getFilter().setShowViewAll(true);
 			getFilter().setShowOperator(true);
 			getFilter().setShowExcludeOperators(true);
@@ -144,7 +143,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			}
 
 			if (!permissions.hasGroup(User.GROUP_CSR)) { // Everyone but CSRs
-				getFilter().setShowConAuditor(true);
 				getFilter().setShowLocation(true);
 			}
 		}
@@ -177,11 +175,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			setFiltered(true);
 		}
 
-		if (filterOn(f.getConAuditorId())) {
-			sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID IN ("
-					+ Strings.implode(f.getConAuditorId()) + ")");
-			sql.addWhere("CASE WHEN (cr.zip IS NULL OR ua.postal_start IS NULL) THEN cr.state = ua.state "
-					+ "ELSE cr.zip BETWEEN ua.postal_start AND ua.postal_end END");
+		if (filterOn(f.getMarketingUsers())) {
+			sql.addWhere("cr.lastContactedBy IN (" + Strings.implode(f.getMarketingUsers()) + ")");
 			setFiltered(true);
 		}
 
@@ -214,14 +209,14 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 		if (filterOn(f.getOperatorTags())) {
 			StringBuilder where = new StringBuilder();
-			
+
 			for (int i = 0; i < f.getOperatorTags().length; i++) {
 				if (i > 0)
 					where.append(" OR ");
-				
+
 				where.append("(FIND_IN_SET(" + f.getOperatorTags()[i] + ", cr.operatorTags) > 0)");
 			}
-			
+
 			sql.addWhere(where.toString());
 		}
 	}
