@@ -312,13 +312,7 @@ public class VerifyView extends ContractorActionSupport {
 					boolean foundSomethingToBeVerified = false;
 					if (t.getAuditType().isPqf()) {
 						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
-							if (cao.getStatus().isSubmitted() && cao.getPercentComplete() == 100) {
-								foundSomethingToBeVerified = true;
-								break;
-							} else if (cao.getStatus().isResubmitted()) {
-								foundSomethingToBeVerified = true;
-								break;
-							} else if (cao.getStatus().isIncomplete() && cao.getPercentComplete() == 100) {
+							if (cao.getStatus().isSubmittedResubmitted()) {
 								foundSomethingToBeVerified = true;
 								break;
 							}
