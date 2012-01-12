@@ -283,7 +283,7 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
 			addChildAction(subMenu, "EmailWizard");
 		}
-		if (permissions.hasPermission(OpPerms.EmailTemplates)) {
+		if (permissions.hasPermission(OpPerms.EmailTemplates) && permissions.isPicsEmployee()) {
 			addChildAction(subMenu, "ReportEmailWebinar");
 		}
 		if (permissions.hasPermission(OpPerms.EmailQueue)) {
