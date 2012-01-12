@@ -185,7 +185,7 @@ public enum IndexValueType {
 		s = s.replaceAll("[˚˘]", "u");
 		s = s.replaceAll("[ÔÓ]", "i");
 		s = s.replaceAll("[‡‚]", "a");
-		s = s.replaceAll("‘", "o");
+		s = s.replaceAll("Ù", "o");
 
 		s = s.replaceAll("[»… À]", "E");
 		s = s.replaceAll("[€Ÿ]", "U");
