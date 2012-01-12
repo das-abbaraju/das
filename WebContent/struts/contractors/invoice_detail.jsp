@@ -19,6 +19,42 @@
 				display: none;
 			}
 		</style>
+		
+		<script type="text/javascript">
+			var ccNumber = '${ccNumber}';
+			
+			$.ajax({
+				url: "BillingAddress.action?country=" + '<s:property value="country" />',
+				success: function(data){
+					$("#billingAddress").html(data);
+				}	
+			});
+			
+			$('a.save').live('click', function(event) {
+				event.preventDefault();
+				
+				$('form#save').submit();
+			});
+			
+			$('a.void').live('click', function(event) {
+				return confirm(translate('JS.InvoiceDetail.ConfirmVoid'));
+			});
+			
+			$('a.pay.ccValid').live('click', function(event) {
+			    event.preventDefault();
+				
+			    var element = $(this);
+			    var href = element.attr('href');
+			    
+				if (confirm(translate('JS.InvoiceDetail.ConfirmCharge', [ccNumber]))) {
+				    element.css({
+				        backgroundImage: 'url(images/spinner.gif)'
+				    });
+				    
+				    window.location = href;
+				}
+			});
+		</script>
 	</head>
 	
 	<body>
@@ -389,31 +425,5 @@
 				</tr>
 			</table>
 		</s:form>
-		
-		<script type="text/javascript">
-			var ccNumber = '${ccNumber}';
-			
-			$.ajax({
-				url: "BillingAddress.action?country=" + '<s:property value="country" />',
-				success: function(data){
-					$("#billingAddress").html(data);
-				}	
-			});
-			
-			$('a.save').live('click', function(event) {
-				event.preventDefault();
-				$('form#save').submit();
-			});
-			
-			$('a.void').live('click', function(event) {
-				return confirm(translate('JS.InvoiceDetail.ConfirmVoid'));
-			});
-			
-			$('a.pay.ccValid').live('click', function(event) {
-				$(this).attr('disabled', true);
-				
-				return confirm(translate('JS.InvoiceDetail.ConfirmCharge', [ccNumber]));
-			});
-		</script>
 	</body>
 </html>
