@@ -139,7 +139,7 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		});
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(),
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), 
 				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
 		return SUCCESS;
 	}
@@ -309,14 +309,23 @@ public class VerifyView extends ContractorActionSupport {
 			verificationAudits = new Grepper<ContractorAudit>() {
 				@Override
 				public boolean check(ContractorAudit t) {
-					if (t.getAuditType().isPqf()
-							&& (t.hasCaoStatus(AuditStatus.Submitted) || t.hasCaoStatus(AuditStatus.Resubmitted) || t
-									.hasCaoStatus(AuditStatus.Incomplete))) {
-						return true;
+					boolean foundSomethingToBeVerified = false;
+					if (t.getAuditType().isPqf()) {
+						for (ContractorAuditOperator cao : t.getOperatorsVisible()) {
+							if (cao.getStatus().isSubmitted() && cao.getPercentComplete() == 100) {
+								foundSomethingToBeVerified = true;
+								break;
+							} else if (cao.getStatus().isResubmitted()) {
+								foundSomethingToBeVerified = true;
+								break;
+							} else if (cao.getStatus().isIncomplete() && cao.getPercentComplete() == 100) {
+								foundSomethingToBeVerified = true;
+								break;
+							}
+						}
 					} else if (t.getAuditType().isAnnualAddendum())
-						return true;
-
-					return false;
+						foundSomethingToBeVerified = true;
+					return foundSomethingToBeVerified;
 				}
 			}.grep(getActiveAudits());
 
