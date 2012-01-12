@@ -189,16 +189,7 @@ public class CaoSave extends AuditActionSupport {
 		AuditStatus newStatus = step.getNewStatus();
 
 		cao.changeStatus(newStatus, permissions);
-		// TODO Are we actually saving this new CAOW?
-		
-		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
-				&& cao.getPercentVerified() == 100) {
-			ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, permissions);
-			caow.setNotes("Auto completed based previously completed verification");
-			caow.setAuditColumns(new User(User.SYSTEM));
-			// caowDAO.save(caow);
-		}
-
+	
 		auditSetExpiresDate(cao, newStatus);
 
 		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Incomplete))
@@ -227,6 +218,16 @@ public class CaoSave extends AuditActionSupport {
 
 		caoDAO.save(cao);
 		setCaoUpdatedNote(prevStatus, cao, note);
+		
+		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
+				&& cao.getPercentVerified() == 100) {
+			ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, permissions);
+			if (caow != null) {
+				caow.setNotes("Auto completed based previously completed verification");
+				caow.setAuditColumns(new User(User.SYSTEM));
+				caowDAO.save(caow);
+			}
+		}
 		autoExpireOldAudits(cao.getAudit(), newStatus);
 	}
 
