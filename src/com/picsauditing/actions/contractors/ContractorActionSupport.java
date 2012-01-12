@@ -483,14 +483,14 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions, " AND type IN ('Operator')");
+			operators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.type IN ('Operator')");
 		return operators;
 	}
 
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
 			activeOperators = accountDao.findOperators(contractor, permissions,
-					" AND status IN ('Active','Demo') AND type IN ('Operator')");
+					" AND status IN ('Active','Demo') AND operatorAccount.type IN ('Operator')");
 		return activeOperators;
 	}
 
