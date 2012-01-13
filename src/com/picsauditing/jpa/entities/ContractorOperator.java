@@ -37,6 +37,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
+	private ContractorOperatorRelationshipType type;
 	private String workStatus = "P";
 	private FlagColor flagColor;
 	private FlagColor baselineFlag;
@@ -75,9 +76,19 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.contractorAccount = contractor;
 	}
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "type")
+	public ContractorOperatorRelationshipType getType() {
+		return type;
+	}
+
+	public void setType(ContractorOperatorRelationshipType type) {
+		this.type = type;
+	}
+
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this
-	 * should default to P and then be approved or rejected
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or
+	 * rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
@@ -169,8 +180,8 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 			baselineApprover = permissions.getUserId();
 		else
 			baselineApprover = User.SYSTEM;
-		
-		for(FlagData fd : this.getFlagDatas())
+
+		for (FlagData fd : this.getFlagDatas())
 			fd.resetBaseline();
 	}
 

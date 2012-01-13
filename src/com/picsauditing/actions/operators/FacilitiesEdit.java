@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -26,6 +25,7 @@ import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FeeClass;
@@ -65,6 +65,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Country country;
 	protected State state;
 	protected int contactID;
+	protected boolean isGeneralContractor;
+	protected boolean inheritsFlagCriteria;
+	protected ContractorOperator linkedContractor;
 	
 	public List<OperatorAccount> operatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -508,6 +511,22 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
+	}
+	
+	public boolean isGeneralContractor() {
+		return isGeneralContractor;
+	}
+	
+	public void setGeneralContractor(boolean isGeneralContractor) {
+		this.isGeneralContractor = isGeneralContractor;
+	}
+	
+	public boolean isInheritsFlagCriteria() {
+		return inheritsFlagCriteria;
+	}
+	
+	public void setInheritsFlagCriteria(boolean inheritsFlagCriteria) {
+		this.inheritsFlagCriteria = inheritsFlagCriteria;
 	}
 
 	public List<AccountUser> getAccountManagers() {
