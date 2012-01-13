@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
@@ -16,7 +17,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class OperatorTags extends OperatorActionSupport {
+public class OperatorTags extends OperatorActionSupport implements Preparable {
 	@Autowired
 	private OperatorTagDAO operatorTagDAO;
 	@Autowired
@@ -31,11 +32,15 @@ public class OperatorTags extends OperatorActionSupport {
 	private int ruleID;
 	private String ruleType;
 
+    @Override
+	public void prepare() throws Exception {
+        findOperator();
+        tags = operatorTagDAO.findByOperator(id, false);
+    }
+
 	@Override
 	@RequiredPermission(value = OpPerms.ContractorTags)
 	public String execute() throws Exception {
-		findOperator();
-		tags = operatorTagDAO.findByOperator(id, false);
 		this.subHeading = getText("OperatorTags.title");
 
 		return SUCCESS;
@@ -43,9 +48,6 @@ public class OperatorTags extends OperatorActionSupport {
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Edit)
 	public String save() throws Exception {
-		findOperator();
-		tags = operatorTagDAO.findByOperator(id, false);
-
 		for (OperatorTag tag : tags) {
 			if (tag != null) {
 				if (tag.getId() == 0) {
@@ -78,9 +80,6 @@ public class OperatorTags extends OperatorActionSupport {
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Delete)
 	public String remove() throws Exception {
-		findOperator();
-		tags = operatorTagDAO.findByOperator(id, false);
-
 		// Removing tags, might be in use
 		// If tag is in use (result > 0 ) then we have to delete them
 		// from con_tag as well
@@ -97,7 +96,9 @@ public class OperatorTags extends OperatorActionSupport {
 		tags.remove(t);
 		operatorTagDAO.remove(t);
 
-		return SUCCESS;
+		redirect("OperatorTags.action?id=" + id);
+		
+		return BLANK;
 	}
 
 	public List<? extends AuditRule> getRelatedCategoryRules() {

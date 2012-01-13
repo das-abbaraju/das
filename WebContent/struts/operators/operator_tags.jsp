@@ -25,9 +25,13 @@
 			<h1><s:text name="OperatorTags.title.DefineContractorTags" /></h1>
 		</s:else>
 		
-		<s:form id="operatorTagForm">
-			<s:hidden name="id" />
-			
+		<s:set var="globalOperator" value="operator" />
+		
+		<s:url action="OperatorTags.action" var="operator_tag_form_url">
+			<s:param name="id" value="id" />
+		</s:url>
+		
+		<form id="operatorTagForm" name="operatorTagForm" action="${operator_tag_form_url}" method="post">
 			<div class="tag-info">
 				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
@@ -55,19 +59,24 @@
 							<%-- <s:text name="OperatorTags.header.VisibleTo">
 								<s:param value="%{getText('global.Operator')}" />
 							</s:text> --%>
-							Is client site visible
+							Is visible to client site
 						</th>
 						
 						<th class="visible-contractor">
 							<%-- <s:text name="OperatorTags.header.VisibleTo">
 								<s:param value="%{getText('global.Contractors')}" />
 							</s:text> --%>
-							Is contractor visible
+							Is visible to contractor
 						</th>
 						
 						<th class="inherit-client-site">
 							<%-- <s:text name="OperatorTags.header.UsableBySites" /> --%>
-							Is inherited
+							<s:if test="#globalOperator.corporate">
+								Is inheritable
+							</s:if>
+							<s:else>
+								Is inherited
+							</s:else>
 						</th>
 						
 						<s:if test="permissions.hasPermission('ContractorTags', 'Delete') 
@@ -80,8 +89,6 @@
 					</tr>
 				</thead>
 				
-				<s:set var="globalOperator" value="operator" />
-				
 				<s:iterator value="tags" var="tag" status="rowstatus">
 					<tr class="<s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
 						<td class="id tag-id">
@@ -91,7 +98,7 @@
 						</td>
 						
 						<%-- edit mode --%>
-						<s:if test="permissions.hasPermission('ContractorTags', 'Edit') && operator.id == permissions.accountId">
+						<s:if test="permissions.hasPermission('ContractorTags', 'Edit') && #tag.operator.id == #globalOperator.id &&  (operator.id == permissions.accountId || permissions.isCanAddRuleForOperator(operator))">
 							<td class="tag-name">
 								<s:textfield name="tags[%{#rowstatus.index}].tag" value="%{tag}" />
 							</td>
@@ -153,11 +160,15 @@
 									&& auditTypeRules.empty 
 									&& auditCategoryRules.empty 
 									&& operatorFlagCriteria.empty">
-									<a href="OperatorTags.action?id=${globalOperator.id}&tagID=${id}&button=removeNum" class="btn error" rel=""><s:text name="button.Remove" /></a>
+									<a href="OperatorTags!remove.action?id=${globalOperator.id}&tagID=${id}" class="btn error" rel=""><s:text name="button.Remove" /></a>
 								</s:if>
 								<s:else>
 									<s:if test="#tag.operator.id != #globalOperator.id">
 										<span class="btn info" title="<s:text name="OperatorTags.TagBelongsToAnotherOperator"><s:param value="operator"/></s:text>">Info</span>
+										
+										<s:if test="permissions.isCanAddRuleForOperator(operator)">
+											<a href="OperatorTags.action?id=${operator.id}" class="btn" title="<s:text name="OperatorTags.TagBelongsToAnotherOperator"><s:param value="operator"/></s:text>">Corporate</a>
+										</s:if>
 									</s:if>
 									<s:elseif test="!auditTypeRules.empty || !auditCategoryRules.empty || !operatorFlagCriteria.empty">
 										<span class="btn info" title="<s:text name="OperatorTags.TagInUseByConfig"/>">Info</span>
@@ -167,6 +178,7 @@
 									</s:elseif>
 								</s:else>
 								
+								<%-- admin use only --%>
 								<s:if test="#tag.operator.id == #globalOperator.id">
 									<s:if test="permissions.isCanAddRuleForOperator(operator)">
 										<s:if test="!auditTypeRules.empty">
@@ -202,6 +214,6 @@
 					<s:submit method="save" value="Save Changes" cssClass="btn success" />
 				</li>
 			</ul>
-		</s:form>
+		</form>
 	</body>
 </html>

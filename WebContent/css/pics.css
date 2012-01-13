@@ -1194,6 +1194,11 @@ div.blockDialog {
 	text-align: center;
 }
 
+#operatorTagForm .table .actions
+{
+	white-space: nowrap;
+}
+
 #operatorTagForm .table input
 {
 	height: 20px;
@@ -1226,6 +1231,7 @@ div.blockDialog {
 #operatorTagForm .table .btn
 {
 	margin-right: 5px;
+	padding: 2px 9px 3px;
 }
 
 #operatorTagForm ul.actions

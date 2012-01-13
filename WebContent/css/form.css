@@ -88,12 +88,13 @@ ul.radio.inline label
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
 	line-height: 18px;
-	padding: 10px 10px 9px;
+	padding: 7px 7px 6px;
 }
 
 .table th
 {
 	font-weight: bold;
+	padding: 10px 10px 9px;
 	text-align: center;
 }
 
