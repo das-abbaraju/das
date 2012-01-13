@@ -79,9 +79,9 @@
 							</s:else>
 						</th>
 						
-						<s:if test="permissions.hasPermission('ContractorTags', 'Delete') 
-							|| permissions.isCanAddRuleForOperator(operator) 
-							|| permissions.hasPermission('ManageAudits')">
+						<s:if test="permissions.hasPermission('ManageAudits')
+							|| permissions.hasPermission('ContractorTags') 
+							|| permissions.isCanAddRuleForOperator(operator)">
 							<th class="actions">
 								Actions
 							</th>
