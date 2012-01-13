@@ -230,7 +230,7 @@
 							</label>
 							
 							<s:if test="!permissions.operatorCorporate">
-								<pics:autocomplete name="newContractor.contractor" action="ContractorsAutocomplete" />
+								<pics:autocomplete name="newContractor.contractor" action="ContractorAutocomplete" />
 							</s:if>
 							
 							<s:if test="newContractor.contractor != null">

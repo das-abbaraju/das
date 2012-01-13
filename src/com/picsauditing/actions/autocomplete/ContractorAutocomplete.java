@@ -1,36 +1,39 @@
 package com.picsauditing.actions.autocomplete;
 
-import org.apache.commons.beanutils.BasicDynaBean;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ContractorAutocomplete extends AutocompleteDynaBean {
+public class ContractorAutocomplete extends AutocompleteActionSupport<ContractorAccount> {
 
+	@Autowired
 	private ContractorAccountDAO dao;
 
-	public ContractorAutocomplete(ContractorAccountDAO dao) {
-		this.dao = dao;
+	@Override
+	protected Collection<ContractorAccount> getItems() {
+		if (itemKeys == null) {
+			if (!Strings.isEmpty(q)) {
+				if (isSearchDigit())
+					return dao.findWhere("a.id LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+				else
+					return dao.findWhere("a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'");
+			}
+		} else if (itemKeys.length > 0) {
+			return dao.findWhere("a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")");
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
-	protected void findItems() {
-		loadPermissions();
-		if (!permissions.isAdmin()) {
-			// TODO Non admin queries not supported yet
-			return;
-		}
-		String where = "a.name LIKE '%" + Utilities.escapeQuotes(q) + "%'";
-		if (isSearchDigit()) {
-			where += " OR a.id = " + q;
-		}
-		items = dao.findWhereNatively(true, where);
-	}
-
-	@Override
-	protected String createOutput(BasicDynaBean item) {
-		return item.get("id") + "|" + item.get("name");
+	public StringBuilder formatAutocomplete(ContractorAccount item) {
+		StringBuilder sb = new StringBuilder();
+		return sb.append(item.getId()).append("|").append(item.getName()).append("|").append(item.getName());
 	}
 }
