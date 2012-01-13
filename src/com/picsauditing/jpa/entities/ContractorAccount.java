@@ -714,8 +714,9 @@ public class ContractorAccount extends Account implements JSONable {
 			}
 		}
 
-		if (emrs.size() == 4)
-			emrs.remove(((TreeMap<String, AuditData>) emrs).lastKey());
+		if (emrs.size() == 4) {
+			emrs.remove(((TreeMap<String, AuditData>) emrs).firstKey());
+		}
 		else if (emrs.size() > 4)
 			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 

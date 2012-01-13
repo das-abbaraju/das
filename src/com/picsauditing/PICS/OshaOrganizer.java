@@ -116,7 +116,7 @@ public class OshaOrganizer {
 		int straightCount = 0;
 
 		for (OshaAudit osha : data.get(type)) {
-			if (osha != null) {
+			if (osha != null && straightCount < 3) {
 				straightAvg.setFactor(osha.getFactor());
 
 				// Need to set a proper verification value on average OSHAs
