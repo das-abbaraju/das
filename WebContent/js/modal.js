@@ -10,7 +10,7 @@
  * show()
  * toggle()
  * 
- * @author: Carey Hinok
+ * @author: Carey Hinoki
  * @date: 1-12-2012
  * @version: 1
  */
