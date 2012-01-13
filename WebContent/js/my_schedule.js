@@ -105,7 +105,7 @@ function loadPreview() {
 			$.getJSON('MyScheduleJSON.action', data, function(json) {
 					$.gritter.add({
 						title: json.title, 
-						htext: json.output
+						text: json.output
 					});
 					
 					if (json.calEvent) {
