@@ -347,10 +347,17 @@ public class CaoSave extends AuditActionSupport {
 				}
 			}
 		}
+		
+		// TODO: remove this ASAP (once we can expire audits)
+		if (!audit.getAuditType().isWCB()) {
+			expireOldAudits(step, audit);
+		}
+	}
 
+	private void expireOldAudits(WorkflowStep step, ContractorAudit audit) {
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			// Expire previous audits
-			int lastYear = DateBean.getCurrentYear() - 1;
+//			int lastYear = DateBean.getCurrentYear() - 1;
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
 				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
 					if (oldAudit.getAuditType().equals(audit.getAuditType())) {

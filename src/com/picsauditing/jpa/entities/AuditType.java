@@ -1,7 +1,10 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -75,6 +78,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 
 	protected List<AuditCategory> topCategories;
 
+	private static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[]{145, 146, 143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
+	
 	public AuditType() {
 	}
 
@@ -298,6 +303,11 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	@Transient
 	public boolean isAnnualAddendum() {
 		return (id == ANNUALADDENDUM);
+	}
+	
+	@Transient
+	public boolean isWCB() {
+		return CANADIAN_PROVINCES.contains(id);
 	}
 	
 	@Transient
