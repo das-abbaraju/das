@@ -532,43 +532,43 @@
 		init: function () {
 			if ($('#Registration-page').length || $('#RegistrationMakePayment-page').length) {
 				
-				var modal = MODAL.createModal();
-				
 				$('.modal-link').bind('click', function (event) {
 					event.preventDefault();
 					
-					var title = $(this).text();
-					var url = $(this).attr('data-url');
-					var content = '';
+					var element = $(this);
 					
 					AJAX.request({
-						url: url,
+						url: element.attr('data-url'),
 						success: function (data, textStatus, XMLHttpRequest) {
-							modal.init({
-								title: title,
-								content: data
-							});
+						    var modal = MODAL.Modal({
+						        height: 550,
+						        width: 700,
+			                    title: element.text(),
+			                    content: data
+			                });
 							
 							// ie specific js to shim select menus
 							if ($.browser.msie && $.browser.version == 6) {
-								var element = $('#bootstrap_modal');
-								var offset = element.offset();
+								var modal_element = modal.getElement();
+								var offset = modal_element.offset();
 								var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
 								
 								// paste shim
 								shim.css({
-									'height': element.height(),
+									'height': modal_element.height(),
 									'left': offset.left,
 									'position': 'absolute',
 									'top': offset.top,
-									'width': element.width()
+									'width': modal_element.width()
 								}).prependTo('body');
 								
 								// add event to destroy shim after modal closes
-								element.bind('hide', function () {
+								modal.bind('hide', function () {
 									shim.remove();
 								});
 							}
+							
+							modal.show();
 						}
 					});
 				});

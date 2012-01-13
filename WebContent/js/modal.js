@@ -93,6 +93,10 @@
                     return defaults;
                 },
                 
+                getElement: function () {
+                    return modal;
+                },
+                
                 hide: function () {
                     modal.modal('hide');
                 },
