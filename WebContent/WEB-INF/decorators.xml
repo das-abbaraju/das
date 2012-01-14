@@ -15,6 +15,7 @@
 		<pattern>/RegistrationMakePayment.action</pattern>
 	</decorator>
 	<decorator name="print" page="print.jsp">
+		<pattern>/ContractorAgreement!print.action</pattern>
 		<pattern>/RegistrationMakePayment!printInvoice.action</pattern>
 	</decorator>
 	<decorator name="mainExt" page="main_ext.jsp">

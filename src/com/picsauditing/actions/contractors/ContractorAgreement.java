@@ -34,6 +34,11 @@ public class ContractorAgreement extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
+	
+	public String print()
+	{
+	    return "print";
+	}
 
 	public Locale getRequest_locale() {
 		return request_locale;

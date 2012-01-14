@@ -1,0 +1,36 @@
+#ContractorAgreement-page #main h1,
+#ContractorAgreement-page #main h2
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0px 0px 15px;
+}
+
+#ContractorAgreement-page #main p
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 15px;
+}
+
+#ContractorAgreement-page #main u
+{
+	display: block;
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+
+#ContractorAgreement-page #main a
+{
+	color: #195F91;
+	text-decoration: underline;
+}
+
+#ContractorAgreement-page #main a:hover
+{
+	text-decoration: none;
+}

@@ -116,6 +116,7 @@
 
 		<action name="ContractorAgreement" class="com.picsauditing.actions.contractors.ContractorAgreement">
 			<result>contractor_agreement.jsp</result>
+			<result name="print">contractor_agreement.jsp</result>
 		</action>
 
 		<action name="PrivacyPolicy" class="com.picsauditing.actions.PicsPolicy">

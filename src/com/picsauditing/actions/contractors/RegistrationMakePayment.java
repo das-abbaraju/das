@@ -601,6 +601,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String printInvoice() throws Exception {
 		findContractor();
+		
 		return "print";
 	}
 

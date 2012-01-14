@@ -1,7 +1,7 @@
 .print-page header
 {
-	background: #F5F5F5;
-	border-bottom: 1px solid #E5E5E5;
+	background: #CDE0EF;
+	border-bottom: 1px solid #888;
 	height: 72px;
 }
 
@@ -22,7 +22,7 @@
 
 .print-page #main
 {
-	border: 1px solid #404040;
+	border: 1px solid #888;
 	margin: 0px auto;
 	padding: 20px;
 	position: relative;

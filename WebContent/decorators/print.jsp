@@ -17,7 +17,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
 		
 		<link rel="stylesheet" type="text/css" href="css/layout_print.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" href="css/registration_print.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" href="css/contractor_agreement_print.css?v=${version}" />
 		
 		<!-- CSS FIXES FOR INTERNET EXPLORER -->
 		<!--[if IE]><link rel="stylesheet" href="css/ie.css" type="text/css" /><![endif]-->
@@ -30,7 +30,7 @@
 	</head>
 	<body id="${actionName}-page" class="print-page">
 		<header>
-			<a href="javascript:;" class="btn info print" onclick="window.print()">Print</a>
+			<a href="javascript:;" class="btn primary print" onclick="window.print()">Print</a>
 		</header>
 		<div id="container">
 			<div id="main" role="main">
