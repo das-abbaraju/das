@@ -415,11 +415,15 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	public boolean isAuditor() {
-		return this.hasGroup(11);
+		return hasGroup(11);
 	}
 	
+	public boolean isAccountManager() {
+		return hasGroup(10801);
+	}
+
 	public boolean isIndependentAuditor() {
-		return this.hasGroup(11265);
+		return hasGroup(11265);
 	}
 
 	public boolean isPicsEmployee() {

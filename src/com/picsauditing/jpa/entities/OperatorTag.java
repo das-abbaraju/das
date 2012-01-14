@@ -14,8 +14,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.util.Strings;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "operator_tag")
@@ -131,14 +129,5 @@ public class OperatorTag extends BaseTable {
 
 	public void setOperatorFlagCriteria(List<FlagCriteriaOperator> operatorFlagCriteria) {
 		this.operatorFlagCriteria = operatorFlagCriteria;
-	}
-
-	@Transient
-	public String getContractorNames() {
-		List<ContractorAccount> contractors = new ArrayList<ContractorAccount>();
-		for(ContractorTag contractorTag : contractorTags)
-			contractors.add(contractorTag.getContractor());
-		
-		return Strings.implode(contractors);
 	}
 }
