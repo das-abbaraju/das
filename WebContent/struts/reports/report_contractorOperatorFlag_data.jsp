@@ -12,7 +12,7 @@
 		<div class="right">
 			<a 
 				class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-				href="javascript: download('ContractorList');" 
+				href="javascript: download('ReportContractorOperatorFlag');" 
 				title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
 			><s:text name="global.Download" /></a>
 		</div>
