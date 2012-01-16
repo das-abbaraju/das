@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
 
@@ -56,7 +57,7 @@
 								<s:text name="global.Employee" />:
 							</label>
 							<s:select list="employeeList" listKey="id" name="employeeID" listValue="displayName" 
-								headerKey="0" headerValue="- Employee -" />
+								headerKey="0" headerValue="- %{getText('Employee')} -" />
 						</li>
 					</s:if>
 					
@@ -84,7 +85,7 @@
 						</label>
 						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" />
 						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" 
-							headerKey="0" headerValue="- Corporate -" />
+							headerKey="0" headerValue="- %{getText('global.Corporate')} -" />
 					</li>
 					<li id="liAdditionalText">
 						<label>
