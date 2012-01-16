@@ -45,7 +45,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addJoin("JOIN accounts oa ON o.id = oa.id");
 			sql.addJoin("JOIN flag_archive f2 ON gc.subID = f2.conID AND gc.genID = f2.opID AND gc.flag <> f2.flag");
 
-			sql.addWhere("f2.creationDate = '" + df.format(subscription.getTimePeriod().getComparisonDate()) + "'");
+			sql.addWhere("f2.creationDate >= '" + df.format(subscription.getTimePeriod().getComparisonDate()) + "'");
 			sql.addWhere("(gc.workStatus = 'Y' OR o.approvesRelationships = 'No')");
 			sql.addWhere("a.status = 'Active'");
 			sql.addField("a.name AS name");
@@ -54,6 +54,7 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addField("gc.flag AS flag");
 			sql.addField("oa.name AS opName");
 			sql.addField("o.id AS opID");
+			sql.setDistinct(true);
 
 			if (o.isOperator()) {
 				sql.addGroupBy("a.id, oa.id");
