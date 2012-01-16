@@ -41,6 +41,8 @@ public abstract class AuditBuilderBase {
 			contractorTypes.add(ContractorType.Offsite);
 		if (contractor.isMaterialSupplier())
 			contractorTypes.add(ContractorType.Supplier);
+		if (contractor.isTransportationServices())
+			contractorTypes.add(ContractorType.Transportation);
 	}
 	
 	protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
