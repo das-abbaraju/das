@@ -7,6 +7,8 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,6 +22,8 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	private String locale;
 	private String value;
 	private Date lastUsed;
+	private TranslationQualityRating qualityRating;
+	private String sourceLanguage;
 
 	private static List<Locale> locales = null;
 
@@ -57,6 +61,23 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 
 	public void setLastUsed(Date lastUsed) {
 		this.lastUsed = lastUsed;
+	}
+
+	@Enumerated(EnumType.ORDINAL)
+	public TranslationQualityRating getQualityRating() {
+		return qualityRating;
+	}
+
+	public void setQualityRating(TranslationQualityRating qualityRating) {
+		this.qualityRating = qualityRating;
+	}
+
+	public String getSourceLanguage() {
+		return sourceLanguage;
+	}
+
+	public void setSourceLanguage(String sourceLanguage) {
+		this.sourceLanguage = sourceLanguage;
 	}
 
 	public static List<Locale> getLocales() {
