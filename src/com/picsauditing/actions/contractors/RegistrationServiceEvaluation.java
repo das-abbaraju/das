@@ -131,16 +131,16 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 
 		if (requireOnsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey("type")), StringUtils.join(onOps, ", "));
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(onOps, ", "));
 		if (requireOffsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey("type")), StringUtils.join(offOps, ", "));
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(offOps, ", "));
 		if (requireMaterialSupplier)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey("type")), StringUtils.join(msOps, ", "));
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(msOps, ", "));
 		if (requireTransportation)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey("type")), StringUtils.join(trxOps, ", "));
+					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(trxOps, ", "));
 	}
 
 	public boolean conTypesOK() {
