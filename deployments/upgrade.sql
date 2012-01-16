@@ -1,3 +1,19 @@
+-- PICS-4285
+-- reset all Flag Changes subscriptions not sent on the first Sunday of this week
+update email_subscription s
+join users u on s.userID = u.id and u.isActive = 'Yes'
+join accounts a on u.accountID = a.id and a.status = 'Active'
+set s.lastSent = '2012-01-10'
+where s.subscription = 'FlagChanges' and s.timePeriod = 'Weekly' and s.lastSent != '2012-01-15';
+
+-- reset all Flag Changes subscriptions not sent on the first Sunday of this month
+update email_subscription s
+join users u on s.userID = u.id and u.isActive = 'Yes'
+join accounts a on u.accountID = a.id and a.status = 'Active'
+set s.lastSent = '2011-12-01'
+where s.subscription = 'FlagChanges' and s.timePeriod = 'Monthly' and s.lastSent != '2012-01-01';
+--
+
 -- -----------------------------------------------------------------------------------------------
 -- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
 -- EXAMPLES:
