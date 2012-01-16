@@ -173,24 +173,37 @@ public class AccountActionSupport extends PicsActionSupport {
 				return o1.getName().compareTo(o2.getName());
 			}
 		});
-		countryList.add(0,countryDAO.find("GB"));
-		countryList.add(0,countryDAO.find("CA"));
-		countryList.add(0,countryDAO.find("US"));
-		
+		countryList.add(0, countryDAO.find("GB"));
+		countryList.add(0, countryDAO.find("CA"));
+		countryList.add(0, countryDAO.find("US"));
+
 		return countryList;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<State> getStateList() {
-		if (account == null)
-			return stateDAO.findAll();
-		return stateDAO.findByCountry(account.getCountry());
+		List<State> results = Collections.emptyList();
+		if (account == null) {
+			results = stateDAO.findAll();
+		} else {
+			results = stateDAO.findByCountry(account.getCountry());
+		}
+
+		Collections.sort(results, new Comparator<State>() {
+			@Override
+			public int compare(State o1, State o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
+		return results;
 	}
 
 	public List<State> getStateList(String countries) {
 		List<State> result;
-		if (countries == null)
+		if (countries == null) {
 			result = stateDAO.findAll();
-		else {
+		} else {
 			boolean negative = false;
 			if (countries.startsWith("!")) {
 				countries = countries.replace("!", "");
@@ -198,6 +211,14 @@ public class AccountActionSupport extends PicsActionSupport {
 			}
 			result = stateDAO.findByCountries(Arrays.asList(countries.split("[|]")), negative);
 		}
+
+		Collections.sort(result, new Comparator<State>() {
+			@Override
+			public int compare(State o1, State o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
 		return result;
 	}
 
