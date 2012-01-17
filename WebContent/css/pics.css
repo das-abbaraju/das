@@ -1158,7 +1158,7 @@ div.blockDialog {
 	margin-top: 10px;
 }
 
-/* OperatorTags.action */
+/* Operator Tags */
 
 #operatorTagForm .tag-info
 {
@@ -1172,6 +1172,7 @@ div.blockDialog {
 
 #operatorTagForm .table td.tag-id
 {
+	color: #404040;
 	font-weight: bold;
 	text-align: right;
 }
@@ -1213,7 +1214,6 @@ div.blockDialog {
 
 #operatorTagForm .table td.add-new-tag
 {
-	background-color: #FFF6D9;
 	font-weight: bold;
 }
 
@@ -1243,4 +1243,35 @@ div.blockDialog {
 .operator-tag-modal table
 {
 	margin: 0px !important;
+}
+
+/* Contractor Saftey Statistics */
+
+.contractor-saftey-statistics .panel_header span
+{
+	float: right;
+}
+
+.contractor-saftey-statistics a.weighted-industry-average
+{
+	float: right;
+	margin: 10px;
+}
+
+.trir-weighted-industry-average-modal table .trade-name
+{
+	width: 60%
+}
+
+.trir-weighted-industry-average-modal table .naics-average
+{
+	text-align: right;
+}
+
+.trir-weighted-industry-average-modal table tfoot td
+{
+	font-size: 16px;
+	font-weight: bold;
+	padding: 14px 7px 13px;
+	text-align: right;
 }

@@ -335,69 +335,8 @@
 						</s:if>
 					</s:iterator>
 					
-					
 					<s:if test="stats.size() > 0">
-						<div class="panel_placeholder">
-							<div class="panel">
-								<div class="panel_header">
-									<span style="float: right;">
-										<a href="#" id="hurdleLinkShow" onclick="$('tr.hurdle').show(); $('#hurdleLinkShow').hide(); $('#hurdleLinkHide').show(); return false;"><s:text name="ContractorView.ShowHurdleRates" /></a>
-										<a href="#" id="hurdleLinkHide" onclick="$('tr.hurdle').hide(); $('#hurdleLinkHide').hide(); $('#hurdleLinkShow').show(); return false;" style="display: none"><s:text name="ContractorView.HideHurdleRates" /></a>
-									</span>
-									<s:text name="global.Statistics" />
-								</div>
-								<div class="panel_content">
-									<s:iterator value="stats" var="stat">
-										<s:if test="#stat.hasData" >
-											<table class="report">
-												<thead>
-													<tr>
-														<td><s:property value="#stat.getOshaType()" /></td>
-														
-														<s:iterator value="#stat.auditForSet" id="auditFor">
-															<td>
-																<s:property value="#auditFor"/>
-															</td>
-														</s:iterator>
-													</tr>
-												</thead>
-												
-												<s:iterator value="#stat.rateTypeSet" id="rateType">
-													<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
-														<s:if test="#rateType.startsWith('P:')">
-															<td style="padding-left: 10px;">
-																<s:property value="#rateType.substring(2)" escape="false"/>
-															</td>
-														</s:if>
-														<s:else>
-															<td>
-																<s:property value="#rateType" escape="false"/>
-															</td>
-														</s:else>
-														
-														<s:iterator value="#stat.auditForSet" id="auditFor">
-															<td>
-																<s:property value="#stat.getData(#rateType, #auditFor)" escape="false"/>
-															</td>
-														</s:iterator>
-													</tr>
-												</s:iterator>
-											</table>
-										</s:if>
-									</s:iterator>
-									<s:if test="contractor.hasWiaCriteria()">
-										<a 
-											class="weighted-industry-average"
-											href="javascript:;"
-											data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
-											title="Weighted Industry Average (TRIR)"
-										>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
-									</s:if>
-									
-									<div class="clear"></div>
-								</div>
-							</div>
-						</div>
+						<s:include value="/struts/contractors/_contractor_saftey_statistics.jsp" />
 					</s:if>
 					
 					<s:if test="criteriaList.categories.size() > 0">

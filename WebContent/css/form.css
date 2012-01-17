@@ -93,6 +93,7 @@ ul.radio.inline label
 
 .table th
 {
+	color: #404040;
 	font-weight: bold;
 	padding: 10px 10px 9px;
 	text-align: center;
@@ -105,5 +106,10 @@ ul.radio.inline label
 
 .table .odd td
 {
-	background-color: #F5F5F5;
+	background-color: #EFEFEF;
+}
+
+.table tfoot td
+{
+	background-color: #FFF6D9;
 }
