@@ -7,25 +7,25 @@
 	padding: 4px !important;
 }
 
-.darkblue
+.operatorsheader
 {
 	background-color: #062541 !important;
 	padding: 4px !important;
 }
 
-.lightblue
+.docuguardheader, .employeeguardheader
 {
 	background-color: #79b7e0 !important;
 	padding: 4px !important;
 }
 
-.grey
+.insureguardheader
 {
 	background-color: #838486 !important;
 	padding: 4px !important;
 }
 
-.brown
+.auditguardheader
 {
 	background-color: #a75025 !important;
 	padding: 4px !important;

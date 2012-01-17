@@ -418,7 +418,7 @@ public class Permissions implements Serializable {
 		return hasGroup(11);
 	}
 	
-	public boolean isAccountManager() {
+	public boolean isMarketing() {
 		return hasGroup(10801);
 	}
 

@@ -29,19 +29,19 @@ $(document).ready(function() {
 <table class="report center">
 	<thead>
 		<tr>
-			<td class="darkblue">
+			<td class="operatorsheader">
 				<s:text name="global.Operators" />
 			</td>
-			<td class="lightblue">
+			<td class="docuguardheader">
 				<s:text name="global.DocuGUARD"></s:text>
 			</td>
-			<td class="grey">
+			<td class="insureguardheader">
 				<s:text name="global.InsureGUARD"></s:text>
 			</td>
-			<td class="brown">
+			<td class="auditguardheader">
 				<s:text name="global.AuditGUARD"></s:text>
 			</td>
-			<td class="lightblue">
+			<td class="employeeguardheader">
 				<s:text name="global.EmployeeGUARD"></s:text>
 			</td>
 		</tr>

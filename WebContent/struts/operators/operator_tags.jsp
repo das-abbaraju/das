@@ -83,7 +83,7 @@
 						
 						<%-- edit mode --%>
 						<s:if test="((permissions.operatorCorporate && permissions.hasPermission('ContractorTags', 'Edit') && operator.id == permissions.accountId)
-										|| (permissions.accountManager))
+										|| (permissions.marketing))
 										&& #tag.operator.id == #globalOperator.id">
 							<td class="tag-name">
 								<s:textfield name="tags[%{#rowstatus.index}].tag" value="%{tag}" />
@@ -144,7 +144,7 @@
 									&& auditCategoryRules.empty 
 									&& operatorFlagCriteria.empty
 									&& ((permissions.hasPermission('ContractorTags', 'Delete') && permissions.operatorCorporate) 
-										|| permissions.accountManager)">
+										|| permissions.marketing)">
 									<a href="OperatorTags!remove.action?id=${globalOperator.id}&tagID=${id}" class="btn error" rel=""><s:text name="button.Remove" /></a>
 								</s:if>
 								<s:else>
@@ -184,7 +184,7 @@
 					</tr>
 				</s:iterator>
 				
-				<s:if test="permissions.hasPermission('ContractorTags','Delete') || permissions.accountManager">
+				<s:if test="permissions.hasPermission('ContractorTags','Delete') || permissions.marketing">
 					<tfoot>
 						<tr>
 							<td colspan="6" class="add-new-tag">
@@ -196,7 +196,7 @@
 				</s:if>
 			</table>
 		
-			<s:if test=" permissions.hasPermission('ContractorTags','Edit') || permissions.accountManager">
+			<s:if test=" permissions.hasPermission('ContractorTags','Edit') || permissions.marketing">
 				<ul class="actions">
 					<li>
 						<s:submit method="save" value="Save Changes" cssClass="btn success" />
