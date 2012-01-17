@@ -120,7 +120,7 @@ class CronPublisher(CronThread):
 			running_lock.acquire()
 			self.logger.info('contractors running: %s' % con_running)
 			running_lock.release()
-			if self.con_q.qsize() < 5:
+			if self.con_q.empty():
 				try:
 					result = urllib2.urlopen(self.url % self.server_g.next()).read().strip()
 					if result:
@@ -152,37 +152,38 @@ class CronWorker(CronThread):
 		self.logger = logging.getLogger('worker')
 	def run(self):
 		while self.running:
-			id = self.con_q.get()
-			running_lock.acquire()
-			try:
-				con_running.add(id)
-			finally:
-				running_lock.release() # release lock, no matter what
-			start = time.time()
-			starttime = datetime.now()
-			success = False
-			try:
-				self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
-				cronurl = self.url % (self.server_g.next(), id)
-				self.logger.debug('using url: %s' % cronurl)
-				result = urllib2.urlopen(cronurl).read()
-				success = True
-				if success:
-					self.logger.info('Contractor %s finished successfully.' % id)
+			if not self.con_q.empty():
+				id = self.con_q.get()
+				running_lock.acquire()
+				try:
+					con_running.add(id)
+				finally:
+					running_lock.release() # release lock, no matter what
+				start = time.time()
+				starttime = datetime.now()
+				success = False
+				try:
+					self.logger.debug('thread #%d starting crontractor %s' % (self.thread_id,id))
+					cronurl = self.url % (self.server_g.next(), id)
+					self.logger.debug('using url: %s' % cronurl)
+					result = urllib2.urlopen(cronurl).read()
+					success = True
+					if success:
+						self.logger.info('Contractor %s finished successfully.' % id)
+					else:
+						self.logger.warning('Error with contractor %s' % id)
+				except Exception, e:
+					self.logger.error(e)
 				else:
-					self.logger.warning('Error with contractor %s' % id)
-			except Exception, e:
-				self.logger.error(e)
-			else:
-				time.sleep(self.sleeptime)
-			totaltime = time.time() - start
-			stats_q.put((id, starttime, totaltime, success, cronurl))
-			
-			running_lock.acquire()
-			try:
-				con_running.discard(id)
-			finally:
-				running_lock.release() # release lock, no matter what
+					time.sleep(self.sleeptime)
+				totaltime = time.time() - start
+				stats_q.put((id, starttime, totaltime, success, cronurl))
+				
+				running_lock.acquire()
+				try:
+					con_running.discard(id)
+				finally:
+					running_lock.release() # release lock, no matter what
 
 class CacheMonitor(CronThread):
 	def __init__(self, server_g):
