@@ -163,6 +163,7 @@ public class ContractorAccount extends Account implements JSONable {
 			if (co.getOperatorAccount().isOperator())
 				list.add(co.getOperatorAccount());
 		}
+		Collections.sort(list);
 		return list;
 	}
 
