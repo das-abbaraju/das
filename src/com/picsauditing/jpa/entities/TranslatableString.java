@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.jsoup.Jsoup;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.util.Strings;
 
@@ -108,6 +110,17 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 			return translations.get(fallback).getValue();
 		else
 			return null;
+	}
+	
+	/**
+	 * Strip Tags
+	 * 
+	 * Strips HTML/XML tags from translated string
+	 * 
+	 * @return
+	 */
+	public String getStripTags() {
+	    return Jsoup.parse(toString()).body().text();
 	}
 
 	@Override
