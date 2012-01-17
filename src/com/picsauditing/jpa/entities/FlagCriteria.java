@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,13 +16,15 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
+public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>, RequiresTranslation {
 
 	private String category;
 	private int displayOrder = 999;
@@ -39,13 +44,16 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	private boolean flaggableWhenMissing = false;
 	private boolean insurance = false;
 	private FlagCriteriaOptionCode optionCode;
+	private String requiredLanguages = null;
 
 	public static final String BOOLEAN = "boolean";
 	public static final String NUMBER = "number";
 	public static final String DATE = "date";
 	public static final String STRING = "string";
-	
+
 	public static final int EMR_AVERAGE_ID = 506;
+
+	private List<String> requiredTranslations = new ArrayList<String>();
 
 	public String getCategory() {
 		return category;
@@ -275,5 +283,40 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 	@Override
 	public int compareTo(FlagCriteria o) {
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
+	}
+
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
 	}
 }

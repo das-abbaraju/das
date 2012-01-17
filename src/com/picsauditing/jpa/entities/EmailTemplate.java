@@ -2,9 +2,11 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,10 +18,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
-public class EmailTemplate extends BaseTable implements java.io.Serializable {
+public class EmailTemplate extends BaseTable implements java.io.Serializable, RequiresTranslation {
 	private int accountID;
 	private String templateName = "";
 	private String subject;
@@ -31,7 +37,9 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	private boolean allowsVelocity = false;
 	private boolean html = false;
 	private boolean translated = false;
+	private String requiredLanguages = null;
 
+	private List<String> requiredTranslations = new ArrayList<String>();
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
 
@@ -155,5 +163,40 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable {
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
 	}
 }

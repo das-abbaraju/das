@@ -24,7 +24,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -35,7 +37,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseHistory implements Comparable<AuditQuestion> {
+public class AuditQuestion extends BaseHistory implements Comparable<AuditQuestion>, RequiresTranslation {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
@@ -82,6 +84,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private boolean hasTitleText;
 	private boolean hasHelpText;
 	private boolean hasRequirementText;
+	private String requiredLanguages = null;
 
 	private List<AuditQuestion> dependentRequired;
 	private List<AuditQuestion> dependentVisible;
@@ -91,6 +94,7 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
 	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<AuditQuestionFunctionWatcher>();
+	private List<String> requiredTranslations = new ArrayList<String>();
 
 	private AuditExtractOption extractOption;
 	private List<AuditTransformOption> transformOptions;
@@ -583,12 +587,12 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 		if (cmp != 0)
 			return cmp;
-		
+
 		int numberCmp = new Integer(getNumber()).compareTo(new Integer(other.getNumber()));
 
 		if (numberCmp != 0)
 			return numberCmp;
-		
+
 		return new Integer(id).compareTo(new Integer(other.getId()));
 	}
 
@@ -718,5 +722,40 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	@Override
 	public String getAutocompleteValue() {
 		return name.toString();
+	}
+
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
 	}
 }

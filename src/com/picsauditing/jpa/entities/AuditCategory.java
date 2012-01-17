@@ -20,6 +20,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.util.Strings;
@@ -28,7 +29,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTable implements Comparable<AuditCategory> {
+public class AuditCategory extends BaseTable implements Comparable<AuditCategory>, RequiresTranslation {
 
 	public static final int COMPANY_INFORMATION = 2;
 	public static final int GENERAL_SAFETY_INFORMATION = 8;
@@ -60,9 +61,11 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	private String uniqueCode;
 	private float scoreWeight = 0f;
 	private int columns = 1;
+	private String requiredLanguages = null;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	private List<String> requiredTranslations = new ArrayList<String>();
 
 	public AuditCategory() {
 
@@ -379,5 +382,40 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	@Transient
 	public boolean isPolicyInformationCategory() {
 		return "policyInformation".equals(this.getUniqueCode());
+	}
+
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
 	}
 }

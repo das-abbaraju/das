@@ -11,17 +11,24 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "audit_option_group")
 @SuppressWarnings("serial")
-public class AuditOptionGroup extends BaseTable {
+public class AuditOptionGroup extends BaseTable implements RequiresTranslation {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
+	private String requiredLanguages = null;
+
 	private List<AuditOptionValue> values = new ArrayList<AuditOptionValue>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	private List<String> requiredTranslations = new ArrayList<String>();
 
 	private int maxScore = 0;
 	/**
@@ -128,5 +135,40 @@ public class AuditOptionGroup extends BaseTable {
 	@Override
 	public String getAutocompleteValue() {
 		return name;
+	}
+
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
 	}
 }

@@ -22,6 +22,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import com.picsauditing.access.OpPerms;
 
@@ -29,7 +30,7 @@ import com.picsauditing.access.OpPerms;
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable {
+public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable, RequiresTranslation {
 
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
@@ -73,13 +74,16 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected OpPerms editPermission;
 	protected Workflow workFlow;
 	protected ScoreType scoreType;
+	protected String requiredLanguages = null;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
+	private List<String> requiredTranslations = new ArrayList<String>();
 
 	protected List<AuditCategory> topCategories;
 
-	private static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[]{145, 146, 143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
-	
+	private static final Set<Integer> CANADIAN_PROVINCES = new HashSet<Integer>(Arrays.asList(new Integer[] { 145, 146,
+			143, 170, 261, 168, 148, 147, 169, 166, 167, 144 }));
+
 	public AuditType() {
 	}
 
@@ -304,18 +308,15 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public boolean isAnnualAddendum() {
 		return (id == ANNUALADDENDUM);
 	}
-	
+
 	@Transient
 	public boolean isWCB() {
 		return CANADIAN_PROVINCES.contains(id);
 	}
-	
+
 	@Transient
 	public boolean isExtractable() {
-		return (id == CAN_QUAL_PQF || 
-				id == COMPLYWORKS_PQF || 
-				id == ISN_CAN_QUAL_PQF ||
-				id == ISN_US_PQF);
+		return (id == CAN_QUAL_PQF || id == COMPLYWORKS_PQF || id == ISN_CAN_QUAL_PQF || id == ISN_US_PQF);
 	}
 
 	@Override
@@ -379,4 +380,38 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 		return name.toString();
 	}
 
+	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
+		if (requiredLanguages != null) {
+			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
+			JSONArray languages = (JSONArray) json.get("requiredLanguages");
+
+			requiredTranslations.clear();
+			if (languages != null)
+				requiredTranslations.addAll(languages);
+		}
+	}
+
+	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
+		JSONObject json = new JSONObject();
+		json.put("requiredLanguages", requiredTranslations);
+		requiredLanguages = json.toJSONString();
+	}
+
+	public String getRequiredLanguages() {
+		return requiredLanguages;
+	}
+
+	public void setRequiredLanguages(String requiredLanguages) {
+		this.requiredLanguages = requiredLanguages;
+		createRequiredTranslationsFromJSON(requiredLanguages);
+	}
+
+	public List<String> getRequiredTranslations() {
+		return requiredTranslations;
+	}
+
+	public void setRequiredTranslations(List<String> requiredTranslations) {
+		this.requiredTranslations = requiredTranslations;
+		createRequiredLanguagesToJSON(requiredTranslations);
+	}
 }
