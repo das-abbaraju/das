@@ -21,7 +21,7 @@
 //        var pb = document.createElement('script');
 //        pb.type = 'text/javascript';
 //        pb.async = true;
-//        pb.src = '//192.168.20.157:8080/picsWeb2/badge/badge.js';
+//        pb.src = '//alpha.picsorganizer.com/badge/badge.js';
 //        
 //        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(pb);
 //    })();
@@ -32,7 +32,7 @@
     var badge_size = _pbq.size || 80;
     var badge_url = '//www.google.com';
     var container_element_id = _pbq.container_element_id || 'pics_badge_container';
-    var host = '//192.168.20.157:8080/picsWeb2/';
+    var host = '//alpha.picsorganizer.com';
     var logo_url;
     var website_text = 'The Contractor\'s Choice';
     var website_url = '//www.picsauditing.com';
@@ -40,6 +40,8 @@
     // script tag 
     var scripts = document.getElementsByTagName('script');
     var script_element = scripts[scripts.length - 1];
+    
+    console.log(script_element);
     
     // badge style
     var style_element = document.createElement('style');
