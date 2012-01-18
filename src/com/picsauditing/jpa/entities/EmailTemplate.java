@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
@@ -39,7 +38,8 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 	private boolean translated = false;
 	private String requiredLanguages = null;
 
-	private List<String> requiredTranslations = new ArrayList<String>();
+	private List<String> languages = new ArrayList<String>();
+	
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
 
@@ -165,38 +165,34 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 		return getI18nKey() + "." + property;
 	}
 
-	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
-		if (requiredLanguages != null) {
-			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
-			JSONArray languages = (JSONArray) json.get("requiredLanguages");
-
-			requiredTranslations.clear();
-			if (languages != null)
-				requiredTranslations.addAll(languages);
-		}
-	}
-
-	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
-		JSONObject json = new JSONObject();
-		json.put("requiredLanguages", requiredTranslations);
-		requiredLanguages = json.toJSONString();
-	}
-
 	public String getRequiredLanguages() {
 		return requiredLanguages;
 	}
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
-		createRequiredTranslationsFromJSON(requiredLanguages);
+		if (requiredLanguages != null)
+		{
+			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
+			languages.clear();
+			for (Object obj : JSONLanguages) {
+				String language = (String) obj;
+				languages.add(language);
+			}
+		}
 	}
 
-	public List<String> getRequiredTranslations() {
-		return requiredTranslations;
+	@Transient
+	public List<String> getLanguages() {
+		return languages;
 	}
 
-	public void setRequiredTranslations(List<String> requiredTranslations) {
-		this.requiredTranslations = requiredTranslations;
-		createRequiredLanguagesToJSON(requiredTranslations);
+	@Transient
+	public void setLanguages(List<String> languages) {
+		this.languages = languages;
+		JSONArray jsonArray = new JSONArray();
+		for (String language : languages)
+			jsonArray.add(language);
+		requiredLanguages = jsonArray.toJSONString();
 	}
 }

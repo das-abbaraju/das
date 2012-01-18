@@ -226,6 +226,10 @@ function showOption() {
 		<li><label>Field Identifier:</label>
 			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
 		</li>
+		<li>
+			<label>Required Languages:</label>
+			<s:select list="#{'en':'English','fr':'French','es':'Spanish'}" cssClass="forms" name="question.languages" multiple="true" size="2" />
+		</li>
 	</ol>
 	</fieldset>
 	<s:if test="question.functions.size() > 0">

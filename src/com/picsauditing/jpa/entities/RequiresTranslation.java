@@ -2,18 +2,13 @@ package com.picsauditing.jpa.entities;
 
 import java.util.List;
 
-
 public interface RequiresTranslation {
-
-	public void createRequiredTranslationsFromJSON(String requiredLanguages);
-
-	public void createRequiredLanguagesToJSON(List<String> requiredTranslations);
 
 	public String getRequiredLanguages();
 
 	public void setRequiredLanguages(String requiredLanguages);
 
-	public List<String> getRequiredTranslations();
+	public List<String> getLanguages();
 
-	public void setRequiredTranslations(List<String> requiredTranslations);
+	public void setLanguages(List<String> requiredTranslations);
 }

@@ -53,7 +53,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 
 	public static final int EMR_AVERAGE_ID = 506;
 
-	private List<String> requiredTranslations = new ArrayList<String>();
+	private List<String> languages = new ArrayList<String>();
 
 	public String getCategory() {
 		return category;
@@ -285,38 +285,34 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
 	}
 
-	public void createRequiredTranslationsFromJSON(String requiredLanguages) {
-		if (requiredLanguages != null) {
-			JSONObject json = (JSONObject) JSONValue.parse(requiredLanguages);
-			JSONArray languages = (JSONArray) json.get("requiredLanguages");
-
-			requiredTranslations.clear();
-			if (languages != null)
-				requiredTranslations.addAll(languages);
-		}
-	}
-
-	public void createRequiredLanguagesToJSON(List<String> requiredTranslations) {
-		JSONObject json = new JSONObject();
-		json.put("requiredLanguages", requiredTranslations);
-		requiredLanguages = json.toJSONString();
-	}
-
 	public String getRequiredLanguages() {
 		return requiredLanguages;
 	}
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
-		createRequiredTranslationsFromJSON(requiredLanguages);
+		if (requiredLanguages != null)
+		{
+			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
+			languages.clear();
+			for (Object obj : JSONLanguages) {
+				String language = (String) obj;
+				languages.add(language);
+			}
+		}
 	}
 
-	public List<String> getRequiredTranslations() {
-		return requiredTranslations;
+	@Transient
+	public List<String> getLanguages() {
+		return languages;
 	}
 
-	public void setRequiredTranslations(List<String> requiredTranslations) {
-		this.requiredTranslations = requiredTranslations;
-		createRequiredLanguagesToJSON(requiredTranslations);
+	@Transient
+	public void setLanguages(List<String> languages) {
+		this.languages = languages;
+		JSONArray jsonArray = new JSONArray();
+		for (String language : languages)
+			jsonArray.add(language);
+		requiredLanguages = jsonArray.toJSONString();
 	}
 }

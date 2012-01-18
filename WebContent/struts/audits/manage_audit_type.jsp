@@ -315,6 +315,10 @@
 								</ul>
 							</pics:fieldhelp>
 						</li>
+						<li>
+							<label>Required Languages:</label>
+							<s:select list="#{'en':'English','fr':'French','es':'Spanish'}" cssClass="forms" name="auditType.languages" multiple="true" size="2" />
+						</li>
 					</ol>
 				</fieldset>
 				<fieldset class="form submit">

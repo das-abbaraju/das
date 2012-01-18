@@ -151,6 +151,10 @@
 							<s:textfield name="category.applyOnAnswer" />
 						</li>
 					</s:if>
+					<li>
+						<label>Required Languages:</label>
+						<s:select list="#{'en':'English','fr':'French','es':'Spanish'}" cssClass="forms" name="category.languages" multiple="true" size="2" />
+					</li>
 				</ol>
 			</fieldset>
 			
