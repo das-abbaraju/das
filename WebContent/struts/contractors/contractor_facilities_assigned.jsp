@@ -1,15 +1,5 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
-<s:if test="permissions.contractor && contractor.needsToIndicateCompetitor">
-	<div class="info"><p><strong><s:text name="ContractorFacilities.MemberOfCompetitor" /></strong></p>
-		<span>
-			<a href="#" class="picsbutton positive"
-				onclick="javascript: return setCanadianCompetitorAnswer(<s:property value="contractor.id"/>,true);"><s:text name="YesNo.Yes" /></a>
-			<a href="#" class="picsbutton negative"
-				onclick="javascript: return setCanadianCompetitorAnswer(<s:property value="contractor.id"/>,false);"><s:text name="YesNo.No" /></a>
-		</span>
-	</div>
-</s:if>
 <s:if test="currentOperators.size() == 0">
 	<div class="alert" style="width: 80%;"><s:text name="ContractorFacilities.NotLinked" ><s:param><s:property value="contractor.name"/></s:param></s:text> 
 	<br/>

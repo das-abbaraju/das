@@ -104,7 +104,8 @@
 					</s:iterator>
 					
 					<%-- Import Fee being hard coded to toggle on/off --%>
-					<s:if test="!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free">
+					<s:if test="contractor.eligibleForImportPQF 
+									&& (!contractor.fees.get(importFee.feeClass) || contractor.fees.get(importFee.feeClass).newLevel.free)">
 						<tr>
 							<td>
 								<s:property	value="importFee.fee" />

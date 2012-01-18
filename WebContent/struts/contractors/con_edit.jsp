@@ -419,20 +419,10 @@
 									</pics:fieldhelp>
 								</li>
 								<li>
-									<label for="conCompetitorMembership">Has Competitor Membership:</label>
-									<s:radio
-										id="conCompetitorMembership" 
-										list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" 
-										name="contractor.competitorMembership"
-										theme="pics" 
-										cssClass="inline" 
-									/>
-									<br />
-									
 									<s:if test="hasImportPQFAudit">
 										<s:submit method="expireImportPQF" cssClass="picsbutton negative" id="removeImportPQFButton" value="Remove Import PQF" />
 									</s:if>
-									<s:elseif test="contractor.competitorMembership.equals(true)">
+									<s:elseif test="contractor.eligibleForImportPQF">
 										<s:submit method="createImportPQF" cssClass="picsbutton positive" value="Create Import PQF" />
 									</s:elseif>
 									
@@ -443,16 +433,6 @@
 											Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.
 										</p>
 									</div>
-								</li>
-								<li>
-									<label for="conCanadianCompetitor">Has Canadian Competitor:</label>
-									<s:radio
-										id="conCanadianCompetitor" 
-										list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No'),'':getText('YesNo.NA')}" 
-										name="contractor.hasCanadianCompetitor"
-										theme="pics"
-										cssClass="inline" 
-									/>
 								</li>
 								<li>
 									<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />

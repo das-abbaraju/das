@@ -275,12 +275,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	public String debugCategoriesBuilder() {
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-		Set<AuditCategory> auditCategories = builder.calculate(conAudit);
-		return "debugCategoriesBuilder";
-	}
-
 	private void addCatData(AuditCategory category) {
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(category);
@@ -509,7 +503,8 @@ public class ContractorAuditController extends AuditActionSupport {
 				// TODO: We might need to clean this logic up later. The import fee is a one time charge. If there is a
 				// contractor fee with the Import Fee class, then I'm assuming that they've been charged for this
 				// before.
-				if (con.getFees().get(FeeClass.ImportFee) != null)
+				if (con.getFees().get(FeeClass.ImportFee) != null
+						&& !con.getFees().get(FeeClass.ImportFee).getNewLevel().isFree())
 					return false;
 
 				for (ContractorAudit importAudit : con.getAudits()) {

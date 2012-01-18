@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -358,8 +357,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	}
 
 	public String createImportPQF() throws Exception {
-		redirect("CreateImportPQFAudit.action?id=" + contractor.getId() + "&url=ContractorEdit.action?id="
-				+ contractor.getId());
+		billingService.addImportPQF(contractor, permissions);
+		addActionMessage(getText("ContractorEdit.message.CreatedImportPQF"));
 
 		return SUCCESS;
 	}

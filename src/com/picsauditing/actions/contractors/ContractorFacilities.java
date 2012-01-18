@@ -137,10 +137,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 		if (button != null) {
 			boolean recalculate = false;
 
-			if (button.equals("setCompetitorAnswer")) {
-				contractor.setHasCanadianCompetitor(competitorAnswer);
-				accountDao.save(contractor);
-			}
 			if (button.equals("search")) {
 				if ((!Strings.isEmpty(operator.getName()) || !Strings.isEmpty(state))) {
 					String where = "";
@@ -274,7 +270,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 					}
 					accountDao.save(contractor);
 				}
-				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
 				return JSON;
 			}
 
@@ -316,7 +311,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 					// Not sure when this happens
 					addActionError(getText("ContractorFacilities.error.ServiceMismatch"));
 				}
-				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
 			}
 
 			if (button.equals("removeOperator")) {
@@ -326,8 +320,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 				else if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
 				recalculate = true;
-				json.put("needsToIndicateCompetitor", contractor.isNeedsToIndicateCompetitor());
-				json.put("numberOfFacilities", contractor.getNonCorporateOperators().size());
 			}
 
 			if (recalculate) {
@@ -447,28 +439,5 @@ public class ContractorFacilities extends ContractorActionSupport {
 			count++;
 
 		return count;
-	}
-
-	@Override
-	public ContractorRegistrationStep getNextRegistrationStep() {
-		if (contractor.isNeedsToIndicateCompetitor())
-			return null;
-
-		if (contractor.getNonCorporateOperators().size() > 0)
-			return ContractorRegistrationStep.values()[ContractorRegistrationStep.Clients.ordinal() + 1];
-
-		return null;
-	}
-
-	@Override
-	public String nextStep() throws Exception {
-		findContractor();
-		if (contractor.isNeedsToIndicateCompetitor()) {
-			redirect(ContractorRegistrationStep.Clients.getUrl());
-			return SUCCESS;
-		} else {
-			redirect(getNextRegistrationStep().getUrl());
-			return SUCCESS;
-		}
 	}
 }

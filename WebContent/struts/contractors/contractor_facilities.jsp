@@ -79,10 +79,6 @@
 				$('#facilitySearch .clearable').val('');
 				runSearch();
 				refreshNoteCategory(conId, 'OperatorChanges');
-				if(result.needsToIndicateCompetitor)
-					$('#next_button').hide();
-				else
-					$('#next_button').show();
 			}
 		});
 		return false;
@@ -101,12 +97,6 @@
 				runSearch();
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
-				if(result.needsToIndicateCompetitor)
-					$('#next_button').hide();
-				else if(result.numberOfFacilities > 0)
-					$('#next_button').show();
-				else
-					$('#next_button').hide();
 			}
 		});
 		return false;
@@ -131,11 +121,7 @@
 				stopThinking( {div: 'thinkingDiv' } );
 				reloadOperators( conId );
 				refreshNoteCategory(conId, 'OperatorChanges');
-				if(result.needsToIndicateCompetitor)
-					$('#next_button').hide();
-				else
-					$('#next_button').show();			
-				}
+			}
 		});
 	}
 
@@ -156,22 +142,6 @@
 				runSearch();
 			}
 		});
-		return false;
-	}
-	
-	function setCanadianCompetitorAnswer(conId,answer) {
-		startThinking( {div: 'thinkingDiv', message: translate('JS.ContractorFacilities.message.SettingAnswer') } );
-		var data= {id: conId, button: 'setCompetitorAnswer', competitorAnswer: answer};
-		$.ajax({
-			url: 'ContractorFacilityAjax.action', 
-			data: data, 
-			complete: function() {
-				stopThinking( {div: 'thinkingDiv' } );
-				reloadOperators( conId );
-				runSearch();
-			}
-		});
-		$('#next_button').show();
 		return false;
 	}
 </script>

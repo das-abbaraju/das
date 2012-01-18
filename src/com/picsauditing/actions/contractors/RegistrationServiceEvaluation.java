@@ -86,11 +86,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (contractor.getRequestedBy() != null && !contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR))
 			showCompetitor = false;
 
-		if (!showCompetitor && contractor.getHasCanadianCompetitor() != null
-				&& contractor.getHasCanadianCompetitor().booleanValue()) {
-			contractor.setHasCanadianCompetitor(false);
-		}
-
 		loadQuestions();
 		loadAnswers();
 

@@ -97,24 +97,6 @@
 				<div id="name_status"></div>
 				
 				<ol>
-					<s:if test="contractor.competitorMembership && contractor.status.pending && !hasPQFImportAudit">
-						<li>
-							<div class="alert">
-								<s:text name="ContractorPaymentOptions.ConsortiumMember">
-									<s:param value="%{contractor.currencyCode.symbol}" />
-									<s:param value="%{importFeeForTranslation.amount.intValue()}" />
-									<s:param value="'watchtip'" />
-								</s:text>
-								<br />
-								
-								<div id="watchtip">
-									<s:text name="ContractorPaymentOptions.ConsortiumMember.cluetip" />
-								</div>
-								
-								<s:submit cssClass="picsbutton positive" method="importPQF" value="%{getText('button.ImportMyData')}" />
-							</div>
-						</li>
-					</s:if>
 					<s:if test="contractor.paymentMethodStatusValid && contractor.paymentMethod.creditCard && contractor.mustPayB">
 						<li>
 							<div class="info">

@@ -84,7 +84,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private Webcam webcam;
 	private boolean soleProprietor;
 	private Boolean competitorMembership;
-	private Boolean hasCanadianCompetitor;
 	private boolean showInDirectory = true;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
@@ -717,8 +716,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		if (emrs.size() == 4) {
 			emrs.remove(((TreeMap<String, AuditData>) emrs).firstKey());
-		}
-		else if (emrs.size() > 4)
+		} else if (emrs.size() > 4)
 			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
@@ -1297,17 +1295,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean worksIn(String country) {
-		for (ContractorOperator co : getOperators()) {
-			if (co.getOperatorAccount().isOperator()
-					&& co.getOperatorAccount().getCountry().getIsoCode().equals(country))
-				return true;
-		}
-
-		return false;
-	}
-
-	@Transient
 	public OperatorAccount getReducedActivationFeeOperator(InvoiceFee activation) {
 		// if Operator activation fee is reduced, return Operator account
 		if (getRequestedBy() != null) {
@@ -1359,14 +1346,6 @@ public class ContractorAccount extends Account implements JSONable {
 		return competitorMembership;
 	}
 
-	public void setHasCanadianCompetitor(Boolean hasCanadianCompetitor) {
-		this.hasCanadianCompetitor = hasCanadianCompetitor;
-	}
-
-	public Boolean getHasCanadianCompetitor() {
-		return hasCanadianCompetitor;
-	}
-
 	public boolean isShowInDirectory() {
 		return showInDirectory;
 	}
@@ -1404,13 +1383,6 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return currentTotal;
-	}
-
-	@Transient
-	public boolean isNeedsToIndicateCompetitor() {
-		return getRequestedBy() != null && getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR)
-				&& (getCompetitorMembership() == null || getCompetitorMembership().booleanValue() == true)
-				&& getHasCanadianCompetitor() == null;
 	}
 
 	@Transient
@@ -1508,7 +1480,7 @@ public class ContractorAccount extends Account implements JSONable {
 		List<Integer> importPQFEligibleOperators = new ArrayList<Integer>();
 
 		for (OperatorAccount operator : getOperatorAccounts())
-			if (importPQFEligibleOperators.contains(operator.getTopAccount()))
+			if (importPQFEligibleOperators.contains(operator.getTopAccount().getId()))
 				return true;
 
 		return false;

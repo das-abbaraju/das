@@ -72,7 +72,7 @@
 			</s:text>
 		</div>		
 	</s:if>
-	<s:if test="needsImportPQFQuestion">
+	<s:if test="conAudit.contractorAccount.eligibleForImportPQF && needsImportPQFQuestion">
 		<div class="info">
 			<s:text name="Audit.message.ImportPQF">
 				<s:param value="'importPQFCluetip'" />
