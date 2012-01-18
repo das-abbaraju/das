@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.jpa.entities.AppTranslation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -54,6 +55,8 @@ public class BatchTranslationsAction extends PicsActionSupport {
 			a.setKey(key);
 			a.setValue(translation);
 			a.setAuditColumns(new User(User.SYSTEM));
+			a.setSourceLanguage("en");
+			a.setQualityRating(TranslationQualityRating.Bad);
 
 			dao.save(a);
 		}

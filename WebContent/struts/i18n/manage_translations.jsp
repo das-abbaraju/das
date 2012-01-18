@@ -35,7 +35,7 @@
 					var that = $(this).closest("td");
 					that.addClass("saving");
 					
-					var params = $(this).closest("form").serialize();
+					var params = $(this).closest("form.translationValue").serialize();
 					
 					$.post('ManageTranslationsAjax.action', params, function(result) {
 						if (result.success) {
@@ -47,6 +47,15 @@
 						}
 						that.removeClass("saving");
 					}, "json");
+				});
+				
+				$('table.report form.translationQuality input[type=radio]').click(function() {
+					var data = $(this).closest("form.translationQuality").serialize(); 
+					
+					$.ajax({
+						url: "ManageTranslationsAjax!updateQualityRating.action",
+						data: data
+					});
 				});
 			});
 		</script>
@@ -86,15 +95,15 @@
 		<s:include value="../config_environment.jsp" />
 		<s:if test="tracingOn">
 			<div class="alert">
-			Text Tracing for Internationalization is turned ON.
-			<s:form id="formTracingOff">
-				<s:hidden name="button" value="tracingOff" />
-				<s:submit value="Turn Tracing Off" />
-			</s:form>
-			<s:form id="formTracingClear">
-				<s:hidden name="button" value="tracingClear" />
-				<s:submit value="Clear Tracing Cache" />
-			</s:form>
+				Text Tracing for Internationalization is turned ON.
+				<s:form id="formTracingOff">
+					<s:hidden name="button" value="tracingOff" />
+					<s:submit value="Turn Tracing Off" />
+				</s:form>
+				<s:form id="formTracingClear">
+					<s:hidden name="button" value="tracingClear" />
+					<s:submit value="Clear Tracing Cache" />
+				</s:form>
 			</div>
 		</s:if>
 		<s:else>
@@ -118,11 +127,13 @@
 				list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()"
 				name="localeTo"
 				listValue="displayName" />
-				
-			Key: <s:textfield name="key" />
-			Search: <s:textfield name="search" />
+			Key:
+			<s:textfield name="key" />
+			Search:
+			<s:textfield name="search" />
 			<br />
-			Custom: <s:select headerKey="" headerValue=""
+			Custom:
+			<s:select headerKey="" headerValue=""
 				list="#{
 					'Common':'Commonly Used '+localeFrom.displayName+' Phrases', 
 					'MissingTo':'Missing '+localeTo.displayName+' Translations', 
@@ -131,7 +142,7 @@
 					'Unused':'Unused Keys'}"
 				name="searchType" />
 			<br /> 
-			<s:submit name="button" id="searchfilter" value="Search"></s:submit>
+			<s:submit name="button" id="searchfilter" value="Search" />
 		</s:form>
 		</div>
 			<div class="right">
@@ -161,18 +172,24 @@
 			</thead>
 			<s:iterator value="list">
 				<tr class="translate" id="row<s:property value="from.id"/>">
-					<td><s:property value="from.key"/></td>
+					<td>
+						<s:property value="from.key" />
+					</td>
 					<s:iterator value="items">
 						<td class="phrase">
-							<form onsubmit="return false;">
+							<form onsubmit="return false;" class="translationValue">
 								<input type="hidden" name="translation" value="<s:property value="id"/>">
 								<s:if test="!(id > 0)">
 									<input type="hidden" name="translation.locale" value="<s:property value="localeTo"/>" />
 									<input type="hidden" name="translation.key" value="<s:property value="from.key"/>" />
-									<a href="#" class="view suggestTranslation">Suggest</a>
+									<a href="#" class="view suggestTranslation">
+										Suggest
+									</a>
 								</s:if>
 								<input type="hidden" name="button" value="save">
-								<a href="#" class="showEdit view">Edit</a>
+								<a href="#" class="showEdit view">
+									Edit
+								</a>
 								<span class="view">
 									<s:property value="value"/>
 								</span>
@@ -185,6 +202,20 @@
 								<s:if test="(updatedBy == null || updatedBy.id == 1) && locale != 'en'">
 									<button class="right" name="button" class="save">Approve</button>
 								</s:if>
+							</form>
+							<form class="translationQuality">
+								<s:hidden name="translation" value="%{id}" />
+								<s:hidden name="localeTo" />
+								<s:hidden name="localeFrom" />
+								<s:hidden name="translation.locale" value="%{localeTo}" />
+								<s:hidden name="translation.key" value="%{from.key}" />
+								<s:radio
+									list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+									name="translation.qualityRating"
+									theme="pics"
+									cssClass="inline"
+									value="%{qualityRating}"
+								/>
 							</form>
 						</td>
 					</s:iterator>

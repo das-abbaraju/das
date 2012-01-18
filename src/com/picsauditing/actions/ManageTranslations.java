@@ -20,6 +20,7 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.jpa.entities.AppTranslation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
@@ -71,6 +72,7 @@ public class ManageTranslations extends ReportActionSupport {
 							throw new Exception("Missing Translation Key");
 						}
 						translation.setAuditColumns(permissions);
+						translation.setSourceLanguage(localeFrom.getLanguage());
 						dao.save(translation);
 						out.put("id", translation.getId());
 					}
@@ -107,11 +109,13 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
+		sql.addField("t1.qualityRating fromQualityRating");
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
-		
+		sql.addField("t2.qualityRating toQualityRating");
+
 		sql.addOrderBy("t2.updatedBy, t2.lastUsed DESC, t1.updatedBy, t1.lastUsed DESC");
 
 		if (searchType != null) {
@@ -163,8 +167,17 @@ public class ManageTranslations extends ReportActionSupport {
 		for (BasicDynaBean row : data) {
 			list.add(new Translation(row));
 		}
-		if (download){
+		if (download) {
 			addExcelColumns();
+		}
+
+		return SUCCESS;
+	}
+
+	public String updateQualityRating() {
+		if (translation != null) {
+			translation.setAuditColumns();
+			dao.save(translation);
 		}
 
 		return SUCCESS;
@@ -181,6 +194,8 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setKey(row.get("msgKey").toString());
 			from.setValue(row.get("fromValue").toString());
 			from.setLocale(localeFrom.getLanguage());
+			from.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
+					"fromQualityRating").toString())));
 			Object fromLastUsed = row.get("fromLastUsed");
 			if (fromLastUsed != null)
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
@@ -196,6 +211,8 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setKey(from.getKey());
 					to.setValue(row.get("toValue").toString());
 					to.setLocale(localeTo.getLanguage());
+					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
+							"toQualityRating").toString())));
 					Object toLastUsed = row.get("toLastUsed");
 					if (toLastUsed != null)
 						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
@@ -284,10 +301,11 @@ public class ManageTranslations extends ReportActionSupport {
 			return false;
 		}
 	}
+
 	public void addExcelColumns() throws IOException {
 		excelSheet.setData(data);
 		excelSheet.buildWorkbook();
-		
+
 		excelSheet.addColumn(new ExcelColumn("msgKey", "msgKey"));
 		excelSheet.addColumn(new ExcelColumn("locale", "locale"));
 		excelSheet.addColumn(new ExcelColumn("toValue", "msgValue"));
@@ -296,7 +314,7 @@ public class ManageTranslations extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("creationDate", "creationDate"));
 		excelSheet.addColumn(new ExcelColumn("updateDate", "updateDate"));
 		excelSheet.addColumn(new ExcelColumn("toLastUsed", "lastUsed"));
-		
+
 		String filename = this.getClass().getSimpleName();
 		excelSheet.setName(filename);
 		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
