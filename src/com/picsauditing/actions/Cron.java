@@ -936,9 +936,10 @@ public class Cron extends PicsActionSupport {
 		stats.execute();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void checkRegistrationRequestsHoldDates() throws Exception {
-		List<ContractorRegistrationRequest> holdRequests = contractorRegistrationRequestDAO
-				.findWhere("c.status = 'Hold'");
+		List<ContractorRegistrationRequest> holdRequests = (List<ContractorRegistrationRequest>) dao.findWhere(
+				ContractorRegistrationRequest.class, "c.status = 'Hold'");
 		Date now = new Date();
 		for (ContractorRegistrationRequest crr : holdRequests) {
 			if (now.after(crr.getHoldDate())) {

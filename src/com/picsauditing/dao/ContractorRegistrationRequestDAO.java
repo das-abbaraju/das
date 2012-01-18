@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ContractorRegistrationRequestDAO extends PicsDAO {
@@ -24,19 +23,7 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 	}
 
 	public ContractorRegistrationRequest find(int id) {
-		ContractorRegistrationRequest a = em.find(ContractorRegistrationRequest.class, id);
-		return a;
-	}
-	
-	public List<ContractorRegistrationRequest> findWhere(String where) {
-		if (!Strings.isEmpty(where)) {
-			where = " WHERE " + where;
-		} else {
-			where = "";
-		}
-		
-		Query query = em.createQuery("FROM ContractorRegistrationRequest c" + where);
-		return query.getResultList();
+		return em.find(ContractorRegistrationRequest.class, id);
 	}
 
 	public List<ContractorRegistrationRequest> findByCSR(int csrID, boolean open) {

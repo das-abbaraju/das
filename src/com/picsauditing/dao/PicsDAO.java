@@ -90,10 +90,13 @@ abstract public class PicsDAO {
 		return em.find(clazz, id);
 	}
 
-	
 	protected List<? extends BaseTable> findAll(Class<? extends BaseTable> clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 		return q.getResultList();
+	}
+
+	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where) {
+		return findWhere(clazz, where, 0);
 	}
 
 	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit) {
