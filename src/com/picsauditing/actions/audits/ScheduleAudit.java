@@ -64,7 +64,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private String scheduledDateDay;
 	private String scheduledDateTime;
 	private Date availabilityStartDate = new Date();
-	
+
 	private Set<User> auditorList;
 
 	@Autowired
@@ -198,14 +198,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String select() throws Exception {
-		// Look up if there are multiple auditors for this area
-		List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor, conAudit
-				.getAuditType());
-		List<User> auditors = new ArrayList<User>();
-		if (assignments.size() > 0) {
-			for (UserAssignment ua : assignments)
-				auditors.add(ua.getUser());
-		}
+		List<User> auditors = userAssignmentDAO.findAuditorsByLocation(conAudit, UserAssignmentType.Auditor);
 
 		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
 		int maxRank = -999;
@@ -219,8 +212,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 		if (availabilitySelectedID > 0) {
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			conAudit.setNeedsCamera(true); // Assume yes until they say
-			// otherwise
+			conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
 			return "confirm";
 		}
 		addActionError("Failed to select time");
@@ -235,7 +227,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			addActionError(getText("ScheduleAudit.message.TimeSlotNotAvailable"));
 			return "select";
 		}
-		
+
 		if (!readInstructions) {
 			addActionError(getText("ScheduleAudit.message.AcknowledgeInstructions"));
 			return "confirm";
@@ -350,8 +342,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 		if (availabilitySelectedID > 0) {
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			conAudit.setNeedsCamera(true); // Assume yes until they say
-			// otherwise
+			conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
 			return "confirm";
 		}
 		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
@@ -362,58 +353,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
 
+		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
 
-		if (conAudit.getAuditor() != null) {
-			// If there's already an auditor set, get the availble slots for that auditor
-			timeslots = auditorAvailabilityDAO.findByAuditorID(conAudit.getAuditor().getId(), availabilityStartDate);
-		} 
-		
-		if (((timeslots == null) || (timeslots.size() == 0))) {
-			// Either there's not already an auditor set, or that auditor didn't have any slots available.
-			// So, get the list of auditors that service the contractor's location.
-			List<UserAssignment> assignments = userAssignmentDAO.findList(conAudit, UserAssignmentType.Auditor,
-					conAudit.getAuditType());
-
-			if (assignments.size() > 0) {
-				// There are at least one assignment for the contractor's location
-				if (assignments.size() > 1) {
-					// There are multiple assignments, select the schedule for all
-					// the available auditors
-					List<User> auditors = new ArrayList<User>();
-					for (UserAssignment ua : assignments)
-						auditors.add(ua.getUser());
-
-					timeslots = auditorAvailabilityDAO.findAvailableLocal(availabilityStartDate, auditors);
-				} else
-					// Just select the one auditor's schedule
-					timeslots = auditorAvailabilityDAO.findByAuditorID(assignments.get(0).getUser().getId(),
-							availabilityStartDate);
-			}
-		}
-			
-			
-		if (((timeslots == null) || (timeslots.size() == 0))) {
-			// Still no timeslots?  Our last resort is to find the schedule for all auditors
-			timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
-		}
-		
-		// Let's first try to load up availableSet with on-site timeslots.
-		// Transfer the found timeslots into the availableSet, ignoring timeslots that are already in the set, until the set has 8 or more days's worth
-		for (AuditorAvailability timeslot : timeslots) {
-			if (timeslot.isConductedOnsite(conAudit)) {
-				if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
-					break;
-				}
-				availableSet.add(timeslot);
-			}
-		}
-
-		if (availableSet.size() > 0) {
-			return;
-		}
-
-		// There weren't any on-site timeslots, so let's try this again with any type of timeslot.
-		// Transfer the found timeslots into the availableSet, ignoring timeslots that are already in the set, until the set has 8 or more days's worth 
 		availableSet = new AvailableSet();
 		for (AuditorAvailability timeslot : timeslots) {
 			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
@@ -681,6 +622,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		addNote(contractor, summary, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 	}
+
 	@Override
 	public Set<User> getAuditorList() {
 		// This page we only want to pull up auditors and not CSRs.
