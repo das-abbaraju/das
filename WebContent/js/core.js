@@ -38,6 +38,28 @@ if (typeof Object.create !== 'function') {
         
         return {
             /**
+             * Init
+             * 
+             * Initialize all init methods when the document is ready
+             * Clear out init methods once they have been executed
+             */
+            _init: function () {
+                var that = this;
+                
+                $(document).ready(function () {
+                    for (var i in _inits) {
+                        var cls = that.getClass(_inits[i]);
+                        
+                        if (typeof cls.init == 'function') {
+                            cls.init();
+                        }
+                    }
+                    
+                    _inits = [];
+                });
+            },
+            
+            /**
              * Ajax
              * 
              * @options: An object literial configuration for an ajax request
@@ -188,28 +210,17 @@ if (typeof Object.create !== 'function') {
             },
             
             /**
-             * Init
-             * 
-             * Initialize all init methods when the document is ready
-             * Clear out init methods once they have been executed
+             * Modal
              */
-            init: function () {
-                var that = this;
+            modal: function (options) {
+                var modal = this.getClass('modal.Modal');
                 
-                $(document).ready(function () {
-                    for (var i in _inits) {
-                        var cls = that.getClass(_inits[i]);
-                        
-                        if (typeof cls.init == 'function') {
-                            cls.init();
-                        }
-                    }
-                    
-                    _inits = [];
-                });
+                modal.create(options);
+                
+                return modal; 
             }
         }
     }()));
     
-    PICS.init();
+    PICS._init();
 }(jQuery));

@@ -540,7 +540,7 @@
 					AJAX.request({
 						url: element.attr('data-url'),
 						success: function (data, textStatus, XMLHttpRequest) {
-						    var modal = MODAL.Modal({
+						    var modal = PICS.modal({
 						        height: 550,
 						        width: 700,
 			                    title: element.text(),

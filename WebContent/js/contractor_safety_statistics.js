@@ -24,10 +24,10 @@
             showWeightedIndustryAverage: function (event) {
                 var element = $(this);
                 
-                AJAX.request({
+                PICS.ajax({
                     url: element.attr('data-url'),
                     success: function(data, textStatus, XMLHttpRequest) {
-                        var modal = MODAL.Modal({
+                        var modal = PICS.modal({
                             modal_class: 'modal trir-weighted-industry-average-modal',
                             height: 450,
                             width: 650,
