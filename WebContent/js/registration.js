@@ -547,27 +547,6 @@
 			                    content: data
 			                });
 							
-							// ie specific js to shim select menus
-							if ($.browser.msie && $.browser.version == 6) {
-								var modal_element = modal.getElement();
-								var offset = modal_element.offset();
-								var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
-								
-								// paste shim
-								shim.css({
-									'height': modal_element.height(),
-									'left': offset.left,
-									'position': 'absolute',
-									'top': offset.top,
-									'width': modal_element.width()
-								}).prependTo('body');
-								
-								// add event to destroy shim after modal closes
-								modal.bind('hide', function () {
-									shim.remove();
-								});
-							}
-							
 							modal.show();
 						}
 					});

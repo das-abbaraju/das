@@ -135,6 +135,26 @@
                     
                     if (!modal.is(':visible')) {
                         modal.modal('show');
+                        
+                        // ie specific js to shim select menus
+                        if ($.browser.msie && $.browser.version == 6) {
+                            var offset = modal.offset();
+                            var shim = $('<iframe class="shim" frameborder="0" scrolling="no"></iframe>');
+                            
+                            // paste shim
+                            shim.css({
+                                'height': modal.height(),
+                                'left': offset.left,
+                                'position': 'absolute',
+                                'top': offset.top,
+                                'width': modal.width()
+                            }).prependTo('body');
+                            
+                            // add event to destroy shim after modal closes
+                            modal.bind('hide', function () {
+                                shim.remove();
+                            });
+                        }
                     }
                 },
                 

@@ -1,3 +1,9 @@
+/**
+ * Prototypal Inheritance
+ * 
+ * Helper method to create class instance
+ * http://javascript.crockford.com/prototypal.html
+ */
 if (typeof Object.create !== 'function') {
     Object.create = function (o) {
         function F() {}
@@ -9,10 +15,6 @@ if (typeof Object.create !== 'function') {
 }
 
 (function ($) {
-    if (!window.PICS) {
-        PICS = {};
-    }
-    
     /**
      * PICS Application
      * 
@@ -20,11 +22,14 @@ if (typeof Object.create !== 'function') {
      * define()
      * getClass()
      * getClasses()
+     * modal()
      */
     PICS = Object.create((function () {
+        // private storage for classes and initializers
         var _classes = {};
         var _inits = [];
         
+        // get class name from a qualified class path "foo.bar.Foo"
         function getClassName(class_path) {
             var class_parts = getClassParts(class_path);
             var class_parts_length = class_parts.length;
@@ -32,13 +37,14 @@ if (typeof Object.create !== 'function') {
             return class_parts[class_parts_length - 1];
         }
         
+        // get class parts from a qualified class path separated by "." i.e. "foo.bar.Foo"
         function getClassParts(class_path) {
             return class_path.split('.');
         }
         
         return {
             /**
-             * Init
+             * _Init
              * 
              * Initialize all init methods when the document is ready
              * Clear out init methods once they have been executed
@@ -90,8 +96,6 @@ if (typeof Object.create !== 'function') {
              * The extend parameter must have  aqualified path to a class your extending from. The methods parameter must be
              * an object literial containing an optional init parameter, a method that will automatically be initialized on
              * document.ready
-             * 
-             * 
              */
             define: function (class_path, class_configuration) {
                 if (typeof class_path != 'string') {
@@ -108,6 +112,7 @@ if (typeof Object.create !== 'function') {
                 var class_object = _classes;
                 var class_path_string = [];
                 
+                // create a class based off the "methods" parameter of the class_configuration object
                 function createClass() {
                     var class_methods = class_configuration.methods;
                     
@@ -120,6 +125,7 @@ if (typeof Object.create !== 'function') {
                     }
                 }
                 
+                // create a child class  off an existing class based off the "extend" parameter of the class_configuration object
                 function extendClass(cls) {
                     var class_name = class_configuration.extend;
                     
@@ -136,6 +142,8 @@ if (typeof Object.create !== 'function') {
                     return cls;
                 }
                 
+                // add the initialize method if a class has defined an init() in its "methods"
+                // the init() will automatically be called when the document is loaded
                 function initClass(cls, class_path_string) {
                     if (typeof cls.init == 'function') {
                         _inits.push(class_path_string.join('.'));
@@ -211,6 +219,8 @@ if (typeof Object.create !== 'function') {
             
             /**
              * Modal
+             * 
+             * Shorthand for creating a modal
              */
             modal: function (options) {
                 var modal = this.getClass('modal.Modal');
