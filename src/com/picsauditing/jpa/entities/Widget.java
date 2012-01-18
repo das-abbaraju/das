@@ -140,8 +140,7 @@ public class Widget {
 			// FusionChart.createChartHTML("charts/"+chartType.toString()+".swf",
 			// dataURL, dataXML,
 			// chartId, chartWidth, chartHeight, debug);
-			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString()
-					+ "_" + widgetID, 300, 300, debug, false);
+			return FusionChart.createChart("charts/" + chartType.toString() + ".swf", url, "", chartType.toString() + "_" + widgetID, 400, 400, debug, false);
 		}
 
 		if (widgetType.equals("Html") || widgetType.equals("Rss"))
