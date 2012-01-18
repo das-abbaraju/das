@@ -16,6 +16,7 @@ if (typeof Object.create !== 'function') {
     /**
      * PICS Application
      * 
+     * ajax()
      * define()
      * getClass()
      * getClasses()
@@ -37,17 +38,38 @@ if (typeof Object.create !== 'function') {
         
         return {
             /**
+             * Ajax
+             * 
+             * @options: An object literial configuration for an ajax request
+             */
+            ajax: function (options) {
+                var defaults = {
+                    url: window.location.href,
+                    type: 'POST',
+                    dataType: 'html',
+                    data: {},
+                    success: function(data, textStatus, XMLHttpRequest) {},
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {},
+                    complete: function(XMLHttpRequest, textStatus) {}
+                };
+                
+                var config = {};
+                
+                $.extend(config, defaults, options);
+                
+                return $.ajax(config);
+            },
+            
+            /**
              * Define
              * 
-             * @class_path:
-             * @class_configuration: {
-             *     extend: // optional
-             *     methods: {
-             *         init: // optional
-             *         
-             *         ...
-             *     }
-             * }
+             * @class_path: A qualified path to the class i.e. contractor.Flags or operator.flag.Criteria
+             * @class_configuration: An object literal container a methods parameter and an optional extend parameter. 
+             * The extend parameter must have  aqualified path to a class your extending from. The methods parameter must be
+             * an object literial containing an optional init parameter, a method that will automatically be initialized on
+             * document.ready
+             * 
+             * 
              */
             define: function (class_path, class_configuration) {
                 if (typeof class_path != 'string') {
@@ -58,65 +80,78 @@ if (typeof Object.create !== 'function') {
                     throw 'PICS.define() @class_configuration must be a configuration object';
                 }
                 
+                var that = this;
                 var class_parts = getClassParts(class_path);
                 var class_name = getClassName(class_path);
+                var class_object = _classes;
+                var class_path_string = [];
+                
+                function createClass() {
+                    var class_methods = class_configuration.methods;
+                    
+                    if (typeof class_methods == 'function') {
+                        return class_methods();
+                    } else if (typeof class_methods == 'object') {
+                        return class_methods;
+                    } else {
+                        throw 'class "' + class_path_string.join('.') + '" requires a "methods" parameter to return an object';
+                    }
+                }
+                
+                function extendClass(cls) {
+                    var class_name = class_configuration.extend;
+                    
+                    if (class_name != undefined) {
+                        var extended_class = Object.create(that.getClass(class_name));
+                        
+                        for (var i in cls) {
+                            extended_class[i] = cls[i]; 
+                        }
+                        
+                        cls = extended_class;
+                    }
+                    
+                    return cls;
+                }
+                
+                function initClass(cls, class_path_string) {
+                    if (typeof cls.init == 'function') {
+                        _inits.push(class_path_string.join('.'));
+                    }
+                }
                 
                 // class_name must start with a capital letter
                 if (class_name.substr(0, 1).search(/[A-Z]/) === -1) {
                     throw 'PICS.define() @class_path must include a valid class (PICS.{ClassName} or PICS.{namespace}.{ClassName})';
                 }
                 
-                var class_object = _classes;
-                var class_path_string = [];
-                
                 for (var i in class_parts) {
-                    var key = class_parts[i];
+                    var class_part = class_parts[i];
                     
-                    class_path_string.push(key);
+                    class_path_string.push(class_part);
                     
                     // create undefined namespaces
-                    if (class_object[key] == undefined && key != class_name) {
-                        class_object[key] = {};
+                    if (class_object[class_part] == undefined && class_part != class_name) {
+                        class_object[class_part] = {};
                         
                     // do not allow classes to be overwritten
-                    } else if (class_object[key] != undefined  && key == class_name) {
-                        throw class_path_string.join('.') + ' is already defined';
+                    } else if (class_object[class_part] != undefined  && class_part == class_name) {
+                        throw 'class "' + class_path_string.join('.') + '" is already defined';
                         
-                    } else if (key == class_name) {
-                        var new_class;
-                        
-                        var class_extend = class_configuration.extend;
-                        var class_methods = class_configuration.methods;
-                        
+                    } else if (class_part == class_name) {
                         // creating class
-                        if (typeof class_methods == 'function') {
-                            new_class = class_methods();
-                        } else if (typeof class_methods == 'object') {
-                            new_class = class_methods;
-                        } else {
-                            throw class_path_string.join('.') + ' requires a "methods" parameter to return an object';
-                        }
-    
+                        var cls = createClass();
+                        
                         // extending class
-                        if (class_extend != undefined) {
-                            var extended_class = Object.create(this.getClass(class_extend));
-                            
-                            for (var i in new_class) {
-                                extended_class[i] = new_class[i]; 
-                            }
-                            
-                            new_class = extended_class;
-                        }
+                        var cls = extendClass(cls);
                         
                         // init class
-                        if (typeof new_class.init == 'function') {
-                            _inits.push(class_path_string.join('.'));
-                        }
+                        initClass(cls, class_path_string);
                             
-                        class_object[key] = new_class;
+                        class_object[class_part] = cls;
                     }
                     
-                    class_object = class_object[key];
+                    class_object = class_object[class_part];
                 }
             },
             
@@ -127,20 +162,19 @@ if (typeof Object.create !== 'function') {
              */
             getClass: function (class_path) {
                 var class_parts = getClassParts(class_path);
-                
                 var class_object = _classes;
                 var class_path_string = [];
                 
                 for (var i in class_parts) {
-                    var key = class_parts[i];
+                    var class_part = class_parts[i];
                     
-                    class_path_string.push(key);
+                    class_path_string.push(class_part);
                     
-                    if (class_object[key] == undefined) {
-                        throw class_path_string.join('.') + ' is not defined';
+                    if (class_object[class_part] == undefined) {
+                        throw 'class "' + class_path_string.join('.') + '" is not defined';
                     }
                     
-                    class_object = class_object[key]; 
+                    class_object = class_object[class_part]; 
                 }
                 
                 return class_object;
