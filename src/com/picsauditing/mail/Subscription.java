@@ -23,8 +23,8 @@ public enum Subscription implements Translatable {
 	TrialContractorAccounts(71, OpPerms.ViewTrialAccounts, true, false, false),
 	ContractorInvoices(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
 			false, true, false),
-	InsuranceExpiration(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
-			false, true, false),
+	InsuranceExpiration(10, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
+			OpPerms.ContractorInsurance, false, true, false, false),
 	AuditOpenRequirements(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
 			false, true, false),
 	FinishPICSProcess(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
@@ -32,7 +32,7 @@ public enum Subscription implements Translatable {
 	PICSSystemNotifications(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event },
 			true, false, false),
 	OQChanges(130, new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Monthly },
-			OpPerms.ViewTrialAccounts, false, false, false, true, false),
+			OpPerms.ViewTrialAccounts, false, false, false, true),
 	Webinar(new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, true,
 			false),
 	// Please use nightly_updates.sql for controlling opt-out subscription inserts
@@ -85,6 +85,7 @@ public enum Subscription implements Translatable {
 
 	Subscription(int templateID, SubscriptionTimePeriod[] supportedTimePeriods, boolean requiredForOperator,
 			boolean requiredForContractor, boolean requiredForAdmin, int viewableBy) {
+		this.templateID = templateID;
 		this.supportedTimePeriods = supportedTimePeriods;
 		this.requiredForOperator = requiredForOperator;
 		this.requiredForContractor = requiredForContractor;
@@ -102,8 +103,7 @@ public enum Subscription implements Translatable {
 	}
 
 	Subscription(int templateID, SubscriptionTimePeriod[] supportedTimePeriods, OpPerms requiredPerms,
-			boolean requiredForOperator, boolean requiredForContractor, boolean requiredForAdmin, boolean requiresOQ,
-			boolean optIn) {
+			boolean requiredForOperator, boolean requiredForContractor, boolean requiredForAdmin, boolean requiresOQ) {
 		this.templateID = templateID;
 		this.supportedTimePeriods = supportedTimePeriods;
 		this.requiredPerms = requiredPerms;
