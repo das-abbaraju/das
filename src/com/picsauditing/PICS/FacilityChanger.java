@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -17,7 +19,10 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -52,6 +57,11 @@ public class FacilityChanger {
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	protected AuditBuilder auditBuilder = null;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
+
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -117,6 +127,22 @@ public class FacilityChanger {
 				|| (contractor.getAccountLevel().isListOnly() && !operator.isAcceptsList())) {
 			contractor.setAccountLevel(AccountLevel.Full);
 			contractor.setRenew(true);
+			
+			for (ContractorAudit cAudit : contractor.getAudits()) {
+				if (cAudit.getAuditType().isPqf()) {
+					for (ContractorAuditOperator cao : cAudit.getOperators()) {
+						if (cao.getStatus().after(AuditStatus.Pending)) {
+							cao.changeStatus(AuditStatus.Pending, permissions);
+							auditDataDAO.save(cao);
+						}
+					}
+
+					auditBuilder.recalculateCategories(cAudit);
+					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
+					auditPercentCalculator.percentCalculateComplete(cAudit);
+					auditDataDAO.save(cAudit);
+				}
+			}
 		}
 
 		contractor.setLastUpgradeDate(new Date());
