@@ -16,6 +16,7 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
@@ -169,32 +170,37 @@ public class I18nCache implements Serializable {
 		return localeString;
 	}
 
-	public void saveTranslatableString(String key, TranslatableString value) throws SQLException {
+	public void saveTranslatableString(String key, TranslatableString value, List<String> requiredLanguages)
+			throws SQLException {
 		if (value == null)
 			return;
 		Database db = new Database();
+		String sourceLanguage = null;
+
+		if (!requiredLanguages.isEmpty()) {
+			sourceLanguage = requiredLanguages.get(0);
+		}
 		// Make sure we handle clearing the cache across multiple servers
 		Iterator<Translation> iterator = value.getTranslations().iterator();
 		while (iterator.hasNext()) {
 			Translation translation = iterator.next();
-			String locale = translation.getLocale();
-			String newValue = Utilities.escapeQuotes(translation.getValue());
+			BasicTranslation basicTranslation = new BasicTranslation(key, translation.getLocale(),
+					Utilities.escapeQuotes(translation.getValue()));
+			boolean isSourceLanguage = basicTranslation.getLocale().equals(sourceLanguage);
+
 			if (translation.isDelete()) {
-				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
+				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '"
+						+ basicTranslation.getLocale() + "'";
 				db.executeUpdate(sql);
-				cache.remove(key, locale);
+				cache.remove(basicTranslation.getKey(), basicTranslation.getLocale());
 				iterator.remove();
 			} else if (translation.isModified()) {
-				String sql = "UPDATE app_translation SET msgValue = '" + newValue
-						+ "', updateDate = NOW() WHERE msgKey = '" + key + "' AND locale = '" + locale + "'";
-				db.executeUpdate(sql);
-				cache.put(key, locale, translation.getValue());
+				db.executeUpdate(createUpdateStatement(basicTranslation, TranslationQualityRating.Good, sourceLanguage));
+				putBasicTranslationInCache(basicTranslation);
 				translation.commit();
 			} else if (translation.isInsert()) {
-				String sql = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed)"
-						+ " VALUES ('" + key + "', '" + locale + "', '" + newValue + "', 1, 1, NOW(), NOW(), NOW())";
-				db.executeInsert(sql);
-				cache.put(key, locale, translation.getValue());
+				db.executeInsert(createInsertStatement(basicTranslation, TranslationQualityRating.Good, sourceLanguage));
+				putBasicTranslationInCache(basicTranslation);
 				translation.commit();
 			}
 		}
@@ -209,6 +215,68 @@ public class I18nCache implements Serializable {
 			String sql = "DELETE FROM app_translation WHERE msgKey IN (" + Strings.implodeForDB(keys, ",") + ")";
 			Database db = new Database();
 			db.executeUpdate(sql);
+		}
+	}
+
+	private String createInsertStatement(BasicTranslation basicTranslation, TranslationQualityRating qualityRating,
+			String sourceLanguage) {
+		if (Strings.isEmpty(sourceLanguage) || sourceLanguage.equals(basicTranslation.getLocale())) {
+			sourceLanguage = "NULL";
+		} else {
+			sourceLanguage = "'" + sourceLanguage + "'";
+		}
+
+		String format = "INSERT INTO app_translation (msgKey, locale, msgValue, qualityRating, sourceLanguage, createdBy, "
+				+ "updatedBy, creationDate, updateDate, lastUsed)"
+				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW())";
+
+		return String.format(format, basicTranslation.getKey(), basicTranslation.getLocale(),
+				basicTranslation.getValue(), qualityRating.ordinal(), sourceLanguage);
+	}
+
+	private String createUpdateStatement(BasicTranslation basicTranslation, TranslationQualityRating qualityRating,
+			String sourceLanguage) {
+		String setClause = "SET msgValue = '%s', updateDate = NOW()";
+
+		if (qualityRating != null) {
+			setClause += ", qualityRating = " + qualityRating.ordinal();
+		}
+
+		if (!Strings.isEmpty(sourceLanguage) && !sourceLanguage.equals(basicTranslation.getLocale())) {
+			setClause += ", sourceLanguage = '" + sourceLanguage + "'";
+		}
+
+		String format = "UPDATE app_translation " + setClause + " WHERE msgKey = '%s' AND locale = '%s'";
+
+		return String.format(format, basicTranslation.getValue(), basicTranslation.getKey(),
+				basicTranslation.getLocale());
+	}
+
+	private void putBasicTranslationInCache(BasicTranslation basicTranslation) {
+		cache.put(basicTranslation.getKey(), basicTranslation.getLocale(), basicTranslation.getValue());
+	}
+
+	private class BasicTranslation {
+		private String key;
+		private String locale;
+		private String value;
+
+		public BasicTranslation(String key, String locale, String value) {
+			this.key = key;
+			this.locale = locale;
+			this.value = value;
+		}
+
+		public String getKey() {
+			return key;
+		}
+
+		public String getLocale() {
+			return locale;
+		}
+
+		public String getValue() {
+			return value;
 		}
 	}
 }
