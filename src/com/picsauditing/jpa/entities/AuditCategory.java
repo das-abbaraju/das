@@ -390,6 +390,10 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
+	}
+
+	@Transient
+	public List<String> getLanguages() {
 		if (requiredLanguages != null)
 		{
 			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
@@ -399,10 +403,6 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 				languages.add(language);
 			}
 		}
-	}
-
-	@Transient
-	public List<String> getLanguages() {
 		return languages;
 	}
 

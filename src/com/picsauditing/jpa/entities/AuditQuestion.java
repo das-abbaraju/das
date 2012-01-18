@@ -730,6 +730,10 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
+	}
+
+	@Transient
+	public List<String> getLanguages() {
 		if (requiredLanguages != null)
 		{
 			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
@@ -739,10 +743,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 				languages.add(language);
 			}
 		}
-	}
-
-	@Transient
-	public List<String> getLanguages() {
 		return languages;
 	}
 

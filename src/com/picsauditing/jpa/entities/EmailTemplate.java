@@ -171,6 +171,10 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
+	}
+
+	@Transient
+	public List<String> getLanguages() {
 		if (requiredLanguages != null)
 		{
 			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
@@ -180,10 +184,6 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 				languages.add(language);
 			}
 		}
-	}
-
-	@Transient
-	public List<String> getLanguages() {
 		return languages;
 	}
 

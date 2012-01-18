@@ -291,6 +291,10 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 
 	public void setRequiredLanguages(String requiredLanguages) {
 		this.requiredLanguages = requiredLanguages;
+	}
+
+	@Transient
+	public List<String> getLanguages() {
 		if (requiredLanguages != null)
 		{
 			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
@@ -300,10 +304,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 				languages.add(language);
 			}
 		}
-	}
-
-	@Transient
-	public List<String> getLanguages() {
 		return languages;
 	}
 
