@@ -1373,15 +1373,10 @@
 		</action>
 
 		<!-- Audits Manage -->
-		<action name="ManageAuditType"
-			class="com.picsauditing.actions.auditType.ManageAuditType">
+		<action name="ManageAuditType" class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
-			<result name="top">
-				struts/audits/audit_selectType.jsp
-			</result>
-			<result name="workFlowSteps">
-				struts/audits/workflow_steps.jsp
-			</result>			
+			<result name="top">struts/audits/audit_selectType.jsp</result>
+			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>			
 		</action>
 
 		<action name="ManageAuditTypeAjax"
