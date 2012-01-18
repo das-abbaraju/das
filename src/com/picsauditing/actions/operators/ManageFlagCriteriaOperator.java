@@ -269,16 +269,7 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	}
 
 	public List<FlagCriteria> getAddableCriterias() {
-		List<FlagCriteriaOperator> opCriteria = operator.getFlagCriteriaInherited();
 		List<FlagCriteria> addableCriteria = new ArrayList<FlagCriteria>();
-
-		Map<FlagCriteria, List<FlagCriteriaOperator>> map = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
-		for (FlagCriteriaOperator fco : opCriteria) {
-			if (map.get(fco.getCriteria()) == null)
-				map.put(fco.getCriteria(), new ArrayList<FlagCriteriaOperator>());
-
-			map.get(fco.getCriteria()).add(fco);
-		}
 
 		Set<Integer> auditTypes = operator.getVisibleAuditTypes();
 
@@ -292,13 +283,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 				// Check audits by matching up the audit types
 				addableCriteria.add(fc);
 			} else if (fc.getQuestion() != null) {
-				// Skip questions 401 & 755?
-				if (fc.getQuestion().getId() != 401 && fc.getQuestion().getId() != 755) {
-					// Check questions
-					AuditQuestion aq = fc.getQuestion();
-					if (auditTypes.contains(aq.getAuditType().getId()) && aq.isCurrent())
-						addableCriteria.add(fc);
-				}
+				AuditQuestion aq = fc.getQuestion();
+				if (auditTypes.contains(aq.getAuditType().getId()) && aq.isCurrent())
+					addableCriteria.add(fc);
 			} else if (fc.getOshaType() != null && fc.getOshaType().equals(operator.getOshaType()))
 				addableCriteria.add(fc);
 		}
