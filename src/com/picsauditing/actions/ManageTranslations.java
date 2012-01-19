@@ -99,21 +99,26 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addJoin("LEFT JOIN app_translation t2 ON t1.msgKey = t2.msgKey AND t2.locale = '" + localeTo + "'");
 		sql.addField("t1.msgKey");
 		sql.addField("t1.msgValue fromValue");
-		if (download) {
-			sql.addField("t2.locale");
-			sql.addField("t2.createdBy");
-			sql.addField("t2.updatedBy");
-			sql.addField("t2.creationDate");
-			sql.addField("t2.updateDate");
-		}
 		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
+		if (download) {
+			sql.addField("t1.updateDate fromUpdateDate");
+			sql.addField("t1.createdBy fromCreatedBy");
+			sql.addField("t1.creationDate fromCreationDate");
+			sql.addField("t1.locale fromLocale");
+		}
 		sql.addField("t1.qualityRating fromQualityRating");
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
+		if (download) {
+			sql.addField("t2.updateDate toUpdateDate");
+			sql.addField("t2.createdBy toCreatedBy");
+			sql.addField("t2.creationDate toCreationDate");
+			sql.addField("t2.locale toLocale");
+		}
 		sql.addField("t2.qualityRating toQualityRating");
 
 		sql.addOrderBy("t2.updatedBy, t2.lastUsed DESC, t1.updatedBy, t1.lastUsed DESC");
@@ -168,7 +173,7 @@ public class ManageTranslations extends ReportActionSupport {
 			list.add(new Translation(row));
 		}
 		if (download) {
-			addExcelColumns();
+			addExcelColumns(sql);
 		}
 
 		return SUCCESS;
@@ -302,18 +307,11 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 	}
 
-	public void addExcelColumns() throws IOException {
+	public void addExcelColumns(SelectSQL sql) throws IOException {
 		excelSheet.setData(data);
 		excelSheet.buildWorkbook();
 
-		excelSheet.addColumn(new ExcelColumn("msgKey", "msgKey"));
-		excelSheet.addColumn(new ExcelColumn("locale", "locale"));
-		excelSheet.addColumn(new ExcelColumn("toValue", "msgValue"));
-		excelSheet.addColumn(new ExcelColumn("createdBy", "createdBy"));
-		excelSheet.addColumn(new ExcelColumn("updatedBy", "updatedBy"));
-		excelSheet.addColumn(new ExcelColumn("creationDate", "creationDate"));
-		excelSheet.addColumn(new ExcelColumn("updateDate", "updateDate"));
-		excelSheet.addColumn(new ExcelColumn("toLastUsed", "lastUsed"));
+		excelSheet = addColumnsFromSQL(excelSheet, sql);
 
 		String filename = this.getClass().getSimpleName();
 		excelSheet.setName(filename);

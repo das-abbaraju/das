@@ -3,6 +3,8 @@ package com.picsauditing.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.picsauditing.util.Strings;
 
 public class SelectSQL {
@@ -224,5 +226,21 @@ public class SelectSQL {
 
 	public void setDistinct(boolean distinct) {
 		this.distinct = distinct;
+	}
+
+	public ArrayList<String> getFields() {
+		return fields;
+	}
+	
+	public static String getAlias(String field)
+	{
+		String alias = "";
+		if (StringUtils.contains(field, " "))
+			alias = field.substring(field.lastIndexOf(" ")+1, field.length());
+		else if (StringUtils.contains(field, "."))
+			alias = field.substring(field.lastIndexOf(".")+1, field.length());
+		else
+			alias = field;
+		return alias;
 	}
 }

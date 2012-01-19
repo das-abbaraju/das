@@ -22,6 +22,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ColorAlternater;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings("serial")
@@ -242,4 +243,12 @@ public class ReportActionSupport extends PicsActionSupport {
 		}
 	}
 
+	public ExcelSheet addColumnsFromSQL(ExcelSheet excelSheet, SelectSQL sql) {
+		for (String field : sql.getFields()) {
+			String alias = SelectSQL.getAlias(field);
+			excelSheet.addColumn(new ExcelColumn(alias, alias));
+		}
+		
+		return excelSheet;
+	}
 }
