@@ -1,5 +1,6 @@
 package com.picsauditing.actions;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.UnknownHostException;
@@ -24,6 +25,7 @@ import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -45,6 +47,7 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -59,8 +62,12 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.GridSender;
+import com.picsauditing.mail.NoUsersDefinedException;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -117,7 +124,7 @@ public class ContractorCron extends PicsActionSupport {
 		if (!Strings.isEmpty(redirectUrl)) {
 			return redirect(redirectUrl);
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -205,13 +212,13 @@ public class ContractorCron extends PicsActionSupport {
 				body.append("There was an error running ContractorCron for id=");
 				body.append(conID);
 				body.append("\n\n");
-				
+
 				try {
 					body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
 					body.append("\n\n");
 				} catch (UnknownHostException e) {
 				}
-				
+
 				body.append(t.getStackTrace());
 
 				body.append(sw.toString());
@@ -499,8 +506,11 @@ public class ContractorCron extends PicsActionSupport {
 	 * Calculate and save the recommended flag color for policies
 	 * 
 	 * @param contractor
+	 * @throws IOException
+	 * @throws EmailException
+	 * @throws NoUsersDefinedException
 	 */
-	private void runPolicies(ContractorAccount contractor) {
+	private void runPolicies(ContractorAccount contractor) throws EmailException, IOException, NoUsersDefinedException {
 		if (!runStep(ContractorCronStep.Policies))
 			return;
 
@@ -511,8 +521,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
-										co.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -521,6 +531,65 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
+
+		Set<ContractorAudit> expiringPolicies = getExpiringPolicies(contractor);
+		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = getUnsentWeeklyInsuranceSubscriptions(contractor);
+
+		if (!expiringPolicies.isEmpty() && !unsentWeeklyInsuranceSubscriptions.isEmpty())
+			EventSubscriptionBuilder
+					.sendExpiringCertificatesEmail(unsentWeeklyInsuranceSubscriptions, expiringPolicies);
+	}
+
+	private Set<EmailSubscription> getUnsentWeeklyInsuranceSubscriptions(ContractorAccount contractor)
+			throws NoUsersDefinedException {
+		Set<EmailSubscription> unsentWeeklyInsuranceSubscriptions = new HashSet<EmailSubscription>();
+		List<EmailSubscription> contractorInsuranceSubscriptions = subscriptionDAO.find(
+				Subscription.InsuranceExpiration, contractor.getId());
+
+		if (contractorInsuranceSubscriptions.isEmpty()) {
+			EmailSubscription defaultUserSubscription = createSubscriptionForDefaultContact(contractor);
+			unsentWeeklyInsuranceSubscriptions.add(defaultUserSubscription);
+		} else {
+			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
+				if (contractorInsuranceSubscription.getLastSent() == null
+						|| contractorInsuranceSubscription.getLastSent().after(
+								SubscriptionTimePeriod.Weekly.getComparisonDate()))
+					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
+			}
+		}
+
+		return unsentWeeklyInsuranceSubscriptions;
+	}
+
+	private EmailSubscription createSubscriptionForDefaultContact(ContractorAccount contractor)
+			throws NoUsersDefinedException {
+		EmailSubscription defaultContactSubscription = new EmailSubscription();
+		defaultContactSubscription.setAuditColumns();
+		defaultContactSubscription.setSubscription(Subscription.InsuranceExpiration);
+		defaultContactSubscription.setTimePeriod(SubscriptionTimePeriod.Event);
+
+		if (contractor.getPrimaryContact() != null) {
+			defaultContactSubscription.setUser(contractor.getPrimaryContact());
+		} else if (!contractor.getUsersByRole(OpPerms.ContractorAdmin).isEmpty()) {
+			defaultContactSubscription.setUser(contractor.getUsersByRole(OpPerms.ContractorAdmin).get(0));
+		} else if (!contractor.getUsers().isEmpty()) {
+			defaultContactSubscription.setUser(contractor.getUsers().get(0));
+		} else {
+			throw new NoUsersDefinedException();
+		}
+
+		subscriptionDAO.save(defaultContactSubscription);
+		return defaultContactSubscription;
+	}
+
+	private Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
+		Set<ContractorAudit> expiringPolicies = new HashSet<ContractorAudit>();
+
+		for (ContractorAudit audit : contractor.getAudits())
+			if (audit.getAuditType().getClassType().isPolicy() && audit.isWithinExpirationWindow())
+				expiringPolicies.add(audit);
+
+		return expiringPolicies;
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
@@ -698,26 +767,26 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		}
 	}
-	
+
 	private String getFlagDataDescription(FlagData data, OperatorAccount operator) {
 		String description = "";
-		
+
 		FlagCriteria fc = data.getCriteria();
 		FlagCriteriaOperator matchingFco = null;
 		ArrayList<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
 		fcos.addAll(operator.getFlagCriteria());
 		fcos.addAll(operator.getFlagCriteriaInherited());
-		for (FlagCriteriaOperator fco:fcos) {
+		for (FlagCriteriaOperator fco : fcos) {
 			if (fco.getCriteria().getId() == fc.getId()) {
 				matchingFco = fco;
 				break;
 			}
 		}
-		
+
 		if (matchingFco != null) {
 			description = matchingFco.getReplaceHurdle();
 		}
-		
+
 		return description;
 	}
 

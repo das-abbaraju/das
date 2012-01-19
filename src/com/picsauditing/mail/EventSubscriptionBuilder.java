@@ -13,21 +13,28 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 public class EventSubscriptionBuilder {
 
-	private static EmailSubscriptionDAO subscriptionDAO = (EmailSubscriptionDAO) SpringUtils.getBean("EmailSubscriptionDAO");
+	private static EmailSubscriptionDAO subscriptionDAO = (EmailSubscriptionDAO) SpringUtils
+			.getBean("EmailSubscriptionDAO");
+	private static NoteDAO noteDAO = (NoteDAO) SpringUtils.getBean("NoteDAO");
 	private static EmailSenderSpring emailSender = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
-	
+
 	public static void contractorFinishedEvent(EmailSubscriptionDAO subscriptionDAO, ContractorOperator co)
 			throws Exception {
 		Date now = new Date();
@@ -124,26 +131,22 @@ public class EventSubscriptionBuilder {
 
 		return email;
 	}
-	
+
 	public static void theSystemIsDown(ContractorCronStatistics stats) {
-		
 
 		Calendar now = Calendar.getInstance();
 
 		if (stats.isEmailCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(
-					Subscription.EmailCronFailure, 1100);
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, 1100);
 			for (EmailSubscription subscription : subscriptions) {
-				if (subscription.getLastSent() == null
-						|| checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
+				if (subscription.getLastSent() == null || checkLastSentPlusTenMinutes(now, subscription.getLastSent())) {
 					sendSystemStatusEmail(subscription, stats);
 				}
 			}
 		}
 
 		if (stats.isContractorCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(
-					Subscription.ContractorCronFailure, 1100);
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.ContractorCronFailure, 1100);
 			if (stats.isContractorCronError()) {
 				for (EmailSubscription subscription : subscriptions) {
 					if (subscription.getLastSent() == null
@@ -155,16 +158,37 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	public static boolean checkLastSentPlusTenMinutes(Calendar now, Date lastSent) {
+	private static boolean checkLastSentPlusTenMinutes(Calendar now, Date lastSent) {
 		// Make sure this email hasn't been sent within the last 10 minutes
 		Calendar result = Calendar.getInstance();
 		result.setTime(lastSent);
 		result.add(Calendar.MINUTE, 10);
 		return now.after(result);
 	}
-	
-	public static void sendContractorEmailForExpiringCertificatesIfNecessary(ContractorAccount contractor) {
-		
+
+	public static void sendExpiringCertificatesEmail(Set<EmailSubscription> contractorInsuranceSubscriptions,
+			Set<ContractorAudit> expiringPolicies) throws EmailException, IOException {
+		for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
+			sendInsuranceEmail(contractorInsuranceSubscription, expiringPolicies);
+		}
+	}
+
+	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
+			Set<ContractorAudit> expiringPolicies) throws IOException {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.clear();
+		emailBuilder.setTemplate(10); // Certificate Expiration
+		emailBuilder.setConID(insuranceSubscription.getUser().getAccount().getId());
+		emailBuilder.addToken("contractor", insuranceSubscription.getUser().getAccount());
+		emailBuilder.addToken("policies", expiringPolicies);
+		emailBuilder.setToAddresses(insuranceSubscription.getUser().getEmail());
+		EmailQueue email = emailBuilder.build();
+		email.setPriority(30);
+		email.setViewableById(Account.EVERYONE);
+		emailSender.send(email);
+
+		stampNote(insuranceSubscription.getUser().getAccount(), "Sent Policy Expiration Email to "
+				+ emailBuilder.getSentTo(), NoteCategory.Insurance);
 	}
 
 	private static void sendSystemStatusEmail(EmailSubscription subscription, ContractorCronStatistics stats) {
@@ -181,5 +205,15 @@ public class EventSubscriptionBuilder {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static void stampNote(Account account, String text, NoteCategory noteCategory) {
+		Note note = new Note(account, new User(User.SYSTEM), text);
+		note.setCanContractorView(true);
+		note.setPriority(LowMedHigh.High);
+		note.setNoteCategory(noteCategory);
+		note.setAuditColumns(new User(User.SYSTEM));
+		note.setViewableById(Account.PicsID);
+		noteDAO.save(note);
 	}
 }

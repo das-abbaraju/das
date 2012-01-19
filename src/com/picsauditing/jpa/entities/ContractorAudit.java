@@ -813,4 +813,17 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public String getViewLink() {
 		return "Audit.action?auditID=" + this.id;
 	}
+	
+	@Transient
+	public boolean isWithinExpirationWindow() {
+		if (this.getExpiresDate() == null)
+			return false;
+
+		Calendar twoWeeksFromNow = Calendar.getInstance();
+		Calendar oneWeekAgo = Calendar.getInstance();
+		twoWeeksFromNow.add(Calendar.WEEK_OF_YEAR, 2);
+		oneWeekAgo.add(Calendar.WEEK_OF_YEAR, -1);
+
+		return (getExpiresDate().before(twoWeeksFromNow.getTime()) && getExpiresDate().after(oneWeekAgo.getTime()));
+	}
 }

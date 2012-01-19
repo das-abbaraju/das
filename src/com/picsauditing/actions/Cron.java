@@ -49,7 +49,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -170,13 +169,6 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 
-			try {
-				startTask("\nSending emails to contractors for expired Certificates...");
-				sendEmailExpiredCertificates();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
 			try {
 				startTask("\nExpiring Audits and cao and stamping notes...");
 				contractorAuditOperatorDAO.expireAudits();
@@ -378,36 +370,6 @@ public class Cron extends PicsActionSupport {
 
 	public void setFlagsOnly(boolean flagsOnly) {
 		this.flagsOnly = flagsOnly;
-	}
-
-	public void sendEmailExpiredCertificates() throws Exception {
-		int offset = 0;
-		List<ContractorAudit> cList = contractorAuditDAO.findExpiredCertificates(offset);
-		while (!cList.isEmpty()) {
-			Set<ContractorAccount> policies = new HashSet<ContractorAccount>();
-
-			for (ContractorAudit cAudit : cList) {
-				if (cAudit.getAuditType().getClassType().equals(AuditTypeClass.Policy)
-						&& cAudit.getCurrentOperators().size() > 0)
-					policies.add(cAudit.getContractorAccount());
-			}
-			for (ContractorAccount policy : policies) {
-				emailBuilder.clear();
-				emailBuilder.setTemplate(10); // Certificate Expiration
-				emailBuilder.setPermissions(permissions);
-				emailBuilder.setContractor(policy, OpPerms.ContractorInsurance);
-				emailBuilder.addToken("policies", policy);
-				EmailQueue email = emailBuilder.build();
-				email.setPriority(30);
-				email.setViewableById(Account.EVERYONE);
-				emailQueueDAO.save(email);
-
-				stampNote(policy, "Sent Policy Expiration Email to " + emailBuilder.getSentTo(), NoteCategory.Insurance);
-			}
-
-			offset += cList.size();
-			cList = contractorAuditDAO.findExpiredCertificates(offset);
-		}
 	}
 
 	private void sendEmailPendingAccounts() throws Exception {
@@ -752,13 +714,13 @@ public class Cron extends PicsActionSupport {
 
 			if (!hasReactivation) {
 				// Calculate Late Fee
-				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
-						.setScale(0, BigDecimal.ROUND_HALF_UP);
+				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
+						BigDecimal.ROUND_HALF_UP);
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-						((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i
+						.getAccount()).getPayingFacilities());
 				InvoiceItem lateFeeItem = new InvoiceItem(fee);
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
@@ -831,13 +793,16 @@ public class Cron extends PicsActionSupport {
 	public void sendFlagChangesEmailToAccountManagers() throws Exception {
 		// Running Query
 		StringBuilder query = new StringBuilder();
-		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query
+				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query
+				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query
+				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");

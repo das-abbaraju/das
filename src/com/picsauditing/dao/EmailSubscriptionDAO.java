@@ -9,6 +9,7 @@ import javax.persistence.TemporalType;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -31,13 +32,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
-	public void remove(int id) {
-		EmailSubscription row = find(id);
-		if (row != null)
-			remove(row);
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
 	public void remove(EmailSubscription row) {
 		if (row != null)
 			em.remove(row);
@@ -53,15 +47,6 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.user.id = ?");
 		q.setParameter(1, userID);
 		return q.getResultList();
-	}
-
-	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod) {
-		Query query = em
-				.createQuery("FROM EmailSubscription WHERE subscription = :sub AND timePeriod = :time AND user.account.status = 'Active' AND user.isActive = 'Yes'");
-		query.setParameter("sub", subscription);
-		query.setParameter("time", timePeriod);
-
-		return query.getResultList();
 	}
 
 	public List<EmailSubscription> find(Subscription subscription, int opID) {
