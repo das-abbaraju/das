@@ -32,8 +32,10 @@
 							</tr>
 						</thead>
 						
+                        <s:set var="is_odd" value="true" />
+                        
 						<s:iterator value="#stat.rateTypeSet" id="rateType" status="rowstatus">
-							<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if>>
+							<tr <s:if test="#rateType.startsWith('P:')">class="hurdle"</s:if><s:elseif test="#is_odd == true">class="odd"</s:elseif>>
 								<s:if test="#rateType.startsWith('P:')">
 									<td>
 										<s:property value="#rateType.substring(2)" escape="false"/>
@@ -51,6 +53,15 @@
 									</td>
 								</s:iterator>
 							</tr>
+                            
+                            <s:if test="!#rateType.startsWith('P:')">
+                                <s:if test="#is_odd == true">
+                                    <s:set var="is_odd" value="false" />
+                                </s:if>
+                                <s:else>
+                                    <s:set var="is_odd" value="true" />
+                                </s:else>
+                            </s:if>
 						</s:iterator>
 					</table>
 				</s:if>
