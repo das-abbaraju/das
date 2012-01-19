@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -69,16 +68,6 @@ public class EventSubscriptionBuilder {
 	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice,
 			Permissions permissions) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
-		// creating list of recipients
-		Set<String> billingUserEmails = new HashSet<String>();
-		for (User u : contractor.getUsersByRole(OpPerms.ContractorBilling))
-			billingUserEmails.add(u.getEmail());
-		// removing main recipient
-		billingUserEmails.remove(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
-		String emails = Strings.implode(billingUserEmails, ", ");
-		if (!Strings.isEmpty(emails))
-			emailBuilder.setCcAddresses(emails);
-		// finishing rest of email
 		emailBuilder.setTemplate(45);
 		// Adding this to cc Billing until they're confident the billing system is ok
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
@@ -101,25 +90,6 @@ public class EventSubscriptionBuilder {
 
 		emailBuilder.addToken("operators", "Your current list of Operators: " + Strings.implode(operatorsString, ", "));
 		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
-
-		List<String> emailAddresses = new ArrayList<String>();
-
-		if (contractor.getPaymentMethod().isCreditCard()) {
-			if (!Strings.isEmpty(contractor.getCcEmail()))
-				emailAddresses.add(contractor.getCcEmail());
-		}
-		User billing = contractor.getUsersByRole(OpPerms.ContractorBilling).get(0);
-		if (!Strings.isEmpty(billing.getEmail()))
-			emailAddresses.add(billing.getEmail());
-		if (!Strings.isEmpty(contractor.getPrimaryContact().getEmail())) {
-			if (!emailAddresses.contains(contractor.getPrimaryContact().getEmail()))
-				emailAddresses.add(contractor.getPrimaryContact().getEmail());
-		}
-
-		emailBuilder.setToAddresses(emailAddresses.get(0));
-
-		if (emailAddresses.size() > 1)
-			emailBuilder.setCcAddresses(emailAddresses.get(1));
 
 		EmailQueue email = emailBuilder.build();
 		if (invoice.getStatus().isPaid())
