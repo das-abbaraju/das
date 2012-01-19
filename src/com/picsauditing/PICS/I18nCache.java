@@ -14,9 +14,10 @@ import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
@@ -145,15 +146,13 @@ public class I18nCache implements Serializable {
 						// insert the default msg into the table and the cache
 						try {
 							Database db = new Database();
-							String sql = "INSERT INTO app_translation (msgKey, locale, msgValue, createdBy, updatedBy, creationDate, updateDate, lastUsed)"
-									+ " VALUES ('"
-									+ key
-									+ "', '"
-									+ localeString
-									+ "', '"
-									+ DEFAULT_TRANSLATION
-									+ "', 1, 1, NOW(), NOW(), NOW())";
-							db.executeInsert(sql);
+
+							AppTranslation newTranslation = new AppTranslation();
+							newTranslation.setKey(key);
+							newTranslation.setLocale(localeString);
+							newTranslation.setValue(DEFAULT_TRANSLATION);
+
+							db.executeInsert(buildInsertStatement(newTranslation));
 							cache.put(key, localeString, DEFAULT_TRANSLATION);
 						} catch (SQLException e) {
 							// In case the translation already existed, it might
@@ -183,26 +182,32 @@ public class I18nCache implements Serializable {
 		// Make sure we handle clearing the cache across multiple servers
 		Iterator<Translation> iterator = value.getTranslations().iterator();
 		while (iterator.hasNext()) {
-			Translation translation = iterator.next();
-			BasicTranslation basicTranslation = new BasicTranslation(key, translation.getLocale(),
-					Utilities.escapeQuotes(translation.getValue()));
-			boolean isSourceLanguage = basicTranslation.getLocale().equals(sourceLanguage);
+			Translation translationFromCache = iterator.next();
 
-			if (translation.isDelete()) {
+			AppTranslation newTranslation = new AppTranslation();
+			newTranslation.setKey(key);
+			newTranslation.setLocale(translationFromCache.getLocale());
+			newTranslation.setValue(Utilities.escapeQuotes(translationFromCache.getValue()));
+			newTranslation.setSourceLanguage(sourceLanguage);
+			newTranslation.setQualityRating(TranslationQualityRating.Good);
+
+			if (translationFromCache.isDelete()) {
 				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '"
-						+ basicTranslation.getLocale() + "'";
+						+ translationFromCache.getLocale() + "'";
 				db.executeUpdate(sql);
-				cache.remove(basicTranslation.getKey(), basicTranslation.getLocale());
+				cache.remove(newTranslation.getKey(), newTranslation.getLocale());
 				iterator.remove();
-			} else if (translation.isModified()) {
-				db.executeUpdate(createUpdateStatement(basicTranslation, TranslationQualityRating.Good, sourceLanguage));
-				putBasicTranslationInCache(basicTranslation);
-				translation.commit();
-			} else if (translation.isInsert()) {
-				db.executeInsert(createInsertStatement(basicTranslation, TranslationQualityRating.Good, sourceLanguage));
-				putBasicTranslationInCache(basicTranslation);
-				translation.commit();
+			} else if (translationFromCache.isModified()) {
+				db.executeUpdate(buildUpdateStatement(newTranslation));
+
+				insertUpdateOtherRequiredLanguages(requiredLanguages, db, newTranslation);
+			} else if (translationFromCache.isInsert()) {
+				db.executeInsert(buildInsertStatement(newTranslation));
+				// If this is the source language, create the other translations as needed
+				insertUpdateOtherRequiredLanguages(requiredLanguages, db, newTranslation);
 			}
+
+			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
 		}
 	}
 
@@ -218,9 +223,9 @@ public class I18nCache implements Serializable {
 		}
 	}
 
-	private String createInsertStatement(BasicTranslation basicTranslation, TranslationQualityRating qualityRating,
-			String sourceLanguage) {
-		if (Strings.isEmpty(sourceLanguage) || sourceLanguage.equals(basicTranslation.getLocale())) {
+	private String buildInsertStatement(AppTranslation translationToinsert) {
+		String sourceLanguage = translationToinsert.getSourceLanguage();
+		if (Strings.isEmpty(sourceLanguage) || sourceLanguage.equals(translationToinsert.getLocale())) {
 			sourceLanguage = "NULL";
 		} else {
 			sourceLanguage = "'" + sourceLanguage + "'";
@@ -230,53 +235,65 @@ public class I18nCache implements Serializable {
 				+ "updatedBy, creationDate, updateDate, lastUsed)"
 				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW())";
 
-		return String.format(format, basicTranslation.getKey(), basicTranslation.getLocale(),
-				basicTranslation.getValue(), qualityRating.ordinal(), sourceLanguage);
+		return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
+				translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage);
 	}
 
-	private String createUpdateStatement(BasicTranslation basicTranslation, TranslationQualityRating qualityRating,
-			String sourceLanguage) {
+	private String buildUpdateStatement(AppTranslation translationToUpdate) {
 		String setClause = "SET msgValue = '%s', updateDate = NOW()";
 
-		if (qualityRating != null) {
-			setClause += ", qualityRating = " + qualityRating.ordinal();
+		if (translationToUpdate.getQualityRating() != null) {
+			setClause += ", qualityRating = " + translationToUpdate.getQualityRating().ordinal();
 		}
 
-		if (!Strings.isEmpty(sourceLanguage) && !sourceLanguage.equals(basicTranslation.getLocale())) {
+		String sourceLanguage = translationToUpdate.getSourceLanguage();
+		if (!Strings.isEmpty(sourceLanguage) && !sourceLanguage.equals(translationToUpdate.getLocale())) {
 			setClause += ", sourceLanguage = '" + sourceLanguage + "'";
 		}
 
 		String format = "UPDATE app_translation " + setClause + " WHERE msgKey = '%s' AND locale = '%s'";
 
-		return String.format(format, basicTranslation.getValue(), basicTranslation.getKey(),
-				basicTranslation.getLocale());
+		return String.format(format, translationToUpdate.getValue(), translationToUpdate.getKey(),
+				translationToUpdate.getLocale());
 	}
 
-	private void putBasicTranslationInCache(BasicTranslation basicTranslation) {
-		cache.put(basicTranslation.getKey(), basicTranslation.getLocale(), basicTranslation.getValue());
+	private void updateCacheAndRemoveTranslationFlagsIfNeeded(Translation translationFromCache,
+			AppTranslation newTranslation) {
+		if (translationFromCache.isInsert() || translationFromCache.isModified()) {
+			updateCacheWithTranslation(newTranslation);
+			translationFromCache.commit();
+		}
 	}
 
-	private class BasicTranslation {
-		private String key;
-		private String locale;
-		private String value;
+	private void updateCacheWithTranslation(AppTranslation newTranslation) {
+		cache.put(newTranslation.getKey(), newTranslation.getLocale(), newTranslation.getValue());
+	}
 
-		public BasicTranslation(String key, String locale, String value) {
-			this.key = key;
-			this.locale = locale;
-			this.value = value;
-		}
+	private void insertUpdateOtherRequiredLanguages(List<String> requiredLanguages, Database db,
+			AppTranslation newTranslation) throws SQLException {
+		for (String requiredLanguage : requiredLanguages) {
+			if (!requiredLanguage.equals(newTranslation.getSourceLanguage())) {
+				AppTranslation insertUpdateTranslation = new AppTranslation();
+				insertUpdateTranslation.setKey(newTranslation.getKey());
+				insertUpdateTranslation.setLocale(requiredLanguage);
+				insertUpdateTranslation.setSourceLanguage(newTranslation.getSourceLanguage());
 
-		public String getKey() {
-			return key;
-		}
+				if (hasKey(newTranslation.getKey(), requiredLanguage)) {
+					String requiredLanguageMsgValue = getText(newTranslation.getKey(), requiredLanguage);
 
-		public String getLocale() {
-			return locale;
-		}
+					insertUpdateTranslation.setValue(requiredLanguageMsgValue);
+					insertUpdateTranslation.setQualityRating(TranslationQualityRating.Questionable);
 
-		public String getValue() {
-			return value;
+					db.executeUpdate(buildUpdateStatement(insertUpdateTranslation));
+				} else {
+					insertUpdateTranslation.setValue(DEFAULT_TRANSLATION);
+					insertUpdateTranslation.setQualityRating(TranslationQualityRating.None);
+
+					db.executeInsert(buildInsertStatement(insertUpdateTranslation));
+				}
+
+				updateCacheWithTranslation(insertUpdateTranslation);
+			}
 		}
 	}
 }
