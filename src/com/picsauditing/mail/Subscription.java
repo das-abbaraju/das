@@ -44,7 +44,10 @@ public enum Subscription implements Translatable {
 			false, false, true),
 	ContractorCronFailure(182,
 			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Event }, false, false,
-			true);
+			true),
+	CancelledScheduledAudits(220, 
+			new SubscriptionTimePeriod[] { SubscriptionTimePeriod.None, SubscriptionTimePeriod.Daily }, 
+			false, false, true);
 
 	private int templateID;
 	private TranslatableString description;
