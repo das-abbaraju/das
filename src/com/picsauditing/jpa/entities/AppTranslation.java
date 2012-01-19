@@ -2,10 +2,10 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +14,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -111,7 +110,7 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	}
 
 	public static Set<String> getLocaleLanguages() {
-		Set<String> languages = new HashSet<String>();
+		Set<String> languages = new TreeSet<String>();
 		if (locales == null) 
 			getLocales();
 		for (Locale locale : locales) {

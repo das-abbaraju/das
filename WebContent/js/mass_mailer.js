@@ -133,6 +133,7 @@ function addTemplate(id) {
 			'template.allowsVelocity': $('#templateAllowsVelocity').is(':checked'),
 			'template.html': $('#templateHtml').is(':checked'),
 			'template.translated': $('#templateTranslated').is(':checked'),
+			'template.languages': $('#templateLanguages').val(),
 			allowsVelocity: $('#original_velocity').val(),
 			allowsHtml: $('#original_html').val(),
 			allowsTranslations: $('#original_translated').val()

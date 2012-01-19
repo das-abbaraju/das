@@ -151,6 +151,10 @@ var aqvExtraParams = {
 			<li>
 				<s:checkbox name="criteria.flaggableWhenMissing" theme="formhelp"/>
 			</li>
+			<li>
+				<label>Required Languages:</label>
+				<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" cssClass="forms" name="criteria.languages" multiple="true" size="2" />
+			</li>
 		</ol>
 	</fieldset>
 	

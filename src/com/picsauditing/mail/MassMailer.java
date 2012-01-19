@@ -83,6 +83,7 @@ public class MassMailer extends PicsActionSupport {
 	private List<Token> picsTags = null;
 	private List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
+	private List<String> templateLanguages = null;
 
 	private EmailBuilder emailBuilder;
 	private EmailQueue emailPreview;
@@ -120,6 +121,7 @@ public class MassMailer extends PicsActionSupport {
 				templateAllowsVelocity = template.isAllowsVelocity();
 				templateHtml = template.isHtml();
 				templateTranslated = template.isTranslated();
+				templateLanguages = template.getLanguages();
 
 				if (template.isTranslated()) {
 					templateSubject = template.getTranslatedSubject().toString();
@@ -537,5 +539,13 @@ public class MassMailer extends PicsActionSupport {
 
 		}
 		return fromAddresses;
+	}
+
+	public List<String> getTemplateLanguages() {
+		return templateLanguages;
+	}
+
+	public void setTemplateLanguages(List<String> templateLanguages) {
+		this.templateLanguages = templateLanguages;
 	}
 }

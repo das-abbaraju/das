@@ -68,5 +68,7 @@
 
 <s:if test="permissions.admin">
 	<s:checkbox name="templateTranslated" id="templateTranslated" onclick="dirtyOn();" />
-	<label for="templateTranslated">Template Has Translations</label>
+	<label for="templateTranslated">Template Has Translations</label> <br />
+	<label>Required Languages:</label>
+	<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" cssClass="forms" name="templateLanguages" multiple="true" size="2"  onclick="dirtyOn();" />
 </s:if>
