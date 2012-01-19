@@ -783,4 +783,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public String preview() throws Exception {
 		return "preview";
 	}
+	
+	public String printFlagMatrix() throws Exception {
+		findContractor();
+	    return "printFlagMatrix";
+	}
 }

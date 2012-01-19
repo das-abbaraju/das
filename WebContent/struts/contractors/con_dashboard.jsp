@@ -595,35 +595,7 @@
 					</div>
 					
 					<%-- Flag Matrix --%>
-					<div class="panel_placeholder widget locations">
-						<div class="panel" id="all">
-							<div class="panel_header">
-								<s:text name="ContractorView.FlagMatrix" />
-								<a href="ContractorFacilities.action?id=${id}"><s:text name="ContractorFacilities.ContractorFacilities.AddFacilities" /></a>
-							</div>
-							<div class="panel_content">
-								<table border="1">
-									<tr>
-										<th><s:text name="global.Operator" /></th>
-										<th><s:text name="FlagColor.Green" /></th>
-										<th><s:text name="FlagColor.Amber" /></th>
-										<th><s:text name="FlagColor.Red" /></th>
-									</tr>
-									<s:iterator value="activeOperatorsMap">
-										<s:iterator value="value">
-											<tr>
-												<td><s:property value="operatorAccount.name" /></td>
-												<td><s:if test="flagColor.isGreen()"><img src="images/tick.png" /></s:if></td>
-												<td><s:if test="flagColor.isAmber()"><img src="images/tick.png" /></s:if></td>
-												<td><s:if test="flagColor.isRed()"><img src="images/tick.png" /></s:if></td>
-											</tr>
-										</s:iterator>
-									</s:iterator>
-								</table>
-								<div class="clear"></div>
-							</div>
-						</div>
-					</div>
+					<s:include value="../contractors/contractor_flag_matrix.jsp" />
 					
 					<%-- All Locations --%>
 					<div class="panel_placeholder widget locations">

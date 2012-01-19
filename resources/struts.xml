@@ -284,7 +284,8 @@
 		<!-- Contractor Information -->
 		<action name="ContractorView" class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/con_dashboard.jsp</result>
-			<result name="preview">struts/contractors/contractor_wia_preview.jsp</result>			
+			<result name="preview">struts/contractors/contractor_wia_preview.jsp</result>
+			<result name="printFlagMatrix">struts/contractors/contractor_flag_matrix.jsp</result>
 		</action>
 
 		<action name="ContractorViewAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
