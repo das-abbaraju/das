@@ -4,8 +4,9 @@
 <div class="panel_placeholder contractor-flag-matrix">
 	<div class="panel">
 		<div class="panel_header">
+            <a href="ContractorView!printFlagMatrix.action?id=${id}" class="print-contractor-flag-matrix"><s:text name="global.print" /></a>
+            
 			<s:text name="ContractorView.FlagMatrix" /> - <s:property value="contractor.name" />
-			<a href="ContractorView!printFlagMatrix.action?id=${id}" class="print-contractor-flag-matrix"><s:text name="global.print" /></a>
 		</div>
 		<div class="panel_content">
 			<table class="table">

@@ -1247,7 +1247,7 @@ div.blockDialog {
 
 /* Contractor Saftey Statistics */
 
-.contractor-saftey-statistics .panel_header span
+.contractor-saftey-statistics .panel_header .hurdle-rate
 {
 	float: right;
 }

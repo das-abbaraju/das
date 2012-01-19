@@ -4,13 +4,11 @@
 <div class="panel_placeholder contractor-saftey-statistics">
 	<div class="panel">
 		<div class="panel_header">
-			<span>
-				<a href="javascipt:;" 
-					class="hurdle-rate" 
-					data-show-text="<s:text name="ContractorView.ShowHurdleRates" />" 
-					data-hide-text="<s:text name="ContractorView.HideHurdleRates" />"
-				><s:text name="ContractorView.ShowHurdleRates" /></a>
-			</span>
+			<a href="javascipt:;" 
+				class="hurdle-rate" 
+				data-show-text="<s:text name="ContractorView.ShowHurdleRates" />" 
+				data-hide-text="<s:text name="ContractorView.HideHurdleRates" />"
+			><s:text name="ContractorView.ShowHurdleRates" /></a>
 			
 			<s:text name="global.Statistics" />
 		</div>
