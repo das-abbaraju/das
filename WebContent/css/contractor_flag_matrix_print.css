@@ -1,0 +1,20 @@
+#ContractorView-page .contractor-flag-matrix .panel_header
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 20px 0px 10px;
+}
+
+#ContractorView-page .contractor-flag-matrix .panel_header a
+{
+	display: none;
+}
+
+#ContractorView-page .contractor-flag-matrix td.green-flag,
+#ContractorView-page .contractor-flag-matrix td.amber-flag,
+#ContractorView-page .contractor-flag-matrix td.red-flag
+{
+	text-align: center;
+}

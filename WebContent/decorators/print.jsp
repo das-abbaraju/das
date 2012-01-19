@@ -14,10 +14,12 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/markdown.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css?v=${version}" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}" /><!--<![endif]-->
-		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
 		
+        
 		<link rel="stylesheet" type="text/css" href="css/layout_print.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="css/form.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" href="css/contractor_agreement_print.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" href="css/contractor_flag_matrix_print.css?v=${version}" />
 		
 		<!-- CSS FIXES FOR INTERNET EXPLORER -->
 		<!--[if IE]><link rel="stylesheet" href="css/ie.css" type="text/css" /><![endif]-->
