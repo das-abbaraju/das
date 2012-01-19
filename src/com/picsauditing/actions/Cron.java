@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,6 @@ import java.util.TreeMap;
 import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -288,8 +288,8 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nEmailing Flag Changes Report to Account Managers...");
-			sendFlagChangesEmailToAccountManagers();
+			startTask("\nEmailing Flag Change Reports...");
+			sendFlagChangesEmails();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -790,8 +790,48 @@ public class Cron extends PicsActionSupport {
 		new Database().executeUpdate(query);
 	}
 
-	public void sendFlagChangesEmailToAccountManagers() throws Exception {
-		// Running Query
+	public void sendFlagChangesEmails() throws Exception {
+		List<BasicDynaBean> data = getFlagChangeData();
+		if (data.isEmpty())
+			return;
+
+		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
+		for (String accountMgr : amMap.keySet()) {
+			if (amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
+				List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
+				sendFlagChangesEmail(accountMgr, flagChanges);
+			}
+		}
+
+		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
+	}
+
+	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
+		EmailBuilder emailBuilder = new EmailBuilder();
+		emailBuilder.setTemplate(55);
+		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
+		emailBuilder.addToken("changes", flagChanges);
+		emailBuilder.setToAddresses(accountMgr);
+		EmailQueue email = emailBuilder.build();
+		email.setPriority(30);
+		email.setViewableById(Account.PicsID);
+		emailQueueDAO.save(email);
+		emailBuilder.clear();
+	}
+
+	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
+		// Sorting results into buckets by AM to add as tokens into the email
+		Map<String, List<BasicDynaBean>> amMap = new HashMap<String, List<BasicDynaBean>>();
+		for (BasicDynaBean bean : data) {
+			String accountMgr = (String) bean.get("accountManager");
+			if (amMap.get(accountMgr) == null)
+				amMap.put(accountMgr, new ArrayList<BasicDynaBean>());
+			amMap.get(accountMgr).add(bean);
+		}
+		return amMap;
+	}
+
+	private List<BasicDynaBean> getFlagChangeData() throws SQLException {
 		StringBuilder query = new StringBuilder();
 		query
 				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
@@ -811,43 +851,7 @@ public class Cron extends PicsActionSupport {
 
 		Database db = new Database();
 		List<BasicDynaBean> data = db.select(query.toString(), true);
-
-		if (data.isEmpty())
-			return;
-
-		// Sorting results into buckets by AM to add as tokens into the email
-		Map<String, List<DynaBean>> amMap = new HashMap<String, List<DynaBean>>();
-		for (DynaBean bean : data) {
-			String accountMgr = (String) bean.get("accountManager");
-			if (amMap.get(accountMgr) == null)
-				amMap.put(accountMgr, new ArrayList<DynaBean>());
-			amMap.get(accountMgr).add(bean);
-		}
-
-		// Adding AM specific tokens to email and sending to AM
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(55);
-		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
-
-		for (String accountMgr : amMap.keySet()) {
-			if (amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
-				emailBuilder.addToken("changes", amMap.get(accountMgr));
-				emailBuilder.setToAddresses((accountMgr == null) ? "dtruitt@picsauditing.com" : accountMgr);
-				EmailQueue email = emailBuilder.build();
-				email.setPriority(30);
-				email.setViewableById(Account.PicsID);
-				emailQueueDAO.save(email);
-			}
-		}
-
-		// Sending list of global changes to managers@picsauditing.com
-		emailBuilder.clear();
-		emailBuilder.addToken("changes", data);
-		emailBuilder.setToAddresses("managers@picsauditing.com");
-		EmailQueue email = emailBuilder.build();
-		email.setPriority(30);
-		email.setViewableById(Account.PicsID);
-		emailQueueDAO.save(email);
+		return data;
 	}
 
 	public void clearForceFlags() {
