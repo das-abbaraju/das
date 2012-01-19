@@ -30,7 +30,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addJoin("LEFT JOIN contractor_audit ca2 ON "
 				+ "ca2.conID = a.id "
 				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0 AND ca2.id != ca.id "
-				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')) ");
+				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Complete')) ");
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
 
 		if (getFilter().isUnScheduledAudits()) {
