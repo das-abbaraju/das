@@ -83,7 +83,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean onsiteServices = false;
 	protected boolean offsiteServices = false;
 	protected boolean materialSupplier = false;
-	protected boolean transportationServices;
+	protected boolean transportationServices = false;
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
 	protected Currency currencyCode = Currency.USD;
