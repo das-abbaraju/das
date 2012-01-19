@@ -1115,7 +1115,6 @@ div.blockDialog {
 	content: " ON";
 }
 
-
 /* locales */
 
 .locales
@@ -1247,12 +1246,12 @@ div.blockDialog {
 
 /* Contractor Saftey Statistics */
 
-.contractor-saftey-statistics .panel_header .hurdle-rate
+.contractor-safety-statistics .panel_header .hurdle-rate
 {
 	float: right;
 }
 
-.contractor-saftey-statistics a.weighted-industry-average
+.contractor-safety-statistics a.weighted-industry-average
 {
 	float: right;
 	margin: 10px;
