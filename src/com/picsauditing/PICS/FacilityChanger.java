@@ -23,6 +23,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -132,8 +133,13 @@ public class FacilityChanger {
 				if (cAudit.getAuditType().isPqf()) {
 					for (ContractorAuditOperator cao : cAudit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
-							cao.changeStatus(AuditStatus.Pending, permissions);
+							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
 							auditDataDAO.save(cao);
+							if (caow != null) {
+								caow.setNotes("PQF set to pending for " + cao.getOperator().getName()
+										+ " because contractor moving to FULL account level.");
+								auditDataDAO.save(caow);
+							}
 						}
 					}
 

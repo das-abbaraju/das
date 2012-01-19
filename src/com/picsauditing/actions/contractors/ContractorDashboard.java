@@ -213,8 +213,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 				if (cAudit.getAuditType().isPqf()) {
 					for (ContractorAuditOperator cao : cAudit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
-							cao.changeStatus(AuditStatus.Pending, permissions);
+							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
 							auditDao.save(cao);
+							if (caow != null) {
+								caow.setNotes("PQF set to pending for " + cao.getOperator().getName()
+										+ " because contractor moving to FULL account leve.");
+								auditDao.save(caow);
+							}
 						}
 					}
 
