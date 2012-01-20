@@ -25,6 +25,7 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	private String value;
 	private Date lastUsed;
 	private TranslationQualityRating qualityRating;
+	private boolean notApplicable;
 	private String sourceLanguage;
 
 	private static List<Locale> locales = null;
@@ -72,6 +73,14 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 
 	public void setQualityRating(TranslationQualityRating qualityRating) {
 		this.qualityRating = qualityRating;
+	}
+
+	public boolean isNotApplicable() {
+		return notApplicable;
+	}
+
+	public void setNotApplicable(boolean notApplicable) {
+		this.notApplicable = notApplicable;
 	}
 
 	public String getSourceLanguage() {
