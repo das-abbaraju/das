@@ -185,66 +185,7 @@
 		</s:form>
 		<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
 		<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
-		<script type="text/javascript">
-			$(function(){
-				$('table.report .showEdit').click(function() {
-					$(this).closest("td").addClass("editMode");
-					return false;
-				});
-			
-				$('table.report .suggestTranslation').click(function() {
-					// http://code.google.com/p/jquery-translate/
-					var textarea = $(this).closest("td").find("textarea");
-					$(textarea).val( $(this).closest("td").prev().find("textarea").val() );
-					$(textarea).translate('<s:property value="localeFrom"/>', '<s:property value="localeTo"/>');
-					$(this).closest("td").addClass("editMode");
-					$(this).hide();
-					return false;
-				});
-			
-				$('table.report button.cancel').click(function() {
-					$(this).closest("td").removeClass("editMode");
-				});
-			
-				$('table.report button.save').click(function() {
-					var that = $(this).closest("td");
-					that.addClass("saving");
-					
-					var params = $(this).closest("form").serialize();
-					
-					$.post('ManageTranslationsAjax.action', params, function(result) {
-						if (result.success) {
-							that.find("input[name|='translation']").val(result.id);
-							that.find("span").html(that.find("textarea").val());
-							that.removeClass("editMode");
-						} else {
-							alert(result.reason);
-						}
-						that.removeClass("saving");
-					}, "json");
-				});
-				
-				$('table.report form ul.qualityRating input').click(function() {
-					var qualityForm = $(this).closest("form");
-					var qualityRating = $(this).val();
-					var ulElement = $(this).closest("ul");
-					
-					$.ajax({
-						url: "ManageTranslationsAjax!updateQualityRating.action",
-						data: {
-							translation: qualityForm.find("input[name=translation]").val(),
-							"translation.qualityRating": qualityRating
-						},
-						success: function() {
-							ulElement.effect('highlight', {color: '#FFFF11'}, 1000);
-						}
-					});
-				});
-				
-				$('#doneButton').bind('click', function() {
-					self.close();
-				});
-			});
-		</script>
+		<script type="text/javascript" src="js/core.js?v=<s:property value="version"/>"></script>
+		<script type="text/javascript" src="js/translation_manage.js?v=<s:property value="version"/>"></script>
 	</body>
 </html>

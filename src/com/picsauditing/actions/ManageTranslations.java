@@ -73,11 +73,11 @@ public class ManageTranslations extends ReportActionSupport {
 						}
 						translation.setAuditColumns(permissions);
 						translation.setSourceLanguage(localeFrom.getLanguage());
-						
+
 						if (translation.getQualityRating() == null) {
 							translation.setQualityRating(TranslationQualityRating.Good);
 						}
-						
+
 						dao.save(translation);
 						out.put("id", translation.getId());
 					}
@@ -124,7 +124,7 @@ public class ManageTranslations extends ReportActionSupport {
 		for (BasicDynaBean row : data) {
 			list.add(new Translation(row));
 		}
-		
+
 		return SUCCESS;
 	}
 
