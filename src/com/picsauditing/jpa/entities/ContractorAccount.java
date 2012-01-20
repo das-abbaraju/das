@@ -1485,4 +1485,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
+	
+	@Transient
+	public boolean isContractorTypeRequired(ContractorType conType) {
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			Set<ContractorType> operatorTypes = operator.getAccountTypes();
+			if (operatorTypes.size() == 1 && operatorTypes.contains(conType)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
