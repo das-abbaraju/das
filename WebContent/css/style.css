@@ -87,13 +87,76 @@ button.picsbutton::-moz-focus-inner,input[type=submit].picsbutton::-moz-focus-in
 .modal-footer:after{clear:both;}
 .modal-footer .btn{float:right;margin-left:5px;}
 
+/* modal */
+
 .modal h3
 {
 	font-size: 22px;
 	line-height: 36px;
 }
 
+.modal a
+{
+	text-decoration: none;
+}
+
+.modal .modal-header
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 36px;
+}
+
 .modal .modal-header a
+{
+	text-decoration: none;
+}
+
+.modal .modal-body
+{
+	height: 280px;
+	overflow-y: scroll;
+}
+
+.modal .modal-body a
+{
+	color: #195F91;
+}
+
+.modal .modal-body h1,
+.modal .modal-body h2
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0px 0px 15px;
+}
+
+.modal .modal-body p
+{
+	color: #404040;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 16px;
+	margin-bottom: 15px;
+}
+
+.modal .modal-body u
+{
+	display: block;
+	font-size: 13px;
+	margin-bottom: 5px;
+}
+
+.modal .modal-body a
+{
+	text-decoration: underline;
+}
+
+.modal .modal-body a:hover
 {
 	text-decoration: none;
 }

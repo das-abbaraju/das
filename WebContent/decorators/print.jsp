@@ -12,7 +12,6 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/markdown.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css?v=${version}" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}" /><!--<![endif]-->
 		
         
@@ -37,7 +36,7 @@
 		<div id="container">
 			<div id="main" role="main">
 				<div>
-					<img src="images/logo_sm.png" alt="Home" />
+					<img src="images/logo_sm.png" alt="Home" class="logo"/>
 				</div>
 				
 				<decorator:body />

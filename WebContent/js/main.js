@@ -30,8 +30,6 @@
 		
 		REGISTRATION.membership_help.init();
 		
-		REGISTRATION.modal.init();
-		
 		REGISTRATION.payment_check.init();
 		
 		REGISTRATION.payment_submision.init();

@@ -152,7 +152,7 @@ if (typeof Object.create !== 'function') {
                 
                 // class_name must start with a capital letter
                 if (class_name.substr(0, 1).search(/[A-Z]/) === -1) {
-                    throw 'PICS.define() @class_path must include a valid class (PICS.{ClassName} or PICS.{namespace}.{ClassName})';
+                    throw 'PICS.define() @class_path must include a valid class ({ClassName} or {namespace}.{ClassName})';
                 }
                 
                 for (var i in class_parts) {

@@ -527,34 +527,6 @@
 		}
 	};
 	
-	// modal
-	REGISTRATION.modal = {
-		init: function () {
-			if ($('#Registration-page').length || $('#RegistrationMakePayment-page').length) {
-				
-				$('.modal-link').bind('click', function (event) {
-					event.preventDefault();
-					
-					var element = $(this);
-					
-					AJAX.request({
-						url: element.attr('data-url'),
-						success: function (data, textStatus, XMLHttpRequest) {
-						    var modal = PICS.modal({
-						        height: 550,
-						        width: 700,
-			                    title: element.text(),
-			                    content: data
-			                });
-							
-							modal.show();
-						}
-					});
-				});
-			}
-		}
-	};
-	
 	// make payment form choose check
 	REGISTRATION.payment_check = {
 		init: function () {
@@ -650,4 +622,52 @@
 		}
 	};
 	
+	PICS.define('registration.Registration', {
+	    methods: {
+	        init: function () {
+	            $('#Registration-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+	            $('#RegistrationMakePayment-page .contractor-agreement.modal-link').bind('click', this.showContractorAgreementModal);
+	            $('#RegistrationMakePayment-page .modal-link:not(.contractor-agreement)').bind('click', this.showBasicModal);
+	        },
+	        
+	        showBasicModal: function (event) {
+	            var element = $(this);
+	            
+	            PICS.ajax({
+	                url: element.attr('data-url'),
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var modal = PICS.modal({
+                            height: 550,
+                            width: 700,
+                            title: element.text(),
+                            content: data
+                        });
+                        
+                        modal.show();
+                    }
+	            });
+	        },
+	        
+	        showContractorAgreementModal: function (event) {
+	            var element = $(this);
+                
+                PICS.ajax({
+                    url: element.attr('data-url'),
+                    success: function (data, textStatus, XMLHttpRequest) {
+                        var modal = PICS.modal({
+                            height: 550,
+                            width: 700,
+                            title: element.text(),
+                            content: data,
+                            buttons: [{
+                                html: '<a href="ContractorAgreement!print.action" class="btn info" target="_blank">' + translate('JS.global.print') + '</a>'
+                            }]
+                        });
+                        
+                        modal.show();
+                    }
+                });
+	        }
+	    }
+	});
 })(jQuery);

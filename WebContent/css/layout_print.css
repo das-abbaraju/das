@@ -29,6 +29,11 @@
 	width: 720px;
 }
 
+.print-page #main .logo
+{
+	margin-bottom: 10px;
+}
+
 @media print
 {
 	.print-page header

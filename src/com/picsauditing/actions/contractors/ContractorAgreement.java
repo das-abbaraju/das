@@ -35,6 +35,7 @@ public class ContractorAgreement extends ContractorActionSupport {
 		return SUCCESS;
 	}
 	
+	@Anonymous
 	public String print()
 	{
 	    return "print";

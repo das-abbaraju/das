@@ -32,7 +32,10 @@
                 width: 560, // width of modal
                 
                 title: 'TITLE',
-                content: 'CONTENT'
+                content: 'CONTENT',
+                
+                // button cofiguration: parameters include label, html, callback
+                buttons: []
             };
             
             var modal;
@@ -70,6 +73,53 @@
                     }
                     
                     function createModal() {
+                        // update modal content
+                        function updateModal(modal_header, modal_body) {
+                            modal_header.find('h3').html(config.title);
+                            modal_body.html(config.content);
+                        }
+                        
+                        function updateModalButtons(modal_footer) {
+                            for (var i in config.buttons) {
+                                if (config.buttons.hasOwnProperty(i) && typeof config.buttons[i] == 'object') {
+                                    var button = config.buttons[i];
+                                    
+                                    if (button.label) {
+                                        var label = button.label;
+                                    } else {
+                                        var label = 'Button';
+                                    }
+                                    
+                                    if (button.html) {
+                                        var btn = $(button.html)
+                                    } else {
+                                        var btn = $('<a href="javascript:;" class="btn">' + label + '</a>');
+                                    }
+                                    
+                                    if (button.callback && typeof button.callback == 'function') {
+                                        btn.bind('click', button.callback);
+                                    }
+                                    
+                                    modal_footer.append(btn);
+                                }
+                            }
+                        }
+                        
+                        function updateModalPosition(modal, modal_body) {
+                            // manually position modal
+                            modal.css({
+                                marginLeft: '-' + (config.width / 2) + 'px',
+                                marginTop: '-' + ((config.height / 2) + 50) + 'px',
+                                width: config.width
+                            });
+                            
+                            // configure height of modal content
+                            modal_body.css({
+                                height: config.height,
+                                overflowY: 'auto'
+                            });
+                        }
+                        
                         // define modal element
                         var modal = $('<div id="' + config.modal_id + '" class="' + config.modal_class + '" style="display: none;">');
                         
@@ -81,22 +131,12 @@
                         
                         $('body').append(html);
                         
-                        // update modal content
-                        modal_header.find('h3').html(config.title);
-                        modal_body.html(config.content);
+                        updateModal(modal_header, modal_body);
                         
-                        // manually position modal
-                        modal.css({
-                            marginLeft: '-' + (config.width / 2) + 'px',
-                            marginTop: '-' + ((config.height / 2) + 50) + 'px',
-                            width: config.width
-                        });
+                        updateModalButtons(modal_footer);
                         
-                        // configure height of modal content
-                        modal_body.css({
-                            height: config.height,
-                            overflowY: 'auto'
-                        });
+                        updateModalPosition(modal, modal_body);
+                            
                         
                         return modal;
                     }
