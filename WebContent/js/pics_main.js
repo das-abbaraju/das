@@ -109,4 +109,20 @@ $(function() {
 			});
 		}
 	});
+	
+	
+	$('#tracing-open').live('click', function(event) {
+		event.preventDefault();
+		
+		
+		$.ajax({
+			url: "ManageTranslations.action?button=tracingOnClearAjax",
+			success: function () {
+				$('body').append('<iframe src="' + window.location.href 
+						+ '" style="display: none;" id="translationTracingFrame"></iframe>');
+				$('body').remove("#translationTracingFrame");
+				window.open("ManageTranslations.action?showDoneButton=true", "tracing_window");
+			}
+		});
+	});
 });

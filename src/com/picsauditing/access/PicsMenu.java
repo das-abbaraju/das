@@ -108,8 +108,7 @@ public class PicsMenu {
 				subMenu = addSupportLink(menu);
 				addChildAction(subMenu, "ProfileEdit");
 			} else {
-				subMenu = menu.addChild(getText("Registration.CompanyDetails.heading"),
-						"ContractorEdit.action");
+				subMenu = menu.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action");
 				addSupportLink(menu);
 			}
 			return menu;
@@ -361,6 +360,11 @@ public class PicsMenu {
 			subMenu.addChild(key, menuItems.get(key));
 		}
 
+		if (permissions.hasPermission(OpPerms.Translator)) {
+			MenuComponent debug = subMenu.addChild("View Traced Translations", "#");
+			debug.setHtmlId("tracing-open");
+		}
+
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 			subMenu = menu.addChild("Dev");
 			subMenu.addChild("System Logging", "LoggerConfig.action");
@@ -386,7 +390,7 @@ public class PicsMenu {
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.ManageAudits))
 			subMenu.addChild("Audit Analysis", "ReportAuditAnalysis.action");
 		if (permissions.hasGroup(User.GROUP_CSR) || permissions.hasGroup(User.GROUP_MANAGER)) {
