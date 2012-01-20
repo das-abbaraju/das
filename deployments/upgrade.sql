@@ -68,9 +68,10 @@ where u.username like '% %' and u.isGroup = 'No' and u.creationDate > '2011-12-0
 
 -- Append '2' to usernames that would conflict if we strip out spaces
 update users u
-join accounts a on u.accountID = a.id
+join users u2 on u.id != u2.id and replace(u.username,' ','') = u2.username
 set u.username = concat(replace(u.username,' ',''),'2')
-where u.username like '% %' and u.isGroup = 'No' and u.id in (3582,6832,8992,22568,22748,54085,54800,53447,53423,55609,54191,53666,52857,53991,54309,55505);
+where u.username like '% %' and u.isGroup = 'No'
+and u2.isGroup = 'No';
 
 -- Should strip the spaces from all non-conflicting usernames
 update users u
