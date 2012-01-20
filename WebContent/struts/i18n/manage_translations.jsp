@@ -137,7 +137,7 @@
 								<s:hidden name="localeFrom" />
 								<s:if test="!(id > 0)">
 									<s:hidden name="translation.locale" value="%{localeTo}" />
-									<s:hidden name="translation.key" value="%{from.ky}" />
+									<s:hidden name="translation.key" value="%{from.key}" />
 									<a href="#" class="view suggestTranslation">
 										Suggest
 									</a>
@@ -239,6 +239,10 @@
 							ulElement.effect('highlight', {color: '#FFFF11'}, 1000);
 						}
 					});
+				});
+				
+				$('#doneButton').bind('click', function() {
+					self.close();
 				});
 			});
 		</script>
