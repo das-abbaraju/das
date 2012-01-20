@@ -48,6 +48,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import com.picsauditing.util.ExpireUneededAnnualUpdates;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -494,6 +495,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 					conAuditDAO.save(ca);
 				}
 			}
+		} else if (status.isComplete() && conAudit.getAuditType().isAnnualAddendum()) {
+			ExpireUneededAnnualUpdates.calculate(conAudit.getContractorAccount());
 		}
 	}
 

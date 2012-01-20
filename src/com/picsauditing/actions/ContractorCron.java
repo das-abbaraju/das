@@ -68,6 +68,7 @@ import com.picsauditing.mail.GridSender;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.util.ExpireUneededAnnualUpdates;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -141,6 +142,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		try {
 			runBilling(contractor);
+			runRemoveExtraAnnualUpdates(contractor);
 			runAuditBuilder(contractor);
 			runAuditCategory(contractor);
 			runAssignAudit(contractor);
@@ -258,6 +260,13 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		billingService.calculateAnnualFees(contractor);
 		contractor.syncBalance();
+	}
+
+	private void runRemoveExtraAnnualUpdates(ContractorAccount contractor) {
+		if (!runStep(ContractorCronStep.RemoveExtraAnnualUpdates))
+			return;
+
+		ExpireUneededAnnualUpdates.calculate(contractor);
 	}
 
 	private void runAuditBuilder(ContractorAccount contractor) {
@@ -521,8 +530,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
-										.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
+										co.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
