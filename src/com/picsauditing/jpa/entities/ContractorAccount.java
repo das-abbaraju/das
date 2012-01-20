@@ -1496,4 +1496,17 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public List<OperatorAccount> getOperatorsThatRequireContractorType(ContractorType conType) {
+		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+		
+		for (OperatorAccount operator : getOperatorAccounts()) {
+			Set<ContractorType> operatorTypes = operator.getAccountTypes();
+			if (operatorTypes.size() == 1 && operatorTypes.contains(conType)) {
+				operators.add(operator);
+			}
+		}
+		return operators;
+	}
 }
