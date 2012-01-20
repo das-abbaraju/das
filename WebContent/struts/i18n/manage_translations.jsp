@@ -8,57 +8,6 @@
 			Manage Translations
 		</title>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-		<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
-		<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
-		<script type="text/javascript">
-			$(function(){
-				$('table.report .showEdit').click(function() {
-					$(this).closest("td").addClass("editMode");
-					return false;
-				});
-			
-				$('table.report .suggestTranslation').click(function() {
-					// http://code.google.com/p/jquery-translate/
-					var textarea = $(this).closest("td").find("textarea");
-					$(textarea).val( $(this).closest("td").prev().find("textarea").val() );
-					$(textarea).translate('<s:property value="localeFrom"/>', '<s:property value="localeTo"/>');
-					$(this).closest("td").addClass("editMode");
-					$(this).hide();
-					return false;
-				});
-			
-				$('table.report button.cancel').click(function() {
-					$(this).closest("td").removeClass("editMode");
-				});
-			
-				$('table.report button.save').click(function() {
-					var that = $(this).closest("td");
-					that.addClass("saving");
-					
-					var params = $(this).closest("form.translationValue").serialize();
-					
-					$.post('ManageTranslationsAjax.action', params, function(result) {
-						if (result.success) {
-							that.find("input[name|='translation']").val(result.id);
-							that.find("span").html(that.find("textarea").val());
-							that.removeClass("editMode");
-						} else {
-							alert(result.reason);
-						}
-						that.removeClass("saving");
-					}, "json");
-				});
-				
-				$('table.report form.translationQuality input[type=radio]').click(function() {
-					var data = $(this).closest("form.translationQuality").serialize(); 
-					
-					$.ajax({
-						url: "ManageTranslationsAjax!updateQualityRating.action",
-						data: data
-					});
-				});
-			});
-		</script>
 		<style type="text/css">
 			td.saving,
 			td.saving textarea,
@@ -95,6 +44,11 @@
 		<s:include value="../config_environment.jsp" />
 		<s:if test="tracingOn">
 			<div class="alert">
+				<s:if test="showDoneButton">
+					<div class="right">
+						<input type="button" class="picsbutton positive" value="Done with this page" id="doneButton" />
+					</div>
+				</s:if>
 				Text Tracing for Internationalization is turned ON.
 				<s:form id="formTracingOff">
 					<s:hidden name="button" value="tracingOff" />
@@ -179,9 +133,11 @@
 						<td class="phrase">
 							<form onsubmit="return false;" class="translationValue">
 								<input type="hidden" name="translation" value="<s:property value="id"/>">
+								<s:hidden name="localeTo" />
+								<s:hidden name="localeFrom" />
 								<s:if test="!(id > 0)">
-									<input type="hidden" name="translation.locale" value="<s:property value="localeTo"/>" />
-									<input type="hidden" name="translation.key" value="<s:property value="from.key"/>" />
+									<s:hidden name="translation.locale" value="%{localeTo}" />
+									<s:hidden name="translation.key" value="%{from.ky}" />
 									<a href="#" class="view suggestTranslation">
 										Suggest
 									</a>
@@ -202,18 +158,11 @@
 								<s:if test="(updatedBy == null || updatedBy.id == 1) && locale != 'en'">
 									<button class="right" name="button" class="save">Approve</button>
 								</s:if>
-							</form>
-							<form class="translationQuality">
-								<s:hidden name="translation" value="%{id}" />
-								<s:hidden name="localeTo" />
-								<s:hidden name="localeFrom" />
-								<s:hidden name="translation.locale" value="%{localeTo}" />
-								<s:hidden name="translation.key" value="%{from.key}" />
 								<s:radio
 									list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
 									name="translation.qualityRating"
 									theme="pics"
-									cssClass="inline"
+									cssClass="inline qualityRating"
 									value="%{qualityRating}"
 								/>
 							</form>
@@ -234,5 +183,64 @@
 			<br />
 			<button name="button" class="save" value="save">Save</button>
 		</s:form>
+		<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
+		<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
+		<script type="text/javascript">
+			$(function(){
+				$('table.report .showEdit').click(function() {
+					$(this).closest("td").addClass("editMode");
+					return false;
+				});
+			
+				$('table.report .suggestTranslation').click(function() {
+					// http://code.google.com/p/jquery-translate/
+					var textarea = $(this).closest("td").find("textarea");
+					$(textarea).val( $(this).closest("td").prev().find("textarea").val() );
+					$(textarea).translate('<s:property value="localeFrom"/>', '<s:property value="localeTo"/>');
+					$(this).closest("td").addClass("editMode");
+					$(this).hide();
+					return false;
+				});
+			
+				$('table.report button.cancel').click(function() {
+					$(this).closest("td").removeClass("editMode");
+				});
+			
+				$('table.report button.save').click(function() {
+					var that = $(this).closest("td");
+					that.addClass("saving");
+					
+					var params = $(this).closest("form").serialize();
+					
+					$.post('ManageTranslationsAjax.action', params, function(result) {
+						if (result.success) {
+							that.find("input[name|='translation']").val(result.id);
+							that.find("span").html(that.find("textarea").val());
+							that.removeClass("editMode");
+						} else {
+							alert(result.reason);
+						}
+						that.removeClass("saving");
+					}, "json");
+				});
+				
+				$('table.report form ul.qualityRating input').click(function() {
+					var qualityForm = $(this).closest("form");
+					var qualityRating = $(this).val();
+					var ulElement = $(this).closest("ul");
+					
+					$.ajax({
+						url: "ManageTranslationsAjax!updateQualityRating.action",
+						data: {
+							translation: qualityForm.find("input[name=translation]").val(),
+							"translation.qualityRating": qualityRating
+						},
+						success: function() {
+							ulElement.effect('highlight', {color: '#FFFF11'}, 1000);
+						}
+					});
+				});
+			});
+		</script>
 	</body>
 </html>

@@ -18,6 +18,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
@@ -25,7 +26,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilter;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ManageTranslations extends ReportActionSupport {
@@ -38,11 +38,11 @@ public class ManageTranslations extends ReportActionSupport {
 	private List<Translation> list;
 	private AppTranslation translation;
 	private ReportFilter filter;
+	private boolean showDoneButton;
 
 	@SuppressWarnings("unchecked")
+	@RequiredPermission(value = OpPerms.Translator)
 	public String execute() throws Exception {
-		permissions.tryPermission(OpPerms.Translator);
-
 		if (localeTo == null) {
 			localeTo = new Locale(permissions.getLocale().getLanguage());
 		}
@@ -50,13 +50,13 @@ public class ManageTranslations extends ReportActionSupport {
 		if (button != null) {
 			if (button.startsWith("tracing")) {
 				Map<String, Object> session = ActionContext.getContext().getSession();
-				if (button.equals("tracingOn")) {
+				if (button.contains("On")) {
 					session.put(i18nTracing, true);
 				}
-				if (button.equals("tracingOff")) {
+				if (button.contains("Off")) {
 					session.put(i18nTracing, false);
 				}
-				if (button.equals("tracingClear")) {
+				if (button.contains("Clear")) {
 					getI18nUsedKeys().clear();
 				}
 			}
@@ -89,10 +89,51 @@ public class ManageTranslations extends ReportActionSupport {
 					output = out.toJSONString();
 					return BLANK;
 				}
-				key = translation.getKey().substring(0, translation.getKey().indexOf("."));
+
+				if (translation.getKey().indexOf(".") > 0) {
+					key = translation.getKey().substring(0, translation.getKey().indexOf("."));
+				} else {
+					key = translation.getKey();
+				}
 			}
 		}
 
+		SelectSQL sql = buildAndRunSQL();
+
+		list = new ArrayList<Translation>();
+		for (BasicDynaBean row : data) {
+			list.add(new Translation(row));
+		}
+		if (download) {
+			addExcelColumns(sql);
+		}
+
+		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.Translator)
+	public String popupAjax() throws Exception {
+		buildAndRunSQL();
+
+		list = new ArrayList<Translation>();
+		for (BasicDynaBean row : data) {
+			list.add(new Translation(row));
+		}
+		
+		return SUCCESS;
+	}
+
+	@RequiredPermission(value = OpPerms.Translator)
+	public String updateQualityRating() {
+		if (translation != null) {
+			translation.setAuditColumns();
+			dao.save(translation);
+		}
+
+		return SUCCESS;
+	}
+
+	private SelectSQL buildAndRunSQL() throws Exception {
 		SelectSQL sql = new SelectSQL("app_translation t1");
 		sql.setSQL_CALC_FOUND_ROWS(true);
 		sql.addWhere("t1.locale = '" + localeFrom + "'");
@@ -159,7 +200,7 @@ public class ManageTranslations extends ReportActionSupport {
 				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys(), ",") + ")");
 			else {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
-				return SUCCESS;
+				return null;
 			}
 		} else if (permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
 			// addAlertMessage("Turn On Tracing to Use this report");
@@ -168,24 +209,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 		run(sql);
 
-		list = new ArrayList<Translation>();
-		for (BasicDynaBean row : data) {
-			list.add(new Translation(row));
-		}
-		if (download) {
-			addExcelColumns(sql);
-		}
-
-		return SUCCESS;
-	}
-
-	public String updateQualityRating() {
-		if (translation != null) {
-			translation.setAuditColumns();
-			dao.save(translation);
-		}
-
-		return SUCCESS;
+		return sql;
 	}
 
 	public class Translation {
@@ -296,6 +320,14 @@ public class ManageTranslations extends ReportActionSupport {
 
 	public void setSearchType(String searchType) {
 		this.searchType = searchType;
+	}
+
+	public boolean isShowDoneButton() {
+		return showDoneButton;
+	}
+
+	public void setShowDoneButton(boolean showDoneButton) {
+		this.showDoneButton = showDoneButton;
 	}
 
 	public boolean isTracingOn() {
