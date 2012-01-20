@@ -9,7 +9,6 @@ import javax.persistence.TemporalType;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -51,9 +50,10 @@ public class EmailSubscriptionDAO extends PicsDAO {
 
 	public List<EmailSubscription> find(Subscription subscription, int opID) {
 		Query query = em
-				.createQuery("FROM EmailSubscription e WHERE  e.subscription = :sub AND e.user.account.id = :opID AND e.user.isActive = 'Yes'");
+				.createQuery("FROM EmailSubscription e WHERE e.timePeriod != :none AND e.subscription = :sub AND e.user.account.id = :opID AND e.user.isActive = 'Yes'");
 		query.setParameter("sub", subscription);
 		query.setParameter("opID", opID);
+		query.setParameter("none", SubscriptionTimePeriod.None);
 
 		return query.getResultList();
 	}
