@@ -17,7 +17,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 
 <script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
-<script type="text/javascript" src="js/Search.js?v=<s:property value="version"/>"></script>
+<script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="js/jquery/jquery-ui/jquery-ui-1.7.2.custom.css">
 <link rel="stylesheet" type="text/css" href="js/jquery/gritter/css/gritter.css" />
 
-<script type="text/javascript" src="js/Search.js?v=123444321"></script>
+<script type="text/javascript" src="js/ReportSearch.js?v=123444321"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=123444321" />
 
 <script type="text/javascript" src="js/jquery/jquery.hoverIntent.js"></script>
