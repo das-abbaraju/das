@@ -5,6 +5,11 @@ import java.util.List;
 
 import com.picsauditing.jpa.entities.Translatable;
 
+/**
+ * This Enum defines the User Permissions.
+ * 
+ * OpPerms stands for Operator Permissions, but it is actually a misnomer.
+ */
 public enum OpPerms implements Translatable{
 	// Development Permission
 	DevelopmentEnvironment("Development Environment", "Allow PICS employees to test.", true, true, true, false, false),
