@@ -5,7 +5,7 @@
             	$('table.report .showEdit').bind('click', this.addEditMode);
             	$('table.report button.cancel').bind('click', this.removeEditMode);
             	$('table.report .suggestTranslation').bind('click', this.suggestTranslation);
-            	$('table.report button.save').bind('click', this.saveTranslation);
+            	$('table.report form button.save').bind('click', this.saveTranslation);
             	$('table.report form ul.qualityRating input').bind('click', this.saveQualityRating);
             	$('#doneButton').bind('click', this.closeWindow);
             },
@@ -40,9 +40,10 @@
             	PICS.ajax({
             		url: 'ManageTranslationsAjax.action',
             		data: params,
-            		type: "json",
-            		success: function () {
-            			that.find("input[name|='translation']").val(result.id);
+            		dataType: "json",
+            		success: function(data, textStatus, XMLHttpRequest) {
+            			console.log(data.id);
+            			that.find("input[name|='translation']").val(data.id);
             			that.find("span").html(that.find("textarea").val());
             			that.removeClass("editMode");
             		},

@@ -103,7 +103,8 @@ public class ManageTranslations extends ReportActionSupport {
 			}
 		}
 
-		SelectSQL sql = buildAndRunSQL();
+		SelectSQL sql = buildSQL();
+		run(sql);
 
 		list = new ArrayList<Translation>();
 		for (BasicDynaBean row : data) {
@@ -111,18 +112,6 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 		if (download) {
 			addExcelColumns(sql);
-		}
-
-		return SUCCESS;
-	}
-
-	@RequiredPermission(value = OpPerms.Translator)
-	public String popupAjax() throws Exception {
-		buildAndRunSQL();
-
-		list = new ArrayList<Translation>();
-		for (BasicDynaBean row : data) {
-			list.add(new Translation(row));
 		}
 
 		return SUCCESS;
@@ -138,7 +127,7 @@ public class ManageTranslations extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	private SelectSQL buildAndRunSQL() throws Exception {
+	private SelectSQL buildSQL() throws Exception {
 		SelectSQL sql = new SelectSQL("app_translation t1");
 		sql.setSQL_CALC_FOUND_ROWS(true);
 		sql.addWhere("t1.locale = '" + localeFrom + "'");
@@ -205,14 +194,11 @@ public class ManageTranslations extends ReportActionSupport {
 				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys(), ",") + ")");
 			else {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
-				return null;
 			}
 		} else if (permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
 			// addAlertMessage("Turn On Tracing to Use this report");
 			// return SUCCESS;
 		}
-
-		run(sql);
 
 		return sql;
 	}
