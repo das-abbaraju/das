@@ -120,6 +120,15 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAudit> findExpiredByContractor(int conID) {
+		Query query = em
+				.createQuery("SELECT t FROM ContractorAudit t "
+						+ "WHERE t.contractorAccount.id = ? "
+						+ "AND (expiresDate < Now()) ORDER BY t.auditType.displayOrder, t.auditFor, t.expiresDate DESC LIMIT 50");
+		query.setParameter(1, conID);
+		return query.getResultList();
+	}
+
 	public List<ContractorAudit> findAuditsNeedingWebcams() {
 		Query q = em
 				.createQuery("FROM ContractorAudit WHERE scheduledDate > NOW() AND needsCamera = TRUE AND auditLocation = 'Web' ORDER BY scheduledDate");

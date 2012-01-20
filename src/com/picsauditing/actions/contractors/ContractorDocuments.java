@@ -17,6 +17,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
@@ -33,6 +34,8 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	protected AuditDecisionTableDAO auditRuleDAO;
+	@Autowired
+	protected ContractorAuditDAO contractorAuditDao;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
 	protected Map<DocumentTab, List<AuditType>> auditTypes;
@@ -82,9 +85,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 
 					imAudits.add(audit);
 				}
-			} else if (audit.isExpired() && audit.getCurrentOperators().size() > 0) {
-				if (!expiredAudits.contains(audit))
-					expiredAudits.add(audit);
 			}
 		}
 
@@ -114,10 +114,21 @@ public class ContractorDocuments extends ContractorActionSupport {
 			else
 				imScores.put(auditName, "Green");
 		}
-
-		Collections.sort(expiredAudits, new AuditByDate());
+		
+		loadExpiredAudits();
 
 		return SUCCESS;
+	}
+
+	private void loadExpiredAudits() {
+		List<ContractorAudit> temp = contractorAuditDao.findExpiredByContractor(contractor.getId());
+
+		for (ContractorAudit contractorAudit : temp) {
+			if (contractorAudit.isVisibleTo(permissions)) {
+				expiredAudits.add(contractorAudit);
+			}
+		}
+		Collections.sort(expiredAudits, new AuditByDate());
 	}
 
 	public boolean isManuallyAddAudit() {
