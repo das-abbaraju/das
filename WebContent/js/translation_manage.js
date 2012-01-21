@@ -42,7 +42,6 @@
             		data: params,
             		dataType: "json",
             		success: function(data, textStatus, XMLHttpRequest) {
-            			console.log(data.id);
             			that.find("input[name|='translation']").val(data.id);
             			that.find("span").html(that.find("textarea").val());
             			that.removeClass("editMode");
