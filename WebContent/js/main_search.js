@@ -1,5 +1,6 @@
 var autoSearch;
 var SEARCH_DELAY = 200;
+
 $(function(){
 	autoSearch = $('#search_box').autocomplete('HeaderSearchAjax.action', {
 		width: 325,
