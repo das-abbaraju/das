@@ -14,7 +14,7 @@ public class QueryData {
 		for (BasicDynaBean dynaBean : rows) {
 			Map<String, Object> row = new HashMap<String, Object>();
 			for (SimpleReportField column : columns) {
-				row.put(column.field, dynaBean.get(column.field));
+				row.put(column.getField(), dynaBean.get(column.getField()));
 			}
 			data.add(row);
 		}

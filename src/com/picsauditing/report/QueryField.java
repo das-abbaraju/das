@@ -14,20 +14,20 @@ public class QueryField implements JSONAware {
 	/**
 	 * aka field or alias
 	 */
-	public String dataIndex;
-	public String sql;
-	public String requireJoin;
-	public FilterType filterType;
-	public int width = 0;
-	public boolean sortable = true;
-	public boolean hideable = true;
-	public boolean isDefault = false;
-	public boolean hidden = false;
-	public int flex = 0;
-	public FieldType type = FieldType.Auto;
-	public JavaScript renderer;
-	public JavaScript editor;
-	public String label;
+	private String dataIndex;
+	private String sql;
+	private String requireJoin;
+	private FilterType filterType;
+	private int width = 0;
+	private boolean sortable = true;
+	private boolean hideable = true;
+	private boolean suggested = false;
+	private boolean hidden = false;
+	private int flex = 0;
+	private FieldType type = FieldType.Auto;
+	private JavaScript renderer;
+	private JavaScript editor;
+	private String label;
 	private String preTranslation;
 	private String postTranslation;
 
@@ -48,10 +48,9 @@ public class QueryField implements JSONAware {
 		this.sql = sql;
 		this.filterType = filterType;
 		this.requireJoin = requireJoin;
-		this.isDefault = isDefault;
-		
-		if (filterType == FilterType.Date)
-		{
+		this.suggested = isDefault;
+
+		if (filterType == FilterType.Date) {
 			type = FieldType.Date;
 		}
 
@@ -123,7 +122,7 @@ public class QueryField implements JSONAware {
 	}
 
 	public QueryField makeDefault() {
-		this.isDefault = true;
+		this.suggested = true;
 		return this;
 	}
 
@@ -144,6 +143,134 @@ public class QueryField implements JSONAware {
 
 	public boolean requiresJoin() {
 		return !Strings.isEmpty(requireJoin);
+	}
+
+	public String getDataIndex() {
+		return dataIndex;
+	}
+
+	public void setDataIndex(String dataIndex) {
+		this.dataIndex = dataIndex;
+	}
+
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+	public String getRequireJoin() {
+		return requireJoin;
+	}
+
+	public void setRequireJoin(String requireJoin) {
+		this.requireJoin = requireJoin;
+	}
+
+	public FilterType getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(FilterType filterType) {
+		this.filterType = filterType;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public boolean isSortable() {
+		return sortable;
+	}
+
+	public void setSortable(boolean sortable) {
+		this.sortable = sortable;
+	}
+
+	public boolean isHideable() {
+		return hideable;
+	}
+
+	public void setHideable(boolean hideable) {
+		this.hideable = hideable;
+	}
+
+	public boolean isSuggested() {
+		return suggested;
+	}
+
+	public void setSuggested(boolean suggested) {
+		this.suggested = suggested;
+	}
+
+	public boolean isHidden() {
+		return hidden;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
+	}
+
+	public int getFlex() {
+		return flex;
+	}
+
+	public void setFlex(int flex) {
+		this.flex = flex;
+	}
+
+	public FieldType getType() {
+		return type;
+	}
+
+	public void setType(FieldType type) {
+		this.type = type;
+	}
+
+	public JavaScript getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(JavaScript renderer) {
+		this.renderer = renderer;
+	}
+
+	public JavaScript getEditor() {
+		return editor;
+	}
+
+	public void setEditor(JavaScript editor) {
+		this.editor = editor;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getPreTranslation() {
+		return preTranslation;
+	}
+
+	public void setPreTranslation(String preTranslation) {
+		this.preTranslation = preTranslation;
+	}
+
+	public String getPostTranslation() {
+		return postTranslation;
+	}
+
+	public void setPostTranslation(String postTranslation) {
+		this.postTranslation = postTranslation;
 	}
 
 }

@@ -131,7 +131,7 @@ public class QueryRunner {
 		Iterator<SimpleReportField> iterator = columns.iterator();
 		while (iterator.hasNext()) {
 			SimpleReportField column = iterator.next();
-			if (!availableFields.containsKey(column.field))
+			if (!availableFields.containsKey(column.getField()))
 				iterator.remove();
 		}
 	}
@@ -169,14 +169,14 @@ public class QueryRunner {
 	private void addColumns() {
 		Set<String> addedJoins = new HashSet<String>();
 		for (SimpleReportField column : columns) {
-			if (availableFields.keySet().contains(column.field)) {
-				QueryField availableField = availableFields.get(column.field);
+			if (availableFields.keySet().contains(column.getField())) {
+				QueryField availableField = availableFields.get(column.getField());
 
 				column.setQueryField(availableField);
 
 				addLeftJoins(addedJoins, availableField);
 
-				sql.addField(column.toSQL(availableFields) + " AS " + column.field);
+				sql.addField(column.toSQL(availableFields) + " AS " + column.getField());
 				// TODO: Think about case/if (IF function or CASE statement) and
 				// calculated fields (2 fields coming out with a result)
 			}
@@ -185,9 +185,9 @@ public class QueryRunner {
 
 	private void addLeftJoins(Set<String> addedJoins, QueryField availableField) {
 		if (availableField.requiresJoin()) {
-			if (!addedJoins.contains(availableField.requireJoin)) {
-				sql.addJoin(this.joins.get(availableField.requireJoin));
-				addedJoins.add(availableField.requireJoin);
+			if (!addedJoins.contains(availableField.getRequireJoin())) {
+				sql.addJoin(this.joins.get(availableField.getRequireJoin()));
+				addedJoins.add(availableField.getRequireJoin());
 			}
 		}
 	}
@@ -199,10 +199,10 @@ public class QueryRunner {
 		}
 
 		for (SimpleReportField field : definition.getOrderBy()) {
-			String orderBy = field.field;
-			if (!columns.contains(field.field))
-				orderBy = availableFields.get(field.field).sql;
-			if (!field.ascending)
+			String orderBy = field.getField();
+			if (!columns.contains(field.getField()))
+				orderBy = availableFields.get(field.getField()).getSql();
+			if (!field.isAscending())
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);
 		}
@@ -235,8 +235,8 @@ public class QueryRunner {
 	private void addTotalField() {
 		addQueryField("total", null, FilterType.Number);
 		SimpleReportField total = new SimpleReportField();
-		total.field = "total";
-		total.function = QueryFunction.Count;
+		total.setField("total");
+		total.setFunction(QueryFunction.Count);
 		columns.add(total);
 	}
 
@@ -338,7 +338,7 @@ public class QueryRunner {
 
 	private QueryField replaceQueryField(String source, String target) {
 		QueryField field = availableFields.remove(source);
-		field.dataIndex = target;
+		field.setDataIndex(target);
 		availableFields.put(target, field);
 		return field;
 	}
@@ -625,12 +625,14 @@ public class QueryRunner {
 		sql.addJoin("contractor_trade child ON child.conID = a.id");
 		sql.addJoin("ref_trade tChild ON tChild.id = child.tradeID");
 
-		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Number, true);
+		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Number,
+				true);
 		contractorTradeParentID.translate("Trade", "name");
 		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", FilterType.Number);
 		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", FilterType.Number);
 
-		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Number, true);
+		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Number,
+				true);
 		contractorTradeChildID.translate("Trade", "name");
 		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", FilterType.Number);
 		addQueryField("contractorTradeChildIndexEnd", "tChild.indexEnd", FilterType.Number);
@@ -857,11 +859,9 @@ public class QueryRunner {
 	}
 
 	public SimpleReportDefinition createDefinitionFromReportParameters(String parameters) {
-		if (StringUtils.isEmpty(parameters))
-			return null;
-
 		SimpleReportDefinition definition = new SimpleReportDefinition();
-		if (parameters != null) {
+
+		if (!StringUtils.isEmpty(parameters)) {
 			JSONObject obj = (JSONObject) JSONValue.parse(parameters);
 			if (obj != null) {
 				definition.fromJSON(obj);

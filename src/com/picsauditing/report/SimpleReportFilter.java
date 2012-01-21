@@ -39,7 +39,7 @@ public class SimpleReportFilter implements JSONable {
 			if (fieldObj instanceof JSONObject) {
 				this.field.fromJSON((JSONObject) fieldObj);
 			} else {
-				field.field = (String) fieldObj;
+				field.setField((String) fieldObj);
 			}
 		}
 		this.operator = QueryFilterOperator.valueOf(json.get("operator").toString());
@@ -56,7 +56,7 @@ public class SimpleReportFilter implements JSONable {
 			if (field2Obj instanceof JSONObject) {
 				this.field2.fromJSON((JSONObject) field2Obj);
 			} else {
-				field2.field = (String) field2Obj;
+				field2.setField((String) field2Obj);
 			}
 		}
 
@@ -65,11 +65,11 @@ public class SimpleReportFilter implements JSONable {
 	}
 
 	public String toExpression(Map<String, QueryField> availableFields) {
-		QueryField queryField = availableFields.get(field.field);
+		QueryField queryField = availableFields.get(field.getField());
 		String columnSQL = field.toSQL(availableFields);
-		if (field.field.equals("accountName"))
+		if (field.getField().equals("accountName"))
 			columnSQL = "a.nameIndex";
-		if (queryField.type.equals(FieldType.Date)) {
+		if (queryField.getType().equals(FieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			value = DateBean.toDBFormat(parameter.getTime());
 		}
@@ -77,7 +77,7 @@ public class SimpleReportFilter implements JSONable {
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		String wrappedValue = null;
 
-		if (StringUtils.isEmpty(value) && field2.field != null) {
+		if (StringUtils.isEmpty(value) && field2.getField() != null) {
 			String columnSQL2 = field2.toSQL(availableFields);
 			wrappedValue = columnSQL2;
 		}

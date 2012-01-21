@@ -8,12 +8,12 @@ import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
 public class SimpleReportField implements JSONable {
-	public String field;
-	public QueryFunction function = null;
-	public String option;
-	public boolean ascending = true;
+	private String field;
+	private QueryFunction function = null;
+	private String option;
+	private boolean ascending = true;
 	// We are thinking about adding the render field to support custom renderers per report
-	public String renderer = null;
+	private String renderer = null;
 	private QueryField queryField;
 
 	public QueryField getQueryField() {
@@ -21,7 +21,7 @@ public class SimpleReportField implements JSONable {
 	}
 
 	public void setQueryField(QueryField queryField) {
-		this.field = queryField.dataIndex;
+		this.field = queryField.getDataIndex();
 		this.queryField = queryField;
 	}
 
@@ -56,7 +56,7 @@ public class SimpleReportField implements JSONable {
 	}
 
 	public String toSQL(Map<String, QueryField> availableFields) {
-		String fieldSQL = availableFields.get(field).sql;
+		String fieldSQL = availableFields.get(field).getSql();
 		if (function == null)
 			return fieldSQL;
 		switch (function) {
@@ -72,7 +72,7 @@ public class SimpleReportField implements JSONable {
 		case Date:
 			return "DATE(" + fieldSQL + ")";
 		case Format:
-			availableFields.get(field).type = FieldType.String;
+			availableFields.get(field).setType(FieldType.String);
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
 		case Lower:
 			return "LOWER(" + fieldSQL + ")";
@@ -94,9 +94,44 @@ public class SimpleReportField implements JSONable {
 		return fieldSQL;
 	}
 
-	private String includeDirection(String sql) {
-		if (!ascending)
-			sql += " DESC";
-		return sql;
+	public String getField() {
+		return field;
 	}
+
+	public void setField(String field) {
+		this.field = field;
+	}
+
+	public QueryFunction getFunction() {
+		return function;
+	}
+
+	public void setFunction(QueryFunction function) {
+		this.function = function;
+	}
+
+	public String getOption() {
+		return option;
+	}
+
+	public void setOption(String option) {
+		this.option = option;
+	}
+
+	public boolean isAscending() {
+		return ascending;
+	}
+
+	public void setAscending(boolean ascending) {
+		this.ascending = ascending;
+	}
+
+	public String getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(String renderer) {
+		this.renderer = renderer;
+	}
+
 }

@@ -172,7 +172,7 @@ public class SimpleReportDefinition implements JSONable {
 			if (fieldObj instanceof JSONObject) {
 				field.fromJSON((JSONObject) fieldObj);
 			} else {
-				field.field = (String) fieldObj;
+				field.setField((String) fieldObj);
 			}
 			fields.add(field);
 		}

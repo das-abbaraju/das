@@ -133,9 +133,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 		for (QueryField field : runner.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
-			obj.put("name", field.dataIndex);
-			if (field.type != FieldType.Auto) {
-				obj.put("type", field.type.toString().toLowerCase());
+			obj.put("name", field.getDataIndex());
+			if (field.getType() != FieldType.Auto) {
+				obj.put("type", field.getType().toString().toLowerCase());
 			}
 			fields.add(obj);
 		}
@@ -148,10 +148,10 @@ public class ReportDynamic extends PicsActionSupport {
 		for (SimpleReportField column : getIncludedFields()) {
 			QueryField field = column.getQueryField();
 			JSONObject obj = new JSONObject();
-			obj.put("name", field.dataIndex);
-			if (field.type != FieldType.Auto) {
-				obj.put("type", field.type.toString().toLowerCase());
-				if (field.type == FieldType.Date)
+			obj.put("name", field.getDataIndex());
+			if (field.getType() != FieldType.Auto) {
+				obj.put("type", field.getType().toString().toLowerCase());
+				if (field.getType() == FieldType.Date)
 					obj.put("dateFormat", "time");
 			}
 			fields.add(obj);
@@ -169,13 +169,13 @@ public class ReportDynamic extends PicsActionSupport {
 
 		for (SimpleReportField column : getIncludedFields()) {
 			QueryField field = column.getQueryField();
-			String label = getText("Report." + field.dataIndex);
+			String label = getText("Report." + field.getDataIndex());
 			if (label != null)
-				field.label = label;
+				field.setLabel(label);
 			else {
-				field.label = "?" + field.dataIndex;
-				if (field.dataIndex != null && column.function != null) {
-					field.label += "." + column.function.toString();
+				field.setLabel("?" + field.getDataIndex());
+				if (field.getDataIndex() != null && column.getFunction() != null) {
+					field.setLabel(field.getLabel() + "." + column.getFunction().toString());
 				}
 			}
 			fields.add(field);
