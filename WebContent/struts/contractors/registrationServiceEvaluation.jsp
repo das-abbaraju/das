@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<title><s:text name="ContractorRegistration.title" /></title>
+
 <div class="registration-header">
 	<section>
 		<s:include value="/struts/contractors/registrationStep.jsp">

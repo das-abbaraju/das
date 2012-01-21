@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<title><s:text name="ContractorRegistration.title" /></title>
+
 <s:if test="contractor.operatorAccounts.empty">
 	<s:set var="display_client_site_right" value="%{'none'}" />
 	<s:set var="display_client_site_get_started" value="%{'block'}" />

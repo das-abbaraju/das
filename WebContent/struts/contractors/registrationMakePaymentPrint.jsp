@@ -2,6 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
+<title><s:text name="ContractorRegistration.title" /></title>
+
 <div class="make-payment">
 	<div>
 		<table>
