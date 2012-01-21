@@ -113,7 +113,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			fillAuditCategories();
 
 			for (AuditCategory auditCategory : cats) {
-				addCatData(auditCategory);
+				addDefaultCategory(auditCategory);
 			}
 			return SUCCESS;
 		}
@@ -122,42 +122,17 @@ public class ContractorAuditController extends AuditActionSupport {
 			if (categoryID > 0 && permissions.isPicsEmployee()) {
 				AuditCategory auditCategory = (AuditCategory) catDataDao.find(AuditCategory.class, categoryID);
 				if ("IncludeCategory".equals(button)) {
-					AuditCatData auditCatData = getCategories().get(auditCategory);
-					if (auditCatData != null) {
-						auditCatData.setApplies(true);
-						auditCatData.setOverride(true);
-						for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
-							AuditCatData childCatData = getCategories().get(childCategory);
-							if (childCatData == null) {
-								childCatData = new AuditCatData();
-								childCatData.setAuditColumns(permissions);
-								childCatData.setAudit(conAudit);
-								conAudit.getCategories().add(childCatData);
-							}
-							childCatData.setApplies(true);
-							childCatData.setOverride(true);	
-						}
-						auditDao.save(auditCatData);
-					}
+					AuditCatData auditCatData = addManuallyAddedCategory(auditCategory);
+					auditDao.save(auditCatData);
+
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
 				}
 
 				if ("UnincludeCategory".equals(button)) {
-					AuditCatData auditCatData = getCategories().get(auditCategory);
-					if (auditCatData != null) {
-						auditCatData.setApplies(false);
-						auditCatData.setOverride(true);
-						for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
-							AuditCatData childCatData = getCategories().get(childCategory);
-							if (childCatData != null) {
-								childCatData.setApplies(false);
-								childCatData.setOverride(true);	
-							}
-						}
-						auditDao.save(auditCatData);
-					}
+					AuditCatData auditCatData = hideCategory(auditCategory);
+					auditDao.save(auditCatData);
 					conAudit.setLastRecalculation(null);
 					contractor.incrementRecalculation();
 					return SUCCESS;
@@ -275,7 +250,10 @@ public class ContractorAuditController extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private void addCatData(AuditCategory category) {
+	/*
+	 * Only use this for default categories.  See also addManuallyAddedCategory()
+	 */
+	private void addDefaultCategory(AuditCategory category) {
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(category);
 		catData.setAudit(conAudit);
@@ -285,8 +263,43 @@ public class ContractorAuditController extends AuditActionSupport {
 		conAudit.getCategories().add(catData);
 
 		for (AuditCategory subCat : category.getSubCategories()) {
-			 addCatData(subCat);
+			 addDefaultCategory(subCat);
 		}
+	}
+
+	/*
+	 * Only use this for manually added categories.  See also addCatData()
+	 */
+	private AuditCatData addManuallyAddedCategory(AuditCategory auditCategory) {
+		AuditCatData auditCatData = getCategories().get(auditCategory);
+		if (auditCatData == null) {
+			auditCatData = new AuditCatData();
+			auditCatData.setAuditColumns(permissions);
+			auditCatData.setAudit(conAudit);
+			conAudit.getCategories().add(auditCatData);
+		}
+		auditCatData.setApplies(true);
+		auditCatData.setOverride(true); // a.k.a. "Manually added"
+		for (AuditCategory childCategory : auditCatData.getCategory().getChildren()) {
+			addManuallyAddedCategory(childCategory);
+		}
+		return auditCatData;
+	}
+
+	/*
+	 * Hides a category (and it's sub-categories). The cetagory might be one that was manually added, or it might be one
+	 * that is there by default. Either way, we'll mark it as "override" to show that it was manually manipulated.
+	 */
+	private AuditCatData hideCategory(AuditCategory auditCategory) {
+		AuditCatData auditCatData = getCategories().get(auditCategory);
+		if (auditCatData != null) {
+			auditCatData.setApplies(false);
+			auditCatData.setOverride(true); 
+			for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
+				hideCategory(childCategory);
+			}
+		}
+		return auditCatData;
 	}
 
 	private void fillAuditCategories() {
