@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
+<title><s:text name="ContractorRegistration.title" /></title>
+
 <%-- toggle display flags for form display --%>
 <s:if test="contractor.country.isoCode == 'AE'">
 	<s:set var="zip_display" value="'display: none;'" />
