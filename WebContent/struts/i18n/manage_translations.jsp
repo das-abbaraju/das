@@ -34,6 +34,12 @@
 			span.view {
 				padding-left: 10px;
 			}
+			
+			td.phrase .right {
+				float: right;
+				clear: both;
+				margin: 0 0 10px 10px;
+			}
 		</style>
 	</head>
 	<body>
@@ -146,25 +152,28 @@
 								<a href="#" class="showEdit view">
 									Edit
 								</a>
-								<span class="view">
-									<s:property value="value"/>
-								</span>
 								<div class="edit">
 									<s:textarea name="translation.value" value="%{value}" cssStyle="width: 90%" rows="5" />
 									<br/>
 									<button name="button" class="save">Save</button>
 									<button class="cancel">Cancel</button>
+									<s:checkbox name="translation.notApplicable" /> Not Applicable
 								</div>
+								<div class="right">
+									<s:radio
+										list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+										name="translation.qualityRating"
+										theme="pics"
+										cssClass="qualityRating"
+										value="%{qualityRating}"
+									/>
+								</div>
+								<span class="view">
+									<s:property value="value"/>
+								</span>
 								<s:if test="(updatedBy == null || updatedBy.id == 1) && locale != 'en'">
 									<button class="right" name="button" class="save">Approve</button>
 								</s:if>
-								<s:radio
-									list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
-									name="translation.qualityRating"
-									theme="pics"
-									cssClass="inline qualityRating"
-									value="%{qualityRating}"
-								/>
 							</form>
 						</td>
 					</s:iterator>
