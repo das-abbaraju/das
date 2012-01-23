@@ -1,15 +1,19 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +35,8 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	private YesNo wasChanged;
 	private User auditor;
 	private Date dateVerified;
+
+	private List<AuditDataHistory> dataHistory = new ArrayList<AuditDataHistory>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "auditID", nullable = false, updatable = false)
@@ -76,6 +82,15 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	@OneToMany(mappedBy = "currentAuditData", cascade = { CascadeType.ALL })
+	public List<AuditDataHistory> getDataHistory() {
+		return dataHistory;
+	}
+
+	public void setDataHistory(List<AuditDataHistory> dataHistory) {
+		this.dataHistory = dataHistory;
 	}
 
 	@Transient
