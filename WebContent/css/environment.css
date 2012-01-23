@@ -1,0 +1,41 @@
+.environment
+{
+    border-bottom: 2px solid #404040;
+    overflow: hidden;
+    padding: 3px;
+}
+
+.environment.localhost
+{
+    background: url(../images/environment/orange.jpg) repeat;
+}
+
+.environment.alpha
+{
+    background: url(../images/environment/green.jpg) repeat;
+}
+
+.environment.config
+{
+    background: url(../images/environment/purple.jpg) repeat;
+}
+
+.environment span
+{
+    color: white;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+    float: right;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 3px;
+    padding: 4px 6px;
+}
+
+.environment span.active
+{
+    background-color: #404040;
+}

@@ -125,6 +125,28 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 		return CONFIG;
 	}
+	
+	public boolean isAlphaEnvironment() {
+	    Boolean isAlpha = getRequestHost().contains("alpha");
+        
+        return isAlpha;
+	}
+	
+	public boolean isConfigurationEnvironment() {
+        Boolean isConfiguration = getRequestHost().contains("config");
+        
+        return isConfiguration;
+    }
+	
+	public boolean isLiveEnvironment() {
+        return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment());
+	}
+	
+	public boolean isLocalhostEnvironment() {
+	    Boolean isLocalhost = getRequestHost().contains("localhost");
+	    
+	    return isLocalhost;
+	}
 
 	public boolean isI18nReady() {
 		if (I18N == null) {

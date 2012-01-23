@@ -15,6 +15,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/layout.css?v=${version}" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}" /><!--<![endif]-->
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/registration.css?v=${version}" />
 		
@@ -27,8 +28,9 @@
 		<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 	</head>
 	<body id="${actionName}-page">
+        <jsp:include page="/struts/layout/environment.jsp" />
+        
 		<div id="container">
-			
 			<s:include value="/struts/layout/header_registration.jsp" />
 			
 			<div id="main" role="main">

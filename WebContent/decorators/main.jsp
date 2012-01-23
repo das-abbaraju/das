@@ -77,6 +77,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=version%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=<%=version%>" />
 		
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 		
@@ -158,6 +159,8 @@
 		<![endif]-->
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
+        <jsp:include page="/struts/layout/environment.jsp" />
+        
 		<div id="bodywrap">
 			<% if (!Strings.isEmpty(systemMessage)) { %>
 				<div id="systemMessage">
