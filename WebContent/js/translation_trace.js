@@ -2,27 +2,42 @@
     PICS.define('translation.Trace', {
         methods: {
             init: function () {
-            	$('#tracing_open').bind('click', this.loadIframe);
+            	$('#tracing_open').bind('click', {that: this}, this.trace);
             },
             
-            loadIframe: function (event) {
+            trace: function (event) {
             	event.preventDefault();
+            	
+            	var that = event.data.that;
             	var ajaxUrl = $(this).attr('data-url');
             	var href = window.location.href;
             	var translationUrl = $(this).attr('href');
-            
-            	PICS.ajax({
-            		url: ajaxUrl,
-            		success: function() {
-            			$('body').append('<script type="text/javascript">var tracer = new PICS.getClass("translation.Trace");</script>' 
-            					+ '<iframe src="' + href + '" id="translationTracingFrame" onload="tracer.openTracer(\''
-            					+ translationUrl + '\')" style="display: none"></iframe>');
-            		}
-            	});
+            	
+            	var urls = new Array(ajaxUrl, href, translationUrl);
+            	var ids = new Array('tracingClearCache', 'tracingThisPage', 'tracerWindow');
+            	var callbacks = new Array(that.loadIframe, that.openWindow);
+            	
+            	that.loadIframe(urls, ids, callbacks);
             },
             
-            openTracer: function(url) {
-            	var tracerWindow = window.open(url, 'tracerWindow');
+            loadIframe: function (urls, ids, callbacks) {
+            	var url = urls.shift();
+            	var id = ids.shift();
+            	var callback = callbacks.shift();
+            	
+	            if (url) {
+	            	$('body').append('<iframe id="' + id + '" style="display: none"></iframe>');
+	            	$('#' + id).attr('src', url);
+	            	
+	            	$('#' + id).load(function() {
+	            		$(this).remove();
+	            		callback(urls, ids, callbacks);
+	            	});
+            	}
+            },
+            
+            openWindow: function(url, id) {
+            	var tracerWindow = window.open(url[0], id[0]);
             }
         }
     });
