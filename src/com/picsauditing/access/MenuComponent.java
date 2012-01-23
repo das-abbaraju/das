@@ -3,6 +3,8 @@ package com.picsauditing.access;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private static final long serialVersionUID = 923449569385839331L;
@@ -11,6 +13,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	private String url;
 	private String htmlId;
 	private String title;
+	private String target;
 	private int id = 1;
 	private String sortField;
 
@@ -19,6 +22,7 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 	protected boolean current = false;
 
 	private String cssClass = "";
+	private Map<String, String> dataFields = new TreeMap<String, String>();
 	private ArrayList<MenuComponent> children = new ArrayList<MenuComponent>();
 
 	public MenuComponent() {
@@ -93,6 +97,14 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 		this.title = title;
 	}
 
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
 	public boolean hasChildren() {
 		return children.size() > 0;
 	}
@@ -153,6 +165,18 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
 
 	public void setCssClass(String cssClass) {
 		this.cssClass = cssClass;
+	}
+
+	public Map<String, String> getDataFields() {
+		return dataFields;
+	}
+
+	public void setDataFields(Map<String, String> dataFields) {
+		this.dataFields = dataFields;
+	}
+	
+	public void addDataField(String key, String value) {
+		dataFields.put(key, value);
 	}
 
 	@Override

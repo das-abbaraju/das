@@ -26,6 +26,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/registration.js"></script>
 <script type="text/javascript" src="js/trade.js"></script>
 <script type="text/javascript" src="js/utility.js"></script>
+<script type="text/javascript" src="js/translation_trace.js"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js"></script>

@@ -59,6 +59,9 @@ public class ManageTranslations extends ReportActionSupport {
 				if (button.contains("Clear")) {
 					getI18nUsedKeys().clear();
 				}
+				if (button.contains("Ajax")) {
+					return BLANK;
+				}
 			}
 			if (button.toLowerCase().contains("save") && translation != null) {
 				JSONObject out = new JSONObject();

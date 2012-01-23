@@ -361,8 +361,11 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
-			MenuComponent debug = subMenu.addChild("View Traced Translations", "#");
-			debug.setHtmlId("tracing-open");
+			MenuComponent tracing = subMenu.addChild("View Traced Translations",
+					"ManageTranslations.action?showDoneButton=true");
+			tracing.setHtmlId("tracing_open");
+			tracing.setTarget("_BLANK");
+			tracing.addDataField("url", "ManageTranslationsAjax.action?button=tracingOnClearAjax");
 		}
 
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
