@@ -35,7 +35,13 @@
     padding: 4px 6px;
 }
 
-.environment span.active
+.environment span.active,
+.environment span.database
 {
     background-color: #404040;
+}
+
+.environment span.database
+{
+	float: left;
 }

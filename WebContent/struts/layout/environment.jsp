@@ -21,6 +21,7 @@
     </s:elseif>
         
     <div class="environment ${environment}">
+        <span class="database">DB@<s:property value="@com.picsauditing.search.Database@getDatabaseName()"/></span>
         <span class="${is_localhost}">Localhost</span>
         <span class="${is_alpha}">Alpha</span>
         <span class="${is_config}">Config</span>
