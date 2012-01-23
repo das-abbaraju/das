@@ -41,8 +41,6 @@
     var scripts = document.getElementsByTagName('script');
     var script_element = scripts[scripts.length - 1];
     
-    console.log(script_element);
-    
     // badge style
     var style_element = document.createElement('style');
     style_element.type = 'text/css';
