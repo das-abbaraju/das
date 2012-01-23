@@ -26,9 +26,9 @@ Ext.define('PICS.view.layout.Menu', {
         text: 'AuditGUARD&trade;',
         menu: {
             items: [{
-                text: 'Saftey Pro Invoices'
+                text: 'Safety Pro Invoices'
             }, {
-                text: 'Create Saftey Pro Invoices'
+                text: 'Create Safety Pro Invoices'
             }, {
                 text: 'Audit List Compress'
             }, {
