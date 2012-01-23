@@ -128,7 +128,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	
 	public boolean isAlphaEnvironment() {
 	    Boolean isAlpha = getRequestHost().contains("alpha");
-        
+	    
         return isAlpha;
 	}
 	
@@ -344,6 +344,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return new Date();
 		}
 	}
+	
+	public String getQueryString()
+	{
+	    return ServletActionContext.getRequest().getQueryString() != null ? ServletActionContext.getRequest().getQueryString() : "";
+	}
 
 	public String getRequestHost()
 	{
@@ -365,6 +370,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
+	}
+	
+	public String getServletPath()
+	{
+	    return ServletActionContext.getRequest().getServletPath();
 	}
 	
 	public String getIP() {

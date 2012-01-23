@@ -20,6 +20,7 @@
     background: url(../images/environment/purple.jpg) repeat;
 }
 
+.environment a,
 .environment span
 {
     color: white;
@@ -33,10 +34,12 @@
     font-weight: bold;
     margin-left: 3px;
     padding: 4px 6px;
+    text-decoration: none;
 }
 
-.environment span.active,
-.environment span.database
+.environment a.active,
+.environment span.database,
+.environment a:hover
 {
     background-color: #404040;
 }

@@ -19,11 +19,22 @@
         <s:set var="environment" value="%{'config'}" />
         <s:set var="is_config" value="%{'active'}" />
     </s:elseif>
-        
+    
+    <s:if test="getQueryString() != ''">
+        <s:set var="query_string" value="'?' + getQueryString()" />
+    </s:if>
+    <s:else>
+        <s:set var="query_string" value="''" />
+    </s:else>
+    
+    <s:set var="localhost_url" value="'http://localhost:8080/picsWeb2' + getServletPath() + #query_string" />
+    <s:set var="alpha_url" value="'http://alpha.picsorganizer.com' + getServletPath() + #query_string" />
+    <s:set var="config_url" value="'http://config.picsorganizer.com' + getServletPath() + #query_string" />
+    
     <div class="environment ${environment}">
         <span class="database">DB@<s:property value="@com.picsauditing.search.Database@getDatabaseName()"/></span>
-        <span class="${is_localhost}">Localhost</span>
-        <span class="${is_alpha}">Alpha</span>
-        <span class="${is_config}">Config</span>
+        <a href="${localhost_url}" class="${is_localhost}" target="_blank">Localhost</a>
+        <a href="${alpha_url}" class="${is_alpha}" target="_blank">Alpha</a>
+        <a href="${config_url}" class="${is_config}" target="_blank">Config</a>
     </div>
 </s:if>
