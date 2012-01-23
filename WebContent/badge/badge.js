@@ -32,7 +32,7 @@
     var badge_size = _pbq.size || 80;
     var badge_url = '//www.google.com';
     var container_element_id = _pbq.container_element_id || 'pics_badge_container';
-    var host = '//alpha.picsorganizer.com';
+    var host = '//alpha.picsorganizer.com/';
     var logo_url;
     var website_text = 'The Contractor\'s Choice';
     var website_url = '//www.picsauditing.com';
