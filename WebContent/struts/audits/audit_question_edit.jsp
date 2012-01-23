@@ -18,6 +18,13 @@
 		<%-- radio // select --%>
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
+                <s:if test="isInlineRadioGroup()">
+                    <s:set var="display_inline" value="'inline'" />
+                </s:if>
+                <s:else>
+                    <s:set var="display_inline" value="" />
+                </s:else>
+                
 				<s:radio 
 					list="#q.option.values" 
 					listValue="name" 
@@ -25,6 +32,7 @@
 					name="auditData.answer" 
 					value="%{#a.answer}"
 					theme="pics"
+                    cssClass="%{#display_inline}"
 				/>
 
 				<s:if test="!isStringEmpty(#a.answer)">
