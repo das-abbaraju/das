@@ -81,7 +81,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				showBidOnly = false;
 		}
 
-		setRequiredTypes();
+		setRequiredContractorTypes();
+		setServicesHelpText();
 
 		if (contractor.getRequestedBy() != null && !contractor.getRequestedBy().isDescendantOf(OperatorAccount.SUNCOR))
 			showCompetitor = false;
@@ -92,50 +93,30 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public void setRequiredTypes() {
-		List<String> onOps = new ArrayList<String>();
-		List<String> offOps = new ArrayList<String>();
-		List<String> msOps = new ArrayList<String>();
-		List<String> trxOps = new ArrayList<String>();
+	public void setRequiredContractorTypes() {
+		requireOnsite = contractor.isContractorTypeRequired(ContractorType.Onsite);
+		requireOffsite = contractor.isContractorTypeRequired(ContractorType.Offsite);
+		requireMaterialSupplier = contractor.isContractorTypeRequired(ContractorType.Supplier);
+		requireTransportation = contractor.isContractorTypeRequired(ContractorType.Transportation);
+	}
 
-		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
-			int on = (operator.isOnsiteServices() ? 1 : 0);
-			int off = (operator.isOffsiteServices() ? 1 : 0);
-			int ms = (operator.isMaterialSupplier() ? 1 : 0);
-			int trx = (operator.isTransportationServices() ? 1 : 0);
-
-			if (on + off + ms + trx == 1) {
-				if (operator.isOnsiteServices()) {
-					requireOnsite = true;
-					onOps.add(operator.getName());
-				}
-				if (operator.isOffsiteServices()) {
-					requireOffsite = true;
-					offOps.add(operator.getName());
-				}
-				if (operator.isMaterialSupplier()) {
-					requireMaterialSupplier = true;
-					msOps.add(operator.getName());
-				}
-				if (operator.isTransportationServices()) {
-					requireTransportation = true;
-					trxOps.add(operator.getName());
-				}
-			}
-		}
-
+	public void setServicesHelpText() {
 		if (requireOnsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(onOps, ", "));
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
 		if (requireOffsite)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(offOps, ", "));
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
 		if (requireMaterialSupplier)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(msOps, ", "));
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
 		if (requireTransportation)
 			servicesHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(trxOps, ", "));
+					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
 	}
 
 	public boolean conTypesOK() {
@@ -170,7 +151,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		else if (contractor.getAccountLevel().equals(AccountLevel.BidOnly))
 			contractor.setAccountLevel(AccountLevel.Full);
 
-		setRequiredTypes();
+		setRequiredContractorTypes();
 
 		// account for disabled checkboxes not coming though
 		if (requireOnsite)
@@ -287,8 +268,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 				increases.add(getTextParameterized("ContractorRegistrationServices.message.ProductEvaluation",
 						productAssessment));
 
-			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels",
-					Strings.implode(increases, getText("ContractorRegistrationServices.message.AndYours")));
+			output = getTextParameterized("ContractorRegistrationServices.message.RiskLevels", Strings.implode(
+					increases, getText("ContractorRegistrationServices.message.AndYours")));
 		}
 
 		setListOnly();
