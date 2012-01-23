@@ -1,8 +1,10 @@
 package com.picsauditing.actions.contractors;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.NoBrainTreeServiceResponseException;
 import com.picsauditing.PICS.PaymentProcessor;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -20,6 +22,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Note;
@@ -127,7 +130,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				payment.setAccount(contractor);
 				payment.setAuditColumns(permissions);
 				payment.setPaymentMethod(method);
-				payment.setCurrency(contractor.getCurrency());
+				Currency appliedInvoiceCurrency = getCurrencyOfAppliedInvoices(contractor, amountApplyMap);
+				payment.setCurrency(appliedInvoiceCurrency);
 
 				if (payment.getTotalAmount().compareTo(BigDecimal.ZERO) <= 0) {
 					addActionError("Payments must be greater than zero");
@@ -359,6 +363,29 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		return SUCCESS;
+	}
+
+	private Currency getCurrencyOfAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
+		List<Invoice> appliedInvoices = new ArrayList<Invoice>();
+
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (amountApplyMap.get(invoice.getId()) != null)
+				appliedInvoices.add(invoice);
+		}
+
+		Currency overallInvoiceCurrency = null;
+		boolean isAllInvoicesSameCurrency = false;
+		if (appliedInvoices.size() > 0) {
+			overallInvoiceCurrency = appliedInvoices.get(0).getCurrency();
+			isAllInvoicesSameCurrency = true;
+		}
+
+		for (Invoice appliedInvoice : appliedInvoices) {
+			if (isAllInvoicesSameCurrency && !appliedInvoice.getCurrency().equals(overallInvoiceCurrency))
+				isAllInvoicesSameCurrency = false;
+		}
+
+		return isAllInvoicesSameCurrency ? overallInvoiceCurrency : contractor.getCurrency();
 	}
 
 	private void unapplyAll() {
