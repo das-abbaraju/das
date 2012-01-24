@@ -377,6 +377,6 @@ public class Employee extends AbstractIndexableTable {
 
 	@Transient
 	public String getViewLink() {
-		return "ManageEmployees.action?employee.id=" + this.id;
+		return "ManageEmployees.action?employee=" + this.id;
 	}
 }
