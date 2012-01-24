@@ -80,6 +80,11 @@ set u.username = replace(u.username,' ','')
 where u.username like '% %' and u.isGroup = 'No';
 --
 
+-- PICS-3904
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder, customConfig)
+values (25, 646, 1, 1, 3, null);
+--
+
 -- -----------------------------------------------------------------------------------------------
 -- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
 -- EXAMPLES:
