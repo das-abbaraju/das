@@ -90,17 +90,43 @@ $(function() {
 	<input type="hidden" name="mode" value="ViewAll" />
 	<input type="hidden" name="auditTypeId" value="1" />
 </div>
-<div class="filterOption"><label>Safety Critical</label><s:select
-	list="#{'Low':'Low','Med':'Medium','High':'High'}"
-	name="contractor.safetyRisk" value="'High'" /></div>
-<div class="filterOption"><label>Product Critical</label><s:select
-	list="#{'Low':'Low','Med':'Medium','High':'High'}"
-	name="contractor.productRisk" value="'High'" /></div>
-<div class="filterOption"><s:checkbox name="contractor.accountLevel.bidOnly" id="acceptsBids" value="false" /><label for="acceptsBids">Bid Only</label></div>
+<div class="filterOption">
+	<label>Safety Risk</label>
+	<s:select
+		list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+		name="contractor.safetyRisk"
+		value="'High'"
+	/>
+</div>
+<div class="filterOption">
+	<label>Product Risk</label>
+	<s:select
+		list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+		name="contractor.productRisk"
+		value="'High'"
+	/>
+</div>
+<div class="filterOption">
+	<label>Transportation Risk</label>
+	<s:select
+		list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+		name="contractor.transportationRisk"
+		value="'High'"
+	/>
+</div>
+<div class="filterOption">
+	<label>Account Level</label>
+	<s:select
+		list="@com.picsauditing.jpa.entities.AccountLevel@values()"
+		name="contractor.accountLevel"
+		value="'Full'"
+	/>
+</div>	
 <div class="filterOption"><s:checkbox name="contractor.soleProprietor" id="soleProprietor" value="false" /><label for="soleProprietor">Sole Proprietor</label></div>
 <div class="filterOption"><s:checkbox name="contractor.onsiteServices" id="onsite" value="true" /><label for="onsite">Onsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.offsiteServices" id="offsite" value="true" /><label for="offsite">Offsite Services</label></div>
 <div class="filterOption"><s:checkbox name="contractor.materialSupplier" id="supplier" value="true" /><label for="supplier">Material Supplier</label></div>
+<div class="filterOption"><s:checkbox name="contractor.transportationServices" id="transportationServices" value="true" /><label for="transportation">Transportation Services</label></div>
 <div>
 <button id="printPQF" type="button" name="button" value='load'
 	class="picsbutton" onclick="this.form.action='AuditPrintAjax.action'; this.form.target='_blank'; this.form.submit(); this.form.action=''; this.form.target='';" >Print PQF</button>
