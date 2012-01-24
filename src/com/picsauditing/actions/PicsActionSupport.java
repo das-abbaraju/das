@@ -332,7 +332,43 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getFuzzyDate(Date d) {
-		return DateBean.getFuzzyDate(d);
+		Calendar now = Calendar.getInstance();
+		Calendar then = Calendar.getInstance();
+		then.setTime(d);
+		long diff = now.getTimeInMillis() - then.getTimeInMillis();
+
+		long SECONDS = 1000;
+		long MINUTES = SECONDS * 60;
+		long HOURS = MINUTES * 60;
+		long DAYS = HOURS * 24;
+		long WEEKS = DAYS * 7;
+		long MONTHS = DAYS * 30;
+		long YEARS = DAYS * 365;
+
+		String fuzzy = "";
+		if (diff < MINUTES)
+			fuzzy = getText("date.Today");
+		else if (diff < HOURS) {
+			long n = diff / MINUTES;
+			fuzzy = getTextParameterized("date.fuzzy.minute", n);
+		} else if (diff < DAYS) {
+			long n = diff / HOURS;
+			fuzzy = getTextParameterized("date.fuzzy.hour", n);
+		} else if (diff < WEEKS) {
+			long n = diff / DAYS;
+			fuzzy = getTextParameterized("date.fuzzy.day", n);
+		} else if (diff < MONTHS) {
+			long n = diff / WEEKS;
+			fuzzy = getTextParameterized("date.fuzzy.week", n);
+		} else if (diff < YEARS) {
+			long n = diff / MONTHS;
+			fuzzy = getTextParameterized("date.fuzzy.month", n);
+		} else {
+			long n = diff / YEARS;
+			fuzzy = getTextParameterized("date.fuzzy.year", n);
+		}
+
+		return fuzzy;
 	}
 
 	public Date parseDate(String date) {

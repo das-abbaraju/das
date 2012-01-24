@@ -311,47 +311,6 @@ public class DateBean {
 		return DateBean.getDateDifference(cal.getTime(), firstDate);
 	}
 
-	public static String getFuzzyDate(Date d) {
-		Calendar now = Calendar.getInstance();
-		Calendar then = Calendar.getInstance();
-		then.setTime(d);
-		long diff = now.getTimeInMillis() - then.getTimeInMillis();
-
-		long SECONDS = 1000;
-		long MINUTES = SECONDS * 60;
-		long HOURS = MINUTES * 60;
-		long DAYS = HOURS * 24;
-		long WEEKS = DAYS * 7;
-		long MONTHS = DAYS * 30;
-		long YEARS = DAYS * 365;
-
-		String fuzzy = "";
-		if (diff < MINUTES)
-			fuzzy = "Today";
-		else if (diff < HOURS) {
-			long n = diff / MINUTES;
-			fuzzy = n + ((n == 1) ? " minute ago" : " minutes ago");
-		} else if (diff < DAYS) {
-			long n = diff / HOURS;
-			fuzzy = n + ((n == 1) ? " hour ago" : " hours ago");
-		} else if (diff < WEEKS) {
-			long n = diff / DAYS;
-			fuzzy = n + ((n == 1) ? " day ago" : " days ago");
-		} else if (diff < MONTHS) {
-			long n = diff / WEEKS;
-			fuzzy = n + ((n == 1) ? " week ago" : " weeks ago");
-		} else if (diff < YEARS) {
-			long n = diff / MONTHS;
-			fuzzy = n + ((n == 1) ? " month ago" : " months ago");
-		} else {
-			long n = diff / YEARS;
-			fuzzy = n + ((n == 1) ? " year ago" : " years ago");
-		}
-
-		return fuzzy;
-
-	}
-
 	public static Date parseDate(String dateString) {
 		if (Strings.isEmpty(dateString))
 			return null;
