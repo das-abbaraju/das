@@ -27,6 +27,7 @@
         <s:set var="query_string" value="''" />
     </s:else>
     
+    <s:set var="live_url" value="'http://www.picsorganizer.com' + getServletPath() + #query_string" />
     <s:set var="localhost_url" value="'http://localhost:8080/picsWeb2' + getServletPath() + #query_string" />
     <s:set var="alpha_url" value="'http://alpha.picsorganizer.com' + getServletPath() + #query_string" />
     <s:set var="config_url" value="'http://config.picsorganizer.com' + getServletPath() + #query_string" />
@@ -36,5 +37,6 @@
         <a href="${localhost_url}" class="${is_localhost}" target="_blank">Localhost</a>
         <a href="${alpha_url}" class="${is_alpha}" target="_blank">Alpha</a>
         <a href="${config_url}" class="${is_config}" target="_blank">Config</a>
+        <a href="${live_url}" target="_blank">Live</a>
     </div>
 </s:if>

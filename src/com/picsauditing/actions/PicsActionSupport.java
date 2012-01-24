@@ -143,7 +143,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 	
 	public boolean isLocalhostEnvironment() {
-	    Boolean isLocalhost = getRequestHost().contains("localhost");
+	    Boolean isLocalhost = getRequestHost().contains(":8080");
 	    
 	    return isLocalhost;
 	}
