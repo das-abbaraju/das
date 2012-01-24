@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.json.simple.JSONArray;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Report;
@@ -12,32 +11,22 @@ import com.picsauditing.report.models.ModelType;
 
 public class ReportDynamicTest {
 
-	private ReportDynamic action;
+	private ReportDynamic action = new ReportDynamic();
 	private Report report = new Report();
-
-	@Before
-	public void setUp() throws Exception {
-		action = new ReportDynamic();
-	}
-
-	@Test
-	public void testMissingReport() throws Exception {
-		assertEquals(ReportDynamic.BLANK, action.execute());
-		assertEquals(1, action.getActionErrors().size());
-	}
-
-	@Test
-	public void testMissingReportBase() throws Exception {
-		action.setReport(report);
-		assertEquals(ReportDynamic.BLANK, action.execute());
-		assertEquals(1, action.getActionErrors().size());
-	}
 
 	@Test
 	public void testExecute() throws Exception {
 		action.setReport(report);
 		report.setModelType(ModelType.Contractors);
 		assertEquals(ReportDynamic.SUCCESS, action.execute());
+	}
+
+	@Test
+	public void testData() throws Exception {
+		action.setReport(report);
+		report.setModelType(ModelType.Contractors);
+		//assertEquals(ReportDynamic.SUCCESS, action.data());
+		//System.out.println(action.getJson());
 	}
 
 	@Test
@@ -48,7 +37,6 @@ public class ReportDynamicTest {
 		JSONArray bases = (JSONArray) action.getJson().get("bases");
 		assertTrue(bases.size() > 1);
 	}
-	
 
 	@Test
 	public void testAvailableFields() throws Exception {
@@ -58,5 +46,5 @@ public class ReportDynamicTest {
 		JSONArray bases = (JSONArray) action.getJson().get("bases");
 		assertTrue(bases.size() > 1);
 	}
-	
+
 }
