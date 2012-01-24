@@ -51,7 +51,7 @@
 			}
 				
 			var hlist = [{
-				text: 'Top', 
+				text: translate('JS.Fieldhelp.Top'), 
 				e: $(me.selector).parents('form:first'), 
 				type: 'jump-top'
 			}];
@@ -81,7 +81,7 @@
 			
 			if ($('fieldset.form.submit').size() > 0) {
 				hlist.push({
-					text: 'Bottom', 
+					text: translate('JS.Fieldhelp.Bottom'),
 					e: $('fieldset.form.submit'), 
 					type: 'jump-bottom'
 				});
@@ -105,7 +105,7 @@
 				headers.append(l);
 			});
 			
-			$('<span>').addClass('jump-to').text('Jump To').bind('mouseenter', function() {
+			$('<span>').addClass('jump-to').text(translate('JS.Fieldhelp.JumpTo')).bind('mouseenter', function() {
 				var me = $(this).addClass('hover');
 			}).bind('mouseleave', function() {
 				$(this).removeClass('hover');
