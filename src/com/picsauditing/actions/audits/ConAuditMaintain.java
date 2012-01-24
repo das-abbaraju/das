@@ -59,7 +59,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 							auditSetExpiresDate(toSave, newStatus);
 							toSave.changeStatus(newStatus, permissions);
 
-							setCaoUpdatedNote(prevStatus, toSave);
+							updateCaoWorkflow(prevStatus, toSave, null);
 
 							caoDAO.save(toSave);
 							autoExpireOldAudits(conAudit, newStatus);

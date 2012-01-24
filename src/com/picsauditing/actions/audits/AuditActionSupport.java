@@ -555,11 +555,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 	}
 
-	protected void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao) {
-		setCaoUpdatedNote(prevStatus, cao, null);
-	}
-
-	protected void setCaoUpdatedNote(AuditStatus prevStatus, ContractorAuditOperator cao, String noteBody) {
+	protected void updateCaoWorkflow(AuditStatus prevStatus, ContractorAuditOperator cao, String noteBody) {
 		if (prevStatus != cao.getStatus()) {
 			// Stamping cao workflow
 			ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
@@ -580,11 +576,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 			newNote.setViewableBy(cao.getOperator());
 
-			if (noteBody == null)
-				noteBody = summary;
-			newNote.setBody(noteBody);
-			caoW.setNotes(noteBody);
-			noteDAO.save(newNote);
+			if (!Strings.isEmpty(noteBody)) {
+				newNote.setBody(noteBody);
+				caoW.setNotes(noteBody);
+				noteDAO.save(newNote);
+			}
 
 			caoW.setCao(cao);
 			caoW.setAuditColumns(permissions);

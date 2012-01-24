@@ -217,7 +217,7 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		caoDAO.save(cao);
-		setCaoUpdatedNote(prevStatus, cao, note);
+		updateCaoWorkflow(prevStatus, cao, note);
 		
 		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
 				&& cao.getPercentVerified() == 100) {
