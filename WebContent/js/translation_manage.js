@@ -6,7 +6,7 @@
             	$('table.report button.cancel').bind('click', this.removeEditMode);
             	$('table.report .suggestTranslation').bind('click', this.suggestTranslation);
             	$('table.report form button.save').bind('click', this.saveTranslation);
-            	$('table.report form ul.qualityRating input').bind('click', this.saveQualityRating);
+            	$('table.report form input[type=checkbox], table.report form input[type=radio]').bind('click', this.saveQualityRating);
             	$('#doneButton').bind('click', this.closeWindow);
             },
             
@@ -56,18 +56,18 @@
             },
             
             saveQualityRating: function () {
-            	var qualityForm = $(this).closest("form");
-            	var qualityRating = $(this).val();
-            	var ulElement = $(this).closest("ul");
+            	var form = $(this).closest("form");
+            	var cell = $(this).closest("td");
+            	
+            	var fields = {};
+            	fields['translation'] = form.find('input[name=translation]').val();
+            	fields[$(this).attr('name')] = $(this).val();
             	
             	PICS.ajax({
-            		url: "ManageTranslationsAjax!updateQualityRating.action",
-            		data: {
-            			translation: qualityForm.find("input[name=translation]").val(),
-            			"translation.qualityRating": qualityRating
-            		},
+            		url: "ManageTranslationsAjax!update.action",
+            		data: fields,
             		success: function() {
-            			ulElement.effect('highlight', {color: '#FFFF11'}, 1000);
+            			cell.effect('highlight', {color: '#FFFF11'}, 1000);
             		}
             	});
             },

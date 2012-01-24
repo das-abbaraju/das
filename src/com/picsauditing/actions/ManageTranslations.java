@@ -121,7 +121,7 @@ public class ManageTranslations extends ReportActionSupport {
 	}
 
 	@RequiredPermission(value = OpPerms.Translator)
-	public String updateQualityRating() {
+	public String update() {
 		if (translation != null) {
 			translation.setAuditColumns();
 			dao.save(translation);
@@ -140,6 +140,7 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
+		sql.addField("t1.notApplicable fromNotApplicable");
 		if (download) {
 			sql.addField("t1.updateDate fromUpdateDate");
 			sql.addField("t1.createdBy fromCreatedBy");
@@ -151,6 +152,7 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
+		sql.addField("t2.notApplicable toNotApplicable");
 		if (download) {
 			sql.addField("t2.updateDate toUpdateDate");
 			sql.addField("t2.createdBy toCreatedBy");
@@ -219,6 +221,7 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setLocale(localeFrom.getLanguage());
 			from.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 					"fromQualityRating").toString())));
+			from.setNotApplicable(Integer.parseInt(row.get("fromNotApplicable").toString()) == 1);
 			Object fromLastUsed = row.get("fromLastUsed");
 			if (fromLastUsed != null)
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
@@ -236,6 +239,7 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setLocale(localeTo.getLanguage());
 					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 							"toQualityRating").toString())));
+					to.setNotApplicable(Integer.parseInt(row.get("toNotApplicable").toString()) == 1);
 					Object toLastUsed = row.get("toLastUsed");
 					if (toLastUsed != null)
 						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));

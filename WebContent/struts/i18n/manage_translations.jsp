@@ -31,14 +31,21 @@
 				display: none;
 			}
 			
-			span.view {
+			span.view
+			{
 				padding-left: 10px;
 			}
 			
-			td.phrase .right {
+			td.phrase .right
+			{
 				float: right;
 				clear: both;
 				margin: 0 0 10px 10px;
+			}
+			
+			input[type=checkbox]
+			{
+				margin: 0 !important;
 			}
 		</style>
 	</head>
@@ -157,7 +164,6 @@
 									<br/>
 									<button name="button" class="save">Save</button>
 									<button class="cancel">Cancel</button>
-									<s:checkbox name="translation.notApplicable" /> Not Applicable
 								</div>
 								<div class="right">
 									<s:radio
@@ -167,6 +173,8 @@
 										cssClass="qualityRating"
 										value="%{qualityRating}"
 									/>
+									<br />
+									<s:checkbox name="translation.notApplicable" value="%{notApplicable}" /> Not Applicable
 								</div>
 								<span class="view">
 									<s:property value="value"/>
