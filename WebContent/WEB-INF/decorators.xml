@@ -15,9 +15,7 @@
 		<pattern>/RegistrationMakePayment.action</pattern>
 	</decorator>
 	<decorator name="print" page="print.jsp">
-		<pattern>/ContractorAgreement!print.action</pattern>
-		<pattern>/RegistrationMakePayment!printInvoice.action</pattern>
-		<pattern>/ContractorView!printFlagMatrix.action</pattern>
+		<pattern>/*!print*.action</pattern>
 	</decorator>
 	<decorator name="mainExt" page="main_ext.jsp">
 	<!-- Not just yet, Trevor wants to get reports working without ExtJS first
