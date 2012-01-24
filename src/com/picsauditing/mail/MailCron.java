@@ -83,7 +83,7 @@ public class MailCron extends PicsActionSupport {
 							email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
 							email.setBody(body.toString());
 							email.setCreationDate(new Date());
-							emailSenderSpring.sendNow(email);
+							emailSenderSpring.send(email);
 						} else {
 							addActionError(ExceptionUtils.getStackTrace(e));
 						}

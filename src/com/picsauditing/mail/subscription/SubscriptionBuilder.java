@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.users.UserAccountRole;
@@ -24,7 +26,7 @@ public abstract class SubscriptionBuilder {
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
 
-	public void sendSubscription(EmailSubscription subscription) throws IOException {
+	public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException {
 		Map<String, Object> tokens = process(subscription);
 		EmailQueue queue = buildEmail(subscription, tokens);
 

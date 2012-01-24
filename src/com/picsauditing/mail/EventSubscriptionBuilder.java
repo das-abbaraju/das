@@ -169,7 +169,7 @@ public class EventSubscriptionBuilder {
 		email.setTemplate(subscription.getSubscription().getTemplateID());
 		try {
 			EmailQueue q = email.build();
-			emailSender.sendNow(q);
+			emailSender.send(q);
 			subscription.setLastSent(new Date());
 			subscriptionDAO.save(subscription);
 		} catch (IOException e) {

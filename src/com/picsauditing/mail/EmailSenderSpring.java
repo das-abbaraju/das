@@ -3,7 +3,6 @@ package com.picsauditing.mail;
 import java.util.Date;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,48 +20,30 @@ public class EmailSenderSpring {
 	private static String defaultPassword = "e3r4t5";
 
 	/**
-	 * Try sending with the first email address info@picsauditing.com still fails, then try regular linux sendmail
 	 * 
 	 * @param email
+	 * @throws MessagingException
 	 */
-	private void sendMail(EmailQueue email, int attempts) throws AddressException {
-		attempts++;
+	private void sendMail(EmailQueue email) throws MessagingException {
+		if (checkDeactivated(email))
+			return;
 
-		if (attempts > 3)
-			throw new AddressException();
-		
-		try {
-			if (checkDeactivated(email))
-				return;
-
-			GridSender gridSender;
-			if (!Strings.isEmpty(email.getFromPassword())) {
-				// Use a specific email address like
-				// tallred@picsauditing.com
-				// We need the password to correctly authenticate with GMail
-				PicsLogger.log("using SendGrid to send email from " + email.getFromAddress());
-				gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
-			} else {
-				// Use the default info@picsauditing.com address
-				PicsLogger.log("using SendGrid to send email from info@picsauditing.com");
-				gridSender = new GridSender("info@picsauditing.com", defaultPassword);
-			}
-			gridSender.sendMail(email);
-
-			email.setStatus(EmailStatus.Sent);
-			email.setSentDate(new Date());
-
-			emailQueueDAO.save(email);
-		} catch (AddressException e) {
-			email.setStatus(EmailStatus.Error);
-			emailQueueDAO.save(email);
-		} catch (MessagingException e) {
-			PicsLogger.log("Send Mail Exception with account info@picsauditing.com: " + e.toString() + " "
-					+ e.getMessage() + "\nFROM: " + email.getFromAddress() + "\nTO: " + email.getToAddresses()
-					+ "\nSUBJECT: " + email.getSubject());
-
-			this.sendMail(email, attempts);
+		GridSender gridSender;
+		if (!Strings.isEmpty(email.getFromPassword())) {
+			// Use a specific email address like
+			// tallred@picsauditing.com
+			// We need the password to correctly authenticate with GMail
+			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
+		} else {
+			// Use the default info@picsauditing.com address
+			gridSender = new GridSender("info@picsauditing.com", defaultPassword);
 		}
+		gridSender.sendMail(email);
+
+		email.setStatus(EmailStatus.Sent);
+		email.setSentDate(new Date());
+
+		emailQueueDAO.save(email);
 	}
 
 	private boolean checkDeactivated(EmailQueue email) {
@@ -84,33 +65,24 @@ public class EmailSenderSpring {
 	 * Send this through GMail or SendMail
 	 * 
 	 * @param email
-	 * @throws Exception
+	 * @throws MessagingException
 	 */
-	public void sendNow(EmailQueue email) {
-		PicsLogger.start("EmailSender", email.getSubject() + " to " + email.getToAddresses());
-		try {
-			email.cleanupEmailAddresses();
+	public void sendNow(EmailQueue email) throws MessagingException {
+		email.cleanupEmailAddresses();
 
-			if (checkDeactivated(email))
-				return;
-			// Check all the addresses
-			if (email.getFromAddress2() == null)
-				email.setFromAddress("info@picsauditing.com");
-			if (email.getToAddresses2() == null) {
-				email.setToAddresses(email.getCcAddresses());
-				email.setCcAddresses(null);
-			}
-			email.getCcAddresses2();
-			email.getBccAddresses2();
-
-			sendMail(email, 0);
-
-		} catch (AddressException e) {
-			email.setStatus(EmailStatus.Error);
-			emailQueueDAO.save(email);
-		} finally {
-			PicsLogger.stop();
+		if (checkDeactivated(email))
+			return;
+		// Check all the addresses
+		if (email.getFromAddress2() == null)
+			email.setFromAddress("info@picsauditing.com");
+		if (email.getToAddresses2() == null) {
+			email.setToAddresses(email.getCcAddresses());
+			email.setCcAddresses(null);
 		}
+		email.getCcAddresses2();
+		email.getBccAddresses2();
+
+		sendMail(email);
 	}
 
 	/**
@@ -125,7 +97,7 @@ public class EmailSenderSpring {
 	/**
 	 * Save this email to the queue for sending later
 	 */
-	public void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
+	private void send(String fromAddress, String toAddress, String ccAddress, String subject, String body) {
 		EmailQueue email = new EmailQueue();
 		email.setCreationDate(new Date());
 		email.setSubject(subject);

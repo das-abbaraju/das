@@ -119,7 +119,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 			emailQueue.setBody("Trade: " + trade.getTrade().getId() + "-" + trade.getTrade().getName()
 					+ " Contractor: " + contractor.getId() + "-" + contractor.getName());
 
-			sender.sendNow(emailQueue);
+			sender.send(emailQueue);
 		}
 
 		trade.getTrade().setContractorCount(trade.getTrade().getContractorCount() + 1);
@@ -177,7 +177,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		contractor.setTradesUpdated(new Date());
 		accountDao.save(contractor);
-		
+
 		// Set the ajax mode to view after saving
 		mode = "View";
 
