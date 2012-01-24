@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.Grid', {
 	extend: 'Ext.grid.Panel',
 	alias: ['widget.reportgrid'],
 
-    store: 'report.Reports',
+    store: 'report.ReportData',
     
     title: 'Grid',
     
@@ -15,13 +15,13 @@ Ext.define('PICS.view.report.Grid', {
         this.dockedItems = [{
             xtype: 'pagingtoolbar',
             
-            store: 'report.Reports',
+            store: 'report.ReportData',
             
             dock: 'top'
         }, {
             xtype: 'pagingtoolbar',
             
-            store: 'report.Reports',
+            store: 'report.ReportData',
             
             dock: 'bottom'
         }];

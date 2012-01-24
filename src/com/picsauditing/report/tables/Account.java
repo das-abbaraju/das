@@ -14,7 +14,7 @@ public class Account extends BaseTable {
 
 	protected void addDefaultFields() {
 		addField("accountID", "a.id", FilterType.Number);
-		addField("accountName", "a.name", FilterType.AccountName);
+		addField("accountName", "a.name", FilterType.AccountName).setWidth(180);
 	}
 
 	public void addFields() {
