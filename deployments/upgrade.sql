@@ -85,6 +85,17 @@ insert into widget_user (widgetID, userID, expanded, `column`, sortOrder, custom
 values (25, 646, 1, 1, 3, null);
 --
 
+-- PICS-4310 Expired unneeded AU automatically
+-- looks for completed 2011 AU and expires 2008 AU
+update accounts a
+join contractor_audit ca on a.id = ca.conID and ca.auditTypeID = 11 and ca.auditFor = 2011
+join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1
+join contractor_audit au on a.id = au.conID and au.auditTypeID = 11 and au.auditFor = 2008 and au.expiresDate > now()
+set au.expiresDate = now()
+where a.type = 'Contractor' and a.status = 'Active'
+and not exists (select * from contractor_audit_operator cao where ca.id = cao.auditID and cao.visible = 1 and cao.status in ('Pending','Submitted','Incomplete','Resubmitted'))
+--
+
 -- -----------------------------------------------------------------------------------------------
 -- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
 -- EXAMPLES:
