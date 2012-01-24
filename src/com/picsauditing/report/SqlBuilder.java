@@ -22,6 +22,7 @@ import com.picsauditing.util.Strings;
 public class SqlBuilder {
 	private ModelBase base;
 	private List<QueryField> includedFields = new ArrayList<QueryField>();
+	// We may be able to use the ModelBase.getAvailableFields...
 	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
 	private SimpleReportDefinition definition = new SimpleReportDefinition();
 	private SelectSQL sql;

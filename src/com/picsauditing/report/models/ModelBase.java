@@ -10,7 +10,7 @@ import com.picsauditing.report.fields.QueryFunction;
 import com.picsauditing.report.fields.SimpleReportField;
 import com.picsauditing.report.tables.BaseTable;
 
-public class ModelBase {
+abstract public class ModelBase {
 	protected BaseTable from;
 	protected String defaultSort = null;
 	protected Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
