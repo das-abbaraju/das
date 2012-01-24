@@ -15,10 +15,12 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 	public void buildQuery() {
 		super.buildQuery();
 
-		sql.addJoin("LEFT JOIN (SELECT ca.conID, ca.auditTypeID, MAX(ca.expiresDate) expired FROM contractor_audit ca "
-				+ "WHERE ca.auditTypeID = 2 AND DATE_ADD(expiresDate,INTERVAL 1 day) < NOW() GROUP BY ca.conID "
-				+ "ORDER BY ca.expiresDate DESC) ca2 ON ca2.conID = ca.conID AND ca2.auditTypeID = ca.auditTypeID");
-		sql.addField("ca2.expired");
+		sql.addField("ca2.expiresDate AS expired");
+		sql.addJoin("LEFT JOIN contractor_audit ca2 ON "
+				+ "ca2.conID = a.id "
+				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0 AND ca2.id != ca.id "
+				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Complete')) ");
+		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
 
 		if (getFilter().isAuditorType())
 			sql.addWhere("ca.auditorID=" + permissions.getUserId());
@@ -44,7 +46,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 		}
 
 		sql.addGroupBy("a.id, ca.id");
-		orderByDefault = "ISNULL(ca2.expired), ca2.expired, ca.assignedDate DESC";
+		orderByDefault = "ISNULL(ca2.expiresDate), ca2.expiresDate, ca.assignedDate DESC";
 
 		getFilter().setShowAuditor(false);
 		getFilter().setShowAuditorType(true);
