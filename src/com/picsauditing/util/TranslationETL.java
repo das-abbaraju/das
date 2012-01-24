@@ -38,6 +38,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AppTranslation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -226,6 +227,11 @@ public class TranslationETL extends PicsActionSupport {
 				translation.appendChild(element);
 				CDATASection text = document.createCDATASection(d.get("msgValue").toString());
 				element.appendChild(text);
+				
+				element = document.createElement("qualityRating");
+				translation.appendChild(element);
+				elementText = document.createTextNode(d.get("qualityRating").toString());
+				element.appendChild(text);
 
 				if (d.get("createdBy") != null) {
 					element = document.createElement("createdBy");
@@ -259,6 +265,13 @@ public class TranslationETL extends PicsActionSupport {
 					element = document.createElement("lastUsed");
 					translation.appendChild(element);
 					elementText = document.createTextNode(d.get("lastUsed").toString());
+					element.appendChild(elementText);
+				}
+				
+				if (d.get("notApplicable") != null) {
+					element = document.createElement("notApplicable");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("notApplicable").toString());
 					element.appendChild(elementText);
 				}
 			}
@@ -321,6 +334,7 @@ public class TranslationETL extends PicsActionSupport {
 			String msgKey = d.get("msgKey").toString();
 			String locale = d.get("locale").toString();
 			String msgValue = d.get("msgValue").toString();
+			String qualityRating = d.get("qualityRating").toString();
 
 			if (importedTranslations.get(msgKey, locale) != null) {
 				// Check if the locale and msgKey are the same
@@ -333,11 +347,13 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, "msgKey", msgKey);
 					addField(t, "locale", locale);
 					addField(t, "msgValue", msgValue);
+					addField(t, "qualityRating", qualityRating);
 					addField(t, "createdBy", d.get("createdBy") == null ? null : d.get("createdBy").toString());
 					addField(t, "updatedBy", d.get("updatedBy") == null ? null : d.get("updatedBy").toString());
 					addField(t, "creationDate", d.get("creationDate") == null ? null : d.get("creationDate").toString());
 					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
+					addField(t, "notApplicable", d.get("notApplicable") == null ? null : d.get("notApplicable").toString());
 
 					importedTranslations.get(t.getKey(), locale).add(t);
 				}
@@ -353,11 +369,13 @@ public class TranslationETL extends PicsActionSupport {
 		sql.addField("t.msgKey");
 		sql.addField("t.locale");
 		sql.addField("t.msgValue");
+		sql.addField("t.qualityRating");
 		sql.addField("t.createdBy");
 		sql.addField("t.updatedBy");
 		sql.addField("DATE_FORMAT(t.creationDate, '%Y-%m-%d %H:%i:%s') creationDate");
 		sql.addField("DATE_FORMAT(t.updateDate, '%Y-%m-%d %H:%i:%s') updateDate");
 		sql.addField("t.lastUsed");
+		sql.addField("t.notApplicable");
 		sql.addWhere(where);
 		sql.addOrderBy("t.updateDate DESC, t.creationDate DESC");
 	}
@@ -374,6 +392,8 @@ public class TranslationETL extends PicsActionSupport {
 			t.setValue(value);
 		if (name.equals("locale"))
 			t.setLocale(value);
+		if (name.equals("qualityRating"))
+			t.setQualityRating(TranslationQualityRating.valueOf(value));
 
 		if (name.equals("createdBy"))
 			t.setCreatedBy(new User(Integer.parseInt(value)));
@@ -385,6 +405,8 @@ public class TranslationETL extends PicsActionSupport {
 			t.setUpdateDate(sdf.parse(value));
 		if (name.equals("lastUsed"))
 			t.setLastUsed(sdf2.parse(value));
+		if (name.equals("notApplicable"))
+			t.setNotApplicable(Integer.parseInt(value) == 1);
 	}
 
 	@Transactional
