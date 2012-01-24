@@ -13,14 +13,8 @@ Locales:
 - Portuguese
 - Spanish
 --%>
-	
-<s:set name="chat_icon" value="%{protocol + 
-	'://server.iad.liveperson.net/hc/90511184/' + 
-	'?cmd=repstate' +
-	'&amp;site=90511184' +
-	'&amp;channel=web' +
-	'&amp;ver=1' +
-	'&amp;imageUrl=' + protocol + '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/' + locale.getDisplayLanguage() + '/General/3a'}" />
+
+<s:set name="chat_icon_type">${param.chat_icon_type}</s:set>
 
 <s:set name="chat_url" value="%{protocol +
 	'://server.iad.liveperson.net/hc/90511184/' + 
@@ -32,6 +26,21 @@ Locales:
 
 <span class="chat">
 	<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-		<img src="images/chat-icon.png" /><span class="link"><s:text name="Header.Chat" /></span>
+        <s:if test="#chat_icon_type == 'large'">
+            <s:set name="chat_icon" value="%{protocol + 
+                '://server.iad.liveperson.net/hc/90511184/' + 
+                '?cmd=repstate' +
+                '&amp;site=90511184' +
+                '&amp;channel=web' +
+                '&amp;ver=1' +
+                '&amp;imageUrl=' + protocol + '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/' + locale.getDisplayLanguage() + '/General/3a'}" />
+                
+            <img src="${chat_icon}" />
+        </s:if>
+        <s:else>
+            <s:set name="chat_icon" value="'images/chat-icon.png'" />
+            
+            <img src="${chat_icon}" /><span class="link"><s:text name="Header.Chat" /></span>
+        </s:else>
 	</a>
 </span>

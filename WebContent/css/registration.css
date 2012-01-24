@@ -178,6 +178,24 @@ footer .footer-menu a
  * registration
  */
  
+#Registration-page .registration-header header
+{
+	position: relative;
+}
+
+#Registration-page .registration-header header .chat
+{
+	position: absolute;
+	margin: 0px;
+	right: 0px;
+	top: 5px;
+}
+
+#Registration-page .registration-header header .chat img
+{
+	margin: 0px;
+}
+ 
 .registration-form
 {
 	float: left;

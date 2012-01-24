@@ -43,6 +43,10 @@
 	<section>
 		<header>
 			<h1><s:text name="Registration.BecomeAMember" /></h1>
+            
+            <s:include value="/struts/layout/chat.jsp">
+                <s:param name="chat_icon_type" value="'large'" />
+            </s:include>
 		</header>
 	</section>
 </div>
