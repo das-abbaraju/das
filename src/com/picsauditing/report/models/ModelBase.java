@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.QueryFunction;
 import com.picsauditing.report.fields.SimpleReportField;
-import com.picsauditing.report.fieldtypes.FilterType;
 import com.picsauditing.report.tables.BaseTable;
 
 abstract public class ModelBase {

@@ -8,7 +8,6 @@ import org.json.simple.JSONObject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.report.fieldtypes.ExtFieldType;
 
 public class SimpleReportFilter implements JSONable {
 	private SimpleReportField field;

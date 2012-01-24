@@ -1,4 +1,5 @@
-package com.picsauditing.report.fieldtypes;
+package com.picsauditing.report.fields;
+
 
 public enum FilterType {
 	String(ExtFieldType.String), Number, Boolean(ExtFieldType.Boolean), Date(ExtFieldType.Date), AccountName(

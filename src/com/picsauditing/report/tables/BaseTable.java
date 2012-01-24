@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fieldtypes.FilterType;
 
 public abstract class BaseTable {
 	protected boolean innerJoin = true;

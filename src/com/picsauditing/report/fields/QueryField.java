@@ -4,8 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.fieldtypes.ExtFieldType;
-import com.picsauditing.report.fieldtypes.FilterType;
 import com.picsauditing.util.Strings;
 
 /**

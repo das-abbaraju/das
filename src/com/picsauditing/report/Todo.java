@@ -3,8 +3,8 @@ package com.picsauditing.report;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fieldtypes.FilterType;
 import com.picsauditing.search.SelectSQL;
 
 public class Todo {

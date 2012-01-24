@@ -1,6 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fieldtypes.FilterType;
+import com.picsauditing.report.fields.FilterType;
 
 public class ContractorAuditOperator extends BaseTable {
 

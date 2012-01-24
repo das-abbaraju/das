@@ -1,8 +1,8 @@
 package com.picsauditing.report.tables;
 
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.Renderer;
-import com.picsauditing.report.fieldtypes.FilterType;
 
 public class Contractor extends BaseTable {
 

@@ -5,7 +5,6 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.report.fieldtypes.ExtFieldType;
 import com.picsauditing.util.Strings;
 
 public class SimpleReportField implements JSONable {

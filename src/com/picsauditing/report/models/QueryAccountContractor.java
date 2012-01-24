@@ -1,6 +1,6 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.fieldtypes.FilterType;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.Contractor;
 import com.picsauditing.util.PermissionQueryBuilder;
 
