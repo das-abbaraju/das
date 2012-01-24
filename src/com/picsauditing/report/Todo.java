@@ -1,32 +1,17 @@
 package com.picsauditing.report;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.SimpleReportField;
-import com.picsauditing.report.models.ModelBase;
-import com.picsauditing.report.models.QueryAccountContractorAudit;
+import com.picsauditing.report.fieldtypes.FilterType;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.PermissionQueryBuilder;
 
 public class Todo {
-	private ModelBase base;
 	private SelectSQL sql = new SelectSQL();
-	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
 	private Map<String, String> joins = new HashMap<String, String>();
-	private Permissions permissions;
 	private String defaultSort = null;
-	private int allRows = 0;
-	private List<SimpleReportField> columns;
-	private BasicDAO dao;
-	private Report report;
-	
+
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin) {
 		return addQueryField(dataIndex, sql, filterType, requireJoin, false);
 	}
@@ -42,7 +27,6 @@ public class Todo {
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin,
 			boolean makeDefault) {
 		QueryField field = new QueryField(dataIndex, sql, filterType, requireJoin, makeDefault);
-		availableFields.put(dataIndex, field);
 		return field;
 	}
 
@@ -60,7 +44,7 @@ public class Todo {
 		addQueryField("emailCreationDate", "eq.creationDate", FilterType.Date);
 		addQueryField("emailSentDate", "eq.sentDate", FilterType.Date);
 
-		leftJoinToAccount("emailContractor", "eq.conID");
+		// leftJoinToAccount("emailContractor", "eq.conID");
 		leftJoinToEmailTemplate("et", "emailTemplate");
 
 		defaultSort = "eq.priority DESC, eq.emailID";
@@ -123,10 +107,10 @@ public class Todo {
 				"FacilitiesEdit.action?operator={0}\">{1}",
 				new String[] { "requestedByOperatorID", "requestedByOperatorName" });
 
-		leftJoinToUser("requestedBy", "crr.requestedByUserID");
-		leftJoinToUser("contactedBy", "crr.lastContactedBy");
+		// leftJoinToUser("requestedBy", "crr.requestedByUserID");
+		// leftJoinToUser("contactedBy", "crr.lastContactedBy");
 
-		leftJoinToAccount("requestedExisting", "crr.conID");
+		// leftJoinToAccount("requestedExisting", "crr.conID");
 	}
 
 	private void buildEmailSubscriptionBase() {
@@ -162,7 +146,7 @@ public class Todo {
 		sql.addJoin("JOIN operators o ON a.id = o.id");
 		sql.addWhere("a.type IN ('Operator','Corporate')");
 		// replaceQueryField("accountName", "operatorName");
-		availableFields.remove("accountType");
+		// availableFields.remove("accountType");
 
 		joinToFacilities("operatorFacility", "opID", "a.id");
 		joinToFacilities("corporateFacility", "corporateID", "a.id");
@@ -208,23 +192,15 @@ public class Todo {
 		addQueryField("userAssignedPostalEnd", "ua.postal_end", FilterType.String, true);
 		addQueryField("userAssignedType", "ua.assignmentType", FilterType.Enum);
 
-		joinToAuditType("userAssignedAuditType", "ua.auditTypeID");
-		leftJoinToAccount("contractorAccount", "ua.conID");
+		// joinToAuditType("userAssignedAuditType", "ua.auditTypeID");
+		// leftJoinToAccount("contractorAccount", "ua.conID");
 	}
 
 	private void buildUserGroupBase() {
 		buildUserBase();
 		sql.addJoin("JOIN usergroup ug ON u.id = ug.userID");
 
-		leftJoinToUser("grp", "ug.groupID");
-	}
-
-	private void buildContractorAuditBase() {
-		base = new QueryAccountContractorAudit();
-		// sql = base.getSql();
-		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
-		sql.addWhere("1 " + permQuery.toString());
-
+		// leftJoinToUser("grp", "ug.groupID");
 	}
 
 	private void buildContractorTradeBase() {
@@ -300,32 +276,19 @@ public class Todo {
 		addQueryField("assessmentCenterName", "center.name", FilterType.String);
 	}
 
-	private void buildContractorAuditOperatorBase() {
-		buildContractorAuditBase();
-
-		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
-		addQueryField("auditOperatorID", "cao.id", FilterType.Number, true);
-		addQueryField("auditOperatorStatus", "cao.status", FilterType.Enum, true);
-		addQueryField("auditOperatorStatusChangedDate", "cao.statusChangedDate", FilterType.Date);
-		addQueryField("auditOperatorVisible", "cao.visible", FilterType.Boolean);
-		addQueryField("auditOperatorPercentComplete", "cao.percentComplete", FilterType.Number, true);
-
-		leftJoinToAccount("caoAccount", "cao.opID");
-	}
-
 	private void buildContractorAuditOperatorWorkflowBase() {
-		buildContractorAuditOperatorBase();
+		// buildContractorAuditOperatorBase();
 
 		sql.addJoin("JOIN contractor_audit_operator_workflow cao ON cao.id = caow.caoID");
 
 		addQueryField("auditOperatorWorkflowStatus", "caow.status", FilterType.Enum, true);
 		addQueryField("auditOperatorWorkflowPreviousStatus", "caow.previousStatus", FilterType.Enum, true);
 		addQueryField("auditOperatorWorkflowCreationDate", "caow.creationDate", FilterType.Date, true);
-		leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
+		// leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	}
 
 	private void buildContractorAuditDataBase() {
-		buildContractorAuditOperatorBase();
+		// buildContractorAuditOperatorBase();
 
 		sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
 
@@ -337,20 +300,6 @@ public class Todo {
 		addQueryField("auditDataUpdateDate", "pd.updateDate", FilterType.Date);
 	}
 
-	private QueryField joinToAuditType(String joinAlias, String foreignKey) {
-		joins.put(joinAlias, "JOIN audit_type " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "ID", foreignKey, FilterType.Number, joinAlias, true);
-		QueryField auditTypeName = addQueryField(joinAlias + "Name", foreignKey, FilterType.String, joinAlias, true);
-		auditTypeName.translate("AuditType", "name");
-
-		addQueryField(joinAlias + "ClassType", joinAlias + ".classType", FilterType.Enum, joinAlias);
-		addQueryField(joinAlias + "IsScheduled", joinAlias + ".isScheduled", FilterType.Boolean, joinAlias);
-		addQueryField(joinAlias + "HasAuditor", joinAlias + ".hasAuditor", FilterType.Boolean, joinAlias);
-		addQueryField(joinAlias + "Scorable", joinAlias + ".scoreable", FilterType.Boolean, joinAlias);
-
-		return auditTypeName;
-	}
-
 	private void joinToFacilities(String joinAlias, String tableKey, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN facilities " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
 				+ foreignKey);
@@ -358,8 +307,8 @@ public class Todo {
 		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID", FilterType.Number, joinAlias, true);
 		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID", FilterType.Number, joinAlias, true);
 
-		leftJoinToAccount("operatorChild", joinAlias + ".opID");
-		leftJoinToAccount("corporateParent", joinAlias + ".corporateID");
+		// leftJoinToAccount("operatorChild", joinAlias + ".opID");
+		// leftJoinToAccount("corporateParent", joinAlias + ".corporateID");
 	}
 
 	private void joinToGeneralContractor(String joinAlias, String tableKey, String foreignKey) {
@@ -371,7 +320,7 @@ public class Todo {
 		addQueryField(joinAlias + "FlagLastUpdated", joinAlias + ".flagLastUpdated", FilterType.Date, joinAlias);
 		addQueryField(joinAlias + "Flag", joinAlias + ".flag", FilterType.String, joinAlias, true);
 
-		leftJoinToAccount(joinAlias + "Operator", joinAlias + ".genID");
+		// leftJoinToAccount(joinAlias + "Operator", joinAlias + ".genID");
 	}
 
 	private void joinToInvoiceFee(String joinAlias, String foreignKey) {
@@ -390,29 +339,10 @@ public class Todo {
 		addQueryField(joinAlias + "RemoteAccess", joinAlias + ".remoteAccess", FilterType.String, joinAlias);
 	}
 
-	private void leftJoinToAccount(String joinAlias, String foreignKey) {
-		joins.put(joinAlias, "LEFT JOIN accounts " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "Name", joinAlias + ".name", FilterType.AccountName, joinAlias, true);
-		addQueryField(joinAlias + "Status", joinAlias + ".status", FilterType.Enum, joinAlias);
-		addQueryField(joinAlias + "Type", joinAlias + ".type", FilterType.Enum, joinAlias);
-	}
-
-	private void leftJoinToUser(String joinAlias, String foreignKey) {
-		joins.put(joinAlias, "LEFT JOIN users " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "UserID", joinAlias + ".id", FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "UserName", joinAlias + ".name", FilterType.String, joinAlias, true).addRenderer(
-				"UsersManage.action?user={0}\">{1}", new String[] { joinAlias + "UserID", joinAlias + "UserName" });
-
-		addQueryField(joinAlias + "Phone", joinAlias + ".phone", FilterType.String, joinAlias);
-		addQueryField(joinAlias + "Email", joinAlias + ".email", FilterType.String, joinAlias);
-	}
-
 	private void leftJoinToEmailTemplate(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN email_template " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias, true);
 		addQueryField(joinAlias + "Name", joinAlias + ".templateName", FilterType.String, joinAlias, true);
 	}
-
 
 }
