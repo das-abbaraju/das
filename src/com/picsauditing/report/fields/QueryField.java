@@ -30,6 +30,7 @@ public class QueryField implements JSONAware {
 	private String label;
 	private String preTranslation;
 	private String postTranslation;
+	private String category = "General";
 
 	// xtype : 'actioncolumn',
 	/*
@@ -260,6 +261,14 @@ public class QueryField implements JSONAware {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getPreTranslation() {

@@ -46,7 +46,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Override
 	public String execute() {
 		checkReport();
-		
+
 		{
 			SimpleReportDefinition definition = new SimpleReportDefinition(report.getParameters());
 			if (!Strings.isEmpty(report.getDevParams())) {
@@ -58,7 +58,7 @@ public class ReportDynamic extends PicsActionSupport {
 			sql = builder.getSql();
 			builder.setPermissions(permissions);
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -193,57 +193,102 @@ public class ReportDynamic extends PicsActionSupport {
 
 	// Getters that need some calculation
 
+	/**
+	 * Return a set of fields which can be used client side for defining the report (columns, sorting, grouping and
+	 * filtering)
+	 */
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
 
 		for (QueryField field : builder.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
-			obj.put("name", field.getDataIndex());
-			if (field.getType() != ExtFieldType.Auto) {
-				obj.put("type", field.getType().toString().toLowerCase());
-			}
+			addName(field, obj);
+			obj.put("label", translateLabel(field));
+			addFilterType(field, obj);
+			addHelp(field, obj);
+			obj.put("category", translateCategory(field.getCategory()));
 			fields.add(obj);
 		}
 		return fields;
 	}
 
+	/**
+	 * Returns a list of Store fields with just name and type
+	 * 
+	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Store
+	 *      http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
+	 */
 	public JSONArray getStoreFields() {
 		JSONArray fields = new JSONArray();
 
 		for (QueryField field : builder.getIncludedFields()) {
 			JSONObject obj = new JSONObject();
-			obj.put("name", field.getDataIndex());
-			if (field.getType() != ExtFieldType.Auto) {
-				obj.put("type", field.getType().toString().toLowerCase());
-				if (field.getType() == ExtFieldType.Date)
-					obj.put("dateFormat", "time");
-			}
+			addName(field, obj);
+			addFilterType(field, obj);
 			fields.add(obj);
 		}
 		return fields;
 	}
 
+	/**
+	 * Returns a list of Columns for a Grid with text, dataIndex, etc
+	 * 
+	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
+	 */
 	public JSONArray getGridColumns() {
 		JSONArray fields = new JSONArray();
 
-		JSONObject rowNum = new JSONObject();
-		rowNum.put("xtype", "rownumberer");
-		rowNum.put("width", 27);
-		fields.add(rowNum);
-
+		fields.add(createRunNumColumn());
 		for (QueryField field : builder.getIncludedFields()) {
-			String label = getText("Report." + field.getDataIndex());
-			if (label != null)
-				field.setLabel(label);
-			else {
-				field.setLabel("?" + field.getDataIndex());
-				// if (field.getDataIndex() != null && column.getFunction() != null) {
-				// field.setLabel(field.getLabel() + "." + column.getFunction().toString());
-				// }
-			}
+			field.setLabel(translateLabel(field));
+			// if (field.getDataIndex() != null && column.getFunction() != null) {
+			// field.setLabel(field.getLabel() + "." + column.getFunction().toString());
+			// }
 			fields.add(field);
 		}
 		return fields;
+	}
+
+	private void addName(QueryField field, JSONObject obj) {
+		obj.put("name", field.getDataIndex());
+	}
+
+	private void addFilterType(QueryField field, JSONObject obj) {
+		if (field.getType() == ExtFieldType.Auto)
+			return;
+
+		obj.put("type", field.getType().toString().toLowerCase());
+		if (field.getType() == ExtFieldType.Date)
+			obj.put("dateFormat", "time");
+	}
+
+	private void addHelp(QueryField field, JSONObject obj) {
+		String translatedText = getText("Report." + field.getDataIndex() + ".help");
+		if (translatedText != null)
+			obj.put("help", translatedText);
+	}
+
+	private String translateLabel(QueryField field) {
+		String translatedText = getText("Report." + field.getDataIndex());
+		if (translatedText == null)
+			translatedText = "?" + field.getDataIndex();
+		return translatedText;
+	}
+
+	private String translateCategory(String category) {
+		String translatedText = getText("Report.Category." + category);
+		if (translatedText == null)
+			translatedText = getText("Report.Category.General");
+		if (translatedText == null)
+			translatedText = "?Report.Category.General";
+		return translatedText;
+	}
+
+	private JSONObject createRunNumColumn() {
+		JSONObject rowNum = new JSONObject();
+		rowNum.put("xtype", "rownumberer");
+		rowNum.put("width", 27);
+		return rowNum;
 	}
 
 	// Getters and Setters
