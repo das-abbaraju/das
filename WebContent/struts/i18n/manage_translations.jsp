@@ -99,17 +99,42 @@
 			Search:
 			<s:textfield name="search" />
 			<br />
-			Custom:
-			<s:select headerKey="" headerValue=""
-				list="#{
-					'Common':'Commonly Used '+localeFrom.displayName+' Phrases', 
-					'MissingTo':'Missing '+localeTo.displayName+' Translations', 
-					'MissingFrom':'Missing '+localeFrom.displayName+' Translations', 
-					'Updated':'Recently Updated '+localeFrom.displayName+' Phrases', 
-					'Unused':'Unused Keys'}"
-				name="searchType" />
-			<br /> 
-			<s:submit name="button" id="searchfilter" value="Search" />
+			<div class="filterOption">
+				Custom:
+				<s:select headerKey="" headerValue=""
+					list="#{
+						'Common':'Commonly Used '+localeFrom.displayName+' Phrases', 
+						'MissingTo':'Missing '+localeTo.displayName+' Translations', 
+						'MissingFrom':'Missing '+localeFrom.displayName+' Translations', 
+						'Updated':'Recently Updated '+localeFrom.displayName+' Phrases', 
+						'Unused':'Unused Keys'}"
+					name="searchType" />
+			</div>
+			<div class="filterOption">
+				<a href="#" class="filterBox">Quality Rating</a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
+				<span class="clearLink q_box select">
+					<s:select
+						list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+						listKey="ordinal()"
+						listValue="name()"
+						multiple="true"
+						name="qualityRatings"
+					/>
+					<br />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+			<div class="filterOption">
+				Not Applicable:
+				<s:radio
+					list="#{'':'Any','true':'Not Applicable','false':'Applicable'}"
+					name="showNotApplicable"
+				/>
+			</div>
+			<div class="clear"></div>
+			<s:submit name="button" id="searchfilter" value="Search" cssClass="picsbutton positive" />
+			<div class="clear"></div>
 		</s:form>
 		</div>
 			<div class="right">
@@ -202,6 +227,7 @@
 		</s:form>
 		<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
 		<script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
+		<script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
 		<script type="text/javascript" src="js/core.js?v=<s:property value="version"/>"></script>
 		<script type="text/javascript" src="js/translation_manage.js?v=<s:property value="version"/>"></script>
 	</body>

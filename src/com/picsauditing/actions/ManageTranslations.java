@@ -40,6 +40,10 @@ public class ManageTranslations extends ReportActionSupport {
 	private ReportFilter filter;
 	private boolean showDoneButton;
 
+	// Pseudo filters
+	private int[] qualityRatings = null;
+	private Boolean showNotApplicable = null;
+
 	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
 	public String execute() throws Exception {
@@ -194,6 +198,16 @@ public class ManageTranslations extends ReportActionSupport {
 			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
 		}
 
+		if (filterOn(qualityRatings)) {
+			sql.addWhere(String.format("t1.qualityRating IN (%1$s) OR t2.qualityRating IN (%1$s)",
+					Strings.implode(qualityRatings)));
+		}
+
+		if (showNotApplicable != null) {
+			sql.addWhere(String.format("t1.notApplicable = %1$d OR t2.notApplicable = %1$s",
+					(showNotApplicable ? 1 : 0)));
+		}
+
 		if (isTracingOn()) {
 			if (getI18nUsedKeys().size() > 0)
 				sql.addWhere("t1.msgKey IN (" + Strings.implodeForDB(getI18nUsedKeys(), ",") + ")");
@@ -326,6 +340,22 @@ public class ManageTranslations extends ReportActionSupport {
 
 	public void setShowDoneButton(boolean showDoneButton) {
 		this.showDoneButton = showDoneButton;
+	}
+
+	public int[] getQualityRatings() {
+		return qualityRatings;
+	}
+
+	public void setQualityRatings(int[] qualityRatings) {
+		this.qualityRatings = qualityRatings;
+	}
+
+	public Boolean getShowNotApplicable() {
+		return showNotApplicable;
+	}
+
+	public void setShowNotApplicable(Boolean showNotApplicable) {
+		this.showNotApplicable = showNotApplicable;
 	}
 
 	public boolean isTracingOn() {
