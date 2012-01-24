@@ -63,7 +63,6 @@ public class Registration extends ContractorActionSupport {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
 			return SUCCESS;
 		}
-		
 
 		if ("request".equalsIgnoreCase(button)) {
 			// check for basic rID...?
@@ -113,7 +112,7 @@ public class Registration extends ContractorActionSupport {
 			return SUCCESS;
 		}
 		permissions = null;
-		
+
 		contractor.setType("Contractor");
 		if (contractor.getName().contains("^^^")) {
 			contractor.setStatus(AccountStatus.Demo);
@@ -164,6 +163,7 @@ public class Registration extends ContractorActionSupport {
 		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
 		user.setLastLogin(new Date());
 		userDAO.save(user);
+		contractor.getUsers().add(user);
 
 		// Login the User
 		Permissions permissions = new Permissions();
@@ -198,6 +198,7 @@ public class Registration extends ContractorActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
 		emailBuilder.setUser(user);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 		user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
 		String confirmLink = "http://www.picsorganizer.com/Login.action?username="
 				+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
