@@ -6,7 +6,8 @@
             	$('table.report button.cancel').bind('click', this.removeEditMode);
             	$('table.report .suggestTranslation').bind('click', this.suggestTranslation);
             	$('table.report form button.save').bind('click', this.saveTranslation);
-            	$('table.report form input[type=checkbox], table.report form input[type=radio]').bind('click', this.saveQualityRating);
+            	$('table.report form input[type=checkbox], table.report form input[type=radio]')
+            		.bind('click', this.saveQualityRatingOrNotApplicable);
             	$('#doneButton').bind('click', this.closeWindow);
             },
             
@@ -55,13 +56,18 @@
             	});
             },
             
-            saveQualityRating: function () {
+            saveQualityRatingOrNotApplicable: function () {
             	var form = $(this).closest("form");
             	var cell = $(this).closest("td");
+            	var value = $(this).val();
+            	
+            	if ($(this).attr('type') == 'checkbox') {
+           			value = $(this).is(':checked');
+            	}
             	
             	var fields = {};
             	fields['translation'] = form.find('input[name=translation]').val();
-            	fields[$(this).attr('name')] = $(this).val();
+            	fields[$(this).attr('name')] = value;
             	
             	PICS.ajax({
             		url: "ManageTranslationsAjax!update.action",
