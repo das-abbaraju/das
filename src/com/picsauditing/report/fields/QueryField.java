@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.report.fieldtypes.ExtFieldType;
+import com.picsauditing.report.fieldtypes.FilterType;
 import com.picsauditing.util.Strings;
 
 /**
@@ -24,7 +26,7 @@ public class QueryField implements JSONAware {
 	private boolean suggested = false;
 	private boolean hidden = false;
 	private int flex = 0;
-	private FieldType type = FieldType.Auto;
+	private ExtFieldType type = ExtFieldType.Auto;
 	private JavaScript renderer;
 	private JavaScript editor;
 	private String label;
@@ -56,7 +58,7 @@ public class QueryField implements JSONAware {
 		this.suggested = isDefault;
 
 		if (filterType == FilterType.Date) {
-			type = FieldType.Date;
+			type = ExtFieldType.Date;
 		}
 
 		if (StringUtils.endsWithIgnoreCase(dataIndex, "id"))
@@ -88,7 +90,7 @@ public class QueryField implements JSONAware {
 		if (renderer != null)
 			json.put("editor", editor);
 
-		if (type == FieldType.Date) {
+		if (type == ExtFieldType.Date) {
 			json.put("xtype", "datecolumn");
 		}
 		return json.toJSONString();
@@ -99,7 +101,7 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
-	public QueryField type(FieldType type) {
+	public QueryField type(ExtFieldType type) {
 		this.type = type;
 		return this;
 	}
@@ -230,11 +232,11 @@ public class QueryField implements JSONAware {
 		this.flex = flex;
 	}
 
-	public FieldType getType() {
+	public ExtFieldType getType() {
 		return type;
 	}
 
-	public void setType(FieldType type) {
+	public void setType(ExtFieldType type) {
 		this.type = type;
 	}
 

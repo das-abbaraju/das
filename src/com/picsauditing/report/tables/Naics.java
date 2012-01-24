@@ -1,6 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fieldtypes.FilterType;
 
 public class Naics extends BaseTable {
 	public Naics(String alias, String foreignKey) {

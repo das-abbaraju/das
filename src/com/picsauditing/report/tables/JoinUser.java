@@ -1,6 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fieldtypes.FilterType;
 
 public class JoinUser extends BaseTable {
 	public JoinUser(String alias, String foreignKey) {

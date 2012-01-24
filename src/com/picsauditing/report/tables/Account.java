@@ -1,6 +1,6 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fieldtypes.FilterType;
 
 public class Account extends BaseTable {
 
@@ -18,8 +18,8 @@ public class Account extends BaseTable {
 	}
 
 	public void addFields() {
-		addField("accountStatus", "a.status", FilterType.Enum);
-		addField("accountType", "a.type", FilterType.Enum);
+		addField("accountStatus", "a.status", FilterType.AccountStatus);
+		addField("accountType", "a.type", FilterType.AccountType);
 		addField("accountPhone", "a.phone", FilterType.String);
 		addField("accountFax", "a.fax", FilterType.String);
 		addField("accountCreationDate", "a.creationDate", FilterType.Date);

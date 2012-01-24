@@ -5,6 +5,7 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fieldtypes.ExtFieldType;
 import com.picsauditing.util.Strings;
 
 public class SimpleReportField implements JSONable {
@@ -73,7 +74,7 @@ public class SimpleReportField implements JSONable {
 		case Date:
 			return "DATE(" + fieldSQL + ")";
 		case Format:
-			availableFields.get(field).setType(FieldType.String);
+			availableFields.get(field).setType(ExtFieldType.String);
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
 		case Lower:
 			return "LOWER(" + fieldSQL + ")";

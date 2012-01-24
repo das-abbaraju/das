@@ -17,8 +17,8 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SimpleReportDefinition;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fieldtypes.ExtFieldType;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -199,7 +199,7 @@ public class ReportDynamic extends PicsActionSupport {
 		for (QueryField field : builder.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
 			obj.put("name", field.getDataIndex());
-			if (field.getType() != FieldType.Auto) {
+			if (field.getType() != ExtFieldType.Auto) {
 				obj.put("type", field.getType().toString().toLowerCase());
 			}
 			fields.add(obj);
@@ -213,9 +213,9 @@ public class ReportDynamic extends PicsActionSupport {
 		for (QueryField field : builder.getIncludedFields()) {
 			JSONObject obj = new JSONObject();
 			obj.put("name", field.getDataIndex());
-			if (field.getType() != FieldType.Auto) {
+			if (field.getType() != ExtFieldType.Auto) {
 				obj.put("type", field.getType().toString().toLowerCase());
-				if (field.getType() == FieldType.Date)
+				if (field.getType() == ExtFieldType.Date)
 					obj.put("dateFormat", "time");
 			}
 			fields.add(obj);

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fieldtypes.FilterType;
 
 public abstract class BaseTable {
 	protected boolean innerJoin = true;
@@ -66,7 +66,15 @@ public abstract class BaseTable {
 		return fields;
 	}
 
-	public QueryField addField(String name, String sql, FilterType filter) {
+	protected QueryField addField(String sql, FilterType filter) {
+		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
+		if (sql.equals("id"))
+			name = alias + "ID";
+		String fullSql = alias + "." + sql;
+		return addField(name, fullSql, filter);
+	}
+
+	protected QueryField addField(String name, String sql, FilterType filter) {
 		QueryField field = new QueryField(name, sql, filter);
 		fields.put(name, field);
 		return field;

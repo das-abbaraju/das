@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fieldtypes.ExtFieldType;
 
 public class SimpleReportFilter implements JSONable {
 	private SimpleReportField field;
@@ -94,7 +95,7 @@ public class SimpleReportFilter implements JSONable {
 		String columnSQL = field.toSQL(availableFields);
 		if (field.getField().equals("accountName"))
 			columnSQL = "a.nameIndex";
-		if (queryField.getType().equals(FieldType.Date)) {
+		if (queryField.getType().equals(ExtFieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			value = DateBean.toDBFormat(parameter.getTime());
 		}
