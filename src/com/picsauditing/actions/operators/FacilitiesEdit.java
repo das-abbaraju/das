@@ -65,10 +65,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Country country;
 	protected State state;
 	protected int contactID;
-	protected boolean isGeneralContractor;
-	protected boolean inheritsFlagCriteria;
 	protected ContractorOperator linkedContractor;
-	
+
 	public List<OperatorAccount> operatorList;
 	public List<OperatorAccount> childOperatorList;
 
@@ -100,10 +98,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			if (operator.getPrimaryContact() == null)
 				addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
 		}
-		
+
 		operatorList = getOperatorList();
 		childOperatorList = operator.getChildOperators();
-		
+
 		return SUCCESS;
 	}
 
@@ -292,20 +290,20 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		// operator.setNeedsIndexing(true);
 		operator = operatorDao.save(operator);
 		id = operator.getId();
-	
 
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return "redirect";
 	}
+
 	// Insure that all newly added facilities get linked to all parent accounts.
-	// i.e.  if F1 -> Hub -> US -> Corporate
+	// i.e. if F1 -> Hub -> US -> Corporate
 	// then F1 needs to be linked to US and Corporate
 	private void linkChildOperatorsToAllParentAccounts(List<OperatorAccount> newFacilities) {
 		List<OperatorAccount> parents = new ArrayList<OperatorAccount>();
 		findParentAccounts(operator, parents);
-		for (OperatorAccount child: newFacilities) {
-			for (OperatorAccount parent: parents){
+		for (OperatorAccount child : newFacilities) {
+			for (OperatorAccount parent : parents) {
 				// add the link into facilities, if it doesn't already exist.
 				Facility facility = facilitiesDAO.findByCorpOp(parent.getId(), child.getId());
 				if (facility == null) {
@@ -318,23 +316,24 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 	}
+
 	// Recursively find all the parents of this operator.
-	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents){
+	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents) {
 		if (currentOperator.getParent() == null)
 			return;
 		else {
 			parents.add(currentOperator.getParent());
 			findParentAccounts(currentOperator.getParent(), parents);
-		}				
+		}
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {
 		// find all operators
 		operatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
-		
+
 		// remove operators that are children of the current operator
 		operatorList.removeAll(operator.getChildOperators());
-		
+
 		// return the list of operators not associated with the current operator
 		return operatorList;
 	}
@@ -511,22 +510,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
-	}
-	
-	public boolean isGeneralContractor() {
-		return isGeneralContractor;
-	}
-	
-	public void setGeneralContractor(boolean isGeneralContractor) {
-		this.isGeneralContractor = isGeneralContractor;
-	}
-	
-	public boolean isInheritsFlagCriteria() {
-		return inheritsFlagCriteria;
-	}
-	
-	public void setInheritsFlagCriteria(boolean inheritsFlagCriteria) {
-		this.inheritsFlagCriteria = inheritsFlagCriteria;
 	}
 
 	public List<AccountUser> getAccountManagers() {
