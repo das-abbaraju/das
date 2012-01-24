@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.report.QueryBase;
+import com.picsauditing.report.models.ModelType;
 
 public class ReportDynamicTest {
 
@@ -36,7 +36,7 @@ public class ReportDynamicTest {
 	@Test
 	public void testExecute() throws Exception {
 		action.setReport(report);
-		report.setBase(QueryBase.Contractors);
+		report.setModelType(ModelType.Contractors);
 		assertEquals(ReportDynamic.SUCCESS, action.execute());
 	}
 

@@ -27,12 +27,12 @@
 			function addReportMenuItem(id, text) {
 				reportMenu.push({
 					text: text,
-					href: 'http://localhost:8080/picsWeb2/ReportDynamic.action?report=' + id
+					href: 'ReportDynamic.action?report=' + id
 				});
 			}
 			
 			<s:iterator value="availableReports">
-				addReportMenuItem('<s:property value="id"/>', '<s:property value="summary"/>');
+			addReportMenuItem('<s:property value="id"/>', '<s:property value="summary"/>');
 			</s:iterator>
 		</script>
 	

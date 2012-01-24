@@ -8,14 +8,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.picsauditing.report.QueryBase;
+import com.picsauditing.report.models.ModelType;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "report")
 public class Report extends BaseTable {
 
-	private QueryBase base;
+	private ModelType modelType;
 	private String summary;
 	private String description;
 	private String parameters;
@@ -24,12 +24,12 @@ public class Report extends BaseTable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	public QueryBase getBase() {
-		return base;
+	public ModelType getModelType() {
+		return modelType;
 	}
 
-	public void setBase(QueryBase base) {
-		this.base = base;
+	public void setModelType(ModelType type) {
+		this.modelType = type;
 	}
 
 	@Column(nullable = false)

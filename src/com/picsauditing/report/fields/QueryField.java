@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.fields;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
@@ -38,6 +38,11 @@ public class QueryField implements JSONAware {
 	 * function(value, metaData, record) { return Ext.String .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
 	 * record.data.accountID);
 	 */
+
+	public QueryField(String dataIndex, String sql) {
+		this.dataIndex = dataIndex;
+		this.sql = sql;
+	}
 
 	public QueryField(String dataIndex, String sql, FilterType filterType) {
 		this(dataIndex, sql, filterType, null, false);

@@ -3,11 +3,15 @@ package com.picsauditing.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import com.picsauditing.util.Strings;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fields.SimpleReportField;
+import com.picsauditing.report.fields.SimpleReportFilter;
 import com.picsauditing.util.JSONUtilities;
 
 public class SimpleReportDefinition implements JSONable {
@@ -16,20 +20,20 @@ public class SimpleReportDefinition implements JSONable {
 	private List<SimpleReportField> orderBy = new ArrayList<SimpleReportField>();
 	private List<SimpleReportField> having = new ArrayList<SimpleReportField>();
 
-	// 1 = Name LIKE 'Trevor%'
-	// 2 =
 	private List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
 	/**
 	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
 	 */
 	private String filterExpression;
-	private int page = 1;
 	private int rowsPerPage = 100;
 
 	public SimpleReportDefinition() {
 	}
 
 	public SimpleReportDefinition(String json) {
+		if (StringUtils.isEmpty(json)) {
+			return;
+		}
 		JSONObject obj = (JSONObject) JSONValue.parse(json);
 		fromJSON(obj);
 	}
@@ -84,14 +88,6 @@ public class SimpleReportDefinition implements JSONable {
 		this.filterExpression = filterExpression;
 	}
 
-	public int getPage() {
-		return page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
-
 	public int getRowsPerPage() {
 		return rowsPerPage;
 	}
@@ -109,8 +105,6 @@ public class SimpleReportDefinition implements JSONable {
 		JSONObject json = new JSONObject();
 		if (rowsPerPage > 0)
 			json.put("rowsPerPage", rowsPerPage);
-		if (page > 1)
-			json.put("page", page);
 		if (filterExpression != null)
 			json.put("filterExpression", filterExpression);
 		if (filters.size() > 0)
@@ -131,7 +125,6 @@ public class SimpleReportDefinition implements JSONable {
 		if (json == null)
 			return;
 		setRowsPerPage(JSONUtilities.convertToInteger(json, "rowsPerPage"));
-		this.page = JSONUtilities.convertToInteger(json, "page");
 
 		this.filterExpression = (String) json.get("filterExpression");
 
@@ -141,7 +134,7 @@ public class SimpleReportDefinition implements JSONable {
 		this.groupBy = parseSortableFieldList(json.get("groupBy"));
 		this.having = parseSortableFieldList(json.get("having"));
 	}
-
+	
 	private List<SimpleReportFilter> parseQueryFilterList(Object obj) {
 		List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
 
@@ -153,8 +146,8 @@ public class SimpleReportDefinition implements JSONable {
 			SimpleReportFilter filter = new SimpleReportFilter();
 			if (filterObj instanceof JSONObject) {
 				filter.fromJSON((JSONObject) filterObj);
+				filters.add(filter);
 			}
-			filters.add(filter);
 		}
 
 		return filters;
@@ -178,5 +171,23 @@ public class SimpleReportDefinition implements JSONable {
 		}
 
 		return fields;
+	}
+
+	public SimpleReportDefinition merge(SimpleReportDefinition definition) {
+		if (definition != null) {
+			columns.addAll(definition.getColumns());
+			groupBy.addAll(definition.getGroupBy());
+			orderBy.addAll(definition.getOrderBy());
+			having.addAll(definition.getHaving());
+			filters.addAll(definition.getFilters());
+			if (!Strings.isEmpty(definition.getFilterExpression())) {
+				if (Strings.isEmpty(filterExpression))
+					filterExpression = definition.getFilterExpression();
+				else
+					filterExpression = filterExpression + " AND " + definition.getFilterExpression();
+			}
+		}
+
+		return definition;
 	}
 }

@@ -1,6 +1,6 @@
-package com.picsauditing.report;
+package com.picsauditing.report.models;
 
-public enum QueryBase {
+public enum ModelType {
 	Accounts,
 	ContractorAudits,
 	ContractorAuditData,

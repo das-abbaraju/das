@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.fields;
 
 import java.util.Map;
 
@@ -31,24 +31,49 @@ public class SimpleReportFilter implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		
+
+		parseField(json);
+		if (field == null)
+			return;
+
+		parseNot(json);
+		parseOperator(json);
+
+		parseValue(json);
+	}
+
+	private void parseField(JSONObject json) {
 		Object fieldObj = json.get("field");
-		if (fieldObj != null) {
-			this.field = new SimpleReportField();
+		if (fieldObj == null)
+			return;
 
-			if (fieldObj instanceof JSONObject) {
-				this.field.fromJSON((JSONObject) fieldObj);
-			} else {
-				field.setField((String) fieldObj);
-			}
+		field = new SimpleReportField();
+
+		if (fieldObj instanceof JSONObject) {
+			field.fromJSON((JSONObject) fieldObj);
+		} else {
+			field.setField((String) fieldObj);
 		}
-		this.operator = QueryFilterOperator.valueOf(json.get("operator").toString());
+	}
 
+	private void parseNot(JSONObject json) {
 		this.not = false;
 		String not = (String) json.get("not");
 		if (not != null)
 			this.not = true;
-		
+	}
+
+	private void parseOperator(JSONObject json) {
+		Object object = json.get("operator");
+		if (object == null) {
+			operator = QueryFilterOperator.Equals;
+			return;
+		}
+
+		this.operator = QueryFilterOperator.valueOf(object.toString());
+	}
+
+	private void parseValue(JSONObject json) {
 		Object field2Obj = json.get("field2");
 		if (field2Obj != null) {
 			this.field2 = new SimpleReportField();

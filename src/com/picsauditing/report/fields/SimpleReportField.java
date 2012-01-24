@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.fields;
 
 import java.util.Map;
 
@@ -55,6 +55,7 @@ public class SimpleReportField implements JSONable {
 			this.ascending = false;
 	}
 
+	// We might want to consider moving this to QueryField
 	public String toSQL(Map<String, QueryField> availableFields) {
 		String fieldSQL = availableFields.get(field).getSql();
 		if (function == null)

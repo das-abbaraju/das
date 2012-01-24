@@ -1,4 +1,4 @@
-package com.picsauditing.report;
+package com.picsauditing.report.fields;
 
 public enum QueryFilterOperator {
 	Equals("="),

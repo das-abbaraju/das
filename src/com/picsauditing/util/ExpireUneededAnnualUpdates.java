@@ -22,12 +22,6 @@ public class ExpireUneededAnnualUpdates {
 					earliestAnnualUpdate = audit;
 			}
 		}
-
-		if (count > AuditType.COMPLETED_ANNUAL_ADDENDUM_NEEDED && earliestAnnualUpdate != null) {
-			earliestAnnualUpdate.setExpiresDate(new Date());
-			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
-			dao.save(earliestAnnualUpdate);
-		}
 	}
 	
 	private static boolean isCompletedAnnualAddendum(ContractorAudit audit) {

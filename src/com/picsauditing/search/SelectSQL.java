@@ -146,13 +146,17 @@ public class SelectSQL {
 		this.fromTable = fromTable;
 	}
 
-	public void addWhere(String whereClause) {
-		if (Strings.isEmpty(whereClause))
+	public void addWhere(String clause) {
+		clause = clause.trim();
+		
+		if (Strings.isEmpty(clause))
 			return;
-
-		if (whereClause.trim().equals("1"))
+		if (clause.equals("1"))
 			return;
-		this.whereClause.add(whereClause);
+		if (whereClause.contains(clause))
+			return;
+		
+		whereClause.add(clause);
 	}
 
 	public void addGroupBy(String groupBy) {

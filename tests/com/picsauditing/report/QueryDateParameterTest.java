@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.picsauditing.report.fields.QueryDateParameter;
+
 import junit.framework.TestCase;
 
 public class QueryDateParameterTest extends TestCase {
