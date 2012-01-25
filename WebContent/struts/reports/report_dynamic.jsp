@@ -37,5 +37,16 @@
 		</script>
 	
 		<script type="text/javascript" src="js/pics/app.js"></script>
+        
+        <script>
+      	/* Ext.Ajax.request({
+      	    url: 'ReportDynamic!availableFields.action?report=' + reportID,
+      	  	method: 'POST',
+            dataType: 'json',
+      	    success: function (response) {
+      	        var text = response.responseText;
+      	    }
+      	}); */
+        </script>
 	</body>
 </html>

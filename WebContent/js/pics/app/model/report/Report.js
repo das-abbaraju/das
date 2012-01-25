@@ -1,13 +1,27 @@
-Ext.define('PICS.model.report.Reports', {
+Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
 
-    // fields : ,
+    fields: [{
+        name: 'id'
+    }, {
+        name: 'modelType'
+    }, {
+        name: 'summary' // Custom title for report
+    }, {
+        name: 'description'
+    }],
     
-    proxy : {
-        type : 'ajax',
-        url : reportURL,
-        reader : {
-            type : 'json'
+    belongsTo: {
+        modal: 'Parameter',
+        associationKey: 'parameters'
+    },
+    
+    proxy: {
+        type: 'ajax',
+        url: 'ReportDynamic.action?report=' + reportID,
+        reader: {
+            type: 'json',
+            root: 'report'
         }
     }
 });

@@ -203,7 +203,7 @@ public class ReportDynamic extends PicsActionSupport {
 		for (QueryField field : builder.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
 			addName(field, obj);
-			obj.put("label", translateLabel(field));
+			obj.put("text", translateLabel(field));
 			addFilterType(field, obj);
 			addHelp(field, obj);
 			obj.put("category", translateCategory(field.getCategory()));
@@ -265,7 +265,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private void addHelp(QueryField field, JSONObject obj) {
 		String translatedText = getText("Report." + field.getDataIndex() + ".help");
 		if (translatedText != null)
-			obj.put("help", translatedText);
+			obj.put("description", translatedText);
 	}
 
 	private String translateLabel(QueryField field) {

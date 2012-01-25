@@ -13,6 +13,8 @@ Ext.define('PICS.view.report.FilterPanel', {
     title: 'Report Options',
     
     items: [{
+        xtype: 'reportfiltercolumngrid',
+        
         title: 'Columns'
     }, {
         title: 'Filters'
@@ -22,5 +24,10 @@ Ext.define('PICS.view.report.FilterPanel', {
         title: 'Share'
     }, {
         title: 'Save',
-    }]
+    }],
+    
+    initComponent: function () {
+        
+        this.callParent();
+    }
 });

@@ -7,6 +7,7 @@ Ext.define('PICS.view.report.Viewport', {
        'PICS.view.layout.Header',
        'PICS.view.layout.Menu',
        'PICS.view.report.FilterPanel',
+       'PICS.view.report.FilterColumnGrid',
        'PICS.view.report.Grid',
        'PICS.view.layout.Footer'
     ],
