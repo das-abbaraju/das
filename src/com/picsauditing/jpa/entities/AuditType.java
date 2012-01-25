@@ -22,7 +22,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import com.picsauditing.access.OpPerms;
 
@@ -30,7 +29,7 @@ import com.picsauditing.access.OpPerms;
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditType extends BaseTable implements Comparable<AuditType>, java.io.Serializable, RequiresTranslation {
+public class AuditType extends BaseTranslatableTable implements Comparable<AuditType>, java.io.Serializable, RequiresTranslation {
 
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
@@ -76,10 +75,8 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	protected OpPerms editPermission;
 	protected Workflow workFlow;
 	protected ScoreType scoreType;
-	protected String requiredLanguages = null;
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
-	private List<String> languages = new ArrayList<String>();
 
 	protected List<AuditCategory> topCategories;
 
@@ -380,36 +377,5 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	@Transient
 	public String getAutocompleteItem() {
 		return name.toString();
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 }

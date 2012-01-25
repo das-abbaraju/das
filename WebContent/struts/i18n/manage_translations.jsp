@@ -111,6 +111,19 @@
 					name="searchType" />
 			</div>
 			<div class="filterOption">
+				<a href="#" class="filterBox">Source Language</a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
+				<span class="clearLink q_box select">
+					<s:select
+						list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()"
+						multiple="true"
+						name="sourceLanguages"
+					/>
+					<br />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+			<div class="filterOption">
 				<a href="#" class="filterBox">Quality Rating</a> =
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 				<span class="clearLink q_box select">
@@ -126,10 +139,10 @@
 				</span>
 			</div>
 			<div class="filterOption">
-				Not Applicable:
+				Applicable:
 				<s:radio
-					list="#{'':'Any','true':'Not Applicable','false':'Applicable'}"
-					name="showNotApplicable"
+					list="#{'':'Any','false':'Not Applicable','true':'Applicable'}"
+					name="showApplicable"
 				/>
 			</div>
 			<div class="clear"></div>
@@ -199,7 +212,11 @@
 										value="%{qualityRating}"
 									/>
 									<br />
-									<s:checkbox name="translation.notApplicable" value="%{notApplicable}" /> Not Applicable
+									<s:checkbox name="translation.applicable" value="%{applicable}" /> Applicable
+									<br />
+									<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" 
+										headerKey="translation.sourceLanguage" cssClass="forms" 
+										name="translation.sourceLanguage" value="%{sourceLanguage}" /> Source Language
 								</div>
 								<span class="view">
 									<s:property value="value"/>

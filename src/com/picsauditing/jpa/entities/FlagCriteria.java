@@ -1,8 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,15 +13,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>, RequiresTranslation {
+public class FlagCriteria extends BaseTranslatableTable implements Comparable<FlagCriteria>, RequiresTranslation {
 
 	private String category;
 	private int displayOrder = 999;
@@ -44,7 +39,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 	private boolean flaggableWhenMissing = false;
 	private boolean insurance = false;
 	private FlagCriteriaOptionCode optionCode;
-	private String requiredLanguages = null;
 
 	public static final String BOOLEAN = "boolean";
 	public static final String NUMBER = "number";
@@ -52,8 +46,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 	public static final String STRING = "string";
 
 	public static final int EMR_AVERAGE_ID = 506;
-
-	private List<String> languages = new ArrayList<String>();
 
 	public String getCategory() {
 		return category;
@@ -283,36 +275,5 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria>,
 	@Override
 	public int compareTo(FlagCriteria o) {
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 }

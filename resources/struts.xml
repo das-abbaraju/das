@@ -1935,6 +1935,10 @@
 			<result>struts/i18n/manage_translations.jsp</result>
 		</action>
 		
+		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.ManageTranslations">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.ManageTranslations">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
@@ -1942,10 +1946,6 @@
 		
 		<action name="BatchTranslations" class="com.picsauditing.actions.BatchTranslationsAction">
 			<result>struts/i18n/batch_translations.jsp</result>
-		</action>
-
-		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.ManageTranslations">
-			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="TranslationETL" class="com.picsauditing.util.TranslationETL">

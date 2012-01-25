@@ -24,9 +24,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -37,7 +35,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseHistory implements Comparable<AuditQuestion>, RequiresTranslation {
+public class AuditQuestion extends BaseTranslatableHistory implements Comparable<AuditQuestion>, RequiresTranslation {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
@@ -84,7 +82,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private boolean hasTitleText;
 	private boolean hasHelpText;
 	private boolean hasRequirementText;
-	private String requiredLanguages = null;
 
 	private List<AuditQuestion> dependentRequired;
 	private List<AuditQuestion> dependentVisible;
@@ -94,7 +91,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
 	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<AuditQuestionFunctionWatcher>();
-	private List<String> languages = new ArrayList<String>();
 
 	private AuditExtractOption extractOption;
 	private List<AuditTransformOption> transformOptions;
@@ -722,37 +718,6 @@ public class AuditQuestion extends BaseHistory implements Comparable<AuditQuesti
 	@Override
 	public String getAutocompleteValue() {
 		return name.toString();
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 	
 	/**

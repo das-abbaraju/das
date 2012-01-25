@@ -20,7 +20,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.util.Strings;
@@ -29,7 +28,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTable implements Comparable<AuditCategory>, RequiresTranslation {
+public class AuditCategory extends BaseTranslatableTable implements Comparable<AuditCategory>, RequiresTranslation {
 
 	public static final int COMPANY_INFORMATION = 2;
 	public static final int GENERAL_SAFETY_INFORMATION = 8;
@@ -61,11 +60,9 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	private String uniqueCode;
 	private float scoreWeight = 0f;
 	private int columns = 1;
-	private String requiredLanguages = null;
 
 	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
-	private List<String> languages = new ArrayList<String>();
 
 	public AuditCategory() {
 
@@ -382,36 +379,5 @@ public class AuditCategory extends BaseTable implements Comparable<AuditCategory
 	@Transient
 	public boolean isPolicyInformationCategory() {
 		return "policyInformation".equals(this.getUniqueCode());
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 }

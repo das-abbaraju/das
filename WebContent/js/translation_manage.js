@@ -7,7 +7,7 @@
             	$('table.report .suggestTranslation').bind('click', this.suggestTranslation);
             	$('table.report form button.save').bind('click', this.saveTranslation);
             	$('table.report form input[type=checkbox], table.report form input[type=radio]')
-            		.bind('click', this.saveQualityRatingOrNotApplicable);
+            		.bind('click', this.saveQualityRatingOrApplicable);
             	$('#doneButton').bind('click', this.closeWindow);
             },
             
@@ -56,7 +56,7 @@
             	});
             },
             
-            saveQualityRatingOrNotApplicable: function () {
+            saveQualityRatingOrApplicable: function () {
             	var form = $(this).closest("form");
             	var cell = $(this).closest("td");
             	var value = $(this).val();

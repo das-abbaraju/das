@@ -11,23 +11,18 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
-
 import com.picsauditing.util.Strings;
 
 @Entity
 @Table(name = "audit_option_group")
 @SuppressWarnings("serial")
-public class AuditOptionGroup extends BaseTable implements RequiresTranslation {
+public class AuditOptionGroup extends BaseTranslatableTable implements RequiresTranslation {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
-	private String requiredLanguages = null;
 
 	private List<AuditOptionValue> values = new ArrayList<AuditOptionValue>();
 	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
-	private List<String> languages = new ArrayList<String>();
 
 	private int maxScore = 0;
 	/**
@@ -134,36 +129,5 @@ public class AuditOptionGroup extends BaseTable implements RequiresTranslation {
 	@Override
 	public String getAutocompleteValue() {
 		return name;
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 }

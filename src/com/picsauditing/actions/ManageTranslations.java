@@ -42,7 +42,8 @@ public class ManageTranslations extends ReportActionSupport {
 
 	// Pseudo filters
 	private int[] qualityRatings = null;
-	private Boolean showNotApplicable = null;
+	private Boolean showApplicable = null;
+	private String[] sourceLanguages = null;
 
 	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
@@ -144,7 +145,8 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.lastUsed fromLastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
-		sql.addField("t1.notApplicable fromNotApplicable");
+		sql.addField("t1.applicable fromApplicable");
+		sql.addField("t1.sourceLanguage fromSourceLanguage");
 		if (download) {
 			sql.addField("t1.updateDate fromUpdateDate");
 			sql.addField("t1.createdBy fromCreatedBy");
@@ -156,7 +158,8 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
-		sql.addField("t2.notApplicable toNotApplicable");
+		sql.addField("t2.applicable toApplicable");
+		sql.addField("t2.sourceLanguage toSourceLanguage");
 		if (download) {
 			sql.addField("t2.updateDate toUpdateDate");
 			sql.addField("t2.createdBy toCreatedBy");
@@ -203,9 +206,14 @@ public class ManageTranslations extends ReportActionSupport {
 					Strings.implode(qualityRatings)));
 		}
 
-		if (showNotApplicable != null) {
-			sql.addWhere(String.format("t1.notApplicable = %1$d OR t2.notApplicable = %1$s",
-					(showNotApplicable ? 1 : 0)));
+		if (showApplicable != null) {
+			sql.addWhere(String.format("t1.applicable = %1$d OR t2.applicable = %1$s",
+					(showApplicable ? 1 : 0)));
+		}
+
+		if (filterOn(sourceLanguages)) {
+			sql.addWhere(String.format("t1.sourceLanguage IN (%1$s) OR t2.sourceLanguage IN (%1$s)",
+					Strings.implodeForDB(sourceLanguages,",")));
 		}
 
 		if (isTracingOn()) {
@@ -232,7 +240,8 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setLocale(localeFrom.getLanguage());
 			from.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 					"fromQualityRating").toString())));
-			from.setNotApplicable(Integer.parseInt(row.get("fromNotApplicable").toString()) == 1);
+			from.setApplicable(Integer.parseInt(row.get("fromApplicable").toString()) == 1);
+			from.setSourceLanguage(row.get("fromSourceLanguage").toString());
 			Object fromLastUsed = row.get("fromLastUsed");
 			if (fromLastUsed != null)
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
@@ -250,7 +259,8 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setLocale(localeTo.getLanguage());
 					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 							"toQualityRating").toString())));
-					to.setNotApplicable(Integer.parseInt(row.get("toNotApplicable").toString()) == 1);
+					to.setApplicable(Integer.parseInt(row.get("toApplicable").toString()) == 1);
+					to.setSourceLanguage(row.get("fromSourceLanguage").toString());
 					Object toLastUsed = row.get("toLastUsed");
 					if (toLastUsed != null)
 						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
@@ -347,12 +357,20 @@ public class ManageTranslations extends ReportActionSupport {
 		this.qualityRatings = qualityRatings;
 	}
 
-	public Boolean getShowNotApplicable() {
-		return showNotApplicable;
+	public Boolean getShowApplicable() {
+		return showApplicable;
 	}
 
-	public void setShowNotApplicable(Boolean showNotApplicable) {
-		this.showNotApplicable = showNotApplicable;
+	public void setShowApplicable(Boolean showApplicable) {
+		this.showApplicable = showApplicable;
+	}
+
+	public String[] getSourceLanguages() {
+		return sourceLanguages;
+	}
+
+	public void setSourceLanguages(String[] sourceLanguages) {
+		this.sourceLanguages = sourceLanguages;
 	}
 
 	public boolean isTracingOn() {

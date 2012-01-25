@@ -268,10 +268,10 @@ public class TranslationETL extends PicsActionSupport {
 					element.appendChild(elementText);
 				}
 				
-				if (d.get("notApplicable") != null) {
-					element = document.createElement("notApplicable");
+				if (d.get("applicable") != null) {
+					element = document.createElement("applicable");
 					translation.appendChild(element);
-					elementText = document.createTextNode(d.get("notApplicable").toString());
+					elementText = document.createTextNode(d.get("applicable").toString());
 					element.appendChild(elementText);
 				}
 			}
@@ -353,7 +353,7 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, "creationDate", d.get("creationDate") == null ? null : d.get("creationDate").toString());
 					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
-					addField(t, "notApplicable", d.get("notApplicable") == null ? null : d.get("notApplicable").toString());
+					addField(t, "applicable", d.get("applicable") == null ? null : d.get("applicable").toString());
 
 					importedTranslations.get(t.getKey(), locale).add(t);
 				}
@@ -375,7 +375,7 @@ public class TranslationETL extends PicsActionSupport {
 		sql.addField("DATE_FORMAT(t.creationDate, '%Y-%m-%d %H:%i:%s') creationDate");
 		sql.addField("DATE_FORMAT(t.updateDate, '%Y-%m-%d %H:%i:%s') updateDate");
 		sql.addField("t.lastUsed");
-		sql.addField("t.notApplicable");
+		sql.addField("t.applicable");
 		sql.addWhere(where);
 		sql.addOrderBy("t.updateDate DESC, t.creationDate DESC");
 	}
@@ -405,8 +405,8 @@ public class TranslationETL extends PicsActionSupport {
 			t.setUpdateDate(sdf.parse(value));
 		if (name.equals("lastUsed"))
 			t.setLastUsed(sdf2.parse(value));
-		if (name.equals("notApplicable"))
-			t.setNotApplicable(Integer.parseInt(value) == 1);
+		if (name.equals("applicable"))
+			t.setApplicable(Integer.parseInt(value) == 1);
 	}
 
 	@Transactional

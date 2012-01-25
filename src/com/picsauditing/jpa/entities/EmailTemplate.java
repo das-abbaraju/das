@@ -2,11 +2,9 @@ package com.picsauditing.jpa.entities;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -18,13 +16,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
-
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
-public class EmailTemplate extends BaseTable implements java.io.Serializable, RequiresTranslation {
+public class EmailTemplate extends BaseTranslatableTable implements java.io.Serializable, RequiresTranslation {
 	private int accountID;
 	private String templateName = "";
 	private String subject;
@@ -36,9 +31,6 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 	private boolean allowsVelocity = false;
 	private boolean html = false;
 	private boolean translated = false;
-	private String requiredLanguages = null;
-
-	private List<String> languages = new ArrayList<String>();
 	
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
@@ -163,36 +155,5 @@ public class EmailTemplate extends BaseTable implements java.io.Serializable, Re
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
-	}
-
-	public String getRequiredLanguages() {
-		return requiredLanguages;
-	}
-
-	public void setRequiredLanguages(String requiredLanguages) {
-		this.requiredLanguages = requiredLanguages;
-	}
-
-	@Transient
-	public List<String> getLanguages() {
-		if (requiredLanguages != null)
-		{
-			JSONArray JSONLanguages = (JSONArray) JSONValue.parse(requiredLanguages);
-			languages.clear();
-			for (Object obj : JSONLanguages) {
-				String language = (String) obj;
-				languages.add(language);
-			}
-		}
-		return languages;
-	}
-
-	@Transient
-	public void setLanguages(List<String> languages) {
-		this.languages = languages;
-		JSONArray jsonArray = new JSONArray();
-		for (String language : languages)
-			jsonArray.add(language);
-		requiredLanguages = jsonArray.toJSONString();
 	}
 }
