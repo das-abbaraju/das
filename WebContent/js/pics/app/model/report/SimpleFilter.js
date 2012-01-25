@@ -2,7 +2,7 @@ Ext.define('PICS.model.report.SimpleFilter', {
     extend: 'Ext.data.Model',
 
     fields: [{
-        name: 'field',
+        name: 'column',
         type: 'string'
     }, {
         name: 'not',
@@ -11,12 +11,12 @@ Ext.define('PICS.model.report.SimpleFilter', {
         name: 'operator',
         type: 'string'
     }, {
-        name: 'field2',
+        name: 'column2',
         type: 'string'
     }, {
         name: 'value',
         type: 'string'
     }],
     
-    belongsTo: 'Parameter'
+    belongsTo: 'Report'
 });

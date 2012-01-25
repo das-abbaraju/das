@@ -203,5 +203,7 @@ Ext.define('PICS.view.layout.Menu', {
     }, {
         text: 'See JSON Data',
         url: 'ReportDynamic!data.action?report=' + reportID
+    }, {
+        text: 'Save'
     }]
 });

@@ -2,18 +2,15 @@ Ext.define('PICS.model.report.SimpleField', {
 	extend: 'Ext.data.Model',
 
 	fields: [{
-		name: 'field',
+		name: 'name',
 		type: 'string'
 	}, {
-		name: 'function',
+		name: 'method',
 		type: 'string'
 	}, {
 		name: 'option',
 		type: 'string'
-	}, {
-		name: 'ascending',
-		type: 'boolean'
 	}],
 	
-	belongsTo: 'Parameter'
+	belongsTo: 'Report'
 });

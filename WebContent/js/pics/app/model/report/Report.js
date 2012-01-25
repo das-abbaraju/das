@@ -11,14 +11,22 @@ Ext.define('PICS.model.report.Report', {
         name: 'description'
     }],
     
-    belongsTo: {
-        modal: 'Parameter',
-        associationKey: 'parameters'
-    },
+    hasMany: [{
+        model: 'SimpleField', 
+        name: 'columns'
+    }, {
+        model: 'SimpleFilter', 
+        name: 'filters'
+    }, {
+        model: 'SimpleSort', 
+        name: 'sorts'
+    }],
     
     proxy: {
         type: 'ajax',
-        url: 'ReportDynamic.action?report=' + reportID,
+        api: {
+            read: 'js/pics/data/report.json'
+        },
         reader: {
             type: 'json',
             root: 'report'

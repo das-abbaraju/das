@@ -1,0 +1,41 @@
+{
+	success: true,
+    report: {
+        id: 7,
+        modelType: 'Contractor',
+        summary: 'Recently Added Contractors',
+        description: 'Missing Credit Card',
+        columns: [{
+            name: 'AccountName'
+        }, {
+            name: 'AccountStatus'
+        }, {
+            name: 'AccountID'
+        }, {
+            name: 'MembershipDateYear',
+            method: 'Year'
+        }, {
+            name: 'MembershipDate'
+        }, {
+            name: 'AccountName',
+            method: 'Left',
+            option: '10'
+        }],
+        filters: [{
+            column: 'AccountName',
+            not: true,
+            operator: 'BeginsWith',
+            value: 'Trevor'
+        }, {
+            column: 'ContractorPaymentExpires',
+            operator: 'GreaterThan',
+            column2: 'ContractorCreditCardExpiration'
+        }],
+        sorts: [{
+            column: 'MembershipDateYear'
+        }, {
+            column: 'AccountName',
+            ascending: false
+        }]
+    }
+}

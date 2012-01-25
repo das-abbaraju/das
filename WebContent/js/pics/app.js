@@ -5,7 +5,9 @@ Ext.Loader.setConfig({
 Ext.application({
 	name: 'PICS',
 	appFolder: 'js/pics/app',
-	models: [ 'report.Report', 'report.ReportRow', 'report.AvailableField', 'report.Parameter', 'report.SimpleField', 'report.SimpleFilter' ],
+	
+	//controllers: [ 'report.Reports' ],
+	models: [ 'report.Report', 'report.ReportRow', 'report.AvailableField', 'report.SimpleField', 'report.SimpleFilter', 'report.SimpleSort' ],
 	stores: [ 'report.Reports', 'report.ReportData', 'report.AvailableFields' ],
 
 	launch: function() {

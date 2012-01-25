@@ -23,7 +23,7 @@ Ext.define('PICS.view.report.FilterPanel', {
     }, {
         title: 'Share'
     }, {
-        title: 'Save',
+        title: 'Save'
     }],
     
     initComponent: function () {
