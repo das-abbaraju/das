@@ -8,27 +8,17 @@ import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
 public class SimpleReportField implements JSONable {
-	private String field;
+	private String name;
 	private QueryFunction function = null;
 	private String option;
 	private boolean ascending = true;
 	// We are thinking about adding the render field to support custom renderers per report
 	private String renderer = null;
-	private QueryField queryField;
-
-	public QueryField getQueryField() {
-		return queryField;
-	}
-
-	public void setQueryField(QueryField queryField) {
-		this.field = queryField.getDataIndex();
-		this.queryField = queryField;
-	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		json.put("field", field);
+		json.put("name", name);
 		if (function != null) {
 			json.put("function", function.toString());
 			if (!Strings.isEmpty(option))
@@ -42,7 +32,7 @@ public class SimpleReportField implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		this.field = (String) json.get("field");
+		this.name = (String) json.get("name");
 		Object functionObj = json.get("function");
 		if (functionObj != null) {
 			this.function = QueryFunction.valueOf(functionObj.toString());
@@ -57,7 +47,7 @@ public class SimpleReportField implements JSONable {
 
 	// We might want to consider moving this to QueryField
 	public String toSQL(Map<String, QueryField> availableFields) {
-		String fieldSQL = availableFields.get(field).getSql();
+		String fieldSQL = availableFields.get(name).getSql();
 		if (function == null)
 			return fieldSQL;
 		switch (function) {
@@ -73,7 +63,7 @@ public class SimpleReportField implements JSONable {
 		case Date:
 			return "DATE(" + fieldSQL + ")";
 		case Format:
-			availableFields.get(field).setType(ExtFieldType.String);
+			availableFields.get(name).setType(ExtFieldType.String);
 			return "DATE_FORMAT(" + fieldSQL + ", '" + option + "')";
 		case Lower:
 			return "LOWER(" + fieldSQL + ")";
@@ -95,12 +85,12 @@ public class SimpleReportField implements JSONable {
 		return fieldSQL;
 	}
 
-	public String getField() {
-		return field;
+	public String getName() {
+		return name;
 	}
 
 	public void setField(String field) {
-		this.field = field;
+		this.name = field;
 	}
 
 	public QueryFunction getFunction() {

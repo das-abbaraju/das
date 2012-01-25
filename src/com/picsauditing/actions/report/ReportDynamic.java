@@ -67,6 +67,18 @@ public class ReportDynamic extends PicsActionSupport {
 		return "list";
 	}
 
+	public String find() {
+		try {
+			checkReport();
+			json.put("report", report.toJSON(true));
+			json.put("success", true);
+		} catch (Exception e) {
+			json.put("success", false);
+			json.put("message", e.getCause() + " " + e.getMessage());
+		}
+		return JSON;
+	}
+
 	public String save() {
 		checkReport();
 		report.setAuditColumns(permissions);
@@ -238,7 +250,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public JSONArray getGridColumns() {
 		JSONArray fields = new JSONArray();
 
-		fields.add(createRunNumColumn());
+		fields.add(createRowNumColumn());
 		for (QueryField field : builder.getIncludedFields()) {
 			field.setLabel(translateLabel(field));
 			// if (field.getDataIndex() != null && column.getFunction() != null) {
@@ -284,7 +296,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return translatedText;
 	}
 
-	private JSONObject createRunNumColumn() {
+	private JSONObject createRowNumColumn() {
 		JSONObject rowNum = new JSONObject();
 		rowNum.put("xtype", "rownumberer");
 		rowNum.put("width", 27);

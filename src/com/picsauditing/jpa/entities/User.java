@@ -635,15 +635,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("name", name);
-		obj.put("account", account == null ? null : account.toJSON());
-		obj.put("group", isGroup());
-		obj.put("active", isActiveB());
-		obj.put("email", email);
-		obj.put("fax", fax);
-		obj.put("phone", phone);
 
 		if (full) {
-			obj.put("creationDate", creationDate == null ? null : creationDate.getTime());
+			obj.put("account", account == null ? null : account.toJSON());
+			obj.put("group", isGroup());
+			obj.put("active", isActiveB());
+			obj.put("email", email);
+			obj.put("fax", fax);
+			obj.put("phone", phone);
 			obj.put("lastLogin", lastLogin);
 			obj.put("username", username);
 

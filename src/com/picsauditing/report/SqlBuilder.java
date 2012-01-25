@@ -84,7 +84,7 @@ public class SqlBuilder {
 		if (definition == null || definition.getColumns().size() == 0)
 			return true;
 		for (SimpleReportField requestField : definition.getColumns()) {
-			if (fieldName.equalsIgnoreCase(requestField.getField()))
+			if (fieldName.equalsIgnoreCase(requestField.getName()))
 				return true;
 		}
 		return false;
@@ -154,9 +154,9 @@ public class SqlBuilder {
 		}
 
 		for (SimpleReportField field : definition.getOrderBy()) {
-			String orderBy = field.getField();
-			if (!sql.getFields().contains(field.getField()))
-				orderBy = availableFields.get(field.getField()).getSql();
+			String orderBy = field.getName();
+			if (!sql.getFields().contains(field.getName()))
+				orderBy = availableFields.get(field.getName()).getSql();
 			if (!field.isAscending())
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);

@@ -21,6 +21,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Permissions;
@@ -31,7 +32,7 @@ import com.picsauditing.search.IndexableField;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseTable extends BaseTranslatable implements JSONable, Serializable, Autocompleteable {
+public abstract class BaseTable extends BaseTranslatable implements JSONable, Serializable, Autocompleteable, JSONAware {
 
 	protected int id;
 	protected User createdBy;
@@ -197,7 +198,11 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 		}
 		return obj;
 	}
-
+	
+	public String toJSONString() {
+		return toJSON(true).toJSONString();
+	}
+	
 	public void fromJSON(JSONObject obj) {
 		// TODO write this!!
 

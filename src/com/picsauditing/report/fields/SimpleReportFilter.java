@@ -90,9 +90,9 @@ public class SimpleReportFilter implements JSONable {
 	}
 
 	public String toExpression(Map<String, QueryField> availableFields) {
-		QueryField queryField = availableFields.get(field.getField());
+		QueryField queryField = availableFields.get(field.getName());
 		String columnSQL = field.toSQL(availableFields);
-		if (field.getField().equals("accountName"))
+		if (field.getName().equals("accountName"))
 			columnSQL = "a.nameIndex";
 		if (queryField.getType().equals(ExtFieldType.Date)) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
@@ -102,7 +102,7 @@ public class SimpleReportFilter implements JSONable {
 		String expression = columnSQL + " " + operator.getOperand() + " ";
 		String wrappedValue = null;
 
-		if (StringUtils.isEmpty(value) && field2.getField() != null) {
+		if (StringUtils.isEmpty(value) && field2.getName() != null) {
 			String columnSQL2 = field2.toSQL(availableFields);
 			wrappedValue = columnSQL2;
 		}
