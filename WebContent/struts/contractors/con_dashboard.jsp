@@ -124,8 +124,13 @@
 								<s:if test="contractor.soleProprietor">
 									<div class="alert">
 										<s:text name="ContractorView.SoleProprietor" />
-										<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip_sole_sync" title="Sole Proprietor"></a>
-										
+										<a
+											href="#"
+											onclick="return false;"
+											class="cluetip help"
+											rel="#cluetip_sole_sync"
+											title="<s:text name="ContractorRegistration.SoleProprietor.heading" />"
+										></a>
 										<div style="display: none;" id="cluetip_sole_sync">
 											<s:text name="ContractorView.SoleProprietor.fieldhelp" />
 										</div>
