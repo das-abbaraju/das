@@ -115,8 +115,6 @@ public class Cron extends PicsActionSupport {
 	@Autowired
 	private EbixLoader ebixLoader;
 	@Autowired
-	private EmailBuilder emailBuilder;
-	@Autowired
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private IndexerEngine indexer;
@@ -415,9 +413,8 @@ public class Cron extends PicsActionSupport {
 			if (!emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
 				OperatorAccount requestedByClientSite = contractor.getRequestedBy();
 
-				emailBuilder.clear();
-
-				emailBuilder.setPermissions(permissions);
+				EmailBuilder emailBuilder = new EmailBuilder();
+				emailBuilder.setFromAddress("Registrations@picsauditing.com");
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailExclusionList.add(contractor.getPrimaryContact().getEmail());
 
@@ -468,9 +465,9 @@ public class Cron extends PicsActionSupport {
 
 			if (clientSite.getPrimaryContact() != null
 					&& !emailExclusionList.contains(clientSite.getPrimaryContact().getEmail())) {
-				emailBuilder.clear();
+				EmailBuilder emailBuilder = new EmailBuilder();
 
-				emailBuilder.setPermissions(permissions);
+				emailBuilder.setFromAddress("Registrations@picsauditing.com");
 				emailBuilder.setToAddresses(clientSite.getPrimaryContact().getEmail());
 				emailExclusionList.add(clientSite.getPrimaryContact().getEmail());
 
@@ -549,13 +546,13 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorRegistrationRequest crr : list) {
 			if (!emailExclusionList.contains(crr.getEmail())) {
-				emailBuilder.clear();
+				EmailBuilder emailBuilder = new EmailBuilder();
 
 				if ((templateID == 212 || templateID == 214) && crr.getDeadline().before(new Date()))
 					templateID++;
 				emailBuilder.setTemplate(templateID);
 
-				emailBuilder.setPermissions(permissions);
+				emailBuilder.setFromAddress("Registrations@picsauditing.com");
 				emailBuilder.setToAddresses(crr.getEmail());
 				emailExclusionList.add(crr.getEmail());
 
@@ -607,9 +604,9 @@ public class Cron extends PicsActionSupport {
 
 			if (clientSiteUser != null && clientSiteUser.getEmail() != null
 					&& !emailExclusionList.contains(clientSiteUser.getEmail())) {
-				emailBuilder.clear();
+				EmailBuilder emailBuilder = new EmailBuilder();
 
-				emailBuilder.setPermissions(permissions);
+				emailBuilder.setFromAddress("Registrations@picsauditing.com");
 				emailBuilder.setToAddresses(clientSiteUser.getEmail());
 				emailExclusionList.add(clientSiteUser.getEmail());
 
@@ -687,7 +684,8 @@ public class Cron extends PicsActionSupport {
 
 		for (ContractorAccount cAccount : cMap.keySet()) {
 			String emailAddress = Strings.implode(cMap.get(cAccount), ",");
-			emailBuilder.clear();
+			EmailBuilder emailBuilder = new EmailBuilder();
+
 			emailBuilder.setTemplate(templateMap.get(cAccount));
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorBilling);
 			emailBuilder.setCcAddresses(emailAddress);
@@ -748,7 +746,8 @@ public class Cron extends PicsActionSupport {
 		List<ContractorAccount> conList = contractorAccountDAO.findBidOnlyContractors();
 
 		for (ContractorAccount cAccount : conList) {
-			emailBuilder.clear();
+			EmailBuilder emailBuilder = new EmailBuilder();
+			
 			emailBuilder.setTemplate(70);
 			// No Action Email Notification - Contractor
 			emailBuilder.setContractor(cAccount, OpPerms.ContractorAdmin);
