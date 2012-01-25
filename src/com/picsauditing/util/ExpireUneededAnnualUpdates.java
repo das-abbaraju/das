@@ -7,6 +7,8 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.util.SpringUtils;
+
 
 public class ExpireUneededAnnualUpdates {
 
@@ -21,6 +23,12 @@ public class ExpireUneededAnnualUpdates {
 						|| (audit.getExpiresDate().getTime() < earliestAnnualUpdate.getExpiresDate().getTime()))
 					earliestAnnualUpdate = audit;
 			}
+		}
+		
+		if (count > AuditType.COMPLETED_ANNUAL_ADDENDUM_NEEDED && earliestAnnualUpdate != null) {
+			earliestAnnualUpdate.setExpiresDate(new Date());
+			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
+			dao.save(earliestAnnualUpdate);
 		}
 	}
 	
