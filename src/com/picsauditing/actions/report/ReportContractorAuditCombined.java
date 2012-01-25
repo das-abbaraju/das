@@ -98,7 +98,7 @@ public class ReportContractorAuditCombined extends ReportContractorAudits {
 			}
 
 			if (getFilter().isShowAuditStatus() && getFilter().getAuditStatus() == null)
-				getFilter().setAuditStatus(AuditStatus.valuesWithoutPending());
+				getFilter().setAuditStatus(AuditStatus.activeStatusesBeyondPending());
 
 			getFilter().setShowOperator(false);
 			getFilter().setShowTrade(false);

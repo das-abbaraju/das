@@ -7,9 +7,10 @@ import org.junit.Test;
 public class AuditStatusTest extends TestCase {
 	@Test
 	public void testStatusArray() {
-		AuditStatus[] statuses = AuditStatus.valuesWithoutPending();
+		AuditStatus[] statuses = AuditStatus.activeStatusesBeyondPending();
 		assertEquals(6, statuses.length);
-		assertEquals(AuditStatus.Resubmitted, statuses[3]);
+		assertEquals(AuditStatus.Incomplete, statuses[0]);
+		assertEquals(AuditStatus.Approved, statuses[5]);
 	}
 
 }

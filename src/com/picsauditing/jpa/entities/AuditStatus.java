@@ -136,7 +136,7 @@ public enum AuditStatus implements Translatable {
 		return false;
 	}
 	
-	static public AuditStatus[] valuesWithoutPending() {
+	static public AuditStatus[] activeStatusesBeyondPending() {
 		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 3];
 		int i = 0;
 		for (AuditStatus status : AuditStatus.values()) {
