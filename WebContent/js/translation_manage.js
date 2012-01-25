@@ -7,7 +7,8 @@
             	$('table.report .suggestTranslation').bind('click', this.suggestTranslation);
             	$('table.report form button.save').bind('click', this.saveTranslation);
             	$('table.report form input[type=checkbox], table.report form input[type=radio]')
-            		.bind('click', this.saveQualityRatingOrApplicable);
+            		.bind('click', this.saveParametersThroughAjax);
+            	$('table.report form select').bind('change', this.saveParametersThroughAjax);
             	$('#doneButton').bind('click', this.closeWindow);
             },
             
@@ -56,7 +57,7 @@
             	});
             },
             
-            saveQualityRatingOrApplicable: function () {
+            saveParametersThroughAjax: function () {
             	var form = $(this).closest("form");
             	var cell = $(this).closest("td");
             	var value = $(this).val();

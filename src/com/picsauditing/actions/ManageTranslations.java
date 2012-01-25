@@ -85,7 +85,7 @@ public class ManageTranslations extends ReportActionSupport {
 						if (translation.getQualityRating() == null) {
 							translation.setQualityRating(TranslationQualityRating.Good);
 						}
-
+						
 						dao.save(translation);
 						out.put("id", translation.getId());
 					}
@@ -125,10 +125,20 @@ public class ManageTranslations extends ReportActionSupport {
 		return SUCCESS;
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
 	public String update() {
 		if (translation != null) {
 			translation.setAuditColumns();
+			
+			if (!Strings.isEmpty(translation.getSourceLanguage())) {
+				List<AppTranslation> otherLanguages = (List<AppTranslation>) dao.findWhere(AppTranslation.class, "t.msgKey = " + translation.getKey());
+				for (AppTranslation otherLanguage : otherLanguages) {
+					otherLanguage.setSourceLanguage(translation.getSourceLanguage());
+					dao.save(otherLanguage);
+				}
+			}
+			
 			dao.save(translation);
 		}
 
