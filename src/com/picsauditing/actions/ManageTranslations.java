@@ -214,9 +214,6 @@ public class ManageTranslations extends ReportActionSupport {
 			else {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 			}
-		} else if (permissions.getAdminID() == 0 && (permissions.isContractor() || permissions.isOperatorCorporate())) {
-			// addAlertMessage("Turn On Tracing to Use this report");
-			// return SUCCESS;
 		}
 
 		return sql;
