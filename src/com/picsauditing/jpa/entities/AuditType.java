@@ -57,7 +57,7 @@ public class AuditType extends BaseTable implements Comparable<AuditType>, java.
 	public static final int COMPLYWORKS_PQF = 271;
 	public static final int ISN_US_PQF = 281;
 	
-	public static final int COMPLETED_ANNUAL_ADDENDUM_NEEDED = 3;
+	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
 	protected TranslatableString name;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;

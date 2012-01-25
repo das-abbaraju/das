@@ -13,19 +13,19 @@ import com.picsauditing.util.SpringUtils;
 public class ExpireUneededAnnualUpdates {
 
 	public static void calculate(ContractorAccount contractor) {
-		int count = 0;
+		int completedAnnualAddendumCount = 0;
 		ContractorAudit earliestAnnualUpdate = null;
 
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (isCompletedAnnualAddendum(audit)) {
-				count++;
+				completedAnnualAddendumCount++;
 				if (earliestAnnualUpdate == null
 						|| (audit.getExpiresDate().getTime() < earliestAnnualUpdate.getExpiresDate().getTime()))
 					earliestAnnualUpdate = audit;
 			}
 		}
 		
-		if (count > AuditType.COMPLETED_ANNUAL_ADDENDUM_NEEDED && earliestAnnualUpdate != null) {
+		if (completedAnnualAddendumCount > AuditType.ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS && earliestAnnualUpdate != null) {
 			earliestAnnualUpdate.setExpiresDate(new Date());
 			ContractorAuditDAO dao = (ContractorAuditDAO) SpringUtils.getBean("ContractorAuditDAO");
 			dao.save(earliestAnnualUpdate);
