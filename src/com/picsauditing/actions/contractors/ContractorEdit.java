@@ -213,14 +213,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	@RequiredPermission(value = OpPerms.RemoveContractors)
 	public String delete() throws Exception {
-		for (ContractorAudit audit : contractor.getAudits()) {
-			for (ContractorAuditOperator cao : audit.getOperators()) {
-				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Expired, permissions);
-				auditDao.save(caow);
-				auditDao.save(cao);
-			}
-		}
-
 		for (User user : contractor.getUsers()) {
 			user.setActive(false);
 			userDAO.save(user);

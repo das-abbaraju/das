@@ -270,11 +270,6 @@ public class AuditBuilder {
 				conAudit.setLastRecalculation(null);
 				contractorAuditOperatorDAO.save(cao);
 			}
-			if (conAudit.isExpired()) {
-				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Expired, null);
-				caow.setNotes("Expiring " + conAudit.getAuditType().getName());
-				contractorAuditOperatorDAO.save(caow);
-			}
 			
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}

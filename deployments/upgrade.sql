@@ -14,6 +14,19 @@ where a.type = 'Contractor' and a.status = 'Active'
 and not exists (select * from contractor_audit_operator cao where ca.id = cao.auditID and cao.visible = 1 and cao.status in ('Pending','Submitted','Incomplete','Resubmitted'))
 --
 
+-- PICS-4378 Removed Expired status on Caos
+-- ones with CaoWs
+update contractor_audit_operator cao
+join contractor_audit_operator_workflow caow on cao.id=caow.caoID
+set cao.status=caow.previousStatus
+where cao.status='Expired' and caow.status='Expired';
+
+-- ones without CaoWs
+update contractor_audit_operator cao
+set cao.status='NotApplicable'
+where cao.status='Expired';
+--
+
 -- -----------------------------------------------------------------------------------------------
 -- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
 -- EXAMPLES:

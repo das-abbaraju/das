@@ -102,10 +102,6 @@ public enum AuditStatus implements Translatable {
 		return this.equals(Complete);
 	}
 
-	public boolean isExpired() {
-		return this.equals(Expired);
-	}
-
 	/**
 	 * Is the status Pending or Submitted
 	 * 
@@ -140,7 +136,7 @@ public enum AuditStatus implements Translatable {
 		return false;
 	}
 	
-	static public AuditStatus[] valuesWithoutPendingExpired() {
+	static public AuditStatus[] valuesWithoutPending() {
 		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 3];
 		int i = 0;
 		for (AuditStatus status : AuditStatus.values()) {

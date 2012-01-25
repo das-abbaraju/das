@@ -7,7 +7,7 @@ import org.junit.Test;
 public class AuditStatusTest extends TestCase {
 	@Test
 	public void testStatusArray() {
-		AuditStatus[] statuses = AuditStatus.valuesWithoutPendingExpired();
+		AuditStatus[] statuses = AuditStatus.valuesWithoutPending();
 		assertEquals(6, statuses.length);
 		assertEquals(AuditStatus.Resubmitted, statuses[3]);
 	}

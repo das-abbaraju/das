@@ -312,7 +312,7 @@ public class ContractorAuditDAO extends PicsDAO {
 			sql.addJoin("JOIN contractor_audit_operator cao ON ca.id = cao.auditID AND cao.visible = 1");
 			sql.addWhere("ca.auditorID IS NOT NULL");
 			sql.addWhere("ca.auditTypeID IN (2,3)");
-			sql.addWhere("cao.status NOT IN ('NotApplicable', 'Expired')");
+			sql.addWhere("cao.status NOT IN ('NotApplicable')");
 			sql.addGroupBy("a.country, a.state");
 			sql.addOrderBy("a.country, a.state");
 			report.setSql(sql);

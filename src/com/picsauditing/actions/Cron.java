@@ -168,8 +168,8 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nExpiring Audits and cao and stamping notes...");
-				contractorAuditOperatorDAO.expireAudits();
+				startTask("\nResetting Renewable Audits and cao and stamping notes...");
+				contractorAuditOperatorDAO.resetRenewableAudits();
 				endTask();
 			} catch (Throwable t) {
 				handleException(t);
