@@ -35,6 +35,9 @@ public abstract class AuditBuilderBase {
 			blank.setId(-1);
 			this.trades.add(blank);
 		}
+		// FIXME PICS-4324 follow-up: Replace the following code with ... 
+		// contractorTypes =  contractor.getAccountTypes();
+		// ... and find other places to do it, too.
 		if (contractor.isOnsiteServices())
 			contractorTypes.add(ContractorType.Onsite);
 		if (contractor.isOffsiteServices())
