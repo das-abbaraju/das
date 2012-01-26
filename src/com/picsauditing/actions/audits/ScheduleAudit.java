@@ -374,7 +374,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	@SuppressWarnings("unused")
-	private String changeSelectedTimeZone() throws Exception {
+	public String changeSelectedTimeZone() throws Exception {
 		findTimeslots(selectedTimeZone);
 		return "picker";
 	}

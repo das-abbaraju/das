@@ -75,14 +75,14 @@
 		<s:include value="../contractors/conHeader.jsp" />
 	
 		<s:form cssClass="schedule-audit-form schedule-audit-select-form">
+            <s:hidden name="auditID" />
+            
 			<fieldset class="form bottom">
 				<h2 class="formLegend"><s:text name="ScheduleAudit.label.ChooseAuditTime" /></h2>
 				
 				<ol>
 					<s:if test="permissions.admin">
 						<li>
-							<s:hidden name="auditID" />
-							
 							<s:submit cssClass="picsbutton" method="edit" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" />
 						</li>
 					</s:if>
