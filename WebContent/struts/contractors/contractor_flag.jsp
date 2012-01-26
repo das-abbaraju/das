@@ -297,7 +297,45 @@ fieldset.form {
 									</s:text>
 								</s:if>
 
-								<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0">
+								<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0 && !displayCorporate">
+									<s:iterator id="key" value="flagDataMap.keySet()">
+										<s:iterator id="data" value="flagDataMap.get(#key)">
+											<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
+												<s:set name="flagoverride"
+													value="%{isFlagDataOverride(#data, #data.operator)}" />
+
+												<s:if test="#flagoverride != null">
+													<s:text name="ContractorFlag.ManualIndividualForceFlagInfo">
+														<s:param>
+															<s:property value="#flagoverride.criteria.label" />
+														</s:param>
+														<s:param>
+															<s:property
+																value="#flagoverride.forceflag.getSmallIcon()"
+																escape="false" />
+														</s:param>
+														<s:param>
+															<s:date name="#flagoverride.forceEnd"
+																format="MMM d, yyyy" />
+														</s:param>
+														<s:param>
+															<s:property value="#flagoverride.updatedBy.name" />
+														</s:param>
+														<s:param>
+															<s:property value="#flagoverride.updatedBy.account.name" />
+														</s:param>
+														<s:param>
+															<s:if test="#flagoverride.operator.corporate">
+																<s:text name="ContractorFlag.ForAllSites" />
+															</s:if>
+														</s:param>
+													</s:text>
+												</s:if>
+											</s:if>
+										</s:iterator>
+									</s:iterator>
+								</s:if>
+								<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0 && displayCorporate">
 									<s:iterator id="key" value="flagDataMap.keySet()">
 										<s:iterator id="data" value="flagDataMap.get(#key)">
 											<s:if test="#data.flag.redAmber || isFlagDataOverride(#data, #data.operator)">
@@ -432,10 +470,12 @@ fieldset.form {
 									</a>
 								</div>
 
-								<a id="override_link" class="override_wrench" href="#"
-									onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;"><s:text
-										name="ContractorFlag.ForceOverallFlagColor"></s:text>
-								</a>
+								<s:if test="permittedToForceFlags" >
+									<a id="override_link" class="override_wrench" href="#"
+										onclick="$('#override').slideDown(); $('#override_link').slideUp(); return false;"><s:text
+											name="ContractorFlag.ForceOverallFlagColor"></s:text>
+									</a>
+								</s:if>
 								<br />
 							</s:else>
 						</pics:permission>
@@ -493,7 +533,7 @@ fieldset.form {
 
 									<tr class="<s:property value="#data.flag" />">
 										<td class="center"
-											<pics:permission perm="EditForcedFlags">rowspan="2"</pics:permission>>
+											<pics:permission perm="EditForcedFlags"><s:if test="permittedToForceFlags" >rowspan="2"</s:if></pics:permission>>
 											<s:property value="#data.flag.smallIcon" escape="false" /></td>
 
 										<s:if test="displayCorporate"><td><s:property value="#data.operator.name" /></td></s:if>
@@ -604,7 +644,7 @@ fieldset.form {
 											</s:if></td>
 									</tr>
 									
-										<pics:permission perm="EditForcedFlags">
+										<pics:permission perm="EditForcedFlags"><s:if test="permittedToForceFlags" >
 											<tr id="<s:property value="%{#data.id}" />_override"
 												class="_override_ clickable">
 												<td <s:if test="displayCorporate">colspan="4"</s:if><s:else>colspan="3"</s:else>>
@@ -702,7 +742,7 @@ fieldset.form {
 																name="ContractorFlag.ShowForceLine"></s:text>
 													</a> </span></td>
 											</tr>
-										</pics:permission>
+										</s:if></pics:permission>
 								</s:if>
 							</s:iterator>
 						</s:iterator>

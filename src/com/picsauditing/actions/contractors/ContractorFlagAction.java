@@ -76,6 +76,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	private Map<FlagColor, Integer> flagCounts;
 	private int[] operatorIds = null;
 	private boolean displayCorporate = false;
+	private boolean permittedToForceFlags = false;
 
 	private File file;
 	private String fileContentType;
@@ -123,7 +124,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 	
 	private boolean canFindOperator() {
-		if (permissions.isOperator() || (opID == 0 && permissions.isCorporate()))
+		if (opID == 0 && (permissions.isOperator() ||  permissions.isCorporate()))
 			opID = permissions.getAccountId();
 		
 		if (permissions.isCorporate() && permissions.getAccountId() == opID) {
@@ -155,12 +156,24 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return false;
 		}
 		
-		operatorIds = new int[getActiveOperators().size() + 1];
 		int i = 0;
-		for (ContractorOperator co1: getActiveOperators()) {
-			operatorIds[i++] = co1.getOperatorAccount().getId();
+		if (displayCorporate) {
+			operatorIds = new int[getActiveOperators().size() + 1];
+			for (ContractorOperator co1 : getActiveOperators()) {
+				operatorIds[i++] = co1.getOperatorAccount().getId();
+			}
+		} else {
+			operatorIds = new int[1];
 		}
 		operatorIds[i] = opID;
+		
+		if (permissions.hasPermission(OpPerms.EditForcedFlags)) {
+			if (permissions.isCorporate() || permissions.isAdmin()) {
+				permittedToForceFlags = true;
+			} else if (permissions.isOperator() && permissions.getAccountId() == opID) {
+				permittedToForceFlags = true;
+			}
+		}
 		
 		return true;
 	}
@@ -867,5 +880,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public void setDisplayCorporate(boolean displayCorporate) {
 		this.displayCorporate = displayCorporate;
+	}
+
+	public boolean isPermittedToForceFlags() {
+		return permittedToForceFlags;
+	}
+
+	public void setPermittedToForceFlags(boolean permittedToForceFlags) {
+		this.permittedToForceFlags = permittedToForceFlags;
 	}
 }
