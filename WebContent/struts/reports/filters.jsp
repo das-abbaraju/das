@@ -788,6 +788,22 @@
 			</div>
 		</s:if>
 		
+		<s:if test="filter.showClosedOnDate">
+			<div class="filterOption">
+				<a href="#" class="filterBox"><s:text name="ReportNewRequestedContractor.ClosedOnDate" /></a> =
+				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+				<br />
+				<span class="clearLink q_box textfield">
+					<s:textfield cssClass="forms datepicker" size="10" id="form1_closedOnDate1" name="filter.closedOnDate1"
+						value="%{maskDateFormat(filter.closedOnDate1)}" />
+					<s:text name="Filters.label.To" />:
+					<s:textfield cssClass="forms datepicker" size="10" id="form1_closedOnDate2" name="filter.closedOnDate2"
+						value="%{maskDateFormat(filter.closedOnDate2)}" />
+					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+				</span>
+			</div>
+		</s:if>
+		
 		<s:if test="filter.showViewAll">
 			<br clear="all" />
 			<div class="filterOption">

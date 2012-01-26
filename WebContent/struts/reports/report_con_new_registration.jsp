@@ -70,7 +70,7 @@
 						<td>
 							<s:text name="ReportNewRequestedContractor.label.InPics" />
 						</td>
-						<s:if test="filter.open == 0">
+						<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
 							<td>
 								<s:text name="ReportNewRequestedContractor.label.ClosedDate" />
 							</td>
@@ -119,9 +119,9 @@
 									</a>			
 								</s:if>
 							</td>
-							<s:if test="filter.open == 0">
+							<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
 								<td>
-									<s:date name="getClosedDate(get('notes'))" />
+									<s:date name="get('closedOnDate')" format="%{getText('date.short')}" />
 								</td>
 							</s:if>
 							<td>

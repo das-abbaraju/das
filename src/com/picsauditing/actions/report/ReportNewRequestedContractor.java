@@ -36,18 +36,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 
 	@RequiredPermission(value = OpPerms.RequestNewContractor)
 	public String execute() throws Exception {
-		getFilter().setShowOperator(false);
-		getFilter().setShowLocation(false);
-		getFilter().setShowTaxID(false);
-		getFilter().setShowRiskLevel(false);
-		getFilter().setShowRegistrationDate(false);
-		getFilter().setShowStatus(false);
-		getFilter().setShowPrimaryInformation(false);
-		getFilter().setShowTradeInformation(false);
-		getFilter().setShowConWithPendingAudits(false);
-		getFilter().setShowSoleProprietership(false);
-		getFilter().setShowProductRiskLevel(false);
-		getFilter().setShowTrade(false);
+		setDefaultFilterDisplay();
 		getFilter().setPermissions(permissions);
 
 		buildQuery();
@@ -105,6 +94,7 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		sql.addField("cr.lastContactDate");
 		sql.addField("(cr.contactCountByEmail + cr.contactCountByPhone) AS contactCount");
 		sql.addField("cr.matchCount");
+		sql.addField("cr.closedOnDate");
 		sql.addField("cr.creationDate");
 		sql.addField("con.id AS conID");
 		sql.addField("con.name AS contractorName");
@@ -125,12 +115,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		}
 
 		if (permissions.isPicsEmployee()) {
-			getFilter().setShowMarketingUsers(true);
-			getFilter().setShowViewAll(true);
-			getFilter().setShowOperator(true);
-			getFilter().setShowExcludeOperators(true);
-			getFilter().setShowOperatorTags(true);
-
 			if (permissions.hasGroup(User.GROUP_CSR) && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN user_assignment ua ON ua.country = cr.country AND ua.userID = "
 						+ permissions.getUserId());
@@ -140,10 +124,6 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 			if (isAmSales() && !getFilter().isViewAll()) {
 				sql.addJoin("JOIN account_user au ON au.accountID = op.id AND au.startDate < NOW() "
 						+ "AND au.endDate > NOW() AND au.userID = " + permissions.getUserId());
-			}
-
-			if (!permissions.hasGroup(User.GROUP_CSR)) { // Everyone but CSRs
-				getFilter().setShowLocation(true);
 			}
 		}
 	}
@@ -194,6 +174,16 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		if (filterOn(f.getCreationDate2())) {
 			report.addFilter(new SelectFilterDate("creationDate2", "cr.creationDate < '?'", DateBean.format(
 					f.getCreationDate2(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getClosedOnDate1())) {
+			report.addFilter(new SelectFilterDate("closedOnDate1", "cr.closedOnDate >= '?'", DateBean.format(
+					f.getClosedOnDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(f.getClosedOnDate2())) {
+			report.addFilter(new SelectFilterDate("closedOnDate2", "cr.closedOnDate < '?'", DateBean.format(
+					f.getClosedOnDate2(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
@@ -267,6 +257,8 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		excelSheet.addColumn(new ExcelColumn("conID", getText("ContractorRegistrationRequest.contractor"),
 				ExcelCellType.Integer));
 		excelSheet.addColumn(new ExcelColumn("contractorName", getText("global.ContractorName")));
+		excelSheet.addColumn(new ExcelColumn("closedOnDate", getText("ReportNewRequestedContractor.ClosedOnDate"),
+				ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("Notes", getText("global.Notes")));
 		excelSheet.addColumn(new ExcelColumn("operatorTags", getText("RequestNewContractor.OperatorTags")));
 	}
@@ -275,17 +267,29 @@ public class ReportNewRequestedContractor extends ReportActionSupport {
 		return auDAO.findByUserSalesAM(permissions.getUserId()).size() > 0;
 	}
 
-	public Date getClosedDate(String notes) throws Exception {
-		String[] lines = notes.split("\r\n");
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+	private void setDefaultFilterDisplay() {
+		getFilter().setShowOperator(permissions.isPicsEmployee());
+		getFilter().setShowLocation(false);
+		getFilter().setShowTaxID(false);
+		getFilter().setShowRiskLevel(false);
+		getFilter().setShowRegistrationDate(false);
+		getFilter().setShowStatus(false);
+		getFilter().setShowPrimaryInformation(false);
+		getFilter().setShowTradeInformation(false);
+		getFilter().setShowConWithPendingAudits(false);
+		getFilter().setShowSoleProprietership(false);
+		getFilter().setShowProductRiskLevel(false);
+		getFilter().setShowTrade(false);
 
-		for (String line : lines) {
-			if (line.contains("Closed the request.")) {
-				String[] pieces = line.split(" - ");
-				return sdf.parse(pieces[0]);
-			}
+		if (permissions.isPicsEmployee()) {
+			getFilter().setShowMarketingUsers(true);
+			getFilter().setShowViewAll(true);
+			getFilter().setShowExcludeOperators(true);
+			getFilter().setShowOperatorTags(true);
 		}
 
-		return null;
+		if (!permissions.hasGroup(User.GROUP_CSR)) {
+			getFilter().setShowLocation(true);
+		}
 	}
 }
