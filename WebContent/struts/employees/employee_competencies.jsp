@@ -100,6 +100,7 @@
 	
 		<script type="text/javascript">
 			$(function() {
+				var accountID = '<s:property value="account.id" />';
 				$('#report_data').delegate('input[type=checkbox]', 'click', function(e) {
 					var checkbox = $(this);
 					var checked = checkbox.is(":checked");
@@ -118,6 +119,11 @@
 						else
 							checkbox.attr('checked', !checked);
 					});
+				});
+				
+				$('#form1').bind('submit', function(event) {
+					$(this).append('<input type="hidden" name="account" value="' + accountID + '" />');
+					return true;
 				});
 			});
 		</script>

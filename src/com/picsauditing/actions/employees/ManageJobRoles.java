@@ -7,7 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.opensymphony.xwork2.Preparable;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
@@ -29,7 +30,7 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageJobRoles extends PicsActionSupport {
+public class ManageJobRoles extends PicsActionSupport implements Preparable {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
@@ -50,10 +51,12 @@ public class ManageJobRoles extends PicsActionSupport {
 	private int auditID;
 	private int id;
 
-	@Before
-	public void startup() throws Exception {
+	public void prepare() throws Exception {
 		if (permissions.isContractor()) {
-			permissions.tryPermission(OpPerms.ContractorAdmin);
+			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
+					&& !permissions.hasPermission(OpPerms.ContractorSafety)) {
+				throw new NoRightsException("Contractor Admin or Safety");
+			}
 		} else if (permissions.isOperatorCorporate()) {
 			permissions.tryPermission(OpPerms.DefineRoles);
 			if (permissions.getAccountId() != account.getId())
@@ -70,6 +73,7 @@ public class ManageJobRoles extends PicsActionSupport {
 			account = accountDAO.find(permissions.getAccountId());
 
 		// Get auditID
+		auditID = getParameter("auditID");
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
 
@@ -81,7 +85,7 @@ public class ManageJobRoles extends PicsActionSupport {
 			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
 					.getContext().getSession().get("auditID"));
 		}
-		
+
 		if (account == null) {
 			throw new RecordNotFoundException("account");
 		}
@@ -125,7 +129,7 @@ public class ManageJobRoles extends PicsActionSupport {
 		if (competency != null) {
 			for (JobCompetency jc : role.getJobCompetencies()) {
 				if (competency.equals(jc.getCompetency()))
-					addActionError(getText(String.format("%s.message.CompetencyExistsForRole", getScope())));
+					addActionError(getText("ManageJobRoles.message.CompetencyExistsForRole"));
 			}
 
 			if (getActionErrors().size() == 0) {
@@ -139,7 +143,7 @@ public class ManageJobRoles extends PicsActionSupport {
 				jobRoleDAO.save(role);
 			}
 		} else {
-			addActionError(getText(String.format("%s.message.MissingCompetency", getScope())));
+			addActionError(getText("ManageJobRoles.message.MissingCompetency"));
 		}
 
 		return "competencies";
@@ -157,7 +161,7 @@ public class ManageJobRoles extends PicsActionSupport {
 				}
 			}
 		} else {
-			addActionError(getText(String.format("%s.message.MissingCompetency", getScope())));
+			addActionError(getText("ManageJobRoles.message.MissingCompetency"));
 		}
 
 		return "competencies";

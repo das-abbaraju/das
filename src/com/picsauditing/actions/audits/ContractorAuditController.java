@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -101,11 +102,11 @@ public class ContractorAuditController extends AuditActionSupport {
 			co.setContractorAccount(contractor);
 
 			operators = new ArrayList<OperatorAccount>();
-			for (int id: operatorIds) {
+			for (int id : operatorIds) {
 				OperatorAccount operator = (OperatorAccount) auditTypeDAO.findWhere(OperatorAccount.class,
 						"id = " + id, 1).get(0);
 				operators.add(operator);
-				
+
 				co.setOperatorAccount(operator);
 				contractor.getOperators().add(co);
 			}
@@ -251,7 +252,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
 	/*
-	 * Only use this for default categories.  See also addManuallyAddedCategory()
+	 * Only use this for default categories. See also addManuallyAddedCategory()
 	 */
 	private void addDefaultCategory(AuditCategory category) {
 		AuditCatData catData = new AuditCatData();
@@ -263,12 +264,12 @@ public class ContractorAuditController extends AuditActionSupport {
 		conAudit.getCategories().add(catData);
 
 		for (AuditCategory subCat : category.getSubCategories()) {
-			 addDefaultCategory(subCat);
+			addDefaultCategory(subCat);
 		}
 	}
 
 	/*
-	 * Only use this for manually added categories.  See also addCatData()
+	 * Only use this for manually added categories. See also addCatData()
 	 */
 	private AuditCatData addManuallyAddedCategory(AuditCategory auditCategory) {
 		AuditCatData auditCatData = getCategories().get(auditCategory);
@@ -294,8 +295,8 @@ public class ContractorAuditController extends AuditActionSupport {
 		AuditCatData auditCatData = getCategories().get(auditCategory);
 		if (auditCatData != null) {
 			auditCatData.setApplies(false);
-			auditCatData.setOverride(true); 
-			for (AuditCategory childCategory: auditCatData.getCategory().getChildren()) {
+			auditCatData.setOverride(true);
+			for (AuditCategory childCategory : auditCatData.getCategory().getChildren()) {
 				hideCategory(childCategory);
 			}
 		}
@@ -384,6 +385,27 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		return menu;
+	}
+
+	public boolean isHasPermissionsToSeeAuditLinks() {
+		if (isContractorAdminOrSafety()) {
+			return true;
+		}
+
+		if (permissions.isPicsEmployee()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean isContractorAdminOrSafety() {
+		if (permissions.isContractor()) {
+			return (permissions.hasPermission(OpPerms.ContractorAdmin) || permissions
+					.hasPermission(OpPerms.ContractorSafety));
+		}
+
+		return false;
 	}
 
 	public String getAuditorNotes() {

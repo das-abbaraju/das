@@ -1,5 +1,6 @@
 package com.picsauditing.util;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -21,29 +22,29 @@ public class ReportFilterEmployee extends ReportFilter {
 	private int accountID;
 	private Permissions permissions;
 
-	protected boolean showAccountName = true;
-	protected boolean showFirstName = true;
-	protected boolean showLastName = true;
-	protected boolean showEmail = true;
-	protected boolean showSsn = true;
-	protected boolean showLimitEmployees = false;
-	protected boolean showProjects = false;
-	protected boolean showAssessmentCenter = false;
-	protected boolean showJobRoles = false;
-	protected boolean showCompetencies = false;
-	protected boolean showOperators = false;
+	private boolean showAccountName = true;
+	private boolean showFirstName = true;
+	private boolean showLastName = true;
+	private boolean showEmail = true;
+	private boolean showSsn = true;
+	private boolean showLimitEmployees = false;
+	private boolean showProjects = false;
+	private boolean showAssessmentCenter = false;
+	private boolean showJobRoles = false;
+	private boolean showCompetencies = false;
+	private boolean showOperators = false;
 
-	protected String accountName;
-	protected String firstName;
-	protected String lastName;
-	protected String email;
-	protected String ssn;
-	protected boolean limitEmployees = true;
-	protected int[] projects;
-	protected int[] assessmentCenters;
-	protected int[] jobRoles;
-	protected int[] competencies;
-	protected int[] operators;
+	private String accountName;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String ssn;
+	private boolean limitEmployees = true;
+	private int[] projects;
+	private int[] assessmentCenters;
+	private int[] jobRoles;
+	private int[] competencies;
+	private int[] operators;
 
 	// Class variables
 	public void setAccountID(int accountID) {
@@ -147,7 +148,7 @@ public class ReportFilterEmployee extends ReportFilter {
 	public String getAccountName() {
 		if (Strings.isEmpty(accountName))
 			accountName = ReportFilterAccount.getDefaultName();
-			
+
 		return accountName;
 	}
 
@@ -260,27 +261,27 @@ public class ReportFilterEmployee extends ReportFilter {
 	}
 
 	public List<OperatorCompetency> getCompetencyList() {
-		if (permissions == null)
-			return null;
+		if (permissions != null) {
+			OperatorCompetencyDAO operatorCompetencyDAO = (OperatorCompetencyDAO) SpringUtils
+					.getBean("OperatorCompetencyDAO");
 
-		OperatorCompetencyDAO operatorCompetencyDAO = (OperatorCompetencyDAO) SpringUtils
-				.getBean("OperatorCompetencyDAO");
+			if (permissions.isOperatorCorporate())
+				return operatorCompetencyDAO.findByOperatorHierarchy(permissions.getVisibleAccounts());
+			else if (permissions.isContractor())
+				return operatorCompetencyDAO.findByContractor(permissions.getAccountId());
+			else if (permissions.isAdmin()) {
+				int auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0
+						: (Integer) ActionContext.getContext().getSession().get("auditID"));
 
-		if (permissions.isOperatorCorporate())
-			return operatorCompetencyDAO.findByOperator(permissions.getAccountId());
-		else if (permissions.isContractor())
-			return operatorCompetencyDAO.findByContractor(permissions.getAccountId());
-		else if (permissions.isAdmin()) {
-			int auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-
-			if (auditID > 0) {
-				ContractorAudit audit = (ContractorAudit) operatorCompetencyDAO.find(ContractorAudit.class, auditID);
-				return operatorCompetencyDAO.findByContractor(audit.getContractorAccount().getId());
+				if (auditID > 0) {
+					ContractorAudit audit = (ContractorAudit) operatorCompetencyDAO
+							.find(ContractorAudit.class, auditID);
+					return operatorCompetencyDAO.findByContractor(audit.getContractorAccount().getId());
+				}
 			}
 		}
 
-		return null;
+		return Collections.emptyList();
 	}
 
 	public List<OperatorAccount> getOperatorList() throws Exception {

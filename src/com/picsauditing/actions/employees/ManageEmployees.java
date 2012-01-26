@@ -15,8 +15,9 @@ import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
@@ -50,7 +51,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageEmployees extends AccountActionSupport {
+public class ManageEmployees extends AccountActionSupport implements Preparable {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
@@ -87,10 +88,10 @@ public class ManageEmployees extends AccountActionSupport {
 		noteCategory = NoteCategory.Employee;
 	}
 
-	@Before
-	public void startup() throws Exception {
+	public void prepare() throws Exception {
 		if (permissions.isContractor()) {
-			permissions.tryPermission(OpPerms.ContractorAdmin);
+			if (!permissions.hasPermission(OpPerms.ContractorAdmin) && !permissions.hasPermission(OpPerms.ContractorSafety))
+				throw new NoRightsException("Contractor Admin or Safety");
 		} else if (permissions.isOperatorCorporate()) {
 			id = permissions.getAccountId();
 

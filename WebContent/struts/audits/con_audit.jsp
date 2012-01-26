@@ -20,42 +20,17 @@
 		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
 		<script type="text/javascript" src="js/con_audit.js?v=<s:property value="version"/>"></script>
 		<script type="text/javascript" src="js/audit_data_save.js?v=<s:property value="version"/>"></script>
-		
 		<script type="text/javascript">
 			var auditID = '<s:property value="conAudit.id"/>';
 			var conID = '<s:property value="id"/>';
+			var hasPermissionsToSeeAuditLinks = '<s:property value="hasPermissionsToSeeAuditLinks" />';
+			var operatorCorporate = '<s:property value="permissions.operatorCorporate" />';
 			
 			$(function() {
 				<s:if test="conAudit.categories.size == 0">
 					updateCategoriesNow();
 				</s:if>
-				
-				<s:if test="!permissions.operatorCorporate">
-					$('a.passAudit').live('click', function() {
-						window.location.href = $(this).attr('href') + ($(this).attr('href').indexOf("?") > 0 ? "&" : "?") + "auditID=" + auditID;
-						return false;
-					});
-				</s:if>
-				<s:else>
-					$('a.operatorViewable').live('click', function() {
-						window.location.href = $(this).attr('href') + "?account=" + conID;
-						return false;
-					});
-				</s:else>
 			});
-			
-			function clearLinks() {
-				<s:if test="permissions.operatorCorporate">
-					$('a.passAudit').not('.operatorViewable').each(function() {
-						var plaintext = $(this);
-						plaintext.after(plaintext.text());
-						plaintext.remove();
-					});
-				</s:if>
-				<s:else>
-					return false;
-				</s:else>
-			}
 		</script>
 	</head>
 	<body>

@@ -18,7 +18,7 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -32,7 +32,7 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
-public class JobCompetencyMatrix extends PicsActionSupport {
+public class JobCompetencyMatrix extends PicsActionSupport implements Preparable {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
@@ -50,14 +50,19 @@ public class JobCompetencyMatrix extends PicsActionSupport {
 
 	private int auditID;
 
-	@Before
-	public void startup() throws Exception {
+	public void prepare() throws Exception {
+		int accountID = getParameter("accountID");
+		if (accountID > 0) {
+			account = accountDAO.find(accountID);
+		}
+		
 		if (account == null) {
 			if (permissions.isContractor())
 				account = accountDAO.find(permissions.getAccountId());
 		}
 
 		// Get auditID
+		int auditID = getParameter("auditID");
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
 

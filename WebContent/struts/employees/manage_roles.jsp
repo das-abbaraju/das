@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<title>
-			<s:property value="subHeading" escape="false" />
+			<s:text name="ManageJobRoles.title" />
 		</title>
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />

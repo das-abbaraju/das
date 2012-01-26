@@ -2246,11 +2246,10 @@
 
 		<action name="EmployeeCompetencies"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
-			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">EmployeeCompetencies</param>
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
-
+		
 		<action name="EmployeeCompetenciesCSV"
 			class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<param name="download">true</param>

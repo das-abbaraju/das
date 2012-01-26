@@ -162,7 +162,7 @@
 					}
 
 					showNavButtons();
-					clearLinks();
+					AUDIT.question.updateLinks();
 					
 					$('a.filter').cluetip({
 						sticky: true,
@@ -259,6 +259,29 @@
 				});
 				
 				AUDIT.question.execute(element, url, data);
+			}
+		},
+		
+		updateLinks: function() {
+			if (hasPermissionsToSeeAuditLinks == 'true') {
+				$('div.question a.passAudit').each(function() {
+					$(this).attr('href', $(this).attr('href') + "?auditID=" + auditID);
+				});
+			} else if (operatorCorporate) {
+				$('div.question a.passAudit').not('.operatorViewable').each(function() {
+					var text = $(this).text();
+					$(this).replaceWith(text);
+				});
+				
+				$('div.question a.operatorViewable').each(function() {
+					$(this).attr('href', $(this).attr('href') + "?accountID=" + conID);
+				});
+			} else {
+				$('div.question a.passAudit, div.question a.operatorViewable')
+				.each(function() {
+					var text = $(this).text();
+					$(this).replaceWith(text);
+				});
 			}
 		},
 		
