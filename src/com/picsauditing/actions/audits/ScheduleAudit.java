@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
-import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -53,7 +53,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	// TODO Move this to a common location
 	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
 	static final public String DATE_FORMAT = "yyyyMMddHHmm";
-	
+
 	private TimeZone selectedTimeZone;
 
 	private AvailableSet availableSet = new AvailableSet();
@@ -102,7 +102,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
 		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
 	}
-	
+
 	public String execute() throws Exception {
 		if (conAudit == null) {
 			addActionError("Missing auditID");
@@ -258,8 +258,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		findTimeslots();
 		return "select";
 	}
-	
-	public String selectTime() {
+
+	public String selectTime() throws Exception {
 		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
 		int maxRank = Integer.MIN_VALUE;
 		for (AuditorAvailability timeslot : timeslots) {
@@ -348,16 +348,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return "summary";
 	}
 
-	public String viewMoreTimes() {
+	public String viewMoreTimes() throws Exception {
 		findTimeslots();
 		return "picker";
 	}
 
-	private void findTimeslots() {
+	private void findTimeslots() throws Exception {
 		findTimeslots(null);
 	}
-	
-	private void findTimeslots(TimeZone tz) {
+
+	private void findTimeslots(TimeZone tz) throws Exception {
 		List<AuditorAvailability> timeslots = null;
 
 		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
@@ -370,10 +370,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			availableSet.add(timeslot, tz);
 		}
 
-		return;		
+		return;
 	}
-	
-	private String changeSelectedTimeZone() {
+
+	@SuppressWarnings("unused")
+	private String changeSelectedTimeZone() throws Exception {
 		findTimeslots(selectedTimeZone);
 		return "picker";
 	}
@@ -464,6 +465,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 		df.applyPattern(DATE_FORMAT);
+
+		if (selectedTimeZone != null)
+			df.setTimeZone(TimeZone.getTimeZone("CST"));
+
 		this.timeSelected = df.parse(dateString);
 	}
 
@@ -476,23 +481,26 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return days.size();
 		}
 
-		void add(AuditorAvailability timeslot, TimeZone tz) {
+		void add(AuditorAvailability timeslot, TimeZone tz) throws Exception {
+			if (tz != null) {
+				Date adjustedStartTime = changeTimeZone("CST", tz.getDisplayName(), timeslot.getStartDate().toString());
+				timeslot.setStartDate(adjustedStartTime);
+			}
+
 			final Date day = stripTimes(timeslot.getStartDate());
-			
-			//TODO adjust timeslot
+
 			if (days.get(day) == null)
 				days.put(day, new ArrayList<AuditorAvailability>());
 
 			for (AuditorAvailability existingTimeSlot : days.get(day)) {
 				if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
-					// We don't need to add more than one time slot per
-					// starting time
+					// We don't need to add more than one time slot per starting time
 					return;
 			}
 			days.get(day).add(timeslot);
 			latest = DateBean.getLatestDate(latest, timeslot.getEndDate());
 		}
-		
+
 		@SuppressWarnings("deprecation")
 		private boolean isSameTime(Date time1, Date time2) {
 			if (time1.getHours() != time2.getHours())
@@ -524,6 +532,20 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return null;
 			return DateBean.getNextDayMidnight(latest);
 		}
+	}
+
+	public static Date changeTimeZone(String inTZ, String outTZ, String inDateStr) throws Exception {
+		Date inDate = null;
+
+		DateFormat inDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		inDf.setTimeZone(TimeZone.getTimeZone(inTZ));
+
+		inDate = inDf.parse(inDateStr);
+
+		DateFormat outDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		outDf.setTimeZone(TimeZone.getTimeZone(outTZ));
+
+		return outDf.parse(outDf.format(inDate));
 	}
 
 	public void setAvailabilityStartDate(Date availabilityStartDate) {
