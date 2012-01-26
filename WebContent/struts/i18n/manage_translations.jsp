@@ -164,13 +164,13 @@
 		<table class="report" style="width: 100%">
 			<thead>
 				<tr>
-					<td width="20%">
+					<td style="width: 20%">
 						Key
 					</td>
-					<td width="40">
+					<td style="width: 40%">
 						<s:property value="localeFrom.displayName"/>
 					</td>
-					<td width="40%">
+					<td style="width: 40%">
 						<s:property value="localeTo.displayName"/>
 					</td>
 				</tr>
@@ -213,10 +213,11 @@
 									/>
 									<br />
 									<s:checkbox name="translation.applicable" value="%{applicable}" /> Applicable
-									<br />
-									<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" 
-										headerKey="translation.sourceLanguage" cssClass="forms" 
-										name="translation.sourceLanguage" value="%{sourceLanguage}" /> Source Language
+									<s:if test="!sourceLanguage.empty">
+										<br />
+										Translated from
+										<s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
+									</s:if>
 								</div>
 								<span class="view">
 									<s:property value="value"/>

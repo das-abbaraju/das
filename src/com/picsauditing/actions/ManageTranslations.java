@@ -80,12 +80,16 @@ public class ManageTranslations extends ReportActionSupport {
 							throw new Exception("Missing Translation Key");
 						}
 						translation.setAuditColumns(permissions);
-						translation.setSourceLanguage(localeFrom.getLanguage());
+
+						if (Strings.isEmpty(translation.getSourceLanguage())
+								&& !localeFrom.getLanguage().equals(translation.getLocale())) {
+							translation.setSourceLanguage(localeFrom.getLanguage());
+						}
 
 						if (translation.getQualityRating() == null) {
 							translation.setQualityRating(TranslationQualityRating.Good);
 						}
-						
+
 						dao.save(translation);
 						out.put("id", translation.getId());
 					}
@@ -125,20 +129,10 @@ public class ManageTranslations extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
 	public String update() {
 		if (translation != null) {
 			translation.setAuditColumns();
-			
-			if (!Strings.isEmpty(translation.getSourceLanguage())) {
-				List<AppTranslation> otherLanguages = (List<AppTranslation>) dao.findWhere(AppTranslation.class, "t.msgKey = " + translation.getKey());
-				for (AppTranslation otherLanguage : otherLanguages) {
-					otherLanguage.setSourceLanguage(translation.getSourceLanguage());
-					dao.save(otherLanguage);
-				}
-			}
-			
 			dao.save(translation);
 		}
 
@@ -217,13 +211,12 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		if (showApplicable != null) {
-			sql.addWhere(String.format("t1.applicable = %1$d OR t2.applicable = %1$s",
-					(showApplicable ? 1 : 0)));
+			sql.addWhere(String.format("t1.applicable = %1$d OR t2.applicable = %1$d", (showApplicable ? 1 : 0)));
 		}
 
 		if (filterOn(sourceLanguages)) {
 			sql.addWhere(String.format("t1.sourceLanguage IN (%1$s) OR t2.sourceLanguage IN (%1$s)",
-					Strings.implodeForDB(sourceLanguages,",")));
+					Strings.implodeForDB(sourceLanguages, ",")));
 		}
 
 		if (isTracingOn()) {
@@ -251,7 +244,8 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 					"fromQualityRating").toString())));
 			from.setApplicable(Integer.parseInt(row.get("fromApplicable").toString()) == 1);
-			from.setSourceLanguage(row.get("fromSourceLanguage").toString());
+			from.setSourceLanguage(row.get("fromSourceLanguage") == null ? null : row.get("fromSourceLanguage")
+					.toString());
 			Object fromLastUsed = row.get("fromLastUsed");
 			if (fromLastUsed != null)
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
@@ -270,7 +264,8 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 							"toQualityRating").toString())));
 					to.setApplicable(Integer.parseInt(row.get("toApplicable").toString()) == 1);
-					to.setSourceLanguage(row.get("fromSourceLanguage").toString());
+					to.setSourceLanguage(row.get("toSourceLanguage") == null ? null : row.get("toSourceLanguage")
+							.toString());
 					Object toLastUsed = row.get("toLastUsed");
 					if (toLastUsed != null)
 						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
@@ -390,6 +385,15 @@ public class ManageTranslations extends ReportActionSupport {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	public String getLanguageNameFromISOCode(String isocode) {
+		if (!Strings.isEmpty(isocode)) {
+			Locale locale = new Locale(isocode);
+			return locale.getDisplayLanguage();
+		}
+
+		return isocode;
 	}
 
 	public void addExcelColumns(SelectSQL sql) throws IOException {

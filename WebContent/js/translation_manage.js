@@ -8,7 +8,6 @@
             	$('table.report form button.save').bind('click', this.saveTranslation);
             	$('table.report form input[type=checkbox], table.report form input[type=radio]')
             		.bind('click', this.saveParametersThroughAjax);
-            	$('table.report form select').bind('change', this.saveParametersThroughAjax);
             	$('#doneButton').bind('click', this.closeWindow);
             },
             
