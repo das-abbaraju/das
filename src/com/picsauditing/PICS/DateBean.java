@@ -254,6 +254,13 @@ public class DateBean {
 		return yearAgo.before(testDate);
 	}// isLessThanOneYearAgo
 
+	public static boolean isLessThanTheeYearAgo(Date testDate) throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -3);
+		java.util.Date threeYearsAgo = cal.getTime();
+		return threeYearsAgo.before(testDate);
+	}
+
 	public static boolean isAfterToday(String testDateString) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		if ("".equals(testDateString))

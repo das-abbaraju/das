@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -19,6 +22,9 @@ import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
+	@Autowired
+	protected ContractorAuditDAO contractorAuditDao;
+
 	private boolean hasImportPQF = false;
 	private boolean importPQFComplete = false;
 	private boolean openReq = false;
@@ -213,7 +219,9 @@ public class OpenTasks extends TranslationActionSupport {
 							text = getTextParameterized(
 									"ContractorWidget.message.CompleteAndSubmitAudit",
 									conAudit.getId(), auditName, showAuditFor, auditFor);
-							text += "<br/>" + getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
+							if (!isPreviousValidCorAuditExists(conAudit)) {
+								text += "<br/>" + getTextParameterized("ContractorWidget.message.ReviewCORNote", conAudit.getCreationDate());
+							}
 						} else {
 							text = getTextParameterized(
 									"ContractorWidget.message.PrepareForAnUpcomingAudit",
@@ -300,5 +308,24 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 		return needed > 0;
+	}
+	
+	private boolean isPreviousValidCorAuditExists(ContractorAudit conAudit) {
+		for (ContractorAudit audit:conAudit.getContractorAccount().getAudits()) {
+			if (audit.getAuditType().getId() == AuditType.COR && audit.getId() != conAudit.getId())
+				return true;
+		}
+		
+		List<ContractorAudit> expiredAudits = contractorAuditDao.findExpiredByContractor(conAudit
+				.getContractorAccount().getId());
+		for (ContractorAudit audit : expiredAudits) {
+			try {
+				if (audit.getAuditType().getId() == AuditType.COR
+						&& DateBean.isLessThanTheeYearAgo(audit.getExpiresDate()))
+					return true;
+			} catch (Exception ignore) {
+			}
+		}
+		return false;
 	}
 }
