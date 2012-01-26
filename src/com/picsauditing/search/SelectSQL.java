@@ -86,7 +86,7 @@ public class SelectSQL {
 				needAnd = true;
 			}
 		}
-		
+
 		// do the same as above for the union
 		if (unionSql.size() > 0) {
 			for (SelectSQL union : unionSql) {
@@ -148,14 +148,14 @@ public class SelectSQL {
 
 	public void addWhere(String clause) {
 		clause = clause.trim();
-		
+
 		if (Strings.isEmpty(clause))
 			return;
 		if (clause.equals("1"))
 			return;
 		if (whereClause.contains(clause))
 			return;
-		
+
 		whereClause.add(clause);
 	}
 
@@ -235,14 +235,13 @@ public class SelectSQL {
 	public ArrayList<String> getFields() {
 		return fields;
 	}
-	
-	public static String getAlias(String field)
-	{
+
+	public static String getAlias(String field) {
 		String alias = "";
 		if (StringUtils.contains(field, " "))
-			alias = field.substring(field.lastIndexOf(" ")+1, field.length());
+			alias = field.substring(field.lastIndexOf(" ") + 1, field.length());
 		else if (StringUtils.contains(field, "."))
-			alias = field.substring(field.lastIndexOf(".")+1, field.length());
+			alias = field.substring(field.lastIndexOf(".") + 1, field.length());
 		else
 			alias = field;
 		return alias;
