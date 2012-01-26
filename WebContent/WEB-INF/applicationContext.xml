@@ -104,6 +104,7 @@
 	<bean id="EmailBuilder" class="com.picsauditing.mail.EmailBuilder" scope="prototype"/>
 	<bean id="EmailSenderSpring" class="com.picsauditing.mail.EmailSenderSpring" />
 	<bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
+	<bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
 	<bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
 	<bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>

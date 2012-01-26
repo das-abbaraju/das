@@ -62,8 +62,11 @@ public class FacilityChanger {
 	protected AuditBuilder auditBuilder = null;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+	@Autowired
+	private AccountLevelAdjuster accountLevelAdjuster;
 
-
+	
+	
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
@@ -122,37 +125,14 @@ public class FacilityChanger {
 			}
 		}
 
-		// Need to upgrade this contractor if operator being added does not
-		// accept bid only contractors or list only contractors
+		// Note: operator field is the operator being added
 		if ((contractor.getAccountLevel().isBidOnly() && !operator.isAcceptsBids())
 				|| (contractor.getAccountLevel().isListOnly() && !operator.isAcceptsList())) {
-			contractor.setAccountLevel(AccountLevel.Full);
-			contractor.setRenew(true);
-			
-			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf()) {
-					for (ContractorAuditOperator cao : cAudit.getOperators()) {
-						if (cao.getStatus().after(AuditStatus.Pending)) {
-							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
-							auditDataDAO.save(cao);
-							if (caow != null) {
-								caow.setNotes("PQF set to pending for " + cao.getOperator().getName()
-										+ " because contractor moving to FULL account level.");
-								auditDataDAO.save(caow);
-							}
-						}
-					}
-
-					auditBuilder.recalculateCategories(cAudit);
-					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-					auditPercentCalculator.percentCalculateComplete(cAudit);
-					auditDataDAO.save(cAudit);
-				}
-			}
+			accountLevelAdjuster.upgradeToFullAccount(contractor, permissions);
 		}
 
 		contractor.setLastUpgradeDate(new Date());
-		setListOnly();
+		accountLevelAdjuster.setListOnlyIfPossible(contractor);
 		contractorAccountDAO.save(contractor);
 
 		checkOQ();
@@ -166,6 +146,7 @@ public class FacilityChanger {
 		billingService.calculateAnnualFees(contractor);
 		contractorAccountDAO.save(contractor);
 	}
+
 
 	public boolean remove() throws Exception {
 		if (contractor == null || contractor.getId() == 0)
@@ -209,7 +190,7 @@ public class FacilityChanger {
 					if (contractor.getNeedsRecalculation() < 20)
 						contractor.incrementRecalculation(5);
 
-					setListOnly();
+					accountLevelAdjuster.setListOnlyIfPossible(contractor);
 
 					billingService.calculateAnnualFees(contractor);
 
@@ -303,18 +284,6 @@ public class FacilityChanger {
 		}
 	}
 
-	private void setListOnly() {
-		if (contractor.isListOnlyEligible() && contractor.getStatus().isPending()
-				&& contractor.getAccountLevel().isFull()) {
-			boolean canBeListed = true;
-			for (ContractorOperator conOp : contractor.getNonCorporateOperators()) {
-				if (!conOp.getOperatorAccount().isAcceptsList())
-					canBeListed = false;
-			}
-			if (canBeListed)
-				contractor.setAccountLevel(AccountLevel.ListOnly);
-		}
-	}
 
 	/**
 	 * @return Returns the earliest added OperatorAccount or null if no operators are present.

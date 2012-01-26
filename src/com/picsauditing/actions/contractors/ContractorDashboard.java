@@ -20,6 +20,7 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Objects;
+import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.NoRightsException;
@@ -95,6 +96,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AuditDecisionTableDAO auditRuleDAO;
+	@Autowired
+	private AccountLevelAdjuster accountLevelAdjuster;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -201,34 +204,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		if ("Upgrade to Full Membership".equals(button)) {
 
-			// TODO Move this into a new class (maybe Payment Options or Facilities or Billing Details)
-			// and then redirect back to Dashboard if necessary
-			// See also ReportBiddingContractors/RequestNewContractor Upgrade
-			contractor.setAccountLevel(AccountLevel.Full);
-			contractor.setRenew(true);
-
-			auditBuilder.buildAudits(contractor);
-
-			for (ContractorAudit cAudit : contractor.getAudits()) {
-				if (cAudit.getAuditType().isPqf()) {
-					for (ContractorAuditOperator cao : cAudit.getOperators()) {
-						if (cao.getStatus().after(AuditStatus.Pending)) {
-							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Pending, permissions);
-							auditDao.save(cao);
-							if (caow != null) {
-								caow.setNotes("PQF set to pending for " + cao.getOperator().getName()
-										+ " because contractor moving to FULL account leve.");
-								auditDao.save(caow);
-							}
-						}
-					}
-
-					auditBuilder.recalculateCategories(cAudit);
-					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-					auditPercentCalculator.percentCalculateComplete(cAudit);
-					auditDao.save(cAudit);
-				}
-			}
+			accountLevelAdjuster.upgradeToFullAccount(contractor, permissions);
+			addNote(contractor, "Upgraded the Bid Only Account to a full membership.", NoteCategory.General);
 
 			if (permissions.isOperator()) {
 				for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
@@ -245,7 +222,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 			contractor.setAuditColumns(permissions);
 			accountDao.save(contractor);
 
-			addNote(contractor, "Upgraded the Bid Only Account to a full membership.", NoteCategory.General);
 
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
