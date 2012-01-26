@@ -7,12 +7,16 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.fields.ExtFieldType;
+import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.fields.SimpleReportField;
+import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.fields.SimpleReportFilter;
+import com.picsauditing.report.fields.SimpleReportSort;
 import com.picsauditing.report.models.ModelBase;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.tables.BaseTable;
@@ -21,26 +25,23 @@ import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 	private ModelBase base;
-	private List<QueryField> includedFields = new ArrayList<QueryField>();
-	// We may be able to use the ModelBase.getAvailableFields...
+	private List<SimpleReportColumn> includedColumns = new ArrayList<SimpleReportColumn>();
 	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
 	private SimpleReportDefinition definition = new SimpleReportDefinition();
 	private SelectSQL sql;
 
 	public SelectSQL getSql() {
 		sql = new SelectSQL();
-		includedFields.clear();
+		includedColumns.clear();
 		availableFields.clear();
-		
+
 		setFrom();
+		addAvailableFields(base.getFrom());
+		addFieldsAndGroupBy();
+		addRuntimeFilters();
+		addOrderBy();
 
 		addJoins(base.getFrom());
-		addFields(base.getFrom());
-
-		addRuntimeFilters();
-		addGroupBy();
-		addHaving();
-		addOrderBy();
 
 		return sql;
 	}
@@ -52,11 +53,18 @@ public class SqlBuilder {
 		sql.setFromTable(from);
 	}
 
+	private void addAvailableFields(BaseTable table) {
+		// We may be able to use the ModelBase.getAvailableFields...
+		availableFields.putAll(table.getFields());
+		for (BaseTable join : table.getJoins()) {
+			addAvailableFields(join);
+		}
+	}
+
 	private void addJoins(BaseTable table) {
 		for (BaseTable join : table.getJoins()) {
 			// System.out.println("Adding join " + join.getTable() + " " + join.getAlias());
-			addFields(join);
-			if (join.isInnerJoin() || includedFields.size() > 0) {
+			if (isJoinNeeded(join)) {
 				String joinSyntax = "";
 				if (!join.isInnerJoin())
 					joinSyntax += "LEFT ";
@@ -69,25 +77,99 @@ public class SqlBuilder {
 		}
 	}
 
-	private void addFields(BaseTable join) {
-		for (String fieldName : join.getFields().keySet()) {
-			QueryField queryField = join.getFields().get(fieldName);
-			availableFields.put(fieldName, queryField);
-			if (isFieldRequested(fieldName)) {
-				includedFields.add(queryField);
-				sql.addField(queryField.getSql() + " AS `" + queryField.getDataIndex() + "`");
+	private boolean isJoinNeeded(BaseTable table) {
+		if (table.isInnerJoin())
+			return true;
+
+		for (BaseTable join : table.getJoins()) {
+			if (isJoinNeeded(join))
+				return true;
+		}
+
+		for (QueryField field : table.getFields().values()) {
+			for (SimpleReportColumn column : includedColumns) {
+				if (column.getAvailableFieldName().equals(field.getDataIndex()))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void addFieldsAndGroupBy() {
+		boolean usesGroupBy = usesGroupBy();
+		for (SimpleReportColumn column : definition.getColumns()) {
+			if (isColumnRequestedValid(column)) {
+				String columnSQL = columnToSQL(column);
+				if (usesGroupBy && !isAggregate(column.getName())) {
+					sql.addGroupBy(columnSQL);
+				}
+				sql.addField(columnSQL + " AS `" + column.getName() + "`");
+				includedColumns.add(column);
 			}
 		}
 	}
 
-	private boolean isFieldRequested(String fieldName) {
-		if (definition == null || definition.getColumns().size() == 0)
-			return true;
-		for (SimpleReportField requestField : definition.getColumns()) {
-			if (fieldName.equalsIgnoreCase(requestField.getName()))
-				return true;
+	private boolean usesGroupBy() {
+		for (SimpleReportColumn column : definition.getColumns()) {
+			if (isColumnRequestedValid(column)) {
+				if (isAggregate(column.getName())) {
+					return true;
+				}
+			}
 		}
 		return false;
+	}
+
+	private boolean isColumnRequestedValid(SimpleReportColumn column) {
+		return getQueryFieldFromSimpleColumn(column) != null;
+	}
+
+	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {
+		return availableFields.get(column.getAvailableFieldName().toUpperCase());
+	}
+
+	private boolean isAggregate(String columnName) {
+		SimpleReportColumn column = convertColumn(columnName);
+		if (column == null)
+			return false;
+		if (column.getFunction() == null)
+			return false;
+
+		return column.getFunction().isAggregate();
+	}
+
+	private String columnToSQL(SimpleReportColumn column) {
+		String fieldSQL = getQueryFieldFromSimpleColumn(column).getSql();
+		if (column.getFunction() == null)
+			return fieldSQL;
+		switch (column.getFunction()) {
+		case Average:
+			return "AVG(" + fieldSQL + ")";
+		case Count:
+			return "COUNT(" + fieldSQL + ")";
+		case CountDistinct:
+			return "COUNT(DISTINCT " + fieldSQL + ")";
+		case Date:
+			return "DATE(" + fieldSQL + ")";
+		case LowerCase:
+			return "LOWER(" + fieldSQL + ")";
+		case Max:
+			return "MAX(" + fieldSQL + ")";
+		case Min:
+			return "MIN(" + fieldSQL + ")";
+		case Month:
+			return "MONTH(" + fieldSQL + ")";
+		case Round:
+			return "ROUND(" + fieldSQL + ")";
+		case Sum:
+			return "SUM(" + fieldSQL + ")";
+		case UpperCase:
+			return "UPPER(" + fieldSQL + ")";
+		case Year:
+			return "YEAR(" + fieldSQL + ")";
+		}
+		return fieldSQL;
 	}
 
 	private void addRuntimeFilters() {
@@ -117,34 +199,74 @@ public class SqlBuilder {
 				// queryFilter.setValue(subSql.toString());
 			}
 
-			String filterExp = queryFilter.toExpression(availableFields);
+			String filterExp = toFilterSql(queryFilter);
 			where = where.replace("{" + i + "}", "(" + filterExp + ")");
 		}
 		sql.addWhere(where);
+
+		for (SimpleReportFilter filter : definition.getFilters()) {
+			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
+				// TODO convert to SQL
+				String having = "";
+				sql.addHaving(having);
+			}
+		}
 	}
 
-	private void addGroupBy() {
-		if (definition.getGroupBy().size() == 0) {
-			return;
+	private SimpleReportColumn convertColumn(String columnName) {
+		if (columnName == null)
+			return null;
+		for (SimpleReportColumn column : definition.getColumns()) {
+			if (column.getName().equals(columnName))
+				return column;
 		}
-
-		for (SimpleReportField field : definition.getGroupBy()) {
-			String groupBy = field.toSQL(availableFields);
-			sql.addGroupBy(groupBy);
-		}
-
-		// addTotalField();
+		return null;
 	}
 
-	private void addHaving() {
-		if (definition.getHaving().size() == 0) {
-			return;
+	private String toFilterSql(SimpleReportFilter filter) {
+
+		SimpleReportColumn column = convertColumn(filter.getColumn());
+
+		String columnSQL = toColumnSql(column);
+		String valueSql = toValueSql(filter, column);
+
+		return columnSQL + " " + filter.getOperator().getOperand() + " " + valueSql;
+	}
+
+	private String toColumnSql(SimpleReportColumn column) {
+		String columnSQL = columnToSQL(column);
+
+		if (column.getName().equals("accountName"))
+			columnSQL = "a.nameIndex";
+		return columnSQL;
+	}
+
+	private String toValueSql(SimpleReportFilter filter, SimpleReportColumn column) {
+		if (filter.getColumn2() != null) {
+			return columnToSQL(convertColumn(filter.getColumn2()));
 		}
 
-		for (SimpleReportField field : definition.getHaving()) {
-			String having = field.toSQL(availableFields);
-			sql.addHaving(having);
+		if (getQueryFieldFromSimpleColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
+			QueryDateParameter parameter = new QueryDateParameter(filter.getValue());
+			return DateBean.toDBFormat(parameter.getTime());
 		}
+
+		String value = filter.getValue();
+		switch (filter.getOperator()) {
+		case BeginsWith:
+			return "'" + value + "%'";
+		case EndsWith:
+			return "'%" + value + "'";
+		case Contains:
+			return "'%" + value + "%'";
+		case In:
+		case InReport:
+			// this only supports numbers, no strings or dates
+			return "(" + value + ")";
+		case Empty:
+			// TODO
+		}
+		return "'" + value + "'";
 	}
 
 	private void addOrderBy() {
@@ -153,14 +275,27 @@ public class SqlBuilder {
 			return;
 		}
 
-		for (SimpleReportField field : definition.getOrderBy()) {
-			String orderBy = field.getName();
-			if (!sql.getFields().contains(field.getName()))
-				orderBy = availableFields.get(field.getName()).getSql();
-			if (!field.isAscending())
+		for (SimpleReportSort sort : definition.getOrderBy()) {
+
+			String orderBy = sort.getColumn();
+			SimpleReportColumn column = getColumn(sort.getColumn());
+			if (column == null) {
+				QueryField field = availableFields.get(sort.getColumn().toUpperCase());
+				orderBy = field.getSql();
+			}
+
+			if (!sort.isAscending())
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);
 		}
+	}
+
+	private SimpleReportColumn getColumn(String name) {
+		for (SimpleReportColumn column : includedColumns) {
+			if (column.getName().equals(name))
+				return column;
+		}
+		return null;
 	}
 
 	// Setters
@@ -186,7 +321,7 @@ public class SqlBuilder {
 		sql.addWhere(where);
 	}
 
-	public List<QueryField> getIncludedFields() {
-		return includedFields;
+	public List<SimpleReportColumn> getIncludedColumns() {
+		return includedColumns;
 	}
 }

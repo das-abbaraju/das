@@ -76,7 +76,8 @@ public abstract class BaseTable {
 
 	protected QueryField addField(String name, String sql, FilterType filter) {
 		QueryField field = new QueryField(name, sql, filter);
-		fields.put(name, field);
+		// We don't want to be case sensitive when matching names
+		fields.put(name.toUpperCase(), field);
 		return field;
 	}
 

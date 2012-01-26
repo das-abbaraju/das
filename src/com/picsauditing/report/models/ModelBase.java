@@ -7,7 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.fields.SimpleReportField;
+import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.tables.BaseTable;
 
 abstract public class ModelBase {
@@ -56,8 +56,8 @@ abstract public class ModelBase {
 
 	private void addTotalField() {
 		addQueryField("total", null, FilterType.Number);
-		SimpleReportField total = new SimpleReportField();
-		total.setField("total");
+		SimpleReportColumn total = new SimpleReportColumn();
+		total.setName("total");
 		total.setFunction(QueryFunction.Count);
 		// columns.add(total);
 	}

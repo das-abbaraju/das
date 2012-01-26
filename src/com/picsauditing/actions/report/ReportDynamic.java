@@ -19,6 +19,7 @@ import com.picsauditing.report.SimpleReportDefinition;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -214,7 +215,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		for (QueryField field : builder.getAvailableFields().values()) {
 			JSONObject obj = new JSONObject();
-			addName(field, obj);
+			obj.put("name", field.getDataIndex());
 			obj.put("text", translateLabel(field));
 			addFilterType(field, obj);
 			addHelp(field, obj);
@@ -232,11 +233,10 @@ public class ReportDynamic extends PicsActionSupport {
 	 */
 	public JSONArray getStoreFields() {
 		JSONArray fields = new JSONArray();
-
-		for (QueryField field : builder.getIncludedFields()) {
+		for (SimpleReportColumn column : builder.getIncludedColumns()) {
 			JSONObject obj = new JSONObject();
-			addName(field, obj);
-			addFilterType(field, obj);
+			addName(column, obj);
+			addFilterType(column, obj);
 			fields.add(obj);
 		}
 		return fields;
@@ -251,18 +251,21 @@ public class ReportDynamic extends PicsActionSupport {
 		JSONArray fields = new JSONArray();
 
 		fields.add(createRowNumColumn());
-		for (QueryField field : builder.getIncludedFields()) {
-			field.setLabel(translateLabel(field));
-			// if (field.getDataIndex() != null && column.getFunction() != null) {
-			// field.setLabel(field.getLabel() + "." + column.getFunction().toString());
-			// }
+		for (SimpleReportColumn column : builder.getIncludedColumns()) {
+			QueryField field = getQueryFieldFromSimpleColumn(column);
+			field.setLabel(translateLabel(column));
 			fields.add(field);
 		}
 		return fields;
 	}
 
-	private void addName(QueryField field, JSONObject obj) {
-		obj.put("name", field.getDataIndex());
+	private void addName(SimpleReportColumn column, JSONObject obj) {
+		obj.put("name", column.getName());
+	}
+
+	private void addFilterType(SimpleReportColumn column, JSONObject obj) {
+		QueryField field = getQueryFieldFromSimpleColumn(column);
+		addFilterType(field, obj);
 	}
 
 	private void addFilterType(QueryField field, JSONObject obj) {
@@ -274,10 +277,26 @@ public class ReportDynamic extends PicsActionSupport {
 			obj.put("dateFormat", "time");
 	}
 
+	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {
+		return builder.getAvailableFields().get(column.getAvailableFieldName().toUpperCase());
+	}
+
 	private void addHelp(QueryField field, JSONObject obj) {
 		String translatedText = getText("Report." + field.getDataIndex() + ".help");
 		if (translatedText != null)
 			obj.put("description", translatedText);
+	}
+
+	private String translateLabel(SimpleReportColumn column) {
+		QueryField field = getQueryFieldFromSimpleColumn(column);
+		String translatedText = translateLabel(field);
+		if (column.getFunction() != null) {
+			// TODO I'm not completely happy about how we're naming columns with Functions
+			// We may want to support the user entering the label manually
+			// Until we work with this more, I'm just going to append the name of the Function
+			translatedText += " " + column.getFunction().toString();
+		}
+		return translatedText;
 	}
 
 	private String translateLabel(QueryField field) {
