@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -63,7 +64,7 @@ public class AuditorAvailability extends BaseTable {
 
 	@Transient
 	public TimeZone getTimezone() {
-		return timezone;
+		return (timezone == null ? TimeZone.getTimeZone("CST") : timezone);
 	}
 
 	public void setTimezone(TimeZone timezone) {
@@ -71,10 +72,17 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	@Transient
-	public String getTimeZoneDate(String format) {
-		DateFormat formatter = new SimpleDateFormat(format);
-		formatter.setTimeZone(timezone);
-		return formatter.format(startDate);
+	public Date getTimeZoneStartDate() throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		formatter.setTimeZone(getTimezone());
+		return formatter.parse(formatter.format(startDate));
+	}
+	
+	@Transient
+	public Date getTimeZoneEndDate() throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		formatter.setTimeZone(getTimezone());
+		return formatter.parse(formatter.format(getEndDate()));
 	}
 
 	/**

@@ -482,12 +482,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		void add(AuditorAvailability timeslot, TimeZone tz) throws Exception {
+			Date adjustedStartTime = timeslot.getStartDate();
+//			Date adjustedEndTime = timeslot.getEndDate();
 			if (tz != null) {
-				Date adjustedStartTime = changeTimeZone("CST", tz.getDisplayName(), timeslot.getStartDate().toString());
+				adjustedStartTime = changeTimeZone(TimeZone.getTimeZone("CST"), tz, timeslot.getStartDate().toString());
+//				adjustedEndTime = changeTimeZone(TimeZone.getTimeZone("CST"), tz, timeslot.getEndDate().toString());
 				timeslot.setStartDate(adjustedStartTime);
+				timeslot.setTimezone(tz);
 			}
 
-			final Date day = stripTimes(timeslot.getStartDate());
+			final Date day = stripTimes(adjustedStartTime);
 
 			if (days.get(day) == null)
 				days.put(day, new ArrayList<AuditorAvailability>());
@@ -498,7 +502,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					return;
 			}
 			days.get(day).add(timeslot);
-			latest = DateBean.getLatestDate(latest, timeslot.getEndDate());
+			latest = DateBean.getLatestDate(latest, timeslot.getTimeZoneEndDate());
 		}
 
 		@SuppressWarnings("deprecation")
@@ -534,18 +538,25 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 	}
 
-	public static Date changeTimeZone(String inTZ, String outTZ, String inDateStr) throws Exception {
+	public static Date changeTimeZone(TimeZone inTZ, TimeZone outTZ, String inDateStr) throws Exception {
 		Date inDate = null;
 
 		DateFormat inDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		inDf.setTimeZone(TimeZone.getTimeZone(inTZ));
+		inDf.setTimeZone(inTZ);
 
 		inDate = inDf.parse(inDateStr);
 
 		DateFormat outDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-		outDf.setTimeZone(TimeZone.getTimeZone(outTZ));
+		outDf.setTimeZone(outTZ);
 
 		return outDf.parse(outDf.format(inDate));
+	}
+	
+	public String formatDate(Date date) {
+		DateFormat df = new SimpleDateFormat();
+		TimeZone tz = (selectedTimeZone == null ? permissions.getTimezone() : selectedTimeZone);
+		df.setTimeZone(tz);
+		return df.format(date);
 	}
 
 	public void setAvailabilityStartDate(Date availabilityStartDate) {

@@ -14,8 +14,6 @@ PICS.define('audit.ScheduleAudit', {
                 },
                 success: function (data, textStatus, XMLHttpRequest) {
                     $('#li_availability').html(data);
-                    
-                    alert(element.val());
                 }
             });
         }
