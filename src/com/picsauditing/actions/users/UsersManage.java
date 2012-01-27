@@ -25,7 +25,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -33,7 +32,6 @@ import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
@@ -42,7 +40,6 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.search.Database;
-import com.picsauditing.search.Report;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
@@ -53,35 +50,28 @@ public class UsersManage extends PicsActionSupport {
 	protected User user;
 	protected Account account;
 
-	protected String password1;
-	protected String password2;
-	protected boolean sendActivationEmail = false;
-	protected boolean setPrimaryAccount = false;
+	private String password1;
+	private String password2;
+	private boolean sendActivationEmail = false;
+	private boolean setPrimaryAccount = false;
 
-	protected String filter = null;
-	protected List<OperatorAccount> facilities = null;
-	protected Report search = null;
 	private List<BasicDynaBean> userList = null;
 
-	protected int shadowID;
-	protected int moveToAccount = 0;
+	private int shadowID;
+	private int moveToAccount = 0;
 
-	protected String isGroup = "";
-	protected String isActive = "Yes";
-	protected YesNo userIsGroup;
+	private String isGroup = "";
+	private String isActive = "Yes";
+	private YesNo userIsGroup;
 
-	protected boolean hasAllOperators = false;
-
-	protected boolean conAdmin = false;
-	protected boolean conBilling = false;
-	protected boolean conSafety = false;
-	protected boolean conInsurance = false;
-	protected boolean newUser = false;
+	private boolean conAdmin = false;
+	private boolean conBilling = false;
+	private boolean conSafety = false;
+	private boolean conInsurance = false;
+	private boolean newUser = false;
 
 	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected OperatorAccountDAO operatorDao;
+	private AccountDAO accountDAO;
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
@@ -89,7 +79,7 @@ public class UsersManage extends PicsActionSupport {
 	@Autowired
 	protected UserGroupDAO userGroupDAO;
 
-	Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
+	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
 		startup();
@@ -118,7 +108,7 @@ public class UsersManage extends PicsActionSupport {
 			userIsGroup = user.getIsGroup();
 
 		if (!userIsGroup.isTrue() && user.getPermissions().size() == 0) {
-			addActionMessage("Please assign this user to a group or add some permissions.");
+			addAlertMessage(getText("UsersManage.AssignUserToGroup"));
 		}
 
 		for (UserAccess ua : user.getOwnedPermissions()) {
@@ -840,6 +830,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	// TODO: Move this to Event Subscription Builder
 	public String sendRecoveryEmail(User user) {
 		try {
 			EmailBuilder emailBuilder = new EmailBuilder();

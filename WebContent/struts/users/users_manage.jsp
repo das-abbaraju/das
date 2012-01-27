@@ -463,12 +463,18 @@
 							<s:else>
 								<s:hidden name="user.isActive" value="Yes" />
 							</s:else>
+							
+							<li>
+								<s:if test="user.id == 0 
+												&& (permissions.picsEmployee || permissions.operatorCorporate)">
+									<div class="alert"><s:text name="UsersManage.AssignUserToGroupReminder" /></div>
+								</s:if>
+							</li>
 						</ol>
 					</fieldset>
 					
 					<fieldset class="form submit">
 						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
-						
 						<pics:permission perm="EditUsers" type="Delete">
 							<s:if test="user.id > 0 && !account.contractor">
 								<s:submit method="delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText(scope + '.confirm.Delete')}');" />
