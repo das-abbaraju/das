@@ -110,6 +110,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			account = accountDAO.find(permissions.getAccountId());
 
 		// Get auditID
+		auditID = getParameter("auditID");
 		if (auditID > 0) {
 			ActionContext.getContext().getSession().put("auditID", auditID);
 
