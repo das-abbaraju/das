@@ -215,7 +215,7 @@
 									<s:checkbox name="translation.applicable" value="%{applicable}" /> Applicable
 									<s:if test="!sourceLanguage.empty">
 										<br />
-										Translated from
+										Source:
 										<s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
 									</s:if>
 								</div>

@@ -33,8 +33,8 @@
             },
             
             saveTranslation: function () {
-            	var that = $(this).closest("td");
-            	that.addClass("saving");
+            	var tdParent = $(this).closest("td");
+            	tdParent.addClass("saving");
 
             	var params = $(this).closest("form").serialize();
             	
@@ -43,15 +43,15 @@
             		data: params,
             		dataType: "json",
             		success: function(data, textStatus, XMLHttpRequest) {
-            			that.find("input[name|='translation']").val(data.id);
-            			that.find("span").html(that.find("textarea").val());
-            			that.removeClass("editMode");
+            			tdParent.find("input[name|='translation']").val(data.id);
+            			tdParent.find("span").html(tdParent.find("textarea").val());
+            			tdParent.removeClass("editMode");
             		},
             		error: function () {
             			alert(result.reason);
             		},
             		complete: function () {
-            			that.removeClass("saving");
+            			tdParent.removeClass("saving");
             		}
             	});
             },

@@ -92,6 +92,8 @@ public class ManageTranslations extends ReportActionSupport {
 
 						dao.save(translation);
 						out.put("id", translation.getId());
+
+						updateOtherLanguagesToQuestionable();
 					}
 					I18nCache.getInstance().clear();
 					flagClearCache();
@@ -127,6 +129,17 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void updateOtherLanguagesToQuestionable() {
+		List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(AppTranslation.class, "t.key = '"
+				+ translation.getKey() + "' AND t.sourceLanguage = '" + translation.getLocale() + "'");
+		for (AppTranslation questionable : nowQuestionable) {
+			questionable.setQualityRating(TranslationQualityRating.Questionable);
+			questionable.setAuditColumns(permissions);
+			dao.save(questionable);
+		}
 	}
 
 	@RequiredPermission(value = OpPerms.Translator)
