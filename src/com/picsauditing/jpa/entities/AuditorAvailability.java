@@ -72,15 +72,22 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	@Transient
-	public Date getTimeZoneStartDate() throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	public String getTimeZoneStartDate() throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("HH:mm");
 		formatter.setTimeZone(getTimezone());
-		return formatter.parse(formatter.format(startDate));
+		return formatter.format(startDate);
 	}
 	
 	@Transient
-	public Date getTimeZoneEndDate() throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	public String getTimeZoneEndDate() throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("HH:mm z");
+		formatter.setTimeZone(getTimezone());
+		return formatter.format(getEndDate());
+	}
+	
+	@Transient
+	public Date getTimeZoneEndDateDate() throws ParseException {
+		DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss z");
 		formatter.setTimeZone(getTimezone());
 		return formatter.parse(formatter.format(getEndDate()));
 	}

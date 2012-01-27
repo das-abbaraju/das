@@ -354,7 +354,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	private void findTimeslots() throws Exception {
-		findTimeslots(null);
+		findTimeslots(TimeZone.getTimeZone("CST"));
 	}
 
 	private void findTimeslots(TimeZone tz) throws Exception {
@@ -483,10 +483,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		void add(AuditorAvailability timeslot, TimeZone tz) throws Exception {
 			Date adjustedStartTime = timeslot.getStartDate();
-//			Date adjustedEndTime = timeslot.getEndDate();
 			if (tz != null) {
 				adjustedStartTime = changeTimeZone(TimeZone.getTimeZone("CST"), tz, timeslot.getStartDate().toString());
-//				adjustedEndTime = changeTimeZone(TimeZone.getTimeZone("CST"), tz, timeslot.getEndDate().toString());
 				timeslot.setStartDate(adjustedStartTime);
 				timeslot.setTimezone(tz);
 			}
@@ -502,7 +500,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					return;
 			}
 			days.get(day).add(timeslot);
-			latest = DateBean.getLatestDate(latest, timeslot.getTimeZoneEndDate());
+			latest = DateBean.getLatestDate(latest, timeslot.getTimeZoneEndDateDate());
 		}
 
 		@SuppressWarnings("deprecation")

@@ -8,7 +8,7 @@
 			<a href="ScheduleAudit!selectTime.action?auditID=<s:property value="conAudit.id"/>&timeSelected=<s:date 
 				name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if>>
 				
-				<s:text name="ScheduleAudit.link.DateSelector"><s:param value="%{#aa.getTimeZoneStartDate()}" /><s:param value="%{#aa.getTimeZoneEndDate()}" /></s:text>
+				<s:text name="ScheduleAudit.link.DateSelector2"><s:param value="%{#aa.getTimeZoneStartDate()}" /><s:param value="%{#aa.getTimeZoneEndDate()}" /></s:text>
 			</a>
 			 <br/>
 		</s:iterator>
