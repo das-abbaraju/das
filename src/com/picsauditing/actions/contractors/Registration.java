@@ -12,6 +12,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.UserDAO;
@@ -40,6 +41,8 @@ public class Registration extends ContractorActionSupport {
 
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private ContractorRegistrationRequestDAO requestDAO;
 	@Autowired
@@ -303,6 +306,13 @@ public class Registration extends ContractorActionSupport {
 
 	public boolean isUsernameInUse() {
 		return userDAO.duplicateUsername(user.getUsername(), 0);
+	}
+
+	public boolean isCompanyNameInUse() {
+		String indexedContractorName = Strings.indexName(contractor.getName());
+		List<ContractorAccount> duplicateAccounts = contractorAccountDAO.findWhere("a.nameIndex = '"
+				+ indexedContractorName + "'");
+		return !duplicateAccounts.isEmpty();
 	}
 
 	public void setState(State state) {
