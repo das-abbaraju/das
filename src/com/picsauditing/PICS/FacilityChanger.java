@@ -10,20 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -61,12 +55,8 @@ public class FacilityChanger {
 	@Autowired
 	protected AuditBuilder auditBuilder = null;
 	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
 
-	
-	
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
 	private Permissions permissions;
@@ -147,7 +137,6 @@ public class FacilityChanger {
 		contractorAccountDAO.save(contractor);
 	}
 
-
 	public boolean remove() throws Exception {
 		if (contractor == null || contractor.getId() == 0)
 			throw new Exception("Please set contractor before calling remove()");
@@ -161,47 +150,45 @@ public class FacilityChanger {
 		Iterator<ContractorOperator> iterator = contractor.getNonCorporateOperators().iterator();
 		while (iterator.hasNext()) {
 			ContractorOperator co = iterator.next();
-			if (!co.getOperatorAccount().isCorporate()) {
-				if (co.getOperatorAccount().equals(operator)) {
-					contractorOperatorDAO.remove(co);
-					contractor.getOperators().remove(co);
+			if (!co.getOperatorAccount().isCorporate() && co.getOperatorAccount().equals(operator)) {
+				contractorOperatorDAO.remove(co);
+				contractor.getOperators().remove(co);
 
-					addNote("Unlinked " + co.getContractorAccount().getName() + " from "
-							+ co.getOperatorAccount().getName() + "'s db");
+				addNote("Unlinked " + co.getContractorAccount().getName() + " from "
+						+ co.getOperatorAccount().getName() + "'s db");
 
-					// If user is a non-billing user, notify billing to
-					// adjust invoice
-					if (!permissions.isContractor() && !permissions.hasGroup(958)
-							&& !co.getContractorAccount().getAccountLevel().isBidOnly()) { // Billing/Accounting
-						EmailBuilder emailBuilder = new EmailBuilder();
-						emailBuilder.setTemplate(47); // Notice of Facility Rem
-						emailBuilder.setPermissions(permissions);
-						emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
-						emailBuilder.addToken("operator", co.getOperatorAccount());
-						emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
-						emailBuilder.setToAddresses("billing@picsauditing.com");
+				// If user is a non-billing user, notify billing to
+				// adjust invoice
+				if (!permissions.isContractor() && !permissions.hasGroup(958)
+						&& !co.getContractorAccount().getAccountLevel().isBidOnly()) { // Billing/Accounting
+					EmailBuilder emailBuilder = new EmailBuilder();
+					emailBuilder.setTemplate(47); // Notice of Facility Rem
+					emailBuilder.setPermissions(permissions);
+					emailBuilder.setContractor(co.getContractorAccount(), OpPerms.ContractorAdmin);
+					emailBuilder.addToken("operator", co.getOperatorAccount());
+					emailBuilder.setFromAddress("\"IT\"<tbaker@picsauditing.com>");
+					emailBuilder.setToAddresses("billing@picsauditing.com");
 
-						EmailQueue emailQueue = emailBuilder.build();
-						emailQueue.setPriority(60);
-						emailSender.send(emailQueue);
-					}
-
-					checkOQ();
-					if (contractor.getNeedsRecalculation() < 20)
-						contractor.incrementRecalculation(5);
-
-					accountLevelAdjuster.setListOnlyIfPossible(contractor);
-
-					billingService.calculateAnnualFees(contractor);
-
-					// adjusting requested by to earliest added operator
-					if (contractor.getRequestedBy().equals(operator)) {
-						contractor.setRequestedBy(findEarliestAddedOperator());
-					}
-
-					contractorAccountDAO.save(contractor);
-					return true;
+					EmailQueue emailQueue = emailBuilder.build();
+					emailQueue.setPriority(60);
+					emailSender.send(emailQueue);
 				}
+
+				checkOQ();
+				if (contractor.getNeedsRecalculation() < 20)
+					contractor.incrementRecalculation(5);
+
+				accountLevelAdjuster.setListOnlyIfPossible(contractor);
+
+				billingService.calculateAnnualFees(contractor);
+
+				// adjusting requested by to earliest added operator
+				if (contractor.getRequestedBy().equals(operator)) {
+					contractor.setRequestedBy(findEarliestAddedOperator());
+				}
+
+				contractorAccountDAO.save(contractor);
+				return true;
 			}
 		}
 
@@ -283,7 +270,6 @@ public class FacilityChanger {
 			}
 		}
 	}
-
 
 	/**
 	 * @return Returns the earliest added OperatorAccount or null if no operators are present.
