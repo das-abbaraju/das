@@ -814,7 +814,7 @@ public class Cron extends PicsActionSupport {
 		emailBuilder.addToken("changes", flagChanges);
 		emailBuilder.setToAddresses(accountMgr);
 		EmailQueue email = emailBuilder.build();
-		email.setPriority(30);
+		email.setPriority(90);
 		email.setViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
 		emailBuilder.clear();
