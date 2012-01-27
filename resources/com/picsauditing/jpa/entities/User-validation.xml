@@ -14,12 +14,12 @@
 			<message>JS.Validation.Maximum100Characters</message>
 		</field-validator>
 		<field-validator type="regex" short-circuit="true">
-	       <param name="expression"><![CDATA[^[ a-zA-Z0-9+._@-]{5,100}$]]></param>
-	       <message>JS.Validation.SpecialCharacters</message>
+			<param name="expression"><![CDATA[^[ a-zA-Z0-9+._@-]{5,100}$]]></param>
+			<message>JS.Validation.SpecialCharacters</message>
 		</field-validator>
 		<field-validator type="regex" short-circuit="true">
-	       <param name="expression"><![CDATA[^[a-zA-Z0-9+._@-]{5,100}$]]></param>
-	       <message>JS.Validation.Whitespace</message>
+			<param name="expression"><![CDATA[^[a-zA-Z0-9+._@-]{5,100}$]]></param>
+			<message>JS.Validation.Whitespace</message>
 		</field-validator>
 	</field>
 	<field name="name">
@@ -60,8 +60,8 @@
 			<message>JS.Validation.Minimum5Characters</message>
 		</field-validator>
 		<field-validator type="fieldexpression" short-circuit="true">
-	       <param name="expression"><![CDATA[!(user.password == user.username)]]></param>
-	       <message>JS.Validation.CannotBeUsername</message>
+			<param name="expression"><![CDATA[!(user.password == user.username)]]></param>
+			<message>JS.Validation.CannotBeUsername</message>
 		</field-validator>
 	</field>
 </validators>

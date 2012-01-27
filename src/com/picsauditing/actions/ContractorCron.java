@@ -530,8 +530,8 @@ public class ContractorCron extends PicsActionSupport {
 					for (ContractorAuditOperator cao : audit.getOperators()) {
 						if (cao.getStatus().after(AuditStatus.Pending)) {
 							if (cao.hasCaop(co.getOperatorAccount().getId())) {
-								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(),
-										co.getFlagDatas());
+								FlagColor flagColor = flagDataCalculator.calculateCaoStatus(audit.getAuditType(), co
+										.getFlagDatas());
 
 								cao.setFlag(flagColor);
 							}
@@ -595,7 +595,8 @@ public class ContractorCron extends PicsActionSupport {
 		Set<ContractorAudit> expiringPolicies = new HashSet<ContractorAudit>();
 
 		for (ContractorAudit audit : contractor.getAudits())
-			if (audit.getAuditType().getClassType().isPolicy() && audit.isWithinExpirationWindow())
+			if (audit.getAuditType().getClassType().isPolicy()
+					&& (audit.willExpireWithinTwoWeeks() || audit.expiredUpToAWeekAgo()))
 				expiringPolicies.add(audit);
 
 		return expiringPolicies;

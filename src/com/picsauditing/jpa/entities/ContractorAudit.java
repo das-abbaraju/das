@@ -34,6 +34,10 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
+/**
+ * @author PICS
+ * 
+ */
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit")
@@ -52,7 +56,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	private OperatorAccount requestingOpAccount;
 	private int score;
 	private boolean manuallyAdded;
-	protected boolean needsIndexing = true;
+	private boolean needsIndexing = true;
 	private String auditFor;
 	private Date lastRecalculation;
 
@@ -584,7 +588,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 		this.ruleID = ruleID;
 	}
 
-	public static Comparator<ContractorAuditOperator> getComparator() {
+	private static Comparator<ContractorAuditOperator> getComparator() {
 		return new Comparator<ContractorAuditOperator>() {
 
 			public int compare(ContractorAuditOperator o1, ContractorAuditOperator o2) {
@@ -813,17 +817,26 @@ public class ContractorAudit extends AbstractIndexableTable {
 	public String getViewLink() {
 		return "Audit.action?auditID=" + this.id;
 	}
-	
+
 	@Transient
-	public boolean isWithinExpirationWindow() {
+	public boolean willExpireWithinTwoWeeks() {
 		if (this.getExpiresDate() == null)
 			return false;
 
 		Calendar twoWeeksFromNow = Calendar.getInstance();
-		Calendar oneWeekAgo = Calendar.getInstance();
 		twoWeeksFromNow.add(Calendar.WEEK_OF_YEAR, 2);
+
+		return getExpiresDate().before(twoWeeksFromNow.getTime()) && getExpiresDate().after(new Date());
+	}
+
+	@Transient
+	public boolean expiredUpToAWeekAgo() {
+		if (this.getExpiresDate() == null)
+			return false;
+
+		Calendar oneWeekAgo = Calendar.getInstance();
 		oneWeekAgo.add(Calendar.WEEK_OF_YEAR, -1);
 
-		return (getExpiresDate().before(twoWeeksFromNow.getTime()) && getExpiresDate().after(oneWeekAgo.getTime()));
+		return getExpiresDate().before(new Date()) && getExpiresDate().after(oneWeekAgo.getTime());
 	}
 }

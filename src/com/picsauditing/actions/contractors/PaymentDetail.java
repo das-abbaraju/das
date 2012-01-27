@@ -366,13 +366,12 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	}
 
 	private Currency getCurrencyOfAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
-		List<Invoice> appliedInvoices = new ArrayList<Invoice>();
+		List<Invoice> appliedInvoices = getAppliedInvoices(contractor, amountApplyMap);
 
-		for (Invoice invoice : contractor.getInvoices()) {
-			if (amountApplyMap.get(invoice.getId()) != null)
-				appliedInvoices.add(invoice);
-		}
+		return getOverallInvoiceCurrency(contractor, appliedInvoices);
+	}
 
+	private Currency getOverallInvoiceCurrency(ContractorAccount contractor, List<Invoice> appliedInvoices) {
 		Currency overallInvoiceCurrency = null;
 		boolean isAllInvoicesSameCurrency = false;
 		if (appliedInvoices.size() > 0) {
@@ -386,6 +385,16 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		}
 
 		return isAllInvoicesSameCurrency ? overallInvoiceCurrency : contractor.getCurrency();
+	}
+
+	private List<Invoice> getAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
+		List<Invoice> appliedInvoices = new ArrayList<Invoice>();
+
+		for (Invoice invoice : contractor.getInvoices()) {
+			if (amountApplyMap.get(invoice.getId()) != null)
+				appliedInvoices.add(invoice);
+		}
+		return appliedInvoices;
 	}
 
 	private void unapplyAll() {
