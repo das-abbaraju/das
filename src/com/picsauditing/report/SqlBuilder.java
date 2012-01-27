@@ -37,6 +37,9 @@ public class SqlBuilder {
 
 		setFrom();
 		addAvailableFields(base.getFrom());
+
+		if (definition.getColumns().size() == 0)
+			addDefaultFields();
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
 		addOrderBy();
@@ -44,6 +47,15 @@ public class SqlBuilder {
 		addJoins(base.getFrom());
 
 		return sql;
+	}
+
+	private void addDefaultFields() {
+		for (QueryField field : availableFields.values()) {
+			if (field.isSuggested())
+				definition.getColumns().add(new SimpleReportColumn(field.getDataIndex()));
+		}
+		if (definition.getColumns().size() == 0)
+			throw new RuntimeException("No columns exist for Report or BaseModel");
 	}
 
 	private void setFrom() {
@@ -290,6 +302,18 @@ public class SqlBuilder {
 		}
 	}
 
+	public void addPermissions(Permissions permissions) {
+		String where = this.base.getWhereClause(permissions);
+		sql.addWhere(where);
+	}
+
+	public void addPaging(int page) {
+		if (page > 1)
+			sql.setStartRow((page - 1) * definition.getRowsPerPage());
+		sql.setLimit(definition.getRowsPerPage());
+		sql.setSQL_CALC_FOUND_ROWS(true);
+	}
+
 	private SimpleReportColumn getColumn(String name) {
 		for (SimpleReportColumn column : includedColumns) {
 			if (column.getName().equals(name))
@@ -308,17 +332,16 @@ public class SqlBuilder {
 		this.base = base;
 	}
 
+	public SimpleReportDefinition getDefinition() {
+		return definition;
+	}
+
 	public void setDefinition(SimpleReportDefinition definition) {
 		this.definition = definition;
 	}
 
 	public Map<String, QueryField> getAvailableFields() {
 		return availableFields;
-	}
-
-	public void setPermissions(Permissions permissions) {
-		String where = this.base.getWhereClause(permissions);
-		sql.addWhere(where);
 	}
 
 	public List<SimpleReportColumn> getIncludedColumns() {

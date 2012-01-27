@@ -13,8 +13,8 @@ public class Account extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField("accountID", "a.id", FilterType.Number);
-		addField("accountName", "a.name", FilterType.AccountName).setWidth(180);
+		addField("accountID", "a.id", FilterType.Number).setSuggested();
+		addField("accountName", "a.name", FilterType.AccountName).setSuggested().setWidth(180);
 	}
 
 	public void addFields() {

@@ -215,6 +215,11 @@ public class QueryField implements JSONAware {
 		this.suggested = suggested;
 	}
 
+	public QueryField setSuggested() {
+		setSuggested(true);
+		return this;
+	}
+
 	public boolean isHidden() {
 		return hidden;
 	}

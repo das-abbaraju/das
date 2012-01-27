@@ -4,10 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.tables.BaseTable;
 
 abstract public class ModelBase {
@@ -27,39 +24,4 @@ abstract public class ModelBase {
 	public String getWhereClause(Permissions permissions) {
 		return "";
 	}
-
-	protected QueryField addQueryField(String dataIndex, String sql, FilterType filterType) {
-		return addQueryField(dataIndex, sql, filterType, null, false);
-	}
-
-	protected QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin) {
-		return addQueryField(dataIndex, sql, filterType, requireJoin, false);
-	}
-
-	protected QueryField addQueryField(String dataIndex, String sql, FilterType filterType, boolean makeDefault) {
-		return addQueryField(dataIndex, sql, filterType, null, makeDefault);
-	}
-
-	protected QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin,
-			boolean makeDefault) {
-		QueryField field = new QueryField(dataIndex, sql, filterType, requireJoin, makeDefault);
-		availableFields.put(dataIndex, field);
-		return field;
-	}
-
-	protected QueryField replaceQueryField(String source, String target) {
-		QueryField field = availableFields.remove(source);
-		field.setDataIndex(target);
-		availableFields.put(target, field);
-		return field;
-	}
-
-	private void addTotalField() {
-		addQueryField("total", null, FilterType.Number);
-		SimpleReportColumn total = new SimpleReportColumn();
-		total.setName("total");
-		total.setFunction(QueryFunction.Count);
-		// columns.add(total);
-	}
-
 }

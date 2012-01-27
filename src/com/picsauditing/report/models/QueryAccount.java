@@ -11,7 +11,7 @@ public class QueryAccount extends ModelBase {
 		from.addFields();
 		from.addJoins();
 
-		defaultSort = "a.nameIndex";
+		defaultSort = "a.name";
 	}
 
 	@Override

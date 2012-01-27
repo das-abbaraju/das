@@ -23,7 +23,6 @@ import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -33,35 +32,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
-
-	private void checkReport() {
-		if (report == null)
-			throw new RuntimeException("Please provide a saved or ad hoc report to run");
-
-		if (report.getModelType() == null)
-			throw new RuntimeException("The report is missing its base");
-
-		builder.setReport(report);
-	}
-
-	@Override
-	public String execute() {
-		checkReport();
-
-		{
-			SimpleReportDefinition definition = new SimpleReportDefinition(report.getParameters());
-			if (!Strings.isEmpty(report.getDevParams())) {
-				SimpleReportDefinition devDefinition = new SimpleReportDefinition(report.getDevParams());
-				definition.merge(devDefinition);
-			}
-			builder.setDefinition(definition);
-
-			sql = builder.getSql();
-			builder.setPermissions(permissions);
-		}
-
-		return SUCCESS;
-	}
 
 	public String list() {
 		// What's this for? I forgot...
@@ -113,6 +83,33 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	private void checkReport() {
+		if (report == null)
+			throw new RuntimeException("Please provide a saved or ad hoc report to run");
+
+		if (report.getModelType() == null)
+			throw new RuntimeException("The report is missing its base");
+
+		builder.setReport(report);
+	}
+
+	@Override
+	public String execute() {
+		checkReport();
+
+		addDefinition();
+
+		sql = builder.getSql();
+		builder.addPermissions(permissions);
+
+		return SUCCESS;
+	}
+
+	private void addDefinition() {
+		SimpleReportDefinition definition = new SimpleReportDefinition(report.getParameters());
+		builder.setDefinition(definition);
+	}
+
 	public String data() {
 		try {
 			buildSQL();
@@ -128,7 +125,7 @@ public class ReportDynamic extends PicsActionSupport {
 			if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
 				json.put("sql", sql.toString());
 				json.put("base", report.getModelType());
-				json.put("command", report.getParameters());
+				// json.put("command", new JsonRaw(report.getParameters()));
 			}
 		}
 
@@ -138,20 +135,11 @@ public class ReportDynamic extends PicsActionSupport {
 	private void buildSQL() {
 		checkReport();
 
-		SimpleReportDefinition definition = new SimpleReportDefinition(report.getParameters());
-		if (!Strings.isEmpty(report.getDevParams())) {
-			SimpleReportDefinition devDefinition = new SimpleReportDefinition(report.getDevParams());
-			definition.merge(devDefinition);
-		}
-		builder.setDefinition(definition);
+		addDefinition();
 
 		sql = builder.getSql();
-		builder.setPermissions(permissions);
-
-		if (page > 1)
-			sql.setStartRow((page - 1) * definition.getRowsPerPage());
-		sql.setLimit(definition.getRowsPerPage());
-		sql.setSQL_CALC_FOUND_ROWS(true);
+		builder.addPermissions(permissions);
+		builder.addPaging(page);
 	}
 
 	private QueryData queryData() throws SQLException {
@@ -179,7 +167,7 @@ public class ReportDynamic extends PicsActionSupport {
 				if (value == null) {
 
 				} else {
-					QueryField field = builder.getAvailableFields().get(column);
+					QueryField field = builder.getAvailableFields().get(column.toUpperCase());
 					if (field.isTranslated()) {
 						jsonRow.put(column, getText(field.getI18nKey(value.toString())));
 					} else if (value.getClass().equals(java.sql.Date.class)) {
@@ -200,7 +188,11 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private void logError(Exception e) {
 		json.put("success", false);
-		json.put("message", e.getMessage());
+		String message = e.getMessage();
+		if (message == null) {
+			message = e.toString();
+		}
+		json.put("message", message);
 		showSQL = true;
 	}
 

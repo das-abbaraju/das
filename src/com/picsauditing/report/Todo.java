@@ -345,4 +345,34 @@ public class Todo {
 		addQueryField(joinAlias + "Name", joinAlias + ".templateName", FilterType.String, joinAlias, true);
 	}
 
+	private void joinToContractorWatch(String joinAlias, String foreignKey) {
+		joins.put(joinAlias, "LEFT JOIN contractor_watch " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
+
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "UserID", joinAlias + ".userID", FilterType.Number, joinAlias, true);
+	}
+
+	private void leftJoinToEmailQueue(String joinAlias, String foreignKey) {
+		joins.put(joinAlias, "JOIN email_queue " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
+
+		addQueryField(joinAlias + "CreationDate", joinAlias + ".creationDate", FilterType.Date, joinAlias, true);
+		addQueryField(joinAlias + "SentDate", joinAlias + ".sentDate", FilterType.Date, joinAlias, true);
+		addQueryField(joinAlias + "CreatedBy", joinAlias + ".createdBy", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "ViewableBy", joinAlias + ".viewableBy", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "Subject", joinAlias + ".subject", FilterType.String, joinAlias);
+		addQueryField(joinAlias + "TemplateID", joinAlias + ".templateID", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "Status", joinAlias + ".status", FilterType.Enum, joinAlias);
+	}
+
+	private void joinToFlagCriteriaContractor(String joinAlias, String foreignKey) {
+		joins.put(joinAlias, "JOIN flag_criteria_contractor " + joinAlias + " ON " + joinAlias + ".conID = "
+				+ foreignKey);
+		// addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, true);
+
+		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "CriteriaID", joinAlias + ".criteriaID", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "Answer", joinAlias + ".answer", FilterType.String, joinAlias);
+	}
+
 }
