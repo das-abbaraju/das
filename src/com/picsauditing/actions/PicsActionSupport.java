@@ -278,7 +278,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 	}
 
-	// TODO remove this
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();

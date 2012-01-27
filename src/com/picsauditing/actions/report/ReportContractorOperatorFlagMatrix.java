@@ -36,8 +36,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 
 		List<Integer> ops = new Vector<Integer>();
 
-		if (getUser().getAccount().isOperator()) {
-			OperatorAccount op = (OperatorAccount) getUser().getAccount();
+		if (getAccount().isOperator()) {
+			OperatorAccount op = (OperatorAccount) getAccount();
 
 			if (op.getCorporateFacilities().size() > 0) {
 				for (Facility facility : op.getCorporateFacilities()) {
@@ -53,8 +53,8 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 			ops.add(permissions.getAccountId());
 		}
 
-		else if (getUser().getAccount().isCorporate()) {
-			OperatorAccount corporate = (OperatorAccount) getUser().getAccount();
+		else if (getAccount().isCorporate()) {
+			OperatorAccount corporate = (OperatorAccount) getAccount();
 			for (Facility child : corporate.getOperatorFacilities()) {
 				ops.add(child.getOperator().getId());
 			}
