@@ -152,6 +152,11 @@ public class EventSubscriptionBuilder {
 		emailBuilder.addToken("contractor", insuranceSubscription.getUser().getAccount());
 		emailBuilder.addToken("policies", expiringPolicies);
 		emailBuilder.setToAddresses(insuranceSubscription.getUser().getEmail());
+
+		Account account = insuranceSubscription.getUser().getAccount();
+		if (account.isContractor() && ((ContractorAccount) account).getAuditor() != null)
+			emailBuilder.setFromAddressAsCSRFor((ContractorAccount) account);
+
 		EmailQueue email = emailBuilder.build();
 		email.setPriority(30);
 		email.setViewableById(Account.EVERYONE);

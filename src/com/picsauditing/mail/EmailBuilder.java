@@ -13,7 +13,6 @@ import java.util.Set;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -21,8 +20,8 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.Token;
-import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.TranslatableString.Translation;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.VelocityAdaptor;
@@ -36,22 +35,17 @@ import com.picsauditing.util.VelocityAdaptor;
 public class EmailBuilder {
 	private String fromAddress = null;
 	private String password = null;
-	protected EmailTemplate template;
-
+	private EmailTemplate template;
 	private List<Token> picsTags = null;
-
-	protected String toAddresses = null;
-	protected String ccAddresses = null;
-	protected String bccAddresses = null;
-	protected Map<String, Object> tokens;
-	protected int conID;
+	private String toAddresses = null;
+	private String ccAddresses = null;
+	private String bccAddresses = null;
+	private Map<String, Object> tokens;
+	private int conID;
 
 	private VelocityAdaptor velocityAdaptor;
-	protected EmailQueueDAO emailQueueDAO;
 
-	// Generic token data
-	protected String serverName;
-	protected Permissions permissions;
+	private Permissions permissions;
 
 	private boolean debug = false;
 	private boolean edited = false;
@@ -334,5 +328,9 @@ public class EmailBuilder {
 
 	public void setConID(int conID) {
 		this.conID = conID;
+	}
+
+	public void setFromAddressAsCSRFor(ContractorAccount contractor) {
+		setFromAddress("\"" + contractor.getAuditor().getName() + "\"<" + contractor.getAuditor().getEmail() + ">");
 	}
 }
