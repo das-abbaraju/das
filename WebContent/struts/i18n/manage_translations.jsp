@@ -222,9 +222,6 @@
 								<span class="view">
 									<s:property value="value"/>
 								</span>
-								<s:if test="(updatedBy == null || updatedBy.id == 1) && locale != 'en'">
-									<button class="right" name="button" class="save">Approve</button>
-								</s:if>
 							</form>
 						</td>
 					</s:iterator>
