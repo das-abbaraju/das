@@ -5,12 +5,11 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	
 	var docuGUARDNum = '<s:property value="docuGUARDNum" />';
 	var insureGUARDNum = '<s:property value="insureGUARDNum" />';
 	var auditGUARDNum = '<s:property value="auditGUARDNum" />';
 	var employeeGUARDNum = '<s:property value="employeeGUARDNum" />';
-	
+
 	$('#'+docuGUARDNum+'DocuGUARD').css({'background-color':'#FFFF12'});
 	$('#'+insureGUARDNum+'InsureGUARD').css({'background-color':'#FFFF12'});
 	$('#'+auditGUARDNum+'AuditGUARD').css({'background-color':'#FFFF12'});
@@ -57,7 +56,7 @@ $(document).ready(function() {
 			<td class="center" id="1InsureGUARD">
 				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1InsureGUARD')"/>
 			</td>
-			<td class="center" id="1auditGUARD">
+			<td class="center" id="1AuditGUARD">
 				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1AuditGUARD')"/>
 			</td>
 			<td class="center" id="1EmployeeGUARD">

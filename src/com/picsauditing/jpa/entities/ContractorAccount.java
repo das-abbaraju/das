@@ -107,20 +107,20 @@ public class ContractorAccount extends Account implements JSONable {
 	private int score;
 	private Date tradesUpdated;
 
-	protected List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-	protected List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-	protected List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
-	protected List<Certificate> certificates = new ArrayList<Certificate>();
-	protected List<JobContractor> jobSites = new ArrayList<JobContractor>();
-	protected Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
-	protected List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
+	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+	private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+	private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
+	private List<Certificate> certificates = new ArrayList<Certificate>();
+	private List<JobContractor> jobSites = new ArrayList<JobContractor>();
+	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
+	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 
 	// Transient helper methods
-	protected OshaOrganizer oshaOrganizer = null;
-	protected Map<String, AuditData> emrs = null;
+	private OshaOrganizer oshaOrganizer = null;
+	private Map<String, AuditData> emrs = null;
 
 	// Agreement Changed on Release date 6/3/2010
-	public static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
+	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
 	public static final int MAX_RECALC = 127;
 
 	public ContractorAccount() {
@@ -1485,7 +1485,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
-	
+
 	@Transient
 	public boolean isContractorTypeRequired(ContractorType conType) {
 		for (OperatorAccount operator : getOperatorAccounts()) {
@@ -1496,11 +1496,11 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return false;
 	}
-	
+
 	@Transient
 	public List<OperatorAccount> getOperatorsThatRequireContractorType(ContractorType conType) {
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
-		
+
 		for (OperatorAccount operator : getOperatorAccounts()) {
 			Set<ContractorType> operatorTypes = operator.getAccountTypes();
 			if (operatorTypes.size() == 1 && operatorTypes.contains(conType)) {
@@ -1509,11 +1509,11 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return operators;
 	}
-	
+
 	@Transient
 	public List<String> getOperatorsNamesThatRequireContractorType(ContractorType conType) {
 		List<String> operators = new ArrayList<String>();
-		
+
 		for (OperatorAccount operator : getOperatorAccounts()) {
 			Set<ContractorType> operatorTypes = operator.getAccountTypes();
 			if (operatorTypes.size() == 1 && operatorTypes.contains(conType)) {

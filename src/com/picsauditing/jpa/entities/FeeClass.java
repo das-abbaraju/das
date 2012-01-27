@@ -27,7 +27,7 @@ public enum FeeClass implements Translatable {
 
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
-					&& contractor.getBillingStatus() != "Renewal")
+					&& contractor.getBillingStatus() == "Upgrade")
 				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
