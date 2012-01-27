@@ -28,7 +28,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditCategory extends BaseTranslatableTable implements Comparable<AuditCategory>, RequiresTranslation {
+public class AuditCategory extends BaseTableRequiringLanguages implements Comparable<AuditCategory> {
 
 	public static final int COMPANY_INFORMATION = 2;
 	public static final int GENERAL_SAFETY_INFORMATION = 8;
@@ -379,5 +379,35 @@ public class AuditCategory extends BaseTranslatableTable implements Comparable<A
 	@Transient
 	public boolean isPolicyInformationCategory() {
 		return "policyInformation".equals(this.getUniqueCode());
+	}
+
+	@Transient
+	public List<String> getAvailableRequiredLanguages() {
+		if (parent != null)
+			return parent.getLanguages();
+		else
+			return auditType.getLanguages();
+	}
+
+	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
+		for (AuditCategory category : subCategories) {
+			category.addAndRemoveRequiredLanguages(add, remove);
+		}
+		for (AuditQuestion question : questions) {
+			question.addAndRemoveRequiredLanguages(add, remove);
+		}
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		boolean hasMissingChild = false;
+
+		for (AuditCategory category : subCategories) {
+			hasMissingChild = hasMissingChild || category.hasMissingChildRequiredLanguages();
+		}
+		for (AuditQuestion question : questions) {
+			hasMissingChild = hasMissingChild || question.getLanguages().isEmpty();
+		}
+
+		return hasMissingChild || getLanguages().isEmpty();
 	}
 }

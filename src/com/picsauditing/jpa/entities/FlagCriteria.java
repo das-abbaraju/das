@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +21,7 @@ import org.json.simple.JSONObject;
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTranslatableTable implements Comparable<FlagCriteria>, RequiresTranslation {
+public class FlagCriteria extends BaseTableRequiringLanguages implements Comparable<FlagCriteria> {
 
 	private String category;
 	private int displayOrder = 999;
@@ -275,5 +277,13 @@ public class FlagCriteria extends BaseTranslatableTable implements Comparable<Fl
 	@Override
 	public int compareTo(FlagCriteria o) {
 		return ((Integer) displayOrder).compareTo(o.displayOrder);
+	}
+
+	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
+		return;
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		return getLanguages().isEmpty();
 	}
 }

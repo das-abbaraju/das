@@ -13,11 +13,11 @@ import org.json.simple.JSONValue;
 @SuppressWarnings("serial")
 @Entity
 @MappedSuperclass
-public abstract class BaseTranslatableHistory extends BaseHistory {
+public abstract class BaseHistoryRequiringLanguages extends BaseHistory {
 
 	protected String requiredLanguages = null;
 	
-	private List<String> languages = new ArrayList<String>();
+	protected List<String> languages = new ArrayList<String>();
 
 	public String getRequiredLanguages() {
 		return requiredLanguages;
@@ -47,7 +47,16 @@ public abstract class BaseTranslatableHistory extends BaseHistory {
 		JSONArray jsonArray = new JSONArray();
 		for (String language : languages)
 			jsonArray.add(language);
-		if (!jsonArray.isEmpty())
-			requiredLanguages = jsonArray.toJSONString();
+		requiredLanguages = jsonArray.toJSONString();
+	}
+	
+	public abstract boolean hasMissingChildRequiredLanguages();
+
+	public void addAndRemoveRequiredLanguages(List<String> add, List<String> remove) {
+		List<String> newLanguages = new ArrayList<String>();
+		newLanguages.addAll(getLanguages());
+		newLanguages.addAll(add);
+		newLanguages.removeAll(remove);
+		setLanguages(newLanguages);
 	}
 }

@@ -34,6 +34,8 @@ public class I18nCache implements Serializable {
 
 	private Table<String, String, String> cache;
 	private Set<String> cacheUsed = new HashSet<String>();
+	
+	private Database db = new Database();
 
 	private I18nCache() {
 	}
@@ -173,7 +175,6 @@ public class I18nCache implements Serializable {
 			throws SQLException {
 		if (value == null)
 			return;
-		Database db = new Database();
 		String sourceLanguage = null;
 
 		if (!requiredLanguages.isEmpty()) {
@@ -200,11 +201,11 @@ public class I18nCache implements Serializable {
 			} else if (translationFromCache.isModified()) {
 				db.executeUpdate(buildUpdateStatement(newTranslation));
 
-				insertUpdateOtherRequiredLanguages(requiredLanguages, db, newTranslation);
+				insertUpdateOtherRequiredLanguages(requiredLanguages, newTranslation);
 			} else if (translationFromCache.isInsert()) {
 				db.executeInsert(buildInsertStatement(newTranslation));
 				// If this is the source language, create the other translations as needed
-				insertUpdateOtherRequiredLanguages(requiredLanguages, db, newTranslation);
+				insertUpdateOtherRequiredLanguages(requiredLanguages, newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
@@ -269,8 +270,7 @@ public class I18nCache implements Serializable {
 		cache.put(newTranslation.getKey(), newTranslation.getLocale(), newTranslation.getValue());
 	}
 
-	private void insertUpdateOtherRequiredLanguages(List<String> requiredLanguages, Database db,
-			AppTranslation newTranslation) throws SQLException {
+	private void insertUpdateOtherRequiredLanguages(List<String> requiredLanguages, AppTranslation newTranslation) throws SQLException {
 		for (String requiredLanguage : requiredLanguages) {
 			if (!requiredLanguage.equals(newTranslation.getSourceLanguage())) {
 				AppTranslation insertUpdateTranslation = new AppTranslation();

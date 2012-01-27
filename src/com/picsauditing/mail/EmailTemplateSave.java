@@ -28,7 +28,8 @@ public class EmailTemplateSave extends PicsActionSupport {
 	private boolean allowsTranslations;
 
 	public String execute() throws NoRightsException {
-		// TODO Need to replace this. I think changes made from the front end get saved when the object is pulled from memory.
+		// TODO Need to replace this. I think changes made from the front end get saved when the object is pulled from
+		// memory.
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
 			addActionError(getText("EmailTemplateSave.MissingPermission"));
@@ -63,6 +64,10 @@ public class EmailTemplateSave extends PicsActionSupport {
 			addActionError(getText("EmailTemplateSave.EnterSubject"));
 		if (bodyMissing)
 			addActionError(getText("EmailTemplateSave.EnterBody"));
+
+		if (template.hasMissingChildRequiredLanguages())
+			addActionError("Changes to required languages must always have at least one language left. "
+					+ "Make sure your email template has at least one language.");
 
 		if (hasActionErrors()) { // change
 			emailTemplateDAO.clear(); // don't save

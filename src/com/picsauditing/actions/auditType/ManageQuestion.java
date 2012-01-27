@@ -93,6 +93,12 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				return false;
 			}
 
+			if (question.hasMissingChildRequiredLanguages()) {
+				addActionError("Changes to required languages must always have at least one language left. "
+						+ "Make sure your question has at least one language.");
+				return false;
+			}
+
 			if (question.getNumber() == 0) {
 				int maxID = 0;
 				for (AuditQuestion sibling : category.getQuestions()) {

@@ -16,7 +16,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_option_group")
 @SuppressWarnings("serial")
-public class AuditOptionGroup extends BaseTranslatableTable implements RequiresTranslation {
+public class AuditOptionGroup extends BaseTableRequiringLanguages {
 	private String name;
 	private boolean radio = false;
 	private String uniqueCode;
@@ -129,5 +129,13 @@ public class AuditOptionGroup extends BaseTranslatableTable implements RequiresT
 	@Override
 	public String getAutocompleteValue() {
 		return name;
+	}
+
+	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
+		return;
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		return getLanguages().isEmpty();
 	}
 }

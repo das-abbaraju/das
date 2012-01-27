@@ -35,7 +35,7 @@ import com.picsauditing.util.Strings;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditQuestion extends BaseTranslatableHistory implements Comparable<AuditQuestion>, RequiresTranslation {
+public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comparable<AuditQuestion> {
 
 	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 	static public final int EMR = 2034;
@@ -719,31 +719,33 @@ public class AuditQuestion extends BaseTranslatableHistory implements Comparable
 	public String getAutocompleteValue() {
 		return name.toString();
 	}
-	
+
 	/**
 	 * Is inline radio group
 	 * 
-	 * Boolean to check to see if a radio group's options should be displayed
-	 * in one line or multiple lines.  There is a css class 'inline' that is
-	 * togglable by this flag.
+	 * Boolean to check to see if a radio group's options should be displayed in one line or multiple lines. There is a
+	 * css class 'inline' that is togglable by this flag.
 	 * 
 	 * @return
 	 */
 	@Transient
-	public boolean isInlineRadioGroup()
-	{
-	    int optionSize = this.option.getValues().size();
-	    
-	    if (this.option.isRadio() && (optionSize == 2 || optionSize == 3)) {
-	        int optionTextLength = 0;
-	        
-	        for (AuditOptionValue optionValue : this.option.getValues()) {
-	            optionTextLength += optionValue.getName().toString().length();
-	        }
-	        
-	        return optionTextLength <= 30;
-	    }
-	    
-	    return false;
+	public boolean isInlineRadioGroup() {
+		int optionSize = this.option.getValues().size();
+
+		if (this.option.isRadio() && (optionSize == 2 || optionSize == 3)) {
+			int optionTextLength = 0;
+
+			for (AuditOptionValue optionValue : this.option.getValues()) {
+				optionTextLength += optionValue.getName().toString().length();
+			}
+
+			return optionTextLength <= 30;
+		}
+
+		return false;
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		return getLanguages().isEmpty();
 	}
 }

@@ -41,10 +41,6 @@ public class ManageFlagCriteria extends PicsActionSupport {
 
 	public String save() throws IOException {
 		if (criteria != null) {
-//			if (criteria.getAuditType() == null && criteria.getQuestion() == null) {
-//				addActionError("Either a question or an audit type is required.");
-//			}
-
 			if (Strings.isEmpty(criteria.getDataType())) {
 				addActionError("DataType is a required field.");
 			}
@@ -57,6 +53,9 @@ public class ManageFlagCriteria extends PicsActionSupport {
 			if (Strings.isEmpty(criteria.getDefaultValue())) {
 				addActionError("Default hurdle is a required field.");
 			}
+			if (criteria.hasMissingChildRequiredLanguages())
+				addActionError("Changes to required languages must always have at least one language left. "
+						+ "Make sure your flag criteria has at least one language.");
 
 			if (hasActionErrors()) {
 				if (criteriaDAO.isContained(criteria))
@@ -133,9 +132,10 @@ public class ManageFlagCriteria extends PicsActionSupport {
 	}
 
 	public String[] getCriteriaCategory() {
-		return new String[] { "Audits", "Insurance", "Insurance AMB Class", "Insurance AMB Rating", "Insurance Criteria", "Paperwork", "Safety", "Statistics" };
+		return new String[] { "Audits", "Insurance", "Insurance AMB Class", "Insurance AMB Rating",
+				"Insurance Criteria", "Paperwork", "Safety", "Statistics" };
 	}
-	
+
 	public String[] getOptionCodeList() {
 		return new String[] { FlagCriteriaOptionCode.None.toString(),
 				FlagCriteriaOptionCode.ExcessAggregate.toString(),

@@ -40,7 +40,7 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 	protected String editPerm;
 	protected String ruleType;
 	protected int ruleID;
-	
+
 	protected List<WorkflowStep> steps;
 
 	private List<AuditType> auditTypes = null;
@@ -204,7 +204,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 				addActionError("You must set a workflow in order to save the Audit Type");
 				return false;
 			}
+			if (auditType.hasMissingChildRequiredLanguages()) {
+				addActionError("Changes to required languages must always have at least one language left. "
+						+ "Check your hierarchy to make sure that each type, category and question has at least one language.");
+				return false;
+			}
+
 			auditType.setAuditColumns(permissions);
+
 			auditType = auditTypeDAO.save(auditType);
 			id = auditType.getId();
 			return true;
@@ -213,8 +220,8 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 		return false;
 	}
-	
-	public String workFlowSteps(){
+
+	public String workFlowSteps() {
 		return "workFlowSteps";
 	}
 
@@ -442,5 +449,4 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 
 		return steps;
 	}
-	
 }

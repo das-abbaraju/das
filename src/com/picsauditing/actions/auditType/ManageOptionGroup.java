@@ -22,6 +22,9 @@ public class ManageOptionGroup extends ManageOptionComponent {
 			group.setUniqueCode(group.getUniqueCode().replaceAll(" ", ""));
 			addActionMessage("Spaces were removed in the unique code");
 		}
+		if (group.hasMissingChildRequiredLanguages())
+			addActionError("Changes to required languages must always have at least one language left. "
+					+ "Make sure your option group has at least one language.");
 
 		if (getActionErrors().size() == 0) {
 			group.setAuditColumns(permissions);

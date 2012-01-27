@@ -228,7 +228,7 @@ function showOption() {
 		</li>
 		<li>
 			<label>Required Languages:</label>
-			<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" cssClass="forms" name="question.languages" multiple="true" size="2" />
+			<s:select list="question.category.languages" cssClass="forms" name="question.languages" multiple="true" size="2" />
 		</li>
 	</ol>
 	</fieldset>

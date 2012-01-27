@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ import javax.persistence.Transient;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "email_template")
-public class EmailTemplate extends BaseTranslatableTable implements java.io.Serializable, RequiresTranslation {
+public class EmailTemplate extends BaseTableRequiringLanguages implements java.io.Serializable {
 	private int accountID;
 	private String templateName = "";
 	private String subject;
@@ -31,7 +32,7 @@ public class EmailTemplate extends BaseTranslatableTable implements java.io.Seri
 	private boolean allowsVelocity = false;
 	private boolean html = false;
 	private boolean translated = false;
-	
+
 	private static final Set<Integer> PRIVATE_VALID_DEACTIVATED_EMAILS = new HashSet<Integer>(Arrays.asList(48, 51, 71,
 			85, 86));
 
@@ -155,5 +156,13 @@ public class EmailTemplate extends BaseTranslatableTable implements java.io.Seri
 	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
+	}
+
+	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
+		return;
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		return getLanguages().isEmpty();
 	}
 }

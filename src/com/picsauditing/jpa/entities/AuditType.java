@@ -29,7 +29,7 @@ import com.picsauditing.access.OpPerms;
 @Entity
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AuditType extends BaseTranslatableTable implements Comparable<AuditType>, java.io.Serializable, RequiresTranslation {
+public class AuditType extends BaseTableRequiringLanguages implements Comparable<AuditType>, java.io.Serializable {
 
 	public static final int PQF = 1;
 	public static final int DESKTOP = 2;
@@ -55,7 +55,7 @@ public class AuditType extends BaseTranslatableTable implements Comparable<Audit
 	public static final int ISN_CAN_QUAL_PQF = 270;
 	public static final int COMPLYWORKS_PQF = 271;
 	public static final int ISN_US_PQF = 281;
-	
+
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
 	protected TranslatableString name;
@@ -377,5 +377,23 @@ public class AuditType extends BaseTranslatableTable implements Comparable<Audit
 	@Transient
 	public String getAutocompleteItem() {
 		return name.toString();
+	}
+
+	public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
+		for (AuditCategory category : categories) {
+			if (category.getParent() == null)
+				category.addAndRemoveRequiredLanguages(add, remove);
+		}
+	}
+
+	public boolean hasMissingChildRequiredLanguages() {
+		boolean hasMissingChild = false;
+
+		for (AuditCategory category : categories) {
+			if (category.getParent() == null)
+				hasMissingChild = hasMissingChild || category.hasMissingChildRequiredLanguages();
+		}
+
+		return hasMissingChild || getLanguages().isEmpty();
 	}
 }
