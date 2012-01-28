@@ -184,13 +184,11 @@ public class EmailBuilder {
 	private String convertPicsTagsToVelocity(String text, boolean allowsVelocity) {
 		if (!allowsVelocity) {
 			// Strip out the velocity tags
-			System.out.println("SUBJECT BEFORE: " + text);
 			text = text.replace("${", "_");
 			text = text.replace("}", "_");
 			text = text.replace('“', '"');
 			text = text.replace('”', '"');
 			text = text.replace("`", "'");
-			System.out.println("SUBJECT AFTER: " + text);
 		}
 		for (Token tag : getPicsTags()) {
 			// This token is valid for this type of email template

@@ -1340,11 +1340,6 @@
 			<result>struts/contractors/verification_mail.jsp</result>
 		</action>
 
-		<action name="VerifySendEmailAjax" method="sendEmail"
-			class="com.picsauditing.actions.audits.VerifyView">
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<action name="VerifyAuditAjax" class="com.picsauditing.actions.audits.VerifyAudit">
 			<result>struts/contractors/verification_audit.jsp</result>
 		</action>

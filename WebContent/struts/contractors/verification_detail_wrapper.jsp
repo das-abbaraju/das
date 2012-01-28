@@ -205,19 +205,6 @@ small {
 		$('#emailTemplate').html("<img src='images/ajax_process.gif' />")
 			.load('VerifyPreviewEmailAjax.action', data);
 	}
-	 
-	function sendEmail() {
-		var data= {id: <s:property value="contractor.id"/>};
-		if($('#body') != null && $('#subject') != null) {
-			data.emailBody = $('#body').val();
-			data.emailSubject = $('#subject').val();
-		}
-		$('#emailStatus').load('VerifySendEmailAjax.action', data, function() {
-				$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-				refreshNoteCategory(<s:property value="id"/>, '<s:property value="noteCategory"/>');
-			}
-		);
-	}
 
 	function copyComment(divId, commentID) {
 		$('#'+commentID).val($('#'+divId).val()).focus().blur();
@@ -265,69 +252,84 @@ $(function(){
 
 <div id="auditHeader" class="auditHeader">
 	<fieldset>
-	<ul>
-		<li><label>CSR:</label>
-			<strong><s:property value="contractor.auditor.name" /></strong>
-		</li>
-		<li><label>Safety Assessment:</label>
-			<s:if test="contractor.safetyRisk != null">
-				<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
-			</s:if>
-			<s:else>
-				<strong><s:text name="ContractorAccount.safetyRisk.missing" /></strong>
-			</s:else>
-		</li>
-		<s:if test="contractor.materialSupplier && contractor.productRisk != null">
-			<li><label>Product Assessment:</label>
-				<strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong>
+		<ul>
+			<li>
+				<label>CSR:</label>
+				<strong><s:property value="contractor.auditor.name" /></strong>
 			</li>
-		</s:if>
-		<li><label>Seasonal:</label>
-			<strong><s:property value="infoSection[71].answer" default="N/A"/></strong>
-		</li>
-		<li><label>Full-Time:</label>
-			<strong><s:property value="infoSection[69].answer" default="N/A"/></strong>
-		</li>
-		<li><label>Total Revenue:</label>
-			<strong><s:property value="infoSection[1616].answer" default="N/A"/></strong>
-		</li>
-	</ul>
+			<li>
+				<label>Safety Assessment:</label>
+				<s:if test="contractor.safetyRisk != null">
+					<strong><s:text name="%{contractor.safetyRisk.i18nKey}" /></strong>
+				</s:if>
+				<s:else>
+					<strong><s:text name="ContractorAccount.safetyRisk.missing" /></strong>
+				</s:else>
+			</li>
+			<s:if test="contractor.materialSupplier && contractor.productRisk != null">
+				<li>
+					<label>Product Assessment:</label>
+					<strong><s:text name="%{contractor.productRisk.i18nKey}" /></strong>
+				</li>
+			</s:if>
+			<li>
+				<label>Seasonal:</label>
+				<strong><s:property value="infoSection[71].answer" default="N/A"/></strong>
+			</li>
+			<li>
+				<label>Full-Time:</label>
+				<strong><s:property value="infoSection[69].answer" default="N/A"/></strong>
+			</li>
+			<li>
+				<label>Total Revenue:</label>
+				<strong><s:property value="infoSection[1616].answer" default="N/A"/></strong>
+			</li>
+		</ul>
 	</fieldset>
 	<fieldset>
-	<ul>
-		<li><label>NAICS:</label>
-			<strong><s:property value="infoSection[57].answer" default="N/A"/></strong>
-		</li>
-		<li><label>Fatalities:</label>
-			<strong><s:property value="infoSection[103].answer" default="N/A"/></strong>
-		</li>
-		<li><label>Citations:</label>
-			<strong><s:property value="infoSection[104].answer"  default="N/A"/></strong>
-		</li>
-	</ul>
+		<ul>
+			<li>
+				<label>NAICS:</label>
+				<strong><s:property value="infoSection[57].answer" default="N/A"/></strong>
+			</li>
+			<li>
+				<label>Fatalities:</label>
+				<strong><s:property value="infoSection[103].answer" default="N/A"/></strong>
+			</li>
+			<li>
+				<label>Citations:</label>
+				<strong><s:property value="infoSection[104].answer"  default="N/A"/></strong>
+			</li>
+		</ul>
 	</fieldset>
 	<fieldset>
-	<ul>
-		<li><label>EMR Origin:</label>
-			<strong><s:property value="infoSection[123].answer" default="N/A"/></strong>
-		</li>
-		<li><label>EMR Anniv.:</label>
-			<strong><s:property value="infoSection[124].answer"  default="N/A"/></strong>
-		</li>
-		<li><label>EMR Rate Type:</label>
-			<strong><s:property value="infoSection[125].answer"  default="N/A"/></strong>
-		</li>
-	</ul>
+		<ul>
+			<li>
+				<label>EMR Origin:</label>
+				<strong><s:property value="infoSection[123].answer" default="N/A"/></strong>
+			</li>
+			<li>
+				<label>EMR Anniv.:</label>
+				<strong><s:property value="infoSection[124].answer"  default="N/A"/></strong>
+			</li>
+			<li>
+				<label>EMR Rate Type:</label>
+				<strong><s:property value="infoSection[125].answer"  default="N/A"/></strong>
+			</li>
+		</ul>
 	</fieldset>
 	<div class="clear"></div>
 </div>
+
 <div class="buttonRow">
 	<button class="approveFlagChanges picsbutton">Check Flag Changes</button>	
 </div>
 
 <div id="verification_detail" style="line-height: 15px;">
-<s:include value="verification_detail.jsp" />
-</div><br />
+	<s:include value="verification_detail.jsp" />
+</div>
+<br />
+
 <s:if test="oshasUS.size > 0 || emrs.size > 0">
 	<table style="width: 100%;">
 		<tbody>
@@ -342,26 +344,17 @@ $(function(){
 <div id="approve_flags"></div>
 <div id="verification_audit"></div>
 <div id="noteAjax" class="blockDialog"></div>
-<br clear="all"/>
-<br clear="all"/>
-<div class="clear"></div>
-<table>
-	<tr class="blueMain">
-		<td><div>
-				<button name="button" onclick="previewEmail();">Preview Email</button>
-				<button class="picsbutton positive" name="button" onclick="sendEmail();">Send Email</button>
-				<a onClick="window.open('NoteEditor.action?id=<s:property value="id"/>&note=0&mode=edit&embedded=0&note.noteCategory=Audits&note.canContractorView=true','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=770,height=550'); return false;"
-				href="#" title="opens in new window" class="picsbutton positive">Add Note</a>
-			</div>
-		</td>
-	</tr>
-	<tr>
-		<td id="emailTemplate"></td>
-	</tr>
-	<tr>
-		<td><div id="emailStatus" style="font-style: italic; color: red;"></div></td>
-	</tr>
-</table>
+<br/>
+<br/>
+<div id="emailTemplate">
+	<button name=button class="picsbutton left" onclick="previewEmail();">Preview Email</button>
+	<form action="VerifyView.action?id=${id}" method="POST">
+		<s:submit cssClass="picsbutton positive left" method="sendEmail" value="Send Email" />
+	</form>
+	<a onClick="window.open('NoteEditor.action?id=<s:property value="id"/>&note=0&mode=edit&embedded=0&note.noteCategory=Audits&note.canContractorView=true','name','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=770,height=550'); return false;"
+		href="#" title="opens in new window" class="picsbutton positive">Add Note</a>
+</div>
+<br/>
 <div id="notesList"><s:include value="../notes/account_notes_embed.jsp"></s:include></div>
 
 </body>

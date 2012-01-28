@@ -55,25 +55,24 @@ public class VerifyView extends ContractorActionSupport {
 
 	public VerifyView() {
 		noteCategory = NoteCategory.Audits;
+		subHeading = getText("VerifyView.title");
 	}
 
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String execute() throws Exception {
-		this.findContractor();
-		subHeading = getText("VerifyView.title");
+		findContractor();
+		fillAuditData();
+		
+		return SUCCESS;
+	}
 
+	private void fillAuditData() {
 		boolean needsOsha = false;
 		boolean needsEmr = false;
 
 		for (ContractorAudit conAudit : getVerificationAudits()) {
 			if (conAudit.getAuditType().isPqf() && !conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
-				List<AuditData> temp = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
-				pqfQuestions = new LinkedHashMap<Integer, AuditData>();
-				for (AuditData ad : temp) {
-					if (ad.getAudit().isCategoryApplicable(ad.getQuestion().getCategory().getId())) {
-						pqfQuestions.put(ad.getQuestion().getId(), ad);
-					}
-				}
+				pqfQuestions = getPQFAnswerMap(conAudit);
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
 				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
@@ -102,8 +101,8 @@ public class VerifyView extends ContractorActionSupport {
 						int categoryID = d.getQuestion().getCategory().getId();
 						if (categoryID != AuditCategory.CITATIONS
 								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
-										.getQuestion().getId() >= 3565 && d.getQuestion().getId() <= 3568 && d
-										.isAnswered()))) {
+										.getQuestion().getId() >= 3565
+										&& d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
 							if (!needsEmr)
 								needsEmr = conAudit.hasCaoStatus(AuditStatus.Submitted)
 										|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
@@ -139,9 +138,21 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		});
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), 
-				Arrays.<Integer> asList(69, 71, 1616, 57, 103, 104, 123, 124, 125));
-		return SUCCESS;
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
+				57, 103, 104, 123, 124, 125));
+	}
+
+	private Map<Integer, AuditData> getPQFAnswerMap(ContractorAudit conAudit) {
+		LinkedHashMap<Integer, AuditData> answerMap = new LinkedHashMap<Integer, AuditData>();
+
+		List<AuditData> answers = auditDataDAO.findCustomPQFVerifications(conAudit.getId());
+		for (AuditData answer : answers) {
+			if (answer.getAudit().isCategoryApplicable(answer.getQuestion().getCategory().getId())) {
+				answerMap.put(answer.getQuestion().getId(), answer);
+			}
+		}
+
+		return answerMap;
 	}
 
 	public String addMissingItemsToEmail() {
@@ -207,7 +218,7 @@ public class VerifyView extends ContractorActionSupport {
 	}
 
 	public String previewEmail() throws Exception {
-		this.findContractor();
+		findContractor();
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(11); // PQF Verification
 		emailBuilder
@@ -221,12 +232,13 @@ public class VerifyView extends ContractorActionSupport {
 	}
 
 	public String sendEmail() throws Exception {
-		this.findContractor();
+		findContractor();
 
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
-		if (emailBody == null && emailSubject == null) {
+		if (previewEmail == null || Strings.isEmpty(previewEmail.getBody())
+				|| Strings.isEmpty(previewEmail.getSubject())) {
 			emailBuilder.setTemplate(11);
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
 			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
@@ -234,8 +246,8 @@ public class VerifyView extends ContractorActionSupport {
 		} else {
 			EmailTemplate emailTemplate = new EmailTemplate();
 			emailTemplate.setId(11);
-			emailTemplate.setBody(emailBody);
-			emailTemplate.setSubject(emailSubject);
+			emailTemplate.setBody(previewEmail.getBody());
+			emailTemplate.setSubject(previewEmail.getSubject());
 			emailBuilder.setEdited(true);
 			emailBuilder.setFromAddress("\"" + contractor.getAuditor().getName() + "\"<"
 					+ contractor.getAuditor().getEmail() + ">");
@@ -247,7 +259,9 @@ public class VerifyView extends ContractorActionSupport {
 		String note = "PQF Verification email sent to " + emailBuilder.getSentTo();
 		addNote(contractor, note, NoteCategory.Audits);
 
-		output = "The email was sent and the contractor notes were stamped";
+		fillAuditData();
+		
+		addActionMessage("The email was sent and the contractor notes were stamped");
 		return SUCCESS;
 	}
 
