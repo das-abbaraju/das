@@ -274,6 +274,13 @@ public class TranslationETL extends PicsActionSupport {
 					elementText = document.createTextNode(d.get("applicable").toString());
 					element.appendChild(elementText);
 				}
+				
+				if (d.get("sourceLanguage") != null) {
+					element = document.createElement("sourceLanguage");
+					translation.appendChild(element);
+					elementText = document.createTextNode(d.get("sourceLanguage").toString());
+					element.appendChild(elementText);
+				}
 			}
 		}
 
@@ -354,6 +361,7 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
 					addField(t, "applicable", d.get("applicable") == null ? null : d.get("applicable").toString());
+					addField(t, "sourceLanguage", d.get("sourceLanguage") == null ? null : d.get("sourceLanguage").toString());
 
 					importedTranslations.get(t.getKey(), locale).add(t);
 				}
@@ -376,6 +384,7 @@ public class TranslationETL extends PicsActionSupport {
 		sql.addField("DATE_FORMAT(t.updateDate, '%Y-%m-%d %H:%i:%s') updateDate");
 		sql.addField("t.lastUsed");
 		sql.addField("t.applicable");
+		sql.addField("t.sourceLanguage");
 		sql.addWhere(where);
 		sql.addOrderBy("t.updateDate DESC, t.creationDate DESC");
 	}
@@ -407,6 +416,8 @@ public class TranslationETL extends PicsActionSupport {
 			t.setLastUsed(sdf2.parse(value));
 		if (name.equals("applicable"))
 			t.setApplicable(Integer.parseInt(value) == 1);
+		if (name.equals("sourceLanguage"))
+			t.setSourceLanguage(value);
 	}
 
 	@Transactional
