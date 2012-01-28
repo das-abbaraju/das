@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -44,7 +45,7 @@ import com.picsauditing.util.Strings;
  * 
  */
 @SuppressWarnings("serial")
-public class MassMailer extends PicsActionSupport {
+public class MassMailer extends RequiredLanguagesSupport {
 	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -547,5 +548,14 @@ public class MassMailer extends PicsActionSupport {
 
 	public void setTemplateLanguages(List<String> templateLanguages) {
 		this.templateLanguages = templateLanguages;
+	}
+	
+	@Override
+	protected void fillSelectedLocales() {
+		if (templateLanguages != null) {
+			for (String language : templateLanguages) {
+				selectedLocales.add(new Locale(language));
+			}
+		}
 	}
 }

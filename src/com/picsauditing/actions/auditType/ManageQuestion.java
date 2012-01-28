@@ -3,6 +3,7 @@ package com.picsauditing.actions.auditType;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -377,5 +378,14 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 
 	public List<AuditTransformOption> getTransformOptions() {
 		return question.getTransformOptions();
+	}
+
+	@Override
+	protected void fillSelectedLocales() {
+		if (question != null && !question.getLanguages().isEmpty()) {
+			for (String locale : question.getLanguages()) {
+				selectedLocales.add(new Locale(locale));
+			}
+		}
 	}
 }

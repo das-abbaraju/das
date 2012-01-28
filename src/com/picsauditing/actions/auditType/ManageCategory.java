@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -147,5 +148,14 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 	public void setTargetCategoryID(int targetCategoryID) {
 		this.targetCategoryID = targetCategoryID;
+	}
+
+	@Override
+	protected void fillSelectedLocales() {
+		if (category != null && !category.getLanguages().isEmpty()) {
+			for (String locale : category.getLanguages()) {
+				selectedLocales.add(new Locale(locale));
+			}
+		}
 	}
 }

@@ -2,6 +2,7 @@ package com.picsauditing.actions.auditType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,7 +11,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -27,7 +28,7 @@ import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageAuditType extends PicsActionSupport implements Preparable {
+public class ManageAuditType extends RequiredLanguagesSupport implements Preparable {
 	protected int id = 0;
 	protected AuditType auditType = null;
 	protected AuditCategory category = null;
@@ -347,10 +348,6 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		return auditTypes;
 	}
 
-	public void setAuditTypes(List<AuditType> auditTypes) {
-		this.auditTypes = auditTypes;
-	}
-
 	public AuditType getAuditType() {
 		return auditType;
 	}
@@ -448,5 +445,14 @@ public class ManageAuditType extends PicsActionSupport implements Preparable {
 		}
 
 		return steps;
+	}
+
+	@Override
+	protected void fillSelectedLocales() {
+		if (auditType != null && !auditType.getLanguages().isEmpty()) {
+			for (String language : auditType.getLanguages()) {
+				selectedLocales.add(new Locale(language));
+			}
+		}
 	}
 }

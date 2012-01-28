@@ -105,4 +105,9 @@ public class ManageOptionValue extends ManageOptionComponent {
 
 		return number + 1;
 	}
+
+	@Override
+	protected void fillSelectedLocales() {
+		// TODO Check if we need to update audit option values to have required languages as well
+	}
 }

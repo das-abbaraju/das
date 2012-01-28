@@ -227,8 +227,32 @@ function showOption() {
 			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
 		</li>
 		<li>
-			<label>Required Languages:</label>
-			<s:select list="question.category.languages" cssClass="forms" name="question.languages" multiple="true" size="2" />
+			<label>
+				<s:text name="ManageAuditType.RequiredLanguages" />:
+			</label>
+			<s:optiontransferselect
+				name="requiredLanguagesName"
+				list="availableLocales"
+				listKey="language"
+				listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+				doubleName="question.languages"
+				doubleList="selectedLocales"
+				doubleListKey="language"
+				doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+				leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
+				rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
+				addToLeftLabel="%{getText('button.Remove')}"
+				addToRightLabel="%{getText('button.Add')}"
+				allowAddAllToLeft="false"
+				allowAddAllToRight="false"
+				allowSelectAll="false"
+				allowUpDownOnLeft="false"
+				allowUpDownOnRight="false"
+				buttonCssClass="arrow"
+				theme="pics"
+			>
+				<s:param name="sort" value="'false'" />
+			</s:optiontransferselect>
 		</li>
 	</ol>
 	</fieldset>

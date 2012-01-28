@@ -152,8 +152,32 @@
 						</li>
 					</s:if>
 					<li>
-						<label>Required Languages:</label>
-						<s:select list="category.AvailableRequiredLanguages" cssClass="forms" name="category.languages" multiple="true" size="2" />
+						<label>
+							<s:text name="ManageAuditType.RequiredLanguages" />:
+						</label>
+						<s:optiontransferselect
+							name="requiredLanguagesName"
+							list="availableLocales"
+							listKey="language"
+							listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+							doubleName="category.languages"
+							doubleList="selectedLocales"
+							doubleListKey="language"
+							doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+							leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
+							rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
+							addToLeftLabel="%{getText('button.Remove')}"
+							addToRightLabel="%{getText('button.Add')}"
+							allowAddAllToLeft="false"
+							allowAddAllToRight="false"
+							allowSelectAll="false"
+							allowUpDownOnLeft="false"
+							allowUpDownOnRight="false"
+							buttonCssClass="arrow"
+							theme="pics"
+ 						>
+ 							<s:param name="sort" value="'false'" />
+ 						</s:optiontransferselect>
 					</li>
 				</ol>
 			</fieldset>

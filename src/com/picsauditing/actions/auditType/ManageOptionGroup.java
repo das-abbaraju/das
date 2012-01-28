@@ -1,6 +1,7 @@
 package com.picsauditing.actions.auditType;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -11,7 +12,7 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ManageOptionGroup extends ManageOptionComponent {
 	private boolean editOnly = false;
-
+	
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Edit)
 	public String save() throws Exception {
@@ -62,7 +63,6 @@ public class ManageOptionGroup extends ManageOptionComponent {
 		return "edit";
 	}
 
-	// Get all
 	public List<AuditOptionGroup> getAll() {
 		return auditOptionValueDAO.getAllOptionTypes();
 	}
@@ -73,5 +73,14 @@ public class ManageOptionGroup extends ManageOptionComponent {
 
 	public void setEditOnly(boolean editOnly) {
 		this.editOnly = editOnly;
+	}
+	
+	@Override
+	protected void fillSelectedLocales() {
+		if (group != null && !group.getLanguages().isEmpty()) {
+			for (String language : group.getLanguages()) {
+				selectedLocales.add(new Locale(language));
+			}
+		}
 	}
 }

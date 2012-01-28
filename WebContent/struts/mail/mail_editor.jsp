@@ -69,6 +69,30 @@
 <s:if test="permissions.admin">
 	<s:checkbox name="templateTranslated" id="templateTranslated" onclick="dirtyOn();" />
 	<label for="templateTranslated">Template Has Translations</label> <br />
-	<label>Required Languages:</label>
-	<s:select list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()" cssClass="forms" name="templateLanguages" multiple="true" size="2"  onclick="dirtyOn();" />
+	<label>
+		<s:text name="ManageAuditType.RequiredLanguages" />:
+	</label>
+	<s:optiontransferselect
+		name="requiredLanguagesName"
+		list="availableLocales"
+		listKey="language"
+		listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+		doubleName="templateLanguages"
+		doubleList="selectedLocales"
+		doubleListKey="language"
+		doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+		leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
+		rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
+		addToLeftLabel="%{getText('button.Remove')}"
+		addToRightLabel="%{getText('button.Add')}"
+		allowAddAllToLeft="false"
+		allowAddAllToRight="false"
+		allowSelectAll="false"
+		allowUpDownOnLeft="false"
+		allowUpDownOnRight="false"
+		buttonCssClass="arrow"
+		theme="pics"
+	>
+		<s:param name="sort" value="'false'" />
+	</s:optiontransferselect>
 </s:if>

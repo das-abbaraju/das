@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
@@ -22,7 +23,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOptionCode;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageFlagCriteria extends PicsActionSupport {
+public class ManageFlagCriteria extends RequiredLanguagesSupport {
 
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
@@ -35,7 +36,6 @@ public class ManageFlagCriteria extends PicsActionSupport {
 
 	@Override
 	public String execute() {
-
 		return SUCCESS;
 	}
 
@@ -141,5 +141,13 @@ public class ManageFlagCriteria extends PicsActionSupport {
 				FlagCriteriaOptionCode.ExcessAggregate.toString(),
 				FlagCriteriaOptionCode.ExcessEachOccurrence.toString() };
 	}
-
+	
+	@Override
+	protected void fillSelectedLocales() {
+		if (criteria != null && !criteria.getLanguages().isEmpty()) {
+			for (String language : criteria.getLanguages()) {
+				selectedLocales.add(new Locale(language));
+			}
+		}
+	}
 }

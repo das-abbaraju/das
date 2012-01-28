@@ -5,12 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.jpa.entities.AuditOptionGroup;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
 @SuppressWarnings("serial")
-public abstract class ManageOptionComponent extends PicsActionSupport {
+public abstract class ManageOptionComponent extends RequiredLanguagesSupport {
 	@Autowired
 	protected AuditOptionValueDAO auditOptionValueDAO;
 
