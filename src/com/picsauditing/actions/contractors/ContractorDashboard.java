@@ -39,7 +39,6 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -49,6 +48,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -185,7 +185,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				cTag.setAuditColumns(permissions);
 				contractor.getOperatorTags().add(cTag);
 				contractor.incrementRecalculation(10);
-				accountDao.save(contractor);
+				contractorAccountDao.save(contractor);
 				auditTypeRuleCache.initialize(auditRuleDAO);
 				for (AuditTypeRule atr : auditTypeRuleCache.getRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
@@ -199,7 +199,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if ("RemoveTag".equals(button)) {
 			contractorTagDAO.remove(tagId);
 			contractor.incrementRecalculation(10);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		}
 
 		if ("Upgrade to Full Membership".equals(button)) {
@@ -220,8 +220,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			contractor.incrementRecalculation();
 			contractor.setAuditColumns(permissions);
-			accountDao.save(contractor);
-
+			contractorAccountDao.save(contractor);
 
 			// Sending a Email to the contractor for upgrade
 			EmailBuilder emailBuilder = new EmailBuilder();
@@ -258,7 +257,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					operatorTags.remove(contractorTag.getTag());
 			}
 		}
-		
+
 		if (opID == 0 && permissions.isOperatorCorporate())
 			opID = permissions.getAccountId();
 
@@ -281,6 +280,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	public String preview() throws Exception {
+		return "preview";
+	}
+
+	public String printFlagMatrix() throws Exception {
+		findContractor();
+		return "printFlagMatrix";
 	}
 
 	public ContractorOperator getCo() {
@@ -392,10 +400,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isCanUpgrade() {
 		if (permissions.isContractor())
 			return true;
-		
+
 		if (permissions.seesAllContractors())
 			return true;
-		
+
 		if (permissions.isOperator() && permissions.hasPermission(OpPerms.ViewTrialAccounts, OpType.Edit))
 			return true;
 
@@ -470,7 +478,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
-			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.TrirNaics, 
+			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.TrirNaics,
 					OshaRateType.LwcrAbsolute, OshaRateType.Fatalities };
 
 			prepopulateNotApplicableStats(oshaRateTypes);
@@ -489,8 +497,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 							put(getText(rate.getDescriptionKey()), auditFor, format(value));
 						}
 
-						put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor, format(audit
-								.getManHours()));
+						put(getText("ContractorView.ContractorDashboard.HoursWorked"), auditFor,
+								format(audit.getManHours()));
 					}
 				}
 			}
@@ -506,17 +514,17 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			if (data.get(getText(OshaRateType.TrirAbsolute.getDescriptionKey())) != null) {
 				if (contractor.hasWiaCriteria(oshaType)) {
-					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
+					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind,
 							format(contractor.getWeightedIndustryAverage()) + "*");
 				} else {
-					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind, 
+					put(getText(OshaRateType.TrirAbsolute.getDescriptionKey()), ind,
 							format(naicsDAO.getIndustryAverage(false, contractor.getNaics())));
 				}
 			}
 
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
-				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind, format(naicsDAO.getIndustryAverage(
-						true, contractor.getNaics())));
+				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
+						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : getActiveOperators()) {
@@ -649,7 +657,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		private String getOshaSuffix(OshaRateType rateType) {
-			if (OshaRateType.TrirAbsolute.equals(rateType) || OshaRateType.TrirNaics.equals(rateType) || OshaRateType.TrirWIA.equals(rateType))
+			if (OshaRateType.TrirAbsolute.equals(rateType) || OshaRateType.TrirNaics.equals(rateType)
+					|| OshaRateType.TrirWIA.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.TRIR");
 			else if (OshaRateType.LwcrAbsolute.equals(rateType))
 				return " " + getText("ContractorView.ContractorDashboard.LWCR");
@@ -700,13 +709,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isHasOperatorTags() {
 		if (permissions.hasPermission(OpPerms.ContractorTags))
 			return true;
-		
+
 		if (permissions.hasGroup(959))
 			return true;
-		
+
 		if (permissions.isContractor())
 			return true;
-		
+
 		return false;
 	}
 
@@ -743,7 +752,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 		return prevStats;
 	}
-	
+
 	public List<ContractorTag> getTagsViewableByUser() {
 		if (permissions.isOperator()) {
 			List<ContractorTag> tags = new ArrayList<ContractorTag>(contractor.getOperatorTags());
@@ -754,19 +763,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 					iterator.remove();
 				}
 			}
-			
+
 			return tags;
 		}
-		
+
 		return contractor.getOperatorTags();
 	}
 	
-	public String preview() throws Exception {
-		return "preview";
-	}
-	
-	public String printFlagMatrix() throws Exception {
-		findContractor();
-	    return "printFlagMatrix";
+	public String getCommaSeparatedContractorTypes() {
+		if (contractor != null) {
+			List<String> types = new ArrayList<String>();
+			
+			for (ContractorType type : contractor.getAccountTypes()) {
+				types.add(getText(type.getI18nKey()));
+			}
+			
+			return Strings.implode(types);
+		}
+		
+		return null;
 	}
 }

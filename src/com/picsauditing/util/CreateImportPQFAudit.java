@@ -88,7 +88,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 			}
 
 			contractor.setCompetitorMembership(true);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		}
 
 		// Finding auditID for redirect after save

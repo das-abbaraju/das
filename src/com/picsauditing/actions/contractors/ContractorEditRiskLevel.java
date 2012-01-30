@@ -36,7 +36,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	public void prepare() throws Exception {
 		int id = getParameter("id");
 		if (id > 0)
-			contractor = accountDao.find(id);
+			contractor = contractorAccountDao.find(id);
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 				contractor.setLastUpgradeDate(new Date());
 
 			contractor.syncBalance();
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 			addActionMessage("Successfully updated Risk Level" + (noteSummary.size() > 1 ? "s" : ""));
 		}
 

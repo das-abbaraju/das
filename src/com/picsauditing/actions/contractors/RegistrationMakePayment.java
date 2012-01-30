@@ -150,7 +150,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			contractor.setMembershipDate(new Date());
 			if (contractor.getBalance() == null)
 				contractor.setBalance(BigDecimal.ZERO);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		} else {
 			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				if (contractor.isCcValid()) {
@@ -183,7 +183,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 						// Activate the contractor
 						billingService.activateContractor(contractor, invoice);
-						accountDao.save(contractor);
+						contractorAccountDao.save(contractor);
 
 						addNote("Credit Card transaction completed and emailed the receipt for "
 								+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
@@ -246,7 +246,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if (!contractor.getAccountLevel().isBidOnly() && !contractor.isRenew()) {
 			contractor.setRenew(true);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		}
 
 		// Reload permissions for this user so they view just their country
@@ -257,7 +257,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		if ("Check".equals(ccName) && contractor.getNewMembershipAmount().intValue() > 500) {
 			contractor.setPaymentMethod(PaymentMethod.Check);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 			return SUCCESS;
 		}
 
@@ -318,7 +318,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
-				accountDao.save(contractor);
+				contractorAccountDao.save(contractor);
 				addActionMessage(getText("ContractorPaymentOptions.SuccessfullyAddedCC"));
 			}
 		}
@@ -388,7 +388,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 	}
 
 	@Override
@@ -403,7 +403,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	public String changePaymentToCC() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.CreditCard);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		loadCC();
 
 		this.redirect("RegistrationMakePayment.action");
@@ -633,7 +633,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			invoice = billingService.createInvoice(contractor);
 			contractor.getInvoices().add(invoice);
 			invoiceDAO.save(invoice);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 			redirect("RegistrationMakePayment.action");
 			return true;
 		}

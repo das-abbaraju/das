@@ -105,7 +105,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		try {
 			PicsLogger.start("ContractorFlagAction");
 			contractor.incrementRecalculation();
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 			noteCategory = NoteCategory.Flags;
 
 			if (!canFindOperator())

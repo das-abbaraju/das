@@ -34,7 +34,7 @@ public class ContractorValidate extends ContractorActionSupport {
 				return BLANK;
 
 			String nameIndex = Strings.indexName(companyName);
-			List<ContractorAccount> matches = accountDao.findWhere("nameIndex = ?", nameIndex);
+			List<ContractorAccount> matches = contractorAccountDao.findWhere("nameIndex = ?", nameIndex);
 
 			if (matches.size() > 0)
 				addActionError(getText("Status.CompanyInUse", new Object[] { companyName }));
@@ -53,7 +53,7 @@ public class ContractorValidate extends ContractorActionSupport {
 					return BLANK;
 				}
 				
-				ContractorAccount con = accountDao.findTaxID(taxId.substring(0, 9), country);
+				ContractorAccount con = contractorAccountDao.findTaxID(taxId.substring(0, 9), country);
 				if (con != null) {
 					if (con.getCountry().isCanada())
 						addActionError(getText("Status.TaxIdInUse.Canada", new Object[] { taxId, con.getTaxId(),

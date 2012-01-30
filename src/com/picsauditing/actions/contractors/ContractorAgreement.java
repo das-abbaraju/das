@@ -27,7 +27,7 @@ public class ContractorAgreement extends ContractorActionSupport {
 						.hasPermission(OpPerms.ContractorSafety))) {
 			contractor.setAgreementDate(new Date());
 			contractor.setAgreedBy(getUser());
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		} else {
 			addActionError("Only account Administrators, Billing, and Safety can accept this Contractor Agreement");
 		}

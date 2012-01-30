@@ -87,7 +87,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			contractor.setCcEmail(contractor.getUsersByRole(OpPerms.ContractorBilling).get(0).getEmail());
 		}
 
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		if (!contractor.getPaymentMethod().isCreditCard())
 			return SUCCESS;
@@ -140,7 +140,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
-				accountDao.save(contractor);
+				contractorAccountDao.save(contractor);
 				addActionMessage(getText("ContractorPaymentOptions.SuccessfullyAddedCC"));
 			}
 		}
@@ -210,7 +210,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		time = DateBean.getBrainTreeDate();
 		hash = BrainTree.buildHash(orderid, amount, customer_vault_id, time, key);
 
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		return;
 	}
 
@@ -229,7 +229,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String changePaymentToCheck() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.Check);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		if (contractor.isCcOnFile())
 			loadCC();
 
@@ -239,7 +239,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String changePaymentToCC() throws Exception {
 		findContractor();
 		contractor.setPaymentMethod(PaymentMethod.CreditCard);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		loadCC();
 
 		return SUCCESS;
@@ -248,7 +248,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String markCCInvalid() throws Exception {
 		findContractor();
 		contractor.setCcOnFile(false);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		loadCC();
 
 		return SUCCESS;
@@ -257,7 +257,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 	public String markCCValid() throws Exception {
 		findContractor();
 		contractor.setCcOnFile(true);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		loadCC();
 
 		return SUCCESS;
@@ -271,7 +271,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						.hasPermission(OpPerms.ContractorSafety))) {
 			contractor.setAgreementDate(new Date());
 			contractor.setAgreedBy(getUser());
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		} else {
 			addActionError(getText("ContractorPaymentOptions.ContractorAgreementError"));
 		}

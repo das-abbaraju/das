@@ -223,7 +223,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
 				contractor.incrementRecalculation(10);
-				accountDao.save(contractor);
+				contractorAccountDao.save(contractor);
 
 				message = getText("InvoiceDetail.message.CanceledInvoice");
 
@@ -263,7 +263,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 							// Activate the contractor
 							billingService.activateContractor(contractor, invoice);
-							accountDao.save(contractor);
+							contractorAccountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
 									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(), getUser());
@@ -335,7 +335,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		contractor.syncBalance();
 
 		contractor.setAuditColumns(permissions);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		return SUCCESS;
 	}

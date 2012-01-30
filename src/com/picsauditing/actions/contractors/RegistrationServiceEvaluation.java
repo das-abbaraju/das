@@ -39,8 +39,6 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
-	private ContractorAccountDAO contractorAccountDAO;
-	@Autowired
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private BillingCalculatorSingle billingService;
@@ -247,7 +245,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractor.setProductRisk(product);
 
 		contractor.setAuditColumns(permissions);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		if (!isSafetyOK || !isProductOK) {
 			String safetyAssessment = safety.toString();
@@ -275,7 +273,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		setListOnly();
 		contractor.syncBalance();
 		billingService.calculateAnnualFees(contractor);
-		contractorAccountDAO.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		// Free accounts should just be activated
 		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingDeactivated()) {
@@ -284,7 +282,7 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 			contractor.setMembershipDate(new Date());
 			if (contractor.getBalance() == null)
 				contractor.setBalance(BigDecimal.ZERO);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		}
 
 		redirect(getRegistrationStep().getUrl());

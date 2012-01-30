@@ -621,7 +621,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.getItems().add(item);
 		contractor.getInvoices().add(invoice);
 		contractor.syncBalance();
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		addNote(contractor, notes, NoteCategory.Audits, getViewableByAccount(conAudit.getAuditType().getAccount()));
 	}

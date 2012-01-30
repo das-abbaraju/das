@@ -101,7 +101,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				conID = getParameter("id");
 			}
 			if (conID > 0) {
-				contractor = accountDao.find(conID);
+				contractor = contractorAccountDao.find(conID);
 
 				billingService.calculateAnnualFees(contractor);
 				contractor.syncBalance();
@@ -192,7 +192,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					addActionError(error);
 				// TODO I don't know if this is the right answer here, but we don't want to save anything if
 				// there are errors.
-				contractor = accountDao.find(contractor.getId());
+				contractor = contractorAccountDao.find(contractor.getId());
 				return SUCCESS;
 			}
 			contractor.setQbSync(true);
@@ -203,7 +203,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setPrimaryContact(userDAO.find(contactID));
 			}
 			// contractor.setNeedsIndexing(true);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
 		}
@@ -219,7 +219,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		contractor.setStatus(AccountStatus.Deleted);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		return "ConList";
 	}
@@ -264,8 +264,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 
 			if (emailAddresses.size() > 0) {
-				if (!accountDao.isContained(contractor)) {
-					contractor = accountDao.find(contractor.getId());
+				if (!contractorAccountDao.isContained(contractor)) {
+					contractor = contractorAccountDao.find(contractor.getId());
 				}
 				EmailBuilder emailBuilder = new EmailBuilder();
 				emailBuilder.setTemplate(51); // Deactivation Email for
@@ -306,7 +306,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		contractor.setBillingState(contractor.getState());
 		contractor.setBillingCountry(contractor.getCountry());
 		contractor.setBillingZip(contractor.getZip());
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		return SUCCESS;
 	}
@@ -327,7 +327,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
 				contractor.setStatus(AccountStatus.Deactivated);
 			}
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 
 			this.addNote(contractor, "Closed contractor account." + expiresMessage);
 			this.addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountClosed", expiresMessage));
@@ -342,7 +342,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			contractor.setStatus(AccountStatus.Active);
 
 		contractor.setReason("");
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 		addNote(contractor, "Reactivated account");
 		addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountReactivated", id));
 		return SUCCESS;

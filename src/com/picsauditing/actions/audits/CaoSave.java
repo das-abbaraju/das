@@ -199,7 +199,7 @@ public class CaoSave extends AuditActionSupport {
 		if (insurance) {
 			ContractorAccount con = cao.getAudit().getContractorAccount();
 			con.incrementRecalculation();
-			accountDao.save(con);
+			contractorAccountDao.save(con);
 			// updatedContractors.add(con.getName());
 		} else
 			checkNewStatus(step, cao);

@@ -145,7 +145,7 @@ public class Registration extends ContractorActionSupport {
 		contractor.setNaics(new Naics());
 		contractor.getNaics().setCode("0");
 		contractor.setNaicsValid(false);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		user.setActive(true);
 		user.setAccount(contractor);
@@ -195,7 +195,7 @@ public class Registration extends ContractorActionSupport {
 		// contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
 		if (contractor.getCountry().isHasStates() && state != null)
 			contractor.setState(state);
-		accountDao.save(contractor);
+		contractorAccountDao.save(contractor);
 
 		// Send the Welcome Email
 		EmailBuilder emailBuilder = new EmailBuilder();

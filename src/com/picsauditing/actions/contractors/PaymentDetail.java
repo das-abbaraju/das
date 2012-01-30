@@ -116,7 +116,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			if (contractor.getStatus().isPendingDeactivated()) {
 				for (PaymentAppliedToInvoice ip : payment.getInvoices()) {
 					if (billingService.activateContractor(contractor, ip.getInvoice())) {
-						accountDao.save(contractor);
+						contractorAccountDao.save(contractor);
 						break;
 					}
 				}
@@ -311,7 +311,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					if (changePaymentMethodOnAccount) {
 						contractor.setPaymentMethod(method);
 						contractor.setAuditColumns(permissions);
-						accountDao.save(contractor);
+						contractorAccountDao.save(contractor);
 					}
 					for (int txnID : amountApplyMap.keySet()) {
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {

@@ -356,7 +356,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			findConAudit();
 
 			contractor.setCompetitorMembership(false);
-			accountDao.save(contractor);
+			contractorAccountDao.save(contractor);
 		}
 
 		checkMode();

@@ -221,7 +221,7 @@ public class AuditDataSave extends AuditActionSupport {
 						}
 					}
 				}
-				accountDao.save(contractor);
+				contractorAccountDao.save(contractor);
 
 				if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
 						&& !StringUtils.isEmpty(auditData.getAnswer())) {

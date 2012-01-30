@@ -41,12 +41,11 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorActionSupport extends AccountActionSupport {
-
 	protected ContractorAccount contractor;
 	private List<ContractorAudit> contractorNonExpiredAudits = null;
 
 	@Autowired
-	protected ContractorAccountDAO accountDao;
+	protected ContractorAccountDAO contractorAccountDao;
 	@Autowired
 	protected ContractorAuditDAO auditDao;
 	@Autowired
@@ -78,7 +77,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		if (permissions.isContractor())
 			id = permissions.getAccountId();
 
-		contractor = accountDao.find(id);
+		contractor = contractorAccountDao.find(id);
 		account = contractor;
 		if (contractor == null)
 			throw new RecordNotFoundException("Contractor " + id);
@@ -483,13 +482,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = accountDao.findOperators(contractor, permissions, " AND operatorAccount.type IN ('Operator')");
+			operators = contractorAccountDao.findOperators(contractor, permissions, " AND operatorAccount.type IN ('Operator')");
 		return operators;
 	}
 
 	public List<ContractorOperator> getActiveOperators() {
 		if (activeOperators == null)
-			activeOperators = accountDao.findOperators(contractor, permissions,
+			activeOperators = contractorAccountDao.findOperators(contractor, permissions,
 					" AND status IN ('Active','Demo') AND operatorAccount.type IN ('Operator')");
 		return activeOperators;
 	}
@@ -559,7 +558,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		try {
 			// Is this ever used? We should just make sure findContractor() has
 			// already been called
-			if (!accountDao.isContained(contractor))
+			if (!contractorAccountDao.isContained(contractor))
 				findContractor();
 		} catch (Exception e) {
 			e.printStackTrace();

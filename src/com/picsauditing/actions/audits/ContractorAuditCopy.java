@@ -41,7 +41,7 @@ public class ContractorAuditCopy extends AuditActionSupport {
 		this.findConAudit();
 		int oldconID = conAudit.getContractorAccount().getId();
 		if (button != null) {
-			ContractorAccount nConAccount = accountDao.findConID(contractorSelect);
+			ContractorAccount nConAccount = contractorAccountDao.findConID(contractorSelect);
 			if (nConAccount == null) {
 				addActionError("No Contractor Found");
 				return SUCCESS;
