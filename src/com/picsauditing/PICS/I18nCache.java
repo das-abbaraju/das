@@ -194,7 +194,7 @@ public class I18nCache implements Serializable {
 			newTranslation.setQualityRating(TranslationQualityRating.Good);
 			newTranslation.setApplicable(true);
 
-			if (!requiredLanguages.contains(newTranslation.getLocale())) {
+			if (requiredLanguages.size() > 0 && !requiredLanguages.contains(newTranslation.getLocale())) {
 				newTranslation.setApplicable(false);
 			}
 
@@ -265,10 +265,8 @@ public class I18nCache implements Serializable {
 		if (!Strings.isEmpty(sourceLanguage) && !sourceLanguage.equals(translationToUpdate.getLocale())) {
 			setClause += ", sourceLanguage = '" + sourceLanguage + "'";
 		}
-		
-		if (!translationToUpdate.isApplicable()) {
-			setClause += ", applicable = 0";
-		}
+
+		setClause += ", applicable = " + (translationToUpdate.isApplicable() ? "1" : "0");
 
 		String format = "UPDATE app_translation " + setClause + " WHERE msgKey = '%s' AND locale = '%s'";
 

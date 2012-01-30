@@ -37,7 +37,7 @@ public abstract class BaseTranslatable implements Translatable {
 	@Transient
 	private List<String> getRequiredLanguagesForEntity() {
 		try {
-			Method getRequiredLanguages = this.getClass().getDeclaredMethod("getLanguages");
+			Method getRequiredLanguages = this.getClass().getMethod("getLanguages");
 			return (List<String>) getRequiredLanguages.invoke(this);
 		} catch (Exception e) {
 			return Collections.emptyList();
