@@ -6,21 +6,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
@@ -30,11 +24,7 @@ import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class ManageJobRoles extends PicsActionSupport implements Preparable {
-	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected ContractorAuditDAO contractorAuditDAO;
+public class ManageJobRoles extends AccountActionSupport {
 	@Autowired
 	protected EmployeeRoleDAO employeeRoleDAO;
 	@Autowired
@@ -44,27 +34,15 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
-	protected Account account;
 	protected JobRole role;
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
-	private int auditID;
 	private int id;
 
-	public void prepare() throws Exception {
-		if (permissions.isContractor()) {
-			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
-					&& !permissions.hasPermission(OpPerms.ContractorSafety)) {
-				throw new NoRightsException("Contractor Admin or Safety");
-			}
-		} else if (permissions.isOperatorCorporate()) {
-			permissions.tryPermission(OpPerms.DefineRoles);
-			if (permissions.getAccountId() != account.getId())
-				permissions.tryPermission(OpPerms.AllOperators);
-		}
+	public String execute() throws Exception {
+		checkPermissions();
 
-		if (id > 0)
-			account = accountDAO.find(id);
+		getContractorAccountFromAuditID();
 
 		if (role != null && role.getAccount() != null)
 			account = role.getAccount();
@@ -72,26 +50,16 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 		if (account == null && permissions.isContractor())
 			account = accountDAO.find(permissions.getAccountId());
 
-		// Get auditID
-		auditID = getParameter("auditID");
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-
-			if (permissions.isAdmin()) {
-				ContractorAudit audit = contractorAuditDAO.find(auditID);
-				account = audit.getContractorAccount();
-			}
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
-
 		if (account == null) {
 			throw new RecordNotFoundException("account");
 		}
+
+		return SUCCESS;
 	}
 
 	public String get() throws Exception {
+		checkPermissions();
+
 		if (role == null)
 			role = new JobRole();
 
@@ -99,7 +67,9 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 	}
 
 	public String save() throws Exception {
-		if (role.getAccount() == null)
+		checkPermissions();
+
+		if (role.getAccount() == null && account != null)
 			role.setAccount(account);
 
 		if (Strings.isEmpty(role.getName())) {
@@ -113,6 +83,8 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 	}
 
 	public String delete() throws Exception {
+		checkPermissions();
+
 		List<EmployeeRole> employeeRoles = employeeRoleDAO.findWhere("e.jobRole.id = " + role.getId());
 
 		if (employeeRoles.size() > 0) {
@@ -122,10 +94,12 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 			jobRoleDAO.remove(role);
 		}
 
-		return redirect("ManageJobRoles.action?id=" + account.getId());
+		return redirect("ManageJobRoles.action?account=" + account.getId());
 	}
 
 	public String addCompetency() throws Exception {
+		checkPermissions();
+
 		if (competency != null) {
 			for (JobCompetency jc : role.getJobCompetencies()) {
 				if (competency.equals(jc.getCompetency()))
@@ -150,6 +124,8 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 	}
 
 	public String removeCompetency() throws Exception {
+		checkPermissions();
+
 		if (competency != null) {
 			Iterator<JobCompetency> iterator = role.getJobCompetencies().iterator();
 			while (iterator.hasNext()) {
@@ -165,14 +141,6 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 		}
 
 		return "competencies";
-	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
 	}
 
 	public JobRole getRole() {
@@ -191,14 +159,6 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 		this.competency = competency;
 	}
 
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
-	}
-
 	public int getId() {
 		return id;
 	}
@@ -215,6 +175,19 @@ public class ManageJobRoles extends PicsActionSupport implements Preparable {
 
 	public int getUsedCount(JobRole jobRole) {
 		return jobRoleDAO.getUsedCount(jobRole.getName());
+	}
+
+	private void checkPermissions() throws NoRightsException {
+		if (permissions.isContractor()) {
+			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
+					&& !permissions.hasPermission(OpPerms.ContractorSafety)) {
+				throw new NoRightsException("Contractor Admin or Safety");
+			}
+		} else if (permissions.isOperatorCorporate()) {
+			permissions.tryPermission(OpPerms.DefineRoles);
+			if (permissions.getAccountId() != account.getId())
+				permissions.tryPermission(OpPerms.AllOperators);
+		}
 	}
 
 	public List<OperatorCompetency> getOtherCompetencies() {

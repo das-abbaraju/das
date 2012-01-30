@@ -1,13 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:form id="roleForm">
-	<s:hidden name="id" value="%{account.id}" />
+	<s:hidden name="account" value="%{account.id}" id="accountID" />
 	<s:hidden name="role" />
 	<fieldset class="form">
-	<h2 class="formLegend"><s:text name="ManageJobRoles.label.DefineRole" /></h2>
+	<h2 class="formLegend">
+		<s:text name="ManageJobRoles.label.DefineRole" />
+	</h2>
 	<ol>
-		<li><label><s:text name="ManageJobRoles.label.JobRole" />:</label> <s:textfield id="roleInputBox" name="role.name" size="35"/></li>
-		<li><label><s:text name="global.Active" />:</label> <s:checkbox name="role.active" value="role.active" /> </li>
+		<li>
+			<label>
+				<s:text name="ManageJobRoles.label.JobRole" />:
+			</label>
+			<s:textfield id="roleInputBox" name="role.name" size="35"/>
+		</li>
+		<li>
+			<label>
+				<s:text name="global.Active" />:
+			</label>
+			<s:checkbox name="role.active" value="role.active" />
+		</li>
 	</ol>
 	</fieldset>
 	<fieldset class="form submit">

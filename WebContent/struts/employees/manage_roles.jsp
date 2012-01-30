@@ -36,61 +36,6 @@
 				padding-left: 10px;
 			}
 		</style>
-		
-		<s:include value="../jquery.jsp" />
-		
-		<script type="text/javascript">
-			var accountID = '<s:property value="account.id" />';
-			
-			$(function() {
-				$('#roleInputBox').autocomplete('RoleSuggestAjax.action',{
-					minChars: 1,
-					formatItem: function(data,i,count) {
-						return data[1];
-					}
-				});
-				
-				$('#roleCell').delegate('.removeCompetency', 'click', function(e) {
-					e.preventDefault();
-					$("a.compEditor").hide();
-			
-					var competencyID = $(this).closest('tr').attr('id');
-					var roleID = $(this).closest('table').attr('id');
-					
-					$('#jobCompetencyList').load('ManageJobRoles!removeCompetency.action', {role: roleID, competency: competencyID});
-				});
-				
-				$('#roleCell').delegate('.addCompetency', 'click', function(e) {
-					e.preventDefault();
-					$("a.compEditor").hide();
-					
-					var competencyID = $(this).closest('tr').attr('id');
-					var roleID = $(this).closest('table').attr('id');
-					
-					$('#jobCompetencyList').load('ManageJobRoles!addCompetency.action', {role: roleID, competency: competencyID});
-				});
-				
-				$('#roleCell').delegate('.cancelButton', 'click', function(e) {
-					e.preventDefault();
-					$('#roleCell').empty();
-				});
-				
-				$('#roleCell').delegate('.deleteButton', 'click', function(e) {
-					return confirm(translate('JS.ManageJobRoles.confirm.RemoveJobRole'));
-				});
-				
-				$('#addLink').live('click', function(e) {
-					e.preventDefault();
-					$('#roleCell').load('ManageJobRoles!get.action');
-				});
-				
-				$('.roleLink').live('click', function(e) {
-					e.preventDefault();
-					startThinking({div: 'roleCell', message: translate('JS.ManageJobRoles.message.LoadingJobRole')});
-					$('#roleCell').load('ManageJobRoles!get.action', { role: $(this).attr('id'), id: accountID });
-				});
-			});
-		</script>
 	</head>
 	<body>
 		<h1>
@@ -121,15 +66,30 @@
 						<table class="report">
 							<thead>
 								<tr>
-									<th><s:text name="ManageJobRoles.label.JobRole" /></th>
-									<th><s:text name="global.Active" /></th>
+									<th>
+										<s:text name="ManageJobRoles.label.JobRole" />
+									</th>
+									<th>
+										<s:text name="global.Active" />
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<s:iterator value="jobRoles">
 									<tr>
-										<td><a href="#" id="<s:property value="id" />" class="roleLink<s:if test="!active"> inactive</s:if>"><s:property value="name" /></a></td>
-										<td class="center"><s:if test="active"><s:text name="YesNo.Yes" /></s:if><s:else><s:text name="YesNo.No" /></s:else></td>
+										<td>
+											<a href="#" id="<s:property value="id" />" class="roleLink<s:if test="!active"> inactive</s:if>">
+												<s:property value="name" />
+											</a>
+										</td>
+										<td class="center">
+											<s:if test="active">
+												<s:text name="YesNo.Yes" />
+											</s:if>
+											<s:else>
+												<s:text name="YesNo.No" />
+											</s:else>
+										</td>
 									</tr>
 								</s:iterator>
 							</tbody>
@@ -140,7 +100,9 @@
 					</a>
 					<br />
 					<div class="info">
-						<a href="resources/HSECompetencyReview.pdf"><s:text name="ManageJobRoles.link.QuestionReviewPDF" /></a>
+						<a href="resources/HSECompetencyReview.pdf">
+							<s:text name="ManageJobRoles.link.QuestionReviewPDF" />
+						</a>
 						<br />
 						<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
 					</div>
@@ -150,5 +112,8 @@
 				</td>
 			</tr>
 		</table>
+		<s:include value="../jquery.jsp" />
+		<script type="text/javascript" src="js/core.js"></script>
+		<script type="text/javascript" src="js/employee_manage_job_roles.js"></script>
 	</body>
 </html>

@@ -125,27 +125,27 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 		return CONFIG;
 	}
-	
+
 	public boolean isAlphaEnvironment() {
-	    Boolean isAlpha = getRequestHost().contains("alpha");
-	    
-        return isAlpha;
+		Boolean isAlpha = getRequestHost().contains("alpha");
+
+		return isAlpha;
 	}
-	
+
 	public boolean isConfigurationEnvironment() {
-        Boolean isConfiguration = getRequestHost().contains("config");
-        
-        return isConfiguration;
-    }
-	
-	public boolean isLiveEnvironment() {
-        return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment());
+		Boolean isConfiguration = getRequestHost().contains("config");
+
+		return isConfiguration;
 	}
-	
+
+	public boolean isLiveEnvironment() {
+		return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment());
+	}
+
 	public boolean isLocalhostEnvironment() {
-	    Boolean isLocalhost = getRequestHost().contains(":8080");
-	    
-	    return isLocalhost;
+		Boolean isLocalhost = getRequestHost().contains(":8080");
+
+		return isLocalhost;
 	}
 
 	public boolean isI18nReady() {
@@ -379,26 +379,25 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return new Date();
 		}
 	}
-	
-	public String getQueryString()
-	{
-	    return ServletActionContext.getRequest().getQueryString() != null ? ServletActionContext.getRequest().getQueryString() : "";
+
+	public String getQueryString() {
+		return ServletActionContext.getRequest().getQueryString() != null ? ServletActionContext.getRequest()
+				.getQueryString() : "";
 	}
 
-	public String getRequestHost()
-	{
-	    // generate requestHost for logo path definition
-        String requestURL = getRequestURL().toString();
-        String requestURI = getRequestURI();
-        String requestHost = requestURL.replace(requestURI, "");
-        
-        return requestHost;
+	public String getRequestHost() {
+		// generate requestHost for logo path definition
+		String requestURL = getRequestURL().toString();
+		String requestURI = getRequestURI();
+		String requestHost = requestURL.replace(requestURI, "");
+
+		return requestHost;
 	}
-	
+
 	public String getRequestString() {
-        return requestURL;
-    }
-	
+		return requestURL;
+	}
+
 	public String getRequestURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
@@ -406,12 +405,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getRequestURL() {
 		return ServletActionContext.getRequest().getRequestURL().toString();
 	}
-	
-	public String getServletPath()
-	{
-	    return ServletActionContext.getRequest().getServletPath();
+
+	public String getServletPath() {
+		return ServletActionContext.getRequest().getServletPath();
 	}
-	
+
 	public String getIP() {
 		return ServletActionContext.getRequest().getRemoteAddr();
 	}
@@ -635,5 +633,4 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return helpUrl;
 	}
-
 }

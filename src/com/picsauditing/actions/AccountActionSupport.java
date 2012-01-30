@@ -1,11 +1,13 @@
 package com.picsauditing.actions;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -13,6 +15,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -21,19 +24,19 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class AccountActionSupport extends PicsActionSupport {
 
 	protected int id;
+	protected int auditID;
 	// protected Account account;
 	protected String subHeading = null;
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
 
+	@Autowired
+	protected AccountDAO accountDAO;
 	@Autowired
 	private NoteDAO noteDao;
 	@Autowired
@@ -47,6 +50,14 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getAuditID() {
+		return auditID;
+	}
+
+	public void setAuditID(int auditID) {
+		this.auditID = auditID;
 	}
 
 	/**
@@ -69,8 +80,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
-			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
-			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
+			account = accountDAO.find(permissions.getAccountId(), permissions.getAccountType());
 		}
 		return account;
 	}
@@ -231,5 +241,22 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public AccountStatus[] getStatusList() {
 		return AccountStatus.values();
+	}
+
+	public void getContractorAccountFromAuditID() {
+		account = null;
+		auditID = getParameter("auditID");
+
+		if (auditID > 0) {
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		} else {
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+		}
+
+		if (auditID > 0 && permissions.isAdmin()) {
+			ContractorAudit audit = dao.find(ContractorAudit.class, auditID);
+			account = audit.getContractorAccount();
+		}
 	}
 }
