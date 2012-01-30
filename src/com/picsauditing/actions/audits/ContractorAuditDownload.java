@@ -223,11 +223,11 @@ public class ContractorAuditDownload extends AuditActionSupport {
 	 * @param oshaAudit
 	 * @param average
 	 */
-	/* Testable */ void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
+	/* Testable */void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
 		if (oshaAudit == null || average == null) {
 			return;
 		}
-		
+
 		OshaType type = oshaAudit.getType();
 		boolean osha = OshaType.OSHA.equals(type);
 		boolean cohs = OshaType.COHS.equals(type);
@@ -239,8 +239,9 @@ public class ContractorAuditDownload extends AuditActionSupport {
 						+ " "
 						+ oshaAudit.getLocation()
 						+ (oshaAudit.isVerified() ? " - "
-								+ getText("AuditDownload.VerifiedBy", new Object[] { conAudit.getAuditor().getName() })
-								: ""), null, null, corporate, getText("OSHA.ThreeYearAverage"), null);
+								+ getText("AuditDownload.VerifiedBy", new Object[] { conAudit.getAuditor() == null ? ""
+										: conAudit.getAuditor().getName() }) : ""), null, null, corporate,
+				getText("OSHA.ThreeYearAverage"), null);
 
 		createRow(sheetStatus, getText("totalHoursWorked"),
 				getText("format.decimal", new Object[] { oshaAudit.getManHours() }), null, osha && corporate,
@@ -366,7 +367,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		}
 	}
 
-	/* Testable */ class SheetStatus {
+	/* Testable */class SheetStatus {
 		public HSSFSheet sheet;
 		public int rownum;
 		// Common
