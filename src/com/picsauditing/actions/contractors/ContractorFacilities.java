@@ -75,10 +75,6 @@ public class ContractorFacilities extends ContractorActionSupport {
 		limitedView = true;
 		findContractor();
 
-		if (contractor.getStatus().isPending()
-				&& ContractorRegistrationStep.Risk.equals(ContractorRegistrationStep.getStep(contractor)))
-			return redirect(ContractorRegistrationStep.getStep(contractor).getUrl());
-
 		// Get request off of the session
 		Object request = ActionContext.getContext().getSession().get("requestID");
 
@@ -169,8 +165,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 							if (contractor.isOnsiteServices() && opToAdd.isOnsiteServices()
 									|| contractor.isOffsiteServices() && opToAdd.isOffsiteServices()
 									|| contractor.isMaterialSupplier() && opToAdd.isMaterialSupplier()
-									|| contractor.isTransportationServices() && opToAdd.isTransportationServices()
-								)
+									|| contractor.isTransportationServices() && opToAdd.isTransportationServices())
 								searchResults.add(opToAdd);
 						}
 					}
@@ -195,8 +190,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 						o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
 
 						if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
-								&& o.isOffsiteServices() || contractor.isMaterialSupplier()
-								&& o.isMaterialSupplier())
+								&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier())
 							searchResults.add(o);
 					}
 
