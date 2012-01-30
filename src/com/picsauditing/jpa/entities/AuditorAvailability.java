@@ -77,19 +77,40 @@ public class AuditorAvailability extends BaseTable {
 		formatter.setTimeZone(getTimezone());
 		return formatter.format(startDate);
 	}
-	
+
 	@Transient
 	public String getTimeZoneEndDate() throws ParseException {
 		DateFormat formatter = new SimpleDateFormat("HH:mm z");
 		formatter.setTimeZone(getTimezone());
 		return formatter.format(getEndDate());
 	}
-	
+
 	@Transient
 	public Date getTimeZoneEndDateDate() throws ParseException {
 		DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss z");
 		formatter.setTimeZone(getTimezone());
 		return formatter.parse(formatter.format(getEndDate()));
+	}
+
+	@Transient
+	public Date convertDate() throws Exception {
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df1.setTimeZone(getTimezone());
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df2.setTimeZone(TimeZone.getTimeZone("CST"));
+		return df1.parse(df2.format(getStartDate()));
+	}
+
+	@Transient
+	public String convertStartDateToString() throws Exception {
+		
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df3 = new SimpleDateFormat("hh:mm a z");
+		df2.setTimeZone(TimeZone.getTimeZone("CST"));
+		df3.setTimeZone(getTimezone());
+		
+		return df3.format(df2.parse(df1.format(startDate)));
 	}
 
 	/**

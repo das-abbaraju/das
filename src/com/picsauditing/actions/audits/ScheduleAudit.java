@@ -246,6 +246,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (rank > maxRank) {
 				maxRank = rank;
 				availabilitySelected = timeslot;
+				if (selectedTimeZone != null)
+					availabilitySelected.setTimezone(selectedTimeZone);
 				availabilitySelectedID = availabilitySelected.getId();
 			}
 		}
@@ -260,14 +262,18 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String selectTime() throws Exception {
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		df2.setTimeZone(TimeZone.getTimeZone("CST"));
+
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(df1.parse(df2.format(timeSelected)));
 		int maxRank = Integer.MIN_VALUE;
 		for (AuditorAvailability timeslot : timeslots) {
 			int rank = timeslot.rank(conAudit, permissions);
 			if (rank > maxRank) {
 				maxRank = rank;
 				availabilitySelected = timeslot;
-				availabilitySelected.setTimezone(permissions.getTimezone());
+				availabilitySelected.setTimezone(selectedTimeZone);
 				availabilitySelectedID = availabilitySelected.getId();
 			}
 		}
@@ -357,7 +363,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		findTimeslots(TimeZone.getTimeZone("CST"));
 	}
 
-	private void findTimeslots(TimeZone tz) throws Exception {
+	private void findTimeslots(TimeZone timezone) throws Exception {
 		List<AuditorAvailability> timeslots = null;
 
 		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
@@ -367,13 +373,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
 				break;
 			}
-			availableSet.add(timeslot, tz);
+			availableSet.add(timeslot, timezone);
 		}
 
 		return;
 	}
 
-	@SuppressWarnings("unused")
 	public String changeSelectedTimeZone() throws Exception {
 		findTimeslots(selectedTimeZone);
 		return "picker";
@@ -462,14 +467,11 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public void setTimeSelected(String dateString) throws ParseException {
-		SimpleDateFormat df = new SimpleDateFormat();
-		df.setLenient(false);
-		df.applyPattern(DATE_FORMAT);
+		SimpleDateFormat dateFormat = new SimpleDateFormat();
+		dateFormat.setLenient(false);
+		dateFormat.applyPattern(DATE_FORMAT);
 
-		if (selectedTimeZone != null)
-			df.setTimeZone(TimeZone.getTimeZone("CST"));
-
-		this.timeSelected = df.parse(dateString);
+		this.timeSelected = dateFormat.parse(dateString);
 	}
 
 	public class AvailableSet {
@@ -481,12 +483,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return days.size();
 		}
 
-		void add(AuditorAvailability timeslot, TimeZone tz) throws Exception {
+		void add(AuditorAvailability timeslot, TimeZone timeZone) throws Exception {
 			Date adjustedStartTime = timeslot.getStartDate();
-			if (tz != null) {
-				adjustedStartTime = changeTimeZone(TimeZone.getTimeZone("CST"), tz, timeslot.getStartDate().toString());
+			if (timeZone != null) {
+				adjustedStartTime = changeTimeZone(TimeZone.getTimeZone("CST"), timeZone, timeslot.getStartDate().toString(), "yyyy-MM-dd HH:mm:ss");
 				timeslot.setStartDate(adjustedStartTime);
-				timeslot.setTimezone(tz);
+				timeslot.setTimezone(timeZone);
 			}
 
 			final Date day = stripTimes(adjustedStartTime);
@@ -536,25 +538,22 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 	}
 
-	public static Date changeTimeZone(TimeZone inTZ, TimeZone outTZ, String inDateStr) throws Exception {
-		Date inDate = null;
+	public static Date changeTimeZone(TimeZone inputTimeZone, TimeZone outputTimeZone, String inputDateString,
+			String inputFormat) throws Exception {
+		if (inputFormat == null)
+			inputFormat = "yyyy-MM-dd HH:mm:ss";
+		
+		Date inputDate = null;
 
-		DateFormat inDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		inDf.setTimeZone(inTZ);
+		DateFormat inputDateFormat = new SimpleDateFormat(inputFormat);
+		inputDateFormat.setTimeZone(inputTimeZone);
 
-		inDate = inDf.parse(inDateStr);
+		inputDate = inputDateFormat.parse(inputDateString);
 
-		DateFormat outDf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-		outDf.setTimeZone(outTZ);
+		DateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		outputDateFormat.setTimeZone(outputTimeZone);
 
-		return outDf.parse(outDf.format(inDate));
-	}
-	
-	public String formatDate(Date date) {
-		DateFormat df = new SimpleDateFormat();
-		TimeZone tz = (selectedTimeZone == null ? permissions.getTimezone() : selectedTimeZone);
-		df.setTimeZone(tz);
-		return df.format(date);
+		return outputDateFormat.parse(outputDateFormat.format(inputDate));
 	}
 
 	public void setAvailabilityStartDate(Date availabilityStartDate) {

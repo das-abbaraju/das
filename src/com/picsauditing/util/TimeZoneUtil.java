@@ -10,6 +10,7 @@ public class TimeZoneUtil {
 	 * 
 	 */
 	public static Map<String, String> TIME_ZONES;
+	public static Map<String, String> TIME_ZONES_SHORT;
 
 	static {
 		Map<String, String> timeZones = new LinkedHashMap<String, String>();
@@ -88,5 +89,42 @@ public class TimeZoneUtil {
 		// timeZones.put("Pacific/Kiritimati", "TimeZone.Pacific.Kiritimati");
 
 		TIME_ZONES = Collections.unmodifiableMap(timeZones);
+	}
+	
+	static {
+		Map<String, String> timeZones = new LinkedHashMap<String, String>();
+		timeZones.put("MIT", "TimeZone.Pacific.Samoa");
+		timeZones.put("HST", "TimeZone.Pacific.Honolulu");
+		timeZones.put("AST", "TimeZone.US.Alaska");
+		timeZones.put("PST", "TimeZone.US.Pacific");
+		timeZones.put("MST", "TimeZone.US.Mountain");
+		timeZones.put("PNT", "TimeZone.US.Arizona");
+		timeZones.put("CST", "TimeZone.US.Central");
+		timeZones.put("EST", "TimeZone.US.Eastern");
+		timeZones.put("IET", "TimeZone.America.Caracas");
+		timeZones.put("CNT", "TimeZone.Canada.Newfoundland");
+		timeZones.put("AGT", "TimeZone.America.Godthab");
+		timeZones.put("BET", "TimeZone.Brazil.DeNoronha");
+		timeZones.put("GMT", "TimeZone.Greenwich");
+		timeZones.put("UTC", "TimeZone.Etc.UTC");
+		timeZones.put("WET", "TimeZone.Africa.Lagos");
+		timeZones.put("ECT", "TimeZone.Europe.Paris");
+		timeZones.put("ART", "TimeZone.Asia.Jerusalem");
+		timeZones.put("EET", "TimeZone.Asia.Riyadh");
+		timeZones.put("EAT", "TimeZone.Europe.Moscow");
+		timeZones.put("NET", "TimeZone.Asia.Kabul");
+		timeZones.put("PLT", "TimeZone.Asia.Calcutta");
+		timeZones.put("IST", "TimeZone.Asia.Kathmandu");
+		timeZones.put("BST", "TimeZone.Asia.Bangkok");
+		timeZones.put("VST", "TimeZone.Asia.Shanghai");
+		timeZones.put("CTT", "TimeZone.Asia.Tokyo");
+		timeZones.put("PRC", "TimeZone.Asia.Singapore");
+		timeZones.put("JST", "TimeZone.Asia.Japan");
+		timeZones.put("ACT", "TimeZone.Australia.Darwin");
+		timeZones.put("AET", "TimeZone.Australia.Sydney");
+		timeZones.put("SST", "TimeZone.Pacific.Norfolk");
+		timeZones.put("NST", "TimeZone.Pacific.Auckland");
+
+		TIME_ZONES_SHORT = Collections.unmodifiableMap(timeZones);
 	}
 }
