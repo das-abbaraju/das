@@ -17,11 +17,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Token {
+public class Token extends BaseTranslatable {
 	private int id;
 	private String name;
 	private ListType listType;
-	private String velocityCode;
+	private TranslatableString velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -34,7 +34,6 @@ public class Token {
 		this.id = id;
 	}
 
-	@Transient
 	public String getName() {
 		return name;
 	}
@@ -44,11 +43,11 @@ public class Token {
 	}
 
 	@Transient
-	public String getVelocityCode() {
+	public TranslatableString getVelocityCode() {
 		return velocityCode;
 	}
 
-	public void setVelocityCode(String velocityCode) {
+	public void setVelocityCode(TranslatableString velocityCode) {
 		this.velocityCode = velocityCode;
 	}
 
@@ -86,5 +85,15 @@ public class Token {
 			// something went wrong so these must not be equal
 			return false;
 		}
+	}
+
+	@Override
+	public String getI18nKey() {
+		return this.getClass().getSimpleName() + "." + getId();
+	}
+
+	@Override
+	public String getI18nKey(String property) {
+		return getI18nKey() + "." + property;
 	}
 }
