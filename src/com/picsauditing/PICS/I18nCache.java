@@ -324,7 +324,7 @@ public class I18nCache implements Serializable {
 
 	private void insertRequiredTranslation(AppTranslation insertUpdateTranslation) throws SQLException {
 		insertUpdateTranslation.setValue(DEFAULT_TRANSLATION);
-		insertUpdateTranslation.setQualityRating(TranslationQualityRating.None);
+		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Bad);
 
 		db.executeInsert(buildInsertStatement(insertUpdateTranslation));
 	}
