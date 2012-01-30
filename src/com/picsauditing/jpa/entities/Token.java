@@ -88,11 +88,13 @@ public class Token extends BaseTranslatable {
 	}
 
 	@Override
+	@Transient
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + getId();
 	}
 
 	@Override
+	@Transient
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}
