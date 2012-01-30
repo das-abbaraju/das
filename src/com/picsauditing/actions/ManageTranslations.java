@@ -218,7 +218,7 @@ public class ManageTranslations extends ReportActionSupport {
 			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
 		}
 
-		if (filterOn(qualityRatings)) {
+		if (qualityRatings != null && qualityRatings.length > 0) {
 			sql.addWhere(String.format("t1.qualityRating IN (%1$s) OR t2.qualityRating IN (%1$s)",
 					Strings.implode(qualityRatings)));
 		}
