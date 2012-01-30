@@ -18,11 +18,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class Token extends BaseTranslatable implements java.io.Serializable {
+public class Token {
 	protected int id;
-	protected TranslatableString name;
+	protected String name;
 	protected ListType listType;
-	protected TranslatableString velocityCode;
+	protected String velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -36,20 +36,20 @@ public class Token extends BaseTranslatable implements java.io.Serializable {
 	}
 
 	@Transient
-	public TranslatableString getName() {
+	public String getName() {
 		return name;
 	}
 
-	public void setName(TranslatableString name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Transient
-	public TranslatableString getVelocityCode() {
+	public String getVelocityCode() {
 		return velocityCode;
 	}
 
-	public void setVelocityCode(TranslatableString velocityCode) {
+	public void setVelocityCode(String velocityCode) {
 		this.velocityCode = velocityCode;
 	}
 
@@ -87,17 +87,5 @@ public class Token extends BaseTranslatable implements java.io.Serializable {
 			// something went wrong so these must not be equal
 			return false;
 		}
-	}
-
-	@Override
-	@Transient
-	public String getI18nKey() {
-		return this.getClass().getSimpleName() + "." + id;
-	}
-
-	@Override
-	@Transient
-	public String getI18nKey(String property) {
-		return getI18nKey() + "." + property;
 	}
 }
