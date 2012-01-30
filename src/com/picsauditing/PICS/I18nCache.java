@@ -206,20 +206,18 @@ public class I18nCache implements Serializable {
 				iterator.remove();
 			} else if (translationFromCache.isModified()) {
 				db.executeUpdate(buildUpdateStatement(newTranslation));
-
-				insertUpdateOtherRequiredLanguages(requiredLanguages, newTranslation);
 			} else if (translationFromCache.isInsert()) {
 				String insert = buildInsertStatement(newTranslation);
 
 				if (insert != null) {
 					db.executeInsert(insert);
 				}
-				// If this is the source language, create the other translations as needed
-				insertUpdateOtherRequiredLanguages(requiredLanguages, newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
 		}
+
+		insertUpdateRequiredLanguages(requiredLanguages, key, sourceLanguage);
 	}
 
 	public void removeTranslatableStrings(List<String> keys) throws SQLException {
@@ -237,7 +235,7 @@ public class I18nCache implements Serializable {
 	private String buildInsertStatement(AppTranslation translationToinsert) {
 		if (translationToinsert.isApplicable()) {
 			String sourceLanguage = translationToinsert.getSourceLanguage();
-			if (Strings.isEmpty(sourceLanguage) || sourceLanguage.equals(translationToinsert.getLocale())) {
+			if (Strings.isEmpty(sourceLanguage)) {
 				sourceLanguage = "NULL";
 			} else {
 				sourceLanguage = "'" + sourceLanguage + "'";
@@ -262,7 +260,7 @@ public class I18nCache implements Serializable {
 		}
 
 		String sourceLanguage = translationToUpdate.getSourceLanguage();
-		if (!Strings.isEmpty(sourceLanguage) && !sourceLanguage.equals(translationToUpdate.getLocale())) {
+		if (!Strings.isEmpty(sourceLanguage)) {
 			setClause += ", sourceLanguage = '" + sourceLanguage + "'";
 		}
 
@@ -286,23 +284,40 @@ public class I18nCache implements Serializable {
 		cache.put(newTranslation.getKey(), newTranslation.getLocale(), newTranslation.getValue());
 	}
 
-	private void insertUpdateOtherRequiredLanguages(List<String> requiredLanguages, AppTranslation newTranslation)
+	private void insertUpdateRequiredLanguages(List<String> requiredLanguages, String key, String source)
 			throws SQLException {
+		setUnneededLanguagesNotApplicable(requiredLanguages, key, source);
+		
 		for (String requiredLanguage : requiredLanguages) {
-			if (!requiredLanguage.equals(newTranslation.getSourceLanguage())) {
-				AppTranslation insertUpdateTranslation = new AppTranslation();
-				insertUpdateTranslation.setKey(newTranslation.getKey());
-				insertUpdateTranslation.setLocale(requiredLanguage);
-				insertUpdateTranslation.setSourceLanguage(newTranslation.getSourceLanguage());
-				insertUpdateTranslation.setApplicable(true);
+			AppTranslation insertUpdateTranslation = new AppTranslation();
+			insertUpdateTranslation.setKey(key);
+			insertUpdateTranslation.setLocale(requiredLanguage);
+			insertUpdateTranslation.setSourceLanguage(source);
+			insertUpdateTranslation.setApplicable(true);
 
-				if (hasKey(newTranslation.getKey(), requiredLanguage)) {
-					updateRequiredLanguage(newTranslation, requiredLanguage, insertUpdateTranslation);
-				} else {
-					insertRequiredTranslation(insertUpdateTranslation);
-				}
+			if (hasKey(key, requiredLanguage)) {
+				updateRequiredLanguage(requiredLanguage, insertUpdateTranslation);
+			} else {
+				insertRequiredTranslation(insertUpdateTranslation);
+			}
 
-				updateCacheWithTranslation(insertUpdateTranslation);
+			updateCacheWithTranslation(insertUpdateTranslation);
+		}
+	}
+
+	private void setUnneededLanguagesNotApplicable(List<String> requiredLanguages, String key, String source)
+			throws SQLException {
+		Map<String, String> allLanguages = getText(key);
+		
+		for (String locale : allLanguages.keySet()) {
+			if (!requiredLanguages.contains(locale)) {
+				AppTranslation unneededTranslation = new AppTranslation();
+				unneededTranslation.setKey(key);
+				unneededTranslation.setLocale(locale);
+				unneededTranslation.setSourceLanguage(source);
+				unneededTranslation.setApplicable(false);
+				
+				updateRequiredLanguage(locale, unneededTranslation);
 			}
 		}
 	}
@@ -314,9 +329,9 @@ public class I18nCache implements Serializable {
 		db.executeInsert(buildInsertStatement(insertUpdateTranslation));
 	}
 
-	private void updateRequiredLanguage(AppTranslation newTranslation, String requiredLanguage,
-			AppTranslation insertUpdateTranslation) throws SQLException {
-		String requiredLanguageMsgValue = getText(newTranslation.getKey(), requiredLanguage);
+	private void updateRequiredLanguage(String requiredLanguage, AppTranslation insertUpdateTranslation)
+			throws SQLException {
+		String requiredLanguageMsgValue = getText(insertUpdateTranslation.getKey(), requiredLanguage);
 
 		insertUpdateTranslation.setValue(requiredLanguageMsgValue);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Questionable);

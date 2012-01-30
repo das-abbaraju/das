@@ -151,34 +151,36 @@
 							<s:textfield name="category.applyOnAnswer" />
 						</li>
 					</s:if>
-					<li>
-						<label>
-							<s:text name="ManageAuditType.RequiredLanguages" />:
-						</label>
-						<s:optiontransferselect
-							name="requiredLanguagesName"
-							list="availableLocales"
-							listKey="language"
-							listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
-							doubleName="category.languages"
-							doubleList="selectedLocales"
-							doubleListKey="language"
-							doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
-							leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
-							rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
-							addToLeftLabel="%{getText('button.Remove')}"
-							addToRightLabel="%{getText('button.Add')}"
-							allowAddAllToLeft="false"
-							allowAddAllToRight="false"
-							allowSelectAll="false"
-							allowUpDownOnLeft="false"
-							allowUpDownOnRight="false"
-							buttonCssClass="arrow"
-							theme="pics"
- 						>
- 							<s:param name="sort" value="'false'" />
- 						</s:optiontransferselect>
-					</li>
+					<s:if test="category.auditType.languages.size > 1">
+						<li>
+							<label>
+								<s:text name="ManageAuditType.RequiredLanguages" />:
+							</label>
+							<s:optiontransferselect
+								name="requiredLanguagesName"
+								list="availableLocales"
+								listKey="language"
+								listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+								doubleName="category.languages"
+								doubleList="getSelectedLocalesFrom(category.auditType)"
+								doubleListKey="language"
+								doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
+								leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"
+								rightTitle="%{getText('ManageAuditType.SelectedLanguages')}"
+								addToLeftLabel="%{getText('button.Remove')}"
+								addToRightLabel="%{getText('button.Add')}"
+								allowAddAllToLeft="false"
+								allowAddAllToRight="false"
+								allowSelectAll="false"
+								allowUpDownOnLeft="false"
+								allowUpDownOnRight="false"
+								buttonCssClass="arrow"
+								theme="pics"
+	 						>
+	 							<s:param name="sort" value="'false'" />
+	 						</s:optiontransferselect>
+						</li>
+					</s:if>
 				</ol>
 			</fieldset>
 			
