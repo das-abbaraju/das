@@ -7,7 +7,6 @@ package com.picsauditing.jpa.entities;
  *
  */
 public enum TranslationQualityRating {
-	None,
 	Bad,
 	Questionable,
 	Good;
