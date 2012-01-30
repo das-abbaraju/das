@@ -145,6 +145,7 @@ public class EventSubscriptionBuilder {
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
 			Set<ContractorAudit> expiringPolicies) throws IOException {
+
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.clear();
 		emailBuilder.setTemplate(10); // Certificate Expiration
@@ -152,6 +153,13 @@ public class EventSubscriptionBuilder {
 		emailBuilder.addToken("contractor", insuranceSubscription.getUser().getAccount());
 		emailBuilder.addToken("policies", expiringPolicies);
 		emailBuilder.setToAddresses(insuranceSubscription.getUser().getEmail());
+		String seed = "u" + insuranceSubscription.getUser().getId() + "t"
+				+ insuranceSubscription.getSubscription().getTemplateID();
+		String confirmLink = "http://www.picsorganizer.com/EmailUserUnsubscribe.action?id="
+				+ insuranceSubscription.getUser().getId() + "&sub=" + insuranceSubscription.getSubscription() + "&key="
+				+ Strings.hashUrlSafe(seed);
+		emailBuilder.addToken("confirmLink", confirmLink);
+		emailBuilder.setUser(insuranceSubscription.getUser());
 
 		Account account = insuranceSubscription.getUser().getAccount();
 		if (account.isContractor() && ((ContractorAccount) account).getAuditor() != null)
