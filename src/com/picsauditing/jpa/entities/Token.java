@@ -14,15 +14,14 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-@SuppressWarnings("serial")
 @Entity
 @Table(name = "token")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Token {
-	protected int id;
-	protected String name;
-	protected ListType listType;
-	protected String velocityCode;
+	private int id;
+	private String name;
+	private ListType listType;
+	private String velocityCode;
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
