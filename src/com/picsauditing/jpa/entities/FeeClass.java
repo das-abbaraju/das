@@ -34,6 +34,7 @@ public enum FeeClass implements Translatable {
 			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 
 			return isAllExclusionsApplicable(contractor, exclusions);
 		}
@@ -104,6 +105,7 @@ public enum FeeClass implements Translatable {
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-01");
 	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
+	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
 
 	public boolean isPaymentExpiresNeeded() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == Activation || this == Reactivation;
@@ -142,6 +144,9 @@ public enum FeeClass implements Translatable {
 				return false;
 			// is it time to start charging this operator for insureguard?
 			else if (new Date().after(exclusions.get(operator.getTopAccount().getId()))) {
+				return false;
+				// is the contractor a non-sole proprietor for Suncor?
+			} else if (operator.getTopAccount().getId() == OperatorAccount.SUNCOR && !contractor.getSoleProprietor()) {
 				return false;
 			}
 		}
