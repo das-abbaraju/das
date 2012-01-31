@@ -34,6 +34,7 @@ public class Token extends BaseTranslatable {
 		this.id = id;
 	}
 
+	@Column(name = "tokenName", nullable = false)
 	public String getName() {
 		return name;
 	}
