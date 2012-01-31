@@ -47,7 +47,7 @@ join contractor_audit_operator cao on ca.id = cao.auditID and cao.visible = 1
 join contractor_audit au on a.id = au.conID and au.auditTypeID = 11 and au.auditFor = 2008 and au.expiresDate > now()
 set au.expiresDate = now()
 where a.type = 'Contractor' and a.status = 'Active'
-and not exists (select * from contractor_audit_operator cao where ca.id = cao.auditID and cao.visible = 1 and cao.status in ('Pending','Submitted','Incomplete','Resubmitted'))
+and not exists (select * from contractor_audit_operator cao where ca.id = cao.auditID and cao.visible = 1 and cao.status in ('Pending','Submitted','Incomplete','Resubmitted'));
 --
 
 -- PICS-4378 Removed Expired status on Caos
