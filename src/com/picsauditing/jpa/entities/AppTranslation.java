@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -132,6 +133,7 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 		return languages;
 	}
 
+	@Transient
 	public boolean isKeyContentDriven() {
 		return StringUtils.startsWith(key, "AuditType") || StringUtils.startsWith(key, "AuditCategory")
 				|| StringUtils.startsWith(key, "AuditQuestion") || StringUtils.startsWith(key, "AuditOptionGroup")
