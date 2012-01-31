@@ -1,9 +1,7 @@
 package com.picsauditing.mail;
 
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -14,11 +12,11 @@ import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.jpa.entities.EmailStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.mail.subscription.SubscriptionBuilder;
 import com.picsauditing.mail.subscription.SubscriptionBuilderFactory;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
  * Run the email task every minute Send 5 emails at a time This translates into 300/hour or 7200/day If this seems slow,
@@ -60,38 +58,10 @@ public class MailCron extends PicsActionSupport {
 				try {
 					SubscriptionBuilder builder = subscriptionFactory.getBuilder(emailSubscription.getSubscription());
 					builder.sendSubscription(emailSubscription);
-				} catch (Exception e) {
-					try { // If emailing the error throws an exception, output to console and continue
-						if (!isDebugging()) {
-							addActionError("Error occurred on subscription " + subscriptionID + "\n" + e.getMessage());
-							// In case this contractor errored out while running contractor
-							// cron we bump the last recalculation date to 1 day in future.
-							emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
-							subscriptionDAO.save(emailSubscription);
+				} catch (Exception continueUpTheStack) {
+					setSubscriptionToBeReprocessedTomorrow(emailSubscription);
 
-							StringBuffer body = new StringBuffer();
-							body.append("There was an error running MailCron for subscription id=");
-							body.append(subscriptionID);
-							body.append("\n\n");
-							body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
-							body.append("\n\n");
-							body.append(ExceptionUtils.getStackTrace(e));
-
-							EmailQueue email = new EmailQueue();
-							email.setToAddresses("errors@picsauditing.com");
-							email.setFromAddress("PICS Mailer<info@picsauditing.com>");
-							email.setSubject("Error in MailCron for subscriptionID = " + subscriptionID);
-							email.setBody(body.toString());
-							email.setCreationDate(new Date());
-							emailSenderSpring.send(email);
-						} else {
-							addActionError(ExceptionUtils.getStackTrace(e));
-						}
-					} catch (Exception notMuchWeCanDoButLogIt) {
-						System.out.println("Error sending email");
-						System.out.println(notMuchWeCanDoButLogIt);
-						notMuchWeCanDoButLogIt.printStackTrace();
-					}
+					throw continueUpTheStack;
 				}
 			}
 		}
@@ -99,31 +69,53 @@ public class MailCron extends PicsActionSupport {
 		/**
 		 * Send mail
 		 */
-		PicsLogger.start("EmailSender");
-		try {
-			List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
-			if (emails.size() == 0) {
-				addActionMessage("The email queue is empty");
-				return ACTION_MESSAGES;
-			}
+		List<EmailQueue> emails = emailQueueDAO.getPendingEmails(1);
+		if (emails.size() == 0) {
+			addActionMessage("The email queue is empty");
+			return ACTION_MESSAGES;
+		}
 
+		try {
 			for (EmailQueue email : emails) {
 				emailSenderSpring.sendNow(email);
 			}
 
 			if (getActionErrors().size() == 0)
 				addActionMessage("Successfully sent " + emails.size() + " email(s)");
-		} catch (Exception notMuchWeCanDoButLogIt) {
-			PicsLogger.log("ERROR with MailCron: " + notMuchWeCanDoButLogIt.getMessage());
-			addActionError("Failed to send email: " + notMuchWeCanDoButLogIt.getMessage());
-			System.out.println("Error sending email");
-			System.out.println(notMuchWeCanDoButLogIt);
-			notMuchWeCanDoButLogIt.printStackTrace();
-		} finally {
-			PicsLogger.stop();
+
+		} catch (Exception continueUpTheStack) {
+			changeEmailStatusToError(emails);
+
+			throw continueUpTheStack;
 		}
 
 		return ACTION_MESSAGES;
+	}
+
+	private void setSubscriptionToBeReprocessedTomorrow(EmailSubscription emailSubscription) {
+		try {
+			emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
+			subscriptionDAO.save(emailSubscription);
+		} catch (Exception notMuchWeCanDoButLogIt) {
+			System.out.println("Error processing subscription " + emailSubscription.getId());
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
+		}
+	}
+
+	private void changeEmailStatusToError(List<EmailQueue> emails) {
+		try {
+			for (EmailQueue email : emails) {
+				email.setStatus(EmailStatus.Error);
+				if (Strings.isEmpty(email.getToAddresses()))
+					email.setToAddresses("errors@picsauditing.com");
+				emailSenderSpring.send(email);
+			}
+		} catch (Exception notMuchWeCanDoButLogIt) {
+			System.out.println("Error sending email");
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
+		}
 	}
 
 	public void setSubscriptionID(int subscriptionID) {

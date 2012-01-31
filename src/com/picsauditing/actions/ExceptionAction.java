@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -33,6 +34,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private String password = "e3r4t5";
 
 	@Override
+	@Anonymous
 	public String execute() {
 		try {
 			loadPermissions();
@@ -136,6 +138,7 @@ public class ExceptionAction extends PicsActionSupport {
 		}
 	}
 
+	@Anonymous
 	public String sendExceptionEmail() {
 		try {
 			loadPermissions();
