@@ -71,6 +71,21 @@ set cao.status='NotApplicable'
 where cao.status='Expired';
 --
 
+-- PICS-4468 Move Import PQF (232) from Pending back to Complete
+insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus, notes) 
+select 1,1,Now(),Now(),cao.id,'Complete',cao.status, 'Move Import PQF to Complete'
+from contractor_audit_operator cao 
+join contractor_audit ca on cao.auditID = ca.id 
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+where ca.auditTypeID=232 and cao.status='Pending' and caow.status='Complete';
+
+update contractor_audit_operator cao 
+join contractor_audit ca on cao.auditID = ca.id 
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+set cao.status = 'Complete', cao.statusChangedDate = Now()
+where ca.auditTypeID=232 and cao.status='Pending' and caow.status='Complete';
+--
+
 /* Foreign Keys must be dropped in the target to ensure that requires changes can be done*/
 
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_con` ;
