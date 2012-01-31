@@ -1,9 +1,6 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,7 +43,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -64,7 +60,6 @@ import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.mail.GridSender;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
@@ -95,8 +90,6 @@ public class ContractorCron extends PicsActionSupport {
 	private BillingCalculatorSingle billingService;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
-
-	private static String defaultPassword = "e3r4t5";
 
 	private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
@@ -137,7 +130,7 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	@Transactional
-	private void run(int conID, int opID) {
+	private void run(int conID, int opID) throws Exception {
 		ContractorAccount contractor = contractorDAO.find(conID);
 
 		try {
@@ -195,59 +188,18 @@ public class ContractorCron extends PicsActionSupport {
 			runPolicies(contractor);
 			runContractorScore(contractor);
 
-		} catch (Throwable t) {
-			StringWriter sw = new StringWriter();
-			t.printStackTrace(new PrintWriter(sw));
+		} catch (Exception continueUpTheStack) {
+			setRecalculationToTomorrow(contractor);
 
-			if (!isDebugging()) {
-				addActionError("Error occurred on contractor " + conID + "<br>" + t.getMessage());
-				// In case this contractor errored out while running contractor
-				// cron
-				// we bump the last recalculation date to 1 day in future.
-				contractorDAO.find(conID);
-				contractor.setNeedsRecalculation(0);
-				contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
-				contractorDAO.save(contractor);
-
-				StringBuffer body = new StringBuffer();
-
-				body.append("There was an error running ContractorCron for id=");
-				body.append(conID);
-				body.append("\n\n");
-
-				try {
-					body.append("Server: " + java.net.InetAddress.getLocalHost().getHostName());
-					body.append("\n\n");
-				} catch (UnknownHostException e) {
-				}
-
-				body.append(t.getStackTrace());
-
-				body.append(sw.toString());
-
-				try {
-					sendMail(body.toString(), conID);
-				} catch (Exception notMuchWeCanDoButLogIt) {
-					System.out.println("Error sending email");
-					System.out.println(notMuchWeCanDoButLogIt);
-					notMuchWeCanDoButLogIt.printStackTrace();
-				}
-			} else {
-				addActionError(sw.toString());
-			}
+			throw continueUpTheStack;
 		}
 	}
 
-	private void sendMail(String message, int conID) {
+	private void setRecalculationToTomorrow(ContractorAccount contractor) {
 		try {
-			GridSender gridSender = new GridSender("info@picsauditing.com", defaultPassword);
-			EmailQueue email = new EmailQueue();
-			email.setToAddresses("errors@picsauditing.com");
-			email.setFromAddress("PICS Mailer<info@picsauditing.com>");
-			email.setSubject("Error in ContractorCron for conID = " + conID);
-			email.setBody(message);
-			email.setCreationDate(new Date());
-			gridSender.sendMail(email);
+			contractor.setNeedsRecalculation(0);
+			contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
+			contractorDAO.save(contractor);
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			System.out.println("Error sending email");
 			System.out.println(notMuchWeCanDoButLogIt);
@@ -561,7 +513,7 @@ public class ContractorCron extends PicsActionSupport {
 		} else {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 				if (contractorInsuranceSubscription.getLastSent() == null
-						|| contractorInsuranceSubscription.getLastSent().after(
+						|| contractorInsuranceSubscription.getLastSent().before(
 								SubscriptionTimePeriod.Weekly.getComparisonDate()))
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
 			}
