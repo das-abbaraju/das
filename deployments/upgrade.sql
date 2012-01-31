@@ -1,3 +1,11 @@
+-- -----------------------------------------------------------------------------------------------
+-- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
+-- EXAMPLES:
+-- -- data conversion
+-- REFER TO config_tables.txt FOR A FULL LIST OF CONFIG TABLES
+-- SEE upgradeConfig.sql FOR CONFIG CHANGES
+-- -----------------------------------------------------------------------------------------------
+
 -- PICS-4248
 update email_template t set t.body = "<SubscriptionHeader>
 <br/>
@@ -63,31 +71,47 @@ set cao.status='NotApplicable'
 where cao.status='Expired';
 --
 
--- PICS-1525
-update app_translation a 
-set a.msgValue = '{0} to {1}' 
-where a.msgKey = 'ScheduleAudit.link.DateSelector'
-and a.locale = 'en';
+/* Foreign Keys must be dropped in the target to ensure that requires changes can be done*/
 
-insert into `app_translation` (`msgKey`, `locale`, `msgValue`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `lastUsed`, `qualityRating`, `sourceLanguage`) 
-values('global.timezone','en','Time Zone','941','941','2012-01-27 12:00:00','2012-01-27 12:00:00',NULL,'4','en');
+ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_con` ;
 
-insert into `app_translation` (`msgKey`, `locale`, `msgValue`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `lastUsed`, `qualityRating`, `sourceLanguage`) 
-values('TimeZone.Asia.Japan','en','Japan Standard Time','941','941','2012-01-27 12:00:00','2012-01-27 12:00:00',NULL,'4','en');
+ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_op` ;
 
-insert into `app_translation` (`msgKey`, `locale`, `msgValue`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `lastUsed`, `qualityRating`, `sourceLanguage`) 
-values('TimeZone.Asia.Calcutta','en','Calcutta Time','941','941','2012-01-27 12:00:00','2012-01-27 12:00:00',NULL,'4','en');
 
-insert into `app_translation` (`msgKey`, `locale`, `msgValue`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `lastUsed`, `qualityRating`, `sourceLanguage`) 
-values('TimeZone.Asia.Singapore','en','Peoples Republic of China Time','941','941','2012-01-27 12:00:00','2012-01-27 12:00:00',NULL,'4','en');
+/* Alter table in target */
+ALTER TABLE `generalcontractors` 
+	ADD COLUMN `type` varchar(25)  COLLATE latin1_swedish_ci NULL after `subID`, 
+	CHANGE `createdBy` `createdBy` int(11)   NULL after `type`, 
+	CHANGE `creationDate` `creationDate` datetime   NULL after `createdBy`, 
+	CHANGE `updatedBy` `updatedBy` int(11)   NULL after `creationDate`, 
+	CHANGE `updateDate` `updateDate` datetime   NULL after `updatedBy`, 
+	CHANGE `workStatus` `workStatus` char(1)  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'P' after `updateDate`, 
+	CHANGE `flag` `flag` enum('Red','Amber','Green','Clear')  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Red' after `workStatus`, 
+	CHANGE `waitingOn` `waitingOn` tinyint(4)   NOT NULL DEFAULT '0' after `flag`, 
+	CHANGE `forceFlag` `forceFlag` enum('Red','Amber','Green')  COLLATE latin1_swedish_ci NULL after `waitingOn`, 
+	CHANGE `forceBegin` `forceBegin` date   NULL after `forceFlag`, 
+	CHANGE `forceEnd` `forceEnd` date   NULL after `forceBegin`, 
+	CHANGE `forcedBy` `forcedBy` int(11)   NULL after `forceEnd`, 
+	CHANGE `relationshipType` `relationshipType` varchar(10)  COLLATE latin1_swedish_ci NULL after `forcedBy`, 
+	CHANGE `processCompletion` `processCompletion` datetime   NULL after `relationshipType`, 
+	CHANGE `flagLastUpdated` `flagLastUpdated` datetime   NULL after `processCompletion`, 
+	CHANGE `forceReason` `forceReason` varchar(255)  COLLATE latin1_swedish_ci NULL after `flagLastUpdated`, 
+	CHANGE `contractorType` `contractorType` varchar(20)  COLLATE latin1_swedish_ci NOT NULL DEFAULT 'Onsite' after `forceReason`, 
+	CHANGE `baselineFlag` `baselineFlag` enum('Red','Amber','Green','Clear')  COLLATE latin1_swedish_ci NULL after `contractorType`, 
+	CHANGE `baselineApprover` `baselineApprover` int(11)   NULL after `baselineFlag`, 
+	CHANGE `baselineApproved` `baselineApproved` datetime   NULL after `baselineApprover`, 
+	CHANGE `flagDetail` `flagDetail` text  COLLATE latin1_swedish_ci NULL after `baselineApproved`, 
+	CHANGE `baselineFlagDetail` `baselineFlagDetail` text  COLLATE latin1_swedish_ci NULL after `flagDetail`, COMMENT=''; 
 
--- -----------------------------------------------------------------------------------------------
--- THIS FILE IS FOR CHANGES TO NON-CONFIG TABLES THAT CANNOT BE APPLIED UNTIL RELEASE TIME
--- EXAMPLES:
--- -- data conversion
--- REFER TO config_tables.txt FOR A FULL LIST OF CONFIG TABLES
--- SEE upgradeConfig.sql FOR CONFIG CHANGES
--- -----------------------------------------------------------------------------------------------
+/* The foreign keys that were dropped are now re-created*/
+
+ALTER TABLE `generalcontractors`
+ADD CONSTRAINT `FK_generalcontractors_con` 
+FOREIGN KEY (`subID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `generalcontractors`
+ADD CONSTRAINT `FK_generalcontractors_op` 
+FOREIGN KEY (`genID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE;
 
 -- PICS-3350
 /*
