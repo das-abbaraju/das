@@ -8,9 +8,9 @@
 
 -- PICS-4248
 update email_template t set t.body = "<SubscriptionHeader>
-<br/>
 This is an automatic reminder that the following Policies for <CompanyName> have or are about to expire.
-
+<br/>
+<br/>
 #foreach($outer in $contractor.audits)
 #if($outer.auditType.classType.toString() == 'Policy')
 #foreach($inner in $contractor.audits)
@@ -24,19 +24,20 @@ $inner.auditType.name for $operator.operator.name Expires On $pics_dateTool.form
 #end
 #end
 #end
-
-Please upload a new insurance certificate using the insurance requirements of the above.
-
-If we do not receive this certificate prior to the expiration you may not be permitted to enter the facility.
-
-As always we appreciate your cooperation and are here to answer any questions you may have. Please reply to <CSRName> at <CSREmail> with any questions.
-
-Thank you,
-<CSRName>
-PICS
-tel: <CSRPhone>
-fax: <CSRFax>
-<CSREmail>
+<br/>
+<br/>
+Please upload a new insurance certificate using the insurance requirements of the above.<br/>
+<br/>
+If we do not receive this certificate prior to the expiration you may not be permitted to enter the facility.<br/>
+<br/>
+As always we appreciate your cooperation and are here to answer any questions you may have.<br/>
+<br/>
+Thank you,<br/>
+<CSRName><br/>
+PICS<br/>
+tel: <CSRPhone><br/>
+fax: <CSRFax><br/>
+<CSREmail><br/>
 <br/>
 <SubscriptionFooter>"
 where t.id = 10;

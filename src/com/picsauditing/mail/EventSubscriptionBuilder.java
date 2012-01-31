@@ -140,6 +140,8 @@ public class EventSubscriptionBuilder {
 			Set<ContractorAudit> expiringPolicies) throws EmailException, IOException {
 		for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
 			sendInsuranceEmail(contractorInsuranceSubscription, expiringPolicies);
+			contractorInsuranceSubscription.setLastSent(new Date());
+			subscriptionDAO.save(contractorInsuranceSubscription);
 		}
 	}
 
