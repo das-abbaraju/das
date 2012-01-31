@@ -42,11 +42,6 @@ fax: <CSRFax>
 where t.id = 10;
 --
 
--- PICS-3904
-insert into widget_user (widgetID, userID, expanded, `column`, sortOrder, customConfig)
-values (25, 646, 1, 1, 3, null);
---
-
 -- PICS-4310 Expired unneeded AU automatically
 -- looks for completed 2011 AU and expires 2008 AU
 update accounts a
