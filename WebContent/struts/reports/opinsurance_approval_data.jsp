@@ -135,7 +135,7 @@
 					/>
 				</div>
 				
-				<a class="picsbutton positive" href="#" onclick="return changeAuditStatus();"><s:text name="ReportInsuranceApproval.SaveChanges" /></a>
+				<a class="picsbutton positive" href="#"><s:text name="ReportInsuranceApproval.SaveChanges" /></a>
 			</td>
 		</tr>
 	</table>
