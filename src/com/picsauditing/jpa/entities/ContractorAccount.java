@@ -151,7 +151,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Only includes the operator accounts, not corporate accounts
+	 * Only includes the Active/Pending/Demo operator accounts, not corporate accounts or Deleted/Deactivated Operators
 	 * 
 	 * @return
 	 */
@@ -159,7 +159,8 @@ public class ContractorAccount extends Account implements JSONable {
 	public List<OperatorAccount> getOperatorAccounts() {
 		List<OperatorAccount> list = new ArrayList<OperatorAccount>();
 		for (ContractorOperator co : operators) {
-			if (co.getOperatorAccount().isOperator())
+			if (co.getOperatorAccount().isOperator() && !co.getOperatorAccount().getStatus().isDeactivated()
+					&& !co.getOperatorAccount().getStatus().isDeleted())
 				list.add(co.getOperatorAccount());
 		}
 		Collections.sort(list);
