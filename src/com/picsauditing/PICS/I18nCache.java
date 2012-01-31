@@ -35,8 +35,6 @@ public class I18nCache implements Serializable {
 	private Table<String, String, String> cache;
 	private Set<String> cacheUsed = new HashSet<String>();
 
-	private Database db = new Database();
-
 	private I18nCache() {
 	}
 
@@ -154,6 +152,8 @@ public class I18nCache implements Serializable {
 							newTranslation.setLocale(localeString);
 							newTranslation.setValue(DEFAULT_TRANSLATION);
 							newTranslation.setApplicable(true);
+							if (newTranslation.isKeyContentDriven())
+								newTranslation.setContentDriven(true);
 
 							db.executeInsert(buildInsertStatement(newTranslation));
 							cache.put(key, localeString, DEFAULT_TRANSLATION);
@@ -176,6 +176,8 @@ public class I18nCache implements Serializable {
 			throws SQLException {
 		if (value == null)
 			return;
+
+		Database db = new Database();
 		String sourceLanguage = null;
 
 		if (!requiredLanguages.isEmpty()) {
@@ -197,6 +199,9 @@ public class I18nCache implements Serializable {
 			if (requiredLanguages.size() > 0 && !requiredLanguages.contains(newTranslation.getLocale())) {
 				newTranslation.setApplicable(false);
 			}
+			
+			if (newTranslation.isKeyContentDriven())
+				newTranslation.setContentDriven(true);
 
 			if (translationFromCache.isDelete()) {
 				String sql = "DELETE FROM app_translation WHERE msgKey = '" + key + "' AND locale = '"
@@ -295,6 +300,9 @@ public class I18nCache implements Serializable {
 			insertUpdateTranslation.setSourceLanguage(source);
 			insertUpdateTranslation.setApplicable(true);
 
+			if (insertUpdateTranslation.isKeyContentDriven())
+				insertUpdateTranslation.setContentDriven(true);
+
 			if (hasKey(key, requiredLanguage)) {
 				updateRequiredLanguage(requiredLanguage, insertUpdateTranslation);
 			} else {
@@ -317,6 +325,9 @@ public class I18nCache implements Serializable {
 				unneededTranslation.setSourceLanguage(source);
 				unneededTranslation.setApplicable(false);
 				
+				if (unneededTranslation.isKeyContentDriven())
+					unneededTranslation.setContentDriven(true);
+
 				updateRequiredLanguage(locale, unneededTranslation);
 			}
 		}
@@ -326,6 +337,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(DEFAULT_TRANSLATION);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Bad);
 
+		Database db = new Database();
 		db.executeInsert(buildInsertStatement(insertUpdateTranslation));
 	}
 
@@ -336,6 +348,7 @@ public class I18nCache implements Serializable {
 		insertUpdateTranslation.setValue(requiredLanguageMsgValue);
 		insertUpdateTranslation.setQualityRating(TranslationQualityRating.Questionable);
 
+		Database db = new Database();
 		db.executeUpdate(buildUpdateStatement(insertUpdateTranslation));
 	}
 }

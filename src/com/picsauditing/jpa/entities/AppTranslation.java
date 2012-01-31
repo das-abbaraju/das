@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "app_translation")
@@ -27,6 +29,7 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	private TranslationQualityRating qualityRating;
 	private boolean applicable;
 	private String sourceLanguage;
+	private boolean contentDriven;
 
 	private static List<Locale> locales = null;
 
@@ -120,12 +123,26 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 
 	public static Set<String> getLocaleLanguages() {
 		Set<String> languages = new TreeSet<String>();
-		if (locales == null) 
+		if (locales == null)
 			getLocales();
 		for (Locale locale : locales) {
 			languages.add(locale.getLanguage());
 		}
-		
+
 		return languages;
+	}
+
+	public boolean isKeyContentDriven() {
+		return StringUtils.startsWith(key, "AuditType") || StringUtils.startsWith(key, "AuditCategory")
+				|| StringUtils.startsWith(key, "AuditQuestion") || StringUtils.startsWith(key, "AuditOptionGroup")
+				|| StringUtils.startsWith(key, "EmailTemplate") || StringUtils.startsWith(key, "FlagCriteria");
+	}
+
+	public boolean isContentDriven() {
+		return contentDriven;
+	}
+
+	public void setContentDriven(boolean contentDriven) {
+		this.contentDriven = contentDriven;
 	}
 }
