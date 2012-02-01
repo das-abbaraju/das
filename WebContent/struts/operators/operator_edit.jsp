@@ -149,7 +149,7 @@
 				</ol>
 			</fieldset>
 			
-			<s:if test="operator.id > 0">
+			<s:if test="operator.id > 0 && permissions.picsEmployee">
 				<fieldset class="form">
 					<h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts" /></h2>
 					
