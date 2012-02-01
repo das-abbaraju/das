@@ -57,7 +57,7 @@
 							cssClass="checkReq"
 							name="newContractor.name"
 							size="35"
-							theme="pics"
+							theme="formhelp"
 						/>
 						<div id="think_name"></div>
 						<div id="match_name"></div>
@@ -66,7 +66,7 @@
 						<s:textfield
 							cssClass="checkReq"
 							name="newContractor.contact"
-							theme="pics"
+							theme="formhelp"
 						/>
 						<div id="think_contact"></div>
 						<div id="match_contact"></div>
@@ -76,7 +76,7 @@
 							cssClass="checkReq"
 							name="newContractor.phone"
 							size="20"
-							theme="pics"
+							theme="formhelp"
 						/>
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
@@ -87,7 +87,7 @@
 							name="newContractor.email"
 							size="30"
 							id="email"
-							theme="pics"
+							theme="formhelp"
 						/>
 						<div id="think_email"></div>
 						<div id="match_email"></div>
@@ -99,7 +99,7 @@
 							size="9"
 							maxLength="9"
 							id="taxID"
-							theme="pics"
+							theme="formhelp"
 						/>
 						<div id="think_tax"></div>
 						<div id="match_tax"></div>
@@ -138,7 +138,7 @@
 							size="20"
 							id="city"
 							cssClass="show-address"
-							theme="pics"
+							theme="formhelp"
 						/>
 					</li>
 					<li class="address-zip">
@@ -146,7 +146,7 @@
 							name="newContractor.address"
 							size="35"
 							id="address"
-							theme="pics"
+							theme="formhelp"
 						/>
 					</li>
 					<li class="address-zip">
@@ -154,7 +154,7 @@
 							name="newContractor.zip"
 							size="7"
 							id="zip"
-							theme="pics"
+							theme="formhelp"
 						/>
 					</li>
 				</ol>
@@ -197,14 +197,14 @@
 							size="10" 
 							value="%{newContractor.deadline != null ? getTextParameterized('short_dates', newContractor.deadline) : ''}"
 							onchange="checkDate(this)"
-							theme="pics"
+							theme="formhelp"
 						/>
 					</li>
 					<li>
 						<s:textarea
 							id="reasonForRegistration"
 							name="newContractor.reasonForRegistration"
-							theme="pics"
+							theme="formhelp"
 						/>
 					</li>
 					<li id="loadTagsList">
@@ -309,9 +309,7 @@
 								<div id="notesHere">
 									<pre id="addHere"></pre>
 									<s:if test="newContractor.notes.length() > 0">
-										<pre id="notesPreview">
-											<s:property value="newContractor.notes" />
-									</pre>
+										<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
 									</s:if>
 								</div>
 							</div>
@@ -354,17 +352,12 @@
 									cssClass="datepicker"
 									size="10"
 									onchange="checkDate(this)"
-									theme="pics"
+									theme="formhelp"
 								/>
 							</li>
 							<li id="reasonDeclinedLi">
-								<label>
-									<s:text name="RequestNewContractor.label.reasonForDecline" />:
-								</label>
-								<p>
-									<s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" theme="pics" />
-								</p>
-								<div class = "fieldhelp">
+								<s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" theme="formhelp" />
+								<div class="fieldhelp">
 									<h3>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />
 									</h3>
