@@ -23,7 +23,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportEmployee extends ReportActionSupport {
-
 	@Autowired
 	protected AccountDAO accountDAO;
 
@@ -154,7 +153,7 @@ public class ReportEmployee extends ReportActionSupport {
 			download = true;
 			run(sql);
 		}
-		
+
 		addExcelColumns();
 
 		if (Strings.isEmpty(filename)) {

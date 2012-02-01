@@ -22,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -37,10 +35,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class EmployeeCompetencies extends ReportEmployee {
-	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
 	protected EmployeeCompetencyDAO employeeCompetencyDAO;
 
@@ -56,26 +50,10 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public String execute() throws Exception {
-		int accountID = getParameter("accountID");
-		if (accountID > 0) {
-			account = accountDAO.find(accountID);
-		}
+		getContractorAccountFromAuditID();
 
 		if (account == null && permissions.isContractor())
 			account = accountDAO.find(permissions.getAccountId());
-
-		// Get auditID
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-
-			if (permissions.isAdmin()) {
-				ContractorAudit audit = contractorAuditDAO.find(auditID);
-				account = audit.getContractorAccount();
-			}
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
 
 		if (account == null)
 			throw new RecordNotFoundException(getText("EmployeeCompetencies.message.MissingAccount"));
@@ -92,6 +70,64 @@ public class EmployeeCompetencies extends ReportEmployee {
 		return SUCCESS;
 	}
 
+	public String changeCompetency() throws Exception {
+		if (employee != null && competency != null) {
+			EmployeeCompetency ec = findEmployeeCompetency();
+
+			if (ec == null) {
+				ec = createNewEmployeeCompetency();
+			}
+
+			ec.setSkilled(!ec.isSkilled());
+			employeeCompetencyDAO.save(ec);
+
+			addResultToActionMessage(ec);
+		} else
+			addActionError(getText("EmployeeCompetencies.message.MissingEmployeeCompetency"));
+
+		return BLANK;
+	}
+
+	private EmployeeCompetency findEmployeeCompetency() {
+		EmployeeCompetency ec = null;
+
+		for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
+			if (employeeCompetency.getCompetency().equals(competency)) {
+				ec = employeeCompetency;
+				break;
+			}
+		}
+		
+		return ec;
+	}
+
+	private void addResultToActionMessage(EmployeeCompetency ec) {
+		if (ec.isSkilled()) {
+			addActionMessage(getText("EmployeeCompetencies.message.AddedTo", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+		} else {
+			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] {
+					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
+		}
+	}
+
+	private void getContractorAccountFromAuditID() {
+		account = null;
+		auditID = getParameter("auditID");
+
+		if (auditID > 0) {
+			ActionContext.getContext().getSession().put("auditID", auditID);
+		} else {
+			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
+					.getContext().getSession().get("auditID"));
+		}
+
+		if (auditID > 0 && permissions.isAdmin()) {
+			ContractorAudit audit = dao.find(ContractorAudit.class, auditID);
+			account = audit.getContractorAccount();
+		}
+	}
+
 	private void setDefaultFilters() {
 		getFilter().setPermissions(permissions);
 		getFilter().setAccountID(account.getId());
@@ -102,38 +138,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 
 		if (permissions.isContractor())
 			getFilter().setShowAccountName(false);
-	}
-
-	public String changeCompetency() throws Exception {
-		if (employee != null && competency != null) {
-			EmployeeCompetency ec = null;
-			for (EmployeeCompetency employeeCompetency : employee.getEmployeeCompetencies()) {
-				if (employeeCompetency.getCompetency().equals(competency)) {
-					ec = employeeCompetency;
-					break;
-				}
-			}
-
-			if (ec == null) {
-				ec = createNewEmployeeCompetency();
-			}
-
-			ec.setSkilled(!ec.isSkilled());
-			employeeCompetencyDAO.save(ec);
-
-			if (ec.isSkilled()) {
-				addActionMessage(getText("EmployeeCompetencies.message.AddedTo",
-						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
-								ec.getEmployee().getFirstName() }));
-			} else {
-				addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom",
-						new Object[] { ec.getCompetency().getLabel(), ec.getEmployee().getLastName(),
-								ec.getEmployee().getFirstName() }));
-			}
-		} else
-			addActionError(getText("EmployeeCompetencies.message.MissingEmployeeCompetency"));
-
-		return BLANK;
 	}
 
 	private EmployeeCompetency createNewEmployeeCompetency() {

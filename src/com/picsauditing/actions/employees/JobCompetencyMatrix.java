@@ -17,79 +17,37 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
 import com.picsauditing.util.DoubleMap;
 
 @SuppressWarnings("serial")
-public class JobCompetencyMatrix extends PicsActionSupport implements Preparable {
-	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected ContractorAuditDAO contractorAuditDAO;
+public class JobCompetencyMatrix extends AccountActionSupport {
 	@Autowired
 	protected JobRoleDAO jobRoleDAO;
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
-	protected Account account;
-
 	private List<JobRole> roles;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
 
-	private int auditID;
+	@Override
+	public String execute() throws Exception {
+		getContractorAccountFromAuditID();
 
-	public void prepare() throws Exception {
-		int accountID = getParameter("accountID");
-		if (accountID > 0) {
-			account = accountDAO.find(accountID);
-		}
-		
-		if (account == null) {
-			if (permissions.isContractor())
-				account = accountDAO.find(permissions.getAccountId());
+		if (account == null && permissions.isContractor()) {
+			account = accountDAO.find(permissions.getAccountId());
 		}
 
-		// Get auditID
-		int auditID = getParameter("auditID");
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
+		loadRolesAndCompetencies();
+		addAccountJobRoles();
 
-			if (permissions.isAdmin()) {
-				ContractorAudit audit = contractorAuditDAO.find(auditID);
-				account = audit.getContractorAccount();
-			}
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
-
-		roles = jobRoleDAO.findMostUsed(account.getId(), true);
-		competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);
-		map = jobRoleDAO.findJobCompetencies(account.getId(), true);
-
-		List<JobRole> jobRoles = account.getJobRoles();
-		Collections.sort(jobRoles, new Comparator<JobRole>() {
-			public int compare(JobRole o1, JobRole o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
-		for (JobRole jr : jobRoles) {
-			if (!roles.contains(jr) && jr.isActive())
-				roles.add(jr);
-		}
+		return SUCCESS;
 	}
 
 	public String download() throws Exception {
@@ -104,22 +62,6 @@ public class JobCompetencyMatrix extends PicsActionSupport implements Preparable
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 		return null;
-	}
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
 	}
 
 	public List<JobRole> getRoles() {
@@ -144,8 +86,31 @@ public class JobCompetencyMatrix extends PicsActionSupport implements Preparable
 	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
 		return map.get(role, comp);
 	}
+	
+	private void loadRolesAndCompetencies() {
+		roles = jobRoleDAO.findMostUsed(account.getId(), true);
+		competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);
+		map = jobRoleDAO.findJobCompetencies(account.getId(), true);
+	}
+
+	private void addAccountJobRoles() {
+		List<JobRole> jobRoles = account.getJobRoles();
+		Collections.sort(jobRoles, new Comparator<JobRole>() {
+			public int compare(JobRole o1, JobRole o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+
+		for (JobRole jr : jobRoles) {
+			if (!roles.contains(jr) && jr.isActive())
+				roles.add(jr);
+		}
+	}
 
 	private HSSFWorkbook buildWorkbook(String name) {
+		loadRolesAndCompetencies();
+		addAccountJobRoles();
+
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet(name);
 
