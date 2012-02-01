@@ -198,7 +198,7 @@ public class OshaOrganizer {
 		straightAvg.setFirstAidInjuries(straightAvg.getFirstAidInjuries() / straightCount);
 		straightAvg.setModifiedWorkDay(straightAvg.getModifiedWorkDay() / straightCount);
 
-		straightAvg.getConAudit().setAuditFor("Years: " + yearsOfAverage);
+		straightAvg.getConAudit().setAuditFor(yearsOfAverage);
 
 		return straightAvg;
 	}

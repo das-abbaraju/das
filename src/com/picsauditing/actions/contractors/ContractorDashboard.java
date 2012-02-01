@@ -361,8 +361,19 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (fcc != null) {
 			if (!Strings.isEmpty(fcc.getAnswer2())) {
 				String answer = fcc.getAnswer2().split("<br/>")[0];
-				if (answer != null && answer.contains("Year"))
-					result = " for " + answer;
+				if (answer != null && fcc.getCriteria().getMultiYearScope() != null) {
+					if (fcc.getCriteria().getMultiYearScope() != null) {
+						if (answer.contains("for")) {
+							result = answer;
+						} else if (answer.contains("Year")) {
+							result = " for " + answer;
+						} else if (fcc.getCriteria().getMultiYearScope() == MultiYearScope.ThreeYearAverage) {
+							result = " for Years: " + answer;
+						} else {
+							result = " for Year: " + answer;
+						}
+					}
+				}
 			}
 		}
 		return result;
