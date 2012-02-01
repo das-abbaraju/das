@@ -7,7 +7,6 @@
 		<title>
 			<s:text name="RequestNewContractor.title" />
 		</title>
-		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
@@ -21,17 +20,13 @@
 		<h1>
 			<s:text name="RequestNewContractor.title" />
 		</h1>
-		
 		<pics:permission perm="RequestNewContractor">
 			<a href="ReportNewRequestedContractor.action">&lt;&lt;
 				<s:text name="RequestNewContractor.link.BackToRequests" />
 			</a>
 		</pics:permission>
-		
-		<s:include value="../actionMessages.jsp"></s:include>
-		
+		<s:include value="../actionMessages.jsp" />
 		<div id="potentialMatches" class="info" style="display: none;"></div>
-		
 		<s:if test="newContractor.contractor != null || !newContractor.open">
 			<div class="info">
 				<s:if test="newContractor.contractor != null">
@@ -44,18 +39,13 @@
 						</s:param>
 					</s:text>
 				</s:if>
-				 
-				<s:if test="newContractor.open">
-				</s:if>
-				<s:else>
+				<s:if test="!newContractor.open">
 					<s:text name="RequestNewContractor.message.RequestClosed" />
-				</s:else>
+				</s:if>
 			</div>
 		</s:if>
-		
 		<s:form id="saveContractorForm">
 			<s:hidden name="newContractor" />
-			
 			<fieldset class="form">
 				<h2 class="formLegend">
 					<s:text name="RequestNewContractor.header.CompanyInformation" />
@@ -63,43 +53,59 @@
 				
 				<ol>
 					<li>
-						<s:textfield cssClass="checkReq" name="newContractor.name" 	size="35" theme="formhelp" />
+						<s:textfield
+							cssClass="checkReq"
+							name="newContractor.name"
+							size="35"
+							theme="pics"
+						/>
 						<div id="think_name"></div>
 						<div id="match_name"></div>
 					</li>
 					<li>
-						<s:textfield cssClass="checkReq" name="newContractor.contact" theme="formhelp" />
+						<s:textfield
+							cssClass="checkReq"
+							name="newContractor.contact"
+							theme="pics"
+						/>
 						<div id="think_contact"></div>
 						<div id="match_contact"></div>
 					</li>
 					<li>
-						<s:textfield cssClass="checkReq" name="newContractor.phone" size="20" theme="formhelp" />
-						
+						<s:textfield
+							cssClass="checkReq"
+							name="newContractor.phone"
+							size="20"
+							theme="pics"
+						/>
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
 					</li>
 					<li>
-						<s:textfield cssClass="checkReq" name="newContractor.email" size="30" id="email" theme="formhelp" />
-						
+						<s:textfield
+							cssClass="checkReq"
+							name="newContractor.email"
+							size="30"
+							id="email"
+							theme="pics"
+						/>
 						<div id="think_email"></div>
 						<div id="match_email"></div>
 					</li>
 					<li>
-						<s:textfield cssClass="checkReq" name="newContractor.taxID" size="9" maxLength="9" id="taxID" theme="formhelp" />
+						<s:textfield
+							cssClass="checkReq"
+							name="newContractor.taxID"
+							size="9"
+							maxLength="9"
+							id="taxID"
+							theme="pics"
+						/>
 						<div id="think_tax"></div>
 						<div id="match_tax"></div>
 					</li>
-					
-					<s:if test="assignedCSR != null">
-						<li>
-							<label><s:text name="RequestNewContractor.label.AssignedCSR" />:</label>
-							<nobr><s:property value="assignedCSR.name" /> / <s:property	value="assignedCSR.phone" /></nobr>
-						</li>
-					</s:if>
 				</ol>
-				
 			</fieldset>
-			
 			<fieldset class="form">
 				<h2 class="formLegend">
 					<s:text name="global.PrimaryAddress" />
@@ -108,8 +114,14 @@
 				<ol>
 					<li>
 						<label for="newContractorCountry"><s:text name="Country" />:</label>
-						<s:select list="countryList" name="newContractor.country" id="newContractorCountry" listKey="isoCode" 
-							listValue="name" value="%{newContractor.country.isoCode}" />
+						<s:select
+							list="countryList"
+							name="newContractor.country"
+							id="newContractorCountry"
+							listKey="isoCode" 
+							listValue="name"
+							value="%{newContractor.country.isoCode}"
+						/>
 							
 						<div class="fieldhelp">
 							<h3>
@@ -121,13 +133,29 @@
 					</li>
 					<li id="state_li"></li>
 					<li>
-						<s:textfield name="newContractor.city" size="20" id="city" cssClass="show-address" theme="formhelp" />
+						<s:textfield
+							name="newContractor.city"
+							size="20"
+							id="city"
+							cssClass="show-address"
+							theme="pics"
+						/>
 					</li>
 					<li class="address-zip">
-						<s:textfield name="newContractor.address" size="35" id="address" theme="formhelp" />
+						<s:textfield
+							name="newContractor.address"
+							size="35"
+							id="address"
+							theme="pics"
+						/>
 					</li>
 					<li class="address-zip">
-						<s:textfield name="newContractor.zip" size="7" id="zip" theme="formhelp" />
+						<s:textfield
+							name="newContractor.zip"
+							size="7"
+							id="zip"
+							theme="pics"
+						/>
 					</li>
 				</ol>
 			</fieldset>
@@ -142,27 +170,47 @@
 						<label>
 							<s:text name="ContractorRegistrationRequest.requestedBy" />:
 						</label>
-						<s:select list="operatorsList" id="operatorsList" headerKey="0" 
+						<s:select
+							list="operatorsList"
+							id="operatorsList"
+							headerKey="0" 
 							headerValue="- %{getText('RequestNewContractor.header.SelectAnOperator')} -" 
-							name="newContractor.requestedBy" listKey="id" listValue="name" 
-							value="%{newContractor.requestedBy.id}" />
+							name="newContractor.requestedBy"
+							listKey="id"
+							listValue="name" 
+							value="%{newContractor.requestedBy.id}"
+						/>
 						
 						<div class="fieldhelp">
-							<h3><s:text name="ContractorRegistrationRequest.requestedBy" /></h3>
+							<h3>
+								<s:text name="ContractorRegistrationRequest.requestedBy" />
+							</h3>
 							<s:text name="ContractorRegistrationRequest.requestedBy.fieldhelp" />
 						</div>
 					</li>
 					<li id="loadUsersList"></li>
 					<li>
-						<s:textfield id="regDate" name="newContractor.deadline" cssClass="datepicker" size="10" 
-							value="%{newContractor.deadline != null ? getTextParameterized('short_dates', newContractor.deadline) : ''}" onchange="checkDate(this)"
-							theme="formhelp" />
+						<s:textfield
+							id="regDate"
+							name="newContractor.deadline"
+							cssClass="datepicker"
+							size="10" 
+							value="%{newContractor.deadline != null ? getTextParameterized('short_dates', newContractor.deadline) : ''}"
+							onchange="checkDate(this)"
+							theme="pics"
+						/>
 					</li>
 					<li>
-						<s:textarea id="reasonForRegistration" name="newContractor.reasonForRegistration" theme="formhelp" />
+						<s:textarea
+							id="reasonForRegistration"
+							name="newContractor.reasonForRegistration"
+							theme="pics"
+						/>
 					</li>
 					<li id="loadTagsList">
-						<label><s:text name="RequestNewContractor.OperatorTags" /></label>
+						<label>
+							<s:text name="RequestNewContractor.OperatorTags" />
+						</label>
 						<s:optiontransferselect
 							label="Operator Tags"
 							name="operatorTags"
@@ -186,7 +234,9 @@
 							theme="pics"
 						/>
 						<div class="fieldhelp">
-							<h3><s:text name="RequestNewContractor.OperatorTags" /></h3>
+							<h3>
+								<s:text name="RequestNewContractor.OperatorTags" />
+							</h3>
 							<s:text name="RequestNewContractor.OperatorTags.fieldhelp" />
 						</div>
 					</li>
@@ -195,30 +245,42 @@
 			</fieldset>
 			
 			<fieldset class="form">
-				<h2 class="formLegend"><s:text name="RequestNewContractor.header.ContactSummary" /></h2>
+				<h2 class="formLegend">
+					<s:text name="RequestNewContractor.header.ContactSummary" />
+				</h2>
 				
 				<ol>
 					<s:if test="newContractor.id > 0">
 						<li>
-							<label><s:text name="RequestNewContractor.label.LastContactedBy" />:</label>
+							<label>
+								<s:text name="RequestNewContractor.label.LastContactedBy" />:
+							</label>
 							<s:property value="newContractor.lastContactedBy.name" /><br />
 						</li>
 						<li>
-							<label><s:text name="RequestNewContractor.label.DateContacted" />:</label>
+							<label>
+								<s:text name="RequestNewContractor.label.DateContacted" />:
+							</label>
 							<s:date name="newContractor.lastContactDate" /><br />
 						</li>
 					</s:if>
 					
 					<s:if test="newContractor.id > 0">
 						<li>
-							<label><s:text name="RequestNewContractor.label.TimesContacted" />:</label>
+							<label>
+								<s:text name="RequestNewContractor.label.TimesContacted" />:
+							</label>
 							<s:property value="newContractor.contactCount" />
 						</li>
 						<li>
-							<label><s:text name="RequestNewContractor.label.MatchesFound" />:</label>
+							<label>
+								<s:text name="RequestNewContractor.label.MatchesFound" />:
+							</label>
 							
 							<s:if test="newContractor.matchCount > 0 && newContractor.open">
-								<a href="#potentialMatches" id="getMatches"><s:property value="newContractor.matchCount" /></a>
+								<a href="#potentialMatches" id="getMatches">
+									<s:property value="newContractor.matchCount" />
+								</a>
 							</s:if>
 							<s:else>
 								<s:property value="newContractor.matchCount" />
@@ -235,7 +297,8 @@
 							
 							<s:if test="newContractor.contractor != null">
 								<a href="ContractorView.action?id=<s:property value="newContractor.contractor.id"/>">
-								<s:property value="newContractor.contractor.name" /></a>
+									<s:property value="newContractor.contractor.name" />
+								</a>
 							</s:if>
 						</li>
 						<li>
@@ -246,7 +309,9 @@
 								<div id="notesHere">
 									<pre id="addHere"></pre>
 									<s:if test="newContractor.notes.length() > 0">
-										<pre id="notesPreview"><s:property value="newContractor.notes" /></pre>
+										<pre id="notesPreview">
+											<s:property value="newContractor.notes" />
+									</pre>
 									</s:if>
 								</div>
 							</div>
@@ -264,48 +329,71 @@
 			
 			<s:if test="newContractor.id > 0">
 				<fieldset class="form">
-					<h2 class="formLegend"><s:text name="ContractorRegistrationRequest.label.status" /></h2>
+					<h2 class="formLegend">
+						<s:text name="ContractorRegistrationRequest.label.status" />
+					</h2>
 					
 					<ol>
 						<s:if test="!permissions.operatorCorporate">
 							<li>
-								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
-								<s:select id="status" list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
-									listValue="getText(i18nKey)" name="status" onchange="hideShow()"/>
+								<label>
+									<s:text name="ContractorRegistrationRequest.label.status" />:
+								</label>
+								<s:select 
+									id="status" 
+									list="@com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@values()" 
+									listValue="getText(i18nKey)"
+									name="status"
+									onchange="hideShow()"
+								/>
 							</li>
 							<li id="holdDateLi">
-								<s:textfield id = "holdDate" name="newContractor.holdDate"	cssClass="datepicker" size="10" onchange="checkDate(this)"	theme="formhelp" />
+								<s:textfield
+									id="holdDate"
+									name="newContractor.holdDate"
+									cssClass="datepicker"
+									size="10"
+									onchange="checkDate(this)"
+									theme="pics"
+								/>
 							</li>
 							<li id="reasonDeclinedLi">
-								<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
-								
+								<label>
+									<s:text name="RequestNewContractor.label.reasonForDecline" />:
+								</label>
 								<p>
-									<s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" />
+									<s:textarea name="newContractor.reasonForDecline" id="reasonForDecline" theme="pics" />
 								</p>
-								
 								<div class = "fieldhelp">
-									<h3><s:text name="RequestNewContractor.label.reasonForDecline" /></h3>
-										
+									<h3>
+										<s:text name="RequestNewContractor.label.reasonForDecline" />
+									</h3>
 									<s:text name="ContractorRegistrationRequest.help.CloseRequest" />
 								</div>
 							</li>
 						</s:if>
 						<s:else>
 							<li>
-								<label><s:text name="ContractorRegistrationRequest.label.status" />:</label>
+								<label>
+									<s:text name="ContractorRegistrationRequest.label.status" />:
+								</label>
 								<s:property value="getText(newContractor.status.I18nKey)" />
 							</li>
 							
 							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
 								<li>
-									<label><s:text name="ContractorRegistrationRequest.label.holdDate" />:</label>
+									<label>
+										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
+									</label>
 									<s:date name="newContractor.holdDate" format="MM/dd/yyyy"/>
 								</li>
 							</s:if>
 							
 							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful">
 								<li>
-									<label><s:text name="RequestNewContractor.label.reasonForDecline" />:</label>
+									<label>
+										<s:text name="RequestNewContractor.label.reasonForDecline" />:
+									</label>
 									<s:property value="newContractor.reasonForDecline" />
 								</li>
 							</s:if>
@@ -371,7 +459,9 @@
 				<s:hidden name="newContractor"/>
 				<s:hidden name="contactType" value="%{@com.picsauditing.actions.contractors.RequestNewContractor@PHONE}"/>
 				
-				<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
+				<label>
+					<s:text name="RequestNewContractor.label.AddAdditionalNotes" />:
+				</label>
 				
 				<p>
 					<s:textarea name="addToNotes" cols="30" rows="3"/>
@@ -391,11 +481,16 @@
 					<h3><s:text name = "RequestNewContractor.button.ContactedByEmail" /></h3>
 				</p>
 				<p>
-					<s:select list="#{@com.picsauditing.actions.contractors.RequestNewContractor@PERSONAL_EMAIL:'Sent a Personal Email',
-						@com.picsauditing.actions.contractors.RequestNewContractor@DRAFT_EMAIL:'Draft Email'}" name="contactType" />
+					<s:select
+						list="#{@com.picsauditing.actions.contractors.RequestNewContractor@PERSONAL_EMAIL:'Sent a Personal Email',
+						@com.picsauditing.actions.contractors.RequestNewContractor@DRAFT_EMAIL:'Draft Email'}"
+						name="contactType"
+					/>
 				</p>
 				<p>
-					<label><s:text name="RequestNewContractor.label.AddAdditionalNotes" />:</label>
+					<label>
+						<s:text name="RequestNewContractor.label.AddAdditionalNotes" />:
+					</label>
 				</p>
 				<p>
 					<s:textarea name="addToNotes" cols="30" rows="3"/>
@@ -433,7 +528,15 @@
 			});
 			
 			function changeState(country) {
-				$('#state_li').load('StateListAjax.action',{countryString: $('#newContractorCountry').val(), stateString: '<s:property value="newContractor.state.isoCode"/>', needsSuffix: false, prefix: 'newContractor.'});
+				$('#state_li').load(
+					'StateListAjax.action',
+					{
+						countryString: $('#newContractorCountry').val(),
+						stateString: '<s:property value="newContractor.state.isoCode"/>',
+						needsSuffix: false,
+						prefix: 'newContractor.'
+					}
+				);
 			}
 		</script>
 		<script type="text/javascript" src="js/con_new_registration.js"></script>
