@@ -27,9 +27,7 @@ $inner.auditType.name for $operator.operator.name Expires On $pics_dateTool.form
 <br/>
 <br/>
 Please upload a new insurance certificate using the insurance requirements of the above.<br/>
-<br/>
 If we do not receive this certificate prior to the expiration you may not be permitted to enter the facility.<br/>
-<br/>
 As always we appreciate your cooperation and are here to answer any questions you may have.<br/>
 <br/>
 Thank you,<br/>
