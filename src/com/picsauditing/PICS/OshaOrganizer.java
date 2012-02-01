@@ -92,6 +92,7 @@ public class OshaOrganizer {
 		// TODO Move this into a separate utility class
 
 		OshaAudit straightAvg = new OshaAudit();
+		straightAvg.setConAudit(new ContractorAudit());
 
 		boolean straightAllVerified = true;
 		Date straightLastVerified = null;
@@ -114,6 +115,8 @@ public class OshaOrganizer {
 		float straightNeer = 0;
 
 		int straightCount = 0;
+		
+		String yearsOfAverage = "";
 
 		for (OshaAudit osha : data.get(type)) {
 			if (osha != null && straightCount < 3) {
@@ -149,6 +152,11 @@ public class OshaOrganizer {
 					straightLwcr += osha.getLostWorkCasesRate();
 					straightDart += osha.getRestrictedDaysAwayRate();
 					straightSeverityRate += osha.getRestrictedOrJobTransferDays();
+					
+					if (yearsOfAverage.length() > 0) {
+						yearsOfAverage +=", ";
+					}
+					yearsOfAverage +=osha.getConAudit().getAuditFor();
 				}
 			}
 		}
@@ -189,6 +197,8 @@ public class OshaOrganizer {
 		straightAvg.setRecordableTotal(straightAvg.getRecordableTotal() / straightCount);
 		straightAvg.setFirstAidInjuries(straightAvg.getFirstAidInjuries() / straightCount);
 		straightAvg.setModifiedWorkDay(straightAvg.getModifiedWorkDay() / straightCount);
+
+		straightAvg.getConAudit().setAuditFor("Years: " + yearsOfAverage);
 
 		return straightAvg;
 	}
