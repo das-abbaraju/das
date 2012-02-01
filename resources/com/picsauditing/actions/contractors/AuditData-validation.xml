@@ -3,7 +3,7 @@
 <validators>
 	<field name="answer">
 		<field-validator type="requiredstring">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 </validators>

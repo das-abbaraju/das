@@ -253,6 +253,7 @@ public class Registration extends ContractorActionSupport {
 		this.confirmPassword = confirmPassword;
 	}
 
+	@Override
 	public User getUser() {
 		return user;
 	}

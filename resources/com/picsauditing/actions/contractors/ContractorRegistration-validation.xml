@@ -14,13 +14,13 @@
 	<field name="confirmPassword">
 		<field-validator type="fieldexpression" short-circuit="true">
 	       <param name="expression"><![CDATA[user.password == confirmPassword]]></param>
-	       <message>JS.Validation.PasswordsMustMatch</message>
+	       <message>${getText("JS.Validation.PasswordsMustMatch")}</message>
 		</field-validator>
 	</field>
 	<field name="user.username">
 		<field-validator type="fieldexpression" short-circuit="true">
 	       <param name="expression"><![CDATA[user.username == "" || !usernameInUse]]></param>
-	       <message>JS.Validation.UsernameIsTaken</message>
+	       <message>${getText("JS.Validation.UsernameIsTaken")}</message>
 		</field-validator>
 	</field>
 </validators>

@@ -4,7 +4,7 @@
 	<field name="contractor.onsiteServices">
 		<field-validator type="fieldexpression">
 	       <param name="expression"><![CDATA[(contractor.onsiteServices || contractor.offsiteServices || contractor.materialSupplier)]]></param>
-	       <message>JS.Validation.SelectService</message>
+	       <message>${getText("JS.Validation.SelectService")}</message>
 		</field-validator>
 	</field>
 </validators>

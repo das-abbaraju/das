@@ -694,7 +694,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Override
 	public String toString() {
-		return account.toString() + ": " + name + "(" + (isGroup() ? "G" : "U") + id + ")";
+		return (account == null ? "NULL" : account.toString()) + ": " + name + "(" + (isGroup() ? "G" : "U") + id + ")";
 	}
 
 	@Transient

@@ -3,33 +3,33 @@
 <validators>
 	<field name="name">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="minLength">2</param>
 			<param name="trim">true</param>
-			<message>JS.Validation.Minimum2Characters</message>
+			<message>${getText("JS.Validation.Minimum2Characters")}</message>
 		</field-validator>
 	</field>
 	<field name="country">
 		<field-validator type="required" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 	<field name="address">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 	<field name="city">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 	<field name="zip">
 		<field-validator type="fieldexpression" short-circuit="true">
-	       <param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
-	       <message>JS.Validation.Required</message>
+			<param name="expression"><![CDATA[country.isoCode == "AE" || zip != ""]]></param>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 </validators>

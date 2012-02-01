@@ -712,7 +712,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Override
 	public String toString() {
-		return name + "(" + id + ")";
+		return (name == null ? "NULL" : name) + "(" + id + ")";
 	}
 
 	@Transient

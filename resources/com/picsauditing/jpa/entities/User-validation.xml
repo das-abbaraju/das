@@ -3,65 +3,65 @@
 <validators>
 	<field name="username">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="minLength">5</param>
-			<message>JS.Validation.Minimum5Characters</message>
+			<message>${getText("JS.Validation.Minimum5Characters")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="maxLength">100</param>
-			<message>JS.Validation.Maximum100Characters</message>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 		<field-validator type="regex" short-circuit="true">
 			<param name="expression"><![CDATA[^[ a-zA-Z0-9+._@-]{5,100}$]]></param>
-			<message>JS.Validation.SpecialCharacters</message>
+			<message>${getText("JS.Validation.SpecialCharacters")}</message>
 		</field-validator>
 		<field-validator type="regex" short-circuit="true">
 			<param name="expression"><![CDATA[^[a-zA-Z0-9+._@-]{5,100}$]]></param>
-			<message>JS.Validation.Whitespace</message>
+			<message>${getText("JS.Validation.Whitespace")}</message>
 		</field-validator>
 	</field>
 	<field name="name">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="maxLength">100</param>
 			<param name="trim">true</param>
-			<message>JS.Validation.Maximum100Characters</message>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 	</field>
 	<field name="email">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 		<field-validator type="email" short-circuit="true">
-			<message>JS.Validation.ValidEmail</message>
+			<message>${getText("JS.Validation.ValidEmail")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="maxLength">100</param>
 			<param name="trim">true</param>
-			<message>JS.Validation.Maximum100Characters</message>
+			<message>${getText("JS.Validation.Maximum100Characters")}</message>
 		</field-validator>
 	</field>
 	<field name="phone">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 	</field>
 	<field name="password">
 		<field-validator type="requiredstring" short-circuit="true">
-			<message>JS.Validation.Required</message>
+			<message>${getText("JS.Validation.Required")}</message>
 		</field-validator>
 		<field-validator type="stringlength" short-circuit="true">
 			<param name="minLength">5</param>
 			<param name="trim">true</param>
-			<message>JS.Validation.Minimum5Characters</message>
+			<message>${getText("JS.Validation.Minimum5Characters")}</message>
 		</field-validator>
 		<field-validator type="fieldexpression" short-circuit="true">
 			<param name="expression"><![CDATA[!(user.password == user.username)]]></param>
-			<message>JS.Validation.CannotBeUsername</message>
+			<message>${getText("JS.Validation.CannotBeUsername")}</message>
 		</field-validator>
 	</field>
 </validators>
