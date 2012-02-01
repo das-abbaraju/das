@@ -5,7 +5,9 @@
 
 <html>
 	<head>
-		<title><s:property value="operator.name" default="Create New Account" /></title>
+		<title>
+			<s:property value="operator.name" default="Create New Account" />
+		</title>
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -152,6 +154,7 @@
 					<h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts" /></h2>
 					
 					<ol>
+						<% /*
 						<li>
 							<s:text name="FacilitiesEdit.IsGeneralContractor" />
 							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="generalContractor" theme="pics" cssClass="inline" />
@@ -159,12 +162,15 @@
 							<br />
 							<pics:autocomplete action="ContractorAutocomplete" name="linkedContractor.contractor" />
 						</li>
+						*/ %>
 						<s:if test="operator.corporate">
 							<li>
 								<s:checkbox name="operator.primaryCorporate" theme="formhelp" />
 							</li>
 							<li>
-								<label><s:text name="FacilitiesEdit.ChildOperators" />:</label>
+								<label>
+									<s:text name="FacilitiesEdit.ChildOperators" />:
+								</label>
 								
 								<s:optiontransferselect
 									label="Child Operators"
@@ -194,8 +200,18 @@
 						<s:if test="operator.operator">
 							<s:if test="operator.corporateFacilities.size() > 0">
 								<li>
-									<label><s:text name="FacilitiesEdit.ParentCorporationDivisionHub" />:</label>
-									<s:select name="operator.parent" list="operator.corporateFacilities" listKey="corporate.id" listValue="corporate.name" headerKey="0"  value="operator.parent.id" headerValue="- %{getText('FacilitiesEdit.SelectParentFacility')} -" />
+									<label>
+										<s:text name="FacilitiesEdit.ParentCorporationDivisionHub" />:
+									</label>
+									<s:select
+										name="operator.parent"
+										list="operator.corporateFacilities"
+										listKey="corporate.id"
+										listValue="corporate.name"
+										headerKey="0"
+										value="operator.parent.id"
+										headerValue="- %{getText('FacilitiesEdit.SelectParentFacility')} -"
+									/>
 									
 									<s:if test="operator.parent.id > 0">
 										<a href="?operator=<s:property value="operator.parent.id"/>">
@@ -204,15 +220,25 @@
 									</s:if>
 									
 									<div class="fieldhelp">
-										<h3><s:text name="FacilitiesEdit.ParentCorporationDivisionHub" /></h3>
+										<h3>
+											<s:text name="FacilitiesEdit.ParentCorporationDivisionHub" />
+										</h3>
 										<s:text name="OperatorAccount.parent.fieldhelp" />
 									</div>
 								</li>
 							</s:if>
 							
 							<li>
-								<label><s:text name="FlagCriteria" />:</label>
-								<s:select name="operator.inheritFlagCriteria" value="operator.inheritFlagCriteria.id" list="relatedFacilities" listKey="id" listValue="name" />
+								<label>
+									<s:text name="FlagCriteria" />:
+								</label>
+								<s:select
+									name="operator.inheritFlagCriteria"
+									value="operator.inheritFlagCriteria.id"
+									list="relatedFacilities"
+									listKey="id"
+									listValue="name"
+								/>
 									
 								<s:if test="operator.inheritFlagCriteria.id > 0">
 									<a href="?operator=<s:property value="operator.inheritFlagCriteria.id"/>">
@@ -221,8 +247,16 @@
 								</s:if>
 							</li>
 							<li>
-								<label><s:text name="FlagCriteria.insurance" />:</label>
-								<s:select name="operator.inheritInsuranceCriteria" value="operator.inheritInsuranceCriteria.id" list="relatedFacilities" listKey="id" listValue="name" />
+								<label>
+									<s:text name="FlagCriteria.insurance" />:
+								</label>
+								<s:select
+									name="operator.inheritInsuranceCriteria"
+									value="operator.inheritInsuranceCriteria.id"
+									list="relatedFacilities"
+									listKey="id"
+									listValue="name"
+								/>
 								
 								<s:if test="operator.inheritInsuranceCriteria.id > 0">
 									<a href="?operator=<s:property value="operator.inheritInsuranceCriteria.id"/>">
@@ -233,7 +267,9 @@
 						</s:if>
 						<s:if test="operator.corporateFacilities.size() > 0">
 							<li>
-								<label><s:text name="OperatorAccount.corporateFacilities" />:</label>
+								<label>
+									<s:text name="OperatorAccount.corporateFacilities" />:
+								</label>
 								
 								<s:iterator value="operator.corporateFacilities" id="facility">
 									|
@@ -286,11 +322,23 @@
 					</li>
 					<li>
 						<label><s:text name="Country" />:</label>
-						<s:select list="countryList" id="opCountry" name="country.isoCode" listKey="isoCode" listValue="name" headerKey="" headerValue="- %{getText('Country')} -" value="operator.country.isoCode" onchange="countryChanged(this.value)" />
+						<s:select
+							list="countryList"
+							id="opCountry"
+							name="country.isoCode"
+							listKey="isoCode"
+							listValue="name"
+							headerKey=""
+							headerValue="- %{getText('Country')} -"
+							value="operator.country.isoCode"
+							onchange="countryChanged(this.value)"
+						/>
 						
 						<s:if test="permissions.admin || operator.operator">
 							<div class="fieldhelp">
-								<h3><s:text name="Country" /></h3>
+								<h3>
+									<s:text name="Country" />
+								</h3>
 								<s:text name="OperatorAccount.country.fieldhelp" />
 							</div>
 						</s:if>
@@ -304,7 +352,12 @@
 					</s:if>
 					
 					<li>
-						<s:select name="operator.timezone" value="operator.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+						<s:select
+							name="operator.timezone"
+							value="operator.timezone.iD"
+							theme="form"
+							list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES"
+						/>
 					</li>
 					<li>
 						<s:textfield name="operator.phone" theme="form" />
@@ -319,7 +372,9 @@
 			</fieldset>
 			
 			<fieldset class="form">
-				<h2 class="formLegend"><s:text name="FacilitiesEdit.CompanyIdentification" /></h2>
+				<h2 class="formLegend">
+					<s:text name="FacilitiesEdit.CompanyIdentification" />
+				</h2>
 				
 				<ol>
 					<li>
@@ -328,7 +383,9 @@
 					
 					<s:if test="operator.id > 0">
 						<li>
-							<label><s:text name="FacilitiesEdit.AccountSince" />:</label>
+							<label>
+								<s:text name="FacilitiesEdit.AccountSince" />:
+							</label>
 							<s:date name="operator.creationDate" format="MMMMM yyyy" />
 						</li>
 					</s:if>
@@ -344,7 +401,12 @@
 							<li>
 								<label>Required Tags:</label> <s:textfield name="operator.requiredTags" />
 								<pics:fieldhelp title="Required Tags">
-									<p>Example: 1,2,3|4,5 <a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">Tags</a></p>
+									<p>
+										Example: 1,2,3|4,5
+										<a href="OperatorTags.action?id=<s:property value="id" />" target="_BLANK">
+											Tags
+										</a>
+									</p>
 								</pics:fieldhelp>
 							</li>
 						</s:if>
