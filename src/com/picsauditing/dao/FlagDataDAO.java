@@ -37,6 +37,17 @@ public class FlagDataDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<FlagData> findByContractorAndOperator(int conID, int[] opIDs) {
+		String q = "FROM FlagData d WHERE contractor.id = " + conID + " ";
+		if (opIDs.length > 0)
+			q += "AND operator.id IN (" + Strings.implode(opIDs) + ") ";
+		else
+			q += "AND (operator.status = contractor.status OR operator.status = 'Active')";
+		q += "ORDER BY d.criteria.displayOrder";
+		Query query = em.createQuery(q);
+		return query.getResultList();
+	}
+
 	public List<FlagData> findByContractorAndOperatorAndCriteria(int conID, int[] opIDs, int critID) {
 		String q = "FROM FlagData d WHERE contractor.id = " + conID + " AND operator.id IN (" + Strings.implode(opIDs)
 				+ ") AND criteria.id = " + critID + " " + "ORDER BY d.criteria.displayOrder";

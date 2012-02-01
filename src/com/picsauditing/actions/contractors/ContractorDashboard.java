@@ -369,8 +369,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	public ContractorFlagCriteriaList getCriteriaList() {
-		if (criteriaList == null)
-			criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, opID));
+		if (criteriaList == null) {
+			List<ContractorOperator> activeOperators = getActiveOperators();
+			int[] operatorIds = new int[activeOperators.size()];
+			int index = 0;
+			for (ContractorOperator co : activeOperators) {
+				operatorIds[index++] = co.getOperatorAccount().getId();
+			}
+			criteriaList = new ContractorFlagCriteriaList(flagDataDAO.findByContractorAndOperator(id, operatorIds));
+		}
 		return criteriaList;
 	}
 
@@ -769,18 +776,18 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return contractor.getOperatorTags();
 	}
-	
+
 	public String getCommaSeparatedContractorTypes() {
 		if (contractor != null) {
 			List<String> types = new ArrayList<String>();
-			
+
 			for (ContractorType type : contractor.getAccountTypes()) {
 				types.add(getText(type.getI18nKey()));
 			}
-			
+
 			return Strings.implode(types);
 		}
-		
+
 		return null;
 	}
 }
