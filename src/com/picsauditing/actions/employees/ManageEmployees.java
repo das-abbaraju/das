@@ -14,14 +14,12 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.EmployeeRoleDAO;
 import com.picsauditing.dao.EmployeeSiteDAO;
@@ -55,8 +53,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	protected ContractorAuditDAO contractorAuditDAO;
-	@Autowired
 	protected EmployeeDAO employeeDAO;
 	@Autowired
 	protected EmployeeRoleDAO employeeRoleDAO;
@@ -72,7 +68,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	protected Employee employee;
 	protected String ssn;
 
-	protected int auditID;
+	protected ContractorAudit audit;
 	protected int childID;
 	protected boolean selectRolesSites = false;
 	protected Set<JobRole> unusedJobRoles;
@@ -89,44 +85,23 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public void prepare() throws Exception {
-		if (permissions.isContractor()) {
-			if (!permissions.hasPermission(OpPerms.ContractorAdmin) && !permissions.hasPermission(OpPerms.ContractorSafety))
-				throw new NoRightsException("Contractor Admin or Safety");
-		} else if (permissions.isOperatorCorporate()) {
-			id = permissions.getAccountId();
-
-			if (employee != null && employee.getAccount() != null
-					&& permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
-				id = employee.getAccount().getId();
-		}
+		checkPermissions();
 
 		if (id > 0)
 			account = accountDAO.find(id);
 
-		if (employee != null && employee.getId() > 0)
-			account = employee.getAccount();
-
 		if (account == null)
 			account = accountDAO.find(permissions.getAccountId());
-
-		// Get auditID
-		auditID = getParameter("auditID");
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-
-			if (permissions.isAdmin()) {
-				ContractorAudit audit = contractorAuditDAO.find(auditID);
-				account = audit.getContractorAccount();
-			}
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
 	}
 
 	@Override
 	public String execute() throws Exception {
-		if (employee != null)
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
+
+		if (employee != null) {
+			account = employee.getAccount();
 			// TODO Put this into the employee cron
 			for (EmployeeSite es : employee.getEmployeeSites()) {
 				Date exp1 = es.getExpirationDate();
@@ -147,6 +122,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 					employeeSiteDAO.save(es);
 				}
 			}
+		}
 
 		return SUCCESS;
 	}
@@ -175,8 +151,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (!existing)
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
-		return redirect("ManageEmployees.action?id=" + account.getId()
-				+ ("Continue".equals(button) ? "&selectRolesSites=true" : "") + "#employee=" + employee.getId());
+		return redirect("ManageEmployees.action?"
+				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()) + "#employee="
+				+ employee.getId());
 	}
 
 	public String delete() throws Exception {
@@ -365,12 +342,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			this.ssn = ssn;
 	}
 
-	public int getAuditID() {
-		return auditID;
+	public ContractorAudit getAudit() {
+		return audit;
 	}
 
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
 	}
 
 	public int getChildID() {
@@ -636,6 +613,20 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		}
 
 		return nccerResults;
+	}
+
+	private void checkPermissions() throws NoRightsException {
+		if (permissions.isContractor()) {
+			if (!permissions.hasPermission(OpPerms.ContractorAdmin)
+					&& !permissions.hasPermission(OpPerms.ContractorSafety))
+				throw new NoRightsException("Contractor Admin or Safety");
+		} else if (permissions.isOperatorCorporate()) {
+			id = permissions.getAccountId();
+
+			if (employee != null && employee.getAccount() != null
+					&& permissions.getVisibleAccounts().contains(employee.getAccount().getId()))
+				id = employee.getAccount().getId();
+		}
 	}
 
 	// Notes

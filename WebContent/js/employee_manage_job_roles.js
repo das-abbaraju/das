@@ -28,7 +28,7 @@
 				event.preventDefault();
 				$("a.compEditor").hide();
 
-				var accountID = $('#accountID').val();
+				var accountID = $(this).attr('data-account');
 				var competencyID = $(this).closest('tr').attr('id');
 				var roleID = $(this).closest('table').attr('id');
 
@@ -46,7 +46,7 @@
 				event.preventDefault();
 				$("a.compEditor").hide();
 
-				var accountID = $('#accountID').val();
+				var accountID = $(this).attr('data-account');
 				var competencyID = $(this).closest('tr').attr('id');
 				var roleID = $(this).closest('table').attr('id');
 
@@ -71,12 +71,13 @@
 
 			addJobRole : function(event) {
 				event.preventDefault();
-
-				var accountID = $('#accountID').val();
+				var account = $(this).attr('data-account');
+				var audit = $(this).attr('data-audit');
 
 				$('#roleCell').load(
 					'ManageJobRoles!get.action', {
-						account : accountID
+						account : account,
+						audit: audit
 					}
 				);
 			},
@@ -85,6 +86,7 @@
 				event.preventDefault();
 
 				var accountID = $('#accountID').val();
+				var audit = $(this).attr('data-audit');
 
 				startThinking({
 					div : 'roleCell',
@@ -94,7 +96,8 @@
 				$('#roleCell').load(
 					'ManageJobRoles!get.action', {
 						role : $(this).attr('id'),
-						account : accountID
+						account : accountID,
+						audit : audit
 					}
 				);
 			}

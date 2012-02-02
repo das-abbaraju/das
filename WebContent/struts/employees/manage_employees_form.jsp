@@ -20,13 +20,18 @@ $(function() {
 });
 </script>
 <s:if test="employee.id > 0">
-	<a href="EmployeeDetail.action?employee=<s:property value="employee.id" />"><s:text name="ManageEmployees.link.ViewProfile" /></a>
+	<a href="EmployeeDetail.action?employee=<s:property value="employee.id" />">
+		<s:text name="ManageEmployees.link.ViewProfile" />
+	</a>
 	<a href="#" class="help cluetip" rel="#cluetip1" title="<s:text name="ManageEmployees.ViewProfileAssignedTasks" />"></a>
-	<div id="cluetip1"><s:text name="ManageEmployees.help.ProfileInfo" /></div>
+	<div id="cluetip1">
+		<s:text name="ManageEmployees.help.ProfileInfo" />
+	</div>
 	<br clear="all" />
 </s:if>
 <s:form id="employeeForm">
-	<s:hidden name="id"/>
+	<s:hidden name="account" />
+	<s:hidden name="audit" />
 	<s:hidden name="employee" />
 	<s:if test="!selectRolesSites">
 		<fieldset class="form">

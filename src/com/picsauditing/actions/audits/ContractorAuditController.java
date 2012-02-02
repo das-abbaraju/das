@@ -14,7 +14,6 @@ import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
@@ -84,8 +83,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
-		ActionContext.getContext().getSession().remove("auditID");
-
 		if (auditID > 0)
 			this.findConAudit();
 

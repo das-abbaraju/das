@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -15,7 +14,6 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -29,7 +27,6 @@ import com.picsauditing.jpa.entities.User;
 public class AccountActionSupport extends PicsActionSupport {
 
 	protected int id;
-	protected int auditID;
 	// protected Account account;
 	protected String subHeading = null;
 	protected List<Note> notes;
@@ -50,14 +47,6 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getAuditID() {
-		return auditID;
-	}
-
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
 	}
 
 	/**
@@ -241,22 +230,5 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public AccountStatus[] getStatusList() {
 		return AccountStatus.values();
-	}
-
-	public void getContractorAccountFromAuditID() {
-		account = null;
-		auditID = getParameter("auditID");
-
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
-
-		if (auditID > 0 && permissions.isAdmin()) {
-			ContractorAudit audit = dao.find(ContractorAudit.class, auditID);
-			account = audit.getContractorAccount();
-		}
 	}
 }

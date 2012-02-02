@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
@@ -15,6 +16,7 @@ import com.picsauditing.dao.JobCompetencyDAO;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmployeeRole;
 import com.picsauditing.jpa.entities.JobCompetency;
@@ -34,15 +36,17 @@ public class ManageJobRoles extends AccountActionSupport {
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
+	private ContractorAudit audit;
 	protected JobRole role;
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
-	private int id;
 
 	public String execute() throws Exception {
 		checkPermissions();
 
-		getContractorAccountFromAuditID();
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
 
 		if (role != null && role.getAccount() != null)
 			account = role.getAccount();
@@ -94,7 +98,7 @@ public class ManageJobRoles extends AccountActionSupport {
 			jobRoleDAO.remove(role);
 		}
 
-		return redirect("ManageJobRoles.action?account=" + account.getId());
+		return redirect("ManageJobRoles.action?" + (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
 	}
 
 	public String addCompetency() throws Exception {
@@ -165,6 +169,14 @@ public class ManageJobRoles extends AccountActionSupport {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public ContractorAudit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
 	}
 
 	public List<JobRole> getJobRoles() {

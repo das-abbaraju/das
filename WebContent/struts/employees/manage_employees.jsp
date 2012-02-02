@@ -3,7 +3,9 @@
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 <html>
 	<head>
-		<title><s:text name="ManageEmployees.title" /></title>
+		<title>
+			<s:text name="ManageEmployees.title" />
+		</title>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		
@@ -27,6 +29,7 @@
 		</style>
 		<script type="text/javascript">
 			var employeeID = '<s:property value="employee == null ? 0 : employee.id"/>';
+			var audit = '<s:property value="audit.id" />';
 			
 			var json_previousLocations = <s:property value="previousLocationsJSON" escape="false"/>;
 			var json_previousTitles = <s:property value="previousTitlesJSON" escape="false"/>;
@@ -46,11 +49,11 @@
 	</head>
 	
 	<body>
-		<s:if test="auditID > 0">
+		<s:if test="audit.id > 0">
 			<div class="info">
 				<s:text name="ManageEmployees.Step3">
 					<s:param>
-						<s:property value="auditID" />
+						<s:property value="audit.id" />
 					</s:param>
 					<s:param>
 						<s:text name="AuditType.99.name" />
@@ -70,13 +73,24 @@
 		<s:if test="account.employees.size() == 0 && employee == null">
 			<div class="info">
 				<s:text name="ManageEmployees.message.NoEmployees">
-					<s:param><s:text name="ManageEmployees.link.Add" /></s:param>
+					<s:param>
+						<s:text name="ManageEmployees.link.Add" />
+					</s:param>
 				</s:text>
 			</div>
 		</s:if>
 	
-		<a href="ManageEmployees!add.action?id=<s:property value="account.id" />" class="add"><s:text name="ManageEmployees.link.Add" /></a><br />
-		<a href="#" class="add" id="addExcel"><s:text name="ManageEmployees.link.Import" /></a>
+		<s:url action="ManageEmployees" method="add" var="addEmployee">
+			<s:param name="account" value="%{account.id}" />
+			<s:param name="audit" value="%{audit.id}" />
+		</s:url>
+		<a href="${addEmployee}" class="add">
+			<s:text name="ManageEmployees.link.Add" />
+		</a>
+		<br />
+		<a href="#" class="add" id="addExcel">
+			<s:text name="ManageEmployees.link.Import" />
+		</a>
 		
 		<table>
 			<tr>
@@ -86,35 +100,71 @@
 							<thead>
 								<tr>
 									<th>id</th>
-									<th><s:text name="Employee.lastName" /></th>
-									<th><s:text name="Employee.firstName" /></th>
-									<th><s:text name="Employee.title" /></th>
-									<th><s:text name="EmployeeClassification" /></th>
-									<th><s:text name="button.Edit" /></th>
-									<th><s:text name="ManageEmployees.message.Profile" /></th>
+									<th>
+										<s:text name="Employee.lastName" />
+									</th>
+									<th>
+										<s:text name="Employee.firstName" />
+									</th>
+									<th>
+										<s:text name="Employee.title" />
+									</th>
+									<th>
+										<s:text name="EmployeeClassification" />
+									</th>
+									<th>
+										<s:text name="button.Edit" />
+									</th>
+									<th>
+										<s:text name="ManageEmployees.message.Profile" />
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<s:iterator value="account.employees" id="e">
 									<tr>
-										<td><s:property value="#e.id" /></td>
 										<td>
-											<a href="#employee=<s:property value="#e.id" />" class="loadEmployee" title="<s:text name="ManageEmployees.title.EditProfile" />">
+											<s:property value="#e.id" />
+										</td>
+										<td>
+											<a
+												href="#employee=<s:property value="#e.id" />"
+												class="loadEmployee"
+												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												data-audit="<s:property value="audit.id" />"
+											>
 												<s:property value="#e.lastName" />
 											</a>
 										</td>
 										<td>
-											<a href="#employee=<s:property value="#e.id" />" class="loadEmployee" title="<s:text name="ManageEmployees.title.EditProfile" />">
+											<a
+												href="#employee=<s:property value="#e.id" />"
+												class="loadEmployee"
+												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												data-audit="<s:property value="audit.id" />"
+											>
 												<s:property value="#e.firstName" />
 											</a>
 										</td>
-										<td><s:property value="#e.title" /></td>
-										<td><s:text name="%{#e.classification.getI18nKey('description')}" /></td>
-										<td class="center">
-											<a href="#employee=<s:property value="#e.id" />" class="loadEmployee edit" title="<s:text name="ManageEmployees.title.EditProfile" />"></a>
+										<td>
+											<s:property value="#e.title" />
+										</td>
+										<td>
+											<s:text name="%{#e.classification.getI18nKey('description')}" />
 										</td>
 										<td class="center">
-											<a href="EmployeeDetail.action?employee=<s:property value="#e.id" />" class="preview"></a>
+											<a
+												href="#employee=<s:property value="#e.id" />"
+												class="loadEmployee edit"
+												title="<s:text name="ManageEmployees.title.EditProfile" />"
+												data-audit="<s:property value="audit.id" />"
+											></a>
+										</td>
+										<td class="center">
+											<a
+												href="EmployeeDetail.action?employee=<s:property value="#e.id" />"
+												class="preview"
+											></a>
 										</td>
 									</tr>
 								</s:iterator>

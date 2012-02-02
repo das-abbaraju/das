@@ -19,7 +19,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.report.ReportEmployee;
 import com.picsauditing.dao.EmployeeCompetencyDAO;
@@ -42,7 +41,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 	protected Employee employee;
 	protected OperatorCompetency competency;
 	protected boolean skilled;
-	private int auditID;
+	private ContractorAudit audit;
 
 	private List<Employee> employees;
 	private List<OperatorCompetency> competencies;
@@ -50,7 +49,9 @@ public class EmployeeCompetencies extends ReportEmployee {
 	private DoubleMap<Employee, OperatorCompetency, EmployeeCompetency> map;
 
 	public String execute() throws Exception {
-		getContractorAccountFromAuditID();
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
 
 		if (account == null && permissions.isContractor())
 			account = accountDAO.find(permissions.getAccountId());
@@ -97,7 +98,7 @@ public class EmployeeCompetencies extends ReportEmployee {
 				break;
 			}
 		}
-		
+
 		return ec;
 	}
 
@@ -108,23 +109,6 @@ public class EmployeeCompetencies extends ReportEmployee {
 		} else {
 			addActionMessage(getText("EmployeeCompetencies.message.RemovedFrom", new Object[] {
 					ec.getCompetency().getLabel(), ec.getEmployee().getLastName(), ec.getEmployee().getFirstName() }));
-		}
-	}
-
-	private void getContractorAccountFromAuditID() {
-		account = null;
-		auditID = getParameter("auditID");
-
-		if (auditID > 0) {
-			ActionContext.getContext().getSession().put("auditID", auditID);
-		} else {
-			auditID = (ActionContext.getContext().getSession().get("auditID") == null ? 0 : (Integer) ActionContext
-					.getContext().getSession().get("auditID"));
-		}
-
-		if (auditID > 0 && permissions.isAdmin()) {
-			ContractorAudit audit = dao.find(ContractorAudit.class, auditID);
-			account = audit.getContractorAccount();
 		}
 	}
 
@@ -384,12 +368,12 @@ public class EmployeeCompetencies extends ReportEmployee {
 		this.skilled = skilled;
 	}
 
-	public int getAuditID() {
-		return auditID;
+	public ContractorAudit getAudit() {
+		return audit;
 	}
 
-	public void setAuditID(int auditID) {
-		this.auditID = auditID;
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
 	}
 
 	public List<Employee> getEmployees() {

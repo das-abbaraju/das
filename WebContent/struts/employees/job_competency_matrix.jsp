@@ -42,11 +42,11 @@
 	</head>
 	
 	<body>
-		<s:if test="auditID > 0">
+		<s:if test="audit.id > 0">
 			<div class="info">
 				<s:text name="JobCompetencyMatrix.Step2">
 					<s:param>
-						<s:property value="auditID" />
+						<s:property value="audit.id" />
 					</s:param>
 					<s:param>
 						<s:text name="AuditType.99.name" />
@@ -55,17 +55,29 @@
 			</div>
 		</s:if>
 		
-		<h1><s:property value="account.name" /><span class="sub"><s:text name="JobCompetencyMatrix.title" /></span></h1>
+		<h1>
+			<s:property value="account.name" />
+			<span class="sub">
+				<s:text name="JobCompetencyMatrix.title" />
+			</span>
+		</h1>
 		
 		<div class="right">
-			<a class="excel" href="JobCompetencyMatrix!download.action?account=<s:property value="account.id" />" target="_BLANK" 
+			<s:url action="JobCompetencyMatrix" method="download" var="download">
+				<s:param name="account" value="%{account.id}" />
+			</s:url>
+			<a class="excel" href="${download}" target="_BLANK" 
 				title="<s:text name="javascript.DownloadAllRows"><s:param value="%{competencies.size}" /></s:text>">
 				<s:text name="global.Download" />
 			</a>
 		</div>
 		
 		<s:if test="permissions.contractor || permissions.admin">
-			<a href="ManageJobRoles.action?id=<s:property value="account.id" />">
+			<s:url action="ManageJobRoles" var="jobRoles" escapeAmp="false">
+				<s:param name="account" value="%{account.id}" />
+				<s:param name="audit" value="%{audit.id}" />
+			</s:url>
+			<a href="${jobRoles}">
 				<s:if test="permissions.contractor">
 					<s:text name="JobCompetencyMatrix.ReturnToEditJobRoles" />
 				</s:if>

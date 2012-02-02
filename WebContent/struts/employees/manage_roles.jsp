@@ -46,11 +46,11 @@
 		</h1>
 		<s:include value="../actionMessages.jsp" />
 		
-		<s:if test="auditID > 0">
+		<s:if test="audit.id > 0">
 			<div class="info">
 				<s:text name="ManageJobRoles.Step1">
 					<s:param>
-						<s:property value="auditID" />
+						<s:property value="audit.id" />
 					</s:param>
 					<s:param>
 						<s:text name="AuditType.99.name" />
@@ -78,7 +78,13 @@
 								<s:iterator value="jobRoles">
 									<tr>
 										<td>
-											<a href="#" id="<s:property value="id" />" class="roleLink<s:if test="!active"> inactive</s:if>">
+											<a
+												href="#"
+												id="<s:property value="id" />"
+												class="roleLink<s:if test="!active"> inactive</s:if>"
+												data-account="<s:property value="account.id" />"
+												data-audit="<s:property value="audit.id" />"
+											>
 												<s:property value="name" />
 											</a>
 										</td>
@@ -95,7 +101,13 @@
 							</tbody>
 						</table>
 					</s:if>
-					<a href="#" id="addLink" class="add">
+					<a 
+						href="#"
+						id="addLink"
+						class="add"
+						data-account="<s:property value="account.id" />"
+						data-audit="<s:property value="audit.id" />"
+					>
 						<s:text name="ManageJobRoles.link.AddNewJobRole" />
 					</a>
 					<br />

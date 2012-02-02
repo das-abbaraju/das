@@ -265,7 +265,7 @@
 		updateLinks: function() {
 			if (hasPermissionsToSeeAuditLinks == 'true') {
 				$('div.question a.passAudit').each(function() {
-					$(this).attr('href', $(this).attr('href') + "?auditID=" + auditID);
+					$(this).attr('href', $(this).attr('href') + "?audit=" + auditID);
 				});
 			} else if (operatorCorporate) {
 				$('div.question a.passAudit').not('.operatorViewable').each(function() {

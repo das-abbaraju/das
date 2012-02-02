@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.JobRoleDAO;
 import com.picsauditing.dao.OperatorCompetencyDAO;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.JobCompetency;
 import com.picsauditing.jpa.entities.JobRole;
 import com.picsauditing.jpa.entities.OperatorCompetency;
@@ -32,13 +33,16 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	@Autowired
 	protected OperatorCompetencyDAO operatorCompetencyDAO;
 
+	private ContractorAudit audit;
 	private List<JobRole> roles;
 	private List<OperatorCompetency> competencies;
 	private DoubleMap<JobRole, OperatorCompetency, JobCompetency> map;
 
 	@Override
 	public String execute() throws Exception {
-		getContractorAccountFromAuditID();
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
 
 		if (account == null && permissions.isContractor()) {
 			account = accountDAO.find(permissions.getAccountId());
@@ -68,6 +72,14 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 		return roles;
 	}
 
+	public ContractorAudit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
+	}
+
 	public List<JobRole> getRoles(OperatorCompetency operatorCompetency) {
 		// need to check if forward entries are all null to not include in list
 		boolean usedRole = false;
@@ -86,7 +98,7 @@ public class JobCompetencyMatrix extends AccountActionSupport {
 	public JobCompetency getJobCompetency(JobRole role, OperatorCompetency comp) {
 		return map.get(role, comp);
 	}
-	
+
 	private void loadRolesAndCompetencies() {
 		roles = jobRoleDAO.findMostUsed(account.getId(), true);
 		competencies = operatorCompetencyDAO.findMostUsed(account.getId(), true);

@@ -37,11 +37,11 @@
 		</style>
 	</head>
 	<body>
-		<s:if test="auditID > 0">
+		<s:if test="audit.id > 0">
 			<div class="info">
 				<s:text name="EmployeeCompetencies.Step5">
 					<s:param>
-						<s:property value="auditID" />
+						<s:property value="audit.id" />
 					</s:param>
 					<s:param>
 						<s:text name="AuditType.99.name" />
@@ -101,6 +101,7 @@
 		<script type="text/javascript">
 			$(function() {
 				var accountID = '<s:property value="account.id" />';
+				var audit = '<s:property value="audit.id" />';
 				$('#report_data').delegate('input[type=checkbox]', 'click', function(e) {
 					var checkbox = $(this);
 					var checked = checkbox.is(":checked");
@@ -123,6 +124,7 @@
 				
 				$('#form1').bind('submit', function(event) {
 					$(this).append('<input type="hidden" name="account" value="' + accountID + '" />');
+					$(this).append('<input type="hidden" name="audit" value="' + audit + '" />');
 					return true;
 				});
 			});
