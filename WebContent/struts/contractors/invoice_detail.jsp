@@ -408,10 +408,10 @@
 							</tr>
 							<tr>
 								<td class="center">
-									<s:param value="getText(\"PicsPhone\", locale)" />
+									<s:text name="PicsPhone" />
 								</td>
 								<td class="center">
-									<s:param value="getText(\"PicsBillingFax\", locale)" />
+									<s:text name="PicsBillingFax" />
 								</td>
 								<td class="center">
 									billing@picsauditing.com
