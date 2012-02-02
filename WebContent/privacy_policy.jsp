@@ -3,6 +3,6 @@
 
 <section>
 	<s:text name="PrivacyPolicy.content">
-		<s:param value="%{@com.picsauditing.util.Strings@getPicsPhone(permissions.country)}" />
+		<s:param value="getText(\"PicsPhone\", locale)" />
 	</s:text>
 </section>

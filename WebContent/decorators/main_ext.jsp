@@ -121,7 +121,7 @@
 					<% } %>
 					<td id="sidebox">
 						<p>
-							<b class="head-phone"><%=com.picsauditing.util.Strings.getPicsPhone(permissions.getCountry())%></b>&emsp;&emsp;
+							<b class="head-phone"><%=i18nCache.getText("PicsPhone", locale)%></b>&emsp;&emsp;
 						<% if (permissions.isLoggedIn()) { %>
 							<span id="name">
 								<% if (permissions.hasPermission(OpPerms.EditProfile)) { %>

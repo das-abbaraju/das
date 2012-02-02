@@ -24,4 +24,4 @@
 	</ul>
 </s:iterator>
 
-<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label> <s:property value="@com.picsauditing.util.Strings@getPicsPhone(permissions.country)" /></p>
+<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label><s:param value="getText(\"PicsPhone\", locale)" /></p>

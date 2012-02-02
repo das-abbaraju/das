@@ -408,10 +408,10 @@
 							</tr>
 							<tr>
 								<td class="center">
-									<s:property value="@com.picsauditing.util.Strings@getPicsPhone(permissions.country)" />
+									<s:param value="getText(\"PicsPhone\", locale)" />
 								</td>
 								<td class="center">
-									<s:property value="@com.picsauditing.util.Strings@getPicsBillingFax(permissions.country)" />
+									<s:param value="getText(\"PicsBillingFax\", locale)" />
 								</td>
 								<td class="center">
 									billing@picsauditing.com

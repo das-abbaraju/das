@@ -477,73 +477,78 @@ public class Strings {
 	}
 
 	/*
-	 * TODO: We need to completely scrap this and use translations instead.
+	 * TODO: remove this method
+	 * Use translation key PicsPhone
 	 */
+	@Deprecated
 	public static String getPicsPhone(String countryCode) {
-		if (isEmpty(countryCode))
-			return "949-936-4500";
-
-		// US and CANADA
-		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
-			return "800-506-PICS (7427)";
-
-		if ("GB".equalsIgnoreCase(countryCode) || "UK".equalsIgnoreCase(countryCode))
-			return "0 845 609 1882";
-
-		return "949-936-4500";
+		return "!!Deprecated method called.  Use translation key PicsPhone!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsFax
+	 */
+	@Deprecated
 	public static String getPicsFax(String countryCode) {
-		if (isEmpty(countryCode))
-			return "949-269-9177";
-
-		return "949-269-9177";
+		return "!!Deprecated method called.  Use translation key PicsFax!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsMainPhone
+	 */
+	@Deprecated
 	public static String getPicsMainPhone(String countryCode) {
 		if (isEmpty(countryCode))
 			return "949-936-4500";
 
-		return "949-936-4500";
+		return "!!Deprecated method called.  Use translation key PicsMainPhone!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsTollFreePhone
+	 */
+	@Deprecated
 	public static String getPicsTollFreePhone(String countryCode) {
-		if (isEmpty(countryCode))
-			return "800-506-PICS (7427)";
-
-		return "800-506-PICS (7427)";
+		return "!!deprecated method called.  Use translation key PicsTollFreePhone!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsBillingPhone
+	 */
+	@Deprecated
 	public static String getPicsBillingPhone(String countryCode) {
-		if (isEmpty(countryCode))
-			return "800-506-PICS x708";
-
-		return "800-506-PICS x708";
+		return "!!Deprecated method called.  Use translation key PicsBillingPhone!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsBillingFax
+	 */
+	@Deprecated
 	public static String getPicsBillingFax(String countryCode) {
-		if (isEmpty(countryCode))
-			return "949-269-9146";
-
-		return "949-269-9146";
+		return "!!Deprecated method called.  Use translation key PicsBillingFax!!";
 	}
-
+	
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsCustomerServiceFax
+	 */
+	@Deprecated
 	public static String getPicsCustomerServiceFax(String countryCode) {
-		if (isEmpty(countryCode))
-			return "949-269-9177";
-
-		return "949-269-9177";
+		return "!!Deprecated method called.  Use translation key PicsCustomerServiceFax!!";
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsCustomerServicePhone
+	 */
+	@Deprecated
 	public static String getPicsCustomerServicePhone(String countryCode) {
-		if (isEmpty(countryCode))
-			return "949-936-4598";
-
-		// US and CANADA
-		if ("US".equalsIgnoreCase(countryCode) || "CA".equalsIgnoreCase(countryCode))
-			return "800-506-7427 x1";
-
-		return "949-936-4598";
+		return "!!Deprecated method called.  Use translation key PicsCustomerServicePhone!!";
 	}
 
 	public static Locale parseLocale(String locale) {
