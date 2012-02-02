@@ -3,25 +3,28 @@
 	background-color: white;
 }
 
-#hidden #operatorForms {
+#hidden #operatorForms,
+.blockMsg
+{
 	display: none;
 }
 
-#attachment {
-	display: inline-block;
-	vertical-align: top;
+#email_preview td,
+#email_preview th
+{
+	padding: 5px;
 }
 
-#email_preview {
-	display: none;
+#email_preview th
+{
+	font-weight: bold;
+	text-align: right;
+}
+
+#email_preview td.body
+{
 	border: 1px solid #C3C3C3;
-	margin-top: 10px;
-	background-color: #FBFBF8;
-	padding: 5px;
-}
-
-#email_preview td {
-	padding: 5px;
+	background-color: #F8F8F8;
 }
 
 .normal:hover {
@@ -29,7 +32,9 @@
 	text-decoration: none;
 }
 
-#notesPreview,#addHere {
+#notesPreview,
+#addHere
+{
 	background-color: transparent;
 }
 

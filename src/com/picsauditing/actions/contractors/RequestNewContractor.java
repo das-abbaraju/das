@@ -122,12 +122,15 @@ public class RequestNewContractor extends PicsActionSupport {
 			opID = newContractor.getRequestedBy().getId();
 		}
 
+		if (permissions.isOperatorCorporate()) {
+			addActionMessage(getText("RequestNewContractor.help.Purpose"));
+		}
+
 		return SUCCESS;
 	}
 
 	@SuppressWarnings("unchecked")
 	public String ajaxCheck() throws Exception {
-
 		SearchEngine searchEngine = new SearchEngine(permissions);
 		List<BasicDynaBean> matches = newGap(searchEngine, term, type);
 		if (matches != null && !matches.isEmpty()) // results
@@ -218,52 +221,9 @@ public class RequestNewContractor extends PicsActionSupport {
 	}
 
 	public String save() throws Exception {
-		if (Strings.isEmpty(newContractor.getName()))
-			addActionError(getText("RequestNewContractor.error.FillContractorName"));
-
-		if (Strings.isEmpty(newContractor.getContact()))
-			addActionError(getText("RequestNewContractor.error.FillContactName"));
-
-		if (newContractor.getRequestedBy() == null)
-			addActionError(getText("RequestNewContractor.error.SelectRequestedByAccount"));
-
-		if (newContractor.getRequestedByUser() == null && Strings.isEmpty(newContractor.getRequestedByUserOther()))
-			addActionError(getText("RequestNewContractor.error.SelectRequestedUser"));
-
-		if (newContractor.getCountry() == null)
-			addActionError(getText("RequestNewContractor.error.SelectCountry"));
-		else if (newContractor.getCountry().getIsoCode().equals("US")
-				|| newContractor.getCountry().getIsoCode().equals("CA")) {
-			if (newContractor.getState() == null || Strings.isEmpty(newContractor.getState().getIsoCode()))
-				addActionError(getText("RequestNewContractor.error.SelectState"));
-		}
-
-		if (Strings.isEmpty(newContractor.getPhone()))
-			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
-
-		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
-			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
-
-		if (newContractor.getDeadline() == null)
-			addActionError(getText("RequestNewContractor.error.SelectDeadline"));
-
-		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
-			addActionError(getText("RequestNewContractor.error.EnterRegistrationReason"));
-
-		if (ContractorRegistrationRequestStatus.Hold.equals(status) && newContractor.getHoldDate() == null)
-			addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
-
-		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(status) || ContractorRegistrationRequestStatus.ClosedSuccessful
-				.equals(status)) && newContractor.getContractor() == null) {
-			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
-		}
-
-		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(status)
-				&& Strings.isEmpty(newContractor.getReasonForDecline()))
-			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
-
-		if (newContractor.getId() > 0 && status == null && newContractor.getStatus() == null)
-			addActionError(getText("RequestNewContractor.error.StatusMissing"));
+		checkContactFields();
+		checkOperatorSpecifiedFields();
+		checkStatusRequirements();
 
 		// There are errors, just exit out
 		if (getActionErrors().size() > 0)
@@ -324,6 +284,59 @@ public class RequestNewContractor extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+	private void checkContactFields() {
+		if (Strings.isEmpty(newContractor.getName()))
+			addActionError(getText("RequestNewContractor.error.FillContractorName"));
+
+		if (Strings.isEmpty(newContractor.getContact()))
+			addActionError(getText("RequestNewContractor.error.FillContactName"));
+
+		if (newContractor.getCountry() == null)
+			addActionError(getText("RequestNewContractor.error.SelectCountry"));
+		else if (newContractor.getCountry().getIsoCode().equals("US")
+				|| newContractor.getCountry().getIsoCode().equals("CA")) {
+			if (newContractor.getState() == null || Strings.isEmpty(newContractor.getState().getIsoCode()))
+				addActionError(getText("RequestNewContractor.error.SelectState"));
+		}
+
+		if (Strings.isEmpty(newContractor.getPhone()))
+			addActionError(getText("RequestNewContractor.error.FillPhoneNumber"));
+
+		if (Strings.isEmpty(newContractor.getEmail()) || !Strings.isValidEmail(newContractor.getEmail()))
+			addActionError(getText("RequestNewContractor.error.FillValidEmail"));
+	}
+
+	private void checkOperatorSpecifiedFields() {
+		if (newContractor.getRequestedBy() == null)
+			addActionError(getText("RequestNewContractor.error.SelectRequestedByAccount"));
+
+		if (newContractor.getRequestedByUser() == null && Strings.isEmpty(newContractor.getRequestedByUserOther()))
+			addActionError(getText("RequestNewContractor.error.SelectRequestedUser"));
+
+		if (newContractor.getDeadline() == null)
+			addActionError(getText("RequestNewContractor.error.SelectDeadline"));
+
+		if (Strings.isEmpty(newContractor.getReasonForRegistration()))
+			addActionError(getText("RequestNewContractor.error.EnterRegistrationReason"));
+	}
+
+	private void checkStatusRequirements() {
+		if (ContractorRegistrationRequestStatus.Hold.equals(status) && newContractor.getHoldDate() == null)
+			addActionError(getText("RequestNewContractor.error.EnterHoldDate"));
+
+		if ((ContractorRegistrationRequestStatus.ClosedContactedSuccessful.equals(status) || ContractorRegistrationRequestStatus.ClosedSuccessful
+				.equals(status)) && newContractor.getContractor() == null) {
+			addActionError(getText("RequestNewContractor.error.PICSContractorNotFound"));
+		}
+
+		if (ContractorRegistrationRequestStatus.ClosedUnsuccessful.equals(status)
+				&& Strings.isEmpty(newContractor.getReasonForDecline()))
+			addActionError(getText("RequestNewContractor.error.EnterReasonDeclined"));
+
+		if (newContractor.getId() > 0 && status == null && newContractor.getStatus() == null)
+			addActionError(getText("RequestNewContractor.error.StatusMissing"));
+	}
+
 	public String contact() throws Exception {
 		if (Strings.isEmpty(addToNotes) && !PERSONAL_EMAIL.equals(contactType)) {
 			addActionError(getText("RequestNewContractor.error.EnterAdditionalNotes"));
@@ -348,6 +361,11 @@ public class RequestNewContractor extends PicsActionSupport {
 
 		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
+	
+	public EmailQueue previewEmail() throws IOException {
+		EmailBuilder builder = prepareEmailBuilder();
+		return builder.build();
+	}
 
 	private void prependToRequestNotes(String note) {
 		if (newContractor != null && note != null)
@@ -357,15 +375,9 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	private void sendEmail() {
 		if (newContractor.getRequestedBy().getId() != OperatorAccount.SALES) {
-			EmailBuilder email = new EmailBuilder();
-			email.setToAddresses(newContractor.getEmail());
-
-			email.setFromAddress("info@picsauditing.com");
-
-			email.setTemplate(INITIAL_EMAIL);
-			email.addToken("newContractor", newContractor);
+			EmailBuilder emailBuilder = prepareEmailBuilder();
 			try {
-				EmailQueue q = email.build();
+				EmailQueue q = emailBuilder.build();
 				emailSenderSpring.send(q);
 				OperatorForm form = getForm();
 				if (form != null)
@@ -374,6 +386,17 @@ public class RequestNewContractor extends PicsActionSupport {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private EmailBuilder prepareEmailBuilder() {
+		EmailBuilder email = new EmailBuilder();
+		email.setToAddresses(newContractor.getEmail());
+
+		email.setFromAddress("info@picsauditing.com");
+
+		email.setTemplate(INITIAL_EMAIL);
+		email.addToken("newContractor", newContractor);
+		return email;
 	}
 
 	private void loadRequestedTags() {

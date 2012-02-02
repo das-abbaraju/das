@@ -20,12 +20,12 @@
 		<h1>
 			<s:text name="RequestNewContractor.title" />
 		</h1>
+		<s:include value="../actionMessages.jsp" />
 		<pics:permission perm="RequestNewContractor">
 			<a href="ReportNewRequestedContractor.action">&lt;&lt;
 				<s:text name="RequestNewContractor.link.BackToRequests" />
 			</a>
 		</pics:permission>
-		<s:include value="../actionMessages.jsp" />
 		<div id="potentialMatches" class="info" style="display: none;"></div>
 		<s:if test="newContractor.contractor != null || !newContractor.open">
 			<div class="info">
@@ -165,6 +165,14 @@
 					<s:text name="RequestNewContractor.header.RequestSummary" />
 				</h2>
 				
+				<s:if test="permissions.operatorCorporate">
+					<div class="info">
+						<s:text name="RequestNewContractor.help.EmailSentWithUser" />
+					</div>
+					<a href="#email_preview" class="preview fancybox">
+						<s:text name="RequestNewContractor.PreviewEmail" />
+					</a>
+				</s:if>
 				<ol>
 					<li>
 						<label>
@@ -373,7 +381,7 @@
 								<s:property value="getText(newContractor.status.I18nKey)" />
 							</li>
 							
-							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@Hold">
+							<s:if test="status.hold">
 								<li>
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
@@ -382,7 +390,7 @@
 								</li>
 							</s:if>
 							
-							<s:if test="status == @com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus@ClosedUnsuccessful">
+							<s:if test="status.closedUnsuccessful">
 								<li>
 									<label>
 										<s:text name="RequestNewContractor.label.reasonForDecline" />:
@@ -443,14 +451,16 @@
 			</div>
 		</s:if>
 		
-		<div class="blockMsg" id="phoneSubmit" style="display: none">
+		<div class="blockMsg" id="phoneSubmit">
 			<s:form>
-				<h3><s:text name = "RequestNewContractor.button.ContactedByPhone" /></h3>
+				<h3>
+					<s:text name = "RequestNewContractor.button.ContactedByPhone" />
+				</h3>
 				
 				<br />
 				
 				<s:hidden name="newContractor"/>
-				<s:hidden name="contactType" value="%{@com.picsauditing.actions.contractors.RequestNewContractor@PHONE}"/>
+				<s:hidden name="contactType" value="%{@vs@PHONE}"/>
 				
 				<label>
 					<s:text name="RequestNewContractor.label.AddAdditionalNotes" />:
@@ -465,7 +475,7 @@
 				</p>
 			</s:form>
 		</div>
-		<div class="blockMsg" id="emailSubmit" style="display: none">
+		<div class="blockMsg" id="emailSubmit">
 			<s:form>
 				<fieldset>
 				<s:hidden name="newContractor"/>
@@ -475,8 +485,8 @@
 				</p>
 				<p>
 					<s:select
-						list="#{@com.picsauditing.actions.contractors.RequestNewContractor@PERSONAL_EMAIL:'Sent a Personal Email',
-						@com.picsauditing.actions.contractors.RequestNewContractor@DRAFT_EMAIL:'Draft Email'}"
+						list="#{@vs@PERSONAL_EMAIL:getText('RequestNewContractor.PersonalEmail'),
+							@vs@DRAFT_EMAIL:getText('RequestNewContractor.DraftEmail')}"
 						name="contactType"
 					/>
 				</p>
@@ -493,6 +503,32 @@
 				</p>
 				</fieldset>
 			</s:form>
+		</div>
+		<div style="display:none;">
+			<div id="email_preview">
+				<s:set name="email" value="%{previewEmail()}" />
+				<table>
+					<tr>
+						<th>
+							<s:text name="EmailQueue.subject" />:
+						</th>
+						<td>
+							${email.subject}
+						</td>
+						<th>
+							<s:text name="EmailQueue.toAddresses" />:
+						</th>
+						<td>
+							${email.toAddresses}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" class="body">
+							<pre>${email.body}</pre>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>

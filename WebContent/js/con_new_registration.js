@@ -8,18 +8,23 @@ $(function() {
 	}
 	
 	$('#phoneContact').click(function() {
-        $.blockUI({ message: $('#phoneSubmit') });
+        $.blockUI({
+        	message: $('#phoneSubmit')
+        });
  
-        $('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);
+        $('.blockOverlay').attr('title', translate('JS.RequestNewContractor.ClickToUnblock')).click($.unblockUI);
     });
 	
 	$('#emailContact').click(function() {
-		$.blockUI({ message: $('#emailSubmit') });
-	         
-		$('.blockOverlay').attr('title','Click to unblock').click($.unblockUI);              
+		$.blockUI({
+			message: $('#emailSubmit')
+		});
+		
+		$('.blockOverlay').attr('title', translate('JS.RequestNewContractor.ClickToUnblock')).click($.unblockUI);              
     });
 	
 	$('.fancybox').fancybox();
+	
 	$('.cluetip').cluetip({
 		closeText: "<img src='images/cross.png' width='16' height='16'>",
 		arrows: true,
