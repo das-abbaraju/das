@@ -8,6 +8,7 @@
 
 var translate = (function(window, document, undefined) {
 	var translations = <s:property value="translations" escape="false" />;
+    
 	return function(key, args) {
 		if (translations[key]) {
 			if (args !== undefined && args.length > 0) {

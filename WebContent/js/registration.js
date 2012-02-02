@@ -431,7 +431,7 @@
 								
 								// conditions show hide duplicate contractor name message
 								$.each(field_errors, function (i, value) {
-								    if (element.attr('id') == 'Registration_contractor_name' && value == 'JS.Validation.CompanyNameAlreadyExists') {
+								    if (element.attr('id') == 'Registration_contractor_name' && value == translate('JS.Validation.CompanyNameAlreadyExists')) {
 								        $('.contractor-name-duplicate').show();
 								    } else {
 								        $('.contractor-name-duplicate').hide();
