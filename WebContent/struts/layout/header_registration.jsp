@@ -33,7 +33,7 @@
 	</s:if>
 	
 	<span class="phone">
-		<img src="images/phone-icon.png" alt="Call Us" /><s:text name="PicsPhone" />
+		<img src="images/phone-icon.png" alt="Call Us" /><s:text name="RegistrationSuperEliteSquadronPhone" />
 	</span>
 	
 	<s:include value="/struts/layout/chat.jsp" />
