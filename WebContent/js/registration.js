@@ -418,7 +418,7 @@
 								var html = '<ul class="errors">';
 								
 								$.each(field_errors, function (i, value) {
-									html += '<li>' + value + '</li>';
+									html += '<li>' + translate(value) + '</li>';
 								})
 								
 								html += '</ul>';
@@ -429,10 +429,24 @@
 									element.after(html);
 								}
 								
+								// conditions show hide duplicate contractor name message
+								$.each(field_errors, function (i, value) {
+								    if (element.attr('id') == 'Registration_contractor_name' && value == 'JS.Validation.CompanyNameAlreadyExists') {
+								        $('.contractor-name-duplicate').show();
+								    } else {
+								        $('.contractor-name-duplicate').hide();
+								    }
+								});
+								
 							// clear out any errors upon correct field validation
 							} else {
 								if (error_element.length) {
 									error_element.remove();
+									
+									// conditions hide duplicate contractor name message
+                                    if (element.attr('id') == 'Registration_contractor_name') {
+                                        $('.contractor-name-duplicate').hide();
+                                    }
 								}
 							}
 						} else {

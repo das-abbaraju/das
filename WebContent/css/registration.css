@@ -282,6 +282,24 @@ footer .footer-menu a
 	overflow: hidden;
 }
 
+.registration-form .contractor-name-duplicate
+{
+	display: none;
+}
+
+.registration-form .contractor-name-duplicate div.alert-message
+{
+	font-size: 12px !important;
+	line-height: 20px;
+	margin: 0px 0px 0px 130px !important;
+	width: auto !important;
+}
+
+.registration-form .contractor-name-duplicate p
+{
+	width: auto;
+}
+
 .registration-form .info-agreement
 {
 	background: url(../images/registration/info_arrow_bg_right2.png) 100% no-repeat;

@@ -43,10 +43,6 @@
 	<section>
 		<header>
 			<h1><s:text name="Registration.BecomeAMember" /></h1>
-            
-            <s:include value="/struts/layout/chat.jsp">
-                <s:param name="chat_icon_type" value="'large'" />
-            </s:include>
 		</header>
 	</section>
 </div>
@@ -118,6 +114,15 @@
 					<li>
 						<s:textfield name="contractor.name" />
 					</li>
+                    <li class="contractor-name-duplicate">
+                        <div class="alert-message warning">
+                            <p style="width: auto;">
+                                <span class="icon warn"></span>
+                                
+                                <s:text name="ContractorRegistration.error.DuplicateContractorName" />
+                            </p> 
+                        </div>
+                    </li>
 					<li class="country">
 						<s:select 
 							list="countryList"
