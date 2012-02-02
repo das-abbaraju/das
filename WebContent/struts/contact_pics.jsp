@@ -17,9 +17,9 @@
 		<li><label>Office Location: </label>
 				17701 Cowan Suite 140, Irvine, CA 92614
 		</li>
-		<li><label>Phone:</label><s:param value="getText(\"PicsMainPhonePhone\", locale)" /></li>
-		<li><label>Toll Free:</label><s:param value="getText(\"PicsTollFreePhone\", locale)" /></li>
-		<li><label>Fax:</label><s:param value="getText(\"PicsFax\", locale)" /></li>
+		<li><label>Phone:</label><s:text name="PicsMainPhone" /></li>
+		<li><label>Toll Free:</label><s:text name="PicsTollFreePhone" /></li>
+		<li><label>Fax:</label><s:text name="PicsFax" /></li>
 		<li><label>Email:</label>info@picsauditing.com</li>
 	</ol>
 	</fieldset>

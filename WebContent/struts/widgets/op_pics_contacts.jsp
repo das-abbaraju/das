@@ -24,4 +24,4 @@
 	</ul>
 </s:iterator>
 
-<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label><s:param value="getText(\"PicsPhone\", locale)" /></p>
+<p><label><s:text name="ContactPage.GeneralInquiries"></s:text>:</label><s:text name="PicsPhone" /></p>
