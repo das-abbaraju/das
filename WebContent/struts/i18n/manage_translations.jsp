@@ -36,6 +36,11 @@
 				padding-left: 10px;
 			}
 			
+			td.phrase
+			{
+				padding: 10px !important;
+			}
+			
 			td.phrase .right
 			{
 				float: right;
@@ -220,7 +225,7 @@
 									</s:if>
 								</div>
 								<span class="view">
-									<s:property value="value"/>
+									<s:property value="value" escape="false" />
 								</span>
 							</form>
 						</td>
