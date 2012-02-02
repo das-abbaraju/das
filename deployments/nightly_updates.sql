@@ -17,7 +17,7 @@ GROUP BY g1.genID, g2.genID;
 -- remove old data from the contractor_cron_log
 DELETE FROM contractor_cron_log WHERE DATEDIFF(NOW(), startDate) > 7;
 
-------------------------- TRADES -----------------------------
+/************************** TRADES **************************/
 -- ref_trade.contractorCount
 UPDATE ref_trade SET contractorCount = 0;
 
