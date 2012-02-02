@@ -749,6 +749,19 @@ public class AuditActionSupport extends ContractorActionSupport {
 				&& category.getParent() != null)
 			return false;
 
+		if (permissions.isContractor() && conAudit.getAuditType().isAnnualAddendum()) {
+			auditCategoryRuleCache.initialize(auditRuleDAO);
+			AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, conAudit.getContractorAccount());
+			for (ContractorAuditOperator cao : conAudit.getOperators()) {
+				setCategoryBuilderToSpecificCao(builder, cao);
+
+				if (cao.getStatus().after(AuditStatus.Incomplete)
+						&& builder.isCategoryApplicable(category, cao)) {
+					return false;
+				}
+			}
+		}
+		
 		/*
 		 * Non-policy audits do not have restrictions on a per category basis. If the user can see the category and has
 		 * the 'Edit' view, they are allowed to edit the audit.
@@ -777,5 +790,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		}
 
 		return true;
+	}
+
+	private void setCategoryBuilderToSpecificCao(AuditCategoriesBuilder builder, ContractorAuditOperator cao) {
+		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions())
+			operators.add(caop.getOperator());
+		builder.calculate(conAudit, operators);
 	}
 }

@@ -18,6 +18,7 @@ import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
@@ -171,8 +172,10 @@ public class OshaSave extends AuditActionSupport implements Preparable {
 				findConAudit();
 				for (ContractorAuditOperator cao : conAudit.getOperators()) {
 					if (cao.getStatus().after(AuditStatus.Resubmitted)) {
-						cao.changeStatus(AuditStatus.Resubmitted, permissions);
+						ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmitted, permissions);
+						caow.setNotes("Due to data change");
 						auditDao.save(cao);
+						auditDao.save(caow);
 					}
 				}
 			}

@@ -10,14 +10,14 @@
 		sites/locations, please click on 'Add New Location' button located at bottom of the page.
 	</span>
 </s:if>
-<s:if test="mode == 'View'">
+<s:if test="mode == 'View' || !isCanEditCategory(#category)">
 	<s:iterator value="conAudit.oshas">
 		<s:if test="matchesType(#category.id, type) == true">
 			<s:include value="audit_cat_osha2.jsp"/>
 		</s:if>
 	</s:iterator>
 </s:if>
-<s:if test="mode == 'Edit'">
+<s:elseif test="mode == 'Edit'">
 
 	<s:if test="categoryData.id == 0">
 		<s:include value="audit_cat_osha_edit2.jsp"/>
@@ -36,4 +36,4 @@
 			<s:submit name="button" cssClass="picsbutton positive" value="Add New Location"/>
 		</s:form>
 	</s:if>
-</s:if>
+</s:elseif>
