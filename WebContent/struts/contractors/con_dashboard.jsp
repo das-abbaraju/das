@@ -12,7 +12,6 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
-		
 		<script type="text/javascript">
 			function removeTag(tagId) {
 				var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
@@ -435,10 +434,14 @@
 								
 								<p>
 									<s:text name="global.CSR" />:
-									<strong><s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> / </strong>
+									<strong>
+										<s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> /
+									</strong>
 									<s:text name="ProfileEdit.u.fax" />:
 									<s:property value="contractor.auditor.fax" /> / 
-									<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email"><s:property value="contractor.auditor.email"/></a>
+									<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email">
+										<s:property value="contractor.auditor.email"/>
+									</a>
 								</p>
 								
 								<p>
@@ -461,11 +464,8 @@
 								</s:if>
 								
 								<p>
-									<s:text name="ContractorAccount.type" />: 
-									<s:if test="contractor.isOnsiteServices()"><s:text name="ContractorAccount.onsiteServices" /></s:if>
-									<s:if test="contractor.isOffsiteServices()">, <s:text name="ContractorAccount.offsiteServices" /></s:if>
-									<s:if test="contractor.isMaterialSupplier()">, <s:text name="ContractorAccount.supplier" /></s:if>
-									<s:if test="contractor.isTransportationServices()">, <s:text name="ContractorAccount.transportationServices" /></s:if>
+									<s:text name="ContractorAccount.type" />:
+									<s:property value="commaSeparatedContractorTypes" /> 
 								</p>
 								
 								<s:if test="hasOperatorTags">
