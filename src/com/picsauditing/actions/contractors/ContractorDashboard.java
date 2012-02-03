@@ -795,13 +795,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public String getCommaSeparatedContractorTypes() {
 		if (contractor != null) {
-			List<String> types = new ArrayList<String>();
+			List<String> commaSeparatedContractorTypes = new ArrayList<String>();
+			List<ContractorType> sortedContractorTypes = new ArrayList<ContractorType>(contractor.getAccountTypes());
+			
+			Collections.sort(sortedContractorTypes);
 
-			for (ContractorType type : contractor.getAccountTypes()) {
-				types.add(getText(type.getI18nKey()));
+			for (ContractorType type : sortedContractorTypes) {
+				commaSeparatedContractorTypes.add(getText(type.getI18nKey()));
 			}
 
-			return Strings.implode(types);
+			return Strings.implode(commaSeparatedContractorTypes, ", ");
 		}
 
 		return null;
