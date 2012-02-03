@@ -1146,11 +1146,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 		int daysUntilRenewal = (paymentExpires == null) ? 0 : DateBean.getDateDifference(paymentExpires);
 
-		if (status.isPending() && membershipDate == null) {
-			if (getAccountLevel().isFull())
-				return "Activation";
-			else
-				return "Renewal";
+		if ((status.isPending() || status.isActive()) && getAccountLevel().isFull() && membershipDate == null) {
+			return "Activation";
 		}
 
 		if (status.isDeactivated() || daysUntilRenewal < -90) {
