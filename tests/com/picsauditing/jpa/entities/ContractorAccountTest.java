@@ -1,15 +1,16 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.TestCase;
+import java.util.Date;
 
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 
-public class ContractorAccountTest extends TestCase {
+public class ContractorAccountTest {
 	@Test
 	public void testCreateInvoiceItems() {
 //		InvoiceFee feeFree = new InvoiceFee(InvoiceFee.FREE);
@@ -54,11 +55,17 @@ public class ContractorAccountTest extends TestCase {
 //		assertEquals("Current", contractor.getBillingStatus());
 	}
 
-	public void testCreditCard() {
+	@Test
+	public void testCreditCard_expiresToday() {
 		ContractorAccount contractor = EntityFactory.makeContractor();
 		contractor.setCcExpiration(new Date());
 		contractor.setCcOnFile(true);
-		//assertTrue(contractor.isCcValid());
+		assertTrue(contractor.isCcValid());
+	}
+	@Test
+	public void testCreditCard_expiredTwoMonthsAgo() {
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		contractor.setCcOnFile(true);
 		contractor.setCcExpiration(DateBean.addMonths(new Date(), -2) );
 		assertFalse(contractor.isCcValid());
 	}

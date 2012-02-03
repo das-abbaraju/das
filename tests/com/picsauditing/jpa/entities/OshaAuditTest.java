@@ -1,13 +1,12 @@
 package com.picsauditing.jpa.entities;
 
-import junit.framework.TestCase;
-
+import org.junit.Before;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
 
 
-public class OshaAuditTest extends TestCase {
+public class OshaAuditTest {
 	
 //	private static final int CAT_ID_SOMETHING_OTHER_THAN_OSHA = 155;
 //
@@ -18,9 +17,8 @@ public class OshaAuditTest extends TestCase {
 //	ContractorAccount contractor;
 //	OshaAudit oshaAudit2010;
 //	
-//	@Override
+//	@Before
 //	protected void setUp() throws Exception {
-//		super.setUp();
 //		contractor = EntityFactory.makeContractor();
 //		oshaAudit2010 = EntityFactory.makeOshaAudit(contractor, "2010");
 //		

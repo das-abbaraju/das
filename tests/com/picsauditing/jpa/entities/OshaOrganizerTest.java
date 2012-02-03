@@ -1,7 +1,12 @@
 package com.picsauditing.jpa.entities;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 
@@ -12,18 +17,17 @@ import com.picsauditing.util.YearList;
 /**
  * The OshaOrganizer is a construct for dealing with multiple OshaAudits
  * together. So, this unit test class deals with test cases that span audits
- * (e.g. getting a 3-year average). See OshaAudirTest for test cases that deal
+ * (e.g. getting a 3-year average). See OshaAuditTest for test cases that deal
  * with only one OshaAudit.
  * 
  */
-public class OshaOrganizerTest extends TestCase {
+public class OshaOrganizerTest  {
 
 //	OshaOrganizer oshaOrganizer;
 //	private ContractorAccount contractor;
 //
-//	@Override
+//	@Before
 //	protected void setUp() throws Exception {
-//		super.setUp();
 //		contractor = new ContractorAccount();
 //		
 //
@@ -97,35 +101,41 @@ public class OshaOrganizerTest extends TestCase {
 //		oshaOrganizer = contractor.getOshaOrganizer();
 //
 //	}
-//	
+//
+//	@Test
 //	public void testOshaOrganizerInitialization() {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		//assertTrue(oshaOrganizer.getOshaAudits().size() > 0);
 //	}
 //	
+//	@Test
 //	public void testTRIR_OneYearAgo() throws Exception {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		assertEquals(2.0f, oshaOrganizer.getRate(OshaType.OSHA,
 //				MultiYearScope.LastYearOnly, OshaRateType.TrirAbsolute));
 //	}
 //	
+//	@Test
 //	public void testTRIR_TwoYearsAgo() throws Exception {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		assertEquals(3.0f, oshaOrganizer.getRate(OshaType.OSHA,
 //				MultiYearScope.TwoYearsAgo, OshaRateType.TrirAbsolute));
 //	}
 //	
+//	@Test
 //	public void testTRIR_ThreeYearsAgo() throws Exception {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		assertEquals(4.0f, oshaOrganizer.getRate(OshaType.OSHA,
 //				MultiYearScope.ThreeYearsAgo, OshaRateType.TrirAbsolute));
 //	}
 //	
+//	@Test
 //	public void testTRIR_ThreeYearAvg() throws Exception {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		assertEquals(3.0f, oshaOrganizer.getRate(OshaType.OSHA,
 //				MultiYearScope.ThreeYearAverage, OshaRateType.TrirAbsolute));
 //	}
+//	@Test
 //	public void testGetOshaAudit(){
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		assertNotNull(oshaOrganizer.getStatistic(OshaType.UK_HSE, MultiYearScope.LastYearOnly));
@@ -136,6 +146,7 @@ public class OshaOrganizerTest extends TestCase {
 //		assertNotNull(oshaOrganizer.getStatistic(OshaType.OSHA, MultiYearScope.TwoYearsAgo));
 //		assertNotNull(oshaOrganizer.getStatistic(OshaType.OSHA, MultiYearScope.ThreeYearsAgo));
 //	}
+//	@Test
 //	public void testMostRecentThreeYears_FromFourYearsOfData() throws Exception {
 //		setupAudits_FourYearsOshaAndUk(contractor);
 //		YearList years = oshaOrganizer.mostRecentThreeYears(OshaType.OSHA);
@@ -145,6 +156,7 @@ public class OshaOrganizerTest extends TestCase {
 //		assertEquals(2010,years.get(2).intValue());
 //	}
 //	
+//	@Test
 //	public void testMostRecentThreeYears_FromTwoYearsOfData() throws Exception {
 //		setupAudits_TwoYearsOsha(contractor);
 //		YearList years = oshaOrganizer.mostRecentThreeYears(OshaType.OSHA);
@@ -153,6 +165,7 @@ public class OshaOrganizerTest extends TestCase {
 //		assertEquals(2010,years.get(1).intValue());
 //	}
 //	
+//	@Test
 //	public void testToDashboard() {
 //		
 //	}

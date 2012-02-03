@@ -1,14 +1,14 @@
 package com.picsauditing.PICS;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
-public class DateBeanTest extends TestCase {
+public class DateBeanTest  {
 	@Test
 	public void testShowFormat() throws Exception {
 		String formatted = DateBean.toShowFormat("2007-03-15");
@@ -54,5 +54,14 @@ public class DateBeanTest extends TestCase {
 		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
 		assertEquals(sourceDate.getHours() - 3, destDate.getHours());
 	}
-	
+	@Test
+	public void testGetNextDayMidnight() throws Exception {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2011, Calendar.JANUARY, 1, 1, 1, 1);
+		Date d1 = cal.getTime();
+		cal.set(2011, Calendar.JANUARY, 2, 0, 0, 0);
+		Date d2 = cal.getTime();
+		
+		assertEquals(d2, DateBean.getNextDayMidnight(d1));
+	}
 }

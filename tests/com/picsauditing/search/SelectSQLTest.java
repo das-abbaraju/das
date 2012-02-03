@@ -41,11 +41,13 @@ public class SelectSQLTest extends TestCase {
 		builder.addField("field1");
 		builder.addField("count(*) as total");
 		builder.addHaving("count(*) > 1");
-		
-		// No HAVING without a GROUP BY
-		assertEquals("SELECT field1, count(*) as total\nFROM my_table", builder.toString());
-		
 		builder.addGroupBy("field1");
 		assertEquals("SELECT field1, count(*) as total\nFROM my_table\nGROUP BY field1\nHAVING (count(*) > 1) ", builder.toString());
+    }
+	public void testHaving_WithoutGroupBy() {
+		builder.addField("field1");
+		builder.addField("count(*) as total");
+		builder.addHaving("count(*) > 1");
+		assertEquals("SELECT field1, count(*) as total\nFROM my_table", builder.toString());
     }
 }
