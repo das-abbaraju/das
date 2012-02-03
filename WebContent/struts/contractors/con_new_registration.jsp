@@ -165,14 +165,6 @@
 					<s:text name="RequestNewContractor.header.RequestSummary" />
 				</h2>
 				
-				<s:if test="permissions.operatorCorporate">
-					<div class="info">
-						<s:text name="RequestNewContractor.help.EmailSentWithUser" />
-					</div>
-					<a href="#email_preview" class="preview fancybox">
-						<s:text name="RequestNewContractor.PreviewEmail" />
-					</a>
-				</s:if>
 				<ol>
 					<li>
 						<label>
@@ -197,6 +189,11 @@
 						</div>
 					</li>
 					<li id="loadUsersList"></li>
+					<li>
+						<a href="#email_preview" class="preview fancybox">
+							<s:text name="RequestNewContractor.PreviewEmail" />
+						</a>
+					</li>
 					<li>
 						<s:textfield
 							id="regDate"

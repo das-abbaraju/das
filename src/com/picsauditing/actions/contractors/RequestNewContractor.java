@@ -117,13 +117,13 @@ public class RequestNewContractor extends PicsActionSupport {
 				newContractor.setRequestedByUser(userDAO.find(permissions.getUserId()));
 				opID = newContractor.getRequestedBy().getId();
 			}
+
+			if (permissions.isOperatorCorporate()) {
+				addActionMessage(getText("RequestNewContractor.help.Purpose"));
+			}
 		} else {
 			status = newContractor.getStatus();
 			opID = newContractor.getRequestedBy().getId();
-		}
-
-		if (permissions.isOperatorCorporate()) {
-			addActionMessage(getText("RequestNewContractor.help.Purpose"));
 		}
 
 		return SUCCESS;
@@ -361,7 +361,7 @@ public class RequestNewContractor extends PicsActionSupport {
 
 		return redirect("RequestNewContractor.action?newContractor=" + newContractor.getId());
 	}
-	
+
 	public EmailQueue previewEmail() throws IOException {
 		EmailBuilder builder = prepareEmailBuilder();
 		return builder.build();
