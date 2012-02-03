@@ -279,7 +279,9 @@ public class ContractorAuditController extends AuditActionSupport {
 		auditCatData.setApplies(true);
 		auditCatData.setOverride(true); // a.k.a. "Manually added"
 		for (AuditCategory childCategory : auditCatData.getCategory().getChildren()) {
-			addManuallyAddedCategory(childCategory);
+			if (auditCategory.getId() != childCategory.getId()) {
+				addManuallyAddedCategory(childCategory);
+			}
 		}
 		return auditCatData;
 	}
@@ -294,7 +296,9 @@ public class ContractorAuditController extends AuditActionSupport {
 			auditCatData.setApplies(false);
 			auditCatData.setOverride(true);
 			for (AuditCategory childCategory : auditCatData.getCategory().getChildren()) {
-				hideCategory(childCategory);
+				if (auditCategory.getId() != childCategory.getId()) {
+					hideCategory(childCategory);
+				}
 			}
 		}
 		return auditCatData;
