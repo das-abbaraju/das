@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
@@ -272,9 +273,12 @@ public class I18nCache implements Serializable {
 		setClause += ", applicable = " + (translationToUpdate.isApplicable() ? "1" : "0");
 
 		String format = "UPDATE app_translation " + setClause + " WHERE msgKey = '%s' AND locale = '%s'";
+		String translationValueQuotationEscaped = StringUtils.replace(translationToUpdate.getValue(), "'", "''");
 
-		return String.format(format, translationToUpdate.getValue(), translationToUpdate.getKey(),
+		String updateSQL = String.format(format, translationValueQuotationEscaped, translationToUpdate.getKey(),
 				translationToUpdate.getLocale());
+
+		return updateSQL;
 	}
 
 	private void updateCacheAndRemoveTranslationFlagsIfNeeded(Translation translationFromCache,
