@@ -1,5 +1,7 @@
 package com.picsauditing.actions.contractors;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Date;
@@ -33,6 +35,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
 
@@ -116,88 +119,48 @@ public class Registration extends ContractorActionSupport {
 		}
 		permissions = null;
 
-		contractor.setType("Contractor");
-		if (contractor.getName().contains("^^^")) {
-			contractor.setStatus(AccountStatus.Demo);
-			contractor.setName(contractor.getName().replaceAll("^", "").trim());
-		}
-
-		// Default their current membership to 0
-		List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD,
-				FeeClass.AuditGUARD, FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
-		for (FeeClass feeClass : feeClasses) {
-			ContractorFee newConFee = new ContractorFee();
-			newConFee.setAuditColumns(new User(User.CONTRACTOR));
-			newConFee.setContractor(contractor);
-
-			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
-			newConFee.setCurrentLevel(currentFee);
-			newConFee.setNewLevel(currentFee);
-			newConFee.setFeeClass(feeClass);
-			contractor.getFees().put(feeClass, newConFee);
-		}
-
-		contractor.setPhone(user.getPhone());
-		contractor.setPaymentExpires(new Date());
-		contractor.setAuditColumns(new User(User.CONTRACTOR));
-		contractor.setNameIndex();
-		contractor.setQbSync(true);
-		contractor.setNaics(new Naics());
-		contractor.getNaics().setCode("0");
-		contractor.setNaicsValid(false);
+		setupUserData();
+		setupContractorData();
 		contractorAccountDao.save(contractor);
-
-		user.setActive(true);
-		user.setAccount(contractor);
-		user.setTimezone(contractor.getTimezone());
-		user.setLocale(ActionContext.getContext().getLocale());
-		user.setAuditColumns(new User(User.CONTRACTOR));
-		user.setIsGroup(YesNo.No);
-		userDAO.save(user);
-		// Initial password is stored unencrypted.
-		// Need to perform a save to create a user id for
-		// seeding the password.
-		user.setEncryptedPassword(user.getPassword());
 		userDAO.save(user);
 
-		user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
-		user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
-		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
-		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
-		user.setLastLogin(new Date());
-		userDAO.save(user);
-		contractor.getUsers().add(user);
+		Permissions permissions = logInUser();
+		setLoginLog(permissions);
 
-		// Login the User
-		Permissions permissions = new Permissions();
-		permissions.login(user);
-		ActionContext.getContext().getSession().put("permissions", permissions);
-
-		// adding this user to the login log
-		String remoteAddress = ServletActionContext.getRequest().getRemoteAddr();
-
-		UserLoginLog loginLog = new UserLoginLog();
-		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(remoteAddress);
-		loginLog.setSuccessful(permissions.isLoggedIn());
-		loginLog.setUser(user);
-		userLoginLogDAO.save(loginLog);
-
-		// agreeing to contractor agreement terms as stated at the end of
-		// con_registration.jsp
 		contractor.setAgreedBy(user);
-		contractor.setAgreementDate(contractor.getCreationDate());
 		contractor.setPrimaryContact(user);
-		// This should get taken care of by the xworks conversion
-		// if (contractor.getState() != null)
-		// contractor.setState(stateDAO.find(contractor.getState().getIsoCode()));
-		// if (contractor.getCountry() != null)
-		// contractor.setCountry(getCountryDAO().find(contractor.getCountry().getIsoCode()));
-		if (contractor.getCountry().isHasStates() && state != null)
-			contractor.setState(state);
 		contractorAccountDao.save(contractor);
 
-		// Send the Welcome Email
+		sendWelcomeEmail();
+		addNote(contractor, "Welcome Email Sent");
+
+		if (requestID > 0) {
+			ContractorRegistrationRequest crr = updateRegistrationRequest();
+
+			Note note = addNote(contractor, "Requested Contractor Registered");
+			note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
+					+ " has registered.");
+			dao.save(note);
+		}
+
+		redirect(getRegistrationStep().getUrl());
+
+		return BLANK;
+
+	}
+
+	private ContractorRegistrationRequest updateRegistrationRequest() {
+		ContractorRegistrationRequest crr = requestDAO.find(requestID);
+		crr.setContractor(contractor);
+		crr.setMatchCount(1);
+		crr.setAuditColumns();
+		crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
+				+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
+		requestDAO.save(crr);
+		return crr;
+	}
+
+	private void sendWelcomeEmail() throws EmailException, UnsupportedEncodingException, IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(2);
 		emailBuilder.setUser(user);
@@ -213,28 +176,72 @@ public class Registration extends ContractorActionSupport {
 		emailQueue.setPriority(90);
 		emailQueue.setViewableById(Account.EVERYONE);
 		emailSender.send(emailQueue);
-		addNote(contractor, "Welcome Email Sent");
+	}
 
-		// Update the Registration Request
-		if (requestID > 0) {
-			ContractorRegistrationRequest crr = requestDAO.find(requestID);
-			crr.setContractor(contractor);
-			crr.setMatchCount(1);
-			crr.setAuditColumns();
-			crr.setNotes(maskDateFormat(new Date()) + " - " + contractor.getPrimaryContact().getName()
-					+ " - Account created through completing a Registration Request\n\n" + crr.getNotes());
-			requestDAO.save(crr);
+	private void setLoginLog(Permissions permissions) {
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginDate(new Date());
+		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
+		loginLog.setSuccessful(permissions.isLoggedIn());
+		loginLog.setUser(user);
+		userLoginLogDAO.save(loginLog);
+	}
 
-			Note note = addNote(contractor, "Requested Contractor Registered");
-			note.setBody("Contractor '" + crr.getName() + "' requested by " + crr.getRequestedBy().getName()
-					+ " has registered.");
-			dao.save(note);
+	private Permissions logInUser() throws Exception {
+		Permissions permissions = new Permissions();
+		permissions.login(user);
+		ActionContext.getContext().getSession().put("permissions", permissions);
+		return permissions;
+	}
+
+	private void setupUserData() {
+		user.setActive(true);
+		user.setAccount(contractor);
+		user.setTimezone(contractor.getTimezone());
+		user.setLocale(ActionContext.getContext().getLocale());
+		user.setAuditColumns(new User(User.CONTRACTOR));
+		user.setIsGroup(YesNo.No);
+		user.setEncryptedPassword(user.getPassword());
+		user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
+		user.addOwnedPermissions(OpPerms.ContractorBilling, User.CONTRACTOR);
+		user.setLastLogin(new Date());
+	}
+
+	private void setupContractorData() {
+		contractor.setType("Contractor");
+		if (contractor.getName().contains("^^^")) {
+			contractor.setStatus(AccountStatus.Demo);
+			contractor.setName(contractor.getName().replaceAll("^", "").trim());
 		}
+		if (contractor.getCountry().isHasStates() && state != null)
+			contractor.setState(state);
+		contractor.setPhone(user.getPhone());
+		contractor.setPaymentExpires(new Date());
+		contractor.setAuditColumns(new User(User.CONTRACTOR));
+		contractor.setNameIndex();
+		contractor.setQbSync(true);
+		contractor.setNaics(new Naics());
+		contractor.getNaics().setCode("0");
+		contractor.setNaicsValid(false);
+		contractor.setAgreementDate(contractor.getCreationDate());
+		contractor.getUsers().add(user);
 
-		redirect(getRegistrationStep().getUrl());
+		// Default their current membership to 0
+		List<FeeClass> feeClasses = Arrays.asList(FeeClass.BidOnly, FeeClass.ListOnly, FeeClass.DocuGUARD,
+				FeeClass.AuditGUARD, FeeClass.InsureGUARD, FeeClass.EmployeeGUARD);
+		for (FeeClass feeClass : feeClasses) {
+			ContractorFee newConFee = new ContractorFee();
+			newConFee.setAuditColumns(new User(User.CONTRACTOR));
+			newConFee.setContractor(contractor);
 
-		return BLANK;
-
+			InvoiceFee currentFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(feeClass, 0);
+			newConFee.setCurrentLevel(currentFee);
+			newConFee.setNewLevel(currentFee);
+			newConFee.setFeeClass(feeClass);
+			contractor.getFees().put(feeClass, newConFee);
+		}
 	}
 
 	public ContractorAccount getContractor() {

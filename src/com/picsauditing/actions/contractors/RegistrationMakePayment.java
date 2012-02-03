@@ -185,8 +185,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						billingService.activateContractor(contractor, invoice);
 						contractorAccountDao.save(contractor);
 
-						addNote("Credit Card transaction completed and emailed the receipt for "
-								+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount());
+						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
+								+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(),
+								NoteCategory.Billing, LowMedHigh.High, true, Account.EVERYONE, getUser(), null);
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -601,7 +602,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	public String printInvoice() throws Exception {
 		findContractor();
-		
+
 		return "print";
 	}
 
@@ -637,7 +638,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			redirect("RegistrationMakePayment.action");
 			return true;
 		}
-		
+
 		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
 		if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
 			billingService.updateInvoice(invoice, newInvoice, permissions);
