@@ -37,10 +37,10 @@ import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -114,6 +114,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<JobContractor> jobSites = new ArrayList<JobContractor>();
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
+	protected List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
 
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
@@ -594,6 +595,15 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setAssessmentResultStages(List<AssessmentResultStage> assessmentResultStages) {
 		this.assessmentResultStages = assessmentResultStages;
+	}
+
+	@OneToMany(mappedBy = "contractor")
+	public List<ContractorOperatorNumber> getContractorOperatorNumbers() {
+		return contractorOperatorNumbers;
+	}
+
+	public void setContractorOperatorNumbers(List<ContractorOperatorNumber> contractorOperatorNumbers) {
+		this.contractorOperatorNumbers = contractorOperatorNumbers;
 	}
 
 	/**

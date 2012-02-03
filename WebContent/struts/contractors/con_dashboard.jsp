@@ -12,6 +12,21 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/trades.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
+		
+		<style type="text/css">
+			<s:set name="isWatched" value="%{watched ? 'none' : 'inline'}" />
+			<s:set name="stopWatch" value="%{watched ? 'inline' : 'none'}" />
+			.watch
+			{
+				display: <s:property value="#isWatched" />;
+			}
+			
+			.stop
+			{
+				display: <s:property value="#stopWatched" />;
+			}
+		</style>
+		
 		<script type="text/javascript">
 			function removeTag(tagId) {
 				var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
@@ -60,22 +75,6 @@
 				};
 		
 				$('#' + id).html(data);
-			}
-		
-			function startWatch() {
-				$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" /><s:text name="ContractorView.AddWatch" />');
-				$.get('ContractorViewAjax.action', {button: 'Start Watch', id: <s:property value="contractor.id" />}, function (output) {
-					$('#contractorWatch').html('<s:text name="ContractorView.WatchingContractor" /> <a href="#" onclick="stopWatch(); return false;"><s:text name="ContractorView.StopWatching" /></a>')
-						.effect('highlight', {color: '#FFFF11'}, 1000);
-				});
-			}
-		
-			function stopWatch() {
-				$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" /><s:text name="ContractorView.RemoveWatch" />');
-				$.get('ContractorViewAjax.action', {button: 'Stop Watch', id: <s:property value="contractor.id" />}, function (output) {
-					$('#contractorWatch').html('<a href="#" onclick="startWatch(); return false;" class="watch"><s:text name="ContractorView.WatchContractor" /></a>')
-						.effect('highlight', {color: '#FFFF11'}, 1000);
-				});
 			}
 		
 			$(function() {
@@ -271,12 +270,17 @@
 									
 									<pics:permission perm="ContractorWatch" type="Edit">
 										<p id="contractorWatch">
-											<s:if test="watched">
-												<s:text name="ContractorView.WatchingContractor" /> <a href="#" onclick="stopWatch(); return false;"><s:text name="ContractorView.StopWatching" /></a>
-											</s:if>
-											<s:else>
-												<a class="watch" href="#" onclick="startWatch(); return false;"><s:text name="ContractorView.WatchContractor" /></a>
-											</s:else>
+											<span class="watch">
+												<s:text name="ContractorView.WatchingContractor" />
+												<a href="#" id="stop_watch_link" data-conid="<s:property value="contractor.id" />">
+													<s:text name="ContractorView.StopWatching" />
+												</a>
+											</span>
+											<span class="stop watch">
+												<a href="#" id="start_watch_link" data-watch="<s:property value="watch.id" />">
+													<s:text name="ContractorView.WatchContractor" />
+												</a>
+											</span>
 										</p>
 									</pics:permission>
 								</div>
@@ -435,10 +439,14 @@
 								<p>
 									<s:text name="global.CSR" />:
 									<strong>
-										<s:property value="contractor.auditor.name" /> / <s:property value="contractor.auditor.phone" /> /
+										<s:property value="contractor.auditor.name" />
+										/
+										<s:property value="contractor.auditor.phone" />
+										/
 									</strong>
 									<s:text name="ProfileEdit.u.fax" />:
-									<s:property value="contractor.auditor.fax" /> / 
+									<s:property value="contractor.auditor.fax" />
+									/ 
 									<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email">
 										<s:property value="contractor.auditor.email"/>
 									</a>
@@ -672,5 +680,7 @@
 				</td>
 			</tr>
 		</table>
+		<script type="text/javascript" src="js/core.js?version=<s:property value="version" />"></script>
+		<script type="text/javascript" src="js/contractor_dashboard.js?version=<s:property value="version" />"></script>
 	</body>
 </html>

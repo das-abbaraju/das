@@ -26,8 +26,7 @@ import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -69,9 +68,6 @@ import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
-
-	@Autowired
-	private AuditBuilder auditBuilder;
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
@@ -88,8 +84,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private NaicsDAO naicsDAO;
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
@@ -155,24 +149,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()
 				&& (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
 			throw new NoRightsException("PICS Administrator");
-
-		if (button != null && button.contains("Watch")) {
-			tryPermissions(OpPerms.ContractorWatch, OpType.Edit);
-			getWatch();
-
-			if ("Start Watch".equals(button) && watch == null) {
-				User user = userDAO.find(permissions.getUserId());
-				watch = new ContractorWatch();
-				watch.setContractor(contractor);
-				watch.setUser(user);
-				watch.setAuditColumns(permissions);
-
-				userDAO.save(watch);
-			}
-
-			if ("Stop Watch".equals(button) && watch != null)
-				userDAO.remove(watch);
-		}
 
 		if ("AddTag".equals(button)) {
 			// TODO Move this into a new class
@@ -282,6 +258,30 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
+	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
+	public String startWatch() {
+		ContractorWatch existingWatch = getExistingContractorWatch();
+
+		if (existingWatch == null) {
+			watch = new ContractorWatch();
+			watch.setContractor(contractor);
+			watch.setUser(userDAO.find(permissions.getUserId()));
+			watch.setAuditColumns(permissions);
+
+			userDAO.save(watch);
+			output = "" + watch.getId();
+		} else {
+			addActionError(getText("ContractorDashboard.AlreadyWatchingContractor"));
+		}
+
+		return BLANK;
+	}
+
+	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
+	public String stopWatch() {
+		return BLANK;
+	}
+
 	public String preview() throws Exception {
 		return "preview";
 	}
@@ -301,6 +301,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setOpID(int opID) {
 		this.opID = opID;
+	}
+
+	public ContractorWatch getWatch() {
+		return watch;
+	}
+
+	public void setWatch(ContractorWatch watch) {
+		this.watch = watch;
 	}
 
 	public List<ContractorAudit> getDocuGUARD() {
@@ -456,22 +464,19 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return flagCounts;
 	}
 
-	private ContractorWatch getWatch() {
-		if (watch == null) {
-			List<ContractorWatch> watched = userDAO.findContractorWatch(permissions.getUserId());
-			for (ContractorWatch w : watched) {
-				if (w.getContractor().equals(contractor)) {
-					watch = w;
-					break;
-				}
-			}
+	private ContractorWatch getExistingContractorWatch() {
+		User user = userDAO.find(permissions.getUserId());
+
+		for (ContractorWatch watchedContractor : user.getWatchedContractors()) {
+			if (watchedContractor.getId() == contractor.getId())
+				return watchedContractor;
 		}
 
-		return watch;
+		return null;
 	}
 
 	public boolean isWatched() {
-		return getWatch() != null;
+		return getExistingContractorWatch() != null;
 	}
 
 	public class OshaDisplay {

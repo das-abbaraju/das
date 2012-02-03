@@ -291,6 +291,10 @@
 		<action name="ContractorViewAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/blank.jsp</result>
 		</action>
+		
+		<action name="ManageContractorOperatorNumber" class="com.picsauditing.actions.contractors.ManageContractorOperatorNumber">
+			<result>/struts/contractors/contractor_operator_numbers.jsp</result>
+		</action>
 
 		<action name="AuditPdfConverter" class="com.picsauditing.actions.contractors.AuditPdfConverter">
 			<result>struts/blank.jsp</result>

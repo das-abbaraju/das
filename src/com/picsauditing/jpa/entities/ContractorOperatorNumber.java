@@ -1,0 +1,58 @@
+package com.picsauditing.jpa.entities;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@SuppressWarnings("serial")
+@Entity
+@Table(name = "contractor_operator_number")
+public class ContractorOperatorNumber extends BaseTable {
+	private ContractorAccount contractor;
+	private OperatorAccount operator;
+	private ContractorOperatorNumberType type;
+	private String value;
+
+	@ManyToOne
+	@JoinColumn(name = "conID", nullable = false)
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "opID", nullable = false)
+	public OperatorAccount getOperator() {
+		return operator;
+	}
+
+	public void setOperator(OperatorAccount operator) {
+		this.operator = operator;
+	}
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	public ContractorOperatorNumberType getType() {
+		return type;
+	}
+
+	public void setType(ContractorOperatorNumberType type) {
+		this.type = type;
+	}
+
+	@Column(nullable = false)
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+}
