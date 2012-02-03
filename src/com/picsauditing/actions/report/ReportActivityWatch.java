@@ -18,6 +18,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorWatch;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterCAO;
 import com.picsauditing.util.Strings;
@@ -320,8 +321,10 @@ public class ReportActivityWatch extends ReportAccount {
 	}
 
 	public List<ContractorWatch> getWatched() {
-		if (watched == null)
-			watched = userDAO.findContractorWatch(permissions.getUserId());
+		if (watched == null) {
+			User user = userDAO.find(permissions.getUserId());
+			watched = user.getWatchedContractors();
+		}
 
 		return watched;
 	}

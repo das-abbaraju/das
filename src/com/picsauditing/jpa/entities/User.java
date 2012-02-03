@@ -84,7 +84,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Date lockUntil = null;
 	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
-	private String department ;
+	private String department;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -92,6 +92,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<UserSwitch> switchTos = new ArrayList<UserSwitch>();
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
+	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
 
 	@Transient
 	public boolean isSuperUser() {
@@ -425,6 +426,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.subscriptions = subscriptions;
 	}
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	public List<ContractorWatch> getWatchedContractors() {
+		return watchedContractors;
+	}
+
+	public void setWatchedContractors(List<ContractorWatch> watchedContractors) {
+		this.watchedContractors = watchedContractors;
+	}
+
 	@Transient
 	public EmailSubscription getEmailSubscription(Subscription subscription) {
 		for (EmailSubscription emailSub : subscriptions) {
@@ -485,11 +495,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		case 34065: // Phillip Laraway
 		case 1725: // Royce Burnett
 		case 9463: // Tiffany Homayounshad
-		case 11503: //Gary Rogers
-		case 38048: //Chad Frost
-		case 38050: //George Megress
-		case 42203: //Preston Case
-		case 50555: //John Van Haaren
+		case 11503: // Gary Rogers
+		case 38048: // Chad Frost
+		case 38050: // George Megress
+		case 42203: // Preston Case
+		case 50555: // John Van Haaren
 			// Houston Employees
 			return new Location(29.769f, -95.3527f);
 		default:

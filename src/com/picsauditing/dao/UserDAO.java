@@ -24,19 +24,6 @@ public class UserDAO extends PicsDAO {
 		return o;
 	}
 
-	@Transactional(propagation = Propagation.NESTED)
-	public void remove(int id) {
-		User row = find(id);
-		remove(row);
-	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void remove(User row) {
-		if (row != null) {
-			em.remove(row);
-		}
-	}
-
 	public User find(int id) {
 		return em.find(User.class, id);
 	}
@@ -47,16 +34,6 @@ public class UserDAO extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.account.name, u.name");
-		return query.getResultList();
-	}
-
-	public List<User> findWhere(String where, int limit) {
-		if (where == null)
-			where = "";
-		if (where.length() > 0)
-			where = "WHERE " + where;
-		Query query = em.createQuery("SELECT u FROM User u " + where + " ORDER BY u.account.name, u.name");
-		query.setMaxResults(limit);
 		return query.getResultList();
 	}
 
@@ -159,24 +136,6 @@ public class UserDAO extends PicsDAO {
 
 		query.setParameter(1, id);
 		return query.getResultList();
-	}
-
-	public boolean canRemoveUser(String table, int userID, String where) {
-		if (where == null)
-			where = "t.updatedBy.id = :userID OR t.createdBy.id = :userID";
-		try {
-			Query query = em.createQuery("SELECT t FROM " + table + " t WHERE " + where);
-			query.setParameter("userID", userID);
-			query.setMaxResults(1);
-			query.getSingleResult();
-		} catch (NoResultException e) {
-			return true;
-		}
-		return false;
-	}
-
-	public List<ContractorWatch> findContractorWatch(int userID) {
-		return findContractorWatchWhere("c.user.id = " + userID);
 	}
 
 	public List<ContractorWatch> findContractorWatchWhere(String where) {

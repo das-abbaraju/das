@@ -49,10 +49,10 @@ public class WatchListManager extends PicsActionSupport {
 
 	@RequiredPermission(value = OpPerms.WatchListManager, type = OpType.Edit)
 	public String remove() throws Exception {
-		List<ContractorWatch> watches = userDAO.findContractorWatch(user.getId());
+		User user = userDAO.find(permissions.getUserId());
 
 		if (contractor != null) {
-			Iterator<ContractorWatch> iterator = watches.iterator();
+			Iterator<ContractorWatch> iterator = user.getWatchedContractors().iterator();
 
 			while (iterator.hasNext()) {
 				ContractorWatch watch = iterator.next();
