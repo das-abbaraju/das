@@ -64,6 +64,10 @@
 			<s:text name="ContractorFacilities.SwitchToBid" /></div>
 </s:if>
 
+<div class="info">
+	<s:text name="ContractorFacilities.HelpWithAddingOrRemoving" ><s:param value="%{getText('RegistrationSuperEliteSquadronPhone')}" /></s:text>
+</div>		
+
 <table class="report">
 	<thead>
 		<tr>
