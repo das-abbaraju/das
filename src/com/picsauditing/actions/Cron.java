@@ -822,7 +822,7 @@ public class Cron extends PicsActionSupport {
 
 	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
 		// Sorting results into buckets by AM to add as tokens into the email
-		Map<String, List<BasicDynaBean>> amMap = new HashMap<String, List<BasicDynaBean>>();
+		Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
 		for (BasicDynaBean bean : data) {
 			String accountMgr = (String) bean.get("accountManager");
 			if (amMap.get(accountMgr) == null)
@@ -845,7 +845,7 @@ public class Cron extends PicsActionSupport {
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
 		query.append("where changes >= 10 and changes/total > .05 ");
-		query.append("order by accountManager, percent desc ");
+		query.append("order by operator, percent desc ");
 
 		Database db = new Database();
 		List<BasicDynaBean> data = db.select(query.toString(), true);
