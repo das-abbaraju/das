@@ -152,6 +152,9 @@ function caoDetailsClueTips(caoID){
 <div>
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
+<div>
+	<strong>Total Flag Differences: </strong><s:property value="totalFlagChanges" escape="false" /><strong>  |  Total Operators Affected: </strong><s:property value="totalOperatorsAffected" escape="false" />
+</div>
 <table class="report">
 	<thead>
 		<tr>

@@ -16,10 +16,11 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class ReportFlagChanges extends ReportAccount {
-
 	private ContractorOperatorDAO contractorOperatorDAO;
 	private List<User> accountManagers;
 	private int[] approvedChanges;
+	private int totalFlagChanges;
+	private int totalOperatorsAffected;
 
 	public ReportFlagChanges(ContractorOperatorDAO contractorOperatorDAO) {
 		this.contractorOperatorDAO = contractorOperatorDAO;
@@ -41,7 +42,10 @@ public class ReportFlagChanges extends ReportAccount {
 			approvedChanges = null;
 			return BLANK;
 		}
-
+		
+		totalFlagChanges = contractorOperatorDAO.getTotalFlagChanges();
+		totalOperatorsAffected = contractorOperatorDAO.getOperatorsAffectedByFlagChanges();
+		
 		return super.execute();
 	}
 
@@ -190,5 +194,21 @@ public class ReportFlagChanges extends ReportAccount {
 
 	public void setApprovedChanges(int[] approvedChanges) {
 		this.approvedChanges = approvedChanges;
+	}
+
+	public int getTotalFlagChanges() {
+		return totalFlagChanges;
+	}
+
+	public void setTotalFlagChanges(int totalFlagChanges) {
+		this.totalFlagChanges = totalFlagChanges;
+	}
+
+	public int getTotalOperatorsAffected() {
+		return totalOperatorsAffected;
+	}
+
+	public void setTotalOperatorsAffected(int totalOperatorsAffected) {
+		this.totalOperatorsAffected = totalOperatorsAffected;
 	}
 }

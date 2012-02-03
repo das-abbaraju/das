@@ -104,4 +104,29 @@ public class ContractorOperatorDAO extends PicsDAO {
 		query.setParameter("now", new Date());
 		return query.getResultList();
 	}
+	
+	public int getTotalFlagChanges() {
+		String sql = "select count(*) from generalcontractors gc " + "join accounts a on a.id=gc.genId "
+				+ "join accounts contractor on contractor.id = gc.subID " + "where gc.flag != gc.baselineFlag "
+				+ "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') " + "AND (gc.flag != 'Clear') "
+				+ "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
+				+ "AND (gc.forceFlag IS NULL OR NOW() >= gc.forceEnd) " + "AND (contractor.type='Contractor') "
+				+ "AND (contractor.status IN ('Active')) "
+				+ "AND (contractor.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK))";
+		Query query = em.createNativeQuery(sql);
+		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
+	public int getOperatorsAffectedByFlagChanges() {
+		String sql = "select count(distinct gc.genid) from generalcontractors gc " + "join accounts a on a.id=gc.genId "
+				+ "join accounts contractor on contractor.id = gc.subID " + "where gc.flag != gc.baselineFlag "
+				+ "AND a.type='Operator' " + "AND (gc.baselineFlag != 'Clear') " + "AND (gc.flag != 'Clear') "
+				+ "AND (gc.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK)) "
+				+ "AND (gc.forceFlag IS NULL OR NOW() >= gc.forceEnd) " + "AND (contractor.type='Contractor') "
+				+ "AND (contractor.status IN ('Active')) "
+				+ "AND (contractor.creationDate < DATE_SUB(NOW(), INTERVAL 2 WEEK))";
+		Query query = em.createNativeQuery(sql);
+		return Integer.parseInt(query.getSingleResult().toString());
+	}
+
 }
