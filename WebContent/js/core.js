@@ -88,6 +88,25 @@ if (typeof Object.create !== 'function') {
                 return $.ajax(config);
             },
             
+            debounce: function (func, threshold) {
+                var timeout;
+                
+                return function () {
+                    var obj = this;
+                    var args = arguments;
+                    
+                    if (timeout) {
+                        clearTimeout(timeout);
+                    }
+                    
+                    timeout = setTimeout(function() {
+                        func.apply(obj, args);
+                        
+                        timeout = null;
+                    }, threshold || 250);
+                };
+            },
+            
             /**
              * Define
              * 
@@ -228,6 +247,20 @@ if (typeof Object.create !== 'function') {
                 modal.create(options);
                 
                 return modal; 
+            },
+            
+            throttle: function (func, delay) {
+                var timer;
+                
+                return function () {
+                    if (!timer) {
+                        timer = setTimeout(function () {
+                            func.apply(this, arguments);
+                            
+                            timer = null;
+                        }, delay);
+                    }
+                };
             }
         }
     }()));

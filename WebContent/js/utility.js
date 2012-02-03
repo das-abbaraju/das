@@ -20,7 +20,7 @@
 				timeout = null;
 			}, threshold || 250);
 		};
-	}
+	};
 	
 	UTILITY.throttle = function(func, delay) {
 		var timer;
