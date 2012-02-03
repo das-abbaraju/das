@@ -227,7 +227,7 @@ public class TranslationETL extends PicsActionSupport {
 				translation.appendChild(element);
 				CDATASection text = document.createCDATASection(d.get("msgValue").toString());
 				element.appendChild(text);
-				
+
 				element = document.createElement("qualityRating");
 				translation.appendChild(element);
 				elementText = document.createTextNode(d.get("qualityRating").toString());
@@ -267,14 +267,14 @@ public class TranslationETL extends PicsActionSupport {
 					elementText = document.createTextNode(d.get("lastUsed").toString());
 					element.appendChild(elementText);
 				}
-				
+
 				if (d.get("applicable") != null) {
 					element = document.createElement("applicable");
 					translation.appendChild(element);
 					elementText = document.createTextNode(d.get("applicable").toString());
 					element.appendChild(elementText);
 				}
-				
+
 				if (d.get("sourceLanguage") != null) {
 					element = document.createElement("sourceLanguage");
 					translation.appendChild(element);
@@ -361,7 +361,8 @@ public class TranslationETL extends PicsActionSupport {
 					addField(t, "updateDate", d.get("updateDate") == null ? null : d.get("updateDate").toString());
 					addField(t, "lastUsed", d.get("lastUsed") == null ? null : d.get("lastUsed").toString());
 					addField(t, "applicable", d.get("applicable") == null ? null : d.get("applicable").toString());
-					addField(t, "sourceLanguage", d.get("sourceLanguage") == null ? null : d.get("sourceLanguage").toString());
+					addField(t, "sourceLanguage", d.get("sourceLanguage") == null ? null : d.get("sourceLanguage")
+							.toString());
 
 					importedTranslations.get(t.getKey(), locale).add(t);
 				}
@@ -402,7 +403,7 @@ public class TranslationETL extends PicsActionSupport {
 		if (name.equals("locale"))
 			t.setLocale(value);
 		if (name.equals("qualityRating"))
-			t.setQualityRating(TranslationQualityRating.valueOf(value));
+			t.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(value)));
 
 		if (name.equals("createdBy"))
 			t.setCreatedBy(new User(Integer.parseInt(value)));
