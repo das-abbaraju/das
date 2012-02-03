@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -41,6 +39,7 @@ import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -53,8 +52,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	// TODO Move this to a common location
 	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
 	static final public String DATE_FORMAT = "yyyyMMddHHmm";
-
-	private TimeZone selectedTimeZone;
 
 	private AvailableSet availableSet = new AvailableSet();
 	private Date timeSelected;
@@ -101,42 +98,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		rescheduling = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ReschedulingFee, 0);
 		expedite = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ExpediteFee, 0);
-	}
-
-	public String execute() throws Exception {
-		if (conAudit == null) {
-			addActionError("Missing auditID");
-			return BLANK;
-		}
-
-		subHeading = "Schedule " + getText(conAudit.getAuditType().getI18nKey("name"));
-
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Pending)) {
-				return "summary";
-			}
-		}
-
-		if (button == null) {
-			if (conAudit.getScheduledDate() == null)
-				// We need to schedule this audit
-				return "address";
-
-			if (conAudit.getScheduledDate().before(new Date())) {
-				// This audit has already passed (and we missed it?)
-				addActionMessage(getText("ScheduleAudit.message.AppointmentPassed"));
-				return "address";
-			}
-
-			if (permissions.isAdmin())
-				// Let the admin reschedule the audit
-				return "edit";
-
-			// Contractors can't change upcoming scheduled audits
-			return "summary";
-		}
-
-		return "address";
 	}
 
 	public String edit() throws Exception {
@@ -246,8 +207,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (rank > maxRank) {
 				maxRank = rank;
 				availabilitySelected = timeslot;
-				if (selectedTimeZone != null)
-					availabilitySelected.setTimezone(selectedTimeZone);
 				availabilitySelectedID = availabilitySelected.getId();
 			}
 		}
@@ -257,32 +216,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return "confirm";
 		}
 		addActionError("Failed to select time");
-		findTimeslots();
-		return "select";
-	}
-
-	public String selectTime() throws Exception {
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df2.setTimeZone(TimeZone.getTimeZone("CST"));
-
-		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(df1.parse(df2.format(timeSelected)));
-		int maxRank = Integer.MIN_VALUE;
-		for (AuditorAvailability timeslot : timeslots) {
-			int rank = timeslot.rank(conAudit, permissions);
-			if (rank > maxRank) {
-				maxRank = rank;
-				availabilitySelected = timeslot;
-				availabilitySelected.setTimezone(selectedTimeZone);
-				availabilitySelectedID = availabilitySelected.getId();
-			}
-		}
-		if (availabilitySelectedID > 0) {
-			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
-			return "confirm";
-		}
-		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
 		findTimeslots();
 		return "select";
 	}
@@ -354,16 +287,70 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return "summary";
 	}
 
-	public String viewMoreTimes() throws Exception {
+	public String viewMoreTimes() {
 		findTimeslots();
 		return "picker";
 	}
 
-	private void findTimeslots() throws Exception {
-		findTimeslots(TimeZone.getTimeZone("CST"));
+	public String execute() throws Exception {
+		if (conAudit == null) {
+			addActionError("Missing auditID");
+			return BLANK;
+		}
+
+		subHeading = "Schedule " + getText(conAudit.getAuditType().getI18nKey("name"));
+
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending)) {
+				return "summary";
+			}
+		}
+
+		if (button == null) {
+			if (conAudit.getScheduledDate() == null)
+				// We need to schedule this audit
+				return "address";
+
+			if (conAudit.getScheduledDate().before(new Date())) {
+				// This audit has already passed (and we missed it?)
+				addActionMessage(getText("ScheduleAudit.message.AppointmentPassed"));
+				return "address";
+			}
+
+			if (permissions.isAdmin())
+				// Let the admin reschedule the audit
+				return "edit";
+
+			// Contractors can't change upcoming scheduled audits
+			return "summary";
+		}
+
+		return "address";
 	}
 
-	private void findTimeslots(TimeZone timezone) throws Exception {
+	public String selectTime() {
+		List<AuditorAvailability> timeslots = auditorAvailabilityDAO.findByTime(timeSelected);
+		int maxRank = Integer.MIN_VALUE;
+		for (AuditorAvailability timeslot : timeslots) {
+			int rank = timeslot.rank(conAudit, permissions);
+			if (rank > maxRank) {
+				maxRank = rank;
+				availabilitySelected = timeslot;
+				availabilitySelected.setTimezone(permissions.getTimezone());
+				availabilitySelectedID = availabilitySelected.getId();
+			}
+		}
+		if (availabilitySelectedID > 0) {
+			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
+			conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
+			return "confirm";
+		}
+		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
+		findTimeslots();
+		return "select";
+	}
+
+	private void findTimeslots() {
 		List<AuditorAvailability> timeslots = null;
 
 		timeslots = auditorAvailabilityDAO.findAvailable(availabilityStartDate);
@@ -373,15 +360,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (availableSet.size() >= 8 && !availableSet.contains(timeslot)) {
 				break;
 			}
-			availableSet.add(timeslot, timezone);
+			availableSet.add(timeslot);
 		}
 
 		return;
-	}
-
-	public String changeSelectedTimeZone() throws Exception {
-		findTimeslots(selectedTimeZone);
-		return "picker";
 	}
 
 	public AuditorAvailability getAvailabilitySelected() {
@@ -467,11 +449,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public void setTimeSelected(String dateString) throws ParseException {
-		SimpleDateFormat dateFormat = new SimpleDateFormat();
-		dateFormat.setLenient(false);
-		dateFormat.applyPattern(DATE_FORMAT);
-
-		this.timeSelected = dateFormat.parse(dateString);
+		SimpleDateFormat df = new SimpleDateFormat();
+		df.setLenient(false);
+		df.applyPattern(DATE_FORMAT);
+		this.timeSelected = df.parse(dateString);
 	}
 
 	public class AvailableSet {
@@ -483,26 +464,19 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			return days.size();
 		}
 
-		void add(AuditorAvailability timeslot, TimeZone timeZone) throws Exception {
-			Date adjustedStartTime = timeslot.getStartDate();
-			if (timeZone != null) {
-				adjustedStartTime = changeTimeZone(TimeZone.getTimeZone("CST"), timeZone, timeslot.getStartDate().toString(), "yyyy-MM-dd HH:mm:ss");
-				timeslot.setStartDate(adjustedStartTime);
-				timeslot.setTimezone(timeZone);
-			}
-
-			final Date day = stripTimes(adjustedStartTime);
-
+		void add(AuditorAvailability timeslot) {
+			final Date day = stripTimes(timeslot.getStartDate());
 			if (days.get(day) == null)
 				days.put(day, new ArrayList<AuditorAvailability>());
 
 			for (AuditorAvailability existingTimeSlot : days.get(day)) {
 				if (isSameTime(existingTimeSlot.getStartDate(), timeslot.getStartDate()))
-					// We don't need to add more than one time slot per starting time
+					// We don't need to add more than one time slot per
+					// starting time
 					return;
 			}
 			days.get(day).add(timeslot);
-			latest = DateBean.getLatestDate(latest, timeslot.getTimeZoneEndDateDate());
+			latest = DateBean.getLatestDate(latest, timeslot.getEndDate());
 		}
 
 		@SuppressWarnings("deprecation")
@@ -536,24 +510,6 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return null;
 			return DateBean.getNextDayMidnight(latest);
 		}
-	}
-
-	public static Date changeTimeZone(TimeZone inputTimeZone, TimeZone outputTimeZone, String inputDateString,
-			String inputFormat) throws Exception {
-		if (inputFormat == null)
-			inputFormat = "yyyy-MM-dd HH:mm:ss";
-		
-		Date inputDate = null;
-
-		DateFormat inputDateFormat = new SimpleDateFormat(inputFormat);
-		inputDateFormat.setTimeZone(inputTimeZone);
-
-		inputDate = inputDateFormat.parse(inputDateString);
-
-		DateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-		outputDateFormat.setTimeZone(outputTimeZone);
-
-		return outputDateFormat.parse(outputDateFormat.format(inputDate));
 	}
 
 	public void setAvailabilityStartDate(Date availabilityStartDate) {
@@ -676,13 +632,5 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
 		}
 		return auditorList;
-	}
-
-	public TimeZone getSelectedTimeZone() {
-		return selectedTimeZone;
-	}
-
-	public void setSelectedTimeZone(TimeZone selectedTimeZone) {
-		this.selectedTimeZone = selectedTimeZone;
 	}
 }

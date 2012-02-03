@@ -75,21 +75,18 @@
 		<s:include value="../contractors/conHeader.jsp" />
 	
 		<s:form cssClass="schedule-audit-form schedule-audit-select-form">
-            <s:hidden name="auditID" />
-            
 			<fieldset class="form bottom">
 				<h2 class="formLegend"><s:text name="ScheduleAudit.label.ChooseAuditTime" /></h2>
 				
 				<ol>
 					<s:if test="permissions.admin">
 						<li>
+							<s:hidden name="auditID" />
+							
 							<s:submit cssClass="picsbutton" method="edit" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" />
 						</li>
 					</s:if>
-					<li>
-					<s:select name="selectedTimezone" id="timezone" value="selecteTimezone.id" theme="form" label="global.timezone" 
-											list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES_SHORT" />
-					</li>
+					
 					<li>
 						<s:text name="ScheduleAudit.message.ChooseAvailableTime" />
 					</li>

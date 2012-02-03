@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -64,7 +63,7 @@ public class AuditorAvailability extends BaseTable {
 
 	@Transient
 	public TimeZone getTimezone() {
-		return (timezone == null ? TimeZone.getTimeZone("CST") : timezone);
+		return timezone;
 	}
 
 	public void setTimezone(TimeZone timezone) {
@@ -72,45 +71,10 @@ public class AuditorAvailability extends BaseTable {
 	}
 
 	@Transient
-	public String getTimeZoneStartDate() throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("HH:mm");
-		formatter.setTimeZone(getTimezone());
+	public String getTimeZoneDate(String format) {
+		DateFormat formatter = new SimpleDateFormat(format);
+		formatter.setTimeZone(timezone);
 		return formatter.format(startDate);
-	}
-
-	@Transient
-	public String getTimeZoneEndDate() throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("HH:mm z");
-		formatter.setTimeZone(getTimezone());
-		return formatter.format(getEndDate());
-	}
-
-	@Transient
-	public Date getTimeZoneEndDateDate() throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss z");
-		formatter.setTimeZone(getTimezone());
-		return formatter.parse(formatter.format(getEndDate()));
-	}
-
-	@Transient
-	public Date convertDate() throws Exception {
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df1.setTimeZone(getTimezone());
-		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df2.setTimeZone(TimeZone.getTimeZone("CST"));
-		return df1.parse(df2.format(getStartDate()));
-	}
-
-	@Transient
-	public String convertStartDateToString() throws Exception {
-		
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df3 = new SimpleDateFormat("hh:mm a z");
-		df2.setTimeZone(TimeZone.getTimeZone("CST"));
-		df3.setTimeZone(getTimezone());
-		
-		return df3.format(df2.parse(df1.format(startDate)));
 	}
 
 	/**

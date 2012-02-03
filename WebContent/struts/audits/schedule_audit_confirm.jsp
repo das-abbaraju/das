@@ -42,7 +42,7 @@
 					</li>
 					<li>
 						<label><s:text name="ScheduleAudit.label.AuditTime" />:</label>
-						<s:property value="availabilitySelected.convertStartDateToString()" /> <br />
+						<s:date name="availabilitySelected.startDate" format="h:mm a z" />
 					</li>
 			
 					<s:if test="conAudit.conductedOnsite">
