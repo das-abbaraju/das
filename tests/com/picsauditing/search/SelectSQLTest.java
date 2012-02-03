@@ -46,6 +46,6 @@ public class SelectSQLTest extends TestCase {
 		assertEquals("SELECT field1, count(*) as total\nFROM my_table", builder.toString());
 		
 		builder.addGroupBy("field1");
-		assertEquals("SELECT field1, count(*) as total\nFROM my_table\nGROUP BY field1\nHAVING count(*) > 1", builder.toString());
+		assertEquals("SELECT field1, count(*) as total\nFROM my_table\nGROUP BY field1\nHAVING (count(*) > 1) ", builder.toString());
     }
 }

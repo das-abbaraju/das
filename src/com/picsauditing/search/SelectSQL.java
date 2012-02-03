@@ -74,16 +74,16 @@ public class SelectSQL {
 		if (this.groupByFields.size() > 0) {
 			sql.append("\nGROUP BY ");
 			sql.append(this.combineArray(this.groupByFields));
-		}
 
-		if (havingClause.size() > 0) {
-			sql.append("\nHAVING ");
-			boolean needAnd = false;
-			for (String havingSQL : this.havingClause) {
-				if (needAnd)
-					sql.append("\n AND ");
-				sql.append("(").append(havingSQL).append(") ");
-				needAnd = true;
+			if (havingClause.size() > 0) {
+				sql.append("\nHAVING ");
+				boolean needAnd = false;
+				for (String havingSQL : this.havingClause) {
+					if (needAnd)
+						sql.append("\n AND ");
+					sql.append("(").append(havingSQL).append(") ");
+					needAnd = true;
+				}
 			}
 		}
 
