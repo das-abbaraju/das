@@ -274,7 +274,7 @@
 				});
 				
 				$('div.question a.operatorViewable').each(function() {
-					$(this).attr('href', $(this).attr('href') + "?accountID=" + conID);
+					$(this).attr('href', $(this).attr('href') + "?account=" + conID);
 				});
 			} else {
 				$('div.question a.passAudit, div.question a.operatorViewable')
