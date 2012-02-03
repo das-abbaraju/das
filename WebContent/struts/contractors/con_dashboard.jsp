@@ -4,9 +4,10 @@
 
 <html>
 	<head>
-		<title><s:property value="contractor.name" /></title>
+		<title>
+			<s:property value="contractor.name" />
+		</title>
 		
-		<s:include value="../jquery.jsp" />
 		<s:include value="../reports/reportHeader.jsp"/>
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -14,8 +15,8 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/dashboard.css?v=<s:property value="version"/>" />
 		
 		<style type="text/css">
-			<s:set name="isWatched" value="%{watched ? 'none' : 'inline'}" />
-			<s:set name="stopWatch" value="%{watched ? 'inline' : 'none'}" />
+			<s:set name="isWatched" value="%{watched ? 'inline' : 'none'}" />
+			<s:set name="stopWatch" value="%{watched ? 'none' : 'inline'}" />
 			.watch
 			{
 				display: <s:property value="#isWatched" />;
@@ -23,7 +24,7 @@
 			
 			.stop
 			{
-				display: <s:property value="#stopWatched" />;
+				display: <s:property value="#stopWatch" />;
 			}
 		</style>
 		
@@ -95,7 +96,9 @@
 		
 		<s:if test="permissions.admin">
 			<s:if test="contractor.hasPastDueInvoice()">
-				<div class="alert"><s:text name="ContractorView.HasPastDueInvoice" /></div>
+				<div class="alert">
+					<s:text name="ContractorView.HasPastDueInvoice" />
+				</div>
 			</s:if>
 		</s:if>
 		
@@ -277,7 +280,7 @@
 												</a>
 											</span>
 											<span class="stop watch">
-												<a href="#" id="start_watch_link" data-watch="<s:property value="watch.id" />">
+												<a href="#" id="start_watch_link" data-conid="<s:property value="contractor.id" />">
 													<s:text name="ContractorView.WatchContractor" />
 												</a>
 											</span>
@@ -680,7 +683,5 @@
 				</td>
 			</tr>
 		</table>
-		<script type="text/javascript" src="js/core.js?version=<s:property value="version" />"></script>
-		<script type="text/javascript" src="js/contractor_dashboard.js?version=<s:property value="version" />"></script>
 	</body>
 </html>

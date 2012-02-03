@@ -100,8 +100,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorOperator co;
 	private int opID;
 
-	private ContractorWatch watch;
-
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
@@ -260,16 +258,16 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
 	public String startWatch() {
-		ContractorWatch existingWatch = getExistingContractorWatch();
+		ContractorWatch contractorWatch = getExistingContractorWatch();
 
-		if (existingWatch == null) {
-			watch = new ContractorWatch();
-			watch.setContractor(contractor);
-			watch.setUser(userDAO.find(permissions.getUserId()));
-			watch.setAuditColumns(permissions);
+		if (contractorWatch == null) {
+			contractorWatch = new ContractorWatch();
+			contractorWatch.setContractor(contractor);
+			contractorWatch.setUser(userDAO.find(permissions.getUserId()));
+			contractorWatch.setAuditColumns(permissions);
 
-			userDAO.save(watch);
-			output = "" + watch.getId();
+			userDAO.save(contractorWatch);
+			addActionMessage("ContractorView.SuccessfullyAddedWatch");
 		} else {
 			addActionError(getText("ContractorDashboard.AlreadyWatchingContractor"));
 		}
@@ -279,6 +277,15 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
 	public String stopWatch() {
+		ContractorWatch existingWatch = getExistingContractorWatch();
+		
+		if (existingWatch != null) {
+			userDAO.remove(existingWatch);
+			addActionMessage("ContractorView.SuccessfullyRemovedWatch");
+		} else {
+			addActionError("ContractorView.RemovingUnwatchedContractor");
+		}
+		
 		return BLANK;
 	}
 
@@ -301,14 +308,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public void setOpID(int opID) {
 		this.opID = opID;
-	}
-
-	public ContractorWatch getWatch() {
-		return watch;
-	}
-
-	public void setWatch(ContractorWatch watch) {
-		this.watch = watch;
 	}
 
 	public List<ContractorAudit> getDocuGUARD() {
@@ -468,7 +467,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		User user = userDAO.find(permissions.getUserId());
 
 		for (ContractorWatch watchedContractor : user.getWatchedContractors()) {
-			if (watchedContractor.getId() == contractor.getId())
+			if (watchedContractor.getContractor().getId() == contractor.getId())
 				return watchedContractor;
 		}
 

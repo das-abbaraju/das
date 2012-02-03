@@ -2,67 +2,38 @@
     PICS.define('contractor.Dashboard', {
         methods: {
             init: function () {
-            	this.initializeTable();
-            	$('#contractor_operator_numbers_add').bind('click', this.addContractorOperatorNumber);
-            	$('#start_watch_link').live('click', this.startWatch);
-            	$('#stop_watch_link').live('click', this.stopWatch);
+            	$('#start_watch_link').live('click', {action: 'Add', method: 'start'}, this.controlWatch);
+            	$('#stop_watch_link').live('click', {action: 'Remove', method: 'stop'}, this.controlWatch);
             },
             
-            initializeTable: function() {
-            	PICS.ajax({
-            		url: "ManageContractorOperatorNumber.action",
-            		data: {
-            			contractor : conID
-            		},
-            		success: function(data, textStatus, XMLHttpRequest) {
-            			$('#contractor_operator_numbers').html(data);
-            		}
-            	});            	
-            },
-            
-            addContractorOperatorNumber: function(event) {
+            controlWatch: function(event) {
             	event.preventDefault();
-            	PICS.ajax({
-            		url: "ManageContractorOperatorNumber!save.action",
-            		data: $('#contractor_operator_numbers_form').serialize(),
-            		success: function(data, textStatus, XMLHttpRequest) {
-            			$('#contractor_operator_numbers').html(data);
-            		}
-            	});
-            },
-            
-            startWatch: function(event) {
-            	event.preventDefault();
+            	
+            	var action = event.data.action;
+            	var method = event.data.method;
+            	
             	var conID = $(this).attr('data-conid');
+            	var previouslyVisible = $('#contractorWatch .watch:visible');
+            	var oldText = previouslyVisible.html();
             	
-            	$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />' + translate('JS.ContractorView.AddWatch'));
+            	previouslyVisible.html(
+            		'<img src="images/ajax_process.gif" alt="Loading" />' + translate('JS.ContractorView.' + action + 'Watch')
+            	);
             	
             	PICS.ajax({
-            		url: 'ContractorView!startWatch.action',
+            		url: 'ContractorView!' + method + 'Watch.action',
             		data: {
             			contractor: conID
             		},
             		success: function(data, textStatus, XMLHttpRequest) {
-            			$('#contractorWatch .watched').toggle().effect('highlight', {color: '#FFFF11'}, 1000);
-            			$('#contractorWatch .not.watched').attr('data-watch', data);
+            			var visibleNow = $('#contractorWatch .watch').not(':visible');
+            			visibleNow.show();
+            			visibleNow.effect('highlight', {color: '#FFFF11'}, 1000);
             		},
-            	});
-            },
-            
-            stopWatch: function(event) {
-            	event.preventDefault();
-            	var watch = $(this).attr('data-watch');
-            	
-            	$('#contractorWatch').html('<img src="images/ajax_process.gif" alt="Loading" />' + translate('JS.ContractorView.RemoveWatch'));
-            	
-            	PICS.ajax({
-            		url: 'ContractorView!stopWatch.action',
-            		data: {
-            			watch: watch
-            		},
-            		success: function(data, textStatus, XMLHttpRequest) {
-            			$('#contractorWatch watch').toggle().effect('highlight', {color: '#FFFF11'}, 1000);
-            		},
+            		complete: function(data, textStatus, XMLHttpRequest) {
+            			previouslyVisible.html(oldText);
+            			previouslyVisible.hide();
+            		}
             	});
             }
         }
