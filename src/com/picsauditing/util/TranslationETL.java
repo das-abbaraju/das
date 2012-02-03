@@ -231,7 +231,7 @@ public class TranslationETL extends PicsActionSupport {
 				element = document.createElement("qualityRating");
 				translation.appendChild(element);
 				elementText = document.createTextNode(d.get("qualityRating").toString());
-				element.appendChild(text);
+				element.appendChild(elementText);
 
 				if (d.get("createdBy") != null) {
 					element = document.createElement("createdBy");
