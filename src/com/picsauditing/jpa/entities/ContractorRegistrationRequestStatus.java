@@ -8,6 +8,27 @@ public enum ContractorRegistrationRequestStatus implements Translatable {
 	ClosedContactedSuccessful, 
 	ClosedSuccessful, 
 	ClosedUnsuccessful;
+	
+	public boolean isActive() {
+		return this == Active;
+	}
+	
+	public boolean isHold() {
+		return this == Hold;
+	}
+	
+	public boolean isClosedContactedSuccessful() {
+		return this == ClosedContactedSuccessful;
+	}
+	
+	public boolean isClosedSuccessful() {
+		return this == ClosedSuccessful;
+	}
+	
+	public boolean isClosedUnsuccessful() {
+		return this == ClosedUnsuccessful;
+	}
+	
 	@Transient
 	@Override
 	public String getI18nKey() {
