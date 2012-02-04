@@ -48,4 +48,9 @@ public class AuditOptionValueDAO extends PicsDAO {
 		// TODO Add sort here
 		return query.getResultList();
 	}
+	
+	public List<AuditOptionValue> findOptionValuesByOptionGroupId(int id) {
+		AuditOptionGroup optionGroup = findOptionGroup(id);
+		return optionGroup.getValues();
+	}
 }

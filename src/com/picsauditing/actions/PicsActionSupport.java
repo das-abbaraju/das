@@ -19,6 +19,7 @@ import javax.persistence.Transient;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -97,6 +98,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
+	
+	/**
+	 * JSONArray used to return JSON array.
+	 * 
+	 * @see com.picsauditing.strutsutil.JSONArrayResult
+	 */
+	protected JSONArray jsonArray = new JSONArray();
 
 	/**
 	 * Current logged in user
@@ -499,6 +507,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	public void setCallback(String callback) {
 		this.callback = callback;
+	}
+	
+	public JSONArray getJsonArray() {
+		return jsonArray;
+	}
+
+	public void setJsonArray(JSONArray jsonArray) {
+		this.jsonArray = jsonArray;
 	}
 
 	protected int getParameter(String name) {
