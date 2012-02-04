@@ -93,6 +93,10 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				addActionError("Option type is required when 'Multiple Choice' is used as the question type");
 				return false;
 			}
+			
+			if (question.getLanguages().isEmpty() && category.getLanguages().size() == 1) {
+				question.setLanguages(category.getLanguages());
+			}
 
 			if (question.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "

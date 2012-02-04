@@ -53,6 +53,10 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				this.addActionError("Category name is required");
 				return false;
 			}
+			
+			if (category.getLanguages().isEmpty() && auditType.getLanguages().size() == 1) {
+				category.setLanguages(auditType.getLanguages());
+			}
 
 			if (category.hasMissingChildRequiredLanguages()) {
 				addActionError("Changes to required languages must always have at least one language left. "
