@@ -44,6 +44,7 @@ public class ReportContractorAuditAssignment extends ReportContractorAudits {
 		sql.addField("manual.comment AS mcomment");
 		sql.addField("manual.id AS mid");
 		sql.addWhere("manual.dateVerified IS NOT NULL");
+		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 		if (getFilter().isNotRenewingContractors())
 			sql.addWhere("c.renew = 0");
 		if (getFilter().isContractorsWithPendingMembership())

@@ -21,6 +21,7 @@ public class ReportContractorAuditAuditor extends ReportContractorAuditOperator 
 				+ "AND ca2.auditTypeID = ca.auditTypeID AND atype.hasMultiple = 0 AND ca2.id != ca.id "
 				+ "AND (ca2.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Complete')) ");
 		sql.addWhere("ca.id IN (SELECT auditID FROM contractor_audit_operator WHERE visible = 1 AND status = 'Pending')");
+		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 
 		if (getFilter().isAuditorType())
 			sql.addWhere("ca.auditorID=" + permissions.getUserId());
