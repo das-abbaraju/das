@@ -34,5 +34,14 @@ public class Assert {
 	private static long toSeconds(long milliseconds) {
 		return Math.round(milliseconds / 1000);
 	}
+	public static void assertContains(String expectedSubstring, String actual) {
+		String adjustedActual = simplifyWhitespace(actual);
+		if (adjustedActual.contains(expectedSubstring))
+			return;
+		throw new ComparisonFailure("Substring comparison ",expectedSubstring, actual);
+	}
+	static private String simplifyWhitespace(String s) {
+		return s.replace("\n", " ").replace("  ", " ");
+	}
 
 }

@@ -1,7 +1,10 @@
 package com.picsauditing.report;
 
-import junit.framework.ComparisonFailure;
-import junit.framework.TestCase;
+import static com.picsauditing.util.Assert.assertContains;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
@@ -12,24 +15,27 @@ import com.picsauditing.report.models.QueryAccount;
 import com.picsauditing.report.models.QueryAccountContractor;
 import com.picsauditing.search.SelectSQL;
 
-public class SqlBuilderTest extends TestCase {
+public class SqlBuilderTest {
 	private SqlBuilder builder;
 	private SimpleReportDefinition definition = new SimpleReportDefinition();
 
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		builder = new SqlBuilder();
 		builder.setDefinition(definition);
 	}
 
+	@Test
 	public void testAccounts() {
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
 
-		assertEquals(0, sql.getFields().size());
-		assertContains("FROM accounts AS a", sql);
-		assertContains("ORDER BY a.nameIndex", sql);
+		assertEquals(2, sql.getFields().size());
+		assertContains("FROM accounts AS a", sql.toString());
+		assertContains("ORDER BY a.name", sql.toString());
 	}
 
+	@Test
 	public void testAccountColumns() {
 		definition.getColumns().add(new SimpleReportColumn("accountID"));
 		definition.getColumns().add(new SimpleReportColumn("accountName"));
@@ -40,18 +46,20 @@ public class SqlBuilderTest extends TestCase {
 
 		assertEquals(3, sql.getFields().size());
 
-		assertContains("a.id AS `accountID`", sql);
+		assertContains("a.id AS `accountID`", sql.toString());
 	}
 
+	@Test
 	public void testContractors() {
 		builder.setBase(new QueryAccountContractor());
 		SelectSQL sql = builder.getSql();
 
-		assertEquals(0, sql.getFields().size());
+		assertEquals(2, sql.getFields().size());
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
-		assertContains(expected, sql);
+		assertContains(expected, sql.toString());
 	}
 
+	@Test
 	public void testContractorColumns() {
 		definition.getColumns().add(new SimpleReportColumn("accountID"));
 		definition.getColumns().add(new SimpleReportColumn("contractorName"));
@@ -63,6 +71,7 @@ public class SqlBuilderTest extends TestCase {
 		assertEquals(3, sql.getFields().size());
 	}
 
+	@Test
 	public void testLeftJoinUser() throws Exception {
 		definition.getColumns().add(new SimpleReportColumn("accountID"));
 		definition.getColumns().add(new SimpleReportColumn("accountName"));
@@ -72,9 +81,10 @@ public class SqlBuilderTest extends TestCase {
 		SelectSQL sql = builder.getSql();
 
 		assertEquals(3, sql.getFields().size());
-		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql);
+		assertContains("LEFT JOIN users AS accountContact ON accountContact.id = a.contactID", sql.toString());
 	}
 
+	@Test
 	public void testFilters() {
 		definition.getColumns().add(new SimpleReportColumn("accountName"));
 		SimpleReportFilter filter = new SimpleReportFilter();
@@ -86,9 +96,10 @@ public class SqlBuilderTest extends TestCase {
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
 
-		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\'s%'))", sql);
+		assertContains("WHERE ((a.nameIndex LIKE 'Trevor\'s%'))", sql.toString());
 	}
 
+	@Test
 	public void testFiltersWithComplexColumn() {
 		SimpleReportColumn column = new SimpleReportColumn("AccountCreationDateYear");
 		column.setFunction(QueryFunction.Year);
@@ -104,9 +115,10 @@ public class SqlBuilderTest extends TestCase {
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
 
-		assertContains("(YEAR(a.creationDate) > '2010')", sql);
+		assertContains("(YEAR(a.creationDate) > '2010')", sql.toString());
 	}
 
+	@Test
 	public void testGroupBy() {
 		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
 		SimpleReportColumn column = new SimpleReportColumn("accountStatusCount");
@@ -116,41 +128,27 @@ public class SqlBuilderTest extends TestCase {
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
 
-		assertContains("COUNT(a.status)", sql);
-		assertContains("GROUP BY a.status", sql);
+		assertContains("COUNT(a.status)", sql.toString());
+		assertContains("GROUP BY a.status", sql.toString());
 	}
 
+	@Test
 	public void testSorts() {
 		builder.setBase(new QueryAccount());
 		
 		SimpleReportSort sort = new SimpleReportSort("accountStatus");
 		definition.getOrderBy().add(sort);
 		SelectSQL sql = builder.getSql();
-		assertContains("ORDER BY a.status", sql);
+		assertContains("ORDER BY a.status", sql.toString());
 		
 		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
 		sql = builder.getSql();
-		assertContains("ORDER BY accountStatus", sql);
+		assertContains("ORDER BY accountStatus", sql.toString());
 		
 		sort.setAscending(false);
 		sql = builder.getSql();
-		assertContains("ORDER BY accountStatus DESC", sql);
+		assertContains("ORDER BY accountStatus DESC", sql.toString());
 	}
 
-	static private void assertContains(String pattern, SelectSQL sql) {
-		// sql.getFields().clear();
-		String sqlWithoutWhitespace = simplifyWhitespace(sql);
-		// sqlWithoutWhitespace = sqlWithoutWhitespace.replace("SELECT * ", "");
-		if (sqlWithoutWhitespace.contains(pattern))
-			return;
-		throw new ComparisonFailure("Missing sql", pattern, sql.toString());
-	}
 
-	static private String simplifyWhitespace(SelectSQL sql) {
-		// Consider moving this to SelectSQL
-		String string = sql.toString();
-		string = string.replace("\n", " ");
-		string = string.replace("  ", " ");
-		return string;
-	}
 }
