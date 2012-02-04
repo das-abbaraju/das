@@ -185,7 +185,7 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 		sql.addField("t2.qualityRating toQualityRating");
 
-		sql.addOrderBy("t2.updatedBy, t2.lastUsed DESC, t1.updatedBy, t1.lastUsed DESC");
+		sql.addOrderBy("t1.msgKey");
 
 		if (searchType != null) {
 			if (searchType.equals("Common")) {
