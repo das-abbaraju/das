@@ -192,7 +192,7 @@
             var items;
             
             if (typeof source == 'string') {
-                items = getItemsFromSource.apply(this);
+                items = getItemsFromSource.apply(this, [source]);
             } else {
                 items = source;
             }
