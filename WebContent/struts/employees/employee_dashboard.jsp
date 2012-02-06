@@ -9,6 +9,23 @@
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
+
+<s:include value="../jquery.jsp" />
+
+<script type="text/javascript">
+	function checkSelections() {
+		if (!$('form .selectable').is(':checked')) {
+			alert("Please select an employee.");
+			return false;			
+		}
+
+		if ($('#operatorId').val() == 0) {
+			alert("Please select an operator.");
+			return false;
+		}
+		return true;
+	}
+</script>
 </head>
 <body>
 	<s:include value="../contractors/conHeader.jsp"></s:include>
@@ -16,8 +33,8 @@
 	<s:include value="../actionMessages.jsp" />
 
 	<s:if test="permissions.admin || permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)" >
-		<a href="ManageEmployees.action?id=<s:property value="id" />">Edit <s:text name="global.Employees" /></a><br />
-		<a href="ManageJobRoles.action?id=<s:property value="id" />">Edit <s:text name="ManageEmployees.header.JobRoles" /></a><br />
+		<a href="ManageEmployees.action?id=<s:property value="id" />" class="edit" >Edit <s:text name="global.Employees" /></a><br />
+		<a href="ManageJobRoles.action?id=<s:property value="id" />" class="edit" >Edit <s:text name="ManageEmployees.header.JobRoles" /></a><br />
 	</s:if>
 	
 	<s:form id="employeeStatus" method="post" cssClass="forms">
@@ -25,7 +42,8 @@
 		<table class="report">
 			<thead>
 				<tr>
-					<td colspan="2"></td>
+					<s:if test="canAddAudits"><td colspan="2"></td></s:if>
+					<s:else><td></td></s:else>
 					<td align="center">Last Name</td>
 					<td align="center">First Name</td>
 					<td align="center">Title</td>
@@ -40,9 +58,11 @@
 					<td class="right">
 						<s:property value="#stat.index + 1" />
 					</td>
-					<td class="center">
-						<input type="checkbox" name="selectedEmployeeIds" value="<s:property value="#employee.id" />" class="selectable" />
-					</td>
+					<s:if test="canAddAudits" >
+						<td class="center">
+							<input type="checkbox" name="selectedEmployeeIds" value="<s:property value="#employee.id" />" class="selectable" />
+						</td>
+					</s:if>
 					<td><s:property value="#employee.lastName" /></td>
 					<td><s:property value="#employee.firstName" /></td>
 					<td><s:property value="#employee.title" /></td>
@@ -76,16 +96,18 @@
 			</s:iterator>
 		</table>
 		
-		<s:if test="permissions.admin || permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)" >
+		<s:if test="(permissions.admin || permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)) && canAddAudits" >
 			<s:if test="contractor.nonCorporateOperators != null && contractor.nonCorporateOperators.size() > 1" >
 				<label>Operator</label>
-				<s:select name="selectedOperator" list="contractor.nonCorporateOperators" headerKey="" headerValue="- Operator -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
+				<s:select id="operatorId" name="selectedOperator" list="contractor.nonCorporateOperators" headerKey="" headerValue="- Operator -" listKey="operatorAccount.id" listValue="operatorAccount.name" />
 			</s:if>
 			<s:if test="isAuditTypeAddable(@com.picsauditing.jpa.entities.AuditType@INTEGRITYMANAGEMENT)" >
-				<s:submit name="button" cssClass="picsbutton " value="Create Integrity Management Audit(s)" method="addIntegrityManagementAudits"/>
+				<s:submit name="button" cssClass="picsbutton " value="Create Integrity Management Audit(s)" 
+					method="addIntegrityManagementAudits" onclick="return checkSelections() "/>
 			</s:if>
 			<s:if test="isAuditTypeAddable(@com.picsauditing.jpa.entities.AuditType@IMPLEMENTATIONAUDITPLUS)" >
-				<s:submit name="button" cssClass="picsbutton " value="Create Integrity Management Audit(s)" method="addImplementationAuditPlusAudits"/>
+				<s:submit name="button" cssClass="picsbutton " value="Create Implementation Audit Plus Audit(s)" 
+					method="addImplementationAuditPlusAudits" onclick="return checkSelections()" />
 			</s:if>
 		</s:if>
 	</s:form>
