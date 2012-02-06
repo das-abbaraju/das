@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class ContractorAuditDownload extends AuditActionSupport {
@@ -223,7 +224,8 @@ public class ContractorAuditDownload extends AuditActionSupport {
 	 * @param oshaAudit
 	 * @param average
 	 */
-	/* Testable */void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
+	@Testable
+	void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
 		if (oshaAudit == null || average == null) {
 			return;
 		}

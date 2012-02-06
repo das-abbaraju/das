@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
@@ -271,7 +272,8 @@ public class OpenTasks extends TranslationActionSupport {
 		return openReq;
 	}
 
-	/* testable */boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
+	@Testable
+	boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
 		int needed = 0;
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
