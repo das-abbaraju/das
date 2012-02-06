@@ -40,9 +40,7 @@ public class UserAssignmentDAO extends PicsDAO {
 	public UserAssignment findByContractor(ContractorAccount contractor, UserAssignmentType type, AuditType auditType) {
 		UserAssignment assignment = null;
 		try {
-			List<UserAssignment> assignments = createQuery(contractor, type, "UserAssignment").getResultList();
-			//findList(contractor, type, auditType);
-			
+			List<UserAssignment> assignments = findList(contractor, type, auditType);
 			// TODO implement comparable on UserAssignment and return the
 			// first entry
 			if (assignments.size() > 0) {
@@ -58,81 +56,88 @@ public class UserAssignmentDAO extends PicsDAO {
 
 		return assignment;
 	}
-	
+
 	// Do we want to find a CSR by default?
 	public UserAssignment findByContractor(ContractorAccount contractor) {
 		return findByContractor(contractor, UserAssignmentType.CSR, null);
+	}
+
+	public UserAssignment findByContractor(ContractorAccount contractor, UserAssignmentType type) {
+		return findByContractor(contractor, type, null);
 	}
 
 	// Assume that provided an audit type we just want the auditor
 	public UserAssignment findByContractor(ContractorAccount contractor, AuditType auditType) {
 		return findByContractor(contractor, UserAssignmentType.Auditor, auditType);
 	}
-	
-	public List<UserAssignment> findList(ContractorAudit conAudit, UserAssignmentType assignmentType) {
-		Query q = createQuery(conAudit, assignmentType, "UserAssignment");
+
+	public List<UserAssignment> findList(ContractorAccount contractor, UserAssignmentType type, AuditType auditType) {
+		return findList(contractor.getState() != null ? contractor.getState().getIsoCode() : null, contractor
+				.getCountry() != null ? contractor.getCountry().getIsoCode() : null, contractor.getZip(), contractor
+				.getId(), type, auditType);
+	}
+
+	public List<UserAssignment> findList(ContractorAudit conAudit, UserAssignmentType type, AuditType auditType) {
+		return findList(conAudit.getState(), conAudit.getCountry(), conAudit.getZip(), conAudit.getContractorAccount()
+				.getId(), type, auditType);
+	}
+
+	public List<UserAssignment> findList(String state, String country, String zip, int conID, UserAssignmentType type,
+			AuditType auditType) {
+		String where = "(country IS NULL OR country.isoCode = :country)";
+		where += " AND (state IS NULL OR state.isoCode = :state)";
+		// If you want the assignment to be based on any zip code starting
+		// with 9, then use 9% in the postalStart
+		where += " AND (postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart)";
+		// postalEnd works the same way as postalStart but with the added
+		// wildcard. This allows us to include 92604-1234 even though the
+		// end is 92604
+		where += " AND (postalEnd IS NULL OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
+		// For these 3 cases, the contractor has to be null
+		where += " AND contractor IS NULL";
+		// contractor is used as an override. this has the highest priority.
+		where = "(" + where + ")" + " OR contractor.id = :conID";
+
+		if (type != null)
+			where = "assignmentType = '" + type + "' AND " + where;
+		if (auditType != null)
+			where = "auditType.id = " + auditType.getId() + " AND " + where;
+
+		Query q = em.createQuery("FROM UserAssignment WHERE " + where);
+
+		q.setParameter("state", state);
+		q.setParameter("country", country);
+		q.setParameter("postal", zip);
+		q.setParameter("conID", conID);
+
 		return q.getResultList();
 	}
 
 	public List<User> findAuditorsByLocation(ContractorAudit conAudit, UserAssignmentType assignmentType) {
-		Query q = createQuery(conAudit, assignmentType, "User");
-		return q.getResultList();
-	}
-	
-	private Query createQuery(Object o, UserAssignmentType assignmentType, String queryType) {
-		ContractorAccount contractor = null;
-		ContractorAudit conAudit = null;
-		
-		String state = "";
-		String country = "";
-		String zip = "";
-		int conID = 0;
-		
-		if (o instanceof ContractorAccount) {
-			contractor = (ContractorAccount) o;
-			state = contractor.getState() != null ? contractor.getState().getIsoCode() : null;
-			country = contractor.getCountry() != null ? contractor.getCountry().getIsoCode() : null;
-			zip = contractor.getZip();
-			conID = contractor.getId();
-		} else if (o instanceof ContractorAudit) {
-			conAudit = (ContractorAudit) o;
-			state = conAudit.getState();
-			country = conAudit.getCountry(); 
-			zip = conAudit.getZip();
-			conID = conAudit.getContractorAccount().getId();
-		}
-		
+		String state = conAudit.getState();
+		String country = conAudit.getCountry();
+		String zip = conAudit.getZip();
+		int conID = conAudit.getContractorAccount().getId();
+
 		String where = "(ua.country IS NULL OR ua.country.isoCode = :country)";
 		where += " AND (ua.state IS NULL OR ua.state.isoCode = :state)";
-		// If you want the assignment to be based on any zip code starting
-		// with 9, then use 9% in the postalStart
 		where += " AND (ua.postalStart IS NULL OR ua.postalStart < :postal OR :postal LIKE ua.postalStart)";
-		// postalEnd works the same way as postalStart but with the added
-		// wild card. This allows us to include 92604-1234 even though the
-		// end is 92604
 		where += " AND (ua.postalEnd IS NULL OR ua.postalEnd > :postal OR :postal LIKE CONCAT(ua.postalEnd, '%') )";
-		// For these 3 cases, the contractor has to be null
 		where += " AND ua.contractor IS NULL";
-		// contractor is used as an override. this has the highest priority.
 		where = "(" + where + ")" + " OR ua.contractor.id = :conID";
-		
+
 		if (assignmentType != null)
 			where = "ua.assignmentType = '" + assignmentType + "' AND " + where;
 		if (conAudit != null)
 			where = "ua.auditType.id = " + conAudit.getAuditType().getId() + " AND " + where;
-		
-		Query q = null;
-		
-		if (queryType.equals("User"))
-			q = em.createQuery("select DISTINCT ua.user FROM UserAssignment ua WHERE " + where);
-		else
-			q = em.createQuery("FROM UserAssignment WHERE " + where);
-		
+
+		Query q = em.createQuery("select DISTINCT ua.user FROM UserAssignment ua WHERE " + where);
+
 		q.setParameter("state", state);
 		q.setParameter("country", country);
 		q.setParameter("postal", zip);
-		q.setParameter("conID", conID);		
-		
-		return q;
+		q.setParameter("conID", conID);
+
+		return q.getResultList();
 	}
 }
