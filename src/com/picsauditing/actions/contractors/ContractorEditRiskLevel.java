@@ -8,9 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -22,6 +27,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	protected UserDAO userDAO;
 	@Autowired
 	protected NoteDAO noteDAO;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	protected LowMedHigh safetyRisk;
 	protected LowMedHigh productRisk;
@@ -60,6 +67,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		LowMedHigh oldProduct = contractor.getProductRisk();
 		LowMedHigh oldTransportation = contractor.getTransportationRisk();
 		boolean needsUpgrades = false;
+		boolean needsPqfReset = false;
 
 		if (contractor.getAccountLevel().isListOnly()) {
 			if (!isListOnlyEligibleForNewProductRisk(productRisk)) {
@@ -85,6 +93,9 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			if (oldSafety.compareTo(safetyRisk) < 0)
 				needsUpgrades = true;
+			
+			if (isRiskChanged(oldSafety, safetyRisk))
+				needsPqfReset = true;
 		}
 
 		if (productRisk != null && !contractor.getProductRisk().equals(productRisk)) {
@@ -96,6 +107,9 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 
 			if (oldProduct.compareTo(productRisk) < 0)
 				needsUpgrades = true;
+			
+			if (isRiskChanged(oldProduct, productRisk))
+				needsPqfReset = true;
 		} else if (contractor.getProductRisk() == null && productRisk != null) {
 			// Add a product risk if it doesn't exist...?
 			noteSummary.add("set product risk level to " + productRisk.toString());
@@ -136,6 +150,10 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 			// If contractor risk level being raised, stamp the last upgrade date
 			if (needsUpgrades)
 				contractor.setLastUpgradeDate(new Date());
+			
+			if (needsPqfReset) {
+				resetPqf();
+			}
 
 			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
@@ -143,6 +161,35 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		}
 
 		return SUCCESS;
+	}
+	
+	private boolean isRiskChanged(LowMedHigh oldSafetyRisk, LowMedHigh newSafetyRisk) {
+		if ((newSafetyRisk.equals(LowMedHigh.Med) || newSafetyRisk.equals(LowMedHigh.High)) 
+				&& (oldSafetyRisk.equals(LowMedHigh.None) || oldSafetyRisk.equals(LowMedHigh.Low)))
+			return true;
+		return false;
+	}
+	
+	private void resetPqf() {
+		for (ContractorAudit audit:contractor.getAudits()) {
+			if (audit.getAuditType().isPqf()) {
+				resetCaos(audit);
+				auditBuilder.recalculateCategories(audit);
+				dao.save(audit);
+			}
+		}
+	}
+
+	private void resetCaos(ContractorAudit audit) {
+		for (ContractorAuditOperator cao:audit.getOperators()) {
+			if (cao.isVisible() && cao.getStatus().after(AuditStatus.Pending)) {
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmit, permissions);
+				if (caow != null) {
+					caow.setNotes(getText("ContractorEditRiskLevel.statuschanged"));
+					dao.save(caow);
+				}
+			}
+		}
 	}
 
 	public LowMedHigh getSafetyRisk() {
