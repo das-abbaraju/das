@@ -28,7 +28,7 @@ small {
 	function toggleVerify(auditId, questionId, answerId, categoryId) {
 		var comment = $('#comment_' + questionId).val();
 		var answerelm = $('#answer_' + questionId);
-		
+		var verifyBtn = $("#qid_" + questionId + " input#verify_" + questionId);
 		startThinking({div:'status_'+questionId});
 		var data= {
 				'auditData.audit.id': auditId,
@@ -44,8 +44,12 @@ small {
 			data['auditData.answer'] = answerelm.val();
 		}
 
+		verifyBtn.attr("disabled", "true");
+		
 		$.getJSON('AuditToggleVerifyAjax.action', data, function(json){
 				$('#verified_' + questionId).toggle();
+
+		
 				if (json.who) {
 					$('#verify_' + questionId ).val('Unverify');
 					$('#verify_details_' + questionId).text(json.dateVerified + ' by ' + json.who);
@@ -55,7 +59,7 @@ small {
 				setApproveButton( json.percentVerified );
 				stopThinking({div:'status_'+questionId});		
 				startThinking({div: 'caoActionArea'});
-				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': auditId});
+				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': auditId}, function(){verifyBtn.removeAttr("disabled");});
 			}
 		);
 		return false;
