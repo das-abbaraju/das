@@ -6,52 +6,6 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
-<style type="text/css">
-	td.saving,
-	td.saving textarea,
-	td.saving button
-	{
-		cursor: wait;
-	}
-	
-	table.report td .edit
-	{
-		display: none;
-	}
-	
-	table.report td.editMode .edit
-	{
-		display: inherit;
-	}
-	
-	table.report td.editMode .view
-	{
-		display: none;
-	}
-	
-	span.view
-	{
-		padding-left: 10px;
-	}
-	
-	td.phrase
-	{
-		padding: 10px !important;
-	}
-	
-	td.phrase .right
-	{
-		float: right;
-		clear: both;
-		margin: 0 0 10px 10px;
-	}
-	
-	input[type=checkbox]
-	{
-		margin: 0 !important;
-	}
-</style>
-
 <script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
 <script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
@@ -185,82 +139,110 @@
 <div>
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
-<table class="report" style="width: 100%">
+
+<table class="table translation-list">
 	<thead>
 		<tr>
-			<td style="width: 20%">
+			<th class="translation-key">
 				Key
-			</td>
-			<td style="width: 40%">
+			</th>
+			<th class="translation-from">
 				<s:property value="localeFrom.displayName"/>
-			</td>
-			<td style="width: 40%">
+			</th>
+			<th class="translation-to">
 				<s:property value="localeTo.displayName"/>
-			</td>
+			</th>
 		</tr>
 	</thead>
     
-	<s:iterator value="list">
-		<tr class="translate" id="row<s:property value="from.id"/>">
-			<td>
-				<s:property value="from.key" />
+	<s:iterator value="list" status="rowstatus">
+		<tr id="row<s:property value="from.id"/>" class="translate <s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>">
+			<td class="translation-key">
+				<span class="key"><s:property value="from.key" /></span>
 			</td>
             
-			<s:iterator value="items">
-				<td class="phrase">
-					<form onsubmit="return false;" class="translationValue">
-						<input type="hidden" name="translation" value="<s:property value="id"/>">
-						<s:hidden name="localeTo" />
-						<s:hidden name="localeFrom" />
-                        <input type="hidden" name="button" value="save">
+			<s:iterator value="items" status="status">
+                <s:if test="#status.index == 0">
+                    <s:set var="translation_class" value="'translation-from'" />
+                    <s:set var="radio_id" value="%{'quality_from_' + id + '_'}" />
+                    <s:set var="checkbox_id" value="%{'applicable_from_' + id + '_'}" />
+                </s:if>
+                <s:else>
+                    <s:set var="translation_class" value="'translation-to'" />
+                    <s:set var="radio_id" value="%{'quality_to_' + id + '_'}" />
+                    <s:set var="checkbox_id" value="%{'applicable_to_' + id + '_'}" />
+                </s:else>
+                
+				<td class="${translation_class}">
+                    <s:form cssClass="translationValue" onsubmit="return false;" theme="pics">
+                        <s:hidden name="translation" value="%{id}" />
+                        <s:hidden name="localeTo" />
+                        <s:hidden name="localeFrom" />
+                        <s:hidden name="button" value="save" />
                         
-						<s:if test="!(id > 0)">
-							<s:hidden name="translation.locale" value="%{localeTo}" />
-							<s:hidden name="translation.key" value="%{from.key}" />
+                        <s:if test="!(id > 0)">
+                            <s:hidden name="translation.locale" value="%{localeTo}" />
+                            <s:hidden name="translation.key" value="%{from.key}" />
+                        </s:if>
+                        
+                        <div class="content view-mode">
+                            <div class="view">
+                                <div class="text">
+                                    <s:property value="value" escape="false" />
+                                </div>
+                                
+                                <%-- <s:if test="!(id > 0)">
+                                    <a href="javascript:;" class="btn small success suggestTranslation">Suggest</a>
+                                </s:if> --%>
+                                
+                                <a href="javascript:;" class="edit btn small primary">Edit</a>
+                            </div>
                             
-							<a href="#" class="view suggestTranslation">
-								Suggest
-							</a>
-						</s:if>
-                        
-						<a href="#" class="showEdit view">
-							Edit
-						</a>
-                        
-						<div class="edit">
-							<s:textarea name="translation.value" value="%{value}" cssStyle="width: 90%" rows="5" />
-							<br/>
-                            
-							<button name="button" class="save">Save</button>
-							<button class="cancel">Cancel</button>
-						</div>
-                        
-						<div class="right">
-							<s:radio
-								list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
-								name="translation.qualityRating"
-								theme="pics"
-								cssClass="qualityRating"
-								value="%{qualityRating}"
-							/>
-							<br />
-                            
-							<s:checkbox name="translation.applicable" value="%{applicable}" /> Applicable
-							<s:if test="!sourceLanguage.empty">
-								<br />
-								Source:
-								<s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
-							</s:if>
-						</div>
-						<span class="view">
-							<s:property value="value" escape="false" />
-						</span>
-					</form>
+                            <div class="edit">
+                                <s:textarea name="translation.value" value="%{value}" />
+                                
+                                <div class="actions">
+                                    <button name="button" class="save btn small success">Save</button>
+                                    <button class="cancel btn small">Cancel</button>
+                                    
+                                    <s:if test="!sourceLanguage.empty">
+                                        <span class="source">
+                                            Src: <s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
+                                        </span>
+                                    </s:if>
+                                </div>
+                                
+                                <div class="rate">
+                                    <div class="applicable">
+                                        <s:checkbox id="%{checkbox_id}" name="translation.applicable" value="%{applicable}" cssClass="is-applicable"/>
+                                    </div>
+                                    
+                                    <s:if test="applicable == false">
+                                        <s:set var="radio_display" value="'display: none'" />
+                                    </s:if>
+                                    <s:else>
+                                        <s:set var="radio_display" value="" />
+                                    </s:else>
+                                    
+                                    <div class="quality" style="${radio_display}">
+                                        <s:radio
+                                            list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+                                            name="translation.qualityRating"
+                                            id="%{radio_id}"
+                                            cssClass="qualityRating"
+                                            value="%{qualityRating}"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </s:form>
 				</td>
 			</s:iterator>
 		</tr>
 	</s:iterator>
 </table>
+
 <div>
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>

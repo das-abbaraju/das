@@ -1288,3 +1288,131 @@ div.blockDialog {
 {
 	float: right;
 }
+
+/* Translations */
+
+.translation-list
+{
+	width: 100%;
+	word-break: break-word;
+}
+
+.translation-list td
+{
+	vertical-align: top !important;
+}
+
+.translation-list .translation-key
+{
+	width: 10%;
+}
+
+.translation-list .translation-from,
+.translation-list .translation-to
+{
+	width: 45%;
+}
+
+.translation-list .suggestTranslation
+{
+	position: absolute;
+	text-decoration: none;	
+}
+
+.translation-list .view-mode.view-more
+{
+	cursor: pointer;
+}
+
+.translation-list .content
+{
+	float: left;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+
+.translation-list .content div.text
+{
+	padding: 0px 65px 0px 0px;
+}
+
+.translation-list .content .see-more
+{
+	line-height: 12px;
+	position: absolute;
+	right: 40px;
+	text-align: center;
+	top: 0px;
+	width: 20px;
+}
+
+.translation-list .content.view-mode .view
+{
+	height: 21px;
+}
+
+.translation-list .content.view-mode .view.all
+{
+	height: auto;
+}
+
+.translation-list .content.view-mode .view .edit
+{
+	position: absolute;
+	right: 0px;
+	text-decoration: none;
+	top: 0px;
+}
+
+.translation-list .content.view-mode .view .text *
+{
+	line-height: normal;
+}
+
+.translation-list .content.edit-mode .edit textarea
+{
+	height: 150px;
+	max-height: 300px;
+	max-width: 80%;
+	padding: 5px;
+	width: 80%;
+}
+
+.translation-list .content.view-mode div.view,
+.translation-list .content.edit-mode div.edit
+{
+	display: block;
+}
+
+.translation-list .content.view-mode div.edit,
+.translation-list .content.edit-mode div.view
+{
+	display: none;
+}
+
+.translation-list .source
+{
+	font-size: 11px;
+	font-weight: bold;
+	height: 21px;
+	margin-top: 2px;
+}
+
+.translation-list .rate
+{
+	background: #EEDC94;
+	border: 1px solid #E4C652;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	float: left;
+	margin-top: 10px;
+	padding: 5px;
+	overflow: hidden;
+}
+
+.translation-list .qualityRating
+{
+	margin-top: 10px;
+}
