@@ -22,7 +22,7 @@
 		
 		<s:include value="../jquery.jsp"></s:include>
 		
-		<script type="text/javascript" src="https://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 		<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
 		
 		<s:if test="conAudit != null">
