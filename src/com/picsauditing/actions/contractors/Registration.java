@@ -123,13 +123,17 @@ public class Registration extends ContractorActionSupport {
 		setupContractorData();
 		contractorAccountDao.save(contractor);
 		userDAO.save(user);
-
-		Permissions permissions = logInUser();
-		setLoginLog(permissions);
+		
+		// requires id for user to exist to seed the password properly
+		user.setEncryptedPassword(user.getPassword());
+		userDAO.save(user);
 
 		contractor.setAgreedBy(user);
 		contractor.setPrimaryContact(user);
 		contractorAccountDao.save(contractor);
+
+		Permissions permissions = logInUser();
+		setLoginLog(permissions);
 
 		sendWelcomeEmail();
 		addNote(contractor, "Welcome Email Sent");
@@ -201,7 +205,6 @@ public class Registration extends ContractorActionSupport {
 		user.setLocale(ActionContext.getContext().getLocale());
 		user.setAuditColumns(new User(User.CONTRACTOR));
 		user.setIsGroup(YesNo.No);
-		user.setEncryptedPassword(user.getPassword());
 		user.addOwnedPermissions(OpPerms.ContractorAdmin, User.CONTRACTOR);
 		user.addOwnedPermissions(OpPerms.ContractorSafety, User.CONTRACTOR);
 		user.addOwnedPermissions(OpPerms.ContractorInsurance, User.CONTRACTOR);
