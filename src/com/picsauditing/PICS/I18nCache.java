@@ -153,6 +153,7 @@ public class I18nCache implements Serializable {
 							newTranslation.setLocale(localeString);
 							newTranslation.setValue(DEFAULT_TRANSLATION);
 							newTranslation.setApplicable(true);
+							newTranslation.setQualityRating(TranslationQualityRating.Bad);
 							if (newTranslation.isKeyContentDriven())
 								newTranslation.setContentDriven(true);
 
