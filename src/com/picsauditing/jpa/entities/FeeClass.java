@@ -26,15 +26,15 @@ public enum FeeClass implements Translatable {
 				return false;
 
 			if (contractor.getLastUpgradeDate() != null
-					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingExpirationDate)
+					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
 					&& contractor.getBillingStatus() == "Upgrade")
 				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
-			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingExpirationDate);
-			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingExpirationDate);
-			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingExpirationDate);
-			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingExpirationDate);
+			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 
 			return isAllExclusionsApplicable(contractor, exclusions);
 		}
@@ -44,7 +44,7 @@ public enum FeeClass implements Translatable {
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			if (contractor.getPayingFacilities() == 1) {
 				Date now = new Date();
-				if (BASFInsureGUARDAndAuditGUARDPricingExpirationDate.after(now)) {
+				if (BASFInsureGUARDAndAuditGUARDPricingEffectiveDate.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
 							return new BigDecimal(299).setScale(2);
@@ -102,10 +102,10 @@ public enum FeeClass implements Translatable {
 	GST,
 	Misc;
 
-	private static final Date InsureGUARDPricingExpirationDate = DateBean.parseDate("2012-01-01");
-	private static final Date BASFInsureGUARDAndAuditGUARDPricingExpirationDate = DateBean.parseDate("2012-02-04");
-	private static final Date AIAndOldcasteInsureGUARDPricingExpirationDate = DateBean.parseDate("2013-01-01");
-	private static final Date SuncorInsureGUARDPricingExpirationDate = DateBean.parseDate("2014-02-01");
+	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
+	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
+	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
+	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
 
 	public boolean isPaymentExpiresNeeded() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == Activation || this == Reactivation;
