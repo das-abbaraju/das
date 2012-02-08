@@ -96,7 +96,7 @@ $(function() {
 		</fieldset>
 	</s:if>
 	<s:if test="employee.id > 0">
-		<s:if test="employee.account.requiresCompetencyReview && (unusedJobRoles.size() + employee.employeeRoles.size()) > 0">
+		<s:if test="showJobRolesSection">
 			<fieldset class="form">
 				<h2 class="formLegend"><s:text name="ManageEmployees.header.JobRoles" /></h2>
 				<div id="employee_role">

@@ -418,6 +418,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		return unusedJobRoles;
 	}
 
+	public boolean isShowJobRolesSection() {
+		boolean hasUnusedJobRoles = getUnusedJobRoles().size() > 0;
+		boolean hasEmployeeRoles = false;
+
+		if (employee != null) {
+			hasEmployeeRoles = employee.getEmployeeRoles().size() > 0;
+		}
+
+		return hasUnusedJobRoles || hasEmployeeRoles;
+	}
+
 	private void getOperators() {
 		Set<OperatorSite> returnList = new HashSet<OperatorSite>();
 		oqOperators = new ArrayList<OperatorSite>();
@@ -560,8 +571,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	/**
-	 * Gets all job tasks across all associated operators (if you're a contractor). Returns the list of job tasks per
-	 * project you have under your umbrella if you're an operator.
+	 * Gets all job tasks across all associated operators (if you're a
+	 * contractor). Returns the list of job tasks per project you have under
+	 * your umbrella if you're an operator.
 	 * 
 	 * @return
 	 */
