@@ -64,7 +64,7 @@ public class Trevor extends PicsActionSupport {
 	private JSONObject toTaggitJson(AuditOptionValue auditOptionValue) {
 		JSONObject obj = new JSONObject();
 		obj.put("id", auditOptionValue.getUniqueCode());
-		obj.put("value", auditOptionValue.getName());
+		obj.put("value", auditOptionValue.getName().toString());
 		return obj;
 	}
 
