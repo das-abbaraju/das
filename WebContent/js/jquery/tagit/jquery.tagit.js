@@ -17,7 +17,10 @@
         this.input; // input generated
         
         this.items;
-        this.items_selected; // selected items
+        this.items_selected;
+        
+        this.items_xhr = null;
+        this.items_selected_xhr = null;
     }
     
     function stringify(objects) {
@@ -114,6 +117,8 @@
                 var that = this;
                 var attempt = 1;
                 
+                console.log(is_selected);
+                
                 function fetchItems() {
                     if (attempt > 3) {
                         if (is_selected == undefined) {
@@ -132,18 +137,32 @@
                                 
                                 if (is_selected == undefined) {
                                     that.config.source = data;
+                                    that.items_xhr = false;
                                 } else {
                                     that.config.source_selected = data;
+                                    that.items_selected_xhr = false;
                                 }
                                 
                                 that.init();
                             },
                             error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                if (is_selected == undefined) {
+                                    that.items_xhr = false;
+                                } else {
+                                    that.items_selected_xhr = false;
+                                }
+                                
                                 attempt++;
                                 
                                 fetchItems();
                             }
                         });
+                        
+                        if (is_selected == undefined) {
+                            that.items_xhr = true;
+                        } else {
+                            that.items_selected_xhr = true;
+                        }
                     }
                 }
                 
@@ -250,7 +269,7 @@
                 
                 var source = this.config.source;
                 
-                if (typeof source == 'string') {
+                if (typeof source == 'string' && !this.items_xhr) {
                     getItemsFromSource.apply(this, [source]);
                 }
                 
@@ -275,7 +294,7 @@
                 
                 var source = this.config.source_selected;
                 
-                if (typeof source == 'string') {
+                if (typeof source == 'string' && !this.items_selected_xhr) {
                     getItemsFromSource.apply(this, [source]);
                 }
                 
