@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
@@ -83,7 +82,8 @@ public class ManageJobRoles extends AccountActionSupport {
 
 		jobRoleDAO.save(role);
 
-		return SUCCESS;
+		return redirect("ManageJobRoles.action?"
+				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
 	}
 
 	public String delete() throws Exception {
@@ -98,7 +98,8 @@ public class ManageJobRoles extends AccountActionSupport {
 			jobRoleDAO.remove(role);
 		}
 
-		return redirect("ManageJobRoles.action?" + (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
+		return redirect("ManageJobRoles.action?"
+				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
 	}
 
 	public String addCompetency() throws Exception {
