@@ -377,7 +377,7 @@ function loadStatus(caoID){
 							</li>
 						</s:if>
 						
-						<s:if test="permissions.picsEmployee && conAudit.closingAuditor.group.contains(User.GROUP_AUDITOR)">
+						<s:if test="permissions.picsEmployee" >
 							<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
 								<li>
 									<label><s:text name="Audit.ClosingAuditor" />:</label>
