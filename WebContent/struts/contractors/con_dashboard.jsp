@@ -490,6 +490,17 @@
 									</s:if>
 								</s:if>
 								
+								<s:if test="permissions.picsEmployee || permissions.operatorCorporate">
+									<div>
+										<span>
+											<s:text name="ContractorOperatorNumber" />:
+										</span>
+										<div id="contractor_operator_numbers">
+											<s:include value="contractor_operator_numbers.jsp" />
+										</div>
+									</div>
+								</s:if>
+								
 								<div class="clear"></div>
 							</div>
 						</div>
