@@ -11,9 +11,49 @@
     function Tagit(element, options) {
         this.original_element = element;
         this.config = options;
-        this.element; // element generated
-        this.items; // selected items
+        
         this.container; // container of the widget
+        this.select; // select generated
+        this.input; // input generated
+        
+        this.items;
+        this.items_selected; // selected items
+    }
+    
+    function stringify(objects) {
+        if (!(objects instanceof Array)) {
+            throw 'error';
+        }
+        
+        var items = [];
+        
+        for (var i in objects) {
+            var object = objects[i];
+            var item = '';
+            
+            item += '{';
+                
+            var properties = [];
+            for (var j in object) {
+                var key = j;
+                var value = object[j];
+                var property = '';
+                
+                if (object.hasOwnProperty(j)) {
+                    property = '"' + key + '"' + ':' + '"' + value.replace('"', '\\"') + '"';
+                }
+                
+                properties.push(property);
+            }
+            
+            item += properties.join(',');
+            
+            item += '}';
+            
+            items.push(item);
+        }
+        
+        return '[' + items.join(',') + ']';
     }
     
     Tagit.prototype = {
@@ -25,7 +65,7 @@
          */
         addItem: function (event, element) {
             // flag the added item as being selected
-            var select_option = this.element.find('option[value="' + element.attr(this.config.data_value) + '"]');
+            var select_option = this.select.find('option[value="' + element.attr(this.config.data_id) + '"]');
             select_option.attr('selected', 'selected');
             
             // detach added item then re-attach below
@@ -62,12 +102,7 @@
         /**
          * Get Items
          */
-        getItems: function () {
-            // if items already exist and have been initialized return same list
-            if (this.items instanceof Array && this.items.length) {
-                return this.items;
-            }
-            
+        getItems: function (is_selected) {
             /**
              * Get Items From Source
              * 
@@ -77,25 +112,42 @@
              */
             function getItemsFromSource(source) {
                 var that = this;
+                var attempt = 1;
                 
-                $.ajax({
-                    url: source,
-                    dataType: 'json',
-                    success: function (data, textStatus, XMLHttpRequest) {
-                        if (!(data instanceof Array && data.length)) {
-                            throw 'Invalid data returned from getItemsFromSource()';
+                function fetchItems() {
+                    if (attempt > 3) {
+                        if (is_selected == undefined) {
+                            that.config.source = [];
+                        } else {
+                            that.config.source_selected = [];
                         }
-                        
-                        that.config.source = data;
-                        
-                        that.init();
+                    } else {
+                        $.ajax({
+                            url: source,
+                            dataType: 'json',
+                            success: function (data, textStatus, XMLHttpRequest) {
+                                if (!(data instanceof Array)) {
+                                    throw 'Invalid data returned from getItemsFromSource()';
+                                }
+                                
+                                if (is_selected == undefined) {
+                                    that.config.source = data;
+                                } else {
+                                    that.config.source_selected = data;
+                                }
+                                
+                                that.init();
+                            },
+                            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                attempt++;
+                                
+                                fetchItems();
+                            }
+                        });
                     }
-                });
+                }
                 
-                // temporary set the source to empty list - this list 'should' be updated once the source returns data
-                source = [];
-
-                return source;
+                fetchItems();
             }
             
             /**
@@ -188,28 +240,79 @@
                 }
             }
             
-            var source = this.config.source;
             var items;
             
-            if (typeof source == 'string') {
-                items = getItemsFromSource.apply(this, [source]);
+            if (is_selected == undefined) {
+                // if items already exist and have been initialized return same list
+                if (this.items instanceof Array && this.items.length) {
+                    return this.items;
+                }
+                
+                var source = this.config.source;
+                
+                if (typeof source == 'string') {
+                    getItemsFromSource.apply(this, [source]);
+                }
+                
+                if (source instanceof Array) {
+                    var items = source;
+                    
+                    if (!isValid(items)) {
+                        throw 'Source does not return valid items';
+                    }
+                    
+                    items = configure(items);
+                    
+                    items.sort(alphabetize);
+                    
+                    this.items = items;
+                }
             } else {
-                items = source;
-            }
-            
-            if (!isValid(items)) {
-                throw 'Source does not return valid items';
-            }
-            
-            if (items.length) {
-                items = configure(items);
+                // if items already exist and have been initialized return same list
+                if (this.items_selected instanceof Array && this.items_selected.length) {
+                    return this.items_selected;
+                }
                 
-                items.sort(alphabetize);
+                var source = this.config.source_selected;
                 
-                this.items = items;
+                if (typeof source == 'string') {
+                    getItemsFromSource.apply(this, [source]);
+                }
+                
+                if (source instanceof Array) {
+                    var items = source;
+                    
+                    if (!isValid(items)) {
+                        throw 'Source does not return valid items';
+                    }
+                    
+                    items = configure(items);
+                    
+                    items.sort(alphabetize);
+                    
+                    this.items_selected = items;
+                }
             }
             
             return items;
+        },
+        
+        getSelectedObjects: function () {
+            var that = this;
+            
+            var objects = [];
+            
+            $.each(that.select.find('option:selected'), function (key, value) {
+                var element = $(this);
+                
+                var items = $.grep(that.config.source, function (item) {
+                    return item.id == element.attr('value');
+                });
+                
+                objects.push(items[0]);
+            });
+            
+            return objects;
         },
         
         /**
@@ -272,10 +375,17 @@
                 // create select
                 var select = $('<select>');
                 
-                select.attr('id', this.original_element.attr('id'));
-                select.attr('name', this.original_element.attr('name'));
                 select.attr('multiple', 'multiple');
                 select.addClass(this.config.class_select);
+                
+                if (this.config.postType == 'list') {
+                    select.attr('id', this.original_element.attr('id'));
+                    select.attr('name', this.original_element.attr('name'));
+                } else if (this.config.postType == 'string') {
+                    select.attr('disabled', 'disabled');
+                } else {
+                    throw 'Unknown postType:' + ' ' + this.config.postType;
+                }
                 
                 select.hide();
                 
@@ -299,9 +409,29 @@
                 
                 // update element to be referenced + attach class to dom element
                 this.original_element.remove();
-                this.element = select;
+                this.select = select;
                 
-                this.element.data('Tagit', this);
+                if (this.config.postType == 'list') {
+                    this.select.data('Tagit', this);
+                }
+            }
+            
+            function initInputTag() {
+                // create input tag
+                var input = $('<input>');
+                
+                input.attr('id', this.original_element.attr('id'));
+                input.attr('name', this.original_element.attr('name'));
+                
+                input.hide();
+                
+                this.select.after(input);
+                
+                this.input = input;
+                
+                if (this.config.postType == 'string') {
+                    this.input.data('Tagit', this);
+                }
             }
             
             /**
@@ -513,6 +643,14 @@
                     var element = $(this);
                     
                     that.removeItem.apply(that, [event, element]);
+                    
+                    if (that.config.postType == 'string') {
+                        var objects = that.getSelectedObjects();
+                        
+                        console.log(objects);
+                        
+                        that.input.val(stringify(objects));
+                    }
                 });
                 
                 container.delegate(drop_down_toggle_selector, 'click', function (event) {
@@ -542,6 +680,12 @@
                     
                     // add item to items list
                     that.addItem.apply(that, [event, element]);
+                    
+                    if (that.config.postType == 'string') {
+                        var objects = that.getSelectedObjects();
+                        
+                        that.input.val(stringify(objects));
+                    }
                     
                     // unbind navigation since drop down is gone
                     html.unbind('keydown', drop_down_item_navigate);
@@ -574,10 +718,16 @@
             }
             
             var items = this.getItems();
+            var items_selected = this.getItems(true);
             
-            if (items.length) {
+            if (items instanceof Array && items.length && items_selected instanceof Array) {
                 initContainer.apply(this);
                 initSelectTag.apply(this);
+                
+                if (this.config.postType == 'string') {
+                    initInputTag.apply(this);
+                }
+                
                 initEvents.apply(this);
             }
         },
@@ -602,13 +752,13 @@
             
             // fetch list of items to be displayed
             if (search_value != null) {
-                var items = this.element.find('option:not(:selected)').filter(function () {
+                var items = this.select.find('option:not(:selected)').filter(function () {
                     var regex = new RegExp(search_value, 'gi');
                     
                     return $(this).attr(that.config.data_drop_down_name).search(regex) != -1;
                 });
             } else {
-                var items = this.element.find('option');
+                var items = this.select.find('option');
             }
             
             // create drop down items
@@ -625,7 +775,7 @@
                     var drop_down_item = $('<a>').html(drop_down_name);
                     drop_down_item.attr(that.config.data_drop_down_name, drop_down_name);
                     drop_down_item.attr(that.config.data_tag_name, tag_name);
-                    drop_down_item.attr(that.config.data_value, element.val());
+                    drop_down_item.attr(that.config.data_id, element.val());
                     
                     drop_down.append(drop_down_row);
                     drop_down_row.append(drop_down_item);
@@ -724,7 +874,7 @@
             var drop_down = container.find('.' + this.config.class_drop_down);
             var item_row = element.closest('li');
             
-            var select_option = this.element.find('option[value="' + element.closest('a').attr(this.config.data_value) + '"]');
+            var select_option = this.select.find('option[value="' + element.closest('a').attr(this.config.data_id) + '"]');
             select_option.attr('selected', null);
             
             item_row.remove();
@@ -754,10 +904,13 @@
                     
                     data_drop_down_name: 'data-drop-down-name',
                     data_tag_name: 'data-tag-name',
-                    data_value: 'data-value',
+                    data_id: 'data-id',
                     
                     formatter_drop_down: '%value%',
                     formatter_tag: '%value%',
+                    
+                    // postType: [list, string]
+                    postType: 'list',
                     
                     width: 'auto'
                 };

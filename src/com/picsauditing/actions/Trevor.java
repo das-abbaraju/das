@@ -16,36 +16,37 @@ public class Trevor extends PicsActionSupport {
 	@Autowired
 	AuditOptionValueDAO auditOptionValueDAO;
 	private int optionGroupId;
+	
+	private List<String> auditName;
+	
 	@Anonymous
 	public String execute() throws SQLException {
-
-		
-
 		return SUCCESS;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Anonymous
 	public String getItemsInJson() {
-		List<AuditOptionValue> countries = auditOptionValueDAO.findOptionValuesByOptionGroupId(optionGroupId);
-		
-	
-		JSONArray result = new JSONArray();
-		for (AuditOptionValue country : countries) {
-			result.add(toTaggitJson(country));
-		}
-		
-		jsonArray = result;
-		
-		return "jsonArray";
+        List<AuditOptionValue> countries = auditOptionValueDAO.findOptionValuesByOptionGroupId(optionGroupId);
+        
+        JSONArray result = new JSONArray();
+        for (AuditOptionValue country : countries) {
+            result.add(toTaggitJson(country));
+        }
+        
+        jsonArray = result;
+        
+        return "jsonArray";
 	
 	}
 	
 	@SuppressWarnings("unchecked")
 	private JSONObject toTaggitJson(AuditOptionValue auditOptionValue) {
 		JSONObject obj = new JSONObject();
+		
 		obj.put("id", auditOptionValue.getUniqueCode());
-		obj.put("value", auditOptionValue.getName());
+		obj.put("value", auditOptionValue.getName().toString());
+		
 		return obj;
 	}
 
@@ -56,6 +57,12 @@ public class Trevor extends PicsActionSupport {
 	public void setOptionGroupId(int optionGroupId) {
 		this.optionGroupId = optionGroupId;
 	}
-	
-	
+
+    public void setAuditName(List<String> auditName) {
+        this.auditName = auditName;
+    }
+
+    public List<String> getAuditName() {
+        return auditName;
+    }
 } 
