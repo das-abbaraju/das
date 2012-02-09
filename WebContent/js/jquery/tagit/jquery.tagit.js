@@ -1,31 +1,16 @@
 (function ($) {
     /**
-     * Tagit
+     * Stringify
      * 
-     * Tagit class attached to the element initialized.
-     * This class contains the current options / state of the initialized element.
+     * Takes an array of object(s) and stringifies it to JSON
      * 
-     * @element
-     * @options
+     * @objects
+     * 
+     * @returns "[{key: value}]"
      */
-    function Tagit(element, options) {
-        this.original_element = element;
-        this.config = options;
-        
-        this.container; // container of the widget
-        this.select; // select generated
-        this.input; // input generated
-        
-        this.items;
-        this.items_selected;
-        
-        this.items_xhr = null;
-        this.items_selected_xhr = null;
-    }
-    
     function stringify(objects) {
         if (!(objects instanceof Array)) {
-            throw 'error';
+            throw 'tagit: Invalid objects in stringify';
         }
         
         var items = [];
@@ -57,6 +42,31 @@
         }
         
         return '[' + items.join(',') + ']';
+    }
+    
+    /**
+     * Tagit
+     * 
+     * Tagit class attached to the element initialized.
+     * This class contains the current options / state of the initialized element.
+     * 
+     * @element
+     * @options
+     */
+    function Tagit(element, options) {
+        this.original_element = element;
+        this.config = options;
+        
+        this.container; // container of the widget
+        this.select; // select generated
+        this.input; // input generated
+        
+        this.items;
+        this.items_selected;
+        
+        // flags to hold ajax request execution - true if ajax request is active
+        this.items_xhr = null;
+        this.items_selected_xhr = null;
     }
     
     Tagit.prototype = {
@@ -117,10 +127,14 @@
                 var that = this;
                 var attempt = 1;
                 
-                console.log(is_selected);
-                
+                /**
+                 * Fetch Items
+                 * 
+                 * Create ajax request to pull up sources. Attempts to try 3 times if there are errors.
+                 */
                 function fetchItems() {
                     if (attempt > 3) {
+                        // set source to empty if not found after 3 attempts
                         if (is_selected == undefined) {
                             that.config.source = [];
                         } else {
@@ -132,32 +146,43 @@
                             dataType: 'json',
                             success: function (data, textStatus, XMLHttpRequest) {
                                 if (!(data instanceof Array)) {
-                                    throw 'Invalid data returned from getItemsFromSource()';
+                                    throw 'tagit: Invalid data returned from getItemsFromSource()';
                                 }
                                 
+                                // set class source to fetched data
                                 if (is_selected == undefined) {
                                     that.config.source = data;
-                                    that.items_xhr = false;
                                 } else {
                                     that.config.source_selected = data;
-                                    that.items_selected_xhr = false;
                                 }
                                 
+                                // re-initialize plugin after the source has been set
                                 that.init();
                             },
                             error: function(XMLHttpRequest, textStatus, errorThrown) {
+                                if (typeof console.log === 'function') {
+                                    console.log('tagit: ' + errorThrown + "\n" + 'response: ' + XMLHttpRequest.responseText);
+                                } else {
+                                    throw 'tagit: ' + errorThrown;
+                                }
+                                
+                                // increase attempt
+                                attempt++;
+                                
+                                // try again
+                                fetchItems();
+                            },
+                            complete: function(XMLHttpRequest, textStatus) {
+                                // flag stop ajax request
                                 if (is_selected == undefined) {
                                     that.items_xhr = false;
                                 } else {
                                     that.items_selected_xhr = false;
                                 }
-                                
-                                attempt++;
-                                
-                                fetchItems();
                             }
                         });
                         
+                        // flag start ajax request - used so that multiple ajax requests are not started if one is currently being executed
                         if (is_selected == undefined) {
                             that.items_xhr = true;
                         } else {
@@ -277,7 +302,7 @@
                     var items = source;
                     
                     if (!isValid(items)) {
-                        throw 'Source does not return valid items';
+                        throw 'tagit: Source does not return valid items';
                     }
                     
                     items = configure(items);
@@ -302,7 +327,7 @@
                     var items = source;
                     
                     if (!isValid(items)) {
-                        throw 'Source does not return valid items';
+                        throw 'tagit: Source does not return valid items';
                     }
                     
                     items = configure(items);
@@ -316,6 +341,14 @@
             return items;
         },
         
+        /**
+         * Get Selected Objects
+         * 
+         * Returns JSON for all of the objects that are 'currently'
+         * selected in the widget.
+         * 
+         * @returns Array of JSON Objects
+         */
         getSelectedObjects: function () {
             var that = this;
             
@@ -336,11 +369,10 @@
         
         /**
          * Init
+         * 
+         * Initialize plugin + container + features + events
          */
         init: function () {
-            /**
-             * Init Container
-             */
             function initContainer() {
                 // create html elements
                 var container = $('<div>').addClass(this.config.class_container);
@@ -363,9 +395,6 @@
                 this.container = container;
             }
             
-            /**
-             * Init Select Tag
-             */
             function initSelectTag() {
                 /**
                  * Get Formatted Name From item
@@ -403,7 +432,7 @@
                 } else if (this.config.postType == 'string') {
                     select.attr('disabled', 'disabled');
                 } else {
-                    throw 'Unknown postType:' + ' ' + this.config.postType;
+                    throw 'tagit: Unknown postType:' + ' ' + this.config.postType;
                 }
                 
                 select.hide();
@@ -426,7 +455,7 @@
                 // append to dom
                 this.container.after(select);
                 
-                // update element to be referenced + attach class to dom element
+                // update element to be referenced + attach dom element to class
                 this.original_element.remove();
                 this.select = select;
                 
@@ -444,8 +473,10 @@
                 
                 input.hide();
                 
+                // append to dom
                 this.select.after(input);
                 
+                // attach dom element to class
                 this.input = input;
                 
                 if (this.config.postType == 'string') {
@@ -453,9 +484,40 @@
                 }
             }
             
-            /**
-             * Init Events
-             */
+            function initItemsSelected() {
+                var that = this;
+                
+                // find input item
+                var item_input = this.container.find('.' + this.config.class_item_input);
+                var item_input_row = item_input.closest('li');
+                
+                $.each(items_selected, function (key, value) {
+                    var option = that.select.find('option[value="' + value.id + '"]');
+                    option.attr('selected', 'selected');
+                    
+                    var drop_down_row = $('<li>');
+                    drop_down_row.attr('class', that.config.class_item_row);
+                    
+                    var drop_down_name = option.attr(that.config.data_drop_down_name);
+                    var tag_name = option.attr(that.config.data_tag_name);
+                    
+                    // configure drop down item
+                    var drop_down_item = $('<a>').html(drop_down_name);
+                    drop_down_item.attr(that.config.data_drop_down_name, drop_down_name);
+                    drop_down_item.attr(that.config.data_tag_name, tag_name);
+                    drop_down_item.attr(that.config.data_id, option.val());
+                    
+                    // create remove item link
+                    var item_remove = $('<span>').addClass(that.config.class_item_remove).html('&#215;');
+                    drop_down_item.append(item_remove);
+                    
+                    drop_down_row.append(drop_down_item);
+                    
+                    // append to dom
+                    item_input_row.before(drop_down_row);
+                });
+            }
+            
             function initEvents() {
                 var that = this;
                 
@@ -474,13 +536,12 @@
                 // defining selectors to be used below
                 var items_selector = '.' + this.config.class_items;
                 var item_input_selector = '.' + this.config.class_item_input;
+                var item_remove_selector = '.' + this.config.class_item_remove;
                 
                 var drop_down_selector = '.' + this.config.class_drop_down;
                 var drop_down_item_selector = '.' + this.config.class_drop_down + ' ' + 'a';
                 var drop_down_item_hover_selector = '.' + this.config.class_drop_down + ' ' + 'a' + '.' + this.config.class_drop_down_item_hover;
                 var drop_down_toggle_selector = '.' + this.config.class_drop_down_toggle;
-                
-                var item_remove_selector = '.' + this.config.class_item_remove;
                 
                 /**
                  * Drop Down Item Hover
@@ -598,6 +659,7 @@
                     }
                 }
                 
+                // close drop down when clicking outside widget
                 html.bind('click', function () {
                     var drop_down = container.find(drop_down_selector);
                     
@@ -608,15 +670,18 @@
                     html.unbind('keydown', drop_down_item_navigate);
                 });
                 
+                // prevent dorp down from closing when clicking inside widget
                 container.bind('click', function (event) {
                     event.stopPropagation();
                 });
                 
+                // focus input on container click
                 container.delegate(items_selector, 'click', function (event) {
                     // focus input
                     container.find(':input').focus();
                 });
                 
+                // search item list on key up
                 container.delegate(item_input_selector, 'keyup', function () {
                     var timer;
                     
@@ -656,6 +721,7 @@
                     };
                 }());
                 
+                // remove items
                 container.delegate(item_remove_selector, 'click', function (event) {
                     event.stopPropagation();
                     
@@ -666,12 +732,11 @@
                     if (that.config.postType == 'string') {
                         var objects = that.getSelectedObjects();
                         
-                        console.log(objects);
-                        
                         that.input.val(stringify(objects));
                     }
                 });
                 
+                // toggle item list view
                 container.delegate(drop_down_toggle_selector, 'click', function (event) {
                     var drop_down = container.find(drop_down_selector);
                     var item_input = container.find(item_input_selector); 
@@ -694,6 +759,7 @@
                     }
                 });
                 
+                // add items
                 container.delegate(drop_down_item_selector, 'click', function (event) {
                     var element = $(this);
                     
@@ -710,6 +776,7 @@
                     html.unbind('keydown', drop_down_item_navigate);
                 });
                 
+                // track mouse movement and hover
                 container.bind('mousemove', function () {
                     var timer;
                     var move = 0;
@@ -742,6 +809,7 @@
             if (items instanceof Array && items.length && items_selected instanceof Array) {
                 initContainer.apply(this);
                 initSelectTag.apply(this);
+                initItemsSelected.apply(this);
                 
                 if (this.config.postType == 'string') {
                     initInputTag.apply(this);
@@ -828,7 +896,7 @@
          */
         option: function (option, value) {
             if (typeof option !== 'string') {
-                throw 'Option must be a string';
+                throw 'tagit: Option must be a string';
             }
             
             function setOption(option, value) {
@@ -928,8 +996,7 @@
                     formatter_drop_down: '%value%',
                     formatter_tag: '%value%',
                     
-                    // postType: [list, string]
-                    postType: 'list',
+                    postType: 'list', // list or string
                     
                     width: 'auto'
                 };
@@ -940,8 +1007,6 @@
                 var cls = new Tagit(this, config);
                 
                 cls.init();
-            } else {
-                throw 'Tagit plugin must be initialized on this element';
             }
         } else {
             if (typeof method == 'string') {
@@ -955,7 +1020,7 @@
                 
                 return cls[method].apply(cls, arguments);
             } else {
-                throw 'Tagit plugin is already initialized on this element';
+                throw 'tagit: Tagit plugin is already initialized on this element';
             }
         }
     };
