@@ -81,8 +81,11 @@
     				'Unused':'Unused Keys'}"
     			name="searchType" />
     	</div>
+
+    	<div class="clear"></div>
+        
     	<div class="filterOption">
-    		<a href="#" class="filterBox">Source Language</a> =
+    		<a href="#" class="filterBox"><s:property value="localeFrom.displayName"/> Source Language</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -90,7 +93,7 @@
     			<s:select
     				list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()"
     				multiple="true"
-    				name="sourceLanguages"
+    				name="fromSourceLanguages"
     			/>
     			<br />
                 
@@ -98,7 +101,7 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		<a href="#" class="filterBox">Quality Rating</a> =
+    		<a href="#" class="filterBox"><s:property value="localeFrom.displayName"/> Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -108,7 +111,7 @@
     				listKey="ordinal()"
     				listValue="name()"
     				multiple="true"
-    				name="qualityRatings"
+    				name="fromQualityRatings"
     			/>
     			<br />
                 
@@ -116,10 +119,51 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		Applicable:
+    		<s:property value="localeFrom.displayName"/> Applicable:
     		<s:radio
     			list="#{'':'Any','false':'Not Applicable','true':'Applicable'}"
-    			name="showApplicable"
+    			name="fromShowApplicable"
+    		/>
+    	</div>
+    	<div class="filterOption">
+    		<a href="#" class="filterBox"><s:property value="localeTo.displayName"/> Source Language</a> =
+    		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+            <br />
+            
+    		<span class="clearLink q_box select">
+    			<s:select
+    				list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()"
+    				multiple="true"
+    				name="toSourceLanguages"
+    			/>
+    			<br />
+                
+    			<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+    		</span>
+    	</div>
+    	<div class="filterOption">
+    		<a href="#" class="filterBox"><s:property value="localeTo.displayName"/> Quality Rating</a> =
+    		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
+            <br />
+            
+    		<span class="clearLink q_box select">
+    			<s:select
+    				list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+    				listKey="ordinal()"
+    				listValue="name()"
+    				multiple="true"
+    				name="toQualityRatings"
+    			/>
+    			<br />
+                
+    			<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
+    		</span>
+    	</div>
+    	<div class="filterOption">
+    		<s:property value="localeTo.displayName"/> Applicable:
+    		<s:radio
+    			list="#{'':'Any','false':'Not Applicable','true':'Applicable'}"
+    			name="toShowApplicable"
     		/>
     	</div>
     	<div class="clear"></div>

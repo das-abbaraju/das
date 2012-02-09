@@ -41,9 +41,12 @@ public class ManageTranslations extends ReportActionSupport {
 	private boolean showDoneButton;
 
 	// Pseudo filters
-	private int[] qualityRatings = null;
-	private Boolean showApplicable = null;
-	private String[] sourceLanguages = null;
+	private int[] fromQualityRatings = null;
+	private Boolean fromShowApplicable = null;
+	private String[] fromSourceLanguages = null;
+	private int[] toQualityRatings = null;
+	private Boolean toShowApplicable = null;
+	private String[] toSourceLanguages = null;
 
 	@SuppressWarnings("unchecked")
 	@RequiredPermission(value = OpPerms.Translator)
@@ -187,6 +190,12 @@ public class ManageTranslations extends ReportActionSupport {
 
 		sql.addOrderBy("t1.msgKey");
 
+		addFiltersToSql(sql);
+
+		return sql;
+	}
+
+	private void addFiltersToSql(SelectSQL sql) {
 		if (searchType != null) {
 			if (searchType.equals("Common")) {
 				String select = "SELECT msgValue, count(*) total "
@@ -218,18 +227,32 @@ public class ManageTranslations extends ReportActionSupport {
 			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
 		}
 
-		if (qualityRatings != null && qualityRatings.length > 0) {
-			sql.addWhere(String.format("t1.qualityRating IN (%1$s) OR t2.qualityRating IN (%1$s)",
-					Strings.implode(qualityRatings)));
+		if (fromQualityRatings != null && fromQualityRatings.length > 0) {
+			sql.addWhere(String.format("t1.qualityRating IN (%1$s)",
+					Strings.implode(fromQualityRatings)));
 		}
 
-		if (showApplicable != null) {
-			sql.addWhere(String.format("t1.applicable = %1$d OR t2.applicable = %1$d", (showApplicable ? 1 : 0)));
+		if (fromShowApplicable != null) {
+			sql.addWhere(String.format("t1.applicable = %1$d", (fromShowApplicable ? 1 : 0)));
 		}
 
-		if (filterOn(sourceLanguages)) {
-			sql.addWhere(String.format("t1.sourceLanguage IN (%1$s) OR t2.sourceLanguage IN (%1$s)",
-					Strings.implodeForDB(sourceLanguages, ",")));
+		if (filterOn(fromSourceLanguages)) {
+			sql.addWhere(String.format("t1.sourceLanguage IN (%1$s)",
+					Strings.implodeForDB(fromSourceLanguages, ",")));
+		}
+
+		if (toQualityRatings != null && toQualityRatings.length > 0) {
+			sql.addWhere(String.format("t2.qualityRating IN (%1$s)",
+					Strings.implode(toQualityRatings)));
+		}
+
+		if (toShowApplicable != null) {
+			sql.addWhere(String.format("t2.applicable = %1$d", (toShowApplicable ? 1 : 0)));
+		}
+
+		if (filterOn(toSourceLanguages)) {
+			sql.addWhere(String.format("t2.sourceLanguage IN (%1$s)",
+					Strings.implodeForDB(toSourceLanguages, ",")));
 		}
 
 		if (isTracingOn()) {
@@ -239,8 +262,6 @@ public class ManageTranslations extends ReportActionSupport {
 				addActionMessage("Open pages containing internationalized text and then return to this report.");
 			}
 		}
-
-		return sql;
 	}
 
 	public class Translation {
@@ -367,30 +388,6 @@ public class ManageTranslations extends ReportActionSupport {
 		this.showDoneButton = showDoneButton;
 	}
 
-	public int[] getQualityRatings() {
-		return qualityRatings;
-	}
-
-	public void setQualityRatings(int[] qualityRatings) {
-		this.qualityRatings = qualityRatings;
-	}
-
-	public Boolean getShowApplicable() {
-		return showApplicable;
-	}
-
-	public void setShowApplicable(Boolean showApplicable) {
-		this.showApplicable = showApplicable;
-	}
-
-	public String[] getSourceLanguages() {
-		return sourceLanguages;
-	}
-
-	public void setSourceLanguages(String[] sourceLanguages) {
-		this.sourceLanguages = sourceLanguages;
-	}
-
 	public boolean isTracingOn() {
 		try {
 			String tracing = ActionContext.getContext().getSession().get(i18nTracing).toString();
@@ -428,5 +425,57 @@ public class ManageTranslations extends ReportActionSupport {
 		outstream.flush();
 		ServletActionContext.getResponse().flushBuffer();
 		outstream.close();
+	}
+
+	public int[] getFromQualityRatings() {
+		return fromQualityRatings;
+	}
+
+	public void setFromQualityRatings(int[] fromQualityRatings) {
+		this.fromQualityRatings = fromQualityRatings;
+	}
+
+	public Boolean getFromShowApplicable() {
+		return fromShowApplicable;
+	}
+
+	public void setFromShowApplicable(Boolean fromShowApplicable) {
+		this.fromShowApplicable = fromShowApplicable;
+	}
+
+	public String[] getFromSourceLanguages() {
+		return fromSourceLanguages;
+	}
+
+	public void setFromSourceLanguages(String[] fromSourceLanguages) {
+		this.fromSourceLanguages = fromSourceLanguages;
+	}
+
+	public int[] getToQualityRatings() {
+		return toQualityRatings;
+	}
+
+	public void setToQualityRatings(int[] toQualityRatings) {
+		this.toQualityRatings = toQualityRatings;
+	}
+
+	public Boolean getToShowApplicable() {
+		return toShowApplicable;
+	}
+
+	public void setToShowApplicable(Boolean toShowApplicable) {
+		this.toShowApplicable = toShowApplicable;
+	}
+
+	public String[] getToSourceLanguages() {
+		return toSourceLanguages;
+	}
+
+	public void setToSourceLanguages(String[] toSourceLanguages) {
+		this.toSourceLanguages = toSourceLanguages;
+	}
+
+	public void setList(List<Translation> list) {
+		this.list = list;
 	}
 }
