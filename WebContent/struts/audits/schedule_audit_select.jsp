@@ -87,8 +87,12 @@
 						</li>
 					</s:if>
 					<li>
-					<s:select name="selectedTimezone" id="timezone" value="selecteTimezone.id" theme="form" label="global.timezone" 
-											list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES_SHORT" />
+    					<s:select name="selectedTimezone" 
+                            id="timezone" 
+                            value="selectedTimezone" 
+                            theme="form" 
+                            label="global.timezone" 
+                            list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES_SHORT" />
 					</li>
 					<li>
 						<s:text name="ScheduleAudit.message.ChooseAvailableTime" />

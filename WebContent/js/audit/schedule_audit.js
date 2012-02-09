@@ -66,12 +66,12 @@ PICS.define('audit.ScheduleAudit', {
             PICS.ajax({
                 url:'ScheduleAudit!viewMoreTimes.action',
                 data: {
-                    auditID: auditID,
+                    auditID: $('#ScheduleAudit_auditID').val(),
                     selectedTimeZone: $('#timezone').val(),
                     availabilityStartDate: startDate
                 },
-                success: function(text, textStatus) {
-                    $('#li_availability').append(text);
+                success: function(data, textStatus, XMLHttpRequest) {
+                    $('#li_availability').append(data);
                 }
             });
         },
