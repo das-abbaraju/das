@@ -1,11 +1,30 @@
 package com.picsauditing.actions.report;
 
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.dao.NoteDAO;
+import com.picsauditing.dao.OshaAuditDAO;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Note;
+import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportIncidenceRate extends ReportAnnualAddendum {
+
+	protected String auditorNotes;
+	protected int conID;
+	protected int oshaAuditID;
+
+	@Autowired
+	protected NoteDAO noteDAO;
+	@Autowired
+	protected OshaAuditDAO oshaAuditDAO;
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -30,6 +49,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < "
 				+ getFilter().getIncidenceRateAvgMax() + ")"
 				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
+		sql.addField("os.id AS oshaAuditID");
 		sql.addField("os.location");
 		sql.addField("os.description");
 		sql.addField("os.SHAType");
@@ -59,7 +79,46 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("SHAType", getText("Filters.label.SHAType")));
 		excelSheet
 				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
-		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"),
-				ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));
+	}
+
+	public String verify() throws Exception {
+		OshaAudit oshaAudit = oshaAuditDAO.find(oshaAuditID);
+		oshaAudit.setVerifiedDate(new Date());
+		oshaAuditDAO.save(oshaAudit);
+
+		ContractorAccount contractor = contractorAccountDAO.find(conID);
+		Note note = new Note(contractor, getUser(), "Incidence Rate for year " + oshaAudit.getConAudit().getAuditFor()
+				+ " has been verified - " + auditorNotes);
+		note.setNoteCategory(NoteCategory.Audits);
+		noteDAO.save(note);
+
+		auditorNotes = "";
+
+		return super.execute();
+	}
+
+	public String getAuditorNotes() {
+		return auditorNotes;
+	}
+
+	public void setAuditorNotes(String auditorNotes) {
+		this.auditorNotes = auditorNotes;
+	}
+
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
+	}
+
+	public int getOshaAuditID() {
+		return oshaAuditID;
+	}
+
+	public void setOshaAuditID(int oshaAuditID) {
+		this.oshaAuditID = oshaAuditID;
 	}
 }
