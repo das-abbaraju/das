@@ -2292,6 +2292,10 @@
 
 		<action name="NameIndexUpdater" class="com.picsauditing.util.NameIndexUpdater">
 		</action>
+		
+		<!-- Taggit Actions -->
+		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
+		</action>
 
 		<action name="CertHashUtil"
 			class="com.picsauditing.actions.contractors.CertHashUtil">

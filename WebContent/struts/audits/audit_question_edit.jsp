@@ -176,6 +176,17 @@
 				</s:if>
 			</div>
 		</s:if>
+		
+		<s:if test="#q.questionType == 'Tagit'">
+			<input
+				class="audit-tagit"
+				name="answerData.answer"
+				width="400px"
+				data-audit-id="${auditID}"
+				data-question-id="${q.id}"
+				data-option-group-id="${q.option.id}"
+			/>	
+		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<s:if test="permissions.picsEmployee">

@@ -136,7 +136,7 @@ function toggleOtherOptionType() {
 }
 
 function showOption() {
-	if ($('#questionTypes select').val() == 'MultipleChoice') {
+	if ($('#questionTypes select').val() == 'MultipleChoice' || $('#questionTypes select').val() == 'Tagit') {
 		$('#optionTypesArea').show();
 		toggleOtherOptionType();
 	} else {

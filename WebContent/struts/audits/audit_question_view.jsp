@@ -70,6 +70,11 @@
 			</div>
 		</div>
 	</s:elseif>
+	<s:elseif test="#q.questionType == 'Tagit'">
+		<s:iterator value="#a.taggitList" var="optionValue">
+			<s:text name="%{optionValue}" />, 
+		</s:iterator>
+	</s:elseif>
 	<s:else>
 		<s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
 			<s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />

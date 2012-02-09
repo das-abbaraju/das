@@ -2,19 +2,24 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-
-
+import javax.swing.Spring;
 
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.CorruptionPerceptionIndexMap;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * The function that a specific {@link AuditQuestion} performs. This is used for calculated values.
@@ -333,7 +338,33 @@ public enum QuestionFunction {
 
 			return "E";
 		}
-	};
+	},
+	/**
+	 * Suncor Audit Corruption Audit.
+	 * 
+	 */
+	CPI_CHECK {
+		@Override
+		public Object calculate(FunctionInput input) {
+			Map<String, String> params = getParameterMap(input);
+
+			// get a string of countries seperated by commas
+			String unparsedJsonCountries = params.get("countries");
+		
+			// CorruptionPerceptionIndexConverter cpiConverter = new CorruptionPerceptionIndexConverter();
+			CorruptionPerceptionIndexMap cpiMap = (CorruptionPerceptionIndexMap) SpringUtils.getBean("CorruptionPerceptionIndexMap");
+			
+			double lowestCpi = 11;
+			for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
+				if (cpi != null && cpi < lowestCpi) {
+					lowestCpi = cpi;
+				}
+			}
+			
+			return lowestCpi;
+		}
+	}
+	;
 	// US OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
 	

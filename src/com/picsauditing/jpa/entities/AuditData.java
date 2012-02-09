@@ -19,6 +19,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.util.Strings;
@@ -307,6 +311,23 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	@Transient
 	public boolean isScoreApplies() {
 		return getScorePercentage() >= 0;
+	}
+	
+	@Transient
+	public List<String> getTaggitList() {
+		List<String> listOfOptionValueIl8nKeys = new ArrayList<String>();
+		
+		JSONArray itemsSelected = (JSONArray) JSONValue.parse(this.getAnswer());
+		for (Object answer: itemsSelected.toArray()) {
+			String uniqueCode = ((JSONObject) answer).get("id").toString();
+			for (AuditOptionValue optionValue: this.getQuestion().getOption().getValues()) {
+				if (uniqueCode.equals(optionValue.getUniqueCode())) {
+					listOfOptionValueIl8nKeys.add(optionValue.getI18nKey());
+					break;
+				}
+			}
+		}
+		return listOfOptionValueIl8nKeys;
 	}
 
 	@Override
