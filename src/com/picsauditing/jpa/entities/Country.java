@@ -29,8 +29,10 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String english;
 	protected String spanish;
 	protected String french;
-
+	protected Double corruptionPerceptionIndex;
+	
 	protected User csr;
+	
 
 	public Country() {
 	}
@@ -105,8 +107,19 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 			return tempCountry;
 		if (tempCountry.equals("Canada"))
 			return "CA";
+		else if (tempCountry.equals("United States"))
+			return "US";
 
-		return "US";
+		return "???";
+	}
+	
+	@Column(name="perceivedCorruption")
+	public Double getCorruptionPerceptionIndex() {
+		return this.corruptionPerceptionIndex;
+	}
+	
+	public void setCorruptionPerceptionIndex(Double corruptionPerceptionIndex) {
+		this.corruptionPerceptionIndex = corruptionPerceptionIndex;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
