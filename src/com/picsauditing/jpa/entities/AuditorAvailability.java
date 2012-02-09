@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -25,12 +26,12 @@ import com.picsauditing.util.Location;
 import com.picsauditing.util.Strings;
 
 @Entity
+@SuppressWarnings("serial")
 @Table(name = "auditor_availability")
 public class AuditorAvailability extends BaseTable {
 
 	private User user;
 	private Date startDate;
-	private TimeZone timezone;
 	private int duration;
 
 	private float latitude = 0;
@@ -40,6 +41,36 @@ public class AuditorAvailability extends BaseTable {
 	private boolean onsiteOnly = false;
 	private boolean webOnly = false;
 	private String onlyInStates = null;
+	
+	@Transient
+	public Date getEndDate() {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startDate);
+		cal.add(Calendar.MINUTE, duration);
+		return cal.getTime();
+	}
+	
+	@Transient
+	public String getTimeZoneStartDate(String tz) throws ParseException {
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df3 = new SimpleDateFormat("hh:mm a");
+		df2.setTimeZone(TimeZone.getTimeZone("CST"));
+		df3.setTimeZone(TimeZone.getTimeZone(tz));
+		
+		return df3.format(df2.parse(df1.format(startDate)));
+	}
+	
+	@Transient
+	public String getTimeZoneEndDate(String tz) throws ParseException {
+		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat df3 = new SimpleDateFormat("hh:mm a z");
+		df2.setTimeZone(TimeZone.getTimeZone("CST"));
+		df3.setTimeZone(TimeZone.getTimeZone(tz));
+		
+		return df3.format(df2.parse(df1.format(getEndDate())));
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
@@ -61,22 +92,6 @@ public class AuditorAvailability extends BaseTable {
 		this.startDate = startDate;
 	}
 
-	@Transient
-	public TimeZone getTimezone() {
-		return timezone;
-	}
-
-	public void setTimezone(TimeZone timezone) {
-		this.timezone = timezone;
-	}
-
-	@Transient
-	public String getTimeZoneDate(String format) {
-		DateFormat formatter = new SimpleDateFormat(format);
-		formatter.setTimeZone(timezone);
-		return formatter.format(startDate);
-	}
-
 	/**
 	 * Number of minutes the auditor is available during this time slot
 	 * 
@@ -89,14 +104,6 @@ public class AuditorAvailability extends BaseTable {
 
 	public void setDuration(int duration) {
 		this.duration = duration;
-	}
-
-	@Transient
-	public Date getEndDate() {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.MINUTE, duration);
-		return cal.getTime();
 	}
 
 	public float getLatitude() {

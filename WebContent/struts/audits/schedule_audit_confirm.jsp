@@ -42,7 +42,10 @@
 					</li>
 					<li>
 						<label><s:text name="ScheduleAudit.label.AuditTime" />:</label>
-						<s:date name="availabilitySelected.startDate" format="h:mm a z" />
+						<s:text name="ScheduleAudit.link.DateSelector2">
+							<s:param value="%{availabilitySelected.getTimeZoneStartDate(getSelectedTimeZone())}" />
+							<s:param value="%{availabilitySelected.getTimeZoneEndDate(getSelectedTimeZone())}" />
+						</s:text>
 					</li>
 			
 					<s:if test="conAudit.conductedOnsite">

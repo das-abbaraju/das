@@ -4,11 +4,14 @@
 	<div class="cal_day">
 		<h4><s:date name="key" format="EEEE, MMM d" /></h4>
 		<div class="cal_times">
-		<s:iterator value="value">
-			<a href="ScheduleAudit!selectTime.action?auditID=<s:property value="conAudit.id"/>&timeSelected=<s:date 
+		<s:iterator value="value" var="auditorAvailability">
+			<a href="ScheduleAudit!selectTime.action?auditID=<s:property value="conAudit.id"/>&selectedTimeZone=<s:property value="selectedTimeZone" />&timeSelected=<s:date 
 				name="startDate" format="%{@com.picsauditing.actions.audits.ScheduleAudit@DATE_FORMAT}" />"<s:if test="isNeedsExpediteFee(startDate)"> class="expedite"</s:if>>
 				
-				<s:text name="ScheduleAudit.link.DateSelector"><s:param value="%{startDate}" /><s:param value="%{endDate}" /></s:text>
+				<s:text name="ScheduleAudit.link.DateSelector2">
+					<s:param value="%{#auditorAvailability.getTimeZoneStartDate(getSelectedTimeZone())}" />
+					<s:param value="%{#auditorAvailability.getTimeZoneEndDate(getSelectedTimeZone())}" />
+				</s:text>
 			</a>
 			 <br/>
 		</s:iterator>

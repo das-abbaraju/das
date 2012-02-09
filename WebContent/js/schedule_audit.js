@@ -206,11 +206,15 @@ $(function() {
 	$('#show_next').live('click', function(e) {
 		$(this).attr('disabled', true);
 		$.ajax({
-			 url:'ScheduleAudit!viewMoreTimes.action',
-			 data:{availabilityStartDate:startDate,auditID:auditID},
-			 success: function(text, textStatus) {
-			   $('#li_availability').append(text);
-			 }
+			url:'ScheduleAudit!viewMoreTimes.action',
+			data:{
+				auditID:auditID,
+				selectedTimeZone:$('#timezone').val(),
+				availabilityStartDate:startDate
+			},
+			success: function(text, textStatus) {
+				$('#li_availability').append(text);
+			}
 		});
 	});
 });
