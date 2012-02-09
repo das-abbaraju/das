@@ -1,0 +1,11 @@
+#ScheduleAudit-page #auditHeader,
+#ScheduleAudit-page #auditHeaderNav 
+{
+	display: none;
+}
+
+#ScheduleAudit-page .schedule-audit-address-form #submitButton,
+#ScheduleAudit-page .schedule-audit-address-form #verifyButton
+{
+	display: none;
+}
