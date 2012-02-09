@@ -27,12 +27,6 @@
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="ScheduleAudit.label.ContactPerson" /></h2>
 			<ol>
-				<s:if test="permissions.admin">
-					<li>
-						<s:submit method="edit" cssClass="picsbutton" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" /> 
-					</li>
-				</s:if>
-				
 				<li>
 					<label><s:text name="User.name" />:</label>
 					<s:textfield name="conAudit.contractorContact" value="%{conAudit.contractorAccount.primaryContact.name}" />

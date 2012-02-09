@@ -81,15 +81,10 @@
 				<h2 class="formLegend"><s:text name="ScheduleAudit.label.ChooseAuditTime" /></h2>
 				
 				<ol>
-					<s:if test="permissions.admin">
-						<li>
-							<s:submit cssClass="picsbutton" method="edit" value="%{getText('ScheduleAudit.button.EditScheduleManually')}" />
-						</li>
-					</s:if>
 					<li>
-    					<s:select name="selectedTimezone" 
+    					<s:select name="selectedTimeZone" 
                             id="timezone" 
-                            value="selectedTimezone" 
+                            value="selectedTimeZone.ID" 
                             theme="form" 
                             label="global.timezone" 
                             list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES_SHORT" />

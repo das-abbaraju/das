@@ -255,8 +255,6 @@
 			</fieldset>
 			
 			<fieldset class="form submit">
-				<div id="mainThinkingDiv"></div>
-				
 				<div>
 					<input type="button" id="verifyButton" class="picsbutton" value="<s:text name="ScheduleAudit.button.VerifyAddress" />" />
 					
