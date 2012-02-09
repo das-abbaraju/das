@@ -377,41 +377,37 @@ function loadStatus(caoID){
 							</li>
 						</s:if>
 						
-						<s:if test="permissions.picsEmployee" >
-							<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
-								<li>
-									<label><s:text name="Audit.ClosingAuditor" />:</label>
-									<s:property value="conAudit.closingAuditor.name" />
-								</li>
-							</s:if>
+						<s:if test="conAudit.closingAuditor != null && conAudit.closingAuditor.id > 0 && conAudit.closingAuditor.name != conAudit.auditor.name">
+							<li>
+								<label><s:text name="Audit.ClosingAuditor" />:</label>
+								<s:property value="conAudit.closingAuditor.name" />
+							</li>
 						</s:if>
 					</ul>
 				</fieldset>
 				
 				<fieldset>
 					<ul>
-						<s:if test="permissions.picsEmployee">
-							<s:if test="conAudit.auditType.hasAuditor">
-								<li>
-									<label>
-										<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum">
-											<s:text name="global.CSR" />:
-										</s:if>
-										<s:else>
-											<s:text name="global.SafetyProfessional" />:
-										</s:else>
-									</label>
-									
-									<s:if test="conAudit.auditor.id > 0">
-										<s:property value="conAudit.auditor.name" />
+						<s:if test="conAudit.auditType.hasAuditor">
+							<li>
+								<label>
+									<s:if test="conAudit.auditType.classType.name().equals('PQF') || conAudit.auditType.classType.name().equals('Policy') || conAudit.auditType.annualAddendum">
+										<s:text name="global.CSR" />:
 									</s:if>
 									<s:else>
-										<a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
-											<s:text name="Audit.message.NotAssigned" />
-										</a>
+										<s:text name="global.SafetyProfessional" />:
 									</s:else>
-								</li>
-							</s:if>
+								</label>
+								
+								<s:if test="conAudit.auditor.id > 0">
+									<s:property value="conAudit.auditor.name" />
+								</s:if>
+								<s:else>
+									<a href="AuditAssignments.action?filter.auditID=<s:property value="auditID"/>">
+										<s:text name="Audit.message.NotAssigned" />
+									</a>
+								</s:else>
+							</li>
 						</s:if>
 						
 						<s:if test="conAudit.auditType.scheduled && conAudit.scheduledDate != null">
