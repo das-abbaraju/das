@@ -37,7 +37,11 @@
 		</s:if>
 		<s:if test="showTrade">
 			<td><s:text name="Trade" /></td>
-		</s:if>	    
+		</s:if>
+			<s:if test="filter.verifiedAnnualUpdate == 2">
+			<td><s:text name="global.Notes" /></td>
+			<td></td>
+		</s:if>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -59,6 +63,16 @@
 			</s:if>
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
+			</s:if>
+			<s:if test="filter.verifiedAnnualUpdate == 2">
+				<s:form action="ReportEmrRates" method="POST">
+					<s:hidden value="%{get('id')}" name="conID" />
+					<s:hidden value="%{get('pqfID')}" name="pqfID" />
+					<td><s:textarea name="auditorNotes" cols="15" rows="4" /></td>
+					<td>
+						<s:submit method="verify" cssClass="picsbutton positive" value="%{getText('button.Verify')}" />
+					</td>
+				</s:form>
 			</s:if>
 		</tr>
 	</s:iterator>
