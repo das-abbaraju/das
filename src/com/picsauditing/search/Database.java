@@ -103,8 +103,14 @@ public class Database {
 
 	public static String getDatabaseName() throws SQLException {
 		Connection connection = DBBean.getDBConnection();
-		String databaseName = connection.getCatalog();
-		connection.close();
+		String databaseName = "";
+
+		try {
+			databaseName = connection.getCatalog();
+		} finally {
+			connection.close();
+		}
+
 		return databaseName;
 	}
 }
