@@ -28,6 +28,9 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 	protected List<AuditData> openReqs = null;
 	protected List<AuditData> closedReqs = null;
 	protected int fileID;
+	private AnswerMap answerMap = null;
+	private Set<AuditData> openReqsSet;
+	private Set<AuditData> closedReqsSet;
 
 	public String execute() throws Exception {
 		this.findConAudit();
@@ -50,47 +53,47 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 
 	public List<AuditData> getOpenReqs() {
 		if (openReqs == null) {
-			loadReqs();
+			loadRequirements();
 		}
 		return openReqs;
 	}
 
 	public List<AuditData> getClosedReqs() {
 		if (closedReqs == null) {
-			loadReqs();
+			loadRequirements();
 		}
 		return closedReqs;
 	}
 	
-	private void loadReqs() {
-		Set<AuditData> openReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
-		Set<AuditData> closedReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
+	private void loadRequirements() {
+		openReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
+		closedReqsSet = new TreeSet<AuditData>(AuditData.getQuestionComparator());
+
+		if (answerMap == null)
+			answerMap = auditDataDao.findAnswers(auditID);
 		
-		AnswerMap answerMap = auditDataDao.findAnswers(auditID);
-		Date validDate = conAudit.getValidDate();
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
-			if(auditCatData.isApplies() 
-					&& getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
-				for (AuditCategory child : auditCatData.getCategory().getChildren()) {
-					for (AuditQuestion auditQuestion : child.getQuestions()) {
-						if (auditQuestion.isValidQuestion(validDate)) {
-							AuditData auditData = answerMap.get(auditQuestion.getId());
-							if (auditData != null) {
-								if (auditData.isHasRequirements()) {
-									if (auditData.isRequirementOpen()) {
-										openReqsSet.add(auditData);
-									} else {
-										closedReqsSet.add(auditData);
-									}
-								}
-							}
-						}
-					}
-				}
+			if (auditCatData.isApplies() && getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
+				loadRequirementsQuestions(auditCatData);
 			}
 		}
 		openReqs = new ArrayList<AuditData>(openReqsSet);
 		closedReqs = new ArrayList<AuditData>(closedReqsSet);
+	}
+
+	private void loadRequirementsQuestions(AuditCatData auditCatData) {
+		for (AuditQuestion auditQuestion : auditCatData.getCategory().getQuestions()) {
+			AuditData auditData = answerMap.get(auditQuestion.getId());
+			if (auditQuestion.isValidQuestion(conAudit.getValidDate()) && auditData != null) {
+				if (auditData.isHasRequirements()) {
+					if (auditData.isRequirementOpen()) {
+						openReqsSet.add(auditData);
+					} else {
+						closedReqsSet.add(auditData);
+					}
+				}
+			}
+		}
 	}
 
 	public int getFileID() {
