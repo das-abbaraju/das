@@ -75,7 +75,7 @@ class CronMonitor(CronThread):
 		super(CronMonitor, self).__init__()
 		# initially mark all servers off
 		self.active_servers = active_servers
-		self.url = SERVER+'keepalive.jsp?load_factor=1.0'
+		self.url = SERVER+'keepalive.jsp?load_factor=2.0'
 		self.sleeptime = 5
 		self.logger = logging.getLogger('monitor')
 	def run(self):
@@ -124,7 +124,7 @@ class CronPublisher(CronThread):
 						finally:
 							running_lock.release() # release lock, no matter what
 							
-						self.logger.debug("Subscriptions waiting in the queue: %s" % self.con_q)
+						self.logger.debug("Subscriptions waiting in the queue: %s" % self.con_q.qsize())
 				except Exception, e:
 					self.logger.error(e)
 			else:

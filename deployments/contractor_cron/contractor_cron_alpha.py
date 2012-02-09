@@ -12,7 +12,7 @@ SERVER = "http://%s/"
 # Organizer1 = '10.178.52.21'
 # Organizer2 = '10.178.52.187'
 # Organizer3 = '10.178.52.99'
-SERVERS = ['organizer1','organizer2','organizer3','organizer4','organizer5']
+SERVERS = ['alpha.picsorganizer.com']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
@@ -234,7 +234,7 @@ class CronStats(CronThread):
 					for i in range(stats_q.qsize()):
 						records.append(stats_q.get())
 					self.logger.info("inserting records: %s", records)
-					conn = MySQLdb.connect (host = "192.168.100.65", user = "pics", passwd = "pics", db = "pics")
+					conn = MySQLdb.connect (host = "192.168.20.56", user = "pics", passwd = "pics", db = "pics")
 					cursor = conn.cursor()
 					cursor.executemany("""
 						INSERT INTO contractor_cron_log (conID, startDate, runTime, success, server)
