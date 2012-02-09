@@ -85,7 +85,7 @@
     	<div class="clear"></div>
         
     	<div class="filterOption">
-    		<a href="#" class="filterBox"><s:property value="localeFrom.displayName"/> Source Language</a> =
+    		<a href="#" class="filterBox">From Source Language</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -101,7 +101,7 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		<a href="#" class="filterBox"><s:property value="localeFrom.displayName"/> Quality Rating</a> =
+    		<a href="#" class="filterBox">From Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -119,14 +119,15 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		<s:property value="localeFrom.displayName"/> Applicable:
+    		From Applicable:
     		<s:radio
     			list="#{'':'Any','false':'Not Applicable','true':'Applicable'}"
     			name="fromShowApplicable"
     		/>
     	</div>
+    	<div class="clear"></div>
     	<div class="filterOption">
-    		<a href="#" class="filterBox"><s:property value="localeTo.displayName"/> Source Language</a> =
+    		<a href="#" class="filterBox">To Source Language</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -142,7 +143,7 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		<a href="#" class="filterBox"><s:property value="localeTo.displayName"/> Quality Rating</a> =
+    		<a href="#" class="filterBox">To Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -160,7 +161,7 @@
     		</span>
     	</div>
     	<div class="filterOption">
-    		<s:property value="localeTo.displayName"/> Applicable:
+    		To Applicable:
     		<s:radio
     			list="#{'':'Any','false':'Not Applicable','true':'Applicable'}"
     			name="toShowApplicable"
@@ -191,10 +192,10 @@
 				Key
 			</th>
 			<th class="translation-from">
-				<s:property value="localeFrom.displayName"/>
+				From (<s:property value="localeFrom.displayName"/>)
 			</th>
 			<th class="translation-to">
-				<s:property value="localeTo.displayName"/>
+				To (<s:property value="localeTo.displayName"/>)
 			</th>
 		</tr>
 	</thead>
