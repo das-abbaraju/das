@@ -81,11 +81,8 @@
     				'Unused':'Unused Keys'}"
     			name="searchType" />
     	</div>
-
-    	<div class="clear"></div>
-        
     	<div class="filterOption">
-    		<a href="#" class="filterBox">From Source Language</a> =
+    		<a href="#" class="filterBox">Source Language</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
             <br />
             
@@ -100,6 +97,9 @@
     			<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
     		</span>
     	</div>
+
+    	<div class="clear"></div>
+        
     	<div class="filterOption">
     		<a href="#" class="filterBox">From Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
@@ -125,23 +125,9 @@
     			name="fromShowApplicable"
     		/>
     	</div>
+
     	<div class="clear"></div>
-    	<div class="filterOption">
-    		<a href="#" class="filterBox">To Source Language</a> =
-    		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
-            <br />
-            
-    		<span class="clearLink q_box select">
-    			<s:select
-    				list="@com.picsauditing.jpa.entities.AppTranslation@getLocaleLanguages()"
-    				multiple="true"
-    				name="toSourceLanguages"
-    			/>
-    			<br />
-                
-    			<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
-    		</span>
-    	</div>
+
     	<div class="filterOption">
     		<a href="#" class="filterBox">To Quality Rating</a> =
     		<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
