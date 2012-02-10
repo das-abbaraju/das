@@ -35,17 +35,17 @@
                             </td>
 							<td class="green-flag">
                                 <s:if test="flagColor.isGreen()">
-                                    <img src="images/tick.png" />
+                                    <img src="images/icon_greenFlag.gif" />
                                 </s:if>
                             </td>
 							<td class="amber-flag">
                                 <s:if test="flagColor.isAmber()">
-                                    <img src="images/tick.png" />
+                                    <img src="images/icon_amberFlag.gif" />
                                 </s:if>
                             </td>
 							<td class="red-flag">
                                 <s:if test="flagColor.isRed()">
-                                    <img src="images/tick.png" />
+                                    <img src="images/icon_redFlag.gif" />
                                 </s:if>
                             </td>
 						</tr>

@@ -1284,6 +1284,12 @@ div.blockDialog {
 	text-align: center;
 }
 
+#content .contractor-flag-matrix div.panel_content
+{
+	height: 400px;
+	overflow-y: scroll;
+}
+
 .print-contractor-flag-matrix
 {
 	float: right;
