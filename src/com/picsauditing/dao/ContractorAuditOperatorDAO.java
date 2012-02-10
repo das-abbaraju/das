@@ -169,21 +169,19 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public void resetRenewableAudits() throws SQLException {
 		String sql = "";
+		String where = "ca.expiresDate BETWEEN DATE_SUB(NOW(),interval 7 day) AND DATE_ADD(NOW(),interval 1 day) and atype.renewable = 1";
 		Database db = new Database();
 		// post contractor audit workflow for renewable audits
-		sql = "insert into contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "
-				+ "select 1,1,Now(),Now(),cao.id,'Pending',cao.status from contractor_audit ca "
-				+ "join contractor_audit_operator cao on cao.auditid = ca.id "
-				+ "join audit_type at on at.id = ca.audittypeid "
-				+ "where DATE_ADD(ca.expiresDate,interval 1 day) < NOW() and at.renewable = 1";
+		sql = "INSERT INTO contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "
+				+ "SELECT 1,1,NOW(),NOW(),cao.id,'Pending',cao.status FROM contractor_audit ca "
+				+ "JOIN contractor_audit_operator cao ON cao.auditid = ca.id "
+				+ "JOIN audit_type atype ON atype.id = ca.audittypeid WHERE " + where;
 		db.executeInsert(sql);
 
 		// update the status for caos for renewable audits
-		sql = "update contractor_audit_operator cao, contractor_Audit ca "
-				+ "set cao.status = 'Pending', cao.statusChangedDate = Now(), ca.expiresDate = null "
-				+ "where cao.auditid = ca.id "
-				+ "and DATE_ADD(ca.expiresDate,interval 1 day) < NOW() "
-				+ "and ca.audittypeid IN (select id from audit_type where renewable= 1)";
+		sql = "UPDATE contractor_audit_operator cao" + "JOIN contractor_audit ca ON ca.id = cao.auditID "
+				+ "JOIN audit_type atype ON ca.auditTypeID = atype.id "
+				+ "SET cao.status = 'Pending', cao.statusChangedDate = NOW(), ca.expiresDate = NULL WHERE " + where;
 		db.executeUpdate(sql);
 	}
 
