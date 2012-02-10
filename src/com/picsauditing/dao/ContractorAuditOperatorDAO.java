@@ -179,7 +179,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		db.executeInsert(sql);
 
 		// update the status for caos for renewable audits
-		sql = "UPDATE contractor_audit_operator cao" + "JOIN contractor_audit ca ON ca.id = cao.auditID "
+		sql = "UPDATE contractor_audit_operator cao JOIN contractor_audit ca ON ca.id = cao.auditID "
 				+ "JOIN audit_type atype ON ca.auditTypeID = atype.id "
 				+ "SET cao.status = 'Pending', cao.statusChangedDate = NOW(), ca.expiresDate = NULL WHERE " + where;
 		db.executeUpdate(sql);
