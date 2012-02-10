@@ -56,7 +56,7 @@
 </s:if>
 
 <%-- Question auto save disable --%>
-<s:if test="#q.questionType == 'ESignature'">
+<s:if test="#q.questionType == 'ESignature' || #q.questionType == 'Tagit'">
 	<s:set name="save" value="%{'save-disable'}" />
 </s:if>
 <s:else>

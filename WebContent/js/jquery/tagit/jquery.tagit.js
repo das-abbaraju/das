@@ -479,9 +479,11 @@
                 // attach dom element to class
                 this.input = input;
                 
-                if (this.config.postType == 'string') {
-                    this.input.data('Tagit', this);
-                }
+                this.input.data('Tagit', this);
+                
+                var objects = this.getSelectedObjects();
+                
+                this.input.val(stringify(objects));
             }
             
             function initItemsSelected() {

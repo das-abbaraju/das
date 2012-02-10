@@ -181,18 +181,20 @@
 			<input
 				class="audit-tagit"
 				name="answerData.answer"
-				width="400px"
 				data-audit-id="${auditID}"
 				data-question-id="${q.id}"
 				data-option-group-id="${q.option.id}"
-			/>	
+			/>
+            
+            <s:submit type="button" value="Submit" cssClass="question-save" />
 		</s:if>
 
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<s:if test="permissions.picsEmployee">
-			<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-					Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
-			</div></s:if>
+    			<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
+    				Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+    			</div>
+            </s:if>
 			<s:else>
 				<div class="verified">
 					<s:text name="Audit.message.AnswerVerifiedOn">

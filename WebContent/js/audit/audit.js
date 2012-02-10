@@ -174,6 +174,20 @@
 					
 					// enable ambest questions on audit category reload
 					AUDIT.am_best_suggest.autocomplete($('#auditViewArea #ambest'));
+					
+					$('.audit-tagit').each(function (key, value) {
+					    var element = $(this);
+					    
+					    var audit_id = element.attr('data-audit-id');
+					    var question_id = element.attr('data-question-id');
+					    var option_group_id = element.attr('data-option-group-id');
+					    
+					    element.tagit({
+					        postType: 'string',
+					        source: 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id,
+					        source_selected: 'OptionGroupTagit!getItemsSelected.action?auditId=' + audit_id + '&questionId=' + question_id
+					    });
+					});
 				}
 			});
 		}
