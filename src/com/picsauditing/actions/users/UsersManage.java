@@ -70,6 +70,9 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conInsurance = false;
 	private boolean newUser = false;
 
+	// used to track whether or not this is being executed from a "Save" Action
+	private boolean isSaveAction = false;
+	
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
@@ -139,6 +142,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public String save() throws Exception {
+		isSaveAction = true;
 		startup();
 
 		user.setIsGroup(userIsGroup);
@@ -147,7 +151,7 @@ public class UsersManage extends PicsActionSupport {
 		user.getGroups().size();
 		user.getOwnedPermissions().size();
 		if (!isOK()) {
-			userDAO.refresh(user); // Clear out ALL changes?
+			userDAO.refresh(user); // Clear out ALL changes for the user
 			return SUCCESS;
 		}
 
@@ -437,11 +441,23 @@ public class UsersManage extends PicsActionSupport {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		// checking to see if primary account user is set
-		if (account != null && account.getPrimaryContact() == null)
+		if (!isSaveAction && (isMakeFirstAccountUserPrimary() || isUserPrimaryContact()))
 			setPrimaryAccount = true;
+				
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
+	}
+	
+	private boolean isMakeFirstAccountUserPrimary() {
+		return (account != null 
+				&& account.getPrimaryContact() == null);
+	}
+	
+	private boolean isUserPrimaryContact() {
+		return (account != null 
+				&& account.getPrimaryContact() != null 
+				&& account.getPrimaryContact().equals(user)); 
 	}
 
 	private boolean isOK() throws Exception {
@@ -493,8 +509,53 @@ public class UsersManage extends PicsActionSupport {
 					addActionError(error);
 			}
 		}
+		
+		if (!validPrimaryContactExists(user)) {
+			addActionError("There must be at least one User that is Active and the Primary Contact on this account.");
+		}
 
 		return getActionErrors().size() == 0;
+	}
+	
+	private boolean validPrimaryContactExists(User user) {
+		if (hasAtLeastOneActivePrimaryContact(user.getAccount())) {
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean hasAtLeastOneActivePrimaryContact(Account account) {
+		if (account != null && account.getPrimaryContact() != null) {
+			List<User> users = account.getUsers();			
+			return foundActivePrimaryContact(users, account);
+		}
+		
+		return false;
+	}
+	
+	private boolean foundActivePrimaryContact(List<User> users, Account account) {
+		if (users != null && !users.isEmpty()) {
+			for (User user : users) {
+				// this is a special case, because when iterating over the users from the Account object,
+				// those users are from the database and may contain the user being Edited, but in
+				// a different state than it is in this Action class instance
+				if (this.user.equals(user) && setPrimaryAccount && user.isActiveB()) {
+					return true;
+				}
+				else if (!this.user.equals(user) && isUserActivePrimaryContact(user, account)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	private boolean isUserActivePrimaryContact(User user, Account account) {
+		return (user != null 
+				&& account.getPrimaryContact().equals(user) 
+				&& user.isActiveB());
 	}
 
 	public String getIsGroup() {
@@ -760,6 +821,7 @@ public class UsersManage extends PicsActionSupport {
 				return db.select(sql.toString(), true);
 			}
 		}
+		
 		return null;
 	}
 
@@ -773,8 +835,8 @@ public class UsersManage extends PicsActionSupport {
 
 	public boolean isCsr() {
 		if (user != null && !user.isGroup()) {
-			for (UserGroup ug : user.getGroups()) {
-				if (ug.getGroup().isGroup() && ug.getGroup().getId() == User.GROUP_CSR)
+			for (UserGroup userGroup : user.getGroups()) {
+				if (userGroup.getGroup().isGroup() && userGroup.getGroup().getId() == User.GROUP_CSR)
 					return true;
 			}
 		}
@@ -783,32 +845,39 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public List<UserGroup> getCsrs() {
-		if (!user.isGroup()) {
-			for (UserGroup ug : user.getGroups()) {
-				if (ug.getGroup().getId() == User.GROUP_CSR) {
-					List<UserGroup> ugs = new ArrayList<UserGroup>(ug.getGroup().getMembers());
-					Iterator<UserGroup> iterator = ugs.iterator();
+		if (user.getId() == User.GROUP_CSR) {
+			return user.getMembers();
+		}
+		else if (!user.isGroup()) {
+			for (UserGroup userGroup : user.getGroups()) {
+				if (userGroup.getGroup().getId() == User.GROUP_CSR) {
+					List<UserGroup> csrs = new ArrayList<UserGroup>(userGroup.getGroup().getMembers());
+					Iterator<UserGroup> iterator = csrs.iterator();
 					while (iterator.hasNext()) {
-						UserGroup current = iterator.next();
-						if (current.equals(ug) || current.getUser().isGroup())
+						UserGroup currentUserGroup = iterator.next();
+						if (currentUserGroup.equals(userGroup) || currentUserGroup.getUser().isGroup())
 							iterator.remove();
 					}
 
-					Collections.sort(ugs, new Comparator<UserGroup>() {
+					sortCSRsByName(csrs);
 
-						@Override
-						public int compare(UserGroup o1, UserGroup o2) {
-							return o1.getUser().getName().compareTo(o2.getUser().getName());
-						}
-					});
-
-					return ugs;
+					return csrs;
 				}
 			}
-		} else if (user.getId() == User.GROUP_CSR)
-			return user.getMembers();
+		} 
+			
 
 		return null;
+	}
+
+	private void sortCSRsByName(List<UserGroup> csrs) {
+		Collections.sort(csrs, new Comparator<UserGroup>() {
+
+			@Override
+			public int compare(UserGroup o1, UserGroup o2) {
+				return o1.getUser().getName().compareTo(o2.getUser().getName());
+			}
+		});
 	}
 
 	public boolean isNewUser() {

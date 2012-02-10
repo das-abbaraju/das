@@ -95,7 +95,7 @@ public class IGVerification extends ContractorActionSupport {
 		emailBuilder.addToken("caowList", caowList);
 		emailBuilder.setPermissions(permissions);
 		emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
+		emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
 		previewEmail = emailBuilder.build();
 	}
 
