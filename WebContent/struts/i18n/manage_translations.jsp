@@ -9,7 +9,7 @@
 <script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
 <script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
-<script type="text/javascript" src="js/core.js?v=<s:property value="version"/>"></script>
+
 <script type="text/javascript" src="js/translation_manage.js?v=<s:property value="version"/>"></script>
 
 <h1>Manage Translations</h1>
