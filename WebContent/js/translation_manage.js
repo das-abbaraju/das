@@ -28,7 +28,7 @@
                                 if ($(this).find('div.text').height() > 18) {
                                     $(this).closest('.content').addClass('view-more');
                                     
-                                    $(this).append('<a href="javascript:;" class="see-more"><img src="js/jquery/tagit/images/arrow_down.gif" /></a>');
+                                    $(this).append('<a href="javascript:;" class="see-more"><img src="images/arrow_down.gif" /></a>');
                                 }
                             });
                             
