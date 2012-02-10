@@ -104,6 +104,7 @@
             // initialize default input item settings
             item_input.width(30);
             item_input.val('');
+            item_input.focus();
             
             // hide drop down
             drop_down.hide();
