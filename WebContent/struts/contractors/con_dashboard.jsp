@@ -445,6 +445,7 @@
 										<s:property value="contractor.auditor.name" />
 										/
 										<s:property value="contractor.auditor.phone" />
+                                        <span id="CSRNote">(<s:text name="ContractorView.ContractorDashboard.CSRCallNote" />)</span>
 										/
 									</strong>
 									<s:text name="ProfileEdit.u.fax" />:

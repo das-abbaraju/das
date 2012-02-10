@@ -195,3 +195,12 @@ table.report tr.hurdle td {
 	padding: 10px 0px 0px;
 	text-align: right;
 }
+
+/*PICS CSR Asterisk Note*/
+#contractor_dashboard #CSRNote {
+	color:#A84D10;
+	font-size:75%;
+	font-style:italic;
+	font-weight: normal;	
+	vertical-align: top;
+}
