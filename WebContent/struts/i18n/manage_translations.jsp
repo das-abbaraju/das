@@ -197,11 +197,13 @@
                     <s:set var="translation_class" value="'translation-from'" />
                     <s:set var="radio_id" value="%{'quality_from_' + id + '_'}" />
                     <s:set var="checkbox_id" value="%{'applicable_from_' + id + '_'}" />
+                    <s:set var="translation" value="from" />
                 </s:if>
                 <s:else>
                     <s:set var="translation_class" value="'translation-to'" />
                     <s:set var="radio_id" value="%{'quality_to_' + id + '_'}" />
                     <s:set var="checkbox_id" value="%{'applicable_to_' + id + '_'}" />
+                    <s:set var="translation" value="to" />
                 </s:else>
                 
 				<td class="${translation_class}">
@@ -222,10 +224,6 @@
                                     <s:property value="value" escape="false" />
                                 </div>
                                 
-                                <%-- <s:if test="!(id > 0)">
-                                    <a href="javascript:;" class="btn small success suggestTranslation">Suggest</a>
-                                </s:if> --%>
-                                
                                 <a href="javascript:;" class="edit btn small primary">Edit</a>
                             </div>
                             
@@ -235,12 +233,6 @@
                                 <div class="actions">
                                     <button name="button" class="save btn small success">Save</button>
                                     <button class="cancel btn small">Cancel</button>
-                                    
-                                    <s:if test="!sourceLanguage.empty">
-                                        <span class="source">
-                                            Src: <s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
-                                        </span>
-                                    </s:if>
                                 </div>
                                 
                                 <div class="rate">
@@ -265,6 +257,32 @@
                                         />
                                     </div>
                                 </div>
+                                
+                                <ul class="info">
+                                    <s:if test="!sourceLanguage.empty">
+                                        <li class="source">
+                                            Src: <s:property value="getLanguageNameFromISOCode(sourceLanguage)" />
+                                        </li>
+                                    </s:if>
+                                    
+                                    <s:if test="#translation.lastUsed">
+                                        <li>
+                                            Last Used: <s:date name="#translation.lastUsed" nice="true" />
+                                        </li>
+                                    </s:if>
+                                    
+                                    <s:if test="#translation.updateDate">
+                                        <li>
+                                            Last Updated: <s:date name="#translation.updateDate" nice="true" />
+                                        </li>
+                                    </s:if>
+                                    
+                                    <s:if test="#translation.updatedBy.name != ''">
+                                        <li>
+                                            Last Updated By: ${translation.updatedBy.name}
+                                        </li>
+                                    </s:if>
+                                </ul>
                             </div>
                         </div>
                     </s:form>

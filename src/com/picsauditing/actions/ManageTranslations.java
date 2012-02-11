@@ -157,9 +157,13 @@ public class ManageTranslations extends ReportActionSupport {
 
 	private SelectSQL buildSQL() throws Exception {
 		SelectSQL sql = new SelectSQL("app_translation t1");
+		
 		sql.setSQL_CALC_FOUND_ROWS(true);
-		sql.addWhere("t1.locale = '" + localeFrom + "'");
+		
 		sql.addJoin("LEFT JOIN app_translation t2 ON t1.msgKey = t2.msgKey AND t2.locale = '" + localeTo + "'");
+		sql.addJoin("LEFT JOIN users from_user ON from_user.id = t1.updatedBy");
+		sql.addJoin("LEFT JOIN users to_user ON to_user.id = t2.updatedBy");
+		
 		sql.addField("t1.msgKey");
 		sql.addField("t1.msgValue fromValue");
 		sql.addField("t1.lastUsed fromLastUsed");
@@ -167,26 +171,33 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.updatedBy fromUpdatedBy");
 		sql.addField("t1.applicable fromApplicable");
 		sql.addField("t1.sourceLanguage fromSourceLanguage");
+		sql.addField("t1.qualityRating fromQualityRating");
+		sql.addField("from_user.name fromUpdatedByName");
+		sql.addField("t1.updateDate fromUpdateDate");
+		
 		if (download) {
-			sql.addField("t1.updateDate fromUpdateDate");
 			sql.addField("t1.createdBy fromCreatedBy");
 			sql.addField("t1.creationDate fromCreationDate");
 			sql.addField("t1.locale fromLocale");
 		}
-		sql.addField("t1.qualityRating fromQualityRating");
+		
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
 		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
 		sql.addField("t2.applicable toApplicable");
 		sql.addField("t2.sourceLanguage toSourceLanguage");
+		sql.addField("t2.qualityRating toQualityRating");
+		sql.addField("to_user.name toUpdatedByName");
+		sql.addField("t2.updateDate toUpdateDate");
+		
 		if (download) {
-			sql.addField("t2.updateDate toUpdateDate");
 			sql.addField("t2.createdBy toCreatedBy");
 			sql.addField("t2.creationDate toCreationDate");
 			sql.addField("t2.locale toLocale");
 		}
-		sql.addField("t2.qualityRating toQualityRating");
+		
+		sql.addWhere("t1.locale = '" + localeFrom + "'");
 
 		sql.addOrderBy("t1.msgKey");
 
@@ -271,6 +282,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 		public Translation(BasicDynaBean row) {
 			from = new AppTranslation();
+			
 			from.setId(Integer.parseInt(row.get("fromID").toString()));
 			from.setKey(row.get("msgKey").toString());
 			from.setValue(row.get("fromValue").toString());
@@ -280,17 +292,35 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setApplicable(Integer.parseInt(row.get("fromApplicable").toString()) == 1);
 			from.setSourceLanguage(row.get("fromSourceLanguage") == null ? null : row.get("fromSourceLanguage")
 					.toString());
+			
 			Object fromLastUsed = row.get("fromLastUsed");
-			if (fromLastUsed != null)
+			
+			if (fromLastUsed != null) {
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
+			}
+			
 			Object fromUpdatedBy = row.get("fromUpdatedBy");
-			if (fromUpdatedBy != null)
+			Object fromUpdatedByName = row.get("fromUpdatedByName");
+			
+			if (fromUpdatedBy != null && fromUpdatedByName != null) {
 				from.setUpdatedBy(new User(Integer.parseInt(fromUpdatedBy.toString())));
+				from.getUpdatedBy().setName(fromUpdatedByName.toString());
+			}
+			
+			Object fromUpdateDate = row.get("fromUpdateDate");
+			
+			if (fromUpdateDate != null) {
+			    from.setUpdateDate(DateBean.parseDate(fromUpdateDate.toString()));
+			}
+			
 
 			Object toID = row.get("toID");
+			
 			if (toID != null) {
 				to = new AppTranslation();
+				
 				to.setId(Integer.parseInt(toID.toString()));
+				
 				if (to.getId() > 0) {
 					to.setKey(from.getKey());
 					to.setValue(row.get("toValue").toString());
@@ -300,12 +330,26 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setApplicable(Integer.parseInt(row.get("toApplicable").toString()) == 1);
 					to.setSourceLanguage(row.get("toSourceLanguage") == null ? null : row.get("toSourceLanguage")
 							.toString());
+					
 					Object toLastUsed = row.get("toLastUsed");
-					if (toLastUsed != null)
+					
+					if (toLastUsed != null) {
 						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
+					}
+					
 					Object toUpdatedBy = row.get("toUpdatedBy");
-					if (toUpdatedBy != null)
-						to.setUpdatedBy(new User(Integer.parseInt(toUpdatedBy.toString())));
+					Object toUpdatedByName = row.get("toUpdatedByName");
+					
+					if (toUpdatedBy != null && toUpdatedByName != null) {
+					    to.setUpdatedBy(new User(Integer.parseInt(toUpdatedBy.toString())));
+					    to.getUpdatedBy().setName(toUpdatedByName.toString());
+					}
+					
+					Object toUpdateDate = row.get("toUpdateDate");
+		            
+		            if (toUpdateDate != null) {
+		                to.setUpdateDate(DateBean.parseDate(toUpdateDate.toString()));
+		            }
 				} else {
 					to = null;
 				}

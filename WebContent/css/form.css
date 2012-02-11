@@ -50,7 +50,7 @@ ul.radio li
 ul.radio input
 {
 	float: left;
-	margin: 1px 5px 0px 0px;
+	margin: 2px 5px 0px 5px;
 }
 
 ul.radio.inline li
