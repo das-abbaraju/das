@@ -233,19 +233,19 @@
 									<s:if test="problems.categories.size() > 0">
 										<p>
 											<s:text name="ContractorView.Problems" />:
+                                        </p>
 											
-											<ul style="margin-left: 10px;">
-												<s:iterator value="problems.categories" id="probcat">
-													<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
-														<li>
-															<s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/>
-															<s:property value="label"/>
-															<s:property value="getCriteriaLabel(#probcrit.id)"/>
-														</li>
-													</s:iterator>
+										<ul style="margin-left: 10px;">
+											<s:iterator value="problems.categories" id="probcat">
+												<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
+													<li>
+														<s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/>
+														<s:property value="label"/>
+														<s:property value="getCriteriaLabel(#probcrit.id)"/>
+													</li>
 												</s:iterator>
-											</ul>
-										</p>
+											</s:iterator>
+										</ul>
 									</s:if>
 									
 									<s:if test="opID > 0 && opID != permissions.accountId">

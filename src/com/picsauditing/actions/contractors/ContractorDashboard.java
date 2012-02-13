@@ -359,15 +359,21 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public String getCriteriaLabel(int fcID) {
 		if (fccMap == null) {
 			fccMap = new HashMap<Integer, FlagCriteriaContractor>();
+			
 			List<FlagCriteriaContractor> flagCriteriaConList = flagCriteriaContractorDAO.findByContractor(id);
-			for (FlagCriteriaContractor fcc : flagCriteriaConList)
+			
+			for (FlagCriteriaContractor fcc : flagCriteriaConList) {
 				fccMap.put(fcc.getCriteria().getId(), fcc);
+			}
 		}
+		
 		FlagCriteriaContractor fcc = fccMap.get(fcID);
 		String result = "";
+		
 		if (fcc != null) {
 			if (!Strings.isEmpty(fcc.getAnswer2())) {
 				String answer = fcc.getAnswer2().split("<br/>")[0];
+				
 				if (answer != null && fcc.getCriteria().getMultiYearScope() != null) {
 					if (fcc.getCriteria().getMultiYearScope() != null) {
 						if (answer.contains("for")) {
@@ -383,6 +389,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				}
 			}
 		}
+		
 		return result;
 	}
 
