@@ -640,8 +640,12 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		}
 
 		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
-		if (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount())) {
-			billingService.updateInvoice(invoice, newInvoice, permissions);
+		if (contractor.isHasMembershipChanged()
+				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
+			billingService.updateInvoice(invoice, newInvoice, getUser());
+			contractor.syncBalance();
+			billingService.calculateAnnualFees(contractor);
+			contractorAccountDao.save(contractor);
 			redirect("RegistrationMakePayment.action");
 			return true;
 		}
