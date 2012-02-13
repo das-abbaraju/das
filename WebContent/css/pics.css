@@ -1286,7 +1286,7 @@ div.blockDialog {
 
 #content .contractor-flag-matrix div.panel_content
 {
-	height: 400px;
+	max-height: 300px;
 	overflow-y: scroll;
 }
 
