@@ -318,9 +318,10 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		List<String> listOfOptionValueIl8nKeys = new ArrayList<String>();
 		
 		JSONArray itemsSelected = (JSONArray) JSONValue.parse(this.getAnswer());
+		List<AuditOptionValue> optionValues = this.getQuestion().getOption().getValues();
 		for (Object answer: itemsSelected.toArray()) {
 			String uniqueCode = ((JSONObject) answer).get("id").toString();
-			for (AuditOptionValue optionValue: this.getQuestion().getOption().getValues()) {
+			for (AuditOptionValue optionValue: optionValues) {
 				if (uniqueCode.equals(optionValue.getUniqueCode())) {
 					listOfOptionValueIl8nKeys.add(optionValue.getI18nKey());
 					break;
