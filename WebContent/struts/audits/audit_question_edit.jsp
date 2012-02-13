@@ -18,8 +18,8 @@
 		<%-- radio // select --%>
 		<s:if test="#q.questionType.equals('MultipleChoice') && #q.option != null">
 			<s:if test="#q.option.radio">
-                <s:if test="isInlineRadioGroup()">
-                    <s:set var="display_inline" value="''" />
+                <s:if test="#q.isInlineRadioGroup()">
+                    <s:set var="display_inline" value="'inline'" />
                 </s:if>
                 <s:else>
                     <s:set var="display_inline" value="" />
