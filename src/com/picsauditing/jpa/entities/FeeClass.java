@@ -28,7 +28,7 @@ public enum FeeClass implements Translatable {
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
 					&& !contractor.isHasPaymentExpired())
-				return fee.getAmount();
+				return BigDecimal.ZERO;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
