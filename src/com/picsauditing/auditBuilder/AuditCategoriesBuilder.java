@@ -187,27 +187,47 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return caos;
 	}
 
-	private Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
-		Set<Integer> auditAnswersNeeded = new HashSet<Integer>();
+	/*testable*/ Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
+		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
-				if (conAudit.getAuditType().equals(rule.getQuestion().getAuditType()))
-					auditAnswersNeeded.add(rule.getQuestion().getId());
-			}
-		}
-
-		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
-		if (auditAnswersNeeded.size() > 0) {
-			List<AuditData> requiredAnswers = new ArrayList<AuditData>();
-			for (AuditData answer : conAudit.getData())
-				if (auditAnswersNeeded.contains(answer.getQuestion().getId()))
-					requiredAnswers.add(answer);
-			AnswerMap answerMap = new AnswerMap(requiredAnswers);
-			for (Integer questionID : auditAnswersNeeded) {
-				answers.put(questionID, answerMap.get(questionID));
+				int currentQuestionId = rule.getQuestion().getId();
+				ContractorAudit auditContainingCurrentQuestion = conAudit;
+			
+				if (!conAudit.getAuditType().equals(rule.getQuestion().getAuditType())) {
+					auditContainingCurrentQuestion = findMostRecentAudit(conAudit.getAuditType().getId());
+				}
+				
+				AuditData answer = findAnswer(auditContainingCurrentQuestion, currentQuestionId);
+				if (answer != null)
+					answers.put(currentQuestionId, answer);
 			}
 		}
 		return answers;
+	}
+	
+	/*testable*/ ContractorAudit findMostRecentAudit(int auditTypeId) {
+		ContractorAudit mostRecentAudit = null;
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (audit.getAuditType().getId() == auditTypeId) {
+				if (mostRecentAudit == null 
+						|| mostRecentAudit.getCreationDate().before(audit.getCreationDate())) {
+					mostRecentAudit = audit;
+				}
+			}
+		}
+		return mostRecentAudit;
+	}
+
+	/*testable*/ AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
+		if (auditContainingCurrentQuestion != null) {
+			for (AuditData answer : auditContainingCurrentQuestion.getData()) {
+				if (answer.getQuestion().getId() == currentQuestionId) {
+					return answer;
+				}
+			}
+		}
+		return null;
 	}
 
 	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {

@@ -165,8 +165,12 @@ public class EntityFactory {
 	}
 
 	static public AuditData makeAuditData(String answer) {
+		return makeAuditData(answer, makeAuditQuestion());
+	}
+	
+	static public AuditData makeAuditData(String answer, AuditQuestion question) {
 		AuditData data = new AuditData();
-		data.setQuestion(EntityFactory.makeAuditQuestion());
+		data.setQuestion(question);
 		data.setAnswer(answer);
 		return data;
 	}
@@ -201,5 +205,12 @@ public class EntityFactory {
 		sub.setTimePeriod(timePeriod);
 
 		return sub;
+	}
+
+	public static AuditCatData makeAuditCatData() {
+		AuditCategory category = new AuditCategory();
+		AuditCatData catData = new AuditCatData();
+		catData.setCategory(category);
+		return catData;
 	}
 }
