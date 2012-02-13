@@ -115,18 +115,18 @@
 			<label><s:text name="Audit.message.RequirementStatus" />:</label>
 			
 			<s:if test="#a.requirementOpen">
-				<div class="unverified-answer">
+				<span class="unverified-answer">
 					<img src="images/notOkCheck.gif" />
 					<s:text name="Audit.message.Open" />
-				</div>
+				</span>
 			</s:if>
 			<s:elseif test="#a.wasChangedB">
-				<div class="verified-answer">
+				<span class="verified-answer">
 					<img src="images/okCheck.gif" />
 					<s:text name="Audit.message.ClosedOn">
 						<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
 					</s:text>
-				</div>
+				</span>
 			</s:elseif>
 		</span>
 	</s:if>

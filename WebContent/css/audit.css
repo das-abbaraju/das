@@ -313,42 +313,46 @@ input.number {
 	padding-right: 10px;
 }
 
-div.verified 
+span.verified 
 {
 	background: transparent url(../images/okCheck.gif) no-repeat left center;
 	color: #272;
+	margin-left: 10px;
 	padding-left: 20px;
 	zoom: 1;
 }
 
-div.verified-answer
+span.verified-answer
 {
 	color: #272;
+	margin-left: 10px;
 	padding-left: 20px;
 	zoom: 1;
 }
 
-div.verified-answer img
+span.verified-answer img
 {
 	margin-right: 2px;
 }
 
-div.unverified
+span.unverified
 {
 	background: transparent url(../images/notOkCheck.gif) no-repeat left center;
 	color: #900;
+	margin-left: 10px;
 	padding-left: 20px;
 	zoom: 1;
 }
 
-div.unverified-answer
+span.unverified-answer
 {
 	color: #900;
+	margin-left: 10px;
 	padding-left: 20px;
 	zoom: 1;
 }
 
-div.unverified-answer img
+span.unverified-answer img
 {
 	margin-right: 2px;
 }
