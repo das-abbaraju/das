@@ -259,7 +259,7 @@ public class BillingCalculatorSingle {
 	 * @param updateWith
 	 * @param permissions
 	 */
-	public void updateInvoice(Invoice toUpdate, Invoice updateWith, Permissions permissions) throws Exception {
+	public void updateInvoice(Invoice toUpdate, Invoice updateWith, User user) throws Exception {
 		if (!toUpdate.getStatus().equals(TransactionStatus.Unpaid))
 			throw new Exception("Cannot update Invoice which is in " + toUpdate.getStatus() + " status.");
 
@@ -277,7 +277,7 @@ public class BillingCalculatorSingle {
 		}
 
 		toUpdate.setAmountApplied(updateWith.getAmountApplied());
-		toUpdate.setAuditColumns(permissions);
+		toUpdate.setAuditColumns(user);
 		toUpdate.setCurrency(updateWith.getCurrency());
 		toUpdate.setDueDate(updateWith.getDueDate());
 
@@ -297,7 +297,7 @@ public class BillingCalculatorSingle {
 
 		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
 				+ " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
-				LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+				LowMedHigh.Med, false, Account.PicsID, user);
 	}
 
 	public Invoice createInvoice(ContractorAccount contractor) {
