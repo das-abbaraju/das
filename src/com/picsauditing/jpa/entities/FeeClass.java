@@ -21,14 +21,14 @@ public enum FeeClass implements Translatable {
 	DocuGUARD,
 	InsureGUARD {
 		@Override
-		public boolean isExcludedFor(ContractorAccount contractor) {
+		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
-				return false;
+				return fee.getAmount();
 
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
-					&& contractor.getBillingStatus() == "Upgrade")
-				return true;
+					&& !contractor.isHasPaymentExpired())
+				return fee.getAmount();
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
@@ -36,7 +36,10 @@ public enum FeeClass implements Translatable {
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 
-			return isAllExclusionsApplicable(contractor, exclusions);
+			if (isAllExclusionsApplicable(contractor, exclusions))
+				return BigDecimal.ZERO;
+
+			return fee.getAmount();
 		}
 	},
 	AuditGUARD {
@@ -116,10 +119,6 @@ public enum FeeClass implements Translatable {
 				|| this == InsureGUARD;
 	}
 
-	public boolean isExcludedFor(ContractorAccount contractor) {
-		return false;
-	}
-
 	public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
 		return fee.getAmount();
 	}
@@ -145,10 +144,10 @@ public enum FeeClass implements Translatable {
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
 				return false;
 				// is it time to start charging this operator for insureguard?
-			} else if ((contractor.getBillingStatus() != "Upgrade" && new Date().after(exclusionExpirationDate))) {
+			} else if (contractor.isHasPaymentExpired() && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if ((contractor.getBillingStatus() == "Upgrade" && (contractor.getLastUpgradeDate() == null || contractor
-					.getLastUpgradeDate().after(exclusionExpirationDate)))) {
+			} else if (!contractor.isHasPaymentExpired() && (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
+					exclusionExpirationDate))) {
 				return false;
 				// is the contractor a non-sole proprietor for Suncor?
 			} else if (operator.getTopAccount().getId() == OperatorAccount.SUNCOR && !contractor.getSoleProprietor()) {

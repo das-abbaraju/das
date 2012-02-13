@@ -1415,6 +1415,14 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
+	public boolean isHasPaymentExpired() {
+		if (getPaymentExpires() == null)
+			return true;
+
+		return new Date().after(getPaymentExpires());
+	}
+
+	@Transient
 	public float getWeightedIndustryAverage() {
 		float sum = 0;
 		int activitySum = 0;
