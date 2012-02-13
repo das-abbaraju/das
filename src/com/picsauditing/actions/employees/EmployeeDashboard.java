@@ -107,7 +107,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 
 			// TODO want to run cron but not redirect since we may be doing mulptiple audits
 			this.redirect("ContractorCron.action?conID=" + id
-						+ "&button=Run&steps=AuditBuilder&redirectUrl=Audit.action?auditID=" + conAudit.getId());
+						+ "&button=Run&steps=AuditBuilder&redirectUrl=EmployeeDashboard.action?id=" + contractor.getId());
 		}
 
 		return SUCCESS;
@@ -180,13 +180,25 @@ public class EmployeeDashboard extends ContractorDocuments {
 		Iterator<AuditType> iterator = getManuallyAddAudits().iterator();
 		while (iterator.hasNext()) {
 			AuditType auditType = iterator.next();
-			if (auditType.getClassType().isIm() || auditType.getClassType().isEmployee()) {
-				employeeGuardAddableIds.add(auditType.getId());
+			if (isEmployeeGaurdAuditType(auditType)) {
+				if (permissions.isAdmin() || permissions.isContractor() || permissions.canSeeAudit(auditType))
+					employeeGuardAddableIds.add(auditType.getId());
 			}
 		}
 	}
+	
+	private boolean isEmployeeGaurdAuditType(AuditType auditType) {
+		return ((auditType.getClassType().isIm() || 
+				auditType.getClassType().isEmployee() || 
+				auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS));
+	}
 
-	public List<Employee> getActiveEmployees() {
+	public List<Employee> getActiveEmployees() throws Exception{
+		findContractor();
+		loadActiveEmployees();
+		auditTypeRuleCache.initialize(auditRuleDAO);
+		loadEmployeeGuardAudits();
+
 		return activeEmployees;
 	}
 
@@ -208,6 +220,32 @@ public class EmployeeDashboard extends ContractorDocuments {
 
 	public void setSelectedOperator(Integer selectedOperator) {
 		this.selectedOperator = selectedOperator;
+	}
+	
+	public List<ContractorOperator> getVisibleOperators() {
+		List<ContractorOperator> visibleOperators = new ArrayList<ContractorOperator>();
+		
+		for (ContractorOperator co : contractor.getNonCorporateOperators()) {
+			if (permissions.isAdmin() || permissions.isContractor()
+					|| co.getOperatorAccount().getId() == permissions.getAccountId()
+					|| co.getOperatorAccount().isDescendantOf(permissions.getAccountId())) {
+				visibleOperators.add(co);
+			}
+		}
+		
+	return visibleOperators;
+	}
+	
+	public List<ContractorAudit> getUnattachedEmployeeAudits() {
+		List<ContractorAudit> unattachedEmployeeAudits = new ArrayList<ContractorAudit>();
+
+		for (ContractorAudit ca : contractor.getAudits()) {
+			if (isEmployeeGaurdAuditType(ca.getAuditType()) && ca.getEmployee() == null && ca.isVisibleTo(permissions)) {
+				unattachedEmployeeAudits.add(ca);
+			}
+		}
+
+		return unattachedEmployeeAudits;
 	}
 	
 }
