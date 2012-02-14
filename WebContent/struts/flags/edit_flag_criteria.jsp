@@ -83,6 +83,7 @@ var aqvExtraParams = {
 			<li>
 				<label><s:text name="FlagCriteria.defaultValue"/>:</label>
 				<pics:autocomplete name="criteria.defaultValue" action="AuditOptionValueAutocomplete" extraParams="aqvExtraParams" minChars="0" cacheLength="1"/>
+				<pics:fieldhelp title="Default Hurdle"> Hurdle value that will automatically be assigned unless you designate a custom hurdle.</pics:fieldhelp>
 			</li>
 			<li>
 				<s:checkbox name="criteria.allowCustomValue" theme="formhelp"/>
