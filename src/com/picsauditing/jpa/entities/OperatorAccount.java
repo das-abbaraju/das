@@ -71,6 +71,7 @@ public class OperatorAccount extends Account {
 
 	public OperatorAccount() {
 		this.type = "Operator";
+		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
 	}
@@ -78,6 +79,7 @@ public class OperatorAccount extends Account {
 	public OperatorAccount(String name) {
 		this.name = name;
 		this.type = "Operator";
+		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
 	}
@@ -392,7 +394,7 @@ public class OperatorAccount extends Account {
 		this.contractorOperators = contractorOperators;
 	}
 
-	@OneToMany(mappedBy = "operator", cascade =  { CascadeType.ALL })
+	@OneToMany(mappedBy = "operator", cascade = { CascadeType.ALL })
 	public List<OperatorTag> getTags() {
 		return tags;
 	}
@@ -437,7 +439,7 @@ public class OperatorAccount extends Account {
 	public void setChildOperators(List<OperatorAccount> childOperators) {
 		this.childOperators = childOperators;
 	}
-	
+
 	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })
 	@JoinTable(name = "facilities", joinColumns = @JoinColumn(name = "opID"), inverseJoinColumns = @JoinColumn(name = "corporateID"))
 	public List<OperatorAccount> getParentOperators() {
