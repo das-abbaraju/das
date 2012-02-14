@@ -12,6 +12,7 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditOptionValueDAO;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
@@ -42,10 +43,15 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 
 	@Override
 	public String getItemsSelected() {
+		JSONArray itemsAlreadySelected = new JSONArray();
+		
 		AuditData answerStored = auditDataDAO.findAnswerByAuditQuestion(
 				auditId, questionId);
-		JSONArray itemsAlreadySelected = (JSONArray) JSONValue
+		
+		if (answerStored != null && !Strings.isEmpty(answerStored.getAnswer())) {
+			itemsAlreadySelected= (JSONArray) JSONValue
 				.parse(answerStored.getAnswer());
+		}
 
 		jsonArray = itemsAlreadySelected;
 

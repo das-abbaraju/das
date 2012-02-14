@@ -180,7 +180,7 @@
 		<s:if test="#q.questionType == 'Tagit'">
 			<input
 				class="audit-tagit"
-				name="answerData.answer"
+				name="auditData.answer"
 				data-audit-id="${auditID}"
 				data-question-id="${q.id}"
 				data-option-group-id="${q.option.id}"
