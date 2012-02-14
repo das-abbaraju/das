@@ -152,7 +152,8 @@ public class AuditDataSave extends AuditActionSupport {
 					if (answerChanged) {
 						if (isAudit && !isAnnualUpdate) {
 							if (newCopy.isVerified()
-									&& newCopy.getAudit().getAuditType().getId() == AuditType.COR) {
+									&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR
+											|| newCopy.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
 								newCopy.setDateVerified(null);
 								newCopy.setAuditor(null);
 							}
