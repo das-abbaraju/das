@@ -123,7 +123,7 @@ public class Registration extends ContractorActionSupport {
 		setupContractorData();
 		contractorAccountDao.save(contractor);
 		userDAO.save(user);
-		
+
 		// requires id for user to exist to seed the password properly
 		user.setEncryptedPassword(user.getPassword());
 		userDAO.save(user);
@@ -186,6 +186,7 @@ public class Registration extends ContractorActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
+		loginLog.setServerAddress(ServletActionContext.getRequest().getServerName());
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		userLoginLogDAO.save(loginLog);

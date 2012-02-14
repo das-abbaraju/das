@@ -185,18 +185,6 @@ public class LoginController extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	private void printSession() {
-		try {
-			System.out.println("SessionID: " + getRequest().getSession().getId());
-			System.out.println("CreationTime: " + getRequest().getSession().getCreationTime());
-			System.out.println("LastAccessedTime: " + getRequest().getSession().getLastAccessedTime());
-			System.out.println("MaxInactiveInterval: " + getRequest().getSession().getMaxInactiveInterval());
-			System.out.println("Session Size: " + ActionContext.getContext().getSession().size());
-		} catch (Exception e) {
-			System.out.println("ERROR: " + e.getMessage());
-		}
-	}
-
 	/**
 	 * Method to log in via an ajax overlay
 	 * 
@@ -366,11 +354,10 @@ public class LoginController extends PicsActionSupport {
 		if (user == null)
 			return;
 
-		String remoteAddress = getRequest().getRemoteAddr();
-
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(remoteAddress);
+		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
+		loginLog.setServerAddress(getRequest().getServerName());
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		if (permissions.getAdminID() > 0)

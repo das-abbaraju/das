@@ -19,6 +19,7 @@ public class UserLoginLog {
 	private boolean successful;
 	private Date loginDate;
 	private String remoteAddress;
+	private String serverAddress;
 	private User admin;
 
 	public UserLoginLog() {
@@ -71,6 +72,15 @@ public class UserLoginLog {
 
 	public void setRemoteAddress(String remoteAddress) {
 		this.remoteAddress = remoteAddress;
+	}
+
+	@Column(name = "remoteAddress", length = 100)
+	public void setServerAddress(String serverAddress) {
+		this.serverAddress = serverAddress;
+	}
+
+	public String getServerAddress() {
+		return serverAddress;
 	}
 
 	public boolean isSuccessful() {
