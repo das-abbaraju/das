@@ -9,3 +9,8 @@
 {
 	display: none;
 }
+
+#ScheduleAudit-page .schedule-audit-confirm-form #ScheduleAudit__confirm
+{
+	display: none;
+}
