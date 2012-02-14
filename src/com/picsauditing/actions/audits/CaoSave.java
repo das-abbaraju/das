@@ -59,8 +59,8 @@ public class CaoSave extends AuditActionSupport {
 	private boolean insurance = false;
 
 	// Update flags
-	private Set<FlagCriteriaContractor> fco;
-	private FlagDataCalculator flagCalc;
+	private Set<FlagCriteriaContractor> contractorFlagCriteria;
+	private FlagDataCalculator flagCalculator;
 
 	public String showHistory() {
 		if (caoID > 0)
@@ -82,6 +82,51 @@ public class CaoSave extends AuditActionSupport {
 		}
 		return "caoStatus";
 	}
+	
+	/**
+	 * Undo: change the cao status back to the previous status it had.
+	 * 
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws NoRightsException
+	 */
+	public String undo() throws RecordNotFoundException, NoRightsException {
+		setup();
+		if (caoID > 0) {
+			ContractorAuditOperator cao = caoDAO.find(caoID);
+			List<ContractorAuditOperatorWorkflow> caows = caowDAO.findByCaoID(caoID);
+			
+			ContractorAuditOperatorWorkflow previousCaow = getPreviousCaoWorkflow(caows);
+			
+			rollbackToPreviousCao(cao, previousCaow);
+		}
+		
+		return SUCCESS;	
+	}
+
+	private void rollbackToPreviousCao(ContractorAuditOperator cao,	ContractorAuditOperatorWorkflow previousCaow) {
+		if (previousCaow != null) {			
+			ContractorAuditOperatorWorkflow newCaow = cao.changeStatus(previousCaow.getStatus(), permissions);
+			newCaow.setNotes(previousCaow.getNotes());
+			caowDAO.save(newCaow);
+			caoDAO.save(cao);
+		}
+	}
+
+	private ContractorAuditOperatorWorkflow getPreviousCaoWorkflow(List<ContractorAuditOperatorWorkflow> caows) {
+		ContractorAuditOperatorWorkflow previousCaow = null;
+		if (hasPreviousCaow(caows)) {
+			previousCaow = caows.get(1);
+		}
+		
+		return previousCaow;
+	}
+
+	private boolean hasPreviousCaow(List<ContractorAuditOperatorWorkflow> caows) {
+		return caows != null 
+				&& !caows.isEmpty() 
+				&& caows.size() > 1;
+	}	
 
 	public String loadStatus() throws RecordNotFoundException, NoRightsException {
 		setup();
@@ -160,7 +205,7 @@ public class CaoSave extends AuditActionSupport {
 	public String save() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
 		setup();
 		if (conAudit != null) {
-			if (conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin())) {
+			if (isExpiredPolicy()) {
 				addActionError("You can't change an expired " + conAudit.getAuditType().getName().toString());
 				return SUCCESS;
 			}
@@ -175,12 +220,16 @@ public class CaoSave extends AuditActionSupport {
 			return SUCCESS;
 	}
 
+	private boolean isExpiredPolicy() {
+		return conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin());
+	}
+
 	private void save(int id) throws RecordNotFoundException, EmailException, IOException {
 		ContractorAuditOperator cao = getCaoByID(id);
 		if (cao == null)
 			throw new RecordNotFoundException("ContractorAuditOperator");
 
-		WorkflowStep step = getStep(cao);
+		WorkflowStep step = getWorkflowStep(cao);
 
 		if (hasActionErrors())
 			return;
@@ -200,7 +249,6 @@ public class CaoSave extends AuditActionSupport {
 			ContractorAccount con = cao.getAudit().getContractorAccount();
 			con.incrementRecalculation();
 			contractorAccountDao.save(con);
-			// updatedContractors.add(con.getName());
 		} else
 			checkNewStatus(step, cao);
 
@@ -228,6 +276,7 @@ public class CaoSave extends AuditActionSupport {
 				caowDAO.save(caow);
 			}
 		}
+		
 		autoExpireOldAudits(cao.getAudit(), newStatus);
 	}
 
@@ -255,16 +304,24 @@ public class CaoSave extends AuditActionSupport {
 		return null;
 	}
 
-	private WorkflowStep getStep(ContractorAuditOperator cao) {
+	private WorkflowStep getWorkflowStep(ContractorAuditOperator cao) {
 		WorkflowStep step = null;
-		String forString = " for " + cao.getOperator().getName();
-		for (WorkflowStep w : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
-			if (w.getOldStatus() != null && w.getOldStatus().equals(cao.getStatus()) && w.getNewStatus().equals(status)) {
-				step = w;
+		
+		for (WorkflowStep workflowStep : cao.getAudit().getAuditType().getWorkFlow().getSteps()) {
+			if (isNextWorkflowStep(cao, workflowStep)) {
+				step = workflowStep;
 				break;
 			}
 		}
 
+		doWorkflowStepValidation(cao, step);
+
+		return step;
+	}
+
+	private void doWorkflowStepValidation(ContractorAuditOperator cao, WorkflowStep step) {
+		String forString = " for " + cao.getOperator().getName();
+		
 		if (step == null)
 			addActionError("No action specified" + forString);
 		else {
@@ -285,10 +342,15 @@ public class CaoSave extends AuditActionSupport {
 					addActionError("Please complete all required questions" + forString);
 			}
 		}
-
-		return step;
 	}
 
+	private boolean isNextWorkflowStep(ContractorAuditOperator cao, WorkflowStep workflowStep) {
+		return (workflowStep.getOldStatus() != null 
+				&& workflowStep.getOldStatus().equals(cao.getStatus()) 
+				&& workflowStep.getNewStatus().equals(status));
+	}
+
+	// TODO: Move this method so it is part of the Email Processing, not in the Action
 	private void sendStatusChangeEmail(WorkflowStep step, ContractorAuditOperator cao) throws EmailException,
 			IOException {
 		EmailBuilder emailBuilder = new EmailBuilder();
@@ -323,18 +385,6 @@ public class CaoSave extends AuditActionSupport {
 		 * join contractor_audit ca on acd.auditID = ca.id AND ca.auditTypeID = 2 JOIN contractor_audit_operator cao on
 		 * cao.auditID = ca.id and cao.status != 'Pending' SET acd.override = 1 ;
 		 */
-		// if (step.getNewStatus().after(AuditStatus.Pending)) {
-		// if (audit.getAuditType().isDesktop()) {
-		// // Desktops after Pending mode should have their categories locked
-		// down
-		// for (AuditCatData catData : audit.getCategories()) {
-		// if (!catData.isOverride()) {
-		// catData.setOverride(true);
-		// auditDao.save(catData);
-		// }
-		// }
-		// }
-		// }
 
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance()) {
@@ -357,7 +407,6 @@ public class CaoSave extends AuditActionSupport {
 	private void expireOldAudits(WorkflowStep step, ContractorAudit audit) {
 		if (step.getNewStatus().after(AuditStatus.Resubmitted)) {
 			// Expire previous audits
-//			int lastYear = DateBean.getCurrentYear() - 1;
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
 				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
 					if (oldAudit.getAuditType().equals(audit.getAuditType())) {
@@ -372,14 +421,14 @@ public class CaoSave extends AuditActionSupport {
 	}
 
 	private void updateFlag(ContractorAuditOperator cao) {
-		if (fco == null || fco != cao.getAudit().getContractorAccount().getFlagCriteria()) {
-			fco = cao.getAudit().getContractorAccount().getFlagCriteria();
-			flagCalc = new FlagDataCalculator(fco);
+		if (contractorFlagCriteria == null || contractorFlagCriteria != cao.getAudit().getContractorAccount().getFlagCriteria()) {
+			contractorFlagCriteria = cao.getAudit().getContractorAccount().getFlagCriteria();
+			flagCalculator = new FlagDataCalculator(contractorFlagCriteria);
 		}
 
 		for (ContractorOperator co : cao.getAudit().getContractorAccount().getNonCorporateOperators()) {
 			if (cao.hasCaop(co.getOperatorAccount().getId())) {
-				FlagColor flagColor = flagCalc.calculateCaoStatus(cao.getAudit().getAuditType(), co.getFlagDatas());
+				FlagColor flagColor = flagCalculator.calculateCaoStatus(cao.getAudit().getAuditType(), co.getFlagDatas());
 				cao.setFlag(flagColor);
 
 				return;
