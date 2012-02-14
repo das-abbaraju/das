@@ -59,6 +59,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		sql.addField("cao.id as caoId");
 		sql.addField("caoaccount.name as caoOperatorName");
 		sql.addField("cao.flag as caoRecommendedFlag");
+		sql.addWhere("ca.expiresDate > NOW() OR ca.expiresDate IS NULL");
 
 		// Get certificates
 		if (permissions.isOperatorCorporate()) {

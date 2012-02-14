@@ -3,7 +3,6 @@ package com.picsauditing.mail.subscription;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -61,6 +60,7 @@ public class InsuranceCertificateSubscription extends SqlSubscriptionBuilder {
 			sql.addWhere("a.type = 'Contractor'");
 			sql.addWhere("o.status = 'Active'");
 			sql.addWhere("d.answer > ''");
+			sql.addWhere("ca.expiresDate > NOW() OR ca.expiresDate IS NULL");
 
 			sql.addOrderBy("o.name, a.name, auditID");
 
