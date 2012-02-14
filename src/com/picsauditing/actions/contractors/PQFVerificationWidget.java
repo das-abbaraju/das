@@ -26,7 +26,7 @@ public class PQFVerificationWidget extends PicsActionSupport {
 		sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = ca.id");
 		sql.addWhere("cao.visible = 1");
 		sql.addWhere("cao.status IN ('Submitted','Resubmitted')");
-		sql.addWhere("ca.auditTypeID IN (1,11)");
+		sql.addWhere("ca.auditTypeID IN (1,11) AND (ca.expiresDate IS NULL OR ca.expiresDate > NOW())");
 		sql.addField("MIN(cao.statusChangedDate) as completedDate");
 		sql.addWhere("c.accountLevel = 'Full'");
 		sql.addWhere("a.status = 'Active'");

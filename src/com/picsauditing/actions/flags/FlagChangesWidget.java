@@ -43,9 +43,15 @@ public class FlagChangesWidget extends PicsActionSupport {
 		sql.addField("operator.name AS opName");
 		sql.addField("operator.id AS opId");
 		sql.addWhere("operator.status IN ('Active') AND operator.type = 'Operator'");
-
+		sql.addField("case when gc_flag.baselineFlag = 'Green' then 1 when gc_flag.baselineFlag is null then "
+				+ "2 when gc_flag.baselineFlag = 'Amber' then 3 when gc_flag.baselineFlag = 'Red' then 4 "
+				+ "when gc_flag.baselineFlag = 'Clear' then 5 end as `baselineEnum`");
+		sql.addField("case when gc_flag.flag = 'Green' then 1 when gc_flag.flag is null then "
+				+ "2 when gc_flag.flag = 'Amber' then 3 when gc_flag.flag = 'Red' then 4 "
+				+ "when gc_flag.flag = 'Clear' then 5 end as `flagEnum`");
 		sql.addField("c.membershipDate");
 		sql.addField("TIMESTAMPDIFF(MINUTE, c.lastRecalculation, NOW()) AS lastRecalculation");
+		sql.addOrderBy("baselineEnum, flagEnum DESC, a.name, operator.name");
 
 		sql.setLimit(10);
 
