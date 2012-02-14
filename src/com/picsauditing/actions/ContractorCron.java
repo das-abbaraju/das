@@ -512,9 +512,9 @@ public class ContractorCron extends PicsActionSupport {
 			unsentWeeklyInsuranceSubscriptions.add(defaultUserSubscription);
 		} else {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
-				if (contractorInsuranceSubscription.getLastSent() == null
-						|| contractorInsuranceSubscription.getLastSent().before(
-								SubscriptionTimePeriod.Weekly.getComparisonDate()))
+				if (!contractorInsuranceSubscription.getTimePeriod().equals(SubscriptionTimePeriod.None)
+						&& (contractorInsuranceSubscription.getLastSent() == null || contractorInsuranceSubscription
+								.getLastSent().before(SubscriptionTimePeriod.Weekly.getComparisonDate())))
 					unsentWeeklyInsuranceSubscriptions.add(contractorInsuranceSubscription);
 			}
 		}
@@ -529,18 +529,30 @@ public class ContractorCron extends PicsActionSupport {
 		defaultContactSubscription.setSubscription(Subscription.InsuranceExpiration);
 		defaultContactSubscription.setTimePeriod(SubscriptionTimePeriod.Event);
 
-		if (contractor.getPrimaryContact() != null) {
+		if (contractor.getPrimaryContact() != null && contractor.getPrimaryContact().isActiveB()) {
 			defaultContactSubscription.setUser(contractor.getPrimaryContact());
-		} else if (!contractor.getUsersByRole(OpPerms.ContractorAdmin).isEmpty()) {
+		} else if (!contractor.getUsersByRole(OpPerms.ContractorAdmin).isEmpty()
+				&& contractor.getUsersByRole(OpPerms.ContractorAdmin).get(0).isActiveB()) {
 			defaultContactSubscription.setUser(contractor.getUsersByRole(OpPerms.ContractorAdmin).get(0));
 		} else if (!contractor.getUsers().isEmpty()) {
-			defaultContactSubscription.setUser(contractor.getUsers().get(0));
+			User activeUser = findActiveUser(contractor);
+			defaultContactSubscription.setUser(activeUser);
 		} else {
 			throw new NoUsersDefinedException();
 		}
 
 		subscriptionDAO.save(defaultContactSubscription);
 		return defaultContactSubscription;
+	}
+
+	private User findActiveUser(ContractorAccount contractor) throws NoUsersDefinedException {
+		for (User user : contractor.getUsers()) {
+			if (user.isActiveB()) {
+				return user;
+			}
+		}
+
+		throw new NoUsersDefinedException("No Active Users");
 	}
 
 	private Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
