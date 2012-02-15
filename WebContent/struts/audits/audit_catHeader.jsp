@@ -57,7 +57,7 @@
 			<s:text name="Audit.message.AboutToExpire"><s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param></s:text>
 		</div>
 	</s:if>
-	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100">
+	<s:if test="conAudit.auditType.hasRequirements && conAudit.auditStatus.submitted && conAudit.percentVerified < 100" >
 		<div class="info">
 			<s:text name="Audit.message.OpenRequirements">
 				<s:param><s:text name="%{conAudit.auditType.getI18nKey('name')}" /></s:param>

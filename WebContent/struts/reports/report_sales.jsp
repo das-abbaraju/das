@@ -140,7 +140,7 @@
 			<td class="center"><s:date name="get('endDate')" format="MMM yyyy"/></td>
 			<td class="right">
 				<s:if test="get('regisLastMonth') > 0">
-					<s:if test="get('ownerPercent') < 100">
+					<s:if test="get('ownerPercent') < 100" >
 						<nobr><s:property value="calcPercentage(@java.lang.Math@round(get('regisLastMonth')*get('ownerPercent')/10),10)" /> Credited</nobr><br/>
 					</s:if>
 					<a href="<s:property value="getUrlPreviousMonth(get('accountID').toString(), get('startDate').toString())" escape="false" />" 
@@ -150,7 +150,7 @@
 			</td>
 			<td class="right">
 				<s:if test="get('regisThisMonth') > 0">
-					<s:if test="get('ownerPercent') < 100">
+					<s:if test="get('ownerPercent') < 100" >
 						<nobr><s:property value="calcPercentage(@java.lang.Math@round(get('regisThisMonth')*get('ownerPercent')/10),10)" /> Credited</nobr><br/>
 					</s:if>
 					<a href="<s:property value="getUrlCurrentMonth(get('accountID').toString(), get('startDate').toString())" escape="false" />" 

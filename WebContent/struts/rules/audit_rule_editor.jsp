@@ -452,7 +452,7 @@
 					</fieldset>
 					
 					<fieldset class="form ruleEditor submit" style="margin-bottom: 0px;">
-						<s:if test="rule.id > 0 && ((!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230))">
+						<s:if test="rule.id > 0 && ((!auditTypeRule && rule.priority < 300) || (auditTypeRule && rule.priority < 230))" >
 							<s:checkbox label="label" id="ruleEditCheckbox" name="ruleEditCheckbox" value="false" fieldValue="false" />I understand that I am changing a rule with potentially broad reaching affects.
 							<br />
 							<div class="buttons">

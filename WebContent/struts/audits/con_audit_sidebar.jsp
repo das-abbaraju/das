@@ -138,8 +138,8 @@
 	
 						<s:if test="!isEveryCAOCompleteOrHigher()">					
 							<s:if test="showVerified">
-								<s:if test="#catNode.percentVerified < 100">
-									<s:if test="!conAudit.auditType.annualAddendum">
+								<s:if test="#catNode.percentVerified < 100" >
+									<s:if test="!conAudit.auditType.annualAddendum" >
 										<img src="images/icon_text_alert.png"/>
 									</s:if>
 								</s:if>

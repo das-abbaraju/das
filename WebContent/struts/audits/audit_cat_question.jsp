@@ -31,7 +31,7 @@
 
 <s:set name="questionStillRequired" value="false" />
 
-<s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)">
+<s:if test="(#a == null || #a.answer == null || #a.answer.length() < 1)" >
 	<s:if test="#q.required">
 		<s:set name="questionStillRequired" value="true" />
 	</s:if>
