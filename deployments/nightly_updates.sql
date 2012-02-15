@@ -66,7 +66,13 @@ update ref_trade p
 join (select parentID, count(*) + SUM(childCountTotal) total FROM ref_trade GROUP BY parentID) c ON p.id = c.parentID
 SET p.childCountTotal = c.total;
 
+-- clean up invisible CAOs
 DELETE from contractor_audit_operator where visible = 0 and status = 'Pending';
+
+delete FROM contractor_audit_operator
+WHERE visible = 0 AND auditID IN (
+	SELECT id FROM contractor_audit WHERE expiresDate < NOW()
+);
 
 -- Opt Out Subscription Inserts
 -- OQChanges
