@@ -119,15 +119,6 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					"contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
-
-			String[] stateIsos = (String[]) ActionContext.getContext().getParameters().get("contractor.state.isoCode");
-			if (stateIsos != null && stateIsos.length > 0 && !Strings.isEmpty(stateIsos[0]))
-				contractor.setState(stateDAO.find(stateIsos[0]));
-
-			String[] billingStateIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"contractor.billingState.isoCode");
-			if (billingStateIsos != null && billingStateIsos.length > 0 && !Strings.isEmpty(billingStateIsos[0]))
-				contractor.setBillingState(stateDAO.find(billingStateIsos[0]));
 		}
 	}
 
