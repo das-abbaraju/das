@@ -52,31 +52,31 @@
 		<td style="vertical-align: top; width: 48%" >
 			<div class="panel_placeholder">
 				<div class="panel">
-					<div class="panel_header">EmployeeGAURD&trade Audits</div>
-					<del class="panel_content">
+					<div class="panel_header">EmployeeGUARD&trade; Audits</div>
+					<div class="panel_content">
 						<s:form id="employeeStatus" method="post" cssClass="forms">
 							<s:hidden name="id" />
-							<table class="report">
+							<table class="table">
 								<thead>
 									<tr>
 										<s:if test="#canAddAudits">
-											<td colspan="2"></td>
+											<th colspan="2"></th>
 										</s:if>
 										<s:else>
-											<td><s:property value="#canAddAudits" />
-											</td>
+											<th><s:property value="#canAddAudits" />
+											</th>
 										</s:else>
-										<td align="center">Employee</td>
-										<td align="center">Title</td>
-										<td align="center">Classification</td>
-										<td align="center">Job Roles</td>
-										<td align="center">Audits</td>
+										<th align="center">Employee</th>
+										<th align="center">Title</th>
+										<th align="center">Classification</th>
+										<th align="center">Job Roles</th>
+										<th align="center">Audits</th>
 									</tr>
 								</thead>
 								<s:set name="rowNum" value="0" />
 								<s:iterator value="activeEmployees" var="employee" status="stat">
-									<tr>
-										<td class="right"><s:property value="#stat.index + 1" />
+									<tr <s:if test="(#stat.index + 1) == true">class="odd"</s:if>>
+										<td class="center"><s:property value="#stat.index + 1" />
 										</td>
 										<s:set name="rowNum" value="#stat.index + 1" />
 										<s:if test="#canAddAudits">
@@ -164,9 +164,11 @@
 								</s:if>
 							</s:if>
 						</s:form>
-					</del>
+					</div>
 				</div>
 			</div></td>
+            <td width="15px"></td>			
+			<td style="vertical-align: top; width: 48%" ></td>
 			</tr>
 	</table>
 
