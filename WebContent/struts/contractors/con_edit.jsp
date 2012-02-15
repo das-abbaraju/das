@@ -393,30 +393,48 @@
 								</li>
 								<li>
 									<label>Contractor Type:</label>
-									
-									<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
-										<s:if test="#conType.toString() == 'Onsite'">
-											<s:checkbox name="contractor.onsiteServices" /><s:property value="#conType.type" />
-										</s:if>
-										<s:elseif test="#conType.toString() == 'Offsite'">
-											<s:checkbox name="contractor.offsiteServices" /><s:property value="#conType.type" />
-										</s:elseif>
-										<s:elseif test="#conType.toString() == 'Supplier'">
-											<s:checkbox name="contractor.materialSupplier" /><s:property value="#conType.type" />
-										</s:elseif>
-										<s:else>
-											<s:checkbox name="contractor.transportationServices" /><s:property value="#conType.type" />
-										</s:else>
-									</s:iterator>
-									
-									<pics:fieldhelp title="Contractor Type">
-										<s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
-											<h5><s:property value="#conType.type" /></h5>
-											
-											<s:property value="#conType.description" escape="false" />
-											<br />
-										</s:iterator>
-									</pics:fieldhelp>
+									<s:if test="getContractorTypeHelpText() != ''">
+										<div class="alert-error alert-message warning">
+											<span class="icon warn"></span>
+											<p><s:property value="getContractorTypeHelpText()" escape="false" /></p>
+										</div>
+									</s:if>
+									<s:checkbox 
+										name="conTypes"
+										id="onSite"
+										fieldValue="Onsite"
+										label="ContractorAccount.onsiteServices" 
+										value="contractor.isContractorTypeRequired('Onsite') ? true : contractor.onsiteServices" 
+										cssClass="checkbox"
+										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Onsite)" 
+									/><s:text name="ContractorAccount.onsiteServices" />
+									<s:checkbox 
+										name="conTypes" 
+										id="offSite"
+										fieldValue="Offsite"
+										label="ContractorAccount.offsiteServices" 
+										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite) ? true : contractor.offsiteServices"
+										cssClass="checkbox"
+										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite)" 
+									/><s:text name="ContractorAccount.offsiteServices" />
+									<s:checkbox 
+										name="conTypes" 
+										id="materialSupplier"
+										fieldValue="Supplier" 
+										label="ContractorAccount.materialSupplier"
+										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier) ? true : contractor.materialSupplier" 
+										cssClass="checkbox"
+										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier)" 
+									/><s:text name="ContractorAccount.materialSupplier" />
+									<s:checkbox 
+										name="conTypes" 
+										id="transportation"
+										fieldValue="Transportation"
+										label="ContractorAccount.transportationServices" 
+										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation) ? true : contractor.transportationServices"
+										cssClass="checkbox"
+										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
+									/><s:text name="ContractorAccount.transportationServices" />
 								</li>
 								<li>
 									<s:if test="hasImportPQFAudit">

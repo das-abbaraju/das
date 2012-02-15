@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -32,12 +33,10 @@ import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.Invoice;
@@ -86,6 +85,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
+	
+	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
+	private String contractorTypeHelpText = "";
 
 	public ContractorEdit() {
 		this.subHeading = "Contractor Edit";
@@ -119,7 +121,28 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 					"contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
+
+			defaultConTypeHelpText();
 		}
+	}
+
+	private void defaultConTypeHelpText() {
+		if (contractor.isContractorTypeRequired(ContractorType.Onsite))
+			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+		if (contractor.isContractorTypeRequired(ContractorType.Offsite))
+			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+		if (contractor.isContractorTypeRequired(ContractorType.Supplier))
+			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+		if (contractor.isContractorTypeRequired(ContractorType.Transportation))
+			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(contractor
+							.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
 	}
 
 	@Before
@@ -158,6 +181,22 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				String fileName = "brochure_" + contractor.getId();
 				FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 				contractor.setBrochureFile(extension);
+			}
+			
+			// account for disabled checkboxes not coming though
+			if (contractor.isContractorTypeRequired(ContractorType.Onsite))
+				conTypes.add(ContractorType.Onsite);
+			if (contractor.isContractorTypeRequired(ContractorType.Offsite))
+				conTypes.add(ContractorType.Offsite);
+			if (contractor.isContractorTypeRequired(ContractorType.Supplier))
+				conTypes.add(ContractorType.Supplier);
+			if (contractor.isContractorTypeRequired(ContractorType.Transportation))
+				conTypes.add(ContractorType.Transportation);
+
+			contractor.editAccountTypes(conTypes);
+			
+			if (!conTypesOK()) {
+				return SUCCESS;
 			}
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
@@ -445,5 +484,41 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		}
 
 		return false;
+	}
+
+	public List<ContractorType> getConTypes() {
+		return conTypes;
+	}
+
+	public void setConTypes(List<ContractorType> conTypes) {
+		this.conTypes = conTypes;
+	}
+	
+	public boolean conTypesOK() {
+		boolean conTypesOK = true;
+		boolean meetsOperatorsRequirements = false;
+		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+			meetsOperatorsRequirements = false;
+			for (ContractorType conType : operator.getAccountTypes()) {
+				if (conTypes.contains(conType))
+					meetsOperatorsRequirements = true;
+			}
+
+			if (!meetsOperatorsRequirements) {
+				String msg = operator.getName() + " requires you to select "
+						+ StringUtils.join(operator.getAccountTypes(), " or ");
+				addActionError(msg);
+				conTypesOK = false;
+			}
+		}
+		return conTypesOK;
+	}
+
+	public String getContractorTypeHelpText() {
+		return contractorTypeHelpText;
+	}
+
+	public void setContractorTypeHelpText(String contractorTypeHelpText) {
+		this.contractorTypeHelpText = contractorTypeHelpText;
 	}
 }
