@@ -190,6 +190,8 @@ public class EmployeeDashboard extends ContractorDocuments {
 	private boolean isEmployeeGaurdAuditType(AuditType auditType) {
 		return ((auditType.getClassType().isIm() || 
 				auditType.getClassType().isEmployee() || 
+				auditType.getId() == AuditType.HSE_COMPETENCY ||
+				auditType.getId() == AuditType.HSE_COMPETENCY_REVIEW ||				
 				auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS));
 	}
 
