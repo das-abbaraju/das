@@ -175,19 +175,7 @@
 					// enable ambest questions on audit category reload
 					AUDIT.am_best_suggest.autocomplete($('#auditViewArea #ambest'));
 					
-					$('.audit-tagit').each(function (key, value) {
-					    var element = $(this);
-					    
-					    var audit_id = element.attr('data-audit-id');
-					    var question_id = element.attr('data-question-id');
-					    var option_group_id = element.attr('data-option-group-id');
-					    
-					    element.tagit({
-					        postType: 'string',
-					        source: 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id,
-					        source_selected: 'OptionGroupTagit!getItemsSelected.action?auditId=' + audit_id + '&questionId=' + question_id
-					    });
-					});
+					AUDIT.question.initTagit();
 				}
 			});
 		}
@@ -291,9 +279,9 @@
 					$(this).attr('href', $(this).attr('href') + "?account=" + conID);
 				});
 			} else {
-				$('div.question a.passAudit, div.question a.operatorViewable')
-				.each(function() {
+				$('div.question a.passAudit, div.question a.operatorViewable').each(function() {
 					var text = $(this).text();
+					
 					$(this).replaceWith(text);
 				});
 			}
@@ -309,7 +297,27 @@
 				
 				// re-enable ambest questions on audit category reload
 				AUDIT.am_best_suggest.autocomplete($('#' + element_id + ' ' + '#ambest'));
+				
+				AUDIT.question.initTagit();
 			});
+		},
+		
+		initTagit: function () {
+		    $('.audit-tagit').each(function (key, value) {
+                var element = $(this);
+                
+                console.log(element);
+                
+                var audit_id = element.attr('data-audit-id');
+                var question_id = element.attr('data-question-id');
+                var option_group_id = element.attr('data-option-group-id');
+                
+                element.tagit({
+                    postType: 'string',
+                    source: 'OptionGroupTagit!getItemsInJson.action?optionGroupId=' + option_group_id,
+                    source_selected: 'OptionGroupTagit!getItemsSelected.action?auditId=' + audit_id + '&questionId=' + question_id
+                });
+            });
 		}
 	};
 	

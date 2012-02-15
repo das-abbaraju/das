@@ -842,9 +842,10 @@
             
             // fetch list of items to be displayed
             if (search_value != null) {
+                var search_value = search_value.replace(/[#-}?]/, '\\$&');
+                var regex = new RegExp(search_value, 'gi');
+                
                 var items = this.select.find('option:not(:selected)').filter(function () {
-                    var regex = new RegExp(search_value, 'gi');
-                    
                     return $(this).attr(that.config.data_drop_down_name).search(regex) != -1;
                 });
             } else {
