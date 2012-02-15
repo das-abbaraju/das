@@ -31,4 +31,15 @@ public class JSONUtilities {
 			return false;
 		return (Boolean) obj;
 	}
+	
+	public static boolean mayBeJSON(String string) {
+		if (string.startsWith("{") && string.endsWith("}")) {
+			return true;
+		} else if (string.startsWith("[") && string.endsWith("]")) {
+			return true;
+		}
+		
+		return false;
+		
+	}
 }

@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Locale;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -7,6 +9,15 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.google.common.base.Strings;
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.util.JSONUtilities;
 
 @SuppressWarnings("serial")
 @Entity
@@ -55,4 +66,56 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
+	
+	/**
+	 * In the event that the notes is NOT JSON, return the notes as a String.
+	 * 
+	 * If the notes is JSON, then parse it and return the concatenated String
+	 * from the Rejection Reasons and the comment.
+	 *  
+	 * JSON Format = {"reasonCodes":["123","456"],"comment":"OptionalComment"} 
+	 * 
+	 * @return
+	 */
+	@Transient
+	public String getMappedNote() {
+		if (!JSONUtilities.mayBeJSON(notes)) {
+			return notes;
+		}
+		
+		// return the notes field as is in the event the JSON Parsing fails
+		JSONObject jsonObject = parseJson();
+		if (jsonObject == null) {
+			return notes;
+		}
+				
+		return buildNotes(jsonObject);
+	}
+	
+	private JSONObject parseJson() {
+		JSONParser jsonParser = new JSONParser();
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = (JSONObject) jsonParser.parse(notes);
+		} catch (Exception nothingWeCanDoExceptLogIt) {
+			System.out.println("CAOW Note JSON Parser Error when parsing " + notes);
+		}
+		
+		return jsonObject;
+	}
+	
+	// TODO: change this so that it will be set to the correct locale
+	private String buildNotes(JSONObject jsonObject) {
+		StringBuilder concatenatedNotes = new StringBuilder();
+		JSONArray reasonCodes = (JSONArray) jsonObject.get("reasonCodes");
+		String[] i18nKeys = (String[]) reasonCodes.toArray();
+		for (String key : i18nKeys) {
+			concatenatedNotes.append(I18nCache.getInstance().getText(key, Locale.US));
+		}
+		
+		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("comment")));
+		
+		return concatenatedNotes.toString();
+	}
+	
 }

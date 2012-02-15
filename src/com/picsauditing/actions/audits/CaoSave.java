@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -48,6 +50,7 @@ public class CaoSave extends AuditActionSupport {
 	private String note;
 	private String noteMessage = "";
 	private String saveMessage = "";
+	private String rejectionReasonCodes;
 	private boolean noteRequired = false;
 	private boolean viewCaoTable = false;
 	private List<Integer> caoIDs = new ArrayList<Integer>();
@@ -201,6 +204,32 @@ public class CaoSave extends AuditActionSupport {
 
 		return "refresh";
 	}
+	
+	/**
+	 * This is used to save Multiple Rejection Reasons as a "JSON Object"
+	 * 
+	 * @return
+	 * @throws RecordNotFoundException
+	 * @throws NoRightsException
+	 */
+	@SuppressWarnings("unchecked")
+	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException {		
+		JSONObject[] jsonObjects = (JSONObject[]) jsonArray.toArray(); 
+		
+		JSONArray reasonCodes = new JSONArray();
+		for (JSONObject jsonObject : jsonObjects) {
+			reasonCodes.add(jsonObject.get("id"));
+		}
+				
+		// builds a JSONObject string with the reason codes and the plain-text comment input
+		// by the user
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("reasonCodes", reasonCodes);
+		jsonObject.put("comment", note);
+		note = jsonObject.toJSONString();
+		
+		return save();
+	}
 
 	public String save() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
 		setup();
@@ -265,6 +294,9 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		caoDAO.save(cao);
+		
+		// TODO: Change the Database Schema so that the notes are saved in either the 
+		// contractor_audit_operator_workflow table or the note table, but NOT BOTH.
 		updateCaoWorkflow(prevStatus, cao, note);
 		
 		if (newStatus.isSubmittedResubmitted() && cao.getAudit().getAuditType().isPqf()
@@ -518,5 +550,13 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setViewCaoTable(boolean viewCaoTable) {
 		this.viewCaoTable = viewCaoTable;
+	}
+	
+	public String getRejectionReasonCodes() {
+		return rejectionReasonCodes;
+	}
+	
+	public void setRejectionReasonCodes(String rejectionReasonCodes) {
+		this.rejectionReasonCodes = rejectionReasonCodes;
 	}
 }

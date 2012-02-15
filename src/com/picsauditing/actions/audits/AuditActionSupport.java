@@ -436,8 +436,10 @@ public class AuditActionSupport extends ContractorActionSupport {
 			else
 				return false;
 		}
+		
 		if (cao.getStatus().before(AuditStatus.Complete))
 			return true;
+		
 		else
 			return false;
 	}
@@ -458,6 +460,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public boolean isCanVerifyPqf() {
 		if (!permissions.hasPermission(OpPerms.AuditVerification))
 			return false;
+		
 		if (!conAudit.getAuditType().isPqf() && !conAudit.getAuditType().isAnnualAddendum())
 			return false;
 
@@ -472,11 +475,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanViewRequirements() {
-		if (conAudit.getAuditType().getWorkFlow().isHasRequirements())
-			if (conAudit.getAuditType().getId() == AuditType.COR)
+		if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
+			
+			if (conAudit.getAuditType().getId() == AuditType.COR) {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Pending);
-			else
+			}
+			else {
 				return conAudit.hasCaoStatusAfter(AuditStatus.Incomplete);
+			}
+		}
+		
 		return false;
 	}
 
@@ -577,8 +585,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 			newNote.setViewableBy(cao.getOperator());
 
 			if (!Strings.isEmpty(noteBody)) {
-				newNote.setBody(noteBody);
 				caoW.setNotes(noteBody);
+
+				// since the note is stored in a separate table, forget about doing extra work to give the
+				// user a correct view to edit the Reason Codes in the note, just throw in the mapped note.
+				newNote.setBody(caoW.getMappedNote());				
 				noteDAO.save(newNote);
 			}
 

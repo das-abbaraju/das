@@ -2330,5 +2330,9 @@
 		<action name="AuditCatRulesChangesAjax" class="com.picsauditing.actions.rules.AuditCatRulesChangesAjax">
 			<result>/struts/rules/audit_rule_table.jsp</result>
 		</action>
+		
+		<action name="AuditRejectLookupAjax" class="com.picsauditing.actions.AuditRejectionLookup">
+			<result type="jsonArray"></result>
+		</action>
 	</package>
 </struts>
