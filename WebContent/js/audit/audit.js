@@ -267,7 +267,13 @@
 		updateLinks: function() {
 			if (hasPermissionsToSeeAuditLinks == 'true') {
 				$('div.question a.passAudit').each(function() {
-					$(this).attr('href', $(this).attr('href') + "?audit=" + auditID);
+					var question_query_param = '';
+					var question_container = $(this).closest('div.question');
+					if (question_container.length) {
+						 var question_id = $(this).closest('div.question').find('input[name="auditData.question.id"]').val();
+						question_query_param = '&questionId=' + question_id;
+					}
+					$(this).attr('href', $(this).attr('href') + "?audit=" + auditID + question_query_param);
 				});
 			} else if (operatorCorporate) {
 				$('div.question a.passAudit').not('.operatorViewable').each(function() {
