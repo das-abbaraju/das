@@ -233,11 +233,11 @@ function showOption() {
 				</label>
 				<s:optiontransferselect
 					name="requiredLanguagesName"
-					list="availableLocales"
+					list="getAvailableLocalesFrom(question.category)"
 					listKey="language"
 					listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
 					doubleName="question.languages"
-					doubleList="getSelectedLocalesFrom(question.category)"
+					doubleList="selectedLocales"
 					doubleListKey="language"
 					doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
 					leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"

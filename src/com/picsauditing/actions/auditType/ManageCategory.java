@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditRule;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
 
 @SuppressWarnings("serial")
 public class ManageCategory extends ManageAuditType implements Preparable {
@@ -161,5 +162,12 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				selectedLocales.add(new Locale(locale));
 			}
 		}
+	}
+	
+	@Override
+	public List<Locale> getAvailableLocalesFrom(BaseTableRequiringLanguages entity) {
+		if (entity == null)
+			entity = category.getAuditType();
+		return super.getAvailableLocalesFrom(entity);
 	}
 }

@@ -158,11 +158,11 @@
 							</label>
 							<s:optiontransferselect
 								name="requiredLanguagesName"
-								list="availableLocales"
+								list="getAvailableLocalesFrom(category.parent)"
 								listKey="language"
 								listValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
 								doubleName="category.languages"
-								doubleList="getSelectedLocalesFrom(category.auditType)"
+								doubleList="selectedLocales"
 								doubleListKey="language"
 								doubleListValue="%{displayLanguage + (displayCountry == '' ? '' : ' (' + displayCountry + ')')}"
 								leftTitle="%{getText('ManageAuditType.AvailableLanguages')}"

@@ -40,14 +40,15 @@ public abstract class RequiredLanguagesSupport extends PicsActionSupport {
 		return selectedLocales;
 	}
 	
-	public List<Locale> getSelectedLocalesFrom(BaseTableRequiringLanguages entity) {
-		selectedLocales = new ArrayList<Locale>();
+	public List<Locale> getAvailableLocalesFrom(BaseTableRequiringLanguages entity) {
+		availableLocales = new ArrayList<Locale>();
 		
 		for (String language : entity.getLanguages()) {
-			selectedLocales.add(new Locale(language));
+			availableLocales.add(new Locale(language));
 		}
-		
-		return selectedLocales;
+		availableLocales.removeAll(getSelectedLocales());
+
+		return availableLocales;
 	}
 	
 	abstract protected void fillSelectedLocales();
