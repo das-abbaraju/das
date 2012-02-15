@@ -31,6 +31,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected String subHeading = null;
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
+	protected int questionId;
 
 	@Autowired
 	protected AccountDAO accountDAO;
@@ -47,6 +48,14 @@ public class AccountActionSupport extends PicsActionSupport {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getQuestionId() {
+		return questionId;
+	}
+
+	public void setQuestionId(int questionId) {
+		this.questionId = questionId;
 	}
 
 	/**

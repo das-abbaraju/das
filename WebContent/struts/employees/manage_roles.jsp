@@ -47,7 +47,8 @@
 		<s:include value="../actionMessages.jsp" />
 		
 		<s:if test="audit.id > 0">
-			<div class="info">
+			<s:if test="questionId==3669" >
+				<div class="info">
 				<s:text name="ManageJobRoles.Step1">
 					<s:param>
 						<s:property value="audit.id" />
@@ -57,6 +58,26 @@
 					</s:param>
 				</s:text>
 			</div>
+			</s:if>
+			<s:elseif test="questionId==3675" >
+			<div class="info">
+				<s:text name="ManageJobRoles.Step2">
+					<s:param>
+						<s:property value="audit.id" />
+					</s:param>
+					<s:param>
+						<s:text name="AuditType.99.name" />
+					</s:param>
+				</s:text>
+			</div>
+		<div class="info">
+			<a href="resources/HSECompetencyReview.pdf">
+				<s:text name="ManageJobRoles.link.QuestionReviewPDF" />
+			</a>
+			<br />
+			<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
+		</div>
+			</s:elseif >
 		</s:if>
 		
 		<table id="rolesTable">
@@ -110,14 +131,7 @@
 					>
 						<s:text name="ManageJobRoles.link.AddNewJobRole" />
 					</a>
-					<br />
-					<div class="info">
-						<a href="resources/HSECompetencyReview.pdf">
-							<s:text name="ManageJobRoles.link.QuestionReviewPDF" />
-						</a>
-						<br />
-						<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
-					</div>
+					
 				</td>
 				<td class="rightCell">
 					<div id="roleCell"></div>

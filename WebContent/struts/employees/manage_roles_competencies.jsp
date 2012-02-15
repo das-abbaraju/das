@@ -63,3 +63,10 @@
 		</td>
 	</tr>
 </table>
+<div class="info">
+	<a href="resources/HSECompetencyReview.pdf">
+		<s:text name="ManageJobRoles.link.QuestionReviewPDF" />
+	</a>
+	<br />
+	<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
+</div>

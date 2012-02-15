@@ -76,6 +76,7 @@
 			<s:url action="ManageJobRoles" var="jobRoles" escapeAmp="false">
 				<s:param name="account" value="%{account.id}" />
 				<s:param name="audit" value="%{audit.id}" />
+				<s:param name="questionId" value="%{questionId}" />
 			</s:url>
 			<a href="${jobRoles}">
 				<s:if test="permissions.contractor">
@@ -123,5 +124,13 @@
 				<td><s:text name="JobCompetencyMatrix.help.CompetencyRequired" /></td>
 			</tr>
 		</table>
+		<br />
+		<div class="info">
+			<a href="resources/HSECompetencyReview.pdf">
+				<s:text name="ManageJobRoles.link.QuestionReviewPDF" />
+			</a>
+			<br />
+			<s:text name="ManageJobRoles.help.QuestionReviewPDF" />
+		</div>
 	</body>
 </html>

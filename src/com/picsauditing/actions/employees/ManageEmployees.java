@@ -93,7 +93,17 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (account == null)
 			account = accountDAO.find(permissions.getAccountId());
 	}
+	
+	public void findAccount() {
+		if (audit != null) {
+			account = audit.getContractorAccount();
+		}
 
+		if (employee != null) {
+			account = employee.getAccount();
+		}		
+	}
+	
 	@Override
 	public String execute() throws Exception {
 		if (audit != null) {
@@ -401,6 +411,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public Set<JobRole> getUnusedJobRoles() {
+		findAccount();
 		if (unusedJobRoles == null) {
 			unusedJobRoles = new LinkedHashSet<JobRole>(account.getJobRoles());
 
