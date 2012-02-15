@@ -306,8 +306,6 @@
 		    $('.audit-tagit').each(function (key, value) {
                 var element = $(this);
                 
-                console.log(element);
-                
                 var audit_id = element.attr('data-audit-id');
                 var question_id = element.attr('data-question-id');
                 var option_group_id = element.attr('data-option-group-id');
