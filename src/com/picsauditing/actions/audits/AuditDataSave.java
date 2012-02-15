@@ -224,41 +224,7 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 				contractorAccountDao.save(contractor);
 
-				if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
-						&& !StringUtils.isEmpty(auditData.getAnswer())) {
-					Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
-					if (!DateBean.isNullDate(expiresDate))
-						tempAudit.setExpiresDate(expiresDate);
-					// In case the answer is not a valid date we add 1 year
-					// to the policy's creation date.
-					if (tempAudit.getExpiresDate() == null) {
-						tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
-					}
-					auditDao.save(tempAudit);
-				}
-				if ("policyExpirationDatePlus120".equals(auditData.getQuestion().getUniqueCode())
-						&& !StringUtils.isEmpty(auditData.getAnswer())) {
-					Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
-					if (!DateBean.isNullDate(expiresDate)) {
-						Calendar date = Calendar.getInstance();
-						date.setTime(expiresDate);
-						date.add(Calendar.DATE, 120);
-						tempAudit.setExpiresDate(date.getTime());
-					}
-					// In case the answer is not a valid date we add 1 year
-					// to the policy's creation date.
-					if (tempAudit.getExpiresDate() == null) {
-						tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
-					}
-					auditDao.save(tempAudit);
-				}
-				if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
-						&& !StringUtils.isEmpty(auditData.getAnswer())) {
-					Date creationDate = DateBean.parseDate(auditData.getAnswer());
-					if (!DateBean.isNullDate(creationDate))
-						tempAudit.setCreationDate(creationDate);
-					auditDao.save(tempAudit);
-				}
+				checkUniqueCode(tempAudit);
 
 				if (auditData.getQuestion().isRecalculateCategories()) {
 					auditBuilder.recalculateCategories(tempAudit);
@@ -375,6 +341,62 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError("Error saving answer, please try again.");
 		}
 		return SUCCESS;
+	}
+
+	private void checkUniqueCode(ContractorAudit tempAudit) {
+		// TODO: Extract this into it's own class.
+		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
+			if (!DateBean.isNullDate(expiresDate))
+				tempAudit.setExpiresDate(expiresDate);
+			// In case the answer is not a valid date we add 1 year
+			// to the policy's creation date.
+			if (tempAudit.getExpiresDate() == null) {
+				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+			}
+			auditDao.save(tempAudit);
+		}
+		if ("policyExpirationDatePlus120".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
+			if (!DateBean.isNullDate(expiresDate)) {
+				Calendar date = Calendar.getInstance();
+				date.setTime(expiresDate);
+				date.add(Calendar.DATE, 120);
+				tempAudit.setExpiresDate(date.getTime());
+			}
+			// In case the answer is not a valid date we add 1 year
+			// to the policy's creation date.
+			if (tempAudit.getExpiresDate() == null) {
+				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+			}
+			auditDao.save(tempAudit);
+		}
+		if ("policyExpirationDatePlusMonthsToExpire".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			int monthsToExpire = tempAudit.getAuditType().getMonthsToExpire() == null ? 12 : tempAudit.getAuditType().getMonthsToExpire();
+			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
+			if (!DateBean.isNullDate(expiresDate)) {
+				Calendar date = Calendar.getInstance();
+				date.setTime(expiresDate);
+				date.add(Calendar.MONTH, monthsToExpire);
+				tempAudit.setExpiresDate(date.getTime());
+			}
+			// In case the answer is not a valid date we add months to expire 
+			// to the policy's creation date.
+			if (tempAudit.getExpiresDate() == null) {
+				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), monthsToExpire));
+			}
+			auditDao.save(tempAudit);
+		}
+		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
+				&& !StringUtils.isEmpty(auditData.getAnswer())) {
+			Date creationDate = DateBean.parseDate(auditData.getAnswer());
+			if (!DateBean.isNullDate(creationDate))
+				tempAudit.setCreationDate(creationDate);
+			auditDao.save(tempAudit);
+		}
 	}
 
 	/**
