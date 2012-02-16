@@ -1310,13 +1310,13 @@ div.blockDialog {
 
 .translation-list .translation-key
 {
-	width: 10%;
+	width: 20%;
 }
 
 .translation-list .translation-from,
 .translation-list .translation-to
 {
-	width: 45%;
+	width: 40%;
 }
 
 .translation-list .suggestTranslation
