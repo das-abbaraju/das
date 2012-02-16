@@ -297,7 +297,22 @@ footer .footer-menu a
 
 .registration-form .contractor-name-duplicate p
 {
+	line-height: 19px;
+	margin-bottom: 10px;
 	width: auto;
+}
+
+.registration-form .contractor-name-duplicate ul
+{
+	clear: both;
+	list-style-type: disc;
+	margin-left: 20px;
+}
+
+.registration-form .contractor-name-duplicate ul li
+{
+	margin-bottom: 5px;
+	overflow: inherit;
 }
 
 .registration-form .info-agreement
@@ -599,22 +614,21 @@ footer .footer-menu a
 
 #Registration-page .popover .arrow
 {
-	left: 87px;
+	left: 60%;
 }
 
-#Registration-page .popover .inner
+#Registration-page .popover .popover-inner
 {
-	left: 72px;
-	position: absolute;
-	width: 350px;
+	left: -80px;
+	position: relative;
 }
 
-#Registration-page .popover .inner .title
+#Registration-page .popover .popover-inner .popover-title
 {
 	display: none;
 }
 
-#Registration-page .popover .inner .content
+#Registration-page .popover .popover-inner .popover-content
 {
 	background: #faf3ed;
 	border-radius: 3px;
@@ -622,7 +636,7 @@ footer .footer-menu a
 	-webkit-border-radius: 3px;
 }
 
-#Registration-page .popover .inner .content p
+#Registration-page .popover .popover-inner .popover-content p
 {
 	line-height: 18px;
 }

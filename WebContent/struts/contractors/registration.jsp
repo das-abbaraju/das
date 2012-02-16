@@ -35,6 +35,14 @@
 	<s:set var="state_label_display" value="%{getText('global.State')}" />
 </s:else>
 
+<s:set name="chat_url" value="%{protocol +
+    '://server.iad.liveperson.net/hc/90511184/' + 
+    '?cmd=file' + 
+    '&amp;file=visitorWantsToChat' +
+    '&amp;site=90511184' + 
+    '&amp;imageUrl=' + protocol + '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' + 
+    '&amp;referrer='}" />
+
 <s:if test="hasActionErrors()">
 	<s:actionerror cssClass="action-error alert-message error" />
 </s:if>
@@ -119,8 +127,15 @@
                             <p style="width: auto;">
                                 <span class="icon warn"></span>
                                 
-                                <s:text name="ContractorRegistration.error.DuplicateContractorName" />
-                            </p> 
+                                <%-- <s:text name="ContractorRegistration.error.DuplicateContractorName" /> --%>
+                                A company with this name already exists in PICS:
+                            </p>
+                            
+                            <ul>
+                                <li><s:a action="Login">Click Here</s:a> to log in</li>
+                                <li>For help, please call 1-800-506-PICS (7427) </li>
+                                <li>Or, <a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">Chat Live</a> with a PICS Representative</li>
+                            </ul>
                         </div>
                     </li>
 					<li class="country">

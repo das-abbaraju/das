@@ -429,11 +429,13 @@
 									element.after(html);
 								}
 								
+								var is_legal_name_field = element.attr('id') == 'Registration_contractor_name';
+								
 								// conditions show hide duplicate contractor name message
 								$.each(field_errors, function (i, value) {
-								    if (element.attr('id') == 'Registration_contractor_name' && value == translate('JS.Validation.CompanyNameAlreadyExists')) {
+								    if (is_legal_name_field && value == translate('JS.Validation.CompanyNameAlreadyExists')) {
 								        $('.contractor-name-duplicate').show();
-								    } else {
+								    } else if (is_legal_name_field) {
 								        $('.contractor-name-duplicate').hide();
 								    }
 								});
@@ -470,13 +472,21 @@
 					var label = $(this).siblings('label');
 					var input = $(this).siblings('input[type=text], select');
 					
-					input.attr('title', label.html().replace(':', ''));
-					input.attr('data-content', html.replace('"', "'"));
-					input.popover({
-						html: true,
-						placement: 'below',
-						trigger: 'focus'
+					label.attr('title', label.html().replace(':', ''));
+					label.attr('data-content', html.replace('"', "'"));
+					
+					label.popover({
+						placement: 'bottom',
+						trigger: 'manual'
 					});
+					
+					input.bind('focus', function (event) {
+                        label.popover('show');
+                    });
+					
+					input.bind('blur', function (event) {
+                        label.popover('hide');
+                    });
 					
 					// ie specific js to shim select menus
 					if ($.browser.msie && $.browser.version == 6) {

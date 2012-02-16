@@ -23,10 +23,10 @@
 	       <message>${getText("JS.Validation.UsernameIsTaken")}</message>
 		</field-validator>
 	</field>
-	<!-- <field name="contractor.name">
+	<field name="contractor.name">
 		<field-validator type="fieldexpression" short-circuit="true">
 	       <param name="expression"><![CDATA[contractor.name == "" || !companyNameInUse]]></param>
 	       <message>${getText("JS.Validation.CompanyNameAlreadyExists")}</message>
 		</field-validator>
-	</field> -->
+	</field>
 </validators>
