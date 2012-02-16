@@ -127,14 +127,24 @@
                             <p style="width: auto;">
                                 <span class="icon warn"></span>
                                 
-                                <%-- <s:text name="ContractorRegistration.error.DuplicateContractorName" /> --%>
-                                A company with this name already exists in PICS:
+                                <s:text name="ContractorRegistration.error.DuplicateContractorName" />
                             </p>
                             
                             <ul>
-                                <li><s:a action="Login">Click Here</s:a> to log in</li>
-                                <li>For help, please call 1-800-506-PICS (7427) </li>
-                                <li>Or, <a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">Chat Live</a> with a PICS Representative</li>
+                                <li>
+                                    <s:a action="Login"><s:text name="Registration.error.DuplicateContractorLoginP1" /></s:a>
+                                    <s:text name="Registration.error.DuplicateContractorLoginP2" />
+                                </li>
+                                <li>
+                                    <s:text name="Registration.error.Call" />
+                                </li>
+                                <li>
+                                    <s:text name="Registration.error.DuplicateContractorLoginP3" />
+                                    <a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
+                                        <s:text name="Registration.error.DuplicateContractorLoginP4" />
+                                    </a>
+                                    <s:text name="Registration.error.DuplicateContractorLoginP5" />
+                                </li>
                             </ul>
                         </div>
                     </li>
