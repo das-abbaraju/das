@@ -13,17 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Country;
-/**
- * This class wraps a map of ISO codes to Corruption Perception Indices
- * @author Lucas
- *
- */
+
 @SuppressWarnings("serial")
 public class CorruptionPerceptionIndexMap extends PicsActionSupport {
 
 	@Autowired
 	protected CountryDAO countryDAO;
-	/*testable*/ Map<String, Double> map = null;
+	@Testable
+	Map<String, Double> map = null;
 	
 
 	public List<Double> findCorruptionPerceptionIndices(String unparsedJsonCountries) {
@@ -38,9 +35,9 @@ public class CorruptionPerceptionIndexMap extends PicsActionSupport {
 		return corruptionPerceptionIndices;
 	}
 	
-	private List<String> convertJsonToIsoCodes(String unprasedJsonCountries) {
+	private List<String> convertJsonToIsoCodes(String unparsedJsonCountries) {
 		List<String> isoCodes = new ArrayList<String>();
-		JSONArray countriesArray = (JSONArray) JSONValue.parse(unprasedJsonCountries);
+		JSONArray countriesArray = (JSONArray) JSONValue.parse(unparsedJsonCountries);
 	
 		for (Object country: countriesArray.toArray()) {
 			JSONObject object = (JSONObject) country;
