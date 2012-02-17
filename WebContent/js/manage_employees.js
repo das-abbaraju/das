@@ -169,10 +169,14 @@ function loadEmployee(id) {
 		div: 'employeeFormDiv', 
 		message: translate('JS.ManageEmployees.message.AjaxLoad')
 	});
-	
+
+	var audit = $('a.loadEmployee').attr('data-audit');
+	var questionId = $('a.loadEmployee').attr('data-questionId');
+
 	$('#employeeFormDiv').load('ManageEmployees!loadAjax.action', {
 			employee : id,
-			audit : audit
+			audit : audit,
+			questionId : questionId
 		}, function() {
 		setupEmployee();
 	});

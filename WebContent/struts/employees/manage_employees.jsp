@@ -97,6 +97,7 @@
 		<s:url action="ManageEmployees" method="add" var="addEmployee">
 			<s:param name="account" value="%{account.id}" />
 			<s:param name="audit" value="%{audit.id}" />
+			<s:param name="questionId" value="%{questionId}" />
 		</s:url>
 		<a href="${addEmployee}" class="add">
 			<s:text name="ManageEmployees.link.Add" />
@@ -146,6 +147,7 @@
 												class="loadEmployee"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
 												data-audit="<s:property value="audit.id" />"
+												data-questionId="<s:property value="questionId" />"
 											>
 												<s:property value="#e.lastName" />
 											</a>
@@ -156,6 +158,7 @@
 												class="loadEmployee"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
 												data-audit="<s:property value="audit.id" />"
+												data-questionId="<s:property value="questionId" />"
 											>
 												<s:property value="#e.firstName" />
 											</a>
@@ -172,6 +175,7 @@
 												class="loadEmployee edit"
 												title="<s:text name="ManageEmployees.title.EditProfile" />"
 												data-audit="<s:property value="audit.id" />"
+												data-questionId="<s:property value="questionId" />"
 											></a>
 										</td>
 										<td class="center">

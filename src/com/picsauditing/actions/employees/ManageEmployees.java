@@ -162,7 +162,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
 		return redirect("ManageEmployees.action?"
-				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()) + "#employee="
+				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account=" + account.getId()) + "#employee="
 				+ employee.getId());
 	}
 

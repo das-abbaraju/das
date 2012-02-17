@@ -33,6 +33,7 @@ $(function() {
 	<s:hidden name="account" />
 	<s:hidden name="audit" />
 	<s:hidden name="employee" />
+	<s:hidden name="questionId" />
 	<s:if test="!selectRolesSites">
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="ManageEmployees.header.EmployeeDetails" /></h2>

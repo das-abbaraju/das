@@ -3,6 +3,7 @@
 <s:form id="roleForm">
 	<s:hidden name="account" value="%{account.id}" id="accountID" />
 	<s:hidden name="audit" value="%{audit.id}" />
+	<s:hidden name="questionId" value="%{questionId}" />
 	<s:hidden name="role" />
 	<fieldset class="form">
 	<h2 class="formLegend">

@@ -105,6 +105,7 @@
 												class="roleLink<s:if test="!active"> inactive</s:if>"
 												data-account="<s:property value="account.id" />"
 												data-audit="<s:property value="audit.id" />"
+												data-questionId="<s:property value="questionId" />"
 											>
 												<s:property value="name" />
 											</a>
@@ -128,6 +129,7 @@
 						class="add"
 						data-account="<s:property value="account.id" />"
 						data-audit="<s:property value="audit.id" />"
+						data-questionId="<s:property value="questionId" />"
 					>
 						<s:text name="ManageJobRoles.link.AddNewJobRole" />
 					</a>

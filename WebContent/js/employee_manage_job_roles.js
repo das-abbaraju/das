@@ -73,11 +73,13 @@
 				event.preventDefault();
 				var account = $(this).attr('data-account');
 				var audit = $(this).attr('data-audit');
+				var questionId = $(this).attr('data-questionId');
 
 				$('#roleCell').load(
 					'ManageJobRoles!get.action', {
 						account : account,
-						audit: audit
+						audit: audit,
+						questionId : questionId
 					}
 				);
 			},
@@ -87,6 +89,7 @@
 
 				var accountID = $('#accountID').val();
 				var audit = $(this).attr('data-audit');
+				var questionId = $(this).attr('data-questionId');
 
 				startThinking({
 					div : 'roleCell',
@@ -97,7 +100,8 @@
 					'ManageJobRoles!get.action', {
 						role : $(this).attr('id'),
 						account : accountID,
-						audit : audit
+						audit : audit,
+						questionId : questionId
 					}
 				);
 			}

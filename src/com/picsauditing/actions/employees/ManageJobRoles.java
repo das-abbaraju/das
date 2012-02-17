@@ -82,8 +82,7 @@ public class ManageJobRoles extends AccountActionSupport {
 
 		jobRoleDAO.save(role);
 
-		return redirect("ManageJobRoles.action?"
-				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
+		return redirect("ManageJobRoles.action?" + getUrlOptions());
 	}
 
 	public String delete() throws Exception {
@@ -97,9 +96,21 @@ public class ManageJobRoles extends AccountActionSupport {
 		} else {
 			jobRoleDAO.remove(role);
 		}
+		
+		return redirect("ManageJobRoles.action?" + getUrlOptions());
+	}
 
-		return redirect("ManageJobRoles.action?"
-				+ (audit != null ? "audit=" + audit.getId() : "account=" + account.getId()));
+	private String getUrlOptions() {
+		String urlOptions = "";
+		if (audit == null) {
+			urlOptions="account=" + account.getId();
+		} else {
+			urlOptions="audit=" + audit.getId();
+			if (questionId > 0) {
+				urlOptions +="&questionId=" + questionId;
+			}
+		}
+		return urlOptions;
 	}
 
 	public String addCompetency() throws Exception {
