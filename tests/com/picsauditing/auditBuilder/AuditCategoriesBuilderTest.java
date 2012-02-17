@@ -51,20 +51,12 @@ public class AuditCategoriesBuilderTest {
 	@Test
 	public void testFindAnswer() {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
-		ContractorAudit auditTypeOne = EntityFactory.makeContractorAudit(1, testContractor);
-		auditTypeOne.setData(new ArrayList<AuditData>());
+		ContractorAudit audit = EntityFactory.makeContractorAudit(1, testContractor);
+		audit.setData(new ArrayList<AuditData>());
 		
-		AuditQuestion questionOne = EntityFactory.makeAuditQuestion();
-		questionOne.setId(1);
-		auditTypeOne.getData().add(EntityFactory.makeAuditData("pink", questionOne));
-		
-		AuditQuestion questionTwo = EntityFactory.makeAuditQuestion();
-		questionTwo.setId(2);
-		auditTypeOne.getData().add(EntityFactory.makeAuditData("purple", questionTwo));
-		
-		AuditQuestion questionThree = EntityFactory.makeAuditQuestion();
-		questionThree.setId(3);
-		auditTypeOne.getData().add(EntityFactory.makeAuditData("magenta", questionThree));
+		AuditQuestion questionOne = makeUpQuestion(1, audit, "pink");
+		AuditQuestion questionTwo = makeUpQuestion(2, audit, "purple");
+		AuditQuestion questionThree = makeUpQuestion(3, audit, "magenta");
 		
 		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
 		
@@ -75,9 +67,16 @@ public class AuditCategoriesBuilderTest {
 		
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
 	
-		assertEquals("pink", categoryBuilder.findAnswer(auditTypeOne, 1).getAnswer());
-		assertEquals("purple", categoryBuilder.findAnswer(auditTypeOne, 2).getAnswer());
-		assertEquals("magenta", categoryBuilder.findAnswer(auditTypeOne, 3).getAnswer());
+		assertEquals("pink", categoryBuilder.findAnswer(audit, 1).getAnswer());
+		assertEquals("purple", categoryBuilder.findAnswer(audit, 2).getAnswer());
+		assertEquals("magenta", categoryBuilder.findAnswer(audit, 3).getAnswer());
 		
+	}
+
+	private AuditQuestion makeUpQuestion(int id,ContractorAudit audit, String answer) {
+		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		question.setId(id);
+		audit.getData().add(EntityFactory.makeAuditData(answer, question));
+		return question;
 	}
 }
