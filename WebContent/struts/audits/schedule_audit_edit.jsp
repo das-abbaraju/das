@@ -14,7 +14,7 @@
 		<s:include value="../jquery.jsp"></s:include>
 		
 		<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="https://maps.google.com/maps?file=api&v=2.x&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 		<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
 		
 		<style type="text/css">
@@ -58,20 +58,16 @@
 					);
 				</s:else>
 				$('.selector').datepicker();
-			
-				if (GBrowserIsCompatible()) {
-					map = new GMap2(document.getElementById("mappreview"));
-					map.setUIToDefault();
-					recenterMap();
-				}
+
+
+				var myOptions = {
+					center: new google.maps.LatLng($('#conAudit_latitude').val(), $('#conAudit_longitude').val()),
+					zoom: 8,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+				var map = new google.maps.Map(document.getElementById("mappreview"), myOptions);
+
 			});
-			
-			function recenterMap() {
-				map.clearOverlays();
-				var point = new GLatLng($('#conAudit_latitude').val(), $('#conAudit_longitude').val());
-				map.setCenter(point, 11);
-				map.addOverlay(new GMarker(point));
-			}
 			
 			var conID = '<s:property value="conAudit.contractorAccount.id"/>';
 			function useContractor() {
