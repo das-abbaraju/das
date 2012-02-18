@@ -50,15 +50,15 @@ public class QueryDateParameter {
 	}
 
 	private int convertPeriod(char period) {
-		if (period == 'y')
+		if (period == 'y' || period == 'Y')
 			return Calendar.YEAR;
-		if (period == 'm')
+		if (period == 'm' || period == 'M')
 			return Calendar.MONTH;
-		if (period == 'd')
+		if (period == 'd' || period == 'D')
 			return Calendar.DAY_OF_MONTH;
-		if (period == 'w')
+		if (period == 'w' || period == 'W')
 			return Calendar.WEEK_OF_YEAR;
-		if (period == 'h')
+		if (period == 'h' || period == 'H')
 			return Calendar.HOUR_OF_DAY;
 		return Calendar.DAY_OF_YEAR;
 	}
