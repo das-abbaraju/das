@@ -36,8 +36,8 @@ public class AuditRejectionLookup extends PicsActionSupport {
 	private void populateJsonArray(ResultSet results) throws Exception {
 		while (results.next()) {
 			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("id", parseCode(results.getString(0)));
-			jsonObject.put("value", results.getString(1));
+			jsonObject.put("id", parseCode(results.getString(1)));
+			jsonObject.put("value", results.getString(2));
 			jsonArray.add(jsonObject);
 		}
 	}
