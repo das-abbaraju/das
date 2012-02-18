@@ -11,7 +11,7 @@ import junit.framework.ComparisonFailure;
  * are referenced through static import:<br/>
  * 
  * <pre>
- * import static com.picsauditing.utils.Assert.*;
+ * import static com.picsauditing.util.Assert.*;
  *    ...
  *    assertEqualsToTheSecond(...);
  * </pre>
