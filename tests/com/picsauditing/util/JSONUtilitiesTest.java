@@ -16,6 +16,10 @@ public class JSONUtilitiesTest {
 		
 		s = "This { is a ] test }";
 		assertFalse(JSONUtilities.mayBeJSON(s));
+		
+		assertFalse(JSONUtilities.mayBeJSON(null));
+		assertFalse(JSONUtilities.mayBeJSON(""));
+		assertFalse(JSONUtilities.mayBeJSON("  "));
 	}
 
 }
