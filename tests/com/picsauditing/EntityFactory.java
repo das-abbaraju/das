@@ -65,6 +65,7 @@ public class EntityFactory {
 	static public ContractorAccount makeContractor() {
 		ContractorAccount contractor = new ContractorAccount();
 		// contractor.setActive('Y');
+		contractor.setId(counter++);
 		contractor.setStatus(AccountStatus.Active);
 		contractor.setName("Contractor Unit Test");
 		contractor.setSafetyRisk(LowMedHigh.Med);
