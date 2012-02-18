@@ -163,7 +163,7 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.AuditGUARD, feeDAO);
 		}
 
-		if (hasInsureGUARD) {
+		if (hasInsureGUARD && !FeeClass.InsureGUARD.isExcludedFor(contractor)) {
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
 			BigDecimal newAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 			contractor.setNewFee(newLevel, newAmount);

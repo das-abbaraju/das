@@ -21,14 +21,14 @@ public enum FeeClass implements Translatable {
 	DocuGUARD,
 	InsureGUARD {
 		@Override
-		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
+		public boolean isExcludedFor(ContractorAccount contractor) {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
-				return fee.getAmount();
+				return false;
 
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
 					&& !contractor.isHasPaymentExpired())
-				return BigDecimal.ZERO;
+				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
@@ -36,10 +36,7 @@ public enum FeeClass implements Translatable {
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 
-			if (isAllExclusionsApplicable(contractor, exclusions))
-				return BigDecimal.ZERO;
-
-			return fee.getAmount();
+			return isAllExclusionsApplicable(contractor, exclusions);
 		}
 	},
 	AuditGUARD {
@@ -117,6 +114,10 @@ public enum FeeClass implements Translatable {
 	public boolean isMembership() {
 		return this == BidOnly || this == ListOnly || this == DocuGUARD || this == AuditGUARD || this == EmployeeGUARD
 				|| this == InsureGUARD;
+	}
+
+	public boolean isExcludedFor(ContractorAccount contractor) {
+		return false;
 	}
 
 	public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
