@@ -288,18 +288,12 @@ public class ImportEmployees extends PicsActionSupport {
 						e.setTwicExpiration(cell.getDateCellValue());
 						break;
 					case 5:
-						e.setBirthDate(cell.getDateCellValue());
-						break;
-					case 6:
 						e.setEmail(cell.toString());
 						break;
-					case 7:
+					case 6:
 						e.setPhone(cell.toString());
 						break;
-					case 8:
-						e.setSsn(cell.toString().replaceAll("[^0-9]", ""));
-						break;
-					case 9:
+					case 7:
 						e.setLocation(cell.toString());
 						break;
 					default:
@@ -330,7 +324,6 @@ public class ImportEmployees extends PicsActionSupport {
 		return new String[] { getText("ManageEmployeesUpload.label.EmployeeFirstName"),
 				getText("ManageEmployeesUpload.label.EmployeeLastName"), getText("ManageEmployeesUpload.label.Title"),
 				getText("ManageEmployeesUpload.label.HireDate"), getText("Employee.twicExpiration"),
-				getText("Employee.birthDate"), getText("Employee.email"), getText("Employee.phone"),
-				getText("Employee.ssn"), getText("Employee.location") };
+				getText("Employee.email"), getText("Employee.phone"), getText("Employee.location") };
 	}
 }
