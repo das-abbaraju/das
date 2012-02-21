@@ -181,7 +181,6 @@ public class AuditDataSave extends AuditActionSupport {
 				}
 
 				auditData = newCopy;
-
 			}
 
 			loadAnswerMap();
@@ -247,23 +246,6 @@ public class AuditDataSave extends AuditActionSupport {
 							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Incomplete, permissions);
 							caow.setNotes("Due to data change");
 							caowDAO.save(caow);
-							updateAudit = true;
-							break;
-						}
-					}
-					if (updateAudit)
-						auditDao.save(tempAudit);
-				}
-
-				if (tempAudit.getAuditType().getClassType().isPolicy()) {
-					boolean updateAudit = false;
-					for (ContractorAuditOperator cao : tempAudit.getViewableOperators(permissions)) {
-						if (cao.getStatus().equals(AuditStatus.Pending) && cao.getPercentComplete() == 100) {
-							ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Submitted, permissions);
-							caow.setNotes(getTextParameterized("AuditDataSave.AutoSubmittedPolicy", cao.getOperator()
-									.getName()));
-							caowDAO.save(caow);
-
 							updateAudit = true;
 							break;
 						}
@@ -340,9 +322,10 @@ public class AuditDataSave extends AuditActionSupport {
 			} else
 				addActionError("Error saving answer, please try again.");
 		}
+		
 		return SUCCESS;
 	}
-
+	
 	private void checkUniqueCode(ContractorAudit tempAudit) {
 		// TODO: Extract this into it's own class.
 		if ("policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())
