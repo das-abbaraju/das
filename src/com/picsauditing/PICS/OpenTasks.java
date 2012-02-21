@@ -292,7 +292,7 @@ public class OpenTasks extends TranslationActionSupport {
 							needed++;
 						}
 					}
-					if (conAudit.getAuditType().getId() == AuditType.COR
+					if ((conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT)
 							&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
 						needed++;
 					}
