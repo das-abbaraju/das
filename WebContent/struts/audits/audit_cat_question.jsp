@@ -90,7 +90,7 @@
 		
 		<s:property value="#q.name" escape="false"/>
 		
-		<s:if test="!isStringEmpty(#q.helpText)">
+		<s:if test="#q.helpText.exists()">
 			<a class="cluetip" href="#" rel="#cluetip_<s:property value="#q.id"/>" title="<s:text name="Audit.AdditionalInformation" />">
 				<img src="images/help-icon.png" />
 			</a>

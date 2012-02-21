@@ -112,6 +112,18 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 			return null;
 	}
 	
+	public boolean exists() {
+	    String translation = toString();
+	    
+	    if (translation == null) {
+	        return false;
+	    }
+	    
+	    translation = translation.trim();
+	    
+	    return translation.length() > 0 && !translation.equals("Translation missing");
+	}
+	
 	/**
 	 * Strip Tags
 	 * 

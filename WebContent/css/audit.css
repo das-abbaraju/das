@@ -209,6 +209,12 @@ h4.groupTitle
 	top: 2px;
 }
 
+.question .cluetip,
+.question .edit-question
+{
+	text-decoration: none;
+}
+
 .question.checkbox img.required
 {
 	left: -25px;
