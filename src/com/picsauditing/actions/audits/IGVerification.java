@@ -57,7 +57,7 @@ public class IGVerification extends ContractorActionSupport {
 		EmailTemplate template = templateDAO.find(132);
 
 		List<ContractorAuditOperator> caos = caoDAO.findByCaoStatus(1000, permissions,
-				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' "
+				"cao.status = 'Incomplete' AND cao.audit.auditType.classType = 'Policy' AND ca.expiresDate > NOW()"
 						+ "AND cao.audit.contractorAccount.id = " + contractor.getId(), "cao.audit.contractorAccount");
 
 		caowList = new ArrayList<ContractorAuditOperatorWorkflow>();
@@ -90,7 +90,7 @@ public class IGVerification extends ContractorActionSupport {
 				caowList.add(recent.get(auditType, operator));
 			}
 		}
-
+		
 		emailBuilder.setTemplate(template);
 		emailBuilder.addToken("caowList", caowList);
 		emailBuilder.setPermissions(permissions);
@@ -98,7 +98,7 @@ public class IGVerification extends ContractorActionSupport {
 		emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
 		previewEmail = emailBuilder.build();
 	}
-
+	
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String sendEmail() throws Exception {
 		previewEmail.setBody(body);
