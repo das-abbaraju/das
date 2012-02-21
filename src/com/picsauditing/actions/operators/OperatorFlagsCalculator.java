@@ -80,7 +80,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 			flagCriteriaOperator.setHurdle(newHurdle);
 		}
 
-		List<BasicDynaBean> results = getResults(flagCriteriaOperator, operator, db);
+		List<BasicDynaBean> results = getContractorResultsByCriteriaAndOperator(flagCriteriaOperator, operator, db);
 
 		if (results.size() > 0) {
 			List<Integer> opIDs = new ArrayList<Integer>();
@@ -175,6 +175,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 							}
 
 							affected.add(flagAndOverride);
+							break;
 						}
 					}
 				}
@@ -323,7 +324,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 		return override;
 	}
 
-	static private List<BasicDynaBean> getResults(FlagCriteriaOperator fco, OperatorAccount op, Database db)
+	static private List<BasicDynaBean> getContractorResultsByCriteriaAndOperator(FlagCriteriaOperator fco, OperatorAccount op, Database db)
 			throws Exception {
 		List<Integer> children = new ArrayList<Integer>();
 		children.add(op.getId());
@@ -437,7 +438,7 @@ public class OperatorFlagsCalculator extends PicsActionSupport {
 	static public List<FlagCriteriaContractor> getFlagCriteriaContractorList(FlagCriteriaOperator fco,
 			OperatorAccount op, Permissions permissions) throws Exception {
 		Database db = new Database();
-		List<BasicDynaBean> results = getResults(fco, op, db);
+		List<BasicDynaBean> results = getContractorResultsByCriteriaAndOperator(fco, op, db);
 		List<FlagCriteriaContractor> fccs = new ArrayList<FlagCriteriaContractor>();
 
 		if (results.size() > 0) {
