@@ -46,10 +46,6 @@ $(function() {
 				</li>
 				<li><s:textfield id="titleSuggest" name="employee.title" theme="formhelp" /></li>
 				<li>
-					<s:textfield name="employee.birthDate" value="%{maskDateFormat(employee.birthDate)}"
-						cssClass="datepicker" theme="formhelp" />
-				</li>
-				<li>
 					<s:select name="employee.classification" 
 						list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
 						listValue="getText(getI18nKey('description'))" theme="formhelp" />
@@ -85,12 +81,6 @@ $(function() {
 				<li>
 					<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" 
 						cssClass="datepicker" theme="formhelp" />
-				</li>
-				<li><label><s:text name="Employee.ssn" />:</label>
-					<s:textfield name="ssn" cssClass="ssn"/>
-					<div class="fieldhelp">
-						<s:text name="Employee.ssn.fieldhelp" />
-					</div>
 				</li>
 				<li><s:textfield name="employee.location" id="locationSuggest" theme="formhelp" /></li>
 			</ol>
