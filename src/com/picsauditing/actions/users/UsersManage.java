@@ -441,7 +441,7 @@ public class UsersManage extends PicsActionSupport {
 			permissions.tryPermission(OpPerms.AllOperators);
 
 		// checking to see if primary account user is set
-		if (!isSaveAction && (isMakeFirstAccountUserPrimary() || isUserPrimaryContact()))
+		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact()))
 			setPrimaryAccount = true;
 				
 		// Default isActive to show all for contractors
@@ -449,9 +449,9 @@ public class UsersManage extends PicsActionSupport {
 			isActive = "All";
 	}
 	
-	private boolean isMakeFirstAccountUserPrimary() {
+	private boolean isPrimaryUserEstablished() {
 		return (account != null 
-				&& account.getPrimaryContact() == null);
+				&& account.getPrimaryContact() != null);
 	}
 	
 	private boolean isUserPrimaryContact() {
@@ -511,7 +511,7 @@ public class UsersManage extends PicsActionSupport {
 		}
 		
 		if (!validPrimaryContactExists(user)) {
-			addActionError("There must be at least one User that is Active and the Primary Contact on this account.");
+			addActionError(getText("UsersManage.Error.PrimaryUser"));
 		}
 
 		return getActionErrors().size() == 0;
@@ -528,13 +528,13 @@ public class UsersManage extends PicsActionSupport {
 	private boolean hasAtLeastOneActivePrimaryContact(Account account) {
 		if (account != null && account.getPrimaryContact() != null) {
 			List<User> users = account.getUsers();			
-			return foundActivePrimaryContact(users, account);
+			return hasActivePrimaryContact(users, account);
 		}
 		
 		return false;
 	}
 	
-	private boolean foundActivePrimaryContact(List<User> users, Account account) {
+	private boolean hasActivePrimaryContact(List<User> users, Account account) {
 		if (users != null && !users.isEmpty()) {
 			for (User user : users) {
 				// this is a special case, because when iterating over the users from the Account object,
@@ -761,7 +761,7 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	public List<UserLoginLog> getRecentLogins() {
-		UserLoginLogDAO loginLogDao = (UserLoginLogDAO) SpringUtils.getBean("UserLoginLogDAO");
+		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
 
@@ -917,7 +917,7 @@ public class UsersManage extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
 		} catch (Exception e) {
@@ -943,7 +943,7 @@ public class UsersManage extends PicsActionSupport {
 			emailQueue = emailBuilder.build();
 			emailQueue.setPriority(100);
 
-			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
+			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
 
 			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
