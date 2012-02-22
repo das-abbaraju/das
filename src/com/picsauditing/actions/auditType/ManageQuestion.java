@@ -94,7 +94,7 @@ public class ManageQuestion extends ManageCategory implements Preparable {
 				return false;
 			}
 			
-			if (question.getLanguages().isEmpty() && category.getLanguages().size() == 1) {
+			if (question.getLanguages().isEmpty() && category.getLanguages().size() >= 1) {
 				question.setLanguages(category.getLanguages());
 			}
 

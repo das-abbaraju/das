@@ -54,9 +54,12 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 				this.addActionError("Category name is required");
 				return false;
 			}
-			
-			if (category.getLanguages().isEmpty() && auditType.getLanguages().size() == 1) {
-				category.setLanguages(auditType.getLanguages());
+
+			if (category.getLanguages().isEmpty()) {
+				if (category.getParent() != null && category.getParent().getLanguages().size() >= 1)
+					category.setLanguages(category.getParent().getLanguages());
+				else if (auditType.getLanguages().size() >= 1)
+					category.setLanguages(auditType.getLanguages());
 			}
 
 			if (category.hasMissingChildRequiredLanguages()) {
@@ -163,7 +166,7 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 			}
 		}
 	}
-	
+
 	@Override
 	public List<Locale> getAvailableLocalesFrom(BaseTableRequiringLanguages entity) {
 		if (entity == null)
