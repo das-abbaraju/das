@@ -5,6 +5,8 @@ import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,6 +32,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String spanish;
 	protected String french;
 	protected Double corruptionPerceptionIndex;
+	protected Currency currency = Currency.USD;
 	
 	protected User csr;
 	
@@ -120,6 +123,15 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	
 	public void setCorruptionPerceptionIndex(Double corruptionPerceptionIndex) {
 		this.corruptionPerceptionIndex = corruptionPerceptionIndex;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency curreny) {
+		this.currency = curreny;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
