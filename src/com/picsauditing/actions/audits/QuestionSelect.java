@@ -62,11 +62,12 @@ public class QuestionSelect extends PicsActionSupport {
 			where += " AND (SELECT auditTypeID " + " FROM audit_category ac " + " WHERE t.categoryID = ac.id) IN (" + auditTypeClause + ")";
 		}
 
-		List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
+		if (!Strings.isEmpty(questionName)) {
+			List<AuditQuestion> questionList = auditQuestionDAO.findByTranslatableField(AuditQuestion.class, where, "name",
 				"%" + Utilities.escapeQuotes(questionName) + "%", null);
-
-		Collections.sort(questionList, AuditQuestion.getComparator());
-		questions.addAll(questionList);
+			Collections.sort(questionList, AuditQuestion.getComparator());
+			questions.addAll(questionList);
+		}
 
 		return SUCCESS;
 	}
