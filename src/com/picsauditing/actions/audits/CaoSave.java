@@ -109,8 +109,8 @@ public class CaoSave extends AuditActionSupport {
 
 	private void rollbackToPreviousCao(ContractorAuditOperator cao,	ContractorAuditOperatorWorkflow previousCaow) {
 		if (previousCaow != null) {			
-			ContractorAuditOperatorWorkflow newCaow = cao.changeStatus(previousCaow.getStatus(), permissions);
-			newCaow.setNotes(previousCaow.getNotes());
+			ContractorAuditOperatorWorkflow newCaow = cao.changeStatus(previousCaow.getPreviousStatus(), permissions);
+			newCaow.setNotes(getText("CaoSave.Undo"));
 			caowDAO.save(newCaow);
 			caoDAO.save(cao);
 		}
@@ -119,17 +119,15 @@ public class CaoSave extends AuditActionSupport {
 	private ContractorAuditOperatorWorkflow getPreviousCaoWorkflow(List<ContractorAuditOperatorWorkflow> caows) {
 		ContractorAuditOperatorWorkflow previousCaow = null;
 		if (hasPreviousCaow(caows)) {
-			previousCaow = caows.get(1);
+			previousCaow = caows.get(0);
 		}
 		
 		return previousCaow;
 	}
 
 	private boolean hasPreviousCaow(List<ContractorAuditOperatorWorkflow> caows) {
-		return caows != null 
-				&& !caows.isEmpty() 
-				&& caows.size() > 1;
-	}	
+		return (caows != null && !caows.isEmpty());
+	}
 
 	public String loadStatus() throws RecordNotFoundException, NoRightsException {
 		setup();
