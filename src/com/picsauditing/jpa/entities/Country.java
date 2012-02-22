@@ -126,6 +126,7 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	}
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	public Currency getCurrency() {
 		return currency;
 	}
