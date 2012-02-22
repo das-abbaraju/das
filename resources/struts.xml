@@ -219,15 +219,13 @@
 			<result>struts/forms/manage_resources.jsp</result>
 		</action>
 		
-		<action name="Resources"
-			class="com.picsauditing.actions.report.ReportResources">
+		<action name="Resources" class="com.picsauditing.actions.report.ReportResources">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">Resources</param>
 			<result>struts/reports/resources.jsp</result>
 		</action>
 		
-		<action name="ResourcesAjax"
-			class="com.picsauditing.actions.report.ReportResources">
+		<action name="ResourcesAjax" class="com.picsauditing.actions.report.ReportResources">
 			<result>struts/reports/resources_data.jsp</result>
 		</action>
 
@@ -296,6 +294,7 @@
 		
 		<action name="ManageContractorOperatorNumber" class="com.picsauditing.actions.contractors.ManageContractorOperatorNumber">
 			<result>/struts/contractors/contractor_operator_numbers.jsp</result>
+			<result name="input">/struts/contractors/contractor_operator_numbers_form.jsp</result>
 		</action>
 
 		<action name="AuditPdfConverter" class="com.picsauditing.actions.contractors.AuditPdfConverter">

@@ -146,7 +146,9 @@ ul {
 	list-style: none;
 }
 
-#conoperator_tags {
+#conoperator_tags,
+#contractor_operator_numbers
+{
 	padding: 10px;
 }
 

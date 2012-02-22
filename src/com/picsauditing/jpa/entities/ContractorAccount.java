@@ -42,6 +42,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.util.SpringUtils;
@@ -604,6 +605,21 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setContractorOperatorNumbers(List<ContractorOperatorNumber> contractorOperatorNumbers) {
 		this.contractorOperatorNumbers = contractorOperatorNumbers;
+	}
+	
+	@Transient
+	public List<ContractorOperatorNumber> getVisibleContractorOperatorNumbers(Permissions permissions) {
+		List<ContractorOperatorNumber> visibleContractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
+		
+		visibleContractorOperatorNumbers.addAll(getContractorOperatorNumbers());
+		Iterator<ContractorOperatorNumber> iterator = visibleContractorOperatorNumbers.iterator();
+		
+		while (iterator.hasNext()) {
+			if (!iterator.next().isVisibleTo(permissions))
+				iterator.remove();
+		}
+		
+		return visibleContractorOperatorNumbers;
 	}
 
 	/**

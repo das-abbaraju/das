@@ -7,6 +7,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.picsauditing.access.Permissions;
 
 @SuppressWarnings("serial")
 @Entity
@@ -54,5 +57,28 @@ public class ContractorOperatorNumber extends BaseTable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@Transient
+	public boolean isVisibleTo(Permissions permissions) {
+		if (permissions.isContractor() || permissions.isPicsEmployee())
+			return true;
+
+		if (operator.getId() == permissions.getAccountId())
+			return true;
+
+		if (permissions.isCorporate()) {
+			for (Integer operatorID : permissions.getOperatorChildren()) {
+				if (operatorID == operator.getId())
+					return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("%s: %s (%s)", getOperator().getName(), getValue(), getType().name());
 	}
 }
