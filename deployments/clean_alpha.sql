@@ -1,11 +1,9 @@
--- Clean up the application data in config that was just copied from Yesterday (Live)
-update users set password = SHA1(CONCAT('v7Rep0rts',id)) WHERE accountID != 1100;
-update users set email = 'tester@picsauditing.com' WHERE accountID != 1100 AND email > '';
+update users set password = SHA1(CONCAT('v7Rep0rts',id));
+update contractor_info set taxID = '123456789';
+update users set email = 'tester@picsauditing.com' where email > '';
 update employee set email = 'tester@picsauditing.com' where email > '';
--- Clean up the email data in config that was just copied from Yesterday (Live)
-update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null 
-where status = 'Pending'
-and (toAddresses not like '%picsauditing.com' or ccAddresses not like '%picsauditing.com');
+update employee set ssn = '123456789' where ssn > '';
+update email_queue set toAddresses = 'tester@picsauditing.com', ccAddresses = null, bccAddresses = null, fromPassword = null, fromAddress = null;
 
 update generalcontractors set baselineFlag = flag, baselineFlagDetail = flagDetail;
 update flag_data set baselineFlag = flag;
@@ -19,4 +17,3 @@ update app_properties set value = 'ccprocessorb' where property = 'brainTree.pro
 
 /* Update the date loaded for this database */
 UPDATE app_properties SET value = NOW() WHERE property = 'PICS.db.dateLoaded';
-UPDATE app_properties SET value = '1' WHERE property = 'PICS.config';
