@@ -16,6 +16,7 @@ import javax.persistence.Transient;
 public class Workflow extends BaseTable {
 
 	public static final int AUDIT_REQUIREMENTS_WORKFLOW = 2;
+	public static final int PQF_WORKFLOW = 4;
 	public static final int HSE_WORKFLOW = 8;
 	public static final int MANUAL_AUDIT_WORKFLOW = 7;
 

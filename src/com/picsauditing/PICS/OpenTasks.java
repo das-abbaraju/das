@@ -282,9 +282,7 @@ public class OpenTasks extends TranslationActionSupport {
 								needed++;
 							}
 						} else if (cao.getStatus().before(AuditStatus.Submitted)
-								|| cao.getStatus() == AuditStatus.Resubmit
-								|| (conAudit.getAuditType().isRenewable() && conAudit.isAboutToExpire() && !cao
-										.getStatus().isComplete())) {
+								|| cao.getStatus() == AuditStatus.Resubmit) {
 							needed++;
 						}
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
