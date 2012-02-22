@@ -233,8 +233,10 @@ public class PicsMenu {
 			subMenu.addChild("Invoice Search Report", "ReportContractorUnpaidInvoices.action");
 			subMenu.addChild("Expired CC Report", "ReportExpiredCreditCards.action?filter.status=Active");
 			subMenu.addChild("Lifetime Members Report", "ReportLifetimeMembership.action");
-			subMenu.addChild("QuickBooks Sync", "QBSyncList.action");
-			subMenu.addChild("QuickBooks Sync Canada", "QBSyncListCanada.action");
+			subMenu.addChild("QuickBooks Sync US", "QBSyncList.action?currency=USD");
+			subMenu.addChild("QuickBooks Sync Canada", "QBSyncList.action?currency=CAD");
+			subMenu.addChild("QuickBooks Sync UK", "QBSyncList.action?currency=GBP");
+			subMenu.addChild("QuickBooks Sync EUR", "QBSyncList.action?currency=EUR");
 		}
 
 		subMenu = menu.addChild(getText("global.InsureGUARD"));

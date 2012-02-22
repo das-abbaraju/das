@@ -72,6 +72,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean qbSync;
 	protected String qbListID;
 	protected String qbListCAID;
+	protected String qbListUKID;
+	protected String qbListEUID;
 	protected String reason;
 	protected boolean acceptsBids;
 	private String description;
@@ -391,10 +393,30 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.qbListCAID = qbListCAID;
 	}
 
+	public String getQbListUKID() {
+		return qbListUKID;
+	}
+
+	public void setQbListUKID(String qbListUKID) {
+		this.qbListUKID = qbListUKID;
+	}
+
+	public String getQbListEUID() {
+		return qbListEUID;
+	}
+
+	public void setQbListEUID(String qbListEUID) {
+		this.qbListEUID = qbListEUID;
+	}
+
 	@Transient
 	public String getQbListID(String currencyCode) {
 		if ("CAD".equals(currencyCode))
 			return getQbListCAID();
+		if ("GBP".equals(currencyCode))
+			return getQbListUKID();
+		if ("EUR".equals(currencyCode))
+			return getQbListEUID();
 
 		// return default for other
 		return getQbListID();
@@ -782,28 +804,28 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			}
 		}
 	}
-	
+
 	public void editAccountTypes(List<ContractorType> conTypes) {
 		if (conTypes != null) {
 			boolean value = false;
 			for (ContractorType conType : ContractorType.values()) {
-				if (conTypes.contains(conType)) 
+				if (conTypes.contains(conType))
 					value = true;
 				else
 					value = false;
 				switch (conType) {
-					case Onsite:
-						setOnsiteServices(value);
-						break;
-					case Offsite:
-						setOffsiteServices(value);
-						break;
-					case Supplier:
-						setMaterialSupplier(value);
-						break;
-					case Transportation:
-						setTransportationServices(value);
-						break;
+				case Onsite:
+					setOnsiteServices(value);
+					break;
+				case Offsite:
+					setOffsiteServices(value);
+					break;
+				case Supplier:
+					setMaterialSupplier(value);
+					break;
+				case Transportation:
+					setTransportationServices(value);
+					break;
 				}
 			}
 		}

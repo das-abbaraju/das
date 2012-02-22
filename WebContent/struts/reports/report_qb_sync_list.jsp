@@ -1,13 +1,40 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<title>QuickBooks Sync</title>
+<title>QuickBooks Sync ${currency}</title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
 </head>
 <body>
-<h1>QuickBooks Sync</h1>
-<a href="QBSyncListCanada.action" class="picsbutton positive">Switch to Canada</a>
+<h1>QuickBooks Sync ${currency}</h1>
+<s:if test="currency.display == 'USD'">
+    <a href="JavaScript:;" class="picsbutton positive disabled">Switch to United States</a>
+</s:if>
+<s:else>
+    <a href="QBSyncList.action?currency=USD" class="picsbutton positive">Switch to United States</a>
+</s:else>
+
+<s:if test="currency.display == 'CAD'">
+    <a href="JavaScript:;" class="picsbutton positive disabled">Switch to Canada</a>
+</s:if>
+<s:else>
+    <a href="QBSyncList.action?currency=CAD" class="picsbutton positive">Switch to Canada</a>
+</s:else>
+
+<s:if test="currency.display == 'GBP'">
+    <a href="JavaScript:;" class="picsbutton positive disabled">Switch to UK</a>
+</s:if>
+<s:else>
+    <a href="QBSyncList.action?currency=GBP" class="picsbutton positive">Switch to UK</a>
+</s:else>
+
+<s:if test="currency.display == 'EUR'">
+    <a href="JavaScript:;" class="picsbutton positive disabled">Switch to Euro</a>
+</s:if>
+<s:else>
+    <a href="QBSyncList.action?currency=EUR" class="picsbutton positive">Switch to Euro</a>
+</s:else>
+
 <div>
 Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 
@@ -30,7 +57,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="contractorInsert">
 			<tr>
-				<td><a href="QBSyncList.action?type=C&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=C&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="id" /></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="id" />"><s:property
 					value="name" /></a></td>
@@ -57,7 +84,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="contractorUpdate">
 			<tr>
-				<td><a href="QBSyncList.action?type=C&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=C&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="id" /></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="id" />"><s:property
 					value="name" /></a></td>
@@ -86,7 +113,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="invoiceInsert">
 			<tr>
-				<td><a href="QBSyncList.action?type=I&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=I&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="InvoiceDetail.action?invoice.id=<s:property value="id" />"><s:property
@@ -117,7 +144,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="invoiceUpdate">
 			<tr>
-				<td><a href="QBSyncList.action?type=I&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=I&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="InvoiceDetail.action?invoice.id=<s:property value="id" />"><s:property
@@ -148,7 +175,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="paymentInsert">
 			<tr>
-				<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=P&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property
@@ -179,7 +206,7 @@ Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 		</thead>
 		<s:iterator value="paymentUpdate">
 			<tr>
-				<td><a href="QBSyncList.action?type=P&id=<s:property value="id" />" class="remove">Skip</a></td>
+				<td><a href="QBSyncList.action?currency=${currency}&type=P&id=${id}" class="remove">Skip</a></td>
 				<td><s:property value="account.id"/></td>
 				<td><a href="ContractorEdit.action?id=<s:property value="account.id" />"><s:property value="account.name" /></a></td>
 				<td><a href="PaymentDetail.action?payment.id=<s:property value="id" />"><s:property

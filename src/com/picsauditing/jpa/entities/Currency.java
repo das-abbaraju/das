@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum Currency {
-	USD("USD", "$"), CAD("CAD", "$"), GBP("GBP", "\u00a3");
+	USD("USD", "$"), CAD("CAD", "$"), GBP("GBP", "\u00a3"), EUR("EUR", "\u20ac");
 
 	private String display;
 	private String symbol;
