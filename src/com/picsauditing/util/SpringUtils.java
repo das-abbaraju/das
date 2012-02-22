@@ -22,27 +22,30 @@ public class SpringUtils implements ApplicationContextAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Object getBean(String beanRefName, Class beanClass) {
-		Object object = null;
+	public static <T> T getBean(String beanRefName, Class<T> beanClass) {
+		T bean = null;
 		Assert.notNull(applicationContext, "ApplicationContext must not be null!");
 		try {
 			BeanFactory factory = (BeanFactory) applicationContext;
-			object = factory.getBean(beanRefName, beanClass);
+			bean = (T) factory.getBean(beanRefName, beanClass);
 		} catch (NoSuchBeanDefinitionException ex) {
 			// ignore
 		}
-		return object;
+		
+		return bean;
 	}
 
-	public static Object getBean(String beanRefName) {
-		Object object = null;
+	@SuppressWarnings("unchecked")
+	public static <T> T getBean(String beanRefName) {
+		T bean = null;
 		Assert.notNull(applicationContext, "ApplicationContext must not be null!");
 		try {
 			BeanFactory factory = (BeanFactory) applicationContext;
-			object = factory.getBean(beanRefName);
+			bean = (T) factory.getBean(beanRefName);
 		} catch (NoSuchBeanDefinitionException ex) {
 			// ignore
 		}
-		return object;
+		return bean;
 	}
+	
 }
