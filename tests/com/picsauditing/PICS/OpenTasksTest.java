@@ -51,7 +51,7 @@ public class OpenTasksTest {
 	@Test
 	public void testIsOpenTaskNeeded_PendingManualAudit() throws Exception {
 		ContractorAudit manualAudit = setUpAudit(AuditType.DESKTOP, Workflow.MANUAL_AUDIT_WORKFLOW);
-		audit.getAuditType().setCanContractorEdit(false);
+		manualAudit.getAuditType().setCanContractorEdit(false);
 		
 		ContractorAuditOperator cao = EntityFactory.addCao(manualAudit, operator);
 		cao.changeStatus(AuditStatus.Pending,permissions);
