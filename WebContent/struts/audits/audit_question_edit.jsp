@@ -87,7 +87,7 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Date'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="text"/>
+			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="date text"/>
 			<span style="font-style: italic; font-size: 12px;"><s:text name="global.Example" />: 12/31/1999</span>
 		</s:if>
 		

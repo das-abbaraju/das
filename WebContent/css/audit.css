@@ -110,6 +110,19 @@ h3.subCategory {
 	width: 50%;
 }
 
+.audit_category input.number
+{
+	min-width: 80px;
+	width: 25%;
+}
+
+.audit_category input.date
+{
+	min-width: 80px;
+	width: 25%;
+}
+
+
 .audit_category input.checkbox
 {
 	left: 20px;
@@ -317,6 +330,8 @@ span.printchecked {
 input.number {
 	text-align: right;
 	padding-right: 10px;
+	min-width: 80px;
+	width: 25%;
 }
 
 span.verified 
