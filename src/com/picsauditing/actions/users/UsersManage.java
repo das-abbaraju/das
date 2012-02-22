@@ -540,16 +540,38 @@ public class UsersManage extends PicsActionSupport {
 				// this is a special case, because when iterating over the users from the Account object,
 				// those users are from the database and may contain the user being Edited, but in
 				// a different state than it is in this Action class instance
-				if (this.user.equals(user) && setPrimaryAccount && user.isActiveB()) {
+				if (validateCurrentUserIsActivePrimary(user)) {
 					return true;
 				}
-				else if (!this.user.equals(user) && isUserActivePrimaryContact(user, account)) {
+				else if (verifyOtherUserIsActivePrimary(account, user)) {
 					return true;
 				}
 			}
 		}
 		
 		return false;
+	}
+
+	/**
+	 * The current user being edited should not be set to the Primary User in order for this
+	 * to return true, because we are checking that another user will remain the Primary Contact
+	 * after this user has been updated.
+	 * 
+	 * @param account
+	 * @param user
+	 * @return
+	 */
+	private boolean verifyOtherUserIsActivePrimary(Account account, User user) {
+		return (!this.user.equals(user) 
+				&& isUserActivePrimaryContact(user, account) 
+				&& user.isActiveB() 
+				&& !setPrimaryAccount);
+	}
+
+	private boolean validateCurrentUserIsActivePrimary(User user) {
+		return (this.user.equals(user) 
+				&& setPrimaryAccount 
+				&& this.user.isActiveB());
 	}
 	
 	private boolean isUserActivePrimaryContact(User user, Account account) {
