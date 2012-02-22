@@ -52,6 +52,10 @@ public class ManageJobRoles extends AccountActionSupport {
 
 		if (account == null && permissions.isContractor())
 			account = accountDAO.find(permissions.getAccountId());
+		
+		if (account == null) {
+			account = accountDAO.find(id);
+		}
 
 		if (account == null) {
 			throw new RecordNotFoundException("account");

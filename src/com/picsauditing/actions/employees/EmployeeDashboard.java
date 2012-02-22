@@ -3,6 +3,7 @@ package com.picsauditing.actions.employees;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.interceptor.annotations.Before;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.contractors.ContractorDocuments;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -30,8 +33,9 @@ public class EmployeeDashboard extends ContractorDocuments {
 	
 	private List<Employee> activeEmployees;
 	private List<Integer> selectedEmployeeIds = new ArrayList<Integer>();
-	private Integer selectedOperator;
+	private Integer selectedOperatorId;
 	private HashSet<Integer> employeeGuardAddableIds = new HashSet<Integer>();
+	private HashMap<Integer, List<OperatorAccount>> auditTypeOperators = new HashMap<Integer, List<OperatorAccount>>();
 
 	@Override
 	public String execute() throws Exception {
@@ -45,6 +49,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 		loadActiveEmployees();
 		auditTypeRuleCache.initialize(auditRuleDAO);
 		loadEmployeeGuardAudits();
+		loadAuditTypeOperators();
 	}
 	
 	public String addIntegrityManagementAudits() throws Exception {
@@ -65,14 +70,14 @@ public class EmployeeDashboard extends ContractorDocuments {
 			
 			if (operator == null || operator.getId() == 0) {
 				if (permissions.isOperatorCorporate())
-					selectedOperator = permissions.getAccountId();
+					selectedOperatorId = permissions.getAccountId();
 				else {
 					addActionError("You must select an operator.");
 					return SUCCESS;
 				}
 			}
 			conAudit.setRequestingOpAccount(new OperatorAccount());
-			conAudit.getRequestingOpAccount().setId(selectedOperator);
+			conAudit.getRequestingOpAccount().setId(selectedOperatorId);
 			conAudit.setEmployee(employee);
 
 			ContractorAuditOperator cao = new ContractorAuditOperator();
@@ -126,7 +131,7 @@ public class EmployeeDashboard extends ContractorDocuments {
 	
 	private OperatorAccount findOperator() {
 		for (ContractorOperator operator:contractor.getNonCorporateOperators()) {
-			if (operator.getOperatorAccount().getId() == selectedOperator) {
+			if (operator.getOperatorAccount().getId() == selectedOperatorId) {
 				return operator.getOperatorAccount();
 			}
 		}
@@ -138,9 +143,19 @@ public class EmployeeDashboard extends ContractorDocuments {
 	}
 	
 	public boolean isCanAddAudits() {
-		return permissions.isAdmin() && (employeeGuardAddableIds.size() > 0);
+		return (permissions.isAdmin() || permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+				&& (employeeGuardAddableIds.size() > 0);
 	}
 	
+	public boolean isCanEditEmploy() {
+		return permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)
+				|| permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit);
+	}
+
+	public boolean isCanEditJob() {
+		return permissions.isAdmin() && (employeeGuardAddableIds.size() > 0);
+	}
+
 	private void loadActiveEmployees() {
 		if (activeEmployees == null) {
 			activeEmployees = new ArrayList<Employee>();
@@ -187,6 +202,19 @@ public class EmployeeDashboard extends ContractorDocuments {
 		}
 	}
 	
+	private void loadAuditTypeOperators() {
+		for (Integer auditTypeID:employeeGuardAddableIds) {
+			if (!auditTypeOperators.containsKey(auditTypeID)) {
+				auditTypeOperators.put(auditTypeID, new ArrayList<OperatorAccount>());
+			}
+			for (ContractorOperator conOp:contractor.getNonCorporateOperators()) {
+				if (conOp.getOperatorAccount().getVisibleAuditTypes().contains(auditTypeID)) {
+					auditTypeOperators.get(auditTypeID).add(conOp.getOperatorAccount());
+				}
+			}
+		}
+	}
+	
 	private boolean isEmployeeGaurdAuditType(AuditType auditType) {
 		return ((auditType.getClassType().isIm() || 
 				auditType.getClassType().isEmployee() || 
@@ -196,11 +224,6 @@ public class EmployeeDashboard extends ContractorDocuments {
 	}
 
 	public List<Employee> getActiveEmployees() throws Exception{
-		findContractor();
-		loadActiveEmployees();
-		auditTypeRuleCache.initialize(auditRuleDAO);
-		loadEmployeeGuardAudits();
-
 		return activeEmployees;
 	}
 
@@ -216,12 +239,12 @@ public class EmployeeDashboard extends ContractorDocuments {
 		this.selectedEmployeeIds = selectedEmployeeIds;
 	}
 
-	public Integer getSelectedOperator() {
-		return selectedOperator;
+	public Integer getSelectedOperatorId() {
+		return selectedOperatorId;
 	}
 
-	public void setSelectedOperator(Integer selectedOperator) {
-		this.selectedOperator = selectedOperator;
+	public void setSelectedOperatorId(Integer selectedOperator) {
+		this.selectedOperatorId = selectedOperator;
 	}
 	
 	public List<ContractorOperator> getVisibleOperators() {
@@ -236,6 +259,10 @@ public class EmployeeDashboard extends ContractorDocuments {
 		}
 		
 	return visibleOperators;
+	}
+	
+	public List<OperatorAccount> getOperatorsByAuditTypeId(int auditTypeId) {
+		return auditTypeOperators.get(auditTypeId);
 	}
 	
 	public List<ContractorAudit> getUnattachedEmployeeAudits() {
