@@ -99,9 +99,10 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 		if (locales == null) {
 			locales = new ArrayList<Locale>();
 			// locales.add(new Locale("ar"));
-			// locales.add(new Locale("zh", "CN"));
-			// locales.add(new Locale("zh", "TW"));
-			// locales.add(new Locale("nl"));
+			locales.add(new Locale("zh"));
+			locales.add(new Locale("zh", "CN"));
+			locales.add(new Locale("zh", "TW"));
+			locales.add(new Locale("nl"));
 			locales.add(new Locale("en"));
 			locales.add(new Locale("en", "AU"));
 			locales.add(new Locale("en", "CA"));
@@ -111,12 +112,14 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 			locales.add(new Locale("fr"));
 			locales.add(new Locale("fr", "CA"));
 			locales.add(new Locale("fr", "FR"));
-			// locales.add(new Locale("de"));
+			locales.add(new Locale("de"));
 			// locales.add(new Locale("ja"));
-			// locales.add(new Locale("pt"));
+			locales.add(new Locale("pt"));
 			locales.add(new Locale("es"));
 			locales.add(new Locale("es", "MX"));
 			locales.add(new Locale("es", "ES"));
+			locales.add(new Locale("fi"));
+			locales.add(new Locale("sv"));
 			// locales.add(new Locale("ru"));
 		}
 		return locales;
