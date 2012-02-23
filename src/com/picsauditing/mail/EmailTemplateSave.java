@@ -63,15 +63,17 @@ public class EmailTemplateSave extends PicsActionSupport {
 			if (Strings.isEmpty(template.getBody()))
 				bodyMissing = true;
 		}
+		
+		List<String> defaultLocales = Arrays.asList(RequiredLanguagesSupport.DEFAULT_LOCALES);
+		List<String> validLanguages = new ArrayList<String>();
 
-		if (template.getLanguages().size() > 0) {
-			List<String> templateLanguages = new ArrayList<String>(template.getLanguages());
-			templateLanguages.removeAll(Arrays.asList(RequiredLanguagesSupport.DEFAULT_LOCALES));
-
-			if (templateLanguages.size() > 0) {
-				addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
+		for (String language : template.getLanguages()) {
+			if (defaultLocales.contains(language))  {
+				validLanguages.add(language);
 			}
-		} else {
+		}
+		
+		if (validLanguages.size() == 0) {
 			addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
 		}
 
@@ -88,6 +90,8 @@ public class EmailTemplateSave extends PicsActionSupport {
 			emailTemplateDAO.clear(); // don't save
 			return BLANK;
 		}
+		
+		template.setLanguages(validLanguages);
 
 		if (template.getId() == 0) {
 			// This is a new one so do some updates
