@@ -19,8 +19,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -128,11 +130,12 @@ public class Cron extends PicsActionSupport {
 
 	@Anonymous
 	public String execute() throws Exception {
+		HttpServletRequest request = ServletActionContext.getRequest();
 
 		report = new StringBuffer();
-
-		report.append("Starting Cron Job at: ");
-		report.append(new Date().toString());
+		report.append("Running Cron Job on Server: " + request.getServerName() + "\n");
+		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n");
+		report.append("Starting Cron Job at: " + new Date().toString());
 		report.append("\n\n");
 
 		if (!flagsOnly) {
@@ -714,13 +717,13 @@ public class Cron extends PicsActionSupport {
 
 			if (!hasReactivation) {
 				// Calculate Late Fee
-				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05))
-						.setScale(0, BigDecimal.ROUND_HALF_UP);
+				BigDecimal lateFee = i.getTotalAmount().multiply(BigDecimal.valueOf(0.05)).setScale(0,
+						BigDecimal.ROUND_HALF_UP);
 				if (lateFee.compareTo(BigDecimal.valueOf(20)) < 1)
 					lateFee = BigDecimal.valueOf(20);
 
-				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee,
-						((ContractorAccount) i.getAccount()).getPayingFacilities());
+				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i
+						.getAccount()).getPayingFacilities());
 				InvoiceItem lateFeeItem = new InvoiceItem(fee);
 				lateFeeItem.setAmount(lateFee);
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
@@ -834,13 +837,16 @@ public class Cron extends PicsActionSupport {
 
 	private List<BasicDynaBean> getFlagChangeData() throws SQLException {
 		StringBuilder query = new StringBuilder();
-		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query
+				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query
+				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query
+				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
