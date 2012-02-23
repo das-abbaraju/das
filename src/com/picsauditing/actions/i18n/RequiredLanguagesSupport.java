@@ -9,14 +9,16 @@ import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
 
 @SuppressWarnings("serial")
 public abstract class RequiredLanguagesSupport extends PicsActionSupport {
+	public static String[] DEFAULT_LOCALES = new String[] { "en", "fr", "es" };
 	protected List<Locale> availableLocales;
 	protected List<Locale> selectedLocales;
 	
 	private static List<Locale> getDefaultLocales() {
 		List<Locale> locales = new ArrayList<Locale>();
-		locales.add(new Locale("en"));
-		locales.add(new Locale("fr"));
-		locales.add(new Locale("es"));
+		
+		for (String locale : DEFAULT_LOCALES) {
+			locales.add(new Locale(locale));
+		}
 		
 		return locales;
 	}

@@ -54,6 +54,7 @@ $(function(){
 		$('#emailTemplateTable').load('EditEmailTemplateAjax.action', {type: type});
 	});
 });
+
 function changeType(){	
 	type = $('#changeType').val();
 	typeTranslated = $('#changeType option[value=' + $('#changeType').val() + ']').text();
@@ -115,7 +116,12 @@ function changeType(){
 	<s:include value="../actionMessages.jsp" />
 </div>
 <s:text name="EditEmailTemplate.TemplateType" />:
-<s:select id="changeType" name="type" list="#{'Audit':getText('ListType.Audit'), 'Contractor':getText('ListType.Contractor'), 'User':getText('ListType.User')}" onchange="changeType(); return false;" />
+<s:select
+	id="changeType"
+	name="type"
+	list="#{'Audit':getText('ListType.Audit'), 'Contractor':getText('ListType.Contractor'), 'User':getText('ListType.User')}"
+	onchange="changeType(); return false;"
+/>
 <table id="emailTemplateTable">	
 	<s:include value="editTemplateList.jsp" />
 </table>

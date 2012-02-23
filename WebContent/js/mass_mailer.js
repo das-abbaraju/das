@@ -2,6 +2,24 @@ var templateID = 0;
 var dirty = false;
 var type = "";
 
+$(function() {
+	$('input[type=radio,checkbox].dirtyOn').live('click', function() {
+		dirtyOn();
+	});
+	
+	$('input[type=text].dirtyOn, textarea.dirtyOn').live('keyup', function() {
+		dirtyOn();
+	});
+	
+	$('select.dirtyOn').live('change', function() {
+		dirtyOn();
+	});
+	
+	$('.double-list-action input').live('click', function() {
+		dirtyOn();
+	});
+});
+
 function dirtyOn() {
 	$('#buttonSave').removeAttr('disabled');
 	dirty = true;
@@ -124,6 +142,7 @@ function deleteTemplate(id) {
 
 function addTemplate(id) {
 	$('#messages').html('');
+	$('#templateLanguages option').attr('selected', true);
 	
 	var data = {
 			template: id,

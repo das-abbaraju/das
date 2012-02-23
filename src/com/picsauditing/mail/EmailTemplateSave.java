@@ -1,5 +1,7 @@
 package com.picsauditing.mail;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.Strings;
@@ -28,7 +31,8 @@ public class EmailTemplateSave extends PicsActionSupport {
 	private boolean allowsTranslations;
 
 	public String execute() throws NoRightsException {
-		// TODO Need to replace this. I think changes made from the front end get saved when the object is pulled from
+		// TODO Need to replace this. I think changes made from the front end
+		// get saved when the object is pulled from
 		// memory.
 		if (template.getId() > 0 && !permissions.hasPermission(OpPerms.AllOperators)
 				&& template.getAccountID() != permissions.getAccountId()) {
@@ -58,6 +62,17 @@ public class EmailTemplateSave extends PicsActionSupport {
 				subjectMissing = true;
 			if (Strings.isEmpty(template.getBody()))
 				bodyMissing = true;
+		}
+
+		if (template.getLanguages().size() > 0) {
+			List<String> templateLanguages = new ArrayList<String>(template.getLanguages());
+			templateLanguages.removeAll(Arrays.asList(RequiredLanguagesSupport.DEFAULT_LOCALES));
+
+			if (templateLanguages.size() > 0) {
+				addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
+			}
+		} else {
+			addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
 		}
 
 		if (subjectMissing)
