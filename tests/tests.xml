@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" 
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
-    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd"	
 	default-autowire="autodetect">
 
 	<bean id="SpringUtils" class="com.picsauditing.util.SpringUtils" />
-
+	<bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO" />
 	<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO" />
 	<bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO" />
 	<bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO" />
@@ -111,9 +113,15 @@
 		scope="prototype" />
 	<bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine"
 		scope="prototype" />
+	<bean id="AuditRejectionLookup" class="com.picsauditing.actions.AuditRejectionLookup" />
 
-	<bean
-		class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+
+	<bean id="dbBean" class="com.picsauditing.PICS.DBBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<!-- JPA implementation -->
 	<bean id="entityManagerFactory"
@@ -142,5 +150,15 @@
 	</bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- the transactional advice (i.e. what 'happens'; see the <aop:advisor/> bean below) -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- the transactional semantics... -->
+		<tx:attributes>
+			<!-- all methods starting with 'get' are read-only (optimization) -->
+			<tx:method name="get*" read-only="true" />
+			<!-- other methods use the default transaction settings (see below) -->
+			<tx:method name="*" />
+		</tx:attributes>
+	</tx:advice>
 
 </beans>
