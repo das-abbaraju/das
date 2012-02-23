@@ -30,6 +30,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
@@ -1547,4 +1548,19 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return operators;
 	}
+	
+	@Transient 
+	public boolean meetsOperatorRequirements(OperatorAccount operator) {
+		boolean meetsOperatorsRequirements = false;
+		
+		Set<ContractorType> contractorTypes = getAccountTypes();
+		
+		for (ContractorType opType : operator.getAccountTypes()) {
+			if (contractorTypes.contains(opType))
+				meetsOperatorsRequirements = true;
+		}
+		
+		return meetsOperatorsRequirements;
+	}
+	
 }

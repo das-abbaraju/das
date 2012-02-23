@@ -281,28 +281,17 @@ public class ContractorFacilities extends ContractorActionSupport {
 			facilityChanger.setPermissions(permissions);
 
 			if (button.equals("addOperator")) {
-				if (type == null) {
-					if (contractor.isOnsiteServices())
-						type = ContractorType.Onsite;
-					else if (contractor.isOffsiteServices())
-						type = ContractorType.Offsite;
-					else
-						type = ContractorType.Supplier;
-				}
-				// Check to make sure the contractor's types match the one
-				// passed in
-				if (type.equals(ContractorType.Onsite) && contractor.isOnsiteServices()
-						|| type.equals(ContractorType.Offsite) && contractor.isOffsiteServices()
-						|| type.equals(ContractorType.Supplier) && contractor.isMaterialSupplier()) {
+				if (contractor.meetsOperatorRequirements(operator)) {
 					contractor.setRenew(true);
 					facilityChanger.add();
+
 					if (contractor.getNonCorporateOperators().size() == 1 && contractor.getStatus().isPending())
 						contractor.setRequestedBy(contractor.getNonCorporateOperators().get(0).getOperatorAccount());
+
 					billingService.calculateAnnualFees(contractor);
 					contractor.syncBalance();
 					recalculate = true;
 				} else {
-					// Not sure when this happens
 					addActionError(getText("ContractorFacilities.error.ServiceMismatch"));
 				}
 			}
