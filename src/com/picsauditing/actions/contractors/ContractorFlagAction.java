@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -395,6 +396,25 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
+	
+	public List<ContractorOperator> getCorporateOverrides() {
+		ArrayList<ContractorOperator> corporateOverrides = new ArrayList<ContractorOperator>();
+		HashMap<String, ContractorOperator> uniqueCorporateOverrides = new HashMap<String, ContractorOperator>();
+		
+		for (ContractorOperator co:getActiveOperators()) {
+			ContractorOperator forceOverallConOp = co.getForceOverallFlag();
+			if (forceOverallConOp != null && forceOverallConOp.getForceFlag() != null) {
+				String key = forceOverallConOp.getForceFlag().toString() + "|" + forceOverallConOp.getForceEnd().toString() + "|"
+						+ forceOverallConOp.getForcedBy().getId() + "|";
+				if (!uniqueCorporateOverrides.containsKey(key))
+					uniqueCorporateOverrides.put(key, forceOverallConOp);
+			}
+		}
+		
+		corporateOverrides.addAll(uniqueCorporateOverrides.values());
+		
+		return corporateOverrides;
+	}
 
 	public ArrayList<String> getUnusedFlagColors(int id) {
 		FlagData flagData = flagDataDAO.find(id);
@@ -551,15 +571,15 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public FlagDataOverride isFlagDataOverride(FlagData flagData, OperatorAccount op) {
 		if (op == null)
 			op = co.getOperatorAccount();
-		if (getFlagDataOverrides(op) != null && getFlagDataOverrides(op).size() > 0) {
-			List<FlagDataOverride> flOverride = getFlagDataOverrides(op).get(flagData.getCriteria());
+		Map<FlagCriteria, List<FlagDataOverride>> flagDataOverrides = getFlagDataOverrides(op);
+		
+		if (flagDataOverrides != null && flagDataOverrides.size() > 0) {
+			List<FlagDataOverride> flOverride = flagDataOverrides.get(flagData.getCriteria());
 			if (flOverride != null && flOverride.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flOverride) {
 					if (flagDataOverride.getOperator().equals(op) && flagDataOverride.isInForce())
 						return flagDataOverride;
 				}
-				if (flOverride.get(0).isInForce())
-					return flOverride.get(0);
 			}
 		}
 		return null;

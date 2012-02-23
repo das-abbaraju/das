@@ -296,6 +296,35 @@ fieldset.form {
 										</s:param>
 									</s:text>
 								</s:if>
+								
+								<s:if test="displayCorporate" >
+									<s:iterator value="corporateOverrides" var="currentOp">
+										<s:if test="#currentOp.forceOverallFlag != null" >
+											<s:text name="ContractorFlag.ManualForceFlagInfo">
+												<s:param>
+													<s:property value="#currentOp.forceOverallFlag.forceFlag.smallIcon"
+														escape="false" />
+												</s:param>
+												<s:param>
+													<s:date name="#currentOp.forceOverallFlag.forceEnd"
+														format="MMM d, yyyy" />
+												</s:param>
+												<s:param>
+													<s:property value="#currentOp.forceOverallFlag.forcedBy.name" />
+												</s:param>
+												<s:param>
+													<s:property value="#currentOp.forceOverallFlag.forcedBy.account.name" />
+												</s:param>
+												<s:param>
+													<s:if
+														test="#currentOp.forceOverallFlag.operatorAccount.type == 'Corporate'">
+														<s:text name="ContractorFlag.ForAllSites" />
+													</s:if>
+												</s:param>
+									</s:text>
+										</s:if>
+									</s:iterator>
+								</s:if>
 
 								<s:if test="getFlagDataOverrides(co.operatorAccount).size() > 0 && !displayCorporate">
 									<s:iterator id="key" value="flagDataMap.keySet()">
