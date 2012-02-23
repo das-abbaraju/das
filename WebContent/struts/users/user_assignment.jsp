@@ -8,6 +8,7 @@
 <s:include value="../jquery.jsp"/>
 <script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
 <script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
+<script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 $(function() {
 	$('#assignments').delegate('tr:not(.new) a.remove', 'click', function(e) {
@@ -110,7 +111,18 @@ tr.dirty a.save { display: inline; }
 
 <h3><s:property value="type"/> Assignment Matrix</h3>
 
+<s:if test="type.toString() == 'CSR'">
+	<div class="right">
+		<a 
+			class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="javascript: download('CSRAssignmentMatrix');" 
+			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
+		><s:text name="global.Download" /></a>
+	</div>
+</s:if>
+
 <a href="#" class="add">Add New Assignment</a>
+	
 <table class="report" id="assignments">
 	<thead>
 		<tr>
@@ -122,6 +134,9 @@ tr.dirty a.save { display: inline; }
 			<th>Contractor</th>
 			<s:if test="type.toString() == 'Auditor'">
 				<th>Audit Type</th>
+			</s:if>
+			<s:if test="type.toString() == 'CSR'">
+				<th>Contractor Status</th>
 			</s:if>
 			<th></th>
 		</tr>
@@ -137,6 +152,9 @@ tr.dirty a.save { display: inline; }
 				<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" value="contractor" /></td>
 				<s:if test="type.toString() == 'Auditor'">
 					<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit',100:'HSE Competency Review',176:'WA State Verification'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" value="%{auditType.id}" /></td>
+				</s:if>
+				<s:if test="type.toString() == 'CSR'">
+					<td><s:property value="%{contractor.status}" /></td>
 				</s:if>
 				<td><s:hidden name="assignment" value="%{id}"/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 			</tr>
@@ -155,6 +173,9 @@ tr.dirty a.save { display: inline; }
 		<td><pics:autocomplete action="ContractorAutocomplete" htmlName="assignment.contractor" /></td>
 		<s:if test="type.toString() == 'Auditor'">
 			<td><s:select list="#{2:'Manual Audit',3:'Implementation Audit',100:'HSE Competency Review',176:'WA State Verification'}" headerKey="" headerValue="- Audit Type -" name="auditTypeID" /></td>
+		</s:if>
+		<s:if test="type.toString() == 'CSR'">
+			<td><s:property value="%{contractor.status}" /></td>
 		</s:if>
 		<td><s:hidden name="assignment" value=""/><a href="#" class="remove"></a><a href="#" class="save"></a></td>
 	</tr>

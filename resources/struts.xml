@@ -1604,6 +1604,12 @@
 			<result>struts/users/user_assignment.jsp</result>
 		</action>
 
+		<action name="CSRAssignmentMatrixCSV"
+			class="com.picsauditing.actions.users.UserAssignmentMatrix">
+			<param name="download">true</param>
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<!-- Email Wizard/Templates/Mailer -->
 		<action name="MassMailer" class="com.picsauditing.mail.MassMailer">
 			<result>struts/mail/mass_mailer.jsp</result>

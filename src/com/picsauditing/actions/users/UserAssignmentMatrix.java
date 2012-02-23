@@ -1,16 +1,21 @@
 package com.picsauditing.actions.users;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.CountryDAO;
@@ -22,9 +27,10 @@ import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
 import com.picsauditing.jpa.entities.UserAssignmentType;
+import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class UserAssignmentMatrix extends PicsActionSupport implements Preparable {
+public class UserAssignmentMatrix extends ReportActionSupport implements Preparable {
 	@Autowired
 	private UserAssignmentDAO assignmentDAO;
 	@Autowired
@@ -42,6 +48,7 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 	private UserAssignmentType type = UserAssignmentType.CSR;
 	private List<User> users = new ArrayList<User>();
 	private int auditTypeID;
+	private SelectSQL sql;
 
 	public void prepare() throws Exception {
 		parameterCleanUp("assignment.postalStart");
@@ -51,7 +58,52 @@ public class UserAssignmentMatrix extends PicsActionSupport implements Preparabl
 	@Override
 	@RequiredPermission(OpPerms.UserZipcodeAssignment)
 	public String execute() throws Exception {
+		buildQuery();
+		run(sql);
+		
+		if (download) {
+
+			addExcelColumns(sql);
+		}
+		
 		return SUCCESS;
+	}
+
+	protected void buildQuery() {
+		sql = new SelectSQL("user_assignment ua");
+		sql.addField("u.name as User");
+		sql.addField("state.msgValue AS State");
+		sql.addField("country.msgValue AS Country");
+		sql.addField("ua.postal_start AS \"Zip Start\"");
+		sql.addField("ua.postal_end AS \"Zip End\"");
+		sql.addField("a.name AS Contractor");
+		sql.addField("a.status AS \"Contractor Status\"");
+		sql.addJoin("JOIN users u ON ua.userID = u.id");
+		sql.addJoin("LEFT JOIN app_translation country ON country.msgKey = CONCAT('Country.',ua.country) AND country.locale = 'en'");
+		sql.addJoin("LEFT JOIN app_translation state ON state.msgKey = CONCAT('State.',ua.state) AND state.locale = 'en'");
+		sql.addJoin("LEFT JOIN accounts a ON ua.conID = a.id");
+		sql.addWhere("ua.assignmentType = 'CSR'");
+	}
+
+	public void addExcelColumns(SelectSQL sql) throws IOException {
+		excelSheet.setData(data);
+		excelSheet.buildWorkbook();
+
+		excelSheet = addColumnsFromSQL(excelSheet, sql);
+		
+		String filename = this.getClass().getSimpleName();
+		excelSheet.setName(filename);
+		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		outstream.close();
 	}
 
 	@SuppressWarnings("unchecked")

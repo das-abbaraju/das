@@ -237,11 +237,22 @@ public class SelectSQL {
 	}
 
 	public static String getAlias(String field) {
+		// TODO: Need to write a better alias parser
 		String alias = "";
-		if (StringUtils.contains(field, " "))
-			alias = field.substring(field.lastIndexOf(" ") + 1, field.length());
-		else if (StringUtils.contains(field, "."))
+		if (StringUtils.contains(field, " ")) {
+			String subField = field.substring(field.indexOf(" ") + 1, field.length()); 
+			if (StringUtils.contains(subField, "\"")) {
+				alias = subField.substring(subField.lastIndexOf("\"",subField.lastIndexOf("\"")-1)+1, subField.lastIndexOf("\""));
+			}
+			else if (StringUtils.contains(subField, "'")) {
+				alias = subField.substring(subField.lastIndexOf("'",subField.lastIndexOf("'")-1)+1, subField.lastIndexOf("'"));
+			}
+			else
+				alias = subField.substring(subField.lastIndexOf(" ") + 1, subField.length());
+		}
+		else if (StringUtils.contains(field, ".")) {
 			alias = field.substring(field.lastIndexOf(".") + 1, field.length());
+		}
 		else
 			alias = field;
 		return alias;
