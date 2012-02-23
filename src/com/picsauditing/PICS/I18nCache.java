@@ -201,7 +201,7 @@ public class I18nCache implements Serializable {
 			if (requiredLanguages.size() > 0 && !requiredLanguages.contains(newTranslation.getLocale())) {
 				newTranslation.setApplicable(false);
 			}
-			
+
 			if (newTranslation.isKeyContentDriven())
 				newTranslation.setContentDriven(true);
 
@@ -249,11 +249,12 @@ public class I18nCache implements Serializable {
 			}
 
 			String format = "INSERT INTO app_translation (msgKey, locale, msgValue, qualityRating, sourceLanguage, createdBy, "
-					+ "updatedBy, creationDate, updateDate, lastUsed)"
-					+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW())";
+					+ "updatedBy, creationDate, updateDate, lastUsed, contentDriven)"
+					+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d)";
 
 			return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
-					translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage);
+					translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
+					translationToinsert.isContentDriven() ? 1 : 0);
 		}
 
 		return null;
@@ -272,6 +273,7 @@ public class I18nCache implements Serializable {
 		}
 
 		setClause += ", applicable = " + (translationToUpdate.isApplicable() ? "1" : "0");
+		setClause += ", contentDriven = " + (translationToUpdate.isContentDriven() ? "1" : "0");
 
 		String format = "UPDATE app_translation " + setClause + " WHERE msgKey = '%s' AND locale = '%s'";
 		String translationValueQuotationEscaped = StringUtils.replace(translationToUpdate.getValue(), "'", "''");
@@ -297,7 +299,7 @@ public class I18nCache implements Serializable {
 	private void insertUpdateRequiredLanguages(List<String> requiredLanguages, String key, String source)
 			throws SQLException {
 		setUnneededLanguagesNotApplicable(requiredLanguages, key, source);
-		
+
 		for (String requiredLanguage : requiredLanguages) {
 			AppTranslation insertUpdateTranslation = new AppTranslation();
 			insertUpdateTranslation.setKey(key);
@@ -321,7 +323,7 @@ public class I18nCache implements Serializable {
 	private void setUnneededLanguagesNotApplicable(List<String> requiredLanguages, String key, String source)
 			throws SQLException {
 		Map<String, String> allLanguages = getText(key);
-		
+
 		for (String locale : allLanguages.keySet()) {
 			if (!requiredLanguages.contains(locale)) {
 				AppTranslation unneededTranslation = new AppTranslation();
@@ -329,7 +331,7 @@ public class I18nCache implements Serializable {
 				unneededTranslation.setLocale(locale);
 				unneededTranslation.setSourceLanguage(source);
 				unneededTranslation.setApplicable(false);
-				
+
 				if (unneededTranslation.isKeyContentDriven())
 					unneededTranslation.setContentDriven(true);
 
