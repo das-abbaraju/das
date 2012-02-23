@@ -68,13 +68,13 @@ public class Utilities {
 			char ch = value.charAt(i);
 			// Found a single quote; replace it with 2 for the SQL statement
 			if ((ch == 146) || (ch == '\'') || (ch == '%'))
-				strval.append("''");
+				strval.append("\'");
 			// if find double quote, change to single quote since html input
 			// can't handle double quotes BJ 3-7-05
 			else if (ch == 92)
 				strval.append("\\\\");
 			else if (ch == '"')
-				strval.append("''");
+				strval.append("\"");
 			else
 				// Just append the char to the strval for the complete string
 				strval.append(ch);
