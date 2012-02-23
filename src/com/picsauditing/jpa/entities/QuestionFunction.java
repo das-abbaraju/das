@@ -348,10 +348,8 @@ public enum QuestionFunction {
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
-			// get a string of countries seperated by commas
 			String unparsedJsonCountries = params.get("countries");
 		
-			// CorruptionPerceptionIndexConverter cpiConverter = new CorruptionPerceptionIndexConverter();
 			CorruptionPerceptionIndexMap cpiMap = (CorruptionPerceptionIndexMap) SpringUtils.getBean("CorruptionPerceptionIndexMap");
 			
 			double lowestCpi = 11;

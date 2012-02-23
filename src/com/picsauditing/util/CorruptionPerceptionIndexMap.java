@@ -25,12 +25,15 @@ public class CorruptionPerceptionIndexMap extends PicsActionSupport {
 
 	public List<Double> findCorruptionPerceptionIndices(String unparsedJsonCountries) {
 		initialize();
-
 	
-		List<String> isoCodesList = convertJsonToIsoCodes(unparsedJsonCountries);
 		List<Double> corruptionPerceptionIndices = new ArrayList<Double>();
-		for (String isoCode: isoCodesList) {
-			corruptionPerceptionIndices.add(map.get(isoCode.trim()));
+	
+		if (!Strings.isEmpty(unparsedJsonCountries)) {
+			List<String> isoCodesList = convertJsonToIsoCodes(unparsedJsonCountries);
+		
+			for (String isoCode: isoCodesList) {
+				corruptionPerceptionIndices.add(map.get(isoCode.trim()));
+			}
 		}
 		return corruptionPerceptionIndices;
 	}
@@ -39,9 +42,11 @@ public class CorruptionPerceptionIndexMap extends PicsActionSupport {
 		List<String> isoCodes = new ArrayList<String>();
 		JSONArray countriesArray = (JSONArray) JSONValue.parse(unparsedJsonCountries);
 	
-		for (Object country: countriesArray.toArray()) {
-			JSONObject object = (JSONObject) country;
-			isoCodes.add(object.get("id").toString());
+		if (countriesArray != null) {
+			for (Object country: countriesArray.toArray()) {
+				JSONObject object = (JSONObject) country;
+				isoCodes.add(object.get("id").toString());
+			}
 		}
 		
 		return isoCodes;
