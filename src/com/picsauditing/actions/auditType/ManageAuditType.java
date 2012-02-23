@@ -120,6 +120,10 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (category == null)
 				category = new AuditCategory();
 
+			if (question != null && category != null && category.getId() > 0)
+				question.setCategory(category);
+
+
 			if (auditType != null && auditType.getId() > 0)
 				category.setAuditType(auditType);
 
