@@ -13,6 +13,11 @@ update ref_country c set c.currency = 'GBP' where c.isoCode in ('GB');
 update ref_country c set c.currency = 'EUR' where c.isoCode in ('AD','AT','AZ','BY','BE','BA','BG','HR','CY','CZ','DK','EE','FI','FR','GE','DE','GR','GL','HU','IS','IE','IM','IT','KZ','LV','LI','LT','LU','MK','MT','MC','ME','NL','NO','PL','PT','RO','RU','SM','RS','SK','SI','ES','SE','CH','TR','UA','UZ','ZA','CF');
 --
 
+-- PICS-4714
+insert into `invoice_fee` (`id`, `fee`, `defaultAmount`, `visible`, `feeClass`, `minFacilities`, `maxFacilities`, `qbFullName`, `createdBy`, `updatedBy`, `creationDate`, `updateDate`, `displayOrder`) 
+values('201','VAT (REG No. GB 126 9246 0)','0.00','1','VAT','0','10000','Tax on sales','20952','20952',now(),now(),'100');
+--
+
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_con` ;
 
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_op` ;

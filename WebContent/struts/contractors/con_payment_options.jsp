@@ -165,6 +165,20 @@
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
+                                <s:elseif test="contractor.country.currency.gbp || contractor.country.currency.eur">
+                                    <li>
+                                        <label><s:text name="ContractorPaymentOptions.VAT"/>:</label>
+                                        <s:property value="contractor.country.currency.symbol" />
+                                        <s:property value="vatFee.amount"/>
+                                        <s:property value="contractor.country.currency" />
+                                    </li>
+                                    <li>
+                                        <label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+                                        <s:property value="contractor.country.currency.symbol" />
+                                        <s:property value="contractor.newMembershipAmount+vatFee.amount"/>
+                                        <s:property value="contractor.country.currency" />
+                                    </li>
+                                </s:elseif>
 								<s:else>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
@@ -249,6 +263,20 @@
 										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
+                                <s:elseif test="contractor.country.currency.gbp || contractor.country.currency.eur">
+                                    <li>
+                                        <label><s:text name="ContractorPaymentOptions.VAT"/>:</label>
+                                        <s:property value="contractor.country.currency.symbol" />
+                                        <s:property value="vatFee.amount"/>
+                                        <s:property value="contractor.country.currency" />
+                                    </li>
+                                    <li>
+                                        <label><s:text name="ContractorPaymentOptions.Total"/>:</label>
+                                        <s:property value="contractor.country.currency.symbol" />
+                                        <s:property value="contractor.newMembershipAmount+vatFee.amount"/>
+                                        <s:property value="contractor.country.currency" />
+                                    </li>
+                                </s:elseif>
 								<s:else>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>

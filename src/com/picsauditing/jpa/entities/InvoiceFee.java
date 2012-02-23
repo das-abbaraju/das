@@ -20,6 +20,7 @@ public class InvoiceFee extends BaseTable {
 	public final static int LATEFEE = 336;
 	public final static int OLDLATEFEE = 55;
 	public final static int GST = 200;
+	public final static int VAT = 201;
 	public final static int IMPORTFEE = 340;
 	public final static int IMPORTFEEZEROLEVEL = 343;
 	private TranslatableString fee;
@@ -159,7 +160,12 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public boolean isGST() {
-		return this.getFeeClass() == FeeClass.GST;
+		return getId() == GST;
+	}
+
+	@Transient
+	public boolean isVAT() {
+		return getId() == VAT;
 	}
 
 	@Transient
@@ -169,9 +175,11 @@ public class InvoiceFee extends BaseTable {
 
 	@Transient
 	public BigDecimal getTax(BigDecimal total) {
-		if (isGST())
+		if (isGST()) {
 			return total.multiply(BigDecimal.valueOf(0.05)).setScale(2, BigDecimal.ROUND_UP);
-		else
+		} else if (isVAT()) {
+			return total.multiply(BigDecimal.valueOf(0.20)).setScale(2, BigDecimal.ROUND_UP);
+		} else
 			return BigDecimal.ZERO;
 	}
 

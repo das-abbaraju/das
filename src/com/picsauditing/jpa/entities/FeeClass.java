@@ -100,6 +100,7 @@ public enum FeeClass implements Translatable {
 	ImportFee,
 	SuncorDiscount,
 	GST,
+	VAT,
 	Misc;
 
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");

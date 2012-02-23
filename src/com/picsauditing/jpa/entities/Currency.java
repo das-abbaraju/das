@@ -17,15 +17,6 @@ public enum Currency {
 		return display;
 	}
 
-	public static Currency getFromISO(String isoCode) {
-		if (isoCode.equals("CA"))
-			return CAD;
-		if (isoCode.equals("GB"))
-			return GBP;
-
-		return USD;
-	}
-
 	public boolean isCAD() {
 		return this.equals(CAD);
 	}
@@ -54,7 +45,7 @@ public enum Currency {
 
 	@Transient
 	public boolean isTaxable() {
-		return isCAD();
+		return isCAD() || isGBP() || isEUR();
 	}
 
 	@Transient
@@ -63,6 +54,10 @@ public enum Currency {
 			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
 			gst.setFeeClass(FeeClass.GST);
 			return gst;
+		} else if(isGBP() || isEUR()){
+			InvoiceFee vat = new InvoiceFee(InvoiceFee.VAT);
+			vat.setFeeClass(FeeClass.VAT);
+			return vat;
 		} else
 			return null;
 	}

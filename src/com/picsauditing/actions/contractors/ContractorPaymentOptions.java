@@ -50,6 +50,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	private InvoiceFee activationFee;
 	private InvoiceFee gstFee;
+	private InvoiceFee vatFee;
 	private InvoiceFee importFee;
 
 	// Any time we do a get w/o an exception we set the communication status.
@@ -487,6 +488,30 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 	public void setGstFee(InvoiceFee gstFee) {
 		this.gstFee = gstFee;
+	}
+
+	public InvoiceFee getVatFee() {
+		if (vatFee == null) {
+			vatFee = new InvoiceFee();
+
+			if (contractor.getCountry().getCurrency().isEUR() || contractor.getCountry().getCurrency().isGBP()) {
+				vatFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.VAT, contractor.getPayingFacilities());
+				BigDecimal total = BigDecimal.ZERO.setScale(2);
+				for (FeeClass feeClass : contractor.getFees().keySet()) {
+					if (!contractor.getFees().get(feeClass).getNewLevel().isFree())
+						total = total.add(contractor.getFees().get(feeClass).getNewAmount());
+				}
+
+				total = total.add(getActivationFee().getAmount());
+				vatFee.setAmount(vatFee.getTax(total));
+			}
+		}
+
+		return vatFee;
+	}
+
+	public void setVatFee(InvoiceFee vatFee) {
+		this.vatFee = vatFee;
 	}
 
 	public InvoiceFee getImportFee() {
