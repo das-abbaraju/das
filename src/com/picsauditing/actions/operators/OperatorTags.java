@@ -32,11 +32,11 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 	private int ruleID;
 	private String ruleType;
 
-    @Override
+	@Override
 	public void prepare() throws Exception {
-        findOperator();
-        tags = operatorTagDAO.findByOperator(id, false);
-    }
+		findOperator();
+		tags = operatorTagDAO.findByOperator(id, false);
+	}
 
 	@Override
 	@RequiredPermission(value = OpPerms.ContractorTags)
@@ -80,6 +80,13 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 
 	@RequiredPermission(value = OpPerms.ContractorTags, type = OpType.Delete)
 	public String remove() throws Exception {
+		OperatorTag t = operatorTagDAO.find(tagID);
+		if (!t.getAuditCategoryRules().isEmpty() || !t.getAuditTypeRules().isEmpty()
+				|| !t.getOperatorFlagCriteria().isEmpty()){
+			addActionError(getText("OperatorTags.TagInUseByConfig"));
+			return SUCCESS;
+		}
+
 		// Removing tags, might be in use
 		// If tag is in use (result > 0 ) then we have to delete them
 		// from con_tag as well
@@ -92,12 +99,11 @@ public class OperatorTags extends OperatorActionSupport implements Preparable {
 				conTagDAO.remove(tag);
 		}
 
-		OperatorTag t = operatorTagDAO.find(tagID);
 		tags.remove(t);
 		operatorTagDAO.remove(t);
 
 		redirect("OperatorTags.action?id=" + id);
-		
+
 		return BLANK;
 	}
 
