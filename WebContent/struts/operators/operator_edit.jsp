@@ -674,7 +674,11 @@
 														
 														<s:if test="operator.corporate">
 															<td>
-																<a href="FacilitiesEdit.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>&button=CopyToChildAccounts" class="add">Copy To Child Accounts</a>
+																<s:url action="FacilitiesEdit" method="copyToChildAccounts" var="copy_to_children">
+																	<s:param name="operator" value="%{operator.id}" />
+																	<s:param name="accountUserId" value="%{id}" />
+																</s:url>
+																<a href="${copy_to_children}" class="add">Copy To Child Accounts</a>
 															</td>
 														</s:if>										
 													</tr>
