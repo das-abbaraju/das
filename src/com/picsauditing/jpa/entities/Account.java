@@ -88,7 +88,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected boolean transportationServices = false;
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
-	protected Currency currencyCode = Currency.USD;
 	protected TimeZone timezone;
 
 	// Other tables
@@ -188,10 +187,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setCountry(Country country) {
 		this.country = country;
-		if (country != null && "CA".equals(country.getIsoCode()))
-			this.setCurrencyCode(Currency.CAD);
-		else
-			this.setCurrencyCode(Currency.USD);
 	}
 
 	@ManyToOne
@@ -531,27 +526,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.description = description;
 	}
 
-	/**
-	 * Account currency code is the country we are assuming for billing a customer. These two may differ in cases where
-	 * the customer resides in a Country which we bill as a US customer.
-	 * 
-	 */
-	@Enumerated(EnumType.STRING)
-	public Currency getCurrencyCode() {
-		if (getCountry() == null)
-			return Currency.USD;
-		if ("CA".equals(this.getCountry().getIsoCode()))
-			return Currency.CAD;
-		if ("GB".equals(this.getCountry().getIsoCode()))
-			return Currency.GBP;
-
-		return Currency.USD;
-	}
-
-	public void setCurrencyCode(Currency currencyCode) {
-		this.currencyCode = currencyCode;
-	}
-
 	@Transient
 	public String getDescriptionHTML() {
 		return Utilities.escapeHTML(this.description);
@@ -678,7 +652,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public Currency getCurrency() {
-		return Currency.getFromISO(country.getIsoCode());
+		return getCountry().getCurrency();
 	}
 
 	@Override

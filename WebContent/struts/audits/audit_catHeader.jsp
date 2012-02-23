@@ -89,7 +89,7 @@
 						<td style="padding-right: 10px; vertical-align: middle;"><img src="images/help/import_pqf_sml.jpg" alt="Import PQF" /></td>
 						<td>
 							<s:text name="Audit.message.ImportPQF.cluetip">
-								<s:param value="%{contractor.currencyCode.symbol + importPQFFeeAmount.toPlainString()}" />
+								<s:param value="%{contractor.country.currency.symbol + importPQFFeeAmount.toPlainString()}" />
 							</s:text>
 						</td>
 					</tr>

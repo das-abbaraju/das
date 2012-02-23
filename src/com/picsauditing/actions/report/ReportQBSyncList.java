@@ -75,23 +75,23 @@ public class ReportQBSyncList extends PicsActionSupport {
 
 		// see InsertContractors
 		contractorInsert = contractorAccountDAO.findWhere("a.qbSync = true and a." + getQBListID(currency)
-				+ " is null and a.currencyCode = '" + currency + "'");
+				+ " is null and a.country.currency = '" + currency + "'");
 
 		// see InsertInvoices
 		invoiceInsert = invoiceDAO.findWhere("i.account." + getQBListID(currency)
-				+ " is not null AND i.account.currencyCode = '" + currency
+				+ " is not null AND i.account.country.currency = '" + currency
 				+ "' AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null " + "AND i.account."
 				+ getQBListID(currency) + " not like 'NOLOAD%' AND i.currency = '" + currency + "'", 10);
 
 		// see InsertPayments
 		paymentInsert = paymentDAO.findWhere("p.account." + getQBListID(currency)
-				+ " is not null AND p.account.currencyCode = '" + currency
+				+ " is not null AND p.account.country.currency = '" + currency
 				+ "' AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null " + "AND p.account."
 				+ getQBListID(currency) + " not like 'NOLOAD%' AND p.currency = '" + currency + "'", 10);
 
 		// see GetContractorsForUpdate
 		contractorUpdate = contractorAccountDAO.findWhere("a." + getQBListID(currency)
-				+ " is not null and a.currencyCode = '" + currency + "' and a." + getQBListID(currency)
+				+ " is not null and a.country.currency = '" + currency + "' and a." + getQBListID(currency)
 				+ " not like 'NOLOAD%' and a.qbSync = true");
 
 		// see GetInvoicesForUpdate
@@ -99,7 +99,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 				.findWhere(
 						"i.account."
 								+ getQBListID(currency)
-								+ " is not null AND i.account.currencyCode = '"
+								+ " is not null AND i.account.country.currency = '"
 								+ currency
 								+ "' AND i.qbListID is not null AND i.qbListID not like 'NOLOAD%' AND i.qbSync = true AND i.currency = '"
 								+ currency + "'", 10);
@@ -109,7 +109,7 @@ public class ReportQBSyncList extends PicsActionSupport {
 				.findWhere(
 						"p.account."
 								+ getQBListID(currency)
-								+ " is not null AND p.account.currencyCode = '"
+								+ " is not null AND p.account.country.currency = '"
 								+ currency
 								+ "' AND p.qbListID is not null AND p.qbListID not like 'NOLOAD%' AND p.qbSync = true AND p.currency = '"
 								+ currency + "'", 10);

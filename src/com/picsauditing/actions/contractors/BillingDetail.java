@@ -78,7 +78,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			Invoice invoice = new Invoice();
 			invoice.setAccount(contractor);
-			invoice.setCurrency(contractor.getCurrency());
+			invoice.setCurrency(contractor.getCountry().getCurrency());
 			invoice.setStatus(TransactionStatus.Unpaid);
 			invoice.setItems(invoiceItems);
 			invoice.setTotalAmount(invoiceTotal);
@@ -96,8 +96,9 @@ public class BillingDetail extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-							+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
-							+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee() + ". ";
+							+ contractor.getCountry().getCurrency().getSymbol() + activation.getAmount() + " to "
+							+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee()
+							+ ". ";
 				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
@@ -152,7 +153,7 @@ public class BillingDetail extends ContractorActionSupport {
 			accountDao.save(contractor);
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
-				this.addNote(contractor, "Created invoice for " + contractor.getCurrencyCode().getSymbol()
+				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
 						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, this.getUser());
 			}
 			ServletActionContext.getResponse().sendRedirect("InvoiceDetail.action?invoice.id=" + invoice.getId());

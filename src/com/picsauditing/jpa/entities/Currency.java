@@ -26,12 +26,22 @@ public enum Currency {
 		return USD;
 	}
 
-	public boolean isCanada() {
+	public boolean isCAD() {
 		return this.equals(CAD);
 	}
 
-	public boolean isUs() {
+	public boolean isUSD() {
 		return this.equals(USD);
+	}
+	
+
+	public boolean isGBP() {
+		return this.equals(GBP);
+	}
+	
+
+	public boolean isEUR() {
+		return this.equals(EUR);
 	}
 
 	public void setSymbol(String symbol) {
@@ -44,12 +54,12 @@ public enum Currency {
 
 	@Transient
 	public boolean isTaxable() {
-		return isCanada();
+		return isCAD();
 	}
 
 	@Transient
 	public InvoiceFee getTaxFee() {
-		if (isCanada()) {
+		if (isCAD()) {
 			InvoiceFee gst = new InvoiceFee(InvoiceFee.GST);
 			gst.setFeeClass(FeeClass.GST);
 			return gst;

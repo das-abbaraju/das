@@ -53,13 +53,14 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private BillingCalculatorSingle billingService;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private BrainTreeService paymentService;
 
 	private Payment payment;
 	private PaymentMethod method = null;
 	private CreditCard creditCard;
 	private Map<Integer, BigDecimal> amountApplyMap = new HashMap<Integer, BigDecimal>();
 
-	private BrainTreeService paymentService = new BrainTreeService();
 	private String transactionCondition = null;
 	private BigDecimal refundAmount;
 	private boolean changePaymentMethodOnAccount = false;
@@ -87,10 +88,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return LOGIN;
 
 		if ("findcc".equals(button)) {
-			paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-			paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 			creditCard = paymentService.getCreditCard(id);
 			method = PaymentMethod.CreditCard;
 			return SUCCESS;
@@ -139,12 +136,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				}
 				if (method.isCreditCard()) {
 					try {
-						paymentService
-								.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
 						if (creditCard == null || creditCard.getCardNumber() == null) {
 							creditCard = paymentService.getCreditCard(id);
 						}
@@ -152,7 +143,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						payment.setCcNumber(creditCard.getCardNumber());
 
 						addNote("Credit Card transaction completed and emailed the receipt for "
-								+ contractor.getCurrencyCode().getSymbol() + payment.getTotalAmount());
+								+ payment.getCurrency().getSymbol() + payment.getTotalAmount());
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -209,11 +200,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 			if (button.equalsIgnoreCase("voidcc")) {
 				try {
-					paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-					paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-					paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-					paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
 					paymentService.voidTransaction(payment.getTransactionID());
 					message = "Successfully canceled credit card transaction";
 					payment.setStatus(TransactionStatus.Void);
@@ -251,11 +237,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					refund.setStatus(TransactionStatus.Paid);
 					if (button.equals("Refund on BrainTree/PICS")) {
 						if (payment.getPaymentMethod().isCreditCard()) {
-							paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada")
-									.getValue());
-							paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-							paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-							paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 							paymentService.processRefund(payment.getTransactionID(), refundAmount);
 							message = "Successfully refunded credit card on BrainTree";
 							refund.setCcNumber(payment.getCcNumber());
@@ -384,7 +365,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 				isAllInvoicesSameCurrency = false;
 		}
 
-		return isAllInvoicesSameCurrency ? overallInvoiceCurrency : contractor.getCurrency();
+		return isAllInvoicesSameCurrency ? overallInvoiceCurrency : contractor.getCountry().getCurrency();
 	}
 
 	private List<Invoice> getAppliedInvoices(ContractorAccount contractor, Map<Integer, BigDecimal> amountApplyMap) {
@@ -479,10 +460,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			return transactionCondition;
 
 		try {
-			paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-			paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-			paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-			paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 			return paymentService.getTransactionCondition(payment.getTransactionID());
 		} catch (Exception e) {
 			return null;

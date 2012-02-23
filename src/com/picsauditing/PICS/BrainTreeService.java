@@ -12,22 +12,22 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.util.Strings;
 
 public class BrainTreeService {
-	private static String urlBase = "https://secure.braintreepaymentgateway.com/api/";
+	@Autowired
+	AppPropertyDAO appPropertyDAO;
 
-	protected String userName = null;
-	protected String password = null;
-	protected String canadaProcessorID = null;
-	protected String usProcessorID = null;
+	private static String urlBase = "https://secure.braintreepaymentgateway.com/api/";
 
 	public CreditCard getCreditCard(int contractorId) throws Exception {
 		StringBuilder request = new StringBuilder(urlBase).append("query.php?report_type=customer_vault");
@@ -73,14 +73,24 @@ public class BrainTreeService {
 		appendUsernamePassword(request);
 		request.append("&customer_vault_id=").append(payment.getAccount().getId());
 		request.append("&amount=").append(payment.getTotalAmount());
-		// although this is the currency off the invoice, the invoice currency gets set
-		// based off of the currencies available to the contractor, which are currently
-		// CAD and USD.
 		request.append("&currency=").append(payment.getCurrency());
-		if(payment.getCurrency().isCanada())
-			request.append("&processor_id=").append(canadaProcessorID);
-		else
-			request.append("&processor_id=").append(usProcessorID);
+
+		String processorID = "";
+		switch (payment.getCurrency()) {
+		case CAD:
+			processorID = appPropertyDAO.find("brainTree.processor_id.canada").getValue();
+			break;
+		case GBP:
+			processorID = appPropertyDAO.find("brainTree.processor_id.gbp").getValue();
+			break;
+		case EUR:
+			processorID = appPropertyDAO.find("brainTree.processor_id.eur").getValue();
+			break;
+		default:
+			processorID = appPropertyDAO.find("brainTree.processor_id.us").getValue();
+		}
+		// if the processorID was somehow empty, BrainTree would default to our primary processor which is USD
+		request.append("&processor_id=").append(processorID);
 
 		if (invoice != null)
 			request.append("&order_id=").append(invoice.getId());
@@ -137,14 +147,11 @@ public class BrainTreeService {
 	}
 
 	/**
-	 * Voiding a transaction will cancel an existing sale or captured
-	 * authorization from actually charging the card. In addition, non-captured
-	 * authorizations can be voided to prevent any future capture. Note however,
-	 * that the amount is still reserved on the card and will take a few days to
-	 * expire. You will have to call the issuing bank to request that the
-	 * authorization be removed if the customer does not want to wait for it to
-	 * expire on its own. Voids can only occur if the transaction has not been
-	 * settled; settled transactions should be refunded.
+	 * Voiding a transaction will cancel an existing sale or captured authorization from actually charging the card. In
+	 * addition, non-captured authorizations can be voided to prevent any future capture. Note however, that the amount
+	 * is still reserved on the card and will take a few days to expire. You will have to call the issuing bank to
+	 * request that the authorization be removed if the customer does not want to wait for it to expire on its own.
+	 * Voids can only occur if the transaction has not been settled; settled transactions should be refunded.
 	 * 
 	 * @param transactionid
 	 * @throws BrainTreeLoginException
@@ -278,31 +285,10 @@ public class BrainTreeService {
 		}
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getCanadaProcessorID() {
-		return canadaProcessorID;
-	}
-
-	public void setCanadaProcessorID(String canadaProcessorID) {
-		this.canadaProcessorID = canadaProcessorID;
-	}
-
-	public String getUsProcessorID() {
-		return usProcessorID;
-	}
-
-	public void setUsProcessorID(String usProcessorID) {
-		this.usProcessorID = usProcessorID;
-	}
-
 	private void appendUsernamePassword(StringBuilder request) throws BrainTreeLoginException {
+		String userName = appPropertyDAO.find("brainTree.username").getValue();
+		String password = appPropertyDAO.find("brainTree.password").getValue();
+
 		if (userName == null || password == null)
 			throw new BrainTreeLoginException("Missing BrainTree username and password");
 

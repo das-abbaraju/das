@@ -231,7 +231,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		findTimeslots();
 		return "select";
 	}
-	
+
 	public String changeSelectedTimeZone() throws Exception {
 		findTimeslots();
 		return "picker";
@@ -245,7 +245,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			if (rank > maxRank) {
 				maxRank = rank;
 				availabilitySelected = timeslot;
-				//availabilitySelected.setTimezone(permissions.getTimezone());
+				// availabilitySelected.setTimezone(permissions.getTimezone());
 				availabilitySelectedID = availabilitySelected.getId();
 			}
 		}
@@ -346,7 +346,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		return "summary";
 	}
-	
+
 	public class AvailableSet {
 		public final Map<Date, List<AuditorAvailability>> days = new TreeMap<Date, List<AuditorAvailability>>();
 		private Date latest;
@@ -556,7 +556,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	private void createInvoice(InvoiceFee fee, String notes) throws Exception {
 		Invoice invoice = new Invoice();
 		invoice.setAccount(contractor);
-		invoice.setCurrency(contractor.getCurrency());
+		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setDueDate(new Date());
 		invoice.setTotalAmount(fee.getAmount());
 		invoice.setNotes(notes + " Thank you for doing business with PICS!");

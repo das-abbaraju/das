@@ -27,7 +27,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.currencyCode = '"
+				"a.qbSync = true and a." + currentSession.getQbID() + " is null and a.country.currency = '"
 						+ currentSession.getCurrencyCode() + "'");
 
 		// no work to do

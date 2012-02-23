@@ -4,23 +4,25 @@ import java.math.BigDecimal;
 
 import junit.framework.TestCase;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.BrainTreeService;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 
 public class BrainTreeTest extends TestCase {
+	@Autowired
+	private BrainTreeService service;
+
 	public BrainTreeTest(String name) {
 		super(name);
 	}
 
 	public void testPayment() {
-		BrainTreeService service = new BrainTreeService();
-		service.setUserName("testapi");
-		service.setPassword("password1");
 		Payment payment = new Payment();
 		payment.setAccount(EntityFactory.makeContractor());
-		payment.setCurrency(payment.getAccount().getCurrency());
+		payment.setCurrency(payment.getAccount().getCountry().getCurrency());
 		payment.setId(123);
 		payment.setTotalAmount(new BigDecimal(99));
 		try {

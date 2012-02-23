@@ -149,7 +149,7 @@
 							<li>
 								<label><s:text name="BillingDetail.Invoicing.CurrentBalance" />:</label>
 								<s:property value="contractor.balance" />
-								<s:property value="contractor.currencyCode"/>
+								<s:property value="contractor.country.currency"/>
 								
 								<s:if test="contractor.balance > 0">
 									<pics:permission perm="Billing" type="Edit">
@@ -176,7 +176,7 @@
 													<s:property value="contractor.fees.get(#feeClass).currentLevel.fee" />:&nbsp;
 												</td>
 												<td class="right">
-													<s:property value="contractor.currencyCode.symbol" />
+													<s:property value="contractor.country.currency.symbol" />
 													<s:property value="contractor.fees.get(#feeClass).currentAmount" />
 												</td>
 												<td>
@@ -200,7 +200,7 @@
 														<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;
 													</td>
 													<td class="right">
-														<s:property value="contractor.currencyCode.symbol" />
+														<s:property value="contractor.country.currency.symbol" />
 														<s:property value="contractor.fees.get(#feeClass).newAmount" />
 													</td>
 													<td>
@@ -228,14 +228,14 @@
 											<li>
 												<label><s:property value="invoiceFee.fee" />:</label>
 												<s:property value="amount" />
-												<s:property value="contractor.currencyCode"/>
+												<s:property value="contractor.country.currency"/>
 											</li>
 										</s:if>
 										<s:else>
 											<li>
 												<label><s:property value="description" />:</label>
 												<s:property value="amount" />
-												<s:property value="contractor.currencyCode"/>
+												<s:property value="contractor.country.currency"/>
 											</li>
 										</s:else>
 									</s:iterator>
@@ -243,7 +243,7 @@
 									<li>
 										<label><s:text name="BillingDetail.Total" />:</label>
 										<s:property value="invoiceTotal" />
-										<s:property value="contractor.currencyCode"/>
+										<s:property value="contractor.country.currency"/>
 									</li>
 									
 									<pics:permission perm="Billing">
@@ -325,7 +325,7 @@
 														</s:if>
 														
 														<s:property value="balance" />
-														<s:property value="contractor.currencyCode"/>
+														<s:property value="contractor.country.currency"/>
 													</td>
 													
 													<s:if test="permissions.admin">

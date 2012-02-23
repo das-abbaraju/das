@@ -51,16 +51,16 @@ $(document).ready(function() {
 				1
 			</td>
 			<td class="center" id="1DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('1DocuGUARD')"/>
 			</td>
 			<td class="center" id="1InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('1InsureGUARD')"/>
 			</td>
 			<td class="center" id="1AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('1AuditGUARD')"/>
 			</td>
 			<td class="center" id="1EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('1EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('1EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="2">
@@ -68,16 +68,16 @@ $(document).ready(function() {
 				2-4
 			</td>
 			<td class="center" id="2DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('2DocuGUARD')"/>
 			</td>
 			<td class="center" id="2InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('2InsureGUARD')"/>
 			</td>
 			<td class="center" id="2AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('2AuditGUARD')"/>
 			</td>
 			<td class="center" id="2EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('2EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('2EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="5">
@@ -85,16 +85,16 @@ $(document).ready(function() {
 				5-8
 			</td>
 			<td class="center" id="5DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('5DocuGUARD')"/>
 			</td>
 			<td class="center" id="5InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('5InsureGUARD')"/>
 			</td>
 			<td class="center" id="5AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('5AuditGUARD')"/>
 			</td>
 			<td class="center" id="5EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('5EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('5EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="9">
@@ -102,16 +102,16 @@ $(document).ready(function() {
 				9-12
 			</td>
 			<td class="center" id="9DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('9DocuGUARD')"/>
 			</td>
 			<td class="center" id="9InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('9InsureGUARD')"/>
 			</td>
 			<td class="center" id="9AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('9AuditGUARD')"/>
 			</td>
 			<td class="center" id="9EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('9EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('9EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="13">
@@ -119,16 +119,16 @@ $(document).ready(function() {
 				13-19
 			</td>
 			<td class="center" id="13DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('13DocuGUARD')"/>
 			</td>
 			<td class="center" id="13InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('13InsureGUARD')"/>
 			</td>
 			<td class="center" id="13AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('13AuditGUARD')"/>
 			</td>
 			<td class="center" id="13EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('13EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('13EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="20">
@@ -136,16 +136,16 @@ $(document).ready(function() {
 				20-49
 			</td>
 			<td class="center" id="20DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('20DocuGUARD')"/>
 			</td>
 			<td class="center" id="20InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('20InsureGUARD')"/>
 			</td>
 			<td class="center" id="20AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('20AuditGUARD')"/>
 			</td>
 			<td class="center" id="20EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('20EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('20EmployeeGUARD')"/>
 			</td>
 		</tr>
 		<tr id="50">
@@ -153,16 +153,16 @@ $(document).ready(function() {
 				50+
 			</td>
 			<td class="center" id="50DocuGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50DocuGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('50DocuGUARD')"/>
 			</td>
 			<td class="center" id="50InsureGUARD">
-				<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50InsureGUARD')"/>
+				<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('50InsureGUARD')"/>
 			</td>
 			<td class="center" id="50AuditGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50AuditGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('50AuditGUARD')"/>
 			</td>
 			<td class="center" id="50EmployeeGUARD">
-				+<s:property value="%{con.currencyCode.symbol}" /><s:property value="getPrice('50EmployeeGUARD')"/>
+				+<s:property value="%{con.country.currency.symbol}" /><s:property value="getPrice('50EmployeeGUARD')"/>
 			</td>
 		</tr>
 	</tbody>
@@ -170,7 +170,7 @@ $(document).ready(function() {
 
 <p class="redMain center">
 	<s:text name="ContractorPricing.ActivationFee">
-	<s:param><s:property value="%{con.currencyCode.symbol}" /></s:param>
+	<s:param><s:property value="%{con.country.currency.symbol}" /></s:param>
 	<s:param><s:property value="getPrice('1Activation')"/></s:param>
 	</s:text>
 </p>

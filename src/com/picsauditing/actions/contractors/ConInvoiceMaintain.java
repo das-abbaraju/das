@@ -86,7 +86,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 					InvoiceItem item = items.next();
 					if (itemID == item.getId()) {
 						String message = "Removed line item <strong>" + item.getInvoiceFee().getFee()
-								+ "</strong> for " + contractor.getCurrencyCode().getSymbol() + item.getAmount();
+								+ "</strong> for " + contractor.getCountry().getCurrency().getSymbol() + item.getAmount();
 
 						if (item.getInvoiceFee().getFeeClass().equals(FeeClass.ImportFee)) {
 							boolean removed = billingService.removeImportPQF(contractor);

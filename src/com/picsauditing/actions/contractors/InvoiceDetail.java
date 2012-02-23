@@ -62,6 +62,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
+	private BrainTreeService paymentService;
+	@Autowired
 	private EmailSenderSpring emailSender;
 
 	private boolean edit = false;
@@ -69,8 +71,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private Invoice invoice;
 	private List<InvoiceFee> feeList = null;
 	private String country;
-
-	private BrainTreeService paymentService = new BrainTreeService();
 
 	@Override
 	public void prepare() {
@@ -228,33 +228,23 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				message = getText("InvoiceDetail.message.CanceledInvoice");
 
 				String noteText = "Cancelled Invoice " + invoice.getId() + " for "
-						+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount().toString();
+						+ contractor.getCountry().getCurrency().getSymbol() + invoice.getTotalAmount().toString();
 				addNote(noteText, getUser());
 			}
 			if (button.equals("pay")) {
 				if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 					if (contractor.isCcValid()) {
-						String canadaProcessorID = appPropDao.find("brainTree.processor_id.canada").getValue();
-						paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-						paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-						paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
-
 						Payment payment = null;
 						try {
 							payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
-
-							if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
-								throw new RuntimeException("Canadian ProcessorID Mismatch");
-							paymentService.setCanadaProcessorID(canadaProcessorID);
-
 							paymentService.processPayment(payment, invoice);
 
 							CreditCard creditCard = paymentService.getCreditCard(id);
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
-									payment.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
+									.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -266,7 +256,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							contractorAccountDao.save(contractor);
 
 							addNote("Credit Card transaction completed and emailed the receipt for "
-									+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(), getUser());
+									+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), getUser());
 
 						} catch (NoBrainTreeServiceResponseException re) {
 							addNote("Credit Card service connection error: " + re.getMessage(), getUser());
@@ -297,8 +287,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 												+ invoice.getId());
 							}
 
-							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
-									Strings.getPicsBillingPhone(permissions.getCountry())));
+							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling", Strings
+									.getPicsBillingPhone(permissions.getCountry())));
 
 							// Assuming Unpaid status per Aaron so that he can
 							// refund or void manually.
@@ -422,10 +412,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 	public String getCcNumber() {
 		String ccNumber = "";
-		paymentService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-		paymentService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-		paymentService.setUserName(appPropDao.find("brainTree.username").getValue());
-		paymentService.setPassword(appPropDao.find("brainTree.password").getValue());
 		try {
 			CreditCard creditCard = paymentService.getCreditCard(id);
 			ccNumber = creditCard.getCardNumber();
@@ -442,8 +428,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		for (InvoiceItem item : this.getInvoice().getItems()) {
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (item.getInvoiceFee().isMembership()
-						&& item.getInvoiceFee().getFeeClass()
-								.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
+						&& item.getInvoiceFee().getFeeClass().equals(
+								contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
 						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel()))
 					return true;
 			}

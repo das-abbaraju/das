@@ -31,6 +31,8 @@ public class ContractorWidget extends ContractorActionSupport {
 	private UserDAO userDAO;
 	@Autowired
 	private OpenTasks tasks;
+	@Autowired
+	private BrainTreeService paymentService;
 
 	protected boolean reminderTask = false;
 
@@ -124,13 +126,7 @@ public class ContractorWidget extends ContractorActionSupport {
 	public BrainTreeService.CreditCard getCreditCard() {
 		if (creditCard == null) {
 			try {
-				BrainTreeService bt = new BrainTreeService();
-				bt.setCanadaProcessorID(appPropDAO.find("brainTree.processor_id.canada").getValue());
-				bt.setUsProcessorID(appPropDAO.find("brainTree.processor_id.us").getValue());
-				bt.setUserName(appPropDAO.find("brainTree.username").getValue());
-				bt.setPassword(appPropDAO.find("brainTree.password").getValue());
-
-				creditCard = bt.getCreditCard(id);
+				creditCard = paymentService.getCreditCard(id);
 			} catch (Exception itllJustStayNull) {
 			}
 		}

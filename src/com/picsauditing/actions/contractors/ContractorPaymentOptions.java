@@ -27,6 +27,8 @@ import com.picsauditing.util.log.PicsLogger;
 public class ContractorPaymentOptions extends ContractorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
+	@Autowired
+	private BrainTreeService paymentService;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -147,15 +149,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 
 		// Response code not received, can either be transmission error or no
 		// previous info entered
-		BrainTreeService ccService = new BrainTreeService();
-		ccService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-		ccService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
-		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
 
 		if ("Delete".equalsIgnoreCase(button)) {
 			try {
-				ccService.deleteCreditCard(contractor.getId());
+				paymentService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
@@ -171,7 +168,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		int retries = 0, quit = 5;
 		while (transmissionError && retries < quit) {
 			try {
-				cc = ccService.getCreditCard(contractor.getId());
+				cc = paymentService.getCreditCard(contractor.getId());
 				transmissionError = false;
 				braintreeCommunicationError = false;
 			} catch (Exception communicationProblem) {
@@ -472,7 +469,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (gstFee == null) {
 			gstFee = new InvoiceFee();
 
-			if (contractor.getCurrencyCode().isCanada()) {
+			if (contractor.getCountry().getCurrency().isCAD()) {
 				gstFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.GST, contractor.getPayingFacilities());
 				BigDecimal total = BigDecimal.ZERO.setScale(2);
 				for (FeeClass feeClass : contractor.getFees().keySet()) {

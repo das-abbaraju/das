@@ -247,9 +247,9 @@ public class BillingCalculatorSingle {
 		contractor.syncBalance();
 		accountDao.save(contractor);
 
-		this.addNote(contractor,
-				"Created invoice for " + contractor.getCurrencyCode().getSymbol() + i.getTotalAmount(),
-				NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID, new User(User.SYSTEM));
+		this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
+				+ i.getTotalAmount(), NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID,
+				new User(User.SYSTEM));
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class BillingCalculatorSingle {
 
 		Invoice invoice = new Invoice();
 		invoice.setAccount(contractor);
-		invoice.setCurrency(contractor.getCurrency());
+		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setStatus(TransactionStatus.Unpaid);
 		invoice.setItems(invoiceItems);
 		invoice.setTotalAmount(invoiceTotal);
@@ -337,8 +337,8 @@ public class BillingCalculatorSingle {
 			if (contractor.hasReducedActivation(activation)) {
 				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 				notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-						+ contractor.getCurrencyCode().getSymbol() + activation.getAmount() + " to "
-						+ contractor.getCurrencyCode().getSymbol() + reducedOperator.getActivationFee() + ". ";
+						+ contractor.getCountry().getCurrency().getSymbol() + activation.getAmount() + " to "
+						+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee() + ". ";
 			}
 		} else if (billingStatus.equals("Reactivation")) {
 			invoice.setDueDate(new Date());
@@ -463,12 +463,12 @@ public class BillingCalculatorSingle {
 				if (upgradeAmount.floatValue() > 0.0f) {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 					if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
-						description = "Upgrading from " + contractor.getCurrencyCode().getSymbol()
-								+ upgrade.getCurrentAmount() + ". Prorated " + contractor.getCurrencyCode().getSymbol()
-								+ upgradeAmount;
+						description = "Upgrading from " + contractor.getCountry().getCurrency().getSymbol()
+								+ upgrade.getCurrentAmount() + ". Prorated "
+								+ contractor.getCountry().getCurrency().getSymbol() + upgradeAmount;
 					} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
 						description = "Upgrading to " + upgrade.getFeeClass() + ". Prorated "
-								+ contractor.getCurrencyCode().getSymbol() + upgradeAmount;
+								+ contractor.getCountry().getCurrency().getSymbol() + upgradeAmount;
 					}
 				} else
 					upgradeAmount = BigDecimal.ZERO.setScale(2);

@@ -77,7 +77,7 @@
 					<s:if test="status.unpaid">
 						<s:text name="ContractorPaymentOptions.UnpaidInvoice">
 							<s:param value="%{id}" />
-							<s:param value="%{contractor.currencyCode.symbol}" />
+							<s:param value="%{contractor.country.currency.symbol}" />
 							<s:param value="%{balance}" />
 							<s:param value="%{dueDate}" />
 						</s:text>
@@ -112,7 +112,7 @@
 							<li>
 								<i>
 									<s:text name="ContractorPaymentOptions.CCRequired">
-										<s:param value="%{contractor.currencyCode.symbol}" />
+										<s:param value="%{contractor.country.currency.symbol}" />
 									</s:text>
 								</i>
 							</li>
@@ -140,7 +140,7 @@
 													<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;
 												</td>
 												<td class="right">
-													<s:property value="contractor.currencyCode.symbol" />
+													<s:property value="contractor.country.currency.symbol" />
 													<s:property value="contractor.fees.get(#feeClass).newAmount" />
 												</td>
 												<td>
@@ -151,26 +151,26 @@
 									</s:iterator>
 								</table>
 								
-								<s:if test="contractor.currencyCode.canada">
+								<s:if test="contractor.country.currency.cad">
 									<li>
 										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
-										<s:property value="contractor.currencyCode.symbol" />
+										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="gstFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
-										<s:property value="contractor.currencyCode.symbol" />
+										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="contractor.newMembershipAmount+gstFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
 								<s:else>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
-										<s:property value="contractor.currencyCode.symbol" />
+										<s:property value="contractor.country.currency.symbol" />
 										<s:property value="contractor.newMembershipAmount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:else>
 							</li>
@@ -205,7 +205,7 @@
 														<s:property value="contractor.fees.get(#feeClass).newLevel.fee" />:&nbsp;
 													</td>
 													<td class="right">
-														<s:property value="contractor.currencyCode.symbol" />
+														<s:property value="contractor.country.currency.symbol" />
 														<s:property value="contractor.fees.get(#feeClass).newAmount" />
 													</td>
 													<td>
@@ -220,41 +220,41 @@
 								<s:if test="contractor.accountLevel.full">
 									<li>
 										<label><s:property value="activationFee.fee"/>:</label>
-										<s:property value="contractor.currencyCode.symbol"/>
+										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
 								
 								<s:if test="importFee.amount > 0">
 									<li>
 										<label><s:property value="importFee.fee"/>:</label>
-										<s:property value="contractor.currencyCode.symbol"/>
+										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="importFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
 								
-								<s:if test="contractor.currencyCode.canada">
+								<s:if test="contractor.country.currency.cad">
 									<li>
 										<label><s:text name="ContractorPaymentOptions.GST"/>:</label>
-										<s:property value="contractor.currencyCode.symbol"/>
+										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="gstFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
-										<s:property value="contractor.currencyCode.symbol"/>
+										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount+contractor.newMembershipAmount+gstFee.amount+importFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:if>
 								<s:else>
 									<li>
 										<label><s:text name="ContractorPaymentOptions.Total"/>:</label>
-										<s:property value="contractor.currencyCode.symbol"/>
+										<s:property value="contractor.country.currency.symbol"/>
 										<s:property value="activationFee.amount+contractor.newMembershipAmount+importFee.amount"/>
-										<s:property value="contractor.currencyCode" />
+										<s:property value="contractor.country.currency" />
 									</li>
 								</s:else>
 							</s:else>

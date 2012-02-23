@@ -59,6 +59,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
+	private BrainTreeService paymentService;
+	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private EmailSenderSpring emailSender;
@@ -94,7 +96,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		this.currentStep = ContractorRegistrationStep.Payment;
 	}
 
-	private BrainTreeService paymentService = new BrainTreeService();
 	private boolean complete = false;
 
 	public String execute() throws Exception {
@@ -154,19 +155,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		} else {
 			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
 				if (contractor.isCcValid()) {
-					String canadaProcessorID = appPropertyDAO.find("brainTree.processor_id.canada").getValue();
-					paymentService.setUsProcessorID(appPropertyDAO.find("brainTree.processor_id.us").getValue());
-					paymentService.setUserName(appPropertyDAO.find("brainTree.username").getValue());
-					paymentService.setPassword(appPropertyDAO.find("brainTree.password").getValue());
 
 					Payment payment = null;
 					try {
 						payment = PaymentProcessor.PayOffInvoice(invoice, getUser(), PaymentMethod.CreditCard);
-
-						if (Strings.isEmpty(canadaProcessorID) && payment.getCurrency().isCanada())
-							throw new RuntimeException("Canadian ProcessorID Mismatch");
-						paymentService.setCanadaProcessorID(canadaProcessorID);
-
 						paymentService.processPayment(payment, invoice);
 
 						CreditCard creditCard = paymentService.getCreditCard(id);
@@ -186,8 +178,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						contractorAccountDao.save(contractor);
 
 						addNote(contractor, "Credit Card transaction completed and emailed the receipt for "
-								+ contractor.getCurrencyCode().getSymbol() + invoice.getTotalAmount(),
-								NoteCategory.Billing, LowMedHigh.High, true, Account.EVERYONE, getUser(), null);
+								+ invoice.getCurrency().getSymbol() + invoice.getTotalAmount(), NoteCategory.Billing,
+								LowMedHigh.High, true, Account.EVERYONE, getUser(), null);
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -326,15 +318,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 		// Response code not received, can either be transmission error or no
 		// previous info entered
-		BrainTreeService ccService = new BrainTreeService();
-		ccService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-		ccService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
-		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
 
 		if ("Delete".equalsIgnoreCase(button)) {
 			try {
-				ccService.deleteCreditCard(contractor.getId());
+				paymentService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
@@ -350,7 +337,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		int retries = 0, quit = 5;
 		while (transmissionError && retries < quit) {
 			try {
-				cc = ccService.getCreditCard(contractor.getId());
+				cc = paymentService.getCreditCard(contractor.getId());
 				transmissionError = false;
 				braintreeCommunicationError = false;
 			} catch (Exception communicationProblem) {

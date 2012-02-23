@@ -7,6 +7,12 @@
 -- -----------------------------------------------------------------------------------------------
 /* Foreign Keys must be dropped in the target to ensure that requires changes can be done*/
 
+-- PICS-4713
+update ref_country c set c.currency = 'CAD' where c.isoCode in ('CA');
+update ref_country c set c.currency = 'GBP' where c.isoCode in ('GB');
+update ref_country c set c.currency = 'EUR' where c.isoCode in ('AD','AT','AZ','BY','BE','BA','BG','HR','CY','CZ','DK','EE','FI','FR','GE','DE','GR','GL','HU','IS','IE','IM','IT','KZ','LV','LI','LT','LU','MK','MT','MC','ME','NL','NO','PL','PT','RO','RU','SM','RS','SK','SI','ES','SE','CH','TR','UA','UZ','ZA','CF');
+--
+
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_con` ;
 
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_op` ;

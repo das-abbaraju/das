@@ -37,13 +37,12 @@ import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import com.picsauditing.PICS.BrainTreeService;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -606,19 +605,19 @@ public class ContractorAccount extends Account implements JSONable {
 	public void setContractorOperatorNumbers(List<ContractorOperatorNumber> contractorOperatorNumbers) {
 		this.contractorOperatorNumbers = contractorOperatorNumbers;
 	}
-	
+
 	@Transient
 	public List<ContractorOperatorNumber> getVisibleContractorOperatorNumbers(Permissions permissions) {
 		List<ContractorOperatorNumber> visibleContractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
-		
+
 		visibleContractorOperatorNumbers.addAll(getContractorOperatorNumbers());
 		Iterator<ContractorOperatorNumber> iterator = visibleContractorOperatorNumbers.iterator();
-		
+
 		while (iterator.hasNext()) {
 			if (!iterator.next().isVisibleTo(permissions))
 				iterator.remove();
 		}
-		
+
 		return visibleContractorOperatorNumbers;
 	}
 
@@ -1269,13 +1268,7 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public CreditCard getCreditCard() {
 		CreditCard cc = null;
-		BrainTreeService ccService = new BrainTreeService();
-		AppPropertyDAO appPropDao = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
-
-		ccService.setCanadaProcessorID(appPropDao.find("brainTree.processor_id.canada").getValue());
-		ccService.setUsProcessorID(appPropDao.find("brainTree.processor_id.us").getValue());
-		ccService.setUserName(appPropDao.find("brainTree.username").getValue());
-		ccService.setPassword(appPropDao.find("brainTree.password").getValue());
+		BrainTreeService paymentService = (BrainTreeService) SpringUtils.getBean("BrainTreeService");
 
 		// Accounting for transmission errors which result in
 		// exceptions being thrown.
@@ -1283,7 +1276,7 @@ public class ContractorAccount extends Account implements JSONable {
 		int retries = 0, quit = 5;
 		while (transmissionError && retries < quit) {
 			try {
-				cc = ccService.getCreditCard(getId());
+				cc = paymentService.getCreditCard(getId());
 				transmissionError = false;
 			} catch (Exception communicationProblem) {
 				// a message or packet could have been dropped in transmission
