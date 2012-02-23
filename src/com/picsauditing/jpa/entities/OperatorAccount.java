@@ -74,6 +74,7 @@ public class OperatorAccount extends Account {
 		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
+		this.transportationServices = true;
 	}
 
 	public OperatorAccount(String name) {
@@ -82,6 +83,7 @@ public class OperatorAccount extends Account {
 		this.onsiteServices = true;
 		this.offsiteServices = true;
 		this.materialSupplier = true;
+		this.transportationServices = true;
 	}
 
 	@Transient
