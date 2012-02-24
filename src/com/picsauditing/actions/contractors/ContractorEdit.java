@@ -90,7 +90,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private String contractorTypeHelpText = "";
 
 	public ContractorEdit() {
-		this.subHeading = "Contractor Edit";
+		this.subHeading = getText("ContractorEdit.subheading");
 	}
 
 	public void prepare() throws Exception {
