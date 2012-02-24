@@ -1,8 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.util.Date;
-
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Strings;
@@ -46,8 +43,6 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 					+ "(" + Strings.implode(permissions.getVisibleAccounts()) + ")"
 					+ " JOIN audit_type atype ON atype.id = acr.auditTypeID AND atype.classType = 'Policy'"
 					+ ") d ON d.auditID = ca.id");
-			
-			sql.addWhere("ca.expiresDate > '" + DateBean.toDBFormat(new Date()) + "'");
 		}
 
 		getFilter().setShowAuditFor(false);

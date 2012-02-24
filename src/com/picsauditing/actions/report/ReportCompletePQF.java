@@ -53,7 +53,6 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 		sql.addField("cao.percentComplete");
 		sql.addWhere("ca.auditTypeID IN (1,11)");
 		sql.addWhere("a.status IN ('Active','Demo')");
-		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 		sql.addField("COUNT(eq.conid) As followUp");
 		sql.addJoin("LEFT JOIN email_queue eq ON eq.conid = a.id AND eq.templateID = 12 AND eq.status = 'Sent'");
 		sql.addGroupBy("eq.conid");

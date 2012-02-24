@@ -1,6 +1,7 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,19 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		super.addFilterToSQL();
 
 		ReportFilterCAO f = getFilter();
+
+		if (f.getAuditStatus() != null)
+		{
+			ArrayList<AuditStatus> auditStatusValues = new ArrayList<AuditStatus>(Arrays.asList(f.getAuditStatus()));
+			if (auditStatusValues.contains(AuditStatus.Expired))
+			{
+				sql.addWhere("ca.expiresDate <= NOW()");
+			}
+			else if (!auditStatusValues.isEmpty())
+			{
+				sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
+			}
+		}
 
 		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
 		if (filterOn(auditStatusList)) {

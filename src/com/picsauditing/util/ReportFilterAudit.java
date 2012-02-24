@@ -1,9 +1,8 @@
 package com.picsauditing.util;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -352,14 +351,8 @@ public class ReportFilterAudit extends ReportFilterContractor {
 		return list;
 	}
 
-	/**
-	 * TODO: Change this back to return the AuditStatus values as an array once the
-	 * Expired status is removed from the AuditStatus enum.
-	 * 
-	 * @return
-	 */
 	public AuditStatus[] getAuditStatusList() {
-		return AuditStatus.valuesWithoutExpiredStatus();
+		return AuditStatus.values();
 	}
 
 	public Map<Integer, String> getAMBestClassList() {

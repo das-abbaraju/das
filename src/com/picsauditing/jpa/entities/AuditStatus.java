@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import javax.persistence.Transient;
 
@@ -153,17 +152,6 @@ public enum AuditStatus implements Translatable {
 
 	public void setColor(String color) {
 		this.color = color;
-	}
-	
-	/**
-	 * TODO: Remove this method once Expired Status has been removed from this enum.
-	 * 
-	 * @return
-	 */
-	public static AuditStatus[] valuesWithoutExpiredStatus() {
-		ArrayList<AuditStatus> auditStatusValues = new ArrayList<AuditStatus>(Arrays.asList(AuditStatus.values()));
-		auditStatusValues.remove(AuditStatus.Expired);		
-		return auditStatusValues.toArray(new AuditStatus[auditStatusValues.size()]);
 	}
 
 	@Transient

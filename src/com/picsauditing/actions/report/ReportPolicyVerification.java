@@ -33,7 +33,6 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 		sql.addWhere("cao.status IN ('Submitted', 'Resubmitted')");
 
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
-		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 
 		sql.addField("COUNT(cao.auditID) as operatorCount");
 		sql.addGroupBy("ca.id");
