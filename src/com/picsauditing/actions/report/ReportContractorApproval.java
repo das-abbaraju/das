@@ -56,7 +56,7 @@ public class ReportContractorApproval extends ReportAccount {
 
 		sql.addWhere("c.accountLevel != 'BidOnly'");
 		sql.addWhere("a.status IN ('Active','Demo')");
-		sql.addOrderBy("a.creationDate");
+		orderByDefault = "a.creationDate";
 
 		filteredDefault = true;
 		getFilter().setShowConWithPendingAudits(false);
