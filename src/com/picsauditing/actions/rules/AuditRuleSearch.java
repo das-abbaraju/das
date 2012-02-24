@@ -1,11 +1,11 @@
 package com.picsauditing.actions.rules;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.report.ReportActionSupport;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReportFilterAuditRule;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditRuleSearch extends ReportActionSupport {
@@ -57,7 +57,7 @@ public class AuditRuleSearch extends ReportActionSupport {
 			sql.addWhere("op.id = " + filter.getOpID());
 		}
 		if (filterOn(filter.getOperator())) {
-			sql.addWhere("op.name LIKE '%" + Utilities.escapeQuotes(filter.getOperator()) + "%'");
+			sql.addWhere("op.name LIKE '%" + Strings.escapeQuotes(filter.getOperator()) + "%'");
 		}
 		if (filterOn(filter.getInclude())) {
 			sql.addWhere("a_search.include = " + filter.getInclude());

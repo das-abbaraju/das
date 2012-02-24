@@ -7,9 +7,9 @@ import javax.persistence.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class AmBestDAO extends PicsDAO {
@@ -61,7 +61,7 @@ public class AmBestDAO extends PicsDAO {
 	}
 
 	public List<AmBest> findByCompanyName(String name) {
-		name = Utilities.escapeQuotes(name);
+		name = Strings.escapeQuotes(name);
 		Query q = em.createQuery("SELECT ab FROM AmBest ab " +
 				"WHERE ab.companyName LIKE '%" + parseCompany(name) + "%' " +
 					"OR ab.naic LIKE '" + name + "%' " +

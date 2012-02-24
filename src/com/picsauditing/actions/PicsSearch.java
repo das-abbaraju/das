@@ -1,29 +1,21 @@
 package com.picsauditing.actions;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Basic;
-
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.RowSetDynaClass;
 
-import com.google.common.base.Strings;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
-import com.picsauditing.PICS.DBBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.PermissionQueryBuilder;
 import com.picsauditing.util.PermissionQueryBuilderEmployee;
 import com.picsauditing.util.PermissionQueryBuilderUser;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class PicsSearch extends PicsActionSupport implements Preparable{
@@ -234,7 +226,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 	 */
 	public void checkString(String check){
 		check = check.trim();
-		String q = Utilities.escapeQuotes(check);
+		String q = Strings.escapeQuotes(check);
 		
 		if(check.matches("[a-zA-Z\\s*]+")){
 			System.out.println("Account, Name");

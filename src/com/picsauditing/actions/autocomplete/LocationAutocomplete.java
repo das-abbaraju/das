@@ -30,14 +30,14 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 			if (!Strings.isEmpty(q)) {
 				if (q.length() == 2) {
 					// search both iso and translated fields for the 2 letter combinations
-					List<State> stateList = stateDAO.findWhere("isoCode = '" + Utilities.escapeQuotes(q) + "'");
-					List<Country> countryList = countryDAO.findWhere("isoCode = '" + Utilities.escapeQuotes(q) + "'");
+					List<State> stateList = stateDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
+					List<Country> countryList = countryDAO.findWhere("isoCode = '" + Strings.escapeQuotes(q) + "'");
 					result.addAll(stateList);
 					result.addAll(countryList);
 					
-					stateList = stateDAO.findByTranslatableField(State.class, "%" + Utilities.escapeQuotes(q) + "%",
+					stateList = stateDAO.findByTranslatableField(State.class, "%" + Strings.escapeQuotes(q) + "%",
 							getLocale());
-					countryList = countryDAO.findByTranslatableField(Country.class, "%" + Utilities.escapeQuotes(q)
+					countryList = countryDAO.findByTranslatableField(Country.class, "%" + Strings.escapeQuotes(q)
 							+ "%", getLocale());
 
 					result.addAll(stateList);
@@ -46,9 +46,9 @@ public class LocationAutocomplete extends AutocompleteActionSupport<Autocomplete
 				} else {
 					// any more or less characters, then search only through translations
 					List<State> stateList = stateDAO.findByTranslatableField(State.class,
-							"%" + Utilities.escapeQuotes(q) + "%", getLocale());
+							"%" + Strings.escapeQuotes(q) + "%", getLocale());
 					List<Country> countryList = countryDAO.findByTranslatableField(Country.class,
-							"%" + Utilities.escapeQuotes(q) + "%", getLocale());
+							"%" + Strings.escapeQuotes(q) + "%", getLocale());
 
 					result.addAll(stateList);
 					result.addAll(countryList);

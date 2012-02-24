@@ -5,9 +5,9 @@ import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategory> {
@@ -23,10 +23,10 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 		if (auditTypeID != null && auditTypeID > 0)
 			where = "t.auditType.id =" + auditTypeID + " AND ";
 		if (isSearchDigit())
-			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Utilities.escapeQuotes(q) + "%'");
+			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Strings.escapeQuotes(q) + "%'");
 		else
 			return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name",
-					"%" + Utilities.escapeQuotes(q) + "%");
+					"%" + Strings.escapeQuotes(q) + "%");
 	}
 
 	@Override

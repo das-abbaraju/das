@@ -11,9 +11,7 @@ import com.mysql.jdbc.Connection;
  */
 public class DefaultDatabase {
 	/**
-	 * Usage DataBean.setConnection(DefaultDatabase.getConnection());
-	 * 
-	 * @return a connection that can be added to a PICS DataBean
+	 * @return a connection that can be added to a PICS Database
 	 * @throws Exception
 	 */
 	static public Connection getConnection() throws Exception {

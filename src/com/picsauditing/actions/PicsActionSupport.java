@@ -433,7 +433,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		like = like.trim();
 
 		SelectUser sql = new SelectUser();
-		sql.addWhere("u.department LIKE '%" + Utilities.escapeQuotes(like) + "%'");
+		sql.addWhere("u.department LIKE '%" + Strings.escapeQuotes(like) + "%'");
 		sql.addGroupBy("u.department");
 		sql.addField("u.department");
 		sql.addOrderBy("u.department");

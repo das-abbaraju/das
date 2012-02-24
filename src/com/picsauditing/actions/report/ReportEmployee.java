@@ -80,25 +80,25 @@ public class ReportEmployee extends ReportActionSupport {
 		ReportFilterEmployee f = getFilter();
 
 		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = Utilities.escapeQuotes(f.getAccountName().trim());
+			String accountName = Strings.escapeQuotes(f.getAccountName().trim());
 			report.addFilter(new SelectFilter("name", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Utilities.escapeQuotes(accountName)
-					+ "%' OR a.id = '" + Utilities.escapeQuotes(accountName) + "'", accountName));
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
+					+ "%' OR a.id = '" + Strings.escapeQuotes(accountName) + "'", accountName));
 			f.setLimitEmployees(false);
 		}
 
 		if (filterOn(f.getFirstName())) {
-			String firstName = Utilities.escapeQuotes(f.getFirstName().trim());
+			String firstName = Strings.escapeQuotes(f.getFirstName().trim());
 			sql.addWhere("e.firstName LIKE '%" + firstName + "%'");
 		}
 
 		if (filterOn(f.getLastName())) {
-			String lastName = Utilities.escapeQuotes(f.getLastName().trim());
+			String lastName = Strings.escapeQuotes(f.getLastName().trim());
 			sql.addWhere("e.lastName LIKE '%" + lastName + "%'");
 		}
 
 		if (filterOn(f.getEmail())) {
-			String email = Utilities.escapeQuotes(f.getEmail().trim());
+			String email = Strings.escapeQuotes(f.getEmail().trim());
 			sql.addWhere("e.email LIKE '%" + email + "%'");
 		}
 

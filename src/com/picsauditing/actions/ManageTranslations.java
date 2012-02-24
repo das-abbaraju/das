@@ -231,11 +231,11 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		if (!Strings.isEmpty(search))
-			sql.addWhere("t1.msgValue LIKE '%" + Utilities.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
-					+ Utilities.escapeQuotes(search).toLowerCase() + "%'");
+			sql.addWhere("t1.msgValue LIKE '%" + Strings.escapeQuotes(search) + "%' OR LOWER(t1.msgKey) LIKE '%"
+					+ Strings.escapeQuotes(search).toLowerCase() + "%'");
 
 		if (!Strings.isEmpty(key)) {
-			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Utilities.escapeQuotes(key).toLowerCase() + "%'");
+			sql.addWhere("LOWER(t1.msgKey) LIKE '%" + Strings.escapeQuotes(key).toLowerCase() + "%'");
 		}
 
 		if (fromQualityRatings != null && fromQualityRatings.length > 0) {

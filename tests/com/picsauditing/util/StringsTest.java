@@ -1,5 +1,7 @@
 package com.picsauditing.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -22,6 +24,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.Note;
@@ -41,7 +44,7 @@ public class StringsTest extends TestCase {
 		addresses = InternetAddress.parse("tallred@picsauditing.com, kn@pics.com");
 		assertEquals("tallred@picsauditing.com", addresses[0].toString());
 		assertEquals("kn@pics.com", addresses[1].toString());
-		
+
 		addresses = InternetAddress.parse("Trevor <tallred@picsauditing.com>");
 		assertEquals("Trevor <tallred@picsauditing.com>", addresses[0].toString());
 	}
@@ -86,20 +89,22 @@ public class StringsTest extends TestCase {
 	@Test
 	public void testHash_sha1Algorithm() {
 		// Known SHA-1 encoding taken from http://en.wikipedia.org/wiki/SHA-1#Example_hashes
-		assertEquals("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",Strings.hash("The quick brown fox jumps over the lazy dog"));
-		assertEquals("de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3",Strings.hash("The quick brown fox jumps over the lazy cog"));
-		assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709",Strings.hash(""));
+		assertEquals("2fd4e1c67a2d28fced849ee1bb76e7391b93eb12",
+				Strings.hash("The quick brown fox jumps over the lazy dog"));
+		assertEquals("de9f2c7fd25e1b3afad3e85a0bd17d9b100db4b3",
+				Strings.hash("The quick brown fox jumps over the lazy cog"));
+		assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709", Strings.hash(""));
 	}
 
 	/**
-	 * In the following assertions, the expected value is taken for granted. The point of this test is
-	 * demonstrate a common way that the hash method is used for passwords, by adding a numeric seed to the end of the
-	 * password before encoding it.
+	 * In the following assertions, the expected value is taken for granted. The point of this test is demonstrate a
+	 * common way that the hash method is used for passwords, by adding a numeric seed to the end of the password before
+	 * encoding it.
 	 */
 	@Test
 	public void testHash_passwordPlusSeed() {
-		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60",Strings.hash("@Irvine1" + 2357));
-		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60",Strings.hash("@Irvine12357"));
+		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60", Strings.hash("@Irvine1" + 2357));
+		assertEquals("9c0968191793a5eac6cfbd14a5fc6d4cf5767e60", Strings.hash("@Irvine12357"));
 	}
 
 	@Test
@@ -126,13 +131,13 @@ public class StringsTest extends TestCase {
 		// Old hash function -- updated to SHA1
 		// assertEquals(28,Strings.hash("").length());
 		// Zero-length strings should be encoded
-		assertEquals(40,Strings.hash("").length());
+		assertEquals(40, Strings.hash("").length());
 
 		// Strings longer than 28 bytes (size of return hash) should be encoded
 		// assertTrue(Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./").length()
 		// == 28);
 		// Strings longer than 40 bytes (size of return hash) should be encoded
-		assertEquals(40,Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length());
+		assertEquals(40, Strings.hash("qwertyuiop[]asdfghjkl;'zxcvbnm,./1234567890-=").length());
 	}
 
 	@Test
@@ -328,7 +333,7 @@ public class StringsTest extends TestCase {
 
 		assertEquals("XXX-XX-9999", ssnMask);
 	}
-	
+
 	public void testEqualNullSafe() {
 		assertTrue(Strings.isEqualNullSafe(null, null));
 		assertFalse(Strings.isEqualNullSafe(null, "foobar"));
@@ -337,5 +342,23 @@ public class StringsTest extends TestCase {
 		assertTrue(Strings.isEqualNullSafe("foobar", "foobar"));
 	}
 
+	char singleQuote = '\'';
+	char backSlash = '\\';
+
+	@Test
+	public void testNoQuotes() {
+		assertEquals("abc", Strings.escapeQuotes("abc"));
+	}
+
+	@Test
+	public void testSingleQuote() {
+		assertEquals("ab" + backSlash + singleQuote, Strings.escapeQuotes("ab" + singleQuote));
+	}
+
+	@Test
+	public void testDoubleSingleQuote() {
+		assertEquals("ab" + backSlash + singleQuote + backSlash + singleQuote,
+				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
+	}
 
 }

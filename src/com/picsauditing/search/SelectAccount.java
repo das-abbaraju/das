@@ -1,8 +1,8 @@
 package com.picsauditing.search;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.PermissionQueryBuilder;
+import com.picsauditing.util.Strings;
 
 /**
  * SELECT a.id, a.name, a.active FROM accounts a
@@ -134,7 +134,7 @@ public class SelectAccount extends SelectSQL {
 	public void setStartsWith(String startsWith) {
 		if (startsWith != null && startsWith.length() > 0) {
 			this.startsWith = startsWith;
-			this.addWhere("a.name LIKE '" + Utilities.escapeQuotes(startsWith) + "%'");
+			this.addWhere("a.name LIKE '" + Strings.escapeQuotes(startsWith) + "%'");
 		}
 	}
 

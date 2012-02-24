@@ -138,14 +138,14 @@ public class ContractorFacilities extends ContractorActionSupport {
 					String where = "";
 
 					if (state != null && state.length() > 0) {
-						where += "state = '" + Utilities.escapeQuotes(state) + "'";
+						where += "state = '" + Strings.escapeQuotes(state) + "'";
 					}
 
 					if (operator != null && !Strings.isEmpty(operator.getName())) {
 						if (where.length() > 0)
 							where += " AND ";
 						where += "nameIndex LIKE '%"
-								+ Utilities.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
+								+ Strings.escapeQuotes(operator.getName()).replaceAll("\\s+|[^a-zA-Z0-9]", "") + "%'";
 					}
 
 					String status = "'Active'";

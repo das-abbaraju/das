@@ -1,6 +1,6 @@
 package com.picsauditing.search;
 
-import com.picsauditing.PICS.Utilities;
+import com.picsauditing.util.Strings;
 
 public class SelectFilter {
 	private String name;
@@ -36,7 +36,7 @@ public class SelectFilter {
 	}
 	
 	public String getWhere() {
-		return getWhereRaw().replace("?", Utilities.escapeQuotes(value));
+		return getWhereRaw().replace("?", Strings.escapeQuotes(value));
 	}
 	
 	protected String getWhereRaw() {
