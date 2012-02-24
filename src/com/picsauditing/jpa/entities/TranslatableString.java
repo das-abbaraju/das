@@ -155,6 +155,9 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		if (translations.containsKey(locale.getLanguage())) {
 			return locale.getLanguage();
 		}
+		for (String anyLocale : translations.keySet()) {
+			return anyLocale;
+		}
 		return null;
 	}
 

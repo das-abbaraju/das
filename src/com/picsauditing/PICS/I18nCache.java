@@ -47,6 +47,18 @@ public class I18nCache implements Serializable {
 		return INSTANCE;
 	}
 
+	private String findAnyLocale(String key) {
+		Map<String, String> locales = getCache().row(key);
+		if (locales == null)
+			return null;
+		if (locales.size() > 0) {
+			for (String locale : locales.keySet()) {
+				return locale;
+			}
+		}
+		return null;
+	}
+
 	private boolean hasKey(String key, String locale) {
 		return getCache().contains(key, locale);
 	}
@@ -143,6 +155,10 @@ public class I18nCache implements Serializable {
 			if (!hasKey(key, localeString)) {
 				localeString = DEFAULT_LANGUAGE;
 				if (!hasKey(key, localeString)) {
+					String anyLocale = findAnyLocale(key);
+					if (anyLocale != null)
+						return anyLocale;
+					
 					if (insertMissing) {
 						// insert the default msg into the table and the cache
 						try {
