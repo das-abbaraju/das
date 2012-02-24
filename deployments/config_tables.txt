@@ -13,9 +13,8 @@ audit_transform_option
 audit_type
 audit_type_rule
 flag_criteria
+flag_criteria_operator
 invoice_fee
-ref_country
-ref_state
 token
 widget
 widget_user
