@@ -406,7 +406,7 @@ public class Cron extends PicsActionSupport {
 		Map<OperatorAccount, List<ContractorAccount>> clientSiteContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
 		for (ContractorAccount contractor : list) {
-			if (!emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
+			if (contractor.getPrimaryContact() != null && !emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
 				OperatorAccount requestedByClientSite = contractor.getRequestedBy();
 
 				EmailBuilder emailBuilder = new EmailBuilder();
@@ -905,7 +905,7 @@ public class Cron extends PicsActionSupport {
 	@SuppressWarnings("unchecked")
 	private void checkRegistrationRequestsHoldDates() throws Exception {
 		List<ContractorRegistrationRequest> holdRequests = (List<ContractorRegistrationRequest>) dao.findWhere(
-				ContractorRegistrationRequest.class, "c.status = 'Hold'");
+				ContractorRegistrationRequest.class, "t.status = 'Hold'");
 		Date now = new Date();
 		for (ContractorRegistrationRequest crr : holdRequests) {
 			if (now.after(crr.getHoldDate())) {
