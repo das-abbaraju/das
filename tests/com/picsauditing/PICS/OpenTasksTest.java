@@ -5,7 +5,7 @@ import static com.picsauditing.util.Assert.*;
 
 import java.util.Date;
 
-import org.apache.struts2.StrutsSpringJUnit4TestCase;
+//import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import com.picsauditing.jpa.entities.Workflow;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/tests.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager")
-public class OpenTasksTest extends StrutsSpringJUnit4TestCase  {
+public class OpenTasksTest /* extends  StrutsSpringJUnit4TestCase */ {
 	private static final int ANTEA_SPECIFIC_AUDIT = 181;
 	private OpenTasks action;
 	private ContractorAccount contractor;
