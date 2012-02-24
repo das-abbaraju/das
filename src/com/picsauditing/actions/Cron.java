@@ -177,13 +177,6 @@ public class Cron extends PicsActionSupport {
 			} catch (Throwable t) {
 				handleException(t);
 			}
-			try {
-				startTask("\nAutoSubmitting/Completing cao for Manual/Implementation audits if one of the CAO is Active...");
-				contractorAuditOperatorDAO.activateAuditsWithReqs();
-				endTask();
-			} catch (Throwable t) {
-				handleException(t);
-			}
 
 			try {
 				// TODO we shouldn't recacluate audits, but only categories.

@@ -184,28 +184,4 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 				+ "SET cao.status = 'Pending', cao.statusChangedDate = NOW(), ca.expiresDate = NULL WHERE " + where;
 		db.executeUpdate(sql);
 	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void activateAuditsWithReqs() throws SQLException {
-		String sql = "";
-		Database db = new Database();
-
-		sql = "insert into contractor_audit_operator_workflow "
-				+ "(createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "
-				+ "select 1,1,Now(),Now(),ncao.id,ncao.status,ocao.status " + "from contractor_Audit_operator ocao "
-				+ "join contractor_audit_operator ncao on ocao.auditID = ncao.auditid "
-				+ "join contractor_audit ca on ca.id = ocao.auditID and ncao.auditid = ca.id "
-				+ "where ca.auditTypeID in (2,3) and ocao.status in ('Submitted','Complete') "
-				+ "and ncao.status != ocao.status and ocao.visible = 1 and ncao.visible = 1 ";
-
-		db.executeInsert(sql);
-
-		sql = "update contractor_Audit_operator ocao "
-				+ "join contractor_audit_operator ncao on ocao.auditID = ncao.auditid "
-				+ "join contractor_audit ca on ca.id = ocao.auditID and ncao.auditid = ca.id "
-				+ "set ncao.status = ocao.status " + "where ca.auditTypeID in (2,3) "
-				+ "and ocao.status in ('Submitted','Complete') " + "and ncao.status != ocao.status "
-				+ "and ocao.visible = 1 and ncao.visible = 1 ";
-		db.executeUpdate(sql);
-	}
 }
