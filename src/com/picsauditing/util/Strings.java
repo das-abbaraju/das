@@ -70,7 +70,6 @@ public class Strings {
 
 	public static String escapeQuotes(String value) {
 		// TODO rename this method to escapeSingleQuote
-		// Where should we put this method?? Maybe Strings or SelectSQL?
 		if (value == null)
 			return "";
 		String singleQuote = "\'";
@@ -103,7 +102,7 @@ public class Strings {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append("'");
-			buffer.append(Strings.escapeQuotes(o));
+			buffer.append(escapeQuotes(o));
 			buffer.append("'");
 		}
 		return buffer.toString();

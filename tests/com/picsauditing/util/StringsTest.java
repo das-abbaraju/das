@@ -1,9 +1,9 @@
 package com.picsauditing.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,22 +19,11 @@ import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.dao.EmployeeDAO;
-import com.picsauditing.jpa.entities.Employee;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.search.SelectUserUnion;
+public class StringsTest  {
 
-public class StringsTest extends TestCase {
-
-	public StringsTest(String name) {
-		super(name);
-	}
-
+	@Test
 	public void testEmail() throws AddressException {
 		// FIXME Why is this test here in StringsTest? -- Craig Jones
 		Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
@@ -49,18 +37,22 @@ public class StringsTest extends TestCase {
 		assertEquals("Trevor <tallred@picsauditing.com>", addresses[0].toString());
 	}
 
+	@Test
 	public void testInsertSpaceNull() {
 		assertEquals(null, Strings.insertSpaces(null));
 	}
 
+	@Test
 	public void testInsertSpace1() {
 		assertEquals("a", Strings.insertSpaces("a"));
 	}
 
+	@Test
 	public void testInsertSpace3() {
 		assertEquals("a b c", Strings.insertSpaces("abc"));
 	}
 
+	@Test
 	public void testArray() {
 		// FIXME What is the purpose of this test? -- Craig Jones
 		List<String> list = new ArrayList<String>();
@@ -74,6 +66,7 @@ public class StringsTest extends TestCase {
 		list.add("World" + list.size());
 	}
 
+	@Test
 	public void testString() {
 		// FIXME What is the purpose of this test? -- Craig Jones
 		String color = "Green";
@@ -169,6 +162,7 @@ public class StringsTest extends TestCase {
 		assertEquals(0, Strings.extractAccountID("1 Micro"));
 	}
 
+	@Test
 	public void testMapParams() {
 		String url = "response=3&responsetext=Invalid Customer Vault Id REFID:101460773&authcode=&transactionid=0&avsresponse=&cvvresponse=&orderid=123&type=sale&response_code=300&customer_vault_id=0";
 		Map<String, String> map = Strings.mapParams(url);
@@ -178,6 +172,7 @@ public class StringsTest extends TestCase {
 		assertEquals("0", map.get("customer_vault_id"));
 	}
 
+	@Test
 	public void testIndexName() {
 		assertEquals(null, oldIndexName(null));
 		assertEquals("HBOBQJOHNS5STARCRANEINCBJCRANE", oldIndexName(" H. Bob & Q. John's 5 Star Crane Inc./BJ Crane"));
@@ -236,10 +231,12 @@ public class StringsTest extends TestCase {
 		return name;
 	}
 
+	@Test
 	public void testMd5() {
 		assertEquals("593b069af7c100f8ee335184c763fad1", Strings.md5("e4d909c290d0fb1ca068ffaddf22cbd0|20080516190549"));
 	}
 
+	@Test
 	public void testFormat() {
 		assertEquals("0", Strings.formatShort(0.000001234f));
 		assertEquals("0.001", Strings.formatShort(0.001235678f));
@@ -258,6 +255,7 @@ public class StringsTest extends TestCase {
 		assertEquals("1.23B", Strings.formatShort(1234567890f));
 	}
 
+	@Test
 	public void testIsInCountries() {
 		Set<String> usOnly = new HashSet<String>();
 		usOnly.add("US");
@@ -300,6 +298,7 @@ public class StringsTest extends TestCase {
 		assertTrue(inCountries);
 	}
 
+	@Test
 	public void testEditDistance() {
 		assertEquals(Strings.editDistance("Tom", "Time"), 2);
 		assertEquals(Strings.editDistance("Tom", "Tom"), 0);
@@ -310,6 +309,7 @@ public class StringsTest extends TestCase {
 		assertEquals(Strings.editDistance("", ""), 0);
 	}
 
+	@Test
 	public void testSimilarTo() {
 		assertFalse(Strings.isSimilarTo("Tom", "Time", 0));
 		assertFalse(Strings.isSimilarTo("Tom", "Time", 1));
@@ -328,12 +328,14 @@ public class StringsTest extends TestCase {
 		assertTrue(Strings.isSimilarTo("", "", 0));
 	}
 
+	@Test
 	public void testMaskSSN() throws Exception {
 		String ssnMask = Strings.maskSSN("999999999");
 
 		assertEquals("XXX-XX-9999", ssnMask);
 	}
 
+	@Test
 	public void testEqualNullSafe() {
 		assertTrue(Strings.isEqualNullSafe(null, null));
 		assertFalse(Strings.isEqualNullSafe(null, "foobar"));
@@ -360,5 +362,5 @@ public class StringsTest extends TestCase {
 		assertEquals("ab" + backSlash + singleQuote + backSlash + singleQuote,
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
-
+	
 }
