@@ -21,6 +21,7 @@ import com.picsauditing.util.JSONUtilities;
 public class Report extends BaseTable {
 
 	private ModelType modelType;
+	// TODO rename to name
 	private String summary;
 	private String description;
 	private String parameters;
