@@ -30,7 +30,7 @@
 			<interceptor name="validation" 
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
 			<interceptor name="jsonValidation" 
-				class="org.apache.struts2.json.JSONValidationInterceptor" />
+				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
