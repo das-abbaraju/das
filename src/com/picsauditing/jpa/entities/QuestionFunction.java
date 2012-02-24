@@ -350,9 +350,9 @@ public enum QuestionFunction {
 
 			String unparsedJsonCountries = params.get("countries");
 		
-			CorruptionPerceptionIndexMap cpiMap = (CorruptionPerceptionIndexMap) SpringUtils.getBean("CorruptionPerceptionIndexMap");
+			CorruptionPerceptionIndexMap cpiMap = SpringUtils.getBean("CorruptionPerceptionIndexMap");
 			
-			double lowestCpi = 11;
+			double lowestCpi = NO_CPI_FOR_COUNTRIES_LISTED;
 			for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
 				if (cpi != null && cpi < lowestCpi) {
 					lowestCpi = cpi;
@@ -362,7 +362,12 @@ public enum QuestionFunction {
 			return lowestCpi;
 		}
 	}
-	;
+;
+	// This a special value if none of the countries listed have a CPI value.
+	// The CPI scale goes from 0 - 10, with 0 being most corrupt. We don't want
+	// to flag a contractor if they work in countries without a defined CPI.
+	private static final int NO_CPI_FOR_COUNTRIES_LISTED = 11000;
+
 	// US OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
 	
