@@ -2,7 +2,7 @@ package com.picsauditing.actions;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.struts2.StrutsSpringJUnit4TestCase;
+//import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import com.picsauditing.jpa.entities.User;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"/tests.xml"})
 @TransactionConfiguration(transactionManager = "transactionManager")
-public class AuditRejectionLookupTest extends StrutsSpringJUnit4TestCase {
+public class AuditRejectionLookupTest /* extends StrutsSpringJUnit4TestCase */ {
 	private AuditRejectionLookup action;
 	public User user;
 	public Permissions permissions;
