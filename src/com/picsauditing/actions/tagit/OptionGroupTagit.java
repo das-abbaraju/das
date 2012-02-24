@@ -38,7 +38,7 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 
 		jsonArray = result;
 
-		return "jsonArray";
+		return JSON_ARRAY;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class OptionGroupTagit extends PicsActionSupport implements TagitAction {
 		
 		jsonArray = itemsAlreadySelected;
 
-		return "jsonArray";
+		return JSON_ARRAY;
 	}
 
 	@SuppressWarnings("unchecked")

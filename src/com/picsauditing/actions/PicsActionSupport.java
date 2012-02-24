@@ -57,6 +57,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String BLANK = "blank";
 	public static final String JSON = "json";
 	public static final String JSONP = "jsonp";
+    public static final String JSON_ARRAY = "jsonArray";
 	public static final String CHART_XML = "chartXML";
 
 	@Autowired

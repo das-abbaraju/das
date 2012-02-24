@@ -3,35 +3,45 @@
 	/* ajax history - bbq */
 	var lastState, catXHR;
 	
-	$('a.hist-category, a.modeset').live('click', function() {
+	$('a.hist-category, a.modeset').live('click', function () {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState('subCat');
 		$.bbq.removeState('viewBlanks');
+		
 		var state = $.bbq.getState();
-		if (state.categoryID == lastState.categoryID && state.mode == lastState.mode)
-			$.bbq.pushState({"_": (new Date()).getTime()});
-		else
+		
+		if (state.categoryID == lastState.categoryID && state.mode == lastState.mode) {
+			$.bbq.pushState({
+			    "_": (new Date()).getTime()
+		    });
+		} else {
 			$.bbq.removeState("_");
-		if (state.mode == 'ViewQ' || state.viewBlanks == "false")
+		}
+		
+		if (state.mode == 'ViewQ' || state.viewBlanks == "false") {
 			$.bbq.removeState('mode');
+		}
+		
 		return false;
 	});
 
-	$('ul.subcat-list li a').live('click', function() {
+	$('ul.subcat-list li a').live('click', function () {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('viewBlanks');
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState("_");
+		
 		return false;
 	});
 
-	$('ul.vert-toolbar a.preview').live('click', function() {
+	$('ul.vert-toolbar a.preview').live('click', function () {
 		$.bbq.pushState(this.href);
 		$.bbq.removeState('viewBlanks');
 		$.bbq.removeState('onlyReq');
 		$.bbq.removeState('_');
 		$.bbq.removeState('subCat');
+		
 		return false;
 	});
 	/* end ajax history - bbq */
@@ -42,7 +52,7 @@
 	
 	// audit load category
 	AUDIT.load_category = {
-		init: function() {
+		init: function () {
 			if ($('#audit-layout').length) {
 				var messageLoadingRequirements = translate('JS.Audit.LoadingRequirements');
 				var messageLoadingCategory = translate('JS.Audit.LoadingCategory');
@@ -50,7 +60,7 @@
 				var messageLoadingAnsweredQuestions = translate('JS.Audit.LoadingAnsweredQuestions');
 				var messageLoadingPreview = translate('JS.Audit.LoadingPreview');
 				
-				$(window).bind('hashchange', function() {
+				$(window).bind('hashchange', function () {
 					var state = $.bbq.getState();
 					
 					if (state.subCat !== undefined) {
@@ -76,7 +86,7 @@
 								css: {
 									top: '20px'
 								}
-							}).load('AuditAjax.action', data, function() {
+							}).load('AuditAjax.action', data, function () {
 								$('ul.catUL li.current').removeClass('current');
 								$(this).unblock();
 							});
@@ -183,7 +193,7 @@
 	
 	// audit question
 	AUDIT.question = {
-		init: function() {
+		init: function () {
 			// reset answer
 			$('#auditViewArea').delegate('.reset-answer', 'click', this.events.reset);
 			
@@ -264,28 +274,31 @@
 			}
 		},
 		
-		updateLinks: function() {
+		updateLinks: function () {
 			if (hasPermissionsToSeeAuditLinks == 'true') {
-				$('div.question a.passAudit').each(function() {
+				$('div.question a.passAudit').each(function () {
 					var question_query_param = '';
 					var question_container = $(this).closest('div.question');
+					
 					if (question_container.length) {
-						 var question_id = $(this).closest('div.question').find('input[name="auditData.question.id"]').val();
+						var question_id = $(this).closest('div.question').find('input[name="auditData.question.id"]').val();
+						
 						question_query_param = '&questionId=' + question_id;
 					}
+					
 					$(this).attr('href', $(this).attr('href') + "?audit=" + auditID + question_query_param);
 				});
 			} else if (operatorCorporate) {
-				$('div.question a.passAudit').not('.operatorViewable').each(function() {
+				$('div.question a.passAudit').not('.operatorViewable').each(function () {
 					var text = $(this).text();
 					$(this).replaceWith(text);
 				});
 				
-				$('div.question a.operatorViewable').each(function() {
+				$('div.question a.operatorViewable').each(function () {
 					$(this).attr('href', $(this).attr('href') + "?account=" + conID);
 				});
 			} else {
-				$('div.question a.passAudit, div.question a.operatorViewable').each(function() {
+				$('div.question a.passAudit, div.question a.operatorViewable').each(function () {
 					var text = $(this).text();
 					
 					$(this).replaceWith(text);
@@ -327,7 +340,7 @@
 	
 	// Esignature questions
 	AUDIT.esignature = {
-		init: function() {
+		init: function () {
 			$('#auditViewArea').delegate('.edit-esignature', 'click', this.events.edit);
 		},
 		

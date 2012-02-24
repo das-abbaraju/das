@@ -39,6 +39,7 @@
 
 .tagit-item-input
 {
+	background: transparent;
     border: 0px;
     color: #404040;
     float: left;

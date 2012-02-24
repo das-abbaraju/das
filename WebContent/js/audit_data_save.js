@@ -87,6 +87,8 @@ function reloadQuestion(qid) {
 	
 	$.post(url, data, function(data, textStatus, XMLHttpRequest) {
 		element.replaceWith(data);
+		
+		AUDIT.question.initTagit();
 	});
 }
 
