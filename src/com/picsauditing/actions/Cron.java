@@ -203,11 +203,24 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending emails to contractors pending and registration requests...");
+			startTask("\nSending emails to contractors pending...");
 
-			emailExclusionList = emailQueueDAO.findEmailAddressExclusions();
+			getEmailExclusions();
 
 			sendEmailPendingAccounts();
+
+			emailExclusionList.clear();
+
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+
+		try {
+			startTask("\nSending emails to registration requests...");
+
+			getEmailExclusions();
+
 			sendEmailContractorRegistrationRequest();
 
 			emailExclusionList.clear();
@@ -312,6 +325,12 @@ public class Cron extends PicsActionSupport {
 		output = "Complete";
 
 		return SUCCESS;
+	}
+
+	private void getEmailExclusions() {
+		List<String> exclusionList = emailQueueDAO.findEmailAddressExclusions();
+		if (exclusionList != null && !exclusionList.isEmpty())
+			emailExclusionList.addAll(exclusionList);
 	}
 
 	private void handleException(Throwable t) {
@@ -460,7 +479,7 @@ public class Cron extends PicsActionSupport {
 		for (OperatorAccount clientSite : clientSiteContractors.keySet()) {
 			List<ContractorAccount> contractors = clientSiteContractors.get(clientSite);
 
-			if (clientSite.getPrimaryContact() != null
+			if (clientSite != null && clientSite.getPrimaryContact() != null
 					&& !emailExclusionList.contains(clientSite.getPrimaryContact().getEmail())) {
 				EmailBuilder emailBuilder = new EmailBuilder();
 
