@@ -10,12 +10,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Country;
 
-@SuppressWarnings("serial")
-public class CorruptionPerceptionIndexMap extends PicsActionSupport {
+public class CorruptionPerceptionIndexMap {
 
 	@Autowired
 	protected CountryDAO countryDAO;

@@ -146,7 +146,7 @@ public enum QuestionFunction {
 	},
 	/**
 	 * Annual Update DART
-	 * LWCR  = (Lost Day Work Cases + Restricted Work Cases * 200,000) / Total Man Hours
+	 * DART  = (Lost Day Work Cases + Restricted Work Cases * 200,000) / Total Man Hours
 	 */
 	DART {
 		@Override
@@ -349,16 +349,20 @@ public enum QuestionFunction {
 			Map<String, String> params = getParameterMap(input);
 
 			String unparsedJsonCountries = params.get("countries");
-		
-			CorruptionPerceptionIndexMap cpiMap = SpringUtils.getBean("CorruptionPerceptionIndexMap");
+			String actingAsAgent = params.get("actingAsAgent");
 			
 			double lowestCpi = NO_CPI_FOR_COUNTRIES_LISTED;
-			for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
-				if (cpi != null && cpi < lowestCpi) {
-					lowestCpi = cpi;
-				}
+						
+			if ("Yes".equals(actingAsAgent)) {
+					CorruptionPerceptionIndexMap cpiMap = (CorruptionPerceptionIndexMap) SpringUtils.getBean("CorruptionPerceptionIndexMap");
+					
+					for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
+						if (cpi != null && cpi < lowestCpi) {
+							lowestCpi = cpi;
+						}
+					}
+		
 			}
-			
 			return lowestCpi;
 		}
 	}
