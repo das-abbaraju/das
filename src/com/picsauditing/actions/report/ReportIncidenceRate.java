@@ -80,6 +80,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet
 				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));
+		excelSheet.addColumn(new ExcelColumn("trir", getText("ReportIncidenceRate.TrirIndustryAverage"), ExcelCellType.Double));
 	}
 
 	public String verify() throws Exception {
