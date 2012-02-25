@@ -102,7 +102,7 @@
                         <s:checkbox name="confirmed" />
 						<s:text name="ScheduleAudit.message.ConfirmMessage">
 							<s:param><s:date name="lastCancellationTime" format="MMMMM d, yyyy, h:mm a" /></s:param>
-							<s:param value="%{rescheduling.amount}" />
+							<s:param value="%{rescheduling.getAmount(conAudit.contractorAccount.country)}" />
 						</s:text>
 					</li>
 				</ol>

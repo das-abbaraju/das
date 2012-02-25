@@ -18,6 +18,36 @@ insert into `invoice_fee` (`id`, `fee`, `defaultAmount`, `visible`, `feeClass`, 
 values('201','VAT (REG No. GB 126 9246 0)','0.00','1','VAT','0','10000','Tax on sales','20952','20952',now(),now(),'100');
 --
 
+-- PICS-4715
+insert into invoice_fee_country (id,feeID,country,amount,createdBy,updatedBy,creationDate,updateDate)
+select null, f.id, c.isoCode, f.defaultAmount, 20952, 20952, now(), now() from invoice_fee f 
+join ref_country c on c.currency = 'EUR'
+where f.feeClass in ('DocuGUARD','InsureGUARD','AuditGUARD','EmployeeGUARD') and f.visible = 1;
+
+update invoice_fee_country fc set fc.amount = 119.00 where fc.feeID in (302,303,304,305,306,307,308);
+update invoice_fee_country fc set fc.amount = 59.00 where fc.feeID = 310;
+update invoice_fee_country fc set fc.amount = 79.00 where fc.feeID = 311;
+update invoice_fee_country fc set fc.amount = 119.00 where fc.feeID = 312;
+update invoice_fee_country fc set fc.amount = 179.00 where fc.feeID = 313;
+update invoice_fee_country fc set fc.amount = 229.00 where fc.feeID = 314;
+update invoice_fee_country fc set fc.amount = 349.00 where fc.feeID = 315;
+update invoice_fee_country fc set fc.amount = 459.00 where fc.feeID = 316;
+update invoice_fee_country fc set fc.amount = 459.00 where fc.feeID = 318;
+update invoice_fee_country fc set fc.amount = 929.00 where fc.feeID = 319;
+update invoice_fee_country fc set fc.amount = 1399.00 where fc.feeID = 320;
+update invoice_fee_country fc set fc.amount = 1729.00 where fc.feeID = 321;
+update invoice_fee_country fc set fc.amount = 2299.00 where fc.feeID = 322;
+update invoice_fee_country fc set fc.amount = 3449.00 where fc.feeID = 323;
+update invoice_fee_country fc set fc.amount = 4599.00 where fc.feeID = 324;
+update invoice_fee_country fc set fc.amount = 119.00 where fc.feeID = 326;
+update invoice_fee_country fc set fc.amount = 229.00 where fc.feeID = 327;
+update invoice_fee_country fc set fc.amount = 349.00 where fc.feeID = 328;
+update invoice_fee_country fc set fc.amount = 459.00 where fc.feeID = 329;
+update invoice_fee_country fc set fc.amount = 699.00 where fc.feeID = 330;
+update invoice_fee_country fc set fc.amount = 929.00 where fc.feeID = 331;
+update invoice_fee_country fc set fc.amount = 1149.00 where fc.feeID = 332;
+--
+
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_con` ;
 
 ALTER TABLE `generalcontractors` DROP FOREIGN KEY `FK_generalcontractors_op` ;

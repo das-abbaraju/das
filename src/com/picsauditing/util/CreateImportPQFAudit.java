@@ -74,8 +74,8 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				ContractorFee newConFee = new ContractorFee();
 				newConFee.setAuditColumns(permissions);
 				newConFee.setContractor(contractor);
-				newConFee.setCurrentAmount(initialFee.getAmount());
-				newConFee.setNewAmount(fee.getAmount());
+				newConFee.setCurrentAmount(initialFee.getAmount(contractor.getCountry()));
+				newConFee.setNewAmount(fee.getAmount(contractor.getCountry()));
 				newConFee.setCurrentLevel(initialFee);
 				newConFee.setNewLevel(fee);
 				newConFee.setFeeClass(fee.getFeeClass());

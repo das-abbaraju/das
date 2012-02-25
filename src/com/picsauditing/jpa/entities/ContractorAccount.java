@@ -890,13 +890,13 @@ public class ContractorAccount extends Account implements JSONable {
 							foundListOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
 									getPayingFacilities());
-							setCurrentFee(fee, fee.getAmount());
+							setCurrentFee(fee, fee.getAmount(getCountry()));
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)
 								&& !foundBidOnlyMembership) {
 							foundBidOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
 									getPayingFacilities());
-							setCurrentFee(fee, fee.getAmount());
+							setCurrentFee(fee, fee.getAmount(getCountry()));
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)
 								&& !foundDocuGUARDMembership) {
 							foundDocuGUARDMembership = true;
@@ -911,14 +911,15 @@ public class ContractorAccount extends Account implements JSONable {
 								// paid legacy DocuGUARD fee.
 								InvoiceFee newDocuGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
 										this.getPayingFacilities());
-								setCurrentFee(newDocuGUARDFee, newDocuGUARDFee.getAmount());
+								setCurrentFee(newDocuGUARDFee, newDocuGUARDFee.getAmount(getCountry()));
 
 								foundInsureGUARDMembership = true;
 								InvoiceFee newInsureGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(
 										FeeClass.InsureGUARD, this.getPayingFacilities());
-								setCurrentFee(newInsureGUARDFee, newInsureGUARDFee.getAmount());
+								setCurrentFee(newInsureGUARDFee, newInsureGUARDFee.getAmount(getCountry()));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(), invoiceItem.getInvoiceFee().getAmount());
+								setCurrentFee(invoiceItem.getInvoiceFee(), invoiceItem.getInvoiceFee().getAmount(
+										getCountry()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -948,12 +949,12 @@ public class ContractorAccount extends Account implements JSONable {
 								foundDocuGUARDMembership = true;
 								InvoiceFee newDocuGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
 										FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newDocuGUARDfee, newDocuGUARDfee.getAmount());
+								setCurrentFee(newDocuGUARDfee, newDocuGUARDfee.getAmount(getCountry()));
 
 								foundInsureGUARDMembership = true;
 								InvoiceFee newInsureGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
 										FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newInsureGUARDfee, newInsureGUARDfee.getAmount());
+								setCurrentFee(newInsureGUARDfee, newInsureGUARDfee.getAmount(getCountry()));
 							}
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
 								&& !foundInsureGUARDMembership) {
@@ -988,7 +989,7 @@ public class ContractorAccount extends Account implements JSONable {
 							&& getFees().containsKey(FeeClass.ImportFee)) {
 						InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 						foundImportPQFFee = true;
-						setCurrentFee(fee, fee.getAmount());
+						setCurrentFee(fee, fee.getAmount(getCountry()));
 					}
 				}
 

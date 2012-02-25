@@ -53,7 +53,7 @@ public enum FeeClass implements Translatable {
 				}
 			}
 
-			return fee.getAmount();
+			return fee.getAmount(contractor.getCountry());
 		}
 	},
 	EmployeeGUARD {
@@ -87,7 +87,7 @@ public enum FeeClass implements Translatable {
 			if (!hseCompetency && (employeeAudits || oq))
 				return BigDecimal.ZERO;
 
-			return fee.getAmount();
+			return fee.getAmount(contractor.getCountry());
 		}
 	},
 	Activation,
@@ -122,7 +122,7 @@ public enum FeeClass implements Translatable {
 	}
 
 	public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-		return fee.getAmount();
+		return fee.getAmount(contractor.getCountry());
 	}
 
 	@Override

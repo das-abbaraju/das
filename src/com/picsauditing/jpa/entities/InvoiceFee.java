@@ -1,11 +1,14 @@
 package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -32,6 +35,8 @@ public class InvoiceFee extends BaseTable {
 	private int maxFacilities;
 	private String qbFullName;
 	private Integer displayOrder = 999;
+
+	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
 
 	public InvoiceFee() {
 	}
@@ -121,6 +126,15 @@ public class InvoiceFee extends BaseTable {
 		return displayOrder;
 	}
 
+	@OneToMany(mappedBy = "invoiceFee")
+	public List<InvoiceFeeCountry> getAmountOverrides() {
+		return this.amountOverrides;
+	}
+
+	public void setAmountOverrides(List<InvoiceFeeCountry> amountOverrides) {
+		this.amountOverrides = amountOverrides;
+	}
+
 	@Transient
 	public boolean isFree() {
 		return this.getMaxFacilities() == 0 && this.getMinFacilities() == 0;
@@ -186,5 +200,15 @@ public class InvoiceFee extends BaseTable {
 	@Transient
 	public boolean isLegacyMembership() {
 		return (this.getId() >= 4 && this.getId() <= 11) || this.getId() == 105;
+	}
+
+	@Transient
+	public BigDecimal getAmount(Country country) {
+		for (InvoiceFeeCountry countryFeeAmountOverride : getAmountOverrides()) {
+			if (countryFeeAmountOverride.getCountry().equals(country))
+				return countryFeeAmountOverride.getAmount();
+		}
+
+		return getAmount();
 	}
 }

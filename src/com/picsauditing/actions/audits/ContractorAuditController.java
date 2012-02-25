@@ -500,8 +500,8 @@ public class ContractorAuditController extends AuditActionSupport {
 							if ("Membership".equals(ii.getInvoiceFee().getFeeClass())
 									&& !ii.getInvoiceFee().isBidonly()
 									&& !ii.getInvoiceFee().isPqfonly()
-									&& (ii.getInvoiceFee().getAmount().equals(ii.getAmount()) || i.getTotalAmount()
-											.intValue() > 450))
+									&& (ii.getInvoiceFee().getAmount(contractor.getCountry()).equals(ii.getAmount()) || i
+											.getTotalAmount().intValue() > 450))
 								return true;
 						}
 					}
@@ -560,9 +560,10 @@ public class ContractorAuditController extends AuditActionSupport {
 		return true;
 	}
 
-	public BigDecimal getImportPQFFeeAmount() {
+	public BigDecimal getImportPQFFeeAmount() throws Exception {
+		findContractor();
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
-		return fee.getAmount();
+		return fee.getAmount(contractor.getCountry());
 	}
 
 	private void checkMode() {
