@@ -166,8 +166,28 @@ public class OpenTasks extends TranslationActionSupport {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-				openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShipped", contractor.getWebcam()
-						.getTrackingNumber()));
+				
+				String carrier = contractor.getWebcam().getCarrier(); 
+
+				if (carrier != null) {
+					if (carrier.equals("FedEx")) {
+						openTasks.add(
+							getTextParameterized(
+								"ContractorWidget.message.WebcamHasShippedFedEx", 
+								contractor.getWebcam().getTrackingNumber()
+							)
+						);
+					} else if (carrier.equals("Purolator")) {
+						openTasks.add(
+							getTextParameterized(
+								"ContractorWidget.message.WebcamHasShippedPurolator",
+								contractor.getWebcam().getTrackingNumber()
+							)
+						);
+					} else {
+						openTasks.add(getText("ContractorWidget.message.WebcamHasShippedGeneric"));
+					}
+				}
 			}
 		}
 	}

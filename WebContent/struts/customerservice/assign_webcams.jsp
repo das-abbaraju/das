@@ -116,7 +116,14 @@ function changeState(state) {
 					<label>Webcam:</label>
 					<s:select name="webcam.id" list="webcams" listKey="id" headerKey="0" headerValue="- Select a Webcam -"/>
 				</li>
-				<li><label>Outgoing Shipping Method:</label><s:select list="{'Ground','Two Day','Express Saver','Overnight'}" name="webcam.shippingMethod"/></li>
+				<li>
+					<label>Carrier:</label>
+					<s:select name="webcam.carrier" list="{'FedEx', 'Purolator'}" />
+				</li>
+				<li>
+					<label>Outgoing Shipping Method:</label>
+					<s:select name="webcam.shippingMethod" list="{'Ground','Two Day','Express Saver','Overnight'}" />
+				</li>
 				<li><label>Outgoing Tracking Number:</label><s:textfield name="webcam.trackingNumber"/>
 					<s:if test="webcam.trackingNumber.trim().length() > 0">
 						<a href="http://www.fedex.com/Tracking?tracknumber_list=<s:property value="webcam.trackingNumber"/>" target="_blank">Track Webcam</a>
