@@ -325,7 +325,6 @@ function loadSched() {
 	date.setHours(7);
 
 	var $calendar = $('#cal_sched').weekCalendar({
-		firstDayOfWeek: 1,
 		date: date,
 		height: function(calendar){return 600;},
 		businessHours: {start: 7, end: 17, limitDisplay: false},
@@ -378,7 +377,7 @@ function loadSched() {
 	});
 
 	$calendar.find('.today').removeClass('today');
-	$calendar.find('.day-column.day-6, .day-column.day-7').css({
+	$calendar.find('.day-column.day-1, .day-column.day-7').css({
 		'background-color':'#dedede'
 	});
 	

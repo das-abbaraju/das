@@ -85,7 +85,7 @@
 	<body>
 		<h1>My Schedule</h1>
 		
-		<s:include value="../actionMessages.jsp"></s:include>
+		<s:include value="../actionMessages.jsp" />
 		
 		<div id="message"></div>
 		
