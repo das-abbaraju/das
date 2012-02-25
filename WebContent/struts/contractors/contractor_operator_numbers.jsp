@@ -5,7 +5,7 @@
 	<table class="report">
 		<thead>
 			<tr>
-				<s:if test="permissions.picsEmployee">
+				<s:if test="permissions.picsEmployee || permissions.corporate">
 					<th>
 						<s:text name="global.Operator" />
 					</th>
@@ -21,12 +21,17 @@
 						<s:text name="button.Edit" />
 					</th>
 				</s:if>
+				<s:if test="permissions.picsEmployee || permissions.operatorCorporate">
+					<th>
+						<s:text name="button.Remove" />
+					</th>
+				</s:if>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="contractor.getVisibleContractorOperatorNumbers(permissions)" var="con_op_num">
 				<tr>
-					<s:if test="permissions.picsEmployee">
+					<s:if test="permissions.picsEmployee || permissions.corporate">
 						<td>
 							<s:property value="operator.name" />
 						</td>
@@ -39,11 +44,24 @@
 					</td>
 					<s:if test="permissions.picsEmployee || permissions.operatorCorporate">
 						<td>
-							<s:url action="ManageContractorOperatorNumber" var="con_op_numbers_edit" method="edit">
-								<s:param name="contractor" value="%{contractor.id}" />
-								<s:param name="number" value="%{id}" />
-							</s:url>
-							<a href="${con_op_numbers_edit}" class="edit" rel="facebox"></a>
+							<s:url action="ManageContractorOperatorNumber" method="edit" var="con_op_numbers_edit" />
+							<a
+								href="${con_op_numbers_edit}"
+								class="edit"
+								data-contractor="<s:property value="contractor.id" />"
+								data-number="<s:property value="id" />"
+							></a>
+						</td>
+					</s:if>
+					<s:if test="permissions.picsEmployee || permissions.operatorCorporate">
+						<td class="center">
+							<s:url action="ManageContractorOperatorNumber" method="delete" var="con_op_numbers_delete" />
+							<a
+								href="${con_op_numbers_delete}"
+								class="remove"
+								data-contractor="<s:property value="contractor.id" />"
+								data-number="<s:property value="id" />"
+							></a>
 						</td>
 					</s:if>
 				</tr>
@@ -52,9 +70,7 @@
 	</table>
 </s:if>
 
-<s:url action="ManageContractorOperatorNumber" var="con_op_numbers_link" method="edit">
-	<s:param name="contractor" value="%{contractor.id}" />
-</s:url>
-<a href="${con_op_numbers_link}" class="add" rel="facebox">
+<s:url action="ManageContractorOperatorNumber" var="con_op_numbers_link" method="edit" />
+<a href="${con_op_numbers_link}" class="add" data-contractor="<s:property value="contractor.id" />">
 	<s:text name="button.Add" />
 </a>

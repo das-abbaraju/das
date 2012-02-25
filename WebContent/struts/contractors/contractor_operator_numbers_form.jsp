@@ -11,15 +11,15 @@
 				<s:text name="ContractorOperatorNumber" />
 			</h2>
 			<ol>
-				<s:if test="permissions.picsEmployee">
+				<s:if test="permissions.picsEmployee || permissions.corporate">
 					<li>
 						<label>
 							<s:text name="global.Operator" />
 						</label>
 						<s:select
-							list="contractor.operators"
-							listKey="%{operatorAccount.id}"
-							listValue="%{operatorAccount.name}"
+							list="viewableOperators"
+							listKey="%{id}"
+							listValue="%{name}"
 							headerKey=""
 							headerValue="- %{getText('global.Operator')} -"
 							name="number.operator"
@@ -55,6 +55,7 @@
 				value="%{getText('button.Save')}"
 				cssClass="picsbutton positive"
 			/>
+			<input type="button" class="picsbutton negative closeButton" value="<s:text name="button.Close" />" />
 		</fieldset>
 	</s:form>
 </div>

@@ -493,7 +493,7 @@
 								
 								<s:if test="permissions.picsEmployee || permissions.operatorCorporate">
 									<div>
-										<span>
+										<span id="contractor_operator_numbers_label">
 											<s:text name="ContractorOperatorNumber" />:
 										</span>
 										<div id="contractor_operator_numbers">
