@@ -57,16 +57,13 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 		InvoiceDAO invoiceDao = (InvoiceDAO) SpringUtils.getBean("InvoiceDAO");
 
-		
-		//easy way to rollback changes in the live environment
+		// easy way to rollback changes in the live environment
 		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useOldVoidLogic");
 		String useOldVoidLogic = "N";
-		if( lookup != null )
-		{
+		if (lookup != null) {
 			useOldVoidLogic = lookup.getValue();
 		}
-		
-		
+
 		int x = 0;
 
 		// unlike the customer feed, the invoice data is keyed by OUR invoice.id field
@@ -85,10 +82,8 @@ public class UpdateInvoices extends CustomerAdaptor {
 					break;
 				}
 
+				if (useOldVoidLogic.equals("Y")) {
 
-				if( useOldVoidLogic.equals("Y" ) )
-				{
-				
 					InvoiceModRqType invoiceModRequest = factory.createInvoiceModRqType();
 					invoiceModRequest.setRequestID("update_invoice_" + thePk);
 
@@ -96,175 +91,174 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 					InvoiceMod invoice = factory.createInvoiceMod();
 					invoiceModRequest.setInvoiceMod(invoice);
-	
+
 					invoice.setTxnID((String) thisInvoiceParms.get("TxnID"));
 					invoice.setEditSequence(existingQBInvoice.getEditSequence());
-	
+
 					invoice.setCustomerRef(factory.createCustomerRef());
-					invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
-	
+					invoice.getCustomerRef().setListID(
+							invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
+
 					invoice.setClassRef(factory.createClassRef());
 					invoice.getClassRef().setFullName("Contractors");
-	
+
 					invoice.setARAccountRef(factory.createARAccountRef());
-					invoice.getARAccountRef().setFullName("Accounts Receivable");
-	
+					if (currentSession.isEUR()) {
+						invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
+					} else {
+						invoice.getARAccountRef().setFullName("Accounts Receivable");
+					}
+
 					invoice.setTemplateRef(factory.createTemplateRef());
 					invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
-	
+
 					invoice.setTxnDate(existingQBInvoice.getTxnDate());
-	
+
 					invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
-	
+
 					invoice.setBillAddress(factory.createBillAddress());
-	
+
 					ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-					
+
 					invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
 
 					invoice.setIsPending("false");
-	
+
 					invoice.setPONumber(invoiceJPA.getPoNumber());
 					invoice.setTermsRef(factory.createTermsRef());
 					invoice.getTermsRef().setFullName("Net 30");
-	
+
 					invoice.setDueDate(DateBean.format(invoiceJPA.getDueDate(), "yyyy-MM-dd"));
-	
+
 					// this may cause a problem
 					invoice.setCustomerMsgRef(factory.createCustomerMsgRef());
-					invoice.getCustomerMsgRef().setFullName("Thank you for your business!");
-	
+					invoice.getCustomerMsgRef().setFullName("Thank you for your business.");
+
 					invoice.setIsToBePrinted("false");
 					invoice.setIsToBeEmailed("false");
-	
-	
-					if( ! ( invoiceJPA.getStatus().equals( TransactionStatus.Void ) ) )
-					{
+
+					if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 						for (InvoiceItem item : invoiceJPA.getItems()) {
-		
+
 							InvoiceLineMod lineItem = factory.createInvoiceLineMod();
-		
+
 							lineItem.setTxnLineID("-1");
-		
+
 							lineItem.setDesc(item.getDescription());
-							if(!item.getInvoiceFee().isGST())
+							if (!item.getInvoiceFee().isGST() && !item.getInvoiceFee().isVAT())
 								lineItem.setQuantity("1");
-		
+
 							lineItem.setClassRef(factory.createClassRef());
 							lineItem.getClassRef().setFullName("Contractors");
-		
+
 							lineItem.setItemRef(factory.createItemRef());
 							lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
-		
+
 							lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-		
+
 							invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
 						}
 					}
 
 					currentSession.getCurrentBatch().put(invoiceModRequest.getRequestID(), thePk);
-					
-				}
-				else
-				{
 
-					if( invoiceJPA.getStatus().equals(TransactionStatus.Void))
-					{
+				} else {
+
+					if (invoiceJPA.getStatus().equals(TransactionStatus.Void)) {
 						TxnVoidRqType createTxnVoidRqType = factory.createTxnVoidRqType();
-						
+
 						createTxnVoidRqType.setRequestID("void_invoice_" + thePk);
 
 						request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(createTxnVoidRqType);
-						
+
 						createTxnVoidRqType.setTxnVoidType("Invoice");
 						createTxnVoidRqType.setTxnID((String) thisInvoiceParms.get("TxnID"));
-						
+
 						currentSession.getCurrentBatch().put(createTxnVoidRqType.getRequestID(), thePk);
-						
-					}
-					else
-					{
-						
+
+					} else {
+
 						InvoiceModRqType invoiceModRequest = factory.createInvoiceModRqType();
 						invoiceModRequest.setRequestID("update_invoice_" + thePk);
 
 						request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(invoiceModRequest);
-						
-						
-	
+
 						InvoiceMod invoice = factory.createInvoiceMod();
 						invoiceModRequest.setInvoiceMod(invoice);
-		
+
 						invoice.setTxnID((String) thisInvoiceParms.get("TxnID"));
 						invoice.setEditSequence(existingQBInvoice.getEditSequence());
-		
+
 						invoice.setCustomerRef(factory.createCustomerRef());
-						invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
-		
+						invoice.getCustomerRef().setListID(
+								invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
+
 						invoice.setClassRef(factory.createClassRef());
 						invoice.getClassRef().setFullName("Contractors");
-		
+
 						invoice.setARAccountRef(factory.createARAccountRef());
-						invoice.getARAccountRef().setFullName("Accounts Receivable");
-		
+						if (currentSession.isEUR()) {
+							invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
+						} else {
+							invoice.getARAccountRef().setFullName("Accounts Receivable");
+						}
+
 						invoice.setTemplateRef(factory.createTemplateRef());
 						invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
-		
+
 						invoice.setTxnDate(existingQBInvoice.getTxnDate());
-		
+
 						invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
-		
+
 						invoice.setBillAddress(factory.createBillAddress());
-		
+
 						ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-						
+
 						invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
-						
+
 						invoice.setIsPending("false");
-		
+
 						invoice.setPONumber(invoiceJPA.getPoNumber());
 						invoice.setTermsRef(factory.createTermsRef());
 						invoice.getTermsRef().setFullName("Net 30");
-		
+
 						invoice.setDueDate(DateBean.format(invoiceJPA.getDueDate(), "yyyy-MM-dd"));
-		
+
 						// this may cause a problem
 						invoice.setCustomerMsgRef(factory.createCustomerMsgRef());
-						invoice.getCustomerMsgRef().setFullName("Thank you for your business!");
-		
+						invoice.getCustomerMsgRef().setFullName("Thank you for your business.");
+
 						invoice.setIsToBePrinted("false");
 						invoice.setIsToBeEmailed("false");
-		
-		
-						if( ! ( invoiceJPA.getStatus().equals( TransactionStatus.Void ) ) )
-						{
+
+						if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 							for (InvoiceItem item : invoiceJPA.getItems()) {
-			
+
 								InvoiceLineMod lineItem = factory.createInvoiceLineMod();
-			
+
 								lineItem.setTxnLineID("-1");
-			
+
 								lineItem.setDesc(item.getDescription());
-								if(!item.getInvoiceFee().isGST())
+								if (!item.getInvoiceFee().isGST() && !item.getInvoiceFee().isVAT())
 									lineItem.setQuantity("1");
-			
+
 								lineItem.setClassRef(factory.createClassRef());
 								lineItem.getClassRef().setFullName("Contractors");
-			
+
 								lineItem.setItemRef(factory.createItemRef());
 								lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
-			
+
 								lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-			
+
 								invoice.getInvoiceLineModOrInvoiceLineGroupMod().add(lineItem);
 							}
 						}
-						
+
 						currentSession.getCurrentBatch().put(invoiceModRequest.getRequestID(), thePk);
 					}
-					
+
 				}
-				
+
 			}
 		}
 
@@ -291,44 +285,39 @@ public class UpdateInvoices extends CustomerAdaptor {
 		List<Object> hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs = msgsRs
 				.getHostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs();
 
-
-		
-		//easy way to rollback changes in the live environment
+		// easy way to rollback changes in the live environment
 		AppProperty lookup = getAppPropertyDao().find("PICSQBLOADER.useOldVoidLogic");
 		String useOldVoidLogic = "N";
-		if( lookup != null )
-		{
+		if (lookup != null) {
 			useOldVoidLogic = lookup.getValue();
 		}
-		if( useOldVoidLogic.equals("Y"))
-		{
-		
-			
+		if (useOldVoidLogic.equals("Y")) {
+
 			for (Object result : hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs) {
-	
+
 				InvoiceModRsType thisQueryResponse = (InvoiceModRsType) result;
-	
+
 				InvoiceRet invoice = thisQueryResponse.getInvoiceRet();
-	
+
 				String thePk = currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID());
-	
+
 				Map<String, Object> thisCustomerParms = currentSession.getToUpdate().get(thePk);
 				currentSession.getToUpdate().remove(thePk);
-	
+
 				Invoice invoiceJPA = (Invoice) thisCustomerParms.get("invoice");
 				invoiceJPA = getInvoiceDao().find(invoiceJPA.getId());
-	
+
 				try {
 					if (invoice == null)
 						throw new Exception("no invoice object");
-	
+
 					String invoiceIdString = invoice.getRefNumber();
-	
+
 					int invoiceId = Integer.parseInt(invoiceIdString);
-	
+
 					if (invoiceId != 0) {
 						invoiceJPA.setQbSync(false);
-	
+
 						// if( invoiceJPA.isPaid() ) {
 						//
 						// if( invoiceJPA.getQbPaymentListID() == null ) {
@@ -339,10 +328,10 @@ public class UpdateInvoices extends CustomerAdaptor {
 						// }
 						// }
 					}
-	
+
 				} catch (Exception e) {
 					StringBuilder errorMessage = new StringBuilder("Problem updating invoice\t");
-	
+
 					errorMessage.append(thisQueryResponse.getRequestID());
 					errorMessage.append("\t");
 					errorMessage.append(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()));
@@ -354,46 +343,40 @@ public class UpdateInvoices extends CustomerAdaptor {
 					errorMessage.append(thisQueryResponse.getStatusCode());
 					errorMessage.append("\t");
 					errorMessage.append(e.getMessage());
-	
+
 					currentSession.getErrors().add(errorMessage.toString());
 				}
-	
+
 				getInvoiceDao().save(invoiceJPA);
 			}
-		}
-		else
-		{
-			
-			
+		} else {
+
 			for (Object result : hostQueryRsOrCompanyQueryRsOrCompanyActivityQueryRs) {
-				
-				if( result instanceof TxnVoidRsType )
-				{
+
+				if (result instanceof TxnVoidRsType) {
 					TxnVoidRsType txnVoidRsType = (TxnVoidRsType) result;
-					
+
 					String thePk = currentSession.getCurrentBatch().get(txnVoidRsType.getRequestID());
-					
-		
+
 					Map<String, Object> thisCustomerParms = currentSession.getToUpdate().get(thePk);
 					currentSession.getToUpdate().remove(thePk);
-		
+
 					Invoice invoiceJPA = (Invoice) thisCustomerParms.get("invoice");
 					invoiceJPA = getInvoiceDao().find(invoiceJPA.getId());
 
-					
 					try {
-		
+
 						String invoiceIdString = txnVoidRsType.getRefNumber();
-		
+
 						int invoiceId = Integer.parseInt(invoiceIdString);
-		
+
 						if (invoiceId != 0) {
 							invoiceJPA.setQbSync(false);
 						}
-		
+
 					} catch (Exception e) {
 						StringBuilder errorMessage = new StringBuilder("Problem updating voided invoice\t");
-		
+
 						errorMessage.append(txnVoidRsType.getRequestID());
 						errorMessage.append("\t");
 						errorMessage.append(currentSession.getCurrentBatch().get(txnVoidRsType.getRequestID()));
@@ -405,45 +388,41 @@ public class UpdateInvoices extends CustomerAdaptor {
 						errorMessage.append(txnVoidRsType.getStatusCode());
 						errorMessage.append("\t");
 						errorMessage.append(e.getMessage());
-		
+
 						currentSession.getErrors().add(errorMessage.toString());
 					}
-		
+
 					getInvoiceDao().save(invoiceJPA);
 
-					
-					
-				}
-				else
-				{
-				
+				} else {
+
 					InvoiceModRsType thisQueryResponse = (InvoiceModRsType) result;
-		
+
 					InvoiceRet invoice = thisQueryResponse.getInvoiceRet();
-		
+
 					String thePk = currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID());
-		
+
 					Map<String, Object> thisCustomerParms = currentSession.getToUpdate().get(thePk);
 					currentSession.getToUpdate().remove(thePk);
-		
+
 					Invoice invoiceJPA = (Invoice) thisCustomerParms.get("invoice");
 					invoiceJPA = getInvoiceDao().find(invoiceJPA.getId());
-		
+
 					try {
 						if (invoice == null)
 							throw new Exception("no invoice object");
-		
+
 						String invoiceIdString = invoice.getRefNumber();
-		
+
 						int invoiceId = Integer.parseInt(invoiceIdString);
-		
+
 						if (invoiceId != 0) {
 							invoiceJPA.setQbSync(false);
 						}
-		
+
 					} catch (Exception e) {
 						StringBuilder errorMessage = new StringBuilder("Problem updating invoice\t");
-		
+
 						errorMessage.append(thisQueryResponse.getRequestID());
 						errorMessage.append("\t");
 						errorMessage.append(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID()));
@@ -455,29 +434,16 @@ public class UpdateInvoices extends CustomerAdaptor {
 						errorMessage.append(thisQueryResponse.getStatusCode());
 						errorMessage.append("\t");
 						errorMessage.append(e.getMessage());
-		
+
 						currentSession.getErrors().add(errorMessage.toString());
 					}
-		
+
 					getInvoiceDao().save(invoiceJPA);
 				}
-			}			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+			}
+
 		}
-		
-		
-		
+
 		if (currentSession.getToUpdate().size() > 0) {
 			setRepeat(true);
 		}

@@ -36,7 +36,6 @@ public class InsertContractors extends CustomerAdaptor {
 		}
 
 		int threshold = 10;
-
 		currentSession.setCurrentBatch(new HashMap<String, String>());
 
 		Writer writer = makeWriter();
@@ -57,14 +56,25 @@ public class InsertContractors extends CustomerAdaptor {
 				}
 
 				CustomerAddRqType customerAddRequest = factory.createCustomerAddRqType();
-				customerAddRequest.setRequestID("insert_customer_" + contractor.getId());
+				String requestID = "insert_customer_" + contractor.getId();
+				/**
+				 * Euros and GBP are stored in the same quickbooks server which doesn't allow for multiple currencies
+				 * per account. Have to name each account differently.
+				 **/
+				if (currentSession.isEUR())
+					requestID += "EU";
+				customerAddRequest.setRequestID(requestID);
 
 				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(customerAddRequest);
 
 				CustomerAdd customer = factory.createCustomerAdd();
 				customerAddRequest.setCustomerAdd(customer);
 
-				customer.setName(contractor.getIdString());
+				String customerName = contractor.getIdString();
+				if (currentSession.isEUR())
+					customerName += "EU";
+				
+				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
 						.toString());
 
@@ -81,8 +91,12 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
 				customer.setBillAddress(factory.createBillAddress());
-
 				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
+
+				if (currentSession.isEUR()) {
+					customer.setCurrencyRef(factory.createCurrencyRef());
+					customer.setCurrencyRef(updateCurrencyRef(contractor, customer.getCurrencyRef()));
+				}
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
@@ -143,8 +157,12 @@ public class InsertContractors extends CustomerAdaptor {
 					if (accountId != 0) {
 						if (currentSession.isUS())
 							connected.setQbListID(customer.getListID());
-						else
+						else if (currentSession.isCanada())
 							connected.setQbListCAID(customer.getListID());
+						else if (currentSession.isGBP())
+							connected.setQbListUKID(customer.getListID());
+						else if (currentSession.isEUR())
+							connected.setQbListEUID(customer.getListID());
 						connected.setQbSync(false);
 					}
 				} catch (Exception e) {

@@ -99,6 +99,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element ref="{}IsStatementWithParent" minOccurs="0"/>
  *         &lt;element ref="{}DeliveryMethod" minOccurs="0"/>
  *         &lt;element ref="{}PriceLevelRef" minOccurs="0"/>
+ *         &lt;element ref="{}CurrencyRef" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -151,7 +152,8 @@ import javax.xml.bind.annotation.XmlType;
     "notes",
     "isStatementWithParent",
     "deliveryMethod",
-    "priceLevelRef"
+    "priceLevelRef",
+    "currencyRef"
 })
 @XmlRootElement(name = "CustomerAdd")
 public class CustomerAdd {
@@ -242,6 +244,8 @@ public class CustomerAdd {
     protected String deliveryMethod;
     @XmlElement(name = "PriceLevelRef")
     protected PriceLevelRef priceLevelRef;
+    @XmlElement(name = "CurrencyRef")
+    protected CurrencyRef currencyRef;
 
     /**
      * Gets the value of the name property.
@@ -1275,4 +1279,27 @@ public class CustomerAdd {
         this.priceLevelRef = value;
     }
 
+    /**
+     * Gets the value of the currencyRef property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CurrencyRef }
+     *     
+     */
+    public CurrencyRef getCurrencyRef() {
+        return currencyRef;
+    }
+
+    /**
+     * Sets the value of the currencyRef property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CurrencyRef }
+     *     
+     */
+    public void setCurrencyRef(CurrencyRef value) {
+        this.currencyRef = value;
+    }
 }

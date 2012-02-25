@@ -30,10 +30,12 @@ public class InsertInvoices extends CustomerAdaptor {
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
-		
+
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				"i.account."+currentSession.getQbID()+" is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
-						+ "AND i.account."+currentSession.getQbID()+" not like 'NOLOAD%' AND i.currency like '"+currentSession.getCurrencyCode()+"'", 10);
+				"i.account." + currentSession.getQbID()
+						+ " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
+						+ "AND i.account." + currentSession.getQbID() + " not like 'NOLOAD%' AND i.currency like '"
+						+ currentSession.getCurrencyCode() + "'", 10);
 
 		// no work to do
 		if (invoices.size() == 0) {
@@ -62,13 +64,18 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoiceAddRequest.setInvoiceAdd(invoice);
 
 				invoice.setCustomerRef(factory.createCustomerRef());
-				invoice.getCustomerRef().setListID(invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
+				invoice.getCustomerRef().setListID(
+						invoiceJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
 
 				invoice.setClassRef(factory.createClassRef());
 				invoice.getClassRef().setFullName("Contractors");
 
 				invoice.setARAccountRef(factory.createARAccountRef());
-				invoice.getARAccountRef().setFullName("Accounts Receivable");
+				if (currentSession.isEUR()) {
+					invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
+				} else {
+					invoice.getARAccountRef().setFullName("Accounts Receivable");
+				}
 
 				invoice.setTemplateRef(factory.createTemplateRef());
 				invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
@@ -80,9 +87,9 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setBillAddress(factory.createBillAddress());
 
 				ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-				
+
 				invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
-				
+
 				invoice.setIsPending("false");
 
 				invoice.setPONumber(invoiceJPA.getPoNumber());
@@ -93,37 +100,34 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				// this may cause a problem
 				invoice.setCustomerMsgRef(factory.createCustomerMsgRef());
-				invoice.getCustomerMsgRef().setFullName("Thank you for your business!");
+				invoice.getCustomerMsgRef().setFullName("Thank you for your business.");
 
 				invoice.setIsToBePrinted("false");
 				invoice.setIsToBeEmailed("false");
 
-
-				if( ! ( invoiceJPA.getStatus().equals( TransactionStatus.Void ) ) )
-				{
+				if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
 					for (InvoiceItem item : invoiceJPA.getItems()) {
-	
+
 						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
-	
+
 						lineItem.setItemRef(factory.createItemRef());
 						lineItem.getItemRef().setFullName(item.getInvoiceFee().getQbFullName());
-	
+
 						lineItem.setDesc(item.getDescription());
-						
+
 						// cannot set a quantity for Tax items
-						if(!item.getInvoiceFee().isGST())
+						if (!item.getInvoiceFee().isGST() && !item.getInvoiceFee().isVAT())
 							lineItem.setQuantity("1");
-	
+
 						lineItem.setClassRef(factory.createClassRef());
 						lineItem.getClassRef().setFullName("Contractors");
-	
+
 						lineItem.setAmount(item.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-	
+
 						invoice.getInvoiceLineAddOrInvoiceLineGroupAdd().add(lineItem);
 					}
 				}
-				
-				
+
 				currentSession.getCurrentBatch().put(invoiceAddRequest.getRequestID(),
 						new Integer(invoiceJPA.getId()).toString());
 			}

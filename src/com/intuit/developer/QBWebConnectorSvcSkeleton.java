@@ -71,7 +71,9 @@ public class QBWebConnectorSvcSkeleton {
 				}
 			}
 
-			if (("PICSQBLOADER".equals(authenticate.getStrUserName()) || "PICSQBLOADERCAN".equals(authenticate
+			if (("PICSQBLOADER".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERCAN".equals(authenticate.getStrUserName())
+					|| "PICSQBLOADERUK".equals(authenticate.getStrUserName()) || "PICSQBLOADEREU".equals(authenticate
 					.getStrUserName()))
 					&& authenticate.getStrPassword().equals(qbPassword)) {
 
@@ -85,6 +87,12 @@ public class QBWebConnectorSvcSkeleton {
 				} else if ("PICSQBLOADERCAN".equals(authenticate.getStrUserName())) {
 					session.setCurrencyCode("CAD");
 					session.setQbID("qbListCAID");
+				} else if ("PICSQBLOADERUK".equals(authenticate.getStrUserName())) {
+					session.setCurrencyCode("GBP");
+					session.setQbID("qbListUKID");
+				} else if ("PICSQBLOADEREU".equals(authenticate.getStrUserName())) {
+					session.setCurrencyCode("EUR");
+					session.setQbID("qbListEUID");
 				}
 				sessions.put(session.getSessionId(), session);
 				sessionId = session.getSessionId();

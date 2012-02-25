@@ -130,7 +130,6 @@ public class QBSession {
 		this.invoicesToInsert = invoicesToInsert;
 	}
 
-
 	public List<Payment> getPossiblePaymentUpdates() {
 		return possiblePaymentUpdates;
 	}
@@ -146,7 +145,7 @@ public class QBSession {
 	public void setToUpdatePayment(Map<String, ReceivePaymentRet> toUpdatePayment) {
 		this.toUpdatePayment = toUpdatePayment;
 	}
-	
+
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
@@ -166,8 +165,16 @@ public class QBSession {
 	public boolean isUS() {
 		return "USD".equals(this.getCurrencyCode());
 	}
-	
+
 	public boolean isCanada() {
 		return "CAD".equals(this.getCurrencyCode());
+	}
+
+	public boolean isGBP() {
+		return "GBP".equals(this.getCurrencyCode());
+	}
+
+	public boolean isEUR() {
+		return "EUR".equals(this.getCurrencyCode());
 	}
 }

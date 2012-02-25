@@ -3941,6 +3941,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CurrencyRef }
+     * 
+     */
+    public CurrencyRef createCurrencyRef() {
+        return new CurrencyRef();
+    }
+    
+    /**
      * Create an instance of {@link CompanyAddressForCustomer }
      * 
      */

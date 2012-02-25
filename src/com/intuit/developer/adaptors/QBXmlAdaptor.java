@@ -17,6 +17,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
+import com.picsauditing.quickbooks.qbxml.CurrencyRef;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -202,5 +203,13 @@ public class QBXmlAdaptor {
 		if (contractor.getCountry() != null)
 			billAddress.setCountry(contractor.getCountry().getIsoCode());
 		return billAddress;
+	}
+
+	static public CurrencyRef updateCurrencyRef(ContractorAccount contractor, CurrencyRef currencyRef) {
+		if (contractor.getCountry().getCurrency().isEUR()) {
+			currencyRef.setFullName("Euro");
+		}
+
+		return currencyRef;
 	}
 }

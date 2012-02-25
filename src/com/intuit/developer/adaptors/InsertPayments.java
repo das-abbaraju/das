@@ -34,8 +34,10 @@ public class InsertPayments extends PaymentAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Payment> payments = getPaymentDao().findWhere(
-				"p.account."+currentSession.getQbID()+" is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
-						+ "AND p.account."+currentSession.getQbID()+" not like 'NOLOAD%' AND p.currency like '"+currentSession.getCurrencyCode()+"'", 10);
+				"p.account." + currentSession.getQbID()
+						+ " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
+						+ "AND p.account." + currentSession.getQbID() + " not like 'NOLOAD%' AND p.currency like '"
+						+ currentSession.getCurrencyCode() + "'", 10);
 
 		// no work to do
 		if (payments.size() == 0) {
@@ -75,7 +77,11 @@ public class InsertPayments extends PaymentAdaptor {
 
 			PicsLogger.log("   setARAccountRef");
 			payment.setARAccountRef(factory.createARAccountRef());
-			payment.getARAccountRef().setFullName("Accounts Receivable");
+			if (currentSession.isEUR()) {
+				payment.getARAccountRef().setFullName("Accounts Receivable EURO");
+			} else {
+				payment.getARAccountRef().setFullName("Accounts Receivable");
+			}
 
 			PicsLogger.log("   setTxnDate");
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
@@ -97,20 +103,37 @@ public class InsertPayments extends PaymentAdaptor {
 
 			PicsLogger.log("   setMemo");
 			payment.setMemo("PICS Payment# " + paymentJPA.getId());
+			/**
+			 * Special handling is needed for Euros because we stored Euros and GBP in the same QuickBooks server.
+			 */
 			if (isCheck) {
 				payment.getPaymentMethodRef().setFullName("Check");
-				payment.getDepositToAccountRef().setFullName("Undeposited Funds");
 				payment.setRefNumber(paymentJPA.getCheckNumber());
 
+				if (currentSession.isEUR()) {
+					payment.getDepositToAccountRef().setFullName("Undeposited Funds EURO");
+				} else {
+					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
+				}
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
 
 				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
-					payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Account");
+
+					if (currentSession.isEUR()) {
+						payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Acct EURO");
+					} else {
+						payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Account");
+					}
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-					payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
+
+					if (currentSession.isEUR()) {
+						payment.getDepositToAccountRef().setFullName("AMEX Merchant Account EURO");
+					} else {
+						payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
+					}
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
 				// payment.setMemo("CC number: " + paymentJPA.getCcNumber());
@@ -140,7 +163,7 @@ public class InsertPayments extends PaymentAdaptor {
 
 		m.marshal(xml, writer);
 		PicsLogger.stop();
-		
+
 		return writer.toString();
 
 	}
