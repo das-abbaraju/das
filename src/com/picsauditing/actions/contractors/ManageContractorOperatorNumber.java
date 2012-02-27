@@ -2,9 +2,9 @@ package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorNumber;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
@@ -23,9 +23,7 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 	}
 
 	public String save() {
-		addErrorIfNullContractor();
-		addErrorIfNonActiveDemoOperator();
-		addErrorIfExistsSameTypeAndOperator();
+		checkForErrors();
 
 		if (!hasActionErrors()) {
 			setContractorIfMissing();
@@ -33,6 +31,10 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 
 			number.setAuditColumns(permissions);
 			dao.save(number);
+
+			if (!contractor.getContractorOperatorNumbers().contains(number)) {
+				contractor.getContractorOperatorNumbers().add(number);
+			}
 		} else {
 			return INPUT;
 		}
@@ -50,22 +52,15 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperatorAccount> getViewableOperators() {
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
-		if (permissions.isCorporate()) {
-			operators = (List<OperatorAccount>) dao.findWhere(OperatorAccount.class,
-					"id IN (" + Strings.implode(permissions.getOperatorChildren()) + ")", 0);
-			Iterator<OperatorAccount> iterator = operators.iterator();
 
-			while (iterator.hasNext()) {
-				OperatorAccount operator = iterator.next();
-				if (!operator.getStatus().isActiveDemo())
-					iterator.remove();
+		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+			if (contractorOperator.getOperatorAccount().getStatus().isActiveDemo()) {
+				if (isViewableByPermissions(contractorOperator)) {
+					operators.add(contractorOperator.getOperatorAccount());
+				}
 			}
-		} else {
-			operators = (List<OperatorAccount>) dao.findWhere(OperatorAccount.class,
-					"type = 'Operator' AND status IN ('Active', 'Demo')", 0);
 		}
 
 		Collections.sort(operators);
@@ -80,6 +75,14 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 		this.number = number;
 	}
 
+	private void checkForErrors() {
+		addErrorIfNullContractor();
+		addErrorIfNonActiveDemoOperator();
+		addErrorIfNullType();
+		addErrorIfExistsSameTypeAndOperator();
+		addErrorIfNullValue();
+	}
+
 	private void addErrorIfNullContractor() {
 		if (contractor == null)
 			addActionError(getText("ManageContractorOperatorNumber.MissingContractor"));
@@ -92,16 +95,27 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 			addActionError(getText("ManageContractorOperatorNumber.ActiveDemoOperator"));
 	}
 
+	private void addErrorIfNullType() {
+		if (number.getType() == null)
+			addActionError(getText("ManageContractorOperatorNumber.MissingType"));
+	}
+
 	private void addErrorIfExistsSameTypeAndOperator() {
 		if (contractor != null && number != null && number.getOperator() != null) {
 			for (ContractorOperatorNumber contractorOperatorNumber : contractor.getContractorOperatorNumbers()) {
 				if (contractorOperatorNumber.getOperator().equals(number.getOperator())) {
-					if (contractorOperatorNumber.getType() == number.getType()) {
+					if (contractorOperatorNumber.getType() == number.getType()
+							&& contractorOperatorNumber.getId() != number.getId()) {
 						addActionError(getText("ManageContractorOperatorNumber.NumberTypeAlreadyExists"));
 					}
 				}
 			}
 		}
+	}
+
+	private void addErrorIfNullValue() {
+		if (Strings.isEmpty(number.getValue()))
+			addActionError(getText("ManageContractorOperatorNumber.MissingNumber"));
 	}
 
 	private void setContractorIfMissing() {
@@ -112,5 +126,11 @@ public class ManageContractorOperatorNumber extends ContractorActionSupport {
 	private void setOperatorByPermissionsIfMissing() {
 		if (number.getOperator() == null && permissions.isOperatorCorporate())
 			number.setOperator(dao.find(OperatorAccount.class, permissions.getAccountId()));
+	}
+
+	private boolean isViewableByPermissions(ContractorOperator contractorOperator) {
+		return (permissions.isCorporate() && permissions.getOperatorChildren().contains(
+				contractorOperator.getOperatorAccount().getId()))
+				|| permissions.isPicsEmployee();
 	}
 }
