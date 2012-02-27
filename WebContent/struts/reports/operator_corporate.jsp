@@ -22,10 +22,10 @@ $(document).ready(function() {
 <body>
 <h1>Manage <s:property value="accountType"/> Accounts</h1>
 <s:if test="canEditCorp">
-	<div><a href="FacilitiesEdit.action?type=Corporate" class="add">Create New Corporate</a></div>
+	<div><a href="FacilitiesEdit!create.action?createType=Corporate" class="add">Create New Corporate</a></div>
 </s:if>
 <s:if test="canEditOp">
-	<div><a href="FacilitiesEdit.action?type=Operator" class="add">Create New Operator</a></div>
+	<div><a href="FacilitiesEdit!create.action?createType=Operator" class="add">Create New Operator</a></div>
 </s:if>	
 <s:if test="canEditAssessment">
 	<div><a href="AssessmentCenterEdit.action" class="add">Create New Assessment Center</a></div>
@@ -43,7 +43,6 @@ $(document).ready(function() {
 			<th>Name</th>
 			<th>Type</th>
 			<th>Status</th>
-			<th>Industry</th>
 			<th><a href="#" class="cluetip help" title="Contractors / Operators" rel="#watchtip">Contractors / Operators</a>
 				<div id="watchtip">
 					For Operators, this number shows how many contractors are under the operator.
@@ -60,9 +59,6 @@ $(document).ready(function() {
 				<th><s:text name="Country" /></th>
 				<th><s:text name="global.ZipPostalCode" /></th>
 			</s:if>
-			<s:if test="canDeleteOp || canDeleteCorp">
-				<th><s:text name="button.Remove" /></th>
-			</s:if>
 		</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -70,7 +66,7 @@ $(document).ready(function() {
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td>
 				<s:if test="get('type') == 'Operator' || get('type') == 'Corporate'">
-					<a href="FacilitiesEdit.action?operator=<s:property value="get('id')"/>&type=<s:property value="get('type')"/>"
+					<a href="FacilitiesEdit.action?operator=<s:property value="get('id')"/>"
 						rel="OperatorQuickAjax.action?id=<s:property value="get('id')"/>"
 						class="operatorQuick account<s:property value="get('status')" />"
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
@@ -83,7 +79,6 @@ $(document).ready(function() {
 			</td>
 			<td><s:property value="get('type')"/></td>
 			<td><s:property value="get('status')"/></td>
-			<td><s:property value="get('industry')"/></td>
 			<td class="right">
 				<s:if test="get('type') == 'Operator'"><s:property value="get('opCount')"/></s:if>
 				<s:if test="get('type') == 'Corporate'"><s:property value="get('corpCount')"/></s:if>
@@ -97,16 +92,6 @@ $(document).ready(function() {
 				<td><s:property value="get('state')"/></td>
 				<td><s:property value="get('country')"/></td>
 				<td><s:property value="get('zip')"/></td>
-			</s:if>
-			<s:if test="canDeleteOp || canDeleteCorp">
-				<td>
-					<s:if test="(canDeleteOp && get('opCount') == null && get('conCount') == null) || (canDeleteCorp && get('corpCount') == null))">
-						<s:form action="ReportAccountList" method="POST">
-							<s:submit value="Remove" name="button" type="picsbutton negative" />
-							<s:hidden value="%{get('id')}" name="accountID"/>
-						</s:form>
-					</s:if>
-				</td>
 			</s:if>
 		</tr>
 	</s:iterator>

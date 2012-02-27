@@ -3,23 +3,15 @@ package com.picsauditing.actions.report;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NoPermissionException;
-
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.dao.AccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ListType;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectFilter;
 import com.picsauditing.util.ReportFilterAccount;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -78,28 +70,6 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		wizardSession.clear();
 		wizardSession.setFilter(ListType.ALL, filter);
 
-		if ("Remove".equals(button)) {
-			AccountDAO accountDAO = (AccountDAO) SpringUtils.getBean("AccountDAO");
-			Account account = accountDAO.find(accountID);
-
-			if (account.getType().equals("Operator") && isCanDeleteOp()) {
-				OperatorAccountDAO opDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-				boolean removed = opDAO.removeAllByOpID((OperatorAccount) account, getFtpDir());
-				if (!removed)
-					addActionError("Cannot Remove this account: " + account.getName());
-			}
-			else if (account.getType().equals("Corporate") && isCanDeleteCorp()) {
-				OperatorAccountDAO opDAO = (OperatorAccountDAO) SpringUtils.getBean("OperatorAccountDAO");
-				boolean removed = opDAO.removeAllByOpID((OperatorAccount) account, getFtpDir());
-				if (!removed)
-					addActionError("Cannot Remove this account: " + account.getName());
-			}
-			else if (account.getType().equals("Assessment") && isCanDeleteAssessment())
-				permissions.tryPermission(OpPerms.ManageAssessment, OpType.Delete);
-			else
-				throw new NoPermissionException("Delete Account");
-		}
-
 		return SUCCESS;
 	}
 
@@ -115,26 +85,14 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
 	}
 	
-	public boolean isCanDeleteCorp() {
-		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
-	}
-
 	public boolean isCanEditOp() {
 		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	}
 
-	public boolean isCanDeleteOp() {
-		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
-	}
-	
 	public boolean isCanEditAssessment() {
 		return permissions.hasPermission(OpPerms.ManageAssessment, OpType.Edit);
 	}
-	
-	public boolean isCanDeleteAssessment() {
-		return permissions.hasPermission(OpPerms.ManageAssessment, OpType.Delete);
-	}
-	
+
 	protected void addFilterToSQL() {
 		ReportFilterAccount f = getFilter();
 
@@ -147,6 +105,7 @@ public class ReportOperatorCorporate extends ReportActionSupport {
 			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
 					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName) + "%' OR a.id = '" + 
 					Strings.escapeQuotes(accountName) + "'", accountName));
+			
 			sql.addField("a.dbaName");
 		}
 

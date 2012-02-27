@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
@@ -18,16 +21,21 @@ public class OperatorActionSupport extends AccountActionSupport {
 	protected OperatorAccount operator;
 	private List<OperatorAccount> inheritsFlagCriteria = null;
 	private List<OperatorAccount> inheritsInsuranceCriteria = null;
-	private List<OperatorAccount> inheritsAudits = null;
-	private List<OperatorAccount> inheritsInsurance = null;
 
 	public String execute() throws Exception {
 		findOperator();
 		return SUCCESS;
 	}
 
-	protected void findOperator() throws Exception {
+	protected void findOperator() throws RecordNotFoundException, Exception {
 		loadPermissions();
+
+		if (permissions.isAdmin())
+			tryPermissions(OpPerms.ManageOperators);
+		else if (permissions.isContractor()) {
+			throw new NoRightsException("Operator");
+		}
+
 		if (operator == null) {
 
 			if (id == 0) {
@@ -47,6 +55,9 @@ public class OperatorActionSupport extends AccountActionSupport {
 			// Exception("Corporate account doesn't have access to that operator");
 
 			operator = operatorDao.find(id);
+			if (operator == null) {
+				throw new RecordNotFoundException("Operator " + id);
+			}
 			account = operator;
 		}
 	}

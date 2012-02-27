@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 
+import javax.naming.NoPermissionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -52,7 +54,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 
-	protected String type = "Operator";
+	protected String createType;
 	protected List<Integer> facilities;
 	protected Set<OperatorAccount> relatedFacilities = null;
 	protected int nameId;
@@ -67,42 +69,58 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected int contactID;
 	protected ContractorOperator linkedContractor;
 
-	public List<OperatorAccount> operatorList;
+	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
 
 	public String execute() throws Exception {
-		if (permissions.isAdmin())
-			tryPermissions(OpPerms.ManageOperators);
-		else if (permissions.isContractor()) {
-			throw new NoRightsException("Operator");
-		} else if (permissions.isOperatorCorporate()) {
-			if (operator == null)
-				operator = operatorDao.find(permissions.getAccountId());
+		findOperator();
 
-			facilities = new ArrayList<Integer>();
+		id = operator.getId();
+
+		facilities = new ArrayList<Integer>();
+		if (operator.isCorporate()) {
 			for (Facility fac : operator.getOperatorFacilities()) {
 				facilities.add(fac.getOperator().getId());
 			}
 		}
 
-		if (operator != null) {
-			type = operator.getType();
-			subHeading = getText("FacilitiesEdit.Edit", new Object[] { getText("global." + type) });
-		}
+		subHeading = getText("FacilitiesEdit.Edit", new Object[] { getText("global." + operator.getType()) });
 
-		if (operator == null && permissions.isAdmin()) {
-			subHeading = "Add " + type;
-			operator = new OperatorAccount();
-			operator.setCountry(new Country("US"));
-		} else {
-			if (operator.getPrimaryContact() == null)
-				addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
-		}
+		if (operator.getPrimaryContact() == null)
+			addAlertMessage(getText("FacilitiesEdit.error.AddPrimaryContact"));
 
-		operatorList = getOperatorList();
+		notChildOperatorList = getOperatorsNotMyChildren();
 		childOperatorList = operator.getChildOperators();
 
 		return SUCCESS;
+	}
+
+	public String create() throws NoRightsException {
+		if ("Corporate".equals(getCreateType())) {
+			if (!isCanEditCorp()) {
+				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+			}
+		}
+		else {
+			setCreateType("Operator");
+			if (!isCanEditOp()) {
+				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+			}
+		}
+		
+		operator = new OperatorAccount();
+		operator.setType(getCreateType());
+		operator.setCountry(new Country(permissions.getCountry()));
+
+		return SUCCESS;
+	}
+
+	private boolean isCanEditCorp() {
+		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
+	}
+	
+	private boolean isCanEditOp() {
+		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	}
 
 	public String remove() {
@@ -189,6 +207,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public String save() {
+		if (operator.getId() == 0)
+		{
+			operator.setType(getCreateType());
+		}
 		if (facilities == null) {
 			facilities = new ArrayList<Integer>();
 			for (Facility fac : operator.getOperatorFacilities()) {
@@ -260,13 +282,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				}
 			}
 
-			operator.setType(type);
 			operator.setAuditColumns(permissions);
-			operator.setNaics(new Naics());
-			operator.getNaics().setCode("0");
 			operator.setNameIndex();
 
 			if (operator.getId() == 0) {
+				operator.setNaics(new Naics());
+				operator.getNaics().setCode("0");
 				operator.setInheritFlagCriteria(operator);
 				operator.setInheritInsuranceCriteria(operator);
 
@@ -274,26 +295,48 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				// with
 				// a unique id
 				operatorDao.save(operator);
+
+				operator.setQbListID("NOLOAD" + operator.getId());
+				operator.setQbListCAID("NOLOAD" + operator.getId());
 			}
 		}
+
 		// Automatically add/update the PICS corporate accounts
 		addPicsConsortium();
-
-		operator.setQbListID("NOLOAD" + operator.getId());
-		operator.setQbListCAID("NOLOAD" + operator.getId());
 
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
 		}
 
-		// operator.setNeedsIndexing(true);
+		operator.setNeedsIndexing(true);
 		operator = operatorDao.save(operator);
 		id = operator.getId();
 
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return "redirect";
+	}
+
+	public String delete() throws NoPermissionException, Exception {
+		findOperator();
+
+		if (operator.isOperator()) {
+			permissions.tryPermission(OpPerms.ManageOperators, OpType.Delete);
+		} else if (operator.isCorporate()) {
+			permissions.tryPermission(OpPerms.ManageCorporate, OpType.Delete);
+		} else {
+			throw new NoPermissionException("Delete Account");
+		}
+
+		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
+		if (!removed) {
+			addActionError("Cannot Remove this account: " + operator.getName());  // TODO: i18n
+			return SUCCESS;
+		}
+
+		redirect("ReportAccountList.action");
+		return SUCCESS;
 	}
 
 	// Insure that all newly added facilities get linked to all parent accounts.
@@ -327,15 +370,16 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 	}
 
-	public List<OperatorAccount> getOperatorList() throws Exception {
+	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
 		// find all operators
-		operatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
+		List<OperatorAccount> tmpOperatorList;
+		tmpOperatorList = operatorDao.findWhere(false, "status IN ('Active','Demo','Pending')");
 
 		// remove operators that are children of the current operator
-		operatorList.removeAll(operator.getChildOperators());
+		tmpOperatorList.removeAll(operator.getChildOperators());
 
 		// return the list of operators not associated with the current operator
-		return operatorList;
+		return tmpOperatorList;
 	}
 
 	public List<User> getUserList() throws Exception {
@@ -351,16 +395,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.facilities = facilities;
 	}
 
-	public boolean isTypeOperator() {
-		return "Operator".equals(type);
+	public String getCreateType() {
+		return createType;
 	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
+	
+	public void setCreateType(String createType) {
+		this.createType = createType;
 	}
 
 	public int getNameId() {
@@ -618,6 +658,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				operator.getCorporateFacilities().add(f);
 			}
 		}
+	}
+
+	public boolean isCanDeleteCorp() {
+		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
+	}
+
+	public boolean isCanDeleteOp() {
+		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
 	}
 
 	public OperatorAccount getActivationFeeOperator() {

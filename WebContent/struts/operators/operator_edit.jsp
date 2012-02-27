@@ -55,8 +55,8 @@
 		</script>
 	</head>
 	<body>
-		<s:if test="operator.getId() == 0">
-			<h1>Create New <s:property value="type" /> Account</h1>
+		<s:if test="operator.id == 0">
+		    <h1>Create New <s:property value="operator.type" /> Account</h1>
 		</s:if>
 		<s:else>
 			<s:include value="opHeader.jsp"></s:include>
@@ -91,11 +91,11 @@
 			<br clear="all" />
 			
 			<s:hidden name="operator" />
-			<s:hidden name="type" />
+			<s:hidden name="createType" />
 			
 			<fieldset class="form">
 				<h2 class="formLegend"><s:text name="FacilitiesEdit.AccountSummary" /></h2>
-				
+
 				<ol>
 					<s:if test="operator.id > 0">
 						<li>
@@ -120,7 +120,7 @@
 							</div>
 						</li>
 					</s:if>
-					
+
 					<s:if test="operator.id > 0">
 						<s:if test="operator.status.deactivated || operator.status.deleted">
 							<li>
@@ -175,7 +175,7 @@
 								<s:optiontransferselect
 									label="Child Operators"
 									name="operatorListLeft"
-									list="operatorList"
+									list="notChildOperatorList"
 									listKey="id"
 									listValue="name"
 									doubleName="facilities"
@@ -783,7 +783,17 @@
 			
 			<fieldset class="form submit">
 				<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
-			</fieldset>
+				<s:if test="operator.id != 0">
+					<s:if test="operator.corporate && canDeleteCorp">
+						<s:submit cssClass="picsbutton negative" method="delete"
+							value="%{getText('button.Delete')}" />
+					</s:if>
+					<s:if test="operator.operator && canDeleteOp">
+						<s:submit cssClass="picsbutton negative" method="delete"
+							value="%{getText('button.Delete')}" />
+					</s:if>
+				</s:if>
+		</fieldset>
 		</s:form>
 	</body>
 </html>
