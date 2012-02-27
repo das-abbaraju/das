@@ -99,6 +99,54 @@ public class DateBeanTest  {
 	}
 	
 	@Test
+	public void testAddFieldWithNull() {
+		Date result = DateBean.addField(null, Calendar.DATE, 1);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testAddFieldWithZeroAmount() {
+		Date result = DateBean.addField(new Date(), Calendar.MONTH, 0);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testGetFirstofMonthWithNull() {
+		Date result = DateBean.getFirstofMonth(null, 2);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testGetFirstOfMonthWithZeroMonths() {
+		Date result = DateBean.getFirstofMonth(new Date(), 0);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testAddDaysWithNullDate() {
+		Date result = DateBean.addDays(null, 6);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testAddDaysWithZeroDays() {
+		Date result = DateBean.addDays(new Date(), 0);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testAddMonthsNullDate() {
+		Date result = DateBean.addMonths(null, 2);
+		assertNull(result);
+	}
+	
+	@Test
+	public void testAddMonthsWithZeroMonths() {
+		Date result = DateBean.addMonths(new Date(), 0);
+		assertNull(result);
+	}
+	
+	@Test
 	public void testGetMarchOfNextYear() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DATE, 5);
@@ -147,6 +195,89 @@ public class DateBeanTest  {
 		assertEquals(1, result.get(Calendar.DATE));
 		assertEquals(Calendar.JANUARY, result.get(Calendar.MONTH));
 		assertEquals(calendar.get(Calendar.YEAR) + 1, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void addField() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 5);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		Date date = DateBean.addField(calendar.getTime(), Calendar.MONTH, 1);
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(date);
+		
+		assertEquals(Calendar.JULY, result.get(Calendar.MONTH));
+	}
+	
+	@Test
+	public void testGetFirstofMonthSameYear() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 30);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		Date date = DateBean.getFirstofMonth(calendar.getTime(), 1);
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(date);
+		
+		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(Calendar.JULY, result.get(Calendar.MONTH));
+		assertEquals(2011, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void testGetFirstofMonth() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 30);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		Date date = DateBean.getFirstofMonth(calendar.getTime(), 1);
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(date);
+		
+		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(Calendar.JULY, result.get(Calendar.MONTH));
+		assertEquals(2011, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void testAddDays() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 15);
+		calendar.set(Calendar.MONTH, Calendar.FEBRUARY);
+		calendar.set(Calendar.YEAR, 2010);
+		
+		Date date = DateBean.addDays(calendar.getTime(), 5);
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(date);
+		
+		assertEquals(20, result.get(Calendar.DATE));
+		assertEquals(Calendar.FEBRUARY, result.get(Calendar.MONTH));
+		assertEquals(2010, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void testAddMonths() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 31);
+		calendar.set(Calendar.MONTH, Calendar.AUGUST);
+		calendar.set(Calendar.YEAR, 2012);
+		
+		Date date = DateBean.addMonths(calendar.getTime(), 4);
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(date);
+		
+		assertEquals(31, result.get(Calendar.DATE));
+		assertEquals(Calendar.DECEMBER, result.get(Calendar.MONTH));
+		assertEquals(2012, result.get(Calendar.YEAR));
 	}
 	
 }
