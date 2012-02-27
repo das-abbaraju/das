@@ -455,12 +455,7 @@ public class DateBean {
 		cal.setTime(startDate);
 		cal.add(Calendar.YEAR, 1);
 
-		cal.set(Calendar.MONTH, Calendar.MARCH);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
+		cal = setDefaultsForMonth(cal, Calendar.MARCH);
 
 		return cal.getTime();
 	}
@@ -471,14 +466,51 @@ public class DateBean {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(startDate);
-		cal.set(Calendar.MONTH, Calendar.MARCH);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-		cal.set(Calendar.HOUR, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
+		cal = setDefaultsForMonth(cal, Calendar.MARCH);
 
 		return cal.getTime();
+	}
+	
+	public static Date getFirstOfNextYear(Date startDate) {
+		if (startDate == null) {
+			return null;
+		}
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(startDate);
+		calendar.add(Calendar.YEAR, 1);
+		
+		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY);
+		
+		return calendar.getTime();
+	}
+	
+	private static Calendar setDefaultsForMonth(Calendar calendar, int month) {
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);		
+		
+		return calendar;
+	}
+	
+	/**
+	 * Returns the integer year of the date argument or
+	 * zero if the date is null.
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static int getYearFromDate(Date date) {
+		if (date == null) {
+			return 0; 
+		}
+		
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		return calendar.get(Calendar.YEAR);
 	}
 
 	public static String getBrainTreeDate() {
