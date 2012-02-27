@@ -126,18 +126,17 @@ public class DateBean {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
 		String temp = format.format(cal.getTime());
-		// System.out.println("Todays date: "+temp);
 		return temp;
-	}// getTodaysDate
+	}
 
 	public static String getThreeYearsAheadDate(String fromDate) throws Exception {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
-		java.util.Date tempDate = showFormat.parse(fromDate);
+		Date tempDate = showFormat.parse(fromDate);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(tempDate);
 		cal.add(Calendar.YEAR, 3);
 		return showFormat.format(cal.getTime());
-	}// getThreeYearsAheadDate
+	}
 
 	public static String getTodaysDateTime() {
 		Calendar cal = Calendar.getInstance();
@@ -188,7 +187,7 @@ public class DateBean {
 	public static int getCurrentYear(ServletContext context) throws Exception {
 		String strCurrentYearStart = context.getInitParameter("currentYearStart");
 		return getCurrentYear(strCurrentYearStart);
-	}// getCur
+	}
 
 	public static int getCurrentYear(String strCurrentYearStart) throws Exception {
 		String curYearStart = strCurrentYearStart + "/" + String.valueOf(getCurrentYear());
@@ -197,7 +196,7 @@ public class DateBean {
 		else
 			return getCurrentYear() + 1;
 
-	}// getCur
+	}
 
 	/**
 	 * @return the month (1-12) of today's date
@@ -231,7 +230,7 @@ public class DateBean {
 			return MonthNames[monthInt];
 		else
 			return "";
-	}// getMonthName
+	}
 
 	static public ArrayList<Calendar> getNextMonths(int numMonths) {
 		ArrayList<Calendar> monthList = new ArrayList<Calendar>();
@@ -249,15 +248,17 @@ public class DateBean {
 		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -1);
-		java.util.Date yearAgo = cal.getTime();
-		java.util.Date testDate = showFormat.parse(dateString);
+		Date yearAgo = cal.getTime();
+		Date testDate = showFormat.parse(dateString);
+		
 		return yearAgo.before(testDate);
-	}// isLessThanOneYearAgo
+	}
 
 	public static boolean isLessThanTheeYearAgo(Date testDate) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -3);
-		java.util.Date threeYearsAgo = cal.getTime();
+		Date threeYearsAgo = cal.getTime();
+		
 		return threeYearsAgo.before(testDate);
 	}
 
@@ -266,8 +267,9 @@ public class DateBean {
 		if ("".equals(testDateString))
 			testDateString = NULL_DATE;
 		Calendar cal = Calendar.getInstance();
-		java.util.Date today = cal.getTime();
-		java.util.Date testDate = showFormat.parse(testDateString);
+		Date today = cal.getTime();
+		Date testDate = showFormat.parse(testDateString);
+		
 		return today.before(testDate);
 	}
 
@@ -289,6 +291,7 @@ public class DateBean {
 				return i;
 			}
 		}
+		
 		return 12;
 	}
 
@@ -398,29 +401,27 @@ public class DateBean {
 		if (startDate == null || months == 0)
 			return null;
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.MONTH, months);
+		Calendar cal = addValueToCalendarField(startDate, Calendar.MONTH, months);
+		
 		return cal.getTime();
 	}
 
 	public static Date addDays(Date startDate, int days) {
 		if (startDate == null || days == 0)
 			return null;
-
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.DATE, days);
+		
+		Calendar cal = addValueToCalendarField(startDate, Calendar.DATE, days);
+		
 		return cal.getTime();
 	}
 
 	public static Date addField(Date startDate, int field, int amount) {
-		if (startDate == null || amount == 0)
+		if (startDate == null || amount == 0) {
 			return null;
+		}
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(field, amount);
+		Calendar cal = addValueToCalendarField(startDate, field, amount);
+
 		return cal.getTime();
 	}
 
@@ -435,11 +436,10 @@ public class DateBean {
 		if (startDate == null || months == 0)
 			return null;
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.MONTH, months);
-		cal.set(Calendar.DATE, 1);
-		return cal.getTime();
+		Calendar calendar = addValueToCalendarField(startDate, Calendar.MONTH, months);
+		calendar.set(Calendar.DATE, 1);
+		
+		return calendar.getTime();
 	}
 
 	/**
@@ -451,10 +451,7 @@ public class DateBean {
 		if (startDate == null)
 			return null;
 
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(startDate);
-		cal.add(Calendar.YEAR, 1);
-
+		Calendar cal = addValueToCalendarField(startDate, Calendar.YEAR, 1);
 		cal = setDefaultsForMonth(cal, Calendar.MARCH);
 
 		return cal.getTime();
@@ -476,13 +473,19 @@ public class DateBean {
 			return null;
 		}
 		
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(startDate);
-		calendar.add(Calendar.YEAR, 1);
-		
+		Calendar calendar = addValueToCalendarField(startDate, Calendar.YEAR, 1);		
 		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY);
 		
 		return calendar.getTime();
+	}
+	
+	
+	private static Calendar addValueToCalendarField(Date date, int field, int amount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(field, amount);		
+		
+		return calendar;
 	}
 	
 	private static Calendar setDefaultsForMonth(Calendar calendar, int month) {
@@ -533,6 +536,7 @@ public class DateBean {
 	public static boolean isBeforeAWeek(Date startDate) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, -5);
+		
 		return calendar.getTime().before(startDate);
 	}
 
