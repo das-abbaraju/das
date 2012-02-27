@@ -159,6 +159,9 @@
 			<result>struts/home.jsp</result>
 		</action>
 
+		<action name="Menu" class="com.picsauditing.access.Menu">
+		</action>
+		
 		<action name="Contact" class="com.picsauditing.access.ContactUs">
 			<result>struts/contact_pics.jsp</result>
 		</action>

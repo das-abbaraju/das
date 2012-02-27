@@ -1,23 +1,31 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
-<h1>Hello World</h1>
+<link rel="stylesheet" type="text/css" href="css/pics.css">
+<link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
         
-<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css" />
-<script type="text/javascript" src="js/jquery/tagit/jquery.tagit.js"></script>
+<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
 
-<s:form>
-    <label for="tag" style="float: left;">Tag:</label>
-    <input type="hidden" name="id" value="1" />
-    <input id="tag" type="text" name="auditName" style="width: 400px" />
-    <input type="submit" value="Submit" />
-</s:form>
+<nav id="site_navigation" style="margin-top: 10px;"></nav>
 
 <script>
-$(document).ready(function () {
-    $('#tag').tagit({
-        postType: 'string',
-        source: 'Trevor!getItemsInJson.action?optionGroupId=27',
-        source_selected: 'Trevor!getItemsInJson.action?optionGroupId=27'
+
+Ext.scopeResetCSS = true;
+
+Ext.Loader.setConfig({
+    enabled: true,
+    paths: {
+        PICS: './js/pics/app'
+    }
+});
+
+Ext.onReady(function () {
+    var menu = Ext.create('PICS.view.layout.Menu', {
+        renderTo: 'site_navigation',
+        enableOverflow: true
+    });
+    
+    Ext.EventManager.onWindowResize(function () {
+        menu.doLayout();
     });
 });
 </script>

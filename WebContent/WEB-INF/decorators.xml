@@ -2,6 +2,7 @@
 	<decorator name="extjs" page="extjs.jsp">
 		<pattern>/ReportDynamic.action</pattern>
 		<pattern>/ReportDynamic!list.action</pattern>
+		<pattern>/Trevor.action</pattern>
 	</decorator>
 	<decorator name="main" page="main.jsp">
 		<pattern>/*.jsp</pattern>

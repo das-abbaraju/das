@@ -137,6 +137,10 @@
             cursor: pointer;
             @include border-radius(3px);
         }
+        
+        .#{$prefix}menu-item-text {
+	        color: $menu-text-over-color;
+	    }
     }
 
     .#{$prefix}menu-item-disabled {
