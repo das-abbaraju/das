@@ -195,7 +195,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				ContractorAudit auditContainingCurrentQuestion = conAudit;
 			
 				if (!conAudit.getAuditType().equals(rule.getQuestion().getAuditType())) {
-					auditContainingCurrentQuestion = findMostRecentAudit(conAudit.getAuditType().getId());
+					auditContainingCurrentQuestion = findMostRecentAudit(rule.getQuestion().getAuditType().getId());
 				}
 				
 				AuditData answer = findAnswer(auditContainingCurrentQuestion, currentQuestionId);
