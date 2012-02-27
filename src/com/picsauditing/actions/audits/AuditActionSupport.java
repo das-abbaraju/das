@@ -503,8 +503,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 					conAuditDAO.save(ca);
 				}
 			}
-		} else if (status.isComplete() && conAudit.getAuditType().isAnnualAddendum()) {
-			ExpireUneededAnnualUpdates.calculate(conAudit.getContractorAccount());
 		}
 	}
 

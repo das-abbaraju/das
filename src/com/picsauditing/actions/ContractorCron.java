@@ -135,7 +135,6 @@ public class ContractorCron extends PicsActionSupport {
 
 		try {
 			runBilling(contractor);
-			runRemoveExtraAnnualUpdates(contractor);
 			runAuditBuilder(contractor);
 			runAuditCategory(contractor);
 			runAssignAudit(contractor);
@@ -212,13 +211,6 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		billingService.calculateAnnualFees(contractor);
 		contractor.syncBalance();
-	}
-
-	private void runRemoveExtraAnnualUpdates(ContractorAccount contractor) {
-		if (!runStep(ContractorCronStep.RemoveExtraAnnualUpdates))
-			return;
-
-		ExpireUneededAnnualUpdates.calculate(contractor);
 	}
 
 	private void runAuditBuilder(ContractorAccount contractor) {

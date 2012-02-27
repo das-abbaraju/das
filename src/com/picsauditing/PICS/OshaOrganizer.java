@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
 public class OshaOrganizer {
@@ -119,7 +120,7 @@ public class OshaOrganizer {
 		String yearsOfAverage = "";
 
 		for (OshaAudit osha : data.get(type)) {
-			if (osha != null && straightCount < 3) {
+			if (osha != null && isAuditForYears(osha.getConAudit().getAuditFor(), type)) {
 				straightAvg.setFactor(osha.getFactor());
 
 				// Need to set a proper verification value on average OSHAs
@@ -201,6 +202,27 @@ public class OshaOrganizer {
 		straightAvg.getConAudit().setAuditFor(yearsOfAverage);
 
 		return straightAvg;
+	}
+	
+	private boolean isAuditForYears(String auditYear, OshaType type) {
+		if (Strings.isEmpty(auditYear))
+			return false;
+		int year = Integer.parseInt(auditYear);
+		
+		YearList yearList = dataYears.get(type);
+		
+		Integer lastYear = yearList.getYearForScope(MultiYearScope.LastYearOnly);
+		Integer twoYearsAgo = yearList.getYearForScope(MultiYearScope.TwoYearsAgo);
+		Integer threeYearsAgo = yearList.getYearForScope(MultiYearScope.ThreeYearsAgo);
+		
+		if (lastYear != null && lastYear.intValue() == year)
+			return true;
+		if (twoYearsAgo != null && twoYearsAgo.intValue() == year)
+			return true;
+		if (threeYearsAgo != null && threeYearsAgo.intValue() == year)
+			return true;
+		
+		return false;
 	}
 
 	public String getAnswer2(OshaType type, MultiYearScope year, OshaRateType rateType) {

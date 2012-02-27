@@ -152,7 +152,8 @@ public class FlagDataCalculator {
 
 				// Checking for at least 3 active annual updates
 				for (ContractorAudit ca : con.getAudits()) {
-					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired() && isAuditVisibleToOperator(ca,getOperator())) {
+					if (ca.getAuditType().equals(criteria.getAuditType()) && !ca.isExpired()
+							&& isAuditVisibleToOperator(ca, getOperator())) {
 						hasAnnualUpdate = true;
 						boolean auditIsGood = false;
 						for (ContractorAuditOperator cao : ca.getOperators()) {
@@ -283,10 +284,12 @@ public class FlagDataCalculator {
 							return answer2 > con.getWeightedIndustryAverage() * hurdle2 / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities
+									.getIndustryAverage(true, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor().getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()
+									.getNaics()) * hurdle2) / 100;
 						}
 					}
 					if (comparison.equals("="))
@@ -335,18 +338,18 @@ public class FlagDataCalculator {
 			}
 		}
 	}
-	
+
 	private boolean isAuditVisibleToOperator(ContractorAudit ca, OperatorAccount op) {
-		for (ContractorAuditOperator cao:ca.getOperators()) {
+		for (ContractorAuditOperator cao : ca.getOperators()) {
 			if (cao.isVisible()) {
-				for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 					if (caop.getOperator().getId() == op.getId()) {
 						return true;
 					}
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -481,6 +484,7 @@ public class FlagDataCalculator {
 			contractorCriteria.put(value.getCriteria(), value);
 		}
 	}
+
 	/**
 	 * 
 	 * @param criteria
