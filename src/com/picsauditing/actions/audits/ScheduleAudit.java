@@ -120,8 +120,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 			if (conAudit.getScheduledDate().before(new Date())) {
 				// This audit has already passed (and we missed it?)
-				addActionMessage(getText("ScheduleAudit.message.AppointmentPassed"));
-				return "address";
+				addAlertMessage(getText("ScheduleAudit.message.AppointmentPassed"));
+				return "edit";
 			}
 
 			if (permissions.isAdmin())
@@ -136,6 +136,12 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public String edit() throws Exception {
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(AuditStatus.Pending)) {
+				return "summary";
+			}
+		}
+		
 		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
 			addActionMessage(getText("ScheduleAudit.message.AuditAppointmentPassed"));
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
