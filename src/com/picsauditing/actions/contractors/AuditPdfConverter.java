@@ -293,8 +293,8 @@ public class AuditPdfConverter extends AuditActionSupport {
 	private void handleQuestion(Document document, AuditQuestion auditQuestion, AnswerMap answerMap, int indentLevel)
 			throws DocumentException {
 
-		if (!Strings.isEmpty(auditQuestion.getTitle())) {
-			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle(), questionTitleFont);
+		if (auditQuestion.getTitle() != null && !Strings.isEmpty(auditQuestion.getTitle().toString())) {
+			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle().toString(), questionTitleFont);
 			questionTitleParagraph.setIndentationLeft(indentLevel + 30);
 			document.add(questionTitleParagraph);
 		}
@@ -306,7 +306,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 		questionLine += auditQuestion.getNumber() + ". " + auditQuestion.getName();
 
 		processQuestion(questionAnswer, questionLine);
-		
+
 		if (answerMap.get(auditQuestion.getId()) != null) {
 			AuditData auditData = answerMap.get(auditQuestion.getId());
 			if (!Strings.isEmpty(auditData.getAnswer())) {
@@ -331,13 +331,13 @@ public class AuditPdfConverter extends AuditActionSupport {
 		}
 		document.add(questionAnswer);
 	}
-	
+
 	private void processQuestion(Paragraph paragraph, String question) {
 		int index;
 		String working = question;
-		
+
 		working = working.replaceAll("&nbsp;", " ");
-		
+
 		while (working.length() > 0) {
 			index = (working.indexOf("<") >= 0) ? working.indexOf("<") : working.length();
 			if (index != 0) {
@@ -346,14 +346,14 @@ public class AuditPdfConverter extends AuditActionSupport {
 			}
 			if (working.length() > 0) {
 				int tagIndex = working.indexOf(">");
-				if (tagIndex >=0) {
+				if (tagIndex >= 0) {
 					String tag = working.substring(0, tagIndex + 1);
-					working=working.substring(tagIndex + 1, working.length());
-					
+					working = working.substring(tagIndex + 1, working.length());
+
 					// process special tags and ignore all others
 					String lower = tag.toLowerCase();
 					lower = lower + "";
-					
+
 					if (tag.toLowerCase().startsWith("<br") || tag.toLowerCase().startsWith("<li")) {
 						paragraph.add(new Chunk(""));
 					} else if (tag.toLowerCase().startsWith("<a")) {
@@ -367,7 +367,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 						}
 						String text = "";
 						int endIndex = working.indexOf("</a>");
-						if (endIndex >=0) {
+						if (endIndex >= 0) {
 							text = working.substring(0, endIndex);
 							working = working.substring(endIndex + 4, working.length());
 						}
