@@ -63,8 +63,8 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.util.ExpireUneededAnnualUpdates;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class ContractorCron extends PicsActionSupport {
@@ -547,15 +547,75 @@ public class ContractorCron extends PicsActionSupport {
 		throw new NoUsersDefinedException("No Active Users");
 	}
 
-	private Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
+	@Testable
+	Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
 		Set<ContractorAudit> expiringPolicies = new HashSet<ContractorAudit>();
 
-		for (ContractorAudit audit : contractor.getAudits())
-			if (audit.getAuditType().getClassType().isPolicy()
-					&& (audit.willExpireWithinTwoWeeks() || audit.expiredUpToAWeekAgo()))
-				expiringPolicies.add(audit);
+//		addExpiringWCBs(contractor, expiringPolicies);		
+		addExpiringPolicies(contractor, expiringPolicies);
 
 		return expiringPolicies;
+	}
+
+	private void addExpiringPolicies(ContractorAccount contractor, Set<ContractorAudit> expiringPolicies) {
+		for (ContractorAudit audit : contractor.getAudits()) {
+			if (isPolicyExpiringSoon(audit)) {
+				expiringPolicies.add(audit);
+			}
+		}
+	}
+
+	private void addExpiringWCBs(ContractorAccount contractor, Set<ContractorAudit> expiringPolicies) {
+		ContractorAudit currentYearWCB = findCurrentYearWCB(contractor.getAudits());	
+		if (isWCBExpiring(currentYearWCB)) {
+			expiringPolicies.add(currentYearWCB);
+		}
+	}
+
+	/**
+	 * Make sure that the WCB for this year has at least been submitted so it can be approved, 
+	 * otherwise the contractor needs to be alerted about this WCB.
+	 * 
+	 * @param currentYearWCB
+	 * @param audit
+	 * @return
+	 */
+	private boolean isWCBExpiring(ContractorAudit currentYearWCB) {
+		return (currentYearWCB != null && !currentYearWCB.hasCaoStatusAfter(AuditStatus.Incomplete));
+	}
+	
+	private ContractorAudit findCurrentYearWCB(List<ContractorAudit> audits) {
+		for (ContractorAudit audit : audits) {
+			if (isCurrentWCB(audit)) {
+				return audit;
+			}
+		}
+		
+		return null;
+	}
+	
+	private boolean isCurrentWCB(ContractorAudit audit) {
+		return (audit.getAuditType().isWCB() 
+				&& !isAuditExpiringSoon(audit)
+				&& wcbExpiresLaterThisYear(audit.getExpiresDate()));
+	}
+	
+	private boolean wcbExpiresLaterThisYear(Date wcbExpirationDate) {
+		int currentYear = DateBean.getCurrentYear();
+		int auditExpiresYear = DateBean.getYearFromDate(wcbExpirationDate);
+		
+		return (auditExpiresYear == currentYear);
+	}
+
+	private boolean isPolicyExpiringSoon(ContractorAudit audit) {
+		return (!audit.getAuditType().isWCB() 
+				&& audit.getAuditType().getClassType().isPolicy()
+				&& isAuditExpiringSoon(audit));
+	}
+	
+	private boolean isAuditExpiringSoon(ContractorAudit audit) {
+		return (audit.willExpireWithinTwoWeeks() 
+				|| audit.expiredUpToAWeekAgo());
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {
