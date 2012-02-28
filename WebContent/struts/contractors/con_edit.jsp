@@ -302,16 +302,16 @@
 								</li>
 								<li>
 									<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
-								</li>
-								<li>
-									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
-									<s:textarea name="contractor.description" cols="40"	rows="15" />
 									<s:if test="contractor.showInDirectory">
 										<br />
 										<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
 											<s:text name="ContractorView.ClickToViewContractorBadge" />
 										</a>
 									</s:if>
+								</li>
+								<li>
+									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
+									<s:textarea name="contractor.description" cols="40"	rows="15" />
 								</li>	
 							</ol>
 						</fieldset>
