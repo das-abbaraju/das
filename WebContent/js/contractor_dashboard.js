@@ -38,7 +38,7 @@
 						visibleNow.show();
 						visibleNow.effect('highlight', {color: '#FFFF11'}, 1000);
 					},
-					complete: function(data, textStatus, XMLHttpRequest) {
+					complete: function(XMLHttpRequest, textStatus) {
 						previouslyVisible.html(oldText);
 						previouslyVisible.hide();
 					}
@@ -68,7 +68,7 @@
 		                    content: data
 		                });
 					},
-					complete: function(data, textStatus, XMLHttpRequest) {
+					complete: function(XMLHttpRequest, textStatus) {
 						if (_modal) {
 							_modal.show();
 						}
