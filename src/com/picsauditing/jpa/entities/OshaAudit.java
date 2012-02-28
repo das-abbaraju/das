@@ -470,6 +470,10 @@ public class OshaAudit implements java.io.Serializable, Comparable<OshaAudit> {
 			return getCad7();
 		case Neer:
 			return getNeer();
+		case Dart:
+			return getRestrictedDaysAwayRate();
+		case DartNaics:
+			return getRestrictedDaysAwayRate();
 		default:
 			throw new RuntimeException("Invalid OSHA Rate Type of " + rateType.toString()
 					+ " specified for osha audit id " + getId() + ", contractor id "

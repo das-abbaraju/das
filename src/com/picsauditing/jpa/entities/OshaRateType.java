@@ -8,6 +8,7 @@ public enum OshaRateType implements Translatable {
 	TrirWIA,
 	Fatalities,
 	Dart,
+	DartNaics,
 	SeverityRate,
 	Cad7,
 	Neer,

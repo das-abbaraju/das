@@ -100,4 +100,8 @@ public class Utilities {
 		return naicsDAO.getIndustryAverage(lwcr, naics);
 	}
 	
-} 
+	public static float getDartIndustryAverage(Naics naics) {
+		NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
+		return naicsDAO.getDartIndustryAverage(naics);
+		}
+}

@@ -36,6 +36,11 @@ public class NaicsDAO extends PicsDAO {
 		else
 			return naics.getTrir();
 	}
+	
+	public float getDartIndustryAverage(Naics naics) {
+		// TODO Auto-generated method stub
+		return 4;
+	}
 
 	public Naics getBroaderNaics(boolean lwcr, Naics naics) {
 		String code = naics.getCode();
@@ -55,4 +60,6 @@ public class NaicsDAO extends PicsDAO {
 				return getBroaderNaics(lwcr, naics2);
 		}
 	}
+
+
 }

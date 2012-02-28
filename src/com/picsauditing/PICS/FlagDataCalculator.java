@@ -291,6 +291,10 @@ public class FlagDataCalculator {
 							return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()
 									.getNaics()) * hurdle2) / 100;
 						}
+						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
+							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor()
+									.getNaics()) * hurdle2) / 100;
+						}
 					}
 					if (comparison.equals("="))
 						return answer2 == hurdle2;
