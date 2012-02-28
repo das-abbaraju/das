@@ -1,12 +1,7 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.Naics;
@@ -103,14 +98,6 @@ public class Utilities {
 	public static float getIndustryAverage(boolean lwcr, Naics naics){
 		NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
 		return naicsDAO.getIndustryAverage(lwcr, naics);
-	}
-	
-	public static <T> List<T> toList(T... values) {
-		if (values == null || values.length == 0) {
-			return Collections.emptyList();
-		}
-		
-		return Arrays.asList(values);
 	}
 	
 } 
