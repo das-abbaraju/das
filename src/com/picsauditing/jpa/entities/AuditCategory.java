@@ -55,7 +55,7 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	private int number;
 	private int numRequired;
 	private int numQuestions;
-	private String helpText;
+	private TranslatableString helpText;
 	private boolean hasHelpText;
 	private String uniqueCode;
 	private float scoreWeight = 0f;
@@ -222,12 +222,12 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 		}
 	}
 
-	// @Deprecated
-	public String getHelpText() {
+	@Transient
+	public TranslatableString getHelpText() {
 		return helpText;
 	}
 
-	public void setHelpText(String helpText) {
+	public void setHelpText(TranslatableString helpText) {
 		this.helpText = helpText;
 	}
 

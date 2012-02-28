@@ -11,3 +11,9 @@ insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate, a
 select concat('AuditQuestion.', id, '.title'), title, 'en', 23157, now(), 1, 2, 1
 from audit_question
 where length(title) > 0;
+
+-- PICS-4826
+insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate, applicable, qualityRating, contentDriven)
+select concat('AuditCategory.', id, '.helpText'), helpText, 'en', 23157, now(), 1, 2, 1
+from audit_category
+where length(helpText) > 0;
