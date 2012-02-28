@@ -52,24 +52,54 @@ public class AuditorAvailability extends BaseTable {
 	
 	@Transient
 	public String getTimeZoneStartDate(String tz) throws ParseException {
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df3 = new SimpleDateFormat("hh:mm a");
-		df2.setTimeZone(TimeZone.getTimeZone("CST"));
-		df3.setTimeZone(TimeZone.getTimeZone(tz));
+		TimeZone cst = TimeZone.getTimeZone("CST");
+		TimeZone stz = TimeZone.getTimeZone(tz);
+		cst.getRawOffset();
+		stz.getRawOffset();
 		
-		return df3.format(df2.parse(df1.format(startDate)));
+		int hoursDifference = (stz.getRawOffset() - cst.getRawOffset()) / 3600000;
+		
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CST"));
+		cal.setTime(startDate);
+		
+		if (cst.inDaylightTime(startDate))
+			cal.add(Calendar.HOUR, hoursDifference);
+		
+		DateFormat stdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		DateFormat cstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		cstFormat.setTimeZone(TimeZone.getTimeZone("CST"));
+		
+		DateFormat stzFormat = new SimpleDateFormat("hh:mm a");
+		stzFormat.setTimeZone(TimeZone.getTimeZone(tz));
+		
+		return stzFormat.format(cstFormat.parse(stdFormat.format(cal.getTime())));
 	}
 	
 	@Transient
 	public String getTimeZoneEndDate(String tz) throws ParseException {
-		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		DateFormat df3 = new SimpleDateFormat("hh:mm a z");
-		df2.setTimeZone(TimeZone.getTimeZone("CST"));
-		df3.setTimeZone(TimeZone.getTimeZone(tz));
+		TimeZone cst = TimeZone.getTimeZone("CST");
+		TimeZone stz = TimeZone.getTimeZone(tz);
+		cst.getRawOffset();
+		stz.getRawOffset();
 		
-		return df3.format(df2.parse(df1.format(getEndDate())));
+		int hoursDifference = (stz.getRawOffset() - cst.getRawOffset()) / 3600000;
+		
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CST"));
+		cal.setTime(getEndDate());
+		
+		if (cst.inDaylightTime(getEndDate()))
+			cal.add(Calendar.HOUR, hoursDifference);
+		
+		DateFormat stdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		DateFormat cstFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		cstFormat.setTimeZone(TimeZone.getTimeZone("CST"));
+		
+		DateFormat stzFormat = new SimpleDateFormat("hh:mm a z");
+		stzFormat.setTimeZone(TimeZone.getTimeZone(tz));
+		
+		return stzFormat.format(cstFormat.parse(stdFormat.format(cal.getTime())));
 	}
 
 	@ManyToOne

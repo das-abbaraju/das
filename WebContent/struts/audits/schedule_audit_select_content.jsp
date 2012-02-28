@@ -18,14 +18,16 @@
 		</div>
 	</div>
 </s:iterator>
+
 <s:if test="availableSet.days.size() == 0">
-<div class="info"><s:text name="ScheduleAudit.message.NoTimeslotsLeft" /></div>
+	<div class="info"><s:text name="ScheduleAudit.message.NoTimeslotsLeft" /></div>
 </s:if>
+
 <s:if test="availableSet.latest != null">
-<script type="text/javascript">
-startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}" />';
-<s:if test="availableSet.days.size() > 0">
-$('#show_next').removeAttr("disabled");
-</s:if>
-</script>
+	<script type="text/javascript">
+		startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}" />';
+		<s:if test="availableSet.days.size() > 0">
+			$('#show_next').removeAttr("disabled");
+		</s:if>
+	</script>
 </s:if>
