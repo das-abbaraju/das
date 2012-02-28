@@ -306,6 +306,12 @@
 								<li>
 									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
 									<s:textarea name="contractor.description" cols="40"	rows="15" />
+									<s:if test="contractor.showInDirectory">
+										<br />
+										<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+											<s:text name="ContractorView.ClickToViewContractorBadge" />
+										</a>
+									</s:if>
 								</li>	
 							</ol>
 						</fieldset>
@@ -328,152 +334,149 @@
 					</td>
 					
 					<s:if test="permissions.admin">
-					
-					<td style="vertical-align: top; width: 50%; padding-left: 10px;">
-						<fieldset class="form">
-							<h2 class="formLegend">PICS Admin Fields</h2>
-							
-							<ol>
-								<li>
-									<label>Status:</label>
-									<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
-								</li>
-								<li>
-									<label>Will Renew:</label>
-									
-									<s:if test="contractor.renew">
-										Yes - <s:submit method="deactivate" value="Cancel Account" />
-										<pics:fieldhelp></pics:fieldhelp>
-									</s:if>
-									<s:else>
-										No - <s:submit method="reactivate" value="Reactivate" /> 
-									</s:else>
-								</li>
-								<li>
-									<label><s:text name="ContractorEdit.SoleProprietor.heading"/></label>
-									<s:checkbox name="contractor.soleProprietor" />
-								</li>
-								<li>
-									<label>Account Level:</label>
-									<s:select list="@com.picsauditing.jpa.entities.AccountLevel@values()" name="contractor.accountLevel"/></li>	
-								<li>
-									<label>Reason:</label>
-									<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- %{getText('Filters.header.DeactivationReason')} -"
-										listKey="key" listValue="value" />
-								</li>
-								
-								<s:if test="canEditRiskLevel">
-									<li>
-										<label>Risk Levels:</label>
-										<a href="ContractorEditRiskLevel.action?id=<s:property value="contractor.id" />" class="edit">Edit Risk Levels</a>
-									</li>
-								</s:if>
-								
-								<s:if test="contractor.country.isoCode != 'AE'">
-									<li id="taxIdItem">
-										<label><s:div cssClass="taxIdLabel" /></label>
-										<s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15" />
-										<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
-									</li>
-								</s:if>
-								
-								<li>
-									<label>Must Pay?</label>
-									<s:radio 
-										list="#{'Yes':'Yes','No':'No'}" 
-										name="contractor.mustPay" 
-										value="contractor.mustPay"
-										theme="pics" 
-										cssClass="inline"
-									/>
-								</li>
-								<li>
-									<label>Upgrade Date:</label>
-									<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="MM/dd/yyyy" />" />
-								</li>
-								<li>
-									<label>Contractor Type:</label>
-									<s:if test="getContractorTypeHelpText() != ''">
-										<div class="alert-error alert-message warning">
-											<span class="icon warn"></span>
-											<p><s:property value="getContractorTypeHelpText()" escape="false" /></p>
-										</div>
-									</s:if>
-									<s:checkbox 
-										name="conTypes"
-										id="onSite"
-										fieldValue="Onsite"
-										label="ContractorAccount.onsiteServices" 
-										value="contractor.isContractorTypeRequired('Onsite') ? true : contractor.onsiteServices" 
-										cssClass="checkbox"
-										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Onsite)" 
-									/><s:text name="ContractorAccount.onsiteServices" />
-									<s:checkbox 
-										name="conTypes" 
-										id="offSite"
-										fieldValue="Offsite"
-										label="ContractorAccount.offsiteServices" 
-										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite) ? true : contractor.offsiteServices"
-										cssClass="checkbox"
-										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite)" 
-									/><s:text name="ContractorAccount.offsiteServices" />
-									<s:checkbox 
-										name="conTypes" 
-										id="materialSupplier"
-										fieldValue="Supplier" 
-										label="ContractorAccount.materialSupplier"
-										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier) ? true : contractor.materialSupplier" 
-										cssClass="checkbox"
-										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier)" 
-									/><s:text name="ContractorAccount.materialSupplier" />
-									<s:checkbox 
-										name="conTypes" 
-										id="transportation"
-										fieldValue="Transportation"
-										label="ContractorAccount.transportationServices" 
-										value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation) ? true : contractor.transportationServices"
-										cssClass="checkbox"
-										disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
-									/><s:text name="ContractorAccount.transportationServices" />
-								</li>
-								<li>
-									<s:if test="hasImportPQFAudit">
-										<s:submit method="expireImportPQF" cssClass="picsbutton negative" id="removeImportPQFButton" value="Remove Import PQF" />
-									</s:if>
-									<s:elseif test="contractor.eligibleForImportPQF">
-										<s:submit method="createImportPQF" cssClass="picsbutton positive" value="Create Import PQF" />
-									</s:elseif>
-									
-									<div class="fieldhelp">
-										<h3>Competitor Membership</h3>
-										
-										<p>
-											Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.
-										</p>
-									</div>
-								</li>
-								<li>
-									<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
-								</li>
-							</ol>
-						</fieldset>
-						
-						<pics:permission perm="EmailOperators">
-							<fieldset class="form bottom">
-								<h2 class="formLegend">De-activation Email</h2>
-								
+						<td style="vertical-align: top; width: 50%; padding-left: 10px;">
+							<fieldset class="form">
+								<h2 class="formLegend">PICS Admin Fields</h2>
 								<ol>
 									<li>
-										<s:submit cssClass="picsbutton positive" method="sendDeactivationEmail" value="%{getText(scope + '.button.SendDeactivationEmail')}" />
+										<label>Status:</label>
+										<s:select list="statusList" name="contractor.status" value="%{contractor.status}" />
 									</li>
 									<li>
-										<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
+										<label>Will Renew:</label>
+										
+										<s:if test="contractor.renew">
+											Yes - <s:submit method="deactivate" value="Cancel Account" />
+											<pics:fieldhelp></pics:fieldhelp>
+										</s:if>
+										<s:else>
+											No - <s:submit method="reactivate" value="Reactivate" /> 
+										</s:else>
+									</li>
+									<li>
+										<label><s:text name="ContractorEdit.SoleProprietor.heading"/></label>
+										<s:checkbox name="contractor.soleProprietor" />
+									</li>
+									<li>
+										<label>Account Level:</label>
+										<s:select list="@com.picsauditing.jpa.entities.AccountLevel@values()" name="contractor.accountLevel"/></li>	
+									<li>
+										<label>Reason:</label>
+										<s:select list="deactivationReasons" name="contractor.reason" headerKey="" headerValue="- %{getText('Filters.header.DeactivationReason')} -"
+											listKey="key" listValue="value" />
+									</li>
+									
+									<s:if test="canEditRiskLevel">
+										<li>
+											<label>Risk Levels:</label>
+											<a href="ContractorEditRiskLevel.action?id=<s:property value="contractor.id" />" class="edit">Edit Risk Levels</a>
+										</li>
+									</s:if>
+									
+									<s:if test="contractor.country.isoCode != 'AE'">
+										<li id="taxIdItem">
+											<label><s:div cssClass="taxIdLabel" /></label>
+											<s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15" />
+											<s:div cssClass="fieldhelp" id="taxIdLabelHelp" />
+										</li>
+									</s:if>
+									
+									<li>
+										<label>Must Pay?</label>
+										<s:radio 
+											list="#{'Yes':'Yes','No':'No'}" 
+											name="contractor.mustPay" 
+											value="contractor.mustPay"
+											theme="pics" 
+											cssClass="inline"
+										/>
+									</li>
+									<li>
+										<label>Upgrade Date:</label>
+										<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="MM/dd/yyyy" />" />
+									</li>
+									<li>
+										<label>Contractor Type:</label>
+										<s:if test="getContractorTypeHelpText() != ''">
+											<div class="alert-error alert-message warning">
+												<span class="icon warn"></span>
+												<p><s:property value="getContractorTypeHelpText()" escape="false" /></p>
+											</div>
+										</s:if>
+										<s:checkbox 
+											name="conTypes"
+											id="onSite"
+											fieldValue="Onsite"
+											label="ContractorAccount.onsiteServices" 
+											value="contractor.isContractorTypeRequired('Onsite') ? true : contractor.onsiteServices" 
+											cssClass="checkbox"
+											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Onsite)" 
+										/><s:text name="ContractorAccount.onsiteServices" />
+										<s:checkbox 
+											name="conTypes" 
+											id="offSite"
+											fieldValue="Offsite"
+											label="ContractorAccount.offsiteServices" 
+											value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite) ? true : contractor.offsiteServices"
+											cssClass="checkbox"
+											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Offsite)" 
+										/><s:text name="ContractorAccount.offsiteServices" />
+										<s:checkbox 
+											name="conTypes" 
+											id="materialSupplier"
+											fieldValue="Supplier" 
+											label="ContractorAccount.materialSupplier"
+											value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier) ? true : contractor.materialSupplier" 
+											cssClass="checkbox"
+											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Supplier)" 
+										/><s:text name="ContractorAccount.materialSupplier" />
+										<s:checkbox 
+											name="conTypes" 
+											id="transportation"
+											fieldValue="Transportation"
+											label="ContractorAccount.transportationServices" 
+											value="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation) ? true : contractor.transportationServices"
+											cssClass="checkbox"
+											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
+										/><s:text name="ContractorAccount.transportationServices" />
+									</li>
+									<li>
+										<s:if test="hasImportPQFAudit">
+											<s:submit method="expireImportPQF" cssClass="picsbutton negative" id="removeImportPQFButton" value="Remove Import PQF" />
+										</s:if>
+										<s:elseif test="contractor.eligibleForImportPQF">
+											<s:submit method="createImportPQF" cssClass="picsbutton positive" value="Create Import PQF" />
+										</s:elseif>
+										
+										<div class="fieldhelp">
+											<h3>Competitor Membership</h3>
+											
+											<p>
+												Clicking on "Remove Import PQF" will only expire any existing Import PQF. This will NOT remove the invoice/fee. Voiding the invoice/fee will have to be done manually.
+											</p>
+										</div>
+									</li>
+									<li>
+										<s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
 									</li>
 								</ol>
 							</fieldset>
-						</pics:permission>
-					</td>
-					
+							
+							<pics:permission perm="EmailOperators">
+								<fieldset class="form bottom">
+									<h2 class="formLegend">De-activation Email</h2>
+									
+									<ol>
+										<li>
+											<s:submit cssClass="picsbutton positive" method="sendDeactivationEmail" value="%{getText(scope + '.button.SendDeactivationEmail')}" />
+										</li>
+										<li>
+											<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
+										</li>
+									</ol>
+								</fieldset>
+							</pics:permission>
+						</td>
 					</s:if>
 				</tr>
 			</table>

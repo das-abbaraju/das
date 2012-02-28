@@ -559,6 +559,12 @@
 											<s:text name="ContractorAccount.webUrl" />:
 											<strong><a href="http://<s:property value="contractor.webUrl" />" class="value" target="_blank"><s:property value="contractor.webUrl" /></a></strong>
 										</p>
+										
+										<s:if test="contractor.showInDirectory">
+											<a href="ContractorBadge.action?contractor=<s:property value="contractor.id" />" class="preview">
+												<s:text name="ContractorView.ClickToViewContractorBadge" />
+											</a>
+										</s:if>
 									</s:if>
 									
 									<s:iterator value="contractor.getUsersByRole('ContractorAdmin')">

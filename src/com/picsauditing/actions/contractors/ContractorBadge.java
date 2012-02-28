@@ -9,6 +9,9 @@ public class ContractorBadge extends ContractorActionSupport {
 		if (contractor == null) {
 			findContractor();
 		}
+		
+		id = contractor.getId();
+		account = contractor;
 
 		return SUCCESS;
 	}
