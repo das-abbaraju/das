@@ -493,6 +493,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return conAudit.hasCaoStatus(AuditStatus.Pending);
 		return false;
 	}
+	
+	public boolean isScheduled() {
+		if (conAudit.getScheduledDate() != null)
+			return true;
+		return false;
+	}
 
 	protected void autoExpireOldAudits(ContractorAudit conAudit, AuditStatus status) {
 		if (status.isSubmitted() && (conAudit.getAuditType().isDesktop() || conAudit.getAuditType().isImplementation())) {

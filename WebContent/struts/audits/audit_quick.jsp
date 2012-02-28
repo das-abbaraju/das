@@ -8,6 +8,6 @@
 	<li><label>Time:</label> <s:property value="formatDate(conAudit.scheduledDate, 'hh:mm a z')"/></li>
 	<s:if test="conAudit.auditType.scheduled && !permissions.operatorCorporate">
 		<li><label></label>
-			<a href="ScheduleAudit.action?auditID=<s:property value="conAudit.id"/>" target="_blank">Audit Schedule</a></li>
+			<a href="ScheduleAudit!edit.action?auditID=<s:property value="conAudit.id"/>" target="_blank">Edit Schedule</a></li>
 	</s:if>
 </ul>
