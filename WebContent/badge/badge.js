@@ -1,10 +1,11 @@
 /**
  * PICS Badge
+ * 
+ * badge.js include src: pb.src must contain pb-id hash 'badge.min.js#pb-id=MzpBbmNvbiBNYXJpbmU=';
+ * where hash is base64("3:Ancon Marine");
  *
  * Remote server inclusion of PICS Badge
  * _pbq = {
- *     id: 3,
- *     name: 'Ancon Marine',
  *     container_id: 'pics_badge_container',
  *     size: 80, 100, 150
  * };
