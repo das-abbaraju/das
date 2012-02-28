@@ -69,7 +69,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private String okAnswer;
 	private String columnHeader;
 	private String uniqueCode;
-	private String title;
+	private TranslatableString title;
 	private TranslatableString requirement;
 	private String helpPage;
 	private TranslatableString helpText;
@@ -263,13 +263,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 		this.uniqueCode = uniqueCode;
 	}
 
-	// @Deprecated
-	@Column(name = "title", length = 250)
-	public String getTitle() {
+	@Transient
+	public TranslatableString getTitle() {
 		return this.title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(TranslatableString title) {
 		this.title = title;
 	}
 
