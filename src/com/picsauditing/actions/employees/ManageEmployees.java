@@ -87,13 +87,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public void prepare() throws Exception {
 		checkPermissions();
 
-		if (id > 0)
+		if (getParameter("id") > 0) {
+			id = getParameter("id");
 			account = accountDAO.find(id);
+		}
 
 		if (account == null)
 			account = accountDAO.find(permissions.getAccountId());
 	}
-	
+
 	public void findAccount() {
 		if (audit != null) {
 			account = audit.getContractorAccount();
@@ -101,9 +103,9 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 		if (employee != null) {
 			account = employee.getAccount();
-		}		
+		}
 	}
-	
+
 	@Override
 	public String execute() throws Exception {
 		if (audit != null) {
@@ -162,8 +164,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
 		return redirect("ManageEmployees.action?"
-				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account=" + account.getId()) + "#employee="
-				+ employee.getId());
+				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
+						+ account.getId()) + "#employee=" + employee.getId());
 	}
 
 	public String delete() throws Exception {

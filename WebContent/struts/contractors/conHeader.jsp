@@ -514,7 +514,7 @@ function loadStatus(caoID){
 				</a>
 			</li>
 			<li>
-				<a href="ManageEmployees.action?id=<s:property value="id"/>">
+				<a href="ManageEmployees.action?account=<s:property value="id"/>">
 					<s:text name="global.Employees" />
 				</a>
 			</li>
