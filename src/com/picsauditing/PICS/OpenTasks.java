@@ -152,7 +152,6 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void gatherTasksAboutAudits() {
-		openReq = false;
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
 				if (isOpenTaskNeeded(conAudit, user, permissions)) {
@@ -214,6 +213,7 @@ public class OpenTasks extends TranslationActionSupport {
 	}
 
 	private void addAuditOpenTasks(ContractorAudit conAudit) {
+		openReq = false;
 		String auditName = getText(conAudit.getAuditType().getI18nKey("name"));
 		Object showAuditFor = (conAudit.getAuditFor() != null && !conAudit.getAuditFor().isEmpty()) ? 1 : 0;
 		String auditFor = conAudit.getAuditFor();
@@ -238,15 +238,12 @@ public class OpenTasks extends TranslationActionSupport {
 						.getId() == AuditType.WA_STATE_VERIFICATION && conAudit.hasCaoStatusAfter(AuditStatus.Pending)))
 				&& (conAudit.getAuditType().getId() != AuditType.SHELL_COMPETENCY_REVIEW)) {
 			if (conAudit.hasCaoStatus(AuditStatus.Submitted)) {
-				// Submitted
-				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
+						&& !conAudit.getAuditType().isCorIecWaState()) {
 					Integer conAuditID = conAudit.getId();
 					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
 							auditName, showAuditFor, auditFor);
-					if (conAudit.getAuditType().getId() == AuditType.COR) {
-						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
-								auditName, showAuditFor, auditFor);
-					}
+
 					if (!openReq) {
 						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
 						openReq = true;
@@ -256,8 +253,7 @@ public class OpenTasks extends TranslationActionSupport {
 					}
 					openTasks.add(text);
 				}
-			} else {
-				// Pending
+			} else if (conAudit.hasCaoStatus(AuditStatus.Pending)) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 					String text = "";
 					if (conAudit.getAuditType().getId() == AuditType.OFFICE && conAudit.getScheduledDate() == null) {
@@ -288,6 +284,24 @@ public class OpenTasks extends TranslationActionSupport {
 							if (conAudit.getAuditType().isImplementation()) {
 								text += "<br/>" + getText("ContractorWidget.message.ImplementationAuditNote");
 							}
+						}
+					}
+					openTasks.add(text);
+				}
+			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
+				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
+					Integer conAuditID = conAudit.getId();
+					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
+							auditName, showAuditFor, auditFor);
+					if (conAudit.getAuditType().getId() == AuditType.COR) {
+						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
+								auditName, showAuditFor, auditFor);
+					}
+					if (!openReq) {
+						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
+						openReq = true;
+						if (conAudit.getAuditType().isDesktop()) {
+							text += "<br/>" + getText("ContractorWidget.message.ManualAuditNote");
 						}
 					}
 					openTasks.add(text);
@@ -353,7 +367,8 @@ public class OpenTasks extends TranslationActionSupport {
 						}
 					}
 					if ((conAudit.getAuditType().getId() == AuditType.COR || conAudit.getAuditType().getId() == AuditType.IEC_AUDIT)
-							&& conAudit.hasCaoStatus(AuditStatus.Submitted)) {
+							&& (conAudit.hasCaoStatus(AuditStatus.Resubmitted) || conAudit
+									.hasCaoStatus(AuditStatus.Incomplete))) {
 						needed++;
 					}
 

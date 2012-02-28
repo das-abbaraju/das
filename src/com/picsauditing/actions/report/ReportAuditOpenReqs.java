@@ -12,7 +12,7 @@ public class ReportAuditOpenReqs extends ReportContractorAuditOperator {
 		sql.addJoin("JOIN contractor_audit_file caf on caf.auditID = ca.id");
 		sql.addJoin("JOIN workflow wf ON wf.id = atype.workflowID");
 		sql.addWhere("ca.closingAuditorID=" + permissions.getUserId() + " OR (ca.closingAuditorID IS NULL AND ca.auditorID=" + permissions.getUserId()+")");
-		sql.addWhere("cao.status = 'Submitted'");
+		sql.addWhere("cao.status IN ('Submitted', 'Resubmitted')");
 		sql.addWhere("wf.hasRequirements");
 		sql.addWhere("caf.reviewed = 0");
 		sql.addWhere("a.status = 'Active'");

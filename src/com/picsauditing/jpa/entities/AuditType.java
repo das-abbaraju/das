@@ -315,6 +315,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 	}
 
 	@Transient
+	public boolean isCorIecWaState() {
+		return (id == COR || id == IEC_AUDIT || id == WA_STATE_VERIFICATION);
+	}
+
+	@Transient
 	public boolean isExtractable() {
 		return (id == CAN_QUAL_PQF || id == COMPLYWORKS_PQF || id == ISN_CAN_QUAL_PQF || id == ISN_US_PQF);
 	}
