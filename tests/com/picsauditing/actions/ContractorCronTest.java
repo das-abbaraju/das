@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.AuditStatus;
@@ -422,7 +423,7 @@ public class ContractorCronTest {
 			audit.setExpiresDate(expiresDate);
 			ContractorAuditOperator cao = new ContractorAuditOperator();
 			cao.setStatus(auditStatus);
-			audit.setOperators(Utilities.toList(cao));
+			audit.setOperators(Lists.newArrayList(cao));
 			
 			AuditType auditType = new AuditType(id);
 			auditType.setClassType(auditTypeClass);
