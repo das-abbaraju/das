@@ -299,6 +299,11 @@
 			<result>/struts/contractors/contractor_operator_numbers.jsp</result>
 			<result name="input">/struts/contractors/contractor_operator_numbers_form.jsp</result>
 		</action>
+		
+		<!-- Contractor Badge -->
+		<action name="ContractorBadge" class="com.picsauditing.actions.contractors.ContractorBadge">
+			<result>/struts/contractors/contractor_badge.jsp</result>
+		</action>
 
 		<action name="AuditPdfConverter" class="com.picsauditing.actions.contractors.AuditPdfConverter">
 			<result>struts/blank.jsp</result>
