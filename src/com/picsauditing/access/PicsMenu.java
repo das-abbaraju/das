@@ -336,7 +336,7 @@ public class PicsMenu {
 			menuItems.put("Category Rules", "CategoryRuleSearch.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit)) {
-			menuItems.put("Audit Category Matrix", "AuditCategoryMatrix.action");
+			menuItems.put(getTitle("AuditCategoryMatrix"), "AuditCategoryMatrix.action");
 		}
 		if (permissions.hasPermission(OpPerms.ManageAuditWorkFlow))
 			menuItems.put("Manage Workflow", "ManageAuditWorkFlow.action");

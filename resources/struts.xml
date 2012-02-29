@@ -1541,11 +1541,10 @@
 			<result>struts/reports/audit_rule_history_data.jsp</result>
 		</action>
 
-		<action name="AuditCategoryMatrix"
-			class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
+		<action name="AuditCategoryMatrix" class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
 			<result>struts/audits/audit_cat_matrix.jsp</result>
-			<result name="toggle">struts/audits/audit_cat_matrix_categories.jsp
-			</result>
+			<result name="filters">struts/audits/audit_cat_matrix_filters.jsp</result>
+			<result name="toggle">struts/audits/audit_cat_matrix_categories.jsp</result>
 			<result name="table">struts/audits/audit_cat_matrix_table.jsp</result>
 		</action>
 
@@ -2249,35 +2248,29 @@
 		</action>
 
 		<!-- Competencies -->
-		<action name="JobCompetencyMatrix"
-			class="com.picsauditing.actions.employees.JobCompetencyMatrix">
+		<action name="JobCompetencyMatrix" class="com.picsauditing.actions.employees.JobCompetencyMatrix">
 			<result>/struts/employees/job_competency_matrix.jsp</result>
 		</action>
 
-		<action name="EmployeeCompetencies"
-			class="com.picsauditing.actions.employees.EmployeeCompetencies">
+		<action name="EmployeeCompetencies" class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<param name="filter.destinationAction">EmployeeCompetencies</param>
 			<result>/struts/employees/employee_competencies.jsp</result>
 		</action>
 		
-		<action name="EmployeeCompetenciesCSV"
-			class="com.picsauditing.actions.employees.EmployeeCompetencies">
+		<action name="EmployeeCompetenciesCSV" class="com.picsauditing.actions.employees.EmployeeCompetencies">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="DefineCompetencies"
-			class="com.picsauditing.actions.employees.DefineCompetencies">
+		<action name="DefineCompetencies" class="com.picsauditing.actions.employees.DefineCompetencies">
 			<result>struts/employees/op_define_competencies.jsp</result>
 		</action>
 
-		<action name="CategorySuggestAjax"
-			class="com.picsauditing.actions.employees.CategorySuggest">
+		<action name="CategorySuggestAjax" class="com.picsauditing.actions.employees.CategorySuggest">
 			<result>struts/employees/category_suggest.jsp</result>
 		</action>
 
-		<action name="ManageJobRoles"
-			class="com.picsauditing.actions.employees.ManageJobRoles">
+		<action name="ManageJobRoles" class="com.picsauditing.actions.employees.ManageJobRoles">
 			<result>struts/employees/manage_roles.jsp</result>
 			<result name="role">struts/employees/manage_roles_role.jsp</result>
 			<result name="competencies">struts/employees/manage_roles_competencies.jsp</result>
@@ -2289,8 +2282,7 @@
 			<result>struts/employees/role_suggest.jsp</result>
 		</action>
 
-		<action name="ReportEmployeeTurnover"
-			class="com.picsauditing.actions.report.ReportEmployeeTurnover">
+		<action name="ReportEmployeeTurnover" class="com.picsauditing.actions.report.ReportEmployeeTurnover">
 			<result>struts/reports/report_employee_turnover.jsp</result>
 		</action>
 
@@ -2306,8 +2298,7 @@
 		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
 		</action>
 
-		<action name="CertHashUtil"
-			class="com.picsauditing.actions.contractors.CertHashUtil">
+		<action name="CertHashUtil" class="com.picsauditing.actions.contractors.CertHashUtil">
 			<result>struts/contractors/cert_convert.jsp</result>
 		</action>
 
@@ -2318,8 +2309,7 @@
 
 		<!-- Remember to Categorize your new Struts pages -->
 
-		<action name="FileIndexingEngine"
-			class="com.picsauditing.actions.files.FileIndexingEngine">
+		<action name="FileIndexingEngine" class="com.picsauditing.actions.files.FileIndexingEngine">
 			<result>/struts/blank.jsp</result>
 		</action>
 
