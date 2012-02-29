@@ -130,6 +130,16 @@ public enum AuditStatus implements Translatable {
 		return false;
 	}
 	
+	public boolean isPendingIncompleteResubmit() {
+		if (this.equals(Pending))
+			return true;
+		if (this.equals(Incomplete))
+			return true;
+		if (this.equals(Resubmit))
+			return true;
+		return false;
+	}
+	
 	public boolean isResubmit() {
 		if(this.equals(Resubmit))
 			return true;

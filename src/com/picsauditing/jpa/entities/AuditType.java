@@ -324,6 +324,11 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 		return (id == CAN_QUAL_PQF || id == COMPLYWORKS_PQF || id == ISN_CAN_QUAL_PQF || id == ISN_US_PQF);
 	}
 
+	@Transient
+	public boolean isEmployeeSpecificAudit() {
+		return classType.isImEmployee() && (id != HSE_COMPETENCY && id != HSE_COMPETENCY_REVIEW);
+	}
+	
 	@Override
 	public int compareTo(AuditType o) {
 		return this.getName().compareTo(o.getName());

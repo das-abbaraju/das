@@ -346,6 +346,11 @@ public class Employee extends AbstractIndexableTable {
 	public String getType() {
 		return "EMPLOYEE";
 	}
+	
+	@Transient
+	public String getNameTitle() {
+		return (firstName + " " + lastName).trim() + " / " + title.trim();
+	}
 
 	@Transient
 	public String getIndexType() {

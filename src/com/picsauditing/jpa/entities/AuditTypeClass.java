@@ -24,6 +24,11 @@ public enum AuditTypeClass implements Translatable {
 	public boolean isIm() {
 		return IM == this;
 	}
+	
+	public boolean isImEmployee() {
+		return IM == this || Employee == this;
+	}
+	
 	@Transient
 	@Override
 	public String getI18nKey() {
