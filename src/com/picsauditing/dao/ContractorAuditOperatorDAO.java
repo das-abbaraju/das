@@ -169,7 +169,7 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public void resetRenewableAudits() throws SQLException {
 		String sql = "";
-		String where = "ca.expiresDate BETWEEN DATE_SUB(NOW(),interval 7 day) AND DATE_ADD(NOW(),interval 1 day) and atype.renewable = 1";
+		String where = "ca.expiresDate BETWEEN DATE_SUB(NOW(),interval 7 day) AND NOW() and atype.renewable = 1";
 		Database db = new Database();
 		// post contractor audit workflow for renewable audits
 		sql = "INSERT INTO contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "
