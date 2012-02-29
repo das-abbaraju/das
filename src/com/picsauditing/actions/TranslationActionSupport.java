@@ -2,6 +2,7 @@ package com.picsauditing.actions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
 
@@ -187,6 +189,27 @@ public class TranslationActionSupport extends ActionSupport {
 	public String getText(String key, String[] args) {
 		return getText(key, null, args);
 	}
+	
+	public Map<String, String> findAllTranslations(String key) {
+        return findAllTranslations(key, true);
+    }
+	
+	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
+        Map<String, String> translationMap = i18nCache.getText(key);
+        Map<String, String> newTranslationMap = new HashMap<String, String>();
+        
+        for (Map.Entry<String, String> entry : translationMap.entrySet()) {
+            newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
+        }
+        
+        if (!includeLocaleStatic) {
+            newTranslationMap.remove(getLocaleStatic().getDisplayLanguage());
+        }
+        
+        Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
+        
+        return sortedTranslationMap;
+    }
 
 	@Override
 	public ResourceBundle getTexts() {

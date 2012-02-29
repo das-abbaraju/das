@@ -91,6 +91,11 @@
 					<li>
 						<label>Category Name:</label>
 						<s:textfield name="category.name" />
+                        
+                        <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
+                            <s:param name="translation_key">AuditCategory.${category.id}.name</s:param>
+                            <s:param name="include_locale_static">true</s:param>
+                        </s:include>
 					</li>
 					<li>
 						<a class="edit translate" href="ManageTranslations.action?button=Search&key=AuditCategory.<s:property value="category.id"/>." target="_BLANK">

@@ -256,6 +256,11 @@
             		<li>
                         <label>Question Text:</label>
             			<s:textarea name="question.name" rows="8" />
+                        
+                        <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
+                            <s:param name="translation_key">AuditQuestion.${question.id}.name</s:param>
+                            <s:param name="include_locale_static">true</s:param>
+                        </s:include>
             		</li>
             		<li>
                         <label>Title:</label>
@@ -434,6 +439,11 @@
             		<li>
                         <label>Requirement</label>
             			<s:textarea name="question.requirement" />
+                        
+                        <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
+                            <s:param name="translation_key">AuditQuestion.${question.id}.requirement</s:param>
+                            <s:param name="include_locale_static">true</s:param>
+                        </s:include>
             		</li>
             		<li>
                         <label>Flaggable:</label>
@@ -522,6 +532,11 @@
             		<li>
                         <label>Help Text:</label>
             			<s:textarea name="question.helpText" rows="4"></s:textarea>
+                        
+                        <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
+                            <s:param name="translation_key">AuditQuestion.${question.id}.helpText</s:param>
+                            <s:param name="include_locale_static">true</s:param>
+                        </s:include>
             		</li>
             	</ol>
         	</fieldset>

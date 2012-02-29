@@ -1444,3 +1444,44 @@ div.blockDialog {
 {
 	font-weight: bold;
 }
+
+/* translation list summary */
+
+.translation-list-summary
+{
+	border: 1px solid #404040;
+}
+
+.translation-list-summary h1
+{
+	background: #B7D2F2;
+	border: 0px;
+	border-bottom: 1px solid #404040;
+	color: #404040;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	letter-spacing: 0px;
+	margin: 0px;
+	padding: 5px;
+	text-decoration: none;
+}
+
+.translation-list-summary ul
+{
+	list-style-type: none;
+}
+
+.translation-list-summary ul,
+.translation-list-summary li
+{
+	float: none !important;
+	font-size: 10px !important;
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+.translation-list-summary li
+{
+	line-height: normal;
+	padding: 5px !important;
+}
