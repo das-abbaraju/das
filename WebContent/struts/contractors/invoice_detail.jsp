@@ -87,19 +87,17 @@
 					<td>
 						<table width="100%">
 							<tr>
-								<td width="100">
-									<img src="images/logo_sm.png" alt="image" width="100" height="31" />
-								</td>
-								<td style="padding: 10px;">
-									<s:if test="invoice.currency.CAD">
-										<s:text name="global.PICSCanadaAddress"/>
-									</s:if>
-									<s:elseif test="invoice.currency.GBP">
-										<s:text name="global.PICSUnitedKingdomAddress"/>
-									</s:elseif>
-									<s:else>
-										<s:text name="global.PICSUnitedStatesAddress"/>
-									</s:else>
+								<td width="100" colspan="2">
+									<img src="images/logo_sm.png" alt="image" width="100" height="31" /><br/>
+                                    <s:if test="invoice.currency.CAD">
+                                        <s:text name="global.PICSCanadaMailingAddress"/>
+                                    </s:if>
+                                    <s:elseif test="invoice.currency.GBP">
+                                        <s:text name="global.PICSUnitedKingdomMailingAddress"/>
+                                    </s:elseif>
+                                    <s:else>
+                                        <s:text name="global.PICSUnitedStatesMailingAddress"/>
+                                    </s:else>
 								</td>
 								<td width="400">   
 									<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
@@ -379,6 +377,13 @@
 						</table>
 					</td>
 				</tr>
+                <s:if test="invoice.currency.GBP">
+                    <tr>
+                        <td style="padding: 15px;">
+                            <s:text name="global.UKRegisteredOffice" />
+                        </td>
+                    </tr>
+                </s:if>
 				<tr>
 					<td style="padding: 15px;">
 						<s:text name="InvoiceDetail.Comments" />
@@ -398,9 +403,11 @@
 								<th width="25%">
 									<s:text name="InvoiceDetail.Phone" />
 								</th>
-								<th width="25%">
-									<s:text name="InvoiceDetail.Fax" />
-								</th>
+                                <s:if test="!invoice.currency.GBP">
+    								<th width="25%">
+    									<s:text name="InvoiceDetail.Fax" />
+    								</th>
+                                </s:if>
 								<th width="25%">
 									<s:text name="InvoiceDetail.Email" />
 								</th>
@@ -410,11 +417,21 @@
 							</tr>
 							<tr>
 								<td class="center">
-									<s:text name="PicsPhone" />
+                                    <s:if test="invoice.currency.CAD">
+                                        <s:text name="global.PicsCanadaBillingPhone"/>
+                                    </s:if>
+                                    <s:elseif test="invoice.currency.GBP">
+                                        <s:text name="global.PicsGreatBritainBillingPhone"/>
+                                    </s:elseif>
+                                    <s:else>
+                                        <s:text name="PicsBillingPhone"/>
+                                    </s:else>
 								</td>
-								<td class="center">
-									<s:text name="PicsBillingFax" />
-								</td>
+                                <s:if test="!invoice.currency.GBP">
+    								<td class="center">
+    									<s:text name="PicsBillingFax" />
+    								</td>
+                                </s:if>
 								<td class="center">
 									billing@picsauditing.com
 								</td>
