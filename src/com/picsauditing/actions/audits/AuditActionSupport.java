@@ -48,7 +48,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
-import com.picsauditing.util.ExpireUneededAnnualUpdates;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
