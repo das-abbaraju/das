@@ -23,13 +23,6 @@
 		<script type="text/javascript">
 			var ccNumber = '${ccNumber}';
 			
-			$.ajax({
-				url: "BillingAddress.action?country=" + '<s:property value="country" />',
-				success: function(data){
-					$("#billingAddress").html(data);
-				}	
-			});
-			
 			$('a.save').live('click', function(event) {
 				event.preventDefault();
 				
@@ -97,9 +90,18 @@
 								<td width="100">
 									<img src="images/logo_sm.png" alt="image" width="100" height="31" />
 								</td>
-								<td style="padding: 10px;" id="billingAddress">
+								<td style="padding: 10px;">
+									<s:if test="invoice.currency.CAD">
+										<s:text name="global.PICSCanadaAddress"/>
+									</s:if>
+									<s:elseif test="invoice.currency.GBP">
+										<s:text name="global.PICSUnitedKingdomAddress"/>
+									</s:elseif>
+									<s:else>
+										<s:text name="global.PICSUnitedStatesAddress"/>
+									</s:else>
 								</td>
-								<td width="400">
+								<td width="400">   
 									<table width="100%" border="0" cellspacing="0" cellpadding="4" class="allborder">
 										<tr>
 											<th>
