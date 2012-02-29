@@ -103,7 +103,7 @@ public enum QuestionFunction {
 			int injuries= Integer.parseInt(params.get("injuries"));
 			int totalCases = fatalities + lostWorkdayCases + restrictedCases + injuries;
 			
-			return calculateOSHARate(totalCases, manHours);
+			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -122,7 +122,7 @@ public enum QuestionFunction {
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
 			
-			return calculateOSHARate(lostWorkdayCases, manHours);
+			return calculateRate(lostWorkdayCases, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -141,7 +141,7 @@ public enum QuestionFunction {
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
 			
-			return calculateOSHARate(restrictedCases, manHours);	
+			return calculateRate(restrictedCases, manHours, OSHA_NORMALIZER);	
 		}
 	},
 	/**
@@ -164,7 +164,7 @@ public enum QuestionFunction {
 			
 			int totalCases = lostWorkdayCases + restrictedCases;
 			
-			return calculateOSHARate(totalCases, manHours);
+			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
@@ -183,7 +183,7 @@ public enum QuestionFunction {
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int fatalities = Integer.parseInt(params.get("fatalities"));
 			
-			return calculateOSHARate(fatalities, manHours);	
+			return calculateRate(fatalities, manHours, OSHA_NORMALIZER);	
 		}
 	},
 	/**
@@ -202,12 +202,12 @@ public enum QuestionFunction {
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
 			
-			return calculateOSHARate(lostWorkdays, manHours);	
+			return calculateRate(lostWorkdays, manHours, OSHA_NORMALIZER);	
 		}
 	},
 	/**
 	 * US Annual Update Severity Rate
-	 * PICS Severity Rate  = (Lost Workdays (K) + Restricted Days (L) / Total Man Hours) * 200,000
+	 * PICS Severity Rate  = ((Lost Workdays (K) + Restricted Days (L)) / Total Man Hours) * 200,000
 	 */
 	PICS_SEVERITY_RATE {
 		@Override
@@ -224,12 +224,12 @@ public enum QuestionFunction {
 			int restrictedDays = Integer.parseInt(params.get("restrictedDays"));
 			int totalDays = lostWorkdays + restrictedDays;
 			
-			return calculateOSHARate(totalDays, manHours);	
+			return calculateRate(totalDays, manHours, OSHA_NORMALIZER);	
 		}
 	},
 	/**
 	 * UK Annual Update Incidence Frequency Rate
-	 * IFR = (fatalities + major injuries + non injuries / number of employees) X 100,000
+	 * IFR = ((fatalities + major injuries + non injuries) / number of employees) X 100,000
 	 */
 	IFR {
 		@Override
@@ -306,6 +306,45 @@ public enum QuestionFunction {
 		}
 		
 	},
+	/**
+	 * France Annual Update
+	 * AFR = ((Deaths + Lost Time Injuries) x  1,000,000 / Total Hours)
+	 */
+	FRANCE_AFR {
+		@Override
+		public Object calculate(FunctionInput input) {	
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("deaths"))
+					|| Strings.isEmpty(params.get("lostTimeInjuries")))
+				return "Audit.missingParameter";
+
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int totalCases = Integer.parseInt(params.get("deaths")) + Integer.parseInt(params.get("lostTimeInjuries"));
+			
+			return calculateRate(totalCases, manHours, FRANCE_NORMALIZER);	
+		}
+	},
+	/**
+	 * France Annual Update
+	 * AFR = ((Deaths + Lost Time Injuries) x  1,000,000 / Total Hours)
+	 */
+	FRANCE_LWR {
+		@Override
+		public Object calculate(FunctionInput input) {	
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("manHours"))
+					|| Strings.isEmpty(params.get("lostWorkDays")))
+				return "Audit.missingParameter";
+
+			int manHours = Integer.parseInt(params.get("manHours"));
+			int lostWorkDays = Integer.parseInt(params.get("lostWorkDays"));
+			
+			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);	
+		}
+	},
 	SCORE {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -377,6 +416,9 @@ public enum QuestionFunction {
 	
 	// UK HSE standard normalizer.
 	private static final BigDecimal UK_NORMALIZER = new BigDecimal(100000);
+	
+	// France HSE standard normalizer.
+	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000000);
 
 	public abstract Object calculate(FunctionInput input)  throws NumberFormatException;;
 
@@ -442,14 +484,14 @@ public enum QuestionFunction {
 
 		return params;
 	}
-	protected Object calculateOSHARate(int totalCases, int manHours) {
+	protected Object calculateRate(int totalCases, int manHours, BigDecimal normalizer) {
 		
 		BigDecimal cases = new BigDecimal(totalCases).setScale(7);
 		BigDecimal hours = new BigDecimal(manHours).setScale(7);
 
 		BigDecimal result;
 		try {
-			result = OSHA_NORMALIZER.multiply(
+			result = normalizer.multiply(
 					cases.divide(hours,7,
 							BigDecimal.ROUND_HALF_UP)).setScale(2);
 		} catch (java.lang.ArithmeticException e) {
