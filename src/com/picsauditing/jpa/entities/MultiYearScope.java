@@ -9,7 +9,8 @@ public enum MultiYearScope {
 	LastYearOnly("Last Year Only"),
 	TwoYearsAgo("Two Years Ago"),
 	ThreeYearsAgo("Three Years Ago"),
-	ThreeYearAverage("Three Year Average");
+	ThreeYearAverage("Three Year Average"),
+	ThreeYearAggregate("Three Year Aggregate");
 
 	@Deprecated
 	private String description;

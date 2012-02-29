@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.flags.MultiYearFlagCalculator;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -179,9 +180,15 @@ public class ContractorFlagETL {
 							}
 						}
 					}
-				} else if (flagCriteria.getQuestion().getCategory() != null
+				}
+//				else if (flagCriteria.getQuestion().getAuditType() == null && flagCriteria.getQuestion() != null 
+//						&& flagCriteria.getMultiYearScope() != null) { 
+//					// TODO: add in the flag criteria to the changes
+//					MultiYearFlagCalculator.performCalculationForMultiYear(contractor, flagCriteria);
+//				} 
+				else if (flagCriteria.getQuestion().getCategory() != null
 						&& flagCriteria.getQuestion().getAuditType().isAnnualAddendum()) {
-					// Temp work around for flagging on the citation questions
+					// Temporary work around for flagging on the citation questions
 					// on Annual Updates
 
 					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
@@ -209,7 +216,7 @@ public class ContractorFlagETL {
 					if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
 						FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
 						if (flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
-							AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+							AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
 							AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 							if (amBest != null) {
 								if (flagCriteria.getCategory().equals("Insurance AMB Rating")) {
