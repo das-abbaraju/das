@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
@@ -26,6 +27,8 @@ public class WaitingOnWidget extends PicsActionSupport {
 			sql.addJoin("JOIN audit_type t ON t.id = a.auditTypeID");
 			sql.addJoin("JOIN accounts con ON con.id = a.conID");
 			sql.addJoin("JOIN contractor_audit_operator cao on cao.auditID = a.id");
+			sql.addWhere("con.status <> '" + AccountStatus.Deactivated + "'");
+			sql.addWhere("con.status <> '" + AccountStatus.Deleted + "'");
 			sql.addWhere("cao.visible = 1");
 			sql.addWhere("cao.percentComplete = 100");
 			sql.addWhere("cao.percentVerified < 100");
