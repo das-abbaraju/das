@@ -162,9 +162,9 @@ public enum QuestionFunction {
 			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
 			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
 			
-			int totalCases = lostWorkdayCases + restrictedCases;
+			int dartCases = lostWorkdayCases + restrictedCases;
 			
-			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
+			return calculateRate(dartCases, manHours, OSHA_NORMALIZER);
 		}
 	},
 	/**
