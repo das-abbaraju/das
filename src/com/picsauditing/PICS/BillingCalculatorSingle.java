@@ -174,7 +174,7 @@ public class BillingCalculatorSingle {
 		if (hasOq || hasHseCompetency || hasEmployeeAudits) {
 			// EmployeeGUARD HSE Contractors have a tiered pricing scheme
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.EmployeeGUARD, payingFacilities);
-			BigDecimal newAmount = newLevel.getAmount(contractor.getCountry());
+			BigDecimal newAmount = contractor.getCountry().getAmount(newLevel);
 
 			if (!hasHseCompetency && (hasEmployeeAudits || hasOq))
 				newAmount = BigDecimal.ZERO.setScale(2);
@@ -188,7 +188,7 @@ public class BillingCalculatorSingle {
 		if (contractor.getAccountLevel().equals(AccountLevel.ListOnly)) {
 			// Set list-only
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly, 1);
-			contractor.setNewFee(newLevel, newLevel.getAmount(contractor.getCountry()));
+			contractor.setNewFee(newLevel, contractor.getCountry().getAmount(newLevel));
 
 			// Turn off DocuGUARD fee
 			contractor.clearNewFee(FeeClass.DocuGUARD, feeDAO);
@@ -197,7 +197,7 @@ public class BillingCalculatorSingle {
 		} else if (contractor.getAccountLevel().isBidOnly()) {
 			// Set bid-only
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly, 1);
-			contractor.setNewFee(newLevel, newLevel.getAmount(contractor.getCountry()));
+			contractor.setNewFee(newLevel, contractor.getCountry().getAmount(newLevel));
 
 			// Turn off DocuGUARD fee
 			contractor.clearNewFee(FeeClass.DocuGUARD, feeDAO);
@@ -206,7 +206,7 @@ public class BillingCalculatorSingle {
 		} else {
 			// Turn on DocuGUARD fee
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD, payingFacilities);
-			contractor.setNewFee(newLevel, newLevel.getAmount(contractor.getCountry()));
+			contractor.setNewFee(newLevel, contractor.getCountry().getAmount(newLevel));
 
 			// Turn off bid-only
 			contractor.clearNewFee(FeeClass.BidOnly, feeDAO);
@@ -224,15 +224,15 @@ public class BillingCalculatorSingle {
 				importConFee.setAuditColumns();
 				importConFee.setContractor(contractor);
 				importConFee.setNewLevel(newLevel);
-				importConFee.setNewAmount(newLevel.getAmount(contractor.getCountry()));
+				importConFee.setNewAmount(contractor.getCountry().getAmount(newLevel));
 				importConFee.setCurrentLevel(currentLevel);
-				importConFee.setCurrentAmount(currentLevel.getAmount(contractor.getCountry()));
+				importConFee.setCurrentAmount(contractor.getCountry().getAmount(currentLevel));
 				importConFee.setFeeClass(FeeClass.ImportFee);
 				invoiceFeeDAO.save(importConFee);
 
 				contractor.getFees().put(FeeClass.ImportFee, importConFee);
 			} else {
-				contractor.setNewFee(newLevel, newLevel.getAmount(contractor.getCountry()));
+				contractor.setNewFee(newLevel, contractor.getCountry().getAmount(newLevel));
 			}
 		} else if (contractor.getFees().containsKey(FeeClass.ImportFee)) {
 			contractor.clearNewFee(FeeClass.ImportFee, feeDAO);
@@ -338,7 +338,7 @@ public class BillingCalculatorSingle {
 				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 				notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
 						+ contractor.getCountry().getCurrency().getSymbol()
-						+ activation.getAmount(contractor.getCountry()) + " to "
+						+ contractor.getCountry().getAmount(activation) + " to "
 						+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee() + ". ";
 			}
 		} else if (billingStatus.equals("Reactivation")) {
@@ -535,13 +535,13 @@ public class BillingCalculatorSingle {
 				}
 
 				// Activate effective today
-				items.add(new InvoiceItem(fee, fee.getAmount(contractor.getCountry()), new Date()));
+				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
 				// For Reactivation Fee and Reactivating Membership
 			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
 						.getPayingFacilities());
 				// Reactivate effective today
-				items.add(new InvoiceItem(fee, fee.getAmount(contractor.getCountry()), new Date()));
+				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
 			}
 		}
 	}

@@ -425,7 +425,8 @@ public class Cron extends PicsActionSupport {
 		Map<OperatorAccount, List<ContractorAccount>> clientSiteContractors = new HashMap<OperatorAccount, List<ContractorAccount>>();
 
 		for (ContractorAccount contractor : list) {
-			if (contractor.getPrimaryContact() != null && !emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
+			if (contractor.getPrimaryContact() != null
+					&& !emailExclusionList.contains(contractor.getPrimaryContact().getEmail())) {
 				OperatorAccount requestedByClientSite = contractor.getRequestedBy();
 
 				EmailBuilder emailBuilder = new EmailBuilder();
@@ -737,7 +738,7 @@ public class Cron extends PicsActionSupport {
 				InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.LateFee, ((ContractorAccount) i
 						.getAccount()).getPayingFacilities());
 				InvoiceItem lateFeeItem = new InvoiceItem(fee);
-				lateFeeItem.setAmount(fee.getAmount(i.getAccount().getCountry()));
+				lateFeeItem.setAmount(i.getAccount().getCountry().getAmount(fee));
 				lateFeeItem.setAuditColumns(new User(User.SYSTEM));
 				lateFeeItem.setInvoice(i);
 				lateFeeItem.setDescription("Assessed " + new SimpleDateFormat("MM/dd/yyyy").format(new Date())

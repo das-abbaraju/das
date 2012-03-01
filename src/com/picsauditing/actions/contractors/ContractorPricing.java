@@ -38,7 +38,7 @@ public class ContractorPricing extends ContractorActionSupport {
 		List<InvoiceFee> list = (List<InvoiceFee>) dao.findWhere(InvoiceFee.class,
 				"visible=1 and feeClass in ('AuditGUARD','InsureGUARD','DocuGUARD','EmployeeGUARD', 'Activation')", 0);
 		for (InvoiceFee fee : ((List<InvoiceFee>) list)) {
-			prices.put("" + fee.getMinFacilities() + fee.getFeeClass(), fee.getAmount(con.getCountry()));
+			prices.put("" + fee.getMinFacilities() + fee.getFeeClass(), con.getCountry().getAmount(fee));
 		}
 
 		return SUCCESS;

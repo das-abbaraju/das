@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Column;
@@ -11,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -33,9 +37,9 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	protected String french;
 	protected Double corruptionPerceptionIndex;
 	protected Currency currency = Currency.USD;
-	
 	protected User csr;
-	
+
+	private List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
 
 	public Country() {
 	}
@@ -115,12 +119,12 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 		return "???";
 	}
-	
-	@Column(name="perceivedCorruption")
+
+	@Column(name = "perceivedCorruption")
 	public Double getCorruptionPerceptionIndex() {
 		return this.corruptionPerceptionIndex;
 	}
-	
+
 	public void setCorruptionPerceptionIndex(Double corruptionPerceptionIndex) {
 		this.corruptionPerceptionIndex = corruptionPerceptionIndex;
 	}
@@ -143,6 +147,15 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 
 	public void setCsr(User csr) {
 		this.csr = csr;
+	}
+
+	@OneToMany(mappedBy = "country")
+	public List<InvoiceFeeCountry> getAmountOverrides() {
+		return this.amountOverrides;
+	}
+
+	public void setAmountOverrides(List<InvoiceFeeCountry> amountOverrides) {
+		this.amountOverrides = amountOverrides;
 	}
 
 	@Transient
@@ -224,14 +237,24 @@ public class Country extends BaseTranslatable implements Comparable<Country>, Se
 	public boolean isUAE() {
 		return "AE".equals(isoCode);
 	}
-	
+
 	@Transient
 	public boolean isUK() {
 		return "GB".equals(isoCode);
 	}
-	
+
 	@Transient
 	public boolean isFrance() {
 		return "FR".equals(isoCode);
+	}
+
+	@Transient
+	public BigDecimal getAmount(InvoiceFee invoiceFee) {
+		for (InvoiceFeeCountry countryFeeAmountOverride : getAmountOverrides()) {
+			if (countryFeeAmountOverride.getInvoiceFee().equals(invoiceFee))
+				return countryFeeAmountOverride.getAmount();
+		}
+
+		return invoiceFee.getAmount();
 	}
 }

@@ -53,7 +53,7 @@ public enum FeeClass implements Translatable {
 				}
 			}
 
-			return fee.getAmount(contractor.getCountry());
+			return contractor.getCountry().getAmount(fee);
 		}
 	},
 	EmployeeGUARD {
@@ -87,7 +87,7 @@ public enum FeeClass implements Translatable {
 			if (!hseCompetency && (employeeAudits || oq))
 				return BigDecimal.ZERO;
 
-			return fee.getAmount(contractor.getCountry());
+			return contractor.getCountry().getAmount(fee);
 		}
 	},
 	Activation,
@@ -122,7 +122,7 @@ public enum FeeClass implements Translatable {
 	}
 
 	public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-		return fee.getAmount(contractor.getCountry());
+		return contractor.getCountry().getAmount(fee);
 	}
 
 	@Override
@@ -148,8 +148,9 @@ public enum FeeClass implements Translatable {
 				// is it time to start charging this operator for insureguard?
 			} else if (contractor.isHasPaymentExpired() && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if (!contractor.isHasPaymentExpired() && (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
-					exclusionExpirationDate))) {
+			} else if (!contractor.isHasPaymentExpired()
+					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
+							exclusionExpirationDate))) {
 				return false;
 				// is the contractor a non-sole proprietor for Suncor?
 			} else if (operator.getTopAccount().getId() == OperatorAccount.SUNCOR && !contractor.getSoleProprietor()) {

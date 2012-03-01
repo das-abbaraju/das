@@ -357,7 +357,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		InvoiceItem newItem = new InvoiceItem();
 		InvoiceFee newFee = invoiceFeeDAO.find(feeId);
 		newItem.setInvoiceFee(newFee);
-		newItem.setAmount(newFee.getAmount(invoice.getAccount().getCountry()));
+		newItem.setAmount(invoice.getAccount().getCountry().getAmount(newFee));
 		newItem.setInvoice(invoice);
 		newItem.setAuditColumns(permissions);
 

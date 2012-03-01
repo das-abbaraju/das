@@ -30,7 +30,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Sort;
@@ -890,13 +889,13 @@ public class ContractorAccount extends Account implements JSONable {
 							foundListOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ListOnly,
 									getPayingFacilities());
-							setCurrentFee(fee, fee.getAmount(getCountry()));
+							setCurrentFee(fee, getCountry().getAmount(fee));
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.BidOnly)
 								&& !foundBidOnlyMembership) {
 							foundBidOnlyMembership = true;
 							InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,
 									getPayingFacilities());
-							setCurrentFee(fee, fee.getAmount(getCountry()));
+							setCurrentFee(fee, getCountry().getAmount(fee));
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.DocuGUARD)
 								&& !foundDocuGUARDMembership) {
 							foundDocuGUARDMembership = true;
@@ -911,15 +910,15 @@ public class ContractorAccount extends Account implements JSONable {
 								// paid legacy DocuGUARD fee.
 								InvoiceFee newDocuGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.DocuGUARD,
 										this.getPayingFacilities());
-								setCurrentFee(newDocuGUARDFee, newDocuGUARDFee.getAmount(getCountry()));
+								setCurrentFee(newDocuGUARDFee, getCountry().getAmount(newDocuGUARDFee));
 
 								foundInsureGUARDMembership = true;
 								InvoiceFee newInsureGUARDFee = feeDAO.findByNumberOfOperatorsAndClass(
 										FeeClass.InsureGUARD, this.getPayingFacilities());
-								setCurrentFee(newInsureGUARDFee, newInsureGUARDFee.getAmount(getCountry()));
+								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(), invoiceItem.getInvoiceFee().getAmount(
-										getCountry()));
+								setCurrentFee(invoiceItem.getInvoiceFee(), getCountry().getAmount(
+										invoiceItem.getInvoiceFee()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -949,12 +948,12 @@ public class ContractorAccount extends Account implements JSONable {
 								foundDocuGUARDMembership = true;
 								InvoiceFee newDocuGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
 										FeeClass.DocuGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newDocuGUARDfee, newDocuGUARDfee.getAmount(getCountry()));
+								setCurrentFee(newDocuGUARDfee, getCountry().getAmount(newDocuGUARDfee));
 
 								foundInsureGUARDMembership = true;
 								InvoiceFee newInsureGUARDfee = feeDAO.findMembershipByLegacyAuditGUARDID(
 										FeeClass.InsureGUARD, invoiceItem.getInvoiceFee());
-								setCurrentFee(newInsureGUARDfee, newInsureGUARDfee.getAmount(getCountry()));
+								setCurrentFee(newInsureGUARDfee, getCountry().getAmount(newInsureGUARDfee));
 							}
 						} else if (invoiceItem.getInvoiceFee().getFeeClass().equals(FeeClass.InsureGUARD)
 								&& !foundInsureGUARDMembership) {
@@ -989,7 +988,7 @@ public class ContractorAccount extends Account implements JSONable {
 							&& getFees().containsKey(FeeClass.ImportFee)) {
 						InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 						foundImportPQFFee = true;
-						setCurrentFee(fee, fee.getAmount(getCountry()));
+						setCurrentFee(fee, getCountry().getAmount(fee));
 					}
 				}
 
@@ -1549,19 +1548,19 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return operators;
 	}
-	
-	@Transient 
+
+	@Transient
 	public boolean meetsOperatorRequirements(OperatorAccount operator) {
 		boolean meetsOperatorsRequirements = false;
-		
+
 		Set<ContractorType> contractorTypes = getAccountTypes();
-		
+
 		for (ContractorType opType : operator.getAccountTypes()) {
 			if (contractorTypes.contains(opType))
 				meetsOperatorsRequirements = true;
 		}
-		
+
 		return meetsOperatorsRequirements;
 	}
-	
+
 }

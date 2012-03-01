@@ -97,7 +97,7 @@ public class BillingDetail extends ContractorActionSupport {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
 							+ contractor.getCountry().getCurrency().getSymbol()
-							+ activation.getAmount(contractor.getCountry()) + " to "
+							+ contractor.getCountry().getAmount(activation) + " to "
 							+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee()
 							+ ". ";
 				}
