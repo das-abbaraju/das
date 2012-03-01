@@ -508,7 +508,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			OshaOrganizer organizer = contractor.getOshaOrganizer();
 
 			OshaRateType[] oshaRateTypes = new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.TrirNaics,
-					OshaRateType.LwcrAbsolute, OshaRateType.Fatalities };
+					OshaRateType.LwcrAbsolute, OshaRateType.Fatalities, OshaRateType.Dart, OshaRateType.DartNaics };
 
 			prepopulateNotApplicableStats(oshaRateTypes);
 
@@ -554,6 +554,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (data.get(getText(OshaRateType.LwcrAbsolute.getDescriptionKey())) != null)
 				put(getText(OshaRateType.LwcrAbsolute.getDescriptionKey()), ind,
 						format(naicsDAO.getIndustryAverage(true, contractor.getNaics())));
+			
+			if (data.get(getText(OshaRateType.Dart.getDescriptionKey())) != null)
+				put(getText(OshaRateType.Dart.getDescriptionKey()), ind,
+						format(naicsDAO.getDartIndustryAverage(contractor.getNaics())));
 
 			Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 			for (ContractorOperator co : getActiveOperators()) {
@@ -566,7 +570,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 						if (OshaRateType.TrirAbsolute.equals(fco.getCriteria().getOshaRateType())
 								|| OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())
 								|| OshaRateType.TrirNaics.equals(fco.getCriteria().getOshaRateType())
-								|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())) {
+								|| OshaRateType.LwcrAbsolute.equals(fco.getCriteria().getOshaRateType())
+								|| OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
 							MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 							String auditFor = findAuditFor(organizer, scope);
 							if (auditFor != null) {
@@ -637,6 +642,10 @@ public class ContractorDashboard extends ContractorActionSupport {
 				float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " "
 						+ format(hurdle / 100 * naicsDAO.getIndustryAverage(false, contractor.getNaics())) + "</nobr>";
+			}else if (OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
+				float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
+				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getCriteria().getComparison() + " "
+						+ format(hurdle / 100 * naicsDAO.getDartIndustryAverage(contractor.getNaics())) + "</nobr>";
 			} else
 				return "<nobr class=\"" + fco.getFlag() + "\">" + fco.getShortDescription() + "</nobr>";
 		}
@@ -658,7 +667,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		private void buildRateTypeSet(Collection<OperatorAccount> operators) {
 			for (OshaRateType ort : Arrays.asList(OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute,
-					OshaRateType.Fatalities)) {
+					OshaRateType.Dart, OshaRateType.Fatalities)) {
 				if (data.get(getText(ort.getDescriptionKey())) != null) {
 					rateTypeSet.add(getText(ort.getDescriptionKey()));
 					for (OperatorAccount operatorAccount : operators) {
