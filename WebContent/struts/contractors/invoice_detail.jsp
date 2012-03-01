@@ -293,6 +293,7 @@
 											<s:text name="InvoiceDetail.OptionalDescription" />
 										</td>
 										<td class="right">
+                                            <s:property value="invoice.currency.symbol" />
 											<s:textfield value="%{amount}" size="6" name="invoice.items[%{#stat.index}].amount" />
 											<s:property value="invoice.currency"/>
 										</td>
@@ -302,6 +303,7 @@
 											<s:property value="description" />
 										</td>
 										<td class="right">
+                                            <s:property value="invoice.currency.symbol" />
 											<s:property value="amount" />
 											<s:property value="invoice.currency"/>
 										</td>
@@ -323,6 +325,7 @@
 									<s:text name="InvoiceDetail.InvoiceTotal" />
 								</th>
 								<td class="big right">
+                                    <s:property value="invoice.currency.symbol" />
 									<s:property value="invoice.totalAmount" />
 									<s:property value="invoice.currency"/>
 								</td>
@@ -357,6 +360,7 @@
 												</s:else>
 											</span>
 											<span class="big">
+                                                <s:property value="invoice.currency.symbol" />
 												(<s:property value="amount" />
 												<s:property value="invoice.currency"/>)
 											</span>
@@ -369,6 +373,7 @@
 										<s:text name="InvoiceDetail.Balance" />
 									</th>
 									<td class="big right">
+                                        <s:property value="invoice.currency.symbol" />
 										<s:property value="invoice.balance" />
 										<s:property value="invoice.currency"/>
 									</td>

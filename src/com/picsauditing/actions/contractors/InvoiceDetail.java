@@ -17,7 +17,6 @@ import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
@@ -55,8 +54,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private PaymentDAO paymentDAO;
-	@Autowired
-	private AppPropertyDAO appPropDao;
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
@@ -164,8 +161,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
 				message = getText("InvoiceDetail.message.ChangedLevel");
 
-				String notes = "Thank you for doing business with PICS!";
-				notes += billingService.getOperatorsString(contractor);
+				String notes = getText("Invoice.ThankYou");
+				notes += " "
+						+ getTextParameterized("Invoice.ClientSiteList", billingService.getOperatorsString(contractor));
 
 				invoice.setNotes(notes);
 				contractor.syncBalance();
@@ -188,7 +186,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 					message = getText("InvoiceDetail.message.SentEmail");
 
 				} catch (Exception e) {
-					message = getText("InvoiceDetail.message.EmailFail");
+					addActionError(getText("InvoiceDetail.message.EmailFail"));
 				}
 			}
 			if ("cancel".equals(button)) {

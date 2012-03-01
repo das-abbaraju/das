@@ -96,7 +96,8 @@ public class BillingDetail extends ContractorActionSupport {
 				if (contractor.hasReducedActivation(activation)) {
 					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-							+ contractor.getCountry().getCurrency().getSymbol() + activation.getAmount(contractor.getCountry()) + " to "
+							+ contractor.getCountry().getCurrency().getSymbol()
+							+ activation.getAmount(contractor.getCountry()) + " to "
 							+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee()
 							+ ". ";
 				}
@@ -123,7 +124,7 @@ public class BillingDetail extends ContractorActionSupport {
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
 			// End of Due date
 
-			notes += "Thank you for doing business with PICS!";
+			notes += getText("Invoice.ThankYou");
 			// AppProperty prop = appPropDao.find("invoice_comment");
 			// if (prop != null) {
 			// notes = prop.getValue();
@@ -136,7 +137,8 @@ public class BillingDetail extends ContractorActionSupport {
 					hasMembership = true;
 			}
 			if (hasMembership) {
-				notes += billingService.getOperatorsString(contractor);
+				notes += " "
+						+ getTextParameterized("Invoice.ClientSiteList", billingService.getOperatorsString(contractor));
 			}
 			invoice.setNotes(notes);
 

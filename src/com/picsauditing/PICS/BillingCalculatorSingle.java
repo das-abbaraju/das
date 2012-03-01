@@ -337,7 +337,8 @@ public class BillingCalculatorSingle {
 			if (contractor.hasReducedActivation(activation)) {
 				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
 				notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-						+ contractor.getCountry().getCurrency().getSymbol() + activation.getAmount(contractor.getCountry()) + " to "
+						+ contractor.getCountry().getCurrency().getSymbol()
+						+ activation.getAmount(contractor.getCountry()) + " to "
 						+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee() + ". ";
 			}
 		} else if (billingStatus.equals("Reactivation")) {
@@ -363,7 +364,7 @@ public class BillingCalculatorSingle {
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
 		// End of Due date
 
-		notes += "Thank you for doing business with PICS!";
+		notes += "Thank you for doing business with PICS.";
 		// AppProperty prop = appPropDao.find("invoice_comment");
 		// if (prop != null) {
 		// notes = prop.getValue();
@@ -376,7 +377,7 @@ public class BillingCalculatorSingle {
 				hasMembership = true;
 		}
 		if (hasMembership) {
-			notes += getOperatorsString(contractor);
+			notes += " You are listed with the following Client Site(s): " + getOperatorsString(contractor);
 		}
 		invoice.setNotes(notes);
 
@@ -572,7 +573,7 @@ public class BillingCalculatorSingle {
 
 		Collections.sort(operatorsString);
 
-		return " You are listed on the following operator list(s): " + Strings.implode(operatorsString, ", ");
+		return Strings.implode(operatorsString, ", ");
 	}
 
 	public void performInvoiceStatusChangeActions(Invoice invoice, TransactionStatus newStatus) {

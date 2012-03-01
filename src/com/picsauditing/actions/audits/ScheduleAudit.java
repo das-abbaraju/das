@@ -141,7 +141,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 				return "summary";
 			}
 		}
-		
+
 		if (conAudit.getScheduledDate() != null && conAudit.getScheduledDate().before(new Date()))
 			addActionMessage(getText("ScheduleAudit.message.AuditAppointmentPassed"));
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -565,7 +565,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setDueDate(new Date());
 		invoice.setTotalAmount(fee.getAmount(contractor.getCountry()));
-		invoice.setNotes(notes + " Thank you for doing business with PICS!");
+		invoice.setNotes(notes + " " + getText("Invoice.ThankYou"));
 		invoice.setAuditColumns(permissions);
 		invoice.setQbSync(true);
 		invoice = invoiceDAO.save(invoice);
