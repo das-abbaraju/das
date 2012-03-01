@@ -288,7 +288,7 @@
                 style_element.type = 'text/css';
                 
                 var css = [
-                    '.pics_badge_container { text-align: center; }',
+                    '.pics_badge_container { line-height: normal; text-align: center; }',
                     '.pics_badge_container a, .pics_badge_container img { border: 0px; color: #A94C0F; font-size: 8pt; line-height: 8pt; text-decoration: none; }',
                     '.pics_badge_container a:hover { text-decoration: underline; }'
                 ];
