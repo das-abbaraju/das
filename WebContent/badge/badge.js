@@ -4,12 +4,6 @@
  * badge.js include src: pb.src must contain pb-id hash 'badge.min.js#pb-id=MzpBbmNvbiBNYXJpbmU=';
  * where hash is base64("3:Ancon Marine");
  *
- * Remote server inclusion of PICS Badge
- * _pbq = {
- *     container_id: 'pics_badge_container',
- *     size: 80, 100, 150
- * };
- * 
  * Author: Carey Hinoki
  * Date: 2-27-2012
  * Version: 1.1
@@ -30,6 +24,23 @@
             
             return new F();
         };
+    }
+    
+    if (!document.getElementsByClassName) {
+        document.getElementsByClassName = function (cls) {
+            var all_elements = document.getElementsByTagName('*');
+            var found_elements = [];
+            var i = 0;
+            var element;
+            
+            while (element = all_elements[i++]) {
+                if (element.className == cls) {
+                    found_elements.push(element);
+                }
+            }
+            
+            return found_elements;
+        }
     }
     
     /**
@@ -176,21 +187,19 @@
         var config = {
             // badge
             badge_path: '//www.picsorganizer.com/badge/images/',
-            badge_size: _pbq.size || 80,
+            badge_size: 80,
             badge_url: '//www.picsauditing.com/',
             
             // general link
             path: '//www.picsauditing.com/contractor/',
             
             // html id
-            container_id: _pbq.container_id || 'pics_badge_container'
+            container_id: 'pics_badge_container'
         };
         
-        // script tag 
-        var scripts = document.getElementsByTagName('script');
-        var script_element = scripts[scripts.length - 1];
-        
         // element storage
+        var element;
+        var script_element;
         var style_element;
         var container_element;
         var badge_element;
@@ -199,8 +208,23 @@
         
         return {
             init: function () {
+                element = this.findBadgeElement();
+                
+                if (!element) {
+                    throw 'Unable to find contractor badge element';
+                }
+                
+                this.configureBadgeElement(element);
+                this.parseBadgeSize(element);
+                
+                script_element = this.findScriptElement(element);
+                
+                if (!script_element) {
+                    throw 'Unable to find contractor script element';
+                }
+                
                 // parse contractor id + name from hash include
-                this.parseContractorHash();
+                this.parseContractorHash(script_element.src);
                 
                 // create badge + link parts
                 this.initBadgeCSS();
@@ -212,10 +236,43 @@
                 this.render();
             },
             
-            parseContractorHash: function () {
-                var include = document.getElementById('pics_badge');
+            findBadgeElement: function () {
+                var elements = document.getElementsByClassName('pb-program');
+                
+                if (elements.length) {
+                    return elements[0];
+                } else {
+                    return null;
+                }
+            },
+            
+            configureBadgeElement: function (element) {
+                element.removeAttribute('class');
+            },
+            
+            findScriptElement: function (element) {
+                var element = element.nextSibling;
+                
+                if (element.nodeName && element.nodeName.toLowerCase() == 'script') {
+                    return element;
+                } else {
+                    while (element && element.nodeType != 1) {
+                        element = element.nextSibling;
+                    }
+                    
+                    return element;
+                }
+            },
+            
+            parseBadgeSize: function (element) {
+                var data_size = element.attributes['data-size'];
+                
+                config.badge_size = data_size ? data_size.value || 80 : 80;
+            },
+            
+            parseContractorHash: function (src) {
                 var a = document.createElement('a');
-                a.href = include.src;
+                a.href = src;
                 
                 // obtain hash from js inclusion
                 var decoded_hash = Base64.decode(a.hash.replace('#pb-id=', ''));
@@ -231,9 +288,9 @@
                 style_element.type = 'text/css';
                 
                 var css = [
-                    '#pics_badge_container { text-align: center; }',
-                    '#pics_badge_container a, #pics_badge_container img { border: 0px; color: #A94C0F; font-size: 8pt; text-decoration: none; }',
-                    '#pics_badge_container a:hover { text-decoration: underline; }'
+                    '.pics_badge_container { text-align: center; }',
+                    '.pics_badge_container a, .pics_badge_container img { border: 0px; color: #A94C0F; font-size: 8pt; line-height: 8pt; text-decoration: none; }',
+                    '.pics_badge_container a:hover { text-decoration: underline; }'
                 ];
                 
                 css = css.join('');
@@ -247,8 +304,9 @@
             
             initBadgeContainer: function () {
                 container_element = document.createElement('div');
-                container_element.id = config.container_id;
-                container_element.style.width = config.badge_size;
+                container_element.id = config.container_id + '_' + config.badge_size;
+                container_element.className = config.container_id;
+                container_element.style.width = config.badge_size + "px";
             },
             
             initBadge: function () {
@@ -264,10 +322,10 @@
                 badge_link_element.target = '_blank';
                 
                 switch (config.badge_size) {
-                    case 150:
+                    case '150':
                         logo = 'PICS-Seal-150x150.png';
                         break;
-                    case 100:
+                    case '100':
                         logo = 'PICS-Seal-100x100.png';
                         break;
                     default:
@@ -289,13 +347,16 @@
             }, 
             
             render: function () {
+                var parent_element = element.parentNode;
+                
                 document.getElementsByTagName('head')[0].appendChild(style_element);
                 
                 badge_link_element.appendChild(badge_element);
                 container_element.appendChild(badge_link_element);
                 container_element.appendChild(link_element);
                 
-                script_element.parentNode.insertBefore(container_element, script_element.nextSibling);
+                parent_element.replaceChild(container_element, element);
+                parent_element.removeChild(script_element);
             }
         }
     }()));

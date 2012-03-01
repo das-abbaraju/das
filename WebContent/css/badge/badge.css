@@ -1,0 +1,53 @@
+#ContractorBadge-page p
+{
+	
+}
+
+#ContractorBadge-page .badges
+{
+	list-style-type: none;
+}
+
+#ContractorBadge-page .badges li
+{
+	clear: both;
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+
+#ContractorBadge-page .badge
+{
+	float: left;
+	margin-right: 20px;
+	width: 200px;
+}
+
+#ContractorBadge-page .code
+{
+	float: left;
+}
+
+#ContractorBadge-page .code a
+{
+	font-size: 12px;
+}
+
+#ContractorBadge-page .badges .pics_badge_container
+{
+	margin: 0px auto;
+}
+
+#ContractorBadge-page .badges textarea
+{
+	height: 120px; width: 550px;
+}
+
+#ContractorBadge-page .badges .clip_container
+{
+	position: relative;	
+}
+
+#ContractorBadge-page .badges .clip_container embed
+{
+	float: left;
+}

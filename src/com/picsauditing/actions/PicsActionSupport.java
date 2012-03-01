@@ -395,13 +395,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getRequestHost() {
-		// generate requestHost for logo path definition
-		String requestURL = getRequestURL().toString();
-		String requestURI = getRequestURI();
-		String requestHost = requestURL.replace(requestURI, "");
+        String requestURL = getRequestURL().toString();
+        String requestURI = getRequestURI();
+        String requestHost = requestURL.replace(requestURI, "");
 
-		return requestHost;
-	}
+        return requestHost;
+    }
+	
+	public String getRequestHostActual() {
+        String requestHost = getRequestHost();
+        
+        if (isLocalhostEnvironment()) {
+            requestHost += "/picsWeb2";
+        }
+
+        return requestHost;
+    }
 
 	public String getRequestString() {
 		return requestURL;
