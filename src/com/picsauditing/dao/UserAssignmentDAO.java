@@ -96,7 +96,7 @@ public class UserAssignmentDAO extends PicsDAO {
 		// For these 3 cases, the contractor has to be null
 		where += " AND contractor IS NULL";
 		// contractor is used as an override. this has the highest priority.
-		where = "(" + where + ")" + " OR contractor.id = :conID";
+		where = "(" + where  + " OR contractor.id = :conID" + ")";
 
 		if (type != null)
 			where = "assignmentType = '" + type + "' AND " + where;
