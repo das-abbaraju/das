@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.flags.MultiYearFlagCalculator;
+import com.picsauditing.PICS.flags.MultiYearValueCalculator;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -176,16 +176,18 @@ public class ContractorFlagETL {
 								flagCriteriaContractor.setAnswer(parseAnswer(flagCriteria, data));
 								flagCriteriaContractor.setAnswer2("for Year: " + annualUpdate.getAuditFor());
 								changes.add(flagCriteriaContractor);
-								break;
+								break;	
 							}
 						}
 					}
-				}
-//				else if (flagCriteria.getQuestion().getAuditType() == null && flagCriteria.getQuestion() != null 
-//						&& flagCriteria.getMultiYearScope() != null) { 
-//					// TODO: add in the flag criteria to the changes
-//					MultiYearFlagCalculator.performCalculationForMultiYear(contractor, flagCriteria);
-//				} 
+				} else if (flagCriteria.getMultiYearScope() != null &&
+						(flagCriteria.getQuestion().getId() == 11046 ||
+						flagCriteria.getQuestion().getId() == 3547)) {					
+					FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+							flagCriteria, "");
+					flagCriteriaContractor.setAnswer(MultiYearValueCalculator.returnValueForMultiYear(contractor, flagCriteria));
+					changes.add(flagCriteriaContractor);
+				} 
 				else if (flagCriteria.getQuestion().getCategory() != null
 						&& flagCriteria.getQuestion().getAuditType().isAnnualAddendum()) {
 					// Temporary work around for flagging on the citation questions
