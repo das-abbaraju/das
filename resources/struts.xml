@@ -309,6 +309,10 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
+		<action name="ContractorCertificate" class="com.picsauditing.actions.contractors.ContractorCertificate">
+			<result>struts/blank.jsp</result>
+		</action>
+
 		<action name="TagNameEditAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>struts/contractors/contractorOperator_tags.jsp</result>
 		</action>

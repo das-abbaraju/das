@@ -436,7 +436,8 @@
 								
 								<p>
 									<s:text name="ContractorView.MemberSince" />:
-									<strong><s:date name="contractor.membershipDate" /></strong>
+									<strong><s:date name="contractor.membershipDate" /></strong>&nbsp;&nbsp;
+									<a class="pdf" href="ContractorCertificate.action?id=<s:property value="contractor.id" />"><s:text name="ContractorDashboard.DownloadCertificate" /></a>
 								</p>
 								
 								<p>
