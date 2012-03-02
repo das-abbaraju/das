@@ -85,7 +85,6 @@ public class I18nCache implements Serializable {
 			Database db = new Database();
 			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key) + "'";
 			cacheUsage.put(key, new Date());
-			System.out.println("updated lastUsed for " + key);
 			try {
 				db.execute(sql);
 			} catch (SQLException e) {

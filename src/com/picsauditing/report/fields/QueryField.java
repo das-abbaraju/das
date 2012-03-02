@@ -1,5 +1,6 @@
 package com.picsauditing.report.fields;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,7 +37,7 @@ public class QueryField implements JSONAware {
 	private String preTranslation;
 	private String postTranslation;
 	private FieldCategory category = FieldCategory.General;
-	private Set<OpPerms> requiredPermissions;
+	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
 
 	// xtype : 'actioncolumn',
 	/*
