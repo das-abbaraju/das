@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
@@ -379,6 +380,24 @@ public class AuditDataSave extends AuditActionSupport {
 			if (!DateBean.isNullDate(creationDate))
 				tempAudit.setCreationDate(creationDate);
 			auditDao.save(tempAudit);
+		}
+		
+		// In the case when a contractor answers "No" to the question "Does your company own or operate any commercial vehicles?"
+		if ("AutomobileLiabilityNotApplicable".equals(auditData.getQuestion().getUniqueCode()) 
+				&& !StringUtils.isEmpty(auditData.getAnswer()) && "No".equals(auditData.getAnswer())) {
+			Date today = new Date();
+			tempAudit.setExpiresDate(DateBean.getFirstOfNextYear(today));
+			
+			// Revisit this to make sure that only the CAOs for Operators not requiring Auto Liability for all Contractors
+			// is set to "N/A"
+			List<ContractorAuditOperator> caos = tempAudit.getCurrentOperators();
+			for (ContractorAuditOperator cao : caos) {
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.NotApplicable, permissions);
+				caow.setNotes(getText("AutoLiability.Commercial.Vehicles.None"));
+				caowDAO.save(caow);
+			}
+			
+			auditDao.save(tempAudit);						
 		}
 	}
 
