@@ -1,9 +1,14 @@
 package com.picsauditing.report.fields;
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
 /**
@@ -30,7 +35,8 @@ public class QueryField implements JSONAware {
 	private String label;
 	private String preTranslation;
 	private String postTranslation;
-	private String category = "General";
+	private FieldCategory category = FieldCategory.General;
+	private Set<OpPerms> requiredPermissions;
 
 	// xtype : 'actioncolumn',
 	/*
@@ -72,7 +78,7 @@ public class QueryField implements JSONAware {
 			json.put("text", label);
 		else
 			json.put("text", dataIndex);
-
+		
 		if (width > 0)
 			json.put("width", width);
 		if (!hideable)
@@ -268,12 +274,13 @@ public class QueryField implements JSONAware {
 		this.label = label;
 	}
 
-	public String getCategory() {
+	public FieldCategory getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public QueryField setCategory(FieldCategory category) {
 		this.category = category;
+		return this;
 	}
 
 	public String getPreTranslation() {
@@ -291,5 +298,13 @@ public class QueryField implements JSONAware {
 	public void setPostTranslation(String postTranslation) {
 		this.postTranslation = postTranslation;
 	}
-
+	
+	public Set<OpPerms> getRequiredPermissions() {
+		return requiredPermissions;
+	}
+	
+	public QueryField requirePermission(OpPerms opPerm) {
+		this.requiredPermissions.add(opPerm);
+		return this;
+	}
 }

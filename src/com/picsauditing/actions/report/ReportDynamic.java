@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
@@ -170,16 +171,18 @@ public class ReportDynamic extends PicsActionSupport {
 
 				} else {
 					QueryField field = builder.getAvailableFields().get(column.toUpperCase());
-					if (field.isTranslated()) {
-						jsonRow.put(column, getText(field.getI18nKey(value.toString())));
-					} else if (value.getClass().equals(java.sql.Date.class)) {
-						java.sql.Date value2 = (java.sql.Date) value;
-						jsonRow.put(column, value2.getTime());
-					} else if (value.getClass().equals(java.sql.Timestamp.class)) {
-						Timestamp value2 = (Timestamp) value;
-						jsonRow.put(column, value2.getTime());
-					} else
-						jsonRow.put(column, value);
+					if (isCanSeeQueryField(field)) {
+						if (field.isTranslated()) {
+							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
+						} else if (value.getClass().equals(java.sql.Date.class)) {
+							java.sql.Date value2 = (java.sql.Date) value;
+							jsonRow.put(column, value2.getTime());
+						} else if (value.getClass().equals(java.sql.Timestamp.class)) {
+							Timestamp value2 = (Timestamp) value;
+							jsonRow.put(column, value2.getTime());
+						} else
+							jsonRow.put(column, value);
+					}
 				}
 			}
 			rows.add(jsonRow);
@@ -208,15 +211,28 @@ public class ReportDynamic extends PicsActionSupport {
 		JSONArray fields = new JSONArray();
 
 		for (QueryField field : builder.getAvailableFields().values()) {
-			JSONObject obj = new JSONObject();
-			obj.put("name", field.getDataIndex());
-			obj.put("text", translateLabel(field));
-			addFilterType(field, obj);
-			addHelp(field, obj);
-			obj.put("category", translateCategory(field.getCategory()));
-			fields.add(obj);
+			if (isCanSeeQueryField(field)) {
+				JSONObject obj = new JSONObject();
+				obj.put("name", field.getDataIndex());
+				obj.put("text", translateLabel(field));
+				addFilterType(field, obj);
+				addHelp(field, obj);
+				obj.put("category", translateCategory(field.getCategory().toString()));
+				fields.add(obj);
+			}
 		}
 		return fields;
+	}
+
+	private boolean isCanSeeQueryField(QueryField field) {
+		if (field.getRequiredPermissions().size() == 0)
+			return true;
+
+		for (OpPerms requiredPermission : field.getRequiredPermissions()) {
+			if (permissions.hasPermission(requiredPermission))
+				return true;
+		}
+		return false;
 	}
 
 	/**
@@ -247,8 +263,10 @@ public class ReportDynamic extends PicsActionSupport {
 		fields.add(createRowNumColumn());
 		for (SimpleReportColumn column : builder.getIncludedColumns()) {
 			QueryField field = getQueryFieldFromSimpleColumn(column);
-			field.setLabel(translateLabel(column));
-			fields.add(field);
+			if (isCanSeeQueryField(field)) {
+				field.setLabel(translateLabel(column));
+				fields.add(field);
+			}
 		}
 		return fields;
 	}
