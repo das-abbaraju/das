@@ -3,6 +3,8 @@ package com.picsauditing.actions;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -549,70 +552,91 @@ public class ContractorCron extends PicsActionSupport {
 
 	@Testable
 	Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
-		Set<ContractorAudit> expiringPolicies = new HashSet<ContractorAudit>();
-
-//		addExpiringWCBs(contractor, expiringPolicies);		
-		addExpiringPolicies(contractor, expiringPolicies);
-
-		return expiringPolicies;
-	}
-
-	private void addExpiringPolicies(ContractorAccount contractor, Set<ContractorAudit> expiringPolicies) {
-		for (ContractorAudit audit : contractor.getAudits()) {
-			if (isPolicyExpiringSoon(audit)) {
-				expiringPolicies.add(audit);
+		Set<ContractorAudit> expiringAudits = new HashSet<ContractorAudit>();
+		Map<Integer, List<ContractorAudit>> policies = createAuditPolicyMap(contractor);
+		
+		for (Map.Entry<Integer, List<ContractorAudit>> entry : policies.entrySet()) {
+			ContractorAudit expiringAudit = getExpiringAudit(entry.getValue());
+			if (expiringAudit != null) {
+				expiringAudits.add(expiringAudit);
 			}
 		}
+		
+		return expiringAudits;
 	}
-
-	private void addExpiringWCBs(ContractorAccount contractor, Set<ContractorAudit> expiringPolicies) {
-		ContractorAudit currentYearWCB = findCurrentYearWCB(contractor.getAudits());	
-		if (isWCBExpiring(currentYearWCB)) {
-			expiringPolicies.add(currentYearWCB);
-		}
-	}
-
+	
 	/**
-	 * Make sure that the WCB for this year has at least been submitted so it can be approved, 
-	 * otherwise the contractor needs to be alerted about this WCB.
+	 * Returns a map of Policies, where the key is the Audit Type ID and the value is a list
+	 * of ContractorAudits for that Audit Type ID. 
 	 * 
-	 * @param currentYearWCB
-	 * @param audit
 	 * @return
 	 */
-	private boolean isWCBExpiring(ContractorAudit currentYearWCB) {
-		return (currentYearWCB != null && !currentYearWCB.hasCaoStatusAfter(AuditStatus.Incomplete));
-	}
-	
-	private ContractorAudit findCurrentYearWCB(List<ContractorAudit> audits) {
-		for (ContractorAudit audit : audits) {
-			if (isCurrentWCB(audit)) {
-				return audit;
+	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
+		Map<Integer, List<ContractorAudit>> policies = new HashMap<Integer, List<ContractorAudit>>();
+			
+		if (CollectionUtils.isNotEmpty(contractor.getAudits())) {
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().getClassType().isPolicy()) {
+					int key = audit.getAuditType().getId();
+					List<ContractorAudit> audits;
+					if (!policies.containsKey(audit.getAuditType().getId())) {
+						audits = new ArrayList<ContractorAudit>();
+					} else {
+						audits = policies.get(key);
+					}			
+			
+					audits.add(audit);
+					policies.put(key, audits);
+				}
 			}
 		}
 		
-		return null;
+		return policies;
 	}
 	
-	private boolean isCurrentWCB(ContractorAudit audit) {
-		return (audit.getAuditType().isWCB() 
-				&& !isAuditExpiringSoon(audit)
-				&& wcbExpiresLaterThisYear(audit.getExpiresDate()));
-	}
-	
-	private boolean wcbExpiresLaterThisYear(Date wcbExpirationDate) {
-		int currentYear = DateBean.getCurrentYear();
-		int auditExpiresYear = DateBean.getYearFromDate(wcbExpirationDate);
+	private ContractorAudit getExpiringAudit(List<ContractorAudit> audits) {		
+		ContractorAudit expiringAudit = null;
 		
-		return (auditExpiresYear == currentYear);
+		sortAuditsByExpirationDateDescending(audits);		
+		if (CollectionUtils.isNotEmpty(audits)) {
+			ContractorAudit audit = audits.get(0);
+			
+			if (isExpiringRenewableAudit(audit)) {
+				expiringAudit = audit;
+			} else if (audits.size() > 1) {
+				ContractorAudit previousAudit = audits.get(1);
+				if (isAuditExpiringSoon(previousAudit) && !audit.hasCaoStatusAfter(AuditStatus.Resubmitted)) {
+					expiringAudit = previousAudit;
+				}
+			}
+		}
+		
+		return expiringAudit;
+	}
+	
+	private void sortAuditsByExpirationDateDescending(List<ContractorAudit> audits) {
+		Collections.sort(audits, new Comparator<ContractorAudit>() {
+
+			@Override
+			public int compare(ContractorAudit audit1, ContractorAudit audit2) {
+				if (audit1.getExpiresDate() == null && audit2.getExpiresDate() == null) {
+					return 0;
+				} else if (audit1.getExpiresDate() == null) {
+					return -1;
+				} else if (audit2.getExpiresDate() == null) {
+					return 1;
+				}
+				
+				return audit2.getExpiresDate().compareTo(audit1.getExpiresDate());
+			}
+			
+		});
+	}
+	
+	private boolean isExpiringRenewableAudit(ContractorAudit audit) {
+		return audit.getAuditType().isRenewable() && isAuditExpiringSoon(audit);
 	}
 
-	private boolean isPolicyExpiringSoon(ContractorAudit audit) {
-		return (!audit.getAuditType().isWCB() 
-				&& audit.getAuditType().getClassType().isPolicy()
-				&& isAuditExpiringSoon(audit));
-	}
-	
 	private boolean isAuditExpiringSoon(ContractorAudit audit) {
 		return (audit.willExpireWithinTwoWeeks() 
 				|| audit.expiredUpToAWeekAgo());
