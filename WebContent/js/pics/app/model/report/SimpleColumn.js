@@ -1,10 +1,11 @@
-Ext.define('PICS.model.report.SimpleField', {
+Ext.define('PICS.model.report.SimpleColumn', {
 	extend: 'Ext.data.Model',
 
 	fields: [
         { name: 'name', type: 'string' },
         { name: 'method', type: 'string' },
-        { name: 'option', type: 'string' }
+        { name: 'option', type: 'string' },
+        { name: 'renderer' }
     ],
     
 	belongsTo: {

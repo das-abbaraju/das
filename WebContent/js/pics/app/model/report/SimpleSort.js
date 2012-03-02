@@ -3,7 +3,7 @@ Ext.define('PICS.model.report.SimpleSort', {
 
     fields: [
         { name: 'column', type: 'string' },
-        { name: 'direction', type: 'string' }
+        { name: 'ascending', type: 'boolean', defaultValue: true }
     ],
     
     belongsTo: {

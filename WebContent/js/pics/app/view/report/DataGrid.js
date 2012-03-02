@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.Grid', {
+Ext.define('PICS.view.report.DataGrid', {
 	extend: 'Ext.grid.Panel',
-	alias: ['widget.reportgrid'],
+	alias: ['widget.reportdatagrid'],
 
     store: 'report.ReportData',
     

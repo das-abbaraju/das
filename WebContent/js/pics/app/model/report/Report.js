@@ -1,7 +1,7 @@
 Ext.define('PICS.model.report.Report', {
     extend: 'Ext.data.Model',
     requires: [
-        'PICS.model.report.SimpleField',
+        'PICS.model.report.SimpleColumn',
         'PICS.model.report.SimpleFilter',
         'PICS.model.report.SimpleSort'
     ],
@@ -10,11 +10,13 @@ Ext.define('PICS.model.report.Report', {
         { name: 'id', type: 'int' },
         { name: 'modelType', type: 'string' },
         { name: 'summary', type: 'string' },
-        { name: 'description', type: 'string' }
+        { name: 'description', type: 'string' },
+        { name: 'filterExpression', type: 'string' },
+        { name: 'rowsPerPage', type: 'int', defaultValue: 100 }
     ],
     
     hasMany: [{
-        model: 'PICS.model.report.SimpleField', 
+        model: 'PICS.model.report.SimpleColumn', 
         name: 'columns'
     }, {
         model: 'PICS.model.report.SimpleFilter', 
@@ -22,17 +24,5 @@ Ext.define('PICS.model.report.Report', {
     }, {
         model: 'PICS.model.report.SimpleSort', 
         name: 'sorts'
-    }],
-    
-    proxy: {
-        type: 'ajax',
-        api: {
-            read: 'js/pics/data/report.json',
-            update: 'ReportDynamic.action?report=' + reportID
-        },
-        reader: {
-            type: 'json',
-            root: 'report'
-        }
-    }
+    }]
 });

@@ -1,13 +1,13 @@
 Ext.define('PICS.view.layout.Footer', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.layoutfooter'],
 
-    xtype: 'toolbar',
-    region: 'south',
-    
     id: 'footer',
     height: 30,
     border: false,
     
-    html: '&copy; 2012'
+    items: [{
+        xtype: 'tbtext',
+        text: '&copy; 2012'
+    }]
 });

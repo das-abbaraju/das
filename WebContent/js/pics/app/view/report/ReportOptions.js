@@ -1,10 +1,10 @@
-Ext.define('PICS.view.report.FilterPanel', {
+Ext.define('PICS.view.report.ReportOptions', {
     extend: 'Ext.panel.Panel',
-    alias: ['widget.reportfilterpanel'],
+    alias: ['widget.reportoptions'],
     
     layout: 'accordion',
     
-    collapsed: true,
+    collapsed: false,
     collapsible: true,
     resizable: {
         handles: 'e'
@@ -13,11 +13,10 @@ Ext.define('PICS.view.report.FilterPanel', {
     title: 'Report Options',
     
     items: [{
-        xtype: 'reportfiltercolumngrid',
-        
-        title: 'Columns'
-    }, {
         title: 'Filters'
+    }, {
+        title: 'Columns',
+        xtype: 'reportoptionscolumns'
     }, {
         title: 'Sort'
     }, {
