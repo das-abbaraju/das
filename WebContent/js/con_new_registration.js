@@ -170,7 +170,7 @@ $(function() {
 });
 
 function checkUserOther(userID) {
-	if (!userID)
+	if (!userID || userID == 0)
 		$("#requestedOther").show();
 	else
 		$("#requestedOther").hide();
@@ -184,11 +184,11 @@ function checkDate(input){
 	var date = $(input).val();
 	date = new Date(date);
 	if(date==null){
-		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
+		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date());
 		$(input).val(newDate);
 	}
 	if(date < new Date()){
-		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date()) 
+		var newDate = $.datepicker.formatDate("mm/dd/yy", new Date());
 		$(input).val(newDate);
 	}
 }
