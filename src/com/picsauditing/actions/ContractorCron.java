@@ -597,8 +597,8 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorAudit getExpiringAudit(List<ContractorAudit> audits) {		
 		ContractorAudit expiringAudit = null;
 		
-		sortAuditsByExpirationDateDescending(audits);		
 		if (CollectionUtils.isNotEmpty(audits)) {
+			sortAuditsByExpirationDateDescending(audits);
 			ContractorAudit audit = audits.get(0);
 			
 			if (isExpiringRenewableAudit(audit)) {
@@ -614,7 +614,7 @@ public class ContractorCron extends PicsActionSupport {
 		return expiringAudit;
 	}
 	
-	private void sortAuditsByExpirationDateDescending(List<ContractorAudit> audits) {
+	private void sortAuditsByExpirationDateDescending(List<ContractorAudit> audits) {		
 		Collections.sort(audits, new Comparator<ContractorAudit>() {
 
 			@Override
