@@ -123,11 +123,6 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 
-		if (!needsOsha)
-			oshasUS.clear();
-		if (!needsEmr)
-			emrs.clear();
-
 		Collections.sort(annualUpdates, new Comparator<ContractorAudit>() {
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				if (o1.getAuditFor().equals(o2.getAuditFor()))
