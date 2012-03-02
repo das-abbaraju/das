@@ -301,7 +301,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		// Sort by category, description
 		Collections.sort(inheritedCriteria, new Comparator<FlagCriteriaOperator>() {
-			@Override
 			public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
 				FlagCriteria f1 = o1.getCriteria();
 				FlagCriteria f2 = o2.getCriteria();
@@ -358,7 +357,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		Collections.sort(affected, new Comparator<FlagCriteriaContractor>() {
-			@Override
 			public int compare(FlagCriteriaContractor arg0, FlagCriteriaContractor arg1) {
 				return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
 			}

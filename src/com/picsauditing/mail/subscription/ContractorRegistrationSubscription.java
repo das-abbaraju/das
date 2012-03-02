@@ -22,8 +22,6 @@ public class ContractorRegistrationSubscription extends SubscriptionBuilder {
 
 	private Comparator<OperatorAccount> getOperatorComparator() {
 		return new Comparator<OperatorAccount>() {
-
-			@Override
 			public int compare(OperatorAccount o1, OperatorAccount o2) {
 				return o1.getName().compareToIgnoreCase(o2.getName());
 			}

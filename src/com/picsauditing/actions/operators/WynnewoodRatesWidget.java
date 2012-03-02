@@ -84,7 +84,6 @@ public class WynnewoodRatesWidget extends ContractorAuditsWidget {
 	
 	public Comparator<ContractorAudit> getCaComparator() {
 		return new Comparator<ContractorAudit>() {
-			@Override
 			public int compare(ContractorAudit a1, ContractorAudit a2) {
 				return a1.getContractorAccount().getName().compareTo(a2.getContractorAccount().getName());
 			}

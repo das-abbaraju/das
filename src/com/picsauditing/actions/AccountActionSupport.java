@@ -176,7 +176,6 @@ public class AccountActionSupport extends PicsActionSupport {
 	public List<Country> getCountryList() {
 		List<Country> countryList = countryDAO.findAll();
 		Collections.sort(countryList, new Comparator<Country>() {
-			@Override
 			public int compare(Country o1, Country o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
@@ -198,7 +197,6 @@ public class AccountActionSupport extends PicsActionSupport {
 		}
 
 		Collections.sort(results, new Comparator<State>() {
-			@Override
 			public int compare(State o1, State o2) {
 				return o1.getName().compareTo(o2.getName());
 			}
@@ -221,7 +219,6 @@ public class AccountActionSupport extends PicsActionSupport {
 		}
 
 		Collections.sort(result, new Comparator<State>() {
-			@Override
 			public int compare(State o1, State o2) {
 				return o1.getName().compareTo(o2.getName());
 			}

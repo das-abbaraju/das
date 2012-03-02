@@ -60,7 +60,6 @@ public class ContractorScore {
 
 		// Calculate Roseburg Audits (MAX of 50)
 		Collections.sort(roseburgAudits, new Comparator<ContractorAudit>() {
-			@Override
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				return o1.getCreationDate().compareTo(o2.getCreationDate());
 			}

@@ -99,8 +99,6 @@ public class FileUtils {
 
 	static public File[] getSimilarFiles(File folder, final String fileName) {
 		File[] fileList = folder.listFiles(new FilenameFilter() {
-
-			@Override
 			public boolean accept(File dir, String name) {
 				return !(new File(dir, name).isDirectory())
 						&& name.substring(0, name.lastIndexOf(".")).equals(fileName);

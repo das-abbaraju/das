@@ -206,7 +206,6 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
         this.level = level;
     }
 
-    @Override
     public int compareTo(MenuComponent o) {
         return sortField.compareTo(o.sortField);
     }

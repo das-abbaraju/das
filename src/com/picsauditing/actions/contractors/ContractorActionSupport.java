@@ -249,7 +249,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 		// Sort audits, by throwing them into a tree set and sorting them by
 		// display and then name
 		TreeSet<ContractorAudit> treeSet = new TreeSet<ContractorAudit>(new Comparator<ContractorAudit>() {
-			@Override
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				if (o1 == null || o2 == null)
 					return 0; // can't compare null objects

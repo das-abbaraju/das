@@ -48,7 +48,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 
 		currentPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
 				new Comparator<ContractorAudit>() {
-					@Override
 					public int compare(ContractorAudit o1, ContractorAudit o2) {
 						return (o1.getAuditType().getName().compareTo(o2.getAuditType().getName()));
 					}
@@ -56,7 +55,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 		
 		expiredPoliciesMap = new TreeMap<ContractorAudit, List<ContractorAuditOperator>>(
 				new Comparator<ContractorAudit>() {
-					@Override
 					public int compare(ContractorAudit o1, ContractorAudit o2) {
 						return (o1.getAuditType().getName().compareTo(o2.getAuditType().getName()));
 					}
@@ -111,7 +109,6 @@ public class ConInsureGuard extends ContractorActionSupport {
 			super.getCertificates();
 
 			Collections.sort(certificates, new Comparator<Certificate>() {
-				@Override
 				public int compare(Certificate o1, Certificate o2) {
 					return o1.getDescription().compareTo(o2.getDescription());
 				}

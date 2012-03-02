@@ -87,7 +87,6 @@ public class FlagColorSubscription extends SqlSubscriptionBuilder {
 
 	private Comparator<ContractorOperator> getCOComparator() {
 		return new Comparator<ContractorOperator>() {
-			@Override
 			public int compare(ContractorOperator co1, ContractorOperator co2) {
 				return co1.getContractorAccount().getName().compareToIgnoreCase(co2.getContractorAccount().getName());
 			}

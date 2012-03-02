@@ -95,7 +95,6 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 	public List<AuditType> getAuditTypes() {
 		List<AuditType> auditTypes = auditTypeDAO.findAll();
 		Collections.sort(auditTypes, new Comparator<AuditType>() {
-			@Override
 			public int compare(AuditType o1, AuditType o2) {
 				if (o1.getName() == null || o1.getName().toString() == null)
 					return -1;

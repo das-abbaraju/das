@@ -233,12 +233,10 @@ public enum OpPerms implements Translatable{
 		return operatorPermissions;
 	}
 
-	@Override
 	public String getI18nKey() {
 		return this.getClass().getSimpleName() + "." + this.name();
 	}
 
-	@Override
 	public String getI18nKey(String property) {
 		return getI18nKey() + "." + property;
 	}

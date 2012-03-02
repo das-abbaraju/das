@@ -94,7 +94,6 @@ public class ReportContractorOperatorFlagMatrix extends ReportAccount {
 
 	private void buildData() {
 		Comparator<Account> compByName = new Comparator<Account>() {
-			@Override
 			public int compare(Account o1, Account o2) {
 				if (o2 == null || o2.getName() == null)
 					return 1;

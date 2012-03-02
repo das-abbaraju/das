@@ -600,8 +600,6 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	public static Comparator<AuditQuestion> getComparator() {
 		return new Comparator<AuditQuestion>() {
-
-			@Override
 			public int compare(AuditQuestion o1, AuditQuestion o2) {
 				String[] o1a = o1.getExpandedNumber().split("\\.");
 				String[] o2a = o2.getExpandedNumber().split("\\.");

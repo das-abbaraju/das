@@ -274,18 +274,10 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return avg;
 	}
 
-	@Override
 	public int compareTo(AuditData other) {
 		if (other == null) {
 			return 1;
 		}
-
-		// int cmp = getQuestion().compareTo(other.getQuestion());
-
-		// if (cmp != 0)
-		// return cmp;
-		//
-		// return new Integer(getId()).compareTo(new Integer(other.getId()));
 		return 0;
 	}
 
@@ -343,7 +335,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 */
 	public static Comparator<AuditData> getQuestionComparator() {
 		return new Comparator<AuditData>() {
-			@Override
 			public int compare(AuditData o1, AuditData o2) {
 				String[] o1a = o1.getQuestion().getExpandedNumber().split("\\.");
 				String[] o2a = o2.getQuestion().getExpandedNumber().split("\\.");

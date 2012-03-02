@@ -273,7 +273,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 			return getText("global.AuditGUARD");
 		}
 
-		@Override
 		public int compareTo(DocumentTab o) {
 			return this.getOrder() - o.getOrder();
 		}
@@ -289,7 +288,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	}
 
 	private class AuditByDate implements Comparator<ContractorAudit> {
-		@Override
 		public int compare(ContractorAudit o1, ContractorAudit o2) {
 			if (o1.getAuditType().isAnnualAddendum() && o2.getAuditType().isAnnualAddendum())
 				return o2.getAuditFor().compareTo(o1.getAuditFor());

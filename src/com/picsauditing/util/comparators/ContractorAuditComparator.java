@@ -12,9 +12,7 @@ public class ContractorAuditComparator implements Comparator<ContractorAudit> {
 		this.orderByClauses = orderByClauses;
 	}
 
-	@Override
 	public int compare(ContractorAudit o1, ContractorAudit o2) {
-
 		int compareValue = 0;
 
 		for (String orderBy : orderByClauses) {

@@ -52,8 +52,6 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 
 	private Comparator<OperatorAccount> getOperatorComparator() {
 		return new Comparator<OperatorAccount>() {
-
-			@Override
 			public int compare(OperatorAccount o1, OperatorAccount o2) {
 				return o1.getName().compareToIgnoreCase(o2.getName());
 			}
@@ -62,8 +60,6 @@ public class ContractorAddedSubscription extends SubscriptionBuilder {
 
 	private Comparator<ContractorAccount> getContractorComparator() {
 		return new Comparator<ContractorAccount>() {
-
-			@Override
 			public int compare(ContractorAccount c1, ContractorAccount c2) {
 				return c1.getName().compareToIgnoreCase(c2.getName());
 			}

@@ -171,7 +171,6 @@ public class EmployeeDashboard extends ContractorDocuments {
 			}
 
 			Collections.sort(activeEmployees, new Comparator<Employee>() {
-				@Override
 				public int compare(Employee o1, Employee o2) {
 					String o1Name = ((o1.getLastName() == null) ? " " : o1.getLastName()) + " "
 							+ ((o1.getFirstName() == null) ? " " : o1.getFirstName()) + " "

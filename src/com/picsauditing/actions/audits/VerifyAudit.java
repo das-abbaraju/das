@@ -82,8 +82,6 @@ public class VerifyAudit extends AuditActionSupport {
 
 	public Comparator<AuditData> getDataComparator() {
 		return new Comparator<AuditData>() {
-
-			@Override
 			public int compare(AuditData o1, AuditData o2) {
 				if (o1 == null)
 					return -1;

@@ -227,7 +227,6 @@ public abstract class ImportPqf {
 		ArrayList<AuditCategory> catList = new ArrayList<AuditCategory>();
 		catList.addAll(conAudit.getAuditType().getTopCategories());
 		Collections.sort(catList, new Comparator<AuditCategory>() {
-			@Override
 			public int compare(AuditCategory o1, AuditCategory o2) {
 				return o1.getNumber() - o2.getNumber();
 			}
@@ -246,7 +245,6 @@ public abstract class ImportPqf {
 		ArrayList<AuditCategory> catList = new ArrayList<AuditCategory>();
 		catList.addAll(cat.getSubCategories());
 		Collections.sort(catList, new Comparator<AuditCategory>() {
-			@Override
 			public int compare(AuditCategory o1, AuditCategory o2) {
 				return o1.getNumber() - o2.getNumber();
 			}

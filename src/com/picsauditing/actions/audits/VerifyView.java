@@ -129,7 +129,6 @@ public class VerifyView extends ContractorActionSupport {
 			emrs.clear();
 
 		Collections.sort(annualUpdates, new Comparator<ContractorAudit>() {
-			@Override
 			public int compare(ContractorAudit o1, ContractorAudit o2) {
 				if (o1.getAuditFor().equals(o2.getAuditFor()))
 					return o1.getCreationDate().compareTo(o2.getCreationDate());
@@ -339,7 +338,6 @@ public class VerifyView extends ContractorActionSupport {
 
 			if (verificationAudits.size() > 0) {
 				Collections.sort(verificationAudits, new Comparator<ContractorAudit>() {
-					@Override
 					public int compare(ContractorAudit o1, ContractorAudit o2) {
 						if (o1.getAuditFor() == null)
 							return -1;

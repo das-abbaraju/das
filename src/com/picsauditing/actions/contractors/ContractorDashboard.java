@@ -774,7 +774,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 						if (cao.getCaoWorkflow().size() > 0) {
 							List<ContractorAuditOperatorWorkflow> caow = cao.getCaoWorkflow();
 							Collections.sort(caow, new Comparator<ContractorAuditOperatorWorkflow>() {
-								@Override
 								public int compare(ContractorAuditOperatorWorkflow o1,
 										ContractorAuditOperatorWorkflow o2) {
 									return o1.getCreationDate().compareTo(o2.getCreationDate());

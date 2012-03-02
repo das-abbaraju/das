@@ -125,7 +125,6 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				cat.setAuditType(auditType);
 				auditType.getCategories().add(cat);
 				Collections.sort(auditType.getCategories(), new Comparator<AuditCategory>() {
-					@Override
 					public int compare(AuditCategory o1, AuditCategory o2) {
 						if (o1.isPolicyInformationCategory() || o1.isPolicyLimitsCategory()) {
 							if (o2.isPolicyInformationCategory() || o2.isPolicyLimitsCategory())
@@ -318,7 +317,6 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 			otherAudits.removeAll(usedAuditTypes);
 
 			Collections.sort(otherAudits, new Comparator<AuditType>() {
-				@Override
 				public int compare(AuditType type1, AuditType type2) {
 					return type1.getName().toString().compareTo(type2.getName().toString());
 				}

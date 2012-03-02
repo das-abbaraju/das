@@ -22,7 +22,6 @@ public class SecurityCheck implements Tag {
 	protected OpPerms opPerms = null;
 	protected OpType opType = null;
 
-	@Override
 	public int doStartTag() throws JspException {
 		HttpSession session = pageContext.getSession();
 
@@ -101,28 +100,22 @@ public class SecurityCheck implements Tag {
 		}
 	}
 
-	@Override
 	public int doEndTag() throws JspException {
 		return EVAL_PAGE;
 	}
 
-	@Override
 	public Tag getParent() {
-		// TODO Auto-generated method stub
 		return parent;
 	}
 
-	@Override
 	public void release() {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void setPageContext(PageContext arg0) {
 		this.pageContext = arg0;
 	}
 
-	@Override
 	public void setParent(Tag arg0) {
 		this.parent = arg0;
 	}

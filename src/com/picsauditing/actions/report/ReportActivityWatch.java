@@ -78,7 +78,6 @@ public class ReportActivityWatch extends ReportAccount {
 				watched.add(watch);
 
 				Collections.sort(watched, new Comparator<ContractorWatch>() {
-					@Override
 					public int compare(ContractorWatch o1, ContractorWatch o2) {
 						return o1.getContractor().getName().compareTo(o2.getContractor().getName());
 					}
