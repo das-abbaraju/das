@@ -267,7 +267,9 @@
 					%>
 					
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
-					<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
+					<% // <a href="javascript:;" class="liveperson-chat-toggle"> %>
+					<% //= i18nCache.getText("Header.Chat", locale) %>
+					<% //</a> %>
 					
 					<a id="_lpChatBtn"
 						class="liveperson-chat"
