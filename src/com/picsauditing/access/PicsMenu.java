@@ -147,6 +147,7 @@ public class PicsMenu {
 		}
 		if (permissions.hasPermission(OpPerms.RequestNewContractor))
 			addChildAction(subMenu, "ReportNewRequestedContractor");
+
 		if (permissions.hasPermission(OpPerms.ViewTrialAccounts)) {
 			String statusFilter = "";
 			if (!permissions.getAccountStatus().isDemo())
@@ -306,6 +307,11 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.MyCalendar)) {
 			subMenu.addChild("My Schedule", "MySchedule.action");
 		}
+
+		if (permissions.hasPermission(OpPerms.ClientSiteReferrals)) {
+				subMenu.addChild("Client Site Referrals", "ReportClientSiteReferrals.action");
+		}
+		
 		if (permissions.hasPermission(OpPerms.Debug)) {
 			MenuComponent debug = subMenu.addChild("Debug", "#");
 			debug.setHtmlId("debug-menu");

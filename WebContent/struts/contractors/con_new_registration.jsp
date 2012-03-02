@@ -27,7 +27,7 @@
 			</a>
 		</pics:permission>
 		<div id="potentialMatches" class="info" style="display: none;"></div>
-		<s:if test="newContractor.contractor != null || !newContractor.open">
+		<s:if test="newContractor.contractor != null || newContractor.status != 'Active'">
 			<div class="info">
 				<s:if test="newContractor.contractor != null">
 					<s:text name="RequestNewContractor.message.Registered">
@@ -39,7 +39,7 @@
 						</s:param>
 					</s:text>
 				</s:if>
-				<s:if test="!newContractor.open">
+				<s:if test="newContractor.status != 'Active'">
 					<s:text name="RequestNewContractor.message.RequestClosed" />
 				</s:if>
 			</div>
@@ -282,7 +282,7 @@
 								<s:text name="RequestNewContractor.label.MatchesFound" />:
 							</label>
 							
-							<s:if test="newContractor.matchCount > 0 && newContractor.open">
+							<s:if test="newContractor.matchCount > 0 && newContractor.status == 'Active'">
 								<a href="#potentialMatches" id="getMatches">
 									<s:property value="newContractor.matchCount" />
 								</a>

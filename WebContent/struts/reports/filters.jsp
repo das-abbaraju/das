@@ -102,6 +102,13 @@
 			</div>
 		</s:if>
 		
+		<s:if test="filter.showReferralStatus">
+			<div class="filterOption">
+				<span><s:text name="global.Status" /> =</span>
+				<s:select cssClass="forms" list="@com.picsauditing.jpa.entities.ClientSiteReferralStatus@values()" listKey="name()" listValue="getText(getI18nKey())" name="filter.referralStatus" headerKey="" headerValue="Any"/>
+			</div>
+		</s:if>
+		
 		<s:if test="filter.showAccountLevel">
 			<div class="filterOption">
 				<a href="#" class="filterBox"><s:text name="Filters.label.AccountLevel" /></a> =

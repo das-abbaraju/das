@@ -1,8 +1,5 @@
 package com.picsauditing.actions.report;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javax.servlet.ServletOutputStream;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

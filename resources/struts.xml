@@ -610,6 +610,25 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
+		<!-- - Operator Referrals -->
+		<action name="ReportClientSiteReferrals"
+			class="com.picsauditing.actions.report.ReportClientSiteReferrals">
+			<result>struts/reports/report_client_site_referrals.jsp</result>
+		</action>
+
+		<action name="ReportClientSiteReferralsCSV"
+			class="com.picsauditing.actions.report.ReportClientSiteReferrals">
+			<param name="download">true</param>
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="ReferNewClientSite" class="com.picsauditing.actions.operators.ReferNewClientSite">
+			<result>/struts/operators/client_site_new_referral.jsp</result>
+			<result name="backToReport" type="redirectAction">
+				<param name="actionName">ReportClientSiteReferrals</param>
+			</result>
+		</action>
+		
 		<action name="ReportActivityWatch"
 			class="com.picsauditing.actions.report.ReportActivityWatch">
 			<result>struts/reports/report_activity_watch.jsp</result>
