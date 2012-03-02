@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,7 +23,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.FacilitiesDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
@@ -30,8 +30,6 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
@@ -51,8 +49,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
-	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
 
 	protected String createType;
 	protected List<Integer> facilities;
@@ -100,14 +96,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			if (!isCanEditCorp()) {
 				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
 			}
-		}
-		else {
+		} else {
 			setCreateType("Operator");
 			if (!isCanEditOp()) {
 				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
 			}
 		}
-		
+
 		operator = new OperatorAccount();
 		operator.setType(getCreateType());
 		operator.setCountry(new Country(permissions.getCountry()));
@@ -118,7 +113,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private boolean isCanEditCorp() {
 		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
 	}
-	
+
 	private boolean isCanEditOp() {
 		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	}
@@ -207,8 +202,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public String save() {
-		if (operator.getId() == 0)
-		{
+		if (operator.getId() == 0) {
 			operator.setType(getCreateType());
 		}
 		if (facilities == null) {
@@ -331,7 +325,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
 		if (!removed) {
-			addActionError("Cannot Remove this account: " + operator.getName());  // TODO: i18n
+			addActionError("Cannot Remove this account: " + operator.getName()); // TODO: i18n
 			return SUCCESS;
 		}
 
@@ -398,7 +392,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	public String getCreateType() {
 		return createType;
 	}
-	
+
 	public void setCreateType(String createType) {
 		this.createType = createType;
 	}
@@ -444,6 +438,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return formDAO.findByopID(this.id);
 	}
 
+	// TODO: This should be converted to Struts2 Validation
 	private Vector<String> validateAccount(OperatorAccount operator) {
 		Vector<String> errorMessages = new Vector<String>();
 		if (Strings.isEmpty(operator.getName()))
@@ -455,9 +450,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-		if (operator.getActivationFee() != null && operator.getActivationFee() > 200) {
-			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
-		}
+//		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
+//				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
+//			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
+//		}
 
 		return errorMessages;
 	}
@@ -666,10 +662,5 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public boolean isCanDeleteOp() {
 		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
-	}
-
-	public OperatorAccount getActivationFeeOperator() {
-		InvoiceFee invoiceFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-		return operator.getActivationFeeOperator(invoiceFee);
 	}
 }

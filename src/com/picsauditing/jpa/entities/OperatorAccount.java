@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
@@ -53,8 +57,9 @@ public class OperatorAccount extends Account {
 	private OshaType oshaType = OshaType.OSHA;
 	private boolean primaryCorporate = false;
 	private boolean autoApproveInsurance = false;
-	private Integer activationFee = null;
 	private String requiredTags;
+	private BigDecimal discountPercent = BigDecimal.ZERO;
+	private Date discountExpiration;
 
 	private List<Facility> corporateFacilities = new ArrayList<Facility>();
 	private List<Facility> operatorFacilities = new ArrayList<Facility>();
@@ -181,38 +186,28 @@ public class OperatorAccount extends Account {
 		this.autoApproveInsurance = autoApproveInsurance;
 	}
 
-	public Integer getActivationFee() {
-		return activationFee;
-	}
-
-	public void setActivationFee(Integer activationFee) {
-		this.activationFee = activationFee;
+	@Transient
+	public boolean isHasDiscount() {
+		return getDiscountPercent().compareTo(BigDecimal.ZERO) > 0;
 	}
 
 	@Transient
-	public OperatorAccount getActivationFeeOperator(InvoiceFee activation) {
-		// if Operator activation fee is reduced, then use Operator account activation fee
-		if (this.getActivationFee() != null && !this.getActivationFee().equals(activation.getAmount().intValue()))
-			return this;
-
-		// if Corporate activation fee is reduced, return Corporate account
-		for (Facility f : this.getCorporateFacilities())
-			if (f.getCorporate().getActivationFee() != null
-					&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
-				return f.getCorporate();
-
-		// checking parents as well
-		OperatorAccount parent = this.getParent();
+	public OperatorAccount getInheritedDiscountPercentOperator() {
+		// check direct parents
+		OperatorAccount parent = getParent();
 		while (parent != null) {
-			if (parent.getActivationFee() != null
-					&& !parent.getActivationFee().equals(activation.getAmount().intValue()))
+			if (parent.isHasDiscount())
 				return parent;
 
 			parent = parent.getParent();
 		}
 
-		// If neither activation fee is set, return self and use default
-		return this;
+		// check corporate associations
+		for (Facility f : getCorporateFacilities())
+			if (f.getCorporate().isHasDiscount())
+				return f.getCorporate();
+
+		return null;
 	}
 
 	public String getRequiredTags() {
@@ -221,6 +216,35 @@ public class OperatorAccount extends Account {
 
 	public void setRequiredTags(String requiredTags) {
 		this.requiredTags = requiredTags;
+	}
+
+	@Column(nullable = false)
+	public BigDecimal getDiscountPercent() {
+		return discountPercent;
+	}
+
+	public void setDiscountPercent(BigDecimal discountPercent) {
+		this.discountPercent = discountPercent;
+	}
+
+	@Transient
+	public BigDecimal getScaledDiscountPercent() {
+		return getDiscountPercent().multiply(new BigDecimal(100));
+	}
+
+	@Transient
+	public void setScaledDiscountPercent(BigDecimal discountPercent) {
+		discountPercent = discountPercent.divide(new BigDecimal(100));
+		setDiscountPercent(discountPercent);
+	}
+
+	@Temporal(TemporalType.DATE)
+	public Date getDiscountExpiration() {
+		return discountExpiration;
+	}
+
+	public void setDiscountExpiration(Date discountExpiration) {
+		this.discountExpiration = discountExpiration;
 	}
 
 	@Transient

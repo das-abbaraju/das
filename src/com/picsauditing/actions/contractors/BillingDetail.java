@@ -13,7 +13,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
@@ -21,7 +20,6 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -42,13 +40,10 @@ public class BillingDetail extends ContractorActionSupport {
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
-	private InvoiceFeeDAO invoiceFeeDAO;
-	@Autowired
 	private TransactionDAO transactionDAO;
 	@Autowired
 	private NoteDAO noteDAO;
 
-	private InvoiceFee activationFee = null;
 	private BigDecimal invoiceTotal;
 	private List<InvoiceItem> invoiceItems;
 	private OperatorAccount requestedBy = null;
@@ -92,15 +87,6 @@ public class BillingDetail extends ContractorActionSupport {
 			// Calculate the due date for the invoice
 			if (contractor.getBillingStatus().equals("Activation")) {
 				invoice.setDueDate(new Date());
-				InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-				if (contractor.hasReducedActivation(activation)) {
-					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
-					notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-							+ contractor.getCountry().getCurrency().getSymbol()
-							+ contractor.getCountry().getAmount(activation) + " to "
-							+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee()
-							+ ". ";
-				}
 			} else if (contractor.getBillingStatus().equals("Reactivation")) {
 				invoice.setDueDate(new Date());
 			} else if (contractor.getBillingStatus().equals("Upgrade")) {
@@ -197,14 +183,6 @@ public class BillingDetail extends ContractorActionSupport {
 			requestedBy = opAccountDao.find(contractor.getRequestedBy().getId());
 
 		return requestedBy;
-	}
-
-	public InvoiceFee getActivationFee() {
-		return activationFee;
-	}
-
-	public void setActivationFee(InvoiceFee activationFee) {
-		this.activationFee = activationFee;
 	}
 
 	public List<InvoiceItem> getInvoiceItems() {

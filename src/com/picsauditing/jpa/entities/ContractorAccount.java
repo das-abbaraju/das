@@ -856,7 +856,7 @@ public class ContractorAccount extends Account implements JSONable {
 				balance = balance.subtract(payment.getTotalAmount());
 		}
 
-		balance = balance.setScale(2);
+		balance = balance.setScale(2, BigDecimal.ROUND_UP);
 
 		// STart here, call private method and set the contractor.fee
 		InvoiceFeeDAO feeDAO = (InvoiceFeeDAO) SpringUtils.getBean("InvoiceFeeDAO");
@@ -1307,29 +1307,6 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public boolean isAgreed() {
 		return (agreementDate != null);
-	}
-
-	@Transient
-	public OperatorAccount getReducedActivationFeeOperator(InvoiceFee activation) {
-		// if Operator activation fee is reduced, return Operator account
-		if (getRequestedBy() != null) {
-			if (getRequestedBy().getActivationFee() != null
-					&& !getRequestedBy().getActivationFee().equals(activation.getAmount().intValue()))
-				return getRequestedBy();
-
-			// if Corporate activation fee is reduced, return Corporate account
-			for (Facility f : getRequestedBy().getCorporateFacilities())
-				if (f.getCorporate().getActivationFee() != null
-						&& !f.getCorporate().getActivationFee().equals(activation.getAmount().intValue()))
-					return f.getCorporate();
-		}
-		return null;
-	}
-
-	@Transient
-	public boolean hasReducedActivation(InvoiceFee activation) {
-		return getReducedActivationFeeOperator(activation) != null
-				&& activation.getAmount().intValue() != getReducedActivationFeeOperator(activation).getActivationFee();
 	}
 
 	@Transient

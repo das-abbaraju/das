@@ -108,7 +108,7 @@ public class Invoice extends Transaction {
 			InvoiceFee taxFee = getCurrency().getTaxFee();
 
 			BigDecimal invoiceTotal = BigDecimal.ZERO;
-			invoiceTotal.setScale(2);
+			invoiceTotal.setScale(2, BigDecimal.ROUND_UP);
 			for (InvoiceItem item : getItems()) {
 				if (item.getInvoiceFee().equals(taxFee)) {
 					taxItem = item;
@@ -150,7 +150,7 @@ public class Invoice extends Transaction {
 
 	@Transient
 	public void updateAmountApplied() {
-		amountApplied = BigDecimal.ZERO.setScale(2);
+		amountApplied = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (PaymentApplied ip : payments) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}

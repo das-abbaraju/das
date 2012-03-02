@@ -3,7 +3,9 @@ package com.picsauditing.jpa.entities;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
@@ -11,6 +13,8 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.util.SpringUtils;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public enum FeeClass implements Translatable {
 	// TODO combine some of these fees
@@ -47,7 +51,7 @@ public enum FeeClass implements Translatable {
 				if (BASFInsureGUARDAndAuditGUARDPricingEffectiveDate.after(now)) {
 					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							return new BigDecimal(299).setScale(2);
+							return new BigDecimal(299).setScale(2, BigDecimal.ROUND_UP);
 						}
 					}
 				}
@@ -90,7 +94,28 @@ public enum FeeClass implements Translatable {
 			return contractor.getCountry().getAmount(fee);
 		}
 	},
-	Activation,
+	Activation {
+		@Override
+		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
+			Set<BigDecimal> discounts = new HashSet<BigDecimal>();
+			for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+				if (operator.isHasDiscount()) {
+					discounts.add(operator.getDiscountPercent());
+				} else {
+					OperatorAccount inheritedDiscountPercentOperator = operator.getInheritedDiscountPercentOperator();
+					if (inheritedDiscountPercentOperator != null) {
+						discounts.add(inheritedDiscountPercentOperator.getDiscountPercent());
+					} else {
+						return contractor.getCountry().getAmount(fee);
+					}
+				}
+			}
+
+			BigDecimal minimumDiscount = (BigDecimal) Collections.min(discounts);
+			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
+			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(2, BigDecimal.ROUND_UP);
+		}
+	},
 	Reactivation,
 	LateFee,
 	ReschedulingFee,

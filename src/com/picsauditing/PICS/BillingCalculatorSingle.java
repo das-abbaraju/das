@@ -177,7 +177,7 @@ public class BillingCalculatorSingle {
 			BigDecimal newAmount = contractor.getCountry().getAmount(newLevel);
 
 			if (!hasHseCompetency && (hasEmployeeAudits || hasOq))
-				newAmount = BigDecimal.ZERO.setScale(2);
+				newAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
 			contractor.setNewFee(newLevel, newAmount);
 		} else {
@@ -309,7 +309,7 @@ public class BillingCalculatorSingle {
 
 		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus);
 
-		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2);
+		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (InvoiceItem item : invoiceItems)
 			invoiceTotal = invoiceTotal.add(item.getAmount());
 
@@ -333,14 +333,6 @@ public class BillingCalculatorSingle {
 		// Calculate the due date for the invoice
 		if (billingStatus.equals("Activation")) {
 			invoice.setDueDate(new Date());
-			InvoiceFee activation = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-			if (contractor.hasReducedActivation(activation)) {
-				OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activation);
-				notes += "(" + reducedOperator.getName() + " Promotion) Activation reduced from "
-						+ contractor.getCountry().getCurrency().getSymbol()
-						+ contractor.getCountry().getAmount(activation) + " to "
-						+ contractor.getCountry().getCurrency().getSymbol() + reducedOperator.getActivationFee() + ". ";
-			}
 		} else if (billingStatus.equals("Reactivation")) {
 			invoice.setDueDate(new Date());
 		} else if (billingStatus.equals("Upgrade")) {
@@ -440,7 +432,7 @@ public class BillingCalculatorSingle {
 	 */
 	private void addProratedUpgradeItems(ContractorAccount contractor, List<InvoiceItem> items,
 			List<ContractorFee> upgrades) {
-		BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2);
+		BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
 		// Actual prorated Upgrade
 		Date upgradeDate = (contractor.getLastUpgradeDate() == null) ? new Date() : contractor.getLastUpgradeDate();
@@ -448,7 +440,7 @@ public class BillingCalculatorSingle {
 		if (daysUntilExpiration > 365)
 			daysUntilExpiration = 365.0;
 
-		BigDecimal upgradeTotal = BigDecimal.ZERO.setScale(2);
+		BigDecimal upgradeTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (ContractorFee upgrade : upgrades) {
 			String description = "";
 			BigDecimal upgradeAmountDifference = upgrade.getNewAmount();
@@ -472,7 +464,7 @@ public class BillingCalculatorSingle {
 								+ contractor.getCountry().getCurrency().getSymbol() + upgradeAmount;
 					}
 				} else
-					upgradeAmount = BigDecimal.ZERO.setScale(2);
+					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
 				// If not membership fee, don't prorate amount
 			} else {
@@ -528,14 +520,10 @@ public class BillingCalculatorSingle {
 				// them now this applies regardless if this is a new reg or
 				// renewal
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-				if (contractor.hasReducedActivation(fee)) {
-					OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(fee);
-					fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
-					fee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
-				}
+				BigDecimal activationAmount = FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor, fee);
 
 				// Activate effective today
-				items.add(new InvoiceItem(fee, contractor.getCountry().getAmount(fee), new Date()));
+				items.add(new InvoiceItem(fee, activationAmount, new Date()));
 				// For Reactivation Fee and Reactivating Membership
 			} else if ("Reactivation".equals(billingStatus) || "Membership Canceled".equals(billingStatus)) {
 				InvoiceFee fee = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor

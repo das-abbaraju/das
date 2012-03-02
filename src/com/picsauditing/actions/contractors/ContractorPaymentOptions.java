@@ -17,7 +17,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.PaymentMethod;
 import com.picsauditing.util.BrainTree;
 import com.picsauditing.util.Strings;
@@ -435,14 +434,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 			if (contractor.getStatus().isPendingDeactivated() && contractor.getAccountLevel().isFull()) {
 				if (contractor.getMembershipDate() == null) {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-					if (contractor.hasReducedActivation(activationFee)) {
-						OperatorAccount reducedOperator = contractor.getReducedActivationFeeOperator(activationFee);
-						activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 0);
-						activationFee.setAmount(new BigDecimal(reducedOperator.getActivationFee()).setScale(2));
-					}
-				} else
+					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
+							activationFee));
+				} else {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
 							.getPayingFacilities());
+					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
+							activationFee));
+				}
 			}
 		}
 

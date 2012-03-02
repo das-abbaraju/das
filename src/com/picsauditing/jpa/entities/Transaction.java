@@ -57,7 +57,7 @@ public abstract class Transaction extends BaseTable {
 	@Transient
 	public BigDecimal getBalance() {
 		if (TransactionStatus.Void.equals(status))
-			return BigDecimal.ZERO.setScale(2);
+			return BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		return totalAmount.subtract(amountApplied);
 	}
 

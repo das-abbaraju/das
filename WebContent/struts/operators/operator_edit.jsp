@@ -34,24 +34,6 @@
 				changeState($("#opCountry").val());
 				$('.datepicker').datepicker();
 			});
-			
-			function checkFee(activationFee, oldValue) {
-				 var ValidChars = "0123456789";
-				   var IsNumber=true;
-				   var Char;
-				   for (i = 0; i < activationFee.length && IsNumber == true; i++) 
-				      { 
-				      Char = activationFee.charAt(i); 
-				      if (ValidChars.indexOf(Char) == -1) 
-				         {
-				         IsNumber = false;
-				         }
-				      }
-				    if(!IsNumber) {
-					    alert("Please enter a number");
-					    $('#opActivationFee').val(oldValue);
-				    }   
-			}
 		</script>
 	</head>
 	<body>
@@ -494,29 +476,27 @@
 							</pics:fieldhelp>
 						</li>
 						<li id="act_li">
-							<label>Contractor Activation Fee:</label>
-							
-							<s:if test="activationFeeOperator.id != operator.id">
-								${operator.currency.symbol}${activationFeeOperator.activationFee}&nbsp;&nbsp;(Activation Fee inherited from <a href="FacilitiesEdit.action?operator=<s:property value="activationFeeOperator.id" />"><s:property value="activationFeeOperator.name" /></a>).
+							<label>Activation Fee Discount Percentage:</label>
+
+							<s:if test="!operator.hasDiscount && operator.inheritedDiscountPercentOperator">
+                                <s:text name="format.percent">
+                                    <s:param value="%{operator.inheritedDiscountPercentOperator.discountPercent}" />
+                                </s:text>
+								&nbsp;&nbsp;(Discount Percentage inherited from <a href="FacilitiesEdit.action?operator=${operator.inheritedDiscountPercentOperator.id}">${operator.inheritedDiscountPercentOperator.name}</a>).
 							</s:if>
 							<s:else>
 								<pics:permission perm="UserRolePicsOperator">
-									<s:if test="operator.activationFee">
-										<s:set var="operator_activationFee_onchange" value="'checkFee(this.value, %{#operator.activationFee})'" />
-									</s:if>
-									<s:else>
-										<s:set var="operator_activationFee_onchange" value="'return false;'" />
-									</s:else>
-									
-									<p>${operator.currency.symbol} <s:textfield id="opActivationFee" name="operator.activationFee" onchange="%{#operator_activationFee_onchange}"/></p>
+                                    % <s:textfield name="operator.scaledDiscountPercent" />
 								</pics:permission>
 								<pics:permission negativeCheck="true" perm="UserRolePicsOperator">
-									${operator.currency.symbol}${activationFeeOperator.activationFee}
+                                    <s:text name="format.percent">
+                                        <s:param value="%{operator.discountPercent}" />
+                                    </s:text>
 								</pics:permission>
 							</s:else>
 							
-							<pics:fieldhelp title="Contractor Activation Fee">
-								<p>The default Activation Fee that contractors are charged when selecting this operator as their primary requesting account. Leave blank to use the default (currently $199). The valid range is 0 to 199 </p>
+							<pics:fieldhelp title="Activation Fee Discount Percentage">
+								<p>The percentage based discount to give contractors associated with this Site on their Activation Fee. For instance a 25% discount would give a contractor an activation fee of $150 instead of $200.</p>
 							</pics:fieldhelp>
 						</li>
 					</ol>

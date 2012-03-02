@@ -99,7 +99,7 @@ public class Payment extends Transaction {
 
 	@Transient
 	public void updateAmountApplied() {
-		amountApplied = BigDecimal.ZERO.setScale(2);
+		amountApplied = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (PaymentApplied ip : applied) {
 			amountApplied = amountApplied.add(ip.getAmount());
 		}
