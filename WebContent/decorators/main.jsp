@@ -267,22 +267,6 @@
 					%>
 					
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
-					<% // <a href="javascript:;" class="liveperson-chat-toggle"> %>
-					<% //= i18nCache.getText("Header.Chat", locale) %>
-					<% //</a> %>
-					
-					<a id="_lpChatBtn"
-						class="liveperson-chat"
-						href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a"
-						target="chat90511184"
-						onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
-						
-						<% if (!Strings.isEmpty(chatIcon)) { %>
-							<img src="<%= chatIcon %>" />
-						<% } else { %>
-							<%= i18nCache.getText("Header.Chat", locale) %>
-						<% } %>
-					</a>
 				</div>
 				
 				<div id="content">
