@@ -23,6 +23,7 @@ import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -79,6 +80,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		json.put("modelType", report.getModelType().toString());
 		json.put("fields", getAvailableFields());
+		json.put("success", true);
 
 		return JSON;
 	}
@@ -123,8 +125,8 @@ public class ReportDynamic extends PicsActionSupport {
 			logError(e);
 		} finally {
 			if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
-				json.put("sql", sql.toString());
-				json.put("base", report.getModelType());
+				json.put("sql", sql.toString().replace("`", "").replace("\n", " "));
+				json.put("base", report.getModelType().toString());
 				// json.put("command", new JsonRaw(report.getParameters()));
 			}
 		}
@@ -199,8 +201,8 @@ public class ReportDynamic extends PicsActionSupport {
 	// Getters that need some calculation
 
 	/**
-	 * Return a set of fields which can be used client side for defining the report (columns, sorting, grouping and
-	 * filtering)
+	 * Return a set of fields which can be used client side for defining the
+	 * report (columns, sorting, grouping and filtering)
 	 */
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
@@ -261,6 +263,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private void addFilterType(QueryField field, JSONObject obj) {
+		obj.put("filterType", field.getFilterType().toString());
+
 		if (field.getType() == ExtFieldType.Auto)
 			return;
 
@@ -276,16 +280,18 @@ public class ReportDynamic extends PicsActionSupport {
 	private void addHelp(QueryField field, JSONObject obj) {
 		String translatedText = getText("Report." + field.getDataIndex() + ".help");
 		if (translatedText != null)
-			obj.put("description", translatedText);
+			obj.put("help", translatedText);
 	}
 
 	private String translateLabel(SimpleReportColumn column) {
 		QueryField field = getQueryFieldFromSimpleColumn(column);
 		String translatedText = translateLabel(field);
 		if (column.getFunction() != null) {
-			// TODO I'm not completely happy about how we're naming columns with Functions
+			// TODO I'm not completely happy about how we're naming columns with
+			// Functions
 			// We may want to support the user entering the label manually
-			// Until we work with this more, I'm just going to append the name of the Function
+			// Until we work with this more, I'm just going to append the name
+			// of the Function
 			translatedText += " " + column.getFunction().toString();
 		}
 		return translatedText;

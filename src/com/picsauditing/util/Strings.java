@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 import org.apache.velocity.tools.generic.DateTool;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {

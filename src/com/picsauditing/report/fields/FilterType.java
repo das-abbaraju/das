@@ -1,10 +1,9 @@
 package com.picsauditing.report.fields;
 
-
 public enum FilterType {
-	String(ExtFieldType.String), Number, Boolean(ExtFieldType.Boolean), Date(ExtFieldType.Date), AccountName(
-			ExtFieldType.String), AccountStatus(ExtFieldType.String), AccountType(ExtFieldType.String), LowMedHigh(
-			ExtFieldType.String), AuditStatus(ExtFieldType.String), Trades, @Deprecated
+	String(ExtFieldType.String), Number, Boolean(ExtFieldType.Boolean), Date(ExtFieldType.Date), DateTime(
+			ExtFieldType.Date), AccountName(ExtFieldType.String), AccountStatus, AccountType, LowMedHigh(
+			ExtFieldType.String), AuditStatus, Trades, Country, StateProvince, @Deprecated
 	Enum, @Deprecated
 	List;
 
