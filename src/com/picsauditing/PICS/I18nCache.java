@@ -3,12 +3,13 @@ package com.picsauditing.PICS;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
@@ -34,7 +35,7 @@ public class I18nCache implements Serializable {
 	private static I18nCache INSTANCE;
 
 	private Table<String, String, String> cache;
-	private Set<String> cacheUsed = new HashSet<String>();
+	private Map<String, Date> cacheUsage;
 
 	private I18nCache() {
 	}
@@ -72,8 +73,25 @@ public class I18nCache implements Serializable {
 	}
 
 	private String getText(String key, String locale) {
-		cacheUsed.add(key);
+		updateCacheUsed(key);
 		return getCache().get(key, locale);
+	}
+
+	private void updateCacheUsed(String key) {
+		Date lastUsed = cacheUsage.get(key);
+		Calendar yesterday = Calendar.getInstance();
+		yesterday.add(Calendar.DAY_OF_YEAR, -1);
+		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
+			Database db = new Database();
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key) + "'";
+			cacheUsage.put(key, new Date());
+			System.out.println("updated lastUsed for " + key);
+			try {
+				db.execute(sql);
+			} catch (SQLException e) {
+				throw new RuntimeException("Failed to reset lastUsed on app_translation because: " + e.getMessage());
+			}
+		}
 	}
 
 	public String getText(String key, Locale locale) {
@@ -116,12 +134,16 @@ public class I18nCache implements Serializable {
 			try {
 				long startTime = System.currentTimeMillis();
 				cache = TreeBasedTable.create();
+				cacheUsage = new HashMap<String, Date>();
 				Database db = new Database();
-				List<BasicDynaBean> messages = db.select(
-						"SELECT msgKey, locale, msgValue, lastUsed FROM app_translation", false);
+				String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation "
+						+ "WHERE qualityRating > 0 AND locale = 'en'";
+				List<BasicDynaBean> messages = db.select(sql, false);
 				for (BasicDynaBean message : messages) {
-					cache.put(String.valueOf(message.get("msgKey")), String.valueOf(message.get("locale")),
-							String.valueOf(message.get("msgValue")));
+					String key = String.valueOf(message.get("msgKey"));
+					cache.put(key, String.valueOf(message.get("locale")), String.valueOf(message.get("msgValue")));
+					Date lastUsed = (Date) message.get("lastUsed");
+					cacheUsage.put(key, lastUsed);
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
@@ -134,18 +156,7 @@ public class I18nCache implements Serializable {
 	}
 
 	public void clear() {
-		if (cacheUsed.size() > 0) {
-			Database db = new Database();
-			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey IN ("
-					+ Strings.implodeForDB(cacheUsed, ",") + ")";
-			try {
-				db.execute(sql);
-			} catch (SQLException doNothing) {
-				throw new RuntimeException("Failed to update app_translation lastUsed on clear.");
-			}
-		}
 		cache = null;
-		cacheUsed.clear();
 	}
 
 	private String getLocaleFallback(String key, Locale locale, boolean insertMissing) {
@@ -158,7 +169,7 @@ public class I18nCache implements Serializable {
 					String anyLocale = findAnyLocale(key);
 					if (anyLocale != null)
 						return anyLocale;
-					
+
 					if (insertMissing) {
 						// insert the default msg into the table and the cache
 						try {
