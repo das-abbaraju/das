@@ -2,10 +2,12 @@ Ext.define('PICS.view.report.ReportOptions', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportoptions'],
     
-    layout: 'accordion',
-    
     collapsed: false,
     collapsible: true,
+    layout: {
+        align: 'stretch',
+        type: 'vbox'
+    },
     resizable: {
         handles: 'e'
     },
@@ -13,16 +15,30 @@ Ext.define('PICS.view.report.ReportOptions', {
     title: 'Report Options',
     
     items: [{
-        title: 'Filters'
-    }, {
-        title: 'Columns',
-        xtype: 'reportoptionscolumns'
-    }, {
-        title: 'Sort'
-    }, {
-        title: 'Share'
-    }, {
-        title: 'Save'
+    	xtype: 'panel',
+    	bodyPadding: 10,
+        items: [{
+			xtype: 'button',
+			// disabled: true,
+			id: 'saveReport',
+			text: 'Save'
+        }]
+    },{
+    	xtype: 'panel',
+    	flex: 1,
+        layout: 'accordion',
+        items: [{
+            title: 'Filters'
+        }, {
+            title: 'Columns',
+            xtype: 'reportoptionscolumns'
+        }, {
+            title: 'Sort'
+        }, {
+            title: 'Share'
+        }, {
+            title: 'Save'
+        }]
     }],
     
     initComponent: function () {
