@@ -371,7 +371,7 @@ public class ManageTranslations extends ReportActionSupport {
 		public List<AppTranslation> getItems() {
 			List<AppTranslation> list = new ArrayList<AppTranslation>();
 			list.add(from);
-			if(to != null && !to.equals(from))
+			if(to == null || !to.equals(from))
 				list.add(to);
 			return list;
 		}

@@ -181,11 +181,12 @@
 				From (<s:property value="localeFrom.displayName"/>)
 			</th>
 			
-			<s:if test="items.size > 1">
+			<s:if test="localeTo == localeFrom"><% // I tried != but it didn't work. :( %></s:if>
+			<s:else>
 				<th class="translation-to">
 					To (<s:property value="localeTo.displayName"/>)
 				</th>
-			</s:if>
+			</s:else>
 		</tr>
 	</thead>
     
