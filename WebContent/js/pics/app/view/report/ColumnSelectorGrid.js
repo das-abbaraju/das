@@ -16,16 +16,12 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
         flex: 1
     }],
     
-    dockedItems: [{
-        xtype: 'toolbar',
-        dock: 'bottom',
-        items: [{
-            xtype: 'tbfill'
-        }, {
-            text: 'Save'
-        }, {
-            text: 'Cancel'
-        }]
+    fbar: [{
+        xtype: 'tbfill'
+    }, {
+        text: 'Save'
+    }, {
+        text: 'Cancel'
     }],
     
     initComponent: function () {

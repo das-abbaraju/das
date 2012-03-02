@@ -10,8 +10,7 @@ Ext.define('PICS.view.report.Viewport', {
        'PICS.view.report.ColumnSelector',
        'PICS.view.report.ColumnSelectorGrid',
        'PICS.view.report.DataGrid',
-       'PICS.view.layout.Footer',
-       'Ext.selection.CheckboxModel'
+       'PICS.view.layout.Footer'
     ],
     
     title: 'Main',

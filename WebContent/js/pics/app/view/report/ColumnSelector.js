@@ -2,9 +2,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    layout: {
-        type: 'fit'
-    },
+    layout: 'fit',
     
     title: 'Select Report Columns',
     
@@ -13,7 +11,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
 
     autoScroll: true,
     
-    items: {
+    items: [{
         xtype: 'reportcolumnselectorgrid'
-    }
+    }]
 });
