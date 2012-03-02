@@ -168,7 +168,7 @@ public class ManageTranslations extends ReportActionSupport {
 
 		sql.addField("t1.msgKey");
 		sql.addField("t1.msgValue fromValue");
-		sql.addField("t1.lastUsed fromLastUsed");
+		sql.addField("t1.lastUsed lastUsed");
 		sql.addField("t1.id fromID");
 		sql.addField("t1.updatedBy fromUpdatedBy");
 		sql.addField("t1.applicable fromApplicable");
@@ -185,7 +185,6 @@ public class ManageTranslations extends ReportActionSupport {
 
 		sql.addField("t2.id toID");
 		sql.addField("t2.msgValue toValue");
-		sql.addField("t2.lastUsed toLastUsed");
 		sql.addField("t2.updatedBy toUpdatedBy");
 		sql.addField("t2.applicable toApplicable");
 		sql.addField("t2.sourceLanguage toSourceLanguage");
@@ -273,6 +272,27 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 	}
 
+	private void addExcelColumns(SelectSQL sql) throws IOException {
+		excelSheet.setData(data);
+		excelSheet.buildWorkbook();
+
+		excelSheet = addColumnsFromSQL(excelSheet, sql);
+
+		String filename = this.getClass().getSimpleName();
+		excelSheet.setName(filename);
+		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+		filename += ".xls";
+
+		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+		wb.write(outstream);
+		outstream.flush();
+		ServletActionContext.getResponse().flushBuffer();
+		outstream.close();
+	}
+
 	public class Translation {
 
 		public AppTranslation from;
@@ -291,8 +311,7 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setSourceLanguage(row.get("fromSourceLanguage") == null ? null : row.get("fromSourceLanguage")
 					.toString());
 
-			Object fromLastUsed = row.get("fromLastUsed");
-
+			Object fromLastUsed = row.get("lastUsed");
 			if (fromLastUsed != null) {
 				from.setLastUsed(DateBean.parseDate(fromLastUsed.toString()));
 			}
@@ -328,11 +347,7 @@ public class ManageTranslations extends ReportActionSupport {
 					to.setSourceLanguage(row.get("toSourceLanguage") == null ? null : row.get("toSourceLanguage")
 							.toString());
 
-					Object toLastUsed = row.get("toLastUsed");
-
-					if (toLastUsed != null) {
-						to.setLastUsed(DateBean.parseDate(toLastUsed.toString()));
-					}
+					to.setLastUsed(from.getLastUsed());
 
 					Object toUpdatedBy = row.get("toUpdatedBy");
 					Object toUpdatedByName = row.get("toUpdatedByName");
@@ -356,7 +371,8 @@ public class ManageTranslations extends ReportActionSupport {
 		public List<AppTranslation> getItems() {
 			List<AppTranslation> list = new ArrayList<AppTranslation>();
 			list.add(from);
-			list.add(to);
+			if(to != null && !to.equals(from))
+				list.add(to);
 			return list;
 		}
 	}
@@ -445,27 +461,6 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		return isocode;
-	}
-
-	public void addExcelColumns(SelectSQL sql) throws IOException {
-		excelSheet.setData(data);
-		excelSheet.buildWorkbook();
-
-		excelSheet = addColumnsFromSQL(excelSheet, sql);
-
-		String filename = this.getClass().getSimpleName();
-		excelSheet.setName(filename);
-		HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-		filename += ".xls";
-
-		ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-		wb.write(outstream);
-		outstream.flush();
-		ServletActionContext.getResponse().flushBuffer();
-		outstream.close();
 	}
 
 	public int[] getFromQualityRatings() {

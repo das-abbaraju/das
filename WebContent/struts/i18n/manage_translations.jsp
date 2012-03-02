@@ -180,9 +180,12 @@
 			<th class="translation-from">
 				From (<s:property value="localeFrom.displayName"/>)
 			</th>
-			<th class="translation-to">
-				To (<s:property value="localeTo.displayName"/>)
-			</th>
+			
+			<s:if test="items.size > 1">
+				<th class="translation-to">
+					To (<s:property value="localeTo.displayName"/>)
+				</th>
+			</s:if>
 		</tr>
 	</thead>
     
