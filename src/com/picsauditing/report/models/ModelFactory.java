@@ -12,8 +12,6 @@ public class ModelFactory {
 			return new QueryAccountContractor();
 		if (type.equals(ModelType.ContractorAudits))
 			return new QueryAccountContractorAudit();
-		if (type.equals(ModelType.Operators))
-			return new QueryAccountOperator();
 
 		return null;
 	}
