@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
@@ -71,7 +72,7 @@ final public class MultiYearValueCalculator {
 
 	@Testable
 	static List<ContractorAudit> getAnnualUpdateAudits(ContractorAccount contractor, int yearsBack) {
-		List<ContractorAudit> audits = contractor.getSortedAnnualUpdates();
+		List<ContractorAudit> audits = removeFirstIncomplete(contractor.getSortedAnnualUpdates(), yearsBack);
 		if (CollectionUtils.isEmpty(audits)) {
 			return Collections.emptyList();
 		}
@@ -81,6 +82,25 @@ final public class MultiYearValueCalculator {
 		}
 
 		return audits.subList(0, yearsBack);
+	}
+	
+	/**
+	 * Returns a list with the first incomplete audit removed.
+	 * 
+	 * @param audits List of ContractorAudit objects in sorted order.
+	 * @param yearsBack
+	 * @return
+	 */
+	static List<ContractorAudit> removeFirstIncomplete(List<ContractorAudit> audits, int yearsBack) {
+		if (CollectionUtils.isEmpty(audits)) {
+			return Collections.emptyList();
+		}
+		
+		if (audits.get(0).hasCaoStatusBefore(AuditStatus.Complete)) {
+			audits.remove(0);
+		}
+		
+		return audits;
 	}
 
 	@Testable
