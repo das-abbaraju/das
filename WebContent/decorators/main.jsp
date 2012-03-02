@@ -230,31 +230,7 @@
 				<div id="notify"></div>
 				
 				<div id="helpbox">
-					<%--
-						http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
-						
-						Locales:
-						
-						- English (e.g. https://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a)
-						- French
-						- German
-						- Hebrew
-						- Portuguese
-						- Spanish
-					--%>
-					
 					<%
-						String chatIcon = protocol + "://server.iad.liveperson.net/hc/90511184/?" +
-							"cmd=repstate" +
-							"&amp;site=90511184" +
-							"&amp;channel=web" +
-							"&amp;ver=1" +
-							"&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + locale.getDisplayLanguage() +"/General/3a";
-							
-						if ("1".equals(System.getProperty("pics.debug"))) {
-							chatIcon = "";
-						}
-					
 						String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
 					
 						if (permissions.isOperatorCorporate()) {

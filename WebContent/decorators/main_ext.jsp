@@ -145,31 +145,7 @@
 				<div id="notify"></div>
 				
 				<div id="helpbox">
-					<%--
-						http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
-						
-						Locales:
-						
-						- English (e.g. https://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a)
-						- French
-						- German
-						- Hebrew
-						- Portuguese
-						- Spanish
-					--%>
-					
 					<%
-						String chatIcon = protocol + "://server.iad.liveperson.net/hc/90511184/?" +
-							"cmd=repstate" +
-							"&amp;site=90511184" +
-							"&amp;channel=web" +
-							"&amp;ver=1" +
-							"&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + locale.getDisplayLanguage() +"/General/3a";
-							
-						if ("1".equals(System.getProperty("pics.debug"))) {
-							chatIcon = "";
-						}
-					
 						String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
 					
 						if (permissions.isOperatorCorporate()) {
@@ -182,20 +158,6 @@
 					%>
 					
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
-					<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
-					
-					<a id="_lpChatBtn"
-						class="liveperson-chat"
-						href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a"
-						target="chat90511184"
-						onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
-						
-						<% if (!Strings.isEmpty(chatIcon)) { %>
-							<img src="<%= chatIcon %>" />
-						<% } else { %>
-							<%= i18nCache.getText("Header.Chat", locale) %>
-						<% } %>
-					</a>
 				</div>
 				
 				<div id="content">
@@ -215,24 +177,6 @@
 		<%
 			if (!"1".equals(System.getProperty("pics.debug"))) {
 		%>
-		
-		<!-- BEGIN LivePerson -->
-		<script type="text/javascript">
-			var lpPosY = 100;
-			var lpPosX = 100;
-		
-			if (typeof(tagVars) == "undefined") tagVars = "";
-		<%	if (permissions.isLoggedIn()) { %>
-				tagVars += "&VISITORVAR!UserID=<%=permissions.getUserId()%>&VISITORVAR!UserName=<%=URLEncoder.encode(permissions.getUsername())%>&VISITORVAR!DisplayName=<%=URLEncoder.encode(permissions.getName())%>";
-		<%	} %>
-		</script>
-		<!-- End Monitor Tracking Variables  -->
-		
-		<script
-			type="text/javascript"
-			src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'>
-		</script>
-		<!-- END LivePerson -->
 		
 		<script type="text/javascript">
 		  var _gaq = _gaq || [];
