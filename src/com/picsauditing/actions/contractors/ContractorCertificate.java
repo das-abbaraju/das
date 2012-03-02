@@ -26,7 +26,7 @@ public class ContractorCertificate extends ContractorActionSupport {
 		PdfReader reader = new PdfReader(ServletActionContext.getServletContext().getRealPath("/resources/MemberCertTemplate.pdf"));
 
 		ServletActionContext.getResponse().setContentType("application/pdf");
-		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + "test.pdf");
+		ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename = " + "PICS Certificate.pdf");
 		ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 		PdfStamper writer = new PdfStamper(reader, outstream);
 
