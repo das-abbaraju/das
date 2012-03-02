@@ -28,7 +28,8 @@ Ext.define('PICS.view.report.ReportOptions', {
     	flex: 1,
         layout: 'accordion',
         items: [{
-            title: 'Filters'
+            title: 'Filters',
+            xtype: 'reportoptionsfilters'            
         }, {
             title: 'Columns',
             xtype: 'reportoptionscolumns'

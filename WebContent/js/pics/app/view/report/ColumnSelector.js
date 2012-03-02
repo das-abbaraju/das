@@ -2,7 +2,9 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    layout: 'fit',
+    layout: {
+        type: 'fit'
+    },
     
     title: 'Select Report Columns',
     
@@ -10,8 +12,22 @@ Ext.define('PICS.view.report.ColumnSelector', {
     width: 600,
 
     autoScroll: true,
-    
+    fbar: [{
+        xtype: 'tbfill'
+    }, {
+        text: 'Save'
+    }, {
+        text: 'Cancel'
+    }],
     items: [{
         xtype: 'reportcolumnselectorgrid'
+    }],
+    tbar: [{
+            xtype: 'searchFilter',
+            fieldLabel: 'Search',
+            labelWidth: 40,
+            id: 'filterfield',
+            store: 'report.AvailableFields',
+            fields: ['category','name','text','help','filterType']        
     }]
 });

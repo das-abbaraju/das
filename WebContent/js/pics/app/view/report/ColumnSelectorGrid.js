@@ -16,14 +16,6 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
         flex: 1
     }],
     
-    fbar: [{
-        xtype: 'tbfill'
-    }, {
-        text: 'Save'
-    }, {
-        text: 'Cancel'
-    }],
-    
     initComponent: function () {
         this.selModel = Ext.create('Ext.selection.CheckboxModel');
         
