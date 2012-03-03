@@ -485,6 +485,82 @@ public class Strings {
 		return expression.replace("|", "");
 	}
 
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsPhone
+	 */
+	@Deprecated
+	public static String getPicsPhone(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsPhone!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsFax
+	 */
+	@Deprecated
+	public static String getPicsFax(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsFax!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsMainPhone
+	 */
+	@Deprecated
+	public static String getPicsMainPhone(String countryCode) {
+		if (isEmpty(countryCode))
+			return "949-936-4500";
+
+		return "!!Deprecated method called.  Use translation key PicsMainPhone!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsTollFreePhone
+	 */
+	@Deprecated
+	public static String getPicsTollFreePhone(String countryCode) {
+		return "!!deprecated method called.  Use translation key PicsTollFreePhone!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsBillingPhone
+	 */
+	@Deprecated
+	public static String getPicsBillingPhone(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsBillingPhone!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsBillingFax
+	 */
+	@Deprecated
+	public static String getPicsBillingFax(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsBillingFax!!";
+	}
+	
+	
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsCustomerServiceFax
+	 */
+	@Deprecated
+	public static String getPicsCustomerServiceFax(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsCustomerServiceFax!!";
+	}
+
+	/*
+	 * TODO: remove this method
+	 * Use translation key PicsCustomerServicePhone
+	 */
+	@Deprecated
+	public static String getPicsCustomerServicePhone(String countryCode) {
+		return "!!Deprecated method called.  Use translation key PicsCustomerServicePhone!!";
+	}
+
 	public static Locale parseLocale(String locale) {
 		Locale test = null;
 		String[] loc = locale.split("[_-]");
