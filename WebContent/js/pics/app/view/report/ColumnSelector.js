@@ -9,7 +9,13 @@ Ext.define('PICS.view.report.ColumnSelector', {
         
         text: 'Save'
     }, {
-        text: 'Cancel'
+        text: 'Cancel',
+        listeners: {
+            click: function () {
+                var columnSelector = Ext.ComponentQuery.query('reportcolumnselector');
+                columnSelector[0].destroy();                
+            }
+        }
     }],
     height: 500,
     items: [{
