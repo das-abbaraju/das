@@ -25,7 +25,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
             fieldLabel: 'Search',
             labelWidth: 40,
             id: 'filterfield',
-            store: 'report.AvailableFields',
+            store: 'report.AvailableFieldsByCategory',
             fields: ['category','name','text','help','filterType']        
     }]
 });

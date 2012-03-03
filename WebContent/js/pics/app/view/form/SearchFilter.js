@@ -4,7 +4,7 @@ Ext.define('PICS.view.form.SearchFilter', {
     enableKeyEvents: true,
     listeners: {
         keyup: function (target, event){
-            var store = Ext.StoreMgr.lookup(this.store), 
+            var store = Ext.StoreMgr.lookup(this.store);
             filterValue = Ext.getCmp('filterfield').getValue(),
             filter = new Ext.util.Filter({
                  property: this.fields,
