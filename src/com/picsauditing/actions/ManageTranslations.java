@@ -135,15 +135,14 @@ public class ManageTranslations extends ReportActionSupport {
 
 	@SuppressWarnings("unchecked")
 	private void updateOtherLanguagesToQuestionable() {
-		if (translation.isContentDriven()) {
-			List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(AppTranslation.class, String
-					.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage",
-							translation.getKey(), translation.getLocale()));
-			for (AppTranslation questionable : nowQuestionable) {
-				questionable.setQualityRating(TranslationQualityRating.Questionable);
-				questionable.setAuditColumns(permissions);
-				dao.save(questionable);
-			}
+		List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(
+				AppTranslation.class,
+				String.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage",
+						translation.getKey(), translation.getLocale()));
+		for (AppTranslation questionable : nowQuestionable) {
+			questionable.setQualityRating(TranslationQualityRating.Questionable);
+			questionable.setAuditColumns(permissions);
+			dao.save(questionable);
 		}
 	}
 
