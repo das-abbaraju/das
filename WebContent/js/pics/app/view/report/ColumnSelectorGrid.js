@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportcolumnselectorgrid'],
     
-    store: 'report.AvailableFields',
+    store: 'report.AvailableFieldsByCategory',
     
     enableColumnHide: false,
     

@@ -19,6 +19,7 @@ Ext.application({
     
 	stores: [
 	    'report.AvailableFields',
+	    'report.AvailableFieldsByCategory',
         'report.Reports', 
         'report.ReportData'
     ],

@@ -2,16 +2,13 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    layout: {
-        type: 'fit'
-    },
+    layout: 'fit',
     
     title: 'Select Report Columns',
     
     height: 500,
     width: 600,
 
-    autoScroll: true,
     fbar: [{
         xtype: 'tbfill'
     }, {
@@ -19,6 +16,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
     }, {
         text: 'Cancel'
     }],
+    
     items: [{
         xtype: 'reportcolumnselectorgrid'
     }],
