@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class ContractorCronTest {
 	public void testContractorAccountOnlyWCBs() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountWithOnlyWCBs();		
+		ContractorAccount contractorAccount = setupContractorAccountWithOnlyWCBs();		
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 						
 		assertTrue(audits.isEmpty());
@@ -52,7 +53,7 @@ public class ContractorCronTest {
 	public void testContractorAccountNoPoliciesOrWCBs() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountNoPoliciesOrWCBs();
+		ContractorAccount contractorAccount = setupContractorAccountNoPoliciesOrWCBs();
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 		
 		assertTrue(audits.isEmpty());
@@ -66,7 +67,7 @@ public class ContractorCronTest {
 	public void testContractorAccountPolicyExpiredTwoMonthsAgo() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountPolicyExpiredTwoMonthsAgo();
+		ContractorAccount contractorAccount = setupContractorAccountPolicyExpiredTwoMonthsAgo();
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 		
 		assertTrue(audits.isEmpty());
@@ -80,7 +81,7 @@ public class ContractorCronTest {
 	public void testContractorAccountWCBExpiredTwoMonthsAgo() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountWCBExpiredTwoMonthsAgo();
+		ContractorAccount contractorAccount = setupContractorAccountWCBExpiredTwoMonthsAgo();
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 		
 		assertTrue(audits.isEmpty());
@@ -93,24 +94,28 @@ public class ContractorCronTest {
 	public void testContractorAccountMultipleAuditsExpiredPolicy() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountMultipleAuditsExpiredPolicy();
+		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredPolicy();
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 		
 		assertEquals(1, audits.size());
-		ContractorAudit[] ary = audits.toArray(new ContractorAudit[audits.size()]);
-		assertEquals(AuditTypeClass.Policy, ary[0].getAuditType().getClassType());
+		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+			ContractorAudit contractorAudit = iterator.next();
+			assertEquals(AuditTypeClass.Policy, contractorAudit.getAuditType().getClassType());
+		}
 	}
 	
 //	@Test
 //	public void testContractorAccountMultipleAuditsExpiredWCB() {
 //		ContractorCron contractorCron = new ContractorCron();
-//		
-//		ContractorAccount contractorAccount = getContractorAccountMultipleAuditsExpiredWCB();
+//
+//		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
 //		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-//		
+//
 //		assertEquals(1, audits.size());
-//		ContractorAudit[] ary = audits.toArray(new ContractorAudit[audits.size()]);
-//		assertTrue(ary[0].getAuditType().isWCB());
+//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+//			ContractorAudit contractorAudit = iterator.next();
+//			assertTrue(contractorAudit.getAuditType().isWCB());
+//		}
 //	}
 	
 	/**
@@ -121,45 +126,50 @@ public class ContractorCronTest {
 	public void testContractorAccountOverlappingValidWCBs() {
 		ContractorCron contractorCron = new ContractorCron();
 		
-		ContractorAccount contractorAccount = getContractorAccountWCBsForDifferentYears();
+		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYears();
 		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 		
-		assertEquals(0, audits.size());
+		assertTrue(audits.isEmpty());
 	}
 	
-	/**
-	 * If there there are overlapping WCBs, one is expiring and the other has a status of
-	 * Incomplete, then it should be in the expiring audit list.
-	 */
+//	/**
+//	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+//	 * Incomplete, then it should be in the expiring audit list.
+//	 */
 //	@Test
 //	public void testContractorAccountOverlappingWCBsIncomplete() {
 //		ContractorCron contractorCron = new ContractorCron();
 //		
-//		ContractorAccount contractorAccount = getContractorAccountWCBsForDifferentYearsIncomplete();
+//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsIncomplete();
 //		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
 //		
 //		assertEquals(1, audits.size());
-//		ContractorAudit[] ary = audits.toArray(new ContractorAudit[audits.size()]);
-//		assertEquals(DateBean.addField(getDateTwoDaysAgo(), Calendar.YEAR, 1), ary[0].getExpiresDate());
+//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+//			ContractorAudit contractorAudit = iterator.next();
+//			assertEquals(DateBean.addField(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), Calendar.YEAR, 1), contractorAudit.getExpiresDate());
+//		}
 //	}	
 	
-	/**
-	 * If there there are overlapping WCBs, one is expiring and the other has a status of
-	 * Pending, then it should be in the expiring audit list.
-	 */
+//	/**
+//	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+//	 * Pending, then it should be in the expiring audit list.
+//	 */
 //	@Test
 //	public void testContractorAccountOverlappingWCBsPending() {
 //		ContractorCron contractorCron = new ContractorCron();
-//		
-//		ContractorAccount contractorAccount = getContractorAccountWCBsForDifferentYearsPending();
+//
+//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsPending();
 //		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-//		
-//		assertEquals(1, audits.size());
-//		ContractorAudit[] ary = audits.toArray(new ContractorAudit[audits.size()]);
-//		assertEquals(DateBean.addField(getDateTwoDaysAgo(), Calendar.YEAR, 1), ary[0].getExpiresDate());
-//	}	
+//
+//		assertTrue(audits.isEmpty());
+//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+//			ContractorAudit contractorAudit = iterator.next();
+//			assertEquals(DateBean.addField(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), Calendar.YEAR, 1),
+//					contractorAudit.getExpiresDate());
+//		}
+//	}
 	
-	private ContractorAccount getContractorAccountWCBExpiredTwoMonthsAgo() {
+	private ContractorAccount setupContractorAccountWCBExpiredTwoMonthsAgo() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
@@ -167,7 +177,7 @@ public class ContractorCronTest {
 									.id(143)
 									.auditTypeClass(AuditTypeClass.Policy)
 									.auditStatus(AuditStatus.Approved)
-									.expiresDate(getDateTwoMonthsAgo())
+									.expiresDate(DateBean.addMonths(new Date(), -2))
 									.build();
 		audits.add(audit);
 		
@@ -176,14 +186,14 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountPolicyExpiredTwoMonthsAgo() {
+	private ContractorAccount setupContractorAccountPolicyExpiredTwoMonthsAgo() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
 		ContractorAudit audit = new MockAuditBuilder()
 									.auditTypeClass(AuditTypeClass.Policy)
 									.auditStatus(AuditStatus.Approved)
-									.expiresDate(getDateTwoMonthsAgo())
+									.expiresDate(DateBean.addMonths(new Date(), -2))
 									.build();
 		audits.add(audit);
 		
@@ -192,14 +202,14 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountNoPoliciesOrWCBs() {
+	private ContractorAccount setupContractorAccountNoPoliciesOrWCBs() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
 		ContractorAudit audit = new MockAuditBuilder()
 									.auditTypeClass(AuditTypeClass.PQF)
 									.auditStatus(AuditStatus.Pending)
-									.expiresDate(getDateThreeMonthsFromNow())
+									.expiresDate(DateBean.addMonths(new Date(), 3))
 									.build();
 		audits.add(audit);
 		
@@ -208,7 +218,7 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountWithOnlyWCBs() {
+	private ContractorAccount setupContractorAccountWithOnlyWCBs() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
@@ -218,7 +228,7 @@ public class ContractorCronTest {
 									.id(143)
 									.auditTypeClass(AuditTypeClass.Policy)
 									.auditStatus(AuditStatus.Submitted)
-									.expiresDate(getDateThreeMonthsFromNow())
+									.expiresDate(DateBean.addMonths(new Date(), 3))
 									.build();
 		audits.add(audit);		
 		
@@ -226,7 +236,7 @@ public class ContractorCronTest {
 					.id(170)
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Complete)
-					.expiresDate(getDateThreeMonthsFromNow())
+					.expiresDate(DateBean.addMonths(new Date(), 3))
 					.build();
 		audits.add(audit);
 		
@@ -234,7 +244,7 @@ public class ContractorCronTest {
 					.id(261)
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Approved)
-					.expiresDate(getDateThreeMonthsFromNow())
+					.expiresDate(DateBean.addMonths(new Date(), 3))
 					.build();
 		audits.add(audit);
 		
@@ -243,7 +253,7 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountMultipleAuditsExpiredPolicy() {
+	private ContractorAccount setupContractorAccountMultipleAuditsExpiredPolicy() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
@@ -251,14 +261,14 @@ public class ContractorCronTest {
 									.id(143)
 									.auditTypeClass(AuditTypeClass.Policy)
 									.auditStatus(AuditStatus.Submitted)
-									.expiresDate(getDateThreeMonthsFromNow())
+									.expiresDate(DateBean.addMonths(new Date(), 3))
 									.build();
 		audits.add(audit);		
 		
 		audit = new MockAuditBuilder()
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Complete)
-					.expiresDate(getDateTwoDaysAgo())
+					.expiresDate(DateBean.addDays(new Date(), -2))
 					.build();
 		audits.add(audit);
 		
@@ -266,7 +276,7 @@ public class ContractorCronTest {
 					.id(261)
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Approved)
-					.expiresDate(getDateThreeMonthsFromNow())
+					.expiresDate(DateBean.addMonths(new Date(), 3))
 					.build();
 		audits.add(audit);
 		
@@ -275,7 +285,7 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountMultipleAuditsExpiredWCB() {
+	private ContractorAccount setupContractorAccountMultipleAuditsExpiredWCB() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 		
@@ -283,14 +293,14 @@ public class ContractorCronTest {
 									.id(143)
 									.auditTypeClass(AuditTypeClass.Policy)
 									.auditStatus(AuditStatus.Submitted)
-									.expiresDate(getDateTwoDaysAgo())
+									.expiresDate(DateBean.addDays(new Date(), -2))
 									.build();
 		audits.add(audit);		
 		
 		audit = new MockAuditBuilder()
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Complete)
-					.expiresDate(getDateThreeMonthsFromNow())
+					.expiresDate(DateBean.addMonths(new Date(), 3))
 					.build();
 		audits.add(audit);
 		
@@ -299,10 +309,10 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountWCBsForDifferentYears() {
+	private ContractorAccount setupContractorAccountWCBsForDifferentYears() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		Date twoDaysAgo = getDateTwoDaysAgo();
+		Date twoDaysAgo = DateBean.addDays(new Date(), -2);
 		
 		ContractorAudit audit = new MockAuditBuilder()
 									.id(143)
@@ -325,10 +335,10 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountWCBsForDifferentYearsIncomplete() {
+	private ContractorAccount setupContractorAccountWCBsForDifferentYearsIncomplete() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		Date twoDaysAgo = getDateTwoDaysAgo();
+		Date twoDaysAgo = DateBean.addDays(new Date(), -2);
 		
 		ContractorAudit audit = new MockAuditBuilder()
 									.id(143)
@@ -351,10 +361,10 @@ public class ContractorCronTest {
 		return contractorAccount;
 	}
 	
-	private ContractorAccount getContractorAccountWCBsForDifferentYearsPending() {
+	private ContractorAccount setupContractorAccountWCBsForDifferentYearsPending() {
 		ContractorAccount contractorAccount = new ContractorAccount();
 		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-		Date twoDaysAgo = getDateTwoDaysAgo();
+		Date twoDaysAgo = DateBean.addDays(new Date(), -2);
 		
 		ContractorAudit audit = new MockAuditBuilder()
 									.id(143)
@@ -375,18 +385,6 @@ public class ContractorCronTest {
 		contractorAccount.setAudits(audits);
 		
 		return contractorAccount;
-	}
-	
-	private Date getDateTwoDaysAgo() {
-		return DateBean.addDays(new Date(), -2);
-	}
-	
-	private Date getDateThreeMonthsFromNow() {
-		return DateBean.addMonths(new Date(), 3);
-	}
-	
-	private Date getDateTwoMonthsAgo() {
-		return DateBean.addMonths(new Date(), -2);
 	}
 	
 	private static class MockAuditBuilder {
