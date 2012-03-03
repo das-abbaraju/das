@@ -54,6 +54,9 @@
 		</s:if>
 	</s:if>
 </s:if>
+<s:elseif test="#q.questionType == 'Tagit' && #a != null && #a.answer == '[]'">
+	<s:set name="questionStillRequired" value="true" />
+</s:elseif>
 
 <%-- Question auto save disable --%>
 <s:if test="#q.questionType == 'ESignature' || #q.questionType == 'Tagit'">
