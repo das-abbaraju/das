@@ -401,7 +401,7 @@ public class DateBean {
 		if (startDate == null || months == 0)
 			return null;
 
-		Calendar cal = addValueToCalendarField(startDate, Calendar.MONTH, months);
+		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
 		
 		return cal.getTime();
 	}
@@ -410,7 +410,7 @@ public class DateBean {
 		if (startDate == null || days == 0)
 			return null;
 		
-		Calendar cal = addValueToCalendarField(startDate, Calendar.DATE, days);
+		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.DATE, days);
 		
 		return cal.getTime();
 	}
@@ -420,7 +420,7 @@ public class DateBean {
 			return null;
 		}
 
-		Calendar cal = addValueToCalendarField(startDate, field, amount);
+		Calendar cal = initializeCalendarWithOffset(startDate, field, amount);
 
 		return cal.getTime();
 	}
@@ -436,7 +436,7 @@ public class DateBean {
 		if (startDate == null || months == 0)
 			return null;
 
-		Calendar calendar = addValueToCalendarField(startDate, Calendar.MONTH, months);
+		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
 		calendar.set(Calendar.DATE, 1);
 		
 		return calendar.getTime();
@@ -451,7 +451,7 @@ public class DateBean {
 		if (startDate == null)
 			return null;
 
-		Calendar cal = addValueToCalendarField(startDate, Calendar.YEAR, 1);
+		Calendar cal = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);
 		cal = setDefaultsForMonth(cal, Calendar.MARCH);
 
 		return cal.getTime();
@@ -473,14 +473,14 @@ public class DateBean {
 			return null;
 		}
 		
-		Calendar calendar = addValueToCalendarField(startDate, Calendar.YEAR, 1);		
+		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.YEAR, 1);		
 		calendar = setDefaultsForMonth(calendar, Calendar.JANUARY);
 		
 		return calendar.getTime();
 	}
 	
 	
-	private static Calendar addValueToCalendarField(Date date, int field, int amount) {
+	private static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
 		calendar.add(field, amount);		
