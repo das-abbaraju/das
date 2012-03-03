@@ -450,10 +450,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
 		}
 
-//		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
-//				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
-//			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
-//		}
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
+				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
+			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
+		}
 
 		return errorMessages;
 	}
