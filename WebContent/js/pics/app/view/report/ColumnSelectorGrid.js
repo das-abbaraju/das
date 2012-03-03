@@ -20,7 +20,7 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
         this.selModel = Ext.create('Ext.selection.CheckboxModel');
         
         this.features = Ext.create('Ext.grid.feature.Grouping',{
-            groupHeaderTpl: 'Cuisine: {name} ({rows.length} Item{[values.rows.length > 1 ? "s" : ""]})'
+            groupHeaderTpl: 'Category: {name} ({rows.length} Item{[values.rows.length != 1 ? "s" : ""]})'
         });
         
         this.callParent();

@@ -9,23 +9,31 @@ Ext.define('PICS.view.report.ColumnSelector', {
     height: 500,
     width: 600,
 
-    fbar: [{
-        xtype: 'tbfill'
+    dockedItems: [{
+        xtype: 'toolbar',
+        dock: 'bottom',
+        items: [{
+            xtype: 'tbfill'
+        }, {
+            xtype: 'button',
+            text: 'Save'
+        }, {
+            text: 'Cancel'
+        }]
     }, {
-        text: 'Save'
-    }, {
-        text: 'Cancel'
+        xtype: 'searchFilter',
+        dock: 'top',
+        fieldLabel: 'Search',
+        labelWidth: 40,
+        id: 'filterfield',
+        store: 'report.AvailableFieldsByCategory',
+        fields: [
+            'category', 
+            'name' 
+        ]
     }],
     
     items: [{
         xtype: 'reportcolumnselectorgrid'
-    }],
-    tbar: [{
-            xtype: 'searchFilter',
-            fieldLabel: 'Search',
-            labelWidth: 40,
-            id: 'filterfield',
-            store: 'report.AvailableFieldsByCategory',
-            fields: ['category','name','text','help','filterType']        
     }]
 });
