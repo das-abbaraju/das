@@ -14,7 +14,6 @@ Ext.define('PICS.model.report.Report', {
         { name: 'filterExpression', type: 'string' },
         { name: 'rowsPerPage', type: 'int', defaultValue: 100 }
     ],
-    
     hasMany: [{
         model: 'PICS.model.report.SimpleColumn', 
         name: 'columns'

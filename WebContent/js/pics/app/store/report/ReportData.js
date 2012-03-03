@@ -1,14 +1,14 @@
 Ext.define('PICS.store.report.ReportData', {
-	extend : 'Ext.data.Store',
-	model : 'PICS.model.report.ReportRow',
-	autoLoad : true,
+	extend: 'Ext.data.Store',
+	model: 'PICS.model.report.ReportRow',
 	
-	proxy : {
-        type : 'ajax',
-        url : reportURL,
-        reader : {
-            type : 'json',
-            root : 'data'
-        }
+	autoLoad: true,
+	proxy: {
+	    reader: {
+            root: 'data',
+            type: 'json'
+        },
+        type: 'ajax',
+        url: reportURL
     }
 });

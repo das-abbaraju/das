@@ -2,38 +2,33 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    layout: 'fit',
-    
-    title: 'Select Report Columns',
-    
-    height: 500,
-    width: 600,
-
-    dockedItems: [{
-        xtype: 'toolbar',
-        dock: 'bottom',
-        items: [{
-            xtype: 'tbfill'
-        }, {
-            xtype: 'button',
-            text: 'Save'
-        }, {
-            text: 'Cancel'
-        }]
+    fbar: [{
+        xtype: 'tbfill'
     }, {
-        xtype: 'searchFilter',
-        dock: 'top',
-        fieldLabel: 'Search',
-        labelWidth: 40,
-        id: 'filterfield',
-        store: 'report.AvailableFieldsByCategory',
-        fields: [
-            'category', 
-            'name' 
-        ]
+        xtype: 'button',
+        
+        text: 'Save'
+    }, {
+        text: 'Cancel'
     }],
-    
+    height: 500,
     items: [{
         xtype: 'reportcolumnselectorgrid'
-    }]
+    }],
+    layout: 'fit',
+    resizable: false,
+    tbar: [{
+        xtype: 'searchFilter',
+        store: 'report.AvailableFieldsByCategory',
+        
+        fieldLabel: 'Search',
+        fields: [
+            'category', 
+            'text'
+        ],
+        id: 'filterfield',
+        labelWidth: 40
+    }],
+    title: 'Select Report Columns',
+    width: 600
 });

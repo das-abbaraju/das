@@ -3,7 +3,6 @@ Ext.define('PICS.view.layout.Menu', {
     alias: ['widget.layoutmenu'],
     
     autoLoad: {
-        url: 'Menu.action',
         renderer: function (loader, response, active) {
             var toolbar = loader.getTarget();
             
@@ -23,6 +22,8 @@ Ext.define('PICS.view.layout.Menu', {
             toolbar.add({
                 text: 'Search'
             });
-        }
-    }
+        },
+        url: 'Menu.action'
+    },
+    enableOverflow: true
 });

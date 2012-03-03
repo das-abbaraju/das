@@ -4,6 +4,29 @@ Ext.define('PICS.view.report.ReportOptions', {
     
     collapsed: false,
     collapsible: true,
+    items: [{
+        xtype: 'panel',
+        
+        bodyPadding: 10,
+        items: [{
+            xtype: 'button',
+            
+            id: 'saveReport',
+            text: 'Save'
+        }]
+    },{
+        xtype: 'panel',
+        
+        flex: 1,
+        items: [{
+            xtype: 'reportoptionsfilters'            
+        }, {
+            xtype: 'reportoptionscolumns'
+        }, {
+            title: 'Sort'
+        }],
+        layout: 'accordion'
+    }],
     layout: {
         align: 'stretch',
         type: 'vbox'
@@ -11,39 +34,9 @@ Ext.define('PICS.view.report.ReportOptions', {
     resizable: {
         handles: 'e'
     },
-    
     title: 'Report Options',
     
-    items: [{
-    	xtype: 'panel',
-    	bodyPadding: 10,
-        items: [{
-			xtype: 'button',
-			// disabled: true,
-			id: 'saveReport',
-			text: 'Save'
-        }]
-    },{
-    	xtype: 'panel',
-    	flex: 1,
-        layout: 'accordion',
-        items: [{
-            title: 'Filters',
-            xtype: 'reportoptionsfilters'            
-        }, {
-            title: 'Columns',
-            xtype: 'reportoptionscolumns'
-        }, {
-            title: 'Sort'
-        }, {
-            title: 'Share'
-        }, {
-            title: 'Save'
-        }]
-    }],
-    
     initComponent: function () {
-        
         this.callParent();
     }
 });

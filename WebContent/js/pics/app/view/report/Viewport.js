@@ -1,8 +1,5 @@
 Ext.define('PICS.view.report.Viewport', {
     extend : 'Ext.container.Viewport',
-    
-    layout : 'border',
-    
     requires: [
        'PICS.view.layout.Menu',
        'PICS.view.report.ReportOptions',
@@ -15,13 +12,8 @@ Ext.define('PICS.view.report.Viewport', {
        'PICS.view.layout.Footer'
     ],
     
-    title: 'Main',
-    
     items: [{
         region: 'center',
-        layout: 'border',
-        
-        id: 'main',
         
         dockedItems: [{
             xtype: 'layoutmenu',
@@ -29,27 +21,30 @@ Ext.define('PICS.view.report.Viewport', {
             dock: 'top',
             height: 30
         }],
-        
+        id: 'main',
         items: [{
             xtype: 'reportoptions',
             region: 'west',
+            
             id: 'aside',
             width: 300
         }, {
             xtype: 'tabpanel',
-            
             region: 'center',
-            
-            title: 'Recently Added Contractors',
             
             items: [{
                 xtype: 'reportdatagrid'
             }, {
                 title: 'Chart'
-            }]
-        }]
+            }],
+            title: 'Recently Added Contractors'
+        }],
+        layout: 'border'
     }, {
         xtype: 'layoutfooter',
+        
         region: 'south'
-    }]
+    }],
+    layout : 'border',
+    title: 'Main'
 });
