@@ -6,8 +6,8 @@ Ext.application({
 	name: 'PICS',
 	appFolder: 'js/pics/app',
 	
-	//controllers: [ 'report.Reports' ],
-	
+    controllers: [ 'report.ReportController' ],
+
 	models: [
 	    'report.AvailableField', 
         'report.Report', 
@@ -23,7 +23,7 @@ Ext.application({
         'report.Reports', 
         'report.ReportData'
     ],
-
+    
 	launch: function() {
 		Ext.create('PICS.view.report.Viewport');
 	}

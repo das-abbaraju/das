@@ -55,8 +55,9 @@ public class ReportDynamic extends PicsActionSupport {
 	public String save() {
 		checkReport();
 		report.setAuditColumns(permissions);
-		dao.save(report);
-		return SUCCESS;
+		// dao.save(report);
+		json.put("success", true);
+		return JSON;
 	}
 
 	public String delete() {

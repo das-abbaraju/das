@@ -9,10 +9,10 @@ Ext.define('PICS.view.report.ReportOptions', {
         
         bodyPadding: 10,
         items: [{
-            xtype: 'button',
-            
-            id: 'saveReport',
-            text: 'Save'
+			xtype: 'button',
+			action: 'save',
+			// disabled: true,
+		    text: 'Save'
         }]
     },{
         xtype: 'panel',
