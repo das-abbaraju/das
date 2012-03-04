@@ -2,21 +2,21 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    fbar: [{
-        xtype: 'tbfill'
-    }, {
-        xtype: 'button',
-        
-        text: 'Save'
-    }, {
-        text: 'Cancel',
-        listeners: {
-            click: function () {
-                var columnSelector = Ext.ComponentQuery.query('reportcolumnselector');
-                columnSelector[0].destroy();                
+    initComponent: function() {
+        this.buttons = [
+            {
+                text: 'Add',
+                action: 'add'
+            },
+            {
+                text: 'Cancel',
+                scope: this,
+                handler: this.close
             }
-        }
-    }],
+        ];
+
+        this.callParent(arguments);
+    },
     height: 500,
     items: [{
         xtype: 'reportcolumnselectorgrid'
@@ -29,7 +29,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
         
         fieldLabel: 'Search',
         fields: [
-            'category', 
+            'category',
             'text'
         ],
         id: 'filterfield',
