@@ -2,6 +2,16 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportoptionsfilters'],
     
+    items: [{
+    	xtype: 'gridpanel',
+    	autoScroll: true,
+    	store: 'report.ReportsColumn',
+    	columns: [{
+    		xtype: 'gridcolumn',
+    		dataIndex: 'name',
+    		text: 'Column Name'
+    	}]
+    }],
     tbar: [{
         text: 'Add Filter',
         

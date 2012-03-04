@@ -3,6 +3,15 @@ Ext.define('PICS.store.report.Reports', {
 	model : 'PICS.model.report.Report',
 	
 	autoLoad: true,
+	listeners: {
+        load: {
+            fn: function(store, records, successful, operation, options) {
+            	var colStore = Ext.StoreManager.get("report.ReportsColumn");
+            	var report = store.first();
+            	colStore.loadRecords(report.columns().data.items);
+            }
+        }
+    },
     proxy: {
         url: 'js/pics/data/report.json',
         reader: {

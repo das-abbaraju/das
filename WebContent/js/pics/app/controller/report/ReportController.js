@@ -2,7 +2,7 @@ Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
 
  	stores: [
-        'report.Reports'
+        'report.Reports', 'report.ReportsColumn'
     ],
 	
     init: function() {

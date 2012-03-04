@@ -20,7 +20,8 @@ Ext.application({
 	stores: [
 	    'report.AvailableFields',
 	    'report.AvailableFieldsByCategory',
-        'report.Reports', 
+        'report.Reports',
+        'report.ReportsColumn',
         'report.ReportData'
     ],
     
