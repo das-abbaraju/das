@@ -2,9 +2,11 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportoptionscolumns'],
     
+    // TODO This isn't right, for some reason the grid isn't scrolling, so I put it here for now
+    autoScroll: true,
     items: [{
     	xtype: 'gridpanel',
-    	autoScroll: true,
+        // autoScroll: true,
     	store: 'report.ReportsColumn',
     	columns: [{
     		xtype: "rownumberer"
@@ -18,19 +20,9 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     	}]
     }],
     tbar: [{
-        text: 'Add Column',
-        
-        handler: function () {
-            var window = Ext.ComponentQuery.query('reportcolumnselector');
-            
-            if (!window.length) {
-                var window = Ext.create('PICS.view.report.ColumnSelector');
-            } else {
-                window = window[0];
-            }
-            
-            window.show();
-        }
+    	action: "add",
+    	store: "columns",
+        text: 'Add Column'
     }],
     title: 'Columns'
 });

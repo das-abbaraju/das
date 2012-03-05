@@ -3,17 +3,15 @@ Ext.define('PICS.view.report.ColumnSelector', {
     alias: ['widget.reportcolumnselector'],
     
     initComponent: function() {
-        this.buttons = [
-            {
-                text: 'Add',
-                action: 'add'
-            },
-            {
-                text: 'Cancel',
-                scope: this,
-                handler: this.close
-            }
-        ];
+        this.buttons = [{
+            action: 'add',
+            scope: this,
+            text: 'Add'
+        },{
+            handler: this.close,
+            scope: this,
+            text: 'Cancel'
+        }];
 
         this.callParent(arguments);
     },
