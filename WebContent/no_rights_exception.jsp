@@ -1,16 +1,15 @@
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
-<%@ page isErrorPage="true" language="java"
-	import="java.util.*, java.io.*, com.opensymphony.xwork2.ActionContext"%>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
+<%@ page isErrorPage="true" language="java" import="java.util.*, java.io.*, com.opensymphony.xwork2.ActionContext" %>
+
 <jsp:useBean id="permissions" class="com.picsauditing.access.Permissions" scope="session" />
 
-<%@page import="com.opensymphony.xwork2.ActionContext"%>
-<%@page import="com.picsauditing.jpa.entities.EmailQueue"%>
-<%@page import="com.picsauditing.mail.EmailSender"%>
-<%@page import="com.picsauditing.search.Database"%>
-<%@page import="java.sql.SQLException"%>
-<%@page import="java.sql.Timestamp"%>
-<html>
+<%@ page import="com.opensymphony.xwork2.ActionContext" %>
+<%@ page import="com.picsauditing.jpa.entities.EmailQueue" %>
+<%@ page import="com.picsauditing.mail.EmailSender" %>
+<%@ page import="com.picsauditing.search.Database" %>
+<%@ page import="java.sql.SQLException" %>
+<%@ page import="java.sql.Timestamp" %>
 
 <%
 /*
@@ -22,11 +21,10 @@
 	error page.
 */
 
-	if( ActionContext.getContext().getActionInvocation() != null )
-	{
-		pageContext.setAttribute( "exception", ActionContext.getContext().getValueStack().findValue("exception") );
+	if(ActionContext.getContext().getActionInvocation() != null) {
+		pageContext.setAttribute("exception", ActionContext.getContext().getValueStack().findValue("exception"));
 		
-		exception = (Exception) pageContext.getAttribute( "exception" );	
+		exception = (Exception) pageContext.getAttribute("exception");
 	}
 
 	boolean debugging = "1".equals(System.getProperty("pics.debug"));
@@ -36,12 +34,15 @@
 	String stacktrace = "";
 
 	if (exception != null) {
-		if (exception.getMessage() != null)
+		if (exception.getMessage() != null) {
 			message = exception.getMessage();
-		else
+		} else {
 			message = exception.toString();
-		if (exception.getCause() != null)
+		}
+        
+		if (exception.getCause() != null) {
 			cause = exception.getCause().getMessage();
+		}
 		
 		StringWriter sw = new StringWriter();
 		exception.printStackTrace(new PrintWriter(sw));
@@ -51,31 +52,38 @@
 	// writing initial exception
 	Database db = new Database();
 	long exceptionID = -1;
+    
 	try {
-		if(permissions != null)
-			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,createdBy,creationDate) VALUES ('"+exception.getClass().getSimpleName()+"',"+1+","+permissions.getUserId()+",'"+new Timestamp(System.currentTimeMillis())+"')");
-		else
-			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,creationDate) VALUES ('"+exception.getClass().getSimpleName()+"',"+1+",'"+new Timestamp(System.currentTimeMillis())+"')");
+		if (permissions != null) {
+			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,createdBy,creationDate) VALUES ('" + exception.getClass().getSimpleName() + "'," + 1 + "," + permissions.getUserId() + ",'" + new Timestamp(System.currentTimeMillis()) + "')");
+		} else {
+			exceptionID = db.executeInsert("INSERT INTO app_error_log (category,priority,creationDate) VALUES ('" + exception.getClass().getSimpleName() + "'," + 1 + ",'" + new Timestamp(System.currentTimeMillis()) + "')");
+		}
+        
 	} catch (SQLException e) {}
 %>
 
 <head>
-<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-<title>PICS Error</title>
-<jsp:include page="struts/jquery.jsp"/>
-<script type="text/javascript">
-    $(document).ready(function() { 
-        $('#response_form').submit(function() {
-        	var priority = $('input[name="priority"]:checked').val();
-        	var user_message = $("textarea#user_message").val();
-        	var to_address = "errors@picsauditing.com";
-        	var from_address = $("#from_address").val();
-        	var user_name = $("#user_name").val();
-        	var dataString = 'priority='+ priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;  
-        	$.ajax({  
-        		type: "POST",  
-        		url: "send_exception_email.jsp",  
-        		data: dataString,  
+    <title>PICS Error</title>
+    
+    <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+    
+    <jsp:include page="struts/jquery.jsp"/>
+    
+    <script type="text/javascript">
+        $(document).ready(function() { 
+            $('#response_form').submit(function() {
+            	var priority = $('input[name="priority"]:checked').val();
+            	var user_message = $("textarea#user_message").val();
+            	var to_address = "errors@picsauditing.com";
+            	var from_address = $("#from_address").val();
+            	var user_name = $("#user_name").val();
+            	var dataString = 'priority=' + priority + '&user_message=' + user_message + '&to_address=' + to_address + '&from_address=' + from_address + '&exceptionID=' + <%= exceptionID %> + '&user_name=' + user_name;
+            	
+            	$.ajax({  
+            		type: "POST",  
+            		url: "send_exception_email.jsp",  
+            		data: dataString,  
         			success: function() {  
         				$('#response_form').html("<div id='message'></div>");  
         				$('#message').html("<h3>Response Submitted!</h3>")  
@@ -83,61 +91,64 @@
         				.hide()  
         				.fadeIn(1500);  
         			}  
-        		});  
-        	return false;  
+        		});
+            	
+            	return false;   
+            }); 
         }); 
-    }); 
-</script> 
+    </script> 
 </head>
 <body>
-<h1>You do not have permission to access this page.</h1>
-<div class="alert"><%=message%></div>
-
-<% if (debugging) { %>
-	<p><%=stacktrace %></p>
-<% } else { %>
-	<div style="padding-bottom:15px;" >
-		<input class="picsbutton" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
-		<input class="picsbutton" type="button" value="Report to PICS Engineers" onclick="$('#user_message').toggle(); return false;" />
-	</div>
-	<div id="user_message" style="display:none;">
-		<form id="response_form" method="post" action="" style="width:650px;">
-			<fieldset class="form">
-				<div style="padding:2ex;">
-					We apologize for this inconvenience.<br />If you continue to receive this message and 
-					believe it is an error, please report it to us using the form below or call Customer 
-					Service at 949.936.4598
-					<label style="padding-top: 2ex;">Priority:</label>
-					<span>
-						Low&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="priority" value="1" checked />1
-						<input type="radio" name="priority" value="2" />2
-						<input type="radio" name="priority" value="3" />3
-						<input type="radio" name="priority" value="4" />4
-						<input type="radio" name="priority" value="5" />5
-						&nbsp;&nbsp;&nbsp;High<br/>
-					</span>
-					Please tell us what you were trying to do:
-					<div>
-					<table>
-						<tr>
-							<td>
-								<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span>
-									<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
-								</span>
-							</td>
-						</tr>		
-					</table>
-					</div>
-				</div>
-			</fieldset>
-		</form>
-	</div>
-<% } %>
+    <h1>You do not have permission to access this page.</h1>
+    <div class="alert"><%=message%></div>
+    
+    <% if (debugging) { %>
+    	<p><%= stacktrace %></p>
+    <% } else { %>
+    	<div style="padding-bottom:15px;" >
+    		<input class="picsbutton" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
+    		<input class="picsbutton" type="button" value="Report to PICS Engineers" onclick="$('#user_message').toggle(); return false;" />
+    	</div>
+        
+    	<div id="user_message" style="display:none;">
+    		<form id="response_form" method="post" action="" style="width:650px;">
+    			<fieldset class="form">
+    				<div style="padding:2ex;">
+    					We apologize for this inconvenience.<br />If you continue to receive this message and 
+    					believe it is an error, please report it to us using the form below or call Customer 
+    					Service at 949.936.4598
+    					
+                        <label style="padding-top: 2ex;">Priority:</label>
+    					<span>
+    						Low&nbsp;&nbsp;&nbsp;
+    						<input type="radio" name="priority" value="1" checked />1
+    						<input type="radio" name="priority" value="2" />2
+    						<input type="radio" name="priority" value="3" />3
+    						<input type="radio" name="priority" value="4" />4
+    						<input type="radio" name="priority" value="5" />5
+    						&nbsp;&nbsp;&nbsp;High<br/>
+    					</span>
+                        
+    					Please tell us what you were trying to do:
+    					<div>
+        					<table>
+        						<tr>
+        							<td>
+        								<textarea id="user_message" name="user_message" rows="3" cols="40" style="color:#464646;font-size:12px;font-weight:bold;"></textarea>
+        							</td>
+        						</tr>
+        						<tr>
+        							<td>
+        								<span>
+        									<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
+        								</span>
+        							</td>
+        						</tr>		
+        					</table>
+    					</div>
+    				</div>
+    			</fieldset>
+    		</form>
+    	</div>
+    <% } %>
 </body>
-</html>

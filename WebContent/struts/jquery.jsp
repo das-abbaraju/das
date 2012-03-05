@@ -25,32 +25,37 @@
 	$(function() {
 		$.ajaxSettings.traditional = true;
 
-		if ($.browser.mozilla)
+		if ($.browser.mozilla) {
 			$("form:not(#login)").attr("autocomplete", "off");
+		}
 
-		if ($.browser.msie && $.browser.version == '6.0'){
+		if ($.browser.msie && $.browser.version == '6.0') {
 			try {
 				var xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 			} catch(e) {
 				$('#content').prepend($('<div/>').addClass('error').text('ActiveX is required for PICS to function properly in your browser. Please Contact your IT Department.'));
 			}
 		}
+		
 		if ($.browser.msie && $.browser.version == '6.0') {
 			$('table.report tr').live('mouseenter', function(event) {
 				$(this).addClass('tr-hover');
 			}).live('mouseleave', function(event) {
 				$(this).removeClass('tr-hover');
 			});
+			
 			$('tr.clickable').live('mouseenter', function(event) {
 				$(this).addClass('tr-hover-clickable');
 			}).live('mouseleave', function(event) {
 				$(this).removeClass('tr-hover-clickable');
 			});
+			
 			$('input[type=text],input[type=password],select,textarea', 'fieldset.form ol').addClass('input-edit-field');
 		}
-		$('.hoverable').live('mouseenter', function(){
+		
+		$('.hoverable').live('mouseenter', function() {
    			$(this).addClass('hover');
-   		}).live('mouseleave', function(){
+   		}).live('mouseleave', function() {
    			$(this).removeClass('hover');
  		});
 	});
