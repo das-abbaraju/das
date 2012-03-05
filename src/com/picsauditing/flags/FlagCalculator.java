@@ -8,10 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AmBest;
@@ -29,10 +32,17 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaRule;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.Testable;
 
+/**
+ * This class is no longer being called anywhere in the PICS code, so 
+ * it is being deprecated. 
+ */
+@Deprecated
 public class FlagCalculator {
 
 	@Autowired
@@ -42,14 +52,13 @@ public class FlagCalculator {
 	private ContractorAccount contractor;
 	private Map<Integer, ContractorAuditOperator> annualUpdates;
 
-	/*
+	/**
 	 * Getting Rules
 	 * 
 	 * if (!worksForOperator || con.getAccountLevel().isBidOnly()) { // This is a check for if the contractor doesn't //
 	 * work for the operator (Search for new), or is a bid only if (!criteria.getAuditType().isPqf()) { // Ignore all
 	 * audit requirements other than PQF return null; } }
 	 */
-
 	public Map<FlagCriteria, FlagColor> calculate(ContractorOperator co, List<FlagCriteriaRule> rules) {
 		Map<FlagCriteria, FlagColor> results = new HashMap<FlagCriteria, FlagColor>();
 
@@ -199,7 +208,7 @@ public class FlagCalculator {
 
 		String answer = auditData.getAnswer();
 		if (criteria.getQuestion().getQuestionType().equals("AMBest")) {
-			AmBestDAO amBestDAO = (AmBestDAO) SpringUtils.getBean("AmBestDAO");
+			AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
 			AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
 			if (amBest == null)
 				return null;
@@ -239,7 +248,6 @@ public class FlagCalculator {
 
 		if (criteria.getQuestion().getId() == AuditQuestion.EMR) {
 			Map<String, AuditData> auditsOfThisEMRType = contractor.getEmrs();
-			//if (annualUpdates.)
 
 			List<AuditData> years = new ArrayList<AuditData>();
 			for (String year : auditsOfThisEMRType.keySet()) {
@@ -337,7 +345,7 @@ public class FlagCalculator {
 		}
 		return null;
 	}
-
+	
 	private boolean isLast2Years(String auditFor) {
 		int lastYear = DateBean.getCurrentYear() - 1;
 		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
@@ -346,32 +354,32 @@ public class FlagCalculator {
 	}
 
 	private String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
-		String qType = auditData.getQuestion().getQuestionType();
-		String cType = flagCriteria.getDataType();
+		String questionType = auditData.getQuestion().getQuestionType();
+		String criteriaType = flagCriteria.getDataType();
 		String answer = auditData.getAnswer();
 
-		if ("Check Box".equals(qType)) {
-			if (!"boolean".equals(cType))
+		if ("Check Box".equals(questionType)) {
+			if (!"boolean".equals(criteriaType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			if ("X".equals(answer))
 				return "true";
 			else
 				return "false";
 		}
-		if ("Manual".equals(qType)) {
-			if (!"string".equals(cType))
+		if ("Manual".equals(questionType)) {
+			if (!"string".equals(criteriaType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			return answer;
 		}
 		if (auditData.isMultipleChoice()
 				&& ("YesNoNA".equals(auditData.getQuestion().getOption().getUniqueCode()) || "Yes/No".equals(auditData
 						.getQuestion().getOption().getUniqueCode()))) {
-			if (!"string".equals(cType))
+			if (!"string".equals(criteriaType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
 			return answer;
 		}
-		if ("Date".equals(qType)) {
-			if (!"date".equals(cType))
+		if ("Date".equals(questionType)) {
+			if (!"date".equals(criteriaType))
 				System.out.println("WARNING!! " + flagCriteria + " should be set to date but isn't");
 			try {
 				DateBean.parseDate(answer);
@@ -381,7 +389,7 @@ public class FlagCalculator {
 				return "";
 			}
 		}
-		if ("number".equals(cType)) {
+		if ("number".equals(criteriaType)) {
 			answer = answer.replace(",", "");
 			try {
 				Float parsedAnswer = Float.parseFloat(answer);
@@ -391,10 +399,10 @@ public class FlagCalculator {
 				return "";
 			}
 		}
-		if ("string".equals(cType)) {
+		if ("string".equals(criteriaType)) {
 			return answer;
 		}
-		System.out.println("Failed to parse type " + cType + " " + qType);
+		System.out.println("Failed to parse type " + criteriaType + " " + questionType);
 		return "";
 	}
 
