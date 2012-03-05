@@ -6,35 +6,35 @@
         summary: 'Recently Added Contractors',
         description: 'Missing Credit Card',
         columns: [{
-            name: 'AccountName'
+            name: 'accountName'
         }, {
-            name: 'AccountStatus'
+            name: 'accountStatus'
         }, {
-            name: 'AccountID'
+            name: 'accountID'
         }, {
-            name: 'MembershipDateYear',
+            name: 'contractorMembershipDateYear',
             method: 'Year'
         }, {
-            name: 'MembershipDate'
+            name: 'contractorMembershipDate'
         }, {
-            name: 'AccountName',
+            name: 'accountDBAName',
             method: 'Left',
             option: '10'
         }],
         filters: [{
-            column: 'AccountName',
+            column: 'accountName',
             not: true,
             operator: 'BeginsWith',
             value: 'Trevor'
         }, {
-            column: 'ContractorPaymentExpires',
+            column: 'contractorPaymentExpires',
             operator: 'GreaterThan',
             column2: 'ContractorCreditCardExpiration'
         }],
         sorts: [{
-            column: 'MembershipDateYear'
+            column: 'contractorMembershipDateYear'
         }, {
-            column: 'AccountName',
+            column: 'accountName',
             direction: 'DESC'
         }]
     }

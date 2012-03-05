@@ -7,9 +7,14 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     	autoScroll: true,
     	store: 'report.ReportsColumn',
     	columns: [{
+    		xtype: "rownumberer"
+    	},{
     		xtype: 'gridcolumn',
     		dataIndex: 'name',
-    		text: 'Column Name'
+    		flex: 1,
+    		hideable: false,
+    		sortable: false,
+    		text: 'Filter'
     	}]
     }],
     tbar: [{

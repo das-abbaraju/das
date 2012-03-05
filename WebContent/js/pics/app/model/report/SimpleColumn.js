@@ -9,6 +9,8 @@ Ext.define('PICS.model.report.SimpleColumn', {
 	},
 	fields: [
         { name: 'name', type: 'string' },
+        { name: 'text', type: 'string', persist: false }, 
+        { name: 'filterType', type: 'string', persist: false },
         { name: 'method', type: 'string' },
         { name: 'option', type: 'string' },
         { name: 'renderer' }

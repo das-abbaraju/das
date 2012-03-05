@@ -7,9 +7,14 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     	autoScroll: true,
     	store: 'report.ReportsColumn',
     	columns: [{
+    		xtype: "rownumberer"
+    	},{
     		xtype: 'gridcolumn',
-    		dataIndex: 'name',
-    		text: 'Column Name'
+    		dataIndex: 'text',
+    		flex: 1,
+    		hideable: false,
+    		sortable: false,
+    		text: 'Column'
     	}]
     }],
     tbar: [{

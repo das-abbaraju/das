@@ -6,9 +6,28 @@ Ext.define('PICS.store.report.Reports', {
 	listeners: {
         load: {
             fn: function(store, records, successful, operation, options) {
+            	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
+            	
             	var colStore = Ext.StoreManager.get("report.ReportsColumn");
             	var report = store.first();
-            	colStore.loadRecords(report.columns().data.items);
+            	
+            	var data = report.columns().data;
+            	var ln = data.length;
+           		i = 0,
+           		records = [];
+            	
+            	for(i = 0; i < ln; i++) {
+            		var item = data.items[i];
+            		
+            		var field = fieldsStore.getField(item.get("name"));
+            		if (field == null) {
+            			item.set('text', item.get("name"));
+            		} else {
+            			item.set('text', field.get("text"));
+            		}
+            		records.push(item);
+            	}
+            	colStore.loadRecords(records);
             }
         }
     },
