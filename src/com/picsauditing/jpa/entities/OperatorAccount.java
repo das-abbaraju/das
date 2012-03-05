@@ -188,7 +188,8 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public boolean isHasDiscount() {
-		return getDiscountPercent().compareTo(BigDecimal.ZERO) > 0;
+		return getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && getDiscountExpiration() != null
+				&& new Date().before(getDiscountExpiration());
 	}
 
 	@Transient
@@ -234,6 +235,8 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public void setScaledDiscountPercent(BigDecimal discountPercent) {
+		if (discountPercent == null)
+			discountPercent = BigDecimal.ZERO;
 		discountPercent = discountPercent.divide(new BigDecimal(100));
 		setDiscountPercent(discountPercent);
 	}

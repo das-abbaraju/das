@@ -499,7 +499,22 @@
 								<p>The percentage based discount to give contractors associated with this Site on their Activation Fee. For instance a 25% discount would give a contractor an activation fee of $150 instead of $200.</p>
 							</pics:fieldhelp>
 						</li>
-					</ol>
+                        <li>
+                            <label>Discount Expiration Date:</label>
+
+                            <pics:permission perm="UserRolePicsOperator">
+                                <s:textfield name="operator.discountExpiration" cssClass="datepicker"/>
+                            </pics:permission>
+                            <pics:permission negativeCheck="true" perm="UserRolePicsOperator">
+                                <s:if test="operator.discountExpiration">
+                                    <s:date name="operator.discountExpiration" format="date.long"/>
+                                </s:if>
+                                <s:else>
+                                    <s:text name="JS.Filters.status.None" />
+                                </s:else>
+                            </pics:permission>
+                        </li>
+    				</ol>
 				</fieldset>
 				
 				<s:if test="operator.id > 0">

@@ -455,6 +455,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
 		}
 
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && operator.getDiscountExpiration() == null) {
+			errorMessages.addElement(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
+		}
+
 		return errorMessages;
 	}
 
