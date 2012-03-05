@@ -41,6 +41,9 @@ import com.picsauditing.util.Testable;
 /**
  * This class is no longer being called anywhere in the PICS code, so 
  * it is being deprecated. 
+ * 
+ * TODO: Deprecated 3/5/2012, delete by 6/5/2012 if we feel confident
+ * that it is not being used anywhere.
  */
 @Deprecated
 public class FlagCalculator {
