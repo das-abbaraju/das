@@ -132,7 +132,7 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		});
 
-		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.<Integer> asList(69, 71, 1616,
+		infoSection = auditDataDAO.findAnswersByContractor(contractor.getId(), Arrays.asList(69, 71, 1616, 
 				57, 103, 104, 123, 124, 125));
 	}
 
