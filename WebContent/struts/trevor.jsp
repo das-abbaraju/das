@@ -27,4 +27,8 @@ Ext.onReady(function () {
         menu.doLayout();
     });
 });
+
 </script>
+
+<script type="text/javascript" id="la_x2s6df8d" src="//picsauditing.ladesk.com/scripts/trackjs.php"></script> 
+<img src="//picsauditing.ladesk.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('button1', this);"/>
