@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     items: [{
     	xtype: 'gridpanel',
     	autoScroll: true,
-    	store: 'report.ReportsColumn',
+    	store: 'report.ReportsFilter',
     	columns: [{
     		xtype: "rownumberer"
     	},{
@@ -15,22 +15,19 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		hideable: false,
     		sortable: false,
     		text: 'Filter'
-    	}]
+    	}],
+    	selModel: {mode: 'multi'}    	
     }],
     tbar: [{
+        action: "add",
+        store: "columns",
         text: 'Add Filter',
-        
-        handler: function () {
-            var window = Ext.ComponentQuery.query('reportcolumnselector');
-            
-            if (!window.length) {
-                var window = Ext.create('PICS.view.report.ColumnSelector');
-            } else {
-                window = window[0];
-            }
-            
-            window.show();
-        }
-    }],
+        columntype:'filter'
+    },{
+        action: "remove",
+        store: "columns",
+        text: 'Remove',
+        columntype:'filter'            
+    }],    
     title: 'Filters'
 });

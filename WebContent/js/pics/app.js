@@ -22,6 +22,7 @@ Ext.application({
 	    'report.AvailableFieldsByCategory',
         'report.Reports',
         'report.ReportsColumn',
+        'report.ReportsFilter',
         'report.ReportData'
     ],
     

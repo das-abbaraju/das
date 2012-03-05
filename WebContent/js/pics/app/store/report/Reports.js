@@ -9,6 +9,7 @@ Ext.define('PICS.store.report.Reports', {
             	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
             	
             	var colStore = Ext.StoreManager.get("report.ReportsColumn");
+            	var filterStore = Ext.StoreManager.get("report.ReportsFilter");            	
             	var report = store.first();
             	
             	var data = report.columns().data;
@@ -28,6 +29,7 @@ Ext.define('PICS.store.report.Reports', {
             		records.push(item);
             	}
             	colStore.loadRecords(records);
+            	filterStore.loadRecords(records);
             }
         }
     },

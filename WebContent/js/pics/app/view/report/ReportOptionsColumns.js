@@ -17,16 +17,25 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     		hideable: false,
     		sortable: false,
     		text: 'Column'
-    	}]
+    	}],
+    	selModel: {mode: 'multi'},
+        viewConfig: {
+            plugins: {
+                ptype: 'gridviewdragdrop',
+                dragText: 'Drag and drop to reorganize'
+            }
+        }    	
     }],
     tbar: [{
     	action: "add",
     	store: "columns",
-        text: 'Add Column'
+        text: 'Add Column',
+        columntype: 'column'
     },{
     	action: "remove",
     	store: "columns",
-        text: 'Remove'
+        text: 'Remove',
+        columntype: 'column'        
     }],
     title: 'Columns'
 });
