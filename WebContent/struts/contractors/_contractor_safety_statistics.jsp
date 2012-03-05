@@ -4,7 +4,7 @@
 <div class="panel_placeholder contractor-safety-statistics">
 	<div class="panel">
 		<div class="panel_header">
-			<a href="javascipt:;" 
+			<a href="javascript:;" 
 				class="hurdle-rate" 
 				data-show-text="<s:text name="ContractorView.ShowHurdleRates" />" 
 				data-hide-text="<s:text name="ContractorView.HideHurdleRates" />"
