@@ -385,11 +385,10 @@ public class AuditDataSave extends AuditActionSupport {
 		// In the case when a contractor answers "No" to the question "Does your company own or operate any commercial vehicles?"
 		if ("AutomobileLiabilityNotApplicable".equals(auditData.getQuestion().getUniqueCode()) 
 				&& !StringUtils.isEmpty(auditData.getAnswer()) && "No".equals(auditData.getAnswer())) {
-			Date today = new Date();
-			tempAudit.setExpiresDate(DateBean.getFirstOfNextYear(today));
+			tempAudit.setExpiresDate(DateBean.getFirstOfNextYear(new Date()));
 			
-			// Revisit this to make sure that only the CAOs for Operators not requiring Auto Liability for all Contractors
-			// is set to "N/A"
+			// TODO: Make sure this is only applied to CAOs when the operator does not require Auto Liability regardless
+			// of whether or not the contractor operates commercial vehicles
 			List<ContractorAuditOperator> caos = tempAudit.getCurrentOperators();
 			for (ContractorAuditOperator cao : caos) {
 				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.NotApplicable, permissions);
