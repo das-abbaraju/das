@@ -23,6 +23,10 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     	action: "add",
     	store: "columns",
         text: 'Add Column'
+    },{
+    	action: "remove",
+    	store: "columns",
+        text: 'Remove'
     }],
     title: 'Columns'
 });

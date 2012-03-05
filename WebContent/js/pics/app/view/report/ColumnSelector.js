@@ -20,7 +20,8 @@ Ext.define('PICS.view.report.ColumnSelector', {
         xtype: 'reportcolumnselectorgrid'
     }],
     layout: 'fit',
-    resizable: false,
+    modal: true,
+    // resizable: false,
     tbar: [{
         xtype: 'searchFilter',
         store: 'report.AvailableFieldsByCategory',
@@ -34,5 +35,5 @@ Ext.define('PICS.view.report.ColumnSelector', {
         labelWidth: 40
     }],
     title: 'Select Report Columns',
-    width: 600
+    width: 400
 });
