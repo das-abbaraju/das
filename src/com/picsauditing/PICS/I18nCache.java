@@ -135,8 +135,7 @@ public class I18nCache implements Serializable {
 				cache = TreeBasedTable.create();
 				cacheUsage = new HashMap<String, Date>();
 				Database db = new Database();
-				String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation "
-						+ "WHERE qualityRating > 0 AND locale = 'en'";
+				String sql = "SELECT msgKey, locale, msgValue, lastUsed FROM app_translation";
 				List<BasicDynaBean> messages = db.select(sql, false);
 				for (BasicDynaBean message : messages) {
 					String key = String.valueOf(message.get("msgKey"));
