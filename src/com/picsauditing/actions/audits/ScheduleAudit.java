@@ -192,6 +192,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 				createInvoice(rescheduling, notes);
 			}
+			
+			if (isNeedsExpediteFee(scheduledDateInServerTime))
+				createExpediteInvoiceAndEmail();
 
 			conAudit.setScheduledDate(scheduledDateInServerTime);
 			conAudit.setContractorConfirm(null);
@@ -322,35 +325,39 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		addActionMessage(getText("ScheduleAudit.message.AuditNowScheduled"));
 
 		if (needsExpediteFee) {
-			String notes = String.format("%s was scheduled within 10 business days, requiring an expedite fee.",
-					conAudit.getAuditType().getName());
-
-			createInvoice(expedite, notes);
-
-			if (conAudit.isNeedsCamera()) {
-				List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
-				List<String> emails = new ArrayList<String>();
-				for (UserAccess ua : webcamUsers) {
-					if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))
-						emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
-				}
-
-				// TODO We should pull this out into an email template.
-				EmailQueue email = new EmailQueue();
-				email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getName() + " for "
-						+ conAudit.getContractorAccount().getName());
-				email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
-						+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
-						+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
-						+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
-				email.setToAddresses(Strings.implode(emails));
-				email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
-				email.setViewableById(Account.PicsID);
-				emailSender.send(email);
-			}
+			createExpediteInvoiceAndEmail();
 		}
 
 		return "summary";
+	}
+	
+	public void createExpediteInvoiceAndEmail() throws Exception {
+		String notes = String.format("%s was scheduled within 10 business days, requiring an expedite fee.",
+				conAudit.getAuditType().getName());
+
+		createInvoice(expedite, notes);
+
+		if (conAudit.isNeedsCamera()) {
+			List<UserAccess> webcamUsers = uaDAO.findByOpPerm(OpPerms.WebcamNotification);
+			List<String> emails = new ArrayList<String>();
+			for (UserAccess ua : webcamUsers) {
+				if (!ua.getUser().isGroup() && !Strings.isEmpty(ua.getUser().getEmail()))
+					emails.add("\"" + ua.getUser().getName() + "\" <" + ua.getUser().getEmail() + ">");
+			}
+
+			// TODO We should pull this out into an email template.
+			EmailQueue email = new EmailQueue();
+			email.setSubject("Webcam needed for Rush " + conAudit.getAuditType().getName() + " for "
+					+ conAudit.getContractorAccount().getName());
+			email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
+					+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
+					+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
+					+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
+			email.setToAddresses(Strings.implode(emails));
+			email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
+			email.setViewableById(Account.PicsID);
+			emailSender.send(email);
+		}
 	}
 
 	public class AvailableSet {
