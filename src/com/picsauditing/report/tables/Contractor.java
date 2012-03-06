@@ -42,7 +42,7 @@ public class Contractor extends BaseTable {
 
 	public void addJoins() {
 		addLeftJoin(new JoinUser("customerService", "c.welcomeAuditor_id"));
-		addLeftJoin(new JoinAccount("requestedByOperator", "c.requestedByID"));
+		addLeftJoin(new Account("requestedByOperator", "c.requestedByID"));
 
 		// joinToFlagCriteriaContractor("contractorFlagCriteria", "c.id");
 		// leftJoinToEmailQueue("contractorEmail", "c.id");

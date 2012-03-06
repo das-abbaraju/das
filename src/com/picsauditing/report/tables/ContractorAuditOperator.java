@@ -21,6 +21,6 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 
 	public void addJoins() {
-		addJoin(new JoinAccount("caoAccount", "cao.opID"));
+		addJoin(new Account("caoAccount", "cao.opID"));
 	}
 }

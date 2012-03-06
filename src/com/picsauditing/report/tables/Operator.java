@@ -32,9 +32,9 @@ public class Operator extends BaseTable {
 
 	public void addJoins() {
 		addLeftJoin(new JoinUser("insuranceRep", "o.insuranceAuditor_id"));
-		addLeftJoin(new JoinAccount("parentOperator", "o.parentID"));
-		addLeftJoin(new JoinAccount("inheritedFlagCriteria", "o.inheritFlagCriteria"));
-		addLeftJoin(new JoinAccount("inheritedInsuranceCriteria", "o.inheritInsuranceCriteria"));
-		addLeftJoin(new JoinAccount("reporting", "o.reportingID"));
+		addLeftJoin(new Account("parentOperator", "o.parentID"));
+		addLeftJoin(new Account("inheritedFlagCriteria", "o.inheritFlagCriteria"));
+		addLeftJoin(new Account("inheritedInsuranceCriteria", "o.inheritInsuranceCriteria"));
+		addLeftJoin(new Account("reporting", "o.reportingID"));
 	}
 }
