@@ -90,9 +90,8 @@ Ext.define('PICS.controller.report.ReportController', {
         		if (success) {
         			console.log(records);
         			var dataGrid = Ext.getCmp("dataGrid");
-        			dataGrid.hide();
-        			dataGrid.columns = [{"width":27,"xtype":"rownumberer"},{"text":"Account Name","width":180,"dataIndex":"accountName"},{"text":"Account Status","dataIndex":"accountStatus"},{"text":"Account ID","dataIndex":"accountID"}];
-        			dataGrid.show();
+        			dataGrid.headerCt.removeAll();
+                    dataGrid.headerCt.add({"width":27,"xtype":"rownumberer"},{"text":"Account Name","width":180,"dataIndex":"accountName"},{"text":"Account Status","dataIndex":"accountStatus"},{"text":"Account ID","dataIndex":"accountID"});
         		} else {
         			Ext.MessageBox.alert("Failed to read data from Server", "Reason: " + operation.error);
         		}
