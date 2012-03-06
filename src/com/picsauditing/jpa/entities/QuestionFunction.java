@@ -2,24 +2,19 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.swing.Spring;
 
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.CorruptionPerceptionIndexMap;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * The function that a specific {@link AuditQuestion} performs. This is used for calculated values.
@@ -46,7 +41,7 @@ public enum QuestionFunction {
 			Map<String, String> modifiableParams = new HashMap<String, String>(params);
 			try {
 				if (Strings.isEmpty(modifiableParams.get("expression"))) {
-					return "Audit.missingParameter";
+					return MISSING_PARAMETER;
 				}
 
 				String expression = modifiableParams.get("expression");
@@ -73,7 +68,7 @@ public enum QuestionFunction {
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = input.getParams();
 			if (Strings.isEmpty(params.get("netPremiumRate")) || Strings.isEmpty(params.get("industryRate"))) {
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			}
 			BigDecimal netPremiumRate = new BigDecimal(params.get("netPremiumRate")).setScale(3);
 			BigDecimal industryRate = new BigDecimal(params.get("industryRate")).setScale(3);
@@ -94,7 +89,7 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("lostWorkdayCases"))
 					|| Strings.isEmpty(params.get("restrictedCases"))
 					|| Strings.isEmpty(params.get("injuries")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int fatalities = Integer.parseInt(params.get("fatalities"));
@@ -117,7 +112,7 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdayCases")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
@@ -136,7 +131,7 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("restrictedCases")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int restrictedCases = Integer.parseInt(params.get("restrictedCases"));
@@ -156,7 +151,7 @@ public enum QuestionFunction {
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdayCases"))
 					|| Strings.isEmpty(params.get("restrictedCases")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			
 			int manHours = Integer.parseInt(params.get("manHours"));			
 			int lostWorkdayCases = Integer.parseInt(params.get("lostWorkdayCases"));
@@ -178,7 +173,7 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("fatalities")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int fatalities = Integer.parseInt(params.get("fatalities"));
@@ -197,7 +192,7 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdays")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
@@ -217,7 +212,7 @@ public enum QuestionFunction {
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkdays"))
 					|| Strings.isEmpty(params.get("restrictedDays")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkdays = Integer.parseInt(params.get("lostWorkdays"));
@@ -238,11 +233,11 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("employees"))
 					|| Strings.isEmpty(params.get("nonMajorInjuries"))
-					|| "Audit.missingParameter".equals((params.get("nonMajorInjuries")))
+					|| MISSING_PARAMETER.equals((params.get("nonMajorInjuries")))
 					|| Strings.isEmpty(params.get("majorInjuries"))
-					|| "Audit.missingParameter".equals((params.get("majorInjuries")))
+					|| MISSING_PARAMETER.equals((params.get("majorInjuries")))
 					|| Strings.isEmpty(params.get("fatalities")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			
 			BigDecimal employees = new BigDecimal(params.get("employees")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
@@ -255,7 +250,7 @@ public enum QuestionFunction {
 			try {
 				result = totalIncidents.divide(employees, 7, RoundingMode.HALF_UP).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			}
 			
 			return result;
@@ -272,7 +267,7 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("totalHours"))
 					|| Strings.isEmpty(params.get("dangerousOccurrences")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			
 			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
 			BigDecimal dangerousOccurences = new BigDecimal(params.get("dangerousOccurrences")).setScale(7);				
@@ -281,7 +276,7 @@ public enum QuestionFunction {
 			try {
 				result = dangerousOccurences.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER; 
 			}
 			
 			return result;
@@ -297,7 +292,7 @@ public enum QuestionFunction {
 			
 			if (Strings.isEmpty(params.get("overThreeDays"))
 					|| Strings.isEmpty(params.get("underThreeDays")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 			
 			int overThreeDays = Integer.valueOf(params.get("overThreeDays"));
 			int underThreeDays = Integer.valueOf(params.get("underThreeDays"));
@@ -318,17 +313,17 @@ public enum QuestionFunction {
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("deaths"))
 					|| Strings.isEmpty(params.get("lostTimeInjuries")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int totalCases = Integer.parseInt(params.get("deaths")) + Integer.parseInt(params.get("lostTimeInjuries"));
 			
-			return calculateRate(totalCases, manHours, FRANCE_NORMALIZER);	
+			return calculateRate(totalCases, manHours, FRANCE_FREQUENCY_RATE_NORMALIZER);	
 		}
 	},
 	/**
 	 * France Annual Update
-	 * AFR = ((Deaths + Lost Time Injuries) x  1,000,000 / Total Hours)
+	 * AFR = ((Lost Work Days) x  1,000 / Total Hours)
 	 */
 	FRANCE_LWR {
 		@Override
@@ -337,12 +332,31 @@ public enum QuestionFunction {
 
 			if (Strings.isEmpty(params.get("manHours"))
 					|| Strings.isEmpty(params.get("lostWorkDays")))
-				return "Audit.missingParameter";
+				return MISSING_PARAMETER;
 
 			int manHours = Integer.parseInt(params.get("manHours"));
 			int lostWorkDays = Integer.parseInt(params.get("lostWorkDays"));
 			
 			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);	
+		}
+	},
+	/**
+	 * France Annual Update
+	 * Frequency Index = (Lost Time Injuries) x  1,000 / Employees)
+	 */
+	FRANCE_FI {
+		@Override
+		public Object calculate(FunctionInput input) {	
+			Map<String, String> params = getParameterMap(input);
+
+			if (Strings.isEmpty(params.get("employees"))
+					|| Strings.isEmpty(params.get("lostTimeInjuries")))
+				return MISSING_PARAMETER;
+
+			int employees = Integer.parseInt(params.get("employees"));
+			int lostTimeInjuries = Integer.parseInt(params.get("lostTimeInjuries"));
+			
+			return calculateRate(lostTimeInjuries, employees, FRANCE_NORMALIZER);	
 		}
 	},
 	SCORE {
@@ -417,9 +431,14 @@ public enum QuestionFunction {
 	// UK HSE standard normalizer.
 	private static final BigDecimal UK_NORMALIZER = new BigDecimal(100000);
 	
-	// France HSE standard normalizer.
-	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000000);
-
+	// France NRIS standard normalizer.
+	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000);
+	
+	// France NRIS standard normalizer for frequency rate.
+	private static final BigDecimal FRANCE_FREQUENCY_RATE_NORMALIZER = new BigDecimal(1000000);
+	
+	private static final String MISSING_PARAMETER = "Audit.missingParameter";
+	
 	public abstract Object calculate(FunctionInput input)  throws NumberFormatException;;
 
 	public static class FunctionInput {
@@ -485,17 +504,14 @@ public enum QuestionFunction {
 		return params;
 	}
 	protected Object calculateRate(int totalCases, int manHours, BigDecimal normalizer) {
-		
 		BigDecimal cases = new BigDecimal(totalCases).setScale(7);
 		BigDecimal hours = new BigDecimal(manHours).setScale(7);
 
 		BigDecimal result;
 		try {
-			result = normalizer.multiply(
-					cases.divide(hours,7,
-							BigDecimal.ROUND_HALF_UP)).setScale(2);
+			result = cases.multiply(normalizer).divide(hours, 2, BigDecimal.ROUND_HALF_UP);
 		} catch (java.lang.ArithmeticException e) {
-			return "Audit.missingParameter";
+			return MISSING_PARAMETER;
 		}
 
 		return result;
