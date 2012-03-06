@@ -146,10 +146,19 @@ PICS.define('audit.ScheduleAudit', {
              */
             function getAddressComponentFromResultsByType(results, type, key) {
                 var component = results.address_components.filter(function (item) {
-                    return item.types[0] == type;
+                    var types = item.types;
+                    var is_found = false;
+                    
+                    $.each(types, function (key, value) {
+                        if (value == type) {
+                            is_found = true;
+                        }
+                    });
+                    
+                    return is_found;
                 });
                 
-                return component[0][key] ? component[0][key] : null;
+                return component.length && component[0][key] ? component[0][key] : null;
             }
             
             var that = this;
