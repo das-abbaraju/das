@@ -286,6 +286,14 @@
                                             Last Updated By: ${translation.updatedBy.name}
                                         </li>
                                     </s:if>
+                                    
+                                    <s:if test="locale == sourceLanguage">
+                                    	<s:checkbox
+                                    		name="updateOtherLocales"
+                                    		label="TranslationQualityRating.Questionable.helpText"
+                                    		theme="pics"
+                                    	/>
+                                    </s:if>
                                 </ul>
                             </div>
                         </div>

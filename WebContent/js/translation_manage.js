@@ -10,7 +10,7 @@
             	$('.translation-list').delegate('.view-mode a.edit', 'click', this.showEditMode);
             	$('.translation-list').delegate('.edit-mode .actions button.cancel', 'click', this.showViewMode);
             	$('.translation-list').delegate('.edit-mode button.save', 'click', this.saveTranslation);
-            	$('.translation-list').delegate('.edit-mode input[type=checkbox], .edit-mode input[type=radio]', 'click', this.saveTranslationParametersThroughAjax);
+            	$('.translation-list').delegate('.edit-mode .rate input[type=checkbox], .edit-mode .rate input[type=radio]', 'click', this.saveTranslationParametersThroughAjax);
             	$('.translation-list').delegate('.is-applicable', 'click', this.toggleQualityRating);
             	$('.translation-list').delegate('.view-mode.view-more', 'click', this.toggleViewModeShowAll);
             	$('.translation-list').delegate('.suggestTranslation', 'click', this.suggestTranslation);

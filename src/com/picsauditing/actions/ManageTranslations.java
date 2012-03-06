@@ -38,6 +38,7 @@ public class ManageTranslations extends ReportActionSupport {
 	private AppTranslation translation;
 	private ReportFilter filter;
 	private boolean showDoneButton;
+	private boolean updateOtherLocales = true;
 
 	// Pseudo filters
 	private int[] fromQualityRatings = null;
@@ -135,14 +136,15 @@ public class ManageTranslations extends ReportActionSupport {
 
 	@SuppressWarnings("unchecked")
 	private void updateOtherLanguagesToQuestionable() {
-		List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(
-				AppTranslation.class,
-				String.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage",
-						translation.getKey(), translation.getLocale()));
-		for (AppTranslation questionable : nowQuestionable) {
-			questionable.setQualityRating(TranslationQualityRating.Questionable);
-			questionable.setAuditColumns(permissions);
-			dao.save(questionable);
+		if (updateOtherLocales) {
+			List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(AppTranslation.class,
+					String.format("t.key = '%s' AND t.sourceLanguage = '%s' AND t.locale != t.sourceLanguage "
+							+ "AND t.qualityRating > 1", translation.getKey(), translation.getLocale()));
+			for (AppTranslation questionable : nowQuestionable) {
+				questionable.setQualityRating(TranslationQualityRating.Questionable);
+				questionable.setAuditColumns(permissions);
+				dao.save(questionable);
+			}
 		}
 	}
 
@@ -370,7 +372,7 @@ public class ManageTranslations extends ReportActionSupport {
 		public List<AppTranslation> getItems() {
 			List<AppTranslation> list = new ArrayList<AppTranslation>();
 			list.add(from);
-			if(to == null || !to.equals(from))
+			if (to == null || !to.equals(from))
 				list.add(to);
 			return list;
 		}
@@ -442,6 +444,14 @@ public class ManageTranslations extends ReportActionSupport {
 
 	public void setShowDoneButton(boolean showDoneButton) {
 		this.showDoneButton = showDoneButton;
+	}
+
+	public boolean isUpdateOtherLocales() {
+		return updateOtherLocales;
+	}
+
+	public void setUpdateOtherLocales(boolean updateOtherLocales) {
+		this.updateOtherLocales = updateOtherLocales;
 	}
 
 	public boolean isTracingOn() {
