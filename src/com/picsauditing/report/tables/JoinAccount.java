@@ -4,19 +4,23 @@ import com.picsauditing.report.fields.FilterType;
 
 public class JoinAccount extends BaseTable {
 
-	public JoinAccount(String alias, String foreignKey) {
-		super("accounts", alias, alias + ".id = " + foreignKey);
+	public JoinAccount() {
+		super("accounts", "account", "a", null);
+	}
+
+	public JoinAccount(String prefix, String alias, String foreignKey) {
+		super("accounts", prefix, alias, alias + ".id = " + foreignKey);
 	}
 
 	protected void addDefaultFields() {
-		addField(alias + "ID", alias + ".id", FilterType.Number).setSuggested();
-		addField(alias + "Name", alias + ".name", FilterType.AccountName).setSuggested().setWidth(180);
+		addField(prefix + "ID", alias + ".id", FilterType.Number).setSuggested();
+		addField(prefix + "Name", alias + ".name", FilterType.AccountName).setSuggested().setWidth(180);
 	}
 
 	public void addFields() {
-		addField(alias + "Status", alias + ".status", FilterType.AccountStatus);
-		addField(alias + "Type", alias + ".type", FilterType.AccountType);
-		addField(alias + "Phone", alias + ".phone", FilterType.String).setCategory(FieldCategory.Contact);
+		addField(prefix + "Status", alias + ".status", FilterType.AccountStatus);
+		addField(prefix + "Type", alias + ".type", FilterType.AccountType);
+		addField(prefix + "Phone", alias + ".phone", FilterType.String).setCategory(FieldCategory.Contact);
 		addField(alias + "Fax", alias + ".fax", FilterType.String).setCategory(FieldCategory.Contact);
 		addField(alias + "CreationDate", alias + ".creationDate", FilterType.Date);
 		addField(alias + "Address", alias + ".address", FilterType.String).setCategory(FieldCategory.Contact);

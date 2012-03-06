@@ -11,13 +11,24 @@ import com.picsauditing.report.fields.QueryField;
 public abstract class BaseTable {
 	protected boolean innerJoin = true;
 	protected String table;
+	protected String prefix;
 	protected String alias;
 	protected String where;
 	protected Map<String, QueryField> fields = new HashMap<String, QueryField>();
 	protected List<BaseTable> joins = new ArrayList<BaseTable>();
 
+	public BaseTable(String table, String prefix, String alias, String where) {
+		this.table = table;
+		this.prefix = prefix;
+		this.alias = alias;
+		this.where = where;
+
+		addDefaultFields();
+	}
+
 	public BaseTable(String table, String alias, String where) {
 		this.table = table;
+		this.prefix = alias;
 		this.alias = alias;
 		this.where = where;
 
