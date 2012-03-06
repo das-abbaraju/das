@@ -85,13 +85,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	protected List<Integer> operatorIds = new ArrayList<Integer>();
 	protected int contactID;
-	
+
 	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
 	private String contractorTypeHelpText = "";
-
-	public ContractorEdit() {
-		this.subHeading = getText("ContractorEdit.subheading");
-	}
 
 	public void prepare() throws Exception {
 		if (permissions.isLoggedIn()) {
@@ -112,13 +108,13 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				}
 			}
 
-			String[] countryIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"contractor.country.isoCode");
+			String[] countryIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("contractor.country.isoCode");
 			if (countryIsos != null && countryIsos.length > 0 && !Strings.isEmpty(countryIsos[0]))
 				contractor.setCountry(countryDAO.find(countryIsos[0]));
 
-			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters().get(
-					"contractor.billingCountry.isoCode");
+			String[] billingCountryIsos = (String[]) ActionContext.getContext().getParameters()
+					.get("contractor.billingCountry.isoCode");
 			if (billingCountryIsos != null && billingCountryIsos.length > 0 && !Strings.isEmpty(billingCountryIsos[0]))
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
 
@@ -129,24 +125,28 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	private void defaultConTypeHelpText() {
 		if (contractor.isContractorTypeRequired(ContractorType.Onsite))
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
+					getText(ContractorType.Onsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Onsite), ", "));
 		if (contractor.isContractorTypeRequired(ContractorType.Offsite))
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
+					getText(ContractorType.Offsite.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Offsite), ", "));
 		if (contractor.isContractorTypeRequired(ContractorType.Supplier))
 			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
+					getText(ContractorType.Supplier.getI18nKey()), StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Supplier), ", "));
 		if (contractor.isContractorTypeRequired(ContractorType.Transportation))
-			contractorTypeHelpText += getTextParameterized("RegistrationServiceEvaluation.OnlyServiceAllowed",
-					getText(ContractorType.Transportation.getI18nKey()), StringUtils.join(contractor
-							.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
+			contractorTypeHelpText += getTextParameterized(
+					"RegistrationServiceEvaluation.OnlyServiceAllowed",
+					getText(ContractorType.Transportation.getI18nKey()),
+					StringUtils.join(
+							contractor.getOperatorsNamesThatRequireContractorType(ContractorType.Transportation), ", "));
 	}
 
 	@Before
 	public void startup() throws Exception {
+		this.subHeading = getText("ContractorEdit.subheading");
+
 		findContractor();
 		// Billing state gets set to an empty string
 		if (contractor.getBillingState() != null && Strings.isEmpty(contractor.getBillingState().getIsoCode()))
@@ -182,7 +182,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				FileUtils.moveFile(brochure, ftpDir, "/files/brochures/", fileName, extension, true);
 				contractor.setBrochureFile(extension);
 			}
-			
+
 			// account for disabled checkboxes not coming though
 			if (contractor.isContractorTypeRequired(ContractorType.Onsite))
 				conTypes.add(ContractorType.Onsite);
@@ -194,7 +194,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				conTypes.add(ContractorType.Transportation);
 
 			contractor.editAccountTypes(conTypes);
-			
+
 			if (!conTypesOK()) {
 				return SUCCESS;
 			}
@@ -220,7 +220,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (errors.size() > 0) {
 				for (String error : errors)
 					addActionError(error);
-				// TODO I don't know if this is the right answer here, but we don't want to save anything if
+				// TODO I don't know if this is the right answer here, but we
+				// don't want to save anything if
 				// there are errors.
 				contractor = contractorAccountDao.find(contractor.getId());
 				return SUCCESS;
@@ -351,8 +352,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 			String expiresMessage = "";
 			if (contractor.getPaymentExpires().after(new Date()))
-				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires", contractor
-						.getPaymentExpires());
+				expiresMessage = this.getTextParameterized("ContractorEdit.message.AccountExpires",
+						contractor.getPaymentExpires());
 			else {
 				expiresMessage = getText("ContractorEdit.message.AccountDeactivated");
 				contractor.setStatus(AccountStatus.Deactivated);
@@ -493,7 +494,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setConTypes(List<ContractorType> conTypes) {
 		this.conTypes = conTypes;
 	}
-	
+
 	public boolean conTypesOK() {
 		boolean conTypesOK = true;
 		boolean meetsOperatorsRequirements = false;
