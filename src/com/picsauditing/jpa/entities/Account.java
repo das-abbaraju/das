@@ -304,7 +304,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * North American Industry Classification System http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 * North American Industry Classification System
+	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
 	 * 
 	 * @return
 	 */
@@ -355,7 +356,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	// }
 
 	/**
-	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * True if QuickBooks Web Connector needs to pull this record into
+	 * QuickBooks
 	 * 
 	 * @return
 	 */
@@ -439,7 +441,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.reason = reason;
 	}
 
-	// We should move this to operator. The contractor already has an accountLevel field that replaces this
+	// We should move this to operator. The contractor already has an
+	// accountLevel field that replaces this
 	@Deprecated
 	public boolean isAcceptsBids() {
 		return acceptsBids;
@@ -451,8 +454,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Operator Qualification regulation, and if Contractor, do they work for an operator who does
-	 * too?
+	 * Are they subject to Operator Qualification regulation, and if Contractor,
+	 * do they work for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -505,7 +508,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Competency Reviews, and if Contractor, do they work for an operator who does too?
+	 * Are they subject to Competency Reviews, and if Contractor, do they work
+	 * for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -532,8 +536,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * The date HSAN accredited the Training Provider to provide training services. If HSAN training providers use a lot
-	 * more custom fields then we'll create a new table for this and other fields.
+	 * The date HSAN accredited the Training Provider to provide training
+	 * services. If HSAN training providers use a lot more custom fields then
+	 * we'll create a new table for this and other fields.
 	 * 
 	 * @return
 	 */
@@ -728,8 +733,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
-				this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
+				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)
@@ -766,15 +771,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public void addAccountTypes(List<ContractorType> conTypes) {
 		if (conTypes != null) {
 			for (ContractorType conType : conTypes) {
-				if (conType.equals(ContractorType.Onsite) && !isOnsiteServices()) {
+				if (conType.equals(ContractorType.Onsite) && !isOnsiteServices())
 					setOnsiteServices(true);
-				}
-				if (conType.equals(ContractorType.Offsite) && !isOffsiteServices()) {
+				if (conType.equals(ContractorType.Offsite) && !isOffsiteServices())
 					setOffsiteServices(true);
-				}
-				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier()) {
+				if (conType.equals(ContractorType.Supplier) && !isMaterialSupplier())
 					setMaterialSupplier(true);
-				}
+				if (conType.equals(ContractorType.Transportation) && !isTransportationServices())
+					setTransportationServices(true);
 			}
 		}
 	}
@@ -790,15 +794,23 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 				switch (conType) {
 				case Onsite:
 					setOnsiteServices(value);
+					if (!value && !isOffsiteServices())
+						((ContractorAccount)this).setSafetyRisk(LowMedHigh.None);
 					break;
 				case Offsite:
 					setOffsiteServices(value);
+					if (!value && !isOnsiteServices())
+						((ContractorAccount)this).setSafetyRisk(LowMedHigh.None);
 					break;
 				case Supplier:
 					setMaterialSupplier(value);
+					if (!value)
+						((ContractorAccount)this).setProductRisk(LowMedHigh.None);
 					break;
 				case Transportation:
 					setTransportationServices(value);
+					if (!value)
+						((ContractorAccount)this).setTransportationRisk(LowMedHigh.None);
 					break;
 				}
 			}
