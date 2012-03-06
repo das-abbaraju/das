@@ -16,13 +16,13 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 
 /**
- * Users should not extend this class.
+ * Only to be used by Annual Updates. 
  */
-final public class MultiYearValueCalculator {
+public class MultiYearValueCalculator {
 
 	/**
-	 * Private default constructor to discourage creating new instances of this
-	 * class.
+	 * Private default constructor to discourage creating new instances
+	 * and extending this class.
 	 */
 	private MultiYearValueCalculator() {}
 
@@ -107,7 +107,8 @@ final public class MultiYearValueCalculator {
 	static Number calculateMultiYearAggregate(FlagCriteria criteria, List<ContractorAudit> audits) {
 		if (!"Check Box".equals(criteria.getQuestion().getQuestionType())) {
 			List<Double> values = getValuesForMathematicalFunction(criteria, audits);
-			return addValues(values);
+			Double result = addValues(values);
+			return (result == null) ? new Double(0.0) : result;
 		}
 		
 		return getTotalCheckBoxCount(criteria, audits);		
@@ -168,6 +169,7 @@ final public class MultiYearValueCalculator {
 		return values;
 	}
 	
+	@Testable
 	static Integer getTotalCheckBoxCount(FlagCriteria criteria, List<ContractorAudit> audits) {
 		if (CollectionUtils.isEmpty(audits)) {
 			return null;
@@ -176,13 +178,14 @@ final public class MultiYearValueCalculator {
 		int total = 0;
 		for (ContractorAudit audit : audits) {
 			List<AuditData> auditDataList = audit.getData();
-			total += isCheckBoxSelectedForQuestion(criteria, auditDataList);
+			total += totalCheckBoxSelectedForQuestion(criteria, auditDataList);
 		}
 		
 		return total;
 	}
 	
-	static int isCheckBoxSelectedForQuestion(FlagCriteria criteria, List<AuditData> auditDataList) {
+	@Testable
+	static int totalCheckBoxSelectedForQuestion(FlagCriteria criteria, List<AuditData> auditDataList) {
 		for (AuditData auditData : auditDataList) {
 			if(isCheckBoxQuestionWithAnswer(criteria, auditData)) {
 				return 1;
