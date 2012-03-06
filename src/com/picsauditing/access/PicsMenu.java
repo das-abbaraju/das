@@ -393,6 +393,10 @@ public class PicsMenu {
 
 		subMenu = menu.addChild(getText("menu.Reports"));
 
+		if (permissions.isDeveloperEnvironment()) {
+			subMenu.addChild("Dynamic Reporting", "ReportDynamic.action?report=1");
+		}
+
 		// TODO - remove these hacks
 		if (permissions.getAccountId() == 6228) {
 			subMenu.addChild("Site Orientation Report", "report_orientation.jsp");

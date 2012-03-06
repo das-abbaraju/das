@@ -13,7 +13,7 @@ public class Contractor extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		QueryField contractorName = addField("contractorName", "a.name", FilterType.AccountName);
+		QueryField contractorName = addField("contractorName", "a.name", FilterType.AccountName).setSuggested();
 		Renderer contractorNameLink = new Renderer("ContractorView.action?id={0}\">{1}", new String[] { "accountID",
 				"contractorName" });
 		contractorName.addRenderer(contractorNameLink);
@@ -42,7 +42,7 @@ public class Contractor extends BaseTable {
 
 	public void addJoins() {
 		addLeftJoin(new JoinUser("customerService", "c.welcomeAuditor_id"));
-		addLeftJoin(new Account("requestedByOperator", "c.requestedByID"));
+		addLeftJoin(new JoinAccount("requestedByOperator", "c.requestedByID"));
 
 		// joinToFlagCriteriaContractor("contractorFlagCriteria", "c.id");
 		// leftJoinToEmailQueue("contractorEmail", "c.id");

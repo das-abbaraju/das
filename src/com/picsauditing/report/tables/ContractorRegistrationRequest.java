@@ -2,15 +2,19 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class Account extends BaseTable {
+public class ContractorRegistrationRequest extends BaseTable {
 
-	public Account() {
-		super("accounts", "a", "");
+	public ContractorRegistrationRequest() {
+		super("contractor_registration_request", "crr", "");
+	}
+
+	public ContractorRegistrationRequest(String alias, String foreignKey) {
+		super("contractor_registration_request", alias, alias + ".id = " + foreignKey);
 	}
 
 	protected void addDefaultFields() {
-		addField("accountID", "a.id", FilterType.Number).setSuggested();
-		addField("accountName", "a.name", FilterType.AccountName).setSuggested().setWidth(180);
+		addField("requestID", "a.id", FilterType.Number).setSuggested();
+		addField("requestName", "a.name", FilterType.AccountName).setSuggested().setWidth(180);
 	}
 
 	public void addFields() {
@@ -28,6 +32,7 @@ public class Account extends BaseTable {
 		addField("accountWebsite", "a.web_url", FilterType.String).addRenderer("http://{0}\">{0}",
 				new String[] { "accountWebsite" });
 		addField("accountDBAName", "a.dbaName", FilterType.AccountName);
+		// addField("accountNameIndex", "a.nameIndex", FilterType.AccountName);
 		addField("accountReason", "a.reason", FilterType.String).setCategory(FieldCategory.Billing);
 		addField("accountOnsite", "a.onsiteServices", FilterType.Boolean).setCategory(FieldCategory.Classification);
 		addField("accountOffsite", "a.offsiteServices", FilterType.Boolean).setCategory(FieldCategory.Classification);

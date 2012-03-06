@@ -66,6 +66,11 @@ public abstract class BaseTable {
 		return fields;
 	}
 
+	public void removeField(String name) {
+		QueryField field = fields.remove(name.toUpperCase());
+		field.setSuggested(false);
+	}
+	
 	protected QueryField addField(String sql, FilterType filter) {
 		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
 		if (sql.equals("id"))

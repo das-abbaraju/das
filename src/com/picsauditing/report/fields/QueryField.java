@@ -8,7 +8,6 @@ import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 

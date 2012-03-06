@@ -20,7 +20,7 @@ public class JoinUser extends BaseTable {
 	}
 
 	public void addJoins() {
-		addJoin(new Account(alias + "Account", alias + ".accountID"));
+		addJoin(new JoinAccount(alias + "Account", alias + ".accountID"));
 	}
 
 }

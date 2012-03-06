@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -26,7 +27,7 @@ import com.picsauditing.util.Strings;
 public class SqlBuilder {
 	private ModelBase base;
 	private List<SimpleReportColumn> includedColumns = new ArrayList<SimpleReportColumn>();
-	private Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
+	private Map<String, QueryField> availableFields = new TreeMap<String, QueryField>();
 	private SimpleReportDefinition definition = new SimpleReportDefinition();
 	private SelectSQL sql;
 
@@ -85,6 +86,7 @@ public class SqlBuilder {
 					joinSyntax += " AS " + join.getAlias();
 				joinSyntax += " ON " + join.getWhere();
 				sql.addJoin(joinSyntax);
+				addJoins(join);
 			}
 		}
 	}
