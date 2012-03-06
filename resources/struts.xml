@@ -451,11 +451,11 @@
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorQuickAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorQuick" class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/contractor_quick.jsp</result>
 		</action>
 
-		<action name="ContractorQuickDocumentsAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorQuickDocuments" class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/contractor_quick_documents.jsp</result>
 		</action>
 

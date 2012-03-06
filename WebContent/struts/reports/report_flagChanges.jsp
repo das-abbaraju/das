@@ -64,7 +64,7 @@ function resolveFlags(detail, baseline, title, gcId, id, opId) {
 	var output = $('<table>', {
 		'class': 'inner',
 		'title' : title,
-		'rel' : "ContractorQuickDocumentsAjax.action?id="+id+"&opID="+opId
+		'rel' : "ContractorQuickDocuments.action?id="+id+"&opID="+opId
 	});
 	if (size(changes) > 0) {
 		$.each(changes, function(criteriaID, data) {
