@@ -2,33 +2,37 @@ Ext.define('PICS.store.report.Reports', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.Report',
 	
-	autoLoad: true,
+	// autoLoad: true,
 	listeners: {
         load: {
             fn: function(store, records, successful, operation, options) {
-            	var colStore = Ext.StoreManager.get("report.ReportsColumn"),
-                data = null,
-            	fieldsStore = Ext.StoreManager.get("report.AvailableFields"),
-            	filterStore = Ext.StoreManager.get("report.ReportsFilter"),            	
-            	report = store.first(),
-            	records = [];
-
-            	data = report.columns().data;
-            	for(i = 0; i < data.length; i++) {
-            		var item = data.items[i],
-            		field = fieldsStore.getField(item.get("name"));
-            		
-            		if (field == null) {
-            			item.set('text', item.get("name"));
-            		} else {
-            			item.set('text', field.get("text"));
-            		}
-            		records.push(item);
+            	var report = store.first();
+            	
+            	if (report) {
+            		this.loadStore("report.ReportsColumn", report.columns());
+            		this.loadStore("report.ReportsFilter", report.filters());
             	}
-            	colStore.loadRecords(records);
-            	filterStore.loadRecords(records);
             }
         }
+    },
+    loadStore: function(storeName, child) {
+    	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
+    	
+    	var records = [];
+    	for(i = 0; i < child.data.length; i++) {
+    		var item = child.data.items[i],
+    		field = fieldsStore.getField(item.get("name"));
+    		
+    		if (field == null) {
+    			item.set('text', item.get("name"));
+    		} else {
+    			item.set('text', field.get("text"));
+    		}
+    		records.push(item);
+    	}
+    	
+    	var store = Ext.StoreManager.get(storeName);
+    	store.loadRecords(records);
     },
     proxy: {
         url: 'js/pics/data/report.json',
@@ -47,11 +51,17 @@ Ext.define('PICS.store.report.Reports', {
         		data.sorts = this.addChildren(report.sortsStore);
         		data.filter = this.addChildren(report.filtersStore);
         		
+        		delete data.id;
+        		delete data.modelType;
+        		request.params["report.summary"] = data.summary;
+        		delete data.summary;
+        		request.params["report.description"] = data.description;
+        		delete data.description;
+        		
         		// See http://docs.sencha.com/ext-js/4-0/source/Json3.html#Ext-data-writer-Json
         		// writeRecords
-        		request.url = 'ReportDynamic!save.action?report=' + report.getId();
-                request.jsonData = request.jsonData || {};
-                request.jsonData["report"] = data;
+                request.params["report.parameters"] = Ext.encode(data);
+                request.url = 'ReportDynamic!save.action?report=' + report.getId();
                 return request;
         	},
         	addChildren: function(child) {

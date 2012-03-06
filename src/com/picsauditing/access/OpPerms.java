@@ -126,6 +126,8 @@ public enum OpPerms implements Translatable{
 	
 	// View the Operator Flag Matrix report
 	OperatorFlagMatrix("Operator Flag Matrix", "Allows operators to view the Operator Flag Matrix report.", false, false, false, false, true),
+	
+	Report("Reports", "Create and edit reports", true, true, true, false, true),
 
 	// Employee Management
 	DefineRoles("Define Roles", "Allows contractors to create job roles to assign to their employees.", true, true, true, true, false),

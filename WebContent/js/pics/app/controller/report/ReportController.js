@@ -2,11 +2,14 @@ Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
 
  	stores: [
-        'report.Reports', 'report.ReportsColumn', 'report.ReportsFilter'
+        'report.ReportData', 'report.Reports', 'report.ReportsColumn', 'report.ReportsFilter'
     ],
 	
     init: function() {
         this.control({
+            "reportoptions button[action=refresh]": {
+                click: this.refreshData
+            },
             "reportoptions button[action=save]": {
                 click: this.saveReport
             },
@@ -20,6 +23,11 @@ Ext.define('PICS.controller.report.ReportController', {
             	click: this.addColumn
             }
         });
+        
+        var reportStore = this.getReportReportsStore();
+        reportStore.loadRawData({"report": reportParameters});
+        
+        this.refreshData();
     },
     addColumn: function(button, e, options) {
         var grid = Ext.ComponentQuery.query('reportcolumnselectorgrid'),
@@ -31,10 +39,10 @@ Ext.define('PICS.controller.report.ReportController', {
         }
         var selected = grid.getSelectionModel().getSelection();
         if (selected.length > 0) {
-            if (this.columnSelector.columntype === "filter"){
+            if (this.columnSelector.columntype === "filter") {
                 store = this.getReportReportsFilterStore();
             } else {
-                store = this.getReportReportsColumnStore();    
+                store = this.getReportReportsColumnStore();
             }
             
             for(var i=0; i < selected.length; i++) {
@@ -46,6 +54,50 @@ Ext.define('PICS.controller.report.ReportController', {
                 store.add(column);
             }
         }
+    },
+    refreshData: function() {
+        var reportStore = this.getReportReportsStore();
+        var report = reportStore.first();
+        
+        if (report == undefined) {
+        	Ext.MessageBox.alert("Error", "Missing report definition");
+        	return;
+        }
+        
+        // Setup store fields for the report data
+        var dataStore = this.getReportReportDataStore();
+        dataStore.fields = [];
+        for(var i = 0; i < report.columns().data.items.length; i++) {
+        	var storeField = {};
+        	var column = report.columns().data.items[i];
+        	storeField.name = column.get("name");
+        	// storeField.type = report.columns().data[i].get("extType");
+        	dataStore.fields.push(storeField);
+        }
+
+        // Setup the URL
+		var url = "ReportDynamic!data.action?";
+		if (report && report.getId() > 0) {
+			url += "report=" + report.getId();
+		} else {
+			url += "report.base=" + report.get("base");
+		}
+        dataStore.proxy.url = url;
+
+        // Run the report
+        dataStore.load({
+        	callback: function(records, operation, success) {
+        		if (success) {
+        			console.log(records);
+        			var dataGrid = Ext.getCmp("dataGrid");
+        			dataGrid.hide();
+        			dataGrid.columns = [{"width":27,"xtype":"rownumberer"},{"text":"Account Name","width":180,"dataIndex":"accountName"},{"text":"Account Status","dataIndex":"accountStatus"},{"text":"Account ID","dataIndex":"accountID"}];
+        			dataGrid.show();
+        		} else {
+        			Ext.MessageBox.alert("Failed to read data from Server", "Reason: " + operation.error);
+        		}
+            }
+        });
     },
     removeColumn: function(button, e, options) {
         var grid = null,

@@ -1,17 +1,24 @@
 package com.picsauditing.actions.report;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.io.IOUtils;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
@@ -24,7 +31,6 @@ import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -34,37 +40,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
-
-	public String list() {
-		// What's this for? I forgot...
-		return "list";
-	}
-
-	public String find() {
-		try {
-			checkReport();
-			json.put("report", report.toJSON(true));
-			json.put("success", true);
-		} catch (Exception e) {
-			json.put("success", false);
-			json.put("message", e.getCause() + " " + e.getMessage());
-		}
-		return JSON;
-	}
-
-	public String save() {
-		checkReport();
-		report.setAuditColumns(permissions);
-		// dao.save(report);
-		json.put("success", true);
-		return JSON;
-	}
-
-	public String delete() {
-		checkReport();
-		dao.remove(report);
-		return SUCCESS;
-	}
 
 	@Anonymous
 	public String availableBases() {
@@ -76,18 +51,70 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	public String availableFields() {
-		checkReport();
-		builder.getSql();
+	public String list() throws Exception {
+		throw new Exception("oops, I thought this wasn't being used anymore");
+	}
 
-		json.put("modelType", report.getModelType().toString());
-		json.put("fields", getAvailableFields());
-		json.put("success", true);
+	public String find() {
+		try {
+			checkReport();
+			json.put("report", report.toJSON(true));
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+		return JSON;
+	}
+
+	public String save() {
+		try {
+			checkReport();
+
+			parseInputStream();
+
+			report.setAuditColumns(permissions);
+			dao.save(report);
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
 
 		return JSON;
 	}
 
-	private void checkReport() {
+	// We probably don't need this anymore
+	// Leave it until we're sure how we'll accept the report parameters
+	private void parseInputStream() throws IOException {
+		HttpServletRequest request = ServletActionContext.getRequest();
+		StringWriter writer = new StringWriter();
+		IOUtils.copy(request.getInputStream(), writer, "UTF-8");
+		String params = writer.toString();
+		System.out.println(params);
+	}
+
+	public String availableFields() {
+		try {
+			checkReport();
+			builder.getSql();
+
+			json.put("modelType", report.getModelType().toString());
+			json.put("fields", getAvailableFields());
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+
+		return JSON;
+	}
+
+	public String delete() throws Exception {
+		permissions.tryPermission(OpPerms.Report, OpType.Delete);
+		checkReport();
+		dao.remove(report);
+		return SUCCESS;
+	}
+
+	private void checkReport() throws Exception {
 		if (report == null)
 			throw new RuntimeException("Please provide a saved or ad hoc report to run");
 
@@ -97,16 +124,31 @@ public class ReportDynamic extends PicsActionSupport {
 		builder.setReport(report);
 	}
 
-	@Override
-	public String execute() {
-		checkReport();
+	private void jsonException(Exception e) {
+		json.put("success", false);
+		json.put("error", e.getCause() + " " + e.getMessage());
+	}
 
+	@Override
+	public String execute() throws Exception {
+		checkReport();
 		addDefinition();
 
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 
 		return SUCCESS;
+	}
+
+	public boolean isCanEdit() {
+		// while we're testing
+		if (permissions.isAdmin())
+			return true;
+		if (!permissions.hasPermission(OpPerms.Report, OpType.Edit))
+			return false;
+		if (report.getCreatedBy().getId() == permissions.getUserId())
+			return true;
+		return false;
 	}
 
 	private void addDefinition() {
@@ -136,7 +178,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	private void buildSQL() {
+	private void buildSQL() throws Exception {
 		checkReport();
 
 		addDefinition();

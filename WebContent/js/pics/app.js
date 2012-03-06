@@ -11,7 +11,6 @@ Ext.application({
 	models: [
 	    'report.AvailableField', 
         'report.Report', 
-        'report.ReportRow', 
         'report.SimpleField', 
         'report.SimpleFilter', 
         'report.SimpleSort' 
