@@ -53,7 +53,7 @@ Ext.define('PICS.store.report.Reports', {
         		
         		delete data.id;
         		delete data.modelType;
-        		request.params["report.summary"] = data.summary;
+        		request.params["report.name"] = data.name;
         		delete data.summary;
         		request.params["report.description"] = data.description;
         		delete data.description;
