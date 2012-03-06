@@ -17,7 +17,6 @@
 		<script type="text/javascript">
 			var availableFields = <s:property value="availableFields" escape="false" />;
 			var reportParameters = <s:property value="report.toJSON(true)" escape="false" />;
-			var gridColumns = <s:property value="gridColumns" escape="false" />;
 		</script>
 		<script type="text/javascript" src="js/pics/app.js"></script>
 	</body>
