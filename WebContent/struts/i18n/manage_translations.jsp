@@ -171,7 +171,7 @@
 	<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 </div>
 
-<table class="table translation-list">
+<table class="table translation-list dirty">
 	<thead>
 		<tr>
 			<th class="translation-key">
@@ -228,39 +228,55 @@
                                     <s:property value="value" escape="false" />
                                 </div>
                                 
-                                <a href="javascript:;" class="edit btn small primary">Edit</a>
+                                <div class="actions">
+                                    <div class="rate">
+                                        <div class="applicable">
+                                            <s:checkbox id="%{checkbox_id}" name="translation.applicable" value="%{applicable}" cssClass="is-applicable"/>
+                                        </div>
+                                        
+                                        <s:if test="applicable == false">
+                                            <s:set var="radio_display" value="'display: none'" />
+                                        </s:if>
+                                        <s:else>
+                                            <s:set var="radio_display" value="" />
+                                        </s:else>
+                                        
+                                        <div class="quality" style="${radio_display}">
+                                            <s:radio
+                                                list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
+                                                name="translation.qualityRating"
+                                                id="%{radio_id}"
+                                                cssClass="quality-rating"
+                                                value="%{qualityRating}"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    <a href="javascript:;" class="edit btn small primary">Edit</a>
+                                </div>
                             </div>
                             
                             <div class="edit">
                                 <s:textarea name="translation.value" value="%{value}" />
                                 
-                                <div class="actions">
-                                    <button name="button" class="save btn small success">Save</button>
-                                    <button class="cancel btn small">Cancel</button>
-                                </div>
-                                
-                                <div class="rate">
-                                    <div class="applicable">
-                                        <s:checkbox id="%{checkbox_id}" name="translation.applicable" value="%{applicable}" cssClass="is-applicable"/>
-                                    </div>
+                                <ul class="actions">
+                                    <li>
+                                        <button name="button" class="save btn small success">Save</button>
+                                    </li>
+                                    <li>
+                                        <button class="cancel btn small">Cancel</button>
+                                    </li>
                                     
-                                    <s:if test="applicable == false">
-                                        <s:set var="radio_display" value="'display: none'" />
+                                    <s:if test="locale == sourceLanguage">
+                                        <li class="translation-changed">
+                                            <s:checkbox
+                                                name="updateOtherLocales"
+                                                label="TranslationQualityRating.Questionable.helpText"
+                                                theme="pics"
+                                            />
+                                        </li>
                                     </s:if>
-                                    <s:else>
-                                        <s:set var="radio_display" value="" />
-                                    </s:else>
-                                    
-                                    <div class="quality" style="${radio_display}">
-                                        <s:radio
-                                            list="@com.picsauditing.jpa.entities.TranslationQualityRating@values()"
-                                            name="translation.qualityRating"
-                                            id="%{radio_id}"
-                                            cssClass="qualityRating"
-                                            value="%{qualityRating}"
-                                        />
-                                    </div>
-                                </div>
+                                </ul>
                                 
                                 <ul class="info">
                                     <s:if test="!sourceLanguage.empty">
@@ -285,14 +301,6 @@
                                         <li>
                                             Last Updated By: ${translation.updatedBy.name}
                                         </li>
-                                    </s:if>
-                                    
-                                    <s:if test="locale == sourceLanguage">
-                                    	<s:checkbox
-                                    		name="updateOtherLocales"
-                                    		label="TranslationQualityRating.Questionable.helpText"
-                                    		theme="pics"
-                                    	/>
                                     </s:if>
                                 </ul>
                             </div>
