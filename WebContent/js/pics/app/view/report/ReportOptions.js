@@ -23,9 +23,9 @@ Ext.define('PICS.view.report.ReportOptions', {
         
         flex: 1,
         items: [{
-            xtype: 'reportoptionscolumns'
+            xtype: 'reportoptionsfilters'
         }, {
-            xtype: 'reportoptionsfilters'            
+            xtype: 'reportoptionscolumns'
         }, {
             title: 'Sort'
         }],
