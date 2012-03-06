@@ -293,7 +293,8 @@ public class SqlBuilder {
 			SimpleReportColumn column = getColumn(sort.getColumn());
 			if (column == null) {
 				QueryField field = availableFields.get(sort.getColumn().toUpperCase());
-				orderBy = field.getSql();
+				if (field != null && field.getSql() != null)
+					orderBy = field.getSql();
 			}
 
 			if (!sort.isAscending())
