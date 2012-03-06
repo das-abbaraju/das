@@ -66,7 +66,7 @@ Ext.define('PICS.controller.report.ReportController', {
         
         var columnStore = this.getReportReportsColumnStore();
         var columns = columnStore.data.items;
-        console.log(columns);
+        // console.log(columns);
 
         // Setup store fields for the report data
         var dataStore = this.getReportReportDataStore();
@@ -85,10 +85,6 @@ Ext.define('PICS.controller.report.ReportController', {
             fields: fields
         });
         dataStore.proxy.reader.setModel(model);
-        
-        // console.log(dataStore);
-//        console.log(this.getReportReportDataStore().model);
-//        console.log(Ext.ModelManager.getModel("PICS.model.report.ReportRow"));
         
         // Setup the URL
 		var url = "ReportDynamic!data.action?";

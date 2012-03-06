@@ -10,10 +10,10 @@ Ext.application({
 
 	models: [
 	    'report.AvailableField', 
-        'report.Report', 
+        'report.Report',
         'report.SimpleField', 
         'report.SimpleFilter', 
-        'report.SimpleSort' 
+        'report.SimpleSort'
     ],
     
 	stores: [
