@@ -34,7 +34,6 @@ public enum FeeClass implements Translatable {
 				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
-			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
@@ -42,23 +41,7 @@ public enum FeeClass implements Translatable {
 			return isAllExclusionsApplicable(contractor, exclusions);
 		}
 	},
-	AuditGUARD {
-		@Override
-		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
-			if (contractor.getPayingFacilities() == 1) {
-				Date now = new Date();
-				if (BASFInsureGUARDAndAuditGUARDPricingEffectiveDate.after(now)) {
-					for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
-						if (contractorOperator.getOperatorAccount().getName().startsWith("BASF")) {
-							return new BigDecimal(299).setScale(2, BigDecimal.ROUND_UP);
-						}
-					}
-				}
-			}
-
-			return contractor.getCountry().getAmount(fee);
-		}
-	},
+	AuditGUARD,
 	EmployeeGUARD {
 		@Override
 		public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
@@ -112,7 +95,7 @@ public enum FeeClass implements Translatable {
 
 			BigDecimal minimumDiscount = (BigDecimal) Collections.min(discounts);
 			minimumDiscount = BigDecimal.ONE.subtract(minimumDiscount);
-			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(2, BigDecimal.ROUND_UP);
+			return contractor.getCountry().getAmount(fee).multiply(minimumDiscount).setScale(0, BigDecimal.ROUND_DOWN);
 		}
 	},
 	Reactivation,
@@ -128,7 +111,6 @@ public enum FeeClass implements Translatable {
 	Misc;
 
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
-	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
 	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
 

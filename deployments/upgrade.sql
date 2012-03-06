@@ -6,6 +6,13 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-4791
+update operators o set o.discountPercent = .5, o.discountExpiration = '2012-03-15' where o.id = 19344;
+update operators o set o.discountPercent = .5, o.discountExpiration = '2012-06-01' where o.id = 26873;
+update operators o set o.discountPercent = .5, o.discountExpiration = '2012-06-30' where o.id = 27406;
+update operators o set o.discountPercent = .25, o.discountExpiration = '2012-12-31' where o.id = 22100;
+--
+
 -- PICS-3350
 /*
 UPDATE `naics` SET `trir` = 5.3, `lwcr` = 2.9 WHERE `code` = 11;
