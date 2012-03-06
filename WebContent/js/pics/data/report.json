@@ -1,9 +1,9 @@
 {
 	success: true,
     report: {
-        id: 7,
+        id: 11,
         modelType: 'Contractor',
-        summary: 'Recently Added Contractors',
+        name: 'Recently Added Contractors',
         description: 'Missing Credit Card',
         columns: [{
             name: 'accountName'

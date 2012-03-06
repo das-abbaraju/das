@@ -21,8 +21,7 @@ import com.picsauditing.util.JSONUtilities;
 public class Report extends BaseTable {
 
 	private ModelType modelType;
-	// TODO rename to name
-	private String summary;
+	private String name;
 	private String description;
 	private String parameters;
 	private Account sharedWith;
@@ -39,12 +38,12 @@ public class Report extends BaseTable {
 	}
 
 	@Column(nullable = false)
-	public String getSummary() {
-		return summary;
+	public String getName() {
+		return name;
 	}
 
-	public void setSummary(String summary) {
-		this.summary = summary;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getDescription() {
@@ -85,7 +84,7 @@ public class Report extends BaseTable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject obj = super.toJSON(full);
 		obj.put("modelType", modelType.toString());
-		obj.put("summary", summary);
+		obj.put("name", name);
 
 		if (full) {
 			obj.put("description", description);

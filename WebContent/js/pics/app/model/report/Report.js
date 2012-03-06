@@ -9,7 +9,7 @@ Ext.define('PICS.model.report.Report', {
     fields: [
         { name: 'id', type: 'int' },
         { name: 'modelType', type: 'string' },
-        { name: 'summary', type: 'string' },
+        { name: 'name', type: 'string' },
         { name: 'description', type: 'string' },
         { name: 'filterExpression', type: 'string' },
         { name: 'rowsPerPage', type: 'int', defaultValue: 100 }

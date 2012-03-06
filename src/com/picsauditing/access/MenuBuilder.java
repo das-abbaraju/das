@@ -506,7 +506,7 @@ public class MenuBuilder {
 
 		MenuComponent subMenu = menu.addChild("My Reports");
 		for (Report report : reports) {
-			subMenu.addChild(report.getSummary(), "ReportDynamic.action?report=" + report.getId());
+			subMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}
 
 		subMenu.addChild("Manage Reports", "ManageReports.action");
