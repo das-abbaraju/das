@@ -136,7 +136,6 @@
 					<h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts" /></h2>
 					
 					<ol>
-						<% /*
 						<li>
 							<s:text name="FacilitiesEdit.IsGeneralContractor" />
 							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="generalContractor" theme="pics" cssClass="inline" />
@@ -144,7 +143,10 @@
 							<br />
 							<pics:autocomplete action="ContractorAutocomplete" name="linkedContractor.contractor" />
 						</li>
-						*/ %>
+						<li>
+							<s:text name="FacilitiesEdit.HasOwnFlagCriteria" />
+							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="inheritsFlagCriteria" theme="pics" cssClass="inline" />
+						</li>
 						<s:if test="operator.corporate">
 							<li>
 								<s:checkbox name="operator.primaryCorporate" theme="formhelp" />

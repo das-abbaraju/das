@@ -63,6 +63,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Country country;
 	protected State state;
 	protected int contactID;
+	protected boolean isGeneralContractor;
+	protected boolean inheritsFlagCriteria;
 	protected ContractorOperator linkedContractor;
 
 	public List<OperatorAccount> notChildOperatorList;
@@ -325,7 +327,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
 		if (!removed) {
-			addActionError("Cannot Remove this account: " + operator.getName()); // TODO: i18n
+			addActionError("Cannot Remove this account: " + operator.getName()); // TODO:
+																					// i18n
 			return SUCCESS;
 		}
 
@@ -550,6 +553,22 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
+	}
+	
+	public boolean isGeneralContractor() {
+		return isGeneralContractor;
+	}
+	
+	public void setGeneralContractor(boolean isGeneralContractor) {
+		this.isGeneralContractor = isGeneralContractor;
+	}
+	
+	public boolean isInheritsFlagCriteria() {
+		return inheritsFlagCriteria;
+	}
+	
+	public void setInheritsFlagCriteria(boolean inheritsFlagCriteria) {
+		this.inheritsFlagCriteria = inheritsFlagCriteria;
 	}
 
 	public List<AccountUser> getAccountManagers() {
