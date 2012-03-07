@@ -201,7 +201,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 					if (!permissions.isCorporate()) {
 						int limit = 10;
 						List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
-						proccessSearchResults(data);
+						processSearchResults(data);
 
 						addActionMessage(getText("ContractorFacilities.message.FacilitiesBasedSelection"));
 					} else {
@@ -237,7 +237,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 						+ contractor.getId() + " )");
 				showAll.addOrderBy("a.name");
 				List<BasicDynaBean> data = db.select(showAll.toString(), true);
-				proccessSearchResults(data);
+				processSearchResults(data);
 
 				return "search";
 			}
@@ -321,7 +321,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 		return SUCCESS;
 	}
 
-	public void proccessSearchResults(List<BasicDynaBean> data) {
+	public void processSearchResults(List<BasicDynaBean> data) {
 		for (BasicDynaBean d : data) {
 			OperatorAccount o = new OperatorAccount();
 
@@ -340,9 +340,13 @@ public class ContractorFacilities extends ContractorActionSupport {
 			o.setOnsiteServices(1 == (Integer) d.get("onsiteServices"));
 			o.setOffsiteServices(1 == (Integer) d.get("offsiteServices"));
 			o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
+			o.setTransportationServices(1 == (Integer) d.get("transportationServices"));
 
-			if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
-					&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier())
+			if (contractor.isOnsiteServices() && o.isOnsiteServices() || 
+					contractor.isOffsiteServices() && o.isOffsiteServices() || 
+					contractor.isMaterialSupplier() && o.isMaterialSupplier() ||
+					contractor.isTransportationServices() && o.isTransportationServices()
+				)
 				searchResults.add(o);
 		}
 	}
