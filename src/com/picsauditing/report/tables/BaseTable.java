@@ -26,15 +26,6 @@ public abstract class BaseTable {
 		addDefaultFields();
 	}
 
-	public BaseTable(String table, String alias, String where) {
-		this.table = table;
-		this.prefix = alias;
-		this.alias = alias;
-		this.where = where;
-
-		addDefaultFields();
-	}
-
 	protected abstract void addDefaultFields();
 
 	public abstract void addFields();
@@ -55,6 +46,14 @@ public abstract class BaseTable {
 
 	public void setTable(String table) {
 		this.table = table;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
 	}
 
 	public String getAlias() {

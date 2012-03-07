@@ -1,41 +1,43 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.Renderer;
 
 public class ContractorAudit extends BaseTable {
 
 	public ContractorAudit() {
-		super("contractor_audit", "ca", "ca.conID = a.id");
+		super("contractor_audit", "audit", "ca", "ca.conID = a.id");
+	}
+
+	public ContractorAudit(String prefix, String alias, String foreignKey) {
+		super("contractor_audit", prefix, alias, alias + ".id = " + foreignKey);
+	}
+
+	public ContractorAudit(String alias, String foreignKey) {
+		super("contractor_audit", alias, alias, alias + ".id = " + foreignKey);
 	}
 
 	protected void addDefaultFields() {
-//		addQueryField("auditID", "ca.id", FilterType.Number, true);
-//		addQueryField("auditCreationDate", "ca.creationDate", FilterType.Date);
-//		addQueryField("auditExpirationDate", "ca.expiresDate", FilterType.Date);
-//		addQueryField("auditScheduledDate", "ca.scheduledDate", FilterType.Date);
-//		addQueryField("auditAssignedDate", "ca.assignedDate", FilterType.Date);
-//		addQueryField("auditLocation", "ca.auditLocation", FilterType.String);
-//		addQueryField("auditFor", "ca.auditFor", FilterType.String, true);
-//		addQueryField("auditScore", "ca.score", FilterType.Number);
-//		addQueryField("auditAuditorID", "ca.auditorID", FilterType.Number);
-//		addQueryField("auditClosingAuditorID", "ca.closingAuditorID", FilterType.Number);
-//		addQueryField("auditContractorConfirmation", "ca.contractorConfirm", FilterType.Date);
-//		addQueryField("auditAuditorConfirmation", "ca.auditorConfirm", FilterType.Date);
-
-//		QueryField auditTypeName = joinToAuditType("auditType", "ca.auditTypeID");
-//		auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", "auditTypeName",
-//				"auditFor" });
-
+		addField(prefix + "ID", alias + ".id", FilterType.Number).setSuggested();
+		addField(prefix + "For", alias + ".auditFor", FilterType.String).setSuggested();
 	}
 
 	public void addFields() {
+		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
+		addField(prefix + "ExpirationDate", alias + ".expiresDate", FilterType.Date);
+		addField(prefix + "ScheduledDate", alias + ".scheduledDate", FilterType.Date);
+		addField(prefix + "AssignedDate", alias + ".assignedDate", FilterType.Date);
+		addField(prefix + "Location", alias + ".auditLocation", FilterType.String);
+		addField(prefix + "Score", alias + ".score", FilterType.Number);
+		addField(prefix + "AuditorID", alias + ".auditorID", FilterType.Number);
+		addField(prefix + "ClosingAuditorID", alias + ".closingAuditorID", FilterType.Number);
+		addField(prefix + "ContractorConfirmation", alias + ".contractorConfirm", FilterType.Date);
+		addField(prefix + "AuditorConfirmation", alias + ".auditorConfirm", FilterType.Date);
 	}
 
 	public void addJoins() {
-		addLeftJoin(new JoinUser("auditor", "ca.auditorID"));
-		addLeftJoin(new JoinUser("closingAuditor", "ca.closingAuditorID"));
-		// joinToOshaAudit("oshaAudit", "ca.id");
+		addLeftJoin(new AuditType(prefix + "Type", alias + ".auditTypeID"));
+		addLeftJoin(new User(prefix + "Auditor", alias + ".auditorID"));
+		addLeftJoin(new User(prefix + "ClosingAuditor", alias + ".closingAuditorID"));
+		// joinToOshaAudit("oshaAudit", alias + ".id");
 	}
 }

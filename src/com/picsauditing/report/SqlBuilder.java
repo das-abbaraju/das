@@ -1,7 +1,6 @@
 package com.picsauditing.report;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -76,7 +75,6 @@ public class SqlBuilder {
 
 	private void addJoins(BaseTable table) {
 		for (BaseTable join : table.getJoins()) {
-			// System.out.println("Adding join " + join.getTable() + " " + join.getAlias());
 			if (isJoinNeeded(join)) {
 				String joinSyntax = "";
 				if (!join.isInnerJoin())
