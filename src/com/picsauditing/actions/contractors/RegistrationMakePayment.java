@@ -210,8 +210,9 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 											+ invoice.getId());
 						}
 
-						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure", Strings
-								.getPicsBillingPhone(null)));
+						addActionError(getText(
+								"ContractorRegistrationFinish.error.ConnectionFailure",
+								getText("PicsBillingPhone")));
 
 						// Assuming paid status per Aaron so that he can
 						// refund or void manually.
@@ -324,8 +325,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 				paymentService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
-						.getPicsTollFreePhone(permissions.getCountry()) }));
+				// TODO: Test
+				addActionError(getText(
+						"ContractorPaymentOptions.GatewayCommunicationError",
+						new Object[] { getText("PicsTollFreePhone") }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -352,8 +355,10 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
-					.getPicsTollFreePhone(permissions.getCountry()) }));
+			// TODO: Test
+			addActionError(getText(
+					"ContractorPaymentOptions.GatewayCommunicationError",
+					new Object[] {getText("PicsTollFreePhone")}));
 			braintreeCommunicationError = true;
 			return;
 		}

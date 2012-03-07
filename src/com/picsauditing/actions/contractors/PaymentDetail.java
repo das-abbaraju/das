@@ -144,6 +144,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 						addNote("Credit Card transaction completed and emailed the receipt for "
 								+ payment.getCurrency().getSymbol() + payment.getTotalAmount());
+						throw new NoBrainTreeServiceResponseException();
 					} catch (NoBrainTreeServiceResponseException re) {
 						addNote("Credit Card service connection error: " + re.getMessage());
 
@@ -170,7 +171,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						}
 
 						addActionError("There has been a connection error while processing your payment. Our Billing department has been notified and will contact you after confirming the status of your payment. Please contact the PICS Billing Department at "
-								+ Strings.getPicsBillingPhone(permissions.getCountry()) + ".");
+								+ getText("PicsBillingPhone") + ".");
 
 						// Assuming paid status per Aaron so that he can refund
 						// or void manually.

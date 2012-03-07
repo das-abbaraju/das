@@ -79,10 +79,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				return BLANK;
 			}
 		}
-
 		if (newRegistration) {
-			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated", new Object[] { Strings
-					.getPicsTollFreePhone(permissions.getCountry()) }));
+			addActionMessage(getText(
+					"ContractorPaymentOptions.ImportPQFCreated",
+					new Object[] {getText("PicsTollFreePhone")}));
 		}
 
 		if ("copyBillingEmail".equals(button)) {
@@ -137,8 +137,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 						responsetext.substring(0, endPos - 1);
 				} catch (Exception justUseThePlainResponseText) {
 				}
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
-						.getPicsTollFreePhone(permissions.getCountry()) }));
+				// TODO: test
+				addActionError(getText(
+						"ContractorPaymentOptions.GatewayCommunicationError",
+						new Object[] { getText("PicsTollFreePhone") }));
 			} else {
 				contractor.setCcOnFile(true);
 				contractor.setPaymentMethod(PaymentMethod.CreditCard);
@@ -155,8 +157,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				paymentService.deleteCreditCard(contractor.getId());
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
-						.getPicsTollFreePhone(permissions.getCountry()) }));
+				// TODO: Test
+				addActionError(getText(
+						"ContractorPaymentOptions.GatewayCommunicationError",
+						new Object[] { getText("PicsTollFreePhone") }));
 				braintreeCommunicationError = true;
 				return;
 			}
@@ -183,8 +187,10 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// the true status of a contractor's account on braintree, and should
 		// not show cc data
 		if (retries >= quit) {
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError", new Object[] { Strings
-					.getPicsTollFreePhone(permissions.getCountry()) }));
+			// TODO: Test
+			addActionError(getText(
+					"ContractorPaymentOptions.GatewayCommunicationError",
+					new Object[] { getText("PicsTollFreePhone") }));
 			braintreeCommunicationError = true;
 			return;
 		}

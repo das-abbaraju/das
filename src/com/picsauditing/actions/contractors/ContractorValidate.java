@@ -57,7 +57,7 @@ public class ContractorValidate extends ContractorActionSupport {
 				if (con != null) {
 					if (con.getCountry().isCanada())
 						addActionError(getText("Status.TaxIdInUse.Canada", new Object[] { taxId, con.getTaxId(),
-								Strings.getPicsTollFreePhone(con.getCountry().getIsoCode()) }));
+								getText("PicsTollFreePhone")}));
 					else
 						addActionError(getText("Status.TaxIdInUse", new Object[] { taxId, con.getCountry().getName() }));
 				}
