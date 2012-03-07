@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,8 @@ import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 
@@ -145,6 +148,7 @@ public class ContractorCron extends PicsActionSupport {
 			runContractorETL(contractor);
 			runCSRAssignment(contractor);
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
+			flagDataCalculator.setEquivalentMultiYearCriteria(getEquivalentMuliscopCriteriaIds());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -196,6 +200,63 @@ public class ContractorCron extends PicsActionSupport {
 			throw continueUpTheStack;
 		}
 	}
+	
+	private Map<Integer, List<Integer>> getEquivalentMuliscopCriteriaIds() {
+		Database db = new Database();
+		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
+		
+		SelectSQL sql = new SelectSQL("flag_criteria fc1");
+		sql.addField("fc1.id as year1_id");
+		sql.addField("fc2.id as year2_id");
+		sql.addField("fc3.id as year3_id");
+		sql.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql.addWhere("fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly'");
+
+		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
+		
+		sql = new SelectSQL("flag_criteria fc1");
+		sql.addField("fc1.id as year1_id");
+		sql.addField("fc2.id as year2_id");
+		sql.addField("fc3.id as year3_id");
+		sql.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql.addWhere("fc1.questionID is not null and fc1.multiYearScope = 'LastYearOnly'");
+		
+		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
+
+		return resultMap;
+	}
+
+	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,
+			Map<Integer, List<Integer>> resultMap) {
+		try {
+			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
+			for (BasicDynaBean row : resultBDB) {
+				Integer year1 = (Integer) row.get("year1_id");
+				Integer year2 = (Integer) row.get("year2_id");
+				Integer year3 = (Integer) row.get("year3_id");
+				
+				ArrayList<Integer> list = new ArrayList<Integer>();
+				if (year1 != null)
+					list.add(year1);
+				if (year2 != null)
+					list.add(year2);
+				if (year3 != null)
+					list.add(year3);
+				
+				if (year1 != null)
+					resultMap.put(year1, list);
+				if (year2 != null)
+					resultMap.put(year2, list);
+				if (year3 != null)
+					resultMap.put(year3, list);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	private void setRecalculationToTomorrow(ContractorAccount contractor) {
 		try {

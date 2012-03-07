@@ -37,6 +37,7 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
 	private OperatorAccount operator = null;
+	private Map<Integer, List<Integer>> equivalentMultiYearCriteria = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// Assume this is true for the contractor in question
@@ -63,11 +64,13 @@ public class FlagDataCalculator {
 				FlagColor flag = FlagColor.Green;
 				if (contractorCriteria.containsKey(key)) {
 					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
-					if (flagged != null) {
-						if (overrides != null && overrides.containsKey(key)) {
-							FlagDataOverride override = hasForceDataFlag(overrides.get(key), operator);
+					if (flagged != null && flagged) {
+						if (overrides != null) {
+							FlagDataOverride override = hasForceDataFlag(key, operator);
 							if (override != null)
 								flag = override.getForceflag();
+							else if (flagged)
+								flag = fco.getFlag();
 						} else if (flagged)
 							flag = fco.getFlag();
 
@@ -292,8 +295,7 @@ public class FlagDataCalculator {
 									.getNaics()) * hurdle2) / 100;
 						}
 						if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
-							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor()
-									.getNaics()) * hurdle2) / 100;
+							return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;
 						}
 					}
 					if (comparison.equals("="))
@@ -502,7 +504,7 @@ public class FlagDataCalculator {
 		String compare = criteria.getRequiredStatusComparison();
 		if (Strings.isEmpty(compare))
 			compare = "<";
-		
+
 		if (compare.equals(">"))
 			return !cao.getStatus().after(criteria.getRequiredStatus());
 		if (compare.equals("="))
@@ -526,6 +528,14 @@ public class FlagDataCalculator {
 		this.overrides = overridesMap;
 	}
 
+	public Map<Integer, List<Integer>> getEquivalentMultiYearCriteria() {
+		return equivalentMultiYearCriteria;
+	}
+
+	public void setEquivalentMultiYearCriteria(Map<Integer, List<Integer>> equivalentMultiYearCriteria) {
+		this.equivalentMultiYearCriteria = equivalentMultiYearCriteria;
+	}
+
 	public boolean isWorksForOperator() {
 		return worksForOperator;
 	}
@@ -542,16 +552,53 @@ public class FlagDataCalculator {
 		return operator;
 	}
 
-	private FlagDataOverride hasForceDataFlag(List<FlagDataOverride> flList, OperatorAccount operator) {
-		if (flList.size() > 0) {
-			for (FlagDataOverride flagDataOverride : flList) {
-				if (flagDataOverride.getOperator().equals(operator) && flagDataOverride.isInForce())
-					return flagDataOverride;
-			}
-			if (flList.get(0).isInForce())
-				return flList.get(0);
+	private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
+		String auditYear = null;
+
+		List<Integer> criteriaIds = new ArrayList<Integer>();
+		FlagCriteriaContractor fcc = contractorCriteria.get(key);
+		if (equivalentMultiYearCriteria.containsKey(key.getId())) {
+			auditYear = extractYear(fcc.getAnswer2());
+			criteriaIds.addAll(equivalentMultiYearCriteria.get(key.getId()));
+		} else {
+			criteriaIds.add(key.getId());
 		}
+
+		for (int id : criteriaIds) {
+			FlagCriteria criteriaKey = new FlagCriteria();
+			criteriaKey.setId(id);
+			List<FlagDataOverride> flList = overrides.get(criteriaKey);
+			if (flList == null)
+				continue;
+			if (flList.size() > 0) {
+				for (FlagDataOverride flagDataOverride : flList) {
+					if (operator.isOrIsDescendantOf(flagDataOverride.getOperator().getId()) && flagDataOverride.isInForce())
+						if (auditYear == null || Strings.isEqualNullSafe(auditYear, flagDataOverride.getYear())) {
+							if (flagDataOverride.getCriteria().getId() != key.getId())
+								flagDataOverride.setCriteria(key);
+							return flagDataOverride;
+						}
+				}
+			}
+		}
+
 		return null;
+	}
+	
+	private String extractYear(String year) {
+		if (Strings.isEmpty(year))
+			return null;
+		int index;
+		index = year.indexOf(":");
+		if (index >= 0)
+			year = year.substring(index + 1);
+		index = year.indexOf("<br");
+		if (index >= 0)
+			year = year.substring(0, index);
+
+		year = year.trim();
+
+		return year;
 	}
 
 	/**

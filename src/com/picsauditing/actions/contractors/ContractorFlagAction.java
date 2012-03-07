@@ -31,7 +31,9 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -49,6 +51,7 @@ import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -308,12 +311,28 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		flagOverride.setForceflag(forceFlag);
 		flagOverride.setForceEnd(forceEnd);
 		flagOverride.setCriteria(flagData.getCriteria());
+		if (flagData.getCriteria().getMultiYearScope().isIndividualYearScope()) {
+			flagOverride.setYear(getAppropriateAnnualAuditYear(flagData.getCriteria()));
+		}
 		flagOverride.setAuditColumns(new User(permissions.getUserId()));
 		flagDataOverrideDAO.save(flagOverride);
 
 		String noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
 				+ " for " + co.getOperatorAccount().getName();
 		return completeAction(noteText);
+	}
+	
+	private String getAppropriateAnnualAuditYear(FlagCriteria criteria) {
+		YearList yearList = new YearList();
+		for (ContractorAudit conAudit:contractor.getSortedAnnualUpdates()) {
+			if (conAudit.hasCaoStatus(AuditStatus.Complete)) {
+				yearList.add(conAudit.getAuditFor());
+			}
+		}
+		
+		Integer year = yearList.getYearForScope(criteria.getMultiYearScope());
+		
+		return ((year == null)?null:year.toString());
 	}
 	
 	public String cancelDataOverride() throws Exception {
@@ -577,8 +596,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			List<FlagDataOverride> flOverride = flagDataOverrides.get(flagData.getCriteria());
 			if (flOverride != null && flOverride.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flOverride) {
-					if (flagDataOverride.getOperator().equals(op) && flagDataOverride.isInForce())
+					if (op.isOrIsDescendantOf(flagDataOverride.getOperator().getId()) && flagDataOverride.isInForce()) {
 						return flagDataOverride;
+					}
 				}
 			}
 		}

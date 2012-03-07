@@ -20,6 +20,7 @@ public class FlagDataOverride extends BaseTable {
 	private FlagCriteria criteria;
 	private FlagColor forceflag;
 	private Date forceEnd;
+	private String year;
 
 	@ManyToOne
 	@JoinColumn(name = "conID", nullable = false)
@@ -68,6 +69,14 @@ public class FlagDataOverride extends BaseTable {
 		this.forceEnd = forceEnd;
 	}
 	
+	public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
 	@Transient
 	public boolean isInForce() {
 		if (forceEnd == null)

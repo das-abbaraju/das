@@ -399,6 +399,12 @@ public class OperatorAccount extends Account {
 	public void setParent(OperatorAccount parent) {
 		this.parent = parent;
 	}
+	
+	public boolean isOrIsDescendantOf(int id) {
+		if (this.id == id)
+			return true;
+		return isDescendantOf(id);
+	}
 
 	public boolean isDescendantOf(int id) {
 		if (getParent() == null)

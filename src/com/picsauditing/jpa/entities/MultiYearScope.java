@@ -49,6 +49,10 @@ public enum MultiYearScope {
 
 		return null;
 	}
+	
+	public boolean isIndividualYearScope() {
+		return (this == LastYearOnly || this == TwoYearsAgo || this == ThreeYearsAgo);
+	}
 
 	static public Map<Integer, MultiYearScope> getMap() {
 		Map<Integer, MultiYearScope> map = new HashMap<Integer, MultiYearScope>();
