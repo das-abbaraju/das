@@ -368,6 +368,12 @@
 						} else {
 							zip_element.slideDown(400);
 						}
+						
+						if (country_string == 'GB') {
+							$('#Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone.GB"));
+						} else {
+							$('#Registration-page header .phone').text(translate("JS.RegistrationSuperEliteSquadronPhone"));
+						}
 					}
 				});
 			}

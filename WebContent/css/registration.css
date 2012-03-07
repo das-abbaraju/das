@@ -70,6 +70,14 @@ header .header-menu li
 	margin: 0px;
 }
 
+header .phone
+{
+	padding: 5px 0 5px 21px;
+	background-image: url('../images/phone-icon.png');
+	background-repeat: no-repeat;
+	background-position: left;
+}
+
 footer
 {
 	background: #A5CEE9;
