@@ -63,6 +63,7 @@
             			<s:text name="ScheduleAudit.message.RescheduleWarning">
             				<s:param><s:date name="lastCancellationTime" /></s:param>
             				<s:param><s:property value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" /></s:param>
+                            <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
             			</s:text>
             		</div>
             	</li>

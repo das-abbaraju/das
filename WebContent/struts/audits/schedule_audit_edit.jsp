@@ -138,6 +138,7 @@
 						<div id="needsReschedulingFee" class="alert">
 							<s:text name="ScheduleAudit.message.ReschedulingWarning">
 								<s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
+                                <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 							</s:text>
 							<br />
 							<input type="button" onclick="showChooseDate(); return false;" value="<s:text name="button.Continue" />" class="picsbutton positive" />

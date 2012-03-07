@@ -103,6 +103,7 @@
 						<s:text name="ScheduleAudit.message.ConfirmMessage">
 							<s:param><s:date name="lastCancellationTime" format="MMMMM d, yyyy, h:mm a" /></s:param>
 							<s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
+                            <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>
 					</li>
 				</ol>

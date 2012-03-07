@@ -139,7 +139,7 @@ public class OpenTasks extends TranslationActionSupport {
 					if (invoice.getStatus().isUnpaid()) {
 						openTasks.add(getTextParameterized("ContractorWidget.message.OpenInvoiceReminder"
 								+ ((user.getAccount().isAdmin() ? ".IsAdmin" : "")), invoice.getId(),
-								invoice.getBalance(), invoice.getDueDate()));
+								invoice.getBalance(), invoice.getDueDate(), invoice.getCurrency().getSymbol()));
 					}
 				}
 			}

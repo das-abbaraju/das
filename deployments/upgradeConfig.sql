@@ -6,6 +6,26 @@
 -- SEE upgrade.sql FOR NON-CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-4961
+update app_translation t set t.msgValue = 'By checking this box, I understand that if I need to reschedule this audit,<br />I must do so before {0} or I will be subject to a {2}{1,number,#,###.00} rescheduling fee.'
+where t.msgKey = 'ScheduleAudit.message.ConfirmMessage' and t.locale = 'en';
+update app_translation t set t.msgValue = 'You have an <a href="https://www.picsorganizer.com/InvoiceDetail.action?invoice.id={0,number,#}">invoice of <b>{3}{1,number,#,##0.00}</b></a> due {2,date}'
+where t.msgKey = 'ContractorWidget.message.OpenInvoiceReminder' and t.locale = 'en';
+update app_translation t set t.msgValue = 'You have an invoice of <b>{3}{1,number,#,##0.00}</b> due {2,date}'
+where t.msgKey = 'ContractorWidget.message.OpenInvoiceReminder.IsAdmin' and t.locale = 'en';
+update app_translation t set t.msgValue = 'This audit is scheduled to be conducted within 48 hours. If the scheduled date is changed, the contractor will be charged a {1}{0,number,#,###.00} rescheduling fee.<br />'
+where t.msgKey = 'ScheduleAudit.message.ReschedulingWarning' and t.locale = 'en';
+
+update app_translation t set t.msgValue = 'En cochant cette case, je comprends que si j''ai besoin de remettre cet audit, <br> je dois le faire avant {0} ou je serai soumis à des frais de modification de {1,number,#,###.00} {2}.'
+where t.msgKey = 'ScheduleAudit.message.ConfirmMessage' and t.locale = 'fr';
+update app_translation t set t.msgValue = 'Vous avez une <a href="https://www.picsorganizer.com/InvoiceDetail.action?invoice.id={0,number,#}">facture de <b>{1,number,#,###.00} {3}</b></a> à payer d''ici le {2,date}'
+where t.msgKey = 'ContractorWidget.message.OpenInvoiceReminder' and t.locale = 'fr';
+update app_translation t set t.msgValue = 'Vous avez une facture de <b>{1,number,#,##0.00} {3}</b> à payer d''ici le {2,date}'
+where t.msgKey = 'ContractorWidget.message.OpenInvoiceReminder.IsAdmin' and t.locale = 'fr';
+update app_translation t set t.msgValue = 'Cet audit devrait être effectué dans les 48 heures. Si la date prévue est modifiée, des frais de modification de {0,number,#,###.00} {1} seront facturés à l''entrepreneur.<br />'
+where t.msgKey = 'ScheduleAudit.message.ReschedulingWarning' and t.locale = 'fr';
+--
+
 -- PICS-4825
 insert into app_translation(msgKey, msgValue, locale, createdBy, creationDate, applicable, qualityRating, contentDriven)
 select concat('AuditQuestion.', id, '.title'), title, 'en', 23157, now(), 1, 2, 1
