@@ -477,6 +477,13 @@
 									</p>
 								</s:if>
 								
+								<s:if test="contractor.transportationServices && contractor.transportationRisk != null">
+									<p>
+										<s:text name="global.TransportationRisk" />:
+										<strong><s:text name="%{contractor.transportationRisk.i18nKey}" /></strong>
+									</p>
+								</s:if>
+								
 								<p>
 									<s:text name="ContractorAccount.type" />:
 									<s:property value="commaSeparatedContractorTypes" /> 
