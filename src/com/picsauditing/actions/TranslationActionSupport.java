@@ -189,27 +189,27 @@ public class TranslationActionSupport extends ActionSupport {
 	public String getText(String key, String[] args) {
 		return getText(key, null, args);
 	}
-	
+
 	public Map<String, String> findAllTranslations(String key) {
-        return findAllTranslations(key, true);
-    }
-	
+		return findAllTranslations(key, true);
+	}
+
 	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
-        Map<String, String> translationMap = i18nCache.getText(key);
-        Map<String, String> newTranslationMap = new HashMap<String, String>();
-        
-        for (Map.Entry<String, String> entry : translationMap.entrySet()) {
-            newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
-        }
-        
-        if (!includeLocaleStatic) {
-            newTranslationMap.remove(getLocaleStatic().getDisplayLanguage());
-        }
-        
-        Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
-        
-        return sortedTranslationMap;
-    }
+		Map<String, String> translationMap = i18nCache.getText(key);
+		Map<String, String> newTranslationMap = new HashMap<String, String>();
+
+		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
+			newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
+		}
+
+		if (!includeLocaleStatic) {
+			newTranslationMap.remove(getLocaleStatic().getDisplayLanguage());
+		}
+
+		Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
+
+		return sortedTranslationMap;
+	}
 
 	@Override
 	public ResourceBundle getTexts() {
