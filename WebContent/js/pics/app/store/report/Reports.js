@@ -45,7 +45,8 @@ Ext.define('PICS.store.report.Reports', {
         	write: function(request) {
         		// See http://docs.sencha.com/ext-js/4-0/source/Json3.html#Ext-data-writer-Json
         		// writeRecords
-                request.params["report.parameters"] = 1;
+        		var report = request.records[0];
+                request.params["report.parameters"] = report.parameters;
                 request.url = 'ReportDynamic!save.action?report=' + report.getId();
                 return request;
         	}

@@ -11,7 +11,7 @@ Ext.define('PICS.controller.report.ReportController', {
                 click: this.refreshData
             },
             "reportoptions button[action=save]": {
-                click: this.saveReport
+                click: this.save
             },
             "reportoptions button[action=add]": {
                 click: this.showColumnSelector
@@ -160,7 +160,7 @@ Ext.define('PICS.controller.report.ReportController', {
         selected = grid[0].getSelectionModel().getSelection();
         store.remove(selected);
     },
-    saveReport: function(button, e, options) {
+    save: function(button, e, options) {
         var reportStore = this.getReportReportsStore();
         this.buildParameters();
         this.report.setDirty();
