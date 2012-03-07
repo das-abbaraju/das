@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum OshaType implements Translatable {
-	OSHA, MSHA, COHS, UK_HSE;
+	OSHA, MSHA, COHS, UK_HSE, NRIS, EMEA;
 	
 	@Override
 	public String getI18nKey() {

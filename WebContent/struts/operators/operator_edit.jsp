@@ -411,11 +411,9 @@
 						</li>
 						<li>
 							<label>Health &amp; Safety Organization:</label>
-							<s:radio 
-								list="#{'OSHA':'OSHA','MSHA':'MSHA','COHS':'Canadian OHS'}" 
+							<s:select
+								list="@com.picsauditing.jpa.entities.OshaType@values()"
 								name="operator.oshaType"
-								theme="pics"
-								cssClass="inline" 
 							/>
 							<pics:fieldhelp title="Health &amp; Safety Organization">
 								<p>The source of statistics that should be used to evaluate contractors. Operators can collect more than one, but only one can be used to evaluate stats.</p>
