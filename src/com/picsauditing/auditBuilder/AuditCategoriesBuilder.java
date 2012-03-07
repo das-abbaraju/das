@@ -24,6 +24,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.Testable;
 
 /**
  * Determine which audits and categories are needed for a contractor.
@@ -219,7 +220,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return mostRecentAudit;
 	}
 
-	/*testable*/ AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
+	@Testable
+	AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
 		if (auditContainingCurrentQuestion != null) {
 			for (AuditData answer : auditContainingCurrentQuestion.getData()) {
 				if (answer.getQuestion().getId() == currentQuestionId) {
