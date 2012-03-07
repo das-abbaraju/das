@@ -29,23 +29,23 @@ public class ReportFilterAjax extends PicsActionSupport {
 		if (listType != null)
 			wizardSession.setListTypes(listType);
 		listType = wizardSession.getListType();
-		
+
 		if (listType != null) {
 			if (listType.equals(ListType.Contractor)) {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
+				filter.setPermissions(permissions);
 				filter.setDestinationAction("ContractorList");
-				filter.setStatus(new AccountStatus[] {AccountStatus.Active}); // default to only active contractors
+				filter.setStatus(new AccountStatus[] { AccountStatus.Active }); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Contractor);
 				filter.setShowInvoiceDueDate(true);
-				filter.setShowConWithPendingAudits(true);
 				filter.setShowInsuranceLimits(true);
 				this.filter = filter;
 			}
 			if (listType.equals(ListType.Audit)) {
 				ReportFilterAudit filter = new ReportFilterCAO();
 				filter.setDestinationAction("ReportCAOList");
-				filter.setStatus(new AccountStatus[] {AccountStatus.Active}); // default to only active contractors
+				filter.setStatus(new AccountStatus[] { AccountStatus.Active }); // default to only active contractors
 				filter.setShowEmailTemplate(true);
 				filter.setEmailListType(ListType.Audit);
 				filter.setShowAuditFor(true);
@@ -63,12 +63,12 @@ public class ReportFilterAjax extends PicsActionSupport {
 		if (filter == null) {
 			filter = new ReportFilter();
 		}
-		
+
 		filter.setPermissions(permissions);
 		filter.setAjax(true);
 		filter.setAllowCollapsed(false);
 		filter.setAllowMailMerge(true);
-		
+
 		if (listType != null && listType.equals(ListType.User))
 			return "userfilters";
 
