@@ -26,9 +26,58 @@ Ext.define('PICS.controller.report.ReportController', {
         
         var reportStore = this.getReportReportsStore();
         reportStore.loadRawData({"report": reportParameters});
+        this.report = reportStore.first();
+        this.columnStore = this.getReportReportsColumnStore();
+        this.filterStore = this.getReportReportsFilterStore();
         
+        // var grid = Ext.ComponentQuery.query('reportcolumnselectorgrid');
+        // grid.store = this.report.columnsStore;
+
         this.refreshData();
     },
+    
+    report: null,
+    columnStore: null,
+    filterStore: null,
+    sortStore: null,
+    
+    buildParameters: function () {
+		// See http://docs.sencha.com/ext-js/4-0/source/Writer.html#Ext-data-writer-Writer-method-write
+		var data = this.getRecordData(this.report);
+		
+		data.columns = this.addChildren(this.columnStore);
+		// data.sorts = this.addChildren(this.sortsStore);
+		// data.filter = this.addChildren(this.filtersStore);
+		
+		delete data.id;
+		delete data.modelType;
+		delete data.summary;
+		delete data.description;
+		//request.params["report.name"] = data.name;
+		//request.params["report.description"] = data.description;
+		
+		this.report.parameters = Ext.encode(data);
+		return this.report.parameters;
+    },
+    getRecordData: function(record) {
+    	var data = {};
+    	record.fields.each(function(field){
+            if (field.persist) {
+                name = field["name"] || field.name;
+                data[name] = record.get(field.name);
+            }
+        });
+    	return data;
+    },
+	addChildren: function(child) {
+		console.log(child);
+		var data = [];
+		var records = child.data.items;
+		for (var i = 0; i < records.length; i++) {
+			data.push(this.getRecordData(records[i]));
+        }
+		return data;
+	},
     addColumn: function(button, e, options) {
         var grid = Ext.ComponentQuery.query('reportcolumnselectorgrid'),
         store = null;
@@ -40,9 +89,9 @@ Ext.define('PICS.controller.report.ReportController', {
         var selected = grid.getSelectionModel().getSelection();
         if (selected.length > 0) {
             if (this.columnSelector.columntype === "filter") {
-                store = this.getReportReportsFilterStore();
+                store = this.report.filtersStore();
             } else {
-                store = this.getReportReportsColumnStore();
+                store = this.columnStore;
             }
             
             for(var i=0; i < selected.length; i++) {
@@ -56,17 +105,12 @@ Ext.define('PICS.controller.report.ReportController', {
         }
     },
     refreshData: function() {
-        var reportStore = this.getReportReportsStore();
-        var report = reportStore.first();
-        
-        if (report == undefined) {
+        if (this.report == undefined) {
         	Ext.MessageBox.alert("Error", "Missing report definition");
         	return;
         }
         
-        var columnStore = this.getReportReportsColumnStore();
-        var columns = columnStore.data.items;
-        // console.log(columns);
+        var columns = this.columnStore.data.items;
 
         // Setup store fields for the report data
         var dataStore = this.getReportReportDataStore();
@@ -87,12 +131,14 @@ Ext.define('PICS.controller.report.ReportController', {
         dataStore.proxy.reader.setModel(model);
         
         // Setup the URL
+        this.buildParameters();
 		var url = "ReportDynamic!data.action?";
-		if (report && report.getId() > 0) {
-			url += "report=" + report.getId();
+		if (this.report && this.report.getId() > 0) {
+			url += "report=" + this.report.getId();
 		} else {
-			url += "report.base=" + report.get("base");
+			url += "report.base=" + this.report.get("base");
 		}
+		url += "&report.parameters=" + this.buildParameters();
         dataStore.proxy.url = url;
 
         // Run the report
@@ -100,8 +146,8 @@ Ext.define('PICS.controller.report.ReportController', {
         	callback: function(records, operation, success) {
         		if (success) {
         			var dataGrid = Ext.getCmp("dataGrid");
-        			dataGrid.headerCt.removeAll();
-                    dataGrid.headerCt.add({"width":27,"xtype":"rownumberer"});
+        			var newColumns = [{"width":27,"xtype":"rownumberer"}];
+        			
                     for(var i = 0; i < columns.length; i++) {
                     	var gridColumn = {};
                     	var column = columns[i];
@@ -109,9 +155,9 @@ Ext.define('PICS.controller.report.ReportController', {
                     	gridColumn.text = column.get("text");
                     	if (column.get("width") > 0)
                     		gridColumn.width = column.get("width");
-                    	dataGrid.headerCt.add(gridColumn);
+                    	newColumns.push(gridColumn);
                     }
-                    console.log(columns.length);
+        			dataGrid.reconfigure(null, newColumns);
         		} else {
         			Ext.MessageBox.alert("Failed to read data from Server", "Reason: " + operation.error);
         		}
@@ -127,7 +173,7 @@ Ext.define('PICS.controller.report.ReportController', {
             store = this.getReportReportsFilterStore();
             type = 'reportoptionsfilters';
         } else {
-            store = this.getReportReportsColumnStore();            
+            store = this.columnStore;
             type = 'reportoptionscolumns';
         }
         grid = Ext.ComponentQuery.query(type +' gridpanel');
@@ -136,7 +182,8 @@ Ext.define('PICS.controller.report.ReportController', {
     },
     saveReport: function(button, e, options) {
         var reportStore = this.getReportReportsStore();
-        reportStore.first().setDirty();
+        this.buildParameters();
+        this.report.setDirty();
         reportStore.sync();
     },
     columnSelector: null,

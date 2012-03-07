@@ -5,6 +5,8 @@ Ext.define('PICS.model.report.Report', {
         'PICS.model.report.SimpleFilter',
         'PICS.model.report.SimpleSort'
     ],
+    
+    parameters: {},
 
     fields: [
         { name: 'id', type: 'int' },

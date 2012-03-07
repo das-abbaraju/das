@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.DataGrid', {
     title: 'Grid',
     
     initComponent: function () {
-        this.columns = [{"width":27,"xtype":"rownumberer"},{"text":"Account Name","width":180,"dataIndex":"accountName"},{"text":"Account Status","dataIndex":"accountStatus"},{"text":"Account ID","dataIndex":"accountID"}];
+        this.columns = [{"width":27,"xtype":"rownumberer"}];
         
         this.dockedItems = [{
             xtype: 'pagingtoolbar',
