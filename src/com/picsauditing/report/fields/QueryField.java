@@ -19,19 +19,19 @@ public class QueryField implements JSONAware {
 	/**
 	 * aka field or alias
 	 */
-	private String dataIndex;
+	private String name;
 	private String sql;
-	private String requireJoin;
 	private FilterType filterType = FilterType.String;
 	private int width = 0;
+	private boolean visible = true;
+	private boolean filterable = true;
 	private boolean sortable = true;
-	private boolean hideable = true;
 	private boolean suggested = false;
 	private boolean hidden = false;
 	private int flex = 0;
 	private ExtFieldType type = ExtFieldType.Auto;
 	private JavaScript renderer;
-	private JavaScript editor;
+	// private JavaScript editor;
 	private String preTranslation;
 	private String postTranslation;
 	private FieldCategory category = FieldCategory.General;
@@ -45,52 +45,48 @@ public class QueryField implements JSONAware {
 	 * record.data.accountID);
 	 */
 
-	public QueryField(String dataIndex, String sql) {
-		this.dataIndex = dataIndex;
-		this.sql = sql;
+	public QueryField(String name, String sql, FilterType filterType) {
+		this(name, sql, filterType, false);
 	}
 
-	public QueryField(String dataIndex, String sql, FilterType filterType) {
-		this(dataIndex, sql, filterType, null, false);
-	}
-
-	public QueryField(String dataIndex, String sql, FilterType filterType, String requireJoin, boolean isDefault) {
-		this.dataIndex = dataIndex;
+	public QueryField(String name, String sql, FilterType filterType, boolean isDefault) {
+		this.name = name;
 		this.sql = sql;
 		this.filterType = filterType;
-		this.requireJoin = requireJoin;
 		this.suggested = isDefault;
 		
 		if (filterType != null) {
 			this.type = this.filterType.getFieldType();
 		}
 		
-		if (StringUtils.endsWithIgnoreCase(dataIndex, "id"))
-			hide();
+		if (StringUtils.endsWithIgnoreCase(name, "id"))
+			hidden = true;
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSONObject() {
 		// TODO Move this to SimpleColumn.js toGridColumn
 		JSONObject json = new JSONObject();
-		json.put("name", dataIndex);
-		json.put("text", dataIndex);
+		json.put("name", name);
+		json.put("text", name);
 		
 		if (width > 0)
 			json.put("width", width);
-		if (!hideable)
-			json.put("hideable", hideable);
-		if (hidden)
-			json.put("hidden", hidden);
+		if (!visible)
+			json.put("visible", visible);
+		if (!filterable)
+			json.put("filterable", filterable);
 		if (!sortable)
 			json.put("sortable", sortable);
+		if (suggested)
+			json.put("suggested", suggested);
+		if (hidden)
+			json.put("hidden", hidden);
 
 		if (flex > 0)
 			json.put("flex", flex);
 		if (renderer != null && renderer.toJSONString().length() > 0)
 			json.put("renderer", renderer);
-		if (renderer != null)
-			json.put("editor", editor);
 
 		json.put("filterType", filterType.toString());
 
@@ -106,16 +102,6 @@ public class QueryField implements JSONAware {
 
 	public String toJSONString() {
 		return toJSONObject().toJSONString();
-	}
-
-	public QueryField hide() {
-		this.hidden = true;
-		return this;
-	}
-
-	public QueryField type(ExtFieldType type) {
-		this.type = type;
-		return this;
 	}
 
 	public QueryField translate(String prefix, String suffix) {
@@ -135,16 +121,6 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
-	public QueryField requireJoin(String joinAlias) {
-		this.requireJoin = joinAlias;
-		return this;
-	}
-
-	public QueryField makeDefault() {
-		this.suggested = true;
-		return this;
-	}
-
 	public String getI18nKey(String value) {
 		String key = value;
 		if (!Strings.isEmpty(preTranslation))
@@ -160,16 +136,8 @@ public class QueryField implements JSONAware {
 		return true;
 	}
 
-	public boolean requiresJoin() {
-		return !Strings.isEmpty(requireJoin);
-	}
-
-	public String getDataIndex() {
-		return dataIndex;
-	}
-
-	public void setDataIndex(String dataIndex) {
-		this.dataIndex = dataIndex;
+	public String getName() {
+		return name;
 	}
 
 	public String getSql() {
@@ -180,44 +148,16 @@ public class QueryField implements JSONAware {
 		this.sql = sql;
 	}
 
-	public String getRequireJoin() {
-		return requireJoin;
-	}
-
-	public void setRequireJoin(String requireJoin) {
-		this.requireJoin = requireJoin;
-	}
-
-	public FilterType getFilterType() {
-		return filterType;
-	}
-
 	public void setFilterType(FilterType filterType) {
 		this.filterType = filterType;
-	}
-
-	public int getWidth() {
-		return width;
 	}
 
 	public void setWidth(int width) {
 		this.width = width;
 	}
 
-	public boolean isSortable() {
-		return sortable;
-	}
-
 	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
-	}
-
-	public boolean isHideable() {
-		return hideable;
-	}
-
-	public void setHideable(boolean hideable) {
-		this.hideable = hideable;
 	}
 
 	public boolean isSuggested() {
@@ -233,16 +173,8 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
-	public boolean isHidden() {
-		return hidden;
-	}
-
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
-	}
-
-	public int getFlex() {
-		return flex;
 	}
 
 	public void setFlex(int flex) {
@@ -257,20 +189,8 @@ public class QueryField implements JSONAware {
 		this.type = type;
 	}
 
-	public JavaScript getRenderer() {
-		return renderer;
-	}
-
 	public void setRenderer(JavaScript renderer) {
 		this.renderer = renderer;
-	}
-
-	public JavaScript getEditor() {
-		return editor;
-	}
-
-	public void setEditor(JavaScript editor) {
-		this.editor = editor;
 	}
 
 	public FieldCategory getCategory() {
@@ -282,16 +202,8 @@ public class QueryField implements JSONAware {
 		return this;
 	}
 
-	public String getPreTranslation() {
-		return preTranslation;
-	}
-
 	public void setPreTranslation(String preTranslation) {
 		this.preTranslation = preTranslation;
-	}
-
-	public String getPostTranslation() {
-		return postTranslation;
 	}
 
 	public void setPostTranslation(String postTranslation) {
@@ -306,4 +218,16 @@ public class QueryField implements JSONAware {
 		this.requiredPermissions.add(opPerm);
 		return this;
 	}
+
+	public QueryField setVisible(boolean visible) {
+		this.visible = visible;
+		return this;
+	}
+
+	public QueryField setFilterable(boolean filterable) {
+		this.filterable = filterable;
+		return this;
+	}
+	
+	
 }

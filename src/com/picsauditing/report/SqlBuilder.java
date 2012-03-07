@@ -52,7 +52,7 @@ public class SqlBuilder {
 	private void addDefaultFields() {
 		for (QueryField field : availableFields.values()) {
 			if (field.isSuggested())
-				definition.getColumns().add(new SimpleReportColumn(field.getDataIndex()));
+				definition.getColumns().add(new SimpleReportColumn(field.getName()));
 		}
 		if (definition.getColumns().size() == 0)
 			throw new RuntimeException("No columns exist for Report or BaseModel");
@@ -100,7 +100,7 @@ public class SqlBuilder {
 
 		for (QueryField field : table.getFields().values()) {
 			for (SimpleReportColumn column : includedColumns) {
-				if (column.getAvailableFieldName().equals(field.getDataIndex()))
+				if (column.getAvailableFieldName().equals(field.getName()))
 					return true;
 			}
 		}

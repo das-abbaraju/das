@@ -9,6 +9,9 @@ Ext.define('PICS.model.report.AvailableField', {
         { name: 'width', type: 'int', defaultValue: 0 },
         { name: 'type', type: 'string' },
         { name: 'dateFormat', type: 'string' },
+        { name: 'visible', type: 'boolean', defaultValue: true },
+        { name: 'filterable', type: 'boolean', defaultValue: true },
+        { name: 'sortable', type: 'boolean', defaultValue: true },
         { name: 'filterType', type: 'string' }
     ],
     createSimpleColumn: function () {

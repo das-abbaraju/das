@@ -256,7 +256,7 @@ public class ReportDynamic extends PicsActionSupport {
 				JSONObject obj = field.toJSONObject();
 				obj.put("category", translateCategory(field.getCategory().toString()));
 				obj.put("text", translateLabel(field));
-				String help = getText("Report." + field.getDataIndex() + ".help");
+				String help = getText("Report." + field.getName() + ".help");
 				if (help != null)
 					obj.put("help", help);
 				fields.add(obj);
@@ -277,9 +277,9 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private String translateLabel(QueryField field) {
-		String translatedText = getText("Report." + field.getDataIndex());
+		String translatedText = getText("Report." + field.getName());
 		if (translatedText == null)
-			translatedText = "?" + field.getDataIndex();
+			translatedText = "?" + field.getName();
 		return translatedText;
 	}
 

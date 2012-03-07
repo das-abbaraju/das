@@ -13,21 +13,21 @@ public class Todo {
 	private String defaultSort = null;
 
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin) {
-		return addQueryField(dataIndex, sql, filterType, requireJoin, false);
+		return addQueryField(dataIndex, sql, filterType, false);
 	}
 
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, boolean makeDefault) {
-		return addQueryField(dataIndex, sql, filterType, null, makeDefault);
+		QueryField field = new QueryField(dataIndex, sql, filterType, makeDefault);
+		return field;
 	}
 
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType) {
-		return addQueryField(dataIndex, sql, filterType, null, false);
+		return addQueryField(dataIndex, sql, filterType, false);
 	}
-
+	
 	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin,
 			boolean makeDefault) {
-		QueryField field = new QueryField(dataIndex, sql, filterType, requireJoin, makeDefault);
-		return field;
+		return addQueryField(dataIndex, sql, filterType, false);
 	}
 
 	private void buildEmailBase() {
