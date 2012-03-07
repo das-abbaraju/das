@@ -42,6 +42,7 @@ public class CorruptionPerceptionIndexMapTest {
 		assertNull(corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("RE"));
 		assertNull(corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("CX"));
 	}
+	
 	@Test
 	public void testFindCorruptionPerceptionIndices() {
 		String json = "[{\"id\":\"US\"},{\"id\":\"CA\"},{\"id\":\"CX\"}]";

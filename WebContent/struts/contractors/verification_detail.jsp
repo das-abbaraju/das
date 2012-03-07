@@ -251,7 +251,7 @@
 							<s:if test="hasCaoStatus('Submitted') || hasCaoStatus('Resubmitted')">
 								<input type="button" value="Verify" onclick="showAudit(<s:property value="id"/>); return false;"/>
 							</s:if>
-						</td>	
+						</td>
 					</s:iterator>
 				</tr>
 			</s:if>

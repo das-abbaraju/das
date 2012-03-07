@@ -45,6 +45,7 @@ public class SpringUtils implements ApplicationContextAware {
 		} catch (NoSuchBeanDefinitionException ex) {
 			// ignore
 		}
+		
 		return bean;
 	}
 	

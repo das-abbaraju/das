@@ -46,6 +46,11 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
+/**
+ * This class is not being called from anywhere within the code base,
+ * so it is being deprecated. 
+ */
+@Deprecated
 public class WaitingOnCalculator {
 
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {

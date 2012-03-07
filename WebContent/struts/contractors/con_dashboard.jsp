@@ -230,6 +230,7 @@
 										</s:if>
 									</s:if>
 									
+									<!-- List of Problems on "Contractor Status" Widget -->
 									<s:if test="problems.categories.size() > 0">
 										<p>
 											<s:text name="ContractorView.Problems" />:
