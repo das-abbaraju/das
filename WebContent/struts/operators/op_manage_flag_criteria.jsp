@@ -32,6 +32,7 @@
 </head>
 <body>
 	<s:include value="opHeader.jsp"></s:include>
+	<s:include value="../config_environment.jsp" />
 	
 	<s:if test="permissions.operatorCorporate && ((insurance && !operator.equals(operator.inheritInsuranceCriteria)) || (!insurance && !operator.equals(operator.inheritFlagCriteria)))">
 		<div id="info">
