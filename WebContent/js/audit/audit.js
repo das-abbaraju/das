@@ -152,7 +152,7 @@
 					$('li.current').removeClass('current');
 					$('#auditViewArea').html(html).unblock();
 
-					var subCatScroll = $('#cathead_'+state.subCat);
+					var subCatScroll = $('#cathead_' + state.subCat);
 					
 					if (subCatScroll.length)
 						$.scrollTo(subCatScroll, 800, {axis: 'y'});
@@ -161,6 +161,15 @@
 						highlight_category(state.categoryID);
 					} else if (data.categoryID !== undefined) {
 						highlight_category(data.categoryID);
+					}
+					
+					// auto scroll to question based on question id
+					if (state.questionID !== undefined) {
+					    var question = $('#node_' + state.questionID);
+					    
+					    if (question.length) {
+					        $(window).scrollTop(question.offset().top);
+					    }
 					}
 
 					if (state.mode == 'ViewQ') {
