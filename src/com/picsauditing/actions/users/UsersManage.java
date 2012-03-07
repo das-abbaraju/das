@@ -508,11 +508,12 @@ public class UsersManage extends PicsActionSupport {
 				for (String error : errors)
 					addActionError(error);
 			}
+			
+			if (!validPrimaryContactExists(user)) {
+				addActionError(getText("UsersManage.Error.PrimaryUser"));
+			}
 		}
 		
-		if (!validPrimaryContactExists(user)) {
-			addActionError(getText("UsersManage.Error.PrimaryUser"));
-		}
 
 		return getActionErrors().size() == 0;
 	}
