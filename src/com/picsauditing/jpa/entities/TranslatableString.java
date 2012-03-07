@@ -112,6 +112,7 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 			return null;
 	}
 	
+	// TODO Carey change to isExists
 	public boolean exists() {
 	    String translation = toString();
 	    
