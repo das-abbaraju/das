@@ -369,7 +369,8 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		}
 	}
 
-	/* Testable */class SheetStatus {
+	@Testable
+	class SheetStatus {
 		public HSSFSheet sheet;
 		public int rownum;
 		// Common
