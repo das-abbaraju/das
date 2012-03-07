@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -49,7 +48,6 @@ import com.picsauditing.util.URLUtils;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware {
 
 	protected static Boolean CONFIG = null;
-	protected static Boolean I18N = null;
 
 	public static final String PLAIN_TEXT = "plain-text";
 	public static final String ACTION_MESSAGES = "action-messages";
@@ -57,7 +55,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String BLANK = "blank";
 	public static final String JSON = "json";
 	public static final String JSONP = "jsonp";
-    public static final String JSON_ARRAY = "jsonArray";
+	public static final String JSON_ARRAY = "jsonArray";
 	public static final String CHART_XML = "chartXML";
 
 	@Autowired
@@ -81,8 +79,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected String output = null;
 
 	/**
-	 * This is rarely used now because of limitations with i18n on Button names. This could still be used for
-	 * non-translated pages such as PICS facing pages.
+	 * This is rarely used now because of limitations with i18n on Button names.
+	 * This could still be used for non-translated pages such as PICS facing
+	 * pages.
 	 */
 	protected String button = null;
 
@@ -99,7 +98,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
-	
+
 	/**
 	 * JSONArray used to return JSON array.
 	 * 
@@ -112,8 +111,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	private User user;
 	/**
-	 * TODO Kyle, please research this field and document it. Also review if we need setAccount on AccountActionSupport
-	 * Maybe we should move the account field to AccountActionSupport???
+	 * TODO Kyle, please research this field and document it. Also review if we
+	 * need setAccount on AccountActionSupport Maybe we should move the account
+	 * field to AccountActionSupport???
 	 */
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
@@ -158,16 +158,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isI18nReady() {
-		if (I18N == null) {
-			I18N = "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
-		}
+		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
+	}
 
-		return I18N;
+	public boolean isLiveChatEnabled() {
+		return "1".equals(propertyDAO.getProperty("PICS.liveChat"));
 	}
 
 	/**
-	 * This method is used to set the clear_cache flag in the AppProperty table to allow the contractor daemon to reset
-	 * caches on all 3 servers.
+	 * This method is used to set the clear_cache flag in the AppProperty table
+	 * to allow the contractor daemon to reset caches on all 3 servers.
 	 * 
 	 */
 	protected void flagClearCache() {
@@ -395,22 +395,22 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getRequestHost() {
-        String requestURL = getRequestURL().toString();
-        String requestURI = getRequestURI();
-        String requestHost = requestURL.replace(requestURI, "");
+		String requestURL = getRequestURL().toString();
+		String requestURI = getRequestURI();
+		String requestHost = requestURL.replace(requestURI, "");
 
-        return requestHost;
-    }
-	
+		return requestHost;
+	}
+
 	public String getRequestHostActual() {
-        String requestHost = getRequestHost();
-        
-        if (isLocalhostEnvironment()) {
-            requestHost += "/picsWeb2";
-        }
+		String requestHost = getRequestHost();
 
-        return requestHost;
-    }
+		if (isLocalhostEnvironment()) {
+			requestHost += "/picsWeb2";
+		}
+
+		return requestHost;
+	}
 
 	public String getRequestString() {
 		return requestURL;
@@ -471,8 +471,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	/**
-	 * Get the directory to store file uploads Use the System property or the Init parameter or C:/temp/ To set the
-	 * System property add -Dpics.ftpDir=folder_location to your startup command
+	 * Get the directory to store file uploads Use the System property or the
+	 * Init parameter or C:/temp/ To set the System property add
+	 * -Dpics.ftpDir=folder_location to your startup command
 	 * 
 	 * @return
 	 */
@@ -518,7 +519,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public void setCallback(String callback) {
 		this.callback = callback;
 	}
-	
+
 	public JSONArray getJsonArray() {
 		return jsonArray;
 	}
@@ -538,8 +539,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	// This should be moved into an intercepter at a later date
 	/**
-	 * Checks to see if this value is in the parameter map. If it is and the value is an empty string ("") then we will
-	 * replace that value with a null
+	 * Checks to see if this value is in the parameter map. If it is and the
+	 * value is an empty string ("") then we will replace that value with a null
 	 * 
 	 * @param name
 	 *            Name of the parameter you want to check in the map

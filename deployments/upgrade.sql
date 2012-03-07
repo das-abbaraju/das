@@ -1215,3 +1215,7 @@ UPDATE `naics` SET `trir` = 7.8, `lwcr` = 4.3 WHERE `code` = 92214;
 UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
 */
 --
+
+-- PICS-4878
+insert into app_properties(property, value)
+values ('PICS.liveChat', 1);

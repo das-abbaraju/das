@@ -57,6 +57,9 @@
 			}
 		}
 	}
+	
+	AppProperty liveChatState = appPropertyDAO.find("PICS.liveChat");
+	boolean liveChatEnabled = "1".equals(liveChatState.getValue());
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -230,7 +233,31 @@
 				<div id="notify"></div>
 				
 				<div id="helpbox">
+					<%--
+						http://solutions.liveperson.com/tagGen/gallery/General3-Blue-fr.asp
+						
+						Locales:
+						
+						- English (e.g. https://base.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a)
+						- French
+						- German
+						- Hebrew
+						- Portuguese
+						- Spanish
+					--%>
+					
 					<%
+						String chatIcon = protocol + "://server.iad.liveperson.net/hc/90511184/?" +
+							"cmd=repstate" +
+							"&amp;site=90511184" +
+							"&amp;channel=web" +
+							"&amp;ver=1" +
+							"&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + locale.getDisplayLanguage() +"/General/3a";
+							
+						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
+							chatIcon = "";
+						}
+					
 						String helpUrl = "http://help.picsorganizer.com/login.action?os_destination=homepage.action&";
 					
 						if (permissions.isOperatorCorporate()) {
@@ -243,6 +270,23 @@
 					%>
 					
 					<a href="<%= helpUrl %>" target="_BLANK"><%=i18nCache.getText("Header.HelpCenter", locale) %></a>
+					
+					<%  if (liveChatEnabled) { %>
+						<a href="javascript:;" class="liveperson-chat-toggle"><%= i18nCache.getText("Header.Chat", locale) %></a>
+						
+						<a id="_lpChatBtn"
+							class="liveperson-chat"
+							href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a"
+							target="chat90511184"
+							onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+							
+							<% if (!Strings.isEmpty(chatIcon)) { %>
+								<img src="<%= chatIcon %>" />
+							<% } else { %>
+								<%= i18nCache.getText("Header.Chat", locale) %>
+							<% } %>
+						</a>
+					<% } %>
 				</div>
 				
 				<div id="content">
@@ -267,12 +311,14 @@
 				for(MenuComponent item : submenu.getChildren()) {
 					if (item.visible()) { %>
 					<li>
-						<% if(item.getName().equals("Online Chat"))  { %>
+						<%  if(item.getName().equals("Online Chat"))  {
+								if (liveChatEnabled) { %>
 								<a id="_lpChatBtn"
 									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'
 									target='chat90511184'
 									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
-						<% } else {
+						<% 		}
+							} else {
 							String dataFields = "";
 							for (String dataKey : item.getDataFields().keySet()) {
 								dataFields += "data-" + dataKey + "=\"" + item.getDataFields().get(dataKey) + "\" ";
@@ -297,6 +343,7 @@
 		
 		<%
 			if (!"1".equals(System.getProperty("pics.debug"))) {
+				if (liveChatEnabled) {
 		%>
 		
 		<!-- BEGIN LivePerson -->
@@ -316,6 +363,7 @@
 			src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'>
 		</script>
 		<!-- END LivePerson -->
+		<%	} %>
 		
 		<script type="text/javascript">
 		  var _gaq = _gaq || [];

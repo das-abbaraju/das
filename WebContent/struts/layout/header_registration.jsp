@@ -33,8 +33,17 @@
 	</s:if>
 	
 	<span class="phone">
-		<img src="images/phone-icon.png" alt="Call Us" /><s:text name="JS.RegistrationSuperEliteSquadronPhone" />
+		<s:if test="permissions.country == 'GB'">
+			<s:text name="JS.RegistrationSuperEliteSquadronPhone.GB" />
+		</s:if>
+		<s:else>
+			<s:text name="JS.RegistrationSuperEliteSquadronPhone" />
+		</s:else>
 	</span>
+	
+	<s:if test="liveChatEnabled">
+		<s:include value="/struts/layout/chat.jsp" />
+	</s:if>
 	
 	<s:if test="actionName == 'Registration'">
 		<s:form id="locale" cssClass="locale-form">
