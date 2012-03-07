@@ -2,17 +2,25 @@ Ext.define('PICS.model.report.SimpleColumn', {
 	extend: 'Ext.data.Model',
 
 	belongsTo: {
-	    model: 'PICS.model.report.Report',
-	    
-	    getterName: 'getReport',
-	    setterName: 'setReport'
+	    model: 'PICS.model.report.AvailableField',
+	    foreignKey: 'field',
+	    getterName: 'getField',
+	    setterName: 'setField'
 	},
 	fields: [
         { name: 'name', type: 'string' },
-        { name: 'text', type: 'string', persist: false }, 
-        { name: 'filterType', type: 'string', persist: false },
         { name: 'method', type: 'string' },
         { name: 'option', type: 'string' },
         { name: 'renderer' }
-    ]
+    ],
+    toStoreField: function () {
+		var field = this.data.field.toStoreField();
+		field.name = this.get("name");
+		return field;
+    },
+    toGridColumn: function () {
+    	var gridColumn = this.data.field.toGridColumn();
+    	gridColumn.dataIndex = this.get("name");
+    	return gridColumn;
+    }
 });

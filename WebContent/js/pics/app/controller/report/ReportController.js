@@ -70,9 +70,8 @@ Ext.define('PICS.controller.report.ReportController', {
     	return data;
     },
 	addChildren: function(child) {
-		console.log(child);
-		var data = [];
 		var records = child.data.items;
+		var data = [];
 		for (var i = 0; i < records.length; i++) {
 			data.push(this.getRecordData(records[i]));
         }
@@ -96,11 +95,8 @@ Ext.define('PICS.controller.report.ReportController', {
             
             for(var i=0; i < selected.length; i++) {
             	var field = selected[i];
-                var column = Ext.create('PICS.model.report.SimpleColumn', {
-                	'name': field.get("name"),
-                	'text': field.get("text")
-                });
-                store.add(column);
+                store.add(field.createSimpleColumn());
+                console.log(store);
             }
         }
     },
@@ -111,23 +107,19 @@ Ext.define('PICS.controller.report.ReportController', {
         }
         
         var columns = this.columnStore.data.items;
-
-        // Setup store fields for the report data
-        var dataStore = this.getReportReportDataStore();
         
+        // Setup store fields for the report data
         var fields = [];
-        for(var i = 0; i < columns.length; i++) {
-        	var field = {};
-        	var column = columns[i];
-        	field.name = column.get("name");
-        	// field.type = column.get("extType");
-        	fields.push(field);
-        }
+        Ext.Array.forEach(columns, function(col) {
+        	fields.push(col.toStoreField());
+        });
         
         var model = Ext.define('PICS.model.report.ReportRow', {
             extend: 'Ext.data.Model',
             fields: fields
         });
+        var dataStore = this.getReportReportDataStore();
+        dataStore.removeAll(true);
         dataStore.proxy.reader.setModel(model);
         
         // Setup the URL
@@ -149,13 +141,8 @@ Ext.define('PICS.controller.report.ReportController', {
         			var newColumns = [{"width":27,"xtype":"rownumberer"}];
         			
                     for(var i = 0; i < columns.length; i++) {
-                    	var gridColumn = {};
                     	var column = columns[i];
-                    	gridColumn.dataIndex = column.get("name");
-                    	gridColumn.text = column.get("text");
-                    	if (column.get("width") > 0)
-                    		gridColumn.width = column.get("width");
-                    	newColumns.push(gridColumn);
+                    	newColumns.push(column.toGridColumn());
                     }
         			dataGrid.reconfigure(null, newColumns);
         		} else {

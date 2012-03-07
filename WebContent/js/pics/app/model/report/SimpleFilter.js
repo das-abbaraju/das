@@ -2,10 +2,10 @@ Ext.define('PICS.model.report.SimpleFilter', {
     extend: 'Ext.data.Model',
 
     belongsTo: {
-        model: 'PICS.model.report.Report',
-        
-        getterName: 'getReport',
-        setterName: 'setReport'
+	    model: 'PICS.model.report.AvailableField',
+	    foreignKey: 'field',
+	    getterName: 'getField',
+	    setterName: 'setField'
     },
     fields: [
         { name: 'column', type: 'string' },

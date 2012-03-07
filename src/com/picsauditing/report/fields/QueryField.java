@@ -32,7 +32,6 @@ public class QueryField implements JSONAware {
 	private ExtFieldType type = ExtFieldType.Auto;
 	private JavaScript renderer;
 	private JavaScript editor;
-	private String label;
 	private String preTranslation;
 	private String postTranslation;
 	private FieldCategory category = FieldCategory.General;
@@ -71,13 +70,11 @@ public class QueryField implements JSONAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public String toJSONString() {
+	public JSONObject toJSONObject() {
+		// TODO Move this to SimpleColumn.js toGridColumn
 		JSONObject json = new JSONObject();
-		json.put("dataIndex", dataIndex);
-		if (!Strings.isEmpty(label))
-			json.put("text", label);
-		else
-			json.put("text", dataIndex);
+		json.put("name", dataIndex);
+		json.put("text", dataIndex);
 		
 		if (width > 0)
 			json.put("width", width);
@@ -95,10 +92,20 @@ public class QueryField implements JSONAware {
 		if (renderer != null)
 			json.put("editor", editor);
 
-		if (type == ExtFieldType.Date) {
-			json.put("xtype", "datecolumn");
+		json.put("filterType", filterType.toString());
+
+		if (!filterType.equals(ExtFieldType.Auto)) {
+			json.put("type", type.toString().toLowerCase());
+			if (type == ExtFieldType.Date) {
+				json.put("xtype", "datecolumn");
+				json.put("dateFormat", "time");
+			}
 		}
-		return json.toJSONString();
+		return json;
+	}
+
+	public String toJSONString() {
+		return toJSONObject().toJSONString();
 	}
 
 	public QueryField hide() {
@@ -264,14 +271,6 @@ public class QueryField implements JSONAware {
 
 	public void setEditor(JavaScript editor) {
 		this.editor = editor;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
 	}
 
 	public FieldCategory getCategory() {

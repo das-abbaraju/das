@@ -9,9 +9,12 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     		xtype: "rownumberer"
     	},{
     		xtype: 'gridcolumn',
-    		dataIndex: 'text',
+    		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
+    		renderer: function(value, metaData, record, rowIndex, colIndex, store) {
+    			return record.data.field.get("text");
+    		},
     		sortable: false,
     		text: 'Column'
     	}],

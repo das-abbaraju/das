@@ -27,7 +27,6 @@ import com.picsauditing.report.SimpleReportDefinition;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.SimpleReportColumn;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
@@ -255,12 +254,12 @@ public class ReportDynamic extends PicsActionSupport {
 
 		for (QueryField field : builder.getAvailableFields().values()) {
 			if (isCanSeeQueryField(field)) {
-				JSONObject obj = new JSONObject();
-				obj.put("name", field.getDataIndex());
-				obj.put("text", translateLabel(field));
-				addFilterType(field, obj);
-				addHelp(field, obj);
+				JSONObject obj = field.toJSONObject();
 				obj.put("category", translateCategory(field.getCategory().toString()));
+				obj.put("text", translateLabel(field));
+				String help = getText("Report." + field.getDataIndex() + ".help");
+				if (help != null)
+					obj.put("help", help);
 				fields.add(obj);
 			}
 		}
@@ -278,86 +277,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return false;
 	}
 
-	/**
-	 * Returns a list of Store fields with just name and type
-	 * 
-	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Store
-	 *      http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
-	 */
-	public JSONArray getStoreFields() {
-		JSONArray fields = new JSONArray();
-		for (SimpleReportColumn column : builder.getIncludedColumns()) {
-			JSONObject obj = new JSONObject();
-			addName(column, obj);
-			addFilterType(column, obj);
-			fields.add(obj);
-		}
-		return fields;
-	}
-
-	/**
-	 * Returns a list of Columns for a Grid with text, dataIndex, etc
-	 * 
-	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
-	 */
-	public JSONArray getGridColumns() {
-		JSONArray fields = new JSONArray();
-
-		fields.add(createRowNumColumn());
-		for (SimpleReportColumn column : builder.getIncludedColumns()) {
-			QueryField field = getQueryFieldFromSimpleColumn(column);
-			if (isCanSeeQueryField(field)) {
-				field.setLabel(translateLabel(column));
-				fields.add(field);
-			}
-		}
-		return fields;
-	}
-
-	private void addName(SimpleReportColumn column, JSONObject obj) {
-		obj.put("name", column.getName());
-	}
-
-	private void addFilterType(SimpleReportColumn column, JSONObject obj) {
-		QueryField field = getQueryFieldFromSimpleColumn(column);
-		addFilterType(field, obj);
-	}
-
-	private void addFilterType(QueryField field, JSONObject obj) {
-		obj.put("filterType", field.getFilterType().toString());
-
-		if (field.getType() == ExtFieldType.Auto)
-			return;
-
-		obj.put("type", field.getType().toString().toLowerCase());
-		if (field.getType() == ExtFieldType.Date)
-			obj.put("dateFormat", "time");
-	}
-
-	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {
-		return builder.getAvailableFields().get(column.getAvailableFieldName().toUpperCase());
-	}
-
-	private void addHelp(QueryField field, JSONObject obj) {
-		String translatedText = getText("Report." + field.getDataIndex() + ".help");
-		if (translatedText != null)
-			obj.put("help", translatedText);
-	}
-
-	private String translateLabel(SimpleReportColumn column) {
-		QueryField field = getQueryFieldFromSimpleColumn(column);
-		String translatedText = translateLabel(field);
-		if (column.getFunction() != null) {
-			// TODO I'm not completely happy about how we're naming columns with
-			// Functions
-			// We may want to support the user entering the label manually
-			// Until we work with this more, I'm just going to append the name
-			// of the Function
-			translatedText += " " + column.getFunction().toString();
-		}
-		return translatedText;
-	}
-
 	private String translateLabel(QueryField field) {
 		String translatedText = getText("Report." + field.getDataIndex());
 		if (translatedText == null)
@@ -372,13 +291,6 @@ public class ReportDynamic extends PicsActionSupport {
 		if (translatedText == null)
 			translatedText = "?Report.Category.General";
 		return translatedText;
-	}
-
-	private JSONObject createRowNumColumn() {
-		JSONObject rowNum = new JSONObject();
-		rowNum.put("xtype", "rownumberer");
-		rowNum.put("width", 27);
-		return rowNum;
 	}
 
 	// Getters and Setters
