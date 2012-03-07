@@ -12,8 +12,8 @@ update app_properties set value = '2J862r8678vrx3d3evk6m44B9RHXcWUv' where prope
 update app_properties set value = '1884502' where property = 'brainTree.key_id';
 update app_properties set value = 'picstest' where property = 'brainTree.username';
 update app_properties set value = 'password1' where property = 'brainTree.password';
-update app_properties set value = 'ccprocessora' where property IN ('brainTree.processor_id.us','brainTree.processor_id.canada');
-update app_properties set value = 'ccprocessorb' where property IN ('brainTree.processor_id.gbp','brainTree.processor_id.eur');
+update app_properties set value = 'ccprocessora' where property like '%brainTree.processor_id.us%' or property like '%brainTree.processor_id.canada%';
+update app_properties set value = 'ccprocessorb' where property like '%brainTree.processor_id.gbp%' or property like '%brainTree.processor_id.eur%';
 
 /* Update the date loaded for this database */
 UPDATE app_properties SET value = NOW() WHERE property = 'PICS.db.dateLoaded';
