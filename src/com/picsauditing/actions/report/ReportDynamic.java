@@ -25,7 +25,6 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SimpleReportDefinition;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;

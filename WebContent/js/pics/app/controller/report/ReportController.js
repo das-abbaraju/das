@@ -30,16 +30,13 @@ Ext.define('PICS.controller.report.ReportController', {
         this.columnStore = this.getReportReportsColumnStore();
         this.filterStore = this.getReportReportsFilterStore();
         
-        // var grid = Ext.ComponentQuery.query('reportcolumnselectorgrid');
-        // grid.store = this.report.columnsStore;
-
         this.refreshData();
     },
     
     report: null,
     columnStore: null,
     filterStore: null,
-    sortStore: null,
+    sortsStore: null,
     
     buildParameters: function () {
 		// See http://docs.sencha.com/ext-js/4-0/source/Writer.html#Ext-data-writer-Writer-method-write
@@ -93,11 +90,9 @@ Ext.define('PICS.controller.report.ReportController', {
                 store = this.columnStore;
             }
             
-            for(var i=0; i < selected.length; i++) {
-            	var field = selected[i];
+            Ext.Array.forEach(selected, function(field) {
                 store.add(field.createSimpleColumn());
-                console.log(store);
-            }
+            });
         }
     },
     refreshData: function() {
@@ -139,10 +134,8 @@ Ext.define('PICS.controller.report.ReportController', {
         		if (success) {
         			var dataGrid = Ext.getCmp("dataGrid");
         			var newColumns = [{"width":27,"xtype":"rownumberer"}];
-        			
                     for(var i = 0; i < columns.length; i++) {
-                    	var column = columns[i];
-                    	newColumns.push(column.toGridColumn());
+                    	newColumns.push(columns[i].toGridColumn());
                     }
         			dataGrid.reconfigure(null, newColumns);
         		} else {

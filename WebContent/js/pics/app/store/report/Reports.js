@@ -20,7 +20,7 @@ Ext.define('PICS.store.report.Reports', {
     	var records = [];
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
-    		field = fieldsStore.getField(item.get("name"));
+    		field = fieldsStore.findField(item.get("name"));
     		
     		item.setField(field);
 //    		if (field == null) {

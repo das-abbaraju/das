@@ -19,7 +19,9 @@ Ext.define('PICS.model.report.AvailableField', {
         column.setField(this);
         return column;
     },
+	// See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
     toStoreField: function () {
+    	// TODO I've only tested a couple of the config options here
     	var field = {};
     	field.name = this.get("name");
     	if (this.get("type")) {
@@ -29,7 +31,9 @@ Ext.define('PICS.model.report.AvailableField', {
     	}
     	return field;
     },
+	// See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
     toGridColumn: function () {
+    	// TODO I've only tested a couple of the config options here
     	var gridColumn = {};
     	gridColumn.dataIndex = this.get("name");
     	gridColumn.text = this.get("text");

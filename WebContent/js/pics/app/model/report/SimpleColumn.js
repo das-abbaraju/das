@@ -21,6 +21,7 @@ Ext.define('PICS.model.report.SimpleColumn', {
     toGridColumn: function () {
     	var gridColumn = this.data.field.toGridColumn();
     	gridColumn.dataIndex = this.get("name");
+    	// TODO add in method, option and renderer
     	return gridColumn;
     }
 });

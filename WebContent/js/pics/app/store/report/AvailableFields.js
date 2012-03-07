@@ -12,7 +12,7 @@ Ext.define('PICS.store.report.AvailableFields', {
         type: 'ajax',
         url: 'ReportDynamic!availableFields.action?report=7'
     },
-    getField: function (name) {
+    findField: function (name) {
     	var i, ln = this.data.length;
     	for(var i = 0; i < ln; i++) {
     		if (name == this.data.items[i].get("name")) {
