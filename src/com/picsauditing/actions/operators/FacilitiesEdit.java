@@ -28,6 +28,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Naics;
@@ -69,6 +70,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
+	private List<ContractorType> operatorServiceTypes = new ArrayList<ContractorType>();
 
 	public String execute() throws Exception {
 		findOperator();
@@ -110,14 +112,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		operator.setCountry(new Country(permissions.getCountry()));
 
 		return SUCCESS;
-	}
-
-	private boolean isCanEditCorp() {
-		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
-	}
-
-	private boolean isCanEditOp() {
-		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	}
 
 	public String remove() {
@@ -280,6 +274,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 			operator.setAuditColumns(permissions);
 			operator.setNameIndex();
+			operator.setAccountTypes(operatorServiceTypes);
 
 			if (operator.getId() == 0) {
 				operator.setNaics(new Naics());
@@ -440,6 +435,15 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	public List<OperatorForm> getOperatorForms() {
 		return formDAO.findByopID(this.id);
 	}
+
+	public List<ContractorType> getOperatorServiceTypes() {
+		return operatorServiceTypes;
+	}
+
+	public void setOperatorServiceTypes(List<ContractorType> operatorServiceTypes) {
+		this.operatorServiceTypes = operatorServiceTypes;
+	}
+
 
 	// TODO: This should be converted to Struts2 Validation
 	private Vector<String> validateAccount(OperatorAccount operator) {
@@ -677,6 +681,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				operator.getCorporateFacilities().add(f);
 			}
 		}
+	}
+
+	public boolean isCanEditCorp() {
+		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
+	}
+
+	public boolean isCanEditOp() {
+		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
 	}
 
 	public boolean isCanDeleteCorp() {

@@ -783,40 +783,35 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		}
 	}
 
-	public void editAccountTypes(List<ContractorType> conTypes) {
-		if (conTypes != null) {
-			boolean value = false;
-			for (ContractorType conType : ContractorType.values()) {
-				if (conTypes.contains(conType))
-					value = true;
-				else
-					value = false;
-				switch (conType) {
-				case Onsite:
-					setOnsiteServices(value);
-					if (!value && !isOffsiteServices())
-						((ContractorAccount)this).setSafetyRisk(LowMedHigh.None);
-					break;
-				case Offsite:
-					setOffsiteServices(value);
-					if (!value && !isOnsiteServices())
-						((ContractorAccount)this).setSafetyRisk(LowMedHigh.None);
-					break;
-				case Supplier:
-					setMaterialSupplier(value);
-					if (!value)
-						((ContractorAccount)this).setProductRisk(LowMedHigh.None);
-					break;
-				case Transportation:
-					setTransportationServices(value);
-					if (!value)
-						((ContractorAccount)this).setTransportationRisk(LowMedHigh.None);
-					break;
-				}
+	@Transient
+	public void setAccountTypes(List<ContractorType> serviceTypes) {
+		if (serviceTypes == null) {
+			return;
+		}
+		
+		boolean value = false;
+		for (ContractorType serviceType : ContractorType.values()) {
+			if (serviceTypes.contains(serviceType))
+				value = true;
+			else
+				value = false;
+			switch (serviceType) {
+			case Onsite:
+				setOnsiteServices(value);
+				break;
+			case Offsite:
+				setOffsiteServices(value);
+				break;
+			case Supplier:
+				setMaterialSupplier(value);
+				break;
+			case Transportation:
+				setTransportationServices(value);
+				break;
 			}
 		}
 	}
-
+	
 	@Transient
 	public boolean isMaterialSupplierOnly() {
 		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));

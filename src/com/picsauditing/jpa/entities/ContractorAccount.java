@@ -299,6 +299,19 @@ public class ContractorAccount extends Account implements JSONable {
 		this.ccEmail = ccEmail;
 	}
 
+	public void resetRisksBasedOnTypes()
+	{
+		if (!isOnsiteServices() && !isOffsiteServices()) {
+			setSafetyRisk(LowMedHigh.None);
+		}
+		if (!isMaterialSupplier()) {
+			setProductRisk(LowMedHigh.None);
+		}
+		if (!isTransportationServices()) {
+			setTransportationRisk(LowMedHigh.None);
+		}
+	}
+
 	@Column(nullable = false)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;

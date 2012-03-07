@@ -477,6 +477,43 @@
 								Check this box to enable all of the HSE Competency features for this operator and qualifying contractors.
 							</pics:fieldhelp>
 						</li>
+						<s:if test="operator.operator">
+					    	<li>
+					    		<label>Operator Service Types:</label>
+					    		<s:checkbox
+									name="operatorServiceTypes"
+									id="onSite"
+									fieldValue="Onsite"
+									value="operator.onsiteServices"
+									cssClass="checkbox"
+									disabled="!permissions.marketing" />
+								<s:text name="ContractorAccount.onsiteServices" />
+					    		<s:checkbox
+									name="operatorServiceTypes"
+									id="offSite"
+									fieldValue="Offsite"
+									value="operator.offsiteServices"
+									cssClass="checkbox"
+									disabled="!permissions.marketing" />
+								<s:text name="ContractorAccount.offsiteServices" />
+					    		<s:checkbox
+									name="operatorServiceTypes"
+									id="materialSupplier"
+									fieldValue="Supplier" 
+									value="operator.materialSupplier"
+									cssClass="checkbox"
+									disabled="!permissions.marketing" />
+								<s:text name="ContractorAccount.materialSupplier" />
+					    		<s:checkbox
+									name="operatorServiceTypes"
+									id="transportation"
+									fieldValue="Transportation"
+									value="operator.transportationServices"
+									cssClass="checkbox"
+									disabled="!permissions.marketing" />
+								<s:text name="ContractorAccount.transportationServices" />
+							</li>
+						</s:if>
 						<li id="act_li">
 							<label>Activation Fee Discount Percentage:</label>
 
@@ -516,7 +553,7 @@
                                 </s:else>
                             </pics:permission>
                         </li>
-    				</ol>
+                    </ol>
 				</fieldset>
 				
 				<s:if test="operator.id > 0">

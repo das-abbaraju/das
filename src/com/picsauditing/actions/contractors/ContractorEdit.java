@@ -193,7 +193,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			if (contractor.isContractorTypeRequired(ContractorType.Transportation))
 				conTypes.add(ContractorType.Transportation);
 
-			contractor.editAccountTypes(conTypes);
+			contractor.setAccountTypes(conTypes);
+			contractor.resetRisksBasedOnTypes();
 
 			if (!conTypesOK()) {
 				return SUCCESS;

@@ -160,7 +160,8 @@ public class RegistrationServiceEvaluation extends ContractorActionSupport {
 		if (requireTransportation)
 			conTypes.add(ContractorType.Transportation);
 
-		contractor.editAccountTypes(conTypes);
+		contractor.setAccountTypes(conTypes);
+		contractor.resetRisksBasedOnTypes();
 
 		if (!conTypesOK()) {
 			return SUCCESS;
