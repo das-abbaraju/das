@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditStatus;
 
 @SuppressWarnings("serial")
