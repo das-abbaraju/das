@@ -3,6 +3,8 @@ Ext.define('PICS.view.report.DataGrid', {
 	alias: ['widget.reportdatagrid'],
     store: 'report.ReportData',
     
+    requires: ['PICS.view.report.LinkColumn'],
+    
     enableColumnHide: false,
     id: 'dataGrid',
     sortableColumns:  false,

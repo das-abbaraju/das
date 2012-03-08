@@ -165,6 +165,7 @@ Ext.define('PICS.controller.report.ReportController', {
         this.buildParameters();
         this.report.setDirty();
         reportStore.sync();
+        this.refreshData();
     },
     columnSelector: null,
     showColumnSelector: function(button, e, options) {

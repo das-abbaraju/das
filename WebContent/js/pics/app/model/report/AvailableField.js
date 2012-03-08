@@ -2,17 +2,18 @@ Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
 	fields: [
-	    { name: 'name', type: 'string' },
         { name: 'category', type: 'string' },
-        { name: 'text', type: 'string' },
-        { name: 'help', type: 'string' },
-        { name: 'width', type: 'int', defaultValue: 0 },
-        { name: 'type', type: 'string' },
         { name: 'dateFormat', type: 'string' },
-        { name: 'visible', type: 'boolean', defaultValue: true },
         { name: 'filterable', type: 'boolean', defaultValue: true },
+        { name: 'filterType', type: 'string' },
+        { name: 'help', type: 'string' },
+        { name: 'name', type: 'string' },
+        { name: 'renderer', type: 'string' },
         { name: 'sortable', type: 'boolean', defaultValue: true },
-        { name: 'filterType', type: 'string' }
+        { name: 'text', type: 'string' },
+        { name: 'type', type: 'string' },
+        { name: 'visible', type: 'boolean', defaultValue: true },
+        { name: 'width', type: 'int', defaultValue: 0 }
     ],
     createSimpleColumn: function () {
         var column = Ext.create('PICS.model.report.SimpleColumn', {
@@ -30,7 +31,7 @@ Ext.define('PICS.model.report.AvailableField', {
     	if (this.get("type")) {
     		field.type = this.get("type");
     		if (field.type == "date")
-    			field.dateFormat = this.get("dateFormat");
+    			field.dateFormat = "time";
     	}
     	return field;
     },
@@ -53,13 +54,29 @@ Ext.define('PICS.model.report.AvailableField', {
     	        };
     		} else if (type == "int") {
     			gridColumn.width = 75;
-    		} else if (type == "date") {
-    			gridColumn.dateFormat = this.get("dateFormat");
+    			gridColumn.align = "right";
+    			gridColumn.xtype = "numbercolumn";
+    			gridColumn.format = "0,000";
+    		} else if (type == "float") {
+    			gridColumn.width = 75;
+    			gridColumn.align = "right";
+    			gridColumn.xtype = "numbercolumn";
+    		} else if (type == "date" || type == "datetime") {
+    			gridColumn.xtype = "datecolumn";
+    			gridColumn.format = "n/j/Y";
+    			// gridColumn.align = "center";
     		}
+    	}
+    	if (this.get("url")) {
+        	gridColumn.xtype = "linkcolumn";
+        	gridColumn.url = this.get("url");
     	}
     	if (this.get("width") > 0)
     		gridColumn.width = this.get("width");
 
+    	if (this.get("renderer"))
+    		gridColumn.renderer = this.get("renderer");
+    	
     	return gridColumn;
     }
 });

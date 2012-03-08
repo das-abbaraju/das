@@ -9,8 +9,7 @@ Ext.define('PICS.store.report.AvailableFields', {
             root: 'fields',
             type: 'json'
         },
-        type: 'ajax',
-        url: 'ReportDynamic!availableFields.action?report=7'
+        type: 'ajax'
     },
     findField: function (name) {
     	var i, ln = this.data.length;
@@ -20,6 +19,10 @@ Ext.define('PICS.store.report.AvailableFields', {
     		}
     	}
     	console.log("Failed to find '" + name + "' from " + ln + " availableField(s)");
-    	return null;
+    	return Ext.create('PICS.model.report.AvailableField', {
+    		name: name,
+    		text: name + " (deprecated)",
+    		width: 50
+    	});
     }
 });

@@ -29,7 +29,7 @@ Ext.define('PICS.store.report.Reports', {
     	store.loadRecords(records);
     },
     proxy: {
-        url: 'js/pics/data/report.json',
+    	url: 'TBD',
         reader: {
             root: 'report',
             type: 'json'

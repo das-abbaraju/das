@@ -20,7 +20,8 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     	selModel: {mode: 'multi'},
     	store: 'report.ReportsColumn',
         viewConfig: {
-            plugins: {
+        	minHeight: 200, // this doesn't seem to work yet
+        	plugins: {
                 ptype: 'gridviewdragdrop',
                 dragText: 'Drag and drop to reorganize'
             }

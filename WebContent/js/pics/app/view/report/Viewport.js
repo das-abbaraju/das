@@ -17,27 +17,23 @@ Ext.define('PICS.view.report.Viewport', {
         
         dockedItems: [{
             xtype: 'layoutmenu',
-            
             dock: 'top',
             height: 30
         }],
-        id: 'main',
         items: [{
             xtype: 'reportoptions',
             region: 'west',
-            
-            id: 'aside',
             width: 300
         }, {
             xtype: 'tabpanel',
             region: 'center',
-            
+            id: 'main',
             items: [{
                 xtype: 'reportdatagrid'
             }, {
                 title: 'Chart'
             }],
-            title: 'Recently Added Contractors'
+            title: 'Report'
         }],
         layout: 'border'
     }, {
