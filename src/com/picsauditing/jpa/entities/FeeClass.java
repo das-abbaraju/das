@@ -34,6 +34,7 @@ public enum FeeClass implements Translatable {
 				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
+			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
@@ -111,6 +112,7 @@ public enum FeeClass implements Translatable {
 	Misc;
 
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
+	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
 	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
 
