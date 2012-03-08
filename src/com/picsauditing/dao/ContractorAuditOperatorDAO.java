@@ -165,23 +165,4 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 		q.setMaxResults(limit);
 		return q.getResultList();
 	}
-
-	@Transactional(propagation = Propagation.NESTED)
-	public void resetRenewableAudits() throws SQLException {
-		String sql = "";
-		String where = "ca.expiresDate BETWEEN DATE_SUB(NOW(),interval 7 day) AND NOW() and atype.renewable = 1";
-		Database db = new Database();
-		// post contractor audit workflow for renewable audits
-		sql = "INSERT INTO contractor_audit_operator_workflow (createdBy,updatedBy,creationDate,updateDate,caoID,status,previousStatus) "
-				+ "SELECT 1,1,NOW(),NOW(),cao.id,'Pending',cao.status FROM contractor_audit ca "
-				+ "JOIN contractor_audit_operator cao ON cao.auditid = ca.id "
-				+ "JOIN audit_type atype ON atype.id = ca.audittypeid WHERE " + where;
-		db.executeInsert(sql);
-
-		// update the status for caos for renewable audits
-		sql = "UPDATE contractor_audit_operator cao JOIN contractor_audit ca ON ca.id = cao.auditID "
-				+ "JOIN audit_type atype ON ca.auditTypeID = atype.id "
-				+ "SET cao.status = 'Pending', cao.statusChangedDate = NOW(), ca.expiresDate = NULL WHERE " + where;
-		db.executeUpdate(sql);
-	}
 }
