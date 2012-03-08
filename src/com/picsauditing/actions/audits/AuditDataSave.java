@@ -440,10 +440,20 @@ public class AuditDataSave extends AuditActionSupport {
 		AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
 		auditData.setQuestion(question);
 		questionIds.add(auditData.getQuestion().getId());
-		if (auditData.getQuestion().getRequiredQuestion() != null)
-			questionIds.add(auditData.getQuestion().getRequiredQuestion().getId());
-		if (auditData.getQuestion().getVisibleQuestion() != null)
-			questionIds.add(auditData.getQuestion().getVisibleQuestion().getId());
+		if (auditData.getQuestion().getRequiredQuestion() != null) {
+			AuditQuestion q = auditData.getQuestion().getRequiredQuestion();
+			while (q != null) {
+				questionIds.add(q.getId());
+				q = q.getRequiredQuestion();
+			}
+		}
+		if (auditData.getQuestion().getVisibleQuestion() != null) {
+			AuditQuestion q = auditData.getQuestion().getVisibleQuestion();
+			while (q != null) {
+				questionIds.add(q.getId());
+				q = q.getVisibleQuestion();
+			}
+		}
 
 		questionIds.addAll(auditData.getQuestion().getSiblingQuestionWatchers());
 

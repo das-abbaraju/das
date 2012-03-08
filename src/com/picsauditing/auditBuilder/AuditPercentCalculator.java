@@ -78,10 +78,22 @@ public class AuditPercentCalculator {
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
 
-			if (question.getRequiredQuestion() != null)
-				questionIDs.add(question.getRequiredQuestion().getId());
-			if (question.getVisibleQuestion() != null)
-				questionIDs.add(question.getVisibleQuestion().getId());
+			if (question.getRequiredQuestion() != null) {
+				AuditQuestion q = question.getRequiredQuestion();
+				while (q != null) {
+					questionIDs.add(q.getId());
+					q = q.getRequiredQuestion();
+					
+				}
+			}
+			if (question.getVisibleQuestion() != null) {
+				AuditQuestion q = question.getVisibleQuestion();
+				while (q != null) {
+					questionIDs.add(q.getId());
+					q = q.getVisibleQuestion();
+					
+				}
+			}
 
 			if (question.isValidQuestion(validDate)) {
 				for (AuditQuestionFunction aqf : question.getFunctions())
@@ -135,46 +147,68 @@ public class AuditPercentCalculator {
 			if (questionIDs.contains(answer.getQuestion().getId()))
 				requiredAnswers.add(answer);
 		AnswerMap answers = new AnswerMap(requiredAnswers);
+		
 		// Get a list of questions/answers for this category
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			if (question.isValidQuestion(validDate)) {
-				boolean isRequired = question.isRequired();
-
-				AuditData answer = answers.get(question.getId());
-				// Getting all the dependsRequiredQuestions
-				if (question.getRequiredQuestion() != null && question.getRequiredAnswer() != null) {
-					if (question.getRequiredAnswer().equals("NULL")) {
-						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-						if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
-							isRequired = true;
-					} else if (question.getRequiredAnswer().equals("NOTNULL")) {
-						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-						if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
-							isRequired = true;
-					} else {
-						// This question is dependent on another
-						// question's answer
-						// Use the parentAnswer, so we get answers in
-						// the same tuple as this one
-						AuditData otherAnswer = answers.get(question.getRequiredQuestion().getId());
-						if (otherAnswer != null && question.getRequiredAnswer().equals(otherAnswer.getAnswer()))
-							isRequired = true;
+				AuditQuestion questionBeingReviewed = question;
+				boolean isRequired = questionBeingReviewed.isRequired();;
+				 
+				AuditData answer = answers.get(questionBeingReviewed.getId());
+				
+				while (questionBeingReviewed != null) {
+					if (questionBeingReviewed.getRequiredQuestion() != null && questionBeingReviewed.getRequiredAnswer() != null) {
+						if (questionBeingReviewed.getRequiredAnswer().equals("NULL")) {
+							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
+								isRequired = true;
+						} else if (questionBeingReviewed.getRequiredAnswer().equals("NOTNULL")) {
+							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
+								isRequired = true;
+						} else {
+							// This question is dependent on another
+							// question's answer
+							// Use the parentAnswer, so we get answers in
+							// the same tuple as this one
+							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							if (otherAnswer != null && questionBeingReviewed.getRequiredAnswer().equals(otherAnswer.getAnswer()))
+								isRequired = true;
+						}
 					}
-				}
 
-				// make sure this dependent required question is visible
-				if (isRequired) {
-					if (catData.getAudit().getEffectiveDate() != null && catData.getAudit().getEffectiveDate().before(question.getEffectiveDate()))
-						isRequired = false;
-					else if (question.getVisibleQuestion() != null && question.getVisibleAnswer() != null) {
-						AuditData otherAnswer = answers.get(question.getVisibleQuestion().getId());
-						if (!question.isVisible(otherAnswer))
+					// make sure this dependent required question is visible
+					if (isRequired) {
+						if (catData.getAudit().getEffectiveDate() != null && catData.getAudit().getEffectiveDate().before(questionBeingReviewed.getEffectiveDate()))
 							isRequired = false;
+						else if (questionBeingReviewed.getVisibleQuestion() != null && questionBeingReviewed.getVisibleAnswer() != null) {
+							AuditData otherAnswer = answers.get(questionBeingReviewed.getVisibleQuestion().getId());
+							if (!questionBeingReviewed.isVisible(otherAnswer))
+								isRequired = false;
+						}
+						
+						// is visible question visible
+						AuditQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
+						while (questionVisibilityParent != null && isRequired) {
+							if (questionVisibilityParent.getVisibleQuestion() != null && questionVisibilityParent.getVisibleAnswer() != null) {
+								if (!questionVisibilityParent.isVisible(answers.get(questionVisibilityParent.getVisibleQuestion().getId())))
+									isRequired = false;
+							}
+							
+							questionVisibilityParent = questionVisibilityParent.getVisibleQuestion();
+						}
 					}
+					
+					if (!isRequired) 
+						break;
+					
+					questionBeingReviewed = questionBeingReviewed.getRequiredQuestion();
 				}
 
-				if (isRequired)
+
+				if (isRequired) {
 					requiredCount++;
+				}
 
 				if (answer != null) {
 					if (answer.isAnswered()) {
@@ -236,6 +270,7 @@ public class AuditPercentCalculator {
 			}
 		}
 
+//		if (catData.getCategory().getId() == 428)System.out.println("");
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);

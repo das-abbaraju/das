@@ -423,8 +423,14 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	public Set<AuditQuestion> getDependentQuestions() {
 		if (dependentQuestions == null) {
 			dependentQuestions = new HashSet<AuditQuestion>();
-			dependentQuestions.addAll(dependentRequired);
-			dependentQuestions.addAll(dependentVisible);
+			for (AuditQuestion dependentQuestion:dependentRequired) {
+				dependentQuestions.add(dependentQuestion);
+				dependentQuestions.addAll(dependentQuestion.getDependentQuestions());
+			}
+			for (AuditQuestion visibleQuestion:dependentVisible) {
+				dependentQuestions.add(visibleQuestion);
+				dependentQuestions.addAll(visibleQuestion.getDependentQuestions());
+			}
 			for (AuditQuestionFunctionWatcher watcher : functionWatchers) {
 				dependentQuestions.add(watcher.getFunction().getQuestion());
 			}
@@ -674,8 +680,19 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public boolean isVisible(AnswerMap answerMap) {
-		if (visibleQuestion != null)
-			return isVisible(answerMap.get(visibleQuestion.getId()));
+		if (visibleQuestion != null) {
+			boolean questionIsVisible = isVisible(answerMap.get(visibleQuestion.getId()));
+			AuditQuestion q = visibleQuestion;
+			
+			while (q != null && questionIsVisible) {
+				if (q.getVisibleQuestion() != null) {
+					questionIsVisible = q.isVisible(answerMap.get(q.getVisibleQuestion().getId()));
+				}
+				
+				q = q.getVisibleQuestion();
+			}
+			return questionIsVisible;
+		}
 		return true;
 	}
 
