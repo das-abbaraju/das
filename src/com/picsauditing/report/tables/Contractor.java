@@ -21,10 +21,10 @@ public class Contractor extends BaseTable {
 
 	protected void addDefaultFields() {
 		// TODO: We need to find a way to pass the parent prefix to here for us to use.
-		QueryField contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
-		Renderer contractorNameLink = new Renderer("ContractorView.action?id={0}\">{1}", new String[] { "accountID",
-				prefix + "Name" });
-		contractorName.addRenderer(contractorNameLink);
+		QueryField contractorName;
+		contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
+		contractorName.setUrl("ContractorView.action?id={accountID}");
+		contractorName.setWidth(300);
 	}
 
 	public void addFields() {
@@ -43,7 +43,7 @@ public class Contractor extends BaseTable {
 		addField(prefix + "CreditCardOnFile", alias + ".ccOnFile", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "CreditCardExpiration", alias + ".ccExpiration", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "Balance", alias + ".balance", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "MustPay", alias + ".mustPay", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
+		addField(prefix + "MustPay", alias + ".mustPay", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing).setSql("CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END");
 		addField(prefix + "PayingFacilities", alias + ".payingFacilities", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "LastUpgradeDate", alias + ".lastUpgradeDate", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 	}

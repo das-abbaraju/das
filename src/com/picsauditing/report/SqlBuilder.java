@@ -1,8 +1,11 @@
 package com.picsauditing.report;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -109,9 +112,12 @@ public class SqlBuilder {
 	}
 
 	private void addFieldsAndGroupBy() {
+		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
 		for (SimpleReportColumn column : definition.getColumns()) {
-			if (isColumnRequestedValid(column)) {
+			QueryField field = getQueryFieldFromSimpleColumn(column);
+			if (field != null) {
+				dependentFields.addAll(field.getDependentFields());
 				String columnSQL = columnToSQL(column);
 				if (usesGroupBy && !isAggregate(column.getName())) {
 					sql.addGroupBy(columnSQL);
@@ -120,21 +126,41 @@ public class SqlBuilder {
 				includedColumns.add(column);
 			}
 		}
+		
+		// Add an dependent fields that aren't already included
+		Iterator<String> iterator = dependentFields.iterator();
+		while (iterator.hasNext()) {
+			String fieldName = (String) iterator.next();
+			if (isFieldIncluded(fieldName)) {
+				iterator.remove();
+			}
+		}
+		
+		for (String fieldName : dependentFields) {
+			SimpleReportColumn column = new SimpleReportColumn(fieldName);
+			String columnSQL = columnToSQL(column);
+			sql.addField(columnSQL + " AS `" + fieldName + "`");
+			includedColumns.add(column);
+		}
+	}
+	
+	private boolean isFieldIncluded(String fieldName) {
+		for (SimpleReportColumn column : includedColumns) {
+			if (column.getName().equals(fieldName))
+				return true;
+		}
+		return false;
 	}
 
 	private boolean usesGroupBy() {
 		for (SimpleReportColumn column : definition.getColumns()) {
-			if (isColumnRequestedValid(column)) {
+			if (getQueryFieldFromSimpleColumn(column) != null) {
 				if (isAggregate(column.getName())) {
 					return true;
 				}
 			}
 		}
 		return false;
-	}
-
-	private boolean isColumnRequestedValid(SimpleReportColumn column) {
-		return getQueryFieldFromSimpleColumn(column) != null;
 	}
 
 	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {

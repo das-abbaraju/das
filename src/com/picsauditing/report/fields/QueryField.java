@@ -2,6 +2,8 @@ package com.picsauditing.report.fields;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONAware;
@@ -30,6 +32,7 @@ public class QueryField implements JSONAware {
 	private boolean hidden = false;
 	private int flex = 0;
 	private ExtFieldType type = ExtFieldType.Auto;
+	private String url;
 	private JavaScript renderer;
 	// private JavaScript editor;
 	private String preTranslation;
@@ -39,9 +42,11 @@ public class QueryField implements JSONAware {
 
 	// xtype : 'actioncolumn',
 	/*
-	 * items : [ { icon : 'images/edit_pencil.png', tooltip : 'Edit', handler : function(grid, rowIndex, colIndex) { var
-	 * record = grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID); } } ] OR renderer :
-	 * function(value, metaData, record) { return Ext.String .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
+	 * items : [ { icon : 'images/edit_pencil.png', tooltip : 'Edit', handler :
+	 * function(grid, rowIndex, colIndex) { var record =
+	 * grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID);
+	 * } } ] OR renderer : function(value, metaData, record) { return Ext.String
+	 * .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
 	 * record.data.accountID);
 	 */
 
@@ -54,13 +59,14 @@ public class QueryField implements JSONAware {
 		this.sql = sql;
 		this.filterType = filterType;
 		this.suggested = isDefault;
-		
+
 		if (filterType != null) {
 			this.type = this.filterType.getFieldType();
 		}
-		
-		if (StringUtils.endsWithIgnoreCase(name, "id"))
+
+		if (StringUtils.endsWithIgnoreCase(name, "id")) {
 			hidden = true;
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -69,7 +75,7 @@ public class QueryField implements JSONAware {
 		JSONObject json = new JSONObject();
 		json.put("name", name);
 		json.put("text", name);
-		
+
 		if (width > 0)
 			json.put("width", width);
 		if (!visible)
@@ -85,6 +91,10 @@ public class QueryField implements JSONAware {
 
 		if (flex > 0)
 			json.put("flex", flex);
+
+		if (!Strings.isEmpty(url))
+			json.put("url", url);
+
 		if (renderer != null && renderer.toJSONString().length() > 0)
 			json.put("renderer", renderer);
 
@@ -92,10 +102,6 @@ public class QueryField implements JSONAware {
 
 		if (!filterType.equals(ExtFieldType.Auto)) {
 			json.put("type", type.toString().toLowerCase());
-			if (type == ExtFieldType.Date) {
-				json.put("xtype", "datecolumn");
-				json.put("dateFormat", "time");
-			}
 		}
 		return json;
 	}
@@ -193,6 +199,22 @@ public class QueryField implements JSONAware {
 		this.renderer = renderer;
 	}
 
+	public Set<String> getDependentFields() {
+		Set<String> dependent = new HashSet<String>();
+		if (!Strings.isEmpty(url)) {
+			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}"); 
+			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
+			while(urlFieldMatcher.find()) {
+				dependent.add(urlFieldMatcher.group(1));
+			}
+		}
+		return dependent;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
 	public FieldCategory getCategory() {
 		return category;
 	}
@@ -209,11 +231,11 @@ public class QueryField implements JSONAware {
 	public void setPostTranslation(String postTranslation) {
 		this.postTranslation = postTranslation;
 	}
-	
+
 	public Set<OpPerms> getRequiredPermissions() {
 		return requiredPermissions;
 	}
-	
+
 	public QueryField requirePermission(OpPerms opPerm) {
 		this.requiredPermissions.add(opPerm);
 		return this;
@@ -228,6 +250,4 @@ public class QueryField implements JSONAware {
 		this.filterable = filterable;
 		return this;
 	}
-	
-	
 }

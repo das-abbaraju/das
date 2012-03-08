@@ -9,6 +9,7 @@ public class SimpleReportColumn implements JSONable {
 	private String name;
 	private QueryFunction function = null;
 	private String option;
+	private boolean hidden = false;
 	// We are thinking about adding the render field to support custom renderers per report
 	private String renderer = null;
 
@@ -80,6 +81,10 @@ public class SimpleReportColumn implements JSONable {
 
 	public void setRenderer(String renderer) {
 		this.renderer = renderer;
+	}
+
+	public void setHidden(boolean hidden) {
+		this.hidden = hidden;
 	}
 
 }
