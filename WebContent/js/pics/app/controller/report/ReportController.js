@@ -4,6 +4,11 @@ Ext.define('PICS.controller.report.ReportController', {
  	stores: [
         'report.ReportData', 'report.Reports', 'report.ReportsColumn', 'report.ReportsFilter'
     ],
+    
+    refs: [{
+        selector: 'reportcolumnselectorgrid',
+        ref: 'columnSelectorGrid'
+    }],
 	
     init: function() {
         this.control({
@@ -56,6 +61,14 @@ Ext.define('PICS.controller.report.ReportController', {
 		this.report.parameters = Ext.encode(data);
 		return this.report.parameters;
     },
+	addChildren: function(child) {
+		var records = child.data.items;
+		var data = [];
+		for (var i = 0; i < records.length; i++) {
+			data.push(this.getRecordData(records[i]));
+        }
+		return data;
+	},
     getRecordData: function(record) {
     	var data = {};
     	record.fields.each(function(field){
@@ -66,23 +79,10 @@ Ext.define('PICS.controller.report.ReportController', {
         });
     	return data;
     },
-	addChildren: function(child) {
-		var records = child.data.items;
-		var data = [];
-		for (var i = 0; i < records.length; i++) {
-			data.push(this.getRecordData(records[i]));
-        }
-		return data;
-	},
     addColumn: function(button, e, options) {
-        var grid = Ext.ComponentQuery.query('reportcolumnselectorgrid'),
-        store = null;
-        
-        if (grid.length > 0) {
-        	// Not sure why we might have two
-        	grid = grid[0];
-        }
-        var selected = grid.getSelectionModel().getSelection();
+    	store = null;
+    	
+        var selected = this.getColumnSelectorGrid().getSelectionModel().getSelection();
         if (selected.length > 0) {
             if (this.columnSelector.columntype === "filter") {
                 store = this.report.filtersStore();
