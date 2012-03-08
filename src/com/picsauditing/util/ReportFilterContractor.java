@@ -109,6 +109,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean auditQuestionFlagChanges = false;
 	protected boolean soleProprietership = false;
 	protected String[] accountLevel;
+	protected String riskType;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -898,5 +899,13 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public static String getDefaultSelectPerformedBy() {
 		return cache.getText("Filters.label.SelfPerformed", getLocaleStatic());
+	}
+
+	public String getRiskType() {
+		return riskType;
+	}
+
+	public void setRiskType(String riskType) {
+		this.riskType = riskType;
 	}
 }

@@ -50,12 +50,8 @@
 			</div>
 			
 			<div class="filterOption">
-				<a href="#" class="filterBox">Risk Type</a> =
-				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
-				<br />
-				<span class="clearLink q_box select">
-					<s:select list="#{'Safety':'Safety','Product':'Product','All':getText('JS.Filters.status.All')}" cssClass="forms" name="type" />
-				</span>
+				<a href="#" class="filterBox">Risk Type</a>
+				<s:select list="#{'All':getText('JS.Filters.status.All'),'Safety':'Safety','Product':'Product'}" cssClass="forms" name="filter.riskType" />
 			</div>
 		</s:form>
 		<div class="clear"></div>

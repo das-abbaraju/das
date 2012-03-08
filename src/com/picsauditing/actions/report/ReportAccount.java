@@ -535,6 +535,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		return filter;
 	}
 
+	public void setFilter(ReportFilterContractor filter) {
+		this.filter = filter;
+	}
+
 	@Override
 	public void prepare() throws Exception {
 		this.getPermissions();

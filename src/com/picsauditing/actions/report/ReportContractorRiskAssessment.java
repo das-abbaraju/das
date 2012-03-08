@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.AuditDataDAO;
@@ -21,6 +22,7 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.WizardSession;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectAccount.Type;
 import com.picsauditing.util.Strings;
@@ -31,7 +33,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected int conID;
 	protected String auditorNotes;
 	protected Note note;
-	protected String type = "All";
+	protected String type;
 	protected ContractorAccount con;
 
 	@Autowired
@@ -61,9 +63,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
 				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
 
-		if ("Safety".equals(type)) {
+		if ("Safety".equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
-		} else if ("Product".equals(type)) {
+		} else if ("Product".equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + productRisk + ") r ON r.id = a.id");
 		} else {
 			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
@@ -77,6 +79,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String accept() throws Exception {
+		recallWizardSessionFilter();
 		if (!Strings.isEmpty(type)) {
 			String noteMessage = type + " risk adjusted from ";
 
@@ -115,7 +118,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
 			note.setNoteCategory(NoteCategory.RiskRanking);
 			noteDAO.save(note);
-			
+
 			if (con.getAccountLevel().isListOnly() && !con.isListOnlyEligible()) {
 				con.setAccountLevel(AccountLevel.Full);
 			}
@@ -129,11 +132,12 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			addActionError("Missing Risk Assessment Type");
 		}
 
-		return super.execute();
+		return execute();
 	}
 
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
+		recallWizardSessionFilter();
 		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
 		if (type.equals("Safety")) {
@@ -158,7 +162,14 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		noteDAO.save(note);
 
 		auditorNotes = "";
-		return super.execute();
+		return execute();
+	}
+
+	private void recallWizardSessionFilter() {
+		// TODO: I have a feeling that this is not the way that Wizard Session should be used. Need to find a better
+		// way.
+		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
+		setFilter(wizardSession.getContractorFilter());
 	}
 
 	private String getRiskSQL(String type, String answer, int... questionIDs) {
@@ -256,19 +267,19 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		this.conID = conID;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
 	public String getAuditorNotes() {
 		return auditorNotes;
 	}
 
 	public void setAuditorNotes(String auditorNotes) {
 		this.auditorNotes = auditorNotes;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }
