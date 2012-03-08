@@ -6,7 +6,6 @@ Ext.define('PICS.view.report.ReportOptions', {
     collapsible: true,
     items: [{
         xtype: 'panel',
-        
         bodyPadding: 10,
         items: [{
 			xtype: 'button',
@@ -19,9 +18,9 @@ Ext.define('PICS.view.report.ReportOptions', {
 		    text: 'Refresh'
         }]
     },{
-        xtype: 'panel',
-        
+        xtype: 'tabpanel',
         flex: 1,
+        activeTab: 1,
         items: [{
             xtype: 'reportoptionsfilters'
         }, {
@@ -39,8 +38,7 @@ Ext.define('PICS.view.report.ReportOptions', {
         handles: 'e'
     },
     title: 'Report Options',
-    
-    initComponent: function () {
+	initComponent: function () {
         this.callParent();
     }
 });

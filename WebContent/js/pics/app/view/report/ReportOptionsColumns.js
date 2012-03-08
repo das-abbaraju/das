@@ -4,7 +4,6 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     
     items: [{
     	xtype: 'gridpanel',
-    	store: 'report.ReportsColumn',
     	columns: [{
     		xtype: "rownumberer"
     	},{
@@ -19,14 +18,42 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     		text: 'Column'
     	}],
     	selModel: {mode: 'multi'},
+    	store: 'report.ReportsColumn',
         viewConfig: {
             plugins: {
                 ptype: 'gridviewdragdrop',
                 dragText: 'Drag and drop to reorganize'
             }
-        }    	
+        }
+    },{
+    	xtype: 'fieldset',
+        flex: 1,
+        items: [{
+            xtype: 'displayfield',
+            value: 'Status',
+            fieldLabel: 'Field'
+        },{
+            xtype: 'combobox',
+            fieldLabel: 'Operator'
+        },{
+            xtype: 'radiogroup',
+            fieldLabel: 'Type',
+            items: [{
+                xtype: 'radiofield',
+                boxLabel: 'Value'
+            },{
+                xtype: 'radiofield',
+                boxLabel: 'Field'
+            }]
+        },{
+            xtype: 'textfield',
+            fieldLabel: 'Value'
+        }]
     }],
-    layout: 'fit',
+    layout: {
+        align: 'stretch',
+        type: 'vbox'
+    },
     tbar: [{
     	action: "add",
     	store: "columns",
