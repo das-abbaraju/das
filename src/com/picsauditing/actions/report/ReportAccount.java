@@ -45,9 +45,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	protected SelectAccount sql = new SelectAccount();
 	protected List<SelectSQL> unionSql = new ArrayList<SelectSQL>();
-	
+
 	private ReportFilterContractor filter = new ReportFilterContractor();
-	
+
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -258,9 +258,9 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 				String stateList = Strings.implodeForDB(states, ",");
 				sb.append("a.state IN (").append(stateList).append(") OR ")
-						.append("EXISTS (SELECT 'x' FROM pqfdata d ")
-						.append("JOIN audit_question aq ON aq.id = d.questionID ")
-						.append("AND aq.uniqueCode in (").append(stateList).append(") LIMIT 1) ");
+						.append("EXISTS (SELECT 'x' FROM pqfdata d ").append(
+								"JOIN audit_question aq ON aq.id = d.questionID ").append("AND aq.uniqueCode in (")
+						.append(stateList).append(") LIMIT 1) ");
 				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
 			}
 
@@ -296,7 +296,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			for (int tradeID : f.getTrade()) {
 				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
 				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
-				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
+				tradeSQL
+						.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
 				tradeSQL.addWhere("a.id = ct.conID");
 				// TODO allow users to search for Manufacture and Activity Percent
 				tradeSQL.addWhere("ct.activityPercent > 1");
@@ -349,7 +350,7 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 		if (filterOn(f.getConAuditorId())) {
 			String list = Strings.implode(f.getConAuditorId(), ",");
-			
+
 			if (f.isNonContactUser())
 				sql.addWhere("u.id IN (" + list + ")");
 			else
@@ -358,13 +359,13 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (filterOn(f.getPolicyChangedDate1())) {
-			report.addFilter(new SelectFilterDate("policyChangedDate1", "caow.creationDate > '?'", DateBean.format(
-					f.getPolicyChangedDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("policyChangedDate1", "caow.creationDate > '?'", DateBean.format(f
+					.getPolicyChangedDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getPolicyChangedDate2())) {
-			report.addFilter(new SelectFilterDate("policyChangedDate2", "caow.creationDate < '?'", DateBean.format(
-					f.getPolicyChangedDate2(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("policyChangedDate2", "caow.creationDate < '?'", DateBean.format(f
+					.getPolicyChangedDate2(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getAccountLevel())) {
@@ -412,18 +413,29 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 		}
 
 		if (filterOn(f.getRegistrationDate1())) {
-			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(
-					f.getRegistrationDate1(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
+					.getRegistrationDate1(), "M/d/yy")));
 		}
 
 		if (filterOn(f.getRegistrationDate2())) {
-			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(
-					f.getRegistrationDate2(), "M/d/yy")));
+			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
+					.getRegistrationDate2(), "M/d/yy")));
 		}
 
 		if (f.isPendingPqfAnnualUpdate()) {
+			String caopFilter = "";
+			if (permissions.isOperatorCorporate()) {
+				String opIDs = permissions.getAccountIdString();
+				if (permissions.isCorporate())
+					opIDs = Strings.implode(permissions.getOperatorChildren());
+
+				caopFilter = " AND cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
+						+ opIDs + "))";
+			}
+
 			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
-					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Pending','Incomplete','Resubmit') AND cao.visible = 1 AND ca.auditTypeID IN (1,11))";
+					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Pending','Incomplete','Resubmit') AND cao.visible = 1 AND ca.auditTypeID IN (1,11) AND ca.expiresDate > NOW()"
+					+ caopFilter + ")";
 			sql.addWhere(query);
 		}
 
@@ -443,21 +455,20 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 			sql.addWhere(f.getCustomAPI());
 
 		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
-			int[] questions = getFilter().getMinorityQuestion();			
+			int[] questions = getFilter().getMinorityQuestion();
 			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
-			for (int question: questions){
-				sql.addJoin("LEFT JOIN pqfdata pdsd"+question+" on casd.id = pdsd"+ question+".auditID AND pdsd"+question+".questionID = "
-						+ question);
+			for (int question : questions) {
+				sql.addJoin("LEFT JOIN pqfdata pdsd" + question + " on casd.id = pdsd" + question + ".auditID AND pdsd"
+						+ question + ".questionID = " + question);
 			}
 			StringBuilder where = new StringBuilder();
-			for (int i = 0; i < questions.length; i ++){
+			for (int i = 0; i < questions.length; i++) {
 				int question = questions[i];
 				if (i != 0)
 					where.append("OR ");
-				
+
 				where.append("pdsd").append(question);
-				if ((question == 3543) || (question == 66)
-						|| (question == 77))
+				if ((question == 3543) || (question == 66) || (question == 77))
 					where.append(".answer = 'X' ");
 				else
 					where.append(".answer = 'Yes' ");

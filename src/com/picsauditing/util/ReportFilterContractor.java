@@ -508,6 +508,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setPermissions(Permissions permissions) {
 		super.setPermissions(permissions);
+		setShowConWithPendingAudits(true);
 
 		if (permissions.isOperatorCorporate())
 			setShowFlagStatus(true);
@@ -525,11 +526,8 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		if (permissions.hasPermission(OpPerms.ContractorTags))
 			setShowOpertorTagName(true);
 
-		if (permissions.isCorporate()) {
-		}
 		if (permissions.isPicsEmployee()) {
 			setShowConAuditor(true);
-			setShowConWithPendingAudits(true);
 		}
 		if (permissions.hasPermission(OpPerms.Billing))
 			setShowCcOnFile(true);
