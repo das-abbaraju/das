@@ -17,7 +17,7 @@ public class ContractorAudit extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Number).setSuggested();
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setSuggested();
 		addField(prefix + "For", alias + ".auditFor", FilterType.String).setSuggested();
 	}
 
@@ -27,9 +27,9 @@ public class ContractorAudit extends BaseTable {
 		addField(prefix + "ScheduledDate", alias + ".scheduledDate", FilterType.Date);
 		addField(prefix + "AssignedDate", alias + ".assignedDate", FilterType.Date);
 		addField(prefix + "Location", alias + ".auditLocation", FilterType.String);
-		addField(prefix + "Score", alias + ".score", FilterType.Number);
-		addField(prefix + "AuditorID", alias + ".auditorID", FilterType.Number);
-		addField(prefix + "ClosingAuditorID", alias + ".closingAuditorID", FilterType.Number);
+		addField(prefix + "Score", alias + ".score", FilterType.Integer);
+		addField(prefix + "AuditorID", alias + ".auditorID", FilterType.Integer);
+		addField(prefix + "ClosingAuditorID", alias + ".closingAuditorID", FilterType.Integer);
 		addField(prefix + "ContractorConfirmation", alias + ".contractorConfirm", FilterType.Date);
 		addField(prefix + "AuditorConfirmation", alias + ".auditorConfirm", FilterType.Date);
 	}

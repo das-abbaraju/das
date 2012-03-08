@@ -34,13 +34,13 @@ public class Todo {
 		sql = new SelectSQL();
 		sql.setFromTable("email_queue eq");
 
-		addQueryField("emailID", "eq.emailID", FilterType.Number, true);
+		addQueryField("emailID", "eq.emailID", FilterType.Integer, true);
 		addQueryField("emailStatus", "eq.emailStatus", FilterType.Enum);
 		addQueryField("emailFromAddress", "eq.emailFromAddress", FilterType.String, true);
 		addQueryField("emailToAddresses", "eq.emailToAddresses", FilterType.String, true);
 		addQueryField("emailCcAddresses", "eq.emailCcAddresses", FilterType.String);
 		addQueryField("emailSubject", "eq.subject", FilterType.String, true);
-		addQueryField("emailPriority", "eq.priority", FilterType.Number);
+		addQueryField("emailPriority", "eq.priority", FilterType.Integer);
 		addQueryField("emailCreationDate", "eq.creationDate", FilterType.Date);
 		addQueryField("emailSentDate", "eq.sentDate", FilterType.Date);
 
@@ -63,12 +63,12 @@ public class Todo {
 		sql = new SelectSQL();
 		sql.setFromTable("app_error_log as ael");
 
-		addQueryField("errorLogID", "ael.id", FilterType.Number, true);
+		addQueryField("errorLogID", "ael.id", FilterType.Integer, true);
 		addQueryField("errorLogCategory", "ael.category", FilterType.String, true);
-		addQueryField("errorLogPriority", "ael.priority", FilterType.Number, true);
+		addQueryField("errorLogPriority", "ael.priority", FilterType.Integer, true);
 		addQueryField("errorLogStatus", "ael.status", FilterType.Enum);
-		addQueryField("errorLogCreatedBy", "ael.createdBy", FilterType.Number);
-		addQueryField("errorLogUpdatedBy", "ael.updatedBy", FilterType.Number);
+		addQueryField("errorLogCreatedBy", "ael.createdBy", FilterType.Integer);
+		addQueryField("errorLogUpdatedBy", "ael.updatedBy", FilterType.Integer);
 		addQueryField("errorLogCreationDate", "ael.creationDate", FilterType.Date);
 		addQueryField("errorLogUpdateDate", "ael.updateDate", FilterType.Date);
 		addQueryField("errorLogMessage", "ael.message", FilterType.String);
@@ -80,7 +80,7 @@ public class Todo {
 		sql = new SelectSQL();
 		sql.setFromTable("contractor_registration_request crr");
 
-		addQueryField("requestID", "crr.id", FilterType.Number);
+		addQueryField("requestID", "crr.id", FilterType.Integer);
 
 		addQueryField("requestedName", "crr.name", FilterType.String, true).addRenderer(
 				"RequestNewContractor.action?newContractor={0}\">{1}", new String[] { "requestID", "requestedName" });
@@ -96,13 +96,13 @@ public class Todo {
 		addQueryField("requestedNotes", "crr.notes", FilterType.String);
 		addQueryField("requestedDeadline", "crr.deadline", FilterType.Date, true);
 		addQueryField("requestedLastContactedByDate", "crr.lastContactDate", FilterType.String);
-		addQueryField("requestedContactCount", "crr.contactCount", FilterType.Number);
-		addQueryField("requestedMatchCount", "crr.matchCount", FilterType.Number);
+		addQueryField("requestedContactCount", "crr.contactCount", FilterType.Integer);
+		addQueryField("requestedMatchCount", "crr.matchCount", FilterType.Integer);
 		addQueryField("requestCreationDate", "crr.creationDate", FilterType.Date);
 		addQueryField("requestStatus", "crr.status", FilterType.Enum);
 
 		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
-		addQueryField("requestedByOperatorID", "op.id", FilterType.Number);
+		addQueryField("requestedByOperatorID", "op.id", FilterType.Integer);
 		addQueryField("requestedByOperatorName", "op.name", FilterType.AccountName).addRenderer(
 				"FacilitiesEdit.action?operator={0}\">{1}",
 				new String[] { "requestedByOperatorID", "requestedByOperatorName" });
@@ -125,7 +125,7 @@ public class Todo {
 		// buildAccountBase();
 		sql.addJoin("JOIN employee e ON a.id = e.accountID");
 
-		addQueryField("employeeID", "e.id", FilterType.Number, true);
+		addQueryField("employeeID", "e.id", FilterType.Integer, true);
 		addQueryField("employeeFirstName", "e.firstName", FilterType.String, true);
 		addQueryField("employeeLastName", "e.lastName", FilterType.String, true);
 		addQueryField("employeeTitle", "e.title", FilterType.String, true);
@@ -134,7 +134,7 @@ public class Todo {
 		addQueryField("employeeEmail", "e.email", FilterType.String);
 		addQueryField("employeePhone", "e.phone", FilterType.String);
 		addQueryField("employeeLocation", "e.location", FilterType.String);
-		addQueryField("employeeSSN", "e.ssn", FilterType.Number);
+		addQueryField("employeeSSN", "e.ssn", FilterType.Integer);
 		addQueryField("employeeTwicExpiration", "e.twicExpiration", FilterType.Date);
 		QueryField employeeClassification = addQueryField("employeeClassification", "e.classification", FilterType.Enum);
 		employeeClassification.translate("EmployeeClassification", "description");
@@ -158,10 +158,10 @@ public class Todo {
 
 		sql.addJoin("JOIN operatorforms of ON a.id = of.opID");
 
-		addQueryField("resourceID", "of.id", FilterType.Number, true);
-		addQueryField("resourceOperatorAccountID", "of.opID", FilterType.Number, true);
+		addQueryField("resourceID", "of.id", FilterType.Integer, true);
+		addQueryField("resourceOperatorAccountID", "of.opID", FilterType.Integer, true);
 		addQueryField("resourceName", "of.formName", FilterType.String, true);
-		addQueryField("resourceParentResourceID", "of.parentID", FilterType.Number);
+		addQueryField("resourceParentResourceID", "of.parentID", FilterType.Integer);
 		addQueryField("resourceLocale", "of.locale", FilterType.String);
 
 		defaultSort = "o.formName";
@@ -171,8 +171,8 @@ public class Todo {
 		// buildAccountBase();
 		sql.addJoin("JOIN users u ON u.accountID = a.id");
 
-		addQueryField("userID", "u.id", FilterType.Number, true);
-		addQueryField("userAccountID", "u.accountID", FilterType.Number, true);
+		addQueryField("userID", "u.id", FilterType.Integer, true);
+		addQueryField("userAccountID", "u.accountID", FilterType.Integer, true);
 		addQueryField("userName", "u.name", FilterType.String, true);
 		addQueryField("userScreenName", "u.username", FilterType.String);
 		addQueryField("userIsActive", "u.isActive", FilterType.String);
@@ -211,17 +211,17 @@ public class Todo {
 		sql.addJoin("contractor_trade child ON child.conID = a.id");
 		sql.addJoin("ref_trade tChild ON tChild.id = child.tradeID");
 
-		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Number,
+		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Integer,
 				true);
 		contractorTradeParentID.translate("Trade", "name");
-		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", FilterType.Number);
-		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", FilterType.Number);
+		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", FilterType.Integer);
+		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", FilterType.Integer);
 
-		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Number,
+		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Integer,
 				true);
 		contractorTradeChildID.translate("Trade", "name");
-		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", FilterType.Number);
-		addQueryField("contractorTradeChildIndexEnd", "tChild.indexEnd", FilterType.Number);
+		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", FilterType.Integer);
+		addQueryField("contractorTradeChildIndexEnd", "tChild.indexEnd", FilterType.Integer);
 	}
 
 	private void buildContractorFeeBase() {
@@ -229,8 +229,8 @@ public class Todo {
 
 		sql.addJoin("contractor_fee cf ON cf.conID = a.id");
 
-		addQueryField("contractorFeeCurrentAmount", "cf.currentAmount", FilterType.Number, true);
-		addQueryField("contractorFeeNewAmount", "cf.newAmount", FilterType.Number);
+		addQueryField("contractorFeeCurrentAmount", "cf.currentAmount", FilterType.Integer, true);
+		addQueryField("contractorFeeNewAmount", "cf.newAmount", FilterType.Integer);
 
 		joinToInvoiceFee("contractorFee", "cf.newLevel");
 	}
@@ -240,9 +240,9 @@ public class Todo {
 
 		sql.addJoin("JOIN invoice i on i.accountID = a.id");
 
-		addQueryField("invoiceID", "i.id", FilterType.Number, true);
-		addQueryField("invoiceAmountApplied", "i.amountApplied", FilterType.Number);
-		addQueryField("invoiceTotalAmount", "i.totalAmount", FilterType.Number, true);
+		addQueryField("invoiceID", "i.id", FilterType.Integer, true);
+		addQueryField("invoiceAmountApplied", "i.amountApplied", FilterType.Integer);
+		addQueryField("invoiceTotalAmount", "i.totalAmount", FilterType.Integer, true);
 		addQueryField("invoiceDueDate", "i.dueDate", FilterType.Date);
 		addQueryField("invoiceStatus", "i.status", FilterType.Enum);
 		addQueryField("invoiceCreationDate", "i.creationDate", FilterType.Date);
@@ -255,7 +255,7 @@ public class Todo {
 		sql.addJoin("JOIN invoice_item ii on ii.invoiceID = i.id");
 
 		addQueryField("invoiceItemPaymentExpires", "ii.paymentExpires", FilterType.Date, true);
-		addQueryField("invoiceItemAmount", "ii.amount", FilterType.Number, true);
+		addQueryField("invoiceItemAmount", "ii.amount", FilterType.Integer, true);
 
 		joinToInvoiceFee("invoiceItemFee", "ii.feeID");
 	}
@@ -294,7 +294,7 @@ public class Todo {
 
 		addQueryField("auditDataAnswer", "pd.answer", FilterType.String, true);
 		addQueryField("auditDataDateVerified", "pd.dateVerified", FilterType.Date);
-		addQueryField("auditDataQuestionID", "pd.questionID", FilterType.Number);
+		addQueryField("auditDataQuestionID", "pd.questionID", FilterType.Integer);
 		QueryField auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID", FilterType.String, true);
 		auditDataQuestion.translate("AuditQuestion", "name");
 		addQueryField("auditDataUpdateDate", "pd.updateDate", FilterType.Date);
@@ -304,8 +304,8 @@ public class Todo {
 		joins.put(joinAlias, "LEFT JOIN facilities " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
 				+ foreignKey);
 
-		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID", FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "OperatorID", joinAlias + ".opID", FilterType.Integer, joinAlias, true);
+		addQueryField(joinAlias + "CorporateID", joinAlias + ".corporateID", FilterType.Integer, joinAlias, true);
 
 		// leftJoinToAccount("operatorChild", joinAlias + ".opID");
 		// leftJoinToAccount("corporateParent", joinAlias + ".corporateID");
@@ -315,8 +315,8 @@ public class Todo {
 		joins.put(joinAlias, "LEFT JOIN generalcontractors " + joinAlias + " ON " + joinAlias + "." + tableKey + " = "
 				+ foreignKey);
 
-		addQueryField(joinAlias + "ContractorID", joinAlias + ".subID", FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "OperatorID", joinAlias + ".genID", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "ContractorID", joinAlias + ".subID", FilterType.Integer, joinAlias, true);
+		addQueryField(joinAlias + "OperatorID", joinAlias + ".genID", FilterType.Integer, joinAlias, true);
 		addQueryField(joinAlias + "FlagLastUpdated", joinAlias + ".flagLastUpdated", FilterType.Date, joinAlias);
 		addQueryField(joinAlias + "Flag", joinAlias + ".flag", FilterType.String, joinAlias, true);
 
@@ -326,42 +326,42 @@ public class Todo {
 	private void joinToInvoiceFee(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "JOIN invoice_fee " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
 
-		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "MaxFacilities", joinAlias + ".maxFacilities", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Integer, joinAlias, true);
+		addQueryField(joinAlias + "MaxFacilities", joinAlias + ".maxFacilities", FilterType.Integer, joinAlias, true);
 	}
 
 	private void joinToLoginLog(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "JOIN loginlog " + joinAlias + " ON " + joinAlias + ".userID = " + foreignKey);
-		addQueryField(joinAlias + "UserID", foreignKey, FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "UserID", foreignKey, FilterType.Integer, joinAlias, true);
 
-		addQueryField(joinAlias + "AdminID", joinAlias + ".adminID", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "AdminID", joinAlias + ".adminID", FilterType.Integer, joinAlias, true);
 		addQueryField(joinAlias + "LoginDate", joinAlias + ".loginDate", FilterType.Date, joinAlias);
 		addQueryField(joinAlias + "RemoteAccess", joinAlias + ".remoteAccess", FilterType.String, joinAlias);
 	}
 
 	private void leftJoinToEmailTemplate(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN email_template " + joinAlias + " ON " + joinAlias + ".id = " + foreignKey);
-		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Integer, joinAlias, true);
 		addQueryField(joinAlias + "Name", joinAlias + ".templateName", FilterType.String, joinAlias, true);
 	}
 
 	private void joinToContractorWatch(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "LEFT JOIN contractor_watch " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
 
-		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
-		addQueryField(joinAlias + "UserID", joinAlias + ".userID", FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Integer, joinAlias, true);
+		addQueryField(joinAlias + "UserID", joinAlias + ".userID", FilterType.Integer, joinAlias, true);
 	}
 
 	private void leftJoinToEmailQueue(String joinAlias, String foreignKey) {
 		joins.put(joinAlias, "JOIN email_queue " + joinAlias + " ON " + joinAlias + ".conID = " + foreignKey);
-		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, joinAlias, true);
+		addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Integer, joinAlias, true);
 
 		addQueryField(joinAlias + "CreationDate", joinAlias + ".creationDate", FilterType.Date, joinAlias, true);
 		addQueryField(joinAlias + "SentDate", joinAlias + ".sentDate", FilterType.Date, joinAlias, true);
-		addQueryField(joinAlias + "CreatedBy", joinAlias + ".createdBy", FilterType.Number, joinAlias);
-		addQueryField(joinAlias + "ViewableBy", joinAlias + ".viewableBy", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "CreatedBy", joinAlias + ".createdBy", FilterType.Integer, joinAlias);
+		addQueryField(joinAlias + "ViewableBy", joinAlias + ".viewableBy", FilterType.Integer, joinAlias);
 		addQueryField(joinAlias + "Subject", joinAlias + ".subject", FilterType.String, joinAlias);
-		addQueryField(joinAlias + "TemplateID", joinAlias + ".templateID", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "TemplateID", joinAlias + ".templateID", FilterType.Integer, joinAlias);
 		addQueryField(joinAlias + "Status", joinAlias + ".status", FilterType.Enum, joinAlias);
 	}
 
@@ -370,8 +370,8 @@ public class Todo {
 				+ foreignKey);
 		// addQueryField(joinAlias + "ContractorID", foreignKey, FilterType.Number, true);
 
-		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Number, joinAlias);
-		addQueryField(joinAlias + "CriteriaID", joinAlias + ".criteriaID", FilterType.Number, joinAlias);
+		addQueryField(joinAlias + "ID", joinAlias + ".id", FilterType.Integer, joinAlias);
+		addQueryField(joinAlias + "CriteriaID", joinAlias + ".criteriaID", FilterType.Integer, joinAlias);
 		addQueryField(joinAlias + "Answer", joinAlias + ".answer", FilterType.String, joinAlias);
 	}
 

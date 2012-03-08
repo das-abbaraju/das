@@ -17,13 +17,13 @@ public class ContractorAuditOperator extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Number);
+		addField(prefix + "ID", alias + ".id", FilterType.Integer);
 		addField(prefix + "Status", alias + ".status", FilterType.AuditStatus);
 	}
 
 	public void addFields() {
 		addField(prefix + "StatusChangedDate", alias + ".statusChangedDate", FilterType.Date);
-		addField(prefix + "PercentComplete", alias + ".percentComplete", FilterType.Number);
+		addField(prefix + "PercentComplete", alias + ".percentComplete", FilterType.Integer);
 	}
 
 	public void addJoins() {

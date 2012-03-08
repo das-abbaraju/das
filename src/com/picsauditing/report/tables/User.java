@@ -17,7 +17,7 @@ public class User extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField("UserID", "id", FilterType.Number);
+		addField("UserID", "id", FilterType.Integer);
 		addField("Name", "name", FilterType.String).addRenderer(
 				"UsersManage.action?user={0}\">{1}", new String[] { prefix + "UserID", prefix + "Name" });
 	}

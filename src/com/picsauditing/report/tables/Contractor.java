@@ -32,8 +32,8 @@ public class Contractor extends BaseTable {
 		addField(prefix + "SafetyRisk", alias + ".safetyRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 		addField(prefix + "ProductRisk", alias + ".productRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 
-		addField(prefix + "Score", alias + ".score", FilterType.Number);
-		addField(prefix + "TRIRAverage", alias + ".trirAverage", FilterType.Number).setCategory(FieldCategory.SafetyStats);
+		addField(prefix + "Score", alias + ".score", FilterType.Integer);
+		addField(prefix + "TRIRAverage", alias + ".trirAverage", FilterType.Integer).setCategory(FieldCategory.SafetyStats);
 		
 		addField(prefix + "MembershipDate", alias + ".membershipDate", FilterType.Date).setCategory(FieldCategory.Billing);
 		addField(prefix + "AccountLevel", alias + ".accountLevel", FilterType.String).setCategory(FieldCategory.Billing);
@@ -42,9 +42,9 @@ public class Contractor extends BaseTable {
 		addField(prefix + "PaymentMethod", alias + ".paymentMethod", FilterType.String).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "CreditCardOnFile", alias + ".ccOnFile", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "CreditCardExpiration", alias + ".ccExpiration", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "Balance", alias + ".balance", FilterType.Number).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
+		addField(prefix + "Balance", alias + ".balance", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "MustPay", alias + ".mustPay", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "PayingFacilities", alias + ".payingFacilities", FilterType.Number).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
+		addField(prefix + "PayingFacilities", alias + ".payingFacilities", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 		addField(prefix + "LastUpgradeDate", alias + ".lastUpgradeDate", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 	}
 

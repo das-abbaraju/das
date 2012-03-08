@@ -17,9 +17,10 @@ public class Naics extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField(prefix + "Code", alias + ".code", FilterType.Number);
-		addField(prefix + "TRIR", alias + ".trir", FilterType.Number);
-		addField(prefix + "LWCR", alias + ".lwcr", FilterType.Number);
+		// add NAICS Category
+		addField(prefix + "Code", alias + ".code", FilterType.String);
+		addField(prefix + "TRIR", alias + ".trir", FilterType.Integer);
+		addField(prefix + "LWCR", alias + ".lwcr", FilterType.Integer);
 	}
 
 	public void addFields() {

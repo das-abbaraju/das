@@ -26,7 +26,7 @@ public class Operator extends BaseTable {
 		addField(prefix + "VerifiedByPICS", alias + ".verifiedByPics", FilterType.Boolean);
 		addField(prefix + "PrimaryCorporate", alias + ".primaryCorporate", FilterType.Boolean);
 		addField(prefix + "AutoApproveInsurance", alias + ".autoApproveInsurance", FilterType.Boolean);
-		addField(prefix + "ActivationFee", alias + ".activationFee", FilterType.Number);
+		addField(prefix + "ActivationFee", alias + ".activationFee", FilterType.Integer);
 		addField(prefix + "RequiredTags", alias + ".requiredTags", FilterType.String);
 		addField(prefix + "DiscountExpiration", alias + ".discountExpiration", FilterType.Date);
 	}
