@@ -134,5 +134,6 @@ public class SmartFacilitySuggest {
 		sql.addField(alias + "onsiteServices");
 		sql.addField(alias + "offsiteServices");
 		sql.addField(alias + "materialSupplier");
+		sql.addField(alias + "transportationServices");
 	}
 }
