@@ -40,14 +40,26 @@ Ext.define('PICS.model.report.AvailableField', {
     	var gridColumn = {};
     	gridColumn.dataIndex = this.get("name");
     	gridColumn.text = this.get("text");
+    	if (this.get("type")) {
+    		var type = this.get("type");
+    		if (type == "boolean") {
+    			gridColumn.align = "center";
+    			gridColumn.width = 50;
+    			gridColumn.renderer = function(value){
+    	            if (value) {
+    	                return '<img src="images/tick.png" width="16" height="16" />';
+    	            }
+    	            return "";
+    	        };
+    		} else if (type == "int") {
+    			gridColumn.width = 75;
+    		} else if (type == "date") {
+    			gridColumn.dateFormat = this.get("dateFormat");
+    		}
+    	}
     	if (this.get("width") > 0)
     		gridColumn.width = this.get("width");
 
-    	if (this.get("type")) {
-    		gridColumn.type = this.get("type");
-    		if (gridColumn.type == "date")
-    			gridColumn.dateFormat = this.get("dateFormat");
-    	}
     	return gridColumn;
     }
 });
