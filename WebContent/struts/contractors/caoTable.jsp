@@ -113,7 +113,7 @@
 						<s:if test="!systemEdit">
 							<td class="buttonAction">
 								<s:iterator value="getCurrentCaoStep(#currentCao.id)" id="step">
-									<s:if test="!(conAudit.auditType.classType.policy && #currentCao.operator.autoApproveInsurance && permissions.admin && #step.newStatus.approved)">
+									<s:if test="displayButton(#currentCao, #step)">
 										<div class="singleButton button <s:property value="#step.newStatus.color"/>">
 											<s:text name="%{#step.newStatus.getI18nKey('button')}" />
 											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>

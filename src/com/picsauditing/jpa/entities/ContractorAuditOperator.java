@@ -204,6 +204,14 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 		return hasCaop(permissions.getAccountId());
 	}
+	
+	@Transient
+	public boolean isReadyToBeSubmitted() {
+		return ((this.status == AuditStatus.Pending 
+				|| this.status == AuditStatus.Incomplete
+				|| this.status == AuditStatus.Resubmit) 
+				&& this.percentComplete == 100);
+	}
 
 	@Transient
 	public boolean hasCaop(int opID) {

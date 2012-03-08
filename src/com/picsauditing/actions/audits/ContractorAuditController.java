@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.MenuComponent;
@@ -41,6 +42,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.TranslatableString;
+import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -236,7 +238,10 @@ public class ContractorAuditController extends AuditActionSupport {
 					}
 				}
 			}
+			
 			String message = "";
+			if (CollectionUtils.isEmpty(contractor.getTrades()) && atLeastOneCompleteVisibleCao()) 
+				message = "At least one trade must be selected before a PQF can be submitted.";
 			if (conAudit.getOperators().size() == 0)
 				message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
 			if (conAudit.hasOnlyInvisibleCaos())
@@ -564,6 +569,41 @@ public class ContractorAuditController extends AuditActionSupport {
 		findContractor();
 		InvoiceFee fee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.ImportFee, 1);
 		return contractor.getCountry().getAmount(fee);
+	}
+	
+	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
+		if (cao != null && step != null) {
+			if (!canContractorSubmitPQF(step)) {
+				return false;
+			}
+			else if (conAudit.getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance() && permissions.isAdmin() && step.getNewStatus().isApproved()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean canContractorSubmitPQF(WorkflowStep step) {
+		if (conAudit.getAuditType().getClassType().isPqf() 
+				&& step.getNewStatus().isSubmitted() 
+				&& permissions.isContractor() 
+				&& CollectionUtils.isEmpty(contractor.getTrades())) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean atLeastOneCompleteVisibleCao() {
+		List<ContractorAuditOperator> visibleCaos = getViewableOperators(permissions);
+		for (ContractorAuditOperator cao : visibleCaos) {
+			if (cao.isReadyToBeSubmitted()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private void checkMode() {
