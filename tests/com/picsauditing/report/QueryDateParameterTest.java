@@ -80,6 +80,7 @@ public class QueryDateParameterTest {
 
 	@Test
 	public void testConvertDateParameterDays() {
+		cal = Calendar.getInstance();
 		cal.add(Calendar.DAY_OF_YEAR, 4);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("4d").getTime());
 
