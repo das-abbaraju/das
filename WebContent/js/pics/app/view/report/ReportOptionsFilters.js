@@ -22,7 +22,21 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
                 
     		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
     			// TODO Based on filterType
-    			return "'" + record.data.field.get('text') + "' = " + record.get('value');
+    		    var filterType = record.data.field.get('filterType'),
+    		        operator = "=",
+    		        value = record.get('value'),
+    		        text = record.data.field.get('text');
+    		            
+    		    if (record.data.operator) {
+    		        operator = record.data.operator;
+    		    }
+    		    if (filterType === "Boolean") {
+    		        if (!value) {
+    		            value = 1;
+    		            record.set('value', 1);    		            
+    		        }
+    		    }
+    		    return "'" + text + "' " + operator + " '" + value + "'";
     		}
     	}, {
             xtype: 'actioncolumn',

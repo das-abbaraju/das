@@ -8,11 +8,14 @@ Ext.define('PICS.view.filter.BooleanFilter', {
 		// disabled: true,
         listeners: {
             click: function () {
-                var radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0],
-                    booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0];
-                
-                var value = radioGroup.getValue().boolean;
-                booleanFilter.record.set("value", value);
+                var form = Ext.ComponentQuery.query('booleanfilter')[0];
+                var values = form.getValues();
+
+                if (values.boolean === '1') {
+                    form.record.set('value', values.boolean);
+                } else {
+                    form.record.set('value', 0);
+                }
             }
         },
 	    text: 'Apply'
@@ -22,6 +25,12 @@ Ext.define('PICS.view.filter.BooleanFilter', {
         border: false,
     	html: "Field Name"
     },{
+        xtype: 'checkbox',
+        boxLabel  : 'Equals',
+        name      : 'boolean',
+        inputValue: '1'
+    }],
+    /*{
         xtype: 'radiogroup',
         id: 'radioFields',
         fieldLabel: 'Equals',
@@ -36,14 +45,20 @@ Ext.define('PICS.view.filter.BooleanFilter', {
             inputValue: '0',
             name: "boolean"
         }],
-    }],
+    }*/
     listeners: {
         beforeRender: function () {
+            var form = Ext.ComponentQuery.query("booleanfilter")[0],
+                checkbox = Ext.ComponentQuery.query("booleanfilter checkbox")[0];
+
+            checkbox.setValue(form.record.data.value);
+        }
+        /*beforeRender: function () {
             var booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0],
                 radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0];
             
             radioGroup.setValue({'boolean': booleanFilter.record.data.value});
-        }
+        }*/
     },
     record: null,
     setRecord: function (record) {
