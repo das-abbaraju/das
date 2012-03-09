@@ -264,6 +264,10 @@ public class SqlBuilder {
 	private String toFilterSql(SimpleReportFilter filter) {
 
 		SimpleReportColumn column = convertColumn(filter.getColumn());
+		
+		if (column == null) {
+			column = new SimpleReportColumn(filter.getColumn());
+		}
 
 		String columnSQL = toColumnSql(column);
 		String valueSql = toValueSql(filter, column);
