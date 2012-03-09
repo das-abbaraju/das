@@ -1,4 +1,4 @@
-Ext.define('PICS.view.form.BooleanFilter', {
+Ext.define('PICS.view.filter.BooleanFilter', {
     extend: 'Ext.form.Panel',
     alias: ['widget.booleanfilter'],    
 
@@ -9,6 +9,7 @@ Ext.define('PICS.view.form.BooleanFilter', {
     	html: "Field Name"
     },{
         xtype: 'radiogroup',
+        id: 'radioFields',
         fieldLabel: 'Equals',
         items: [{
             xtype: 'radiofield',
@@ -21,16 +22,17 @@ Ext.define('PICS.view.form.BooleanFilter', {
             inputValue: '0',
             name: "boolean"
         }],
+    },{
+        xtype: "button",
+        text: "Apply",
         listeners: {
-        	change: function (field, value) {
-        		if (value) {
-            		console.log(field.getValue());
-            		console.log(this.record);
-                    //this.record.set("value", field.getValue());
-        		}
-        	}
-        	
-        }        
+            click: function () {
+                var radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0];
+                var value = radioGroup.getValue().boolean;
+                var booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0];                
+                booleanFilter.record.set("value", value);
+            }
+        }
     }],
     record: null,
     setRecord: function (record) {
