@@ -54,7 +54,7 @@ public class SqlBuilderTest {
 		builder.setBase(new QueryAccountContractor());
 		SelectSQL sql = builder.getSql();
 
-		assertEquals(2, sql.getFields().size());
+		assertEquals(4, sql.getFields().size());
 		String expected = "JOIN contractor_info AS c ON a.id = c.id AND a.type = 'Contractor'";
 		assertContains(expected, sql.toString());
 	}
