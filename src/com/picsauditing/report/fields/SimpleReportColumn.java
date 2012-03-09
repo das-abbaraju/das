@@ -48,11 +48,11 @@ public class SimpleReportColumn implements JSONable {
 	}
 
 	public String getAvailableFieldName() {
-		if (function == null)
+//		if (function == null)
 			return name;
-		int startOfFunction = name.lastIndexOf(function.toString());
-		
-		return name.substring(0, startOfFunction);
+//		int startOfFunction = name.lastIndexOf(function.toString());
+//		
+//		return name.substring(0, startOfFunction);
 	}
 
 	public void setName(String field) {

@@ -18,7 +18,7 @@ public class AuditType extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		// TODO: We need to find a way to pass the parent prefix to here for us to use.
+		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
 		addField(prefix + "ID", alias + ".id", FilterType.Integer).setSuggested();
 		QueryField auditTypeName = addField(prefix + "Name", alias + ".id", FilterType.String).setSuggested();
 		auditTypeName.translate("AuditType", "name");

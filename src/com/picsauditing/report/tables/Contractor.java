@@ -3,7 +3,6 @@ package com.picsauditing.report.tables;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.Renderer;
 
 public class Contractor extends BaseTable {
 
@@ -20,7 +19,7 @@ public class Contractor extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		// TODO: We need to find a way to pass the parent prefix to here for us to use.
+		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
 		QueryField contractorName;
 		contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
 		contractorName.setUrl("ContractorView.action?id={accountID}");
@@ -31,6 +30,10 @@ public class Contractor extends BaseTable {
 		addField(prefix + "RiskLevel", alias + ".riskLevel", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 		addField(prefix + "SafetyRisk", alias + ".safetyRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 		addField(prefix + "ProductRisk", alias + ".productRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
+
+		addField(prefix + "MainTrade", alias + ".main_trade", FilterType.LowMedHigh);
+		addField(prefix + "TradesSelfPerformed", alias + ".tradesSelf", FilterType.LowMedHigh);
+		addField(prefix + "TradesSubContracted", alias + ".tradesSub", FilterType.LowMedHigh);
 
 		addField(prefix + "Score", alias + ".score", FilterType.Integer);
 		addField(prefix + "TRIRAverage", alias + ".trirAverage", FilterType.Integer).setCategory(FieldCategory.SafetyStats);

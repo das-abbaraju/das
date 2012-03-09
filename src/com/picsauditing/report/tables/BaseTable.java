@@ -24,6 +24,7 @@ public abstract class BaseTable {
 		this.where = where;
 
 		addDefaultFields();
+		addFields();
 	}
 
 	protected abstract void addDefaultFields();
@@ -108,6 +109,13 @@ public abstract class BaseTable {
 	public BaseTable addLeftJoin(BaseTable join) {
 		joins.add(join);
 		join.setLeftJoin();
+		return join;
+	}
+
+	public BaseTable addAllFieldsAndJoins(BaseTable join) {
+		joins.add(join);
+		join.addFields();
+		join.addJoins();
 		return join;
 	}
 }

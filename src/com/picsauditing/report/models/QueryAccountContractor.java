@@ -9,9 +9,7 @@ public class QueryAccountContractor extends QueryAccount {
 		from.removeField("accountType");
 
 		Contractor contractor = new Contractor();
-		from.addJoin(contractor);
-		contractor.addFields();
-		contractor.addJoins();
+		from.addAllFieldsAndJoins(contractor);
 	}
 
 }

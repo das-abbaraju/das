@@ -76,43 +76,6 @@ public class Todo {
 		defaultSort = "ael.creationDate DESC";
 	}
 
-	private void buildRegistrationRequestsBase() {
-		sql = new SelectSQL();
-		sql.setFromTable("contractor_registration_request crr");
-
-		addQueryField("requestID", "crr.id", FilterType.Integer);
-
-		addQueryField("requestedName", "crr.name", FilterType.String, true).addRenderer(
-				"RequestNewContractor.action?newContractor={0}\">{1}", new String[] { "requestID", "requestedName" });
-		addQueryField("requestedContact", "crr.contact", FilterType.String, true);
-		addQueryField("requestedPhone", "crr.phone", FilterType.String, true);
-		addQueryField("requestedEmail", "crr.email", FilterType.String);
-		addQueryField("requestedTaxID", "crr.taxID", FilterType.String);
-		addQueryField("requestedAddress", "crr.address", FilterType.String);
-		addQueryField("requestedCity", "crr.city", FilterType.String);
-		addQueryField("requestedState", "crr.state", FilterType.String);
-		addQueryField("requestedZip", "crr.zip", FilterType.String);
-		addQueryField("requestedCountry", "crr.country", FilterType.String);
-		addQueryField("requestedNotes", "crr.notes", FilterType.String);
-		addQueryField("requestedDeadline", "crr.deadline", FilterType.Date, true);
-		addQueryField("requestedLastContactedByDate", "crr.lastContactDate", FilterType.String);
-		addQueryField("requestedContactCount", "crr.contactCount", FilterType.Integer);
-		addQueryField("requestedMatchCount", "crr.matchCount", FilterType.Integer);
-		addQueryField("requestCreationDate", "crr.creationDate", FilterType.Date);
-		addQueryField("requestStatus", "crr.status", FilterType.Enum);
-
-		sql.addJoin("JOIN accounts op ON op.id = crr.requestedByID");
-		addQueryField("requestedByOperatorID", "op.id", FilterType.Integer);
-		addQueryField("requestedByOperatorName", "op.name", FilterType.AccountName).addRenderer(
-				"FacilitiesEdit.action?operator={0}\">{1}",
-				new String[] { "requestedByOperatorID", "requestedByOperatorName" });
-
-		// leftJoinToUser("requestedBy", "crr.requestedByUserID");
-		// leftJoinToUser("contactedBy", "crr.lastContactedBy");
-
-		// leftJoinToAccount("requestedExisting", "crr.conID");
-	}
-
 	private void buildEmailSubscriptionBase() {
 		// buildAccountBase();
 		sql.addJoin("JOIN email_subscription es ON es.userID = u.id");

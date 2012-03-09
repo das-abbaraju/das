@@ -17,12 +17,13 @@ public class User extends BaseTable {
 	}
 
 	protected void addDefaultFields() {
-		addField("UserID", "id", FilterType.Integer);
-		addField("Name", "name", FilterType.String).addRenderer(
-				"UsersManage.action?user={0}\">{1}", new String[] { prefix + "UserID", prefix + "Name" });
+		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		addField(prefix + "Name", alias + ".name", FilterType.String).addRenderer("UsersManage.action?user={0}\">{1}",
+				new String[] { prefix + "ID", prefix + "Name" });
 	}
 
 	public void addFields() {
+		addField(prefix + "AccountID", alias + ".accountID", FilterType.String);
 		addField(prefix + "Phone", alias + ".phone", FilterType.String);
 		addField(prefix + "Email", alias + ".email", FilterType.String);
 	}
@@ -30,5 +31,4 @@ public class User extends BaseTable {
 	public void addJoins() {
 		addJoin(new Account(prefix + "Account", alias + ".accountID"));
 	}
-
 }

@@ -2,7 +2,6 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
-import com.picsauditing.report.fields.Renderer;
 
 public class Operator extends BaseTable {
 
@@ -10,12 +9,20 @@ public class Operator extends BaseTable {
 		super("operators", "operator", "o", "a.id = o.id AND a.type in ('Operator','Corporate')");
 	}
 
+	public Operator(String prefix, String alias, String foreignKey) {
+		super("operators", prefix, alias, alias + ".id = " + foreignKey);
+	}
+
+	public Operator(String alias, String foreignKey) {
+		super("operators", alias, alias, alias + ".id = " + foreignKey);
+	}
+
 	protected void addDefaultFields() {
-		// TODO: We need to find a way to pass the parent prefix to here for us to use.
-		QueryField operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
-		Renderer operatorNameLink = new Renderer("FacilitiesEdit.action?operator={0}&type={1}\">{2}", new String[] {
-				"accountID", "accountType", prefix + "Name" });
-		operatorName.addRenderer(operatorNameLink);
+		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
+		QueryField operatorName;
+		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
+		operatorName.setUrl("FacilitiesEdit.action?operator={accountID}");
+		operatorName.setWidth(300);
 	}
 
 	public void addFields() {
@@ -32,10 +39,10 @@ public class Operator extends BaseTable {
 	}
 
 	public void addJoins() {
-		addLeftJoin(new User("insuranceRep", "o.insuranceAuditor_id"));
-		addLeftJoin(new Account("parentOperator", "o.parentID"));
-		addLeftJoin(new Account("inheritedFlagCriteria", "o.inheritFlagCriteria"));
-		addLeftJoin(new Account("inheritedInsuranceCriteria", "o.inheritInsuranceCriteria"));
-		addLeftJoin(new Account("reporting", "o.reportingID"));
+		addLeftJoin(new User(prefix + "InsuranceRep", alias + ".insuranceAuditor_id"));
+		addLeftJoin(new Account(prefix + "ParentOperator", alias + ".parentID"));
+		addLeftJoin(new Account(prefix + "InheritedFlagCriteria", alias + ".inheritFlagCriteria"));
+		addLeftJoin(new Account(prefix + "InheritedInsuranceCriteria", alias + ".inheritInsuranceCriteria"));
+		addLeftJoin(new Account(prefix + "Reporting", alias + ".reportingID"));
 	}
 }

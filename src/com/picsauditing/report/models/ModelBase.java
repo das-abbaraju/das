@@ -11,7 +11,6 @@ abstract public class ModelBase {
 	protected BaseTable from;
 	protected String defaultSort = null;
 	protected Map<String, QueryField> availableFields = new HashMap<String, QueryField>();
-	protected Map<String, String> joins = new HashMap<String, String>();
 
 	public BaseTable getFrom() {
 		return from;

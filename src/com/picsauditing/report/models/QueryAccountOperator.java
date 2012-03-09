@@ -8,9 +8,7 @@ public class QueryAccountOperator extends QueryAccount {
 		from.removeField("accountName");
 
 		Operator operator = new Operator();
-		from.addJoin(operator);
-		operator.addFields();
-		operator.addJoins();
+		from.addAllFieldsAndJoins(operator);
 	}
 
 }
