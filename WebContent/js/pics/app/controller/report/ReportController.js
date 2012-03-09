@@ -26,7 +26,7 @@ Ext.define('PICS.controller.report.ReportController', {
             },
             "reportcolumnselector button[action=add]":  {
             	click: this.addColumn
-            }
+            }           
         });
         
         var reportStore = this.getReportReportsStore();
@@ -85,7 +85,7 @@ Ext.define('PICS.controller.report.ReportController', {
         var selected = this.getColumnSelectorGrid().getSelectionModel().getSelection();
         if (selected.length > 0) {
             if (this.columnSelector.columntype === "filter") {
-                store = this.report.filtersStore();
+                store = this.filterStore;
             } else {
                 store = this.columnStore;
             }

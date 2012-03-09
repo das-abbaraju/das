@@ -1,11 +1,15 @@
 Ext.define('PICS.view.report.ReportOptionsFilters', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportoptionsfilters'],
-    
+
+    bbar: [{
+        action: "apply",
+        text: 'Apply Filter'
+    }],    
     items: [{
     	xtype: 'gridpanel',
-    	autoScroll: true,
     	store: 'report.ReportsFilter',
+    	
     	columns: [{
     		xtype: "rownumberer"
     	},{
@@ -16,8 +20,18 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		sortable: false,
     		text: 'Filter'
     	}],
-    	selModel: {mode: 'multi'}    	
+    	flex: 2,
+    	selModel: {mode: 'multi'},
+        width: "100%"    
+    },{
+        xtype: 'panel',
+
+        autoScroll:true,
+        flex: 1,
+        id: 'options',
+        width: "100%"
     }],
+    layout: "vbox",
     tbar: [{
         action: "add",
         store: "columns",

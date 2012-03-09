@@ -6,7 +6,7 @@ Ext.application({
 	name: 'PICS',
 	appFolder: 'js/pics/app',
 	
-    controllers: [ 'report.ReportController' ],
+    controllers: [ 'report.ReportController', 'report.FilterController'],
 
 	models: [
 	    'report.AvailableField', 
