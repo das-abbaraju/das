@@ -23,6 +23,14 @@ Ext.define('PICS.model.report.AvailableField', {
         column.setField(this);
         return column;
     },
+    createSimpleFilter: function () {
+        var filter = Ext.create('PICS.model.report.SimpleFilter', {
+        	'name': this.get("name"),
+        	'type': this.get("type")
+        });
+        filter.setField(this);
+        return filter;
+    },
 	// See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
     toStoreField: function () {
     	// TODO I've only tested a couple of the config options here

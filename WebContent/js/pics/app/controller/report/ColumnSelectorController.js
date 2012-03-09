@@ -65,15 +65,17 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             
             if (columnSelector.column_type === "filter") {
                 store = this.getReportReportsFilterStore();
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleFilter());
+                });
             } else if (columnSelector.column_type === "column") {
                 store = this.getReportReportsColumnStore()
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleColumn());
+                });
             } else {
                 throw 'columnSelector.column_type is ' + columnSelector.column_type + ' - must be (filter|column)';
             }
-            
-            Ext.Array.forEach(selected, function (field) {
-                store.add(field.createSimpleColumn());
-            });
         }
         
         columnSelector.destroy();

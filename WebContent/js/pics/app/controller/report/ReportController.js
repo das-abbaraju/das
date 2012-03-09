@@ -40,8 +40,8 @@ Ext.define('PICS.controller.report.ReportController', {
 		var data = this.getRecordData(this.report);
 		
 		data.columns = this.addChildren(this.columnStore);
+		data.filters = this.addChildren(this.filterStore);
 		// data.sorts = this.addChildren(this.sortsStore);
-		// data.filter = this.addChildren(this.filtersStore);
 		
 		delete data.id;
 		delete data.modelType;

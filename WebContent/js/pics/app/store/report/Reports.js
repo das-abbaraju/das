@@ -9,7 +9,7 @@ Ext.define('PICS.store.report.Reports', {
             	
             	if (report) {
             		this.loadStore("report.ReportsColumn", report.columns());
-            		this.loadStore("report.ReportsFilter", report.filters());
+            		this.loadStoreFilter("report.ReportsFilter", report.filters());
             	}
             }
         }
@@ -21,6 +21,23 @@ Ext.define('PICS.store.report.Reports', {
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
     		field = fieldsStore.findField(item.get("name"));
+    		
+    		item.setField(field);
+    		records.push(item);
+    	}
+    	
+    	var store = Ext.StoreManager.get(storeName);
+    	store.loadRecords(records);
+    },
+    loadStoreFilter: function(storeName, child) {
+    	// TODO refactor these two methods
+    	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
+    	
+    	var records = [];
+    	for(i = 0; i < child.data.length; i++) {
+    		var item = child.data.items[i],
+    		field = fieldsStore.findField(item.get("column"));
+    		
     		item.setField(field);
     		records.push(item);
     	}

@@ -2,10 +2,6 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.reportoptionsfilters'],
 
-    bbar: [{
-        action: 'apply',
-        text: 'Apply Filter'
-    }],
     items: [{
     	xtype: 'gridpanel',
     	store: 'report.ReportsFilter',
@@ -17,6 +13,10 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
+    		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
+    			// TODO Based on filterType
+    			return "'" + record.data.field.get('text') + "' = " + record.get('value');
+    		},
     		sortable: false,
     		text: 'Filter'
     	}],

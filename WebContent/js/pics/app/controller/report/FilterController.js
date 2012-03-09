@@ -3,20 +3,11 @@ Ext.define('PICS.controller.report.FilterController', {
 
     filterStyle: null,
     showOptionsPanel: null,    
-    applyFilter: function (view, record, item, index, e, options) {
 
-        console.log(Ext.StoreMgr.lookup("report.Reports"));
-        var values = Ext.ComponentQuery.query('reportoptionsfilters ' + this.filterPanelStyle);
-        values = values[0];
-        //console.log(values.getValues());
-    },
     init: function() {
         this.control({
             "reportoptionsfilters gridpanel":  {
                 itemclick: this.showFilterOptions
-            },
-            "reportoptionsfilters button[action=apply]":  {
-                click: this.applyFilter
             }         
         });
     },
@@ -45,7 +36,7 @@ Ext.define('PICS.controller.report.FilterController', {
     showFilterOptions: function (view, record, item, index, e, options) {
         var optionsPanel = Ext.ComponentQuery.query('reportoptionsfilters #options')[0],
             availableStore = Ext.StoreMgr.lookup('report.AvailableFields'),
-            storeRecord = availableStore.findRecord('name', record.get("name")),
+            storeRecord = availableStore.findRecord('name', record.get("column")),
             filterType = storeRecord.get('filterType');
 
         this.filterType = filterType;

@@ -280,7 +280,7 @@ public class SqlBuilder {
 	}
 
 	private String toValueSql(SimpleReportFilter filter, SimpleReportColumn column) {
-		if (filter.getColumn2() != null) {
+		if (!Strings.isEmpty(filter.getColumn2())) {
 			return columnToSQL(convertColumn(filter.getColumn2()));
 		}
 

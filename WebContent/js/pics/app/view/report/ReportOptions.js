@@ -20,7 +20,7 @@ Ext.define('PICS.view.report.ReportOptions', {
     },{
         xtype: 'tabpanel',
         flex: 1,
-        activeTab: 1,
+        activeTab: 0,
         items: [{
             xtype: 'reportoptionsfilters'
         }, {

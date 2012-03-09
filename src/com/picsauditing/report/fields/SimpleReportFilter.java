@@ -43,7 +43,7 @@ public class SimpleReportFilter implements JSONable {
 
 	private void parseNot(JSONObject json) {
 		this.not = false;
-		String not = (String) json.get("not");
+		Boolean not = (Boolean) json.get("not");
 		if (not != null)
 			this.not = true;
 	}

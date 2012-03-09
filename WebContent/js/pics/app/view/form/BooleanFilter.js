@@ -10,16 +10,16 @@ Ext.define('PICS.view.form.BooleanFilter', {
         xtype: 'panel'
     },{
         xtype: 'radiogroup',
-        fieldLabel: 'Type',
+        fieldLabel: 'Equals',
         items: [{
             xtype: 'radiofield',
-            boxLabel: 'True',
-            inputValue: 'true',
+            boxLabel: 'Yes',
+            inputValue: '1',
             name: "boolean"
         },{
             xtype: 'radiofield',
-            boxLabel: 'False',
-            inputValue: 'false',
+            boxLabel: 'No',
+            inputValue: '0',
             name: "boolean"
         }]
     }]
