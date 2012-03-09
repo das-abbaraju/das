@@ -8,161 +8,136 @@
 		<s:include value="reportHeader.jsp" />
 	</head>
 	<body>
-		<h1>
-			<s:text name="ReportNewRequestedContractor.title" />
-		</h1>
-		<s:include value="filters.jsp" />
-		<div class="right">
-			<a class="excel" rel="<s:property value="report.allRows" />" href="#" 
-				title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>">
-				<s:text name="global.Download" />
-			</a>
-		</div>
-		<form id="test" action="ReportNewRequestedContractorImport.action" method="post">
+		<div id="${actionName}-page">
+			<h1>
+				<s:text name="ReportNewRequestedContractor.title" />
+			</h1>
+			<s:include value="filters.jsp" />
+			<div class="right">
+				<a class="excel" rel="<s:property value="report.allRows" />" href="javascript:;" 
+					title="<s:text name="javascript.DownloadAllRows"><s:param><s:property value="report.allRows" /></s:param></s:text>">
+					<s:text name="global.Download" />
+				</a>
+			</div>
 			<div style="padding: 5px;">
 				<a href="RequestNewContractor.action" class="add">
 					<s:text name="ReportNewRequestedContractor.link.AddRegistrationRequest" />
 				</a>
-				<s:if test="amSales">
-					<a class="add excelUpload" href="#" title="<s:text name="javascript.OpensInNewWindow" />">
+				<s:if test="amSales || debugging">
+					<a
+						href="javascript:;"
+						title="<s:text name="javascript.OpensInNewWindow" />"
+						class="add excelUpload"
+						data-url="ReportNewReqConImport.action">
 						<s:text name="ReportNewRequestedContractor.link.ImportRegistrationRequests" />
 					</a>
 				</s:if>
 			</div>
-		</form>
-		<s:if test="data.size > 0">
-			<div>
-				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-			</div>
-			<table class="report">
-				<thead>
-					<tr>
-						<td colspan="2">
-							<s:text name="global.Account.name" />
-						</td>
-						<td>
-							<s:text name="ContractorRegistrationRequest.requestedBy" />
-						</td>
-						<td>
-							<a href="javascript: changeOrderBy('form1','cr.creationDate');">
-								<s:text name="global.CreationDate" />
-							</a>
-						</td>
-						<td>
-							<a href="javascript: changeOrderBy('form1','cr.deadline');">
-								<s:text name="ContractorRegistrationRequest.deadline" />
-							</a>
-						</td>
-						<td>
-							<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
-						</td>
-						<td>
-							<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
-								<s:text name="ReportNewRequestedContractor.label.On" />
-							</a>
-						</td>
-						<td>
-							<s:text name="ReportNewRequestedContractor.label.Attempts" />
-						</td>
-						<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
-							<s:text name="ReportNewRequestedContractor.label.Matches" />
-						</td>
-						<td>
-							<s:text name="ReportNewRequestedContractor.label.InPics" />
-						</td>
-						<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
-							<td>
-								<s:text name="ReportNewRequestedContractor.label.ClosedDate" />
-							</td>
-						</s:if>
-						<td>
-							<s:text name="RequestNewContractor.OperatorTags" />
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					<s:iterator value="data" status="stat" var="crr">
+			<s:if test="data.size > 0">
+				<div>
+					<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+				</div>
+				<table class="report">
+					<thead>
 						<tr>
-							<td class="right">
-								<s:property value="#stat.index + report.firstRowNumber" />
+							<td colspan="2">
+								<s:text name="global.Account.name" />
 							</td>
 							<td>
-								<a href="RequestNewContractor.action?newContractor=<s:property value="get('id')"/>">
-									<s:property value="get('name')" />
+								<s:text name="ContractorRegistrationRequest.requestedBy" />
+							</td>
+							<td>
+								<a href="javascript: changeOrderBy('form1','cr.creationDate');">
+									<s:text name="global.CreationDate" />
 								</a>
 							</td>
-							<td title="<s:property value="get('RequestedUser')"/>">
-								<s:property value="get('RequestedBy')"/>
+							<td>
+								<a href="javascript: changeOrderBy('form1','cr.deadline');">
+									<s:text name="ContractorRegistrationRequest.deadline" />
+								</a>
 							</td>
 							<td>
-								<s:date name="get('creationDate')" />
+								<s:text name="ReportNewRequestedContractor.label.ContactedBy" />
 							</td>
 							<td>
-								<s:date name="get('deadline')" />
+								<a href="javascript: changeOrderBy('form1','cr.lastContactDate DESC');">
+									<s:text name="ReportNewRequestedContractor.label.On" />
+								</a>
 							</td>
 							<td>
-								<s:property value="get('ContactedBy')" />
+								<s:text name="ReportNewRequestedContractor.label.Attempts" />
+							</td>
+							<td title="<s:text name="ReportNewRequestedContractor.label.PotentialMatches" />">
+								<s:text name="ReportNewRequestedContractor.label.Matches" />
 							</td>
 							<td>
-								<s:date name="get('lastContactDate')" />
-							</td>
-							<td>
-								<s:property value="get('contactCount')" />
-							</td>
-							<td>
-								<s:property value="get('matchCount')" />
-							</td>
-							<td>
-								<s:if test="get('conID') != null">
-									<a href="ContractorView.action?id=<s:property value="get('conID')"/>">
-										<s:property value="get('contractorName')" />
-									</a>			
-								</s:if>
+								<s:text name="ReportNewRequestedContractor.label.InPics" />
 							</td>
 							<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
 								<td>
-									<s:date name="get('closedOnDate')" format="%{getText('date.short')}" />
+									<s:text name="ReportNewRequestedContractor.label.ClosedDate" />
 								</td>
 							</s:if>
 							<td>
-								<s:property value="get('operatorTags')" />
+								<s:text name="RequestNewContractor.OperatorTags" />
 							</td>
 						</tr>
-					</s:iterator>
-				</tbody>
-			</table>
-		</s:if>
-		<div>
-			<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+					</thead>
+					<tbody>
+						<s:iterator value="data" status="stat" var="crr">
+							<tr>
+								<td class="right">
+									<s:property value="#stat.index + report.firstRowNumber" />
+								</td>
+								<td>
+									<a href="RequestNewContractor.action?newContractor=<s:property value="get('id')"/>">
+										<s:property value="get('name')" />
+									</a>
+								</td>
+								<td title="<s:property value="get('RequestedUser')"/>">
+									<s:property value="get('RequestedBy')"/>
+								</td>
+								<td>
+									<s:date name="get('creationDate')" />
+								</td>
+								<td>
+									<s:date name="get('deadline')" />
+								</td>
+								<td>
+									<s:property value="get('ContactedBy')" />
+								</td>
+								<td>
+									<s:date name="get('lastContactDate')" />
+								</td>
+								<td>
+									<s:property value="get('contactCount')" />
+								</td>
+								<td>
+									<s:property value="get('matchCount')" />
+								</td>
+								<td>
+									<s:if test="get('conID') != null">
+										<a href="ContractorView.action?id=<s:property value="get('conID')"/>">
+											<s:property value="get('contractorName')" />
+										</a>			
+									</s:if>
+								</td>
+								<s:if test="filter.requestStatus.empty || filter.requestStatus.contains('Closed')">
+									<td>
+										<s:date name="get('closedOnDate')" format="%{getText('date.short')}" />
+									</td>
+								</s:if>
+								<td>
+									<s:property value="get('operatorTags')" />
+								</td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+			</s:if>
+			<div>
+				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+			</div>
 		</div>
-		<script type="text/javascript">
-			$(function() {
-				$('#content').delegate('a.excel', 'click', function(e) {
-					e.preventDefault();
-					var num = $(this).attr('rel');
-					
-					var confirmed = false;
-					if (num > 500)
-						confirmed = confirm(translate('JS.ConfirmDownloadAllRows', ['<s:property value="report.allRows" />']));
-					else
-						confirmed = true;
-					
-					if (confirmed) {
-						newurl = "ReportNewRequestedContractorCSV.action?" + $('#form1').serialize();
-						popupWin = window.open(newurl, 'ReportNewRequestedContractor', '');
-					}
-				});
-				
-				$('#test').delegate('.excelUpload', 'click', function(e) {
-					e.preventDefault();
-					
-					var url = 'ReportNewReqConImport.action';
-					var title = 'Upload';
-					var pars = 'scrollbars=yes,resizable=yes,width=650,height=400,toolbar=0,directories=0,menubar=0';
-					fileUpload = window.open(url,title,pars);
-					fileUpload.focus();
-				});
-			});
-		</script>
 	</body>
 </html>

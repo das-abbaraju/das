@@ -23,6 +23,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
+import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.State;
@@ -120,47 +121,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
 						continue;
 
-					ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
-					crr.setName((String) getValue(row, 0));
-					crr.setContact((String) getValue(row, 1));
-					crr.setPhone((String) getValue(row, 2));
-					crr.setEmail((String) getValue(row, 3));
-					crr.setTaxID((String) getValue(row, 4));
-					crr.setAddress((String) getValue(row, 5));
-					crr.setCity((String) getValue(row, 6));
-					crr.setState((State) getValue(row, 7));
-					crr.setZip((String) getValue(row, 8));
-					crr.setCountry((Country) getValue(row, 9));
-					crr.setRequestedBy((OperatorAccount) getValue(row, 10));
-					crr.setRequestedByUser((User) getValue(row, 11));
-					crr.setRequestedByUserOther((String) getValue(row, 12));
-					crr.setDeadline((Date) getValue(row, 13));
-					crr.setNotes((String) getValue(row, 14));
-					crr.setAuditColumns(permissions);
+					ContractorRegistrationRequest crr = createdRegistrationRequest(row);
 
 					// Assuming that no company name = empty row
 					if (crr.getName() == null)
 						continue;
 
-					if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
-						crr.setRequestedByUserOther(null);
-
-					if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
-							|| crr.getRequestedBy() == null)
-						addActionError("Missing required fields in row " + (j + 1));
-
-					if (Strings.isEmpty(crr.getEmail()))
-						addActionError("Contact information is required. Missing email in row " + (j + 1));
-
-					if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
-						addActionError("Missing requested by user field in row " + (j + 1));
-
-					if (crr.getDeadline() == null)
-						crr.setDeadline(DateBean.addMonths(new Date(), 2));
-
-					if (!Strings.isEmpty(crr.getNotes()))
-						crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - "
-								+ crr.getNotes());
+					checkRequestForErrors(j, crr);
 
 					requests.add(crr);
 				}
@@ -179,6 +146,55 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			addActionMessage("Successfully imported <b>" + requests.size() + "</b> registration request"
 					+ (requests.size() == 1 ? "" : "s"));
 		}
+	}
+
+	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
+		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
+		crr.setName((String) getValue(row, 0));
+		crr.setContact((String) getValue(row, 1));
+		crr.setPhone((String) getValue(row, 2));
+		crr.setEmail((String) getValue(row, 3));
+		crr.setTaxID((String) getValue(row, 4));
+		crr.setAddress((String) getValue(row, 5));
+		crr.setCity((String) getValue(row, 6));
+		crr.setState((State) getValue(row, 7));
+		crr.setZip(getValue(row, 8).toString());
+		crr.setCountry((Country) getValue(row, 9));
+		crr.setRequestedBy((OperatorAccount) getValue(row, 10));
+		crr.setRequestedByUser((User) getValue(row, 11));
+		crr.setRequestedByUserOther((String) getValue(row, 12));
+		crr.setDeadline((Date) getValue(row, 13));
+		crr.setNotes((String) getValue(row, 14));
+		crr.setAuditColumns(permissions);
+		crr.setStatus(ContractorRegistrationRequestStatus.Active);
+		return crr;
+	}
+
+	private void checkRequestForErrors(int j, ContractorRegistrationRequest crr) {
+		if (crr.getRequestedByUser() != null && !Strings.isEmpty(crr.getRequestedByUserOther()))
+			crr.setRequestedByUserOther(null);
+
+		if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
+				|| crr.getRequestedBy() == null)
+			addActionError("Missing required fields in row " + (j + 1));
+
+		if (Strings.isEmpty(crr.getEmail()))
+			addActionError("Contact information is required. Missing email in row " + (j + 1));
+
+		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
+			addActionError("Missing requested by user field in row " + (j + 1));
+
+		if (crr.getDeadline() == null)
+			crr.setDeadline(DateBean.addMonths(new Date(), 2));
+
+		if (!Strings.isEmpty(crr.getNotes()))
+			crr.setNotes(maskDateFormat(new Date()) + " - " + permissions.getName() + " - " + crr.getNotes());
+
+		if (crr.getContact().length() > 30)
+			crr.setContact(crr.getContact().substring(0, 30));
+
+		if (crr.getPhone().length() > 20)
+			crr.setPhone(crr.getPhone().substring(0, 20));
 	}
 
 	private int findGap(ContractorRegistrationRequest newContractor) {

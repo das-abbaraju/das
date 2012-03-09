@@ -595,8 +595,7 @@
 			<result>struts/reports/report_con_approvals_data.jsp</result>
 		</action>
 
-		<action name="ReportNewRequestedContractor"
-			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
+		<action name="ReportNewRequestedContractor"	class="com.picsauditing.actions.report.ReportNewRequestedContractor">
 			<result>struts/reports/report_con_new_registration.jsp</result>
 		</action>
 
@@ -606,11 +605,9 @@
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ReportNewReqConImport"
-			class="com.picsauditing.actions.report.ReportNewReqConImport">
+		<action name="ReportNewReqConImport" class="com.picsauditing.actions.report.ReportNewReqConImport">
 			<result>struts/reports/report_con_new_reg_upload.jsp</result>
-			<result name="success">struts/reports/report_con_new_reg_upload.jsp
-			</result>
+			<result name="success">struts/reports/report_con_new_reg_upload.jsp</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
