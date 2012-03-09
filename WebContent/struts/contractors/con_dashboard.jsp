@@ -175,6 +175,12 @@
 										<s:text name="ContractorView.LifetimeFree" />
 									</div>
 								</s:if>
+								
+								<s:if test="(permissions.admin || permissions.contractor) && hasPendingGeneralContractors">
+									<div class="alert">
+										<s:text name="ContractorView.PendingGeneralContractorsAlert" />
+									</div>
+								</s:if>
 				
 								<s:if test="co != null">
 									<s:if test="co.operatorAccount.approvesRelationships.toString() == 'Yes'">
@@ -404,8 +410,38 @@
 							</div>
 						</div>
 					</s:if>
-
-				
+					
+					<%-- Pending General Contractors --%>
+					<s:if test="(permissions.admin || permissions.contractor) && hasPendingGeneralContractors">
+						<div class="panel_placeholder">
+							<div class="panel">
+								<div class="panel_header">
+									<s:text name="ContractorView.PendingGeneralContractors" />
+								</div>
+								<div class="panel_content" id="con_pending_gcs">
+									<table class="report">
+										<thead>
+											<tr>
+												<th>
+													<s:text name="global.Operator" />
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<s:iterator value="generalContractorsWaitingContractorApproval">
+												<tr>
+													<td>
+														<s:property value="operatorAccount.name" />
+													</td>
+												</tr>
+											</s:iterator>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</s:if>
+					
 					<%-- Contractor Info --%>
 					<div class="panel_placeholder">
 						<div class="panel">

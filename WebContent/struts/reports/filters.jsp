@@ -192,7 +192,7 @@
 		<s:if test="filter.showWorkStatus">
 			<div class="filterOption">
 				<a href="#"><s:text name="Filters.label.WorkStatus" /></a> =
-				<s:select list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('Filters.status.Pending')}" headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
+				<s:select list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('Filters.status.Pending'),'C':getText('ContractorOperator.WorkStatusContractor')}" headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
 			</div>
 		</s:if>
 		

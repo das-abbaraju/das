@@ -89,6 +89,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
 	protected TimeZone timezone;
+	protected boolean autoApprove = true;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -301,6 +302,14 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setTimezone(TimeZone timezone) {
 		this.timezone = timezone;
+	}
+
+	public boolean isAutoApprove() {
+		return autoApprove;
+	}
+
+	public void setAutoApprove(boolean autoApprove) {
+		this.autoApprove = autoApprove;
 	}
 
 	/**
@@ -788,7 +797,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		if (serviceTypes == null) {
 			return;
 		}
-		
+
 		boolean value = false;
 		for (ContractorType serviceType : ContractorType.values()) {
 			if (serviceTypes.contains(serviceType))
@@ -811,7 +820,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 			}
 		}
 	}
-	
+
 	@Transient
 	public boolean isMaterialSupplierOnly() {
 		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));

@@ -217,6 +217,10 @@
 		<action name="OperatorsFlagSummaryAjax" class="com.picsauditing.actions.operators.OperatorFlagsWidget">
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
+		
+		<action name="SubcontractorsFlagMatrix" class="com.picsauditing.actions.operators.SubcontractorsFlagMatrixWidget">
+			<result>/struts/widgets/subcontractors_flag_matrix.jsp</result>
+		</action>
 
 		<action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
 			<result>struts/forms/manage_resources.jsp</result>

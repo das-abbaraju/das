@@ -141,11 +141,7 @@
 							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="generalContractor" theme="pics" cssClass="inline" />
 							<s:text name="FacilitiesEdit.LinkedContractorAccount" />
 							<br />
-							<pics:autocomplete action="ContractorAutocomplete" name="linkedContractor.contractor" />
-						</li>
-						<li>
-							<s:text name="FacilitiesEdit.HasOwnFlagCriteria" />
-							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="inheritsFlagCriteria" theme="pics" cssClass="inline" />
+							<pics:autocomplete action="ContractorAutocomplete" name="operator.gcContractor.contractorAccount" />
 						</li>
 						<s:if test="operator.corporate">
 							<li>
@@ -400,6 +396,20 @@
 							<s:radio 
 								list="#{'Yes':'Yes','No':'No'}" 
 								name="operator.approvesRelationships" 
+								theme="pics"
+								cssClass="inline"
+							/>
+							<pics:fieldhelp title="Approves Contractors">
+								If Yes, contractors must be approved before operator users will see them. 
+								Default and recommended setting is No. 
+								If set to Yes, at least one user should have the permissions: [Approve Contractors] and [View Unapproved Contractors].
+							</pics:fieldhelp>
+						</li>
+						<li>
+							<label>Auto Approves Contractors:</label>
+							<s:radio 
+								list="#{true:'Yes',false:'No'}" 
+								name="operator.autoApprove" 
 								theme="pics"
 								cssClass="inline"
 							/>

@@ -34,7 +34,12 @@
 			<s:iterator value="data" status="stat">
 				<tr>
 					<td style="text-align: center;">
-						<input id="conid_co<s:property value="get('id')"/>" type="checkbox" class="massCheckable" name="conids" value="<s:property value="get('id')"/>"/>
+						<s:if test="get('workStatus')) == \"C\"">
+							<s:text name="ContractorApproval.WaitingOnContractor" />
+						</s:if>
+						<s:else>
+							<input id="conid_co<s:property value="get('id')"/>" type="checkbox" class="massCheckable" name="conids" value="<s:property value="get('id')"/>"/>
+						</s:else>
 					</td>
 					<td>
 						<a href="ContractorView.action?id=<s:property value="get('id')"/>" rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" class="contractorQuick" title="<s:property value="get('name')" />">

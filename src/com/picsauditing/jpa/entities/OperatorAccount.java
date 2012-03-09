@@ -2,6 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,8 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
+
+	private ContractorOperator gcContractor;
 
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
@@ -286,6 +289,37 @@ public class OperatorAccount extends Account {
 	}
 
 	@Transient
+	public ContractorOperator getGcContractor() {
+		if (gcContractor == null) {
+			for (ContractorOperator contractorOperator : getContractorOperators()) {
+				if (contractorOperator.isGeneralContractorType())
+					gcContractor = contractorOperator;
+			}
+		}
+		
+		return gcContractor;
+	}
+	
+	@Transient
+	public boolean isGeneralContractor() {
+		return getGcContractor() != null;
+	}
+	
+	@Transient
+	public boolean isGCFree() {
+		return doContractorsPay.equals("No");
+	}
+	
+	@Transient
+	public List<OperatorAccount> getGcContractorOperators() {
+		if (getGcContractor() != null) {
+			return getGcContractor().getContractorAccount().getOperatorAccounts();
+		}
+		
+		return Collections.emptyList();
+	}
+	
+	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
 
@@ -364,8 +398,9 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorAccounts()
-	 * @return a list of all "associated" operator accounts associated via the facilities intersection table for
-	 *         example, BASF would contain BASF Port Arthur but not BASF Freeport Hub
+	 * @return a list of all "associated" operator accounts associated via the
+	 *         facilities intersection table for example, BASF would contain
+	 *         BASF Port Arthur but not BASF Freeport Hub
 	 */
 	@OneToMany(mappedBy = "corporate")
 	public List<Facility> getOperatorFacilities() {
@@ -378,8 +413,9 @@ public class OperatorAccount extends Account {
 
 	/**
 	 * @see getOperatorFacilities()
-	 * @return a list of all the "direct" child operators/corporates mapped through operator.parentID for example, BASF
-	 *         would contain BASF Freeport Hub, but not BASF Port Arthur
+	 * @return a list of all the "direct" child operators/corporates mapped
+	 *         through operator.parentID for example, BASF would contain BASF
+	 *         Freeport Hub, but not BASF Port Arthur
 	 */
 	@OneToMany(mappedBy = "parent")
 	public List<OperatorAccount> getOperatorChildren() {
@@ -399,7 +435,7 @@ public class OperatorAccount extends Account {
 	public void setParent(OperatorAccount parent) {
 		this.parent = parent;
 	}
-	
+
 	public boolean isOrIsDescendantOf(int id) {
 		if (this.id == id)
 			return true;

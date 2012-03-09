@@ -3,7 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Transient;
 
 public enum ContractorOperatorRelationshipType implements Translatable {
-	ContractorOperator("", ""), GeneralContractor("", ""), SubContractorOperator("", "");
+	ContractorOperator("", ""), GeneralContractor("", "");
 
 	private String type;
 	private String description;

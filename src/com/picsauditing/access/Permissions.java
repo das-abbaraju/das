@@ -24,10 +24,11 @@ import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
 
 /**
- * This is the main class that is stored for each user containing information if they are logged in, which groups
- * they're in, and what permission(s) they have
- *
- * Warning: this class is stored in the session Make sure you keep the footprint very small
+ * This is the main class that is stored for each user containing information if
+ * they are logged in, which groups they're in, and what permission(s) they have
+ * 
+ * Warning: this class is stored in the session Make sure you keep the footprint
+ * very small
  */
 public class Permissions implements Serializable {
 
@@ -37,6 +38,7 @@ public class Permissions implements Serializable {
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 	private Set<Integer> groups = new HashSet<Integer>();
+	private Set<Integer> inheritedGroups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
@@ -61,6 +63,8 @@ public class Permissions implements Serializable {
 	private boolean requiresOQ = false;
 	private boolean requiresCompetencyReview = false;
 	private boolean active = false;
+	private boolean gcContractor = false;
+	private boolean gcOperator = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 
 	private int shadowedUserID;
@@ -87,6 +91,9 @@ public class Permissions implements Serializable {
 		requiresCompetencyReview = false;
 		canSeeInsurance = false;
 
+		gcContractor = false;
+		gcOperator = false;
+
 		adminID = 0;
 		topAccountID = 0;
 
@@ -95,6 +102,7 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
+		inheritedGroups.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
@@ -181,10 +189,13 @@ public class Permissions implements Serializable {
 							canSeeInsurance = true;
 					}
 				}
+
+				if (operator.isGeneralContractor())
+					gcOperator = true;
 			}
-			
+
 			for (com.picsauditing.jpa.entities.UserAccess ua : user.getPermissions()) {
-				permissions.add(new UserAccess(ua));				
+				permissions.add(new UserAccess(ua));
 			}
 
 			if (isContractor()) {
@@ -197,6 +208,10 @@ public class Permissions implements Serializable {
 			for (UserGroup u : user.getGroups()) {
 				if (u.getGroup().isGroup())
 					groups.add(u.getGroup().getId());
+			}
+
+			for (UserGroup u : user.getGroups()) {
+				addInheritedUserGroup(inheritedGroups, u);
 			}
 
 		} catch (Exception ex) {
@@ -228,6 +243,10 @@ public class Permissions implements Serializable {
 
 	public Set<Integer> getGroups() {
 		return groups;
+	}
+
+	public Set<Integer> getInheritedGroups() {
+		return inheritedGroups;
 	}
 
 	public String getUsername() {
@@ -283,8 +302,9 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * This gets the shadowed user from the User object, if it's set. Otherwise this returns the user's own id
-	 *
+	 * This gets the shadowed user from the User object, if it's set. Otherwise
+	 * this returns the user's own id
+	 * 
 	 * @return user ID or shadowed user ID
 	 */
 	public int getShadowedUserID() {
@@ -297,7 +317,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Does this user have 'oType' access to 'opPerm'
-	 *
+	 * 
 	 * @param opPerm
 	 *            OSHA, ContractorDetails, UserAdmin, etc
 	 * @param oType
@@ -370,6 +390,10 @@ public class Permissions implements Serializable {
 		return groups.contains(group);
 	}
 
+	public boolean hasInheritedGroup(Integer group) {
+		return inheritedGroups.contains(group);
+	}
+
 	public boolean isContractor() {
 		return "Contractor".equals(this.accountType);
 	}
@@ -388,7 +412,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * True if operator or corporate
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isOperatorCorporate() {
@@ -406,7 +430,7 @@ public class Permissions implements Serializable {
 	public boolean seesAllContractors() {
 		return this.hasPermission(OpPerms.AllContractors);
 	}
-	
+
 	public boolean isDeveloperEnvironment() {
 		return this.hasPermission(OpPerms.DevelopmentEnvironment);
 	}
@@ -417,7 +441,7 @@ public class Permissions implements Serializable {
 	public boolean isAuditor() {
 		return hasGroup(11);
 	}
-	
+
 	public boolean isMarketing() {
 		return hasGroup(10801);
 	}
@@ -432,7 +456,7 @@ public class Permissions implements Serializable {
 
 	/**
 	 * Is the logged in user an non-PICS employee auditor?
-	 *
+	 * 
 	 * @return
 	 */
 	public boolean isOnlyAuditor() {
@@ -494,12 +518,13 @@ public class Permissions implements Serializable {
 
 	/**
 	 * user.getAccount().getCountry().getIsoCode()
+	 * 
 	 * @return
 	 */
 	public String getCountry() {
 		return country;
 	}
-	
+
 	public boolean isRequiresCompetencyReview() {
 		return requiresCompetencyReview;
 	}
@@ -510,6 +535,18 @@ public class Permissions implements Serializable {
 
 	public boolean isCanSeeInsurance() {
 		return canSeeInsurance;
+	}
+
+	public boolean isGcContractor() {
+		return gcContractor;
+	}
+	
+	public boolean isGcOperator() {
+		return gcOperator;
+	}
+
+	public boolean isGeneralContractor() {
+		return gcContractor || gcOperator;
 	}
 
 	public boolean canSeeAudit(AuditType auditType) {
@@ -526,7 +563,7 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return Map of AuditTypeID to OperatorID (aka governing body)
 	 */
 	public Set<Integer> getVisibleAuditTypes() {
@@ -558,7 +595,8 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * Translators need the ability to switch accounts and retain the ability to do translations
+	 * Translators need the ability to switch accounts and retain the ability to
+	 * do translations
 	 */
 	public void setTranslatorOn() {
 		UserAccess ua = new UserAccess();
@@ -567,5 +605,18 @@ public class Permissions implements Serializable {
 		ua.setDeleteFlag(true);
 
 		this.permissions.add(ua);
+	}
+
+	private void addInheritedUserGroup(Set<Integer> inheritedGroups, UserGroup userGroup) {
+		if (userGroup.getGroup() != null && userGroup.getGroup().getGroups() != null) {
+			for (UserGroup group : userGroup.getGroup().getGroups()) {
+				if (group.getGroup().isGroup()) {
+					inheritedGroups.add(group.getGroup().getId());
+					addInheritedUserGroup(inheritedGroups, group);
+				}
+			}
+		}
+
+		return;
 	}
 }

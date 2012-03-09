@@ -817,4 +817,24 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return null;
 	}
+	
+	public boolean isHasPendingGeneralContractors() {
+		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+			if (contractorOperator.isGeneralContractorType() && contractorOperator.isWorkStatusContractor())
+				return true;
+		}
+
+		return false;
+	}
+
+	public List<ContractorOperator> getGeneralContractorsWaitingContractorApproval() {
+		List<ContractorOperator> generalContractors = new ArrayList<ContractorOperator>();
+		
+		for (ContractorOperator contractorOperator : contractor.getOperators()) {
+			if (contractorOperator.isGeneralContractorType() && contractorOperator.isWorkStatusContractor())
+				generalContractors.add(contractorOperator);
+		}
+		
+		return generalContractors;
+	}
 }

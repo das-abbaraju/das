@@ -37,14 +37,16 @@ public class WidgetUserDAO extends PicsDAO {
 
 	public List<WidgetUser> findByUser(Permissions permissions) {
 
-		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? OR wu.user.id = ? ORDER BY wu.sortOrder");
-		query.setParameter(2, permissions.getUserId()); // user specific widgets / not groups
+		Query query = em
+				.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? OR wu.user.id = ? ORDER BY wu.sortOrder");
+		query.setParameter(2, permissions.getUserId());
+		// user specific widgets / not groups
 
 		permissions.getAccountType();
 		if (permissions.isPicsEmployee())
 			query.setParameter(1, 941); // tallred
-		if(permissions.hasGroup(959)) 
-			query.setParameter(1, 959); // For CSRs 
+		if (permissions.hasGroup(959))
+			query.setParameter(1, 959); // For CSRs
 		if (permissions.isOnlyAuditor())
 			query.setParameter(1, 910); // ddooly
 		if (permissions.isOperator())
@@ -53,6 +55,11 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, 646); // shellcorporate
 		if (permissions.isContractor())
 			query.setParameter(1, 1); // contractor
+		// TODO: update with real id
+		if (permissions.hasInheritedGroup(61460))
+			query.setParameter(1, 61460); // GC Free
+		if (permissions.hasInheritedGroup(61461))
+			query.setParameter(1, 61461); // GC Full
 
 		return query.getResultList();
 	}

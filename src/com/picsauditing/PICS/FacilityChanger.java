@@ -19,6 +19,7 @@ import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
 import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
@@ -78,11 +79,19 @@ public class FacilityChanger {
 		ContractorOperator co = new ContractorOperator();
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
-
+		co.setType(ContractorOperatorRelationshipType.ContractorOperator);
+		
 		if (permissions.isOperatorCorporate()) {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
-			co.setWorkStatus("Y");
+			co.setWorkStatus(ContractorOperator.WORK_STATUS_YES);
+		}
+		
+		if (operator.isGeneralContractor()) {
+			co.setType(ContractorOperatorRelationshipType.GeneralContractor);
+			
+			if (!contractor.isAutoApprove())
+				co.setWorkStatus(ContractorOperator.WORK_STATUS_CONTRACTOR);
 		}
 
 		co.setAuditColumns(permissions);
@@ -272,11 +281,12 @@ public class FacilityChanger {
 	}
 
 	/**
-	 * @return Returns the earliest added OperatorAccount or null if no operators are present.
+	 * @return Returns the earliest added OperatorAccount or null if no
+	 *         operators are present.
 	 */
 	private OperatorAccount findEarliestAddedOperator() {
-		LinkedList<OperatorAccount> creationDateQueue = new LinkedList<OperatorAccount>(contractor
-				.getOperatorAccounts());
+		LinkedList<OperatorAccount> creationDateQueue = new LinkedList<OperatorAccount>(
+				contractor.getOperatorAccounts());
 		Collections.sort(creationDateQueue, new Comparator<OperatorAccount>() {
 			@Override
 			public int compare(OperatorAccount o1, OperatorAccount o2) {

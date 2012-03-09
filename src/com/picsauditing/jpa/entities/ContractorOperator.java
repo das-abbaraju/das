@@ -34,11 +34,15 @@ import com.picsauditing.util.Strings;
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
+	public static final String WORK_STATUS_PENDING = "P";
+	public static final String WORK_STATUS_YES = "Y";
+	public static final String WORK_STATUS_NO = "N";
+	public static final String WORK_STATUS_CONTRACTOR = "C";
 
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private ContractorOperatorRelationshipType type;
-	private String workStatus = "P";
+	private String workStatus = WORK_STATUS_PENDING;
 	private FlagColor flagColor;
 	private FlagColor baselineFlag;
 	private Integer baselineApprover;
@@ -85,10 +89,20 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setType(ContractorOperatorRelationshipType type) {
 		this.type = type;
 	}
-
+	
+	@Transient
+	public boolean isGeneralContractorType() {
+		return ContractorOperatorRelationshipType.GeneralContractor.equals(getType());
+	}
+	
+	@Transient
+	public boolean isContractorOperatorType() {
+		return ContractorOperatorRelationshipType.ContractorOperator.equals(getType());
+	}
+	
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this should default to P and then be approved or
-	 * rejected
+	 * Assume Yes if the operator approvesRelationships=No, otherwise this
+	 * should default to P and then be approved or rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
@@ -103,25 +117,33 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	@Transient
 	public boolean isWorkStatusApproved() {
 		if (!getOperatorAccount().isCorporate())
-			return "Y".equals(workStatus);
+			return WORK_STATUS_YES.equals(workStatus);
 		else
-			return isChildrenWorkStatusEqual("Y");
+			return isChildrenWorkStatusEqual(WORK_STATUS_YES);
 	}
 
 	@Transient
 	public boolean isWorkStatusRejected() {
 		if (!getOperatorAccount().isCorporate())
-			return "N".equals(workStatus);
+			return WORK_STATUS_NO.equals(workStatus);
 		else
-			return isChildrenWorkStatusEqual("N");
+			return isChildrenWorkStatusEqual(WORK_STATUS_NO);
 	}
 
 	@Transient
 	public boolean isWorkStatusPending() {
 		if (!getOperatorAccount().isCorporate())
-			return "P".equals(workStatus);
+			return WORK_STATUS_PENDING.equals(workStatus);
 		else
-			return isChildrenWorkStatusEqual("P");
+			return isChildrenWorkStatusEqual(WORK_STATUS_PENDING);
+	}
+
+	@Transient
+	public boolean isWorkStatusContractor() {
+		if (!getOperatorAccount().isCorporate())
+			return WORK_STATUS_CONTRACTOR.equals(workStatus);
+		else
+			return isChildrenWorkStatusEqual(WORK_STATUS_CONTRACTOR);
 	}
 
 	private boolean isChildrenWorkStatusEqual(String parentStatus) {

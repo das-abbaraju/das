@@ -441,6 +441,15 @@
 										/><s:text name="ContractorAccount.transportationServices" />
 									</li>
 									<li>
+										<label>Auto Approves General Contractors:</label>
+										<s:radio 
+											list="#{true:'Yes',false:'No'}" 
+											name="contractor.autoApprove" 
+											theme="pics"
+											cssClass="inline"
+										/>
+									</li>
+									<li>
 										<s:if test="hasImportPQFAudit">
 											<s:submit method="expireImportPQF" cssClass="picsbutton negative" id="removeImportPQFButton" value="Remove Import PQF" />
 										</s:if>

@@ -1549,5 +1549,14 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return meetsOperatorsRequirements;
 	}
+	
+	@Transient
+	public ContractorOperator getContractorOperatorForOperator(OperatorAccount operator) {
+		for (ContractorOperator op : getOperators()) {
+			if (op.getOperatorAccount().getId() == operator.getId())
+				return op;
+		}
+		return null;
+	}
 
 }

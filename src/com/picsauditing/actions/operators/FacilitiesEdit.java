@@ -22,15 +22,18 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
+import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
 import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
@@ -50,6 +53,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
+	@Autowired
+	protected ContractorOperatorDAO contractorOperatorDAO;
 
 	protected String createType;
 	protected List<Integer> facilities;
@@ -65,8 +70,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected State state;
 	protected int contactID;
 	protected boolean isGeneralContractor;
-	protected boolean inheritsFlagCriteria;
-	protected ContractorOperator linkedContractor;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -272,6 +275,26 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				}
 			}
 
+			if (operator.getGcContractor() != null
+					&& operator.getGcContractor().getContractorAccount().getStatus().isActive()) {
+				List<ContractorOperator> existingContractorOperator = contractorOperatorDAO
+						.findWhere("operatorAccount.id = " + operator.getId() + " AND contractorAccount.id = "
+								+ operator.getGcContractor().getContractorAccount().getId());
+
+				if (existingContractorOperator.size() > 0) {
+					for (ContractorOperator existing : existingContractorOperator) {
+						operator.getContractorOperators().remove(existing);
+						contractorOperatorDAO.remove(existing);
+					}
+				}
+
+				operator.getGcContractor().setOperatorAccount(operator);
+				operator.getGcContractor().setAuditColumns(permissions);
+				operator.getGcContractor().setFlagColor(FlagColor.Clear);
+				operator.getGcContractor().setType(ContractorOperatorRelationshipType.GeneralContractor);
+				contractorOperatorDAO.save(operator.getGcContractor());
+			}
+
 			operator.setAuditColumns(permissions);
 			operator.setNameIndex();
 			operator.setAccountTypes(operatorServiceTypes);
@@ -444,7 +467,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.operatorServiceTypes = operatorServiceTypes;
 	}
 
-
 	// TODO: This should be converted to Struts2 Validation
 	private Vector<String> validateAccount(OperatorAccount operator) {
 		Vector<String> errorMessages = new Vector<String>();
@@ -558,21 +580,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	public void setContactID(int contactID) {
 		this.contactID = contactID;
 	}
-	
+
 	public boolean isGeneralContractor() {
 		return isGeneralContractor;
 	}
-	
+
 	public void setGeneralContractor(boolean isGeneralContractor) {
 		this.isGeneralContractor = isGeneralContractor;
-	}
-	
-	public boolean isInheritsFlagCriteria() {
-		return inheritsFlagCriteria;
-	}
-	
-	public void setInheritsFlagCriteria(boolean inheritsFlagCriteria) {
-		this.inheritsFlagCriteria = inheritsFlagCriteria;
 	}
 
 	public List<AccountUser> getAccountManagers() {

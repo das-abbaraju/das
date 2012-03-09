@@ -32,7 +32,7 @@ public class ReportContractorApproval extends ReportAccount {
 
 	protected List<Integer> conids = null;
 	protected String operatorNotes = "";
-	protected String workStatus = "P";
+	protected String workStatus = ContractorOperator.WORK_STATUS_PENDING;
 
 	@Override
 	protected void buildQuery() {
@@ -66,7 +66,7 @@ public class ReportContractorApproval extends ReportAccount {
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowWorkStatus(true);
 		getFilter().setShowLocation(false);
-		getFilter().setWorkStatus("P");
+		getFilter().setWorkStatus(ContractorOperator.WORK_STATUS_PENDING);
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
@@ -146,9 +146,11 @@ public class ReportContractorApproval extends ReportAccount {
 	}
 
 	public String getWorkStatusDesc(String workStatus) {
-		if (workStatus.equals("P"))
+		if (workStatus.equals(ContractorOperator.WORK_STATUS_CONTRACTOR))
+			return "Contractor Approves";
+		if (workStatus.equals(ContractorOperator.WORK_STATUS_PENDING))
 			return "Pending";
-		if (workStatus.equals("Y"))
+		if (workStatus.equals(ContractorOperator.WORK_STATUS_YES))
 			return "Yes";
 		else
 			return "No";

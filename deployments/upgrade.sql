@@ -6,6 +6,12 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-2219
+update generalcontractors gc
+set gc.type = 'ContractorOperator'
+where gc.type is null;
+
+
 -- PICS-4791
 update operators o set o.discountPercent = .5, o.discountExpiration = '2012-03-15' where o.id = 19344;
 update operators o set o.discountPercent = .5, o.discountExpiration = '2012-06-01' where o.id = 26873;
