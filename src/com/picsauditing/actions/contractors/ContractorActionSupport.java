@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +17,11 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.AccountActionSupport;
+import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -25,6 +29,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.Certificate;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -57,6 +62,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	protected boolean limitedView = false;
 	protected List<ContractorOperator> activeOperators;
 	protected Map<ContractorAudit, AuditStatus> contractorAuditWithStatuses = null;
+	protected List<ContractorAudit> employeeGuardAudits;
 
 	protected List<Certificate> certificates = null;
 
@@ -66,6 +72,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private PermissionToViewContractor permissionToViewContractor = null;
 
 	protected ContractorRegistrationStep currentStep = null;
+	protected Set<AuditType> manuallyAddAudits = null;
+	@Autowired
+	protected AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
+	protected AuditDecisionTableDAO auditRuleDAO;
 
 	public String execute() throws Exception {
 		findContractor();
@@ -370,22 +381,39 @@ public class ContractorActionSupport extends AccountActionSupport {
 		}
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
-			// Add Integrity Management
-			MenuComponent subMenu = new MenuComponent("IM", "ContractorDocuments.action?id=" + id + "#"
-					+ ContractorDocuments.getSafeName(getText("AuditType.17.name")));
+			// Add EmployeeGUARD
+			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
+			boolean addMenu = false;
+			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
+				subMenu.addChild(getText("ManageEmployees.title"), "ManageEmployees.action?id=" + id);
+			}
+			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.DefineRoles)) {
+				subMenu.addChild(getText("ManageJobRoles.title"), "ManageJobRoles.action?id=" + id);
+			}
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
-				if (audit.getAuditType().getClassType().equals(AuditTypeClass.IM) && audit.getOperators().size() > 0) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
+				if (audit.getAuditType().getClassType().isImEmployee() && audit.getOperators().size() > 0) {
+					if (employeeGuardAudits == null)
+						employeeGuardAudits = new ArrayList<ContractorAudit>();
+					employeeGuardAudits.add(audit);
+					
+					if (!audit.getAuditType().isEmployeeSpecificAudit()) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						String linkText = getText(audit.getAuditType().getI18nKey("name"))
-								+ (audit.getAuditFor() == null ? "" : " " + audit.getAuditFor());
+						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
+						String linkText = getText(audit.getAuditType().getI18nKey("name")) + " '" + year;
 						childMenu.setName(linkText);
+						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
 					}
+					addMenu = true;
 					iter.remove();
 				}
 			}
+			
+			if (isManuallyAddAudit()) {
+				subMenu.addChild(getText("EmployeeGUARD.CreateNewAudit"), "AuditOverride.action?id=" + id);
+			}
+			
 			addSubMenu(menu, subMenu);
 		}
 
@@ -706,4 +734,89 @@ public class ContractorActionSupport extends AccountActionSupport {
 		else
 			return 3;
 	}
+
+	public List<ContractorAudit> getEmployeeGuardAudits() {
+		return employeeGuardAudits;
+	}
+
+	public void setEmployeeGuardAudits(List<ContractorAudit> employeeGuardAudits) {
+		this.employeeGuardAudits = employeeGuardAudits;
+	}
+
+	public boolean isManuallyAddAudit() {
+		if (getManuallyAddAudits().size() > 0) {
+			if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
+				return true;
+			if (permissions.isOperatorCorporate()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Set<AuditType> getManuallyAddAudits() {
+		if (manuallyAddAudits == null) {
+			manuallyAddAudits = new HashSet<AuditType>();
+			auditTypeRuleCache.initialize(auditRuleDAO);
+			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
+	
+			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
+				if (isValidManualAuditType(auditTypeRule)) {
+					manuallyAddAudits.add(auditTypeRule.getAuditType());
+				}
+			}
+		}
+	
+		return manuallyAddAudits;
+	}
+
+	public boolean isValidManualAuditType(int auditTypeId) {
+		if (manuallyAddAudits == null)
+			getManuallyAddAudits();
+		
+		AuditType auditType = new AuditType(auditTypeId);
+		
+		return manuallyAddAudits.contains(auditType);
+	}
+	
+	public boolean isValidManualAuditType(AuditTypeRule auditTypeRule) {
+		if (!auditTypeRule.isInclude() || auditTypeRule.getAuditType() == null
+				|| auditTypeRule.getAuditType().isAnnualAddendum() || auditTypeRule.getAuditType().isExtractable()) {
+			return false;
+		}
+		
+		if (!auditTypeRule.getAuditType().isHasMultiple() && !auditTypeRule.isManuallyAdded()) {
+			return false;
+		}
+		
+		if (!auditTypeRule.getAuditType().isHasMultiple()) {
+			for (ContractorAudit audit : contractor.getAudits()) {
+				if (audit.getAuditType().getId() == auditTypeRule.getAuditType().getId() && !audit.isExpired()) {
+					return false;
+				}
+			}
+		}
+		
+		if (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded()) {
+			if (permissions.isAdmin())
+				return true;
+			else if (permissions.isOperator()) {
+				if (auditTypeRule.getOperatorAccount() != null
+						&& (permissions.getCorporateParent().contains(
+								auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
+								.getOperatorAccount().getId())) {
+					return true;
+				}
+			} else if (permissions.isCorporate()) {
+				if (auditTypeRule.getOperatorAccount() != null
+						&& auditTypeRule.getOperatorAccount().getId() == permissions.getAccountId()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+
 }

@@ -80,6 +80,15 @@
 			</s:elseif >
 		</s:if>
 		
+		<s:if test="audit == null" >
+			<div>
+				<a href="EmployeeDashboard.action?id=<s:property value='account.id' />" >
+					<s:text name="global.EmployeeGUARD" />
+				</a>
+			</div>
+		</s:if>
+		
+		
 		<table id="rolesTable">
 			<tr>
 				<td class="leftCell">

@@ -662,7 +662,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	protected void addNote(String newNote, LowMedHigh priority) {
 		User user = new User(permissions.getUserId());
-		super.addNote(account, newNote, noteCategory, priority, true, Account.EVERYONE, user, employee);
+		super.addNote(employee.getAccount(), newNote, noteCategory, priority, true, Account.EVERYONE, user, employee);
 	}
 
 	// Classes

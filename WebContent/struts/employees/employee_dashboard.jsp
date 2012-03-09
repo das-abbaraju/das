@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>EmployeeGUARD&trade; Dashboard</title>
+<title><s:text name="global.EmployeeGUARD" /></title>
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen"
@@ -42,6 +42,9 @@
 		
 	<s:set name="canEditCompetencies"
 		value="permissions.hasPermission('DefineCompetencies', 'Edit')" />
+
+	<s:set name="canAddAudits"
+		value="manuallyAddAudit" />
 		
 	<table id="employee_dashboard">
 		<tr>
@@ -49,28 +52,22 @@
 				<!--  1st Column -->
 				<div class="panel_placeholder">
 					<div class="panel">
-						<div class="panel_header">Employees</div>
+						<div class="panel_header"><s:text name="global.Employees" /></div>
 						<div class="panel_content">
 							<s:if test="activeEmployees.size() > 0">
 								<table class="table">
 									<thead>
 										<tr>
-											<th></th>
-											<th>Last Name</th>
-											<th>First Name</th>
-											<th>Title</th>
-											<th>Classification</th>
-											<th>Job Roles</th>
-<%-- 											<s:if test="canEditEmployees" > --%>
-<!-- 												<th>Edit</th> -->
-<%-- 											</s:if> --%>
+											<th><s:text name="Employee.lastName" /></th>
+											<th><s:text name="Employee.firstName" /></th>
+											<th><s:text name="Employee.title" /></th>
+											<th><s:text name="Employee.classification" /></th>
+											<th><s:text name="EmployeeDashboard.JobRoles" /></th>
 										</tr>
 									</thead>
 									<s:iterator value="activeEmployees" var="employee"
 										status="stat">
 										<tr <s:if test="(#stat.index + 1)%2 == 1">class="odd"</s:if>>
-											<td class="center"><s:property value="#stat.index + 1" />
-											</td>
 											<td><s:property value="#employee.lastName" />
 											</td>
 											<td><s:property value="#employee.firstName" />
@@ -84,20 +81,14 @@
 													<s:if test="#line.index > 0">, </s:if>
 													<s:property value="#er.jobRole.name" />
 												</s:iterator></td>
-<%-- 											<s:if test="canEditEmployees" > --%>
-<!-- 												<td> -->
-<%-- 													<a href="ManageEmployees.action?id=<s:property value="id" />#employee=<s:property value="#employee.id" />" --%>
-<!-- 									class="edit center" ></a> -->
-<!-- 												</td> -->
-<%-- 											</s:if> --%>
 										</tr>
 									</s:iterator>
 								</table>
 							</s:if>
 							
 							<s:if test="canEditEmployees" >
-								<a href="ManageEmployees.action?id=<s:property value="id" />"
-									class="edit">Edit <s:text name="global.Employees" /> </a>
+								<a href="ManageEmployees.action?id=<s:property value='id' />"
+									class="edit"><s:text name="EmployeeDashboard.EditEmployees" /></a>
 							</s:if>
 						</div>
 					</div>
@@ -105,24 +96,19 @@
 				<br />
 				<div class="panel_placeholder">
 					<div class="panel">
-						<div class="panel_header">Job Roles and HSE Job Competencies</div>
+						<div class="panel_header"><s:text name="EmployeeDashboard.JobRolesTitle" /></div>
 						<div class="panel_content">
 							<s:if test="contractor.jobRoles.size() > 0">
 								<table class="table">
 									<thead>
 										<tr>
-											<th></th>
-											<th>Job Role</th>
-											<th>Active</th>
-											<th>HSE Competencies</th>
-<%-- 											<s:if test="#canEditJobRoles || #canEditCompetencies" > --%>
-<!-- 												<th>Edit</th> -->
-<%-- 											</s:if> --%>
+											<th><s:text name="global.JobRole" /></th>
+											<th><s:text name="global.Active" /></th>
+											<th><s:text name="global.HSECompetencies" /></th>
 										</tr>
 									</thead>
 									<s:iterator value="contractor.jobRoles" var="role" status="stat">
 										<tr <s:if test="(#stat.index + 1)%2 == 1">class="odd"</s:if>>
-											<td class="center"><s:property value="#stat.index + 1" /></td>
 											<td><s:property value="#role.name" /></td>
 											<td class="center">
 												<s:if test="active">
@@ -140,119 +126,86 @@
 													<s:property value="#jobCompetency.competency.label" />
 												</s:iterator>
 											</td>
-<%-- 											<s:if test="#canEditJobRoles" > --%>
-<%-- 												<td><a href="ManageJobRoles.action?role=<s:property value="#role.id" />&account=<s:property value="#role.account.id" />" class="edit"></a> --%>
-<!-- 												</td> -->
-<%-- 											</s:if> --%>
 										</tr>
 									</s:iterator>
 								</table>
 							</s:if>
 							<s:if test="#canEditJobRoles" >
-<%-- 								<s:if test="permissions.admin || permissions.hasPermission(@com.picsauditing.access.OpPerms@ContractorAdmin)"> --%>
 								<a href="ManageJobRoles.action?id=<s:property value="id" />"
-									class="edit">Edit <s:text name="ManageEmployees.header.JobRoles" /> </a>
+									class="edit"><s:text name="EmployeeDashboard.EditJobRoles" /></a>
 								<br />
 							</s:if>
 
 						</div>
 					</div>
 				</div>
-
-<!-- 				<div class="panel_placeholder"> -->
-<!-- 					<div class="panel"> -->
-<!-- 						<div class="panel_header">Projects and Job Sites</div> -->
-<!-- 						<div class="panel_content"></div> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
 			</td>
 			<td width="15px"></td>
 			<td style="vertical-align: top; width: 48%">
 				<!--  2nd Column -->
 				<div class="panel_placeholder">
 					<div class="panel">
-						<div class="panel_header">Audits</div>
+						<div class="panel_header"><s:text name="global.Audits" /></div>
 						<div class="panel_content">
-							<s:form id="empAudits" method="post" cssClass="forms">
-								<s:hidden name="id" />
-								<s:if
-									test="activeEmployees.size() > 0 || unattachedEmployeeAudits.size() > 0">
-									<table class="table">
-										<thead>
-											<tr>
-												<s:if test="canAddAudits">
-													<th colspan="2"></th>
-												</s:if>
-												<s:else>
-													<th></th>
-												</s:else>
-												<th align="center">Employee</th>
-												<th align="center">Title</th>
-												<th align="center">Audits</th>
-											</tr>
-										</thead>
-										<s:set name="rowNum" value="0" />
-										<s:iterator value="activeEmployees" var="employee"
-											status="stat">
-											<tr <s:if test="(#stat.index + 1)%2 == 1">class="odd"</s:if>>
-												<td class="center"><s:property value="#stat.index + 1" />
-												</td>
-												<s:set name="rowNum" value="#stat.index + 1" />
-												<s:if test="canAddAudits">
-													<td class="center"><input type="checkbox"
-														name="selectedEmployeeIds"
-														value="<s:property value="#employee.id" />"
-														class="selectable" />
-													</td>
-												</s:if>
-												<td><s:property value="#employee.firstName" /> <s:property
-														value="#employee.lastName" /></td>
-												<td><s:property value="#employee.title" /></td>
-												<td><s:set var="addBreak" value="false" /> <s:iterator
-														value="#employee.audits" var="empAudit">
-														<s:if
-															test="#empAudit.isVisibleTo(permissions) && (#empAudit.auditType.id==17 || #empAudit.auditType.id==29)">
-															<s:if test="#addBreak">
-																<br />
-															</s:if>
-															<a
-																href="Audit.action?auditID=<s:property value='#empAudit.id' />">
-																<s:property value='#empAudit.auditType.name' /> for <s:property
-																	value='#empAudit.requestingOpAccount.name' /> </a>
-															<s:set var="addBreak" value="true" />
-														</s:if>
-													</s:iterator>
-												</td>
-											</tr>
-										</s:iterator>
-										<s:iterator value="unattachedEmployeeAudits" var="unattachedAudit" status="stat">
-											<tr <s:if test="((#rowNum + #stat.index) % 2) == 0">class="odd"</s:if>>
-												<td><s:property value="#rowNum + #stat.index + 1" /></td>
-												<s:if test="canAddAudits"> <td></td> </s:if>
-												<td></td>
-												<td></td>
-												<td>
-													<a href="Audit.action?auditID=<s:property value="#unattachedAudit.id" />">
-																<s:property value='#unattachedAudit.auditFor' /> <s:property
-																	value='#unattachedAudit.auditType.name' /> </a>
-												</td>
-											</tr>										
-										</s:iterator>
-									</table>
+							<s:if test="employeeGuardAudits.size() > 0" >
+								<table class="table">
+									<thead>
+										<tr>
+											<th><s:text name="EmployeeDashboard.Audit" /></th>
+											<th><s:text name="EmployeeDashboard.Employee" /></th>
+											<th><s:text name="EmployeeDashboard.Location" /></th>
+											<th><s:text name="EmployeeDashboard.Effective" /></th>
+											<th><s:text name="EmployeeDashboard.Status" /></th>
+										</tr>
+									</thead>
+								<s:iterator value="employeeGuardAudits"  var="audit" status="stat" >
+									<tr <s:if test="(#stat.index + 1)%2 == 1">class="odd"</s:if>>
+										<td>
+											<a href="Audit.action?auditID=<s:property value='#audit.id' />"> <s:property value='getAuditName(#audit)' /></a>
+										</td>
+										<td>
+											<s:if test="#audit.employee !=null" >
+												<s:property value='#audit.employee.nameTitle' />
+											</s:if>
+										</td>
+										<td>
+											<s:if test="#audit.requestingOpAccount !=null" >
+												<s:property value='#audit.requestingOpAccount.name' />
+											</s:if>
+										</td>
+										<td>
+											<s:if test="#audit.effectiveDate !=null" >
+												<s:date name="#audit.effectiveDate" format="M/d/yy" />
+											</s:if>
+										</td>
+										<td>
+											<s:if test="#audit.operators.size > 0">
+												<s:iterator value="#audit.getCaoStats(permissions).keySet()" id="status" status="stat">
+													<s:if test="getCaoStats(permissions).get(#status) > 1 || #audit.getCaoStats(permissions).keySet().size > 1">
+														<s:property value="getCaoStats(permissions).get(#status)" />
+													</s:if>
+															
+													<s:text name="%{#status.getI18nKey()}" /><s:if test="!#stat.last">,</s:if>
+												</s:iterator>
+											</s:if>
+										</td>
+									</tr>
+								</s:iterator>
+								</table>
+							</s:if>
+							<s:if test="#canAddAudits">
+								<s:set var="addBreak" value="false" />
+								<s:if test="isValidManualAuditType(29)" >
+									<a class="add" href="AuditOverride.action?id=<s:property value="id"/>&selectedAudit=29"><s:text name="EmployeeDashboard.CreateNewAuditImplementationAuditPlus" /></a>
+									<s:set var="addBreak" value="true" />
 								</s:if>
-								<s:if test="canAddAudits">
-									<s:hidden name="selectedOperatorId" />
-									<s:if test="isAuditTypeAddable(@com.picsauditing.jpa.entities.AuditType@INTEGRITYMANAGEMENT) && getOperatorsByAuditTypeId(17).size() > 0">
-										<s:submit name="button" method="addIntegrityManagementAudits" onclick="return checkSelections('imOperator')" />
-										Integrity Management Audits for <s:select id="imOperator" list="getOperatorsByAuditTypeId(17)" listKey="id" listValue="name" />
-										<br />
-									</s:if>
-									<s:if test="isAuditTypeAddable(@com.picsauditing.jpa.entities.AuditType@IMPLEMENTATIONAUDITPLUS) && getOperatorsByAuditTypeId(29).size() > 0">
-										<s:submit name="button" method="addImplementationAuditPlusAudits" onclick="return checkSelections('iapOperator')"/>
-										Implementation Audit Plus Audits for <s:select id="iapOperator" list="getOperatorsByAuditTypeId(29)" listKey="id" listValue="name" />
-									</s:if>
+								<s:if test="#addBreak" >
+									<br />
 								</s:if>
-							</s:form>
+								<s:if test="isValidManualAuditType(17)" >
+									<a class="add" href="AuditOverride.action?id=<s:property value="id"/>&selectedAudit=17"><s:text name="EmployeeDashboard.CreateIntegrityManagement" /></a>
+								</s:if>
+							</s:if>
 						</div>
 					</div>
 				</div>

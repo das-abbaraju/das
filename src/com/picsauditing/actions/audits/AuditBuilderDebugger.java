@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 
 @SuppressWarnings("serial")
 public class AuditBuilderDebugger extends ContractorActionSupport {
@@ -20,11 +18,6 @@ public class AuditBuilderDebugger extends ContractorActionSupport {
 
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
-	@Autowired
-	private AuditTypeRuleCache auditTypeRuleCache;
-	@Autowired
-	private AuditDecisionTableDAO auditRuleDAO;
-
 	public String execute() throws Exception {
 		findContractor();
 		auditTypeRuleCache.initialize(auditRuleDAO);

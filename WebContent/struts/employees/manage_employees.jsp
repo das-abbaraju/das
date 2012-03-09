@@ -84,6 +84,14 @@
 		</h1>
 		<s:include value="../actionMessages.jsp"/>
 	
+		<s:if test="audit == null" >
+			<div>
+				<a href="EmployeeDashboard.action?id=<s:property value='account.id' />" >
+					<s:text name="global.EmployeeGUARD" />
+				</a>
+			</div>
+		</s:if>
+		
 		<s:if test="account.employees.size() == 0 && employee == null">
 			<div class="info">
 				<s:text name="ManageEmployees.message.NoEmployees">

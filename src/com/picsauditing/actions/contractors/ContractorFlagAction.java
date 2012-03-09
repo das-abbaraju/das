@@ -128,7 +128,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	}
 	
 	private boolean canFindOperator() {
-		if (opID == 0 && (permissions.isOperator() ||  permissions.isCorporate()))
+
 			opID = permissions.getAccountId();
 		
 		if (permissions.isCorporate() && permissions.getAccountId() == opID) {

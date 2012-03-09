@@ -27,9 +27,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -85,11 +83,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	@Autowired
-	private AuditTypeRuleCache auditTypeRuleCache;
-	@Autowired
 	private EmailSenderSpring emailSender;
-	@Autowired
-	private AuditDecisionTableDAO auditRuleDAO;
 	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
 

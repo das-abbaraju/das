@@ -21,7 +21,6 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
@@ -63,8 +62,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private NaicsDAO naicsDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
-	@Autowired
-	private AuditDecisionTableDAO auditRuleDAO;
 	@Autowired
 	private AuditBuilder auditBuilder;
 

@@ -24,7 +24,6 @@ import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.CertificateDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -66,8 +65,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ContractorAuditOperatorWorkflowDAO caowDAO;
 	@Autowired
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
-	@Autowired
-	private AuditDecisionTableDAO auditRuleDAO;
 	@Autowired
 	private ContractorAuditDAO conAuditDAO;
 

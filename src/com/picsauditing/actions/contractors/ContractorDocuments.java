@@ -3,19 +3,13 @@ package com.picsauditing.actions.contractors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -31,10 +25,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
-	@Autowired
-	protected AuditDecisionTableDAO auditRuleDAO;
-	@Autowired
 	protected ContractorAuditDAO contractorAuditDao;
 
 	protected Map<AuditType, List<ContractorAudit>> auditMap;
@@ -46,8 +36,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 	protected Integer selectedOperator;
 	protected String auditFor;
 	protected AuditTypeClass auditClass;
-
-	protected Set<AuditType> manuallyAddAudits = null;
 
 	@Override
 	public String execute() throws Exception {
@@ -131,17 +119,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		Collections.sort(expiredAudits, new AuditByDate());
 	}
 
-	public boolean isManuallyAddAudit() {
-		if (getManuallyAddAudits().size() > 0) {
-			if (permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
-				return true;
-			if (permissions.isOperatorCorporate()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public Map<AuditType, List<ContractorAudit>> getAuditMap() {
 		return auditMap;
 	}
@@ -190,60 +167,6 @@ public class ContractorDocuments extends ContractorActionSupport {
 		this.auditClass = auditClass;
 	}
 
-	public Set<AuditType> getManuallyAddAudits() {
-		if (manuallyAddAudits == null) {
-			manuallyAddAudits = new HashSet<AuditType>();
-			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
-
-			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
-				if (isValidManualAuditType(auditTypeRule)) {
-					manuallyAddAudits.add(auditTypeRule.getAuditType());
-				}
-			}
-		}
-
-		return manuallyAddAudits;
-	}
-
-	private boolean isValidManualAuditType(AuditTypeRule auditTypeRule) {
-		if (!auditTypeRule.isInclude() || auditTypeRule.getAuditType() == null
-				|| auditTypeRule.getAuditType().isAnnualAddendum() || auditTypeRule.getAuditType().isExtractable()) {
-			return false;
-		}
-		
-		if (!auditTypeRule.getAuditType().isHasMultiple() && !auditTypeRule.isManuallyAdded()) {
-			return false;
-		}
-		
-		if (!auditTypeRule.getAuditType().isHasMultiple()) {
-			for (ContractorAudit audit : contractor.getAudits()) {
-				if (audit.getAuditType().getId() == auditTypeRule.getAuditType().getId() && !audit.isExpired()) {
-					return false;
-				}
-			}
-		}
-		
-		if (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded()) {
-			if (permissions.isAdmin())
-				return true;
-			else if (permissions.isOperator()) {
-				if (auditTypeRule.getOperatorAccount() != null
-						&& (permissions.getCorporateParent().contains(
-								auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
-								.getOperatorAccount().getId())) {
-					return true;
-				}
-			} else if (permissions.isCorporate()) {
-				if (auditTypeRule.getOperatorAccount() != null
-						&& auditTypeRule.getOperatorAccount().getId() == permissions.getAccountId()) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
 	public class DocumentTab implements Comparable<DocumentTab> {
 		private AuditType type;
 

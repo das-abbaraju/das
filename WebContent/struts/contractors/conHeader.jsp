@@ -244,15 +244,30 @@ function loadStatus(caoID){
 
 	<span class="sub">
 		<s:if test="auditID > 0">
-			<s:text name="Audit.auditFor" >				<s:param value="%{conAudit.auditType.name}" />
-				<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
-				<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
-			</s:text>
+			<s:if test="conAudit.employee==null" >
+				<s:text name="Audit.auditFor" >					<s:param value="%{conAudit.auditType.name}" />
+					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
+					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
+				</s:text>
+			</s:if>
+			<s:else>
+				<s:text name="Audit.auditForEmployee" >
+					<s:param value="%{conAudit.auditType.name}" />
+					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? 1 : 0}" />
+					<s:param value="%{conAudit.auditFor != null && conAudit.auditFor.length() > 0 ? conAudit.auditFor : conAudit.effectiveDateLabel}" />
+				</s:text>
+			</s:else>
 		</s:if>
 		<s:else>
 			<s:property value="subHeading" escape="false" />
 		</s:else>
 	</span>
+	<s:if test="auditID > 0 && conAudit.employee!=null">
+		<div class="sub">
+		&nbsp;&nbsp;<s:property value="conAudit.employee.firstName" /> <s:property value="conAudit.employee.lastName" />
+		<s:if test="conAudit.employee.title != null && conAudit.employee.title.length() > 0">&nbsp;/&nbsp;<s:property value="conAudit.employee.title" /></s:if>
+		</div>
+	</s:if>
 </h1>
 
 <s:if test="showHeader">
@@ -513,20 +528,6 @@ function loadStatus(caoID){
 					<s:text name="global.Users" />
 				</a>
 			</li>
-			<li>
-				<a href="ManageEmployees.action?account=<s:property value="id"/>">
-					<s:text name="global.Employees" />
-				</a>
-			</li>
-			
-			<pics:permission perm="DefineRoles">
-				<li>
-					<a href="ManageJobRoles.action?id=<s:property value="id"/>">
-						<s:text name="ManageEmployees.header.JobRoles" />
-					</a>
-				</li>
-			</pics:permission>
-			
 			<s:if test="!contractor.status.demo">
 				<li>
 					<a id="billing_detail" href="BillingDetail.action?id=<s:property value="id" />" <s:if test="requestURI.contains('billing_detail')">class="current"</s:if>>
@@ -574,19 +575,6 @@ function loadStatus(caoID){
 						<s:text name="global.Users" />
 					</a>
 				</li>
-				<li>
-					<a href="ManageEmployees.action">
-						<s:text name="global.Employees" />
-					</a>
-				</li>
-				
-				<s:if test="permissions.requiresCompetencyReview">
-					<li>
-						<a href="ManageJobRoles.action">
-							<s:text name="ManageEmployees.header.JobRoles" />
-						</a>
-					</li>
-				</s:if>
 			</pics:permission>
 			
 			<pics:permission perm="ContractorBilling">
