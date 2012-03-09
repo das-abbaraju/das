@@ -12,6 +12,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 	public void prepare() throws Exception {
 		super.prepare();
 
+		getFilter().setShowStatus(true);
 		getFilter().setShowInsuranceLimits(false);
 		getFilter().setShowOpertorTagName(false);
 	}
@@ -40,8 +41,6 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addJoin("LEFT JOIN users u ON u.id = ff.forcedBy");
 		sql.addJoin("LEFT JOIN accounts fa ON fa.id = u.accountID");
 		sql.addJoin("LEFT JOIN generalcontractors gc ON gc.genid = o.id and gc.subid = ff.conid");
-		sql.addWhere("a.status = 'Active'");
-		sql.addWhere("o.status = 'Active'");
 		sql.addWhere("ff.forceFlag IS NOT NULL");
 		if(permissions.isOperatorCorporate()) {
 			String opIds = " ff.opid = " + permissions.getAccountId() + " OR ";
