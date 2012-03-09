@@ -3,15 +3,15 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     alias: ['widget.reportoptionsfilters'],
 
     bbar: [{
-        action: "apply",
+        action: 'apply',
         text: 'Apply Filter'
-    }],    
+    }],
     items: [{
     	xtype: 'gridpanel',
     	store: 'report.ReportsFilter',
     	
     	columns: [{
-    		xtype: "rownumberer"
+    		xtype: 'rownumberer'
     	},{
     		xtype: 'gridcolumn',
     		dataIndex: 'name',
@@ -21,27 +21,27 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		text: 'Filter'
     	}],
     	flex: 2,
-    	selModel: {mode: 'multi'},
-        width: "100%"    
+    	selModel: {
+    	    mode: 'multi'
+	    },
+        width: '100%'    
     },{
         xtype: 'panel',
 
         autoScroll:true,
         flex: 1,
         id: 'options',
-        width: "100%"
+        width: '100%'
     }],
-    layout: "vbox",
+    layout: 'vbox',
     tbar: [{
-        action: "add",
-        store: "columns",
-        text: 'Add Filter',
-        columntype:'filter'
+        action: 'add',
+        column_type:'filter',
+        text: 'Add Filter'
     },{
-        action: "remove",
-        store: "columns",
-        text: 'Remove',
-        columntype:'filter'            
+        action: 'remove',
+        column_type:'filter',
+        text: 'Remove'
     }],    
     title: 'Filters'
 });

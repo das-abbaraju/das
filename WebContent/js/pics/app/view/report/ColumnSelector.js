@@ -2,25 +2,25 @@ Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
     
-    closeAction: 'hide',
     height: 500,
     items: [{
         xtype: 'reportcolumnselectorgrid'
     }],
     layout: 'fit',
     modal: true,
-    // resizable: false,
     tbar: [{
-        xtype: 'searchFilter',
-        store: 'report.AvailableFieldsByCategory',
+        xtype: 'textfield',
         
+        enableKeyEvents: true,
         fieldLabel: 'Search',
-        fields: [
-            'category',
-            'text'
-        ],
-        id: 'filterfield',
         labelWidth: 40
+    }, {
+        xtype: 'checkboxfield',
+        
+        boxLabel: 'Hide All Selected',
+        checked: true,
+        inputValue: true,
+        name: 'hide_selected_column'
     }],
     title: 'Select Report Columns',
     width: 400,

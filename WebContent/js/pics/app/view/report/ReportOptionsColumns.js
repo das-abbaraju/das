@@ -5,19 +5,21 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     items: [{
     	xtype: 'gridpanel',
     	columns: [{
-    		xtype: "rownumberer"
-    	},{
+    		xtype: 'rownumberer'
+    	}, {
     		xtype: 'gridcolumn',
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
-    		renderer: function(value, metaData, record, rowIndex, colIndex, store) {
-    			return record.data.field.get("text");
+    		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
+    			return record.data.field.get('text');
     		},
     		sortable: false,
     		text: 'Column'
     	}],
-    	selModel: {mode: 'multi'},
+    	selModel: {
+    	    mode: 'multi'
+        },
     	store: 'report.ReportsColumn',
         viewConfig: {
         	minHeight: 200, // this doesn't seem to work yet
@@ -56,15 +58,13 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
         type: 'vbox'
     },
     tbar: [{
-    	action: "add",
-    	store: "columns",
+    	action: 'add',
+    	column_type: 'column',
         text: 'Add Column',
-        columntype: 'column'
     },{
-    	action: "remove",
-    	store: "columns",
-        text: 'Remove',
-        columntype: 'column'        
+    	action: 'remove',
+    	column_type: 'column',
+        text: 'Remove'
     }],
     title: 'Columns'
 });

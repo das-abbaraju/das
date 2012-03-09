@@ -13,14 +13,24 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
         flex: 1
     }],
     enableColumnHide: false,
+    features: Ext.create('Ext.grid.feature.Grouping', {
+        groupHeaderTpl: 'Category: {name} ({rows.length} Item{[values.rows.length != 1 ? "s" : ""]})'
+    }),
     
     initComponent: function () {
-        this.selModel = Ext.create('Ext.selection.CheckboxModel');
-        
-        this.features = Ext.create('Ext.grid.feature.Grouping', {
-            groupHeaderTpl: 'Category: {name} ({rows.length} Item{[values.rows.length != 1 ? "s" : ""]})'
+        this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            onHeaderClick: function (headerCt, header, e) {
+                return false;
+            }
         });
         
         this.callParent();
+    },
+    listeners: {
+        afterRender: function (component, eOpts) {
+            var component_element = component.getEl();
+            
+            Ext.get(Ext.query('.x-column-header-checkbox div:first', component_element.dom)).hide();
+        }
     }
 });

@@ -5,7 +5,7 @@
         
 <script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
 
-<nav id="site_navigation" style="margin-top: 10px;"></nav>
+<nav id="site_navigation"></nav>
 
 <script>
 

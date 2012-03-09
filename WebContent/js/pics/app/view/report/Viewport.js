@@ -6,7 +6,6 @@ Ext.define('PICS.view.report.Viewport', {
        'PICS.view.report.ReportOptionsColumns',
        'PICS.view.report.ColumnSelector',
        'PICS.view.report.ColumnSelectorGrid',
-       'PICS.view.form.SearchFilter',
        'PICS.view.report.ReportOptionsFilters',
        'PICS.view.report.DataGrid',
        'PICS.view.layout.Footer'

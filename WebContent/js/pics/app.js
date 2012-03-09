@@ -6,7 +6,13 @@ Ext.application({
 	name: 'PICS',
 	appFolder: 'js/pics/app',
 	
-    controllers: [ 'report.ReportController', 'report.FilterController'],
+    controllers: [
+        'report.ColumnSelectorController',
+        // TODO: should be renamed ReportOptionsFilterController
+        'report.FilterController',
+        'report.ReportController',
+        'report.ReportOptionsController'
+    ],
 
 	models: [
 	    'report.AvailableField', 
