@@ -38,6 +38,10 @@ select concat('AuditCategory.', id, '.helpText'), helpText, 'en', 23157, now(), 
 from audit_category
 where length(helpText) > 0;
 
+-- PICS-3967
+-- Note this needs code updates as well
+update audit_type set classType='Employee' where id in (17, 29, 99, 100);
+
 -- PICS-4600
 update app_translation t set t.msgValue = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
