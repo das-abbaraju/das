@@ -1,5 +1,5 @@
 Ext.Loader.setConfig({
-	enabled : true
+	enabled: true
 });
 
 Ext.application({
