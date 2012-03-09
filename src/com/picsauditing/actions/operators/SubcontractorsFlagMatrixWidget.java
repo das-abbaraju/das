@@ -1,6 +1,8 @@
 package com.picsauditing.actions.operators;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
@@ -38,6 +40,12 @@ public class SubcontractorsFlagMatrixWidget extends PicsActionSupport {
 				subcontractors.add(conOp.getContractorAccount());
 			}
 		}
+		
+		Collections.sort(subcontractors, new Comparator<ContractorAccount>() {
+			public int compare(ContractorAccount contractorOne, ContractorAccount contractorTwo) {
+				return contractorOne.getName().toLowerCase().compareTo(contractorTwo.getName().toLowerCase());
+			}
+		});
 		
 		return subcontractors;
 	}
