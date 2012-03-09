@@ -211,6 +211,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			}
 
 		}
+		
 		return viewableCaos;
 	}
 

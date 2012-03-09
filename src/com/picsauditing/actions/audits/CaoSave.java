@@ -222,8 +222,8 @@ public class CaoSave extends AuditActionSupport {
 		// builds a JSONObject string with the reason codes and the plain-text comment input
 		// by the user
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("reasonCodes", reasonCodes);
-		jsonObject.put("comment", note);
+		jsonObject.put("noteCodes", reasonCodes);
+		jsonObject.put("additionalComment", note);
 		note = jsonObject.toJSONString();
 		
 		return save();

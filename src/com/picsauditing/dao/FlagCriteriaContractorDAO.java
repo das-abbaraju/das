@@ -25,7 +25,7 @@ public class FlagCriteriaContractorDAO extends PicsDAO {
 	}
 	
 	@Transactional(propagation = Propagation.NESTED)
-	public void deleteEntriesForContractor(int conID){
+	public void deleteEntriesForContractor(int conID) {
 		Query query = em.createQuery("DELETE FROM FlagCriteriaContractor fcc WHERE fcc.contractor.id = ?");
 		query.setParameter(1, conID);
 		query.executeUpdate();

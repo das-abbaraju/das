@@ -382,6 +382,7 @@ public class AuditPercentCalculator {
 			if (caoWithStatus != null) {
 				ContractorAuditOperatorWorkflow caoW = new ContractorAuditOperatorWorkflow();
 				caoW.setCao(cao);
+				// TODO: I18N
 				caoW.setNotes("Updating status to same as " + caoWithStatus.getOperator().getName());
 				caoW.setPreviousStatus(cao.getStatus());
 				caoW.setAuditColumns(new User(User.SYSTEM));

@@ -104,19 +104,19 @@ public class ContractorCronTest {
 		}
 	}
 	
-//	@Test
-//	public void testContractorAccountMultipleAuditsExpiredWCB() {
-//		ContractorCron contractorCron = new ContractorCron();
-//
-//		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
-//		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-//
-//		assertEquals(1, audits.size());
-//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
-//			ContractorAudit contractorAudit = iterator.next();
-//			assertTrue(contractorAudit.getAuditType().isWCB());
-//		}
-//	}
+	@Test
+	public void testContractorAccountMultipleAuditsExpiredWCB() {
+		ContractorCron contractorCron = new ContractorCron();
+
+		ContractorAccount contractorAccount = setupContractorAccountMultipleAuditsExpiredWCB();
+		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+
+		assertEquals(1, audits.size());
+		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+			ContractorAudit contractorAudit = iterator.next();
+			assertTrue(contractorAudit.getAuditType().isWCB());
+		}
+	}
 	
 	/**
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
@@ -132,42 +132,69 @@ public class ContractorCronTest {
 		assertTrue(audits.isEmpty());
 	}
 	
-//	/**
-//	 * If there there are overlapping WCBs, one is expiring and the other has a status of
-//	 * Incomplete, then it should be in the expiring audit list.
-//	 */
-//	@Test
-//	public void testContractorAccountOverlappingWCBsIncomplete() {
-//		ContractorCron contractorCron = new ContractorCron();
-//		
-//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsIncomplete();
-//		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-//		
-//		assertEquals(1, audits.size());
-//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
-//			ContractorAudit contractorAudit = iterator.next();
-//			assertEquals(DateBean.addField(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), Calendar.YEAR, 1), contractorAudit.getExpiresDate());
-//		}
-//	}	
+	/**
+	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+	 * Incomplete, then it should be in the expiring audit list.
+	 */
+	@Test
+	public void testContractorAccountOverlappingWCBsIncomplete() {
+		ContractorCron contractorCron = new ContractorCron();
+		
+		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsIncomplete();
+		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+		
+		assertEquals(1, audits.size());
+		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+			ContractorAudit contractorAudit = iterator.next();
+			assertEquals(DateBean.addField(new Date(), Calendar.DATE, -2), contractorAudit.getExpiresDate());
+		}
+	}	
 	
-//	/**
-//	 * If there there are overlapping WCBs, one is expiring and the other has a status of
-//	 * Pending, then it should be in the expiring audit list.
-//	 */
-//	@Test
-//	public void testContractorAccountOverlappingWCBsPending() {
-//		ContractorCron contractorCron = new ContractorCron();
-//
-//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsPending();
+	/**
+	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+	 * Pending, then it should be in the expiring audit list.
+	 */
+	@Test
+	public void testContractorAccountOverlappingWCBsPending() {
+		ContractorCron contractorCron = new ContractorCron();
+
+		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsPending();
+		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+
+		assertEquals(2, audits.size());
+		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
+			ContractorAudit contractorAudit = iterator.next();
+			assertEquals(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), contractorAudit.getExpiresDate());
+		}
+	}
+	
+	/**
+	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+	 * Pending, then it should be in the expiring audit list.
+	 */
+	@Test
+	public void testContractorAccountOverlappingWCBsComplete() {
+		ContractorCron contractorCron = new ContractorCron();
+
+		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
+		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
+
+		assertTrue(audits.isEmpty());
+	}
+	
+	/**
+	 * If there there are overlapping WCBs, one is expiring and the other has a status of
+	 * Pending, then it should be in the expiring audit list.
+	 */
+	@Test
+	public void testContractorAccountRenewableAudits() {
+		ContractorCron contractorCron = new ContractorCron();
+
+//		ContractorAccount contractorAccount = setupContractorAccountWCBsForDifferentYearsComplete();
 //		Set<ContractorAudit> audits = contractorCron.getExpiringPolicies(contractorAccount);
-//
+
 //		assertTrue(audits.isEmpty());
-//		for (Iterator<ContractorAudit> iterator = audits.iterator(); iterator.hasNext();) {
-//			ContractorAudit contractorAudit = iterator.next();
-//			assertEquals(DateBean.addField(DateBean.addField(new Date(), Calendar.DAY_OF_YEAR, -2), Calendar.YEAR, 1),
-//					contractorAudit.getExpiresDate());
-//		}
-//	}
+	}
 	
 	private ContractorAccount setupContractorAccountWCBExpiredTwoMonthsAgo() {
 		ContractorAccount contractorAccount = new ContractorAccount();
@@ -378,6 +405,51 @@ public class ContractorCronTest {
 					.id(143)
 					.auditTypeClass(AuditTypeClass.Policy)
 					.auditStatus(AuditStatus.Pending)
+					.expiresDate(DateBean.addField(twoDaysAgo, Calendar.YEAR, 1))
+					.build();
+		audits.add(audit);
+		
+		contractorAccount.setAudits(audits);
+		
+		audit = new MockAuditBuilder()
+					.id(170)
+					.auditTypeClass(AuditTypeClass.Policy)
+					.auditStatus(AuditStatus.Approved)
+					.expiresDate(twoDaysAgo)
+					.build();
+		audits.add(audit);		
+
+		audit = new MockAuditBuilder()
+					.id(170)
+					.auditTypeClass(AuditTypeClass.Policy)
+					.auditStatus(AuditStatus.Pending)
+					.expiresDate(DateBean.addField(twoDaysAgo, Calendar.YEAR, 1))
+					.build();
+		audits.add(audit);
+
+		contractorAccount.setAudits(audits);		
+		
+		
+		return contractorAccount;
+	}
+	
+	private ContractorAccount setupContractorAccountWCBsForDifferentYearsComplete() {
+		ContractorAccount contractorAccount = new ContractorAccount();
+		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+		Date twoDaysAgo = DateBean.addDays(new Date(), -2);
+		
+		ContractorAudit audit = new MockAuditBuilder()
+									.id(143)
+									.auditTypeClass(AuditTypeClass.Policy)
+									.auditStatus(AuditStatus.Complete)
+									.expiresDate(twoDaysAgo)
+									.build();
+		audits.add(audit);		
+		
+		audit = new MockAuditBuilder()
+					.id(143)
+					.auditTypeClass(AuditTypeClass.Policy)
+					.auditStatus(AuditStatus.Complete)
 					.expiresDate(DateBean.addField(twoDaysAgo, Calendar.YEAR, 1))
 					.build();
 		audits.add(audit);

@@ -1,6 +1,5 @@
 package com.picsauditing.auditBuilder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Testable;
 
 /**
@@ -188,7 +186,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return caos;
 	}
 
-	/*testable*/ Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
+	@Testable
+	Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
 		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
@@ -207,7 +206,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return answers;
 	}
 	
-	/*testable*/ ContractorAudit findMostRecentAudit(int auditTypeId) {
+	@Testable
+	ContractorAudit findMostRecentAudit(int auditTypeId) {
 		ContractorAudit mostRecentAudit = null;
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == auditTypeId) {

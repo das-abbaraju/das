@@ -838,4 +838,14 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 		return getExpiresDate().before(new Date()) && getExpiresDate().after(oneWeekAgo.getTime());
 	}
+	
+	@Transient
+	public boolean isExpiringSoon() {
+		return (willExpireWithinTwoWeeks() || expiredUpToAWeekAgo());
+	}
+	
+	@Transient
+	public boolean isExpiringRenewableAudit() {
+		return getAuditType().isRenewable() && isExpiringSoon();
+	}
 }

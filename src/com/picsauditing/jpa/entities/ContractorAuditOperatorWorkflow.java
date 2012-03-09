@@ -73,7 +73,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	 * If the notes is JSON, then parse it and return the concatenated String
 	 * from the Rejection Reasons and the comment.
 	 *  
-	 * JSON Format = {"reasonCodes":["123","456"],"comment":"OptionalComment"} 
+	 * JSON Format = {"noteType":"insurance","noteCodes":["Insurance.Rejection.Code.123","456"],"additionalComment":"optionalComment"} 
 	 * 
 	 * @return
 	 */
@@ -107,13 +107,13 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	// TODO: change this so that it will be set to the correct locale
 	private String buildNotes(JSONObject jsonObject) {
 		StringBuilder concatenatedNotes = new StringBuilder();
-		JSONArray reasonCodes = (JSONArray) jsonObject.get("reasonCodes");
+		JSONArray reasonCodes = (JSONArray) jsonObject.get("noteCodes");
 		String[] i18nKeys = (String[]) reasonCodes.toArray();
 		for (String key : i18nKeys) {
-			concatenatedNotes.append(I18nCache.getInstance().getText(key, Locale.US));
+			concatenatedNotes.append(I18nCache.getInstance().getText(key, Locale.US) + "\n");
 		}
 		
-		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("comment")));
+		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("optionalComment")));
 		
 		return concatenatedNotes.toString();
 	}
