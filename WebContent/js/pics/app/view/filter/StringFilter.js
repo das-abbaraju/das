@@ -1,6 +1,6 @@
-Ext.define('PICS.view.form.StringFilter', {
+Ext.define('PICS.view.filter.StringFilter', {
     extend: 'Ext.form.Panel',
-    alias: ['widget.stringfilter'],    
+    alias: ['widget.stringfilter'],
 
     border: false,
     defaults: {
@@ -10,30 +10,22 @@ Ext.define('PICS.view.form.StringFilter', {
         xtype: 'panel'
     },{
         xtype: 'combo',
-        
-        displayField: 'name',
-        labelAlign: 'left',
-        padding: 0,
-        size: 10,
-        typeAhead: true,
-        valueField: 'name'                    
+        store: [
+	        ['Contains', 'contains'],
+	        ['BeginsWith', 'begins with'],
+	        ['EndsWith', 'ends with'],
+	        ['Equals', 'equals'],
+	        ['Empty', 'blank']
+        ],
+        typeAhead: true
     },{
         xtype: 'textfield',
-        name: 'textfilter'
+        name: 'textfilter',
+        text: 'Value'
     }],
-    initComponent: function () {
-        this.items[1].store = Ext.create('Ext.data.ArrayStore', {
-                fields: [
-                    {name: 'name', type: 'string'},
-                ],
-                data: [['begins with'],
-                        ['contains'],
-                        ['ends with'],
-                        ['equal to'],
-                        ['not empty']
-                ],
-                autoLoad: true
-            });
-        this.callParent();
+    record: null,
+    setRecord: function (record) {
+    	this.record = record;
+    	this.items.items[0].html = "<h1>" + record.data.field.data.text + "</h1>";
     }
 });

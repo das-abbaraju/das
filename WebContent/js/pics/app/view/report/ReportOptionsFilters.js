@@ -23,17 +23,18 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     	flex: 2,
     	selModel: {
     	    mode: 'multi'
-	    },
-        width: '100%'    
+	    }
     },{
         xtype: 'panel',
-
+        dock: 'bottom',
         autoScroll:true,
         flex: 1,
-        id: 'options',
-        width: '100%'
+        id: 'options'
     }],
-    layout: 'vbox',
+    layout: {
+        align: 'stretch',
+        type: 'vbox'
+    },
     tbar: [{
         action: 'add',
         column_type:'filter',
@@ -42,6 +43,6 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
         action: 'remove',
         column_type:'filter',
         text: 'Remove'
-    }],    
+    }],
     title: 'Filters'
 });

@@ -24,6 +24,8 @@ Ext.define('PICS.controller.report.FilterController', {
 
         if (this.filterType === "String") {
             this.showOptionsPanel = Ext.create('PICS.view.filter.StringFilter');
+        } else if (this.filterType === "AccountName") {
+            this.showOptionsPanel = Ext.create('PICS.view.filter.StringFilter');
         } else if (this.filterType === "Boolean") {
             this.showOptionsPanel = Ext.create('PICS.view.filter.BooleanFilter');
         } else {
