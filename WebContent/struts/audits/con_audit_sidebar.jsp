@@ -99,7 +99,7 @@
 	
 	<s:if test="canSchedule">
 		<li>
-			<a class="calendar" href="ScheduleAudit<s:if test="conAudit.scheduledDate != null">!edit</s:if>.action?auditID=<s:property value="conAudit.id"/>">
+			<a class="calendar" href="ScheduleAudit<s:if test="conAudit.scheduledDate != null && permissions.admin">!edit</s:if>.action?auditID=<s:property value="conAudit.id"/>">
 				<s:text name="Audit.button.ScheduleAudit" />
 			</a>
 		</li>
