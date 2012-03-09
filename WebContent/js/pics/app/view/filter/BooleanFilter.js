@@ -8,9 +8,10 @@ Ext.define('PICS.view.filter.BooleanFilter', {
 		// disabled: true,
         listeners: {
             click: function () {
-                var radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0];
+                var radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0],
+                    booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0];
+                
                 var value = radioGroup.getValue().boolean;
-                var booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0];                
                 booleanFilter.record.set("value", value);
             }
         },
@@ -36,6 +37,14 @@ Ext.define('PICS.view.filter.BooleanFilter', {
             name: "boolean"
         }],
     }],
+    listeners: {
+        beforeRender: function () {
+            var booleanFilter = Ext.ComponentQuery.query("booleanfilter")[0],
+                radioGroup = Ext.ComponentQuery.query("booleanfilter radiogroup")[0];
+            
+            radioGroup.setValue({'boolean': booleanFilter.record.data.value});
+        }
+    },
     record: null,
     setRecord: function (record) {
     	this.record = record;
