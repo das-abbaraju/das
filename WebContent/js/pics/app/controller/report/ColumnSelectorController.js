@@ -85,7 +85,7 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         var store = this.getReportAvailableFieldsByCategoryStore();
         var search = this.getSearchField();
         
-        store.filter(Ext.create('PICS.src.util.FilterMultipleColumn', {
+        store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
             property: [
                 'category',
                 'text'

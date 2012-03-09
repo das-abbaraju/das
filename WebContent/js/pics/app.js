@@ -1,5 +1,8 @@
 Ext.Loader.setConfig({
-	enabled: true
+	enabled: true,
+	paths: {
+        'Ext.ux': './js/pics/app/ux'
+    }
 });
 
 Ext.application({
@@ -25,10 +28,10 @@ Ext.application({
 	stores: [
 	    'report.AvailableFields',
 	    'report.AvailableFieldsByCategory',
+	    'report.ReportData',
         'report.Reports',
         'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportData'
+        'report.ReportsFilter'
     ],
     
 	launch: function() {
