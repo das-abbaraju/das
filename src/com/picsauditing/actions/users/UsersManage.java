@@ -509,8 +509,13 @@ public class UsersManage extends PicsActionSupport {
 					addActionError(error);
 			}
 			
-			if (!validPrimaryContactExists(user)) {
+			// Could not find an OpPerms type for the Primary User, so just using ContractorAccounts
+			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
+			} 
+			
+			if (!validUserForRoleExists(user, OpPerms.ContractorAdmin)) {
+				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}
 		
@@ -518,33 +523,37 @@ public class UsersManage extends PicsActionSupport {
 		return getActionErrors().size() == 0;
 	}
 	
-	private boolean validPrimaryContactExists(User user) {
-		if (hasAtLeastOneActivePrimaryContact(user.getAccount())) {
+	private boolean validUserForRoleExists(User user, OpPerms userRole) {
+		if (OpPerms.ContractorAdmin != userRole && OpPerms.ContractorAccounts != userRole) {
+			throw new IllegalArgumentException("userRole can only be OpPerms.ContractorAccounts or OpPerms.ContractorAdmin!");
+		}
+		
+		if (hasAtLeastOneActiveUserWithRole(user.getAccount(), userRole)) {
 			return true;
 		}
 		
 		return false;
 	}
 	
-	private boolean hasAtLeastOneActivePrimaryContact(Account account) {
+	private boolean hasAtLeastOneActiveUserWithRole(Account account, OpPerms userRole) {
 		if (account != null && account.getPrimaryContact() != null) {
 			List<User> users = account.getUsers();			
-			return hasActivePrimaryContact(users, account);
+			return hasActiveUserForRole(users, account, userRole);
 		}
 		
 		return false;
 	}
 	
-	private boolean hasActivePrimaryContact(List<User> users, Account account) {
+	private boolean hasActiveUserForRole(List<User> users, Account account, OpPerms userRole) {
 		if (users != null && !users.isEmpty()) {
 			for (User user : users) {
 				// this is a special case, because when iterating over the users from the Account object,
 				// those users are from the database and may contain the user being Edited, but in
 				// a different state than it is in this Action class instance
-				if (validateCurrentUserIsActivePrimary(user)) {
+				if (validateCurrentUserForRoleIsActive(user, userRole)) {
 					return true;
 				}
-				else if (verifyOtherUserIsActivePrimary(account, user)) {
+				else if (verifyOtherUserIsActive(account, user, userRole)) {
 					return true;
 				}
 			}
@@ -554,31 +563,59 @@ public class UsersManage extends PicsActionSupport {
 	}
 
 	/**
-	 * The current user being edited should not be set to the Primary User in order for this
-	 * to return true, because we are checking that another user will remain the Primary Contact
-	 * after this user has been updated.
+	 * The current user being edited should not have the User Role we are checking for in order 
+	 * for this to return true, because we are checking that another user will have the same 
+	 * role after this user has been updated.
 	 * 
 	 * @param account
 	 * @param user
 	 * @return
 	 */
-	private boolean verifyOtherUserIsActivePrimary(Account account, User user) {
+	private boolean verifyOtherUserIsActive(Account account, User user, OpPerms userRole) {
+		if (OpPerms.ContractorAdmin == userRole) {
+			return (!this.user.equals(user) 
+					&& isUserForRoleActive(user, account, userRole) 
+					&& user.isActiveB() 
+					&& !conAdmin);
+		}
+		
 		return (!this.user.equals(user) 
-				&& isUserActivePrimaryContact(user, account) 
+				&& isUserForRoleActive(user, account, userRole) 
 				&& user.isActiveB() 
 				&& !setPrimaryAccount);
 	}
 
-	private boolean validateCurrentUserIsActivePrimary(User user) {
+	private boolean validateCurrentUserForRoleIsActive(User user, OpPerms userRole) {
+		if (OpPerms.ContractorAdmin == userRole) {
+			return (this.user.equals(user) 
+					&& conAdmin 
+					&& this.user.isActiveB());
+		}
+		
 		return (this.user.equals(user) 
 				&& setPrimaryAccount 
 				&& this.user.isActiveB());
 	}
 	
-	private boolean isUserActivePrimaryContact(User user, Account account) {
+	private boolean isUserForRoleActive(User user, Account account, OpPerms userRole) {
+		if (OpPerms.ContractorAdmin == userRole) {
+			 return (user != null && user.isActiveB() && userHasRole(user, userRole));
+		}
+		
 		return (user != null 
 				&& account.getPrimaryContact().equals(user) 
 				&& user.isActiveB());
+	}
+	
+	private boolean userHasRole(User user, OpPerms userRole) {
+		List<UserAccess> roles = user.getOwnedPermissions();
+		for (UserAccess userAccess : roles) {
+			if (userRole == userAccess.getOpPerm()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public String getIsGroup() {
