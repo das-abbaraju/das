@@ -19,6 +19,7 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
     
     initComponent: function () {
         this.selModel = Ext.create('Ext.selection.CheckboxModel', {
+            // remove ability to select all checkbox for performance -- hack
             onHeaderClick: function (headerCt, header, e) {
                 return false;
             }
@@ -27,6 +28,7 @@ Ext.define('PICS.view.report.ColumnSelectorGrid', {
         this.callParent();
     },
     listeners: {
+        // remove ability to select all checkbox for performance -- hack
         afterRender: function (component, eOpts) {
             var component_element = component.getEl();
             

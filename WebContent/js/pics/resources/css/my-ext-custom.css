@@ -1,0 +1,32 @@
+/* body */
+
+.x-body
+{
+	background: #FFF;
+}
+
+/* grid action column */
+
+.x-action-col-cell .x-grid-cell-inner
+{
+	text-align: right !important;
+}
+
+/* custom icons */
+
+.ext-icon
+{
+	cursor: pointer;
+	cursor: hand;
+	height: 16px;
+	margin: 4px;
+	white-space: nowrap;
+	width: 16px;
+	zoom: 1;
+}
+
+.ext-icon.grid
+{
+	height: 10px;
+	width: 10px;
+}

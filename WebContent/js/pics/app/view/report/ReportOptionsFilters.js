@@ -6,28 +6,47 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     	xtype: 'gridpanel',
     	store: 'report.ReportsFilter',
     	
+    	// custom type to determine panel actions
+        _column_type: 'filter',
+        
     	columns: [{
     		xtype: 'rownumberer'
-    	},{
+    	}, {
     		xtype: 'gridcolumn',
+    		
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
+    		sortable: false,
+            text: 'Filter',
+                
     		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
     			// TODO Based on filterType
     			return "'" + record.data.field.get('text') + "' = " + record.get('value');
-    		},
-    		sortable: false,
-    		text: 'Filter'
-    	}],
-    	flex: 2,
-    	selModel: {
-    	    mode: 'multi'
-	    }
+    		}
+    	}, {
+            xtype: 'actioncolumn',
+            
+            hideable: false,
+            items: [{
+                icon: 'images/cross.png',
+                iconCls: 'ext-icon grid remove-filter',
+                tooltip: 'Remove'
+            }],
+            sortable: false,
+            width: 25
+        }],
+    	enableColumnResize: false,
+	    tbar: [{
+	        action: 'add-filter',
+            icon: 'js/pics/resources/images/dd/drop-add.gif',
+	        text: 'Add Filter'
+	    }]
     },{
         xtype: 'panel',
+        
+        autoScroll: true,
         dock: 'bottom',
-        autoScroll:true,
         flex: 1,
         id: 'options'
     }],
@@ -35,14 +54,5 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
         align: 'stretch',
         type: 'vbox'
     },
-    tbar: [{
-        action: 'add',
-        column_type:'filter',
-        text: 'Add Filter'
-    },{
-        action: 'remove',
-        column_type:'filter',
-        text: 'Remove'
-    }],
     title: 'Filters'
 });

@@ -18,44 +18,55 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
     
     init: function () {
         this.control({
-            'reportoptions button[action=add]': {
+            'reportoptions grid actioncolumn': {
+                click: this.removeColumn
+            },
+            'reportoptionscolumns grid toolbar[dock=top] button[action=add-column]': {
                 click: this.showColumnSelector
             },
-            'reportoptions button[action=remove]': {
-                click: this.removeColumn
+            'reportoptionsfilters grid toolbar[dock=top] button[action=add-filter]': {
+                click: this.showColumnSelector
             }
         });
     },
     
-    removeColumn: function(component, e, options) {
-        var store;
-        var grid;
+    removeColumn: function(view, cell, row, col, e) {
+        var target = e.getTarget();
         
-        if (component.column_type === 'filter') {
-            store = this.getReportReportsFilterStore();
-            grid = this.getReportOptionsFiltersGrid();
-        } else if (component.column_type === 'column') {
-            store = this.getReportReportsColumnStore();
-            grid = this.getReportOptionsColumnsGrid();
-        } else {
-            throw 'columnSelector.column_type is ' + columnSelector.column_type + ' - must be (filter|column)';
+        if (target && typeof target.className == 'string') {
+            if (target.className.search('remove-column|remove-filter') !== -1) {
+                var grid = view.up('grid');
+                var store;
+                
+                if (grid._column_type === 'filter') {
+                    store = this.getReportReportsFilterStore();
+                } else if (grid._column_type === 'column') {
+                    store = this.getReportReportsColumnStore();
+                } else {
+                    throw 'grid._column_type is ' + grid._column_type + ' - must be (filter|column)';
+                }
+                
+                grid.getSelectionModel().select(row, false);
+                
+                var selected = grid.getSelectionModel().getSelection(); 
+                
+                store.remove(selected);
+            }
         }
-        
-        var selected = grid.getSelectionModel().getSelection(); 
-        
-        store.remove(selected);
     },
     
     showColumnSelector: function(component, e, options) {
         var window = this.getReportColumnSelector();
         
         if (!window) {
+            var grid = component.up('gridpanel');
+            
             var store = this.getReportAvailableFieldsByCategoryStore();
             store.clearFilter();
             
             window = Ext.create('PICS.view.report.ColumnSelector');
             
-            window.column_type = component.column_type;
+            window._column_type = grid._column_type;
             window.show();
         }
     }

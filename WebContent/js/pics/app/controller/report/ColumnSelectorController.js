@@ -55,30 +55,30 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
     },
     
     addColumnToReportOptionsColumns: function(component, e, eOpts) {
-        var columnSelector = this.getColumnSelector();
-        var columnSelectorGrid = this.getColumnSelectorGrid();
+        var window = this.getColumnSelector();
+        var grid = this.getColumnSelectorGrid();
         
-        var selected = columnSelectorGrid.getSelectionModel().getSelection();
+        var selected = grid.getSelectionModel().getSelection();
         
         if (selected.length > 0) {
             var store;
             
-            if (columnSelector.column_type === "filter") {
+            if (window._column_type === "filter") {
                 store = this.getReportReportsFilterStore();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleFilter());
                 });
-            } else if (columnSelector.column_type === "column") {
+            } else if (window._column_type === "column") {
                 store = this.getReportReportsColumnStore()
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleColumn());
                 });
             } else {
-                throw 'columnSelector.column_type is ' + columnSelector.column_type + ' - must be (filter|column)';
+                throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
         }
         
-        columnSelector.destroy();
+        window.destroy();
     },
     
     search: function () {
@@ -103,12 +103,12 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         if (hide_column_checkbox.checked) {
             var window = this.getColumnSelector();
             
-            if (window.column_type === 'filter') {
+            if (window._column_type === 'filter') {
                 store = this.getReportReportsFilterStore();
-            } else if (window.column_type === 'column') {
+            } else if (window._column_type === 'column') {
                 store = this.getReportReportsColumnStore();
             } else {
-                throw 'columnSelector.column_type is ' + columnSelector.column_type + ' - must be (filter|column)';
+                throw 'columnSelector.column_type is ' + window._column_type + ' - must be (filter|column)';
             }
             
             var columns = [];

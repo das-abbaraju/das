@@ -4,52 +4,78 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     
     items: [{
     	xtype: 'gridpanel',
+    	store: 'report.ReportsColumn',
+    	
+    	// custom type to determine panel actions
+    	_column_type: 'column',
+    	
     	columns: [{
     		xtype: 'rownumberer'
     	}, {
     		xtype: 'gridcolumn',
+    		
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
-    		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
-    			return record.data.field.get('text');
-    		},
     		sortable: false,
-    		text: 'Column'
+    		text: 'Column',
+    		
+    		renderer: function (value, metaData, record, rowIndex, colIndex, store) {
+                return record.data.field.get('text');
+            }
+    	}, {
+    	    xtype: 'actioncolumn',
+    	    
+    	    hideable: false,
+    	    items: [{
+    	        icon: 'images/cross.png',
+    	        iconCls: 'ext-icon grid remove-column',
+    	        tooltip: 'Remove'
+    	    }],
+    	    sortable: false,
+    	    width: 25
     	}],
-    	selModel: {
-    	    mode: 'multi'
-        },
-    	store: 'report.ReportsColumn',
+    	enableColumnResize: false,
+        tbar: [{
+            action: 'add-column',
+            icon: 'js/pics/resources/images/dd/drop-add.gif',
+            text: 'Add Column'
+        }],
         viewConfig: {
-        	minHeight: 200, // this doesn't seem to work yet
         	plugins: {
-                ptype: 'gridviewdragdrop',
-                dragText: 'Drag and drop to reorganize'
+                dragText: 'Drag and drop to reorganize',
+                ptype: 'gridviewdragdrop'
             }
         }
-    },{
+    }, {
     	xtype: 'fieldset',
+    	
         flex: 1,
         items: [{
             xtype: 'displayfield',
-            value: 'Status',
-            fieldLabel: 'Field'
-        },{
+            
+            fieldLabel: 'Field',
+            value: 'Status'
+        }, {
             xtype: 'combobox',
+            
             fieldLabel: 'Operator'
-        },{
+        }, {
             xtype: 'radiogroup',
+            
             fieldLabel: 'Type',
             items: [{
                 xtype: 'radiofield',
+                
                 boxLabel: 'Value'
-            },{
+            }, {
                 xtype: 'radiofield',
+                
                 boxLabel: 'Field'
             }]
-        },{
+        }, {
             xtype: 'textfield',
+            
             fieldLabel: 'Value'
         }]
     }],
@@ -57,14 +83,5 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
         align: 'stretch',
         type: 'vbox'
     },
-    tbar: [{
-    	action: 'add',
-    	column_type: 'column',
-        text: 'Add Column',
-    },{
-    	action: 'remove',
-    	column_type: 'column',
-        text: 'Remove'
-    }],
     title: 'Columns'
 });
