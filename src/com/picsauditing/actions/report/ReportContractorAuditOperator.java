@@ -89,22 +89,24 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 
 		ReportFilterCAO f = getFilter();
 
-		if (f.getAuditStatus() != null)
+		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
+		if (filterOn(auditStatusList))
 		{
 			ArrayList<AuditStatus> auditStatusValues = new ArrayList<AuditStatus>(Arrays.asList(f.getAuditStatus()));
 			if (auditStatusValues.contains(AuditStatus.Expired))
 			{
 				sql.addWhere("ca.expiresDate <= NOW()");
+				auditStatusValues.remove(AuditStatus.Expired);
+				auditStatusList = Strings.implodeForDB(auditStatusValues, ",");
 			}
 			else if (!auditStatusValues.isEmpty())
 			{
 				sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 			}
-		}
 
-		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
-		if (filterOn(auditStatusList)) {
-			sql.addWhere("cao.status IN (" + auditStatusList + ")");
+			if (filterOn(auditStatusList)) {
+				sql.addWhere("cao.status IN (" + auditStatusList + ")");
+			}
 		}
 
 		if (filterOn(f.getPercentComplete1())) {
