@@ -49,6 +49,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 			else 
 				opIds += " ff.opid IN (SELECT opID from facilities where corporateID = " + permissions.getAccountId()+")";
 			sql.addWhere(opIds);
+			sql.addWhere("a.status != 'Demo'");
 		}
 		sql.addField("o.name AS opName");
 		sql.addField("o.type AS opType");
