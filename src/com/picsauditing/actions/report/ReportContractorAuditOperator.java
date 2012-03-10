@@ -92,14 +92,16 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		String auditStatusList = Strings.implodeForDB(f.getAuditStatus(), ",");
 		if (filterOn(auditStatusList))
 		{
+			boolean isFilteringExpiresDate = filterOn(f.getExpiredDate1()) || filterOn(f.getExpiredDate2());
 			ArrayList<AuditStatus> auditStatusValues = new ArrayList<AuditStatus>(Arrays.asList(f.getAuditStatus()));
 			if (auditStatusValues.contains(AuditStatus.Expired))
 			{
-				sql.addWhere("ca.expiresDate <= NOW()");
+				if (!isFilteringExpiresDate)
+					sql.addWhere("ca.expiresDate <= NOW()");
 				auditStatusValues.remove(AuditStatus.Expired);
 				auditStatusList = Strings.implodeForDB(auditStatusValues, ",");
 			}
-			else if (!auditStatusValues.isEmpty())
+			else if (!auditStatusValues.isEmpty() && !isFilteringExpiresDate)
 			{
 				sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 			}
