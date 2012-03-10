@@ -33,7 +33,6 @@ public class ReportFilterAjax extends PicsActionSupport {
 		if (listType != null) {
 			if (listType.equals(ListType.Contractor)) {
 				ReportFilterContractor filter = wizardSession.getContractorFilter();
-				filter.setPermissions(permissions);
 				filter.setDestinationAction("ContractorList");
 				filter.setStatus(new AccountStatus[] { AccountStatus.Active }); // default to only active contractors
 				filter.setShowEmailTemplate(true);
