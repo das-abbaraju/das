@@ -61,7 +61,6 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testContractorColumns() {
-		definition.getColumns().add(new SimpleReportColumn("accountID"));
 		definition.getColumns().add(new SimpleReportColumn("contractorName"));
 		definition.getColumns().add(new SimpleReportColumn("contractorScore"));
 
@@ -133,22 +132,66 @@ public class SqlBuilderTest {
 	}
 
 	@Test
+	public void testHaving() {
+		// {"filters":[{"column":"contractorName","operator":"BeginsWith","value":"Da"}]}
+		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
+		SimpleReportColumn column = new SimpleReportColumn("accountNameCount");
+		column.setFunction(QueryFunction.Count);
+		definition.getColumns().add(column);
+
+		{
+			SimpleReportFilter filter = new SimpleReportFilter();
+			filter.setColumn("accountNameCount");
+			filter.setOperator(QueryFilterOperator.GreaterThan);
+			filter.setValue("5");
+			definition.getFilters().add(filter);
+		}
+		{
+			SimpleReportFilter filter = new SimpleReportFilter();
+			filter.setColumn("accountName");
+			filter.setOperator(QueryFilterOperator.BeginsWith);
+			filter.setValue("A");
+			definition.getFilters().add(filter);
+		}
+
+		builder.setBase(new QueryAccount());
+		SelectSQL sql = builder.getSql();
+
+		assertContains("HAVING (COUNT(a.name) > '5')", sql.toString());
+		assertContains("WHERE ((a.nameIndex LIKE 'A%'))", sql.toString());
+		assertContains("GROUP BY a.status", sql.toString());
+	}
+
+	@Test
+	public void testGroupByContractorName() {
+		builder.setBase(new QueryAccountContractor());
+
+		SimpleReportColumn contractorNameCount = new SimpleReportColumn("contractorNameCount");
+		contractorNameCount.setFunction(QueryFunction.Count);
+		definition.getColumns().add(contractorNameCount);
+		
+		SelectSQL sql = builder.getSql();
+		System.out.println(sql.toString());
+		assertEquals(1, sql.getFields().size());
+		assertEquals("", sql.getOrderBy());
+	}
+	
+	@Test
 	public void testSorts() {
 		builder.setBase(new QueryAccount());
-		
+
 		SimpleReportSort sort = new SimpleReportSort("accountStatus");
 		definition.getOrderBy().add(sort);
 		SelectSQL sql = builder.getSql();
 		assertContains("ORDER BY a.status", sql.toString());
-		
+
 		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
 		sql = builder.getSql();
 		assertContains("ORDER BY accountStatus", sql.toString());
-		
+
 		sort.setAscending(false);
 		sql = builder.getSql();
 		assertContains("ORDER BY accountStatus DESC", sql.toString());
 	}
-
 
 }

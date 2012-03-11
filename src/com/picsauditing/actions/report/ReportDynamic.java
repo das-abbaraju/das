@@ -211,8 +211,13 @@ public class ReportDynamic extends PicsActionSupport {
 				if (value == null) {
 
 				} else {
+					
 					QueryField field = builder.getAvailableFields().get(column.toUpperCase());
-					if (isCanSeeQueryField(field)) {
+					if (field == null) {
+						// TODO we get nulls if the column name is custom such as contractorNameCount. Convert this to contractorName
+						jsonRow.put(column, value);
+						
+					} else if (isCanSeeQueryField(field)) {
 						if (field.isTranslated()) {
 							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
 						} else if (value.getClass().equals(java.sql.Date.class)) {

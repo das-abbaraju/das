@@ -117,7 +117,10 @@ public class SqlBuilder {
 		for (SimpleReportColumn column : definition.getColumns()) {
 			QueryField field = getQueryFieldFromSimpleColumn(column);
 			if (field != null) {
-				dependentFields.addAll(field.getDependentFields());
+				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
+					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
+					dependentFields.addAll(field.getDependentFields());
+				}
 				String columnSQL = columnToSQL(column);
 				if (usesGroupBy && !isAggregate(column.getName())) {
 					sql.addGroupBy(columnSQL);
@@ -126,7 +129,7 @@ public class SqlBuilder {
 				includedColumns.add(column);
 			}
 		}
-		
+
 		// Add an dependent fields that aren't already included
 		Iterator<String> iterator = dependentFields.iterator();
 		while (iterator.hasNext()) {
@@ -135,7 +138,7 @@ public class SqlBuilder {
 				iterator.remove();
 			}
 		}
-		
+
 		for (String fieldName : dependentFields) {
 			SimpleReportColumn column = new SimpleReportColumn(fieldName);
 			String columnSQL = columnToSQL(column);
@@ -143,7 +146,7 @@ public class SqlBuilder {
 			includedColumns.add(column);
 		}
 	}
-	
+
 	private boolean isFieldIncluded(String fieldName) {
 		for (SimpleReportColumn column : includedColumns) {
 			if (column.getName().equals(fieldName))
@@ -168,6 +171,8 @@ public class SqlBuilder {
 	}
 
 	private boolean isAggregate(String columnName) {
+		if (columnName == null)
+			return false;
 		SimpleReportColumn column = convertColumn(columnName);
 		if (column == null)
 			return false;
@@ -178,7 +183,8 @@ public class SqlBuilder {
 	}
 
 	private String columnToSQL(SimpleReportColumn column) {
-		String fieldSQL = getQueryFieldFromSimpleColumn(column).getSql();
+		QueryField field = getQueryFieldFromSimpleColumn(column);
+		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
 			return fieldSQL;
 		switch (column.getFunction()) {
@@ -214,39 +220,43 @@ public class SqlBuilder {
 		if (definition.getFilters().size() == 0) {
 			return;
 		}
+		
+		Set<SimpleReportFilter> whereFilters = new HashSet<SimpleReportFilter>();
+		Set<SimpleReportFilter> havingFilters = new HashSet<SimpleReportFilter>();
+		
+		for (SimpleReportFilter filter : definition.getFilters()) {
+			// TODO we might want to verify the filter is properly defined before including it
+			// if (filter.isFullyDefined()) { }
+			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
+				havingFilters.add(filter);
+			} else {
+				whereFilters.add(filter);
+			}
+		}
 
 		String where = definition.getFilterExpression();
 		if (where == null || Strings.isEmpty(where)) {
 			where = "";
-			for (int i = 0; i < definition.getFilters().size(); i++) {
+			for (int i = 0; i < whereFilters.size(); i++) {
 				where += "{" + i + "} AND ";
 			}
 			where = StringUtils.removeEnd(where, " AND ");
 		}
 
-		for (int i = 0; i < definition.getFilters().size(); i++) {
-			SimpleReportFilter queryFilter = definition.getFilters().get(i);
-
-			if (queryFilter.getOperator().equals(QueryFilterOperator.InReport)) {
-				// TODO Replace InReport filters out before hand with a SelectSQL object so we don't have to use a DAO
-				// here
-
-				// Report subReport = dao.find(Report.class, Integer.parseInt(queryFilter.getValue()));
-				// QueryRunner subRunner = new QueryRunner(subReport);
-				// SelectSQL subSql = subRunner.buildQueryWithoutLimits();
-				// queryFilter.setValue(subSql.toString());
+		int whereIndex = 0;
+		for (SimpleReportFilter filter : whereFilters) {
+			if (!isAggregate(filter.getColumn()) && !isAggregate(filter.getColumn2())) {
+				String filterExp = toFilterSql(filter);
+				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
+				whereIndex++;
 			}
-
-			String filterExp = toFilterSql(queryFilter);
-			where = where.replace("{" + i + "}", "(" + filterExp + ")");
 		}
 		sql.addWhere(where);
 
-		for (SimpleReportFilter filter : definition.getFilters()) {
+		for (SimpleReportFilter filter : havingFilters) {
 			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
-				// TODO convert to SQL
-				String having = "";
-				sql.addHaving(having);
+				String filterExp = toFilterSql(filter);
+				sql.addHaving(filterExp);
 			}
 		}
 	}
@@ -264,7 +274,7 @@ public class SqlBuilder {
 	private String toFilterSql(SimpleReportFilter filter) {
 
 		SimpleReportColumn column = convertColumn(filter.getColumn());
-		
+
 		if (column == null) {
 			column = new SimpleReportColumn(filter.getColumn());
 		}
@@ -313,6 +323,9 @@ public class SqlBuilder {
 
 	private void addOrderBy() {
 		if (definition.getOrderBy().size() == 0) {
+			if (usesGroupBy()) {
+				return;
+			}
 			sql.addOrderBy(base.getDefaultSort());
 			return;
 		}
