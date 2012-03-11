@@ -25,7 +25,7 @@ public class SimpleReportColumn implements JSONable {
 		JSONObject json = new JSONObject();
 		json.put("name", name);
 		if (function != null) {
-			json.put("function", function.toString());
+			json.put("method", function.toString());
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
@@ -36,9 +36,9 @@ public class SimpleReportColumn implements JSONable {
 		if (json == null)
 			return;
 		this.name = (String) json.get("name");
-		Object functionObj = json.get("function");
-		if (functionObj != null) {
-			this.function = QueryFunction.valueOf(functionObj.toString());
+		String methodName = (String) json.get("method");
+		if (!Strings.isEmpty(methodName)) {
+			this.function = QueryFunction.valueOf(methodName);
 			this.option = (String) json.get("option");
 		}
 	}
@@ -48,11 +48,12 @@ public class SimpleReportColumn implements JSONable {
 	}
 
 	public String getAvailableFieldName() {
-//		if (function == null)
+		if (function == null)
 			return name;
-//		int startOfFunction = name.lastIndexOf(function.toString());
-//		
-//		return name.substring(0, startOfFunction);
+		int startOfFunction = name.lastIndexOf(function.toString());
+		if (startOfFunction < 0)
+			return name;
+		return name.substring(0, startOfFunction);
 	}
 
 	public void setName(String field) {
