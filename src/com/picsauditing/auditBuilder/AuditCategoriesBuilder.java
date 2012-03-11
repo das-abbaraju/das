@@ -199,8 +199,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				}
 				
 				AuditData answer = findAnswer(auditContainingCurrentQuestion, currentQuestionId);
-				if (answer != null)
-					answers.put(currentQuestionId, answer);
+				answers.put(currentQuestionId, answer);
 			}
 		}
 		return answers;
