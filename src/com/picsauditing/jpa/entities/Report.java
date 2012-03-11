@@ -7,7 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
@@ -25,7 +24,6 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private Account sharedWith;
-	private String devParams;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -62,14 +60,6 @@ public class Report extends BaseTable {
 		this.parameters = parameters;
 	}
 
-	public String getDevParams() {
-		return devParams;
-	}
-
-	public void setDevParams(String devParams) {
-		this.devParams = devParams;
-	}
-
 	@ManyToOne
 	@JoinColumn(name = "sharedWith")
 	public Account getSharedWith() {
@@ -97,13 +87,5 @@ public class Report extends BaseTable {
 				obj.put("sorts", JSONUtilities.convertFromList(definition.getOrderBy()));
 		}
 		return obj;
-	}
-
-	public void fromJSON(JSONObject obj) {
-		// TODO write this!!
-
-		// if (id == 0)
-		// id = (Integer)obj.get("id");
-		// createdBy = new User(obj.get("createdBy"));
 	}
 }

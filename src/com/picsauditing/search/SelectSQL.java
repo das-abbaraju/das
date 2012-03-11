@@ -158,7 +158,7 @@ public class SelectSQL {
 
 		whereClause.add(clause);
 	}
-
+	
 	public void addGroupBy(String groupBy) {
 		if (!Strings.isEmpty(groupBy))
 			this.groupByFields.add(groupBy);
