@@ -290,7 +290,8 @@
 					var question_container = $(this).closest('div.question');
 					
 					if (question_container.length) {
-						var question_id = $(this).closest('div.question').find('input[name="auditData.question.id"]').val();
+						var question_id = $(this).closest('div.question').attr('id');
+						question_id = question_id.substring(5);
 						
 						question_query_param = '&questionId=' + question_id;
 					}
