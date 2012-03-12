@@ -16,7 +16,12 @@ Ext.define('PICS.controller.report.FilterController', {
         });
     },
     showFilterOptions: function (view, record, item, index, e, options) {
-        if (this.showOptionsPanel != null) {
+        //if record deleted, don't display options
+        if (!record.store) {
+            this.showOptionsPanel.destroy();
+            return;
+        }
+        if (this.showOptionsPanel !== null) {
             this.showOptionsPanel.destroy();
         }
         
