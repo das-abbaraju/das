@@ -37,7 +37,7 @@ public class FlagDataCalculator {
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
 	private OperatorAccount operator = null;
-	private Map<Integer, List<Integer>> equivalentMultiYearCriteria = null;
+	private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
 
 	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// Assume this is true for the contractor in question
@@ -528,12 +528,12 @@ public class FlagDataCalculator {
 		this.overrides = overridesMap;
 	}
 
-	public Map<Integer, List<Integer>> getEquivalentMultiYearCriteria() {
-		return equivalentMultiYearCriteria;
+	public Map<Integer, List<Integer>> getCorrespondingMultiYearCriteria() {
+		return correspondingMultiYearCriteria;
 	}
 
-	public void setEquivalentMultiYearCriteria(Map<Integer, List<Integer>> equivalentMultiYearCriteria) {
-		this.equivalentMultiYearCriteria = equivalentMultiYearCriteria;
+	public void setCorrespondingMultiYearCriteria(Map<Integer, List<Integer>> equivalentMultiYearCriteria) {
+		this.correspondingMultiYearCriteria = equivalentMultiYearCriteria;
 	}
 
 	public boolean isWorksForOperator() {
@@ -557,9 +557,9 @@ public class FlagDataCalculator {
 
 		List<Integer> criteriaIds = new ArrayList<Integer>();
 		FlagCriteriaContractor fcc = contractorCriteria.get(key);
-		if (equivalentMultiYearCriteria.containsKey(key.getId())) {
+		if (correspondingMultiYearCriteria.containsKey(key.getId())) {
 			auditYear = extractYear(fcc.getAnswer2());
-			criteriaIds.addAll(equivalentMultiYearCriteria.get(key.getId()));
+			criteriaIds.addAll(correspondingMultiYearCriteria.get(key.getId()));
 		} else {
 			criteriaIds.add(key.getId());
 		}

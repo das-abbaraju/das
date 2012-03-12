@@ -148,7 +148,7 @@ public class ContractorCron extends PicsActionSupport {
 			runContractorETL(contractor);
 			runCSRAssignment(contractor);
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
-			flagDataCalculator.setEquivalentMultiYearCriteria(getEquivalentMuliscopCriteriaIds());
+			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -201,7 +201,7 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 	
-	private Map<Integer, List<Integer>> getEquivalentMuliscopCriteriaIds() {
+	private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
 		Database db = new Database();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
 		
