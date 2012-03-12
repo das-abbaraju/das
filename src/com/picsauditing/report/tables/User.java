@@ -16,13 +16,10 @@ public class User extends BaseTable {
 		super("users", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
+	public void addFields() {
 		addField(prefix + "ID", alias + ".id", FilterType.Integer);
 		addField(prefix + "Name", alias + ".name", FilterType.String).addRenderer("UsersManage.action?user={0}\">{1}",
 				new String[] { prefix + "ID", prefix + "Name" });
-	}
-
-	public void addFields() {
 		addField(prefix + "AccountID", alias + ".accountID", FilterType.String);
 		addField(prefix + "Phone", alias + ".phone", FilterType.String);
 		addField(prefix + "Email", alias + ".email", FilterType.String);

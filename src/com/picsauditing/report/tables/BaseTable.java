@@ -23,11 +23,8 @@ public abstract class BaseTable {
 		this.alias = alias;
 		this.where = where;
 
-		addDefaultFields();
 		addFields();
 	}
-
-	protected abstract void addDefaultFields();
 
 	public abstract void addFields();
 
@@ -78,8 +75,7 @@ public abstract class BaseTable {
 	}
 
 	public void removeField(String name) {
-		QueryField field = fields.remove(name.toUpperCase());
-		field.setSuggested(false);
+		fields.remove(name.toUpperCase());
 	}
 	
 	protected QueryField addField(String sql, FilterType filter) {

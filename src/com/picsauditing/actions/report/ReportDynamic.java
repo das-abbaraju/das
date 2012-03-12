@@ -158,9 +158,11 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			buildSQL();
 
-			QueryData data = queryData();
-			convertToJson(data);
-			json.put("success", true);
+			if (builder.getDefinition().getColumns().size() > 0) {
+				QueryData data = queryData();
+				convertToJson(data);
+				json.put("success", true);
+			}
 		} catch (SQLException e) {
 			logError(e);
 		} catch (Exception e) {
@@ -169,7 +171,6 @@ public class ReportDynamic extends PicsActionSupport {
 			if (showSQL && (permissions.isPicsEmployee() || permissions.getAdminID() > 0)) {
 				json.put("sql", sql.toString().replace("`", "").replace("\n", " "));
 				json.put("base", report.getModelType().toString());
-				// json.put("command", new JsonRaw(report.getParameters()));
 			}
 		}
 
@@ -250,8 +251,8 @@ public class ReportDynamic extends PicsActionSupport {
 	// Getters that need some calculation
 
 	/**
-	 * Return a set of fields which can be used client side for defining the
-	 * report (columns, sorting, grouping and filtering)
+	 * Return a set of fields which can be used client side for defining the report (columns, sorting, grouping and
+	 * filtering)
 	 */
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();

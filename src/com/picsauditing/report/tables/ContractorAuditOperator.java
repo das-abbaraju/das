@@ -16,12 +16,9 @@ public class ContractorAuditOperator extends BaseTable {
 		super("contractor_audit_operator", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
+	public void addFields() {
 		addField(prefix + "ID", alias + ".id", FilterType.Integer);
 		addField(prefix + "Status", alias + ".status", FilterType.AuditStatus);
-	}
-
-	public void addFields() {
 		addField(prefix + "StatusChangedDate", alias + ".statusChangedDate", FilterType.Date);
 		addField(prefix + "PercentComplete", alias + ".percentComplete", FilterType.Integer);
 	}

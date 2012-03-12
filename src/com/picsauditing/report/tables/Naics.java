@@ -16,11 +16,8 @@ public class Naics extends BaseTable {
 		super("naics", alias, alias, alias + ".code = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
-		addField(prefix + "Code", alias + ".code", FilterType.String).setCategory(FieldCategory.NAICS);
-	}
-
 	public void addFields() {
+		addField(prefix + "Code", alias + ".code", FilterType.String).setCategory(FieldCategory.NAICS);
 		addField(prefix + "TRIR", alias + ".trir", FilterType.Float).setCategory(FieldCategory.NAICS);
 		addField(prefix + "LWCR", alias + ".lwcr", FilterType.Float).setCategory(FieldCategory.NAICS);
 	}

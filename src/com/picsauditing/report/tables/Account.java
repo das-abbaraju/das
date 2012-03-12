@@ -16,12 +16,9 @@ public class Account extends BaseTable {
 		super("accounts", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setSuggested().setWidth(80);
-		addField(prefix + "Name", alias + ".name", FilterType.AccountName).setSuggested().setWidth(200);
-	}
-
 	public void addFields() {
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setWidth(80);
+		addField(prefix + "Name", alias + ".name", FilterType.AccountName).setWidth(200);
 		addField(prefix + "DBAName", alias + ".dbaName", FilterType.AccountName).setWidth(200);
 		addField(prefix + "Status", alias + ".status", FilterType.AccountStatus);
 		addField(prefix + "Type", alias + ".type", FilterType.AccountType);

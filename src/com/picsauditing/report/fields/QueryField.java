@@ -28,7 +28,6 @@ public class QueryField implements JSONAware {
 	private boolean visible = true;
 	private boolean filterable = true;
 	private boolean sortable = true;
-	private boolean suggested = false;
 	private boolean hidden = false;
 	private int flex = 0;
 	private ExtFieldType type = ExtFieldType.Auto;
@@ -58,7 +57,6 @@ public class QueryField implements JSONAware {
 		this.name = name;
 		this.sql = sql;
 		this.filterType = filterType;
-		this.suggested = isDefault;
 
 		if (filterType != null) {
 			this.type = this.filterType.getFieldType();
@@ -84,8 +82,6 @@ public class QueryField implements JSONAware {
 			json.put("filterable", filterable);
 		if (!sortable)
 			json.put("sortable", sortable);
-		if (suggested)
-			json.put("suggested", suggested);
 		if (hidden)
 			json.put("hidden", hidden);
 
@@ -164,19 +160,6 @@ public class QueryField implements JSONAware {
 
 	public void setSortable(boolean sortable) {
 		this.sortable = sortable;
-	}
-
-	public boolean isSuggested() {
-		return suggested;
-	}
-
-	public void setSuggested(boolean suggested) {
-		this.suggested = suggested;
-	}
-
-	public QueryField setSuggested() {
-		setSuggested(true);
-		return this;
 	}
 
 	public void setHidden(boolean hidden) {

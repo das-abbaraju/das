@@ -17,15 +17,12 @@ public class Operator extends BaseTable {
 		super("operators", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
+	public void addFields() {
 		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
 		QueryField operatorName;
-		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
+		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
 		operatorName.setUrl("FacilitiesEdit.action?operator={accountID}");
 		operatorName.setWidth(300);
-	}
-
-	public void addFields() {
 		addField(prefix + "IsCorporate", alias + ".isCorporate", FilterType.Boolean);
 		addField(prefix + "DoContractorsPay", alias + ".doContractorsPay", FilterType.Boolean);
 		addField(prefix + "CanSeeInsurance", alias + ".canSeeInsurance", FilterType.Boolean);

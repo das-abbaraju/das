@@ -16,12 +16,9 @@ public class ContractorAudit extends BaseTable {
 		super("contractor_audit", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setSuggested();
-		addField(prefix + "For", alias + ".auditFor", FilterType.String).setSuggested();
-	}
-
 	public void addFields() {
+		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		addField(prefix + "For", alias + ".auditFor", FilterType.String);
 		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
 		addField(prefix + "ExpirationDate", alias + ".expiresDate", FilterType.Date);
 		addField(prefix + "ScheduledDate", alias + ".scheduledDate", FilterType.Date);

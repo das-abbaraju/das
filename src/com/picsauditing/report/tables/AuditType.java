@@ -17,16 +17,14 @@ public class AuditType extends BaseTable {
 		super("audit_type", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
-		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
-		addField(prefix + "ID", alias + ".id", FilterType.Integer).setSuggested();
-		QueryField auditTypeName = addField(prefix + "Name", alias + ".id", FilterType.String).setSuggested();
-		auditTypeName.translate("AuditType", "name");
-		auditTypeName.addRenderer("Audit.action?auditID={0}\">{1} {2}", new String[] { "auditID", prefix + "Name",
-				"auditFor" });
-	}
-
 	public void addFields() {
+		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
+		addField(prefix + "ID", alias + ".id", FilterType.Integer);
+		QueryField auditTypeName = addField(prefix + "Name", alias + ".id", FilterType.String);
+		auditTypeName.translate("AuditType", "name");
+		auditTypeName.setUrl("Audit.action?auditID={auditID}");
+		auditTypeName.setWidth(300);
+
 		addField(prefix + "ClassType", alias + ".classType", FilterType.Integer);
 		addField(prefix + "IsScheduled", alias + ".isScheduled", FilterType.Boolean);
 		addField(prefix + "HasAuditor", alias + ".hasAuditor", FilterType.Boolean);

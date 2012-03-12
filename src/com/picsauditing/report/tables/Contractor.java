@@ -18,15 +18,12 @@ public class Contractor extends BaseTable {
 		super("contractor_info", alias, alias, alias + ".id = " + foreignKey);
 	}
 
-	protected void addDefaultFields() {
+	public void addFields() {
 		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
 		QueryField contractorName;
-		contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName).setSuggested();
+		contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
 		contractorName.setUrl("ContractorView.action?id={accountID}");
 		contractorName.setWidth(300);
-	}
-
-	public void addFields() {
 		addField(prefix + "RiskLevel", alias + ".riskLevel", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 		addField(prefix + "SafetyRisk", alias + ".safetyRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
 		addField(prefix + "ProductRisk", alias + ".productRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);

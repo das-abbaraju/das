@@ -41,8 +41,6 @@ public class SqlBuilder {
 		setFrom();
 		addAvailableFields(base.getFrom());
 
-		if (definition.getColumns().size() == 0)
-			addDefaultFields();
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
 		addOrderBy();
@@ -50,15 +48,6 @@ public class SqlBuilder {
 		addJoins(base.getFrom());
 
 		return sql;
-	}
-
-	private void addDefaultFields() {
-		for (QueryField field : availableFields.values()) {
-			if (field.isSuggested())
-				definition.getColumns().add(new SimpleReportColumn(field.getName()));
-		}
-		if (definition.getColumns().size() == 0)
-			throw new RuntimeException("No columns exist for Report or BaseModel");
 	}
 
 	private void setFrom() {
