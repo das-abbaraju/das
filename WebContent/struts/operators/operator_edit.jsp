@@ -138,7 +138,13 @@
 					<ol>
 						<li>
 							<s:text name="FacilitiesEdit.IsGeneralContractor" />
-							<s:radio list="#{'true':getText('YesNo.Yes'),'false':getText('YesNo.No')}" name="generalContractor" theme="pics" cssClass="inline" />
+							<s:radio 
+                                list="#{'true': getText('YesNo.Yes'), 'false': getText('YesNo.No')}" 
+                                name="generalContractor" 
+                                theme="pics" 
+                                cssClass="inline" 
+                            />
+                            
 							<s:text name="FacilitiesEdit.LinkedContractorAccount" />
 							<br />
 							<pics:autocomplete action="ContractorAutocomplete" name="operator.gcContractor.contractorAccount" />
