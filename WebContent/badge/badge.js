@@ -289,7 +289,9 @@
                 
                 var css = [
                     '.pics_badge_container { line-height: normal; text-align: center; }',
-                    '.pics_badge_container a, .pics_badge_container img { border: 0px; color: #A94C0F; font-size: 8pt; line-height: 8pt; text-decoration: none; }',
+                    '.pics_badge_container a, .pics_badge_container img { border: 0px; color: #A94C0F; font-size: 10px; line-height: 10px; text-decoration: none; }',
+                    '#pics_badge_container_100 a { font-size: 11px; }',
+                    '#pics_badge_container_150 a { font-size: 13px; }',
                     '.pics_badge_container a:hover { text-decoration: underline; }'
                 ];
                 
