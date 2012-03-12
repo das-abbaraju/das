@@ -83,7 +83,8 @@ public class I18nCache implements Serializable {
 		yesterday.add(Calendar.DAY_OF_YEAR, -1);
 		if (lastUsed == null || lastUsed.before(yesterday.getTime())) {
 			Database db = new Database();
-			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key) + "'";
+			String sql = "UPDATE app_translation SET lastUsed = NOW() WHERE msgKey = '" + Strings.escapeQuotes(key)
+					+ "'";
 			cacheUsage.put(key, new Date());
 			try {
 				db.execute(sql);
@@ -265,24 +266,20 @@ public class I18nCache implements Serializable {
 	}
 
 	private String buildInsertStatement(AppTranslation translationToinsert) {
-		if (translationToinsert.isApplicable()) {
-			String sourceLanguage = translationToinsert.getSourceLanguage();
-			if (Strings.isEmpty(sourceLanguage)) {
-				sourceLanguage = "NULL";
-			} else {
-				sourceLanguage = "'" + sourceLanguage + "'";
-			}
-
-			String format = "INSERT INTO app_translation (msgKey, locale, msgValue, qualityRating, sourceLanguage, createdBy, "
-					+ "updatedBy, creationDate, updateDate, lastUsed, contentDriven)"
-					+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d)";
-
-			return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
-					translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
-					translationToinsert.isContentDriven() ? 1 : 0);
+		String sourceLanguage = translationToinsert.getSourceLanguage();
+		if (Strings.isEmpty(sourceLanguage)) {
+			sourceLanguage = "NULL";
+		} else {
+			sourceLanguage = "'" + sourceLanguage + "'";
 		}
 
-		return null;
+		String format = "INSERT INTO app_translation (msgKey, locale, msgValue, qualityRating, sourceLanguage, "
+				+ "createdBy, updatedBy, creationDate, updateDate, lastUsed, contentDriven, applicable)"
+				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d, %d)";
+
+		return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
+				translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
+				translationToinsert.isContentDriven() ? 1 : 0, translationToinsert.isApplicable() ? 1 : 0);
 	}
 
 	private String buildUpdateStatement(AppTranslation translationToUpdate) {
