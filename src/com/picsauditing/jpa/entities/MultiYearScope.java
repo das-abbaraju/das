@@ -10,7 +10,7 @@ public enum MultiYearScope {
 	TwoYearsAgo("Two Years Ago"),
 	ThreeYearsAgo("Three Years Ago"),
 	ThreeYearAverage("Three Year Average"),
-	ThreeYearAggregate("Three Year Aggregate");
+	ThreeYearAggregate("Three Year Sum"); // change ThreeYearAggregate to ThreeYearSum
 
 	@Deprecated
 	private String description;
@@ -34,6 +34,7 @@ public enum MultiYearScope {
 			cal.add(Calendar.YEAR, -2);
 		if (this == LastYearOnly)
 			cal.add(Calendar.YEAR, -1);
+		
 		return "" + cal.get(Calendar.YEAR);
 	}
 
@@ -59,6 +60,7 @@ public enum MultiYearScope {
 		for (MultiYearScope value : MultiYearScope.values()) {
 			map.put(value.ordinal(), value);
 		}
+		
 		return map;
 	}
 }
