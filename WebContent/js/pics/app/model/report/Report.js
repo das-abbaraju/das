@@ -6,6 +6,9 @@ Ext.define('PICS.model.report.Report', {
         'PICS.model.report.SimpleSort'
     ],
     
+    // TODO: COMMENT THIS PARAMETER IS IMPORTANT
+    // TIED TO STORE + REPORT CONTROLLER
+    // WAY TO MUCH BLIND DEPENDENCY
     parameters: {},
 
     fields: [

@@ -8,45 +8,52 @@ Ext.define('PICS.store.report.Reports', {
             	var report = store.first();
             	
             	if (report) {
-            		this.loadStore("report.ReportsColumn", report.columns());
-            		this.loadStoreFilter("report.ReportsFilter", report.filters());
+            		this.loadStoreColumn('report.ReportsColumn', report.columns());
+            		this.loadStoreFilter('report.ReportsFilter', report.filters());
             	}
             }
         }
     },
-    loadStore: function(storeName, child) {
-    	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
+    
+    loadStoreColumn: function(store_name, child) {
+    	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
     	
     	var records = [];
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
-    		field = fieldsStore.findField(item.get("name"));
+    		field = available_fields_store.findField(item.get('name'));
     		
-    		item.setField(field);
+    		item.setAvailableField(field);
     		records.push(item);
     	}
     	
-    	var store = Ext.StoreManager.get(storeName);
+    	var store = Ext.StoreManager.get(store_name);
     	store.loadRecords(records);
     },
-    loadStoreFilter: function(storeName, child) {
+    
+    loadStoreFilter: function(store_name, child) {
     	// TODO refactor these two methods
-    	var fieldsStore = Ext.StoreManager.get("report.AvailableFields");
-    	
+    	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
     	var records = [];
+    	
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
-    		field = fieldsStore.findField(item.get("column"));
+    		field = available_fields_store.findField(item.get('column'));
     		
-    		item.setField(field);
+    		item.setAvailableField(field);
     		records.push(item);
     	}
     	
-    	var store = Ext.StoreManager.get(storeName);
+    	var store = Ext.StoreManager.get(store_name);
     	store.loadRecords(records);
     },
     proxy: {
-    	url: 'TBD',
+        // TODO: refactor proxy + figure out better writer
+        // url parameter is important and must be null????
+        // create proxy reader and writer on the fly???
+        // writer.base????
+        // better way of overriding request.params + url object? blind dependency
+    	url: '',
         reader: {
             root: 'report',
             type: 'json'
@@ -57,7 +64,7 @@ Ext.define('PICS.store.report.Reports', {
         		// See http://docs.sencha.com/ext-js/4-0/source/Json3.html#Ext-data-writer-Json
         		// writeRecords
         		var report = request.records[0];
-                request.params["report.parameters"] = report.parameters;
+                request.params['report.parameters'] = report.parameters;
                 request.url = 'ReportDynamic!save.action?report=' + report.getId();
                 return request;
         	}

@@ -108,7 +108,7 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             } else if (window._column_type === 'column') {
                 store = this.getReportReportsColumnStore();
             } else {
-                throw 'columnSelector.column_type is ' + window._column_type + ' - must be (filter|column)';
+                throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
             
             var columns = [];

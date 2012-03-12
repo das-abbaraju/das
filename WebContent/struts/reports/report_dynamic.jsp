@@ -6,12 +6,7 @@
 	<head>
 		<title><s:property value="report.summary"/></title>
         <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css"> -->
-		
-		<style>
-		.x-body {
-			background: #FFFFFF;
-		}
-		</style>
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
 	</head>
 	<body>
 		<script type="text/javascript">

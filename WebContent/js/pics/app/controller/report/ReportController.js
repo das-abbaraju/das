@@ -1,5 +1,9 @@
 Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
+    refs: [{
+        ref: 'dataGrid',
+        selector: 'reportdatagrid'
+    }],
  	stores: [
         'report.ReportData',
         'report.Reports',
@@ -7,131 +11,204 @@ Ext.define('PICS.controller.report.ReportController', {
         'report.ReportsFilter'
     ],
 	
-    init: function() {
+    init: function () {
         this.control({
             'reportoptions button[action=refresh]': {
-                click: this.refreshData
+                click: this.refreshReport
             },
             'reportoptions button[action=save]': {
-                click: this.save
+                click: this.saveReport
             }
         });
+    },
+    
+    onLaunch: function () {
+        var store = this.getReportReportsStore();
         
-        var reportStore = this.getReportReportsStore();
-        
-        reportStore.loadRawData({
+        // popuplate report store
+        // report store populates report columns store
+        // report store populates report filters store
+        store.loadRawData({
             report: reportParameters
         });
         
-        this.report = reportStore.first();
-        this.columnStore = this.getReportReportsColumnStore();
-        this.filterStore = this.getReportReportsFilterStore();
+        this.refreshReport();
+    },
+    
+    getReportParameters: function () {
+        var report_store = this.getReportReportsStore();
+        var report = report_store && report_store.first();
         
-        this.refreshData();
-    },
-    
-    report: null,
-    columnStore: null,
-    filterStore: null,
-    sortsStore: null,
-    
-    buildParameters: function () {
-		// See http://docs.sencha.com/ext-js/4-0/source/Writer.html#Ext-data-writer-Writer-method-write
-		var data = this.getRecordData(this.report);
-		
-		data.columns = this.addChildren(this.columnStore);
-		data.filters = this.addChildren(this.filterStore);
-		// data.sorts = this.addChildren(this.sortsStore);
-		
-		delete data.id;
-		delete data.modelType;
-		delete data.summary;
-		delete data.description;
-		//request.params['report.name'] = data.name;
-		//request.params['report.description'] = data.description;
-		
-		this.report.parameters = Ext.encode(data);
-		return this.report.parameters;
-    },
-	addChildren: function(child) {
-		var records = child.data.items;
-		var data = [];
-		for (var i = 0; i < records.length; i++) {
-			data.push(this.getRecordData(records[i]));
+        // TODO: instance of report store
+        if (!report) {
+            Ext.Msg.alert('Error', 'Missing report definition');
+            
+            return false;
         }
-		return data;
-	},
-    getRecordData: function(record) {
-    	var data = {};
-    	record.fields.each(function(field){
-            if (field.persist) {
-                name = field['name'] || field.name;
-                data[name] = record.get(field.name);
+        
+        var column_store = this.getReportReportsColumnStore();
+        var filter_store = this.getReportReportsFilterStore();
+        
+        function configureReportParameters() {
+            function getFieldDataFromStore(store) {
+                var data = [];
+                
+                store.each(function (record) {
+                    var item = {};
+                    
+                    record.fields.each(function (field) {
+                        var field_name = field.name;
+                        
+                        item[field_name] = record.get(field_name);
+                    });
+                    
+                    data.push(item);
+                });
+                
+                if (data.length == 1) {
+                    return data[0];
+                } else {
+                    return data;
+                }
             }
-        });
-    	return data;
-    },
-    refreshData: function() {
-        if (this.report == undefined) {
-        	Ext.MessageBox.alert('Error', 'Missing report definition');
-        	return;
+            
+            var data = getFieldDataFromStore(report_store);
+            
+            if (data instanceof Object) {
+                data.columns = getFieldDataFromStore(column_store);
+                data.filters = getFieldDataFromStore(filter_store);
+            }
+            
+            delete data.id;
+            delete data.modelType;
+            delete data.summary;
+            delete data.description;
+            
+            return Ext.encode(data);
         }
         
-        var columns = this.columnStore.data.items;
+        return configureReportParameters();
+    },
+    
+    refreshReport: function () {
+        var report_store = this.getReportReportsStore();
+        var report = report_store && report_store.first();
         
-        // Setup store fields for the report data
-        var fields = [];
-        Ext.Array.forEach(columns, function(col) {
-        	fields.push(col.toStoreField());
-        });
+        // TODO: instance of report store
+        if (!report) {
+            Ext.Msg.alert('Error', 'Missing report definition');
+            
+            return false;
+        }
         
-        var model = Ext.define('PICS.model.report.ReportRow', {
-            extend: 'Ext.data.Model',
-            fields: fields
-        });
-        var dataStore = this.getReportReportDataStore();
-        dataStore.removeAll(true);
-        dataStore.proxy.reader.setModel(model);
+        var me = this;
+        var column_store = this.getReportReportsColumnStore();
+        var filter_store = this.getReportReportsFilterStore();
         
-        // Setup the URL
-        this.buildParameters();
-		var url = 'ReportDynamic!data.action?';
-		
-		if (this.report && this.report.getId() > 0) {
-			url += 'report=' + this.report.getId();
-		} else {
-			url += 'report.base=' + this.report.get('base');
-		}
-		
-		url += '&report.parameters=' + this.buildParameters();
-        dataStore.proxy.url = url;
-
+        function buildReportDataStoreUrl(report_parameters) {
+            var url = 'ReportDynamic!data.action?';
+            
+            if (report && report.getId() > 0) {
+                url += 'report=' + report.getId();
+            } else {
+                url += 'report.base=' + report.get('base');
+            }
+            
+            url += '&report.parameters=' + report_parameters;
+            
+            return url;
+        }
+        
+        function buildReportDataStore() {
+            function generateReportRowFields() {
+                var column_store = me.getReportReportsColumnStore();
+                var fields = [];
+                
+                column_store.each(function (record) {
+                    var report_row_field = record.convertRecordToReportRowField();
+                    
+                    fields.push(report_row_field);
+                });
+                
+                return fields;
+            }
+            
+            function generateReportRowModel(fields) {
+                // TODO: typecheck fields + existence
+                
+                var model = Ext.define('PICS.model.report.ReportRow', {
+                    extend: 'Ext.data.Model',
+                    
+                    fields: fields
+                });
+                
+                return model;
+            }
+            
+            function configureReportDataStore(model) {
+                // TODO: typecheck model + existence
+                
+                var data_store = me.getReportReportDataStore();
+                
+                data_store.removeAll(true);
+                data_store.proxy.reader.setModel(model);
+                
+                return data_store;
+            }
+            
+            var fields = generateReportRowFields();
+            var model = generateReportRowModel(fields);
+            var data_store = configureReportDataStore(model);
+            
+            return data_store;
+        }
+        
+        var report_parameters = this.getReportParameters();
+        var report_data_store_url = buildReportDataStoreUrl(report_parameters);
+        
+        var report_data_store = buildReportDataStore();
+        report_data_store.proxy.url = report_data_store_url;
+        
         // Run the report
-        dataStore.load({
-        	callback: function(records, operation, success) {
-        		if (success) {
-        			var dataGrid = Ext.getCmp('dataGrid');
-        			var newColumns = [{
-        			    xtype: 'rownumberer',
-        			    width: 27
-			        }];
-        			
+        report_data_store.load({
+            callback: function(records, operation, success) {
+                if (success) {
+                    var data_grid = me.getDataGrid();
+                    var columns = column_store.data.items;
+                    var new_columns = [{
+                        xtype: 'rownumberer',
+                        
+                        width: 27
+                    }];
+                    
                     for(var i = 0; i < columns.length; i++) {
-                    	newColumns.push(columns[i].toGridColumn());
+                        new_columns.push(columns[i].toGridColumn());
                     }
                     
-        			dataGrid.reconfigure(null, newColumns);
-        		} else {
-        			Ext.MessageBox.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-        		}
-            }, scope: this
+                    data_grid.reconfigure(null, new_columns);
+                } else {
+                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                }
+            }
         });
     },
-    save: function(button, e, options) {
-        var reportStore = this.getReportReportsStore();
-        this.buildParameters();
-        this.report.setDirty();
-        reportStore.sync();
-        this.refreshData();
+    
+    saveReport: function () {
+        var report_store = this.getReportReportsStore();
+        var report = report_store && report_store.first();
+        
+        // TODO: instance of report store
+        if (!report) {
+            Ext.Msg.alert('Error', 'Missing report definition');
+            
+            return false;
+        }
+        
+        report.parameters = this.getReportParameters();
+        report.setDirty();
+        
+        report_store.sync();
+        
+        this.refreshReport();
     }
 });

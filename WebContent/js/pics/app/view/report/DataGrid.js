@@ -1,9 +1,10 @@
 Ext.define('PICS.view.report.DataGrid', {
 	extend: 'Ext.grid.Panel',
 	alias: ['widget.reportdatagrid'],
+    requires: [
+        'PICS.view.report.LinkColumn'
+    ],
     store: 'report.ReportData',
-    
-    requires: ['PICS.view.report.LinkColumn'],
     
     enableColumnHide: false,
     id: 'dataGrid',
@@ -11,15 +12,21 @@ Ext.define('PICS.view.report.DataGrid', {
     title: 'Grid',
     
     initComponent: function () {
-        this.columns = [{"width":27,"xtype":"rownumberer"}];
+        this.columns = [{
+            xtype: 'rownumberer',
+            
+            width: 27
+        }];
         
         this.dockedItems = [{
             xtype: 'pagingtoolbar',
             store: 'report.ReportData',
+            
             dock: 'top'
         }, {
             xtype: 'pagingtoolbar',
             store: 'report.ReportData',
+            
             dock: 'bottom'
         }];
         
