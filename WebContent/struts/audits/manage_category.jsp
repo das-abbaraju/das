@@ -156,6 +156,7 @@
 							<s:textfield name="category.applyOnAnswer" />
 						</li>
 					</s:if>
+                    
 					<s:if test="category.auditType.languages.size > 1">
 						<li>
 							<label>

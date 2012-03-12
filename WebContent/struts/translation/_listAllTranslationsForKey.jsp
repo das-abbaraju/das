@@ -14,7 +14,7 @@
     <ul>
         <s:iterator value="findAllTranslations(#translation_key, #include_locale_static)" var="translation">
             <li>
-                ${translation.key}: ${translation.value} 
+                <s:property value="#translation.key" />: <s:property value="#translation.value" />
             </li>
         </s:iterator>
     </ul>
