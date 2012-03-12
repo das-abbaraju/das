@@ -17,6 +17,7 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.i18n.RequiredLanguagesSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
+import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.util.Strings;
 
@@ -63,18 +64,24 @@ public class EmailTemplateSave extends PicsActionSupport {
 			if (Strings.isEmpty(template.getBody()))
 				bodyMissing = true;
 		}
-		
+
 		List<String> defaultLocales = Arrays.asList(RequiredLanguagesSupport.DEFAULT_LOCALES);
 		List<String> validLanguages = new ArrayList<String>();
 
 		for (String language : template.getLanguages()) {
-			if (defaultLocales.contains(language))  {
+			if (defaultLocales.contains(language)) {
 				validLanguages.add(language);
 			}
 		}
-		
+
 		if (validLanguages.size() == 0) {
-			addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
+			if (permissions.isOperatorCorporate()) {
+				// Default to whatever locale the operator/corporate user is
+				// using
+				validLanguages.add(permissions.getLocale().getLanguage());
+			} else {
+				addActionError(getText("EmailTemplateSave.SelectRequiredLanguage"));
+			}
 		}
 
 		if (subjectMissing)
@@ -90,7 +97,7 @@ public class EmailTemplateSave extends PicsActionSupport {
 			emailTemplateDAO.clear(); // don't save
 			return BLANK;
 		}
-		
+
 		template.setLanguages(validLanguages);
 
 		if (template.getId() == 0) {
