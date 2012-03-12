@@ -90,7 +90,7 @@ public class FacilityChanger {
 		if (operator.isGeneralContractor()) {
 			co.setType(ContractorOperatorRelationshipType.GeneralContractor);
 			
-			if (!contractor.isAutoApprove())
+			if (!contractor.isAutoApproveRelationships())
 				co.setWorkStatus(ContractorOperator.WORK_STATUS_CONTRACTOR);
 		}
 
