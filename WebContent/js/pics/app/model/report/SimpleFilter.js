@@ -4,8 +4,8 @@ Ext.define('PICS.model.report.SimpleFilter', {
     belongsTo: {
 	    model: 'PICS.model.report.AvailableField',
 	    foreignKey: 'field',
-	    getterName: 'getField',
-	    setterName: 'setField'
+	    getterName: 'getAvailableField',
+	    setterName: 'setAvailableField'
     },
     fields: [
         { name: 'column', type: 'string' },
