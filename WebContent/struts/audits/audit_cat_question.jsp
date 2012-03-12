@@ -87,9 +87,11 @@
 			<img src="images/star.png" class="required" alt="<s:text name="AuditQuestion.required" />">
 		</s:if>
 		
-		<span class="questionNumber">
-			<s:property value="#q.expandedNumber"/>
-		</span>
+		<s:url action="Audit" var="question_number_url">
+            <s:param name="auditID">${conAudit.id}</s:param>
+        </s:url>
+        
+        <a href="${question_number_url}#categoryID=${category.topParent.id}&questionID=${q.id}" class="questionNumber"><s:property value="#q.expandedNumber"/></a>
 		
 		<s:property value="#q.name" escape="false"/>
 		
