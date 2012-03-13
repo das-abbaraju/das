@@ -345,8 +345,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
 		if (!removed) {
-			addActionError("Cannot Remove this account: " + operator.getName()); // TODO:
-																					// i18n
+			addActionError(getText("FacilitiesEdit.error.UnableToDeleteAccount", new Object[]{operator.getName()}));
 			return SUCCESS;
 		}
 
