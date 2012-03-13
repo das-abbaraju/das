@@ -99,6 +99,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		childOperatorList = operator.getChildOperators();
 
 		generalContractor = operator.isGeneralContractor();
+		linkedAccount = operator.getGcContractor();
 
 		return SUCCESS;
 	}
