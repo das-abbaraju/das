@@ -17,7 +17,21 @@ update operators o set o.discountPercent = .5, o.discountExpiration = '2012-03-1
 update operators o set o.discountPercent = .5, o.discountExpiration = '2012-06-01' where o.id = 26873;
 update operators o set o.discountPercent = .5, o.discountExpiration = '2012-06-30' where o.id = 27406;
 update operators o set o.discountPercent = .25, o.discountExpiration = '2012-12-31' where o.id = 22100;
---
+
+-- PICS-4878
+insert into app_properties(property, value)
+values ('PICS.liveChat', 1);
+
+-- PICS-5031
+-- For Data conversion 
+update flag_criteria 
+set multiYearScope = 'ThreeYearSum' 
+where multiYearScope = 'ThreeYearAggregate'; 
+
+-- For Roll-Back 
+update flag_criteria 
+set multiYearScope = 'ThreeYearAggregate' 
+where multiYearScope = 'ThreeYearSum'; 
 
 -- PICS-3350
 /*
@@ -1221,7 +1235,3 @@ UPDATE `naics` SET `trir` = 7.8, `lwcr` = 4.3 WHERE `code` = 92214;
 UPDATE `naics` SET `trir` = 13, `lwcr` = 6.1 WHERE `code` = 23;
 */
 --
-
--- PICS-4878
-insert into app_properties(property, value)
-values ('PICS.liveChat', 1);
