@@ -182,7 +182,8 @@ public class FlagCalculator {
 
 		return null;
 	}
-	// TODO: FIX ME
+	
+	// TODO: Delete me once the OSHA changes are deployed to LIVE
 	private Boolean calculateOSHA(FlagCriteriaRule rule) {
 		/*FlagCriteria flagCriteria = rule.getCriteria();
 		String hurdle = getHurdle(rule);
