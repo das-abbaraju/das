@@ -17,6 +17,7 @@ Ext.define('PICS.model.report.AvailableField', {
     ],
     
     createSimpleColumn: function () {
+        // TODO: what the heck is type it does not exist??????
         var column = Ext.create('PICS.model.report.SimpleColumn', {
         	'name': this.get('name'),
         	'type': this.get('type')
@@ -28,8 +29,11 @@ Ext.define('PICS.model.report.AvailableField', {
     },
     
     createSimpleFilter: function () {
+        // TODO: why the heck was this called name it did not work
+        // it is column????
+        // what the heck is type it does not exist
         var filter = Ext.create('PICS.model.report.SimpleFilter', {
-        	'name': this.get('name'),
+        	'column': this.get('name'),
         	'type': this.get('type')
         });
         

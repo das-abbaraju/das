@@ -65,14 +65,10 @@ Ext.define('PICS.controller.report.ReportController', {
                     data.push(item);
                 });
                 
-                if (data.length == 1) {
-                    return data[0];
-                } else {
-                    return data;
-                }
+                return data;
             }
             
-            var data = getFieldDataFromStore(report_store);
+            var data = getFieldDataFromStore(report_store)[0];
             
             if (data instanceof Object) {
                 data.columns = getFieldDataFromStore(column_store);
