@@ -115,7 +115,9 @@ public class ContractorAccount extends Account implements JSONable {
 	private List<JobContractor> jobSites = new ArrayList<JobContractor>();
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
-	protected List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
+	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
+	private List<OperatorAccount> generalContractorOperators;
+	private List<OperatorAccount> nonGeneralContractorOperators;
 
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
@@ -1576,5 +1578,30 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 		return null;
 	}
+	
+	@Transient
+	public List<OperatorAccount> getGeneralContractorOperators() {
+		if (generalContractorOperators == null) {
+			generalContractorOperators = new ArrayList<OperatorAccount>();
+			
+			for (ContractorOperator contractorOperator : getOperators()) {
+				if (contractorOperator.getOperatorAccount().isGeneralContractor())
+					generalContractorOperators.add(contractorOperator.getOperatorAccount());
+			}
+			
+			Collections.sort(generalContractorOperators);
+		}
+		
+		return generalContractorOperators;
+	}
 
+	@Transient
+	public List<OperatorAccount> getNonGeneralContractorOperators() {
+		if (nonGeneralContractorOperators == null) {
+			nonGeneralContractorOperators = new ArrayList<OperatorAccount>(getOperatorAccounts());
+			nonGeneralContractorOperators.removeAll(getGeneralContractorOperators());
+		}
+		
+		return nonGeneralContractorOperators;
+	}
 }

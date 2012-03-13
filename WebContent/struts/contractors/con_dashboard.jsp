@@ -275,6 +275,13 @@
 											<s:if test="flagCounts.size() > 0">
 												(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
 											</s:if>
+											
+											<s:if test="contractor.generalContractors.size > 0">
+												<s:text name="ContractorView.SubcontractingUnder" />:
+												<s:iterator value="contractor.generalContractors" status="gc_stat">
+													<s:property value="name" /><s:if test="!#gc_stat.last">,</s:if>
+												</s:iterator>
+											</s:if>
 										</p>
 									</s:if>
 									
