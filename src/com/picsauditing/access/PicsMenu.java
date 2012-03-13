@@ -309,9 +309,9 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.ClientSiteReferrals)) {
-				subMenu.addChild("Client Site Referrals", "ReportClientSiteReferrals.action");
+			subMenu.addChild("Client Site Referrals", "ReportClientSiteReferrals.action");
 		}
-		
+
 		if (permissions.hasPermission(OpPerms.Debug)) {
 			MenuComponent debug = subMenu.addChild("Debug", "#");
 			debug.setHtmlId("debug-menu");
@@ -423,6 +423,9 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.EMRReport) && "US".equals(permissions.getCountry())) {
 			subMenu.addChild(getTitle("GraphEmrRates"), "GraphEmrRates.action?years=2010");
 			subMenu.addChild(getTitle("ReportEmrRates"), "ReportEmrRates.action?filter.auditFor=2010");
+			if (permissions.isAuditor()) {
+				subMenu.addChild("Auditor Emr Rates Report", "ReportAuditorEmrRates.action");
+			}
 		}
 		if (permissions.hasPermission(OpPerms.FatalitiesReport)) {
 			final String url = "ReportFatalities.action?filter.auditFor=2010&filter.shaType=OSHA&filter.shaLocation=Corporate";

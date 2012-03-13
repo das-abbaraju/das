@@ -929,6 +929,21 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="ReportAuditorEmrRates" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportAuditorEmrRates</param>
+			<result>struts/reports/report_auditor_emr.jsp</result>
+		</action>
+
+		<action name="ReportAuditorEmrRatesAjax" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+			<result>struts/reports/report_auditor_emr_data.jsp</result>
+		</action>
+
+		<action name="ReportAuditorEmrRatesCSV" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="ReportFatalities" class="com.picsauditing.actions.report.ReportFatalities">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportFatalities</param>

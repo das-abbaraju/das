@@ -7,7 +7,7 @@
 	<div class="right">
 		<a class="excel" 
 			<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-			href="javascript: download('ReportEmrRates');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
+			href="javascript: download('ReportAuditorEmrRates');" title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>">
 			<s:text name="global.Download" />
 		</a>
 	</div>
@@ -37,7 +37,9 @@
 		</s:if>
 		<s:if test="showTrade">
 			<td><s:text name="Trade" /></td>
-		</s:if>	    
+		</s:if>
+		<td><s:text name="global.Notes" /></td>
+		<td></td>
 	</tr>
 	</thead>
 	<s:iterator value="data" status="stat">
@@ -60,6 +62,14 @@
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
 			</s:if>
+			<s:form action="ReportAuditorEmrRates" method="POST">
+				<s:hidden value="%{get('id')}" name="conID" />
+				<s:hidden value="%{get('pqfID')}" name="pqfID" />
+				<td><s:textarea name="auditorNotes" cols="15" rows="4" /></td>
+				<td>
+					<s:submit method="verify" cssClass="picsbutton positive" value="%{getText('button.Verify')}" />
+				</td>
+			</s:form>
 		</tr>
 	</s:iterator>
 </table>
