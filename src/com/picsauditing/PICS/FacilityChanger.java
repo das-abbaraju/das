@@ -80,18 +80,15 @@ public class FacilityChanger {
 		co.setContractorAccount(contractor);
 		co.setOperatorAccount(operator);
 		co.setType(ContractorOperatorRelationshipType.ContractorOperator);
-		
+
 		if (permissions.isOperatorCorporate()) {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
 			co.setWorkStatus(ContractorOperator.WORK_STATUS_YES);
 		}
-		
-		if (operator.isGeneralContractor()) {
-			co.setType(ContractorOperatorRelationshipType.GeneralContractor);
-			
-			if (!contractor.isAutoApproveRelationships())
-				co.setWorkStatus(ContractorOperator.WORK_STATUS_CONTRACTOR);
+
+		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+			co.setWorkStatus(ContractorOperator.WORK_STATUS_CONTRACTOR);
 		}
 
 		co.setAuditColumns(permissions);
