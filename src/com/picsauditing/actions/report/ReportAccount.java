@@ -258,9 +258,11 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 				String stateList = Strings.implodeForDB(states, ",");
 				sb.append("a.state IN (").append(stateList).append(") OR ")
-						.append("EXISTS (SELECT 'x' FROM pqfdata d ").append(
-								"JOIN audit_question aq ON aq.id = d.questionID ").append("AND aq.uniqueCode in (")
-						.append(stateList).append(") LIMIT 1) ");
+						.append("EXISTS (SELECT 'x' FROM pqfdata d ")
+						.append("JOIN audit_question aq ON aq.id = d.questionID ")
+						.append("WHERE ca1.id = d.auditID ")
+						.append("AND aq.uniqueCode IN (").append(stateList)
+						.append(") LIMIT 1) ");
 				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
 			}
 
