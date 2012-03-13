@@ -82,9 +82,9 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trir", getText("ReportIncidenceRate.TrirIndustryAverage"), ExcelCellType.Double));
 	}
-
+	// TODO: FIX ME
 	public String verify() throws Exception {
-		OshaAudit oshaAudit = oshaAuditDAO.find(oshaAuditID);
+		/*OshaAudit oshaAudit = oshaAuditDAO.find(oshaAuditID);
 		oshaAudit.setVerifiedDate(new Date());
 		oshaAuditDAO.save(oshaAudit);
 
@@ -94,7 +94,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		note.setNoteCategory(NoteCategory.Audits);
 		noteDAO.save(note);
 
-		auditorNotes = "";
+		auditorNotes = "";*/
 
 		return super.execute();
 	}

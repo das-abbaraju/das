@@ -182,9 +182,9 @@ public class FlagCalculator {
 
 		return null;
 	}
-
+	// TODO: FIX ME
 	private Boolean calculateOSHA(FlagCriteriaRule rule) {
-		FlagCriteria flagCriteria = rule.getCriteria();
+		/*FlagCriteria flagCriteria = rule.getCriteria();
 		String hurdle = getHurdle(rule);
 
 		OshaOrganizer osha = contractor.getOshaOrganizer();
@@ -194,7 +194,8 @@ public class FlagCalculator {
 		if (answer == null)
 			return null;
 
-		return compare(flagCriteria.getDataType(), flagCriteria.getComparison(), hurdle, answer.toString());
+		return compare(flagCriteria.getDataType(), flagCriteria.getComparison(), hurdle, answer.toString());*/
+		return null;
 	}
 
 	private Boolean calculateQuestion(FlagCriteriaRule rule, Map<Integer, AuditData> answerMap) {

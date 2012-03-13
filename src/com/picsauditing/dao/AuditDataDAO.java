@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
@@ -180,6 +181,17 @@ public class AuditDataDAO extends PicsDAO {
 		Query query = em.createNativeQuery("select d.* from pqfdata d join contractor_audit ca on d.auditID = ca.id " +
 				" left join contractor_audit ca2 on ca.conID = ca2.conID and ca.auditTypeID = ca2.auditTypeID and ca.creationDate < ca2.creationDate " +
                 " where ca2.id is null and ca.conID = " + conId + " and d.questionID in (" + Strings.implode(questionIds) + ")", AuditData.class);
+		return mapData(query.getResultList());
+	}
+	
+	public AnswerMap findAnswersByAuditAndQuestions(ContractorAudit audit, Collection<Integer> questionIds) {
+		if (questionIds.size() == 0)
+			return new AnswerMap(Collections.<AuditData>emptyList());
+
+		Query query = em.createQuery("SELECT d FROM AuditData d" +
+				" WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
+		query.setParameter("auditID", audit.getId());
+		query.setParameter("questionList", questionIds);
 		return mapData(query.getResultList());
 	}
 

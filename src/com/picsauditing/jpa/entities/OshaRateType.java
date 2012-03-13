@@ -17,9 +17,11 @@ public enum OshaRateType implements Translatable {
 	JobTransfersCases,
 	JobTransferDays,
 	OtherRecordables,
-	LWCR,
 	Hours,
-	IFR;
+	IFR,
+	EMR,
+	AFR,
+	DOFR;
 
 	public String getDescriptionKey() {
 		return getI18nKey("description");

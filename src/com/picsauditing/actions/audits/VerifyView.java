@@ -75,7 +75,8 @@ public class VerifyView extends ContractorActionSupport {
 				pqfQuestions = getPQFAnswerMap(conAudit);
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
+				// TODO: FIX ME
+				/*AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
 				for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (us != null) {
 						if ("Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
@@ -92,7 +93,7 @@ public class VerifyView extends ContractorActionSupport {
 					// if (oshaAudit.getType().equals(OshaType.COHS) &&
 					// oshaAudit.isCorporate())
 					// oshasCA.add(oshaAudit);
-				}
+				}*/
 
 				annualUpdates.add(conAudit);
 
@@ -157,14 +158,15 @@ public class VerifyView extends ContractorActionSupport {
 					&& (conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted) || conAudit
 							.hasCaoStatus(AuditStatus.Incomplete))) {
 				StringBuffer sb2 = new StringBuffer("");
-				for (OshaAudit oshaAudit : conAudit.getOshas()) {
+				// TODO: FIX ME
+				/*for (OshaAudit oshaAudit : conAudit.getOshas()) {
 					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()
 							&& !Strings.isEmpty(oshaAudit.getComment())) {
 						sb2.append("OSHA : ");
 						sb2.append(oshaAudit.getComment());
 						sb2.append("\n");
 					}
-				}
+				}*/
 				for (AuditData auditData : conAudit.getData()) {
 					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
 						int categoryID = auditData.getQuestion().getCategory().getId();

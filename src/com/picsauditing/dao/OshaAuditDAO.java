@@ -1,20 +1,9 @@
 package com.picsauditing.dao;
 
-import java.util.List;
-
-import javax.persistence.Query;
-
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
-
+// TODO: FIX ME
 @SuppressWarnings("unchecked")
 public class OshaAuditDAO extends PicsDAO {
-	@Transactional(propagation = Propagation.NESTED)
+	/*@Transactional(propagation = Propagation.NESTED)
 	public OshaAudit save(OshaAudit o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -102,5 +91,5 @@ public class OshaAuditDAO extends PicsDAO {
 		query.setParameter(1, auditID);
 		query.setParameter(2, oshaType);
 		return query.executeUpdate();		
-	}
+	}*/
 }

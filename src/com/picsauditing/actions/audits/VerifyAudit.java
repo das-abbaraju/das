@@ -113,8 +113,8 @@ public class VerifyAudit extends AuditActionSupport {
 		}
 		return applicableAuditData;
 	}
-
-	public OshaAudit getOsha() {
+// TODO: FIX ME
+	/*public OshaAudit getOsha() {
 		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
 		if (auditData != null && "Yes".equals(auditData.getAnswer())) {
 			for (OshaAudit oshaAudit : conAudit.getOshas()) {
@@ -124,7 +124,7 @@ public class VerifyAudit extends AuditActionSupport {
 			}
 		}
 		return null;
-	}
+	}*/
 
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
 		int questionid = auditQuestion.getId();

@@ -122,9 +122,9 @@ public class EntityFactory {
 		auditCategory.setName(makeTranslatableString(name));
 		return auditCategory;
 	}
-
+	// TODO: FIX ME
 	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
-		OshaAudit oshaAudit = new OshaAudit();
+		/*OshaAudit oshaAudit = new OshaAudit();
 		oshaAudit.setConAudit(conAudit);
 		oshaAudit.setType(OshaType.OSHA);
 		oshaAudit.setCorporate(true);
@@ -132,7 +132,8 @@ public class EntityFactory {
 		oshaAudit.setManHours(manHours);
 		oshaAudit.setLostWorkCases(12);
 		oshaAudit.setRecordableTotal(134);
-		return oshaAudit;
+		return oshaAudit;*/
+		return null;
 	}
 
 	static public AuditType makeAuditType(int auditTypeID) {

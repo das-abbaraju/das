@@ -108,6 +108,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private Date tradesUpdated;
 
 	private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+	protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
 	private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
 	private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 	private List<Certificate> certificates = new ArrayList<Certificate>();
@@ -721,9 +722,26 @@ public class ContractorAccount extends Account implements JSONable {
 	@Transient
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
-			oshaOrganizer = new OshaOrganizer(getSortedAnnualUpdates());
+			oshaOrganizer = new OshaOrganizer();
+			for (OshaAudit audit: this.getOshaAudits()) {
+				if (audit.isVerified())
+					audit.accept(oshaOrganizer);
+			}
 		}
 		return oshaOrganizer;
+	}
+	
+	@Transient
+	public List<OshaAudit> getOshaAudits() {
+		if (oshaAudits == null || oshaAudits.size() == 0) {
+			oshaAudits = new ArrayList<OshaAudit>();
+			for (ContractorAudit audit: getAudits()){
+				if (audit.getAuditType().isAnnualAddendum()) {
+					oshaAudits.add(new OshaAudit(audit));
+				}
+			}
+		}
+		return this.oshaAudits;
 	}
 
 	@Transient
@@ -759,8 +777,8 @@ public class ContractorAccount extends Account implements JSONable {
 			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
-		if (avg != null && !Strings.isEmpty(avg.getAnswer()))
-			emrs.put(OshaAudit.AVG, avg);
+		//if (avg != null && !Strings.isEmpty(avg.getAnswer()))
+			//emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
 	}

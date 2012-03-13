@@ -463,9 +463,10 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setViewBlanks(boolean viewBlanks) {
 		this.viewBlanks = viewBlanks;
 	}
-
+	// TODO: FIX ME
 	public OshaAudit getAverageOsha(OshaType oshaType) {
-		return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
+		//return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
+		return null;
 	}
 
 	public int getCaoID() {

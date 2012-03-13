@@ -1,249 +1,138 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.util.Strings;
+import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.util.YearList;
 
-public class OshaOrganizer {
+
+public class OshaOrganizer implements OshaVisitor {
 
 	// OSHA Audits will be sorted by their auditYears
-	private Map<OshaType, ArrayList<OshaAudit>> data = new HashMap<OshaType, ArrayList<OshaAudit>>();
+	Map<OshaType, Map<Integer, SafetyStatistics>> theData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
 	private Map<OshaType, YearList> dataYears = new HashMap<OshaType, YearList>();
+	private static final MultiYearScope[] YEARS_ONLY = {
+			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
+			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
 
-	public OshaOrganizer(List<ContractorAudit> audits) {
-		data.put(OshaType.OSHA, new ArrayList<OshaAudit>());
-		data.put(OshaType.MSHA, new ArrayList<OshaAudit>());
-		data.put(OshaType.COHS, new ArrayList<OshaAudit>());
-		dataYears.put(OshaType.OSHA, new YearList());
-		dataYears.put(OshaType.MSHA, new YearList());
-		dataYears.put(OshaType.COHS, new YearList());
-
-		for (ContractorAudit contractorAudit : audits) {
-			if (contractorAudit.hasCaoStatus(AuditStatus.Complete)) {
-				for (AuditData auditData : contractorAudit.getData()) {
-					if (auditData.getQuestion().getId() == 2064 || auditData.getQuestion().getId() == 2065
-							|| auditData.getQuestion().getId() == 2066) {
-						OshaType oshaType = getOshaType(auditData.getQuestion());
-						if ("Yes".equals(auditData.getAnswer())) {
-							for (OshaAudit osha : contractorAudit.getOshas()) {
-								if (osha.isCorporate() && osha.getType().equals(oshaType)) {
-									data.get(osha.getType()).add(osha);
-									dataYears.get(osha.getType()).add(osha.getConAudit().getAuditFor());
-								}
-							}
-						}
-					}
-				}
+	/**
+	 * For the given OshaType, determine (up to) the three most resent years for
+	 * which we data.
+	 * 
+	 * @param type
+	 */
+	public /* Testable */ YearList mostRecentThreeYears(OshaType type) {
+		YearList yearList = new YearList();
+		
+		if (theData.get(type) != null && theData.get(type).size() > 0) {
+			for (int year : theData.get(type)
+					.keySet()) {
+				yearList.add(year);
 			}
 		}
+		return yearList;
 	}
 
 	public boolean isVerified(OshaType type, MultiYearScope year) {
-		if (data.get(type).isEmpty())
-			return false;
-
-		OshaAudit oshaAudit = getOshaAudit(type, year);
-		if (oshaAudit == null)
-			return false;
-		return oshaAudit.isVerified();
-	}
-
-	public Float getRate(OshaType type, MultiYearScope year, OshaRateType rateType) {
-		OshaAudit oshaAudit = getOshaAudit(type, year);
-		if (oshaAudit == null)
-			return null;
-		return oshaAudit.getRate(rateType);
-	}
-
-	public OshaAudit getOshaAudit(OshaType type, MultiYearScope scope) {
-		if (data.get(type).isEmpty())
-			return null;
-
-		if (MultiYearScope.ThreeYearAverage.equals(scope))
-			return getAverageOshaAudit(type);
-
-		Integer targetYear = dataYears.get(type).getYearForScope(scope);
-		if (targetYear == null)
-			return null;
-
-		for (OshaAudit oshaAudit : data.get(type)) {
-			if (oshaAudit.getConAudit().getAuditFor().equals(targetYear.toString())) {
-				return oshaAudit;
-			}
-		}
-
-		// TODO Maybe throw Exception because this should never happen
-		return null;
-	}
-
-	private OshaAudit getAverageOshaAudit(OshaType type) {
-		// TODO Move this into a separate utility class
-
-		OshaAudit straightAvg = new OshaAudit();
-		straightAvg.setConAudit(new ContractorAudit());
-
-		boolean straightAllVerified = true;
-		Date straightLastVerified = null;
-
-		float straightManHours = 0;
-		float straightFatalities = 0;
-		float straightLostWorkCases = 0;
-		float straightLostWorkDays = 0;
-		float straightInjuryIllnessCases = 0;
-		float straightRestrictedWorkCases = 0;
-		float straightRecordableTotal = 0;
-		float straightFirstAidInjuries = 0;
-		float straightModifiedWorkDay = 0;
-
-		float straightTrir = 0;
-		float straightLwcr = 0;
-		float straightDart = 0;
-		float straightSeverityRate = 0;
-		float straightCad7 = 0;
-		float straightNeer = 0;
-
-		int straightCount = 0;
-		
-		String yearsOfAverage = "";
-
-		for (OshaAudit osha : data.get(type)) {
-			if (osha != null && isAuditForYears(osha.getConAudit().getAuditFor(), type)) {
-				straightAvg.setFactor(osha.getFactor());
-
-				// Need to set a proper verification value on average OSHAs
-				// for inserting verified tag in ContractorFlagETL answer2
-				if (!osha.isVerified())
-					straightAllVerified = false;
-				if (osha.getVerifiedDate() != null)
-					straightLastVerified = osha.getVerifiedDate();
-
-				if (osha.getManHours() > 0) {
-					straightCount++;
-
-					// calculating cumulative values
-					straightManHours += osha.getManHours();
-					straightFatalities += osha.getFatalities();
-					straightLostWorkCases += osha.getLostWorkCases();
-					straightLostWorkDays += osha.getLostWorkDays();
-					straightInjuryIllnessCases += osha.getInjuryIllnessCases();
-					straightRestrictedWorkCases += osha.getRestrictedWorkCases();
-					straightRecordableTotal += osha.getRecordableTotal();
-					straightFirstAidInjuries += osha.getFirstAidInjuries();
-					straightModifiedWorkDay += osha.getModifiedWorkDay();
-
-					if (osha.getCad7() != null)
-						straightCad7 += osha.getCad7();
-					if (osha.getNeer() != null)
-						straightNeer += osha.getNeer();
-
-					straightTrir += osha.getRecordableTotalRate();
-					straightLwcr += osha.getLostWorkCasesRate();
-					straightDart += osha.getRestrictedDaysAwayRate();
-					straightSeverityRate += osha.getRestrictedOrJobTransferDays();
-					
-					if (yearsOfAverage.length() > 0) {
-						yearsOfAverage +=", ";
-					}
-					yearsOfAverage +=osha.getConAudit().getAuditFor();
-				}
-			}
-		}
-
-		if (straightCount == 0)
-			return null;
-
-		// If all are verified, set verified to last recorded date
-		if (straightAllVerified)
-			straightAvg.setVerifiedDate(straightLastVerified);
-
-		// setting cumulative values
-		straightAvg.setManHours(straightManHours);
-		straightAvg.setFatalities(straightFatalities);
-		straightAvg.setLostWorkCases(straightLostWorkCases);
-		straightAvg.setLostWorkDays(straightLostWorkDays);
-		straightAvg.setInjuryIllnessCases(straightInjuryIllnessCases);
-		straightAvg.setRestrictedWorkCases(straightRestrictedWorkCases);
-		straightAvg.setRecordableTotal(straightRecordableTotal);
-		straightAvg.setFirstAidInjuries(straightFirstAidInjuries);
-		straightAvg.setModifiedWorkDay(straightModifiedWorkDay);
-
-		// rate is based on the cumulative RATES, so final is NOT straight
-		straightAvg.setRecordableTotalRate(straightTrir / (float) straightCount);
-		straightAvg.setLostWorkCasesRate(straightLwcr / (float) straightCount);
-		straightAvg.setRestrictedDaysAwayRate(straightDart / (float) straightCount);
-		straightAvg.setRestrictedOrJobTransferDays(straightSeverityRate / (float) straightCount);
-		straightAvg.setCad7(straightCad7 / (float) straightCount);
-		straightAvg.setNeer(straightNeer / (float) straightNeer);
-
-		// setting individual values to their average value for display
-		straightAvg.setManHours(straightAvg.getManHours() / straightCount);
-		straightAvg.setFatalities(straightAvg.getFatalities() / straightCount);
-		straightAvg.setLostWorkCases(straightAvg.getLostWorkCases() / straightCount);
-		straightAvg.setLostWorkDays(straightAvg.getLostWorkDays() / straightCount);
-		straightAvg.setInjuryIllnessCases(straightAvg.getInjuryIllnessCases() / straightCount);
-		straightAvg.setRestrictedWorkCases(straightAvg.getRestrictedWorkCases() / straightCount);
-		straightAvg.setRecordableTotal(straightAvg.getRecordableTotal() / straightCount);
-		straightAvg.setFirstAidInjuries(straightAvg.getFirstAidInjuries() / straightCount);
-		straightAvg.setModifiedWorkDay(straightAvg.getModifiedWorkDay() / straightCount);
-
-		straightAvg.getConAudit().setAuditFor(yearsOfAverage);
-
-		return straightAvg;
-	}
-	
-	private boolean isAuditForYears(String auditYear, OshaType type) {
-		if (Strings.isEmpty(auditYear))
-			return false;
-		int year = Integer.parseInt(auditYear);
-		
-		YearList yearList = dataYears.get(type);
-		
-		Integer lastYear = yearList.getYearForScope(MultiYearScope.LastYearOnly);
-		Integer twoYearsAgo = yearList.getYearForScope(MultiYearScope.TwoYearsAgo);
-		Integer threeYearsAgo = yearList.getYearForScope(MultiYearScope.ThreeYearsAgo);
-		
-		if (lastYear != null && lastYear.intValue() == year)
-			return true;
-		if (twoYearsAgo != null && twoYearsAgo.intValue() == year)
-			return true;
-		if (threeYearsAgo != null && threeYearsAgo.intValue() == year)
-			return true;
-		
+		/*
+		 * if (data.get(type).isEmpty()) return false;
+		 * 
+		 * PicsLogger.log("OshaOrganizer.isVerified(" + type + "," + year +
+		 * ")"); OshaAudit oshaAudit = getOshaAudit(type, year);
+		 * 
+		 * return oshaAudit != null && oshaAudit.isVerified();
+		 */
 		return false;
 	}
 
-	public String getAnswer2(OshaType type, MultiYearScope year, OshaRateType rateType) {
-		OshaAudit oshaAudit = getOshaAudit(type, year);
-		if (oshaAudit == null || oshaAudit.getConAudit() == null)
-			return "";
-		String auditFor = oshaAudit.getConAudit().getAuditFor();
+	/**
+	 * Returns the contractor's rate for a specified year, osha type and rate
+	 * type. If a value is not found for the given parameters this method will
+	 * return -1 (since rates are always positive).
+	 * 
+	 * @param type
+	 * @param scope
+	 * @param rateType
+	 * @return
+	 */
+	public double getRate(OshaType type, MultiYearScope scope,
+			OshaRateType rateType) {
+		YearList years = mostRecentThreeYears(type);
 
-		// conditionally add verified tag
-		if (isVerified(type, year)) {
-			auditFor += "<br/><span class=\"verified\">Verified</span>";
+		if (scope == MultiYearScope.ThreeYearAverage) {
+			int avgCount = 0;
+			BigDecimal rate = new BigDecimal(0);
+			
+			for (MultiYearScope yearScope: YEARS_ONLY) {
+			BigDecimal value = getRateForSpecficYear(type, years.getYearForScope(yearScope), rateType);
+								
+				if (value != null) {
+					rate = rate.add(value);
+					avgCount++;
+				}
+			}
+			
+			if (avgCount == 0)
+				return -1;
+
+			return rate.divide(new BigDecimal(avgCount), 2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
 		}
-
-		return auditFor;
+		else {
+			Integer yearWeWant = years.getYearForScope(scope);
+			if (yearWeWant != null && yearWeWant > 0) {
+				return this.getRateForSpecficYear(type, yearWeWant, rateType).setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
+			}
+			return -1;
+		}
+		
 	}
 
-	static private OshaType getOshaType(AuditQuestion auditQuestion) {
-		if (auditQuestion.getId() == 2065)
-			return OshaType.MSHA;
-		if (auditQuestion.getId() == 2066)
-			return OshaType.COHS;
-		return OshaType.OSHA;
+	public BigDecimal getRateForSpecficYear(OshaType type, Integer year,
+			OshaRateType rateType) {
+		if (year != null) {
+			Map<Integer, SafetyStatistics> typeMap = theData.get(type);
+			SafetyStatistics stats = typeMap.get(year);
+			String value = stats.getStats(rateType);
+		
+			if (value != null) {
+				return new BigDecimal(value);
+			}
+		}
+		return null;
+	}
+
+
+	public SafetyStatistics getStatistic(OshaType type, MultiYearScope year) {
+		return theData.get(type).get(new Integer(year.getAuditFor()));
+	}
+
+	public String getAnswer2(OshaType type, MultiYearScope year,
+			OshaRateType rateType) {
+		/*String auditFor = getAuditFor(type, year);*/
+		return null;
+	}
+
+	//Map<OshaType, Map<Integer, SafetyStatistics>> theData
+	@Override
+	public void gatherData(SafetyStatistics safetyStatistics) {
+		Map<Integer, SafetyStatistics> innerMap = theData.get(safetyStatistics.getOshaType());
+		if (innerMap == null) {
+			innerMap = new HashMap<Integer, SafetyStatistics>();
+		}
+		innerMap.put(safetyStatistics.getYear(), safetyStatistics);
+		theData.put(safetyStatistics.getOshaType(), innerMap);	
+	}
+	
+	public boolean hasOshaType(OshaType oshaType) {
+		return theData.get(oshaType) != null && theData.get(oshaType).size() > 0;
+	}
+	public int size() {
+		return 4;
+		//return theData.size();
 	}
 }

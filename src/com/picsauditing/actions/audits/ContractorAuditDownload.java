@@ -133,10 +133,11 @@ public class ContractorAuditDownload extends AuditActionSupport {
 					type = OshaType.COHS;
 
 				if (scope != null) {
-					OshaAudit oshaAudit = contractor.getOshaOrganizer().getOshaAudit(type, scope);
-					OshaAudit average = contractor.getOshaOrganizer().getOshaAudit(type,
-							MultiYearScope.ThreeYearAverage);
-					fillExcelOsha(sheetStatus, oshaAudit, average);
+				// TODO: FIX ME
+//					OshaAudit oshaAudit = contractor.getOshaOrganizer().getOshaAudit(type, scope);
+//					OshaAudit average = contractor.getOshaOrganizer().getOshaAudit(type,
+//							MultiYearScope.ThreeYearAverage);
+//					fillExcelOsha(sheetStatus, oshaAudit, average);
 				}
 			} else {
 				sheetStatus = fillExcelQuestions(sheetStatus, start.getQuestions());
@@ -229,7 +230,8 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		if (oshaAudit == null || average == null) {
 			return;
 		}
-
+		// TODO: FIX ME
+/*
 		OshaType type = oshaAudit.getType();
 		boolean osha = OshaType.OSHA.equals(type);
 		boolean cohs = OshaType.COHS.equals(type);
@@ -312,7 +314,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		if (osha && corporate) {
 			createRow(sheetStatus, getText(type.getI18nKey("VerificationIssues")),
 					oshaAudit.isVerified() ? getText("OSHA.None") : oshaAudit.getComment());
-		}
+		}*/
 	}
 
 	private void createRow(SheetStatus sheetStatus, String statistic, String total) {

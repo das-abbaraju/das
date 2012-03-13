@@ -103,8 +103,8 @@ public class AuditPercentCalculator {
 			}
 		}
 
-		AnswerMap currentWatcherAnswers = auditDataDAO.findCurrentAnswers(catData.getAudit().getContractorAccount()
-				.getId(), functionWatcherQuestionIds);
+		AnswerMap currentWatcherAnswers = auditDataDAO.findAnswersByAuditAndQuestions(catData.getAudit()
+				, functionWatcherQuestionIds);
 
 		// Run functions to update answers
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
@@ -467,45 +467,8 @@ public class AuditPercentCalculator {
 	 */
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
-			OshaType typeFromCategory = OshaTypeConverter.getTypeFromCategory(data.getCategory().getId());
-			if (typeFromCategory != null) {
-				for (OshaAudit osha : conAudit.getOshas()) {
-					if (osha.isCorporate() && osha.getType().equals(typeFromCategory)) {
-						percentOshaComplete(osha, data);
-					}
-				}
-			} else {
 				updatePercentageCompleted(data);
-			}
 		}
-	}
-
-	public void percentOshaComplete(OshaAudit osha, AuditCatData catData) {
-		int count = 0;
-		int numRequired = 2;
-		int numVerified = 0;
-
-		if (osha.getType().equals(OshaType.OSHA)) {
-			if (osha.getManHours() > 0)
-				count++;
-			if (osha.isFileUploaded())
-				count++;
-			if (osha.isVerified()) {
-				numVerified = 2;
-			}
-		}
-
-		if (osha.getType().equals(OshaType.MSHA) || osha.getType().equals(OshaType.COHS)) {
-			numRequired = 1;
-			if (osha.getManHours() > 0)
-				count++;
-			numVerified = count;
-		}
-
-		catData.setRequiredCompleted(count);
-		catData.setNumRequired(numRequired);
-		catData.setNumVerified(numVerified);
-		categoryDataDAO.save(catData);
 	}
 
 	public List<AuditData> getVerifiedPqfData(int auditID) {

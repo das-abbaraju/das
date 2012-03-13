@@ -398,9 +398,6 @@ public class AuditBuilder {
 				if (categoryApplies != catData.isApplies())
 					catData.setAuditColumns(systemUser);
 				catData.setApplies(categoryApplies);
-				if ((OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()) != null) && categoryApplies) {
-					addOshaLog(catData);
-				}
 			}
 			// Where are we saving the catData??
 		}
@@ -520,25 +517,6 @@ public class AuditBuilder {
 		audit.setExpiresDate(dateToExpire);
 		conAuditDao.save(audit);
 		contractor.getAudits().add(audit);
-	}
-
-	private void addOshaLog(AuditCatData catData) {
-		boolean hasOshaCorporate = false;
-		for (OshaAudit osha : catData.getAudit().getOshas()) {
-			if (osha.isCorporate()
-					&& osha.getType().equals(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()))) {
-				hasOshaCorporate = true;
-			}
-		}
-
-		if (!hasOshaCorporate) {
-			OshaAudit oshaAudit = new OshaAudit();
-			oshaAudit.setConAudit(catData.getAudit());
-			oshaAudit.setCorporate(true);
-			oshaAudit.setType(OshaTypeConverter.getTypeFromCategory(catData.getCategory().getId()));
-			catData.getAudit().getOshas().add(oshaAudit);
-			catData.setNumRequired(2);
-		}
 	}
 
 	private boolean contains(Collection<? extends BaseTable> haystack, BaseTable needle) {

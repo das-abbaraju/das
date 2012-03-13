@@ -19,7 +19,7 @@ public class OshaStatistics extends SafetyStatistics {
 				answerMap.put(OshaRateType.TrirAbsolute, answer.getAnswer());
 			}
 			else if (answer.getQuestion().getId() == QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR) {
-				answerMap.put(OshaRateType.LWCR, answer.getAnswer());
+				answerMap.put(OshaRateType.LwcrAbsolute, answer.getAnswer());
 			}
 			else if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.Fatalities, answer.getAnswer());

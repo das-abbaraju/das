@@ -256,9 +256,9 @@ public class ContractorFlagETL {
 			flagCriteriaContractorDao.remove(criteriaData);
 		}
 	}
-
+	// TODO: Fix Me
 	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes, FlagCriteria flagCriteria) {
-		OshaOrganizer osha = contractor.getOshaOrganizer();
+		/*OshaOrganizer osha = contractor.getOshaOrganizer();
 		Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
 		PicsLogger.log("Answer = " + answer);
 
@@ -278,7 +278,7 @@ public class ContractorFlagETL {
 			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, null);
 			flagCriteriaContractor.setAnswer2(null);
 			changes.add(flagCriteriaContractor);
-		}
+		}*/
 	}
 
 }

@@ -173,12 +173,6 @@ public class CaoSave extends AuditActionSupport {
 						}
 					}
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
-					for (OshaAudit oshaAudit : conAudit.getOshas()) {
-						if (!oshaAudit.isVerified() && !Strings.isEmpty(oshaAudit.getComment())) {
-							note += "OSHA : " + oshaAudit.getComment();
-							note += "\n";
-						}
-					}
 					for (AuditData auditData : conAudit.getData()) {
 						if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
 							note += auditData.getQuestion().getColumnHeaderOrQuestion() + " Comment : "

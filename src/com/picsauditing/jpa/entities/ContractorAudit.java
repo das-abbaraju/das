@@ -115,11 +115,12 @@ public class ContractorAudit extends AbstractIndexableTable {
 		this.employee = employee;
 	}
 
-	@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.ALL })
+	// TODO: FIX ME
+	/*@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.ALL })
 	@OrderBy("location")
 	public List<OshaAudit> getOshas() {
 		return oshas;
-	}
+	}*/
 
 	public void setOshas(List<OshaAudit> oshas) {
 		this.oshas = oshas;

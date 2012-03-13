@@ -175,15 +175,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 			hasManual = getDataForSafetyManual();
 		return hasManual;
 	}
-
+	// TODO: FIX ME
 	public String getDescriptionOsMs() {
-		String descriptionText = "OSHA Recordable";
+		/*String descriptionText = "OSHA Recordable";
 		for (OshaAudit osha : conAudit.getOshas())
 			if (osha.getType().equals(OshaType.MSHA))
 				descriptionText = "MSHA Reportable";
 			else
 				descriptionText = "OSHA Recordable";
-		return descriptionText;
+		return descriptionText;*/
+		return "FIX ME in Audit Action Support";
 	}
 
 	public int getCategoryID() {

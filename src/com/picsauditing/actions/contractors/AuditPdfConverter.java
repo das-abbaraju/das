@@ -140,9 +140,9 @@ public class AuditPdfConverter extends AuditActionSupport {
 				handleCategory(document, allCategories, answerMap, category, 0);
 		}
 	}
-
+	// TODO: FIX ME
 	private void addOshaLog(Document document, ContractorAudit audit, AuditCategory category) throws DocumentException {
-		for (OshaAudit oshaAudit : audit.getOshas()) {
+		/*for (OshaAudit oshaAudit : audit.getOshas()) {
 			if (matchesType(category.getId(), oshaAudit.getType())) {
 				String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
 				if (!Strings.isEmpty(oshaAudit.getDescription()))
@@ -263,7 +263,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 				document.add(oshaTable);
 			}
-		}
+		}*/
 	}
 
 	private void handleCategory(Document document, Map<AuditCategory, AuditCatData> allCategories, AnswerMap answerMap,
