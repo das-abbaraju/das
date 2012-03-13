@@ -147,7 +147,7 @@
                             
 							<s:text name="FacilitiesEdit.LinkedContractorAccount" />
 							<br />
-							<pics:autocomplete action="ContractorAutocomplete" name="operator.gcContractor.contractorAccount" />
+							<pics:autocomplete action="ContractorAutocomplete" name="linkedAccount.contractorAccount" />
 						</li>
 						<s:if test="operator.corporate">
 							<li>

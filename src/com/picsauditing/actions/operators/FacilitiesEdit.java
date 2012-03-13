@@ -39,22 +39,23 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
 	@Autowired
+	protected AccountUserDAO accountUserDAO;
+	@Autowired
+	protected ContractorOperatorDAO contractorOperatorDAO;
+	@Autowired
 	protected FacilitiesDAO facilitiesDAO;
 	@Autowired
 	protected OperatorFormDAO formDAO;
 	@Autowired
-	protected AccountUserDAO accountUserDAO;
-	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
-	@Autowired
-	protected ContractorOperatorDAO contractorOperatorDAO;
 
 	protected String createType;
 	protected List<Integer> facilities;
@@ -69,7 +70,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	protected Country country;
 	protected State state;
 	protected int contactID;
-	protected boolean isGeneralContractor;
+	// General Contractor
+	protected boolean generalContractor;
+	protected ContractorOperator linkedAccount;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -94,6 +97,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		notChildOperatorList = getOperatorsNotMyChildren();
 		childOperatorList = operator.getChildOperators();
+
+		generalContractor = operator.isGeneralContractor();
 
 		return SUCCESS;
 	}
@@ -215,6 +220,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			operator.setCountry(country);
 		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState()))
 			operator.setState(state);
+
+		saveGeneralContractorRelationship();
+		if (hasActionErrors()) {
+			return SUCCESS;
+		}
 
 		Vector<String> errors = validateAccount(operator);
 		if (errors.size() > 0) {
@@ -345,43 +355,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
 		if (!removed) {
-			addActionError(getText("FacilitiesEdit.error.UnableToDeleteAccount", new Object[]{operator.getName()}));
+			addActionError(getText("FacilitiesEdit.error.UnableToDeleteAccount", new Object[] { operator.getName() }));
 			return SUCCESS;
 		}
 
 		redirect("ReportAccountList.action");
 		return SUCCESS;
-	}
-
-	// Insure that all newly added facilities get linked to all parent accounts.
-	// i.e. if F1 -> Hub -> US -> Corporate
-	// then F1 needs to be linked to US and Corporate
-	private void linkChildOperatorsToAllParentAccounts(List<OperatorAccount> newFacilities) {
-		List<OperatorAccount> parents = new ArrayList<OperatorAccount>();
-		findParentAccounts(operator, parents);
-		for (OperatorAccount child : newFacilities) {
-			for (OperatorAccount parent : parents) {
-				// add the link into facilities, if it doesn't already exist.
-				Facility facility = facilitiesDAO.findByCorpOp(parent.getId(), child.getId());
-				if (facility == null) {
-					facility = new Facility();
-					facility.setCorporate(parent);
-					facility.setOperator(child);
-					facility.setAuditColumns(permissions);
-					facilitiesDAO.save(facility);
-				}
-			}
-		}
-	}
-
-	// Recursively find all the parents of this operator.
-	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents) {
-		if (currentOperator.getParent() == null)
-			return;
-		else {
-			parents.add(currentOperator.getParent());
-			findParentAccounts(currentOperator.getParent(), parents);
-		}
 	}
 
 	public List<OperatorAccount> getOperatorsNotMyChildren() throws Exception {
@@ -464,30 +443,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public void setOperatorServiceTypes(List<ContractorType> operatorServiceTypes) {
 		this.operatorServiceTypes = operatorServiceTypes;
-	}
-
-	// TODO: This should be converted to Struts2 Validation
-	private Vector<String> validateAccount(OperatorAccount operator) {
-		Vector<String> errorMessages = new Vector<String>();
-		if (Strings.isEmpty(operator.getName()))
-			errorMessages.addElement(getText("FacilitiesEdit.PleaseFillInCompanyName"));
-		else if (operator.getName().length() < 2)
-			errorMessages.addElement(getText("FacilitiesEdit.NameAtLeast2Chars"));
-
-		if (operator.getCountry() == null) {
-			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
-		}
-
-		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
-				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
-			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
-		}
-
-		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && operator.getDiscountExpiration() == null) {
-			errorMessages.addElement(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
-		}
-
-		return errorMessages;
 	}
 
 	public void setOperator(OperatorAccount operator) {
@@ -581,11 +536,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public boolean isGeneralContractor() {
-		return isGeneralContractor;
+		return generalContractor;
 	}
 
-	public void setGeneralContractor(boolean isGeneralContractor) {
-		this.isGeneralContractor = isGeneralContractor;
+	public void setGeneralContractor(boolean generalContractor) {
+		this.generalContractor = generalContractor;
+	}
+
+	public ContractorOperator getLinkedAccount() {
+		return linkedAccount;
+	}
+
+	public void setLinkedAccount(ContractorOperator linkedAccount) {
+		this.linkedAccount = linkedAccount;
 	}
 
 	public List<AccountUser> getAccountManagers() {
@@ -635,6 +598,77 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 
 		return managers;
+	}
+
+	public boolean isCanEditCorp() {
+		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
+	}
+
+	public boolean isCanEditOp() {
+		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
+	}
+
+	public boolean isCanDeleteCorp() {
+		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
+	}
+
+	public boolean isCanDeleteOp() {
+		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
+	}
+
+	// TODO: This should be converted to Struts2 Validation
+	private Vector<String> validateAccount(OperatorAccount operator) {
+		Vector<String> errorMessages = new Vector<String>();
+		if (Strings.isEmpty(operator.getName()))
+			errorMessages.addElement(getText("FacilitiesEdit.PleaseFillInCompanyName"));
+		else if (operator.getName().length() < 2)
+			errorMessages.addElement(getText("FacilitiesEdit.NameAtLeast2Chars"));
+
+		if (operator.getCountry() == null) {
+			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
+		}
+
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
+				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
+			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
+		}
+
+		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && operator.getDiscountExpiration() == null) {
+			errorMessages.addElement(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
+		}
+
+		return errorMessages;
+	}
+
+	// Insure that all newly added facilities get linked to all parent accounts.
+	// i.e. if F1 -> Hub -> US -> Corporate
+	// then F1 needs to be linked to US and Corporate
+	private void linkChildOperatorsToAllParentAccounts(List<OperatorAccount> newFacilities) {
+		List<OperatorAccount> parents = new ArrayList<OperatorAccount>();
+		findParentAccounts(operator, parents);
+		for (OperatorAccount child : newFacilities) {
+			for (OperatorAccount parent : parents) {
+				// add the link into facilities, if it doesn't already exist.
+				Facility facility = facilitiesDAO.findByCorpOp(parent.getId(), child.getId());
+				if (facility == null) {
+					facility = new Facility();
+					facility.setCorporate(parent);
+					facility.setOperator(child);
+					facility.setAuditColumns(permissions);
+					facilitiesDAO.save(facility);
+				}
+			}
+		}
+	}
+
+	// Recursively find all the parents of this operator.
+	private void findParentAccounts(OperatorAccount currentOperator, List<OperatorAccount> parents) {
+		if (currentOperator.getParent() == null)
+			return;
+		else {
+			parents.add(currentOperator.getParent());
+			findParentAccounts(currentOperator.getParent(), parents);
+		}
 	}
 
 	private void addPicsConsortium() {
@@ -696,19 +730,33 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 	}
 
-	public boolean isCanEditCorp() {
-		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit);
-	}
+	private void saveGeneralContractorRelationship() {
+		ContractorOperator gcContractor = operator.getGcContractor();
+		if (generalContractor) {
+			if (linkedAccount == null) {
+				// TODO: translate?
+				addActionError("Please select a contractor to set this operator as a General Contractor");
+			} else {
+				if (gcContractor != null) {
+					// TODO: Do we change the existing relationship?
+					gcContractor.setType(ContractorOperatorRelationshipType.ContractorOperator);
+					gcContractor.setAuditColumns(permissions);
+					contractorOperatorDAO.save(gcContractor);
+				}
 
-	public boolean isCanEditOp() {
-		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit);
-	}
-
-	public boolean isCanDeleteCorp() {
-		return permissions.hasPermission(OpPerms.ManageCorporate, OpType.Delete);
-	}
-
-	public boolean isCanDeleteOp() {
-		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
+				linkedAccount.setOperatorAccount(operator);
+				linkedAccount.setAuditColumns(permissions);
+				// TODO: GC Contractor is clear flagged by GC Operator?
+				linkedAccount.setFlagColor(FlagColor.Clear);
+				linkedAccount.setWaitingOn(WaitingOn.None);
+				linkedAccount.setType(ContractorOperatorRelationshipType.GeneralContractor);
+				contractorOperatorDAO.save(linkedAccount);
+			}
+		} else {
+			if (gcContractor != null) {
+				// TODO: Do we set the gcContractor to a normal
+				// contractorOperator relationship?
+			}
+		}
 	}
 }
