@@ -479,25 +479,31 @@ public class DateBean {
 		return calendar.getTime();
 	}
 	
-	
-	private static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
+	public static Date setToEndOfDay(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-		calendar.add(field, amount);		
 		calendar.set(Calendar.HOUR_OF_DAY, 23);
 		calendar.set(Calendar.MINUTE, 59);
 		calendar.set(Calendar.SECOND, 59);
-		calendar.set(Calendar.MILLISECOND, 0);		
+		calendar.set(Calendar.MILLISECOND, 0);	
+		
+		return calendar.getTime();
+	}
+	
+	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(field, amount);		
 		
 		return calendar;
 	}
 	
-	private static Calendar setDefaultsForMonth(Calendar calendar, int month) {
+	protected static Calendar setDefaultsForMonth(Calendar calendar, int month) {
 		calendar.set(Calendar.MONTH, month);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 23);
-		calendar.set(Calendar.MINUTE, 59);
-		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);		
 		
 		return calendar;

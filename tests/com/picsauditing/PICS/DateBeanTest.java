@@ -164,6 +164,26 @@ public class DateBeanTest  {
 	}
 	
 	@Test
+	public void testGetMarchOfNextYearEndOfDay() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DATE, 5);
+		calendar.set(Calendar.MONTH, Calendar.JUNE);
+		calendar.set(Calendar.YEAR, 2011);
+		
+		Date marchOfThatYear = DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(calendar.getTime()));
+		
+		Calendar result = Calendar.getInstance();
+		result.setTime(marchOfThatYear);
+		
+		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(Calendar.MARCH, result.get(Calendar.MONTH));
+		assertEquals(calendar.get(Calendar.YEAR) + 1, result.get(Calendar.YEAR));
+		assertEquals(result.get(Calendar.HOUR_OF_DAY), 23);
+		assertEquals(result.get(Calendar.MINUTE), 59);
+		assertEquals(result.get(Calendar.SECOND), 59);
+	}
+	
+	@Test
 	public void testGetMarchOfThatYear() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.DATE, 5);
