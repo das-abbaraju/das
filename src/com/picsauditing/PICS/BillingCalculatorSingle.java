@@ -82,7 +82,8 @@ public class BillingCalculatorSingle {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
 		for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
 			OperatorAccount operator = contractorOperator.getOperatorAccount();
-			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay()))
+			if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay())
+					&& !contractorOperator.isGeneralContractorType())
 				payingOperators.add(operator);
 		}
 
