@@ -772,8 +772,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		ContractorOperator gcContractor = operator.getGcContractor();
 		if (generalContractor) {
 			if (linkedAccount == null) {
-				// TODO: translate?
-				addActionError("Please select a contractor to set this operator as a General Contractor");
+				addActionError(getText("FacilitiesEdit.PleaseSelectContractorForGC"));
 			} else {
 				if (gcContractor != null) {
 					// TODO: Do we change the existing relationship?
@@ -788,6 +787,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				linkedAccount.setFlagColor(FlagColor.Clear);
 				linkedAccount.setWaitingOn(WaitingOn.None);
 				linkedAccount.setType(ContractorOperatorRelationshipType.GeneralContractor);
+				linkedAccount.setWorkStatus(ApprovalStatus.Y);
 				contractorOperatorDAO.save(linkedAccount);
 			}
 		} else {
