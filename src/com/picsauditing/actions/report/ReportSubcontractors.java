@@ -100,7 +100,7 @@ public class ReportSubcontractors extends ReportAccountAudits {
 		innerJoin.addJoin("JOIN generalcontractors gc2 ON gc2.genID = gc1.genID");
 		innerJoin.addJoin("JOIN accounts a ON a.id = gc1.genID AND a.status = 'Active' AND a.type = 'Operator'");
 
-		innerJoin.addField("GROUP_CONCAT(CONCAT(a.id, '|', a.name, '|', gc2.flag)) 'name'");
+		innerJoin.addField("GROUP_CONCAT(CONCAT(a.id, '|', a.name, '|', gc2.flag) ORDER BY a.name ASC) 'name'");
 		innerJoin.addField("GROUP_CONCAT(gc2.genID) genIDs");
 		innerJoin.addField("gc2.subID");
 
