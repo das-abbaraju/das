@@ -1003,6 +1003,7 @@ footer .footer-menu a
 {
 	color: #878787;
 	font-size: 14px;
+	line-height: 18px;
 	margin: 10px 0px 20px;
 }
 
@@ -1300,16 +1301,20 @@ footer .footer-menu a
 .make-payment-form .actions input.btn
 {
 	float: left;
+	padding: 10px 20px 12px;
+	margin: 1px 10px 0px 0px;
 }
 
-.make-payment-form .actions p
+.make-payment-form .actions .brain-tree-badge
 {
-	width: 450px;
+	float: left;
 }
 
 .make-payment-form .check-note
 {
+	clear: left;
 	display: none;
+	float: left;
 }
 
 .make-payment .process-check-info
@@ -1345,7 +1350,8 @@ footer .footer-menu a
 .make-payment .processing p
 {
 	color: #BB621A;
-	font-size: 16px;
+	float: left;
+	font-size: 13px;
 	font-weight: bold;
 	text-shadow: #D6D6D6 1px 1px 1px;
 }

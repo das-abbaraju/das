@@ -229,6 +229,10 @@
 							key="button.SubmitPayment" 
 							cssClass="btn success" 
 						/>
+                        
+                        <a href="https://www.braintreegateway.com/merchants/YOUR_MERCHANT_ID/verified" target="_blank" class="brain-tree-badge">
+                            <img src="https://braintree-badges.s3.amazonaws.com/05.png" border="0" />
+                        </a>
 						
 						<div class="processing">
 							<img src="images/loading.gif" />
