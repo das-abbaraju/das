@@ -236,7 +236,8 @@ public class ContractorAuditDAO extends PicsDAO {
 
 	public List<ContractorAudit> findScheduledAudits(int auditorID, Date startDate, Date endDate) {
 		String hql = "SELECT ca FROM ContractorAudit ca "
-				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate";
+				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate "
+				+ " AND ca.contractorAccount.status = 'Active'";
 		if (auditorID > 0)
 			hql += " AND ca.auditor.id = :auditorID";
 		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
