@@ -231,6 +231,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				showAll.addField("a.onsiteServices");
 				showAll.addField("a.offsiteServices");
 				showAll.addField("a.materialSupplier");
+				showAll.addField("a.transportationServices");
 				showAll.addWhere("a.type = 'Operator'");
 				showAll.addWhere("a.status = 'Active'");
 				showAll.addWhere("a.id NOT IN (SELECT genID from generalContractors WHERE subID = "
