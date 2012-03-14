@@ -78,6 +78,8 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             }
         }
         
+        this.application.fireEvent('refreshreport');
+        
         window.destroy();
     },
     

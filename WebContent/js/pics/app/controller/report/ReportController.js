@@ -23,6 +23,11 @@ Ext.define('PICS.controller.report.ReportController', {
                 click: this.refreshReport
             }
         });
+        
+        this.application.on({
+            refreshreport: this.refreshReport,
+            scope: this
+        });
     },
     
     onLaunch: function () {
