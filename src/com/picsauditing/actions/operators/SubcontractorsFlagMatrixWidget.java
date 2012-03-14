@@ -56,7 +56,7 @@ public class SubcontractorsFlagMatrixWidget extends PicsActionSupport {
 	
 	public List<OperatorAccount> getGcContractorOperators() {
 		if (gcContractorOperators == null) {
-			gcContractorOperators = operator.getGcContractorOperators();
+			gcContractorOperators = operator.getGcContractorOperatorAccounts();
 		}
 		return gcContractorOperators;
 	}

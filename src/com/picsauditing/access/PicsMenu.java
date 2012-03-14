@@ -262,6 +262,8 @@ public class PicsMenu {
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
+		if (permissions.isGcOperator() && permissions.hasPermission(OpPerms.ContractorApproval))
+			subMenu.addChild(getTitle("ReportSubcontractors"), "ReportSubcontractors.action");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "OperatorTags");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
@@ -479,7 +481,8 @@ public class PicsMenu {
 
 			subMenu.addChild(getTitle("ReportCompetencyByAccount"), "ReportCompetencyByAccount.action");
 			subMenu.addChild(getTitle("ReportCompetencyByEmployee"), "ReportCompetencyByEmployee.action");
-			// subMenu.addChild("Employee Turnover", "ReportEmployeeTurnover.action");
+			// subMenu.addChild("Employee Turnover",
+			// "ReportEmployeeTurnover.action");
 		}
 
 		if (permissions.isRequiresOQ()) {
@@ -519,7 +522,8 @@ public class PicsMenu {
 
 	static public MenuComponent addSupportLink(MenuComponent menu) {
 		MenuComponent subMenu = menu.addChild(getText("menu.Support"), "Contact.action");
-		// We may want to add the Contact page as a child menu after we have more "Support" options
+		// We may want to add the Contact page as a child menu after we have
+		// more "Support" options
 		// subMenu.addChild(getTitle("Contact"), "Contact.action");
 		return subMenu;
 	}

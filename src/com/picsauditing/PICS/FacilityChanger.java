@@ -82,7 +82,7 @@ public class FacilityChanger {
 		co.setOperatorAccount(operator);
 		co.setType(ContractorOperatorRelationshipType.ContractorOperator);
 
-		if (permissions.isOperatorCorporate()) {
+		if (addedByOperatorCorporate()) {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
 			co.setWorkStatus(ApprovalStatus.Y);
@@ -294,5 +294,14 @@ public class FacilityChanger {
 
 		return creationDateQueue.peekFirst();
 	}
-
+	
+	private boolean addedByOperatorCorporate() {
+		if (permissions.isOperator() && permissions.getAccountId() == operator.getId())
+			return true;
+		
+		if (permissions.isCorporate() && permissions.getOperatorChildren().contains(operator.getId()))
+			return true;
+		
+		return false;
+	}
 }

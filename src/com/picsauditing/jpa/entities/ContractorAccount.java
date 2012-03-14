@@ -116,7 +116,8 @@ public class ContractorAccount extends Account implements JSONable {
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
-	private List<OperatorAccount> generalContractorOperators;
+	private List<ContractorOperator> generalContractorOperators = new ArrayList<ContractorOperator>();
+	private List<OperatorAccount> generalContractorOperatorAccounts;
 	private List<OperatorAccount> nonGeneralContractorOperators;
 
 	// Transient helper methods
@@ -155,7 +156,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Only includes the Active/Pending/Demo operator accounts, not corporate accounts or Deleted/Deactivated Operators
+	 * Only includes the Active/Pending/Demo operator accounts, not corporate
+	 * accounts or Deleted/Deactivated Operators
 	 * 
 	 * @return
 	 */
@@ -302,8 +304,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.ccEmail = ccEmail;
 	}
 
-	public void resetRisksBasedOnTypes()
-	{
+	public void resetRisksBasedOnTypes() {
 		if (!isOnsiteServices() && !isOffsiteServices()) {
 			setSafetyRisk(LowMedHigh.None);
 		}
@@ -404,8 +405,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
-	 * contractors. Yes or No
+	 * Determines if this contractor must pay or not. It allows for PICS to
+	 * grant "free" lifetime accounts to certain contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	public String getMustPay() {
@@ -511,7 +512,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the contractor was invoiced for their most recent activation/reactivation fee
+	 * The date the contractor was invoiced for their most recent
+	 * activation/reactivation fee
 	 * 
 	 * @return
 	 */
@@ -537,8 +539,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
-	 * NEVER be null.
+	 * The date the lastPayment expires and the contractor is due to pay another
+	 * "period's" membership fee. This should NEVER be null.
 	 * 
 	 * @return
 	 */
@@ -553,7 +555,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, audits and billing
+	 * Used to determine if we need to calculate the flagColor, audits and
+	 * billing
 	 * 
 	 * @return
 	 */
@@ -638,7 +641,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Returns a list of the trades in a sorted order This is needed for the struts iterator for the trade cloud
+	 * Returns a list of the trades in a sorted order This is needed for the
+	 * struts iterator for the trade cloud
 	 */
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
@@ -725,19 +729,19 @@ public class ContractorAccount extends Account implements JSONable {
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
 			oshaOrganizer = new OshaOrganizer();
-			for (OshaAudit audit: this.getOshaAudits()) {
+			for (OshaAudit audit : this.getOshaAudits()) {
 				if (audit.isVerified())
 					audit.accept(oshaOrganizer);
 			}
 		}
 		return oshaOrganizer;
 	}
-	
+
 	@Transient
 	public List<OshaAudit> getOshaAudits() {
 		if (oshaAudits == null || oshaAudits.size() == 0) {
 			oshaAudits = new ArrayList<OshaAudit>();
-			for (ContractorAudit audit: getAudits()){
+			for (ContractorAudit audit : getAudits()) {
 				if (audit.getAuditType().isAnnualAddendum()) {
 					oshaAudits.add(new OshaAudit(audit));
 				}
@@ -779,8 +783,8 @@ public class ContractorAccount extends Account implements JSONable {
 			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
 
 		AuditData avg = AuditData.addAverageData(emrs.values());
-		//if (avg != null && !Strings.isEmpty(avg.getAnswer()))
-			//emrs.put(OshaAudit.AVG, avg);
+		// if (avg != null && !Strings.isEmpty(avg.getAnswer()))
+		// emrs.put(OshaAudit.AVG, avg);
 
 		return emrs;
 	}
@@ -824,7 +828,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
+	 * The last day someone added a facility to this contractor. This is used to
+	 * prorate upgrade amounts
 	 * 
 	 * @return
 	 */
@@ -902,16 +907,17 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean foundEmployeeGUARDMembership = false;
 		boolean foundImportPQFFee = false;
 		/**
-		 * TRUE if we found the most recent membership activation/reactivation or renewal. We're not looking for
-		 * upgrades here.
+		 * TRUE if we found the most recent membership activation/reactivation
+		 * or renewal. We're not looking for upgrades here.
 		 */
 		boolean foundMembership = false;
 		boolean foundMembershipDate = false;
 		boolean foundPaymentExpires = false;
 
 		/**
-		 * Go through the list of invoices in reverse order (most recent first). Find the first invoice with a
-		 * membership line and grab all the invoiceFees.
+		 * Go through the list of invoices in reverse order (most recent first).
+		 * Find the first invoice with a membership line and grab all the
+		 * invoiceFees.
 		 */
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
@@ -950,8 +956,8 @@ public class ContractorAccount extends Account implements JSONable {
 										FeeClass.InsureGUARD, this.getPayingFacilities());
 								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(), getCountry().getAmount(
-										invoiceItem.getInvoiceFee()));
+								setCurrentFee(invoiceItem.getInvoiceFee(),
+										getCountry().getAmount(invoiceItem.getInvoiceFee()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -975,7 +981,8 @@ public class ContractorAccount extends Account implements JSONable {
 								setCurrentFee(invoiceItem.getInvoiceFee(), currentAmount);
 							}
 
-							// Old AuditGUARD included DocuGUARD fee & InsureGUARD fee
+							// Old AuditGUARD included DocuGUARD fee &
+							// InsureGUARD fee
 							// For legacy compliance
 							if (invoiceItem.getInvoiceFee().isLegacyMembership()) {
 								foundDocuGUARDMembership = true;
@@ -1099,7 +1106,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel(); con.getFees().getDocuGUARD().getNewLevel();
+	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel();
+	 * con.getFees().getDocuGUARD().getNewLevel();
 	 * 
 	 * @return
 	 */
@@ -1178,17 +1186,23 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
-	 * set to renew:<br />
+	 * The following are states of Billing Status: Membership Canceled
+	 * Contractor is not active and membership is not set to renew:<br />
 	 * <br>
 	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
-	 * <b>Activation</b> means the contractor is not active and has never been active<br>
-	 * <b>Reactivation</b> means the contractor was active, but is no longer active anymore<br>
+	 * <b>Activation</b> means the contractor is not active and has never been
+	 * active<br>
+	 * <b>Reactivation</b> means the contractor was active, but is no longer
+	 * active anymore<br>
 	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
-	 * <b>Do not renew</b> means the contractor has asked not to renew their account<br>
-	 * <b>Membership Canceled</b> means the contractor closed their account and doesn't want to renew<br>
-	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration Date is past.<br>
-	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
+	 * <b>Do not renew</b> means the contractor has asked not to renew their
+	 * account<br>
+	 * <b>Membership Canceled</b> means the contractor closed their account and
+	 * doesn't want to renew<br>
+	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
+	 * Date is past.<br>
+	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
+	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
 	 * 
@@ -1509,7 +1523,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 	@Transient
 	public boolean isEligibleForImportPQF() {
-		// This list is empty because currently Import PQF is not enabled for any Operators
+		// This list is empty because currently Import PQF is not enabled for
+		// any Operators
 		List<Integer> importPQFEligibleOperators = new ArrayList<Integer>();
 
 		for (OperatorAccount operator : getOperatorAccounts())
@@ -1569,39 +1584,51 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return meetsOperatorsRequirements;
 	}
-	
+
 	@Transient
 	public ContractorOperator getContractorOperatorForOperator(OperatorAccount operator) {
 		for (ContractorOperator op : getOperators()) {
 			if (op.getOperatorAccount().getId() == operator.getId())
 				return op;
 		}
+		
 		return null;
 	}
-	
+
+	@OneToMany(mappedBy = "contractorAccount")
+	@Where(clause = "type='GeneralContractor'")
+	public List<ContractorOperator> getGeneralContractorOperators() {
+		return generalContractorOperators;
+	}
+
+	public void setGeneralContractorOperators(List<ContractorOperator> generalContractorOperators) {
+		this.generalContractorOperators = generalContractorOperators;
+	}
+
 	@Transient
-	public List<OperatorAccount> getGeneralContractorOperators() {
-		if (generalContractorOperators == null) {
-			generalContractorOperators = new ArrayList<OperatorAccount>();
-			
-			for (ContractorOperator contractorOperator : getOperators()) {
-				if (contractorOperator.getOperatorAccount().isGeneralContractor())
-					generalContractorOperators.add(contractorOperator.getOperatorAccount());
+	public List<OperatorAccount> getGeneralContractorOperatorAccounts() {
+		if (generalContractorOperatorAccounts == null) {
+			generalContractorOperatorAccounts = new ArrayList<OperatorAccount>();
+
+			for (ContractorOperator gcContractorOperator : getGeneralContractorOperators()) {
+				generalContractorOperatorAccounts.add(gcContractorOperator.getOperatorAccount());
 			}
 			
-			Collections.sort(generalContractorOperators);
+			Collections.sort(generalContractorOperatorAccounts);
 		}
-		
-		return generalContractorOperators;
+
+		return generalContractorOperatorAccounts;
 	}
 
 	@Transient
 	public List<OperatorAccount> getNonGeneralContractorOperators() {
 		if (nonGeneralContractorOperators == null) {
 			nonGeneralContractorOperators = new ArrayList<OperatorAccount>(getOperatorAccounts());
-			nonGeneralContractorOperators.removeAll(getGeneralContractorOperators());
+			nonGeneralContractorOperators.removeAll(getGeneralContractorOperatorAccounts());
+			
+			Collections.sort(nonGeneralContractorOperators);
 		}
-		
+
 		return nonGeneralContractorOperators;
 	}
 }

@@ -2,7 +2,6 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +24,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 
 import com.google.common.base.Strings;
 import com.picsauditing.dao.AuditDecisionTableDAO;
@@ -48,8 +48,6 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
-
-	private ContractorOperator gcContractor;
 
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
@@ -76,6 +74,9 @@ public class OperatorAccount extends Account {
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
 	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Set<Integer> visibleAuditTypes = null;
+
+	private List<ContractorOperator> generalContractorContractors = new ArrayList<ContractorOperator>();
+	private List<OperatorAccount> gcContractorOperatorAccounts;
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -288,37 +289,46 @@ public class OperatorAccount extends Account {
 			return inheritFlagCriteria.getFlagCriteria();
 	}
 
+	@OneToMany(mappedBy = "operatorAccount")
+	@Where(clause = "type='GeneralContractor'")
+	public List<ContractorOperator> getGcContractors() {
+		return generalContractorContractors;
+	}
+
+	public void setGcContractors(List<ContractorOperator> gcContractors) {
+		this.generalContractorContractors = gcContractors;
+	}
+
 	@Transient
 	public ContractorOperator getGcContractor() {
-		if (gcContractor == null) {
-			for (ContractorOperator contractorOperator : getContractorOperators()) {
-				if (contractorOperator.isGeneralContractorType())
-					gcContractor = contractorOperator;
-			}
-		}
-		
-		return gcContractor;
+		if (getGcContractors() != null)
+			return getGcContractors().get(0);
+
+		return null;
 	}
-	
+
 	@Transient
 	public boolean isGeneralContractor() {
-		return getGcContractor() != null;
+		return getGcContractors().size() > 0;
 	}
-	
+
 	@Transient
 	public boolean isGCFree() {
-		return doContractorsPay.equals("No");
+		return isGeneralContractor() && doContractorsPay.equals("No");
 	}
-	
+
 	@Transient
-	public List<OperatorAccount> getGcContractorOperators() {
-		if (getGcContractor() != null) {
-			return getGcContractor().getContractorAccount().getOperatorAccounts();
+	public List<OperatorAccount> getGcContractorOperatorAccounts() {
+		if (gcContractorOperatorAccounts == null) {
+			ContractorAccount gcContractor = getGcContractor().getContractorAccount();
+
+			gcContractorOperatorAccounts = new ArrayList<OperatorAccount>(
+					gcContractor.getNonGeneralContractorOperators());
 		}
-		
-		return Collections.emptyList();
+
+		return gcContractorOperatorAccounts;
 	}
-	
+
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
