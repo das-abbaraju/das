@@ -389,7 +389,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<ContractorOperator> getGCOperators() {
 		if (permissions.isGeneralContractor()) {
-			List<OperatorAccount> gcOps = dao.find(OperatorAccount.class, permissions.getAccountId()).getGcContractorOperators();
+			List<OperatorAccount> gcOps = dao.find(OperatorAccount.class, permissions.getAccountId()).getGcContractorOperatorAccounts();
 			List<ContractorOperator> ccOps = contractor.getOperators();
 			
 			Iterator<ContractorOperator> coItr = ccOps.iterator();
