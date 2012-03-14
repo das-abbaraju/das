@@ -106,9 +106,9 @@
 								<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 								
 								<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
-									<s:if test="title != null && title.length() > 0 && !#hidden">
+									<s:if test="#q.title != null && #q.title.toString().length() > 0 && !#hidden">
 										<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
-											<s:property value="title" escape="false"/>
+											<s:property value="#q.title" escape="false"/>
 										</h4>
 									</s:if>
 									
@@ -157,6 +157,7 @@
 					<s:include value="audit_cat_view.jsp"/>
 				</s:if>
 			</s:iterator>
+			
 		</s:else>
 		
 		<s:if test="!#showCat && onlyReq">
