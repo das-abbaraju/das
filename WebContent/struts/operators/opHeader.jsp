@@ -43,18 +43,20 @@
 				</li>
 			</pics:permission>
 			
-			<li>
-				<a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.id"/>" <s:if test="requestURI.contains('op_manage_flag_criteria') && !insurance">class="current"</s:if>>
-					<s:text name="FlagCriteria" />
-				</a>
-			</li>
-			
-			<s:if test="operator.canSeeInsurance.toString() == 'Yes'">
+			<s:if test="!permissions.generalContractorFree">
 				<li>
-					<a href="ManageInsuranceCriteriaOperator.action?id=<s:property value="operator.id"/>" <s:if test="requestURI.contains('op_manage_flag_criteria') && insurance">class="current"</s:if>>
-						<s:text name="FlagCriteria.insurance" />
+					<a href="ManageFlagCriteriaOperator.action?id=<s:property value="operator.id"/>" <s:if test="requestURI.contains('op_manage_flag_criteria') && !insurance">class="current"</s:if>>
+						<s:text name="FlagCriteria" />
 					</a>
 				</li>
+				
+				<s:if test="operator.canSeeInsurance.toString() == 'Yes'">
+					<li>
+						<a href="ManageInsuranceCriteriaOperator.action?id=<s:property value="operator.id"/>" <s:if test="requestURI.contains('op_manage_flag_criteria') && insurance">class="current"</s:if>>
+							<s:text name="FlagCriteria.insurance" />
+						</a>
+					</li>
+				</s:if>
 			</s:if>
 			
 			<pics:permission perm="ManageProjects">

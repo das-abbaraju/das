@@ -63,6 +63,7 @@ public class Permissions implements Serializable {
 	private boolean active = false;
 	private boolean gcContractor = false;
 	private boolean gcOperator = false;
+	private boolean gcFree = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 
 	private int shadowedUserID;
@@ -91,7 +92,8 @@ public class Permissions implements Serializable {
 
 		gcContractor = false;
 		gcOperator = false;
-
+		gcFree = false;
+		
 		adminID = 0;
 		topAccountID = 0;
 
@@ -190,6 +192,8 @@ public class Permissions implements Serializable {
 
 				if (operator.isGeneralContractor())
 					gcOperator = true;
+				if (operator.isGCFree())
+					gcFree = true;
 			}
 
 			for (com.picsauditing.jpa.entities.UserAccess ua : user.getPermissions()) {
@@ -544,6 +548,10 @@ public class Permissions implements Serializable {
 
 	public boolean isGeneralContractor() {
 		return gcContractor || gcOperator;
+	}
+	
+	public boolean isGeneralContractorFree() {
+		return gcFree;
 	}
 
 	public boolean canSeeAudit(AuditType auditType) {
