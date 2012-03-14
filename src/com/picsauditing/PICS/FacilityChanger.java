@@ -15,6 +15,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -84,11 +85,11 @@ public class FacilityChanger {
 		if (permissions.isOperatorCorporate()) {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
-			co.setWorkStatus(ContractorOperator.WORK_STATUS_YES);
+			co.setWorkStatus(ApprovalStatus.Y);
 		}
 
 		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
-			co.setWorkStatus(ContractorOperator.WORK_STATUS_CONTRACTOR);
+			co.setWorkStatus(ApprovalStatus.C);
 		}
 
 		co.setAuditColumns(permissions);

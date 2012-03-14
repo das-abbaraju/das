@@ -442,11 +442,10 @@
 									</li>
 									<li>
 										<label>Auto Approves General Contractors:</label>
-										<s:radio 
-											list="#{true:'Yes',false:'No'}" 
-											name="contractor.autoApprove" 
-											theme="pics"
-											cssClass="inline"
+										<s:checkbox 
+											name="contractor.autoApproveRelationships" 
+											cssClass="checkbox"
+											disabled="!permissions.marketing" 
 										/>
 									</li>
 									<li>

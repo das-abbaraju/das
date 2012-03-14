@@ -89,7 +89,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	protected Date accreditation;
 	private Locale locale = Locale.ENGLISH;
 	protected TimeZone timezone;
-	protected boolean autoApproveRelationships = false;
+	protected boolean autoApproveRelationships = true;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;

@@ -31,6 +31,7 @@ import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
@@ -153,7 +154,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			if (permissions.isOperator()) {
 				for (ContractorOperator cOperator : contractor.getNonCorporateOperators()) {
 					if (cOperator.getOperatorAccount().getId() == permissions.getAccountId()) {
-						cOperator.setWorkStatus("Y");
+						cOperator.setWorkStatus(ApprovalStatus.Y);
 						cOperator.setAuditColumns(permissions);
 						contractorOperatorDAO.save(cOperator);
 						break;

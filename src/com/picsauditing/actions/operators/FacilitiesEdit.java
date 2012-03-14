@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -28,6 +29,7 @@ import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.AccountUser;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
 import com.picsauditing.jpa.entities.ContractorType;
@@ -45,34 +47,34 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
 	@Autowired
-	protected AccountUserDAO accountUserDAO;
+	private AccountUserDAO accountUserDAO;
 	@Autowired
-	protected ContractorOperatorDAO contractorOperatorDAO;
+	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
-	protected FacilitiesDAO facilitiesDAO;
+	private FacilitiesDAO facilitiesDAO;
 	@Autowired
-	protected OperatorFormDAO formDAO;
+	private OperatorFormDAO formDAO;
 	@Autowired
-	protected UserDAO userDAO;
+	private UserDAO userDAO;
 	@Autowired
-	protected UserSwitchDAO userSwitchDAO;
+	private UserSwitchDAO userSwitchDAO;
 
-	protected String createType;
-	protected List<Integer> facilities;
-	protected Set<OperatorAccount> relatedFacilities = null;
-	protected int nameId;
-	protected String name;
-	protected Map<UserAccountRole, List<AccountUser>> managers;
+	private String createType;
+	private List<Integer> facilities;
+	private Set<OperatorAccount> relatedFacilities = null;
+	private int nameId;
+	private String name;
+	private Map<UserAccountRole, List<AccountUser>> managers;
 
-	protected int accountUserId;
-	protected AccountUser salesRep = null;
-	protected AccountUser accountRep = null;
-	protected Country country;
-	protected State state;
-	protected int contactID;
-	// General Contractor
-	protected boolean generalContractor;
-	protected ContractorOperator linkedAccount;
+	private int accountUserId;
+	private AccountUser salesRep = null;
+	private AccountUser accountRep = null;
+	private Country country;
+	private State state;
+	private int contactID;
+	private boolean generalContractor;
+	private ContractorOperator linkedAccount;
+	private Boolean autoApproveRelationships;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -240,6 +242,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
+			if (autoApproveRelationships != null && autoApproveRelationships != operator.isAutoApproveRelationships()) {
+				if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
+					approveAllRelationships();
+				}
+				
+				operator.setAutoApproveRelationships(autoApproveRelationships);
+			}
 
 			if (operator.isCorporate()) {
 				if (facilities != null) {
@@ -341,6 +350,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[] { operator.getName() }));
 
 		return "redirect";
+	}
+
+	private void approveAllRelationships() {
+		for (ContractorOperator co : operator.getContractorOperators()) {
+			if (co.getWorkStatus().isPending() || co.getWorkStatus().isNo()) {
+				co.setWorkStatus(ApprovalStatus.Y);
+			}
+		}
 	}
 
 	public String delete() throws NoPermissionException, Exception {
@@ -552,6 +569,26 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.linkedAccount = linkedAccount;
 	}
 
+	/**
+	 * @param autoApproveRelationships
+	 *            the autoApproveRelationships to set
+	 */
+	public void setAutoApproveRelationships(Boolean autoApproveRelationships) {
+		this.autoApproveRelationships = autoApproveRelationships;
+	}
+
+	/**
+	 * @return the autoApproveRelationships
+	 * @throws Exception
+	 * @throws RecordNotFoundException
+	 */
+	public Boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
+		if (operator == null)
+			findOperator();
+
+		return operator.isAutoApproveRelationships();
+	}
+
 	public List<AccountUser> getAccountManagers() {
 		List<AccountUser> list = new ArrayList<AccountUser>();
 
@@ -759,5 +796,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				// contractorOperator relationship?
 			}
 		}
+	}
+
+	public int pendingAndNotApprovedRelationshipCount() {
+		if (operator == null)
+			getOperator();
+
+		int pendingAndNotApprovedCount = 0;
+
+		for (ContractorOperator co : operator.getContractorOperators()) {
+			if (co.getWorkStatus().isPending() || co.getWorkStatus().isNo())
+				pendingAndNotApprovedCount++;
+		}
+
+		return pendingAndNotApprovedCount;
 	}
 }

@@ -11,6 +11,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.Facility;
@@ -32,7 +33,7 @@ public class ReportContractorApproval extends ReportAccount {
 
 	protected List<Integer> conids = null;
 	protected String operatorNotes = "";
-	protected String workStatus = ContractorOperator.WORK_STATUS_PENDING;
+	protected ApprovalStatus workStatus = ApprovalStatus.P;
 
 	@Override
 	protected void buildQuery() {
@@ -66,7 +67,7 @@ public class ReportContractorApproval extends ReportAccount {
 		getFilter().setShowWaitingOn(false);
 		getFilter().setShowWorkStatus(true);
 		getFilter().setShowLocation(false);
-		getFilter().setWorkStatus(ContractorOperator.WORK_STATUS_PENDING);
+		getFilter().setWorkStatus(ApprovalStatus.P);
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorApproval, type = OpType.Edit)
@@ -126,15 +127,15 @@ public class ReportContractorApproval extends ReportAccount {
 		this.operatorNotes = operatorNotes;
 	}
 
-	public String getWorkStatus() {
+	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
 
-	public void setWorkStatus(String workStatus) {
+	public void setWorkStatus(ApprovalStatus workStatus) {
 		this.workStatus = workStatus;
 	}
 
-	public void approveContractor(ContractorAccount cAccount, int operatorID, String workStatus) {
+	public void approveContractor(ContractorAccount cAccount, int operatorID, ApprovalStatus workStatus) {
 		for (ContractorOperator cOperator : cAccount.getOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
 				cOperator.setWorkStatus(workStatus);
@@ -145,12 +146,12 @@ public class ReportContractorApproval extends ReportAccount {
 		}
 	}
 
-	public String getWorkStatusDesc(String workStatus) {
-		if (workStatus.equals(ContractorOperator.WORK_STATUS_CONTRACTOR))
+	public String getWorkStatusDesc(ApprovalStatus workStatus) {
+		if (workStatus.isContractor())
 			return "Contractor Approves";
-		if (workStatus.equals(ContractorOperator.WORK_STATUS_PENDING))
+		if (workStatus.isPending())
 			return "Pending";
-		if (workStatus.equals(ContractorOperator.WORK_STATUS_YES))
+		if (workStatus.isYes())
 			return "Yes";
 		else
 			return "No";

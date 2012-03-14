@@ -15,6 +15,7 @@ import com.picsauditing.dao.InvoiceItemDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -108,7 +109,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		if (permissions.isCorporate()) {
 			OperatorAccount corporate = operatorAccountDAO.find(permissions.getAccountId());
 			for (Facility facility : corporate.getOperatorFacilities()) {
-				if (facility.getOperator().getApprovesRelationships().isTrue()) {
+				if (!facility.getOperator().isAutoApproveRelationships()) {
 					approveContractor(contractor, facility.getOperator().getId());
 				}
 			}
@@ -193,7 +194,7 @@ public class ReportBiddingContractors extends ReportAccount {
 	public void approveContractor(ContractorAccount cAccount, int operatorID) {
 		for (ContractorOperator cOperator : cAccount.getNonCorporateOperators()) {
 			if (cOperator.getOperatorAccount().getId() == operatorID) {
-				cOperator.setWorkStatus("Y");
+				cOperator.setWorkStatus(ApprovalStatus.Y);
 				cOperator.setAuditColumns(permissions);
 				contractorOperatorDAO.save(cOperator);
 				break;

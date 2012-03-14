@@ -34,15 +34,10 @@ import com.picsauditing.util.Strings;
 @Table(name = "generalcontractors")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
-	public static final String WORK_STATUS_PENDING = "P";
-	public static final String WORK_STATUS_YES = "Y";
-	public static final String WORK_STATUS_NO = "N";
-	public static final String WORK_STATUS_CONTRACTOR = "C";
-
 	private OperatorAccount operatorAccount;
 	private ContractorAccount contractorAccount;
 	private ContractorOperatorRelationshipType type;
-	private String workStatus = WORK_STATUS_PENDING;
+	private ApprovalStatus workStatus = ApprovalStatus.P;
 	private FlagColor flagColor;
 	private FlagColor baselineFlag;
 	private Integer baselineApprover;
@@ -89,68 +84,68 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setType(ContractorOperatorRelationshipType type) {
 		this.type = type;
 	}
-	
+
 	@Transient
 	public boolean isGeneralContractorType() {
 		return ContractorOperatorRelationshipType.GeneralContractor.equals(getType());
 	}
-	
+
 	@Transient
 	public boolean isContractorOperatorType() {
 		return ContractorOperatorRelationshipType.ContractorOperator.equals(getType());
 	}
-	
+
 	/**
-	 * Assume Yes if the operator approvesRelationships=No, otherwise this
-	 * should default to P and then be approved or rejected
+	 * Default to P and then be approved or rejected
 	 * 
 	 * @return P=Pending, Y=Yes, N=No
 	 */
-	public String getWorkStatus() {
+	@Enumerated(EnumType.STRING)
+	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
 
-	public void setWorkStatus(String workStatus) {
+	public void setWorkStatus(ApprovalStatus workStatus) {
 		this.workStatus = workStatus;
 	}
 
 	@Transient
 	public boolean isWorkStatusApproved() {
 		if (!getOperatorAccount().isCorporate())
-			return WORK_STATUS_YES.equals(workStatus);
+			return workStatus.isYes();
 		else
-			return isChildrenWorkStatusEqual(WORK_STATUS_YES);
+			return isChildrenWorkStatusEqual(ApprovalStatus.Y);
 	}
 
 	@Transient
 	public boolean isWorkStatusRejected() {
 		if (!getOperatorAccount().isCorporate())
-			return WORK_STATUS_NO.equals(workStatus);
+			return workStatus.isNo();
 		else
-			return isChildrenWorkStatusEqual(WORK_STATUS_NO);
+			return isChildrenWorkStatusEqual(ApprovalStatus.N);
 	}
 
 	@Transient
 	public boolean isWorkStatusPending() {
 		if (!getOperatorAccount().isCorporate())
-			return WORK_STATUS_PENDING.equals(workStatus);
+			return workStatus.isPending();
 		else
-			return isChildrenWorkStatusEqual(WORK_STATUS_PENDING);
+			return isChildrenWorkStatusEqual(ApprovalStatus.P);
 	}
 
 	@Transient
 	public boolean isWorkStatusContractor() {
 		if (!getOperatorAccount().isCorporate())
-			return WORK_STATUS_CONTRACTOR.equals(workStatus);
+			return workStatus.isContractor();
 		else
-			return isChildrenWorkStatusEqual(WORK_STATUS_CONTRACTOR);
+			return isChildrenWorkStatusEqual(ApprovalStatus.C);
 	}
 
-	private boolean isChildrenWorkStatusEqual(String parentStatus) {
+	private boolean isChildrenWorkStatusEqual(ApprovalStatus parentStatus) {
 		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'";
 		Set<Integer> idList = new HashSet<Integer>();
 		for (Facility f : getOperatorAccount().getOperatorFacilities())
-			if (f.getOperator().getStatus().isActiveDemo() && f.getOperator().getApprovesRelationships().isTrue())
+			if (f.getOperator().getStatus().isActiveDemo() && !f.getOperator().isAutoApproveRelationships())
 				idList.add(f.getOperator().getId());
 		String ids = Strings.implode(idList, ",");
 		where += " AND genid IN (" + ids + ")";
@@ -331,7 +326,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	// added mappedBy="flag" to show which side is the owning side in the
 	// relationship
 	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "flag")
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
@@ -342,7 +337,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
 		return overrides;

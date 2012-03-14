@@ -15,6 +15,7 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.ListType;
@@ -95,7 +96,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected Date invoiceDueDate2;
 	protected String deactivationReason;
 	protected int[] minorityQuestion;
-	protected String workStatus;
+	protected ApprovalStatus workStatus;
 	protected String glEachOccurrence;
 	protected String glGeneralAggregate;
 	protected String alCombinedSingle;
@@ -728,11 +729,11 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.minorityQuestion = minorityQuestion;
 	}
 
-	public String getWorkStatus() {
+	public ApprovalStatus getWorkStatus() {
 		return workStatus;
 	}
 
-	public void setWorkStatus(String workStatus) {
+	public void setWorkStatus(ApprovalStatus workStatus) {
 		this.workStatus = workStatus;
 	}
 

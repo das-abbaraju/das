@@ -20,15 +20,13 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.strutsutil.AjaxUtils;
 
 /**
- * This is the main class that is stored for each user containing information if
- * they are logged in, which groups they're in, and what permission(s) they have
+ * This is the main class that is stored for each user containing information if they are logged in, which groups
+ * they're in, and what permission(s) they have
  * 
- * Warning: this class is stored in the session Make sure you keep the footprint
- * very small
+ * Warning: this class is stored in the session Make sure you keep the footprint very small
  */
 public class Permissions implements Serializable {
 
@@ -160,7 +158,7 @@ public class Permissions implements Serializable {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
 				visibleAuditTypes = operator.getVisibleAuditTypes();
 
-				approvesRelationships = YesNo.Yes.equals(operator.getApprovesRelationships());
+				approvesRelationships = !operator.isAutoApproveRelationships();
 
 				if (isOperator()) {
 					if (operator.getParent() != null)
@@ -302,8 +300,7 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * This gets the shadowed user from the User object, if it's set. Otherwise
-	 * this returns the user's own id
+	 * This gets the shadowed user from the User object, if it's set. Otherwise this returns the user's own id
 	 * 
 	 * @return user ID or shadowed user ID
 	 */
@@ -540,7 +537,7 @@ public class Permissions implements Serializable {
 	public boolean isGcContractor() {
 		return gcContractor;
 	}
-	
+
 	public boolean isGcOperator() {
 		return gcOperator;
 	}
@@ -595,8 +592,7 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * Translators need the ability to switch accounts and retain the ability to
-	 * do translations
+	 * Translators need the ability to switch accounts and retain the ability to do translations
 	 */
 	public void setTranslatorOn() {
 		UserAccess ua = new UserAccess();

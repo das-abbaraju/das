@@ -1,54 +1,25 @@
 package com.picsauditing.flags;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.AmBestDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.FlagCriteriaContractorDAO;
-import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaRateType;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.jpa.entities.YesNo;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.log.PicsLogger;
 
 /**
- * This class is not being called from anywhere within the code base,
- * so it is being deprecated. 
+ * This class is not being called from anywhere within the code base, so it is being deprecated.
  */
 @Deprecated
 public class WaitingOnCalculator {
@@ -73,7 +44,7 @@ public class WaitingOnCalculator {
 		}
 
 		// Operator Relationship Approval
-		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
+		if (!operator.isAutoApproveRelationships()) {
 			if (co.isWorkStatusPending())
 				// Operator needs to approve/reject this contractor
 				return WaitingOn.Operator;

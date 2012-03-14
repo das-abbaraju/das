@@ -379,7 +379,7 @@ public class FlagDataCalculator {
 		}
 
 		// Operator Relationship Approval
-		if (YesNo.Yes.equals(operator.getApprovesRelationships())) {
+		if (!operator.isAutoApproveRelationships()) {
 			if (co.isWorkStatusPending())
 				// Operator needs to approve/reject this contractor
 				return WaitingOn.Operator;
@@ -572,7 +572,8 @@ public class FlagDataCalculator {
 				continue;
 			if (flList.size() > 0) {
 				for (FlagDataOverride flagDataOverride : flList) {
-					if (operator.isOrIsDescendantOf(flagDataOverride.getOperator().getId()) && flagDataOverride.isInForce())
+					if (operator.isOrIsDescendantOf(flagDataOverride.getOperator().getId())
+							&& flagDataOverride.isInForce())
 						if (auditYear == null || Strings.isEqualNullSafe(auditYear, flagDataOverride.getYear())) {
 							if (flagDataOverride.getCriteria().getId() != key.getId())
 								flagDataOverride.setCriteria(key);
@@ -584,7 +585,7 @@ public class FlagDataCalculator {
 
 		return null;
 	}
-	
+
 	private String extractYear(String year) {
 		if (Strings.isEmpty(year))
 			return null;
