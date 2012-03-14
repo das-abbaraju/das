@@ -35,6 +35,7 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 <script type="text/javascript" src="js/audit_category_matrix.js"></script>
 <script type="text/javascript" src="js/registration_request_report.js"></script>
 <script type="text/javascript" src="js/subcontractors_report.js"></script>
+<script type="text/javascript" src="js/operator_edit.js"></script>
 
 <%-- struts utils --%>
 <script type="text/javascript" src="js/utils.js"></script>

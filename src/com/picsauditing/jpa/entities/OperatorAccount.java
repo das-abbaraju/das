@@ -301,7 +301,7 @@ public class OperatorAccount extends Account {
 
 	@Transient
 	public ContractorOperator getGcContractor() {
-		if (getGcContractors() != null)
+		if (!getGcContractors().isEmpty())
 			return getGcContractors().get(0);
 
 		return null;
