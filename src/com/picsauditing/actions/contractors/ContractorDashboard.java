@@ -35,6 +35,7 @@ import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
+import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
@@ -47,6 +48,7 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
@@ -385,6 +387,21 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
 
+	public List<ContractorOperator> getGCOperators() {
+		if (permissions.isGeneralContractor()) {
+			List<OperatorAccount> gcOps = dao.find(OperatorAccount.class, permissions.getAccountId()).getGcContractorOperators();
+			List<ContractorOperator> ccOps = contractor.getOperators();
+			
+			Iterator<ContractorOperator> coItr = ccOps.iterator();
+			while (coItr.hasNext()) {
+				if (!gcOps.contains(coItr.next().getOperatorAccount()))
+					coItr.remove();
+			}
+			
+			return ccOps;
+		} else
+			return Collections.EMPTY_LIST;
+	}
 	public int getTagId() {
 		return tagId;
 	}

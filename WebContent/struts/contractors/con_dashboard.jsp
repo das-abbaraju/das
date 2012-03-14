@@ -302,7 +302,21 @@
 									</pics:permission>
 								</div>
 								
-								<s:if test="activeOperators.size() > 1">
+								<s:if test="permissions.generalContractor && getGCOperators().size > 0">
+									<div class="co_select nobr">
+										<s:text name="global.SelectOperator" />:
+										<s:select 
+											list="getGCOperators()" 
+											listKey="operatorAccount.id" 
+											listValue="operatorAccount.name" 
+											name="opID"
+											headerKey="0" 
+											headerValue="- %{getText('global.Operator')} -"
+											onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"
+										/>
+									</div>
+								</s:if>
+								<s:elseif test="activeOperators.size() > 1">
 									<div class="co_select nobr">
 										<s:text name="global.SelectOperator" />:
 										<s:select 
@@ -315,7 +329,7 @@
 											onchange="location.href='ContractorView.action?id=%{id}&opID='+this.value"
 										/>
 									</div>
-								</s:if>
+								</s:elseif>
 								
 								<div class="clear"></div>
 							</div>
