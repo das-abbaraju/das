@@ -1591,7 +1591,7 @@ public class ContractorAccount extends Account implements JSONable {
 			if (op.getOperatorAccount().getId() == operator.getId())
 				return op;
 		}
-		
+
 		return null;
 	}
 
@@ -1610,10 +1610,12 @@ public class ContractorAccount extends Account implements JSONable {
 		if (generalContractorOperatorAccounts == null) {
 			generalContractorOperatorAccounts = new ArrayList<OperatorAccount>();
 
-			for (ContractorOperator gcContractorOperator : getGeneralContractorOperators()) {
-				generalContractorOperatorAccounts.add(gcContractorOperator.getOperatorAccount());
+			for (OperatorAccount gcOperator : getOperatorAccounts()) {
+				if (gcOperator.isGeneralContractor()) {
+					generalContractorOperatorAccounts.add(gcOperator);
+				}
 			}
-			
+
 			Collections.sort(generalContractorOperatorAccounts);
 		}
 
@@ -1625,7 +1627,7 @@ public class ContractorAccount extends Account implements JSONable {
 		if (nonGeneralContractorOperators == null) {
 			nonGeneralContractorOperators = new ArrayList<OperatorAccount>(getOperatorAccounts());
 			nonGeneralContractorOperators.removeAll(getGeneralContractorOperatorAccounts());
-			
+
 			Collections.sort(nonGeneralContractorOperators);
 		}
 

@@ -275,13 +275,6 @@
 											<s:if test="flagCounts.size() > 0">
 												(<s:iterator value="flagCounts" status="stat"><s:property value="value"/> <s:property value="key.smallIcon" escape="false"/><s:if test="!#stat.last">, </s:if></s:iterator>)
 											</s:if>
-											
-											<s:if test="contractor.generalContractors.size > 0">
-												<s:text name="ContractorView.SubcontractingUnder" />:
-												<s:iterator value="contractor.generalContractors" status="gc_stat">
-													<s:property value="name" /><s:if test="!#gc_stat.last">,</s:if>
-												</s:iterator>
-											</s:if>
 										</p>
 									</s:if>
 									
@@ -545,6 +538,17 @@
 									<s:text name="ContractorAccount.type" />:
 									<s:property value="commaSeparatedContractorTypes" /> 
 								</p>
+								
+								<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
+									<p>
+										<s:text name="ContractorView.SubcontractingUnder" />:
+										<s:iterator value="contractor.generalContractorOperatorAccounts" status="gc_index">
+											<strong>
+												<s:property value="name" /><s:if test="!#gc_index.last">, </s:if>
+											</strong>
+										</s:iterator>
+									</p>
+								</s:if>
 								
 								<s:if test="hasOperatorTags">
 									<s:if test= "contractor.operatorTags.size() > 0 || operatorTags.size() > 0">
