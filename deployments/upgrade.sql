@@ -6,6 +6,21 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-4542
+update accounts a 
+join operators o on a.id = o.id
+set a.autoApproveRelationships = true where o.approvesRelationships = 'No';
+
+update accounts a 
+join operators o on a.id = o.id
+set a.autoApproveRelationships = false where o.approvesRelationships = 'Yes';
+
+update operators o
+join generalcontractors gc on gc.genID = o.id
+set gc.workStatus = 'Y'
+where o.approvesRelationships = 'No' and gc.workStatus in ('P','N') and o.id >= 16;
+--
+
 -- PICS-2219
 update generalcontractors gc
 set gc.type = 'ContractorOperator'
