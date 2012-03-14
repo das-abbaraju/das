@@ -598,7 +598,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
-		AuditCatData as = categories.get(auditCategory);
 		if (categories.get(auditCategory).isApplies())
 			return true;
 		if (!categories.get(auditCategory.getParent()).isApplies())
