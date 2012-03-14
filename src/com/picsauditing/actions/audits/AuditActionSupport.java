@@ -533,7 +533,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					for (ContractorAudit conAudit:cao.getAudit().getContractorAccount().getAudits()) {
 						if (conAudit.getAuditType().getId() == auditType.getId() && conAudit.getExpiresDate() != null) {
 							if (conAudit.getExpiresDate().compareTo(expirationDate) <= 0) {
-								expirationDate = DateBean.getMarchOfNextYear(conAudit.getExpiresDate());
+								expirationDate = DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(conAudit.getExpiresDate()));
 							}
 						}
 					}
@@ -548,12 +548,12 @@ public class AuditActionSupport extends ContractorActionSupport {
 		Integer months = conAudit.getAuditType().getMonthsToExpire();
 		if (months == null) {
 			// check months first, then do date if empty
-			return DateBean.getMarchOfNextYear(new Date());
+			return DateBean.setToEndOfDay(DateBean.getMarchOfNextYear(new Date()));
 		} else if (months > 0) {
 			if (conAudit.getAuditType().getClassType().isPqf())
-				return DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months));
+				return DateBean.setToEndOfDay(DateBean.getMarchOfThatYear(DateBean.addMonths(new Date(), months)));
 			else
-				return DateBean.addMonths(new Date(), months);
+				return DateBean.setToEndOfDay(DateBean.addMonths(new Date(), months));
 		} else {
 			return null;
 		}
@@ -598,6 +598,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isAppliesSubCategory(AuditCategory auditCategory) {
+		AuditCatData as = categories.get(auditCategory);
 		if (categories.get(auditCategory).isApplies())
 			return true;
 		if (!categories.get(auditCategory.getParent()).isApplies())

@@ -513,7 +513,7 @@ public class AuditBuilder {
 		effDate.set(year, Calendar.JANUARY, 1);
 		audit.setEffectiveDate(effDate.getTime());
 		audit.setCreationDate(startDate.getTime());
-		Date dateToExpire = DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire());
+		Date dateToExpire = DateBean.setToEndOfDay(DateBean.addMonths(startDate.getTime(), auditType.getMonthsToExpire()));
 		audit.setExpiresDate(dateToExpire);
 		conAuditDao.save(audit);
 		contractor.getAudits().add(audit);

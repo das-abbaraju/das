@@ -479,17 +479,6 @@ public class DateBean {
 		return calendar.getTime();
 	}
 	
-	public static Date setToEndOfDay(Date date) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(date);
-		calendar.set(Calendar.HOUR_OF_DAY, 23);
-		calendar.set(Calendar.MINUTE, 59);
-		calendar.set(Calendar.SECOND, 59);
-		calendar.set(Calendar.MILLISECOND, 0);	
-		
-		return calendar.getTime();
-	}
-	
 	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
@@ -507,6 +496,17 @@ public class DateBean {
 		calendar.set(Calendar.MILLISECOND, 0);		
 		
 		return calendar;
+	}
+	
+	public static Date setToEndOfDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 0);	
+		
+		return calendar.getTime();
 	}
 	
 	/**

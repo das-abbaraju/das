@@ -334,7 +334,7 @@ public class AuditDataSave extends AuditActionSupport {
 			// In case the answer is not a valid date we add 1 year
 			// to the policy's creation date.
 			if (tempAudit.getExpiresDate() == null) {
-				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+				tempAudit.setExpiresDate(DateBean.setToEndOfDay(DateBean.addMonths(tempAudit.getCreationDate(), 12)));
 			}
 			auditDao.save(tempAudit);
 		}
@@ -350,7 +350,7 @@ public class AuditDataSave extends AuditActionSupport {
 			// In case the answer is not a valid date we add 1 year
 			// to the policy's creation date.
 			if (tempAudit.getExpiresDate() == null) {
-				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), 12));
+				tempAudit.setExpiresDate(DateBean.setToEndOfDay(DateBean.addMonths(tempAudit.getCreationDate(), 12)));
 			}
 			auditDao.save(tempAudit);
 		}
@@ -367,7 +367,7 @@ public class AuditDataSave extends AuditActionSupport {
 			// In case the answer is not a valid date we add months to expire 
 			// to the policy's creation date.
 			if (tempAudit.getExpiresDate() == null) {
-				tempAudit.setExpiresDate(DateBean.addMonths(tempAudit.getCreationDate(), monthsToExpire));
+				tempAudit.setExpiresDate(DateBean.setToEndOfDay(DateBean.addMonths(tempAudit.getCreationDate(), monthsToExpire)));
 			}
 			auditDao.save(tempAudit);
 		}
