@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -14,6 +15,7 @@ import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.strutsutil.AjaxUtils;
 
 @SuppressWarnings("serial")
 public class ReportInsuranceApproval extends ReportContractorAuditOperator {
@@ -73,6 +75,17 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		}
 
 		sql.addGroupBy("cao.id");
+	}
+	
+	public String ajaxFormInsuranceRejectionStatus() {
+	    // TODO @alex #alex $do_it
+	    if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+	        throw new RuntimeException("forward 404");
+	    }
+	    
+	    String id = ServletActionContext.getRequest().getParameter("id");
+	    
+	    return "form";
 	}
 
 	public Map<Integer, ContractorAuditOperator> getCaos() {

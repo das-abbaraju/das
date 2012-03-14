@@ -1,0 +1,56 @@
+/* ReportInsuranceApproval-page */
+
+#ReportInsuranceApproval-page .insurance-approval-report tr.disable td
+{
+	background: #888;
+}
+
+#ReportInsuranceApproval-page .insurance-approval-report .actions ul
+{
+	list-style-type: none;
+	margin: 0px;
+}
+
+#ReportInsuranceApproval-page .insurance-approval-report .actions li
+{
+	margin-bottom: 5px;
+}
+
+#ReportInsuranceApproval-page .insurance-approval-report .actions a
+{
+	text-decoration: none;
+}
+
+
+#ReportInsuranceApproval-page .insurance-approval-report .revert-policy
+{
+	display: none;
+}
+
+/* insurance rejection popup */
+
+.insurance-rejection-modal .alert-message
+{
+	font-size: 13px;
+	line-height: 18px;
+}
+
+.insurance-rejection-status-form textarea
+{
+	height: 100px;
+	width: 520px;
+}
+
+.insurance-rejection-status-form .alert-message .icon
+{
+	display: block;
+	float: left;
+	height: 16px;
+	margin: 1px 5px 0px 0px;
+	width: 16px;
+}
+
+.insurance-rejection-status-form .alert-message .icon.warn
+{
+	background: url(../../js/jquery/jquery-ui/images/ui-icons_666666_256x240.png) 0px -144px no-repeat;
+}

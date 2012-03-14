@@ -2050,6 +2050,7 @@
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportInsuranceApproval</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
+			<result name="form">struts/insureguard/_formInsuranceRejectionStatus.jsp</result>
 		</action>
 
 		<action name="ReportInsuranceApprovalAjax"

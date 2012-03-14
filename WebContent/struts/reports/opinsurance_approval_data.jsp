@@ -6,53 +6,50 @@
 		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 	</div>
 	
-	<table class="report">
+	<table class="table insurance-approval-report">
 		<thead>
 			<tr>
-				<td>
-					<input title="<s:text name="ReportInsuranceApproval.CheckAll" />" type="checkbox" id="setAllCheckboxes" />
-				</td>
-				<td title="<s:text name="ReportInsuranceApproval.PICSRecommendation" />" style="cursor: help;"></td>
-				<td>
+				<th title="<s:text name="ReportInsuranceApproval.PICSRecommendation" />" style="cursor: help;"></th>
+				<th>
 					<a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a>
-				</td>
-				<td>
+				</th>
+				<th>
 					<a><s:text name="ReportInsuranceApproval.Policy" /></a>
-				</td>
-				<td align="center">
+				</th>
+				<th align="center">
 					<a href="javascript: changeOrderBy('form1','expiresDate ASC');"><s:text name="ReportInsuranceApproval.Expires" /></a>
-				</td>
+				</th>
 				
 				<s:if test="filter.primaryInformation">
-					<td>
+					<th>
 						<s:text name="global.Contact" />
-					</td>
+					</th>
 				</s:if>
 				
-				<td>
+				<th>
 					<s:text name="ReportInsuranceApproval.Limits" />
-				</td>
-				<td>
+				</th>
+				<th>
 					<s:text name="AmBest" />
-				</td>
-				<td title="<s:text name="ReportInsuranceApproval.AdditionalRequirements" />">
+				</th>
+				<th title="<s:text name="ReportInsuranceApproval.AdditionalRequirements" />">
 					<s:text name="ReportInsuranceApproval.AdditionalShort" />
-				</td>
-				<td>
+				</th>
+				<th>
 					<s:text name="ReportInsuranceApproval.Cert" />
-				</td>
-				<td>
+				</th>
+				<th>
 					<s:text name="global.Notes" />
-				</td>
+				</th>
+                <th>
+                    Actions
+                </th>
 			</tr>
 		</thead>
 		
-		<s:iterator value="data" status="stat">
-			<tr>
-				<td style="text-align: center;">
-					<input id="cao_cb<s:property value="get('caoId')"/>" type="checkbox" class="massCheckable" name="caoIDs" value="<s:property value="get('caoId')"/>"/>
-				</td>
-				<td style="text-align: center;" >
+		<s:iterator value="data" status="rowstatus">
+			<tr class="<s:if test="#rowstatus.odd == true">odd</s:if><s:else>even</s:else>" data-cao-id="<s:property value="get('caoId')" />">
+				<td>
 					<s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('caoRecommendedFlag').toString())" escape="false"/>
 				</td>
 				<td>
@@ -91,10 +88,8 @@
 				
 				<td>
 					<s:iterator value="getDataForAudit(get('auditID'),'Limits')">
-						<nobr>
-							<s:property value="getFormattedDollarAmount(answer)"/> =
-							<span style="font-size: 9px;"><s:property value="question.columnHeader"/></span>
-						</nobr>
+						<s:property value="getFormattedDollarAmount(answer)"/> =
+						<span><s:property value="question.columnHeader"/></span>
 						<br/>
 					</s:iterator>
 				</td>
@@ -103,7 +98,7 @@
 						<s:property value="getAMBestRatings(comment)" escape="false"/>
 					</s:iterator>
 				</td>
-				<td class="center">
+				<td>
 					<s:if test="get('valid').toString() == 'Yes'">
 						<s:text name="YesNo.Yes" />
 					</s:if>
@@ -111,16 +106,33 @@
 						<s:text name="YesNo.No" />
 					</s:else>
 				</td>
-				<td class="center">
+				<td>
 					<s:if test="get('certID') != null">
-						<a href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certID')"/>&button=download"
-						target="_BLANK"><img src="images/icon_insurance.gif" /></a>	
+						<a 
+                            href="CertificateUpload.action?id=<s:property value="get('id')"/>&certID=<s:property value="get('certID')"/>&button=download"
+                            target="_BLANK"
+                        ><img src="images/icon_insurance.gif" /></a>	
 					</s:if>
 				</td>
 				<td>
 					<s:property value="get('caoNotes')"/>
-					<br />
 				</td>
+                <td class="actions">
+                    <ul>
+                        <li class="change-policy policy-approve">
+                            <a href="javascript:;" class="btn small success">Approve</a>
+                        </li>
+                        <li class="change-policy policy-reject">
+                            <a href="javascript:;" class="btn small danger">Reject</a>
+                        </li>
+                        <li class="change-policy policy-na">
+                            <a href="javascript:;" class="btn small">N/A</a>
+                        </li>
+                        <li class="revert-policy">
+                            <a href="javascript:;" class="btn small">Undo</a>
+                        </li>
+                    </ul>
+                </td>
 			</tr>
 		</s:iterator>
 		
