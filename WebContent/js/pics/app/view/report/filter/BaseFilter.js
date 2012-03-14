@@ -1,5 +1,6 @@
-Ext.define('PICS.view.filter.BaseFilter', {
+Ext.define('PICS.view.report.filter.BaseFilter', {
     extend: 'Ext.form.Panel',
+    alias: ['widget.basefilter'],
 
     constructor:function(config){
         this.callParent(arguments);
@@ -17,11 +18,12 @@ Ext.define('PICS.view.filter.BaseFilter', {
     tbar: [{
 		xtype: 'button',
 		itemId: 'apply',
+		action: 'apply',
 		// disabled: true,
 	    text: 'Apply'
     }],
     applyFilter: function() {
-        console.log("base applyFilter");
+        //console.log("base applyFilter");
     },
     buttonSetup: function () {
         var tbar = this.getDockedComponent(0),

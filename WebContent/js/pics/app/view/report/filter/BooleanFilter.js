@@ -1,5 +1,5 @@
-Ext.define('PICS.view.filter.BooleanFilter', {
-    extend: 'PICS.view.filter.BaseFilter',
+Ext.define('PICS.view.report.filter.BooleanFilter', {
+    extend: 'PICS.view.report.filter.BaseFilter',
     alias: ['widget.booleanfilter'],    
 
     items: [{
@@ -20,7 +20,7 @@ Ext.define('PICS.view.filter.BooleanFilter', {
         }
     },
     constructor: function () {
-        Ext.override(PICS.view.filter.BaseFilter, {
+        Ext.override(PICS.view.report.filter.BaseFilter, {
             applyFilter: function() {
                 var values = this.getValues();
                
@@ -29,7 +29,8 @@ Ext.define('PICS.view.filter.BooleanFilter', {
                 } else {
                     this.record.set('value', 0);
                 }
-                //this.callOverridden();  //call base function
+                this.record.set('operator', 'Equals'); //TODO remove hack to get boolean working
+                this.callOverridden();  //call base function
             }
         });
        this.callParent(arguments);        
