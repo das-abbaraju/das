@@ -91,7 +91,7 @@ public class ReportContractorAudits extends ReportAccount {
 		
 		if (auditTypeClass != null) {
 			if (auditTypeClass == AuditTypeClass.Audit) {
-				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF' ) ");
+				sql.addWhere("atype.classType in ( 'Audit', 'IM', 'PQF', 'Employee' ) ");
 			} else {
 				sql.addWhere("atype.classType = '" + auditTypeClass.toString() + "'");
 			}
