@@ -10,7 +10,7 @@ public enum MultiYearScope {
 	TwoYearsAgo("Two Years Ago"),
 	ThreeYearsAgo("Three Years Ago"),
 	ThreeYearAverage("Three Year Average"),
-	ThreeYearAggregate("Three Year Sum"); // change ThreeYearAggregate to ThreeYearSum
+	ThreeYearSum("Three Year Sum");
 
 	@Deprecated
 	private String description;
@@ -43,8 +43,10 @@ public enum MultiYearScope {
 
 		if ((cal.get(Calendar.YEAR) - 3) == year)
 			return ThreeYearsAgo;
+		
 		if ((cal.get(Calendar.YEAR) - 2) == year)
 			return TwoYearsAgo;
+		
 		if ((cal.get(Calendar.YEAR) - 1) == year)
 			return LastYearOnly;
 
