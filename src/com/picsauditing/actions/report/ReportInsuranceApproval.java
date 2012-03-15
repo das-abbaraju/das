@@ -84,6 +84,7 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	    }
 	    
 	    String id = ServletActionContext.getRequest().getParameter("id");
+	    ServletActionContext.getRequest().setAttribute("id", id);
 	    
 	    return "form";
 	}
