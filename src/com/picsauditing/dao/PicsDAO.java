@@ -90,23 +90,23 @@ abstract public class PicsDAO {
 		return em.find(clazz, id);
 	}
 
-	protected List<? extends BaseTable> findAll(Class<? extends BaseTable> clazz) {
+	protected <T extends BaseTable> List<T> findAll(Class<T> clazz) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 		return q.getResultList();
 	}
 
-	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where) {
+	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where) {
 		return findWhere(clazz, where, 0);
 	}
 
-	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit) {
+	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
 			q.setMaxResults(limit);
 		return q.getResultList();
 	}
 
-	public List<? extends BaseTable> findWhere(Class<? extends BaseTable> clazz, String where, int limit, String orderBy) {
+	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit, String orderBy) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY " + orderBy);
 		if (limit > 0)
 			q.setMaxResults(limit);
@@ -118,6 +118,11 @@ abstract public class PicsDAO {
 		if (limit > 0)
 			q.setMaxResults(limit);
 		return q.getResultList();
+	}
+
+	public <T extends BaseTable> int getCount(Class<T> clazz, String where) {
+		List<T> results = findWhere(clazz, where);
+		return results.size();
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value) {
@@ -162,7 +167,8 @@ abstract public class PicsDAO {
 		sql.addField("t.*");
 
 		if (locale != null)
-			sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+			sql
+					.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
 
 		Query query = em.createNativeQuery(sql.toString(), cls);
 		query.setParameter("value", value);

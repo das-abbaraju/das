@@ -14,7 +14,6 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.naming.NoPermissionException;
-import javax.servlet.ServletContext;
 
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
-import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.FlagColor;
@@ -248,7 +246,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
 					approveAllRelationships();
 				}
-				
+
 				operator.setAutoApproveRelationships(autoApproveRelationships);
 			}
 
@@ -352,16 +350,17 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		return "redirect";
 	}
-	
+
 	public String ajaxAutoApproveRelationshipModal() throws Exception {
-        if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
-            throw new RuntimeException("forward 404");
-        }
-        
-        ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount", pendingAndNotApprovedRelationshipCount());
-        
-        return "AutoApproveRelationshipModal";
-    }
+		if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+			throw new RuntimeException("forward 404");
+		}
+
+		ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount",
+				pendingAndNotApprovedRelationshipCount());
+
+		return "AutoApproveRelationshipModal";
+	}
 
 	private void approveAllRelationships() {
 		for (ContractorOperator co : operator.getContractorOperators()) {
@@ -802,16 +801,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public int pendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
-		if (operator == null) {
-		    findOperator();
-		}
+		if (operator == null)
+			findOperator();
 
-		int pendingAndNotApprovedCount = 0;
-
-		for (ContractorOperator co : operator.getContractorOperators()) {
-			if (co.getWorkStatus().isPending() || co.getWorkStatus().isNo())
-				pendingAndNotApprovedCount++;
-		}
+		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class, "operatorAccount.id = "
+				+ operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
 
 		return pendingAndNotApprovedCount;
 	}
