@@ -78,7 +78,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
-	private List<ContractorType> operatorServiceTypes = new ArrayList<ContractorType>();
 
 	public String execute() throws Exception {
 		findOperator();
@@ -317,7 +316,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 			operator.setAuditColumns(permissions);
 			operator.setNameIndex();
-			operator.setAccountTypes(operatorServiceTypes);
 
 			if (operator.getId() == 0) {
 				operator.setNaics(new Naics());
@@ -453,14 +451,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public List<OperatorForm> getOperatorForms() {
 		return formDAO.findByopID(this.id);
-	}
-
-	public List<ContractorType> getOperatorServiceTypes() {
-		return operatorServiceTypes;
-	}
-
-	public void setOperatorServiceTypes(List<ContractorType> operatorServiceTypes) {
-		this.operatorServiceTypes = operatorServiceTypes;
 	}
 
 	public void setOperator(OperatorAccount operator) {

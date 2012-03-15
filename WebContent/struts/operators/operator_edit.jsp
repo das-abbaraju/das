@@ -468,36 +468,20 @@
 							<s:if test="operator.operator">
 						    	<li>
 						    		<label>Operator Service Types:</label>
-						    		<s:checkbox
-										name="operatorServiceTypes"
-										id="onSite"
-										fieldValue="Onsite"
-										value="operator.onsiteServices"
-										cssClass="checkbox"
+					    			<s:checkbox
+										name="operator.onsiteServices"
 										disabled="!permissions.marketing" />
 									<s:text name="ContractorAccount.onsiteServices" />
-						    		<s:checkbox
-										name="operatorServiceTypes"
-										id="offSite"
-										fieldValue="Offsite"
-										value="operator.offsiteServices"
-										cssClass="checkbox"
+					    			<s:checkbox
+										name="operator.offsiteServices"
 										disabled="!permissions.marketing" />
 									<s:text name="ContractorAccount.offsiteServices" />
-						    		<s:checkbox
-										name="operatorServiceTypes"
-										id="materialSupplier"
-										fieldValue="Supplier" 
-										value="operator.materialSupplier"
-										cssClass="checkbox"
+					    			<s:checkbox
+										name="operator.materialSupplier"
 										disabled="!permissions.marketing" />
 									<s:text name="ContractorAccount.materialSupplier" />
-						    		<s:checkbox
-										name="operatorServiceTypes"
-										id="transportation"
-										fieldValue="Transportation"
-										value="operator.transportationServices"
-										cssClass="checkbox"
+					    			<s:checkbox
+										name="operator.transportationServices"
 										disabled="!permissions.marketing" />
 									<s:text name="ContractorAccount.transportationServices" />
 								</li>
