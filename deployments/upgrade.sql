@@ -26,6 +26,33 @@ update generalcontractors gc
 set gc.type = 'ContractorOperator'
 where gc.type is null;
 
+-- PICS-4209
+-- GC Free
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
+select wu.widgetID, 61460, wu.expanded, wu.column, wu.sortOrder
+from widget_user wu
+join widget w on w.widgetID = wu.widgetID
+join users u on u.id = wu.userID
+where u.id = 616 -- regular operator
+and w.caption not like '%flag%'
+;
+
+-- GC Full
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
+select wu.widgetID, 61461, wu.expanded, wu.column, wu.sortOrder
+from widget_user wu
+join widget w on w.widgetID = wu.widgetID
+join users u on u.id = wu.userID
+where u.id = 616 -- regular operator
+and w.caption not like '%flag%'
+;
+
+-- GC Full Subcontractors Flag Matrix
+insert into widget(caption, widgetType, url)
+values ("Subcontractor Flag Matrix", "Html", "SubcontractorsFlagMatrix.action");
+
+insert into widget_user (widgetID, userID, `column`, sortOrder)
+values (36, 61461, 2, 30);
 
 -- PICS-4791
 update operators o set o.discountPercent = .5, o.discountExpiration = '2012-03-15' where o.id = 19344;
