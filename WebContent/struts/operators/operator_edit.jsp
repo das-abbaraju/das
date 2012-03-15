@@ -391,6 +391,7 @@
 	                                cssClass="checkbox"
 	                                disabled="!permissions.marketing" 
 	                            />
+                                
 								<pics:fieldhelp title="Approves Contractors">
 									If Unchecked, contractors must be approved before operator users will see them. 
 									Default and recommended setting is Checked. 

@@ -14,7 +14,9 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 import javax.naming.NoPermissionException;
+import javax.servlet.ServletContext;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -42,6 +44,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -349,6 +352,17 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		return "redirect";
 	}
+	
+	public String ajaxAutoApproveRelationshipModal() throws Exception {
+        if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+            throw new RuntimeException("forward 404");
+        }
+        
+        String pendingAndNotApprovedRelationshipCount = Integer.toString(pendingAndNotApprovedRelationshipCount());
+        ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount", pendingAndNotApprovedRelationshipCount);
+        
+        return "AutoApproveRelationshipModal";
+    }
 
 	private void approveAllRelationships() {
 		for (ContractorOperator co : operator.getContractorOperators()) {
@@ -788,9 +802,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 	}
 
-	public int pendingAndNotApprovedRelationshipCount() {
-		if (operator == null)
-			getOperator();
+	public int pendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
+		if (operator == null) {
+		    findOperator();
+		}
 
 		int pendingAndNotApprovedCount = 0;
 

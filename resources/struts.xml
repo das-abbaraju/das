@@ -841,6 +841,7 @@
 				<param name="actionName">FacilitiesEdit</param>
 				<param name="operator">${operator.id}</param>
 			</result>
+			<result name="AutoApproveRelationshipModal">/struts/operators/_autoApproveRelationshipModal.jsp</result>
 		</action>
 		<action name="OperatorConfiguration" class="com.picsauditing.actions.operators.OperatorConfiguration">
 			<result>struts/operators/op_config.jsp</result>

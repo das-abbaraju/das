@@ -1531,3 +1531,11 @@ div.blockDialog {
 	line-height: normal;
 	padding: 5px !important;
 }
+
+/* facilities edit */
+
+.operator-approve-relationship-modal
+{
+	font-size: 13px;
+	line-height: 16px;
+}
