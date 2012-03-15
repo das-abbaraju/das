@@ -104,6 +104,12 @@ public class EntityFactory {
 		return conAudit;
 	}
 
+	static public OshaAudit makeOshaAudit(ContractorAccount contractor, String auditFor) {
+		ContractorAudit audit = makeAnnualUpdate(11, contractor, auditFor);
+		OshaAudit oshaAudit = new OshaAudit(audit);
+		return oshaAudit;
+	}
+	
 	static public AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
 		AuditCatData auditCatData = new AuditCatData();
 		auditCatData.setAudit(conAudit);
@@ -176,6 +182,12 @@ public class EntityFactory {
 		data.setAnswer(answer);
 		return data;
 	}
+	
+	static public AuditData makeAuditData(String answer, int id) {
+		AuditQuestion question = makeAuditQuestion();
+		question.setId(id);
+		return makeAuditData(answer, question);
+	}
 
 	static public Permissions makePermission() {
 		User user = makeUser();
@@ -214,5 +226,17 @@ public class EntityFactory {
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(category);
 		return catData;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit, AuditStatus status) {
+		ContractorAuditOperator cao = new ContractorAuditOperator();
+		cao.setAudit(audit);
+		cao.setStatus(status);
+		cao.setVisible(true);
+		return cao;
+	}
+	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit) {
+		return makeContractorAuditOperator(audit, AuditStatus.Complete );
 	}
 }

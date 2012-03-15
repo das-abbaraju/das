@@ -1,9 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 public enum OshaRateType implements Translatable {
-	LwcrAbsolute,
+	LwcrAbsolute(true),
 	LwcrNaics,
-	TrirAbsolute,
+	TrirAbsolute(true),
 	TrirNaics,
 	TrirWIA,
 	Fatalities,
@@ -22,6 +22,20 @@ public enum OshaRateType implements Translatable {
 	EMR,
 	AFR,
 	DOFR;
+
+	private boolean hasIndustryAverage;
+
+	private OshaRateType() {
+		this.hasIndustryAverage = false;
+	}
+	
+	private OshaRateType(boolean hasIndustryAverage) {
+		this.hasIndustryAverage = hasIndustryAverage;
+	}
+
+	public boolean isHasIndustryAverage() {
+		return hasIndustryAverage;
+	}
 
 	public String getDescriptionKey() {
 		return getI18nKey("description");

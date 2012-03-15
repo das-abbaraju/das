@@ -36,4 +36,5 @@ public class Naics implements java.io.Serializable {
 	public void setLwcr(float lwcr) {
 		this.lwcr = lwcr;
 	}
+
 }

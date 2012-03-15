@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
+import com.picsauditing.util.Testable;
 
 /**
  * Decorator for ContractorAudit, specifically for when ContractorAudit is an
@@ -40,19 +41,23 @@ public class OshaAudit implements OshaVisitable {
 		return contractorAudit.getAuditFor();
 	}
 
-	/* Testable */List<AuditCatData> getCategories() {
+	@Testable
+	List<AuditCatData> getCategories() {
 		return contractorAudit.getCategories();
 	}
 
-	/* Testable */ContractorAudit getContractorAudit() {
+	@Testable
+	ContractorAudit getContractorAudit() {
 		return contractorAudit;
 	}
 
-	/* Testable */List<AuditData> getData() {
+	@Testable
+	List<AuditData> getData() {
 		return contractorAudit.getData();
 	}
 
-	/* Testable */void setCategories(ArrayList<AuditCatData> categories) {
+	@Testable
+	void setCategories(ArrayList<AuditCatData> categories) {
 		contractorAudit.setCategories(categories);
 	}
 
@@ -61,7 +66,8 @@ public class OshaAudit implements OshaVisitable {
 		return safetyStatisticsMap.values();
 	}
 
-	private void initializeStatistics() {
+	@Testable
+	void initializeStatistics() {
 		SafetyStatistics safetyStatistics = null;
 		int year = new Integer(contractorAudit.getAuditFor());
 		for (AuditCatData category : this.getCategories()) {

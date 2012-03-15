@@ -46,6 +46,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.Testable;
 import com.picsauditing.util.comparators.ContractorAuditComparator;
 
 @SuppressWarnings("serial")
@@ -1621,7 +1622,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return generalContractorOperatorAccounts;
 	}
-
+	
 	@Transient
 	public List<OperatorAccount> getNonGeneralContractorOperators() {
 		if (nonGeneralContractorOperators == null) {
@@ -1633,4 +1634,10 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return nonGeneralContractorOperators;
 	}
+
+	@Testable
+	void setOshaAudits(List<OshaAudit> oshaAudits) {
+		this.oshaAudits = oshaAudits;
+	}
+
 }

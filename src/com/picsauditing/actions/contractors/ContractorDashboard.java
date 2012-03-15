@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.base.Objects;
 import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
+import com.picsauditing.PICS.OshaDisplay;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -27,6 +28,7 @@ import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.ContractorTagDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
 import com.picsauditing.dao.FlagDataDAO;
+import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.dao.OperatorTagDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -48,13 +50,10 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OshaRateType;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.YearList;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
@@ -71,12 +70,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 	@Autowired
 	private UserDAO userDAO;
 	@Autowired
+	private NaicsDAO naicsDao;
+	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDAO;
 	@Autowired
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
-
+	
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 	private boolean runTagConCronAjax = false;
@@ -100,11 +101,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private Map<FlagColor, Integer> flagCounts;
 	
 	private	OshaOrganizer oshaOrganizer;
-	
-	private static final MultiYearScope[] YEAR_SCOPES = {
-		MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
-		MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage,
-		MultiYearScope.ThreeYearAverage};
+	private OshaDisplay oshaDisplay;
 
 	@Override
 	public String execute() throws Exception {
@@ -224,6 +221,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		oshaOrganizer = contractor.getOshaOrganizer();
+		
+		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(),
+				getActiveOperators(), contractor, naicsDao);
 
 		return SUCCESS;
 	}
@@ -420,7 +420,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 			return ccOps;
 		} else
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 	}
 
 	public int getTagId() {
@@ -505,66 +505,6 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public OshaOrganizer getOshaOrganizer() {
 		return oshaOrganizer;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List getColumnNames(OshaType oshaType) {
-		List columnNames = new ArrayList();
-		YearList yearList = oshaOrganizer.mostRecentThreeYears(oshaType);
-		for (MultiYearScope yearScope : YEAR_SCOPES) {
-			if (yearScope != MultiYearScope.ThreeYearAverage)
-				columnNames.add(yearList.getYearForScope(yearScope));
-		}
-		columnNames.add("Avg");
-		return columnNames;
-	}
-
-	@SuppressWarnings("unchecked")
-	private Map getInfoForParticularOshaType(OshaType oshaType) {
-		Map info = new HashMap();
-		info.put("columnNames", getColumnNames(oshaType));
-		info.put("data", getData(oshaType));
-
-		return info;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List getData(OshaType oshaType) {
-		List rows = new ArrayList();
-		for (OshaRateType rateType : oshaType.rates) {
-			List cells = new ArrayList();
-			cells.add(rateType.getI18nKey());
-
-			for (MultiYearScope scope : YEAR_SCOPES) {
-				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
-				if (answer != null && answer >= 0) {
-					cells.add(answer);
-				} else {
-					cells.add("Not found");
-				}
-			}
-
-			rows.add(cells);
-
-		}
-
-		return rows;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map getStats() {
-		Map stats = new HashMap();
-		for (OshaType oshaType : OshaType.values()) {
-			try {
-				oshaOrganizer.hasOshaType(oshaType);
-				if (oshaOrganizer.hasOshaType(oshaType)) {
-					stats.put(oshaType, getInfoForParticularOshaType(oshaType));
-				}
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-		return stats;
 	}
 
 	public boolean isRunTagConCronAjax() {
@@ -684,5 +624,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (co == null || (co.getOperatorAccount() != null && !co.getOperatorAccount().isGeneralContractor())) {
 			addActionError(getText("ContractorView.SelectGeneralContractor"));
 		}
+	}
+
+	public OshaDisplay getOshaDisplay() {
+		return oshaDisplay;
 	}
 }

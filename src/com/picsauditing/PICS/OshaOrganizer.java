@@ -15,7 +15,6 @@ public class OshaOrganizer implements OshaVisitor {
 
 	// OSHA Audits will be sorted by their auditYears
 	Map<OshaType, Map<Integer, SafetyStatistics>> theData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
-	private Map<OshaType, YearList> dataYears = new HashMap<OshaType, YearList>();
 	private static final MultiYearScope[] YEARS_ONLY = {
 			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
 			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
@@ -89,7 +88,6 @@ public class OshaOrganizer implements OshaVisitor {
 			}
 			return -1;
 		}
-		
 	}
 
 	public BigDecimal getRateForSpecficYear(OshaType type, Integer year,
@@ -116,8 +114,7 @@ public class OshaOrganizer implements OshaVisitor {
 		/*String auditFor = getAuditFor(type, year);*/
 		return null;
 	}
-
-	//Map<OshaType, Map<Integer, SafetyStatistics>> theData
+	
 	@Override
 	public void gatherData(SafetyStatistics safetyStatistics) {
 		Map<Integer, SafetyStatistics> innerMap = theData.get(safetyStatistics.getOshaType());
@@ -132,7 +129,6 @@ public class OshaOrganizer implements OshaVisitor {
 		return theData.get(oshaType) != null && theData.get(oshaType).size() > 0;
 	}
 	public int size() {
-		return 4;
-		//return theData.size();
+		return theData.size();
 	}
 }

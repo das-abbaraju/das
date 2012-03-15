@@ -91,4 +91,8 @@ public class YearList {
 		return referenceYear;
 	}
 
+	public int size() {
+		return yearList.size();
+	}
+
 }
