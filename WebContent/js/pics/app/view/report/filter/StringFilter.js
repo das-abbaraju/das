@@ -36,7 +36,6 @@ Ext.define('PICS.view.report.filter.StringFilter', {
     applyFilter: function() {
         var values = this.getValues();
         
-        console.log("string apply");
         this.record.set('value', values.textfilter);
         this.record.set('operator', values.operator);
         this.superclass.applyFilter();

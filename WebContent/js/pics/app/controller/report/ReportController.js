@@ -18,9 +18,6 @@ Ext.define('PICS.controller.report.ReportController', {
             },
             'reportoptions button[action=save]': {
                 click: this.saveReport
-            },
-            'basefilter button[action=apply]': {
-                click: this.refreshReport
             }
         });
         

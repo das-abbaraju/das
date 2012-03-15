@@ -12,7 +12,12 @@ Ext.define('PICS.controller.report.FilterController', {
         this.control({
             "reportoptionsfilters gridpanel":  {
                 itemclick: this.showFilterOptions
-            }         
+            },
+            'basefilter button[action=apply]': {
+                click: function () {
+                    this.application.fireEvent('refreshreport');            
+                }                
+            }
         });
     },
     showFilterOptions: function (view, record, item, index, e, options) {
