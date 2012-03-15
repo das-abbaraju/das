@@ -4,29 +4,27 @@
             init: function () {
                 $('#FacilitiesEdit-page').bind('#opCountry', this.countryChanged);
                 $('#FacilitiesEdit-page').delegate('#general_contractor_checkbox', 'click', this.toggleLinkedAccountField);
-                $('#FacilitiesEdit-page').delegate('#opCountry', 'change', {operatorEdit: this}, this.countryChanged);
+                $('#FacilitiesEdit-page').delegate('#opCountry', 'change', this.updateCountry);
                 $('#FacilitiesEdit-page').delegate('#save_autoApproveRelationships', 'change', this.showAutoApproveRelationshipModal);
             },
             
-            changeState: function(event) {
-                var countryString = $('#FacilitiesEdit-page #opCountry').val();
-                var stateString = $('#FacilitiesEdit-page #operatorState').val();
-                
-                PICS.ajax({
-                    url: "StateListAjax.action",
-                    data: {
-                        countryString: countryString,
-                        stateString: stateString
-                    },
-                    success: function(data, textStatus, XMLHttpRequest) {
-                        $('#FacilitiesEdit-page #state_li').html(data);
-                    }
-                });
-            },
+            updateCountry: function (event) {
+                function updateState(country, state) {
+                    PICS.ajax({
+                        url: "StateListAjax.action",
+                        data: {
+                            countryString: country,
+                            stateString: state
+                        },
+                        success: function(data, textStatus, XMLHttpRequest) {
+                            $('#FacilitiesEdit-page #state_li').html(data);
+                        }
+                    });
+                }
             
-            countryChanged: function(event) {
-                var operatorEdit = event.data.operatorEdit;
-                var country = $(this).val();
+                var element = $(this);
+                var country = element.val();
+                var state = $('#FacilitiesEdit-page #operatorState').val();
                 
                 if (country == 'AE') {
                     $('#zip_li').hide();
@@ -34,7 +32,7 @@
                     $('#zip_li').show();
                 }
                 
-                operatorEdit.changeState();
+                updateState(country, state);
             },
             
             // show modal to confirm auto approve relationship on facility edit
