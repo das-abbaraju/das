@@ -33,7 +33,7 @@ public class PermissionQueryBuilder {
 		if (permissions.isContractor()) {
 			return "AND " + accountAlias + ".id = " + permissions.getAccountId();
 		}
-		
+
 		// Assessment Centers
 		if (permissions.isAssessment()) {
 			return "AND " + accountAlias + ".status IN ('Active', 'Pending', 'Deactivated')";
@@ -51,7 +51,8 @@ public class PermissionQueryBuilder {
 				subquery = "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + permissions.getAccountId();
 
 			if (workingFacilities) {
-				if (permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved)) {
+				if ((permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved))
+						|| permissions.isGcOperator()) {
 					subquery += " AND workStatus = 'Y'";
 				}
 			}
@@ -92,15 +93,15 @@ public class PermissionQueryBuilder {
 			return "AND 1=0";
 
 		String query = "AND " + accountAlias + ".status IN ('Active'";
-		
+
 		if (permissions.getAccountStatus().isDemo())
 			query += ",'Demo'";
-		
+
 		if (showPendingDeactivated)
 			query += ",'Pending','Deactivated'";
 
 		query += ") AND " + accountAlias;
-		
+
 		if (queryLanguage == HQL)
 			return query += " IN (" + subquery + ")";
 		else

@@ -29,26 +29,6 @@
 		</style>
 		
 		<script type="text/javascript">
-			function removeTag(tagId) {
-				var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
-				$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
-					.load('TagNameEditAjax.action', data, function(text, status) {
-							if (status=='success')
-								$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-						});
-				return false;
-			}
-		
-			function addTag() {
-				var data = {button: 'AddTag', tagId: $('#tagName').val(), id: <s:property value="id"/>};
-				$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
-					.load('TagNameEditAjax.action', data, function(text, status) {
-							if (status=='success')
-								$(this).effect('highlight', {color: '#FFFF11'}, 1000);
-						});
-				return false;
-			}
-		
 			function limit(id, pat) {
 				var data = $('#' + id).text();
 				var size = 500;
@@ -80,10 +60,6 @@
 		
 			$(function() {
 				limit('description', '\n');
-				
-				$('.reloadPage').live('click', function(){
-					location.reload();
-				});
 				
 				$('a.trade').each(function() {
 					$(this).attr('href', 'ContractorTrades.action?id=<s:property value="id"/>');
@@ -433,24 +409,7 @@
 									<s:text name="ContractorView.PendingGeneralContractors" />
 								</div>
 								<div class="panel_content" id="con_pending_gcs">
-									<table class="report">
-										<thead>
-											<tr>
-												<th>
-													<s:text name="global.Operator" />
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											<s:iterator value="generalContractorsWaitingContractorApproval">
-												<tr>
-													<td>
-														<s:property value="operatorAccount.name" />
-													</td>
-												</tr>
-											</s:iterator>
-										</tbody>
-									</table>
+									<s:include value="con_dashboard_pending_gc_operators.jsp" />
 								</div>
 							</div>
 						</div>

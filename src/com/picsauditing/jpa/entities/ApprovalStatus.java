@@ -9,6 +9,8 @@ public enum ApprovalStatus implements Translatable {
 	P,
 	/** Contractor - "Contractor in General Contractor Relationship" **/
 	C,
+	/** Contractor Denied - "Contractor denied General Contractor Relationship" **/
+	D,
 	/** Yes - "Approved" **/
 	Y;
 
@@ -26,6 +28,10 @@ public enum ApprovalStatus implements Translatable {
 
 	public boolean isContractor() {
 		return this.equals(C);
+	}
+
+	public boolean isDenied() {
+		return this.equals(D);
 	}
 
 	@Transient
