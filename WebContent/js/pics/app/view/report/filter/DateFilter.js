@@ -34,18 +34,13 @@ Ext.define('PICS.view.report.filter.DateFilter', {
             textfield.setValue(form.record.data.value);
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
- 
-                this.record.set('value', values.date);
-                this.record.set('operator', values.operator);
-                this.callOverridden();  //call base function
-            }
-        });
-        this.callParent(arguments);        
-    },
+    applyFilter: function() {
+        var values = this.getValues();
+     
+        this.record.set('value', values.date);
+        this.record.set('operator', values.operator);
+        this.superclass.applyFilter();
+    }
     dateConvert: function (year,month,day,hours,minutes,seconds,ms) {
         var d = Date.UTC(year,month,day,hours,minutes,seconds,ms);
         return d;

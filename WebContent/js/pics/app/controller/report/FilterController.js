@@ -22,14 +22,12 @@ Ext.define('PICS.controller.report.FilterController', {
             if (this.showOptionsPanel !== null) {
                 this.showOptionsPanel.destroy();
             }
-            return;            
+            return;
         }
-        if (this.showOptionsPanel !== null) {
+        if (this.showOptionsPanel !== null){
             this.showOptionsPanel.destroy();
         }
-        
         this.filterType = record.data.field.data.filterType;
-
         
         if (this.filterType === "String") {
             this.showOptionsPanel = Ext.create('PICS.view.report.filter.StringFilter');
@@ -46,7 +44,11 @@ Ext.define('PICS.controller.report.FilterController', {
         } else if (this.filterType === "AccountType") {
             this.showOptionsPanel = Ext.create('PICS.view.report.filter.AccountTypeFilter');
         } else if (this.filterType === "AccountStatus") {
-            this.showOptionsPanel = Ext.create('PICS.view.report.filter.AccountStatusFilter');            
+            this.showOptionsPanel = Ext.create('PICS.view.report.filter.AccountStatusFilter');
+        } else if (this.filterType === "StateProvince") {
+            this.showOptionsPanel = Ext.create('PICS.view.report.filter.StateFilter');            
+        } else if (this.filterType === "Country") {
+            this.showOptionsPanel = Ext.create('PICS.view.report.filter.CountryFilter');
         } else if (this.filterType === "Date") {
             this.showOptionsPanel = Ext.create('PICS.view.report.filter.DateFilter');
         } else {

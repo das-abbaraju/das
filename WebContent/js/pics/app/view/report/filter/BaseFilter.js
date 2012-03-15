@@ -15,12 +15,13 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
         id: "basePanel",
         html: "Field Name"
     }],
-    tbar: [{
+    bbar: [{
 		xtype: 'button',
 		itemId: 'apply',
 		action: 'apply',
 		// disabled: true,
-	    text: 'Apply'
+	    text: 'Apply',
+	    cls: 'x-btn-default-small'	    
     }],
     applyFilter: function() {
         //console.log("base applyFilter");

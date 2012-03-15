@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.filter.AccountTypeFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
-    alias: ['widget.accounttypefilter'],
+    alias: ['widget.accounttypefilter'],    
 
     items: [{
         xtype: 'panel',
@@ -20,21 +20,16 @@ Ext.define('PICS.view.report.filter.AccountTypeFilter', {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('accounttypefilter')[0],
                 combo = form.child("combo"),
-                value = form.record.data.accounttype;
+                value = form.record.data.value;
             
             (value) ? combo.setValue(value) : combo.setValue('Contractor'); 
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
-                
-                this.record.set('value', values.accounttype);
-                this.record.set('operator', 'Equals');
-                this.callOverridden();  //call base function
-            }
-        });
-        this.callParent(arguments);        
+    applyFilter: function() {
+        var values = this.getValues();
+        
+        this.record.set('value', values.accounttype);
+        this.record.set('operator', 'Equals');
+        this.superclass.applyFilter();
     }
 });

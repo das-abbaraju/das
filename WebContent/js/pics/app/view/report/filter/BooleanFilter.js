@@ -19,20 +19,15 @@ Ext.define('PICS.view.report.filter.BooleanFilter', {
             checkbox.setValue(form.record.data.value);
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
-               
-                if (values.boolean === '1') {
-                    this.record.set('value', values.boolean);
-                } else {
-                    this.record.set('value', 0);
-                }
-                this.record.set('operator', 'Equals'); //TODO remove hack to get boolean working
-                this.callOverridden();  //call base function
-            }
-        });
-       this.callParent(arguments);        
+    applyFilter: function() {
+        var values = this.getValues();
+       
+        if (values.boolean === '1') {
+            this.record.set('value', values.boolean);
+        } else {
+            this.record.set('value', 0);
+        }
+        this.record.set('operator', 'Equals'); //TODO remove hack to get boolean working
+        this.superclass.applyFilter();
     }
 });

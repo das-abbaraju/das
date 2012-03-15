@@ -51,6 +51,7 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
                 var selected = grid.getSelectionModel().getSelection(); 
                 
                 store.remove(selected);
+                this.application.fireEvent('refreshreport');                
             }
         }
     },

@@ -38,16 +38,11 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
             textfield.setValue(form.record.data.value);
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
+    applyFilter: function() {
+        var values = this.getValues();
 
-                this.record.set('value', values.textfilter);
-                this.record.set('operator', values.operator);
-                this.callOverridden();  //call base function
-            }
-        });
-        this.callParent(arguments);        
+        this.record.set('value', values.textfilter);
+        this.record.set('operator', values.operator);
+        this.superclass.applyFilter();
     }
 });

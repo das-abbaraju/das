@@ -22,21 +22,16 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('AccountStatusFilter')[0],
                 combo = form.child("combo"),
-                value = form.record.data.accountstatus;
+                value = form.record.data.value;
             
             (value) ? combo.setValue(value) : combo.setValue('Active'); 
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
-                
-                this.record.set('value', values.accountstatus);
-                this.record.set('operator', 'Equals');
-                this.callOverridden();  //call base function
-            }
-        });
-        this.callParent(arguments);        
+    applyFilter: function() {
+        var values = this.getValues();
+        
+        this.record.set('value', values.accountstatus);
+        this.record.set('operator', 'Equals');
+        this.superclass.applyFilter();
     }
 });

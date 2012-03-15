@@ -33,16 +33,12 @@ Ext.define('PICS.view.report.filter.StringFilter', {
             textfield.setValue(form.record.data.value);
         }
     },
-    constructor: function () {
-        Ext.override(PICS.view.report.filter.BaseFilter, {
-            applyFilter: function() {
-                var values = this.getValues();
-                
-                this.record.set('value', values.textfilter);
-                this.record.set('operator', values.operator);
-                this.callOverridden();  //call base function
-            }
-        });
-        this.callParent(arguments);        
-    }
+    applyFilter: function() {
+        var values = this.getValues();
+        
+        console.log("string apply");
+        this.record.set('value', values.textfilter);
+        this.record.set('operator', values.operator);
+        this.superclass.applyFilter();
+    }    
 });
