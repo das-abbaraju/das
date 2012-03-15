@@ -36,9 +36,7 @@
 	<s:include value="conHeader.jsp"/>
     
     <div id="${actionName}-page">
-        <p>
-            <s:text name="ContractorBadge.Information" />
-        </p>
+        <s:text name="ContractorBadge.Information" />
         
         <ul class="badges">
             <li>
