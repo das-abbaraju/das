@@ -38,9 +38,9 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         var values = this.getValues();
      
         this.record.set('value', values.date);
-        this.record.set('operator', values.operator);
+        this.record.set('operator', 'GreaterThan');
         this.superclass.applyFilter();
-    }
+    },
     dateConvert: function (year,month,day,hours,minutes,seconds,ms) {
         var d = Date.UTC(year,month,day,hours,minutes,seconds,ms);
         return d;
