@@ -358,8 +358,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
             throw new RuntimeException("forward 404");
         }
         
-        String pendingAndNotApprovedRelationshipCount = Integer.toString(pendingAndNotApprovedRelationshipCount());
-        ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount", pendingAndNotApprovedRelationshipCount);
+        ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount", pendingAndNotApprovedRelationshipCount());
         
         return "AutoApproveRelationshipModal";
     }
