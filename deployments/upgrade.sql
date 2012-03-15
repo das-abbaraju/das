@@ -75,6 +75,21 @@ update flag_criteria
 set multiYearScope = 'ThreeYearAggregate' 
 where multiYearScope = 'ThreeYearSum'; 
 
+-- PICS-4928
+update contractor_info c JOIN accounts a ON a.id = c.id 
+set c.safetyRisk = 0
+ WHERE (c.safetyRisk <> 0 AND a.onsiteServices = 0 AND a.offsiteServices = 0); 
+
+update contractor_info c JOIN accounts a ON a.id = c.id 
+set c.productRisk = 0
+ WHERE (c.productRisk <> 0 AND a.materialSupplier = 0); 
+
+update contractor_info c JOIN accounts a ON a.id = c.id 
+set c.transportationRisk = 0
+ WHERE (c.transportationRisk <> 0 AND a.transportationServices = 0);
+
+
+
 -- PICS-3350
 /*
 UPDATE `naics` SET `trir` = 5.3, `lwcr` = 2.9 WHERE `code` = 11;
