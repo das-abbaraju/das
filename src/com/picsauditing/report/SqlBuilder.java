@@ -287,26 +287,29 @@ public class SqlBuilder {
 			return columnToSQL(convertColumn(filter.getColumn2()));
 		}
 
+		// date filter
 		if (getQueryFieldFromSimpleColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(filter.getValue());
-			return DateBean.toDBFormat(parameter.getTime());
+			
+			return "'" + DateBean.toDBFormat(parameter.getTime()) + "'";
 		}
 
 		String value = filter.getValue();
 		switch (filter.getOperator()) {
-		case BeginsWith:
-			return "'" + value + "%'";
-		case EndsWith:
-			return "'%" + value + "'";
-		case Contains:
-			return "'%" + value + "%'";
-		case In:
-		case InReport:
-			// this only supports numbers, no strings or dates
-			return "(" + value + ")";
-		case Empty:
-			// TODO
+    		case BeginsWith:
+    			return "'" + value + "%'";
+    		case EndsWith:
+    			return "'%" + value + "'";
+    		case Contains:
+    			return "'%" + value + "%'";
+    		case In:
+    		case InReport:
+    			// this only supports numbers, no strings or dates
+    			return "(" + value + ")";
+    		case Empty:
+    			// TODO
 		}
+		
 		return "'" + value + "'";
 	}
 
