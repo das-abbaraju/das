@@ -356,9 +356,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			throw new RuntimeException("forward 404");
 		}
 
-		ServletActionContext.getRequest().setAttribute("pendingAndNotApprovedRelationshipCount",
-				pendingAndNotApprovedRelationshipCount());
-
 		return "AutoApproveRelationshipModal";
 	}
 
@@ -800,7 +797,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 	}
 
-	public int pendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
+	public int getPendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
 		if (operator == null)
 			findOperator();
 
