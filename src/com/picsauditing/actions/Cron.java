@@ -812,15 +812,15 @@ public class Cron extends PicsActionSupport {
 		if (data.isEmpty())
 			return;
 
+		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
+
 		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
 		for (String accountMgr : amMap.keySet()) {
-			if (amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
+			if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
 				List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
 				sendFlagChangesEmail(accountMgr, flagChanges);
 			}
 		}
-
-		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
 	}
 
 	private void sendFlagChangesEmail(String accountMgr, List<BasicDynaBean> flagChanges) throws IOException {
