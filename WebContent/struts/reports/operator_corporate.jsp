@@ -25,7 +25,7 @@ $(document).ready(function() {
 	<div><a href="FacilitiesEdit!create.action?createType=Corporate" class="add">Create New Corporate</a></div>
 </s:if>
 <s:if test="canEditOp">
-	<div><a href="FacilitiesEdit!create.action?createType=Operator" class="add">Create New Operator</a></div>
+	<div><a href="FacilitiesEdit!create.action?createType=Operator" class="add">Create New Client Site</a></div>
 </s:if>	
 <s:if test="canEditAssessment">
 	<div><a href="AssessmentCenterEdit.action" class="add">Create New Assessment Center</a></div>
@@ -77,7 +77,14 @@ $(document).ready(function() {
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</s:else>
 			</td>
-			<td><s:property value="get('type')"/></td>
+			<td>
+				 <s:if test="get('type') == 'Operator'">
+					Client Site
+				</s:if>
+				<s:else>
+					<s:property value="get('type')"/>
+				</s:else>
+			</td>
 			<td><s:property value="get('status')"/></td>
 			<td class="right">
 				<s:if test="get('type') == 'Operator'"><s:property value="get('opCount')"/></s:if>

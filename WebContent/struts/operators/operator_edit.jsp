@@ -18,7 +18,14 @@
 	<body>
 		<div id="${actionName}-page">
 			<s:if test="operator.id == 0">
-			    <h1>Create New <s:property value="operator.type" /> Account</h1>
+			    <h1>Create New 
+			    <s:if test="operator.operator">
+			    	Client Site
+			    </s:if>
+   				<s:else>
+   					<s:property value="operator.type" />
+				</s:else>
+                Account</h1>
 			</s:if>
 			<s:else>
 				<s:include value="opHeader.jsp"></s:include>
