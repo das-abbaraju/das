@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <form class="insurance-rejection-status-form" action="CaoSaveAjax!save.action" method="POST">
-    <s:hidden name="cao_id">${id}</s:hidden>
+    <s:hidden name="cao_id" value="%{#id}" />
     
     <s:textarea name="note" cssClass="notes" />
 </form>
