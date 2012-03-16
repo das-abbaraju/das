@@ -306,3 +306,31 @@ div#info {
 </html>'
 where t.msgKey = 'EmailTemplate.45.translatedBody' and t.locale = 'en';
 --
+
+-- PICS-4209
+-- GC Free
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
+select wu.widgetID, 61460, wu.expanded, wu.column, wu.sortOrder
+from widget_user wu
+join widget w on w.widgetID = wu.widgetID
+join users u on u.id = wu.userID
+where u.id = 616 -- regular operator
+and w.caption not like '%flag%'
+;
+
+-- GC Full
+insert into widget_user (widgetID, userID, expanded, `column`, sortOrder)
+select wu.widgetID, 61461, wu.expanded, wu.column, wu.sortOrder
+from widget_user wu
+join widget w on w.widgetID = wu.widgetID
+join users u on u.id = wu.userID
+where u.id = 616 -- regular operator
+and w.caption not like '%flag%'
+;
+
+-- GC Full Subcontractors Flag Matrix
+insert into widget(caption, widgetType, url)
+values ("Subcontractor Flag Matrix", "Html", "SubcontractorsFlagMatrix.action");
+
+insert into widget_user (widgetID, userID, `column`, sortOrder)
+values (36, 61461, 2, 30);
