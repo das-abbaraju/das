@@ -777,11 +777,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return null;
 	}
 
-	@Transient
-	public boolean isHasSubscription(Subscription subscription) {
-		return getSubscription(subscription) != null;
-	}
-
 	/**
 	 * Enables subscription if disabled or creates subscription if it does not exist.
 	 * 
@@ -790,10 +785,12 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	 */
 	@Transient
 	public EmailSubscription getFallbackEmailSubscription(Subscription subscription) {
-		if (isHasSubscription(subscription)) {
-			EmailSubscription emailSubscription = getSubscription(subscription);
-			if (emailSubscription.isDisabled())
+		EmailSubscription emailSubscription = getSubscription(subscription);
+
+		if (emailSubscription != null) {
+			if (emailSubscription.isDisabled()) {
 				emailSubscription.enable();
+			}
 
 			return emailSubscription;
 		}

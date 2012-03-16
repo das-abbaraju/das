@@ -30,6 +30,9 @@ import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.mail.NoUsersDefinedException;
+import com.picsauditing.mail.Subscription;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
@@ -852,5 +855,70 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setMainTrade(Trade mainTrade) {
 		this.mainTrade = mainTrade;
+	}
+
+	@Transient
+	public EmailSubscription getFallbackSubscriptionForDefaultContact(Subscription subscription)
+			throws NoUsersDefinedException {
+		OpPerms requiredPermissionForSubscription = subscription.getRequiredPerms();
+		User activeUserWithPermission = getActiveUserWithPermission(requiredPermissionForSubscription);
+		if (activeUserWithPermission != null) {
+			return activeUserWithPermission.getFallbackEmailSubscription(subscription);
+		}
+
+		User activeUserWithContractorAdminPermission = getActiveUserWithPermission(OpPerms.ContractorAdmin);
+		if (activeUserWithContractorAdminPermission != null) {
+			return activeUserWithContractorAdminPermission.getFallbackEmailSubscription(subscription);
+		}
+
+		if (getPrimaryContact() != null && getPrimaryContact().isActiveB()) {
+			return getPrimaryContact().getFallbackEmailSubscription(subscription);
+		}
+
+		if (!getUsers().isEmpty()) {
+			User activeUser = getActiveUser();
+			return activeUser.getFallbackEmailSubscription(subscription);
+		}
+
+		throw new NoUsersDefinedException();
+	}
+
+	@Transient
+	public User getActiveUser() throws NoUsersDefinedException {
+		for (User user : getUsers()) {
+			if (user.isActiveB()) {
+				return user;
+			}
+		}
+
+		throw new NoUsersDefinedException("No Active Users");
+	}
+
+	@Transient
+	public User getActiveUserWithPermission(OpPerms opPerms) throws NoUsersDefinedException {
+		for (User user : getUsersByRole(opPerms)) {
+			if (user.isActiveB()) {
+				return user;
+			}
+		}
+
+		return null;
+	}
+
+	@Transient
+	public List<User> getUsersByRole(OpPerms opPerms) {
+		List<User> users = new ArrayList<User>();
+		for (User user : getUsers()) {
+			// TJA - not sure how null users are getting into the list but on
+			// registration it happens
+			if (user != null && user.isActiveB()) {
+				for (UserAccess userAccess : user.getOwnedPermissions()) {
+					if (userAccess.getOpPerm().equals(opPerms)) {
+						users.add(user);
+					}
+				}
+			}
+		}
+		return users;
 	}
 }
