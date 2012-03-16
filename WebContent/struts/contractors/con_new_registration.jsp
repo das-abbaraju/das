@@ -27,7 +27,7 @@
 			</a>
 		</pics:permission>
 		<div id="potentialMatches" class="info" style="display: none;"></div>
-		<s:if test="newContractor.contractor != null || newContractor.status != 'Active'">
+		<s:if test="newContractor.contractor != null || (newContractor.status != null && newContractor.status != 'Active')">
 			<div class="info">
 				<s:if test="newContractor.contractor != null">
 					<s:text name="RequestNewContractor.message.Registered">
@@ -39,7 +39,7 @@
 						</s:param>
 					</s:text>
 				</s:if>
-				<s:if test="newContractor.status != 'Active'">
+				<s:if test="newContractor.status != null && newContractor.status != 'Active'">
 					<s:text name="RequestNewContractor.message.RequestClosed" />
 				</s:if>
 			</div>
@@ -120,7 +120,7 @@
 							id="newContractorCountry"
 							listKey="isoCode" 
 							listValue="name"
-							value="%{newContractor.country.isoCode}"
+							value="%{newContractor.country == null ? permissions.country : newContractor.country.isoCode}"
 						/>
 							
 						<div class="fieldhelp">
