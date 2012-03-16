@@ -153,7 +153,7 @@ public class ContractorAuditController extends AuditActionSupport {
 					if (cao.isVisible()) {
 						if (cao.getStatus() == AuditStatus.Pending || cao.getStatus() == AuditStatus.Incomplete
 								|| cao.getStatus() == AuditStatus.Resubmit) {
-							if (cao.getPercentComplete() == 100) {
+							if (cao.getPercentComplete() == 100 && CollectionUtils.isNotEmpty(contractor.getTrades())) {
 								json.put("remind", getText("Audit.PleaseSubmitWhenFinished"));
 								break;
 							}
@@ -250,7 +250,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	private String determineMessageForUser() {
 		String message = "";
 		if (CollectionUtils.isEmpty(contractor.getTrades())) {
-			String noTradesSelectedMessage = "At least one trade must be selected before a PQF can be submitted.";
+			String noTradesSelectedMessage = "At least one trade must be selected before an audit can be submitted.";
 			if (!atLeastOneCompleteVisibleCao()) {  
 				message = noTradesSelectedMessage;
 			}
@@ -594,6 +594,12 @@ public class ContractorAuditController extends AuditActionSupport {
 		return contractor.getCountry().getAmount(fee);
 	}
 	
+	public boolean displayMultiStatusDropDown() {
+		return (actionStatus.size() > 0 
+				&& CollectionUtils.isNotEmpty(contractor.getTrades())
+				&& !permissions.isAdmin());
+	}
+	
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
 			if (!canContractorSubmitPQF(step)) {
@@ -608,9 +614,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 	
 	private boolean canContractorSubmitPQF(WorkflowStep step) {
-		if (conAudit.getAuditType().getClassType().isPqf() 
-				&& step.getNewStatus().isSubmitted() 
-				&& permissions.isContractor() 
+		if (step.getNewStatus().isSubmitted()
+				&& !permissions.isAdmin()
 				&& CollectionUtils.isEmpty(contractor.getTrades())) {
 			return false;
 		}

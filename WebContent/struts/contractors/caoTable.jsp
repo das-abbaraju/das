@@ -17,7 +17,7 @@
 				</s:if>
 				<s:if test="!systemEdit">
 					<th>						
-						<s:if test="actionStatus.size() > 0 && contractor.trades.size() > 0">
+						<s:if test="displayMultiStatusDropDown()">
 							<s:select list="actionStatus.asMap()" headerKey="-1" headerValue="-- Select Action --"
 								listKey="key" listValue="key.button+' All'" name="multiStatusChange" id="multiStatusChange" />
 							<s:iterator value="actionStatus.asMap()" var="status">
