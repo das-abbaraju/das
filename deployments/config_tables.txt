@@ -15,6 +15,7 @@ audit_type_rule
 flag_criteria
 flag_criteria_operator
 invoice_fee
+naics
 token
 widget
 widget_user
