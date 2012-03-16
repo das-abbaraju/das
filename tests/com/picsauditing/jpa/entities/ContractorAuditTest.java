@@ -2,11 +2,13 @@ package com.picsauditing.jpa.entities;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
 
+import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 
 /**
@@ -143,4 +145,45 @@ public class ContractorAuditTest {
 		assertTrue(contractorAudit.expiredUpToAWeekAgo());
 	}
 	
+	@Test
+	public void testHasCaoStatusAfterFalse() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmitted)));
+		assertFalse(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
+	}
+	
+	@Test
+	public void testHasCaoStatusAfterTrue() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Complete)));
+		assertTrue(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
+	}
+	
+	@Test
+	public void testHasCaoStatusBeforeFalse() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmitted)));
+		assertFalse(contractorAudit.hasCaoStatusBefore(AuditStatus.Resubmitted));
+	}
+	
+	@Test
+	public void testHasCaoStatusBeforeTrue() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmit)));
+		assertTrue(contractorAudit.hasCaoStatusBefore(AuditStatus.Resubmitted));
+	}
+	
+	@Test
+	public void testHasCaoStatusFalse() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Pending)));
+		assertFalse(contractorAudit.hasCaoStatus(AuditStatus.Resubmitted));
+	}
+	
+	@Test
+	public void testHasCaoStatusTrue() {
+		ContractorAudit contractorAudit = new ContractorAudit();
+		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Approved)));
+		assertTrue(contractorAudit.hasCaoStatus(AuditStatus.Approved));
+	}
 }
