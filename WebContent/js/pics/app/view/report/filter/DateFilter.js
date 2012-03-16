@@ -20,6 +20,7 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         typeAhead: true
     },{
         xtype: 'datefield',
+        format: 'Y-m-d',        
         id: 'datefilter',
         name: 'date',
         maxValue: new Date()  // limited to the current date or prior
@@ -38,11 +39,7 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         var values = this.getValues();
      
         this.record.set('value', values.date);
-        this.record.set('operator', 'GreaterThan');
+        this.record.set('operator', values.operator);
         this.superclass.applyFilter();
-    },
-    dateConvert: function (year,month,day,hours,minutes,seconds,ms) {
-        var d = Date.UTC(year,month,day,hours,minutes,seconds,ms);
-        return d;
     }
 });

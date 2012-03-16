@@ -65,11 +65,15 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             
             if (window._column_type === "filter") {
                 store = this.getReportReportsFilterStore();
+                colStore = this.getReportReportsColumnStore();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleFilter());
+                    if (colStore.findRecord("name", field.get('name')) === null) {
+                        colStore.add(field.createSimpleColumn());
+                    }
                 });
             } else if (window._column_type === "column") {
-                store = this.getReportReportsColumnStore()
+                store = this.getReportReportsColumnStore();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleColumn());
                 });

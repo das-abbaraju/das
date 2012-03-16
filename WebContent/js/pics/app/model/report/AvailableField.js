@@ -32,9 +32,11 @@ Ext.define('PICS.model.report.AvailableField', {
         // TODO: why the heck was this called name it did not work
         // it is column????
         // what the heck is type it does not exist
+        // remove default operator hack
         var filter = Ext.create('PICS.model.report.SimpleFilter', {
         	'column': this.get('name'),
-        	'type': this.get('type')
+        	'type': this.get('type'),
+        	'operator': 'Contains'
         });
         
         filter.setAvailableField(this);

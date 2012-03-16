@@ -15,7 +15,7 @@ Ext.define('PICS.controller.report.FilterController', {
             },
             'basefilter button[action=apply]': {
                 click: function () {
-                    this.application.fireEvent('refreshreport');            
+                    this.application.fireEvent('refreshreport');
                 }                
             }
         });
