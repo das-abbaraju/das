@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.Subscription;
@@ -71,4 +72,20 @@ public class EmailSubscription extends BaseTable {
 		this.permission = permission;
 	}
 
+	@Transient
+	public boolean isDisabled() {
+		return getTimePeriod().isNone();
+	}
+
+	@Transient
+	public void enable() {
+		setAuditColumns();
+		setTimePeriod(getSubscription().getDefaultTimePeriod());
+	}
+
+	@Transient
+	public void disable() {
+		setAuditColumns();
+		setTimePeriod(SubscriptionTimePeriod.None);
+	}
 }

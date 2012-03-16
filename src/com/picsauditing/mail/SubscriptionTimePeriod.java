@@ -29,7 +29,7 @@ public enum SubscriptionTimePeriod implements Translatable {
 
 		return calendar.getTime();
 	}
-	
+
 	public Date getNearestComparisonDate() {
 		Calendar calendar = Calendar.getInstance();
 
@@ -76,6 +76,10 @@ public enum SubscriptionTimePeriod implements Translatable {
 			}
 		}
 		return values;
+	}
+
+	public boolean isNone() {
+		return this.equals(SubscriptionTimePeriod.None);
 	}
 
 	@Override

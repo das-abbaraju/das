@@ -26,7 +26,6 @@ import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -200,29 +199,33 @@ public class ContractorCron extends PicsActionSupport {
 			throw continueUpTheStack;
 		}
 	}
-	
+
 	private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
 		Database db = new Database();
 		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
-		
+
 		SelectSQL sql = new SelectSQL("flag_criteria fc1");
 		sql.addField("fc1.id as year1_id");
 		sql.addField("fc2.id as year2_id");
 		sql.addField("fc3.id as year3_id");
-		sql.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql
+				.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql
+				.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
 		sql.addWhere("fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly'");
 
 		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
-		
+
 		sql = new SelectSQL("flag_criteria fc1");
 		sql.addField("fc1.id as year1_id");
 		sql.addField("fc2.id as year2_id");
 		sql.addField("fc3.id as year3_id");
-		sql.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
+		sql
+				.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
+		sql
+				.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
 		sql.addWhere("fc1.questionID is not null and fc1.multiYearScope = 'LastYearOnly'");
-		
+
 		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
 
 		return resultMap;
@@ -236,7 +239,7 @@ public class ContractorCron extends PicsActionSupport {
 				Integer year1 = (Integer) row.get("year1_id");
 				Integer year2 = (Integer) row.get("year2_id");
 				Integer year3 = (Integer) row.get("year3_id");
-				
+
 				ArrayList<Integer> list = new ArrayList<Integer>();
 				if (year1 != null)
 					list.add(year1);
@@ -244,7 +247,7 @@ public class ContractorCron extends PicsActionSupport {
 					list.add(year2);
 				if (year3 != null)
 					list.add(year3);
-				
+
 				if (year1 != null)
 					resultMap.put(year1, list);
 				if (year2 != null)
@@ -256,7 +259,6 @@ public class ContractorCron extends PicsActionSupport {
 			e.printStackTrace();
 		}
 	}
-
 
 	private void setRecalculationToTomorrow(ContractorAccount contractor) {
 		try {
@@ -564,7 +566,8 @@ public class ContractorCron extends PicsActionSupport {
 				Subscription.InsuranceExpiration, contractor.getId());
 
 		if (contractorInsuranceSubscriptions.isEmpty()) {
-			EmailSubscription defaultUserSubscription = createSubscriptionForDefaultContact(contractor);
+			EmailSubscription defaultUserSubscription = contractor
+					.getFallbackSubscriptionForDefaultContact(Subscription.InsuranceExpiration);
 			unsentWeeklyInsuranceSubscriptions.add(defaultUserSubscription);
 		} else {
 			for (EmailSubscription contractorInsuranceSubscription : contractorInsuranceSubscriptions) {
@@ -578,63 +581,30 @@ public class ContractorCron extends PicsActionSupport {
 		return unsentWeeklyInsuranceSubscriptions;
 	}
 
-	private EmailSubscription createSubscriptionForDefaultContact(ContractorAccount contractor)
-			throws NoUsersDefinedException {
-		EmailSubscription defaultContactSubscription = new EmailSubscription();
-		defaultContactSubscription.setAuditColumns();
-		defaultContactSubscription.setSubscription(Subscription.InsuranceExpiration);
-		defaultContactSubscription.setTimePeriod(SubscriptionTimePeriod.Event);
-
-		if (contractor.getPrimaryContact() != null && contractor.getPrimaryContact().isActiveB()) {
-			defaultContactSubscription.setUser(contractor.getPrimaryContact());
-		} else if (!contractor.getUsersByRole(OpPerms.ContractorAdmin).isEmpty()
-				&& contractor.getUsersByRole(OpPerms.ContractorAdmin).get(0).isActiveB()) {
-			defaultContactSubscription.setUser(contractor.getUsersByRole(OpPerms.ContractorAdmin).get(0));
-		} else if (!contractor.getUsers().isEmpty()) {
-			User activeUser = findActiveUser(contractor);
-			defaultContactSubscription.setUser(activeUser);
-		} else {
-			throw new NoUsersDefinedException();
-		}
-
-		subscriptionDAO.save(defaultContactSubscription);
-		return defaultContactSubscription;
-	}
-
-	private User findActiveUser(ContractorAccount contractor) throws NoUsersDefinedException {
-		for (User user : contractor.getUsers()) {
-			if (user.isActiveB()) {
-				return user;
-			}
-		}
-
-		throw new NoUsersDefinedException("No Active Users");
-	}
-
 	@Testable
 	Set<ContractorAudit> getExpiringPolicies(ContractorAccount contractor) {
 		Set<ContractorAudit> expiringAudits = new HashSet<ContractorAudit>();
 		Map<Integer, List<ContractorAudit>> policies = createAuditPolicyMap(contractor);
-		
+
 		for (Map.Entry<Integer, List<ContractorAudit>> entry : policies.entrySet()) {
 			ContractorAudit expiringAudit = getExpiringAudit(entry.getValue());
 			if (expiringAudit != null) {
 				expiringAudits.add(expiringAudit);
 			}
 		}
-		
+
 		return expiringAudits;
 	}
-	
+
 	/**
-	 * Returns a map of Policies, where the key is the Audit Type ID and the value is a list
-	 * of ContractorAudits for that Audit Type ID. 
+	 * Returns a map of Policies, where the key is the Audit Type ID and the value is a list of ContractorAudits for
+	 * that Audit Type ID.
 	 * 
 	 * @return
 	 */
 	private Map<Integer, List<ContractorAudit>> createAuditPolicyMap(ContractorAccount contractor) {
 		Map<Integer, List<ContractorAudit>> policies = new HashMap<Integer, List<ContractorAudit>>();
-			
+
 		if (CollectionUtils.isNotEmpty(contractor.getAudits())) {
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (audit.getAuditType().getClassType().isPolicy()) {
@@ -644,24 +614,24 @@ public class ContractorCron extends PicsActionSupport {
 						audits = new ArrayList<ContractorAudit>();
 					} else {
 						audits = policies.get(key);
-					}			
-			
+					}
+
 					audits.add(audit);
 					policies.put(key, audits);
 				}
 			}
 		}
-		
+
 		return policies;
 	}
-	
-	private ContractorAudit getExpiringAudit(List<ContractorAudit> audits) {		
+
+	private ContractorAudit getExpiringAudit(List<ContractorAudit> audits) {
 		ContractorAudit expiringAudit = null;
-		
+
 		if (CollectionUtils.isNotEmpty(audits)) {
 			sortAuditsByExpirationDateDescending(audits);
 			ContractorAudit audit = audits.get(0);
-			
+
 			if (isExpiringRenewableAudit(audit)) {
 				expiringAudit = audit;
 			} else if (audits.size() > 1) {
@@ -671,11 +641,11 @@ public class ContractorCron extends PicsActionSupport {
 				}
 			}
 		}
-		
+
 		return expiringAudit;
 	}
-	
-	private void sortAuditsByExpirationDateDescending(List<ContractorAudit> audits) {		
+
+	private void sortAuditsByExpirationDateDescending(List<ContractorAudit> audits) {
 		Collections.sort(audits, new Comparator<ContractorAudit>() {
 
 			@Override
@@ -687,20 +657,19 @@ public class ContractorCron extends PicsActionSupport {
 				} else if (audit2.getExpiresDate() == null) {
 					return 1;
 				}
-				
+
 				return audit2.getExpiresDate().compareTo(audit1.getExpiresDate());
 			}
-			
+
 		});
 	}
-	
+
 	private boolean isExpiringRenewableAudit(ContractorAudit audit) {
 		return audit.getAuditType().isRenewable() && isAuditExpiringSoon(audit);
 	}
 
 	private boolean isAuditExpiringSoon(ContractorAudit audit) {
-		return (audit.willExpireWithinTwoWeeks() 
-				|| audit.expiredUpToAWeekAgo());
+		return (audit.willExpireWithinTwoWeeks() || audit.expiredUpToAWeekAgo());
 	}
 
 	private void runCorporateRollup(ContractorAccount contractor, Set<OperatorAccount> corporateSet) {

@@ -766,4 +766,38 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		return null;
 	}
+
+	@Transient
+	public EmailSubscription getSubscription(Subscription subscription) {
+		for (EmailSubscription emailSubscription : getSubscriptions()) {
+			if (emailSubscription.getSubscription().equals(subscription))
+				return emailSubscription;
+		}
+
+		return null;
+	}
+
+	@Transient
+	public boolean isHasSubscription(Subscription subscription) {
+		return getSubscription(subscription) != null;
+	}
+
+	/**
+	 * Enables subscription if disabled or creates subscription if it does not exist.
+	 * 
+	 * @param subscription
+	 * @return
+	 */
+	@Transient
+	public EmailSubscription getFallbackEmailSubscription(Subscription subscription) {
+		if (isHasSubscription(subscription)) {
+			EmailSubscription emailSubscription = getSubscription(subscription);
+			if (emailSubscription.isDisabled())
+				emailSubscription.enable();
+
+			return emailSubscription;
+		}
+
+		return subscription.createEmailSubscription(this);
+	}
 }
