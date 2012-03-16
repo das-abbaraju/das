@@ -3,6 +3,7 @@ package com.picsauditing.report.fields;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.util.Strings;
 
 public class SimpleReportFilter implements JSONable {
 	private String column;
@@ -44,13 +45,13 @@ public class SimpleReportFilter implements JSONable {
 	private void parseNot(JSONObject json) {
 		this.not = false;
 		Boolean not = (Boolean) json.get("not");
-		if (not != null)
+		if (not != null && not == true)
 			this.not = true;
 	}
 
 	private void parseOperator(JSONObject json) {
-		Object object = json.get("operator");
-		if (object == null) {
+		String object = (String)json.get("operator");
+		if (Strings.isEmpty(object)) {
 			operator = QueryFilterOperator.Equals;
 			return;
 		}
@@ -96,5 +97,12 @@ public class SimpleReportFilter implements JSONable {
 
 	public void setColumn2(String column2) {
 		this.column2 = column2;
+	}
+	
+	public boolean isValid() {
+		if (value == null)
+			return false;
+		
+		return true;
 	}
 }

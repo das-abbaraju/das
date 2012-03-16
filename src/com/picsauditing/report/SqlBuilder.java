@@ -261,6 +261,8 @@ public class SqlBuilder {
 	}
 
 	private String toFilterSql(SimpleReportFilter filter) {
+		if (!filter.isValid())
+			return "true";
 
 		SimpleReportColumn column = convertColumn(filter.getColumn());
 
@@ -270,8 +272,31 @@ public class SqlBuilder {
 
 		String columnSQL = toColumnSql(column);
 		String valueSql = toValueSql(filter, column);
+		
+		String operand = filter.getOperator().getOperand();
+		
+		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
+			if (filter.isNot()) {
+				return columnSQL + " NOT IS NULL OR " + columnSQL + " != ''";
+			} else {
+				return columnSQL + " IS NULL OR " + columnSQL + " = ''";
+			}
+		}
+		
+		if (!filter.isNot())
+			return columnSQL + " " + operand + " " + valueSql;
 
-		return columnSQL + " " + filter.getOperator().getOperand() + " " + valueSql;
+		switch (filter.getOperator()) {
+		case Equals:
+			return columnSQL + " !" + operand + " " + valueSql;
+		case GreaterThan:
+		case GreaterThanOrEquals:
+		case LessThan:
+		case LessThanOrEquals:
+			return "NOT " + columnSQL + " " + operand + " " + valueSql;
+		default:
+			return columnSQL + " NOT " + operand + " " + valueSql;
+		}
 	}
 
 	private String toColumnSql(SimpleReportColumn column) {

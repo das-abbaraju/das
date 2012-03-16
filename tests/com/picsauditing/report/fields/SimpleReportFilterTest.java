@@ -19,6 +19,29 @@ public class SimpleReportFilterTest {
 	}
 
 	@Test
+	public void testBlankOperator() {
+		jsonObj.put("column", "accountID");
+		jsonObj.put("operator", "");
+		
+		filter.fromJSON(jsonObj);
+
+		String expected = "{\"column\":\"accountID\",\"operator\":\"Equals\"}";
+		assertEquals(expected, filter.toJSON(true).toJSONString());
+	}
+
+	@Test
+	public void testNot() {
+		jsonObj.put("column", "accountID");
+		jsonObj.put("not", true);
+		
+		filter.fromJSON(jsonObj);
+
+		String expected = "{\"not\":true,\"column\":\"accountID\",\"operator\":\"Equals\"}";
+		assertEquals(expected, filter.toJSON(true).toJSONString());
+		assertTrue(filter.isNot());
+	}
+
+	@Test
 	public void testValue() {
 		jsonObj.put("column", "AccountName");
 		jsonObj.put("operator", "BeginsWith");
