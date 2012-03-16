@@ -250,7 +250,9 @@ public class ContractorAuditController extends AuditActionSupport {
 	private String determineMessageForUser() {
 		String message = "";
 		if (CollectionUtils.isEmpty(contractor.getTrades())) {
-			String noTradesSelectedMessage = "At least one trade must be selected before an audit can be submitted.";
+			// using Integer.toString() because the autoboxed int primitive gets a comma in the translated message, which is incorrect
+			// because it is used in a URL.
+			String noTradesSelectedMessage = getTextParameterized("Audit.Error.ContractorMissingTrades", Integer.toString(contractor.getId()));
 			if (!atLeastOneCompleteVisibleCao()) {  
 				message = noTradesSelectedMessage;
 			}
