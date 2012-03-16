@@ -1,8 +1,10 @@
 package com.picsauditing.actions.employees;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,10 +41,17 @@ public class ManageJobRoles extends AccountActionSupport {
 	protected JobRole role;
 	protected OperatorCompetency competency;
 	protected List<JobRole> jobRoles;
+	protected int contractorId = 0;
 
 	public String execute() throws Exception {
 		checkPermissions();
 
+		findAccount();
+
+		return SUCCESS;
+	}
+
+	private void findAccount() throws RecordNotFoundException {
 		if (audit != null) {
 			account = audit.getContractorAccount();
 		}
@@ -50,18 +59,19 @@ public class ManageJobRoles extends AccountActionSupport {
 		if (role != null && role.getAccount() != null)
 			account = role.getAccount();
 
-		if (account == null && permissions.isContractor())
+		if (account == null && permissions.isContractor()) {
 			account = accountDAO.find(permissions.getAccountId());
+			contractorId = permissions.getAccountId();
+		}
 		
 		if (account == null) {
+			contractorId = id;
 			account = accountDAO.find(id);
 		}
 
 		if (account == null) {
 			throw new RecordNotFoundException("account");
 		}
-
-		return SUCCESS;
 	}
 
 	public String get() throws Exception {
@@ -218,9 +228,20 @@ public class ManageJobRoles extends AccountActionSupport {
 		}
 	}
 
-	public List<OperatorCompetency> getOtherCompetencies() {
+	public List<OperatorCompetency> getOtherCompetencies() throws Exception {
+		findAccount();
+		
 		if (role != null) {
-			List<OperatorCompetency> others = operatorCompetencyDAO.findAll();
+			List<OperatorCompetency> others;
+			if (account.isContractor() || contractorId > 0) {
+				ContractorAccount contractor = dao.find(ContractorAccount.class, contractorId);
+				Set<Integer> opIds = new HashSet<Integer>();
+				for (ContractorOperator op : contractor.getOperators())
+					opIds.add(op.getOperatorAccount().getId());
+				others = operatorCompetencyDAO.findByOperatorHierarchy(opIds);
+			} else {
+				others = operatorCompetencyDAO.findAll();
+			}
 
 			List<OperatorCompetency> exists = new ArrayList<OperatorCompetency>();
 			for (JobCompetency jc : role.getJobCompetencies()) {
