@@ -569,14 +569,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return DateBean.getDateDifference(cal.getTime());
 	}
 
-	public String getActionName() {
-		return ServletActionContext.getActionMapping().getName();
-	}
-
-	public String getProtocol() {
-		return URLUtils.getProtocol(ServletActionContext.getRequest());
-	}
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void setRequest(Map arg0) {
@@ -660,4 +652,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return helpUrl;
 	}
+	
+	public String getActionName() {
+        return ServletActionContext.getActionMapping().getName();
+    }
+
+	public String getMethodName() {
+	    return ServletActionContext.getActionMapping().getMethod();
+	}
+	
+	public String getProtocol() {
+        return URLUtils.getProtocol(ServletActionContext.getRequest());
+    }
 }

@@ -7,13 +7,14 @@
 	<meta name="help" content="Scheduling_Audits">
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/audit/schedule_audit.css?v=<s:property value="version"/>" />
-	
+    
 	<s:include value="../jquery.jsp"/>
+    
+    <script type="text/javascript" src="js/audit/schedule_audit_confirm.js?v=<s:property value="version"/>"></script>
 </head>
 	
-<div id="${actionName}-page">
+<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 	<s:include value="../contractors/conHeader.jsp" />
 	
 	<div class="alert">

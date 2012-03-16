@@ -1,16 +1,83 @@
-#ScheduleAudit-page #auditHeader,
-#ScheduleAudit-page #auditHeaderNav 
+.ScheduleAudit-page #auditHeader,
+.ScheduleAudit-page #auditHeaderNav 
 {
 	display: none;
 }
 
-#ScheduleAudit-page .schedule-audit-address-form #submitButton,
-#ScheduleAudit-page .schedule-audit-address-form #verifyButton
+/* ScheduleAudit */
+
+#ScheduleAudit__page .schedule-audit-address-form #submitButton,
+#ScheduleAudit__page .schedule-audit-address-form #verifyButton
 {
 	display: none;
 }
 
-#ScheduleAudit-page .schedule-audit-confirm-form #ScheduleAudit__confirm
+/* ScheduleAuditSelect */
+
+#ScheduleAudit_address_page li#li_availability {
+	width: 100%;
+	margin: 5px;
+	padding: 5px;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day {
+	float: left;
+	padding: 10px 20px;
+	margin: 10px;
+	border: 1px dashed #999;
+	width: 14em;
+	height: 10em;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day div.cal_times {
+	height:80%;
+	overflow:auto;
+	padding: 0;
+	margin: 0;
+}
+
+#ScheduleAudit_address_page li#li_availability div.cal_day:hover {
+	border: 1px solid #002240;
+	background-color: white;
+}
+
+#ScheduleAudit_address_page li#li_availability a {
+	padding: 5px;
+	border: 1px solid #4686BF;
+	white-space: nowrap;
+	text-decoration: none;
+	line-height: 35px;
+}
+
+#ScheduleAudit_address_page li#li_availability a:hover {
+	background-color: #ffffbb;
+}
+
+/* ScheduleAuditConfirm */
+
+#ScheduleAudit_selectTime_page .schedule-audit-confirm-form #ScheduleAudit__confirm
 {
 	display: none;
+}
+
+/* ScheduleAuditEdit google map preview */
+
+#ScheduleAudit_edit_page #mappreview
+{
+	border: 2px solid #003768;
+    float: right;
+    height: 350px;
+    width: 350px;
+}
+
+#ScheduleAudit_edit_page #mappreview div
+{
+    font-family: Arial, sans-serif;
+    margin: 0px;
+    padding: 0px;
+}
+
+#ScheduleAudit_edit_page div#needsReschedulingFee
+{
+    display: none;
 }

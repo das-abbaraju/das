@@ -7,17 +7,16 @@
 	
 	<meta name="help" content="Scheduling_Audits">
 	
-	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
-	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/audit/schedule_audit.css?v=<s:property value="version"/>" />
 	
 	<s:include value="../jquery.jsp"></s:include>
 	
 	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 	<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
+	<script type="text/javascript" src="js/audit/schedule_audit_address.js?v=<s:property value="version"/>"></script>
 </head>
 
-<div id="${actionName}-page">
+<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 	<s:include value="../contractors/conHeader.jsp" />
 	
 	<div class="info" style="clear:left"><s:text name="ScheduleAudit.message.EnterPrimaryRepresentative" /></div>

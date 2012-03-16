@@ -13,6 +13,7 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -42,6 +43,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
@@ -329,6 +331,15 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 
 		return "summary";
+	}
+	
+	public String ajaxScheduleAuditExpediteModal() {
+	    // TODO:
+	    if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+            throw new RuntimeException("forward 404");
+        }
+	    
+	    return "ScheduleAuditExpediteModal";
 	}
 	
 	public void createExpediteInvoiceAndEmail() throws Exception {
