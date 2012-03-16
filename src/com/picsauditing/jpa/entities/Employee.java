@@ -349,7 +349,13 @@ public class Employee extends AbstractIndexableTable {
 	
 	@Transient
 	public String getNameTitle() {
-		return (firstName + " " + lastName).trim() + " / " + title.trim();
+		String last = (Strings.isEmpty(lastName))? "" : lastName.trim();
+		String first = (Strings.isEmpty(firstName))? "" : firstName.trim();
+		String position = (Strings.isEmpty(title))? "" : title.trim();
+		String nameTitle = first + " " + last;
+		if (!Strings.isEmpty(position))
+			nameTitle += " / " + position;
+		return nameTitle;
 	}
 
 	@Transient

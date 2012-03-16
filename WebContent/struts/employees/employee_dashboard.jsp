@@ -13,21 +13,6 @@
 
 <s:include value="../jquery.jsp" />
 
-<script type="text/javascript">
-	function checkSelections(listId) {
-		if (!$('form .selectable').is(':checked')) {
-			alert("Please select an employee for audit.");
-			return false;			
-		}
-		
-		var e = document.getElementById(listId);
-		var value = e.options[e.selectedIndex].value;
-		document.forms['empAudits'].selectedOperatorId.value = value;
-		
-		return true;
-	}
-</script>
-
 </head>
 <body>
 	<s:include value="../contractors/conHeader.jsp"></s:include>
