@@ -1,7 +1,12 @@
 package com.picsauditing.actions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Anonymous;
@@ -13,23 +18,19 @@ import com.picsauditing.dao.AppPropertyDAO;
 public class ClearCacheAction extends PicsActionSupport {
 	public static String CLEAR_CACHE_PROPERTY = "PICS.clear_cache";
 
-	AuditTypeRuleCache auditTypeRuleCache;
-	AuditCategoryRuleCache auditCategoryRuleCache;
-	AppPropertyDAO appPropertyDAO;
+	@Autowired
+	private AuditTypeRuleCache auditTypeRuleCache;
+	@Autowired
+	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	private AppPropertyDAO appPropertyDAO;
 
-	public ClearCacheAction(AuditTypeRuleCache auditTypeRuleCache, AuditCategoryRuleCache auditCategoryRuleCache,
-			AppPropertyDAO appPropertyDAO) {
-		this.auditTypeRuleCache = auditTypeRuleCache;
-		this.auditCategoryRuleCache = auditCategoryRuleCache;
-		this.appPropertyDAO = appPropertyDAO;
-	}
+	private SimpleDateFormat databaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		String[] cacheNames = CacheManager.getInstance().getCacheNames();
-
-		appPropertyDAO.setProperty(CLEAR_CACHE_PROPERTY, "0");
 
 		for (String cacheName : cacheNames) {
 			System.out.println(cacheName);
@@ -41,6 +42,8 @@ public class ClearCacheAction extends PicsActionSupport {
 				cache.remove(key);
 			}
 		}
+
+		appPropertyDAO.setProperty(CLEAR_CACHE_PROPERTY, databaseFormat.format(new Date()));
 
 		// The Python Cron monitors the status of the App Property "clear_cache"
 		// and if it has been set, resets the cache via this Action Class on all
@@ -60,11 +63,21 @@ public class ClearCacheAction extends PicsActionSupport {
 	@Anonymous
 	public String monitor() {
 		String property = appPropertyDAO.getProperty(CLEAR_CACHE_PROPERTY);
-		if ("1".equals(property)) {
+		Date lastClearDoneOnI18nCache = I18nCache.getLastCleared();
+		Date lastClearCommandIssued = null;
+		
+		try {
+			lastClearCommandIssued = databaseFormat.parse(property);
+		} catch (Exception e) {
+			lastClearCommandIssued = new Date();
+		}
+
+		if (lastClearDoneOnI18nCache == null || lastClearDoneOnI18nCache.before(lastClearCommandIssued)) {
 			output = "CLEAR";
 		} else {
 			output = "OK";
 		}
+
 		return PLAIN_TEXT;
 	}
 }

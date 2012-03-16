@@ -33,7 +33,8 @@ public class I18nCache implements Serializable {
 	static public final String DEFAULT_TRANSLATION = "Translation missing";
 
 	private static I18nCache INSTANCE;
-
+	private static Date LAST_CLEARED;
+	
 	private Table<String, String, String> cache;
 	private Map<String, Date> cacheUsage;
 
@@ -146,6 +147,8 @@ public class I18nCache implements Serializable {
 				}
 				long endTime = System.currentTimeMillis();
 				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
+				
+				LAST_CLEARED = new Date();
 			} catch (SQLException e) {
 				System.out.println(e.getMessage());
 			}
@@ -264,7 +267,11 @@ public class I18nCache implements Serializable {
 			db.executeUpdate(sql);
 		}
 	}
-
+	
+	public static Date getLastCleared() {
+		return LAST_CLEARED;
+	}
+	
 	private String buildInsertStatement(AppTranslation translationToinsert) {
 		String sourceLanguage = translationToinsert.getSourceLanguage();
 		if (Strings.isEmpty(sourceLanguage)) {
