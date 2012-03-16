@@ -16,8 +16,8 @@
 					<th><s:text name="Audit.header.Suggested" /></th>
 				</s:if>
 				<s:if test="!systemEdit">
-					<th>
-						<s:if test="actionStatus.size()>0">
+					<th>						
+						<s:if test="actionStatus.size() > 0 && contractor.trades.size() > 0">
 							<s:select list="actionStatus.asMap()" headerKey="-1" headerValue="-- Select Action --"
 								listKey="key" listValue="key.button+' All'" name="multiStatusChange" id="multiStatusChange" />
 							<s:iterator value="actionStatus.asMap()" var="status">

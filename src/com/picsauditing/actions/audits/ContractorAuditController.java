@@ -239,18 +239,32 @@ public class ContractorAuditController extends AuditActionSupport {
 				}
 			}
 			
-			String message = "";
-			if (CollectionUtils.isEmpty(contractor.getTrades()) && atLeastOneCompleteVisibleCao()) 
-				message = "At least one trade must be selected before a PQF can be submitted.";
-			if (conAudit.getOperators().size() == 0)
-				message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
-			if (conAudit.hasOnlyInvisibleCaos())
-				message = "This audit has no visible CAOs and cannot be seen by external users.  Data is not deleted when facilities are disassociated, but it is no longer visible to external users.";
+			String message = determineMessageForUser();			
 			if (!Strings.isEmpty(message))
 				addAlertMessage(message);
 		}
 
 		return SUCCESS;
+	}
+
+	private String determineMessageForUser() {
+		String message = "";
+		if (CollectionUtils.isEmpty(contractor.getTrades())) {
+			String noTradesSelectedMessage = "At least one trade must be selected before a PQF can be submitted.";
+			if (!atLeastOneCompleteVisibleCao()) {  
+				message = noTradesSelectedMessage;
+			}
+			else {
+				addActionError(noTradesSelectedMessage);	
+			}
+		}
+		
+		if (conAudit.getOperators().size() == 0)
+			message = "This audit has no valid CAOs and cannot be seen by external users.  As we do retain the audit data, the audit is still viewable by internal users";
+		if (conAudit.hasOnlyInvisibleCaos())
+			message = "This audit has no visible CAOs and cannot be seen by external users.  Data is not deleted when facilities are disassociated, but it is no longer visible to external users.";
+		
+		return message;
 	}
 
 	/*
@@ -463,7 +477,15 @@ public class ContractorAuditController extends AuditActionSupport {
 	public void setViewBlanks(boolean viewBlanks) {
 		this.viewBlanks = viewBlanks;
 	}
+	
 	// TODO: FIX ME
+	/**
+	 * This will have to execute the MultiYearValueCalculator to determine the
+	 * 3 year average.
+	 * 
+	 * @param oshaType
+	 * @return
+	 */
 	public OshaAudit getAverageOsha(OshaType oshaType) {
 		//return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
 		return null;
