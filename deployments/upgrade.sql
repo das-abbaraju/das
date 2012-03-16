@@ -64,6 +64,43 @@ update operators o set o.discountPercent = .25, o.discountExpiration = '2012-12-
 insert into app_properties(property, value)
 values ('PICS.liveChat', 1);
 
+-- PICS-3668 Employee Dashboard
+-- This is a script to generate folds and copy files
+-- 1. Run scripts and copy results into batch file
+-- 2. Run batch file to create directories and copy files
+-- Create folders batch script
+select distinct CONCAT('mkdir files/', SUBSTRING(pcaf.id, 1, 3)) 
+from pics_config.contractor_audit cca
+join pics_live.contractor_audit pca on cca.auditTypeID = pca.auditTypeID and cca.creationDate = pca.creationDate
+left join pics_config.pqfdata cpd on cca.id = cpd.auditID and cpd.questionID=2385
+left join pics_live.pqfdata ppd on pca.id = ppd.auditID and ppd.questionID=2385
+join pics_config.contractor_audit_file ccaf on cca.id = ccaf.auditID
+join pics_live.contractor_audit_file pcaf on pca.id = pcaf.auditID
+where pca.auditTypeID=29
+and date(cca.expiresDate) = date(pca.expiresDate)
+and cca.effectiveDate = pca.effectiveDate
+and ccaf.description = pcaf.description
+and ccaf.creationDate = pcaf.creationDate
+and cca.id != pca.id
+order by cca.id, pca.id, ccaf.id, pcaf.id;
+
+-- Copy Files batch script
+select CONCAT('cp forms/files/audit_', IF(ccaf.id > 999, CONCAT(SUBSTRING(ccaf.id, 1, 3), '/'), ''), CONCAT('audit_', ccaf.id, '.', ccaf.fileType), " ", 
+ 'forms/files/audit_', IF(pcaf.id > 999, CONCAT(SUBSTRING(pcaf.id, 1, 3), '/'), ''), CONCAT('audit_', pcaf.id, '.', ccaf.fileType)) as move_me 
+from pics_config.contractor_audit cca
+join pics_live.contractor_audit pca on cca.auditTypeID = pca.auditTypeID and cca.creationDate = pca.creationDate
+left join pics_config.pqfdata cpd on cca.id = cpd.auditID and cpd.questionID=2385
+left join pics_live.pqfdata ppd on pca.id = ppd.auditID and ppd.questionID=2385
+join pics_config.contractor_audit_file ccaf on cca.id = ccaf.auditID
+join pics_live.contractor_audit_file pcaf on pca.id = pcaf.auditID
+where pca.auditTypeID=29
+and date(cca.expiresDate) = date(pca.expiresDate)
+and cca.effectiveDate = pca.effectiveDate
+and ccaf.description = pcaf.description
+and ccaf.creationDate = pcaf.creationDate
+and cca.id != pca.id
+order by cca.id, pca.id, ccaf.id, pcaf.id;
+
 -- PICS-5031
 -- For Data conversion 
 update flag_criteria 
