@@ -24,6 +24,7 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
                 }
         }),
         displayField: 'countryName',
+        editable: false,
         multiSelect: true,
         name: 'country',
         queryMode: 'local',
@@ -40,10 +41,17 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
         }
     },
     applyFilter: function() {
-        var values = this.getValues();
+        var values = this.getValues(),
+        valuesFormat = "";
         
-        this.record.set('value', values.country);
-        this.record.set('operator', 'Equals');
+        for (x = 0; x < values.country.length; x++) {
+            if (x !== 0) {
+                valuesFormat += ',';    
+            }
+            valuesFormat += '\'' + values.country[x] + '\'';
+        }
+        this.record.set('value', valuesFormat);
+        this.record.set('operator', 'In');
         this.superclass.applyFilter();
     }    
 });
