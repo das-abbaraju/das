@@ -35,5 +35,8 @@ s/,-/,0.0/gi
 --    the sum of "days away" and "restriction or transfer" (i.e. DART).  \
 -- 2. The original data contains some data values of "-".  They have been changed to 0.0. \
 -- \
--- TODO Need DDL here to add the new DART column. \
+USE `database name here`; \
 TRUNCATE `naics`; \
+ALTER TABLE `naics` ADD COLUMN `dart` decimal(6,2) NULL AFTER `lwcr`;  \
+INSERT INTO `naics` (`code`,`trir`,`lwcr`,`dart`) VALUES (0,2.0,1.5,1.5); \
+\
