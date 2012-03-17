@@ -19,7 +19,7 @@
 					listValue="name"
 					name="operatorToLink"
 				/>
-				<input type="button" value="<s:text name="button.Save" />" class="picsbutton positive save" />
+				<input type="button" value="<s:text name="button.Save" />" class="picsbutton positive save" data-url="ReportSubcontractorsAjax!save.action" />
 				<div id="report_data">
 					<s:include value="report_subcontractors_data.jsp" />
 				</div>

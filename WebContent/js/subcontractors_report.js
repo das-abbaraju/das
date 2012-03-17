@@ -3,7 +3,7 @@
         methods : {
             init : function() {
                 $('#ReportSubcontractors-page table.report input[type=checkbox].selectAll').live('click', this.toggleAllSelectable);
-                $('#ReportSubcontractors-page form .save').live('click', this.toggleAllSelectable);
+                $('#ReportSubcontractors-page form .save').live('click', this.submitForm);
             },
 
             toggleAllSelectable : function(event) {
@@ -13,9 +13,27 @@
 
             submitForm : function(event) {
                 event.preventDefault();
-                
+
+                var url = $(this).attr('data-url');
                 var formElement = $(this).closest('form');
-                console.log(formElement.serialize());
+                var reportData = formElement.find('#report_data');
+                var serializedParameters = formElement.serialize();
+                var htmlData = null;
+                
+                reportData.html('<img src="images/ajax_process2.gif" />' + translate('JS.Loading'));
+                
+                PICS.ajax({
+                   url: url + "?" + serializedParameters,
+                   success: function(data, textStatus, XMLHttpRequest) {
+                       htmlData = data;
+                   },
+                   error: function(XMLHttpRequest, textStatus, errorThrown) {
+                       htmlData = errorThrown;
+                   },
+                   complete: function(XMLHttpRequest, textStatus) {
+                       reportData.html(htmlData);
+                   }
+                });
             }
         }
     });
