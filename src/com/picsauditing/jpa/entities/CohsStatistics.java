@@ -13,4 +13,10 @@ public class CohsStatistics extends SafetyStatistics{
 	public String toString() {
 		return null;
 	}
+
+	@Override
+	public List<AuditData> getQuestionsToVerify() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
