@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
@@ -43,6 +44,11 @@ public class ManageJobRoles extends AccountActionSupport {
 	protected List<JobRole> jobRoles;
 	protected int contractorId = 0;
 
+	@Before
+	public void startup() throws Exception {
+		findAccount();
+	}
+
 	public String execute() throws Exception {
 		checkPermissions();
 
@@ -53,6 +59,7 @@ public class ManageJobRoles extends AccountActionSupport {
 
 	private void findAccount() throws RecordNotFoundException {
 		if (audit != null) {
+			// Default in case role is not specified
 			account = audit.getContractorAccount();
 		}
 
@@ -63,15 +70,15 @@ public class ManageJobRoles extends AccountActionSupport {
 			account = accountDAO.find(permissions.getAccountId());
 			contractorId = permissions.getAccountId();
 		}
-		
+
 		if (account == null) {
 			contractorId = id;
 			account = accountDAO.find(id);
 		}
-
 		if (account == null) {
 			throw new RecordNotFoundException("account");
 		}
+		assert (account.isContractor());
 	}
 
 	public String get() throws Exception {
@@ -110,18 +117,18 @@ public class ManageJobRoles extends AccountActionSupport {
 		} else {
 			jobRoleDAO.remove(role);
 		}
-		
+
 		return redirect("ManageJobRoles.action?" + getUrlOptions());
 	}
 
 	private String getUrlOptions() {
 		String urlOptions = "";
 		if (audit == null) {
-			urlOptions="account=" + account.getId();
+			urlOptions = "account=" + account.getId();
 		} else {
-			urlOptions="audit=" + audit.getId();
+			urlOptions = "audit=" + audit.getId();
 			if (questionId > 0) {
-				urlOptions +="&questionId=" + questionId;
+				urlOptions += "&questionId=" + questionId;
 			}
 		}
 		return urlOptions;
@@ -228,31 +235,32 @@ public class ManageJobRoles extends AccountActionSupport {
 		}
 	}
 
+	// "other" means "unassigned"/"available"
 	public List<OperatorCompetency> getOtherCompetencies() throws Exception {
 		findAccount();
-		
+
 		if (role != null) {
 			List<OperatorCompetency> others;
-			if (account.isContractor() || contractorId > 0) {
-				ContractorAccount contractor = dao.find(ContractorAccount.class, contractorId);
-				Set<Integer> opIds = new HashSet<Integer>();
-				for (ContractorOperator op : contractor.getOperators())
-					opIds.add(op.getOperatorAccount().getId());
-				others = operatorCompetencyDAO.findByOperatorHierarchy(opIds);
-			} else {
-				others = operatorCompetencyDAO.findAll();
-			}
+			ContractorAccount contractor = (ContractorAccount) account;
+			others = operatorCompetencyDAO.findByOperatorHierarchy(operatorIDs(contractor));
 
-			List<OperatorCompetency> exists = new ArrayList<OperatorCompetency>();
+			List<OperatorCompetency> alreadyAssigned = new ArrayList<OperatorCompetency>();
 			for (JobCompetency jc : role.getJobCompetencies()) {
-				exists.add(jc.getCompetency());
+				alreadyAssigned.add(jc.getCompetency());
 			}
 
-			others.removeAll(exists);
+			others.removeAll(alreadyAssigned);
 			return others;
 		}
 
 		return null;
+	}
+
+	private Set<Integer> operatorIDs(ContractorAccount contractor) {
+		Set<Integer> opIds = new HashSet<Integer>();
+		for (ContractorOperator op : contractor.getOperators())
+			opIds.add(op.getOperatorAccount().getId());
+		return opIds;
 	}
 
 	public List<OperatorAccount> getShellOps() {

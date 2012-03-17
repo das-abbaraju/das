@@ -31,7 +31,7 @@ public class OperatorCompetencyDAO extends PicsDAO {
 	
 	public List<OperatorCompetency> findByOperatorHierarchy(Set<Integer> operatorIDs) {
 		Query query = em.createQuery("SELECT o FROM OperatorCompetency o WHERE o.operator.id IN (:operatorHierarchy) " +
-				"ORDER BY o.category, o.label");
+				"ORDER BY o.label");
 		
 		operatorIDs.removeAll(Account.PICS_CORPORATE);
 		
