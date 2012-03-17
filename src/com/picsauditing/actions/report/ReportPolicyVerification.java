@@ -31,6 +31,7 @@ public class ReportPolicyVerification extends ReportContractorAuditOperator {
 		super.buildQuery();
 
 		sql.addWhere("cao.status IN ('Submitted', 'Resubmitted')");
+		sql.addWhere("ca.expiresDate IS NULL OR ca.expiresDate > NOW()");
 
 		sql.addField("MIN(cao.statusChangedDate) statusChangedDate");
 
