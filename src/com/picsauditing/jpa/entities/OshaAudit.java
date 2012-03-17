@@ -12,6 +12,8 @@ import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
 import com.picsauditing.util.Testable;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 /**
  * Decorator for ContractorAudit, specifically for when ContractorAudit is an
  * OSHa type, that adds OSHA-specific logic.
@@ -87,18 +89,30 @@ public class OshaAudit implements OshaVisitable {
 		}
 	}
 
-	@Transient
 	public SafetyStatistics getSafetyStatistics(OshaType oshaType) {
 		return safetyStatisticsMap.get(oshaType);
 	}
-
-	@Transient
+	
+	public String getSpecificRate(OshaType oshaType, OshaRateType rateType) {
+		return getSafetyStatistics(oshaType).getStats(rateType);
+	}
+	
+	public Integer getFileUploadId(OshaType oshaType) {
+		return getSafetyStatistics(oshaType).getFileUpload().getQuestion().getId();
+	}
+	
+	public List<AuditData> getQuestionsToVerify(OshaType oshaType) {
+		return getSafetyStatistics(oshaType).getQuestionsToVerify();
+	}
+	
+	public Collection<AuditData> getAllQuestionsInOshaType(OshaType oshaType) {
+		return getSafetyStatistics(oshaType).getAnswerMap().values();
+	}
+	
 	public boolean isEmpty(OshaType oshaType) {
 		return (getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null || getSafetyStatistics(
 				oshaType).getStats(OshaRateType.Hours).equals("0"));
 	}
-
-
 
 	@Override
 	public void accept(OshaVisitor visitor) {
@@ -129,5 +143,9 @@ public class OshaAudit implements OshaVisitable {
 		}
 		return false;
 	}
-
+	
+	public boolean isVerified(OshaType oshaType) {
+		AuditData hoursWorked = getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours);
+		return hoursWorked.isVerified();
+	}
 }

@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.Grepper;
+import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
@@ -35,6 +36,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class VerifyView extends ContractorActionSupport {
+	private static final String YES = "Yes";
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
@@ -52,6 +54,7 @@ public class VerifyView extends ContractorActionSupport {
 	protected String emailBody;
 	protected String emailSubject;
 	protected EmailQueue previewEmail;
+	OshaOrganizer oshaOrganizer;
 
 	public VerifyView() {
 		noteCategory = NoteCategory.Audits;
@@ -61,6 +64,7 @@ public class VerifyView extends ContractorActionSupport {
 	@RequiredPermission(value = OpPerms.AuditVerification)
 	public String execute() throws Exception {
 		findContractor();
+		oshaOrganizer = contractor.getOshaOrganizer();
 		fillAuditData();
 		
 		return SUCCESS;
@@ -75,25 +79,19 @@ public class VerifyView extends ContractorActionSupport {
 				pqfQuestions = getPQFAnswerMap(conAudit);
 			}
 			if (conAudit.getAuditType().isAnnualAddendum()) {
-				// TODO: FIX ME
-				/*AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
-				for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (us != null) {
-						if ("Yes".equals(us.getAnswer()) && oshaAudit.isCorporate()
-								&& oshaAudit.getType().equals(OshaType.OSHA)) {
-							oshasUS.add(oshaAudit);
-
-							if (!needsOsha)
-								needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted)
-										|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
+				
+				AuditData us = auditDataDAO.findAnswerToQuestion(conAudit.getId(), 2064);
+				if (us != null && YES.equals(us.getAnswer())) {
+					OshaAudit oshaAudit = new OshaAudit(conAudit);
+					if (!oshaAudit.isEmpty(OshaType.OSHA)) {
+						oshasUS.add(new OshaAudit(conAudit));
+					
+						if (!needsOsha) {
+							needsOsha = conAudit.hasCaoStatus(AuditStatus.Submitted)
+							|| conAudit.hasCaoStatus(AuditStatus.Resubmitted);
 						}
 					}
-
-					// TODO Work on verifying COHS
-					// if (oshaAudit.getType().equals(OshaType.COHS) &&
-					// oshaAudit.isCorporate())
-					// oshasCA.add(oshaAudit);
-				}*/
+				}
 
 				annualUpdates.add(conAudit);
 

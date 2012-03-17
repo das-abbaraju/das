@@ -16,12 +16,15 @@ import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 public class VerifyAudit extends AuditActionSupport {
 
 	private static final long serialVersionUID = -4976847934505647430L;
 	private List<AuditData> pqfQuestions = null;
 	private Map<OperatorAccount, ContractorAuditOperator> caos;
 	private List<Integer> allCaoIDs;
+	private OshaAudit oshaAudit;
 
 	private List<AuditData> applicableAuditData = null;
 
@@ -113,18 +116,15 @@ public class VerifyAudit extends AuditActionSupport {
 		}
 		return applicableAuditData;
 	}
-// TODO: FIX ME
-	/*public OshaAudit getOsha() {
-		AuditData auditData = auditDataDao.findAnswerToQuestion(conAudit.getId(), 2064);
-		if (auditData != null && "Yes".equals(auditData.getAnswer())) {
-			for (OshaAudit oshaAudit : conAudit.getOshas()) {
-				if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate()) {
-					return oshaAudit;
-				}
+	public OshaAudit getOsha() {
+		if (conAudit.getAuditType().isAnnualAddendum()) { 
+			if (oshaAudit == null) { 
+				oshaAudit = new OshaAudit(conAudit);
 			}
+			return oshaAudit;
 		}
 		return null;
-	}*/
+	}
 
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
 		int questionid = auditQuestion.getId();

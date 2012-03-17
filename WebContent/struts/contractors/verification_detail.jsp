@@ -56,27 +56,34 @@
 						</s:iterator>
 					</tr>
 				</thead>
-
 				<tr>
 					<td>Upload New Files</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
-							<s:iterator value="oshasUS" var="osha">
-								<s:if test="#osha.conAudit.equals(#year)">
-									<s:if test="fileUploaded"><a href="#" onClick="openOsha(<s:property value="id"/>)">Show File</a></s:if>
-									<s:else>No File</s:else>
+							<s:iterator value="oshasUS">
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:set name="fileId" value="getFileUploadId('OSHA')" />	
+									
+									<s:if test="#fileId != null" >
+										<a href="#" onClick="openOsha(<s:property value="#audit.id" />,<s:property value="#fileId" />)">
+											Show File
+										</a>
+									</s:if>
+									<s:else>
+										No File
+									</s:else>
 								</s:if>
 							</s:iterator>
 						</td>
 					</s:iterator>
-				</tr>
+				</tr>				
 				<tr>
 					<td>Man Hours Worked:</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="manHours" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'Hours')" />
 								</s:if>
 							</s:iterator>
 						</td>
@@ -84,11 +91,11 @@
 				</tr>
 				<tr>
 					<td>Number of Fatalities:</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="fatalities" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'Fatalities')" />
 								</s:if>
 							</s:iterator>
 						</td>
@@ -96,11 +103,11 @@
 				</tr>
 				<tr>
 					<td>Number of Lost Work Cases:</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="lostWorkCases" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'DaysAwayCases')" />
 								</s:if>
 							</s:iterator>
 						</td>
@@ -108,23 +115,11 @@
 				</tr>
 				<tr>
 					<td>Number of Lost Workdays:</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="lostWorkDays" />
-								</s:if>
-							</s:iterator>
-						</td>
-					</s:iterator>
-				</tr>
-				<tr>
-					<td>Injury &amp; Illnesses Medical Cases:</td>
-					<s:iterator value="annualUpdates" id="year">
-						<td class="center">
-							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="injuryIllnessCases" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'DaysAway')" />
 								</s:if>
 							</s:iterator>
 						</td>
@@ -132,78 +127,23 @@
 				</tr>
 				<tr>
 					<td>Restricted Work Cases:</td>
-					<s:iterator value="annualUpdates" id="year">
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="restrictedWorkCases" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'JobTransfersCases')" />
 								</s:if>
 							</s:iterator>
 						</td>
 					</s:iterator>
 				</tr>
 				<tr>
-					<td>Number of On Job Transfer OR Restricted Days</td>
-					<s:iterator value="annualUpdates" id="year">
+					<td>Number of On Job Transfer OR Restricted Days:</td>
+					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="modifiedWorkDay" />
-								</s:if>
-							</s:iterator>
-						</td>
-					</s:iterator>
-				</tr>
-				<tr>
-					<td>Total Injuries and Illnesses:</td>
-					<s:iterator value="annualUpdates" id="year">
-						<td class="center">
-							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="recordableTotal" />
-								</s:if>
-							</s:iterator>
-						</td>
-					</s:iterator>
-				</tr>
-				<tr>
-					<td>Is Correct:</td>
-					<s:iterator value="annualUpdates" id="year">
-						<td class="center">
-							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:if test="verified">
-										<span style="color: #006400; font-weight: bold;">
-											<s:property value="verified" />
-										</span>
-									</s:if>
-									<s:else>
-										<s:property value="verified" />
-									</s:else>
-								</s:if>
-							</s:iterator>
-						</td>
-					</s:iterator>
-				</tr>
-				<tr>
-					<td>Verified Date:</td>
-					<s:iterator value="annualUpdates" id="year">
-						<td class="center">
-							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:date name="verifiedDate" format="MM/dd/yyyy" />
-								</s:if>
-							</s:iterator>
-						</td>
-					</s:iterator>
-				</tr>
-				<tr>
-					<td>Issue:</td>
-					<s:iterator value="annualUpdates" id="year">
-						<td class="center">
-							<s:iterator value="oshasUS">
-								<s:if test="conAudit.equals(#year)">
-									<s:property value="comment" />
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'JobTransferDays')" />
 								</s:if>
 							</s:iterator>
 						</td>

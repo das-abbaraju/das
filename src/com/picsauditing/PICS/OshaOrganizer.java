@@ -14,7 +14,8 @@ import com.picsauditing.util.YearList;
 public class OshaOrganizer implements OshaVisitor {
 
 	// OSHA Audits will be sorted by their auditYears
-	Map<OshaType, Map<Integer, SafetyStatistics>> theData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
+	Map<OshaType, Map<Integer, SafetyStatistics>> safetyStatisticsData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
+	
 	private static final MultiYearScope[] YEARS_ONLY = {
 			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
 			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
@@ -28,8 +29,8 @@ public class OshaOrganizer implements OshaVisitor {
 	public /* Testable */ YearList mostRecentThreeYears(OshaType type) {
 		YearList yearList = new YearList();
 		
-		if (theData.get(type) != null && theData.get(type).size() > 0) {
-			for (int year : theData.get(type)
+		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
+			for (int year : safetyStatisticsData.get(type)
 					.keySet()) {
 				yearList.add(year);
 			}
@@ -93,7 +94,7 @@ public class OshaOrganizer implements OshaVisitor {
 	public BigDecimal getRateForSpecficYear(OshaType type, Integer year,
 			OshaRateType rateType) {
 		if (year != null) {
-			Map<Integer, SafetyStatistics> typeMap = theData.get(type);
+			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
 			SafetyStatistics stats = typeMap.get(year);
 			String value = stats.getStats(rateType);
 		
@@ -106,7 +107,7 @@ public class OshaOrganizer implements OshaVisitor {
 
 
 	public SafetyStatistics getStatistic(OshaType type, MultiYearScope year) {
-		return theData.get(type).get(new Integer(year.getAuditFor()));
+		return safetyStatisticsData.get(type).get(new Integer(year.getAuditFor()));
 	}
 
 	public String getAnswer2(OshaType type, MultiYearScope year,
@@ -117,18 +118,18 @@ public class OshaOrganizer implements OshaVisitor {
 	
 	@Override
 	public void gatherData(SafetyStatistics safetyStatistics) {
-		Map<Integer, SafetyStatistics> innerMap = theData.get(safetyStatistics.getOshaType());
+		Map<Integer, SafetyStatistics> innerMap = safetyStatisticsData.get(safetyStatistics.getOshaType());
 		if (innerMap == null) {
 			innerMap = new HashMap<Integer, SafetyStatistics>();
 		}
 		innerMap.put(safetyStatistics.getYear(), safetyStatistics);
-		theData.put(safetyStatistics.getOshaType(), innerMap);	
+		safetyStatisticsData.put(safetyStatistics.getOshaType(), innerMap);	
 	}
 	
 	public boolean hasOshaType(OshaType oshaType) {
-		return theData.get(oshaType) != null && theData.get(oshaType).size() > 0;
+		return safetyStatisticsData.get(oshaType) != null && safetyStatisticsData.get(oshaType).size() > 0;
 	}
 	public int size() {
-		return theData.size();
+		return safetyStatisticsData.size();
 	}
 }

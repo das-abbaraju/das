@@ -9,9 +9,10 @@ import java.util.List;
  *
  */
 public abstract class SafetyStatistics {
-	protected HashMap<OshaRateType, String> answerMap;
+	protected HashMap<OshaRateType, AuditData> answerMap;
 	protected OshaType oshaType;
 	protected int year;
+	protected AuditData fileUpload = null;
 
 	public int getYear() {
 		return year;
@@ -30,13 +31,17 @@ public abstract class SafetyStatistics {
 		return oshaType;
 	}
 	
-	abstract public String toString();
-	
 	public String getStats(OshaRateType rateType) {
-		return answerMap.get(rateType);
+		return answerMap.get(rateType).getAnswer();
 	}
 
-	public HashMap<OshaRateType, String> getAnswerMap() {
+	public HashMap<OshaRateType, AuditData> getAnswerMap() {
 		return answerMap;
 	}
+
+	public AuditData getFileUpload() {
+		return fileUpload;
+	}
+
+	abstract public List<AuditData> getQuestionsToVerify();
 }

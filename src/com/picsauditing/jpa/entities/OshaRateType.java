@@ -18,6 +18,7 @@ public enum OshaRateType implements Translatable {
 	JobTransferDays,
 	OtherRecordables,
 	Hours,
+	FileUpload,
 	IFR,
 	EMR,
 	AFR,

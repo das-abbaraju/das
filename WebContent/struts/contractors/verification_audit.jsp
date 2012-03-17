@@ -254,90 +254,29 @@
 		<s:if test="osha != null">
 			<fieldset class="form">
 				<h2 class="formLegend">OSHA</h2>
+					<s:if test="!osha.verified">
+						<s:set name="verifyText" value="'Verify'"/>
+					</s:if>
+					<s:else>
+						<s:set name="verifyText" value="'Unverify'"/>
+					</s:else>
+					
+					<input 
+						id="verify_<s:property value="osha.id"/>" 
+						name="verify" 
+						type="button" 
+						onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,<s:property value="osha.conAudit.id"/>);" 
+						value="<s:property value="#attr.verifyText"/>"
+					/>				
 				
 				<s:div id="oid_%{osha.id}">
 					<ol>
-						<s:if test="!osha.verified">
-							<s:set name="verifyText" value="'Verify'"/>
-						</s:if>
-						<s:else>
-							<s:set name="verifyText" value="'Unverify'"/>
-						</s:else>
-						
-						<input 
-							id="verify_<s:property value="osha.id"/>" 
-							name="verify" 
-							type="button" 
-							onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,<s:property value="osha.conAudit.id"/>);" 
-							value="<s:property value="#attr.verifyText"/>"
-						/>
-						
-						<s:div id="status_%{osha.id}"></s:div>
-						
-						<s:if test="osha.verified">
-							<s:set name="displayVerified" value="'block'"/>
-						</s:if>
-						<s:else>
-							<s:set name="displayVerified" value="'none'"/>
-						</s:else>
-						
-						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
-							<label>Verified:</label>
-							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.verifiedDate" format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/>
-							</s:div>
-						</li>
+					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 						<li>
-							<label>Comment:</label>
-							<s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems" name="osha.comment" />
-						</li>
-						<li>
-							<label>Links:</label>
-							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
+							<label><s:property value="#auditData.question.name" escape="false"/></label>
+							<s:textfield name="#auditData.answer" cssClass="oshanum" />
 						</li>	
-						<li>
-							<hr>
-						</li>
-						<li>
-							<label>File:</label>
-							<s:if test="osha.fileUploaded">
-								<a href="#" onclick="openOsha(<s:property value="osha.id"/>); return false;" target="_BLANK">View File</a>
-								<a href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit" target="_BLANK">Change File</a>
-							</s:if>
-							<s:else>
-								None.
-								<a
-									href="Audit.action?auditID=<s:property value="conAudit.id" />&catID=151&mode=Edit"
-									target="_BLANK"
-								>Upload New Files</a>
-							</s:else>
-						</li>
-						<li>
-							<label>Total Man Hours:</label>
-							<s:textfield id="manHours_%{osha.id}" name="osha.manHours" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Fatalities:</label>
-							<s:textfield id="fatalities_%{osha.id}" name="osha.fatalities" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>LWD Cases:</label> <s:textfield id="lwc_%{osha.id}" name="osha.lostWorkCases" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Lost Days:</label> <s:textfield id="lwd_%{osha.id}" name="osha.lostWorkDays" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Restricted Cases:</label> <s:textfield id="rwc_%{osha.id}" name="osha.restrictedWorkCases" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Restricted Days:</label> <s:textfield id="rwd_%{osha.id}" name="osha.modifiedWorkDay" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Other Injuries:</label> <s:textfield id="imc_%{osha.id}" name="osha.injuryIllnessCases" cssClass="oshanum" />
-						</li>
-						<li>
-							<label>Total Injuries:</label><s:property	value="osha.recordableTotal"/>
-						</li>
+					</s:iterator>	
 					</ol>
 				</s:div>
 			</fieldset>
