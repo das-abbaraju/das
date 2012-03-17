@@ -19,12 +19,6 @@
 
 <s:if test="tracingOn">
 	<div class="alert">
-		<s:if test="showDoneButton">
-			<div class="right">
-				<input type="button" class="picsbutton positive" value="Done with this page" id="doneButton" />
-			</div>
-		</s:if>
-        
 		Text Tracing for Internationalization is turned ON.
 		
         <s:form id="formTracingOff">
