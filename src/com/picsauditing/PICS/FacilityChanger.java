@@ -82,7 +82,7 @@ public class FacilityChanger {
 		co.setOperatorAccount(operator);
 		co.setType(ContractorOperatorRelationshipType.ContractorOperator);
 
-		if (addedByOperatorCorporate()) {
+		if (addedByOperatorCorporate() || operator.isAutoApproveRelationships()) {
 			// This could be controversial, but we're going to always approve if
 			// the operator adds them
 			co.setWorkStatus(ApprovalStatus.Y);
