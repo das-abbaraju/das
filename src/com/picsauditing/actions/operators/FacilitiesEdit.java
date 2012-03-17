@@ -791,8 +791,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		} else {
 			if (gcContractor != null) {
-				// TODO: Do we set the gcContractor to a normal
-				// contractorOperator relationship?
+				operator.getGcContractors().remove(gcContractor);
+				operator.getContractorOperators().remove(gcContractor);
+				contractorOperatorDAO.remove(gcContractor);
 			}
 		}
 	}

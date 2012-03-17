@@ -125,10 +125,12 @@
 						
 						<ol>
 							<li>
+								<label for="">
+									<s:text name="FacilitiesEdit.IsGeneralContractor" />:
+								</label>
 								<s:checkbox 
 	                                name="generalContractor"
 	                                label="FacilitiesEdit.IsGeneralContractor" 
-	                                theme="pics"
 	                                id="general_contractor_checkbox"
 	                            />
 							</li>
