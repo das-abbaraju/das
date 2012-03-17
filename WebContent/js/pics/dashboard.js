@@ -3,26 +3,14 @@ Ext.Loader.setConfig({
 });
 
 Ext.application({
-	name: 'PICS',
-	appFolder: 'js/pics/app',
+    name: 'PICS',
+    appFolder: 'js/pics/app',
 
-	models: [
-        'report.AvailableField', 
-        'report.Report',
-        'report.SimpleField', 
-        'report.SimpleFilter', 
-        'report.SimpleSort'
-    ],
+    controllers: [ 'dashboard.DashboardController' ],
+    models: [],
+    stores: [],
     
- 	stores: [
- 	    'report.AvailableFields',
- 	    'report.AvailableFieldsByCategory',
-        'report.Reports',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportData'
-    ],
-	launch: function() {
-		Ext.create('PICS.view.dashboard.Viewport');
-	}
+    launch: function() {
+        Ext.create('PICS.view.dashboard.Viewport');
+    }
 });

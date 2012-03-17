@@ -1,8 +1,8 @@
 Ext.define('PICS.view.dashboard.Column', {
     extend: 'Ext.container.Container',
-	alias: ['widget.dashboardcolumn'],
+    alias: ['widget.dashboardcolumn'],
 
-	layout: {
+    layout: {
         align: 'stretch',
         type: 'vbox'
     },
