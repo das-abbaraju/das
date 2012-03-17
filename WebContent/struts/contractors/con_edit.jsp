@@ -310,6 +310,9 @@
 									</s:if>
 								</li>
 								<li>
+									<s:checkbox name="contractor.autoApprovesRelationship" theme="formhelp" />
+								</li>
+								<li>
 									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
 									<s:textarea name="contractor.description" cols="40"	rows="15" />
 								</li>	
