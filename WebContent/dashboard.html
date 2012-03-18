@@ -1,65 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>dashboard</title>
-    <link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-all.css">
-	<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
-	<style>
-		.x-body {
-			background: #FFFFFF;
-		}
-	</style>
-	
-</head>
-<body>
-<script type="text/javascript">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>dashboard</title>
+<link rel="stylesheet" type="text/css"
+	href="js/pics/resources/css/ext-all.css">
+<script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
+<style>
+.x-body {
+	background: #FFFFFF;
+}
+</style>
 
+<script type="text/javascript">
     var dashboard = [ {
         config: {
             flex: 2,
         },
         panels: [ {
+            type: 'report',
             id: 1,
-            name: 'Contractor sdfSummary',
+            name: 'Contractor Report 1',
             fields: [ 'contractorName' ],
             columns: [ {
                 header: 'Contractor Name',
+                flex: 1,
                 dataIndex: 'contractorName'
             }, {
                 header: 'Phone',
                 dataIndex: 'phone'
             } ]
         }, {
-            id: 2,
-            name: 'Contractor Summary 2',
-            fields: [ 'contractorName' ],
-            columns: [ {
-                header: 'Contractor Name 2',
-                dataIndex: 'contractorName'
-            }, {
-                header: 'Phone',
-                dataIndex: 'phone'
+            type: 'chart',
+            id: 4,
+            name: 'Contractor Status Chart 2',
+            fields: [ 'accountStatus', {name: 'contractorNameCount', type: 'int'} ],
+            series: [ {
+                type: 'pie',
+                field: 'contractorNameCount',
+                showInLegend: true,
+                highlight: {
+                    segment: {
+                        margin: 20
+                    }
+                },
+                label: {
+                    field: 'accountStatus',
+                    display: 'rotate',
+                    minMargin: 10,
+                    contrast: true
+                }
             } ]
         } ]
     }, {
         panels: [ {
-            id: 1,
-            name: 'Contractor Summary',
+            type: 'html',
+            name: 'Test Html',
+            url: 'dashboard_test.html'
+        }, {
+            type: 'report',
+            id: 2,
+            name: 'Contractor Report 2',
             fields: [ 'contractorName' ],
             columns: [ {
                 header: 'Contractor Name',
-                dataIndex: 'contractorName'
-            }, {
-                header: 'Phone',
-                dataIndex: 'phone'
-            } ]
-        }, {
-            id: 2,
-            name: 'Contractor Summary 2',
-            fields: [ 'contractorName' ],
-            columns: [ {
-                header: 'Contractor Name 2',
+                flex: 1,
                 dataIndex: 'contractorName'
             }, {
                 header: 'Phone',
@@ -68,6 +73,8 @@
         } ]
     } ];
 </script>
-<script type="text/javascript" src="js/pics/dashboard.js"></script>
+</head>
+<body>
+	<script type="text/javascript" src="js/pics/dashboard.js"></script>
 </body>
 </html>

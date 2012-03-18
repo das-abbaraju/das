@@ -7,25 +7,52 @@ Ext.define('PICS.controller.dashboard.DashboardController', {
     
     onLaunch: function() {
         for ( var column = 0; column < dashboard.length; column++) {
-            console.log(column);
             var columnPanel = Ext.create('PICS.view.dashboard.Column', dashboard[column].config);
             this.getViewport().add(columnPanel);
             var panels = dashboard[column].panels;
             for ( var row = 0; row < panels.length; row++) {
-                var panel = this.createPanelReport(panels[row]);
-                columnPanel.add(panel);
+                var config = panels[row];
+                if (config.type == 'report') {
+                    columnPanel.add(this.createPanelReport(config));
+                } else if (config.type == 'chart') {
+                    columnPanel.add(this.createPanelChart(config));
+                } else if (config.type == 'html') {
+                    columnPanel.add(this.createPanelHTML(config));
+                }
             }
         }
     },
 	
-    createPanelReport: function(report) {
+    createPanelHTML: function(config) {
+        console.log(config.url);
         return Ext.create('PICS.view.dashboard.Panel', {
-            title: report.name,
-            items: [{
-                xtype: 'gridpanel',
+            title: config.name,
+            insetPadding: 25,
+            loader: {
+                autoLoad: true,
+                loadMask: true,
+                renderer: 'html',
+                scripts: true,
+                url: config.url
+            }
+        });
+    },
+    
+    createPanelChart: function(config) {
+        return Ext.create('PICS.view.dashboard.Panel', {
+            title: config.name,
+            items: [ {
+                xtype: 'chart',
+                series: config.series,
+                animate: true,
+                shadow: true,
+                legend: {
+                    position: 'right'
+                },
+                insetPadding: 25,
                 store: {
                     autoLoad: true,
-                    fields: report.fields,
+                    fields: config.fields,
                     proxy: {
                         type: 'ajax',
                         reader: {
@@ -33,10 +60,32 @@ Ext.define('PICS.controller.dashboard.DashboardController', {
                             root: 'data',
                             type: 'json'
                         },
-                        url: 'ReportDynamic!data.action?report=' + report.id
+                        url: 'ReportDynamic!data.action?report=' + config.id
+                    }
+                }
+            } ]
+        });
+    },
+    
+    createPanelReport: function(config) {
+        return Ext.create('PICS.view.dashboard.Panel', {
+            title: config.name,
+            items: [{
+                xtype: 'gridpanel',
+                store: {
+                    autoLoad: true,
+                    fields: config.fields,
+                    proxy: {
+                        type: 'ajax',
+                        reader: {
+                            messageProperty: 'message',
+                            root: 'data',
+                            type: 'json'
+                        },
+                        url: 'ReportDynamic!data.action?report=' + config.id
                     }
                 },
-                columns: report.columns
+                columns: config.columns
             }],
         });
     }
