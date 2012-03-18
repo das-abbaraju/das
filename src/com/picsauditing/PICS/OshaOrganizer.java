@@ -132,4 +132,5 @@ public class OshaOrganizer implements OshaVisitor {
 	public int size() {
 		return safetyStatisticsData.size();
 	}
+	
 }

@@ -104,7 +104,7 @@ public class VerifyAudit extends AuditActionSupport {
 			}
 			// Iterate over categories, check for isApplies
 			for (AuditCatData acd : conAudit.getCategories()) {
-				if (acd.isApplies()) {
+				if (acd.isApplies() && !OshaAudit.isSafetyStatisticsCategory(acd.getCategory().getId())) {
 					// Iterator over all questions, if exist then we'll add to
 					// return result
 					for (AuditQuestion aq : acd.getCategory().getQuestions()) {

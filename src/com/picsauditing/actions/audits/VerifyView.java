@@ -30,6 +30,7 @@ import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.Strings;
@@ -54,7 +55,7 @@ public class VerifyView extends ContractorActionSupport {
 	protected String emailBody;
 	protected String emailSubject;
 	protected EmailQueue previewEmail;
-	OshaOrganizer oshaOrganizer;
+	protected OshaOrganizer oshaOrganizer;
 
 	public VerifyView() {
 		noteCategory = NoteCategory.Audits;
@@ -98,7 +99,8 @@ public class VerifyView extends ContractorActionSupport {
 				for (AuditData d : conAudit.getData()) {
 					if (d.getAudit().isCategoryApplicable(d.getQuestion().getCategory().getId())) {
 						int categoryID = d.getQuestion().getCategory().getId();
-						if (categoryID != AuditCategory.CITATIONS
+						if ((categoryID != AuditCategory.CITATIONS &&
+							!OshaAudit.isSafetyStatisticsCategory(categoryID))
 								|| (categoryID == AuditCategory.CITATIONS && (d.getQuestion().isRequired()) || (d
 										.getQuestion().getId() >= 3565
 										&& d.getQuestion().getId() <= 3568 && d.isAnswered()))) {
@@ -157,14 +159,14 @@ public class VerifyView extends ContractorActionSupport {
 							.hasCaoStatus(AuditStatus.Incomplete))) {
 				StringBuffer sb2 = new StringBuffer("");
 				// TODO: FIX ME
-				/*for (OshaAudit oshaAudit : conAudit.getOshas()) {
-					if (oshaAudit.getType().equals(OshaType.OSHA) && oshaAudit.isCorporate() && !oshaAudit.isVerified()
-							&& !Strings.isEmpty(oshaAudit.getComment())) {
+				for (OshaAudit oshaAudit : contractor.getOshaAudits()) {
+					if (!oshaAudit.isVerified(OshaType.OSHA)
+							&& !Strings.isEmpty(oshaAudit.getComment(OshaType.OSHA))) {
 						sb2.append("OSHA : ");
-						sb2.append(oshaAudit.getComment());
+						sb2.append(oshaAudit.getComment(OshaType.OSHA));
 						sb2.append("\n");
 					}
-				}*/
+				}
 				for (AuditData auditData : conAudit.getData()) {
 					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
 						int categoryID = auditData.getQuestion().getCategory().getId();

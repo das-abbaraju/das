@@ -65,38 +65,39 @@ small {
 		return false;
 	}
 	
-	function toggleOSHAVerify( oshaId, auditID ) {
-	
+	function toggleOSHAVerify(oshaId, oshaType) {
 		startThinking({div:'status_'+oshaId});
-		
+		var verify;
+		if ($('#verify_'+oshaId).val() == 'Verify') {
+			verify = true;
+		}
+		else {
+			verify = false;	
+		}
 		var data= {
-				id: oshaId,
-				'osha.comment': $('#comment_' + oshaId).val(),
-				'osha.manHours': $('#manHours_' + oshaId).val(),
-				'osha.fatalities': $('#fatalities_' + oshaId).val(),
-				'osha.lostWorkCases': $('#lwc_' + oshaId).val(),
-				'osha.lostWorkDays': $('#lwd_' + oshaId).val(),
-				'osha.injuryIllnessCases': $('#imc_' + oshaId).val(),
-				'osha.restrictedWorkCases': $('#rwc_' + oshaId).val(),
-				'osha.modifiedWorkDay': $('#rwd_' + oshaId).val(),
-				button: 'toggleVerify'
-		};
-
-		$.getJSON('AuditToggleOSHAVerifyAjax.action', data, function(json) {
+				'audit': oshaId,
+				'oshaType': oshaType,
+				'verify': verify
+			};
+		$.getJSON('AuditToggleOSHAVerifyAjax.action', data, function(json){
+				stopThinking({div:'status_'+oshaId});
 				$('#verified_' + oshaId).toggle();
 				if( json.who ) {
 					$('#verify_' + oshaId ).val('Unverify');
 					$('#verify_details_' + oshaId).text(json.dateVerified + ' by ' + json.who);
+					console.log("unverify " + json.who);
 				} else {
 					$('#verify_' + oshaId ).val('Verify');
+					console.log("verify " + json.who);
 				}
 				
 				setApproveButton( json.percentVerified );
 				stopThinking({div:'status_'+oshaId});
 				startThinking({div: 'caoActionArea'});
-				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': auditID});
+				$('#caoActionArea').load('UpdateVerifyAuditAjax.action', {'auditID': oshaId});
 			}
 		);
+
 		return false;
 	}
 	
@@ -124,12 +125,12 @@ small {
 		startThinking({div:'status_'+oshaId});
 	
 		var data= {
-				id: oshaId,
-				'osha.comment': $('#comment_' + oshaId).val(),
-				button: 'save'
+				'audit': oshaId,
+				'comment': $('#comment_' + oshaId).val(),
+				'oshaType': 'OSHA'
 		};
 
-		$.post('AuditToggleOSHAVerifyAjax.action', data, function() {
+		$.post('AuditToggleOSHAVerifyAjax!stampOshaComment.action', data, function() {
 				$('#comment_' + oshaId).effect('highlight', {color: '#FFFF11'}, 1000);
 				stopThinking({div:'status_'+oshaId});
 			}

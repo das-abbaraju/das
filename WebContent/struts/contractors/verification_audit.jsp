@@ -254,7 +254,7 @@
 		<s:if test="osha != null">
 			<fieldset class="form">
 				<h2 class="formLegend">OSHA</h2>
-					<s:if test="!osha.verified">
+					<s:if test="!osha.isVerified('OSHA')">
 						<s:set name="verifyText" value="'Verify'"/>
 					</s:if>
 					<s:else>
@@ -265,12 +265,37 @@
 						id="verify_<s:property value="osha.id"/>" 
 						name="verify" 
 						type="button" 
-						onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,<s:property value="osha.conAudit.id"/>);" 
+						onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,'OSHA');" 
 						value="<s:property value="#attr.verifyText"/>"
 					/>				
-				
-				<s:div id="oid_%{osha.id}">
+				<s:div id="status_%{osha.id}"></s:div>
+					
+				<s:if test="osha.verified">
+					<s:set name="displayVerified" value="'block'"/>
+				</s:if>
+				<s:else>
+					<s:set name="displayVerified" value="'none'"/>
+				</s:else>
+
+				<div>
 					<ol>
+						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
+							<label>Verified:</label>
+							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
+								<s:date name="osha.verifiedDate" format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/>
+							</s:div>
+						</li>
+						<li>
+							<label>Comment:</label>
+							<s:select onchange="return setOSHAComment(%{osha.id});" id="comment_%{osha.id}" list="oshaProblems" name="osha.getComment('OSHA')" />
+						</li>
+						<li>
+							<label>Links:</label>
+							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
+						</li>	
+						<li>
+							<hr>
+						</li>						
 					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 						<li>
 							<label><s:property value="#auditData.question.name" escape="false"/></label>
@@ -278,7 +303,7 @@
 						</li>	
 					</s:iterator>	
 					</ol>
-				</s:div>
+				</div>
 			</fieldset>
 		</s:if>
 	</s:else>

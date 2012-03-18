@@ -24,8 +24,9 @@ public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_OSHA = 2033; // U.S.
 	public static final int CAT_ID_COHS = 2086; // Canada
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
+	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
 	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] {
-			CAT_ID_OSHA, CAT_ID_COHS, CAT_ID_UK_HSE };
+			CAT_ID_OSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
 
 	protected ContractorAudit contractorAudit;
 
@@ -50,7 +51,7 @@ public class OshaAudit implements OshaVisitable {
 	public List<ContractorAuditOperator> getCaos() {
 		return contractorAudit.getOperatorsVisible();
 	}
-
+	
 	@Testable
 	List<AuditCatData> getCategories() {
 		return contractorAudit.getCategories();
@@ -125,6 +126,16 @@ public class OshaAudit implements OshaVisitable {
 	public boolean isEmpty(OshaType oshaType) {
 		return (getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null || getSafetyStatistics(
 				oshaType).getStats(OshaRateType.Hours).equals("0"));
+	}
+	
+	public String getComment(OshaType oshaType) {
+		return getSafetyStatistics(oshaType).getFileUpload().getComment();
+	}
+	
+	public AuditData stampOshaComment(OshaType oshaType, String comment) {
+		AuditData fileUpload = getSafetyStatistics(oshaType).getFileUpload();
+		fileUpload.setComment(comment);
+		return fileUpload;
 	}
 
 	@Override

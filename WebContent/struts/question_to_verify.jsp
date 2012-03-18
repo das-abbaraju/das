@@ -11,14 +11,14 @@
 		<s:property value="#verifiedPercent" />
 	}
 </s:if>
-<s:elseif test="osha">
-	{"dateVerified" : "<s:date name="osha.verifiedDate" format="MM/dd/yyyy" />", 
-	"who" : "<s:property value="osha.auditor.name"/>", 
+<s:elseif test="oshaAudit">
+	{"dateVerified" : "<s:date name="verifiedDate" format="MM/dd/yyyy" />", 
+	"who" : "<s:property value="auditor.name"/>", 
 	"percentVerified" :
-		<s:iterator value="osha.conAudit.operators" id="cao">
+		<s:iterator value="oshaAudit.caos" id="cao">
 			<s:set name="verifiedPercent" value="#cao.percentVerified + #verifiedPercent" />
 		</s:iterator>
-		<s:set name="verifiedPercent" value="#verifiedPercent / osha.conAudit.operators.size" /> 
+		<s:set name="verifiedPercent" value="#verifiedPercent / oshaAudit.caos.size" /> 
 		<s:property value="#verifiedPercent" />
 	}
 </s:elseif>
