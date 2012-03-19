@@ -231,8 +231,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id"
 				+ (!Strings.isEmpty(questionString) ? " AND d.questionID " + questionString : ""));
 
-		String where = String.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR "
-				+ "(d.answer = 'Medium' AND c.%1$sRisk > 2)", type.toLowerCase());
+		String where = String.format("(d.answer = 'Low' AND c.%1$sRisk != 1) OR "
+				+ "(d.answer = 'Medium' AND c.%1$sRisk != 2)", type.toLowerCase());
 
 		if (PRODUCT.equals(type)) {
 			sql2.addWhere("a.materialSupplier = 1");
