@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -27,8 +26,6 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.QuestionFunctionType;
 import com.picsauditing.jpa.entities.ScoreType;
 import com.picsauditing.jpa.entities.User;
@@ -38,8 +35,6 @@ import com.picsauditing.util.Strings;
 public class AuditPercentCalculator {
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
-	@Autowired
-	private AuditCategoryDataDAO categoryDataDAO;
 	@Autowired
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired

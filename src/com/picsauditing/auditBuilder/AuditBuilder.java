@@ -33,7 +33,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;

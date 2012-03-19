@@ -234,7 +234,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 * Take a map of numerical AuditData answers and add an additional AuditData containing an average. The new average
 	 * will be verified only if all the others are verified
 	 */
-	// TODO: FIX ME
+	// TODO: FIX ME - This might be used by average EMR
 	public static AuditData addAverageData(Collection<AuditData> dataList) {
 		/*if (dataList == null || dataList.size() == 0)
 			return null;
