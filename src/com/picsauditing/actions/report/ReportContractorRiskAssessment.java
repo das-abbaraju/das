@@ -258,7 +258,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				+ (!Strings.isEmpty(questionString) ? " AND d.questionID " + questionString : ""));
 
 		String where = String.format("(d.answer = 'Low' AND c.%1$sRisk != 1) OR "
-				+ "(d.answer = 'Medium' AND c.%1$sRisk != 2)", type.toLowerCase());
+				+ "(d.answer = 'Medium' AND c.%1$sRisk != 2) OR (c.%1$sRisk = 0)", type.toLowerCase());
 
 		if (PRODUCT.equals(type)) {
 			sql2.addWhere("a.materialSupplier = 1");
