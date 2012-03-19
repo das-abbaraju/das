@@ -770,7 +770,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private void saveGeneralContractorRelationship() {
 		ContractorOperator gcContractor = operator.getGcContractor();
 		if (generalContractor) {
-			if (linkedAccount == null) {
+			if (linkedAccount == null || linkedAccount.getContractorAccount() == null) {
 				addActionError(getText("FacilitiesEdit.PleaseSelectContractorForGC"));
 			} else {
 				if (gcContractor != null) {
@@ -802,8 +802,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (operator == null)
 			findOperator();
 
-		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class, "operatorAccount.id = "
-				+ operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
+		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
+				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
 
 		return pendingAndNotApprovedCount;
 	}
