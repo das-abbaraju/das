@@ -234,7 +234,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	 * Take a map of numerical AuditData answers and add an additional AuditData containing an average. The new average
 	 * will be verified only if all the others are verified
 	 */
-	// TODO: FIX ME - This might be used by average EMR
+	// TODO: FIX ME - only used in the EMR calculation - Alex is working on this
 	public static AuditData addAverageData(Collection<AuditData> dataList) {
 		/*if (dataList == null || dataList.size() == 0)
 			return null;
@@ -267,11 +267,13 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 				}
 			}
 		}
+		
 		if (count > 0) {
 			Float avgRateFloat = rateTotal / count;
 			avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
 			avg.setAnswer(avgRateFloat.toString());
 		}
+		
 		return avg;*/
 		return null;
 	}
