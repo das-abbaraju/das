@@ -17,7 +17,7 @@
 				<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('baselineFlag').toString())" escape="false"/></td>
 				<td><s:property value="@com.picsauditing.jpa.entities.FlagColor@getSmallIcon(get('flag').toString())" escape="false"/></td>
 				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>" 
-						rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" 
+						rel="ContractorQuick.action?id=<s:property value="get('id')"/>" 
 						class="contractorQuick account<s:property value="get('status')"/>" title="<s:property value="get('name')"/>"
 					><s:property value="get('name')"/></a></td>
 				<td><a href="OperatorConfiguration.action?id=<s:property value="get('opId')"/>"><s:property value="get('opName')"/></a></td>

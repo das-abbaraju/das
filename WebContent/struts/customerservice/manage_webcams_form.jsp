@@ -26,7 +26,7 @@
 			<s:else>
 				<li><label>Contractor:</label> 
 					<a href="ContractorView.action?id=<s:property value="webcam.contractor.id"/>" 
-						rel="ContractorQuickAjax.action?id=<s:property value="webcam.contractor.id"/>" 
+						rel="ContractorQuick.action?id=<s:property value="webcam.contractor.id"/>" 
 							class="contractorQuick" title="<s:property value="webcam.contractor.name"/>">
 						<s:property value="webcam.contractor.name"/>
 					</a>

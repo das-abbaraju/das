@@ -24,7 +24,7 @@
 		<s:iterator value="tableDisplay.rows" id="row">
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="tableDisplay.rowIds.get(#row)"/>"
-						rel="ContractorQuickAjax.action?id=<s:property value="tableDisplay.rowIds.get(#row)"/>"
+						rel="ContractorQuick.action?id=<s:property value="tableDisplay.rowIds.get(#row)"/>"
 						class="contractorQuick" title="<s:property value="#row"/>"><s:property value="#row"/></a></td>
 				<s:iterator value="tableDisplay.columns" id="column">
 					<td><s:property value="tableDisplay.getContentIcon(#row, #column)" escape="false"/></td>
