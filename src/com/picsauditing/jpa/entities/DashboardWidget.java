@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "rpt_dashboard")
+@Table(name = "rpt_dashboard_widget")
 public class DashboardWidget extends BaseTable {
 	private Dashboard dashboard;
 	private int column = 1;
@@ -20,7 +20,7 @@ public class DashboardWidget extends BaseTable {
 	private String parameters;
 
 	@ManyToOne
-	@JoinColumn(name = "userID", nullable = false)
+	@JoinColumn(name = "dashboardID", nullable = false)
 	public Dashboard getDashboard() {
 		return dashboard;
 	}
@@ -63,7 +63,7 @@ public class DashboardWidget extends BaseTable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name = "userID", nullable = false)
+	@JoinColumn(name = "reportID", nullable = false)
 	public Report getReport() {
 		return report;
 	}
