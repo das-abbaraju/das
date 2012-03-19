@@ -40,6 +40,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectUser;
 import com.picsauditing.util.LocaleController;
+import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -118,10 +119,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
 
-	// Should we put this in another file? so we don't always check in the
-	// PicsActionSupport file?
+	@Deprecated
 	public static final String getVersion() {
-		return "6.8";
+		return PicsOrganizerVersion.getVersion();
 	}
 
 	public boolean isShowConfigMessage() {

@@ -2340,19 +2340,15 @@
 		</action>
 
 		<!-- Development struts mappings -->
-		<action name="CertCleanUp" class="com.picsauditing.actions.contractors.CertCleanUp">
-			<result>/struts/blank.jsp</result>
+		<action name="DataConversion" class="com.picsauditing.actions.DataConversion">
+			<result>/struts/data_conversion.jsp</result>
 		</action>
-
+		
 		<action name="NameIndexUpdater" class="com.picsauditing.util.NameIndexUpdater">
 		</action>
 		
 		<!-- Taggit Actions -->
 		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
-		</action>
-
-		<action name="CertHashUtil" class="com.picsauditing.actions.contractors.CertHashUtil">
-			<result>struts/contractors/cert_convert.jsp</result>
 		</action>
 
 		<!-- Exceptions -->
