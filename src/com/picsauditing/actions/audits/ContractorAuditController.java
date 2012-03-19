@@ -583,7 +583,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	public boolean displayMultiStatusDropDown() {
 		return (actionStatus.size() > 0 
 				&& CollectionUtils.isNotEmpty(contractor.getTrades())
-				&& !permissions.isAdmin());
+				&& !permissions.hasGroup(10));
 	}
 	
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
@@ -601,7 +601,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	
 	private boolean canContractorSubmitPQF(WorkflowStep step) {
 		if (step.getNewStatus().isSubmitted()
-				&& !permissions.isAdmin()
+				&& !permissions.hasGroup(10)
 				&& CollectionUtils.isEmpty(contractor.getTrades())) {
 			return false;
 		}
