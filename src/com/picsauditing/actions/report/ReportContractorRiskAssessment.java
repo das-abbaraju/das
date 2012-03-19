@@ -150,6 +150,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			contractorAccountDAO.save(con);
 
 			auditorNotes = "";
+			manuallySetRisk = LowMedHigh.None;
 		} else {
 			addActionError("Missing Risk Assessment Type");
 		}
