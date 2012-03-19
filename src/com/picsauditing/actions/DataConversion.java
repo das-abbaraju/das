@@ -1,12 +1,14 @@
 package com.picsauditing.actions;
 
 import java.io.File;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.PicsOrganizerVersion;
 import com.picsauditing.util.Strings;
@@ -20,7 +22,7 @@ import com.picsauditing.util.Strings;
 public class DataConversion extends PicsActionSupport {
 	@Autowired
 	private AppPropertyDAO appPropertyDAO;
-	
+
 	@Anonymous
 	public String execute() throws Exception {
 		if (applicationNeedsUpgrade()) {
@@ -31,16 +33,16 @@ public class DataConversion extends PicsActionSupport {
 			return BLANK;
 		}
 	}
-	
+
 	private boolean applicationNeedsUpgrade() {
 		String versionMajor = appPropertyDAO.getProperty("VERSION.major");
 		if (Strings.isEmpty(versionMajor))
 			return true;
-		
+
 		String versionMinor = appPropertyDAO.getProperty("VERSION.minor");
 		if (Strings.isEmpty(versionMajor))
 			return true;
-		
+
 		if (PicsOrganizerVersion.greaterThan(Integer.parseInt(versionMajor), Integer.parseInt(versionMinor))) {
 			return true;
 		}
@@ -53,9 +55,11 @@ public class DataConversion extends PicsActionSupport {
 			addActionError("Application is already up to date");
 			return BLANK;
 		}
-		sampleUpdate1();
+		long startTime = System.currentTimeMillis();
+		convertEmployeeGuard();
 		updateDatabaseVersions();
-		addActionMessage("Data conversion completed successfully");
+		long endTime = System.currentTimeMillis();
+		addActionMessage("Data conversion completed successfully in " + (endTime - startTime) + " ms");
 		return BLANK;
 	}
 
@@ -64,26 +68,34 @@ public class DataConversion extends PicsActionSupport {
 		appPropertyDAO.setProperty("VERSION.minor", PicsOrganizerVersion.minor + "");
 	}
 
-	private void sampleUpdate1() {
-		// TODO Auto-generated method stub
-		
-//		File[] files = getFiles(certs.get(i).getId());
-//		PicsLogger.log("  found " + files.length
-//				+ " files for certificate id="
-//				+ certs.get(i).getId());
-//		for (File file : files)
-//			FileUtils.moveFile(file, getFtpDir() + "/cert_cleanup/");
+	private void convertEmployeeGuard() {
+		List<ContractorAudit> auditList = dao.findWhere(ContractorAudit.class, "auditType.id IN (17,29)");
+		for (ContractorAudit conAudit : auditList) {
+			System.out.println(" Converting: " + conAudit.getId() + " " + conAudit.getAuditType().getName() + " "
+					+ conAudit.getAuditFor());
+			if (conAudit.getAuditType().getId() == 17)
+				convertIntegrityManagementAudit(conAudit);
+			if (conAudit.getAuditType().getId() == 29)
+				convertImplementationAuditPlusAudit(conAudit);
+
+		}
+	}
+
+	private void convertImplementationAuditPlusAudit(ContractorAudit conAudit) {
 
 	}
-	
+
+	private void convertIntegrityManagementAudit(ContractorAudit conAudit) {
+
+	}
+
 	private String getFileName(int certID) {
 		return PICSFileType.certs + "_" + certID;
 	}
 
 	private File[] getFiles(int certID) {
-		File dir = new File(getFtpDir() + "/files/"
-				+ FileUtils.thousandize(certID));
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(certID));
 		return FileUtils.getSimilarFiles(dir, getFileName(certID));
 	}
-	
+
 }
