@@ -51,7 +51,7 @@
 			
 			<div class="filterOption">
 				<a href="#" class="filterBox">Risk Type</a>
-				<s:select list="#{'All':getText('JS.Filters.status.All'),'Safety':'Safety','Product':'Product'}" cssClass="forms" name="filter.riskType" />
+				<s:select list="riskList" cssClass="forms" name="filter.riskType" />
 			</div>
 		</s:form>
 		<div class="clear"></div>

@@ -1,6 +1,8 @@
 package com.picsauditing.actions.report;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,6 +32,10 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportContractorRiskAssessment extends ReportAccount {
+	public static String SAFETY = "Safety";
+	public static String PRODUCT = "Product";
+	public static String TRANSPORTATION = "Transportation";
+
 	protected int conID;
 	protected String auditorNotes;
 	protected Note note;
@@ -57,24 +63,27 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public void buildQuery() {
 		super.buildQuery();
 
-		String safetyRisk = getRiskSQL("Safety", "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
-		String productRisk = getRiskSQL("Product", "GROUP_CONCAT(CONCAT(CASE d.questionID "
+		String safetyRisk = getRiskSQL(SAFETY, "d.answer", AuditQuestion.RISK_LEVEL_ASSESSMENT);
+		String productRisk = getRiskSQL(PRODUCT, "GROUP_CONCAT(CONCAT(CASE d.questionID "
 				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
 				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
 				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
+		String transportationRisk = getRiskSQL(TRANSPORTATION, null);
 
-		if ("Safety".equals(getFilter().getRiskType())) {
+		if (SAFETY.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
-		} else if ("Product".equals(getFilter().getRiskType())) {
+		} else if (PRODUCT.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + productRisk + ") r ON r.id = a.id");
+		} else if (TRANSPORTATION.equals(getFilter().getRiskType())) {
+			sql.addJoin("JOIN (" + transportationRisk + ") r ON r.id = a.id");
 		} else {
-			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
+			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + "\nUNION\n" + transportationRisk + ") r ON r.id = a.id");
 		}
 
 		sql.addField("r.riskType");
 		sql.addField("r.risk");
-		sql.addField("r.answer");
 		sql.addField("r.lastVerifiedDate");
+		sql.addField("r.answer");
 	}
 
 	@RequiredPermission(value = OpPerms.RiskRank)
@@ -83,7 +92,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		if (!Strings.isEmpty(type)) {
 			String noteMessage = type + " risk adjusted from ";
 
-			if ("Safety".equals(type)) {
+			if (SAFETY.equals(type)) {
 				LowMedHigh newSafetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
 				LowMedHigh currentSafetyRisk = con.getSafetyRisk();
 
@@ -140,7 +149,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		recallWizardSessionFilter();
 		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
-		if (type.equals("Safety")) {
+		if (type.equals(SAFETY)) {
 			LowMedHigh safetyRisk = getContractorAnswer(AuditQuestion.RISK_LEVEL_ASSESSMENT);
 
 			noteMessage += con.getSafetyRisk().toString() + " to " + safetyRisk.toString();
@@ -165,8 +174,43 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		return execute();
 	}
 
+	public int getConID() {
+		return conID;
+	}
+
+	public void setConID(int conID) {
+		this.conID = conID;
+	}
+
+	public String getAuditorNotes() {
+		return auditorNotes;
+	}
+
+	public void setAuditorNotes(String auditorNotes) {
+		this.auditorNotes = auditorNotes;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public List<String> getRiskList() {
+		List<String> risks = new ArrayList<String>();
+		risks.add(getText("JS.Filters.status.All"));
+		risks.add(SAFETY);
+		risks.add(PRODUCT);
+		risks.add(TRANSPORTATION);
+
+		return risks;
+	}
+
 	private void recallWizardSessionFilter() {
-		// TODO: I have a feeling that this is not the way that Wizard Session should be used. Need to find a better
+		// TODO: I have a feeling that this is not the way that Wizard Session
+		// should be used. Need to find a better
 		// way.
 		WizardSession wizardSession = new WizardSession(ActionContext.getContext().getSession());
 		setFilter(wizardSession.getContractorFilter());
@@ -175,31 +219,39 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	private String getRiskSQL(String type, String answer, int... questionIDs) {
 		String questionString = "";
 
-		if (questionIDs.length == 1)
+		if (questionIDs.length == 1) {
 			questionString = "= " + questionIDs[0];
-		else
+		} else if (questionIDs.length > 1) {
 			questionString = String.format("IN (%s)", Strings.implode(questionIDs));
+		}
 
 		SelectAccount sql2 = new SelectAccount();
 		sql2.setType(Type.Contractor);
 		sql2.addJoin("JOIN contractor_audit ca ON ca.conID = a.id AND ca.auditTypeID = 1");
-		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id AND d.questionID " + questionString);
+		sql2.addJoin("JOIN pqfdata d ON d.auditID = ca.id"
+				+ (!Strings.isEmpty(questionString) ? " AND d.questionID " + questionString : ""));
 
-		String where = String
-				.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR (d.answer = 'Medium' AND c.%1$sRisk > 2)",
-						type.toLowerCase());
+		String where = String.format("(d.answer = 'Low' AND c.%1$sRisk > 1) OR "
+				+ "(d.answer = 'Medium' AND c.%1$sRisk > 2)", type.toLowerCase());
 
-		if (type.equals("Product")) {
+		if (PRODUCT.equals(type)) {
 			sql2.addWhere("a.materialSupplier = 1");
 			sql2.addGroupBy("a.id");
+		} else if (TRANSPORTATION.equals(type)) {
+			sql2.addWhere("a.transportationServices = 1");
 		} else {
 			sql2.addWhere("a.onsiteServices = 1 OR a.offsiteServices = 1");
 		}
 
 		sql2.addField("'" + type + "' riskType");
 		sql2.addField("c." + type.toLowerCase() + "Risk risk");
-		sql2.addField(answer);
 		sql2.addField("c." + type.toLowerCase() + "RiskVerified lastVerifiedDate");
+
+		if (!Strings.isEmpty(answer)) {
+			sql2.addField(answer);
+		} else {
+			sql2.addField("'' answer");
+		}
 
 		sql2.addWhere("a.status = 'Active'");
 		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL "
@@ -257,29 +309,5 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		} catch (Exception e) {
 			PicsLogger.log("Cannot send email to  " + con.getName() + " (" + con.getId() + ")");
 		}
-	}
-
-	public int getConID() {
-		return conID;
-	}
-
-	public void setConID(int conID) {
-		this.conID = conID;
-	}
-
-	public String getAuditorNotes() {
-		return auditorNotes;
-	}
-
-	public void setAuditorNotes(String auditorNotes) {
-		this.auditorNotes = auditorNotes;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 }
