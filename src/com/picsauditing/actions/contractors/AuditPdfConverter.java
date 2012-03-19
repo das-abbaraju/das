@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.servlet.ServletOutputStream;
 
 import org.apache.struts2.ServletActionContext;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.Anchor;
@@ -24,16 +23,12 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfImportedPage;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.audits.AuditActionSupport;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -44,10 +39,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -63,7 +55,6 @@ public class AuditPdfConverter extends AuditActionSupport {
 			.getFont(FontFactory.HELVETICA, 24, Font.BOLD, new BaseColor(0xa8, 0x4d, 0x10));
 	private Font auditFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0x01, 0x21, 0x42));
 	private Font categoryFont = FontFactory.getFont(FontFactory.HELVETICA, 20, new BaseColor(0xa8, 0x4d, 0x10));
-	private Font subCategoryFont = FontFactory.getFont(FontFactory.HELVETICA, 16, new BaseColor(0xa8, 0x4d, 0x10));
 	private Font questionTitleFont = FontFactory.getFont(FontFactory.HELVETICA, 13, new BaseColor(0xa8, 0x4d, 0x10));
 	private Font questionFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
 	private Font answerFont = FontFactory.getFont(FontFactory.COURIER, 10, BaseColor.BLUE);
@@ -140,132 +131,6 @@ public class AuditPdfConverter extends AuditActionSupport {
 				handleCategory(document, allCategories, answerMap, category, 0);
 		}
 	}
-	
-	// TODO: FIX ME
-	private void addOshaLog(Document document, ContractorAudit audit, AuditCategory category) throws DocumentException {
-		/*for (OshaAudit oshaAudit : audit.getOshas()) {
-			if (matchesType(category.getId(), oshaAudit.getType())) {
-				String logInfo = oshaAudit.getType().toString() + " - " + oshaAudit.getLocation();
-				if (!Strings.isEmpty(oshaAudit.getDescription()))
-					logInfo += " " + oshaAudit.getDescription();
-
-				Paragraph oshaSubCat = new Paragraph(logInfo, subCategoryFont);
-				oshaSubCat.setIndentationLeft(20);
-				document.add(oshaSubCat);
-				PdfPTable oshaTable = new PdfPTable(3);
-
-				oshaTable.setWidths(new int[] { 75, 10, 15 });
-				oshaTable.setSpacingBefore(20);
-
-				List<PdfPCell> cells = new ArrayList<PdfPCell>();
-
-				PdfPCell cell = new PdfPCell(new Phrase("Total Hours Worked"));
-				cell.setColspan(2);
-				cells.add(cell);
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getManHours(), "#,##0"), questionFont)));
-
-				cells.add(new PdfPCell(new Phrase("")));
-				cells.add(new PdfPCell(new Phrase("#")));
-				cells.add(new PdfPCell(new Phrase("Rate")));
-
-				cells.add(new PdfPCell(new Phrase("Number of Fatalities", questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getFatalities(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getFatalitiesRate()), questionFont)));
-
-				String lostWorkDaysCases = "Number of Lost Workday Cases - Has lost days AND is "
-						+ oshaAudit.getDescriptionReportable();
-				if (oshaAudit.getType().equals(OshaType.COHS))
-					lostWorkDaysCases = "Number of Lost Time Injuries";
-				cells.add(new PdfPCell(new Phrase(lostWorkDaysCases, questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getLostWorkCases(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkCasesRate(), "#,##0"), questionFont)));
-
-				String lostWorkDays = "All lost workdays (regardless of restricted days) AND is "
-						+ oshaAudit.getDescriptionReportable();
-				if (oshaAudit.getType().equals(OshaType.COHS))
-					lostWorkDays = "Number of Days Away From Work";
-				cells.add(new PdfPCell(new Phrase(lostWorkDays, questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getLostWorkDays(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getLostWorkDaysRate()), questionFont)));
-
-				String injuryAndIllness = "Injury & Illnesses Medical Cases - No lost OR restricted days AND is "
-						+ oshaAudit.getDescriptionReportable() + "(non-fatal)";
-				if (oshaAudit.getType().equals(OshaType.COHS))
-					injuryAndIllness = "Number of Medical Aid/Treatment Cases";
-				cells.add(new PdfPCell(new Phrase(injuryAndIllness, questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getInjuryIllnessCases(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getInjuryIllnessCasesRate()), questionFont)));
-
-				String restrictedCases = "Has restricted days AND no lost days AND is "
-						+ oshaAudit.getDescriptionReportable();
-				if (oshaAudit.getType().equals(OshaType.COHS))
-					restrictedCases = "Number of Restricted/Modified Cases";
-				cells.add(new PdfPCell(new Phrase(restrictedCases, questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getRestrictedWorkCases(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRestrictedWorkCasesRate()), questionFont)));
-
-				String totalInjuriesAndIllnesses = "Total " + oshaAudit.getDescriptionReportable()
-						+ " Injuries and Illnesses";
-				if (oshaAudit.getType().equals(OshaType.COHS))
-					totalInjuriesAndIllnesses = "Total Recordable Injuries and Illnesses";
-				cells.add(new PdfPCell(new Phrase(totalInjuriesAndIllnesses, questionFont)));
-				cells.add(new PdfPCell(new Phrase("" + oshaAudit.getRecordableTotal(), questionFont)));
-				cells.add(new PdfPCell(new Phrase(format(oshaAudit.getRecordableTotalRate()), questionFont)));
-
-				if (oshaAudit.getType().equals(OshaType.COHS)) {
-					cell = new PdfPCell(new Phrase("What is your CAD-7", questionFont));
-					cell.setColspan(2);
-					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase("" + oshaAudit.getCad7(), questionFont)));
-
-					cell = new PdfPCell(new Phrase("What is your NEER", questionFont));
-					cell.setColspan(2);
-					cells.add(cell);
-					cells.add(new PdfPCell(new Phrase("" + oshaAudit.getNeer(), questionFont)));
-				}
-				if (!oshaAudit.getType().equals(OshaType.COHS)) {
-					cell = new PdfPCell(new Phrase("Uploaded Log Files", questionFont));
-					cell.setColspan(2);
-					cells.add(cell);
-					if (oshaAudit.isFileUploaded()) {
-						File oshaDir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(oshaAudit.getId()));
-						File[] files = FileUtils.getSimilarFiles(oshaDir, PICSFileType.osha.toString() + "_"
-								+ oshaAudit.getId());
-						if (files.length > 0) {
-							File oshaFile = files[0];
-							String filename = oshaFile.getName();
-							String extension = filename.substring(filename.lastIndexOf('.') + 1, filename.length());
-							if ("pdf".equalsIgnoreCase(extension)) {
-								String fileMD5 = FileUtils.getFileMD5(oshaFile);
-								if (fileMD5 == null || !attachments.containsKey(fileMD5)) {
-									attachments.put(fileMD5, oshaFile);
-								}
-								cells.add(new PdfPCell(new Phrase("See Attached", questionFont)));
-							} else {
-								Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
-										Font.UNDERLINE, new BaseColor(0, 0, 255)));
-								anchor.setReference("http://www.picsorganizer.com/DownloadOsha.action?id="
-										+ oshaAudit.getId());
-								anchor.setName("View File");
-								Phrase phrase = new Phrase();
-								phrase.add(anchor);
-								cells.add(new PdfPCell(phrase));
-							}
-						}
-					} else
-						cells.add(new PdfPCell(new Phrase("No File Uploaded", questionFont)));
-				}
-
-				for (PdfPCell c : cells) {
-					c.setBorderColor(new BaseColor(0xa8, 0x4d, 0x10));
-					c.setPadding(5);
-					oshaTable.addCell(c);
-				}
-
-				document.add(oshaTable);
-			}
-		}*/
-	}
 
 	private void handleCategory(Document document, Map<AuditCategory, AuditCatData> allCategories, AnswerMap answerMap,
 			AuditCategory category, int indentLevel) throws DocumentException {
@@ -289,12 +154,14 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void handleQuestion(Document document, AuditQuestion auditQuestion, AnswerMap answerMap, int indentLevel)
 			throws DocumentException {
+		if (auditQuestion.getTitle() != null && auditQuestion.getTitle().exists()) {
+			String questionTitle = Jsoup.parse(auditQuestion.getTitle().toString()).text();
 
-		if (auditQuestion.getTitle() != null && !Strings.isEmpty(auditQuestion.getTitle().toString())) {
-			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle().toString(), questionTitleFont);
+			Paragraph questionTitleParagraph = new Paragraph(20, questionTitle, questionTitleFont);
 			questionTitleParagraph.setIndentationLeft(indentLevel + 30);
 			document.add(questionTitleParagraph);
 		}
+
 		Paragraph questionAnswer = new Paragraph();
 		questionAnswer.setIndentationLeft(indentLevel + 30);
 		String questionLine = "";
@@ -315,6 +182,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 								+ auditData.getAudit().getId() + "&auditData.question.id="
 								+ auditData.getQuestion().getId());
 						anchor.setName("View File");
+						questionAnswer.add("   ");
 						questionAnswer.add(anchor);
 					} else {
 						questionAnswer.add(new Chunk("File Not Uploaded", answerFont));
@@ -333,7 +201,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 		int index;
 		String working = question;
 
-		working = working.replaceAll("&nbsp;", " ");
+		working = working.replaceAll("&nbsp;", " ").trim();
 
 		while (working.length() > 0) {
 			index = (working.indexOf("<") >= 0) ? working.indexOf("<") : working.length();
