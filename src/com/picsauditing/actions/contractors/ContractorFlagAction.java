@@ -808,7 +808,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				}
 			}
 
-			String where = "t.audit.contractorAccount.id = " + id + " AND t.status != 'Expired' AND t.visible = 1 "
+			String where = "t.audit.contractorAccount.id = " + id + " AND t.visible = 1 "
 					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id IN (" + Strings.implode(operatorIds, ",") + "))";
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
 					ContractorAuditOperator.class, where, 0);
@@ -816,7 +816,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
-				addCaoToMissingAudits(cao,  auditTypeToFlagCriteria);
+				if (!cao.getAudit().isExpired())
+					addCaoToMissingAudits(cao,  auditTypeToFlagCriteria);
 			}
 		}
 		return missingAudits;
