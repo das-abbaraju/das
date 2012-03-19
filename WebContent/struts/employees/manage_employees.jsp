@@ -175,7 +175,9 @@
 											<s:property value="#e.title" />
 										</td>
 										<td>
-											<s:text name="%{#e.classification.getI18nKey('description')}" />
+											<s:if test="#e.classification != null">
+												<s:text name="%{#e.classification.getI18nKey('description')}" />
+											</s:if>
 										</td>
 										<td class="center">
 											<a

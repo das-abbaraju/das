@@ -15,6 +15,7 @@ import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
+import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -88,6 +89,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		checkPermissions();
 	}
 
+	@Before
 	public void findAccount() {
 		if (audit != null) {
 			account = audit.getContractorAccount();
@@ -96,7 +98,16 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (employee != null) {
 			account = employee.getAccount();
 		}
-	}
+
+		if (getParameter("id") > 0) {
+			id = getParameter("id");
+			account = accountDAO.find(id);
+		}
+
+		if (account == null)
+			account = accountDAO.find(permissions.getAccountId());
+
+}
 
 	@Override
 	public String execute() throws Exception {
@@ -127,15 +138,6 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 				}
 			}
 		}
-
-
-		if (getParameter("id") > 0) {
-			id = getParameter("id");
-			account = accountDAO.find(id);
-		}
-
-		if (account == null)
-			account = accountDAO.find(permissions.getAccountId());
 
 		return SUCCESS;
 	}
