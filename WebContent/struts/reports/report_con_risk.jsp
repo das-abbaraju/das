@@ -79,22 +79,47 @@
 				<td class="right"><s:property value="#stat.count" /></td>
 				<td>
 					<a href="ContractorView.action?id=<s:property value="get('id')"/>"
-						rel="ContractorQuickAjax.action?id=<s:property value="get('id')"/>" class="contractorQuick"
+						rel="ContractorQuick.action?id=<s:property value="get('id')"/>"
+						class="contractorQuick"
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</td>
-				<td><s:date name="get('creationDate')" /></td>
-				<td><s:property value="get('riskType')" /></td>
-				<td><s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" /></td>
-				<td><s:property value="get('answer')" escape="false" /></td>
-				<td><s:date name="get('lastVerifiedDate')" /></td>
+				<td>
+					<s:date name="get('creationDate')" />
+				</td>
+				<td>
+					<s:property value="get('riskType')" />
+				</td>
+				<td>
+					<s:property value="@com.picsauditing.jpa.entities.LowMedHigh@getName(get('risk'))" />
+				</td>
 				<s:form action="ReportContractorRiskLevel" method="POST">
-					<s:hidden value="%{get('id')}" name="conID" />
-					<s:hidden value="%{get('riskType')}" name="type" />
-					<td><s:textarea name="auditorNotes" cols="15" rows="4" /></td>
 					<td>
-						<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
+						<s:if test="get('riskType').toString() != 'Transportation'">
+							<s:property value="get('answer')" escape="false" />
+						</s:if>
+						<s:else>
+							<s:select 
+								list="@com.picsauditing.jpa.entities.LowMedHigh@values()"
+								listKey="name()"
+								listValue="name()"
+								name="manuallySetRisk"
+							/>
+						</s:else>
 					</td>
 					<td>
+						<s:date name="get('lastVerifiedDate')" />
+					</td>
+					<td>
+						<s:textarea name="auditorNotes" cols="15" rows="4" />
+					</td>
+					<td>
+						<s:if test="get('riskType').toString() != 'Transportation'">
+							<s:submit method="reject" cssClass="picsbutton positive" value="%{getText('button.Reject')}" />
+						</s:if>
+					</td>
+					<td>
+						<s:hidden value="%{get('id')}" name="conID" />
+						<s:hidden value="%{get('riskType')}" name="type" />
 						<s:submit method="accept" cssClass="picsbutton negative" value="%{getText('button.Accept')}" />
 					</td>
 				</s:form>

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.ProducerCallback;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
@@ -32,6 +33,15 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ReportContractorRiskAssessment extends ReportAccount {
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	protected AuditDataDAO auditDataDAO;
+	@Autowired
+	protected NoteDAO noteDAO;
+	@Autowired
+	private EmailSenderSpring emailSender;
+
 	public static String SAFETY = "Safety";
 	public static String PRODUCT = "Product";
 	public static String TRANSPORTATION = "Transportation";
@@ -41,15 +51,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	protected Note note;
 	protected String type;
 	protected ContractorAccount con;
-
-	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO;
-	@Autowired
-	protected AuditDataDAO auditDataDAO;
-	@Autowired
-	protected NoteDAO noteDAO;
-	@Autowired
-	private EmailSenderSpring emailSender;
+	protected LowMedHigh manuallySetRisk;
 
 	public ReportContractorRiskAssessment() {
 		this.orderByDefault = "a.creationDate DESC, a.name";
@@ -77,7 +79,8 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		} else if (TRANSPORTATION.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + transportationRisk + ") r ON r.id = a.id");
 		} else {
-			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + "\nUNION\n" + transportationRisk + ") r ON r.id = a.id");
+			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + "\nUNION\n" + transportationRisk
+					+ ") r ON r.id = a.id");
 		}
 
 		sql.addField("r.riskType");
@@ -90,6 +93,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	public String accept() throws Exception {
 		recallWizardSessionFilter();
 		if (!Strings.isEmpty(type)) {
+			if (con == null)
+				con = contractorAccountDAO.find(conID);
+			
 			String noteMessage = type + " risk adjusted from ";
 
 			if (SAFETY.equals(type)) {
@@ -107,7 +113,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 				con.setSafetyRisk(newSafetyRisk);
 				con.setSafetyRiskVerified(new Date());
-			} else {
+			} else if (PRODUCT.equals(type)) {
 				LowMedHigh productRisk = getContractorAnswer(AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT);
 				LowMedHigh businessRisk = getContractorAnswer(AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT);
 				// Get highest
@@ -122,6 +128,13 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 				con.setProductRisk(productRisk);
 				con.setProductRiskVerified(new Date());
+			} else if (TRANSPORTATION.equals(type)) {
+				LowMedHigh currentTransportationRisk = con.getTransportationRisk();
+				
+				noteMessage += currentTransportationRisk.name() + " to " + manuallySetRisk.name();
+				
+				con.setTransportationRisk(manuallySetRisk);
+				con.setTransportationRiskVerified(new Date());
 			}
 
 			Note note = new Note(con, getUser(), noteMessage + " - " + auditorNotes);
@@ -147,6 +160,10 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
 		recallWizardSessionFilter();
+		
+		if (con == null)
+			con = contractorAccountDAO.find(conID);
+		
 		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
 		if (type.equals(SAFETY)) {
@@ -196,6 +213,14 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public LowMedHigh getManuallySetRisk() {
+		return manuallySetRisk;
+	}
+
+	public void setManuallySetRisk(LowMedHigh manuallySetRisk) {
+		this.manuallySetRisk = manuallySetRisk;
 	}
 
 	public List<String> getRiskList() {
@@ -262,9 +287,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	}
 
 	private LowMedHigh getContractorAnswer(int questionID) {
-		if (con == null)
-			con = contractorAccountDAO.find(conID);
-
 		if (Strings.isEmpty(auditorNotes))
 			auditorNotes = null;
 

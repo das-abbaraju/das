@@ -14,6 +14,7 @@ public enum LowMedHigh implements Translatable {
 		for (LowMedHigh value : LowMedHigh.values()) {
 			map.put(value.ordinal(), value);
 		}
+
 		return map;
 	}
 
