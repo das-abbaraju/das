@@ -41,11 +41,8 @@ import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.mail.NoUsersDefinedException;
-import com.picsauditing.mail.Subscription;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
@@ -1623,38 +1620,6 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 
 		return nonGeneralContractorOperators;
-	}
-
-	@Transient
-	public EmailSubscription getFallbackSubscriptionForDefaultContact(Subscription subscription)
-			throws NoUsersDefinedException {
-		if (getPrimaryContact() != null && getPrimaryContact().isActiveB()) {
-			return getPrimaryContact().getFallbackEmailSubscription(subscription);
-		}
-
-		if (!getUsersByRole(OpPerms.ContractorAdmin).isEmpty()
-				&& getUsersByRole(OpPerms.ContractorAdmin).get(0).isActiveB()) {
-			User contractorAdmin = getUsersByRole(OpPerms.ContractorAdmin).get(0);
-			return contractorAdmin.getFallbackEmailSubscription(subscription);
-		}
-
-		if (!getUsers().isEmpty()) {
-			User activeUser = findActiveUser();
-			return activeUser.getFallbackEmailSubscription(subscription);
-		}
-
-		throw new NoUsersDefinedException();
-	}
-
-	@Transient
-	public User findActiveUser() throws NoUsersDefinedException {
-		for (User user : getUsers()) {
-			if (user.isActiveB()) {
-				return user;
-			}
-		}
-
-		throw new NoUsersDefinedException("No Active Users");
 	}
 
 	@Testable
