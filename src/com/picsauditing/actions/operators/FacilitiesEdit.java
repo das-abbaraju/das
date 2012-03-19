@@ -653,6 +653,16 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
 	}
 
+	public int getPendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
+		if (operator == null)
+			findOperator();
+
+		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
+				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
+
+		return pendingAndNotApprovedCount;
+	}
+
 	// TODO: This should be converted to Struts2 Validation
 	private Vector<String> validateAccount(OperatorAccount operator) {
 		Vector<String> errorMessages = new Vector<String>();
@@ -773,16 +783,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			if (linkedAccount == null || linkedAccount.getContractorAccount() == null) {
 				addActionError(getText("FacilitiesEdit.PleaseSelectContractorForGC"));
 			} else {
-				if (gcContractor != null) {
-					// TODO: Do we change the existing relationship?
-					gcContractor.setType(ContractorOperatorRelationshipType.ContractorOperator);
-					gcContractor.setAuditColumns(permissions);
-					contractorOperatorDAO.save(gcContractor);
-				}
+				updateExistingGCRelationshipToNormal(gcContractor);
+				findExistingContractorOperator();
 
 				linkedAccount.setOperatorAccount(operator);
 				linkedAccount.setAuditColumns(permissions);
-				// TODO: GC Contractor is clear flagged by GC Operator?
 				linkedAccount.setFlagColor(FlagColor.Clear);
 				linkedAccount.setWaitingOn(WaitingOn.None);
 				linkedAccount.setType(ContractorOperatorRelationshipType.GeneralContractor);
@@ -790,21 +795,31 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				contractorOperatorDAO.save(linkedAccount);
 			}
 		} else {
-			if (gcContractor != null) {
-				operator.getGcContractors().remove(gcContractor);
-				operator.getContractorOperators().remove(gcContractor);
-				contractorOperatorDAO.remove(gcContractor);
+			removeGCRelationship(gcContractor);
+		}
+	}
+
+	private void updateExistingGCRelationshipToNormal(ContractorOperator gcContractor) {
+		if (gcContractor != null) {
+			gcContractor.setType(ContractorOperatorRelationshipType.ContractorOperator);
+			gcContractor.setAuditColumns(permissions);
+			contractorOperatorDAO.save(gcContractor);
+		}
+	}
+
+	private void findExistingContractorOperator() {
+		for (ContractorOperator linkedContractor : operator.getContractorOperators()) {
+			if (linkedContractor.getContractorAccount().equals(linkedAccount.getContractorAccount())) {
+				linkedAccount = linkedContractor;
 			}
 		}
 	}
 
-	public int getPendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
-		if (operator == null)
-			findOperator();
-
-		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
-				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
-
-		return pendingAndNotApprovedCount;
+	private void removeGCRelationship(ContractorOperator gcContractor) {
+		if (gcContractor != null) {
+			operator.getGcContractors().remove(gcContractor);
+			operator.getContractorOperators().remove(gcContractor);
+			contractorOperatorDAO.remove(gcContractor);
+		}
 	}
 }
