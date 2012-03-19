@@ -21,7 +21,6 @@ import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.search.Report;
@@ -90,7 +89,6 @@ public class ContractorAuditDAO extends PicsDAO {
 				auditCatData.setAudit(oCAudit);
 			}
 			oCAudit.getCategories().addAll(acList);
-			oCAudit.setOshas(new ArrayList<OshaAudit>());
 			oCAudit.setOperators(new ArrayList<ContractorAuditOperator>());
 		}
 		save(oCAudit);

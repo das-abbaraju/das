@@ -16,9 +16,6 @@ import com.picsauditing.util.Testable;
 /**
  * Decorator for ContractorAudit, specifically for when ContractorAudit is an
  * OSHa type, that adds OSHA-specific logic.
- * 
- * @author PICS-User
- * 
  */
 public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_OSHA = 2033; // U.S.

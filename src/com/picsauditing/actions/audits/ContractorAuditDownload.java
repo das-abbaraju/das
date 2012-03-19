@@ -22,9 +22,6 @@ import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 
@@ -122,26 +119,7 @@ public class ContractorAuditDownload extends AuditActionSupport {
 			cell.setCellValue(start.getFullNumber() + " - " + start.getName().toString());
 			cell.setCellStyle(sheetStatus.bold);
 
-			if (start.getAuditType().isAnnualAddendum() && start.isSha()) {
-				int year = Integer.parseInt(conAudit.getAuditFor());
-				MultiYearScope scope = MultiYearScope.getScopeFromYear(year);
-
-				OshaType type = OshaType.OSHA;
-				if (start.getId() == AuditCategory.MSHA)
-					type = OshaType.MSHA;
-				if (start.getId() == AuditCategory.CANADIAN_STATISTICS)
-					type = OshaType.COHS;
-
-				if (scope != null) {
-				// TODO: FIX ME
-//					OshaAudit oshaAudit = contractor.getOshaOrganizer().getOshaAudit(type, scope);
-//					OshaAudit average = contractor.getOshaOrganizer().getOshaAudit(type,
-//							MultiYearScope.ThreeYearAverage);
-//					fillExcelOsha(sheetStatus, oshaAudit, average);
-				}
-			} else {
-				sheetStatus = fillExcelQuestions(sheetStatus, start.getQuestions());
-			}
+			sheetStatus = fillExcelQuestions(sheetStatus, start.getQuestions());
 
 			for (AuditCategory subcat : start.getSubCategories()) {
 				sheetStatus = fillExcelCategories(sheetStatus, viewableCats, subcat);
@@ -216,159 +194,6 @@ public class ContractorAuditDownload extends AuditActionSupport {
 		}
 
 		return sheetStatus;
-	}
-
-	/**
-	 * Modeled after the OSHA Organizer. Need to update this when the OSHA Organizer changes or is removed.
-	 * 
-	 * @param sheetStatus
-	 * @param oshaAudit
-	 * @param average
-	 */
-	@Testable
-	void fillExcelOsha(SheetStatus sheetStatus, OshaAudit oshaAudit, OshaAudit average) {
-		if (oshaAudit == null || average == null) {
-			return;
-		}
-		// TODO: FIX ME
-/*
-		OshaType type = oshaAudit.getType();
-		boolean osha = OshaType.OSHA.equals(type);
-		boolean cohs = OshaType.COHS.equals(type);
-		boolean corporate = "Corporate".equals(oshaAudit.getLocation());
-		// Header
-		createRow(
-				sheetStatus,
-				getText(type.getI18nKey("dataHeader"))
-						+ " "
-						+ oshaAudit.getLocation()
-						+ (oshaAudit.isVerified() ? " - "
-								+ getText("AuditDownload.VerifiedBy", new Object[] { conAudit.getAuditor() == null ? ""
-										: conAudit.getAuditor().getName() }) : ""), null, null, corporate,
-				getText("OSHA.ThreeYearAverage"), null);
-
-		createRow(sheetStatus, getText("totalHoursWorked"),
-				getText("format.decimal", new Object[] { oshaAudit.getManHours() }), null, osha && corporate,
-				getText("format.decimal", new Object[] { average.getManHours() }), null);
-
-		createRow(sheetStatus, null, "#", getText("OSHA.Rate"), osha && corporate, "#", getText("OSHA.Rate"));
-
-		createRow(sheetStatus, null, "fatalities", oshaAudit.getFatalities(), oshaAudit.getFatalitiesRate(), osha
-				&& corporate, average.getFatalities(), average.getFatalitiesRate());
-
-		createRow(sheetStatus, type, "lostWorkDayCases", oshaAudit.getLostWorkCases(),
-				oshaAudit.getLostWorkCasesRate(), osha && corporate, average.getLostWorkCases(),
-				average.getLostWorkCasesRate());
-
-		createRow(sheetStatus, type, "restrictedCases", oshaAudit.getRestrictedWorkCases(),
-				oshaAudit.getRestrictedWorkCasesRate(), osha && corporate, average.getRestrictedWorkCases(),
-				average.getRestrictedWorkCasesRate());
-
-		if (osha || cohs) {
-			createRow(sheetStatus, type, "modifiedWorkDay", oshaAudit.getModifiedWorkDay(),
-					oshaAudit.getModifiedWorkDayRate(), osha && corporate, average.getModifiedWorkDay(),
-					average.getModifiedWorkDayRate());
-		}
-
-		createRow(sheetStatus, type, "injuryAndIllness", oshaAudit.getInjuryIllnessCases(),
-				oshaAudit.getInjuryIllnessCasesRate(), osha && corporate, average.getInjuryIllnessCases(),
-				average.getInjuryIllnessCasesRate());
-
-		if (cohs) {
-			createRow(sheetStatus, getText(type.getI18nKey("injuryAndIllness")),
-					getText("format.number", new Object[] { oshaAudit.getFirstAidInjuries() }));
-		}
-
-		if (osha) {
-			createRow(sheetStatus, null, "OSHA.DartRate",
-					oshaAudit.getRestrictedWorkCases() + oshaAudit.getLostWorkCases(),
-					oshaAudit.getRestrictedDaysAwayRate(), corporate,
-					average.getLostWorkCases() + average.getRestrictedWorkCases(), average.getRestrictedDaysAwayRate());
-		}
-
-		createRow(sheetStatus, type, "totalInjuriesAndIllnesses", oshaAudit.getRecordableTotal(),
-				oshaAudit.getRecordableTotalRate(), osha && corporate, average.getRecordableTotal(),
-				average.getRecordableTotalRate());
-
-		if (osha || cohs) {
-			createRow(
-					sheetStatus,
-					type,
-					"SeverityRate",
-					OshaType.OSHA.equals(type) ? (oshaAudit.getLostWorkDays() + oshaAudit.getModifiedWorkDay())
-							: oshaAudit.getLostWorkDays(),
-					oshaAudit.getRestrictedOrJobTransferDays(),
-					osha && corporate,
-					OshaType.OSHA.equals(type) ? (average.getLostWorkDays() + average.getModifiedWorkDay()) : average
-							.getLostWorkDays(), average.getRestrictedOrJobTransferDays());
-		}
-
-		if (cohs) {
-			createRow(sheetStatus, getText(type.getI18nKey("vehicleIncidents")),
-					getText("format.number", new Object[] { oshaAudit.getVehicleIncidents() }));
-
-			createRow(sheetStatus, getText(type.getI18nKey("totalkmDriven")),
-					getText("format.number", new Object[] { oshaAudit.getTotalkmDriven() }));
-		}
-
-		if (osha && corporate) {
-			createRow(sheetStatus, getText(type.getI18nKey("VerificationIssues")),
-					oshaAudit.isVerified() ? getText("OSHA.None") : oshaAudit.getComment());
-		}*/
-	}
-
-	private void createRow(SheetStatus sheetStatus, String statistic, String total) {
-		createRow(sheetStatus, statistic, total, null, false, null, null);
-	}
-
-	private void createRow(SheetStatus sheetStatus, OshaType type, String property, float total, float rate,
-			boolean showAverage, float avgTotal, float avgRate) {
-		String typeProperty = "";
-		if (type == null)
-			typeProperty = getText(property);
-		else
-			typeProperty = getText(type.getI18nKey(property));
-
-		String totalFormatted = getText("format.number", new Object[] { total });
-		String rateFormatted = getText("format.decimal", new Object[] { rate });
-		String avgTotalFormatted = getText("format.number", new Object[] { avgTotal });
-		String avgRateFormatted = getText("format.decimal", new Object[] { avgRate });
-
-		createRow(sheetStatus, typeProperty, totalFormatted, rateFormatted, showAverage, avgTotalFormatted,
-				avgRateFormatted);
-	}
-
-	private void createRow(SheetStatus sheetStatus, String statistic, String total, String rate, boolean show3YAvg,
-			String corpTotal, String corpRate) {
-		HSSFRow row = sheetStatus.sheet.createRow(sheetStatus.rownum++);
-		HSSFCell cell;
-
-		if (!Strings.isEmpty(statistic)) {
-			cell = row.createCell(0);
-			cell.setCellValue(statistic);
-		}
-
-		if (!Strings.isEmpty(total)) {
-			cell = row.createCell(1);
-			cell.setCellValue(total);
-		}
-
-		if (!Strings.isEmpty(rate)) {
-			cell = row.createCell(2);
-			cell.setCellValue(rate);
-		}
-
-		if (show3YAvg) {
-			if (!Strings.isEmpty(corpTotal)) {
-				cell = row.createCell(3);
-				cell.setCellValue(corpTotal);
-			}
-
-			if (!Strings.isEmpty(corpRate)) {
-				cell = row.createCell(4);
-				cell.setCellValue(corpRate);
-			}
-		}
 	}
 
 	@Testable

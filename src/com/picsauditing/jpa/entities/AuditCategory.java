@@ -35,11 +35,8 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 	public static final int WORK_HISTORY = 6;
 	public static final int SAFETY_POLICIES = 7;
 	public static final int TRAINING = 25;
-	public static final int OSHA_AUDIT = 151;
 	public static final int EMR = 152;
 	public static final int GENERAL_INFORMATION = 155;
-	public static final int MSHA = 157;
-	public static final int CANADIAN_STATISTICS = 158;
 	public static final int LOSS_RUN = 159;
 	public static final int SUPPLIER_DIVERSITY = 184;
 	public static final int FINANCIAL_HISTORY = 200;
@@ -273,17 +270,6 @@ public class AuditCategory extends BaseTableRequiringLanguages implements Compar
 
 	public void setHasHelpText(boolean hasHelpText) {
 		this.hasHelpText = hasHelpText;
-	}
-
-	@Transient
-	public boolean isSha() {
-		if (id == OSHA_AUDIT)
-			return true;
-		if (id == MSHA)
-			return true;
-		if (id == CANADIAN_STATISTICS)
-			return true;
-		return false;
 	}
 
 	@Transient

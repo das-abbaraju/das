@@ -480,19 +480,6 @@ public class ContractorAuditController extends AuditActionSupport {
 		this.viewBlanks = viewBlanks;
 	}
 	
-	// TODO: FIX ME
-	/**
-	 * This will have to execute the MultiYearValueCalculator to determine the
-	 * 3 year average.
-	 * 
-	 * @param oshaType
-	 * @return
-	 */
-	public OshaAudit getAverageOsha(OshaType oshaType) {
-		//return contractor.getOshaOrganizer().getOshaAudit(oshaType, MultiYearScope.ThreeYearAverage);
-		return null;
-	}
-
 	public int getCaoID() {
 		return caoID;
 	}

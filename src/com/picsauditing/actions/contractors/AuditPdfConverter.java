@@ -140,6 +140,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 				handleCategory(document, allCategories, answerMap, category, 0);
 		}
 	}
+	
 	// TODO: FIX ME
 	private void addOshaLog(Document document, ContractorAudit audit, AuditCategory category) throws DocumentException {
 		/*for (OshaAudit oshaAudit : audit.getOshas()) {
@@ -275,13 +276,9 @@ public class AuditPdfConverter extends AuditActionSupport {
 			categoryParagraph.setIndentationLeft(indentLevel);
 			document.add(categoryParagraph);
 
-			if (category.isSha())
-				addOshaLog(document, auditCatData.getAudit(), category);
-			else {
-				for (AuditQuestion auditQuestion : category.getQuestions()) {
-					if (auditQuestion.isCurrent())
-						handleQuestion(document, auditQuestion, answerMap, indentLevel);
-				}
+			for (AuditQuestion auditQuestion : category.getQuestions()) {
+				if (auditQuestion.isCurrent())
+					handleQuestion(document, auditQuestion, answerMap, indentLevel);
 			}
 
 			for (AuditCategory subCategory : category.getSubCategories()) {

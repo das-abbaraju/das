@@ -158,26 +158,12 @@ public class VerifyView extends ContractorActionSupport {
 					&& (conAudit.hasCaoStatus(AuditStatus.Submitted) || conAudit.hasCaoStatus(AuditStatus.Resubmitted) || conAudit
 							.hasCaoStatus(AuditStatus.Incomplete))) {
 				StringBuffer sb2 = new StringBuffer("");
-				// TODO: FIX ME
-				for (OshaAudit oshaAudit : contractor.getOshaAudits()) {
-					if (!oshaAudit.isVerified(OshaType.OSHA)
-							&& !Strings.isEmpty(oshaAudit.getComment(OshaType.OSHA))) {
-						sb2.append("OSHA : ");
-						sb2.append(oshaAudit.getComment(OshaType.OSHA));
-						sb2.append("\n");
-					}
-				}
+				
 				for (AuditData auditData : conAudit.getData()) {
-					if (auditData.getQuestion().getId() != 2447 && auditData.getQuestion().getId() != 2448) {
-						int categoryID = auditData.getQuestion().getCategory().getId();
-						if (categoryID != AuditCategory.CITATIONS
-								|| (categoryID == AuditCategory.CITATIONS && auditData.getQuestion().isRequired())) {
-							if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
-								sb2.append(auditData.getQuestion().getColumnHeaderOrQuestion());
-								sb2.append(" : " + auditData.getComment());
-								sb2.append("\n");
-							}
-						}
+					if (isCommentNeeded(auditData)) {
+						sb2.append(auditData.getQuestion().getColumnHeaderOrQuestion());
+						sb2.append(" : " + auditData.getComment());
+						sb2.append("\n");
 					}
 				}
 
@@ -211,6 +197,26 @@ public class VerifyView extends ContractorActionSupport {
 			}
 		}
 		return sb.toString();
+	}
+
+	private boolean isCommentNeeded(AuditData auditData) {
+		if (auditData.getQuestion().getId() == 2447)
+			return false;
+		if (auditData.getQuestion().getId() == 2448)
+			return false;
+		
+		int categoryID = auditData.getQuestion().getCategory().getId();
+		
+		if (categoryID == AuditCategory.CITATIONS && !auditData.getQuestion().isRequired())
+			return false;
+		
+		if (auditData.isVerified())
+			return false;
+		
+		if (Strings.isEmpty(auditData.getComment()))
+			return false;
+
+		return true;
 	}
 
 	public String previewEmail() throws Exception {

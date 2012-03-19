@@ -10,7 +10,9 @@ public class ContractorAuditDownloadTest {
 	public void testNullPointerFix() {
 		ContractorAuditDownload contractorAuditDownload = new ContractorAuditDownload();
 		try {
-			contractorAuditDownload.fillExcelOsha(contractorAuditDownload.new SheetStatus(), null, null);
+			// We removed Osha from this class
+			// TODO create a more meaningful unit test
+			// contractorAuditDownload.fillExcelOsha(contractorAuditDownload.new SheetStatus(), null, null);
 		} catch (Exception e) {
 			fail("An unexpected exception occurred during test execution");
 		}

@@ -16,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -80,7 +79,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 	private List<AuditData> data = new ArrayList<AuditData>();
-	private List<OshaAudit> oshas = new ArrayList<OshaAudit>();
 	private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 	private Map<AuditStatus, Integer> caoStats = null;
 
@@ -113,17 +111,6 @@ public class ContractorAudit extends AbstractIndexableTable {
 
 	public void setEmployee(Employee employee) {
 		this.employee = employee;
-	}
-
-	// TODO: FIX ME
-	/*@OneToMany(mappedBy = "conAudit", cascade = { CascadeType.ALL })
-	@OrderBy("location")
-	public List<OshaAudit> getOshas() {
-		return oshas;
-	}*/
-
-	public void setOshas(List<OshaAudit> oshas) {
-		this.oshas = oshas;
 	}
 
 	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })

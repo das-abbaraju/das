@@ -82,84 +82,78 @@
 			</div>
 		</pics:permission>
 		
-		<s:if test="#category.sha">
-			<s:include value="audit_cat_sha.jsp"></s:include>
+		<s:if test="#category.helpText.length() > 0">
+			<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 		</s:if>
-		<s:else>
-			<s:if test="#category.helpText.length() > 0">
-				<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
-			</s:if>
-			
-			<s:set name="shaded" value="true" scope="action"/>
-			<s:set name="mode" value="mode"/>
-			<s:set name="questions" value="#category.getEffectiveQuestions(conAudit.effectiveDate)"/>
-			
-			<s:if test="#questions.size() > 0">
-				<div class="columns-<s:property value="#category.columns" />">
-					<s:iterator status="status" begin="1" end="#category.columns">
-						<s:set name="begin" value="#status.index * (#questions.size() / #category.columns)" />
-						<s:set name="end" value="(#status.index + 1) * (#questions.size() / #category.columns) - 1" />
-	
-						<ul class="column column<s:property value="#status.count" />">
-							<s:iterator value="#questions" var="q" begin="#begin" end="#end">
-							<li>
-								<s:set name="hidden" value="!#q.isVisible(answerMap)" />
-								
-								<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
-									<s:if test="#q.title != null && #q.title.toString().length() > 0 && !#hidden">
-										<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
-											<s:property value="#q.title" escape="false"/>
-										</h4>
-									</s:if>
-									
-									<s:if test="mode == 'ViewQ'">
-										<div class="question<s:if test="shaded"> shaded</s:if>">
-											<s:include value="audit_cat_questions.jsp"></s:include>
-										</div>
-									</s:if>
-									
-									<s:set name="a" value="answerMap.get(#q.id)" />
-									<s:set name="visible" value="#q.isCurrent(conAudit.validDate)"/>
-									
-									<s:if test="onlyReq && !#a.hasRequirements">
-										<s:set name="visible" value="false" />
-									</s:if>
-									<s:else>
-										<s:set name="showCat" value="true" />
-									</s:else>
-									
-									<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
-										<s:set name="visible" value="false" />
-									</s:if>
-									
-									<s:if test="#hidden && mode=='ViewAll'" >
-										<s:set name="visible" value="false" />
-									</s:if>
-									
-									<s:if test="previewCat || #visible">
-										<s:if test="!#q.groupedWithPrevious">
-											<s:set name="shaded" value="!#shaded" scope="action"/>
-										</s:if>
-
-										<%-- Audit Category Question --%>
-										<s:include value="audit_cat_question.jsp"></s:include>
-									</s:if>
-								</s:if>		
-							</li>
-							</s:iterator>
-						</ul>
-					</s:iterator>
-				</div>
-			</s:if>
-			
-			<s:iterator value="#category.subCategories" id="category">
-				<s:if test="previewCat || isAppliesSubCategory(#category)">
-					<s:include value="audit_cat_view.jsp"/>
-				</s:if>
-			</s:iterator>
-			
-		</s:else>
 		
+		<s:set name="shaded" value="true" scope="action"/>
+		<s:set name="mode" value="mode"/>
+		<s:set name="questions" value="#category.getEffectiveQuestions(conAudit.effectiveDate)"/>
+		
+		<s:if test="#questions.size() > 0">
+			<div class="columns-<s:property value="#category.columns" />">
+				<s:iterator status="status" begin="1" end="#category.columns">
+					<s:set name="begin" value="#status.index * (#questions.size() / #category.columns)" />
+					<s:set name="end" value="(#status.index + 1) * (#questions.size() / #category.columns) - 1" />
+
+					<ul class="column column<s:property value="#status.count" />">
+						<s:iterator value="#questions" var="q" begin="#begin" end="#end">
+						<li>
+							<s:set name="hidden" value="!#q.isVisible(answerMap)" />
+							
+							<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
+								<s:if test="#q.title != null && #q.title.toString().length() > 0 && !#hidden">
+									<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
+										<s:property value="#q.title" escape="false"/>
+									</h4>
+								</s:if>
+								
+								<s:if test="mode == 'ViewQ'">
+									<div class="question<s:if test="shaded"> shaded</s:if>">
+										<s:include value="audit_cat_questions.jsp"></s:include>
+									</div>
+								</s:if>
+								
+								<s:set name="a" value="answerMap.get(#q.id)" />
+								<s:set name="visible" value="#q.isCurrent(conAudit.validDate)"/>
+								
+								<s:if test="onlyReq && !#a.hasRequirements">
+									<s:set name="visible" value="false" />
+								</s:if>
+								<s:else>
+									<s:set name="showCat" value="true" />
+								</s:else>
+								
+								<s:if test="!viewBlanks && (#a == null || #a.answer == null || #a.answer.length() == 0)">
+									<s:set name="visible" value="false" />
+								</s:if>
+								
+								<s:if test="#hidden && mode=='ViewAll'" >
+									<s:set name="visible" value="false" />
+								</s:if>
+								
+								<s:if test="previewCat || #visible">
+									<s:if test="!#q.groupedWithPrevious">
+										<s:set name="shaded" value="!#shaded" scope="action"/>
+									</s:if>
+
+									<%-- Audit Category Question --%>
+									<s:include value="audit_cat_question.jsp"></s:include>
+								</s:if>
+							</s:if>		
+						</li>
+						</s:iterator>
+					</ul>
+				</s:iterator>
+			</div>
+		</s:if>
+		
+		<s:iterator value="#category.subCategories" id="category">
+			<s:if test="previewCat || isAppliesSubCategory(#category)">
+				<s:include value="audit_cat_view.jsp"/>
+			</s:if>
+		</s:iterator>
+			
 		<s:if test="!#showCat && onlyReq">
 			<script>
 				$(function() {

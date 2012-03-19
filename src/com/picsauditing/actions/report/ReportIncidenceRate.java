@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.OshaAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -23,8 +22,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 
 	@Autowired
 	protected NoteDAO noteDAO;
-	@Autowired
-	protected OshaAuditDAO oshaAuditDAO;
 
 	@Override
 	public void checkPermissions() throws Exception {
@@ -82,7 +79,8 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trir", getText("ReportIncidenceRate.TrirIndustryAverage"), ExcelCellType.Double));
 	}
-	// TODO: FIX ME
+	
+	// TODO: FIX ME Michael, please convert this report to use the OSHA Data stored in PQF Data instead
 	public String verify() throws Exception {
 		/*OshaAudit oshaAudit = oshaAuditDAO.find(oshaAuditID);
 		oshaAudit.setVerifiedDate(new Date());

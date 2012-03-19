@@ -128,6 +128,7 @@ public class EntityFactory {
 		auditCategory.setName(makeTranslatableString(name));
 		return auditCategory;
 	}
+	
 	// TODO: FIX ME
 	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
 		/*OshaAudit oshaAudit = new OshaAudit();

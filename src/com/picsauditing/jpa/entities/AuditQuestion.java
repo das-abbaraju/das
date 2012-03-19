@@ -67,6 +67,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private String questionType;
 	private AuditOptionGroup option;
 	private String okAnswer;
+	// TODO Convert this into a TranslatableString PICS-5137
 	private String columnHeader;
 	private String uniqueCode;
 	private TranslatableString title;

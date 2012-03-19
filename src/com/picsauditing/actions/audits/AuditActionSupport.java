@@ -19,7 +19,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.actions.converters.OshaTypeConverter;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDataDAO;
@@ -44,8 +43,6 @@ import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
@@ -175,18 +172,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			hasManual = getDataForSafetyManual();
 		return hasManual;
 	}
-	// TODO: FIX ME
-	public String getDescriptionOsMs() {
-		/*String descriptionText = "OSHA Recordable";
-		for (OshaAudit osha : conAudit.getOshas())
-			if (osha.getType().equals(OshaType.MSHA))
-				descriptionText = "MSHA Reportable";
-			else
-				descriptionText = "OSHA Recordable";
-		return descriptionText;*/
-		return "FIX ME in Audit Action Support";
-	}
-
+	
 	public int getCategoryID() {
 		return categoryID;
 	}
@@ -612,14 +598,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		} catch (NumberFormatException nfe) {
 			return null;
 		}
-	}
-
-	public boolean matchesType(int categoryId, OshaType oa) {
-		if (OshaTypeConverter.getTypeFromCategory(categoryId) == null || oa == null)
-			return false;
-		if (oa == OshaTypeConverter.getTypeFromCategory(categoryId))
-			return true;
-		return false;
 	}
 
 	public boolean isSystemEdit() {
