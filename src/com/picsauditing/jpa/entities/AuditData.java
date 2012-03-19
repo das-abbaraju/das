@@ -230,54 +230,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		return result;
 	}
 
-	/**
-	 * Take a map of numerical AuditData answers and add an additional AuditData containing an average. The new average
-	 * will be verified only if all the others are verified
-	 */
-	// TODO: FIX ME - only used in the EMR calculation - Alex is working on this
-	public static AuditData addAverageData(Collection<AuditData> dataList) {
-		/*if (dataList == null || dataList.size() == 0)
-			return null;
-
-		AuditData avg = new AuditData();
-		avg.setVerified(true); // Assume it's all verified
-		ContractorAudit audit = new ContractorAudit();
-		audit.setAuditFor(OshaAudit.AVG);
-		avg.setAudit(audit);
-
-		float rateTotal = 0;
-		int count = 0;
-		for (AuditData data : dataList) {
-			if (data != null) {
-				avg.setQuestion(data.getQuestion());
-				avg.getAudit().setContractorAccount(data.getAudit().getContractorAccount());
-				avg.getAudit().setAuditType(data.getAudit().getAuditType());
-
-				if (data.isUnverified())
-					avg.setVerified(false);
-
-				try {
-					float rate = Float.parseFloat(data.getAnswer());
-					rateTotal += rate;
-					count++;
-				} catch (Exception e) {
-					// String error = "Failed to parse rate:" + data.getAnswer()
-					// + " for audit " + data.getAudit().getId();
-					// System.out.println(error);
-				}
-			}
-		}
-		
-		if (count > 0) {
-			Float avgRateFloat = rateTotal / count;
-			avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
-			avg.setAnswer(avgRateFloat.toString());
-		}
-		
-		return avg;*/
-		return null;
-	}
-
 	public int compareTo(AuditData other) {
 		if (other == null) {
 			return 1;

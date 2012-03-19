@@ -91,8 +91,7 @@ public class OshaDisplay {
 			rateRow.addCell(rateType.getI18nKey());
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
-				Double answer = oshaOrganizer
-						.getRate(oshaType, scope, rateType);
+				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
 				if (answer != null && answer >= 0) {
 					rateRow.addCell(answer.toString());
 				}

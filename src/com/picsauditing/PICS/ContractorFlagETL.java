@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.flags.FlagAnswerParser;
 import com.picsauditing.PICS.flags.MultiYearValueCalculator;
+import com.picsauditing.PICS.flags.OshaResult;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.FlagCriteriaContractorDAO;
@@ -74,32 +75,20 @@ public class ContractorFlagETL {
 
 		if (flagCriteria.getQuestion() != null) {
 			if (AuditQuestion.EMR == flagCriteria.getQuestion().getId()) {
-				changes.addAll(doOldStuffForEMR(flagCriteria, contractor));
+				changes.addAll(calculateFlagCriteriaForEMR(flagCriteria, contractor));
+			} else if (flagCriteria.getQuestion().getId() == AuditQuestion.CITATIONS) {
+				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, false);
+				if (flagCriteriaContractor != null) {
+					changes.add(flagCriteriaContractor);
+				}
 			} else if (flagCriteria.getMultiYearScope() != null && QUESTION_IDS_FOR_MULTI_YEAR.contains(flagCriteria.getQuestion().getId())) {
-				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-						flagCriteria, "");
-				flagCriteriaContractor.setAnswer(MultiYearValueCalculator.returnValueForMultiYear(contractor, flagCriteria));
-				changes.add(flagCriteriaContractor);
-			} else if (runAnnualUpdateFlagging(flagCriteria)) {
-
-				/**
-				 * There is extra check before the Citation Question to make sure that the flag criteria's
-				 * question category is applicable, before executing the flagging for the Citation Question
-				 */
 				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
-				ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(flagCriteria.getMultiYearScope());
-
-				if (annualUpdate != null) {
-					if (annualUpdate.isCategoryApplicable(flagCriteria.getQuestion().getCategory().getId())) {
-						for (AuditData data : annualUpdate.getData()) {
-							if (data.getQuestion().getId() == flagCriteria.getQuestion().getId()) {
-								flagCriteriaContractor.setAnswer(FlagAnswerParser.parseAnswer(flagCriteria, data));
-								flagCriteriaContractor.setAnswer2("for Year: " + annualUpdate.getAuditFor());
-								changes.add(flagCriteriaContractor);
-								break;
-							}
-						}
-					}
+				flagCriteriaContractor.setAnswer(MultiYearValueCalculator.calculateValueForMultiYear(contractor, flagCriteria));
+				changes.add(flagCriteriaContractor);
+			} else if (runAnnualUpdateFlaggingForCategoryOnMultiYearScope(flagCriteria)) {
+				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, true);
+				if (flagCriteriaContractor != null) {
+					changes.add(flagCriteriaContractor);
 				}
 			} else {
 				changes.addAll(performFlaggingForNonEMR(contractor, answerMap, flagCriteria));
@@ -113,9 +102,35 @@ public class ContractorFlagETL {
 		return changes;
 	}
 
-	private boolean runAnnualUpdateFlagging(FlagCriteria flagCriteria) {
+	private boolean runAnnualUpdateFlaggingForCategoryOnMultiYearScope(FlagCriteria flagCriteria) {
 		return (flagCriteria.getQuestion().getCategory() != null
 				&& flagCriteria.getQuestion().getAuditType().isAnnualAddendum());
+	}
+	
+	private FlagCriteriaContractor generateFlaggableData(FlagCriteria flagCriteria, ContractorAccount contractor, boolean applyCategory) {
+		FlagCriteriaContractor flagCriteriaContractor = null;
+		ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(flagCriteria.getMultiYearScope());
+		
+		if (annualUpdate != null) {
+			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) {
+				for (AuditData data : annualUpdate.getData()) {
+					if (data.getQuestion().getId() == flagCriteria.getQuestion().getId()) {
+						flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
+						flagCriteriaContractor.setAnswer(FlagAnswerParser.parseAnswer(flagCriteria, data));
+						flagCriteriaContractor.setAnswer2("for Year: " + annualUpdate.getAuditFor());
+						return flagCriteriaContractor;
+					}
+				}
+			}
+		}
+		
+		return flagCriteriaContractor;
+	}
+
+	private boolean checkForApplicableCategory(FlagCriteria flagCriteria, ContractorAudit annualUpdate, boolean applyCategory) {
+		return (applyCategory 
+				&& flagCriteria.getQuestion().getCategory() != null 
+				&& annualUpdate.isCategoryApplicable(flagCriteria.getQuestion().getCategory().getId()));
 	}
 
 	/**
@@ -160,16 +175,7 @@ public class ContractorFlagETL {
 		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
 			FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, "");
 			if (flagCriteria.getQuestion().getQuestionType().equals("AMBest")) {
-				AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
-				AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
-				if (amBest != null) {
-					if (flagCriteria.getCategory().equals("Insurance AMB Rating")) {
-						fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
-					}
-					if (flagCriteria.getCategory().equals("Insurance AMB Class")) {
-						fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
-					}
-				}
+				performFlaggingForAMBest(flagCriteria, auditData, fcc);
 			} else {
 				fcc.setAnswer(FlagAnswerParser.parseAnswer(flagCriteria, auditData));
 				fcc.setVerified(auditData.isVerified());
@@ -188,16 +194,29 @@ public class ContractorFlagETL {
 			}
 
 			changes.add(fcc);
-		} else {
-			if (flagCriteria.isFlaggableWhenMissing()) {
-				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-						flagCriteria, null);
-				flagCriteriaContractor.setAnswer2(null);
+		} else { // the User did not provide an answer
+			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);
+			if (flagCriteriaContractor != null) {
 				changes.add(flagCriteriaContractor);
 			}
 		}
 		
 		return changes;
+	}
+
+	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData, FlagCriteriaContractor fcc) {
+		AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
+		AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
+		
+		if (amBest != null) {
+			if (flagCriteria.getCategory().equals("Insurance AMB Rating")) {
+				fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
+			}
+			
+			if (flagCriteria.getCategory().equals("Insurance AMB Class")) {
+				fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
+			}
+		}
 	}
 
 	private void persistFlagCriteriaContractorChanges(ContractorAccount contractor, Set<FlagCriteriaContractor> changes) {
@@ -209,19 +228,13 @@ public class ContractorFlagETL {
 		}
 	}
 	
-	private Set<FlagCriteriaContractor> doOldStuffForEMR(FlagCriteria flagCriteria, ContractorAccount contractor) {
+	private Set<FlagCriteriaContractor> calculateFlagCriteriaForEMR(FlagCriteria flagCriteria, ContractorAccount contractor) {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			Map<String, AuditData> auditsOfThisEMRType = contractor.getEmrs();
+			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResults(contractor.getSortedAnnualUpdates());
 
-			List<AuditData> years = new ArrayList<AuditData>();
-			for (String year : auditsOfThisEMRType.keySet()) {
-				if (!year.equals("Average"))
-					years.add(auditsOfThisEMRType.get(year));
-			}
-
-			if (years != null && years.size() > 0) {
+			if (CollectionUtils.isNotEmpty(oshaResults)) {
 				Float answer = null;
 				String answer2 = "";
 				boolean verified = true; // Has the data been verified?
@@ -229,49 +242,43 @@ public class ContractorFlagETL {
 				try {
 					switch (flagCriteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-						AuditData average = auditsOfThisEMRType.get("Average");
-						answer = (average != null) ? Float.valueOf(Strings.formatNumber(average.getAnswer())) : null;
-						for (AuditData year : years) {
-							if (year != null) {
-								answer2 += (answer2.isEmpty()) ? "Years: "
-										+ year.getAudit().getAuditFor() : ", "
-										+ year.getAudit().getAuditFor();
-							}
-						}
-						if (average == null || !average.isVerified())
-							verified = false;
+						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults); 
+						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult.getAnswer())) : null;
+						verified = oshaResult.isVerified();
+						answer2 = "Years: " + oshaResult.getYear();						
 						break;
 					case ThreeYearsAgo:
-						if (years.size() >= 3) {
-							if (years.get(years.size() - 3) != null) {
-								answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 3).getAnswer()));
-								verified = years.get(years.size() - 3).isVerified();
-								answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
+						if (oshaResults.size() >= 3) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 3);
+							if (result != null) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
 					case TwoYearsAgo:
-						if (years.size() >= 2) {
-							if (years.get(years.size() - 2) != null) {
-								answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 2).getAnswer()));
-								verified = years.get(years.size() - 2).isVerified();
-								answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
+						if (oshaResults.size() >= 2) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 2);
+							if (result != null) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
 					case LastYearOnly:
-						if (years.size() >= 1) {
-							AuditData lastYear = years.get(years.size() - 1);
-							if (lastYear != null && isLast2Years(lastYear.getAudit().getAuditFor())) {
-								answer = Float.valueOf(Strings.formatNumber(lastYear.getAnswer()));
-								verified = lastYear.isVerified();
-								answer2 = "Year: " + lastYear.getAudit().getAuditFor();
+						if (oshaResults.size() >= 1) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 1);
+							if (result != null && isLast2Years(result.getYear())) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
 					default:
-						throw new RuntimeException(
-								"Invalid MultiYear scope of "
+						throw new RuntimeException("Invalid MultiYear scope of "
 										+ flagCriteria.getMultiYearScope().toString()
 										+ " specified for flag criteria id "
 										+ flagCriteria.getId()
@@ -292,8 +299,7 @@ public class ContractorFlagETL {
 				}
 
 				if (answer != null) {
-					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(
-							contractor, flagCriteria, answer.toString());
+					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, answer.toString());
 					fcc.setVerified(verified);
 
 					// conditionally add verified tag
@@ -303,51 +309,60 @@ public class ContractorFlagETL {
 					fcc.setAnswer2(answer2);
 
 					changes.add(fcc);
-				} else {
-					if (flagCriteria.isFlaggableWhenMissing()) {
-						FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, null);
-						flagCriteriaContractor.setAnswer2(null);
+				} else { // The user did not provide an answer
+					FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);
+					if (flagCriteriaContractor != null) {
 						changes.add(flagCriteriaContractor);
 					}
 				}
 			}
 		}
 		
-		
 		return changes;
 	}
 
-	private static boolean isLast2Years(String auditFor) {
+	private boolean isLast2Years(String auditFor) {
 		int lastYear = DateBean.getCurrentYear() - 1;
-		if (Integer.toString(lastYear).equals(auditFor)
-				|| Integer.toString(lastYear - 1).equals(auditFor))
+		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
 			return true;
+	
 		return false;
 	}
-	
-	// TODO: Fix Me
+		
+	// TODO: find out why it throws an exception with Ancon Marine
 	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes, FlagCriteria flagCriteria) {
-		/*OshaOrganizer osha = contractor.getOshaOrganizer();
-		Float answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
-		PicsLogger.log("Answer = " + answer);
-
-		if (answer != null) {
-			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-					flagCriteria, Float.toString(answer));
-
-			String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-					flagCriteria.getOshaRateType());
-			flagCriteriaContractor.setAnswer2(answer2);
-
-			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
-			flagCriteriaContractor.setVerified(verified);
-
-			changes.add(flagCriteriaContractor);
-		} else if (flagCriteria.isFlaggableWhenMissing()) { // check if flaggable when missing and flag it because the answer is missing
+//		OshaOrganizer osha = contractor.getOshaOrganizer();
+//		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
+//		PicsLogger.log("Answer = " + answer);
+//
+//		if (answer != null && !answer.equals(Double.valueOf(-1))) {
+//			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
+//					flagCriteria, Double.toString(answer));
+//
+//			String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+//					flagCriteria.getOshaRateType());
+//			flagCriteriaContractor.setAnswer2(answer2);
+//
+//			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
+//			flagCriteriaContractor.setVerified(verified);
+//
+//			changes.add(flagCriteriaContractor);
+//		} else { // the User did not provide an answer
+//			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);			
+//			if (flagCriteriaContractor != null) {
+//				changes.add(flagCriteriaContractor);
+//			}
+//		}
+	}
+	
+	private FlagCriteriaContractor checkForMissingAnswer(FlagCriteria flagCriteria, ContractorAccount contractor) {
+		if (flagCriteria.isFlaggableWhenMissing()) {
 			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, null);
 			flagCriteriaContractor.setAnswer2(null);
-			changes.add(flagCriteriaContractor);
-		}*/
+			return flagCriteriaContractor;
+		}
+		
+		return null;
 	}
 
 }

@@ -29,7 +29,6 @@
 	</s:if>
 </s:if>
 
-
 <s:if test="permissions.contractor">
 	<s:if test="conAudit.auditStatus.activeSubmitted || conAudit.auditStatus.activeResubmittedExempt">
 		<s:if test="activePendingEditableAudits.size > 0">

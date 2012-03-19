@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.PICS.flags.MultiYearValueCalculator;
+import com.picsauditing.PICS.flags.OshaResult;
 import com.picsauditing.dao.AmBestDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AmBest;
@@ -252,58 +254,49 @@ public class FlagCalculator {
 		String hurdle = getHurdle(rule);
 
 		if (criteria.getQuestion().getId() == AuditQuestion.EMR) {
-			Map<String, AuditData> auditsOfThisEMRType = contractor.getEmrs();
+			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResults(contractor.getSortedAnnualUpdates());			
 
-			List<AuditData> years = new ArrayList<AuditData>();
-			for (String year : auditsOfThisEMRType.keySet()) {
-				if (!year.equals("Average"))
-					years.add(auditsOfThisEMRType.get(year));
-			}
-
-			if (years != null && years.size() > 0) {
+			if (CollectionUtils.isNotEmpty(oshaResults)) {
 				Float answer = null;
+				// TODO: refactor this code and remove answer2 and verified if they are not being used
 				String answer2 = "";
 				boolean verified = true; // Has the data been verified?
 
 				try {
 					switch (criteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-						AuditData average = auditsOfThisEMRType.get("Average");
-						answer = (average != null) ? Float.valueOf(Strings.formatNumber(average.getAnswer())) : null;
-						for (AuditData year : years) {
-							if (year != null) {
-								answer2 += (answer2.isEmpty()) ? "Years: " + year.getAudit().getAuditFor() : ", "
-										+ year.getAudit().getAuditFor();
-							}
-						}
-						if (average == null || !average.isVerified())
-							verified = false;
+						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults); 
+						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult.getAnswer())) : null;
+						verified = oshaResult.isVerified();
+						answer2 = "Years: " + oshaResult.getYear();						
 						break;
 					case ThreeYearsAgo:
-						if (years.size() >= 3) {
-							if (years.get(years.size() - 3) != null) {
-								answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 3).getAnswer()));
-								verified = years.get(years.size() - 3).isVerified();
-								answer2 = "Year: " + years.get(years.size() - 3).getAudit().getAuditFor();
+						if (oshaResults.size() >= 3) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 3);
+							if (result != null) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
 					case TwoYearsAgo:
-						if (years.size() >= 2) {
-							if (years.get(years.size() - 2) != null) {
-								answer = Float.valueOf(Strings.formatNumber(years.get(years.size() - 2).getAnswer()));
-								verified = years.get(years.size() - 2).isVerified();
-								answer2 = "Year: " + years.get(years.size() - 2).getAudit().getAuditFor();
+						if (oshaResults.size() >= 2) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 2);
+							if (result != null) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
 					case LastYearOnly:
-						if (years.size() >= 1) {
-							AuditData lastYear = years.get(years.size() - 1);
-							if (lastYear != null && isLast2Years(lastYear.getAudit().getAuditFor())) {
-								answer = Float.valueOf(Strings.formatNumber(lastYear.getAnswer()));
-								verified = lastYear.isVerified();
-								answer2 = "Year: " + lastYear.getAudit().getAuditFor();
+						if (oshaResults.size() >= 1) {
+							OshaResult result = oshaResults.get(oshaResults.size() - 1);
+							if (result != null && isLast2Years(result.getYear())) {
+								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
+								verified = result.isVerified();
+								answer2 = "Year: " + result.getYear();
 							}
 						}
 						break;
@@ -348,6 +341,7 @@ public class FlagCalculator {
 				}
 			}
 		}
+		
 		return null;
 	}
 	
@@ -355,6 +349,7 @@ public class FlagCalculator {
 		int lastYear = DateBean.getCurrentYear() - 1;
 		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
 			return true;
+		
 		return false;
 	}
 

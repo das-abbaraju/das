@@ -120,16 +120,16 @@
                 <td class="actions">
                     <ul>
                         <li class="change-policy policy-approve">
-                            <a href="javascript:;" class="btn small success">Approve</a>
+                            <a href="javascript:;" class="btn small success"><s:text name="AuditStatus.Approved.button" /></a>
                         </li>
                         <li class="change-policy policy-reject">
-                            <a href="javascript:;" class="btn small danger">Reject</a>
+                            <a href="javascript:;" class="btn small danger"><s:text name="button.Reject" /></a>
                         </li>
                         <li class="change-policy policy-na">
-                            <a href="javascript:;" class="btn small">N/A</a>
+                            <a href="javascript:;" class="btn small"><s:text name="AuditStatus.NotApplicable.button" /></a>
                         </li>
                         <li class="revert-policy">
-                            <a href="javascript:;" class="btn small">Undo</a>
+                            <a href="javascript:;" class="btn small"><s:text name="button.Undo" /></a>
                         </li>
                     </ul>
                 </td>

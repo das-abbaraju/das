@@ -78,9 +78,9 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	}
 	
 	public String ajaxFormInsuranceRejectionStatus() {
-	    // TODO @alex #alex $do_it
 	    if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
-	        throw new RuntimeException("forward 404");
+	    	addActionError("This method is only accessible through an AJAX Request.");
+	    	return SUCCESS;
 	    }
 	    
 	    String id = ServletActionContext.getRequest().getParameter("id");

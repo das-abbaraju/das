@@ -135,7 +135,7 @@
                     // if there is no note alert an error message
                     if (note == '') {
                         if (!$('.insurance-rejection-modal .alert-message').length) {
-                            var alert = $('<div class="alert-message warning"><span class="icon warn"></span>Required</div>');
+                            var alert = $('<div class="alert-message warning"><span class="icon warn"></span>' + translate('JS.Validation.Required') + '</div>');
                             
                             form.prepend(alert);
                             
@@ -192,13 +192,13 @@
                     
                     function createModal(data) {
                         var modal = PICS.modal({
-                            title: 'Insurance Rejection',
+                            title: translate('JS.Modal.Title.InsuranceRejection'), 
                             modal_class: 'modal insurance-rejection-modal',
                             content: data,
                             buttons: [{
                                 html: [
-                                    '<a href="javascript:;" class="btn cancel-policy">Cancel</a>',
-                                    '<a href="javascript:;" class="btn error reject-policy">Reject</a>'
+                                    '<a href="javascript:;" class="btn cancel-policy">' + translate('JS.button.Cancel') + '</a>',
+                                    '<a href="javascript:;" class="btn error reject-policy">' + translate('JS.button.Reject') + '</a>'
                                 ].join('')
                             }]
                         });

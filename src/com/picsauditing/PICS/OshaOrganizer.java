@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.SafetyStatistics;
+import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
 
 
@@ -26,7 +27,8 @@ public class OshaOrganizer implements OshaVisitor {
 	 * 
 	 * @param type
 	 */
-	public /* Testable */ YearList mostRecentThreeYears(OshaType type) {
+	@Testable
+	public YearList mostRecentThreeYears(OshaType type) {
 		YearList yearList = new YearList();
 		
 		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
@@ -60,8 +62,7 @@ public class OshaOrganizer implements OshaVisitor {
 	 * @param rateType
 	 * @return
 	 */
-	public double getRate(OshaType type, MultiYearScope scope,
-			OshaRateType rateType) {
+	public double getRate(OshaType type, MultiYearScope scope, OshaRateType rateType) {
 		YearList years = mostRecentThreeYears(type);
 
 		if (scope == MultiYearScope.ThreeYearAverage) {
@@ -91,8 +92,7 @@ public class OshaOrganizer implements OshaVisitor {
 		}
 	}
 
-	public BigDecimal getRateForSpecficYear(OshaType type, Integer year,
-			OshaRateType rateType) {
+	public BigDecimal getRateForSpecficYear(OshaType type, Integer year, OshaRateType rateType) {
 		if (year != null) {
 			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
 			SafetyStatistics stats = typeMap.get(year);
@@ -110,8 +110,7 @@ public class OshaOrganizer implements OshaVisitor {
 		return safetyStatisticsData.get(type).get(new Integer(year.getAuditFor()));
 	}
 
-	public String getAnswer2(OshaType type, MultiYearScope year,
-			OshaRateType rateType) {
+	public String getAnswer2(OshaType type, MultiYearScope year, OshaRateType rateType) {
 		/*String auditFor = getAuditFor(type, year);*/
 		return null;
 	}

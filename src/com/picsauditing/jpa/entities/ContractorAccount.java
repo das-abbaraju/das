@@ -751,45 +751,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	/*
-	 * Get a map of the last 3 years of applicable emr data (verified or not)
-	 */
-	public Map<String, AuditData> getEmrs() {
-		if (emrs != null)
-			return emrs;
-
-		emrs = new TreeMap<String, AuditData>();
-		int number = 0;
-		List<ContractorAudit> sortedAudits = getSortedAnnualUpdates();
-		for (ContractorAudit audit : sortedAudits) {
-			if (number < 4 && audit.hasCaoStatus(AuditStatus.Complete)) {
-				// Store the EMR rates into a map for later use
-				for (AuditData answer : audit.getData()) {
-					if (answer.getQuestion().getId() == AuditQuestion.EMR
-							|| (answer.getQuestion().getId() == 2033 && "No".equals(answer.getAnswer()))) {
-						if (!Strings.isEmpty(answer.getAnswer())) {
-							number++;
-							if (answer.getQuestion().getId() != 2033)
-								emrs.put(audit.getAuditFor(), answer);
-						}
-					}
-				}
-			}
-		}
-
-		if (emrs.size() == 4) {
-			emrs.remove(((TreeMap<String, AuditData>) emrs).firstKey());
-		} else if (emrs.size() > 4)
-			throw new RuntimeException("Found [" + emrs.size() + "] EMRs");
-
-		AuditData avg = AuditData.addAverageData(emrs.values());
-		// if (avg != null && !Strings.isEmpty(avg.getAnswer()))
-		// emrs.put(OshaAudit.AVG, avg);
-
-		return emrs;
-	}
-
-	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
 		completeAnnualUpdates.put(MultiYearScope.LastYearOnly, null);

@@ -704,8 +704,7 @@ public class ContractorAudit extends AbstractIndexableTable {
 	}
 
 	@Transient
-	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions,
-			Set<AuditCategory> requiredCategories) {
+	public Map<AuditCategory, AuditCatData> getApplicableCategories(Permissions permissions, Set<AuditCategory> requiredCategories) {
 		Map<AuditCategory, AuditCatData> categories = new LinkedHashMap<AuditCategory, AuditCatData>();
 		List<AuditCatData> sortedCats = getCategories();
 		Collections.sort(sortedCats, new Comparator<AuditCatData>() {
