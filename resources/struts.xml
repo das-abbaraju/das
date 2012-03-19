@@ -567,6 +567,11 @@
 			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
 
+		<action name="Dashboard"
+			class="com.picsauditing.actions.DashboardHome">
+			<result>struts/dashboard.jsp</result>
+		</action>
+
 		<!-- Contractor List -->
 		<action name="ContractorList"
 			class="com.picsauditing.actions.report.ReportAccountAudits">

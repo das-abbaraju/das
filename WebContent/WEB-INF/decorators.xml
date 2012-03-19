@@ -1,7 +1,7 @@
 <decorators defaultdir="/decorators">
 	<decorator name="extjs" page="extjs.jsp">
 		<pattern>/ReportDynamic.action</pattern>
-		<pattern>/ReportDynamic!list.action</pattern>
+		<pattern>/Dashboard.action</pattern>
 		<pattern>/Trevor.action</pattern>
 	</decorator>
 	<decorator name="main" page="main.jsp">
