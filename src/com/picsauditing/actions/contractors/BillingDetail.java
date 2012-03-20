@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
@@ -18,6 +19,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.TransactionDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -47,6 +49,8 @@ public class BillingDetail extends ContractorActionSupport {
 	private BigDecimal invoiceTotal;
 	private List<InvoiceItem> invoiceItems;
 	private OperatorAccount requestedBy = null;
+	private List<ContractorOperator> freeOperators;
+	private List<ContractorOperator> payingOperators;
 
 	public BillingDetail() {
 		this.noteCategory = NoteCategory.Billing;
@@ -202,5 +206,43 @@ public class BillingDetail extends ContractorActionSupport {
 		if (transactionList == null)
 			return new ArrayList<Transaction>();
 		return transactionList;
+	}
+
+	public List<ContractorOperator> getNonCorporatePayingOperators() throws Exception {
+		if (contractor == null)
+			findContractor();
+
+		if (payingOperators == null) {
+			payingOperators = new Grepper<ContractorOperator>() {
+
+				@Override
+				public boolean check(ContractorOperator t) {
+					return !t.getOperatorAccount().isCorporate()
+							&& !t.getOperatorAccount().getDoContractorsPay().equals("No")
+							&& t.getOperatorAccount().getStatus().isActiveDemo();
+				}
+			}.grep(contractor.getOperators());
+		}
+
+		return payingOperators;
+	}
+
+	public List<ContractorOperator> getNonCorporateFreeOperators() throws Exception {
+		if (contractor == null)
+			findContractor();
+
+		if (freeOperators == null) {
+			freeOperators = new Grepper<ContractorOperator>() {
+
+				@Override
+				public boolean check(ContractorOperator t) {
+					return !t.getOperatorAccount().isCorporate()
+							&& t.getOperatorAccount().getDoContractorsPay().equals("No")
+							&& t.getOperatorAccount().getStatus().isActiveDemo();
+				}
+			}.grep(contractor.getOperators());
+		}
+
+		return freeOperators;
 	}
 }

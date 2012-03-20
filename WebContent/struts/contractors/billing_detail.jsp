@@ -6,7 +6,6 @@
 	<head>
 		<title><s:property value="contractor.name" /> <s:text name="BillingDetail.title" /></title>
 		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 		
@@ -105,15 +104,14 @@
 							
 							<li>
 								<label><s:text name="BillingDetail.Facilities.Facilities" />:</label>
-								<s:text name="BillingDetail.PayingOperators">
-									<s:param><s:property value="contractor.payingFacilities" /></s:param>
-								</s:text>
-								<br /><br />
-								
-								<ul style="position: relative; left: 1em; list-style-type: disc;">
-									<s:iterator value="contractor.nonCorporateOperators">
-										<s:if test="operatorAccount.status.activeDemo">
-											<li>
+                                <s:if test="nonCorporatePayingOperators.size() > 0">
+                                    <div>
+                                    <s:text name="BillingDetail.PayingOperators">
+                                        <s:param><s:property value="nonCorporatePayingOperators.size()" /></s:param>
+                                    </s:text>
+    								<ul style="position: relative; left: 1em; list-style-type: disc;">
+    									<s:iterator value="nonCorporatePayingOperators">
+											<li style="padding: 5px 0 5px 0;">
 												<s:if test="permissions.admin">
 													<a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id" />">
 														<s:property value="operatorAccount.name" />
@@ -125,9 +123,33 @@
 													</a>
 												</s:else>
 											</li>
-										</s:if>
-									</s:iterator>
-								</ul>
+    									</s:iterator>
+    								</ul>
+                                    </div>
+                                </s:if>
+                                <s:if test="nonCorporateFreeOperators.size() > 0">
+                                    <div style="float: left; padding-top: 5px;">
+                                    <s:text name="BillingDetail.NonPayingOperators">
+                                        <s:param><s:property value="nonCorporateFreeOperators.size()" /></s:param>
+                                    </s:text>
+                                    <ul style="position: relative; left: 1em; list-style-type: disc;">
+                                        <s:iterator value="nonCorporateFreeOperators">
+                                            <li style="padding: 5px 0 5px 0;">
+                                                <s:if test="permissions.admin">
+                                                    <a href="OperatorConfiguration.action?id=<s:property value="operatorAccount.id" />">
+                                                        <s:property value="operatorAccount.name" />
+                                                    </a>
+                                                </s:if>
+                                                <s:else>
+                                                    <a href="ContractorFlag.action?opID=<s:property value="operatorAccount.id" />">
+                                                        <s:property value="operatorAccount.name" />
+                                                    </a>
+                                                </s:else>
+                                            </li>
+                                        </s:iterator>
+                                    </ul>
+                                    </div>
+                                </s:if>
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Facilities.ViewOperators" />:</label>
