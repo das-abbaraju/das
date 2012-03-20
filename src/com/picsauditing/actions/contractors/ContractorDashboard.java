@@ -641,4 +641,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public OshaDisplay getOshaDisplay() {
 		return oshaDisplay;
 	}
+
+	public boolean isViewableByGC() {
+		if (permissions.isGeneralContractor()) {
+			if (getActiveOperators().size() == 1 && getActiveOperators().get(0).getOperatorAccount().getId() == permissions.getAccountId()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
