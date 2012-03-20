@@ -35,6 +35,22 @@
 	line-height: 18px;
 }
 
+.insurance-rejection-status-form .insurance-rejection-tagit
+{
+	width: 350px;
+}
+
+.insurance-rejection-status-form .tagit-container
+{
+	margin: 0px 0px 10px;
+}
+
+.insurance-rejection-status-form .tagit-container a
+{
+	color: white;
+	text-decoration: none;
+}
+
 .insurance-rejection-status-form textarea
 {
 	height: 100px;

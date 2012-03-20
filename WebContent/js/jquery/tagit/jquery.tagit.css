@@ -74,7 +74,7 @@
     max-height: 300px;
     overflow-y: auto;
     position: absolute;
-    z-index: 9999;
+    z-index: 99999;
 }
 
 .tagit-drop-down .empty,

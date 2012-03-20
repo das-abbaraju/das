@@ -7,8 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.jsoup.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -205,22 +209,28 @@ public class CaoSave extends AuditActionSupport {
 	 * @throws NoRightsException
 	 */
 	@SuppressWarnings("unchecked")
-	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException {		
-		JSONObject[] jsonObjects = (JSONObject[]) jsonArray.toArray(); 
-		
-		JSONArray reasonCodes = new JSONArray();
-		for (JSONObject jsonObject : jsonObjects) {
-			reasonCodes.add(jsonObject.get("id"));
-		}
-				
-		// builds a JSONObject string with the reason codes and the plain-text comment input
-		// by the user
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("noteCodes", reasonCodes);
-		jsonObject.put("additionalComment", note);
-		note = jsonObject.toJSONString();
-		
-		return save();
+	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException, ParseException {		
+	    String jsonArrayRequest = ServletActionContext.getRequest().getParameter("jsonArray");
+	    if (Strings.isEmpty(jsonArrayRequest)) {
+            return save();
+        }	    
+	    
+	    JSONParser parser = new JSONParser();
+	    Object object = parser.parse(jsonArrayRequest);
+	    JSONArray array = (JSONArray) object;
+	    	            
+        JSONArray reasonCodes = new JSONArray();
+        for (int index = 0; index < array.size(); index++) {
+            JSONObject jsonObject = (JSONObject) array.get(index);
+            reasonCodes.add(jsonObject.get("id"));
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("noteCodes", reasonCodes);
+        jsonObject.put("additionalComment", note);
+        note = jsonObject.toJSONString();
+        
+        return save();
 	}
 
 	public String save() throws RecordNotFoundException, EmailException, IOException, NoRightsException {

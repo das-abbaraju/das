@@ -379,7 +379,7 @@
                 }
             }
             
-            var items;
+            var items = [];
             
             if (is_selected == undefined) {
                 // if items already exist and have been initialized return same list

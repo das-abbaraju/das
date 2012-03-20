@@ -36,10 +36,10 @@
              * @data:
              * @success_callback:
              */
-            function savePolicy(data, success_callback) {
+            function savePolicy(url, data, success_callback) {
                 if (!xhr) {
                     xhr = PICS.ajax({
-                        url: 'CaoSaveAjax!save.action',
+                        url: url,
                         data: data,
                         success: function (data, textStatus, XMLHttpRequest) {
                             if (typeof success_callback == 'function') {
@@ -83,7 +83,7 @@
                     var row = element.closest('tr');
                     var id = row.attr('data-cao-id');
                     
-                    savePolicy({
+                    savePolicy('CaoSaveAjax!save.action', {
                         status: 'Approved',
                         caoIDs: id,
                         insurance: true,
@@ -105,7 +105,7 @@
                     var row = element.closest('tr');
                     var id = row.attr('data-cao-id');
                     
-                    savePolicy({
+                    savePolicy('CaoSaveAjax!save.action', {
                         status: 'NotApplicable',
                         caoIDs: id,
                         insurance: true,
@@ -147,10 +147,14 @@
                             }, 2000);
                         }
                     } else {
-                        savePolicy({
+                        var json = form.find('[name=jsonArray]').val();
+                        json = json ? json : [];
+                        
+                        savePolicy('CaoSaveAjax!saveRejectionReasons.action', {
                             status: 'Incomplete',
                             caoIDs: id,
                             insurance: true,
+                            jsonArray: json,
                             note: note
                         }, function () {
                             // close modal window
@@ -227,6 +231,11 @@
                             
                             $('.insurance-rejection-modal').delegate('.reject-policy', 'click', function (event) {
                                 that.policyReject.apply(that, [event]);
+                            });
+                            
+                            $('.insurance-rejection-tagit').tagit({
+                                postType: 'string',
+                                source: 'AuditRejectLookupAjax.action',
                             });
                         }
                     });
