@@ -11,7 +11,6 @@ function filter(returnType, filter, value) {
 	};
 	data[filter] = value;
 	
-	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
 	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
@@ -29,13 +28,11 @@ function refresh(returnType) {
 			returnType: returnType
 	};
 
-	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
 	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 
 function refreshNoteCategory(accountID, defaultCategory) {
 	var divName = 'notesList';
-	startThinking({div: 'thinking_' + divName, message: "Refreshing Notes", type: "large"});
 
 	var data = {id: accountID, noteCategory: defaultCategory};
 	$('#'+divName).load('EmbeddedNotesAjax.action', data);
@@ -46,7 +43,6 @@ function runNoteSearch(returnType) {
 
 	var data = $('#'+returnType+'Form').serialize();
 	
-	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
 	$.post(accountType+'NotesAjax.action', data, function(text, status){
 		if (status=='success')
 			$('#'+divName).html(text);
@@ -64,7 +60,6 @@ function updateNotePage(accountID,button,returnType,result) {
 			'filter.category': $('#notesForm_filter_category').val()
 	};
 
-	startThinking({div: 'thinking_' + divName, message: "Filtering List"});
 	$('#'+divName).load(accountType+'NotesAjax.action', data);
 }
 

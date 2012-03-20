@@ -8,8 +8,6 @@
 	</div>
 </pics:permission>
 
-<div id="thinking_notesList"></div>
-
 <table class="notes">
 	<thead>
 		<tr>
