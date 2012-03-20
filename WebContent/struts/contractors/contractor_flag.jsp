@@ -569,8 +569,8 @@ fieldset.form {
 
 										<!-- Description -->
 										<td><s:set name="opCriteria"
-												value="getApplicableOperatorCriteria(#data)" /> <s:if
-												test="#opCriteria != null">
+												value="getApplicableOperatorCriteria(#data)" /> 
+												<s:if test="#opCriteria != null">
 												<s:if
 													test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
 													<s:property value="#opCriteria.replaceHurdle" />
@@ -606,7 +606,7 @@ fieldset.form {
 																	 '<s:date name="#cao.audit.effectiveDateLabel" format="yy" />
 																</s:elseif>
 																<s:else>
-																	 <s:property value="#cao.audit.auditFor" />
+																	 <s:property value="#cao.audit.auditFor" /> '<s:date name="#cao.audit.effectiveDateLabel" format="yy" />
 																</s:else>
 															</a>
 														</s:param>
