@@ -326,7 +326,8 @@ public class AuditPercentCalculator {
 					answered += data.getRequiredCompleted();
 					verified += data.getNumVerified();
 
-					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent) {
+					if (conAudit.getAuditType().getScoreType() == ScoreType.Percent || 
+							conAudit.getAuditType().getScoreType() == ScoreType.Actual) {
 						if (data.getScorePossible() > 0) {
 							score += data.getScore();
 							scoreWeight += data.getScorePossible();
