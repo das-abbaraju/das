@@ -171,8 +171,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 			if ("email".equals(button)) {
 				try {
-					EmailQueue email = EventSubscriptionBuilder
-							.contractorInvoiceEvent(contractor, invoice, permissions);
+					EmailQueue email = EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 					String note = "";
 					if (invoice.getStatus().isPaid())
 						note += "Payment Receipt for Invoice";
@@ -193,7 +192,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 				Iterator<PaymentAppliedToInvoice> paIterator = invoice.getPayments().iterator();
 				if (paIterator.hasNext()) {
 					PaymentAppliedToInvoice paymentAppliedToInvoice = paIterator.next();
-					paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, this.getUser());
+					paymentDAO.removePaymentInvoice(paymentAppliedToInvoice, getUser());
 				}
 				invoice.setStatus(TransactionStatus.Void);
 				billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
@@ -284,8 +283,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 												+ ") for invoice "
 												+ invoice.getId());
 							}
-							addActionError(getTextParameterized(
-									"InvoiceDetail.error.ContactBilling",
+							addActionError(getTextParameterized("InvoiceDetail.error.ContactBilling",
 									getText("PicsBillingPhone")));
 
 							// Assuming Unpaid status per Aaron so that he can
@@ -303,7 +301,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 
 					// Send a receipt to the contractor
 					try {
-						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
+						EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 					} catch (Exception theyJustDontGetAnEmail) {
 					}
 				}
@@ -388,7 +386,6 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		this.edit = edit;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<InvoiceFee> getFeeList() {
 		if (feeList == null)
 			feeList = (List<InvoiceFee>) invoiceFeeDAO.findWhere(InvoiceFee.class, "t.visible = true", 100);

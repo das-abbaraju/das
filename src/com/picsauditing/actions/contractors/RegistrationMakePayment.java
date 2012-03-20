@@ -51,8 +51,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 	@Autowired
 	private NoteDAO noteDAO;
 	@Autowired
-	private AppPropertyDAO appPropertyDAO;
-	@Autowired
 	private PaymentDAO paymentDAO;
 	@Autowired
 	private AppPropertyDAO appPropDao;
@@ -210,8 +208,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 											+ invoice.getId());
 						}
 
-						addActionError(getText(
-								"ContractorRegistrationFinish.error.ConnectionFailure",
+						addActionError(getText("ContractorRegistrationFinish.error.ConnectionFailure",
 								getText("PicsBillingPhone")));
 
 						// Assuming paid status per Aaron so that he can
@@ -230,7 +227,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 				// Send a receipt to the contractor
 				try {
-					EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, permissions);
+					EventSubscriptionBuilder.contractorInvoiceEvent(contractor, invoice, getUser());
 				} catch (Exception theyJustDontGetAnEmail) {
 				}
 			}
@@ -326,8 +323,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				// TODO: Test
-				addActionError(getText(
-						"ContractorPaymentOptions.GatewayCommunicationError",
+				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
 						new Object[] { getText("PicsTollFreePhone") }));
 				braintreeCommunicationError = true;
 				return;
@@ -356,9 +352,8 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		// not show cc data
 		if (retries >= quit) {
 			// TODO: Test
-			addActionError(getText(
-					"ContractorPaymentOptions.GatewayCommunicationError",
-					new Object[] {getText("PicsTollFreePhone")}));
+			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+					new Object[] { getText("PicsTollFreePhone") }));
 			braintreeCommunicationError = true;
 			return;
 		}
@@ -623,7 +618,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		findContractor();
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {
-			invoice = billingService.createInvoice(contractor);
+			invoice = billingService.createInvoice(contractor, getUser());
 			contractor.getInvoices().add(invoice);
 			invoiceDAO.save(invoice);
 			contractorAccountDao.save(contractor);
@@ -631,7 +626,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 			return true;
 		}
 
-		Invoice newInvoice = billingService.createInvoice(contractor, "Activation");
+		Invoice newInvoice = billingService.createInvoice(contractor, "Activation", getUser());
 		if (contractor.isHasMembershipChanged()
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());

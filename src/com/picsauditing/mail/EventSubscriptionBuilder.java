@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.ContractorCronStatistics;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -65,17 +64,15 @@ public class EventSubscriptionBuilder {
 		}
 	}
 
-	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice,
-			Permissions permissions) throws Exception {
+	public static EmailQueue contractorInvoiceEvent(ContractorAccount contractor, Invoice invoice, User user)
+			throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 		emailBuilder.setTemplate(45);
 		// Adding this to cc Billing until they're confident the billing system is ok
 		emailBuilder.setBccAddresses("billing@picsauditing.com");
 		emailBuilder.setContractor(contractor, OpPerms.ContractorBilling);
 		emailBuilder.addToken("invoice", invoice);
-		emailBuilder.addToken("billingUser", contractor.getUsersByRole(OpPerms.ContractorBilling).get(0));
-		if (permissions != null)
-			emailBuilder.setPermissions(permissions);
+		emailBuilder.addToken("user", contractor.getUsersByRole(OpPerms.ContractorBilling).get(0));
 
 		List<String> operatorsString = new ArrayList<String>();
 
@@ -88,12 +85,10 @@ public class EventSubscriptionBuilder {
 
 		Collections.sort(operatorsString);
 
-		emailBuilder.addToken("operators", "Your current list of Operators: " + Strings.implode(operatorsString, ", "));
+		emailBuilder.addToken("operators", Strings.implode(operatorsString, ", "));
 		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 
 		EmailQueue email = emailBuilder.build();
-		if (invoice.getStatus().isPaid())
-			email.setSubject("PICS Payment Receipt for Invoice " + invoice.getId());
 		email.setPriority(60);
 		email.setHtml(true);
 		email.setViewableById(Account.PicsID);

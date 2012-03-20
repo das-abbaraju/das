@@ -59,7 +59,7 @@ public class BillingDetail extends ContractorActionSupport {
 		this.findContractor();
 		billingService.calculateAnnualFees(contractor);
 
-		invoiceItems = billingService.createInvoiceItems(contractor);
+		invoiceItems = billingService.createInvoiceItems(contractor, getUser());
 
 		invoiceTotal = BigDecimal.ZERO.setScale(2);
 		for (InvoiceItem item : invoiceItems)

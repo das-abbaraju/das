@@ -221,6 +221,7 @@ public class Registration extends ContractorActionSupport {
 		}
 		if (contractor.getCountry().isHasStates() && state != null)
 			contractor.setState(state);
+		contractor.setLocale(ActionContext.getContext().getLocale());
 		contractor.setPhone(user.getPhone());
 		contractor.setPaymentExpires(new Date());
 		contractor.setAuditColumns(new User(User.CONTRACTOR));

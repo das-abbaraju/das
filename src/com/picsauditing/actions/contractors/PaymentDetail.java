@@ -17,7 +17,6 @@ import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -37,7 +36,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -47,8 +45,6 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private PaymentDAO paymentDAO;
 	@Autowired
 	private NoteDAO noteDAO;
-	@Autowired
-	private AppPropertyDAO appPropDao;
 	@Autowired
 	private BillingCalculatorSingle billingService;
 	@Autowired
@@ -305,8 +301,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 									// Email Receipt to Contractor
 									try {
 										if (collected)
-											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn,
-													permissions);
+											EventSubscriptionBuilder.contractorInvoiceEvent(contractor, txn, getUser());
 									} catch (Exception e) {
 										/**
 										 * The above can throw an exception if a user doesn't have an email address

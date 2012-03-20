@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,8 @@ public class BillingCalculatorSingle {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
+
+	private I18nCache i18nCache = I18nCache.getInstance();
 
 	public void setPayingFacilities(ContractorAccount contractor) {
 		List<OperatorAccount> payingOperators = new Vector<OperatorAccount>();
@@ -241,18 +244,6 @@ public class BillingCalculatorSingle {
 
 	}
 
-	public void addInvoiceToContractor(ContractorAccount contractor, Invoice i) {
-		invoiceDAO.save(i);
-
-		contractor.getInvoices().add(i);
-		contractor.syncBalance();
-		accountDao.save(contractor);
-
-		this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
-				+ i.getTotalAmount(), NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID,
-				new User(User.SYSTEM));
-	}
-
 	/**
 	 * This can only be used on invoices which are in Unpaid status to prevent Syncing errors w/ Quickbooks.
 	 * 
@@ -301,14 +292,14 @@ public class BillingCalculatorSingle {
 				LowMedHigh.Med, false, Account.PicsID, user);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor) {
-		return createInvoice(contractor, contractor.getBillingStatus());
+	public Invoice createInvoice(ContractorAccount contractor, User user) {
+		return createInvoice(contractor, contractor.getBillingStatus(), user);
 	}
 
-	public Invoice createInvoice(ContractorAccount contractor, String billingStatus) {
+	public Invoice createInvoice(ContractorAccount contractor, String billingStatus, User user) {
 		calculateAnnualFees(contractor);
 
-		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus);
+		List<InvoiceItem> invoiceItems = createInvoiceItems(contractor, billingStatus, user);
 
 		BigDecimal invoiceTotal = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 		for (InvoiceItem item : invoiceItems)
@@ -357,7 +348,7 @@ public class BillingCalculatorSingle {
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
 		// End of Due date
 
-		notes += "Thank you for doing business with PICS.";
+		notes += i18nCache.getText("Invoice.ThankYou", user != null ? user.getLocale() : Locale.ENGLISH);
 		// AppProperty prop = appPropDao.find("invoice_comment");
 		// if (prop != null) {
 		// notes = prop.getValue();
@@ -370,7 +361,7 @@ public class BillingCalculatorSingle {
 				hasMembership = true;
 		}
 		if (hasMembership) {
-			notes += " You are listed with the following Client Site(s): " + getOperatorsString(contractor);
+			notes += i18nCache.getText("Invoice.ClientSiteList", user != null ? user.getLocale() : Locale.ENGLISH, getOperatorsString(contractor));
 		}
 		invoice.setNotes(notes);
 
@@ -396,11 +387,11 @@ public class BillingCalculatorSingle {
 	 * @return
 	 */
 
-	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor) {
-		return createInvoiceItems(contractor, contractor.getBillingStatus());
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, User user) {
+		return createInvoiceItems(contractor, contractor.getBillingStatus(), user);
 	}
 
-	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, String billingStatus) {
+	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, String billingStatus, User user) {
 		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 
 		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current"))
@@ -417,7 +408,7 @@ public class BillingCalculatorSingle {
 			List<ContractorFee> upgrades = getUpgradedFees(contractor);
 
 			if (!upgrades.isEmpty()) {
-				addProratedUpgradeItems(contractor, items, upgrades);
+				addProratedUpgradeItems(contractor, items, upgrades, user);
 			}
 		}
 
@@ -432,7 +423,7 @@ public class BillingCalculatorSingle {
 	 * @param upgrades
 	 */
 	private void addProratedUpgradeItems(ContractorAccount contractor, List<InvoiceItem> items,
-			List<ContractorFee> upgrades) {
+			List<ContractorFee> upgrades, User user) {
 		BigDecimal upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
 		// Actual prorated Upgrade
@@ -457,12 +448,12 @@ public class BillingCalculatorSingle {
 				if (upgradeAmount.floatValue() > 0.0f) {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 					if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
-						description = "Upgrading from " + contractor.getCountry().getCurrency().getSymbol()
-								+ upgrade.getCurrentAmount() + ". Prorated "
-								+ contractor.getCountry().getCurrency().getSymbol() + upgradeAmount;
+						description = i18nCache.getText("Invoice.UpgradingFrom", user != null ? user.getLocale() : Locale.ENGLISH, contractor
+								.getCountry().getCurrency().getSymbol(), upgrade.getCurrentAmount(), contractor
+								.getCountry().getCurrency().getSymbol(), upgradeAmount);
 					} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
-						description = "Upgrading to " + upgrade.getFeeClass() + ". Prorated "
-								+ contractor.getCountry().getCurrency().getSymbol() + upgradeAmount;
+						description = i18nCache.getText("Invoice.UpgradingTo", user != null ? user.getLocale() : Locale.ENGLISH, upgrade.getFeeClass(),
+								contractor.getCountry().getCurrency().getSymbol(), upgradeAmount);
 					}
 				} else
 					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
