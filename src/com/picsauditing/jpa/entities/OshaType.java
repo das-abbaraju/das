@@ -10,9 +10,9 @@ package com.picsauditing.jpa.entities;
  * UK_HSE = UK's Heath Safety and Environment (??? is this the official name?)
  */
 public enum OshaType implements Translatable {
-	OSHA(new OshaRateType[]{OshaRateType.TrirAbsolute,OshaRateType.LwcrAbsolute,OshaRateType.Fatalities,OshaRateType.Hours}),
-	MSHA(new OshaRateType[]{}),
-	COHS(new OshaRateType[]{}),
+	OSHA(new OshaRateType[]{OshaRateType.TrirAbsolute,OshaRateType.LwcrAbsolute,OshaRateType.Dart,OshaRateType.Fatalities,OshaRateType.Hours}),
+	MSHA(new OshaRateType[]{OshaRateType.TrirAbsolute,OshaRateType.LwcrAbsolute,OshaRateType.Fatalities,OshaRateType.Hours}),
+	COHS(new OshaRateType[]{OshaRateType.TrirAbsolute,OshaRateType.LwcrAbsolute,OshaRateType.Fatalities,OshaRateType.Hours}),
 	UK_HSE(new OshaRateType[]{OshaRateType.IFR, OshaRateType.DOFR});
 	
 	public OshaRateType[] rates;

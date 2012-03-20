@@ -17,6 +17,7 @@ public class OshaStatistics extends SafetyStatistics {
 	public static final int QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR = 8812;
 	public static final int QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR = 8810;
 	public static final int QUESTION_ID_FILE_UPLOAD_FOR_THE_GIVEN_YEAR = 8811;
+	public static final int QUESTION_ID_DART_FOR_THE_GIVEN_YEAR = 9778;
 	
 	public OshaStatistics(int year, List<AuditData> data) {
 		super(year, OshaType.OSHA, data);
@@ -52,6 +53,9 @@ public class OshaStatistics extends SafetyStatistics {
 			else if (answer.getQuestion().getId() == QUESTION_ID_FILE_UPLOAD_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.FileUpload, answer);
 				fileUpload = answer;
+			}
+			else if (answer.getQuestion().getId() == QUESTION_ID_DART_FOR_THE_GIVEN_YEAR) {
+				answerMap.put(OshaRateType.Dart, answer);
 			}
 		} 
 	}

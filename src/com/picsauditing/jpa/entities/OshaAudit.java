@@ -81,7 +81,7 @@ public class OshaAudit implements OshaVisitable {
 		for (AuditCatData category : this.getCategories()) {
 			OshaType oshaType = convertCategoryToOshaType(category
 					.getCategory().getId());
-			if (category.isApplies()) {
+			if (oshaType != null && category.isApplies()) {
 				if (oshaType == OshaType.OSHA) {
 					safetyStatistics = new OshaStatistics(year, contractorAudit
 							.getData());
