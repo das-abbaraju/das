@@ -155,6 +155,11 @@ public class Note extends BaseTable implements java.io.Serializable {
 	public String getBodyHtml() {
 		return Utilities.escapeHTML(body);
 	}
+	@Transient
+	public String getBodyHtml(int maxLength) {
+		return Utilities.escapeHTML(body,maxLength);
+	}
+
 
 	public void setBody(String body) {
 		this.body = body;

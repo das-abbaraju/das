@@ -29,6 +29,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	protected int id;
 	// protected Account account;
 	protected String subHeading = null;
+	// TODO This local-copy optimzation is probably unnecessary, being redundant with Hibernate's caching.
 	protected List<Note> notes;
 	protected NoteCategory noteCategory = NoteCategory.General;
 	protected int questionId;
@@ -36,7 +37,7 @@ public class AccountActionSupport extends PicsActionSupport {
 	@Autowired
 	protected AccountDAO accountDAO;
 	@Autowired
-	private NoteDAO noteDao;
+	protected NoteDAO noteDao;
 	@Autowired
 	private CountryDAO countryDAO;
 	@Autowired
@@ -101,9 +102,9 @@ public class AccountActionSupport extends PicsActionSupport {
 	 * Get a list of notes up to the limit, using the given where clause
 	 * 
 	 * @param where
-	 *            should be in the format of "AND field=1", can be an empty string
+	 *        should be in the format of "AND field=1", can be an empty string
 	 * @param limit
-	 *            ie 25
+	 *        e.g. 25
 	 * @return
 	 */
 	public List<Note> getNotes(String where, int firstLimit, int limit) {
@@ -111,6 +112,16 @@ public class AccountActionSupport extends PicsActionSupport {
 			notes = noteDao.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit, limit);
 
 		return notes;
+	}
+
+	/**
+	 * Using the same parameters as getNotes(), above, see if there is at least
+	 * one more note that can be fetched after that.
+	 */
+	public boolean atLeastOneMoreNote(String where, int firstLimit, int limit) {
+		List<Note> zeroOrOneMoreNote = noteDao
+				.getNotes(id, permissions, "status IN (1,2)" + where, firstLimit + limit, 1);
+		return (zeroOrOneMoreNote.size() > 0);
 	}
 
 	/**

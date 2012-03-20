@@ -35,7 +35,7 @@
 								<s:param><s:property value="filter.firstResult + 1"/></s:param>
 								<s:param>
 									<s:if test="!next">
-										<s:property value="countRows" />
+										<s:property value="filter.firstResult + countRows" />
 									</s:if>
 									<s:else>
 										<s:property value="filter.limit + filter.firstResult" />
@@ -82,15 +82,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<s:if test="notes.size() == 0">
-			<tr>
-				<td class="center" colspan="3">
-					<s:text name="ContractorNotes.NoNotesFound" />
-				</td>
-			</tr>
-		</s:if>
-		
-		<s:iterator value="notes">
+		<s:iterator value="activity" var="bean">
 			<tr>
 				<td class="center">
 					<nobr>
@@ -107,44 +99,45 @@
 					</nobr>
 				</td>
 				<td class="priority">
+					<s:if test='"None".equals(#bean.priority.name())'>
+					</s:if>
+					<s:else>
 					<a href="#" onclick="filter('notes', 'filter.priority', '<s:property value="priority" />'); return false;">
 						<img src="images/star<s:property value="priority" />.gif" height="25" width="25" title="<s:property value="priority" /> Priority" />
 					</a>
+					</s:else>
 				</td>
 				<td>
+					<s:if test='#bean.hasDetails()'>
 					<a href="#view" style="float: right; padding: 5px" onclick="noteEditor('<s:property value="account.id"/>', '<s:property value="id" />','view')">
 						<s:text name="UserOpenNotesAjax.ShowDetails" />
 					</a>
+					</s:if>
 					
 					<a class="filter" href="#" onclick="filter('notes', 'filter.category', '<s:property value="noteCategory" />'); return false;">
 						<s:property value="noteCategory" />
 					</a>:
+
 					
-					<s:property value="summary" />
+					<s:property value="summary" escape="false"/>
 					
-					<s:if test="body != null && body.length() > 150">
+					<s:if test="body != null">
 						<br />
-						
-						<s:property value="bodyHtml.substring(0,150)" escape="false"/>
+						<s:property value="#bean.getBodyHtml(150)" escape="false"/>
 					</s:if>
-					<s:elseif test="body != null">
-						<br />
-						
-						<s:property value="bodyHtml" escape="false"/>
-					</s:elseif>
 					
-					<br /><br />
+					<br />
 					
 					<s:if test="attachment != null">
-						<a href="NoteEditor!attachment.action?note=<s:property value="id"/>" target="_BLANK">
+						<br /><a href="NoteEditor!attachment.action?note=<s:property value="id"/>" target="_BLANK">
 							<s:text name="ContractorNotes.ViewAttachment" />
 						</a>
 						
-						<br /><br />
+						<br />
 					</s:if>
 					
 					<s:if test="updateDate != null && updateDate.after(creationDate)">
-						<s:text name="ContractorNotes.EditedBy">
+						<br /><s:text name="ContractorNotes.EditedBy">
 							<s:param><s:property value="updatedBy.name" /></s:param>
 							<s:param><s:date name="updateDate" format="M/d/yy h:mm a" /></s:param>
 						</s:text>

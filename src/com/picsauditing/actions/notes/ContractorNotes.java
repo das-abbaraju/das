@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -43,6 +42,27 @@ public class ContractorNotes extends ContractorActionSupport {
 		return returnType;
 	}
 
+	public List<ActivityBean> getActivity() {
+		List<ActivityBean> activity = noteDao.getActivity(id, permissions, "status IN (1,2)" + getFilters(),
+				getFiltersForWorkflow(), filter.getCategory(), filter.getFirstResult(), filter.getLimit());
+		for (ActivityBean bean : activity) {
+			if (bean.needsComplexSummaryWithTranlations()) {
+				bean.setSummary(composeComplexSummary(bean));
+			}
+		}
+		return activity;
+	}
+
+	private String composeComplexSummary(ActivityBean bean) {
+		// Currently, only ActivityBeanAudit requires a complex summary, so
+		// there's no need to test for which bean type this is
+		return "<a href='Audit.action?auditID=" + bean.getAuditId() + "'>"
+				+ getText(bean.getAuditType().getI18nKey("name")) + " " + bean.getAuditFor()
+				+ "</a> &nbsp; &nbsp; <span style='color:#AAA'>" + getText(bean.getPreviousStatus().getI18nKey())
+				+ "</span> &rarr; " + getText(bean.getStatus().getI18nKey()) + " &nbsp; &nbsp; "
+				+ bean.getOperator().getName();
+	}
+
 	public List<Note> getNotes() {
 		return super.getNotes(getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
@@ -55,18 +75,11 @@ public class ContractorNotes extends ContractorActionSupport {
 	}
 
 	public boolean isNext() {
-		List<Note> noteList = getNotes(getFilters(), filter.getFirstResult() + filter.getLimit(), 100000);
-		notes = null;
-		if (noteList.size() > 0) {
-			return true;
-		}
-		return false;
+		return atLeastOneMoreNote(getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
 
 	public boolean isPrevious() {
-		if (filter.getFirstResult() > 0)
-			return true;
-		return false;
+		return (filter.getFirstResult() > 0);
 	}
 
 	private String getFilters() {
@@ -98,6 +111,28 @@ public class ContractorNotes extends ContractorActionSupport {
 		return filterString;
 	}
 
+	private String getFiltersForWorkflow() {
+		String filterString = "";
+		if (filter.getPriority() != null && filter.getPriority().length > 0) {
+			// CAOW records have no prioority at all, so if the user filters on
+			// priorty, then force the query to bring back nothing
+			filterString += " AND 1=2";
+		}
+		if (!Strings.isEmpty(filter.getKeyword())) {
+			filterString += " AND (w.cao.audit.auditFor LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'"
+					+ " OR w.notes LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%'"
+					+ " OR w.cao.operator.name LIKE '%" + Strings.escapeQuotes(filter.getKeyword()) + "%')";
+		}
+		if (filter.getUserID() != null && filter.getUserID().length > 0) {
+			filterString += " AND w.createdBy.id IN (" + Strings.implode(filter.getUserID(), ",") + ")";
+		}
+		if (filter.getUserAccountID() != null && filter.getUserAccountID().length > 0) {
+			filterString += " AND w.createdBy.account.id IN (" + Strings.implode(filter.getUserAccountID(), ",") + ")";
+		}
+
+		return filterString;
+	}
+
 	public String getReturnType() {
 		return returnType;
 	}
@@ -111,8 +146,6 @@ public class ContractorNotes extends ContractorActionSupport {
 	}
 
 	public int getCountRows() {
-		List<Note> noteList = getNotes(getFilters(), 0, 100000);
-		notes = null;
-		return noteList.size();
+		return getNotes().size();
 	}
 }
