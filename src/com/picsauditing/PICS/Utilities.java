@@ -25,8 +25,22 @@ public class Utilities {
 	}
 
 	public static String escapeHTML(String value) {
+		return escapeHTML(value,Integer.MAX_VALUE);
+	}
+
+	/**
+	 * This variation of escapeHTML(text) accepts a second argument of
+	 * maxLength. It truncates the text to the given length, before escaping it.
+	 * This means that we can safely truncate the text without worrying about
+	 * truncating in the middle of an escape sequence.
+	 * 
+	 * Additionally, if the text is truncated, then "..." is appended in place
+	 * of the truncted text.
+	 */
+	public static String escapeHTML(String value,int maxLength) {
+		int maxIndex = Math.min(maxLength,value.length());
 		StringBuffer out = new StringBuffer();
-		for (int i = 0; i < value.length(); i++) {
+		for (int i = 0; i < maxIndex; i++) {
 			char c = value.charAt(i);
 			if (c > 127 || c == '"' || c == '<' || c == '>' || c == '\'') {
 				out.append("&#" + (int) c + ";");
@@ -35,6 +49,9 @@ public class Utilities {
 			} else {
 				out.append(c);
 			}
+		}
+		if (maxLength < value.length()) {
+			out.append("...");
 		}
 		return out.toString();
 	}

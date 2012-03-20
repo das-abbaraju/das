@@ -221,7 +221,18 @@ public class DateBean {
 	 */
 	public static Date getEndOfTime() {
 		Calendar cal = Calendar.getInstance();
-		cal.set(4000, Calendar.JANUARY, 1);
+		cal.set(4000, Calendar.JANUARY, 1,23,59,59);
+		return cal.getTime();
+	}
+
+	/**
+	 * Get the start of time date 1/1/2000 This is used for query ranges
+	 * 
+	 * @return
+	 */
+	public static Date getStartOfPicsTime() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(2000, Calendar.JANUARY, 1,0,0,0);
 		return cal.getTime();
 	}
 
