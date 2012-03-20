@@ -31,6 +31,13 @@ fieldset.form ol li label {
 }
 </style>
 <script type="text/javascript">
+function clearFilterCheckboxes() {
+	$("#audits").attr('checked', false);
+	$("#flagColorChange").attr('checked', false);
+	$("#login").attr('checked', false);
+	$("#notesAndEmail").attr('checked', false);
+	$("#flagCriteria").attr('checked', false);
+}
 $(function() {
 	$('#newContractor').autocomplete('ContractorSelectAjax.action', 
 		{
@@ -104,12 +111,13 @@ $(function() {
 		<s:checkbox value="flagCriteria" name="flagCriteria" id="flagCriteria"></s:checkbox>
 		<label for="flagCriteria"><s:text name="ReportActivityWatch.label.FlagCriteria" /></label>
 	</div>
+	<div>&nbsp;&nbsp;<a class="clearLink" href="#" onclick="clearFilterCheckboxes(); return false;"><s:text name="button.Clear" /></a></div>
 	<br clear="all" />
 </s:form></div>
 
 <table>
 	<tr>
-		<s:if test="!permissions.admin">
+		
 			<s:if test="contractor == null">
 				<td class="leftSide">
 					<s:if test="watched.size() > 0">
@@ -152,7 +160,8 @@ $(function() {
 					</s:form>
 				</td>
 			</s:if>
-		</s:if>
+	
+
 		<td>
 			<s:if test="data.size() > 0">
 				<table class="report">

@@ -10,9 +10,11 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.ContractorWatchlistHelper;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -39,16 +41,14 @@ public class ReportActivityWatch extends ReportAccount {
 	private boolean notesAndEmail = true;
 	private boolean flagCriteria = true;
 
-	private List<ContractorWatch> watched;
-	private Set<Integer> visibleCaos = new HashSet<Integer>();
+	private ContractorWatchlistHelper contractorWatchlistHelper;
 
 	@Override
 	public String execute() throws Exception {
 		checkPermissions();
 
-		if (login == false && notesAndEmail == false && audits == false && flagColorChange == false
-				&& flagCriteria == false) {
-			addActionError("Please select a watch criteria");
+		if (!login && !notesAndEmail && !audits && !flagColorChange && !flagCriteria ) {
+			addActionError(getText("ReportActivityWatch.message.SelectWatchCriteria","Please select a watch criteria"));
 			return SUCCESS;
 		}
 
@@ -58,74 +58,37 @@ public class ReportActivityWatch extends ReportAccount {
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
 	public String add() throws Exception {
 		if (contractor != null) {
-			boolean exists = false;
-
-			for (ContractorWatch watch : getWatched()) {
-				if (contractor.equals(watch.getContractor()))
-					exists = true;
-			}
-
-			if (!exists) {
-				ContractorWatch watch = new ContractorWatch();
-				watch.setAuditColumns(permissions);
-				watch.setContractor(contractor);
-				watch.setUser(getUser());
-
+			if (getContractorWatchlistHelper().isWatching(contractor))
+				addActionError(getText("ReportActivityWatch.message.ContractorAlreadyWatched"));
+			else {
+				getContractorWatchlistHelper().addContractorToWatchList(contractor);
 				addActionMessage(getText("ReportActivityWatch.message.AddedToWatchList",
 						new Object[] { contractor.getName() }));
-
-				watch = (ContractorWatch) userDAO.save(watch);
-				watched.add(watch);
-
-				Collections.sort(watched, new Comparator<ContractorWatch>() {
-					public int compare(ContractorWatch o1, ContractorWatch o2) {
-						return o1.getContractor().getName().compareTo(o2.getContractor().getName());
-					}
-				});
-			} else
-				addActionError(getText("ReportActivityWatch.message.ContractorAlreadyWatched"));
+			}
 		} else
 			addActionError(getText("ReportActivityWatch.message.SelectContractor"));
 
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
-		else
-			return super.execute();
+		
+		return super.execute();
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
 	public String remove() throws Exception {
-		int redirect = 0;
-		if (contractorWatch != null) {
-			Iterator<ContractorWatch> iterator = getWatched().iterator();
-
-			while (iterator.hasNext()) {
-				ContractorWatch watch = iterator.next();
-
-				if (contractorWatch.equals(watch)) {
-					redirect = watch.getContractor().getId();
-					iterator.remove();
-					userDAO.remove(watch);
-				}
-			}
-		} else {
+		if (contractorWatch == null) {
 			addActionError(getText("ReportActivityWatch.message.SelectContractorToStopWatching"));
 			return SUCCESS;
 		}
-
+		getContractorWatchlistHelper().removeContractorFromWatchList(contractorWatch);
 		return redirect("ReportActivityWatch.action"
-				+ (contractor != null && contractor.getId() != redirect ? "?contractor=" + contractor.getId() : ""));
+				+ (contractor != null && contractor.getId() != getContractorWatchlistHelper().getRemovedContractorId() ? "?contractor=" + contractor.getId() : ""));
 	}
 
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
 
-		if (permissions.isOperator()) {
-			visibleCaos.add(permissions.getAccountId());
-		}
-		if (permissions.isCorporate())
-			visibleCaos.addAll(permissions.getOperatorChildren());
 
 		String activity = "JOIN (";
 		List<String> watchOptions = new ArrayList<String>();
@@ -136,9 +99,10 @@ public class ReportActivityWatch extends ReportAccount {
 			joins.add("JOIN contractor_audit_operator cao on cao.auditID = ca.id AND cao.visible = 1");
 			joins.add("JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
 
-			if (permissions.isOperatorCorporate())
+			if (permissions.isOperatorCorporate()) {
 				joins.add("JOIN contractor_audit_operator_permission caop ON caop.caoID = cao.id AND caop.opID IN ("
-						+ Strings.implode(visibleCaos, ",") + ")");
+						+ visibleCaoOpIDsAsCsvList() + ")");
+			}
 			// Audit Expiration
 			SelectSQL sql2 = buildWatch("Audits", "contractor_audit ca", "ca.conID", "caow.creationDate", "aType.id",
 					"caow.previousStatus", "caow.status",
@@ -209,8 +173,8 @@ public class ReportActivityWatch extends ReportAccount {
 			joins.add("JOIN accounts o ON o.id = fco.opID"
 					+ (permissions.isOperatorCorporate() ? " AND o.id = " + permissions.getAccountId() : ""));
 			joins.add("JOIN flag_data fd ON fd.opID = fco.opID AND fd.criteriaID = fc.id");
-			SelectSQL sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fco.updateDate",
-					"o.name", "CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''", "''", "''", joins);
+			SelectSQL sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fco.updateDate", "o.name",
+					"CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''", "''", "''", joins);
 			watchOptions.add("(" + sql2.toString() + ")");
 			joins.clear();
 
@@ -218,8 +182,8 @@ public class ReportActivityWatch extends ReportAccount {
 				joins.add("JOIN (SELECT DISTINCT criteriaID, conID FROM flag_data WHERE conID = " + contractor.getId()
 						+ (permissions.isOperatorCorporate() ? " AND opID = " + permissions.getAccountId() : "") + ")"
 						+ " fd ON fc.id = fd.criteriaID");
-				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate", "CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''",
-						"''", "''", "''", joins);
+				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate",
+						"CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''", "''", "''", "''", joins);
 
 				watchOptions.add("(" + sql2.toString() + ")");
 			}
@@ -233,6 +197,17 @@ public class ReportActivityWatch extends ReportAccount {
 		orderByDefault = "ac.activityDate DESC";
 
 		report.setLimit(limit);
+	}
+
+	private String visibleCaoOpIDsAsCsvList() {
+		Set<Integer> visibleCaos = new HashSet<Integer>();
+
+		if (permissions.isOperator()) {
+			visibleCaos.add(permissions.getAccountId());
+		}
+		if (permissions.isCorporate())
+			visibleCaos.addAll(permissions.getOperatorChildren());
+		return Strings.implode(visibleCaos, ",");
 	}
 
 	private SelectSQL buildWatch(String activityType, String from, String accountID, String activityDate, String v1,
@@ -320,12 +295,7 @@ public class ReportActivityWatch extends ReportAccount {
 	}
 
 	public List<ContractorWatch> getWatched() {
-		if (watched == null) {
-			User user = userDAO.find(permissions.getUserId());
-			watched = user.getWatchedContractors();
-		}
-
-		return watched;
+		return getContractorWatchlistHelper().getWatchedSortedByContractorName();
 	}
 
 	@Override
@@ -339,4 +309,12 @@ public class ReportActivityWatch extends ReportAccount {
 	public ReportFilterCAO getFilter() {
 		return filter;
 	}
+
+	private ContractorWatchlistHelper getContractorWatchlistHelper() {
+		if (contractorWatchlistHelper == null) {
+			contractorWatchlistHelper = new ContractorWatchlistHelper(getUser(), permissions);
+		}
+		return contractorWatchlistHelper;
+	}
+
 }
