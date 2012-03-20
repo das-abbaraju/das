@@ -232,7 +232,7 @@ public class ContractorFlagETL {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResults(contractor.getSortedAnnualUpdates());
+			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor.getSortedAnnualUpdates());
 
 			if (CollectionUtils.isNotEmpty(oshaResults)) {
 				Float answer = null;
@@ -329,30 +329,29 @@ public class ContractorFlagETL {
 		return false;
 	}
 		
-	// TODO: find out why it throws an exception with Ancon Marine
 	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes, FlagCriteria flagCriteria) {
-//		OshaOrganizer osha = contractor.getOshaOrganizer();
-//		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
-//		PicsLogger.log("Answer = " + answer);
-//
-//		if (answer != null && !answer.equals(Double.valueOf(-1))) {
-//			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor,
-//					flagCriteria, Double.toString(answer));
-//
-//			String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
-//					flagCriteria.getOshaRateType());
-//			flagCriteriaContractor.setAnswer2(answer2);
-//
-//			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
-//			flagCriteriaContractor.setVerified(verified);
-//
-//			changes.add(flagCriteriaContractor);
-//		} else { // the User did not provide an answer
-//			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);			
-//			if (flagCriteriaContractor != null) {
-//				changes.add(flagCriteriaContractor);
-//			}
-//		}
+		OshaOrganizer osha = contractor.getOshaOrganizer();
+		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
+		PicsLogger.log("Answer = " + answer);
+
+		if (answer != null && !answer.equals(Double.valueOf(-1))) {
+			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, Double.toString(answer));
+
+			String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
+			flagCriteriaContractor.setAnswer2(answer2);
+
+			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
+			flagCriteriaContractor.setVerified(verified);
+			
+//			System.out.println("Year Value for - " + flagCriteria.getI18nKey() + " => " + flagCriteriaContractor.getAnswer2());
+
+			changes.add(flagCriteriaContractor);
+		} else { // the User did not provide an answer
+			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);			
+			if (flagCriteriaContractor != null) {
+				changes.add(flagCriteriaContractor);
+			}
+		}
 	}
 	
 	private FlagCriteriaContractor checkForMissingAnswer(FlagCriteria flagCriteria, ContractorAccount contractor) {

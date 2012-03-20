@@ -1,10 +1,15 @@
 package com.picsauditing.PICS.flags;
 
+/**
+ * Used as a Container for information related to Osha or International Osha-Like
+ * data because there are cases where multiple data points are needed when 
+ * processing business logic.
+ */
 public class OshaResult {
 
 	private boolean verified;
 	private String answer;
-	private String years;
+	private String year;
 	
 	public boolean isVerified() {
 		return verified;
@@ -15,14 +20,17 @@ public class OshaResult {
 	}
 	
 	public String getYear() {
-		return years;
+		return year;
 	}
 	
+	/**
+	 * Used to build a new instance of OshaResult
+	 */
 	public static class Builder {
 		
 		private boolean verified;
 		private String answer;
-		private String years;
+		private String year;
 		
 		public Builder verified(boolean verified) {
 			this.verified = verified;
@@ -34,8 +42,8 @@ public class OshaResult {
 			return this;
 		}
 		
-		public Builder years(String years) {
-			this.years = years;
+		public Builder year(String year) {
+			this.year = year;
 			return this;
 		}
 		
@@ -44,7 +52,7 @@ public class OshaResult {
 			
 			oshaResult.verified = this.verified;
 			oshaResult.answer = this.answer;
-			oshaResult.years = this.years;
+			oshaResult.year = this.year;
 			
 			return oshaResult;
 		}

@@ -39,7 +39,6 @@ public class FlagDataCalculator {
 	private OperatorAccount operator = null;
 	private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
 
-	// private Map<AuditType, List<ContractorAuditOperator>> caoMap;
 	// Assume this is true for the contractor in question
 	private boolean worksForOperator = true;
 
@@ -518,8 +517,10 @@ public class FlagDataCalculator {
 	public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
 		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator value : list) {
-			if (operatorCriteria.get(value.getCriteria()) == null)
+			if (operatorCriteria.get(value.getCriteria()) == null) {
 				operatorCriteria.put(value.getCriteria(), new ArrayList<FlagCriteriaOperator>());
+			}
+			
 			operatorCriteria.get(value.getCriteria()).add(value);
 		}
 	}
@@ -589,10 +590,12 @@ public class FlagDataCalculator {
 	private String extractYear(String year) {
 		if (Strings.isEmpty(year))
 			return null;
+		
 		int index;
 		index = year.indexOf(":");
 		if (index >= 0)
 			year = year.substring(index + 1);
+		
 		index = year.indexOf("<br");
 		if (index >= 0)
 			year = year.substring(0, index);
@@ -613,8 +616,9 @@ public class FlagDataCalculator {
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				if (caop.getOperator().equals(operator) && cao.isVisible())
+				if (caop.getOperator().equals(operator) && cao.isVisible()) {
 					caos.add(cao);
+				}
 			}
 		}
 

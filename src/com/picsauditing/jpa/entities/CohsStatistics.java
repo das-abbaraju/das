@@ -17,8 +17,8 @@ public class CohsStatistics extends SafetyStatistics {
 	public static final int QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR = 8841;
 	public static final int QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR = 8839;
 
-	public CohsStatistics(int year, List<AuditData> data) {
-		super(year, OshaType.COHS, data);
+	public CohsStatistics(int year, List<AuditData> data, OshaAudit oshaAudit) {
+		super(year, OshaType.COHS, data, oshaAudit);
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		for (AuditData answer : data) {
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR) {

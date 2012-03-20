@@ -254,7 +254,7 @@ public class FlagCalculator {
 		String hurdle = getHurdle(rule);
 
 		if (criteria.getQuestion().getId() == AuditQuestion.EMR) {
-			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResults(contractor.getSortedAnnualUpdates());			
+			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor.getSortedAnnualUpdates());			
 
 			if (CollectionUtils.isNotEmpty(oshaResults)) {
 				Float answer = null;

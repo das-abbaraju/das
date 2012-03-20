@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class UkStatistics extends SafetyStatistics{
-	public UkStatistics(int year, List<AuditData> data) {
-		super(year, OshaType.UK_HSE, data);
+	
+	public UkStatistics(int year, List<AuditData> data, OshaAudit oshaAudit) {
+		super(year, OshaType.UK_HSE, data, oshaAudit);
+		
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		for (AuditData answer: data) {
 			if (answer.getQuestion().getId() == 9060) {

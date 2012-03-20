@@ -19,8 +19,8 @@ public class OshaStatistics extends SafetyStatistics {
 	public static final int QUESTION_ID_FILE_UPLOAD_FOR_THE_GIVEN_YEAR = 8811;
 	public static final int QUESTION_ID_DART_FOR_THE_GIVEN_YEAR = 9778;
 	
-	public OshaStatistics(int year, List<AuditData> data) {
-		super(year, OshaType.OSHA, data);
+	public OshaStatistics(int year, List<AuditData> data, OshaAudit oshaAudit) {
+		super(year, OshaType.OSHA, data, oshaAudit);
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		for (AuditData answer: data) {
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR) {

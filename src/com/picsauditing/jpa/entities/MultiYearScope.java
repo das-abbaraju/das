@@ -1,7 +1,10 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -11,6 +14,9 @@ public enum MultiYearScope {
 	ThreeYearsAgo("Three Years Ago"),
 	ThreeYearAverage("Three Year Average"),
 	ThreeYearSum("Three Year Sum");
+	
+	private static final List<MultiYearScope>LIST_INDIVIDUAL_YEAR_SCOPES = Collections.unmodifiableList(
+			Arrays.asList(LastYearOnly, TwoYearsAgo, ThreeYearsAgo));
 
 	@Deprecated
 	private String description;
@@ -55,6 +61,14 @@ public enum MultiYearScope {
 	
 	public boolean isIndividualYearScope() {
 		return (this == LastYearOnly || this == TwoYearsAgo || this == ThreeYearsAgo);
+	}
+	
+	public boolean isMultiYearScope() {
+		return (this == ThreeYearAverage || this == ThreeYearSum);
+	}
+	
+	public static List<MultiYearScope> getListOfIndividualYearScopes() {
+		return LIST_INDIVIDUAL_YEAR_SCOPES;
 	}
 
 	static public Map<Integer, MultiYearScope> getMap() {

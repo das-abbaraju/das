@@ -79,19 +79,16 @@ public class OshaAudit implements OshaVisitable {
 		SafetyStatistics safetyStatistics = null;
 		int year = new Integer(contractorAudit.getAuditFor());
 		for (AuditCatData category : this.getCategories()) {
-			OshaType oshaType = convertCategoryToOshaType(category
-					.getCategory().getId());
+			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
 			if (oshaType != null && category.isApplies()) {
 				if (oshaType == OshaType.OSHA) {
-					safetyStatistics = new OshaStatistics(year, contractorAudit
-							.getData());
+					safetyStatistics = new OshaStatistics(year, contractorAudit.getData(), this);
 				} else if (oshaType == OshaType.COHS) {
-					safetyStatistics = new CohsStatistics(year, contractorAudit
-							.getData());
+					safetyStatistics = new CohsStatistics(year, contractorAudit.getData(), this);
 				} else if (oshaType == OshaType.UK_HSE) {
-					safetyStatistics = new UkStatistics(year, contractorAudit
-							.getData());
+					safetyStatistics = new UkStatistics(year, contractorAudit.getData(), this);
 				}
+				
 				if (safetyStatistics != null) {
 					safetyStatisticsMap.put(oshaType, safetyStatistics);
 				}

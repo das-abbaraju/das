@@ -725,6 +725,11 @@ public class ContractorAccount extends Account implements JSONable {
 		return false;
 	}
 
+	/**
+	 * Uses the OshaVisitor to gather all the data 
+	 * 
+	 * @return
+	 */
 	@Transient
 	public OshaOrganizer getOshaOrganizer() {
 		if (oshaOrganizer == null) {
@@ -734,6 +739,7 @@ public class ContractorAccount extends Account implements JSONable {
 					audit.accept(oshaOrganizer);
 			}
 		}
+		
 		return oshaOrganizer;
 	}
 
@@ -747,6 +753,7 @@ public class ContractorAccount extends Account implements JSONable {
 				}
 			}
 		}
+		
 		return this.oshaAudits;
 	}
 
