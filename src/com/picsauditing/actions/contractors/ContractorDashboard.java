@@ -19,6 +19,7 @@ import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaDisplay;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.access.GeneralContractorNotApprovedException;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
@@ -77,7 +78,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
-	
+
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
 	private boolean runTagConCronAjax = false;
@@ -99,8 +100,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private ContractorFlagCriteriaList criteriaList;
 
 	private Map<FlagColor, Integer> flagCounts;
-	
-	private	OshaOrganizer oshaOrganizer;
+
+	private OshaOrganizer oshaOrganizer;
 	private OshaDisplay oshaDisplay;
 
 	@Override
@@ -114,6 +115,18 @@ public class ContractorDashboard extends ContractorActionSupport {
 		if (permissions.isOperatorCorporate()
 				&& (contractor.getStatus().isDeactivated() || contractor.getStatus().isDeleted()))
 			throw new NoRightsException("PICS Administrator");
+
+		if (permissions.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+			// find GC entry
+			for (OperatorAccount operator : contractor.getGeneralContractorOperatorAccounts()) {
+				ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(operator);
+				if (contractorOperator.getOperatorAccount().getId() == permissions.getAccountId()
+						&& contractorOperator.getWorkStatus() != ApprovalStatus.Y) {
+					throw new GeneralContractorNotApprovedException(getTextParameterized(
+							"ContractorView.ContractorHasNotApprovedGC", contractor.getName()));
+				}
+			}
+		}
 
 		if ("AddTag".equals(button)) {
 			// TODO Move this into a new class
@@ -221,9 +234,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		oshaOrganizer = contractor.getOshaOrganizer();
-		
-		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(),
-				getActiveOperators(), contractor, naicsDao);
+
+		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
 
 		return SUCCESS;
 	}

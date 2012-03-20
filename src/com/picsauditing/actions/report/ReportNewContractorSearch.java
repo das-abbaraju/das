@@ -213,8 +213,11 @@ public class ReportNewContractorSearch extends ReportAccount {
 		facilityChanger.setOperator(operator);
 		facilityChanger.add();
 
-		addActionMessage(getText("NewContractorSearch.message.SuccessfullyAdded", new Object[] {
-				contractor.getId() + "", contractor.getName() }));
+		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+			addActionMessage(getTextParameterized("NewContractorSearch.ContractorNeedsToApprove", contractor.getName()));
+		} else {
+			addActionMessage(getTextParameterized("NewContractorSearch.message.SuccessfullyAdded", contractor.getId() + "", contractor.getName()));
+		}
 
 		// Automatically upgrading Contractor per discussion
 		// 2/15/2011

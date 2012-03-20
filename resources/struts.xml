@@ -72,6 +72,7 @@
 			<result name="Exception" type="chain">
 				<param name="actionName">ExceptionAction</param>
 			</result>
+			<result name="GeneralContractorNotApprovedException">/gc_not_approved_exception.jsp</result>
 			<result name="NoRightsException">/no_rights_exception.jsp</result>
 			<result name="RecordNotFoundException">/record_not_found_exception.jsp</result>
 			<result name="LoginAjax">struts/login_ajax.jsp</result>
@@ -92,6 +93,7 @@
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception" />
+			<exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException" result="GeneralContractorNotApprovedException" />
 			<exception-mapping exception="com.picsauditing.access.NoRightsException" result="NoRightsException" />
 			<exception-mapping exception="com.picsauditing.access.RecordNotFoundException" result="RecordNotFoundException" />
 			<exception-mapping exception="com.picsauditing.access.NotLoggedInException" result="login-redirect" />
