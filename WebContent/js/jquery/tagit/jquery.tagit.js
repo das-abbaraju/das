@@ -58,7 +58,7 @@
             return (((1 + Math.random()) * 0x10000)|0).toString(16).substring(1);
         }
         
-        var format_array = format.trim().split('');
+        var format_array = $.trim(format).split('');
         
         for (i = 0; i < format_array.length; i++) {
             if (format_array[i] == 'x') {
@@ -536,14 +536,23 @@
                     var matches = formatter.match(/%.*?%/g);
                     var label = formatter;
                     
-                    for (var j in matches) {
-                        var match = matches[j].replace(/%/g, '');
-                        var value = item[match];
+                    $.each(matches, function (key, value) {
+                        var match = matches[key];
                         
-                        if (value) {
-                            label = label.replace(matches[j], value);
+                        if (match) {
+                            match = match.replace(/%/g, '');
+                            
+                            var value = item[match];
+                            
+                            if (value) {
+                                label = label.replace(matches[key], value);
+                            } else {
+                                label = item.value;
+                            }
+                        } else {
+                            label = item.value;
                         }
-                    }
+                    });
                     
                     return label;
                 }
