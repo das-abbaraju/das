@@ -89,24 +89,71 @@ public class DataConversion extends PicsActionSupport {
 	 * Parse out employee create emp records copy audit & files link emp and uadit
 	 */
 	private void convertEmployeeGuard() {
-		List<ContractorAudit> auditList = auditDao.findWhere(0, "auditType.id IN (29)", "");
+		List<ContractorAudit> auditList = auditDao.findWhere(0, "auditType.id IN (29) OR id IN (43413,86061)", "");
 		for (ContractorAudit conAudit : auditList) {
 			conAudit = auditDao.find(conAudit.getId());
-			for (AuditData ad : conAudit.getData()) {
-				if (ad.getQuestion().getId() == 2385) {
-					convertImplementationAuditPlusAudit(conAudit, ad);
+			
+			if (conAudit.getAuditType().getId() == 17)
+			{
+				convertIntegrityManagement(conAudit);
+			}
+			else if (conAudit.getAuditType().getId() == 29)
+			{
+				for (AuditData ad : conAudit.getData()) {
+					if (ad.getQuestion().getId() == 2385) {
+						convertImplementationAuditPlusAudit(conAudit, ad);
+					}
 				}
 			}
 		}
 	}
 
+	private void convertIntegrityManagement(ContractorAudit conAudit) {
+		int oldConAuditID = conAudit.getId();
+		ArrayList<String> employees = parseEmployees(conAudit.getAuditFor());
+		
+		for (int i = 0; i < employees.size(); i++) {
+			String employee = employees.get(i);
+			String title = StringUtils.trim(StringUtils.substring(employee,
+					StringUtils.lastIndexOf(employee, "/") + 1));
+			String name = StringUtils.trim(StringUtils.substring(employee, 0,
+					StringUtils.lastIndexOf(employee, "/")));
+			
+			String firstName = StringUtils.trim(StringUtils.substring(name, 0,
+					StringUtils.lastIndexOf(name, " ")));
+			String lastName = StringUtils.trim(StringUtils.substring(name,
+					StringUtils.lastIndexOf(name, " ") + 1));
+			Employee newEmployee = new Employee();
+			newEmployee.setClassification(EmployeeClassification.FullTime);
+			newEmployee.setFirstName(firstName);
+			newEmployee.setLastName(lastName);
+			newEmployee.setTitle(title);
+			newEmployee.setAccount(conAudit.getContractorAccount());
+			employeeDAO.save(newEmployee);
+
+			int firstEmployee = 0;
+			if (i != firstEmployee) {
+				Map<Integer, AuditData> preToPostAuditDataIdMapper = new HashMap<Integer, AuditData>();
+				auditDao.copyAuditForNewEmployee(conAudit, newEmployee, preToPostAuditDataIdMapper);
+
+				copyAuditQuestionFiles(preToPostAuditDataIdMapper, oldConAuditID);
+
+				copyAuditFiles(oldConAuditID, conAudit);
+			} else {
+				conAudit.setEmployee(newEmployee);
+				auditDao.save(conAudit);
+			}
+		}
+	}
+
 	private void convertImplementationAuditPlusAudit(ContractorAudit conAudit, AuditData data) {
+		int oldConAuditID = conAudit.getId();
 		ArrayList<String> employees = parseEmployees(data.getAnswer());
+
 		for (int i = 0; i < employees.size(); i++) {
 			String employeeName = employees.get(i);
 			String firstName = StringUtils.trim(StringUtils.substring(employeeName, 0,
 					StringUtils.lastIndexOf(employeeName, " ")));
-			;
 			String lastName = StringUtils.trim(StringUtils.substring(employeeName,
 					StringUtils.lastIndexOf(employeeName, " ") + 1));
 			Employee newEmployee = new Employee();
@@ -121,13 +168,26 @@ public class DataConversion extends PicsActionSupport {
 				Map<Integer, AuditData> preToPostAuditDataIdMapper = new HashMap<Integer, AuditData>();
 				auditDao.copyAuditForNewEmployee(conAudit, newEmployee, preToPostAuditDataIdMapper);
 
-				copyAuditQuestionFiles(preToPostAuditDataIdMapper, conAudit);
+				copyAuditQuestionFiles(preToPostAuditDataIdMapper, oldConAuditID);
 
-				copyAuditFiles(conAudit);
+				copyAuditFiles(oldConAuditID, conAudit);
 			} else {
 				conAudit.setEmployee(newEmployee);
 				auditDao.save(conAudit);
 			}
+		}
+		
+		if (employees.size() == 0)
+		{
+			Employee newEmployee = new Employee();
+			newEmployee.setClassification(EmployeeClassification.FullTime);
+			newEmployee.setFirstName("Missing Name");
+			newEmployee.setLastName("Missing Name");
+			newEmployee.setAccount(conAudit.getContractorAccount());
+			employeeDAO.save(newEmployee);
+
+			conAudit.setEmployee(newEmployee);
+			auditDao.save(conAudit);
 		}
 	}
 
@@ -169,8 +229,8 @@ public class DataConversion extends PicsActionSupport {
 		return employeeList;
 	}
 
-	private void copyAuditQuestionFiles(Map<Integer, AuditData> preToPostAuditDataIdMapper, ContractorAudit conAudit) {
-		ContractorAudit oldConAudit = auditDao.find(conAudit.getId());
+	private void copyAuditQuestionFiles(Map<Integer, AuditData> preToPostAuditDataIdMapper, int oldConAuditID) {
+		ContractorAudit oldConAudit = auditDao.find(oldConAuditID);
 
 		for (AuditData auditData : oldConAudit.getData()) {
 
@@ -195,8 +255,8 @@ public class DataConversion extends PicsActionSupport {
 		}
 	}
 
-	private void copyAuditFiles(ContractorAudit conAudit) {
-		List<ContractorAuditFile> auditFiles = contractorAuditFileDAO.findByAudit(conAudit.getId());
+	private void copyAuditFiles(int oldConAuditID, ContractorAudit conAudit) {
+		List<ContractorAuditFile> auditFiles = contractorAuditFileDAO.findByAudit(oldConAuditID);
 		for (ContractorAuditFile caf : auditFiles) {
 			ContractorAuditFile contractorAuditFile = new ContractorAuditFile();
 
