@@ -41,11 +41,8 @@ public class ContractorAuditDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {
-			System.out.println("PERSISTENCE IS FUTILE!!!!");
 			em.persist(o);
 		} else {
-			System.out.println("YOU WILL BE MERGED*******");
-			System.out.println();
 			o = em.merge(o);
 		}
 		return o;
