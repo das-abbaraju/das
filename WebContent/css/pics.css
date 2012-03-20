@@ -1145,6 +1145,12 @@ div.blockDialog {
 	text-decoration: underline;
 }
 
+/* workflow */
+.previous-status
+{
+	color: #AAA;
+}
+
 /* email subscriptions */
 #tab_subscriptions div
 {

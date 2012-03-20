@@ -58,7 +58,7 @@ public class ContractorNotes extends ContractorActionSupport {
 		// there's no need to test for which bean type this is
 		return "<a href='Audit.action?auditID=" + bean.getAuditId() + "'>"
 				+ getText(bean.getAuditType().getI18nKey("name")) + " " + bean.getAuditFor()
-				+ "</a> &nbsp; &nbsp; <span style='color:#AAA'>" + getText(bean.getPreviousStatus().getI18nKey())
+				+ "</a> &nbsp; &nbsp; <span class='previous-status'>" + getText(bean.getPreviousStatus().getI18nKey())
 				+ "</span> &rarr; " + getText(bean.getStatus().getI18nKey()) + " &nbsp; &nbsp; "
 				+ bean.getOperator().getName();
 	}
