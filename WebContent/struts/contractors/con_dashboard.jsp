@@ -504,7 +504,9 @@
 											<s:text name="ContractorView.SubcontractingUnder" />:
 											<s:iterator value="contractor.generalContractorOperatorAccounts" status="gc_index">
 												<strong>
-													<s:property value="name" /><s:if test="!#gc_index.last">, </s:if>
+													<s:if test="id != permissions.accountId">
+														<s:property value="name" /><s:if test="!#gc_index.last">, </s:if>
+													</s:if>
 												</strong>
 											</s:iterator>
 										</p>
