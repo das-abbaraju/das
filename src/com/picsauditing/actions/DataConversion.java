@@ -74,7 +74,7 @@ public class DataConversion extends PicsActionSupport {
 		}
 		long startTime = System.currentTimeMillis();
 		convertEmployeeGuard();
-		// updateDatabaseVersions();
+		updateDatabaseVersions();
 		long endTime = System.currentTimeMillis();
 		addActionMessage("Data conversion completed successfully in " + (endTime - startTime) + " ms");
 		return BLANK;
