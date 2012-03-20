@@ -11,16 +11,21 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditDataHistory;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.Employee;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.search.Report;
@@ -30,11 +35,17 @@ import com.picsauditing.util.PermissionQueryBuilder;
 
 @SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {
+	@Autowired
+	private ContractorAuditOperatorDAO caoDao;
+
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {
+			System.out.println("PERSISTENCE IS FUTILE!!!!");
 			em.persist(o);
 		} else {
+			System.out.println("YOU WILL BE MERGED*******");
+			System.out.println();
 			o = em.merge(o);
 		}
 		return o;
@@ -80,6 +91,7 @@ public class ContractorAuditDAO extends PicsDAO {
 
 				auditData.setId(0);
 				auditData.setAudit(oCAudit);
+				auditData.setDataHistory(new ArrayList<AuditDataHistory>());
 			}
 			oCAudit.getData().addAll(auList);
 
@@ -90,6 +102,66 @@ public class ContractorAuditDAO extends PicsDAO {
 			}
 			oCAudit.getCategories().addAll(acList);
 			oCAudit.setOperators(new ArrayList<ContractorAuditOperator>());
+		}
+		save(oCAudit);
+	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void copyAuditForNewEmployee(ContractorAudit oCAudit, Employee employee,
+			Map<Integer, AuditData> preToPostAuditDataIdMapper) {
+		if (oCAudit != null) {
+			List<AuditData> auList = new Vector<AuditData>(oCAudit.getData());
+			List<AuditCatData> acList = new Vector<AuditCatData>(oCAudit.getCategories());
+			List<ContractorAuditOperator> caoList = new Vector<ContractorAuditOperator>(oCAudit.getOperators());
+
+			for (AuditData auditData : auList) {
+				preToPostAuditDataIdMapper.put(auditData.getId(), auditData);
+
+				auditData.setId(0);
+				auditData.setAudit(oCAudit);
+				auditData.setDataHistory(new ArrayList<AuditDataHistory>());
+			}
+			oCAudit.setData(new ArrayList<AuditData>());
+			oCAudit.getData().addAll(auList);
+
+			for (AuditCatData auditCatData : acList) {
+				auditCatData.setId(0);
+				auditCatData.setAudit(oCAudit);
+			}
+			oCAudit.setCategories(new ArrayList<AuditCatData>());
+			oCAudit.getCategories().addAll(acList);
+
+			for (ContractorAuditOperator cao : caoList) {
+				cao.setId(0);
+				cao.setAudit(oCAudit);
+
+				List<ContractorAuditOperatorWorkflow> caowList = new Vector<ContractorAuditOperatorWorkflow>(
+						cao.getCaoWorkflow());
+				List<ContractorAuditOperatorPermission> caopList = new Vector<ContractorAuditOperatorPermission>(
+						cao.getCaoPermissions());
+
+				cao.getCaoWorkflow().clear();
+				for (ContractorAuditOperatorWorkflow caow : caowList) {
+					caow.setId(0);
+					caow.setCao(cao);
+				}
+				cao.setCaoWorkflow(new ArrayList<ContractorAuditOperatorWorkflow>());
+				cao.getCaoWorkflow().addAll(caowList);
+
+				cao.getCaoPermissions().clear();
+				for (ContractorAuditOperatorPermission caop : caopList) {
+					caop.setId(0);
+					caop.setCao(cao);
+				}
+				cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());
+				cao.getCaoPermissions().addAll(caopList);
+			}
+			oCAudit.setOperators(new ArrayList<ContractorAuditOperator>());
+			oCAudit.getOperators().addAll(caoList);
+
+			clear();
+			oCAudit.setId(0);
+			oCAudit.setEmployee(employee);
 		}
 		save(oCAudit);
 	}
@@ -141,7 +213,8 @@ public class ContractorAuditDAO extends PicsDAO {
 		if (orderBy.length() > 0)
 			hql += " ORDER BY " + orderBy;
 		Query query = em.createQuery(hql);
-		query.setMaxResults(limit);
+		if (limit > 0)
+			query.setMaxResults(limit);
 		return query.getResultList();
 	}
 
@@ -180,9 +253,8 @@ public class ContractorAuditDAO extends PicsDAO {
 		sql.addJoin("JOIN contractor_audit_operator cao ON ca.id = cao.auditID");
 		sql.addWhere("aty.classType = 'Policy'");
 		sql.addWhere("(cao.status = 'Pending' AND cao.visible = 1)");
-		sql
-				.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
-						+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, CURDATE(), :After7))");
+		sql.addWhere("EXISTS (SELECT id FROM contractor_audit ca1 WHERE ca1.auditTypeID = ca.auditTypeID"
+				+ " AND ca1.conID = ca.conID AND ca.id > ca1.id AND ca1.expiresDate IN (:Before14, CURDATE(), :After7))");
 		sql.addOrderBy("ca.id");
 		Query query = em.createNativeQuery(sql.toString(), ContractorAudit.class);
 		query.setMaxResults(100);
@@ -343,14 +415,9 @@ public class ContractorAuditDAO extends PicsDAO {
 	}
 
 	public List<BasicDynaBean> findCancelledScheduledAudits() {
-		String sql = "SELECT * "+ 
-					"FROM contractor_audit ca "+
-					"WHERE ca.scheduledDate > NOW() "+
-					"AND (NOT EXISTS "+
-							"(SELECT 'x' "+
-							"FROM   contractor_audit_operator cao "+
-							"WHERE  ca.id = cao.auditID AND cao.visible = 1) "+
-						")";
+		String sql = "SELECT * " + "FROM contractor_audit ca " + "WHERE ca.scheduledDate > NOW() " + "AND (NOT EXISTS "
+				+ "(SELECT 'x' " + "FROM   contractor_audit_operator cao "
+				+ "WHERE  ca.id = cao.auditID AND cao.visible = 1) " + ")";
 		Query query = em.createNativeQuery(sql, ContractorAudit.class);
 
 		return query.getResultList();
