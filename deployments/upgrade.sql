@@ -197,6 +197,31 @@ select
 from osha_audit oa
 where oa.SHAType = "OSHA";
 
+-- PICS-5192
+-- MSHA: Audit Cat Data update
+update audit_cat_data acd1
+join audit_cat_data acd2 on acd1.auditID = acd2.auditID
+set acd1.applies = 0, acd2.applies = 1
+where acd1.categoryID = 157
+and acd2.categoryID = 2256
+and acd1.applies = 1;
+
+-- COHS: Audit Cat Data update
+update audit_cat_data acd1
+join audit_cat_data acd2 on acd1.auditID = acd2.auditID
+set acd1.applies = 0, acd2.applies = 1
+where acd1.categoryID = 158
+and acd2.categoryID = 2086
+and acd1.applies = 1;
+
+-- OSHA: Audit Cat Data update
+update audit_cat_data acd1
+join audit_cat_data acd2 on acd1.auditID = acd2.auditID
+set acd1.applies = 0, acd2.applies = 1
+where acd1.categoryID = 151
+and acd2.categoryID = 2033
+and acd1.applies = 1;
+
 -- 
 UPDATE ref_country SET perceivedCorruption = 9.5 WHERE isoCode = 'NZ';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'DK';
