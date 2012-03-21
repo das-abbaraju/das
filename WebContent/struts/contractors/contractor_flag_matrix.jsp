@@ -33,21 +33,26 @@
 							<td class="client-site">
                                 <s:property value="operatorAccount.name" />
                             </td>
-							<td class="green-flag">
-                                <s:if test="flagColor.isGreen()">
-                                    <img src="images/icon_greenFlag.gif" />
-                                </s:if>
-                            </td>
-							<td class="amber-flag">
-                                <s:if test="flagColor.isAmber()">
-                                    <img src="images/icon_amberFlag.gif" />
-                                </s:if>
-                            </td>
-							<td class="red-flag">
-                                <s:if test="flagColor.isRed()">
-                                    <img src="images/icon_redFlag.gif" />
-                                </s:if>
-                            </td>
+							<s:if test="operatorAccount.gCFree" >
+								<td></td><td></td><td></td>
+							</s:if>
+							<s:else>
+								<td class="green-flag">
+	                                <s:if test="flagColor.isGreen()">
+	                                    <img src="images/icon_greenFlag.gif" />
+	                                </s:if>
+	                            </td>
+								<td class="amber-flag">
+	                                <s:if test="flagColor.isAmber()">
+	                                    <img src="images/icon_amberFlag.gif" />
+	                                </s:if>
+	                            </td>
+								<td class="red-flag">
+	                                <s:if test="flagColor.isRed()">
+	                                    <img src="images/icon_redFlag.gif" />
+	                                </s:if>
+	                            </td>
+                            </s:else>
 						</tr>
                         
                         <s:if test="#is_odd == true">

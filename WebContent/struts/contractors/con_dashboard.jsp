@@ -670,21 +670,25 @@
 											<s:iterator value="value">
 												<li>
 													<span class="other_operator">
-														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
-															<s:property value="flagColor.smallIcon" escape="false" />
-														</a>
-														
-														<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
-															<s:if test="permissions.admin">
-																title="<s:property value="operatorAccount.name" />: <s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
-																rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
-																class="operatorQuick"
-															</s:if>
-															<s:else>
-																title="<s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
-															</s:else>>
+														<s:if test="!operatorAccount.gCFree">
+															<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />">
+																<s:property value="flagColor.smallIcon" escape="false" />
+															</a>
+															<a href="ContractorFlag.action?id=<s:property value="contractor.id" />&opID=<s:property value="operatorAccount.id" />"
+																<s:if test="permissions.admin">
+																	title="<s:property value="operatorAccount.name" />: <s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
+																	rel="OperatorQuickAjax.action?id=<s:property value="operatorAccount.id"/>"
+																	class="operatorQuick"
+																</s:if>
+																<s:else>
+																	title="<s:text name="global.WaitingOn"/> '<s:text name="%{waitingOn.i18nKey}"/>'"
+																</s:else>>
+																<s:property value="operatorAccount.name" />
+															</a>
+														</s:if>
+														<s:else>
 															<s:property value="operatorAccount.name" />
-														</a>
+														</s:else>
 													</span>
 												</li>
 											</s:iterator>
