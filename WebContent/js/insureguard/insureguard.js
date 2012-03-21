@@ -236,6 +236,8 @@
                             $('.insurance-rejection-tagit').tagit({
                                 postType: 'string',
                                 source: 'AuditRejectLookupAjax.action',
+                                formatter_drop_down: '%id%',
+                                formatter_tag: '%id%'
                             });
                         }
                     });
