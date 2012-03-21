@@ -50,16 +50,18 @@
 				</pics:permission>
 				
 				<pics:permission perm="ContractorDetails">
-					<td></td>
-					
-					<s:if test="pqfVisible">
-						<td>
-							<s:text name="AuditType.1.name" />
-						</td>
+					<s:if test="!permissions.generalContractorFree">
+						<td></td>
+						
+						<s:if test="pqfVisible">
+							<td>
+								<s:text name="AuditType.1.name" />
+							</td>
+						</s:if>
 					</s:if>
 				</pics:permission>
 				
-				<s:if test="permissions.operatorCorporate">
+				<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
 					<td>
 						<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
 					</td>
@@ -158,20 +160,22 @@
 					</pics:permission>
 					
 					<pics:permission perm="ContractorDetails">
-						<td>
-							<a href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ContractorList.label.Audits" /></a>
-						</td>
-							
-						<s:if test="pqfVisible">
-							<td class="icon center">
-								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon">
-									<img src="images/icon_PQF.gif" width="20" height="20" border="0">
-								</a>
+						<s:if test="!permissions.generalContractorFree">
+							<td>
+								<a href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ContractorList.label.Audits" /></a>
 							</td>
+								
+							<s:if test="pqfVisible">
+								<td class="icon center">
+									<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon">
+										<img src="images/icon_PQF.gif" width="20" height="20" border="0">
+									</a>
+								</td>
+							</s:if>
 						</s:if>
 					</pics:permission>
 					
-					<s:if test="permissions.operatorCorporate">
+					<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
 						<td class="center">
 							<pics:permission perm="ContractorDetails">
 								<a 

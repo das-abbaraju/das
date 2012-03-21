@@ -21,6 +21,9 @@ public class ReportAccountAudits extends ReportAccount {
 		if (permissions.isPicsEmployee()
 				|| (permissions.isOperatorCorporate() && permissions.isRequiresCompetencyReview()))
 			getFilter().setShowHSE(true);
+		if (permissions.isGeneralContractor()) {
+			getFilter().setShowOperator(true);
+		}
 
 		getFilter().setShowInsuranceLimits(true);
 		

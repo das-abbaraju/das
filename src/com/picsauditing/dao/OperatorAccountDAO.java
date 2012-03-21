@@ -90,23 +90,31 @@ public class OperatorAccountDAO extends PicsDAO {
 			where += ",'Demo'";
 		where += ") ";
 
-		if (permissions.isCorporate()) {
-			// Show corporate users operators in their facility
-			where += "AND a IN (SELECT operator FROM Facility " + "WHERE corporate = " + permissions.getAccountId()
-					+ ")";
-			includeCorporate = false; // don't use the default findWhere to get
-										// corporates
+		if (permissions.isGeneralContractor()) {
+			where += "AND a IN (SELECT co1.operatorAccount FROM ContractorOperator co1 "
+					+ "WHERE co1.contractorAccount IN (SELECT co2.contractorAccount FROM ContractorOperator co2 "
+					+ "WHERE co2.operatorAccount.id = " + permissions.getAccountId()
+					+ " AND co2.type = 'GeneralContractor') AND co1.operatorAccount.type = 'Operator')";
+		} else {
+			if (permissions.isCorporate()) {
+				// Show corporate users operators in their facility
+				where += "AND a IN (SELECT operator FROM Facility " + "WHERE corporate = " + permissions.getAccountId()
+						+ ")";
+				includeCorporate = false;
+				// don't use the default findWhere to get corporates
+			}
+			if (permissions.isOperator()) {
+				// Show operator users operators that share the same corporate
+				// facility
+				where += "AND (a.id = " + permissions.getAccountId() + " OR a IN (SELECT operator FROM Facility "
+						+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
+						+ permissions.getAccountId() + " AND corporate.id NOT IN ("
+						+ Strings.implode(Account.PICS_CORPORATE, ",") + ") )))";
+				includeCorporate = false;
+				// don't use the default findWhere to get corporates
+			}
 		}
-		if (permissions.isOperator()) {
-			// Show operator users operators that share the same corporate
-			// facility
-			where += "AND (a.id = " + permissions.getAccountId() + " OR a IN (SELECT operator FROM Facility "
-					+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
-					+ permissions.getAccountId() + " AND corporate.id NOT IN ("
-					+ Strings.implode(Account.PICS_CORPORATE, ",") + ") )))";
-			includeCorporate = false; // don't use the default findWhere to get
-										// corporates
-		}
+
 		List<OperatorAccount> operatorList = findWhere(includeCorporate, where);
 
 		if (corporateList.size() > 0) {
@@ -119,6 +127,7 @@ public class OperatorAccountDAO extends PicsDAO {
 
 	/**
 	 * Alias a
+	 * 
 	 * @param includeCorporate
 	 * @param where
 	 * @return
@@ -132,7 +141,6 @@ public class OperatorAccountDAO extends PicsDAO {
 
 		select.addWhere(where);
 		select.addOrderBy("a.name");
-		
 
 		try {
 			Database db = new Database();
@@ -245,14 +253,13 @@ public class OperatorAccountDAO extends PicsDAO {
 
 	@Transactional(propagation = Propagation.NESTED)
 	public void incrementContractors(int id) {
-		Query q = em.createNativeQuery("UPDATE contractor_info " +
-										"SET    needsRecalculation = IF(needsRecalculation + 1 < 127, needsRecalculation + 1, 127) " +
-										"WHERE  id IN (SELECT gc.subID " +
-										              "FROM   generalcontractors gc JOIN accounts a ON a.id = gc.subID " +
-										              "WHERE  gc.genID = " + id + " AND a.status = 'Active')");
+		Query q = em.createNativeQuery("UPDATE contractor_info "
+				+ "SET    needsRecalculation = IF(needsRecalculation + 1 < 127, needsRecalculation + 1, 127) "
+				+ "WHERE  id IN (SELECT gc.subID " + "FROM   generalcontractors gc JOIN accounts a ON a.id = gc.subID "
+				+ "WHERE  gc.genID = " + id + " AND a.status = 'Active')");
 		q.executeUpdate();
 	}
-	
+
 	public List<OperatorAccount> nativeClientSiteSearch(String select) {
 		Query query = em.createNativeQuery(select, OperatorAccount.class);
 
