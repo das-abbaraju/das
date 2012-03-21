@@ -63,10 +63,6 @@ public enum MultiYearScope {
 		return (this == LastYearOnly || this == TwoYearsAgo || this == ThreeYearsAgo);
 	}
 	
-	public boolean isMultiYearScope() {
-		return (this == ThreeYearAverage || this == ThreeYearSum);
-	}
-	
 	public static List<MultiYearScope> getListOfIndividualYearScopes() {
 		return LIST_INDIVIDUAL_YEAR_SCOPES;
 	}
