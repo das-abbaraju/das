@@ -14,7 +14,10 @@ function changePage(form, start){
 }
 </script>
 <h2>Search Results</h2>
-Lani
+<ul>
+	<li>This is a test</li>
+	<li>Lani</li>
+</ul>
 <s:hidden id="hiddenSearchTerm" value="%{searchTerm}" />
 <div id="filterSuggest">
 	<div id="info" style="">You searched for: <s:property value="searchTerm" /><br/>
