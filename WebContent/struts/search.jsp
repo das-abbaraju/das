@@ -17,7 +17,6 @@ function changePage(form, start){
 <ul>
 	<li>This is a test BEFORE with version 2</li>
 	<li>This is a test</li>
-	<li>Lani</li>
 </ul>
 <s:hidden id="hiddenSearchTerm" value="%{searchTerm}" />
 <div id="filterSuggest">
