@@ -5,6 +5,8 @@ import java.io.StringWriter;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,13 +22,16 @@ import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SimpleReportDefinition;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.models.ModelType;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
@@ -42,11 +47,64 @@ public class ReportDynamic extends PicsActionSupport {
 	@Anonymous
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
-		for (ModelType base : ModelType.values()) {
-			rows.add(base.toString());
+		for (ModelType type : ModelType.values()) {
+			rows.add(type.toString());
 		}
 		json.put("bases", rows);
 		return JSON;
+	}
+
+	@Anonymous
+	public String fillTranslations() {
+		List<AppTranslation> existingList = dao
+				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
+		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
+		for (AppTranslation translation : existingList) {
+			existing.put(translation.getKey(), translation);
+		}
+		for (FieldCategory category : FieldCategory.values()) {
+			saveTranslation(existing, "Report.Category." + category);
+		}
+		for (ModelType type : ModelType.values()) {
+			System.out.println("-- filling fields for " + type);
+			Report fakeReport = new Report();
+			fakeReport.setModelType(type);
+			builder = new SqlBuilder();
+			builder.setReport(fakeReport);
+			builder.getSql();
+			for (QueryField field : builder.getAvailableFields().values()) {
+				String key = "Report." + field.getName();
+				saveTranslation(existing, key);
+				saveTranslation(existing, key + ".help");
+			}
+		}
+		return BLANK;
+	}
+
+	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
+		AppTranslation translation = existing.get(key);
+		if (translation == null) {
+			translation = new AppTranslation();
+			translation.setKey(key);
+			translation.setLocale("en");
+			translation.setQualityRating(TranslationQualityRating.Bad);
+			translation.setValue("?" + key);
+			translation.setAuditColumns(permissions);
+			System.out.println("Adding " + key);
+			existing.put(key, translation);
+		} else {
+			Calendar yesterday = Calendar.getInstance();
+			yesterday.add(Calendar.DAY_OF_YEAR, -1);
+			if (translation.getLastUsed().after(yesterday.getTime())) {
+				System.out.println("Already updated " + key);
+				return;
+			}
+			System.out.println("Updating " + key);
+		}
+		translation.setLastUsed(new Date());
+		translation.setApplicable(true);
+		translation.setContentDriven(true);
+		dao.save(translation);
 	}
 
 	public String list() throws Exception {
@@ -212,12 +270,14 @@ public class ReportDynamic extends PicsActionSupport {
 				if (value == null) {
 
 				} else {
-					
+
 					QueryField field = builder.getAvailableFields().get(column.toUpperCase());
 					if (field == null) {
-						// TODO we get nulls if the column name is custom such as contractorNameCount. Convert this to contractorName
+						// TODO we get nulls if the column name is custom such
+						// as contractorNameCount. Convert this to
+						// contractorName
 						jsonRow.put(column, value);
-						
+
 					} else if (isCanSeeQueryField(field)) {
 						if (field.isTranslated()) {
 							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
@@ -251,8 +311,8 @@ public class ReportDynamic extends PicsActionSupport {
 	// Getters that need some calculation
 
 	/**
-	 * Return a set of fields which can be used client side for defining the report (columns, sorting, grouping and
-	 * filtering)
+	 * Return a set of fields which can be used client side for defining the
+	 * report (columns, sorting, grouping and filtering)
 	 */
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
