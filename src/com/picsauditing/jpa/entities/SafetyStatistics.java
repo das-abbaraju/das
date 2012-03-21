@@ -13,20 +13,11 @@ public abstract class SafetyStatistics {
 	protected OshaType oshaType;
 	protected int year;
 	protected AuditData fileUpload = null;
-	protected OshaAudit oshaAudit = null;
+	protected boolean verified;
 	
-	public int getYear() {
-		return year;
-	}
-
-	public void setYear(int year) {
-		this.year = year;
-	}
-
-	public SafetyStatistics(int year, OshaType oshaType, List<AuditData> data, OshaAudit oshaAudit) {
+	public SafetyStatistics(int year, OshaType oshaType, List<AuditData> data) {
 		this.oshaType = oshaType;
 		this.year = year;
-		this.oshaAudit = oshaAudit;
 	}
 
 	public OshaType getOshaType() {
@@ -58,10 +49,6 @@ public abstract class SafetyStatistics {
 		error.append("SafetyStatistics -> Configuration Error: rateType ").append(rateType)
 				.append(" is not in the answerMap.");
 		
-		if (oshaAudit != null) {
-			error.append(" OshaAudit = " + oshaAudit.getId());
-		}
-		
 		if (fileUpload != null) {
 			error.append(" AuditData id = " + fileUpload.getId());
 		}
@@ -75,12 +62,24 @@ public abstract class SafetyStatistics {
 		return answerMap;
 	}
 
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
+	}
+	
 	public AuditData getFileUpload() {
 		return fileUpload;
 	}
 	
-	public OshaAudit getOshaAudit() {
-		return oshaAudit;
+	public boolean isVerified() {
+		return verified;
+	}
+	
+	public void setVerified(boolean verified) {
+		this.verified = verified;
 	}
 
 	abstract public List<AuditData> getQuestionsToVerify();

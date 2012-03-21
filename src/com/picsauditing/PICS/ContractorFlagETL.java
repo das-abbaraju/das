@@ -343,8 +343,6 @@ public class ContractorFlagETL {
 			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
 			flagCriteriaContractor.setVerified(verified);
 			
-//			System.out.println("Year Value for - " + flagCriteria.getI18nKey() + " => " + flagCriteriaContractor.getAnswer2());
-
 			changes.add(flagCriteriaContractor);
 		} else { // the User did not provide an answer
 			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);			

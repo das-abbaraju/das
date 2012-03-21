@@ -5,8 +5,8 @@ import java.util.List;
 
 public class UkStatistics extends SafetyStatistics{
 	
-	public UkStatistics(int year, List<AuditData> data, OshaAudit oshaAudit) {
-		super(year, OshaType.UK_HSE, data, oshaAudit);
+	public UkStatistics(int year, List<AuditData> data) {
+		super(year, OshaType.UK_HSE, data);
 		
 		answerMap = new HashMap<OshaRateType, AuditData>();
 		for (AuditData answer: data) {
