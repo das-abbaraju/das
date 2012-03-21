@@ -33,6 +33,9 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
@@ -114,6 +117,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "name", nullable = false, length = 50)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
+	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getName() {
 		return this.name;
 	}
@@ -137,6 +141,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
+	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getDbaName() {
 		return dbaName;
 	}
@@ -146,6 +151,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Column(name = "address", length = 50)
+	@ReportField(category = FieldCategory.Contact, width = 150)
 	public String getAddress() {
 		return this.address;
 	}
@@ -155,6 +161,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Column(name = "address2", length = 50)
+	@ReportField(category = FieldCategory.Contact, width = 100)
 	public String getAddress2() {
 		return this.address2;
 	}
@@ -164,6 +171,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Column(name = "address3", length = 50)
+	@ReportField(category = FieldCategory.Contact, width = 100)
 	public String getAddress3() {
 		return this.address3;
 	}
@@ -174,6 +182,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(length = 35)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
+	@ReportField(category = FieldCategory.Contact)
 	public String getCity() {
 		return this.city;
 	}
@@ -185,6 +194,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
+	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Country, width = 60)
 	public Country getCountry() {
 		return country;
 	}
@@ -196,6 +206,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "state")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
+	@ReportField(category = FieldCategory.Contact, filterType = FilterType.StateProvince, width = 60)
 	public State getState() {
 		return this.state;
 	}
@@ -206,6 +217,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(length = 15)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
+	@ReportField(category = FieldCategory.Contact)
 	public String getZip() {
 		return this.zip;
 	}
@@ -223,6 +235,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Transient
+	@ReportField(category = FieldCategory.Contact, sql = "CONCAT({ALIAS}.city, {ALIAS}.state)", filterable = false)
 	public String getFullAddress() {
 		// We may want to extract this out and create a String address formatter
 		StringBuffer full = new StringBuffer();
@@ -264,6 +277,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(length = 25)
 	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
+	@ReportField(category = FieldCategory.Contact)
 	public String getPhone() {
 		return this.phone;
 	}
@@ -273,6 +287,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	@Column(length = 20)
+	@ReportField(category = FieldCategory.Contact)
 	public String getFax() {
 		return this.fax;
 	}
@@ -283,6 +298,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Column(name = "web_URL", length = 50)
 	@IndexableField(type = IndexValueType.URLTYPE, weight = 4)
+	@ReportField
 	public String getWebUrl() {
 		return this.webUrl;
 	}
@@ -342,6 +358,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
+	@ReportField(filterType = FilterType.AccountStatus)
 	public AccountStatus getStatus() {
 		return status;
 	}
@@ -349,23 +366,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	public void setStatus(AccountStatus status) {
 		this.status = status;
 	}
-
-	// @Deprecated
-	// @Column(nullable = false, length = 1)
-	// public char getActive() {
-	// return this.active;
-	// }
-	//
-	// @Deprecated
-	// public void setActive(char active) {
-	// this.active = active;
-	// }
-	//
-	// @Deprecated
-	// @Transient
-	// public boolean isActiveB() {
-	// return active == 'Y';
-	// }
 
 	/**
 	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
@@ -436,6 +436,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
+	@ReportField(filterType = FilterType.AccountType)
 	public String getType() {
 		return type;
 	}
@@ -444,6 +445,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.type = type;
 	}
 
+	@ReportField(category = FieldCategory.Billing, width = 200)
 	public String getReason() {
 		return reason;
 	}
@@ -486,6 +488,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.needsIndexing = needsIndex;
 	}
 
+	@ReportField(category = FieldCategory.Billing, width = 200)
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}

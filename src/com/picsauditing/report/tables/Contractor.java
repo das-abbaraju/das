@@ -1,60 +1,28 @@
 package com.picsauditing.report.tables;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.QueryField;
 
 public class Contractor extends BaseTable {
 
-	public Contractor() {
-		super("contractor_info", "contractor", "c", "a.id = c.id AND a.type = 'Contractor'");
-	}
+	private String accountAlias = "a";
 
-	public Contractor(String prefix, String alias, String foreignKey) {
-		super("contractor_info", prefix, alias, alias + ".id = " + foreignKey);
-	}
-
-	public Contractor(String alias, String foreignKey) {
-		super("contractor_info", alias, alias, alias + ".id = " + foreignKey);
+	public Contractor(String accountAlias) {
+		super("contractor_info", "contractor", "c", accountAlias + ".id = c.id AND " + accountAlias
+				+ ".type = 'Contractor'");
 	}
 
 	public void addFields() {
-		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
+		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
+
 		QueryField contractorName;
-		contractorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
+		contractorName = addField(prefix + "Name", accountAlias + ".name", FilterType.AccountName);
 		contractorName.setUrl("ContractorView.action?id={accountID}");
 		contractorName.setWidth(300);
-		addField(prefix + "RiskLevel", alias + ".riskLevel", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
-		addField(prefix + "SafetyRisk", alias + ".safetyRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
-		addField(prefix + "ProductRisk", alias + ".productRisk", FilterType.LowMedHigh).setCategory(FieldCategory.Classification);
-
-		addField(prefix + "MainTrade", alias + ".main_trade", FilterType.LowMedHigh);
-		addField(prefix + "TradesSelfPerformed", alias + ".tradesSelf", FilterType.LowMedHigh);
-		addField(prefix + "TradesSubContracted", alias + ".tradesSub", FilterType.LowMedHigh);
-
-		addField(prefix + "Score", alias + ".score", FilterType.Integer);
-		addField(prefix + "TRIRAverage", alias + ".trirAverage", FilterType.Integer).setCategory(FieldCategory.SafetyStats);
-		
-		addField(prefix + "MembershipDate", alias + ".membershipDate", FilterType.Date).setCategory(FieldCategory.Billing);
-		addField(prefix + "AccountLevel", alias + ".accountLevel", FilterType.String).setCategory(FieldCategory.Billing);
-		addField(prefix + "Renew", alias + ".renew", FilterType.Boolean).setCategory(FieldCategory.Billing);
-		addField(prefix + "PaymentExpires", alias + ".paymentExpires", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "PaymentMethod", alias + ".paymentMethod", FilterType.String).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "CreditCardOnFile", alias + ".ccOnFile", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "CreditCardExpiration", alias + ".ccExpiration", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "Balance", alias + ".balance", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "MustPay", alias + ".mustPay", FilterType.Boolean).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing).setSql("CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END");
-		addField(prefix + "PayingFacilities", alias + ".payingFacilities", FilterType.Integer).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
-		addField(prefix + "LastUpgradeDate", alias + ".lastUpgradeDate", FilterType.Date).setCategory(FieldCategory.Billing).requirePermission(OpPerms.Billing);
 	}
 
 	public void addJoins() {
 		addLeftJoin(new User(prefix + "CustomerService", alias + ".welcomeAuditor_id"));
 		addLeftJoin(new Account(prefix + "RequestedByOperator", alias + ".requestedByID"));
-
-		// joinToFlagCriteriaContractor("contractorFlagCriteria", "c.id");
-		// leftJoinToEmailQueue("contractorEmail", "c.id");
-		// joinToGeneralContractor("contractorOperator", "subID", "c.id");
-		// joinToContractorWatch("contractorWatch", "c.id");
 	}
 }
