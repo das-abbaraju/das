@@ -391,13 +391,10 @@ public class PicsMenu {
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action");
 			subMenu.addChild("Exception Log", "ReportExceptions.action");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action");
+			subMenu.addChild("Dynamic Reporting", "ReportDynamic.action?report=1");
 		}
 
 		subMenu = menu.addChild(getText("menu.Reports"));
-
-		if (permissions.isDeveloperEnvironment()) {
-			subMenu.addChild("Dynamic Reporting", "ReportDynamic.action?report=1");
-		}
 
 		// TODO - remove these hacks
 		if (permissions.getAccountId() == 6228) {
