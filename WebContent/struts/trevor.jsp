@@ -32,5 +32,4 @@ Ext.onReady(function () {
 
 <script type="text/javascript" id="la_x2s6df8d" src="//picsauditing.ladesk.com/scripts/trackjs.php"></script> 
 <img src="//picsauditing.ladesk.com/scripts/pix.gif" onLoad="LiveAgentTracker.createButton('button1', this);"/>
-
 hello world
