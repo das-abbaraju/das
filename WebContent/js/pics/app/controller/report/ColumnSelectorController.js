@@ -16,7 +16,8 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
     stores: [
         'report.AvailableFieldsByCategory',
         'report.ReportsColumn',
-        'report.ReportsFilter'
+        'report.ReportsFilter',
+        'report.ReportsSort'        
     ],
     
     init: function () {
@@ -62,7 +63,6 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         
         if (selected.length > 0) {
             var store;
-            
             if (window._column_type === "filter") {
                 store = this.getReportReportsFilterStore();
                 colStore = this.getReportReportsColumnStore();
@@ -76,6 +76,15 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 store = this.getReportReportsColumnStore();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleColumn());
+                });
+            } else if (window._column_type === "sort") {
+                store = this.getReportReportsSortStore();
+                colStore = this.getReportReportsColumnStore();
+                Ext.Array.forEach(selected, function (field) {
+                    store.add(field.createSimpleSort());
+                    if (colStore.findRecord("name", field.get('name')) === null) {
+                        colStore.add(field.createSimpleColumn());
+                    }
                 });
             } else {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
@@ -113,6 +122,8 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 store = this.getReportReportsFilterStore();
             } else if (window._column_type === 'column') {
                 store = this.getReportReportsColumnStore();
+            } else if (window._column_type === 'sort') {
+                store = this.getReportReportsSortStore();                
             } else {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }

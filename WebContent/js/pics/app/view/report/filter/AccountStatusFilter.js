@@ -7,6 +7,16 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         name: 'title'
     },{
         xtype: 'combo',
+        editable: false,
+        name: 'not',
+        store: [
+            ['false', ' '],
+            ['true', 'not']
+        ],
+        width: 50
+    },{
+        xtype: 'combo',
+        id: 'accountstatus',
         name: 'accountstatus',
         store: [
 	        ['Active', 'active'],
@@ -21,7 +31,7 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
     listeners: {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('AccountStatusFilter')[0],
-                combo = form.child("combo"),
+                combo = form.child("#accountstatus"),
                 value = form.record.data.value;
             
             (value) ? combo.setValue(value) : combo.setValue('Active'); 
@@ -32,6 +42,11 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         
         this.record.set('value', values.accountstatus);
         this.record.set('operator', 'Equals');
+        if (values.not === 'true') {
+            this.record.set('not', true);    
+        } else {
+            this.record.set('not', false);
+        }
         this.superclass.applyFilter();
     }
 });

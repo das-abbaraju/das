@@ -26,9 +26,8 @@ Ext.define('PICS.view.report.ReportOptions', {
         }, {
             xtype: 'reportoptionscolumns'
         }, {
-            title: 'Sort'
-        }],
-        layout: 'accordion'
+            xtype: 'reportoptionssorts'
+        }]
     }],
     layout: {
         align: 'stretch',

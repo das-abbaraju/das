@@ -8,6 +8,15 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
         name: 'title'
     },{
         xtype: 'combo',
+        editable: false,
+        name: 'not',
+        store: [
+            ['false', ' '],
+            ['true', 'not']
+        ],
+        width: 50
+    },{
+        xtype: 'combo',
         store: Ext.create('Ext.data.Store', {
                 autoLoad: true,
                 fields: [
@@ -25,6 +34,7 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
         }),
         displayField: 'countryName',
         editable: false,
+        id: 'country',
         multiSelect: true,
         name: 'country',
         queryMode: 'local',
@@ -34,7 +44,7 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
     listeners: {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('countryfilter')[0],
-                combo = form.child("combo"),
+                combo = form.child("#country"),
                 value = form.record.data.value;
 
             (value) ? combo.setValue(value) : combo.setValue(''); 
@@ -52,6 +62,11 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
         }
         this.record.set('value', valuesFormat);
         this.record.set('operator', 'In');
+        if (values.not === 'true') {
+            this.record.set('not', true);    
+        } else {
+            this.record.set('not', false);
+        }
         this.superclass.applyFilter();
     }    
 });

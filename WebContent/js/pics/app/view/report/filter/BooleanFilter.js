@@ -7,7 +7,7 @@ Ext.define('PICS.view.report.filter.BooleanFilter', {
         name: 'title'
     },{
         xtype: 'checkbox',
-        boxLabel  : 'Equals',
+        boxLabel  : 'On',
         name      : 'boolean',
         inputValue: '1'
     }],

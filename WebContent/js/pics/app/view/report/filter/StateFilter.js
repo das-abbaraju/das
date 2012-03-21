@@ -8,7 +8,17 @@ Ext.define('PICS.view.report.filter.StateFilter', {
         name: 'title'
     },{
         xtype: 'combo',
-        multiSelect: true,        
+        editable: false,
+        name: 'not',
+        store: [
+            ['false', ' '],
+            ['true', 'not']
+        ],
+        width: 50
+    },{
+        xtype: 'combo',
+        id: 'state',
+        multiSelect: true,
         name: 'state',
         store: [
             ['AL', 'Alabama'],  
@@ -69,17 +79,29 @@ Ext.define('PICS.view.report.filter.StateFilter', {
     listeners: {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('statefilter')[0],
-                combo = form.child("combo"),
+                combo = form.child("#state"),
                 value = form.record.data.value;
 
             (value) ? combo.setValue(value) : combo.setValue(''); 
         }
     },
     applyFilter: function() {
-        var values = this.getValues();
+        var values = this.getValues(),
+        valuesFormat = "";
         
-        this.record.set('value', values.state);
-        this.record.set('operator', 'Equals');
+        for (x = 0; x < values.state.length; x++) {
+            if (x !== 0) {
+                valuesFormat += ',';    
+            }
+            valuesFormat += '\'' + values.state[x] + '\'';
+        }
+        this.record.set('value', valuesFormat);
+        this.record.set('operator', 'In');
+        if (values.not === 'true') {
+            this.record.set('not', true);    
+        } else {
+            this.record.set('not', false);
+        }
         this.superclass.applyFilter();
     }    
 });

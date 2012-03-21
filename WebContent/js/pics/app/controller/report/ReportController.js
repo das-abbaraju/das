@@ -8,7 +8,8 @@ Ext.define('PICS.controller.report.ReportController', {
         'report.ReportData',
         'report.Reports',
         'report.ReportsColumn',
-        'report.ReportsFilter'
+        'report.ReportsFilter',
+        'report.ReportsSort'
     ],
 	
     init: function () {
@@ -36,7 +37,7 @@ Ext.define('PICS.controller.report.ReportController', {
         store.loadRawData({
             report: reportParameters
         });
-        
+
         this.refreshReport();
     },
     
@@ -53,6 +54,7 @@ Ext.define('PICS.controller.report.ReportController', {
         
         var column_store = this.getReportReportsColumnStore();
         var filter_store = this.getReportReportsFilterStore();
+        var sort_store = this.getReportReportsSortStore();
         
         function configureReportParameters() {
             function getFieldDataFromStore(store) {
@@ -78,6 +80,7 @@ Ext.define('PICS.controller.report.ReportController', {
             if (data instanceof Object) {
                 data.columns = getFieldDataFromStore(column_store);
                 data.filters = getFieldDataFromStore(filter_store);
+                data.sorts = getFieldDataFromStore(sort_store);                
             }
             
             delete data.id;
@@ -105,6 +108,7 @@ Ext.define('PICS.controller.report.ReportController', {
         var me = this;
         var column_store = this.getReportReportsColumnStore();
         var filter_store = this.getReportReportsFilterStore();
+        var sort_store = this.getReportReportsSortStore();
         
         function buildReportDataStoreUrl(report_parameters) {
             var url = 'ReportDynamic!data.action?';
@@ -160,7 +164,7 @@ Ext.define('PICS.controller.report.ReportController', {
             var fields = generateReportRowFields();
             var model = generateReportRowModel(fields);
             var data_store = configureReportDataStore(model);
-            
+
             return data_store;
         }
         

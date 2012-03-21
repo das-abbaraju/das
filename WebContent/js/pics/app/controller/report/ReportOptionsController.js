@@ -13,7 +13,8 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
     stores: [
         'report.AvailableFieldsByCategory',
         'report.ReportsColumn',
-        'report.ReportsFilter'
+        'report.ReportsFilter',
+        'report.ReportsSort'
     ],
     
     init: function () {
@@ -26,6 +27,9 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
             },
             'reportoptionsfilters grid toolbar[dock=top] button[action=add-filter]': {
                 click: this.showColumnSelector
+            },
+            'reportoptionssorts grid toolbar[dock=top] button[action=add-sort]': {
+                click: this.showColumnSelector
             }
         });
     },
@@ -34,7 +38,7 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
         var target = e.getTarget();
         
         if (target && typeof target.className == 'string') {
-            if (target.className.search('remove-column|remove-filter') !== -1) {
+            if (target.className.search('remove-column|remove-filter|remove-sort') !== -1) {
                 var grid = view.up('grid');
                 var store;
                 
@@ -42,6 +46,8 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
                     store = this.getReportReportsFilterStore();
                 } else if (grid._column_type === 'column') {
                     store = this.getReportReportsColumnStore();
+                } else if (grid._column_type === 'sort') {
+                    store = this.getReportReportsSortStore();                
                 } else {
                     throw 'grid._column_type is ' + grid._column_type + ' - must be (filter|column)';
                 }

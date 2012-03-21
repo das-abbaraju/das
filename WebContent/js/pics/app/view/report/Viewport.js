@@ -1,14 +1,15 @@
 Ext.define('PICS.view.report.Viewport', {
     extend : 'Ext.container.Viewport',
     requires: [
+       'PICS.view.layout.Footer',               
        'PICS.view.layout.Menu',
-       'PICS.view.report.ReportOptions',
-       'PICS.view.report.ReportOptionsColumns',
        'PICS.view.report.ColumnSelector',
        'PICS.view.report.ColumnSelectorGrid',
-       'PICS.view.report.ReportOptionsFilters',
        'PICS.view.report.DataGrid',
-       'PICS.view.layout.Footer'
+       'PICS.view.report.ReportOptions',
+       'PICS.view.report.ReportOptionsColumns',
+       'PICS.view.report.ReportOptionsFilters',
+       'PICS.view.report.ReportOptionsSorts'
     ],
     
     items: [{

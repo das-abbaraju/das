@@ -7,7 +7,17 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
         name: 'title'
     },{
         xtype: 'combo',
+        editable: false,
+        name: 'not',
+        store: [
+            ['false', ' '],
+            ['true', 'not']
+        ],
+        width: 50
+    },{
+        xtype: 'combo',
         name: 'operator',
+        id: 'operator',
         store: [
 	        ['Equals', '='],
 	        ['GreaterThan', '>'],
@@ -31,7 +41,7 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
     listeners: {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('numberfilter')[0],
-                combo = form.child("combo"),
+                combo = form.child("#operator"),
                 textfield = form.child("#numberfilter");
             
             combo.setValue(form.record.data.operator);
@@ -43,6 +53,11 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
 
         this.record.set('value', values.textfilter);
         this.record.set('operator', values.operator);
+        if (values.not === 'true') {
+            this.record.set('not', true);    
+        } else {
+            this.record.set('not', false);
+        }        
         this.superclass.applyFilter();
     }
 });

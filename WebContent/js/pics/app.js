@@ -13,15 +13,16 @@ Ext.application({
         'report.ColumnSelectorController',
         // TODO: should be renamed ReportOptionsFilterController
         'report.FilterController',
+        'report.SortController',        
         'report.ReportController',
         'report.ReportOptionsController'
-    ],
+        ],
 
 	models: [
 	    'report.AvailableField', 
         'report.Report',
         'report.SimpleField', 
-        'report.SimpleFilter', 
+        'report.SimpleFilter',
         'report.SimpleSort'
     ],
     
@@ -31,7 +32,8 @@ Ext.application({
 	    'report.ReportData',
         'report.Reports',
         'report.ReportsColumn',
-        'report.ReportsFilter'
+        'report.ReportsFilter',
+        'report.ReportsSort'
     ],
     
 	launch: function() {

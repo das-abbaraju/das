@@ -25,18 +25,34 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		    var filterType = record.data.field.get('filterType'),
     		        operator = "=",
     		        value = record.get('value'),
-    		        text = record.data.field.get('text');
-    		            
-    		    if (record.data.operator) {
-    		        operator = record.data.operator;
-    		    }
-    		    if (filterType === "Boolean") {
-    		        if (!value) {
-    		            value = 1;
-    		            record.set('value', 1);    		            
+    		        text = record.data.field.get('text'),
+    		        formattedData = text + " ";
+    		    
+    		    function formatFilterDisplay() {
+                    if (record.get('not') === true) {
+                        formattedData += ' Not ';
+                    }
+    		        
+    		        if (filterType === 'Boolean') {
+    		            if (!value) {
+    		                value = '1';
+    		                record.set('value', 1);    		                
+    		            } else {
+    		                (value === '1') ? operator = 'isTrue' : operator = 'isFalse';        
+    		            }
+    		            formattedData += operator;
+    		        } else {
+    		            formattedData += operator + " '" + value + "'";    
     		        }
     		    }
-    		    return "'" + text + "' " + operator + " '" + value + "'";
+    		    
+                if (record.data.operator) {
+                    operator = record.data.operator;
+                }
+                
+    		    formatFilterDisplay();
+
+    		    return formattedData; 
     		}
     	}, {
             xtype: 'actioncolumn',
@@ -51,6 +67,7 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
             width: 25
         }],
     	enableColumnResize: false,
+    	flex: 2,
 	    tbar: [{
 	        action: 'add-filter',
             icon: 'js/pics/resources/images/dd/drop-add.gif',
@@ -58,8 +75,6 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
 	    }]
     },{
         xtype: 'panel',
-        
-        autoScroll: true,
         dock: 'bottom',
         flex: 1,
         id: 'options'

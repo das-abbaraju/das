@@ -10,11 +10,10 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         xtype: 'combo',
         name: 'operator',
         store: [
-            ['Equals', '='],
             ['GreaterThan', '>'],
             ['LessThan', '<'],
             ['GreaterThanOrEquals', '>='],
-            ['LessThanOrEquals', '<='],         
+            ['LessThanOrEquals', '<='],
             ['Empty', 'blank']
         ],
         typeAhead: true

@@ -7,6 +7,16 @@ Ext.define('PICS.view.report.filter.AccountTypeFilter', {
         name: 'title'
     },{
         xtype: 'combo',
+        editable: false,
+        name: 'not',
+        store: [
+            ['false', ' '],
+            ['true', 'not']
+        ],
+        width: 50
+    },{
+        xtype: 'combo',
+        id: 'accounttype',
         name: 'accounttype',
         store: [
 	        ['Contractor', 'contractor'],
@@ -19,7 +29,7 @@ Ext.define('PICS.view.report.filter.AccountTypeFilter', {
     listeners: {
         beforeRender: function () {
             var form = Ext.ComponentQuery.query('accounttypefilter')[0],
-                combo = form.child("combo"),
+                combo = form.child("#accounttype"),
                 value = form.record.data.value;
             
             (value) ? combo.setValue(value) : combo.setValue('Contractor'); 
@@ -30,6 +40,11 @@ Ext.define('PICS.view.report.filter.AccountTypeFilter', {
         
         this.record.set('value', values.accounttype);
         this.record.set('operator', 'Equals');
+        if (values.not === 'true') {
+            this.record.set('not', true);    
+        } else {
+            this.record.set('not', false);
+        }
         this.superclass.applyFilter();
     }
 });

@@ -44,6 +44,15 @@ Ext.define('PICS.model.report.AvailableField', {
         return filter;
     },
     
+    createSimpleSort: function () {
+        var sort = Ext.create('PICS.model.report.SimpleSort', {
+            'column': this.get('name')
+        });
+        
+        sort.setAvailableField(this);
+        
+        return sort;
+    },
     // TODO: not sure if this is used anymore
 	// See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Field
     toStoreField: function () {

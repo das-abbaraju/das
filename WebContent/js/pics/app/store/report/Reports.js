@@ -10,6 +10,7 @@ Ext.define('PICS.store.report.Reports', {
             	if (report) {
             		this.loadStoreColumn('report.ReportsColumn', report.columns());
             		this.loadStoreFilter('report.ReportsFilter', report.filters());
+            		this.loadStoreSort('report.ReportsSort', report.sorts());            		
             	}
             }
         }
@@ -47,6 +48,22 @@ Ext.define('PICS.store.report.Reports', {
     	var store = Ext.StoreManager.get(store_name);
     	store.loadRecords(records);
     },
+    loadStoreSort: function(store_name, child) {
+        // TODO refactor these two methods
+        var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
+        var records = [];
+        
+        for(i = 0; i < child.data.length; i++) {
+            var item = child.data.items[i],
+            field = available_fields_store.findField(item.get('column'));
+            
+            item.setAvailableField(field);
+            records.push(item);
+        }
+        
+        var store = Ext.StoreManager.get(store_name);
+        store.loadRecords(records);
+    },    
     proxy: {
         // TODO: refactor proxy + figure out better writer
         // url parameter is important and must be null????
