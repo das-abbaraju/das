@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.jpa.entities.MultiYearScope;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.SafetyStatistics;
@@ -18,6 +17,8 @@ public class OshaOrganizer implements OshaVisitor {
 	// OSHA Audits will be sorted by their auditYears
 	Map<OshaType, Map<Integer, SafetyStatistics>> safetyStatisticsData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
 	
+	// TODO: remove ThreeYearAverage from here if its not being used anywhere
+	// in this class from the YEARS_ONLY array
 	private static final MultiYearScope[] YEARS_ONLY = {
 			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
 			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
@@ -49,47 +50,38 @@ public class OshaOrganizer implements OshaVisitor {
 	 */
 	public boolean isVerified(OshaType oshaType, MultiYearScope scope) {		
 		if (scope.isIndividualYearScope()) {
-			return determineMultiYearVerificationStatus(oshaType, scope);
+			return determineMultiYearVerificationStatus(oshaType);
 		} 
 		
-		return determineVerificationStatus(oshaType, scope, mostRecentThreeYears(oshaType));
+		YearList yearList = mostRecentThreeYears(oshaType);
+		return determineVerificationStatus(oshaType, yearList.getYearForScope(scope));
 	}
 	
-	private boolean determineMultiYearVerificationStatus(OshaType oshaType, MultiYearScope scope) {
+	private boolean determineMultiYearVerificationStatus(OshaType oshaType) {
 		YearList yearList = mostRecentThreeYears(oshaType);
 		
-		boolean lastYear = determineVerificationStatus(oshaType, MultiYearScope.LastYearOnly, yearList);
-		boolean twoYears = determineVerificationStatus(oshaType, MultiYearScope.TwoYearsAgo, yearList);
-		boolean threeYears = determineVerificationStatus(oshaType, MultiYearScope.ThreeYearsAgo, yearList);
+		boolean lastYear = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.LastYearOnly));
+		boolean twoYears = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
+		boolean threeYears = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
 		
 		return (lastYear && twoYears && threeYears);
 	}
 	
-	private boolean determineVerificationStatus(OshaType oshaType, MultiYearScope scope, YearList yearList) {
-		OshaAudit oshaAudit = retrieveOshaAudit(oshaType, yearList.getYearForScope(scope));
-		if (oshaAudit != null) {
-			return oshaAudit.isVerified(oshaType);
-		}
-		
-		return false;
-	}
-	
-	private OshaAudit retrieveOshaAudit(OshaType oshaType, Integer year) {
-		OshaAudit oshaAudit = null;
+	private boolean determineVerificationStatus(OshaType oshaType, Integer year) {
 		if (year == null) {
-			return oshaAudit;
+			return false;
 		}
 		
-		
+		boolean verified = false;
 		Map<Integer, SafetyStatistics> statisticsByYear = safetyStatisticsData.get(oshaType);
 		if (statisticsByYear != null) {
 			SafetyStatistics stats = statisticsByYear.get(year);
 			if (stats != null) {
-				oshaAudit = stats.getOshaAudit();
+				verified = stats.isVerified();
 			}
 		}
 		
-		return oshaAudit;
+		return verified;
 	}
 
 	/**

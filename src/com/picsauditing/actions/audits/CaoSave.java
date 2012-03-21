@@ -209,11 +209,12 @@ public class CaoSave extends AuditActionSupport {
 	 * @throws NoRightsException
 	 */
 	@SuppressWarnings("unchecked")
-	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException, ParseException {		
-	    String jsonArrayRequest = ServletActionContext.getRequest().getParameter("jsonArray");
+	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException, ParseException {
+	    // TODO: figure out how to get this working with Struts, rather than pulling it out of the request
+		String jsonArrayRequest = ServletActionContext.getRequest().getParameter("jsonArrayValue");
 	    if (Strings.isEmpty(jsonArrayRequest)) {
             return save();
-        }	    
+	    }
 	    
 	    JSONParser parser = new JSONParser();
 	    Object object = parser.parse(jsonArrayRequest);

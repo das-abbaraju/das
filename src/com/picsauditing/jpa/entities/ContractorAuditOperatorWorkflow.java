@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import net.sf.cglib.core.Local;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -108,12 +110,15 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 	private String buildNotes(JSONObject jsonObject) {
 		StringBuilder concatenatedNotes = new StringBuilder();
 		JSONArray reasonCodes = (JSONArray) jsonObject.get("noteCodes");
-		String[] i18nKeys = (String[]) reasonCodes.toArray();
-		for (String key : i18nKeys) {
-			concatenatedNotes.append(I18nCache.getInstance().getText(key, Locale.US) + "\n");
+		
+		for (int index = 0; index < reasonCodes.size(); index++) {
+			String reasonCode = (String) reasonCodes.get(index);
+			if (!Strings.isNullOrEmpty(reasonCode)) {
+				concatenatedNotes.append(I18nCache.getInstance().getText("Insurance.Rejection.Reason.Code." + reasonCode, Locale.US) + "\n");
+			}
 		}
 		
-		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("optionalComment")));
+		concatenatedNotes.append(Strings.nullToEmpty((String) jsonObject.get("additionalComment")));
 		
 		return concatenatedNotes.toString();
 	}

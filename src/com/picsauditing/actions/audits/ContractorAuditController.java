@@ -228,9 +228,9 @@ public class ContractorAuditController extends AuditActionSupport {
 						if (permissions.isAdmin()
 								|| (permissions.isContractor() && permissions.getAccountId() == conAudit
 										.getContractorAccount().getId())) {
-							problems.put(caow.getCao(), caow.getNotes());
+							problems.put(caow.getCao(), caow.getMappedNote());
 						} else if (getViewableOperators(permissions).contains(caow.getCao())) {
-							problems.put(caow.getCao(), caow.getNotes());
+							problems.put(caow.getCao(), caow.getMappedNote());
 						}
 					}
 				}

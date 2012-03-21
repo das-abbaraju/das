@@ -2,12 +2,15 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Transient;
+
+import org.jboss.util.Strings;
 
 import com.picsauditing.PICS.OshaVisitable;
 import com.picsauditing.PICS.OshaVisitor;
@@ -82,15 +85,16 @@ public class OshaAudit implements OshaVisitable {
 			OshaType oshaType = convertCategoryToOshaType(category.getCategory().getId());
 			if (oshaType != null && category.isApplies()) {
 				if (oshaType == OshaType.OSHA) {
-					safetyStatistics = new OshaStatistics(year, contractorAudit.getData(), this);
+					safetyStatistics = new OshaStatistics(year, contractorAudit.getData());
 				} else if (oshaType == OshaType.COHS) {
-					safetyStatistics = new CohsStatistics(year, contractorAudit.getData(), this);
+					safetyStatistics = new CohsStatistics(year, contractorAudit.getData());
 				} else if (oshaType == OshaType.UK_HSE) {
-					safetyStatistics = new UkStatistics(year, contractorAudit.getData(), this);
+					safetyStatistics = new UkStatistics(year, contractorAudit.getData());
 				}
 				
 				if (safetyStatistics != null) {
 					safetyStatisticsMap.put(oshaType, safetyStatistics);
+					safetyStatistics.setVerified(isVerified(oshaType));					
 				}
 			}
 		}
@@ -101,34 +105,62 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	public String getSpecificRate(OshaType oshaType, OshaRateType rateType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return Strings.EMPTY;
+		}
+		
 		return getSafetyStatistics(oshaType).getStats(rateType);
 	}
 
 	public Integer getFileUploadId(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return Integer.valueOf(-1);
+		}
+		
 		return getSafetyStatistics(oshaType).getFileUpload().getQuestion()
 				.getId();
 	}
 
 	public List<AuditData> getQuestionsToVerify(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return Collections.emptyList();
+		}
+		
 		return getSafetyStatistics(oshaType).getQuestionsToVerify();
 	}
 
 	public Collection<AuditData> getAllQuestionsInOshaType(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return Collections.emptyList();
+		}
+		
 		return getSafetyStatistics(oshaType).getAnswerMap().values();
 	}
 
 	public boolean isEmpty(OshaType oshaType) {
-		return (getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null || getSafetyStatistics(
-				oshaType).getStats(OshaRateType.Hours).equals("0"));
+		return (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null 
+				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours).equals("0"));
 	}
 	
 	public String getComment(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return Strings.EMPTY;
+		}
+		
 		return getSafetyStatistics(oshaType).getFileUpload().getComment();
 	}
 	
 	public AuditData stampOshaComment(OshaType oshaType, String comment) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return null;
+		}
+		
 		AuditData fileUpload = getSafetyStatistics(oshaType).getFileUpload();
-		fileUpload.setComment(comment);
+		if (fileUpload != null) {
+			fileUpload.setComment(comment);
+		}
+		
 		return fileUpload;
 	}
 
@@ -163,12 +195,20 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	public boolean isVerified(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return false;
+		}
+		
 		AuditData hoursWorked = getSafetyStatistics(oshaType).getAnswerMap()
 				.get(OshaRateType.Hours);
 		return hoursWorked.isVerified();
 	}
 
 	public Date verifiedDate(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null) {
+			return null;
+		}
+		
 		AuditData hoursWorked = getSafetyStatistics(oshaType).getAnswerMap()
 				.get(OshaRateType.Hours);
 		return hoursWorked.getDateVerified();
@@ -179,6 +219,7 @@ public class OshaAudit implements OshaVisitable {
 			if (categoryId == safetyStatisticsCategory)
 				return true;
 		}
+		
 		return false;
 	}
 }

@@ -248,7 +248,7 @@ public class NoteDAO extends PicsDAO {
 			bean.setOperator(caow.getCao().getOperator());
 			bean.setStatus(caow.getStatus());
 			bean.setPreviousStatus(caow.getPreviousStatus());
-			bean.setBody(caow.getNotes());
+			bean.setBody(caow.getMappedNote());
 
 			bean.setCreatedBy(caow.getCreatedBy());
 			bean.setCreationDate(caow.getCreationDate());
