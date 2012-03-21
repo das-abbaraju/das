@@ -77,7 +77,7 @@ public abstract class BaseTable {
 	public void removeField(String name) {
 		fields.remove(name.toUpperCase());
 	}
-	
+
 	protected QueryField addField(String sql, FilterType filter) {
 		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
 		if (sql.equals("id"))
@@ -114,4 +114,11 @@ public abstract class BaseTable {
 		join.addJoins();
 		return join;
 	}
+
+	public void addFields(@SuppressWarnings("rawtypes") Class clazz) {
+		for (QueryField field : JpaFieldExtractor.addFields(clazz, prefix, alias)) {
+			fields.put(field.getName().toUpperCase(), field);
+		}
+	}
+
 }

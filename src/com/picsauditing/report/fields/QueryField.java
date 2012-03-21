@@ -10,6 +10,7 @@ import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.annotations.ReportField;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.util.Strings;
 
@@ -48,7 +49,14 @@ public class QueryField implements JSONAware {
 	 * .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
 	 * record.data.accountID);
 	 */
+	
+	
 
+	public QueryField(ReportField annotation) {
+		this.filterType = annotation.filterType();
+		// TODO other options
+	}
+	
 	public QueryField(String name, String sql, FilterType filterType) {
 		this(name, sql, filterType, false);
 	}
@@ -142,6 +150,9 @@ public class QueryField implements JSONAware {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getSql() {
 		return sql;
 	}

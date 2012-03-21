@@ -19,6 +19,7 @@ public class ModelFactory {
 		if (type.equals(ModelType.Operators))
 			return new QueryAccountOperator();
 
+		System.out.println("WARNING: ModelFactory failed to define Model for type = " + type);
 		return null;
 	}
 }

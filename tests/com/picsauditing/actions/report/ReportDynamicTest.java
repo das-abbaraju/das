@@ -47,4 +47,9 @@ public class ReportDynamicTest {
 		assertTrue(bases.size() > 1);
 	}
 
+	public void testSaveTranslation()
+	{
+	
+	}
+
 }

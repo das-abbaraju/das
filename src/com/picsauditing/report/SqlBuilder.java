@@ -38,6 +38,9 @@ public class SqlBuilder {
 		includedColumns.clear();
 		availableFields.clear();
 
+		if (base == null)
+			return sql;
+		
 		setFrom();
 		addAvailableFields(base.getFrom());
 
@@ -385,8 +388,9 @@ public class SqlBuilder {
 
 	// Setters
 
-	public void setReport(Report report) {
+	public ModelBase setReport(Report report) {
 		this.base = ModelFactory.getBase(report.getModelType());
+		return this.base;
 	}
 
 	public void setBase(ModelBase base) {
