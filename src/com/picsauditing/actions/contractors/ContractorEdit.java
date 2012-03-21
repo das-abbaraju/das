@@ -184,20 +184,23 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			}
 
 			// account for disabled checkboxes not coming though
-			if (contractor.isContractorTypeRequired(ContractorType.Onsite))
-				conTypes.add(ContractorType.Onsite);
-			if (contractor.isContractorTypeRequired(ContractorType.Offsite))
-				conTypes.add(ContractorType.Offsite);
-			if (contractor.isContractorTypeRequired(ContractorType.Supplier))
-				conTypes.add(ContractorType.Supplier);
-			if (contractor.isContractorTypeRequired(ContractorType.Transportation))
-				conTypes.add(ContractorType.Transportation);
+			// but only if populated/presented
+			if (!permissions.isContractor()) {
+				if (contractor.isContractorTypeRequired(ContractorType.Onsite))
+					conTypes.add(ContractorType.Onsite);
+				if (contractor.isContractorTypeRequired(ContractorType.Offsite))
+					conTypes.add(ContractorType.Offsite);
+				if (contractor.isContractorTypeRequired(ContractorType.Supplier))
+					conTypes.add(ContractorType.Supplier);
+				if (contractor.isContractorTypeRequired(ContractorType.Transportation))
+					conTypes.add(ContractorType.Transportation);
 
-			contractor.setAccountTypes(conTypes);
-			contractor.resetRisksBasedOnTypes();
+				contractor.setAccountTypes(conTypes);
+				contractor.resetRisksBasedOnTypes();
 
-			if (!conTypesOK()) {
-				return SUCCESS;
+				if (!conTypesOK()) {
+					return SUCCESS;
+				}
 			}
 
 			Vector<String> errors = contractorValidator.validateContractor(contractor);
