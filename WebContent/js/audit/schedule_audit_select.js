@@ -5,8 +5,17 @@
                 var element = $('#ScheduleAudit_address_page');
                 
                 if (element.length) {
-                    $('#timezone', element).bind('change', this.updateTimeZone);
-                    $('#show_next', element).bind('click', this.showMoreTimeslots);
+                    var that = this;
+                    
+                    var show_more_element = element.find('#show_next');
+                    show_more_element.bind('click', this.showMoreTimeslots);
+                    
+                    var timezone_element = element.find('#timezone');
+                    timezone_element.bind('change', this.updateTimeZone);
+                    
+                    $('window').ready(function (event) {
+                        that.updateTimeZone.apply(timezone_element, [event]);
+                    });
                 }
             },
             
