@@ -15,6 +15,7 @@ function changePage(form, start){
 </script>
 <h2>Search Results</h2>
 <ul>
+	<li>This is a test BEFORE with version 2</li>
 	<li>This is a test</li>
 	<li>Lani</li>
 </ul>
