@@ -136,6 +136,11 @@
 		<servlet-name>AxisAdminServlet</servlet-name>
 		<servlet-class>
 		org.apache.axis2.transport.http.AxisAdminServlet</servlet-class>
+		<!--
+		This line is causing problems with starting the application
+		I'm removing it for now since it's only being used by NACE which isn't active right now
+		<load-on-startup>100</load-on-startup>
+		-->
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>loadPDF</servlet-name>
