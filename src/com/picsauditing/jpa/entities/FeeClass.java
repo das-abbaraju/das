@@ -24,13 +24,13 @@ public enum FeeClass implements Translatable {
 	DocuGUARD,
 	InsureGUARD {
 		@Override
-		public boolean isExcludedFor(ContractorAccount contractor) {
+		public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel) {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
 				return false;
 
 			if (contractor.getLastUpgradeDate() != null
 					&& contractor.getLastUpgradeDate().before(InsureGUARDPricingEffectiveDate)
-					&& !isRenewal(contractor))
+					&& contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel))
 				return true;
 
 			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
@@ -39,7 +39,7 @@ public enum FeeClass implements Translatable {
 			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
 			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
 
-			return isAllExclusionsApplicable(contractor, exclusions);
+			return isAllExclusionsApplicable(contractor, exclusions, newLevel);
 		}
 	},
 	AuditGUARD,
@@ -125,7 +125,7 @@ public enum FeeClass implements Translatable {
 				|| this == InsureGUARD;
 	}
 
-	public boolean isExcludedFor(ContractorAccount contractor) {
+	public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel) {
 		return false;
 	}
 
@@ -146,7 +146,8 @@ public enum FeeClass implements Translatable {
 	}
 
 	// TODO: This probably needs to be refactored into rules as it continues to grow
-	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer, Date> exclusions) {
+	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer, Date> exclusions,
+			InvoiceFee newLevel) {
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
 
@@ -156,7 +157,7 @@ public enum FeeClass implements Translatable {
 				// is it time to start charging this operator for insureguard?
 			} else if (isRenewal(contractor) && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if (!isRenewal(contractor)
+			} else if (contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel)
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
 				return false;

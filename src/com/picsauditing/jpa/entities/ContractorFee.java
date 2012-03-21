@@ -77,9 +77,25 @@ public class ContractorFee extends BaseTable {
 		return newAmount;
 	}
 
+	/**
+	 * This compares the currentAmount paid vs the newAmount that needs to be paid. The reason this goes off amounts
+	 * instead of Invoice Fee Levels is so we don't upgrade contractors for $0 if they move in-between fee levels where
+	 * a charge would not be incurred.
+	 * 
+	 * @return
+	 */
 	@Transient
 	public boolean isUpgrade() {
 		return this.getNewAmount().compareTo(this.getCurrentAmount()) > 0;
+	}
+
+	@Transient
+	public boolean willBeUpgradedBy(InvoiceFee newFeeLevel) {
+		if (!getFeeClass().equals(newFeeLevel.getFeeClass()))
+			throw new RuntimeException("FeeClass mismatch for upgrade comparison. Expected " + getFeeClass()
+					+ " but was passed " + newFeeLevel.getFeeClass());
+
+		return getCurrentLevel().getId() < newFeeLevel.getId();
 	}
 
 	@Transient

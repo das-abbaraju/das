@@ -167,10 +167,14 @@ public class BillingCalculatorSingle {
 			contractor.clearNewFee(FeeClass.AuditGUARD, feeDAO);
 		}
 
-		if (hasInsureGUARD && !FeeClass.InsureGUARD.isExcludedFor(contractor)) {
+		if (hasInsureGUARD) {
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
 			BigDecimal newAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
-			contractor.setNewFee(newLevel, newAmount);
+
+			if (!FeeClass.InsureGUARD.isExcludedFor(contractor, newLevel))
+				contractor.setNewFee(newLevel, newAmount);
+			else
+				contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		} else {
 			contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
 		}
@@ -361,7 +365,8 @@ public class BillingCalculatorSingle {
 				hasMembership = true;
 		}
 		if (hasMembership) {
-			notes += i18nCache.getText("Invoice.ClientSiteList", user != null ? user.getLocale() : Locale.ENGLISH, getOperatorsString(contractor));
+			notes += i18nCache.getText("Invoice.ClientSiteList", user != null ? user.getLocale() : Locale.ENGLISH,
+					getOperatorsString(contractor));
 		}
 		invoice.setNotes(notes);
 
@@ -448,12 +453,13 @@ public class BillingCalculatorSingle {
 				if (upgradeAmount.floatValue() > 0.0f) {
 					upgradeTotal = upgradeTotal.add(upgradeAmount);
 					if (upgrade.getCurrentAmount().floatValue() > 0.0f) {
-						description = i18nCache.getText("Invoice.UpgradingFrom", user != null ? user.getLocale() : Locale.ENGLISH, contractor
-								.getCountry().getCurrency().getSymbol(), upgrade.getCurrentAmount(), contractor
-								.getCountry().getCurrency().getSymbol(), upgradeAmount);
+						description = i18nCache.getText("Invoice.UpgradingFrom", user != null ? user.getLocale()
+								: Locale.ENGLISH, contractor.getCountry().getCurrency().getSymbol(), upgrade
+								.getCurrentAmount(), contractor.getCountry().getCurrency().getSymbol(), upgradeAmount);
 					} else if (upgrade.getCurrentAmount().floatValue() == 0.0f) {
-						description = i18nCache.getText("Invoice.UpgradingTo", user != null ? user.getLocale() : Locale.ENGLISH, upgrade.getFeeClass(),
-								contractor.getCountry().getCurrency().getSymbol(), upgradeAmount);
+						description = i18nCache.getText("Invoice.UpgradingTo", user != null ? user.getLocale()
+								: Locale.ENGLISH, upgrade.getFeeClass(), contractor.getCountry().getCurrency()
+								.getSymbol(), upgradeAmount);
 					}
 				} else
 					upgradeAmount = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
