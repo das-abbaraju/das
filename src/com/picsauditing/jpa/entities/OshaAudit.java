@@ -113,7 +113,9 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	public Integer getFileUploadId(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null) {
+		if (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getFileUpload() == null
+				|| getSafetyStatistics(oshaType).getFileUpload().getQuestion() == null) {
 			return Integer.valueOf(-1);
 		}
 		
@@ -130,7 +132,8 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	public Collection<AuditData> getAllQuestionsInOshaType(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null) {
+		if (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getAnswerMap() == null) {
 			return Collections.emptyList();
 		}
 		
@@ -144,10 +147,11 @@ public class OshaAudit implements OshaVisitable {
 	}
 	
 	public String getComment(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null) {
+		if (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getFileUpload() == null) {
 			return Strings.EMPTY;
 		}
-		
+				
 		return getSafetyStatistics(oshaType).getFileUpload().getComment();
 	}
 	
@@ -191,27 +195,28 @@ public class OshaAudit implements OshaVisitable {
 			if (cao.isVisible() && cao.getStatus().isComplete())
 				return true;
 		}
+		
 		return false;
 	}
 
 	public boolean isVerified(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null) {
+		if (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getAnswerMap() == null 
+				||getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
 			return false;
 		}
 		
-		AuditData hoursWorked = getSafetyStatistics(oshaType).getAnswerMap()
-				.get(OshaRateType.Hours);
-		return hoursWorked.isVerified();
+		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).isVerified();
 	}
 
 	public Date verifiedDate(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null) {
+		if (getSafetyStatistics(oshaType) == null 
+				|| getSafetyStatistics(oshaType).getAnswerMap() == null
+				|| getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
 			return null;
 		}
-		
-		AuditData hoursWorked = getSafetyStatistics(oshaType).getAnswerMap()
-				.get(OshaRateType.Hours);
-		return hoursWorked.getDateVerified();
+				
+		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getDateVerified();
 	}
 
 	public static boolean isSafetyStatisticsCategory(int categoryId) {
