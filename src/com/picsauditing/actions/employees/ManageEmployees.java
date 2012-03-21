@@ -91,15 +91,15 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 
 	@Before
 	public void findAccount() {
-		if (audit != null) {
+		if (account == null && audit != null) {
 			account = audit.getContractorAccount();
 		}
 
-		if (employee != null) {
+		if (account == null && employee != null) {
 			account = employee.getAccount();
 		}
 
-		if (getParameter("id") > 0) {
+		if (account == null && getParameter("id") > 0) {
 			id = getParameter("id");
 			account = accountDAO.find(id);
 		}
