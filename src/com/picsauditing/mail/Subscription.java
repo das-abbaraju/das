@@ -321,7 +321,9 @@ public enum Subscription implements Translatable {
 
 	@Override
 	public String getI18nKey() {
-		return this.getClass().getSimpleName() + "." + this.name();
+		return (!getClass().getSimpleName().isEmpty() ? getClass().getSimpleName() : getClass().getSuperclass()
+				.getSimpleName())
+				+ "." + toString();
 	}
 
 	@Override
