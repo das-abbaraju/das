@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -88,6 +89,19 @@ public class ReportAccountAudits extends ReportAccount {
 		}
 		sql.addField("c.score");
 		sql.addField("a.dbaName");
+		
+		if (permissions.isGeneralContractor()) {
+			SelectSQL innerjoin = new SelectSQL("generalcontractors gccOps");
+			innerjoin.addJoin("JOIN accounts a ON gccOps.genID = a.id");
+			innerjoin.addJoin("JOIN generalcontractors otherCons ON gccOps.genID = otherCons.genID");
+			innerjoin.addWhere("gccOps.subID = (SELECT subID FROM generalcontractors WHERE genID = " + permissions.getAccountId() + " and type = 'GeneralContractor') and a.type = 'Operator'");
+			innerjoin.addGroupBy("otherCons.subID");
+			innerjoin.addField("otherCons.subID");
+			innerjoin.addField("COUNT(*) cnt");
+			
+			sql.addJoin("LEFT JOIN (" + innerjoin.toString() + ") tmp ON tmp.subID = a.id");
+			sql.addField("tmp.cnt - 1 AS nonGCOpsInCommon");
+		}
 
 		filteredDefault = true;
 

@@ -1601,4 +1601,17 @@ public class ContractorAccount extends Account implements JSONable {
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
+	
+	@Transient
+	public boolean hasAtLeastOneNonGCOperator(OperatorAccount gco) {
+		List<OperatorAccount> gcOperators = gco.getGcContractor().getContractorAccount().getNonGeneralContractorOperators();
+		List<OperatorAccount> conOperators = getOperatorAccounts();
+		
+		for (OperatorAccount gcOp : gcOperators) {
+			if (conOperators.contains(gcOp))
+				return true;
+		}
+		
+		return false;
+	}
 }

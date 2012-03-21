@@ -151,6 +151,13 @@
 								<s:property value="get('dbaName')"/>
 							</div>
 						</s:if>
+						
+						<s:if test="permissions.generalContractor && get('nonGCOpsInCommon') == 0">
+							<div class="right">
+								<a href="javascript:;" class="help" title="<s:text name="ContractorList.PleaseAddOperatorsToSub" />"></a>
+							</div>
+						</s:if>
+						
 					</td>
 					
 					<pics:permission perm="AllContractors">
