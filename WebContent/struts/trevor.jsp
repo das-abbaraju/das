@@ -18,7 +18,7 @@ Ext.Loader.setConfig({
     }
 });
 
-Ext.onReady(function () {
+Ext.onReady(function ()  {
     var menu = Ext.create('PICS.view.layout.Menu', {
         renderTo: 'site_navigation'
     });
