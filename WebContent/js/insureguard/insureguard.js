@@ -154,7 +154,7 @@
                             status: 'Incomplete',
                             caoIDs: id,
                             insurance: true,
-                            jsonArray: json,
+                            jsonArrayValue: json,
                             note: note
                         }, function () {
                             // close modal window
