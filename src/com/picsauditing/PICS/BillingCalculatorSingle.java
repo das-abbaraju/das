@@ -5,9 +5,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,14 +130,17 @@ public class BillingCalculatorSingle {
 		ruleCache.initialize(auditDAO);
 		AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
 
+		Set<OperatorAccount> operatorsRequiringInsureGUARD = new HashSet<OperatorAccount>();
 		for (AuditTypeDetail detail : builder.calculate()) {
 			AuditType auditType = detail.rule.getAuditType();
 			if (auditType == null)
 				continue;
 			if (auditType.isDesktop() || auditType.getId() == AuditType.OFFICE)
 				hasAuditGUARD = true;
-			if (auditType.getClassType().equals(AuditTypeClass.Policy))
+			if (auditType.getClassType().equals(AuditTypeClass.Policy)) {
 				hasInsureGUARD = true;
+				operatorsRequiringInsureGUARD.addAll(detail.operators);
+			}
 			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
 					|| auditType.getClassType().isEmployee())
 				hasEmployeeAudits = true;
@@ -171,7 +176,7 @@ public class BillingCalculatorSingle {
 			InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(FeeClass.InsureGUARD, payingFacilities);
 			BigDecimal newAmount = FeeClass.InsureGUARD.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 
-			if (!FeeClass.InsureGUARD.isExcludedFor(contractor, newLevel))
+			if (!FeeClass.InsureGUARD.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD))
 				contractor.setNewFee(newLevel, newAmount);
 			else
 				contractor.clearNewFee(FeeClass.InsureGUARD, feeDAO);
