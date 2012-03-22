@@ -54,14 +54,11 @@ public class ReportEmployee extends ReportActionSupport {
 		sql.addField("e.firstName");
 		sql.addField("e.lastName");
 		sql.addField("e.title");
-		sql.addField("e.birthDate");
 		sql.addField("CONCAT('EmployeeClassification.', e.classification, '.description') classification");
 		sql.addField("e.hireDate");
 		sql.addField("e.email");
 		sql.addField("e.phone");
 		sql.addField("e.twicExpiration");
-		sql.addField("e.ssn");
-		sql.addField("e.location");
 
 		String accountStatus = "'Active'";
 		if (permissions.isAdmin() || permissions.getAccountStatus().isDemo())

@@ -95,7 +95,7 @@ public class ImportEmployees extends PicsActionSupport {
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
 			wb.write(outstream);
 			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
+			outstream.close();
 		}
 
 		return SUCCESS;
@@ -293,9 +293,6 @@ public class ImportEmployees extends PicsActionSupport {
 					case 6:
 						e.setPhone(cell.toString());
 						break;
-					case 7:
-						e.setLocation(cell.toString());
-						break;
 					default:
 						int index = cell.getColumnIndex() - getEmployeeInfo().length;
 						// Get operators?
@@ -324,6 +321,6 @@ public class ImportEmployees extends PicsActionSupport {
 		return new String[] { getText("ManageEmployeesUpload.label.EmployeeFirstName"),
 				getText("ManageEmployeesUpload.label.EmployeeLastName"), getText("ManageEmployeesUpload.label.Title"),
 				getText("ManageEmployeesUpload.label.HireDate"), getText("Employee.twicExpiration"),
-				getText("Employee.email"), getText("Employee.phone"), getText("Employee.location") };
+				getText("Employee.email"), getText("Employee.phone") };
 	}
 }
