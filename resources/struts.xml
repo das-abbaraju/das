@@ -2012,14 +2012,18 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<action name="BatchTranslations" class="com.picsauditing.actions.BatchTranslationsAction">
+		<action name="BatchTranslations" class="com.picsauditing.actions.i18n.BatchTranslationsAction">
 			<result>struts/i18n/batch_translations.jsp</result>
 		</action>
 
-		<action name="TranslationETL" class="com.picsauditing.util.TranslationETL">
+		<action name="TranslationETL" class="com.picsauditing.actions.i18n.TranslationETL">
 			<result>struts/i18n/translation_etl.jsp</result>
 			<result name="data">struts/i18n/translation_etl_data.jsp</result>
 			<result name="upload">struts/i18n/translation_etl_upload.jsp</result>
+		</action>
+		
+		<action name="UnsyncedTranslations" class="com.picsauditing.actions.i18n.UnsyncedTranslations">
+			<result>struts/i18n/unsynced_translations.jsp</result>
 		</action>
 
 		<!-- Customer Service -->

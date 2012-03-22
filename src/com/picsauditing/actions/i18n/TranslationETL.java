@@ -1,4 +1,4 @@
-package com.picsauditing.util;
+package com.picsauditing.actions.i18n;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -42,6 +42,9 @@ import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.DoubleMap;
+import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class TranslationETL extends PicsActionSupport {

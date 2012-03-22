@@ -326,6 +326,10 @@ public class PicsMenu {
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			menuItems.put("Manage Translations", "ManageTranslations.action");
 			menuItems.put("Import/Export Translations", "TranslationETL.action");
+			
+			if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
+				menuItems.put("Import/Export Translations", "TranslationETL.action");
+			}
 		}
 		if (permissions.hasPermission(OpPerms.ManageTrades)) {
 			menuItems.put(getTitle("TradeTaxonomy"), "TradeTaxonomy.action");
