@@ -1998,17 +1998,16 @@
 			<result>struts/flags/flag_criteria_list.jsp</result>
 		</action>
 
-		<!-- Customer Service -->
-
-		<action name="ManageTranslations" class="com.picsauditing.actions.ManageTranslations">
+		<!-- I18n -->
+		<action name="ManageTranslations" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<result>struts/i18n/manage_translations.jsp</result>
 		</action>
 		
-		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.ManageTranslations">
+		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.ManageTranslations">
+		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
@@ -2023,6 +2022,7 @@
 			<result name="upload">struts/i18n/translation_etl_upload.jsp</result>
 		</action>
 
+		<!-- Customer Service -->
 		<action name="ManageWebcams"
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>
