@@ -82,7 +82,7 @@
 			</div>
 		</pics:permission>
 		
-		<s:if test="#category.helpText.length() > 0">
+		<s:if test="#category.helpText.exists()">
 			<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 		</s:if>
 		
