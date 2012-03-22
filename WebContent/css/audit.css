@@ -300,6 +300,12 @@ h4.groupTitle
 	width: 65%;
 }
 
+#content .columns-2 div.answer .radio.inline label,
+#content .columns-3 div.answer .radio.inline label
+{
+	width: auto;
+}
+
 #content div.subquestion {
 	padding-left: 5%;	
 }
