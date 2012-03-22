@@ -29,6 +29,26 @@
 		</style>
 		
 		<script type="text/javascript">
+			function removeTag(tagId) {
+				var data = {button: 'RemoveTag', tagId: tagId, id: <s:property value="id"/>};
+				$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+					.load('TagNameEditAjax.action', data, function(text, status) {
+							if (status=='success')
+								$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+						});
+				return false;
+			}
+		
+			function addTag() {
+				var data = {button: 'AddTag', tagId: $('#tagName').val(), id: <s:property value="id"/>};
+				$('#conoperator_tags').html('<img src="images/ajax_process.gif"/>')
+					.load('TagNameEditAjax.action', data, function(text, status) {
+							if (status=='success')
+								$(this).effect('highlight', {color: '#FFFF11'}, 1000);
+						});
+				return false;
+			}
+		
 			function limit(id, pat) {
 				var data = $('#' + id).text();
 				var size = 500;

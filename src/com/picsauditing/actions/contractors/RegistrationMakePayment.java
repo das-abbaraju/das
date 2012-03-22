@@ -616,11 +616,13 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 
 	private boolean generateOrUpdateInvoiceIfNecessary() throws Exception {
 		findContractor();
+		billingService.calculateAnnualFees(contractor);
 		invoice = contractor.findLastUnpaidInvoice();
 		if (invoice == null) {
 			invoice = billingService.createInvoice(contractor, getUser());
 			contractor.getInvoices().add(invoice);
 			invoiceDAO.save(invoice);
+			contractor.syncBalance();
 			contractorAccountDao.save(contractor);
 			redirect("RegistrationMakePayment.action");
 			return true;
@@ -631,7 +633,6 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 				|| (newInvoice != null && !invoice.getTotalAmount().equals(newInvoice.getTotalAmount()))) {
 			billingService.updateInvoice(invoice, newInvoice, getUser());
 			contractor.syncBalance();
-			billingService.calculateAnnualFees(contractor);
 			contractorAccountDao.save(contractor);
 			redirect("RegistrationMakePayment.action");
 			return true;

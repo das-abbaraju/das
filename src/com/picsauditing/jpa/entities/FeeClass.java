@@ -151,13 +151,14 @@ public enum FeeClass implements Translatable {
 		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
 
+			boolean isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
 			// do I have an operator outside the exclusions list?
 			if (!exclusions.containsKey(operator.getTopAccount().getId())) {
 				return false;
 				// is it time to start charging this operator for insureguard?
-			} else if (isRenewal(contractor) && new Date().after(exclusionExpirationDate)) {
+			} else if (!isUpgrade && new Date().after(exclusionExpirationDate)) {
 				return false;
-			} else if (contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel)
+			} else if (isUpgrade
 					&& (contractor.getLastUpgradeDate() == null || contractor.getLastUpgradeDate().after(
 							exclusionExpirationDate))) {
 				return false;
@@ -168,16 +169,5 @@ public enum FeeClass implements Translatable {
 		}
 
 		return true;
-	}
-
-	// TODO: This should be moved to a BillingStatusCalculator class
-	private static boolean isRenewal(ContractorAccount contractor) {
-		int daysUntilRenewal = (contractor.getPaymentExpires() == null) ? 0 : DateBean.getDateDifference(contractor
-				.getPaymentExpires());
-
-		if (daysUntilRenewal < 45)
-			return true;
-
-		return false;
 	}
 }
