@@ -165,6 +165,7 @@ public class TradeTaxonomy extends PicsActionSupport {
 		try {
 			for (Trade t : trades) {
 				t.setParent(trade);
+				t.setAuditColumns(permissions);
 				tradeDAO.save(t);
 			}
 			json.put("success", true);
