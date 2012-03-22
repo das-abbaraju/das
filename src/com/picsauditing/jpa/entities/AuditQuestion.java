@@ -52,7 +52,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	static public final String[] TYPE_ARRAY = { "MultipleChoice", "Text", "Text Area", "Check Box",
 			"Additional Insured", "AMBest", "Calculation", "Date", "Decimal Number", "File", "FileCertificate",
-			"License", "Money", "Number", "ESignature", "Tagit", "MultiSelect" };
+			"License", "Money", "Number", "ESignature", "Tagit" };
 
 	private int number;
 	private int scoreWeight;
@@ -68,7 +68,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	private AuditOptionGroup option;
 	private String okAnswer;
 	// TODO Convert this into a TranslatableString PICS-5137
-	private TranslatableString columnHeader;
+	private String columnHeader;
 	private String uniqueCode;
 	private TranslatableString title;
 	private TranslatableString requirement;
@@ -246,12 +246,12 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	}
 
 	// @Deprecated
-	@Transient
-	public TranslatableString getColumnHeader() {
+	@Column(length = 30)
+	public String getColumnHeader() {
 		return columnHeader;
 	}
 
-	public void setColumnHeader(TranslatableString columnHeader) {
+	public void setColumnHeader(String columnHeader) {
 		this.columnHeader = columnHeader;
 	}
 
@@ -554,8 +554,8 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 
 	@Transient
 	public String getColumnHeaderOrQuestion() {
-		if (columnHeader != null && columnHeader.toString().length() > 0)
-			return columnHeader.toString();
+		if (columnHeader != null && columnHeader.length() > 0)
+			return columnHeader;
 		if (getName() == null)
 			return "";
 		return getName().toString();
