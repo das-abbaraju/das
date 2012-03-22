@@ -157,8 +157,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				aq1.setRequired(true);
 				aq1.setEffectiveDate(effDate.getTime());
 				aq1.setExpirationDate(exDate.getTime());
-				aq1.setColumnHeader(new TranslatableString());
-				aq1.getName().putTranslation("en", "Certificate", true);
+				aq1.setColumnHeader("Certificate");
 				AuditQuestion aq2 = new AuditQuestion();
 				aq2.setNumber(2);
 				aq2.setAuditColumns(permissions);
@@ -169,8 +168,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 				aq2.setRequired(true);
 				aq2.setEffectiveDate(effDate.getTime());
 				aq2.setExpirationDate(exDate.getTime());
-				aq2.setColumnHeader(new TranslatableString());
-				aq2.getName().putTranslation("en", "Certificate", true);
+				aq2.setColumnHeader("Certificate");
 				typeDAO.save(cat);
 				typeDAO.save(auditType);
 				typeDAO.save(aq1);
