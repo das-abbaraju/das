@@ -16,6 +16,13 @@
 	margin-top: 10px;
 }
 
+/* AUDIT */
+
+.audit_category .columns-2 .column
+{
+	width: 49%;
+}
+
 /* IE6 css fixer v0.95: Tue, 13 Dec 2011 02:49:23 +0100 */
 
 /* ============================================= */

@@ -16,6 +16,8 @@ public class UserAccessSave extends UsersManage {
 
 	@SuppressWarnings("unchecked")
 	public String execute() throws Exception {
+		user = userDAO.find(user.getId());
+		
 		if (!forceLogin()) {
 			addActionError("Timeout: you need to login again");
 			return LOGIN;
