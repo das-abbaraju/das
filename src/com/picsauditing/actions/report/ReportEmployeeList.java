@@ -85,14 +85,11 @@ public class ReportEmployeeList extends ReportEmployee {
 		super.addExcelColumns();
 
 		excelSheet.addColumn(new ExcelColumn("title", getText("Employee.title")));
-		excelSheet.addColumn(new ExcelColumn("birthDate", getText("Employee.birthDate"), ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("classification", getText("EmployeeClassification"),
 				ExcelCellType.Translated));
 		excelSheet.addColumn(new ExcelColumn("hireDate", getText("Employee.hireDate"), ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("email", getText("Employee.email")));
 		excelSheet.addColumn(new ExcelColumn("phone", getText("Employee.phone")));
 		excelSheet.addColumn(new ExcelColumn("twicExpiration", getText("Employee.twicExpiration"), ExcelCellType.Date));
-		excelSheet.addColumn(new ExcelColumn("ssn", getText("Employee.ssn")));
-		excelSheet.addColumn(new ExcelColumn("location", getText("Employee.location")));
 	}
 }
