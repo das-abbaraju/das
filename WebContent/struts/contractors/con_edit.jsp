@@ -276,7 +276,6 @@
 						
 						<fieldset class="form">
 							<h2 class="formLegend"><s:text name="ContractorEdit.CompanyIdentification.heading"/></h2>
-							
 							<ol>
 								<li>
 									<label>
@@ -310,7 +309,11 @@
 									</s:if>
 								</li>
 								<li>
-									<s:checkbox name="contractor.autoApprovesRelationship" theme="formhelp" />
+									<label>Auto Approves General Contractors:</label>
+									<s:checkbox 
+										name="contractor.autoApproveRelationships" 
+										cssClass="checkbox"
+									/>
 								</li>
 								<li>
 									<label><s:text name="ContractorEdit.CompanyIdentification.Description"/>:</label>
@@ -442,14 +445,6 @@
 											cssClass="checkbox"
 											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
 										/><s:text name="ContractorAccount.transportationServices" />
-									</li>
-									<li>
-										<label>Auto Approves General Contractors:</label>
-										<s:checkbox 
-											name="contractor.autoApproveRelationships" 
-											cssClass="checkbox"
-											disabled="!permissions.marketing" 
-										/>
 									</li>
 									<li>
 										<s:if test="hasImportPQFAudit">
