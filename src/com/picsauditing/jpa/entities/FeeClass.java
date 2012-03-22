@@ -170,15 +170,4 @@ public enum FeeClass implements Translatable {
 
 		return true;
 	}
-
-	// TODO: This should be moved to a BillingStatusCalculator class
-	private static boolean isRenewal(ContractorAccount contractor) {
-		int daysUntilRenewal = (contractor.getPaymentExpires() == null) ? 0 : DateBean.getDateDifference(contractor
-				.getPaymentExpires());
-
-		if (daysUntilRenewal < 45)
-			return true;
-
-		return false;
-	}
 }
