@@ -156,6 +156,10 @@
 		<!--[if IE]>
 			<link rel="stylesheet" href="css/ie.css" type="text/css" />
 		<![endif]-->
+        
+        <!--[if IE 7]>
+            <link rel="stylesheet" href="css/ie7.css" type="text/css" />
+        <![endif]-->
 		
 		<!-- compliance patch for microsoft browsers -->
 		<!--[if lt IE 7]>
