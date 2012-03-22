@@ -514,7 +514,7 @@ public class UsersManage extends PicsActionSupport {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			} 
 			
-			if (!userRoleExists(OpPerms.ContractorAdmin)) {
+			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}

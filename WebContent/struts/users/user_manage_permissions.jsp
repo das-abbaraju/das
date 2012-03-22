@@ -45,19 +45,19 @@ function savePerm(userID, permType, checkbox) {
 					<s:text name="OpPerms.ContractorAdmin.helpText" />
 				</span></span>
 			</td>
-			<td><s:property value="OpPerms.ContractorBilling.description" />
+			<td><s:text name="OpPerms.ContractorBilling.description" />
 				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
-					<s:property value="OpPerms.ContractorBilling.helpText" />
+					<s:text name="OpPerms.ContractorBilling.helpText" />
 				</span></span>
 			</td>
-			<td><s:property value="OpPerms.ContractorSafety.description" />
+			<td><s:text name="OpPerms.ContractorSafety.description" />
 				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
-					<s:property value="OpPerms.ContractorSafety.helpText" />
+					<s:text name="OpPerms.ContractorSafety.helpText" />
 				</span></span>
 			</td>
-			<td><s:property value="OpPerms.ContractorInsurance.description" />
+			<td><s:text name="OpPerms.ContractorInsurance.description" />
 				<span class="block" style="position: relative;"><img src="images/help.gif" height="15" width="15"><span class="hoverhelp" style="bottom: 13px; left: -99px;">
-					<s:property value="OpPerms.ContractorInsurance.helpText" />
+					<s:text name="OpPerms.ContractorInsurance.helpText" />
 				</span></span>
 			</td>
 		</tr>

@@ -26,6 +26,9 @@
 				<li>
 					<a href="?request_locale=es">Español</a>
 				</li>
+                <li>
+                    <a href="?request_locale=de">Deutsch</a>
+                </li>
 			</ul> 
 		</s:if>
 		
