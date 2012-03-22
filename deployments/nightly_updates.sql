@@ -35,8 +35,6 @@ UPDATE ref_trade AS rt,
 SET    rt.contractorCount = counts.total
 WHERE  rt.id = counts.id;
 
-update ref_trade set parentID = null where parentID = 5;
-
 update ref_trade set childCount = 0, childCountTotal = 0;
 
 update ref_trade p

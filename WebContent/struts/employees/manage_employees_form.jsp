@@ -82,7 +82,6 @@ $(function() {
 					<s:textfield name="employee.twicExpiration" value="%{maskDateFormat(employee.twicExpiration)}" 
 						cssClass="datepicker" theme="formhelp" />
 				</li>
-				<li><s:textfield name="employee.location" id="locationSuggest" theme="formhelp" /></li>
 			</ol>
 		</fieldset>
 	</s:if>

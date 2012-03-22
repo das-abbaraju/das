@@ -59,6 +59,7 @@ import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FeeClass;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.FlagOverrideHistory;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
@@ -878,6 +879,14 @@ public class Cron extends PicsActionSupport {
 		while (fdoIter.hasNext()) {
 			FlagDataOverride fdo = fdoIter.next();
 
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(fdo);
+			foh.setAuditColumns(system);
+			foh.setDeleted(false);
+			foh.setDeleteReason("Flag Data Override Expired");
+			dao.save(foh);
+
 			// Create note & Delete override
 			Note note = new Note(fdo.getContractor(), system, "Forced " + fdo.getCriteria().getLabel() + " Flag to "
 					+ fdo.getForceflag() + " Expired for " + fdo.getContractor().getName());
@@ -897,6 +906,14 @@ public class Cron extends PicsActionSupport {
 		Iterator<ContractorOperator> overrideIter = overrides.iterator();
 		while (overrideIter.hasNext()) {
 			ContractorOperator override = overrideIter.next();
+
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(override);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(false);
+			foh.setDeleteReason("Overall Flag Override Expired");
+			dao.save(foh);
 
 			// Create note & Remove override
 			Note note = new Note(override.getContractorAccount(), system, "Overall Forced Flag to "
