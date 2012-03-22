@@ -300,4 +300,9 @@ public class DateBeanTest  {
 		assertEquals(2012, result.get(Calendar.YEAR));
 	}
 	
+	@Test
+	public void testFormatWithNullValue() {
+		assertNull(DateBean.format(null, "MM/dd/yyyy"));
+	}
+	
 }
