@@ -448,6 +448,12 @@
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
+		
+		<action name="ScheduleJob" class="com.picsauditing.actions.ScheduleJobAction">
+        	<result>struts/schedule_job.jsp</result>
+			<result name="initSchedule">struts/schedule_job.jsp</result>
+			<result name="startSchedule">struts/schedule_job.jsp</result>
+		</action>
 
 		<action name="ContractorEditRiskLevel" class="com.picsauditing.actions.contractors.ContractorEditRiskLevel">
 			<result>struts/contractors/con_edit_risk.jsp</result>
