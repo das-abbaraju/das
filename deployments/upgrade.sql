@@ -192,7 +192,8 @@ set c.transportationRisk = 0
  
  
  -- PICS-3156 Osha Data Conversion
- -- Total Man Hours
+-- OSHA
+-- Total Man Hours
 replace into pqfdata
             (auditID,
              questionID,
@@ -332,6 +333,308 @@ select
 from osha_audit oa
 where oa.SHAType = "OSHA";
 
+-- Were there any injuries?
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8838,
+  "Yes",
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "OSHA";
+
+-- MSHA
+-- Total Man Hours
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  10009,
+  oa.manHours,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- Fatalities
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  10010,
+  oa.fatalities,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- Lost Workday Cases
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  1011,
+  oa.lostWorkCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- Lost Workdays
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  10012,
+  oa.lostWorkDays,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- Restricted
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  10013,
+  oa.restrictedWorkCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- Job Transfers
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  10014,
+  oa.modifiedWorkDay,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- injuries and illnesses
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  11112,
+  oa.injuryIllnessCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "MSHA";
+
+-- COHS
+-- Total Man Hours
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  8839,
+  oa.manHours,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- Fatalities
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  8841,
+  oa.fatalities,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- Lost Workday Cases
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  8842,
+  oa.lostWorkCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- Lost Workdays
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  8843,
+  oa.lostWorkDays,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- Restricted
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  8844,
+  oa.restrictedWorkCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- Job Transfers
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select
+  oa.auditID,
+  11119,
+  oa.modifiedWorkDay,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- injuries and illnesses
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8845,
+  oa.injuryIllnessCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
 -- PICS-5192
 -- MSHA: Audit Cat Data update
 update audit_cat_data acd1
@@ -357,7 +660,13 @@ where acd1.categoryID = 151
 and acd2.categoryID = 2033
 and acd1.applies = 1;
 
--- 
+-- Resetting the annual updates so calculations run when contractor is synchronized
+update contractor_audit ca
+set ca.lastRecalculation = null
+where ca.auditTypeID = 11
+and ca.auditFor in ('2008','2009','2010','2011');
+
+-- PICS-4344 populating corruption perception indices
 UPDATE ref_country SET perceivedCorruption = 9.5 WHERE isoCode = 'NZ';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'DK';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'FI';
