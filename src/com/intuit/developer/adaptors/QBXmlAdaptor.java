@@ -145,17 +145,17 @@ public class QBXmlAdaptor {
 
 	static public String nullSafeCity(String city, Country country) {
 		if (country == null)
-			return nullSafeSubString(city, 0, 24);
+			return nullSafeSubString(city, 0, 23);
 		if (country.isUS())
-			return nullSafeSubString(city, 0, 27);
-		if (country.isCanada())
 			return nullSafeSubString(city, 0, 26);
-		if (country.isFrance())
+		if (country.isCanada())
 			return nullSafeSubString(city, 0, 25);
-		if (country.isUK())
+		if (country.isFrance())
 			return nullSafeSubString(city, 0, 24);
+		if (country.isUK())
+			return nullSafeSubString(city, 0, 23);
 
-		return nullSafeSubString(city, 0, 24);
+		return nullSafeSubString(city, 0, 23);
 	}
 
 	static public String nullSafePhoneFormat(String in) {
