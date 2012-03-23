@@ -21,10 +21,16 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
 /**
- * Only to be used by Annual Updates.
+ * This is a collection of misc. business calculations that are applied to audit
+ * question answers. They allow us to extract knowledge from the raw data. This
+ * knowelege is currently used in two ways:
+ * 
+ * 1. As the inputs for flag decisions.
+ * 
+ * 2. For EMR-specific calculated fields.
  */
 public class MultiYearValueCalculator {
-	
+
 	private static final int EMR_YES_NO_QUESTION_ID = 2033;
 
 	/**
@@ -35,35 +41,36 @@ public class MultiYearValueCalculator {
 	}
 
 	/**
-	 * Used when the audits are expected to be retrieved and the results applied using the
-	 * YearList.
+	 * Used when the audits are expected to be retrieved and the results applied
+	 * using the YearList.
 	 * 
 	 * @param contractor
 	 * @param criteria
 	 * @return
 	 */
 	public static String calculateValueForMultiYear(ContractorAccount contractor, FlagCriteria criteria) {
-		List<ContractorAudit> audits = buildMultiYearAudits(contractor.getAudits());						
+		List<ContractorAudit> audits = buildMultiYearAudits(contractor.getAudits());
 		return calculateValueForMultiYear(criteria, audits);
 	}
-	
+
 	static List<ContractorAudit> buildMultiYearAudits(List<ContractorAudit> audits) {
 		if (CollectionUtils.isEmpty(audits)) {
 			return Collections.emptyList();
 		}
-		
+
 		Map<String, ContractorAudit> auditsByYear = new HashMap<String, ContractorAudit>();
 		YearList yearList = new YearList();
-		
+
 		retrieveAnnualUpdatesForFlagCriteriaProcessing(audits, auditsByYear, yearList);
 		List<ContractorAudit> auditsForFlagCriteria = buildAuditsForFlagCriteria(auditsByYear, yearList);
-				
+
 		return auditsForFlagCriteria;
 	}
 
 	/**
-	 * The List<ContractorAudit> returned can have null entries if there is no Annual Update audit in a 
-	 * valid Status (Complete or further in the Workflow) for that year.
+	 * The List<ContractorAudit> returned can have null entries if there is no
+	 * Annual Update audit in a valid Status (Complete or further in the
+	 * Workflow) for that year.
 	 * 
 	 * @param auditsByYear
 	 * @param yearList
@@ -76,10 +83,11 @@ public class MultiYearValueCalculator {
 		auditsForFlagCriteria.add(retrieveAuditForScope(auditsByYear, yearList, MultiYearScope.ThreeYearsAgo));
 		return auditsForFlagCriteria;
 	}
-	
-	static void retrieveAnnualUpdatesForFlagCriteriaProcessing(List<ContractorAudit> audits, Map<String, ContractorAudit> auditsByYear, YearList yearList) {
+
+	static void retrieveAnnualUpdatesForFlagCriteriaProcessing(List<ContractorAudit> audits,
+			Map<String, ContractorAudit> auditsByYear, YearList yearList) {
 		yearList.setToday(new Date());
-		
+
 		for (ContractorAudit audit : audits) {
 			if (auditIsCompleteAnnualUpdate(audit)) {
 				String year = audit.getAuditFor();
@@ -92,24 +100,24 @@ public class MultiYearValueCalculator {
 	}
 
 	static boolean auditIsCompleteAnnualUpdate(ContractorAudit audit) {
-		return (audit != null 
-				&& audit.getAuditType() != null 
-				&& audit.getAuditType().isAnnualAddendum() 
-				&& audit.hasCaoStatusAfter(AuditStatus.Resubmitted));
+		return (audit != null && audit.getAuditType() != null && audit.getAuditType().isAnnualAddendum() && audit
+				.hasCaoStatusAfter(AuditStatus.Resubmitted));
 	}
-	
-	static ContractorAudit retrieveAuditForScope(Map<String, ContractorAudit> auditsByYear, YearList yearList, MultiYearScope multiYearScope) {
+
+	static ContractorAudit retrieveAuditForScope(Map<String, ContractorAudit> auditsByYear, YearList yearList,
+			MultiYearScope multiYearScope) {
 		Integer yearForScope = yearList.getYearForScope(multiYearScope);
 		if (yearForScope != null) {
 			return auditsByYear.get(yearForScope);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
-	 * Used in cases where existing code does not use the YearList, and an existing set of Audits are used to perform
-	 * the calculation. The audits in the list are expected to be in descending order by Year.
+	 * Used in cases where existing code does not use the YearList, and an
+	 * existing set of Audits are used to perform the calculation. The audits in
+	 * the list are expected to be in descending order by Year.
 	 * 
 	 * @param contractor
 	 * @param criteria
@@ -118,9 +126,9 @@ public class MultiYearValueCalculator {
 	 */
 	public static String calculateValueForMultiYear(FlagCriteria criteria, List<ContractorAudit> audits) {
 		Number result = null;
-		
+
 		switch (criteria.getMultiYearScope()) {
-		
+
 		case LastYearOnly:
 			result = getValueForSpecificYear(audits, criteria, 1);
 			break;
@@ -185,46 +193,47 @@ public class MultiYearValueCalculator {
 
 		return null;
 	}
-	
+
 	/**
 	 * Get a map of the last 3 years of applicable EMR data (verified or not)
 	 */
 	public static List<OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
 		List<OshaResult> oshaResults = buildOshaResultsList(audits);
-		
+
 		if (oshaResults.size() == 4) {
 			oshaResults.remove(0);
 		} else if (oshaResults.size() > 4) {
 			throw new RuntimeException("Found [" + oshaResults.size() + "] EMRs");
 		}
-		
+
 		return oshaResults;
 	}
 
 	static List<OshaResult> buildOshaResultsList(List<ContractorAudit> audits) {
 		List<OshaResult> oshaResults = new ArrayList<OshaResult>();
 		int count = 0;
-		
+
 		for (ContractorAudit audit : audits) {
 			if (count < 4 && audit.hasCaoStatus(AuditStatus.Complete)) {
 				// Store the EMR rates into a list for later use
 				for (AuditData answer : audit.getData()) {
 					if (answer.getQuestion().getId() == AuditQuestion.EMR
-							|| (answer.getQuestion().getId() == EMR_YES_NO_QUESTION_ID && "No".equals(answer.getAnswer()))) {
+							|| (answer.getQuestion().getId() == EMR_YES_NO_QUESTION_ID && "No".equals(answer
+									.getAnswer()))) {
 						String answerValue = answer.getAnswer();
 						if (!Strings.isEmpty(answerValue)) {
 							count++;
 							if (answer.getQuestion().getId() != EMR_YES_NO_QUESTION_ID) {
-								boolean verified = true; // we assume that everything is verified until we prove otherwise
+								boolean verified = true; // we assume that
+															// everything is
+															// verified until we
+															// prove otherwise
 								if (answer.isUnverified()) {
 									verified = false;
 								}
-								
-								OshaResult oshaResult = new OshaResult.Builder()
-																	.verified(verified)
-																	.answer(answerValue)
-																	.year(audit.getAuditFor())
-																	.build();
+
+								OshaResult oshaResult = new OshaResult.Builder().verified(verified).answer(answerValue)
+										.year(audit.getAuditFor()).build();
 								oshaResults.add(oshaResult);
 							}
 						}
@@ -232,10 +241,10 @@ public class MultiYearValueCalculator {
 				}
 			}
 		}
-		
+
 		return oshaResults;
 	}
-	
+
 	/**
 	 * Calculate the Average EMR
 	 */
@@ -244,7 +253,7 @@ public class MultiYearValueCalculator {
 		if (values != null && !values.isEmpty()) {
 			return oshaResult;
 		}
-		
+
 		String years = null;
 		float rateTotal = 0;
 		int count = 0;
@@ -255,28 +264,29 @@ public class MultiYearValueCalculator {
 			} else {
 				years = ", " + singleResult.getYear();
 			}
-			
+
 			if (!singleResult.isVerified()) {
 				verified = false;
 			}
-			
+
 			try {
 				float rate = Float.parseFloat(singleResult.getAnswer());
 				rateTotal += rate;
 				count++;
-			} catch (Exception WeCannotDoAnythingAboutThis) {				
+			} catch (Exception WeCannotDoAnythingAboutThis) {
 			}
 		}
-		
+
 		if (count > 0) {
 			Float avgRateFloat = rateTotal / count;
 			avgRateFloat = (float) Math.round(1000 * avgRateFloat) / 1000;
-			oshaResult = new OshaResult.Builder().answer(Float.toString(avgRateFloat)).year(years).verified(verified).build();
+			oshaResult = new OshaResult.Builder().answer(Float.toString(avgRateFloat)).year(years).verified(verified)
+					.build();
 		}
-		
+
 		return oshaResult;
 	}
-	
+
 	static int totalNonNullValues(List<Double> values) {
 		int count = 0;
 		for (Double value : values) {
@@ -284,7 +294,7 @@ public class MultiYearValueCalculator {
 				count++;
 			}
 		}
-		
+
 		return count;
 	}
 
@@ -361,18 +371,14 @@ public class MultiYearValueCalculator {
 	}
 
 	private static boolean isQuestionWithNumericAnswer(FlagCriteria criteria, AuditData auditData) {
-		return (auditData != null
-				&& criteria.getQuestion().getId() == auditData.getQuestion().getId() 
-				&& FlagCriteria.NUMBER.equals(criteria.getDataType()) 
-				&& !Strings.isEmpty(auditData.getAnswer()));
+		return (auditData != null && criteria.getQuestion().getId() == auditData.getQuestion().getId()
+				&& FlagCriteria.NUMBER.equals(criteria.getDataType()) && !Strings.isEmpty(auditData.getAnswer()));
 	}
 
 	private static boolean isCheckBoxQuestionWithAnswer(FlagCriteria criteria, AuditData auditData) {
-		return (auditData != null
-				&& criteria.getQuestion().getId() == auditData.getQuestion().getId()
+		return (auditData != null && criteria.getQuestion().getId() == auditData.getQuestion().getId()
 				&& "Check Box".equals(criteria.getQuestion().getQuestionType())
-				&& !Strings.isEmpty(auditData.getAnswer()) 
-				&& "X".equals(auditData.getAnswer()));
+				&& !Strings.isEmpty(auditData.getAnswer()) && "X".equals(auditData.getAnswer()));
 	}
 
 }

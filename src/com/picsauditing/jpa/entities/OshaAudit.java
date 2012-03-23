@@ -112,6 +112,7 @@ public class OshaAudit implements OshaVisitable {
 		return getSafetyStatistics(oshaType).getStats(rateType);
 	}
 
+	// TODO I can't find where this actually being used.  Need code coverage testing.   -- AA
 	public Integer getFileUploadId(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null 
 				|| getSafetyStatistics(oshaType).getFileUpload() == null
