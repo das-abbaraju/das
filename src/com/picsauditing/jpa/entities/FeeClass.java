@@ -24,7 +24,7 @@ public enum FeeClass implements Translatable {
 	DocuGUARD,
 	InsureGUARD {
 		@Override
-		public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel) {
+		public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel, Set<OperatorAccount> operators) {
 			if (contractor == null || contractor.getOperatorAccounts().isEmpty())
 				return false;
 
@@ -33,14 +33,9 @@ public enum FeeClass implements Translatable {
 					&& contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel))
 				return true;
 
-			Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
-			exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
-			exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
-			exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
-			exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
-
-			return isAllExclusionsApplicable(contractor, exclusions, newLevel);
+			return isAllExclusionsApplicable(contractor, newLevel, operators);
 		}
+
 	},
 	AuditGUARD,
 	EmployeeGUARD {
@@ -125,7 +120,7 @@ public enum FeeClass implements Translatable {
 				|| this == InsureGUARD;
 	}
 
-	public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel) {
+	public boolean isExcludedFor(ContractorAccount contractor, InvoiceFee newLevel, Set<OperatorAccount> operators) {
 		return false;
 	}
 
@@ -146,9 +141,10 @@ public enum FeeClass implements Translatable {
 	}
 
 	// TODO: This probably needs to be refactored into rules as it continues to grow
-	public boolean isAllExclusionsApplicable(ContractorAccount contractor, Map<Integer, Date> exclusions,
-			InvoiceFee newLevel) {
-		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+	public boolean isAllExclusionsApplicable(ContractorAccount contractor, InvoiceFee newLevel,
+			Set<OperatorAccount> operators) {
+		for (OperatorAccount operator : operators) {
+			Map<Integer, Date> exclusions = getExclusions();
 			Date exclusionExpirationDate = exclusions.get(operator.getTopAccount().getId());
 
 			boolean isUpgrade = contractor.getFees().get(newLevel.getFeeClass()).willBeUpgradedBy(newLevel);
@@ -169,5 +165,14 @@ public enum FeeClass implements Translatable {
 		}
 
 		return true;
+	}
+
+	protected Map<Integer, Date> getExclusions() {
+		Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
+		exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
+		return exclusions;
 	}
 }
