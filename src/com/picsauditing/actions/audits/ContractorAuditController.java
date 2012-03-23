@@ -580,45 +580,7 @@ public class ContractorAuditController extends AuditActionSupport {
 		return contractor.getCountry().getAmount(fee);
 	}
 	
-	public boolean displayMultiStatusDropDown() {
-		return (actionStatus.size() > 0 
-				&& CollectionUtils.isNotEmpty(contractor.getTrades())
-				&& !permissions.hasGroup(10));
-	}
 	
-	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
-		if (cao != null && step != null) {
-			if (!canContractorSubmitPQF(step)) {
-				return false;
-			}
-			else if (conAudit.getAuditType().getClassType().isPolicy() && cao.getOperator().isAutoApproveInsurance() && permissions.isAdmin() && step.getNewStatus().isApproved()) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	private boolean canContractorSubmitPQF(WorkflowStep step) {
-		if (step.getNewStatus().isSubmitted()
-				&& !permissions.hasGroup(10)
-				&& CollectionUtils.isEmpty(contractor.getTrades())) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean atLeastOneCompleteVisibleCao() {
-		List<ContractorAuditOperator> visibleCaos = getViewableOperators(permissions);
-		for (ContractorAuditOperator cao : visibleCaos) {
-			if (cao.isReadyToBeSubmitted()) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
 
 	private void checkMode() {
 		if (mode == null)
