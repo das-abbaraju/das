@@ -36,6 +36,141 @@ update operators o set o.discountPercent = .25, o.discountExpiration = '2012-12-
 insert into app_properties(property, value)
 values ('PICS.liveChat', 1);
 
+-- PICS-5221 Data Conversion script to fix current flag data overrides to audit
+-- lastyear, 2011
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2011'
+and fdo.year is NULL
+AND fc.multiYearScope='LastYearOnly';
+
+-- last year, 2010
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+join contractor_audit ca2 on fdo.conID=ca2.conID
+join contractor_audit_operator cao2 on cao2.auditID=ca2.id and ca2.auditTypeID = 11 and ca2.auditFor = '2011' and cao2.status != 'Complete'
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2010'
+and fdo.year is NULL
+AND fc.multiYearScope='LastYearOnly';
+
+-- 2 years 2010
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+join contractor_audit ca2 on fdo.conID=ca2.conID
+join contractor_audit_operator cao2 on cao2.auditID=ca2.id and ca2.auditTypeID = 11 and ca2.auditFor = '2011' and cao2.status = 'Complete'
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2010'
+and fdo.year is NULL
+AND fc.multiYearScope='TwoYearsAgo';
+
+-- 2 years 2009
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+join contractor_audit ca2 on fdo.conID=ca2.conID
+join contractor_audit_operator cao2 on cao2.auditID=ca2.id and ca2.auditTypeID = 11 and ca2.auditFor = '2010' and cao2.status = 'Complete'
+join contractor_audit ca3 on fdo.conID=ca3.conID
+join contractor_audit_operator cao3 on cao3.auditID=ca3.id and ca2.auditTypeID = 11 and ca3.auditFor = '2011' and cao3.status != 'Complete'
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2009'
+and fdo.year is NULL
+AND fc.multiYearScope='TwoYearsAgo';
+
+-- 3 years, 2009
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+join contractor_audit ca2 on fdo.conID=ca2.conID
+join contractor_audit_operator cao2 on cao2.auditID=ca2.id and ca2.auditTypeID = 11 and ca2.auditFor = '2010' and cao2.status = 'Complete'
+join contractor_audit ca3 on fdo.conID=ca3.conID
+join contractor_audit_operator cao3 on cao3.auditID=ca3.id and ca2.auditTypeID = 11 and ca3.auditFor = '2011' and cao3.status = 'Complete'
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2009'
+and fdo.year is NULL
+AND fc.multiYearScope='ThreeYearsAgo';
+
+-- 3 year, 2008
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+join contractor_audit ca2 on fdo.conID=ca2.conID
+join contractor_audit_operator cao2 on cao2.auditID=ca2.id and ca2.auditTypeID = 11 and ca2.auditFor = '2009' and cao2.status = 'Complete'
+join contractor_audit ca3 on fdo.conID=ca3.conID
+join contractor_audit_operator cao3 on cao3.auditID=ca3.id and ca3.auditTypeID = 11 and ca3.auditFor = '2010' and cao3.status = 'Complete'
+join contractor_audit ca4 on fdo.conID=ca4.conID
+join contractor_audit_operator cao4 on cao4.auditID=ca4.id and ca4.auditTypeID = 11 and ca4.auditFor = '2011' and cao4.status != 'Complete'
+set fdo.year = ca.auditFor
+where 1
+and cao.visible=1
+and cao.status='Complete'
+AND caow.status='Complete'
+AND ca.auditTypeID=11
+and ca.auditFor='2008'
+and fdo.year is NULL
+AND fc.multiYearScope='ThreeYearsAgo';
+
+-- remaining
+update
+flag_data_override fdo
+join flag_criteria fc on fdo.criteriaID=fc.id
+join contractor_audit ca on fdo.conID=ca.conID
+join contractor_audit_operator cao on cao.auditID=ca.id
+join contractor_audit_operator_workflow caow on caow.caoID = cao.id
+set fdo.year = ca.auditFor
+where fdo.year is null
+and cao.visible=1
+and fdo.creationDate > caow.creationDate
+AND ca.auditTypeID=11
+AND fc.multiYearScope in ('ThreeYearsAgo','TwoYearsAgo','LastYearOnly');
+
 -- PICS-5031
 -- For Data conversion 
 update flag_criteria 
