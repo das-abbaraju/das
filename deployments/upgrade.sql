@@ -660,6 +660,12 @@ where acd1.categoryID = 151
 and acd2.categoryID = 2033
 and acd1.applies = 1;
 
+-- Resetting the annual updates so calculations run when contractor is synchronized
+update contractor_audit ca
+set ca.lastRecalculation = null
+where ca.auditTypeID = 11
+and ca.auditFor in ('2008','2009','2010','2011');
+
 -- 
 UPDATE ref_country SET perceivedCorruption = 9.5 WHERE isoCode = 'NZ';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'DK';
