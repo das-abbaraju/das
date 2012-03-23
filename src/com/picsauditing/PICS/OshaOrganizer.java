@@ -7,6 +7,7 @@ import java.util.Map;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.jpa.entities.QuestionFunction;
 import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
@@ -138,7 +139,10 @@ public class OshaOrganizer implements OshaVisitor {
 					return new BigDecimal(value);
 				}
 				catch (NumberFormatException valueIsNotAValidNumberSoJustReturnNull) {
-					return null;
+					if (QuestionFunction.MISSING_PARAMETER.equals(value)) {
+						return null;
+					}
+					throw valueIsNotAValidNumberSoJustReturnNull;
 				}
 			}
 		}
