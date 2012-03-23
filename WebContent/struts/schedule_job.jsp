@@ -25,8 +25,24 @@
 			<li>
 				<label>Schedule:</label>
 				<s:radio 
-					list="#{'Daily':'Daily', 'DaysxxxWeek':'Days Per Week', 'DaysxxxMonth':'Days Per Month'}" 
+					list="#{'daily':'Daily', 'weekly':'Days Per Week', 'monthly':'Days Per Month'}" 
 					name="scheduleType"
+					theme="pics"
+					cssClass="inline" 
+				/>
+				<%-- TODO: MAKE THIS A DROPDOWN --%>
+				<label>Recurrence:</label>
+				<s:radio 
+					list="#{'0':'once', '900':'15 Minutes'}" 
+					name="recurrenceInterval"
+					theme="pics"
+					cssClass="inline" 
+				/>
+				<%-- TODO: Clean it up --%>
+				<label>Days of the Week:</label>
+				<s:checkbox
+					list="#{'1':'Monday', '2':'Tuesday'}" 
+					name="daysOfTheWeek"
 					theme="pics"
 					cssClass="inline" 
 				/>
