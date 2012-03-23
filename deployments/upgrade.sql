@@ -666,7 +666,7 @@ set ca.lastRecalculation = null
 where ca.auditTypeID = 11
 and ca.auditFor in ('2008','2009','2010','2011');
 
--- 
+-- PICS-4344 populating corruption perception indices
 UPDATE ref_country SET perceivedCorruption = 9.5 WHERE isoCode = 'NZ';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'DK';
 UPDATE ref_country SET perceivedCorruption = 9.4 WHERE isoCode = 'FI';
