@@ -341,7 +341,6 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 		
 		if (newCopy.getQuestion().getId() == OSHA_INCIDENT_QUESTION_ID) {
-			// TODO: move "No" and "Yes" into another class where it can be referenced
 			if (newCopy.getAnswer().equals(NO)) {
 				for (int incidentQuestionId : OSHA_INCIDENT_RELATED_QUESTION_IDS) {
 					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(), incidentQuestionId);
