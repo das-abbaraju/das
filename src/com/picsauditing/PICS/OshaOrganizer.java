@@ -135,7 +135,12 @@ public class OshaOrganizer implements OshaVisitor {
 			String value = stats.getStats(rateType);
 		
 			if (value != null) {
-				return new BigDecimal(value);
+				try {
+					return new BigDecimal(value);
+				}
+				catch (NumberFormatException valueIsNotAValidNumberSoJustReturnNull) {
+					return null;
+				}
 			}
 		}
 		
