@@ -125,7 +125,7 @@
 						
 						<ol>
 							<li>
-								<label for="">
+								<label for="general_contractor_checkbox">
 									<s:text name="FacilitiesEdit.IsGeneralContractor" />:
 								</label>
 								<s:checkbox 
