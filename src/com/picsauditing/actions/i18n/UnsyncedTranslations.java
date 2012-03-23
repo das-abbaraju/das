@@ -32,9 +32,14 @@ public class UnsyncedTranslations extends ReportActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		buildQuery();
-		addFilterToSQL();
-		run(sql);
+		addErrorIfOnTargetDatabase();
+
+		if (!hasActionErrors()) {
+			addAlertMessage("Syncing translations to <strong>" + target + "</strong>");
+			buildQuery();
+			addFilterToSQL();
+			run(sql);
+		}
 
 		return SUCCESS;
 	}
@@ -42,7 +47,6 @@ public class UnsyncedTranslations extends ReportActionSupport {
 	public String sendToTarget() throws Exception {
 		if (translationsToTransfer != null && translationsToTransfer.length > 0) {
 			database = new Database();
-			local = Database.getDatabaseName();
 			String fields = Strings.implode(getColumnsFromAppTranslation(), ", ");
 
 			executeInsertSelectUpdate(fields);
@@ -71,6 +75,26 @@ public class UnsyncedTranslations extends ReportActionSupport {
 
 	public void setTranslationsToTransfer(int[] translationsToTransfer) {
 		this.translationsToTransfer = translationsToTransfer;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	public String getLocal() throws SQLException {
+		if (local == null) {
+			local = Database.getDatabaseName();
+		}
+
+		return local;
+	}
+
+	public void setLocal(String local) {
+		this.local = local;
 	}
 
 	private void buildQuery() {
@@ -112,6 +136,13 @@ public class UnsyncedTranslations extends ReportActionSupport {
 		}
 	}
 
+	private void addErrorIfOnTargetDatabase() throws SQLException {
+		if (target.equals(Database.getDatabaseName())) {
+			addActionError("You're currently on the target database, <strong>" + target
+					+ "</strong>. NO translations will be moved.");
+		}
+	}
+
 	private List<String> getColumnsFromAppTranslation() throws SQLException {
 		List<String> fieldList = new ArrayList<String>();
 		List<String> auditColumnsList = Arrays.asList(auditColumns);
@@ -130,7 +161,7 @@ public class UnsyncedTranslations extends ReportActionSupport {
 	private void executeInsertSelectUpdate(String fields) throws SQLException {
 		String insert = String.format("INSERT INTO %s.app_translation(%s, %s) ", target, fields, getAuditColumnList());
 		String select = String.format("SELECT %s, %d, NOW(), NULL, NULL FROM %s.app_translation a WHERE a.id IN (%s) ",
-				fields, permissions.getUserId(), local, Strings.implode(translationsToTransfer));
+				fields, permissions.getUserId(), getLocal(), Strings.implode(translationsToTransfer));
 		String update = String.format("ON DUPLICATE KEY UPDATE msgValue = a.msgValue, updatedBy = %d, "
 				+ "updateDate = NOW()", permissions.getUserId());
 
@@ -140,7 +171,7 @@ public class UnsyncedTranslations extends ReportActionSupport {
 	private void executeUpdateOtherLocalesToQuestionable() throws SQLException {
 		String updateOtherLocalesToQuestionable = "UPDATE " + target
 				+ ".app_translation c SET c.qualityRating = 1, c.updatedBy = " + permissions.getUserId()
-				+ ", c.updateDate = NOW() WHERE c.msgKey IN (SELECT msgKey FROM " + local
+				+ ", c.updateDate = NOW() WHERE c.msgKey IN (SELECT msgKey FROM " + getLocal()
 				+ ".app_translation WHERE id IN (" + Strings.implode(translationsToTransfer)
 				+ ")) AND c.locale != c.sourceLanguage";
 
