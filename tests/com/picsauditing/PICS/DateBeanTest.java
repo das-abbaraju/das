@@ -8,6 +8,8 @@ import java.util.TimeZone;
 
 import org.junit.Test;
 
+import com.google.common.base.Strings;
+
 public class DateBeanTest  {
 	
 	@Test
@@ -298,6 +300,11 @@ public class DateBeanTest  {
 		assertEquals(31, result.get(Calendar.DATE));
 		assertEquals(Calendar.DECEMBER, result.get(Calendar.MONTH));
 		assertEquals(2012, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void testFormatWithNullValue() {
+		assertEquals("", DateBean.format(null, "MM/dd/yyyy"));
 	}
 	
 }
