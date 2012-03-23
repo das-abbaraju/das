@@ -15,7 +15,7 @@ public enum MultiYearScope {
 	ThreeYearAverage("Three Year Average"),
 	ThreeYearSum("Three Year Sum");
 	
-	private static final List<MultiYearScope>LIST_INDIVIDUAL_YEAR_SCOPES = Collections.unmodifiableList(
+	private static final List<MultiYearScope> LIST_INDIVIDUAL_YEAR_SCOPES = Collections.unmodifiableList(
 			Arrays.asList(LastYearOnly, TwoYearsAgo, ThreeYearsAgo));
 
 	@Deprecated

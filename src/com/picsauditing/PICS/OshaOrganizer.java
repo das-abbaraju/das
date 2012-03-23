@@ -17,12 +17,6 @@ public class OshaOrganizer implements OshaVisitor {
 	// OSHA Audits will be sorted by their auditYears
 	Map<OshaType, Map<Integer, SafetyStatistics>> safetyStatisticsData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
 	
-	// TODO: remove ThreeYearAverage from here if its not being used anywhere
-	// in this class from the YEARS_ONLY array
-	private static final MultiYearScope[] YEARS_ONLY = {
-			MultiYearScope.ThreeYearsAgo, MultiYearScope.TwoYearsAgo,
-			MultiYearScope.LastYearOnly, MultiYearScope.ThreeYearAverage };
-
 	/**
 	 * For the given OshaType, determine (up to) the three most resent years for
 	 * which we data.
@@ -49,7 +43,7 @@ public class OshaOrganizer implements OshaVisitor {
 	 * @return
 	 */
 	public boolean isVerified(OshaType oshaType, MultiYearScope scope) {		
-		if (scope.isIndividualYearScope()) {
+		if (!scope.isIndividualYearScope()) {
 			return determineMultiYearVerificationStatus(oshaType);
 		} 
 		
@@ -101,8 +95,8 @@ public class OshaOrganizer implements OshaVisitor {
 			int avgCount = 0;
 			BigDecimal rate = new BigDecimal(0);
 			
-			for (MultiYearScope yearScope : YEARS_ONLY) {
-			BigDecimal value = getRateForSpecficYear(type, years.getYearForScope(yearScope), rateType);
+			for (MultiYearScope yearScope : MultiYearScope.getListOfIndividualYearScopes()) {
+				BigDecimal value = getRateForSpecficYear(type, years.getYearForScope(yearScope), rateType);
 								
 				if (value != null) {
 					rate = rate.add(value);
