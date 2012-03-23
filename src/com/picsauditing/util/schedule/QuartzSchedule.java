@@ -12,8 +12,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 public class QuartzSchedule {
 	static Log logger = LogFactory.getLog(QuartzSchedule.class);
-
-	// a change to check out git merging
+	
 	private QuartzSchedule() {
 	}
 	
