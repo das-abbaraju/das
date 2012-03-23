@@ -18,7 +18,7 @@ import org.quartz.TimeOfDay;
 public class PicsScheduleDetails {
 	public static final int SECONDS_PER_HOUR = 3600;
 	public static final int SECONDS_PER_MINUTE = 60;
-	enum ScheduleType { DAILY, DAYS_PER_WEEK, DAYS_PER_MONTH };
+	public enum ScheduleType { DAILY, DAYS_PER_WEEK, DAYS_PER_MONTH };
 	ScheduleType scheduleType = ScheduleType.DAILY;
 	int recurringIntervalInSeconds = 0;  // 0 means just once for the day/weekdays/monthdays
 	TimeOfDay startingFireTime = null;
