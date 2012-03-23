@@ -134,7 +134,6 @@ public class ManageTranslations extends ReportActionSupport {
 		return SUCCESS;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void updateOtherLanguagesToQuestionable() {
 		if (updateOtherLocales) {
 			List<AppTranslation> nowQuestionable = (List<AppTranslation>) dao.findWhere(AppTranslation.class,
@@ -156,6 +155,13 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		return SUCCESS;
+	}
+	
+	public String preview() {
+		I18nCache cache = I18nCache.getInstance();
+		output = cache.getText(key, (localeTo != null ? localeTo : localeFrom));
+		
+		return BLANK;
 	}
 
 	private SelectSQL buildSQL() throws Exception {
