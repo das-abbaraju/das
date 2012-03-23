@@ -54,11 +54,15 @@ public class OshaOrganizer implements OshaVisitor {
 	private boolean determineMultiYearVerificationStatus(OshaType oshaType) {
 		YearList yearList = mostRecentThreeYears(oshaType);
 		
-		boolean lastYear = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.LastYearOnly));
-		boolean twoYears = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.TwoYearsAgo));
-		boolean threeYears = determineVerificationStatus(oshaType, yearList.getYearForScope(MultiYearScope.ThreeYearsAgo));
-		
-		return (lastYear && twoYears && threeYears);
+		boolean result = true;
+		for (MultiYearScope scope : MultiYearScope.getListOfIndividualYearScopes()) {
+			Integer year = yearList.getYearForScope(scope);
+			if (year != null && !determineVerificationStatus(oshaType, year)) {
+				return false;
+			}
+		}
+
+		return result;
 	}
 	
 	private boolean determineVerificationStatus(OshaType oshaType, Integer year) {
@@ -186,6 +190,7 @@ public class OshaOrganizer implements OshaVisitor {
 	public boolean hasOshaType(OshaType oshaType) {
 		return safetyStatisticsData.get(oshaType) != null && safetyStatisticsData.get(oshaType).size() > 0;
 	}
+	
 	public int size() {
 		return safetyStatisticsData.size();
 	}
