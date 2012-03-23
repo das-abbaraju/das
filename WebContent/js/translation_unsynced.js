@@ -1,5 +1,5 @@
 (function ($) {
-    PICS.define('translation.Manage', {
+    PICS.define('translation.Unsynced', {
         methods: {
             init: function () {
                 $('#UnsyncedTranslations-page').delegate('.master', 'click', this.selectAllCheckboxes);
