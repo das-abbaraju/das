@@ -402,16 +402,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return requestHost;
 	}
 
-	public String getRequestHostActual() {
-		String requestHost = getRequestHost();
-
-		if (isLocalhostEnvironment()) {
-			requestHost += "/picsWeb2";
-		}
-
-		return requestHost;
-	}
-
 	public String getRequestString() {
 		return requestURL;
 	}
