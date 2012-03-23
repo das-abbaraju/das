@@ -1,4 +1,4 @@
-package com.picsauditing.actions;
+package com.picsauditing.actions.i18n;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1998,31 +1998,35 @@
 			<result>struts/flags/flag_criteria_list.jsp</result>
 		</action>
 
-		<!-- Customer Service -->
-
-		<action name="ManageTranslations" class="com.picsauditing.actions.ManageTranslations">
+		<!-- I18n -->
+		<action name="ManageTranslations" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<result>struts/i18n/manage_translations.jsp</result>
 		</action>
 		
-		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.ManageTranslations">
+		<action name="ManageTranslationsAjax" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.ManageTranslations">
+		<action name="ManageTranslationsCSV" class="com.picsauditing.actions.i18n.ManageTranslations">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 		
-		<action name="BatchTranslations" class="com.picsauditing.actions.BatchTranslationsAction">
+		<action name="BatchTranslations" class="com.picsauditing.actions.i18n.BatchTranslationsAction">
 			<result>struts/i18n/batch_translations.jsp</result>
 		</action>
 
-		<action name="TranslationETL" class="com.picsauditing.util.TranslationETL">
+		<action name="TranslationETL" class="com.picsauditing.actions.i18n.TranslationETL">
 			<result>struts/i18n/translation_etl.jsp</result>
 			<result name="data">struts/i18n/translation_etl_data.jsp</result>
 			<result name="upload">struts/i18n/translation_etl_upload.jsp</result>
 		</action>
+		
+		<action name="UnsyncedTranslations" class="com.picsauditing.actions.i18n.UnsyncedTranslations">
+			<result>struts/i18n/unsynced_translations.jsp</result>
+		</action>
 
+		<!-- Customer Service -->
 		<action name="ManageWebcams"
 			class="com.picsauditing.actions.customerservice.ManageWebcams">
 			<result>struts/customerservice/manage_webcams.jsp</result>

@@ -1,9 +1,10 @@
-package com.picsauditing.actions;
+package com.picsauditing.actions.i18n;
 
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
+import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
