@@ -522,13 +522,12 @@
 							</li>
 	                        <li>
 	                            <label>Discount Expiration Date:</label>
-	
 	                            <pics:permission perm="UserRolePicsOperator">
 	                                <s:textfield name="operator.discountExpiration" cssClass="datepicker"/>
 	                            </pics:permission>
 	                            <pics:permission negativeCheck="true" perm="UserRolePicsOperator">
 	                                <s:if test="operator.discountExpiration">
-	                                    <s:date name="operator.discountExpiration" format="date.long"/>
+	                                    <s:date name="operator.discountExpiration" format="yyyy-MM-dd" />
 	                                </s:if>
 	                                <s:else>
 	                                    <s:text name="JS.Filters.status.None" />
