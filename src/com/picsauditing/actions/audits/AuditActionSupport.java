@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -294,7 +295,51 @@ public class AuditActionSupport extends ContractorActionSupport {
 	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null || caoSteps.isEmpty())
 			getValidSteps();
+		
 		return caoSteps.get(caoID);
+	}
+	
+	public boolean displayMultiStatusDropDown() {
+		return (actionStatus.size() > 0 
+				&& CollectionUtils.isNotEmpty(contractor.getTrades())
+				&& !permissions.hasGroup(10));
+	}
+	
+	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
+		if (cao != null && step != null) {
+			if (!canContractorSubmitPQF(step)) {
+				return false;
+			}
+			else if (conAudit.getAuditType().getClassType().isPolicy() 
+					&& cao.getOperator().isAutoApproveInsurance()
+					&& permissions.isAdmin() 
+					&& step.getNewStatus().isApproved()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	private boolean canContractorSubmitPQF(WorkflowStep step) {
+		if (step.getNewStatus().isSubmitted()
+				&& !permissions.hasGroup(10)
+				&& CollectionUtils.isEmpty(contractor.getTrades())) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	protected boolean atLeastOneCompleteVisibleCao() {
+		List<ContractorAuditOperator> visibleCaos = getViewableOperators(permissions);
+		for (ContractorAuditOperator cao : visibleCaos) {
+			if (cao.isReadyToBeSubmitted()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public List<AuditStatus> getValidStatuses(int caoID) {
