@@ -5,17 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.beanutils.DynaProperty;
-
 public class QueryData {
 	private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
-	public QueryData(List<BasicDynaBean> rows) {
-		for (BasicDynaBean dynaBean : rows) {
+	public QueryData(List<String> fields, List<Object[]> rawData) {
+		for (Object[] object : rawData) {
 			Map<String, Object> row = new HashMap<String, Object>();
-			for (DynaProperty column : dynaBean.getDynaClass().getDynaProperties()) {
-				row.put(column.getName(), dynaBean.get(column.getName()));
+			int columnCounter = 0;
+			for (String fieldName : fields) {
+				row.put(fieldName, object[columnCounter]);
+				columnCounter++;
 			}
 			data.add(row);
 		}

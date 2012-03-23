@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -10,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.io.IOUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
@@ -32,7 +33,6 @@ import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
-import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings({ "unchecked", "serial" })
@@ -245,12 +245,12 @@ public class ReportDynamic extends PicsActionSupport {
 		builder.addPaging(page);
 	}
 
-	private QueryData queryData() throws SQLException {
-		Database db = new Database();
+	private QueryData queryData() {
 		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
 
+		Query query = dao.getEntityManager().createNativeQuery(sql.toString());
+
+		List<Object[]> rows = query.getResultList();
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
 			showSQL = true;
@@ -258,7 +258,16 @@ public class ReportDynamic extends PicsActionSupport {
 			System.out.println("Time to query: " + queryTime + " ms");
 		}
 
-		return new QueryData(rows);
+		if (sql.isSQL_CALC_FOUND_ROWS())
+			json.put("total", findAllRows());
+
+		return new QueryData(sql.getFields(), rows);
+	}
+
+	private int findAllRows() {
+		Query query = dao.getEntityManager().createNativeQuery("SELECT FOUND_ROWS()");
+		BigInteger result = (BigInteger) query.getSingleResult();
+		return result.intValue();
 	}
 
 	private void convertToJson(QueryData data) {
