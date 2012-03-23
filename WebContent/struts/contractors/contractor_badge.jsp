@@ -3,7 +3,7 @@
 
 <s:set var="badge_80">
     <s:include value="/struts/badge/_badge.jsp">
-        <s:param name="host">${requestHostActual}</s:param>
+        <s:param name="host">${requestHost}</s:param>
         <s:param name="hash">${hash}</s:param>
         <s:param name="size">80</s:param>
     </s:include>
@@ -11,7 +11,7 @@
 
 <s:set var="badge_100">
     <s:include value="/struts/badge/_badge.jsp">
-        <s:param name="host">${requestHostActual}</s:param>
+        <s:param name="host">${requestHost}</s:param>
         <s:param name="hash">${hash}</s:param>
         <s:param name="size">100</s:param>
     </s:include>
@@ -19,7 +19,7 @@
 
 <s:set var="badge_150">
     <s:include value="/struts/badge/_badge.jsp">
-        <s:param name="host">${requestHostActual}</s:param>
+        <s:param name="host">${requestHost}</s:param>
         <s:param name="hash">${hash}</s:param>
         <s:param name="size">150</s:param>
     </s:include>
