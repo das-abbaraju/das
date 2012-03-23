@@ -44,7 +44,14 @@ import com.picsauditing.util.Strings;
 
 public class AuditDataSave extends AuditActionSupport {
 
+	private static final String NO = "No";
+
 	private static final long serialVersionUID = 1103112846482868309L;
+	
+	private static final int OSHA_INCIDENT_QUESTION_ID = 8838;
+	// also need to do this for the COHS
+	private static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] {8812, 8813, 8814, 8815, 8816, 8817};
+		
 	private AuditData auditData = null;
 	private String[] multiAnswer;
 	private AnswerMap answerMap;
@@ -174,6 +181,7 @@ public class AuditDataSave extends AuditActionSupport {
 							newCopy.setWasChanged(YesNo.Yes);
 
 						newCopy.setAnswer(auditData.getAnswer());
+
 					}
 				}
 
@@ -319,8 +327,39 @@ public class AuditDataSave extends AuditActionSupport {
 			} else
 				addActionError("Error saving answer, please try again.");
 		}
-		
+		autoFillRelatedOshaIncidentsQuestions(auditData);
 		return SUCCESS;
+	}
+
+	/**
+	 * This is a special case where the Contractor can say they have not had any incidents this year
+	 * and the questions related to the number of incidents are set to zero.
+	 */
+	private void autoFillRelatedOshaIncidentsQuestions(AuditData newCopy) {
+		if (newCopy == null) {
+			return;
+		}
+		
+		if (newCopy.getQuestion().getId() == OSHA_INCIDENT_QUESTION_ID) {
+			// TODO: move "No" and "Yes" into another class where it can be referenced
+			if (newCopy.getAnswer().equals(NO)) {
+				for (int incidentQuestionId : OSHA_INCIDENT_RELATED_QUESTION_IDS) {
+					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(), incidentQuestionId);
+					if (auditData == null) {
+						auditData = new AuditData();
+						auditData.setId(0);
+						auditData.setAudit(conAudit);
+						AuditQuestion auditQuestion = questionDao.find(incidentQuestionId);
+						auditData.setQuestion(auditQuestion);					
+					}			
+
+					auditData.setAuditColumns(permissions);
+					auditData.setAnswer("0");
+
+					auditDataDao.save(auditData);
+				}
+			}
+		}
 	}
 	
 	private void checkUniqueCode(ContractorAudit tempAudit) {
