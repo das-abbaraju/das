@@ -32,6 +32,7 @@ public class OshaOrganizer implements OshaVisitor {
 				yearList.add(year);
 			}
 		}
+		
 		return yearList;
 	}
 
@@ -141,8 +142,13 @@ public class OshaOrganizer implements OshaVisitor {
 	}
 
 
-	public SafetyStatistics getStatistic(OshaType type, MultiYearScope year) {
-		return safetyStatisticsData.get(type).get(new Integer(year.getAuditFor()));
+	public SafetyStatistics getStatistic(OshaType type, MultiYearScope scope) {
+		Integer year = this.mostRecentThreeYears(type).getYearForScope(scope);
+		if (year == null) {
+			return null;
+		}
+		
+		return safetyStatisticsData.get(type).get(year);
 	}
 
 	public String getAnswer2(OshaType oshaType, MultiYearScope scope) {
