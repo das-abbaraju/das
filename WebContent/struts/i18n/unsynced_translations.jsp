@@ -13,50 +13,87 @@
 	<h1>Unsynced Translations</h1>
 	
 	<s:include value="../actionMessages.jsp" />
-	<s:include value="../config_environment.jsp" />
+	<s:include value="../reports/filters_translation.jsp" />
 	
-	<div>
-		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
-	</div>
-	
-	<table class="report">
-		<thead>
-			<tr>
-				<th>
-					Key
-				</th>
-				<th>
-					Locale
-				</th>
-				<th>
-					Local Translation
-				</th>
-				<th>
-					Config Translation
-				</th>
-			</tr>
-		</thead>
-	    <tbody>
-	    	<s:iterator value="data">
-		    	<tr>
-		    		<td>
-		    			<s:property value="get('msgKey')" />
-		    		</td>
-		    		<td>
-		    			<s:property value="get('locale')" />
-		    		</td>
-		    		<td>
-		    			<s:property value="get('translationLocal')" />
-		    		</td>
-		    		<td>
-		    			<s:property value="get('translationConfig')" />
-		    		</td>
-		    	</tr>
-	    	</s:iterator>
-	    </tbody>
-	</table>
-	
-	<div>
-		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+	<div id="${actionName}-page">
+		<s:form id="unsynced_translations">
+			<s:submit
+				action="UnsyncedTranslations"
+				method="sendToTarget"
+				value="Send to Config"
+				cssClass="picsbutton"
+			/>
+			
+			<div>
+				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+			</div>
+			
+			<table class="report">
+				<thead>
+					<tr>
+						<th>
+						</th>
+						<th>
+							<input
+			    				type="checkbox"
+			    				class="master"
+			    			/>
+						</th>
+						<th>
+							Key
+						</th>
+						<th>
+							Locale
+						</th>
+						<th>
+							Local Translation
+						</th>
+						<th>
+							Config Translation
+						</th>
+					</tr>
+				</thead>
+			    <tbody>
+			    	<s:iterator value="data" status="stat">
+				    	<tr>
+				    		<td class="right">
+				    			<s:property value="#stat.index + report.firstRowNumber" />
+				    		</td>
+				    		<td>
+				    			<input
+				    				type="checkbox"
+				    				name="translationsToTransfer"
+				    				value="<s:property value="get('id')" />"
+				    				class="selectable"
+				    			/>
+				    		</td>
+				    		<td>
+				    			<s:property value="get('msgKey')" />
+				    		</td>
+				    		<td>
+				    			<s:property value="get('locale')" />
+				    		</td>
+				    		<td>
+				    			<s:property value="get('translationLocal')" />
+				    		</td>
+				    		<td>
+				    			<s:property value="get('translationTarget')" />
+				    		</td>
+				    	</tr>
+			    	</s:iterator>
+			    </tbody>
+			</table>
+			
+			<div>
+				<s:property value="report.pageLinksWithDynamicForm" escape="false" />
+			</div>
+			
+			<s:submit
+				action="UnsyncedTranslations"
+				method="sendToTarget"
+				value="Send to Config"
+				cssClass="picsbutton"
+			/>
+		</s:form>
 	</div>
 </body>

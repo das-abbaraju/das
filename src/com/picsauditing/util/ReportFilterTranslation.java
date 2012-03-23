@@ -8,9 +8,9 @@ public class ReportFilterTranslation extends ReportFilter {
 	private boolean showKey = true;
 	private boolean showRestrictToCurrentUser = true;
 
-	private TranslationQualityRating[] qualityRating;
+	private TranslationQualityRating[] qualityRating = new TranslationQualityRating[] { TranslationQualityRating.Good };
 	private String key;
-	private boolean restrictToCurrentUser;
+	private boolean restrictToCurrentUser = true;
 
 	public boolean isShowQualityRating() {
 		return showQualityRating;
