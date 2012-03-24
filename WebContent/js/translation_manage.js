@@ -201,7 +201,7 @@
             },
             
             showPreview: function (event) {
-                event.preventDefault();
+                event.stopPropagation();
                 
                 var url = $(this).attr('data-url');
                 var key = $(this).attr('data-key');
