@@ -89,6 +89,7 @@ public class AuditFileUpload extends AuditActionSupport {
 				}
 				String extension = null;
 				if (file != null && file.length() > 0) {
+					fileName = fileFileName;
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
