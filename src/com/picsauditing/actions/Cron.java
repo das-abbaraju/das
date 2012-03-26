@@ -387,7 +387,7 @@ public class Cron extends PicsActionSupport {
 	}
 
 	private void sendEmailPendingAccounts() throws Exception {
-		String exclude = Strings.implodeForDB(emailExclusionList, "', '");
+		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 		String where = "u.email NOT IN ('" + exclude + "') AND ";
 		String where1Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 1 DAY)";
 		String where3Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
@@ -515,7 +515,7 @@ public class Cron extends PicsActionSupport {
 		List<String> emailsAlreadySent = emailQueueDAO.findPendingActivationEmails("1 MONTH");
 		emailExclusionList.addAll(emailsAlreadySent);
 
-		String exclude = Strings.implodeForDB(emailExclusionList, "', '");
+		String exclude = Strings.implodeForDB(emailExclusionList, ",");
 		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND ";
 
 		String where3Days = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
