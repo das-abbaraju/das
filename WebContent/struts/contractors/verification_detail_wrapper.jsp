@@ -2,6 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
+<title><s:text name="PQFVerification.Page.Title" /></title>
 <s:include value="../jquery.jsp"/>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
 <script src="js/notes.js?v=<s:property value="version"/>" type="text/javascript"></script>
