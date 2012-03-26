@@ -50,6 +50,10 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
                     operator = record.data.operator;
                 }
                 
+                record.docked = {
+                        value: false,
+                        id: ''
+                }
     		    formatFilterDisplay();
 
     		    return formattedData; 

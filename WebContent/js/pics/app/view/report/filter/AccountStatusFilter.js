@@ -4,6 +4,7 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
 
     items: [{
         xtype: 'panel',
+        bodyStyle: 'background:transparent;',
         name: 'title'
     },{
         xtype: 'combo',
@@ -16,7 +17,6 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         width: 50
     },{
         xtype: 'combo',
-        id: 'accountstatus',
         name: 'accountstatus',
         store: [
 	        ['Active', 'active'],
@@ -29,10 +29,9 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         typeAhead: true
     }],
     listeners: {
-        beforeRender: function () {
-            var form = Ext.ComponentQuery.query('AccountStatusFilter')[0],
-                combo = form.child("#accountstatus"),
-                value = form.record.data.value;
+        beforeRender: function (target) {
+            var combo = target.child('combo[name=accountstatus'),
+                value = target.record.data.value;
             
             (value) ? combo.setValue(value) : combo.setValue('Active'); 
         }
@@ -48,5 +47,22 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
             this.record.set('not', false);
         }
         this.superclass.applyFilter();
-    }
+    },
+    constructor: function (config) {
+        if (config.displayMode === 'docked') {
+            this.items.push({
+                xtype: 'button',
+                itemId: 'apply',
+                action: 'apply',
+                listeners: {
+                    click: function () {
+                        this.up().applyFilter(true);
+                    }
+                },
+                text: 'Apply',
+                cls: 'x-btn-default-small'
+            });
+        }
+        this.callParent(arguments);
+    }    
 });

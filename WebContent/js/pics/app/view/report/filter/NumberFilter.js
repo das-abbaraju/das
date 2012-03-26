@@ -4,6 +4,7 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
 
     items: [{
         xtype: 'panel',
+        bodyStyle: 'background:transparent;',        
         name: 'title'
     },{
         xtype: 'combo',
@@ -17,7 +18,6 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
     },{
         xtype: 'combo',
         name: 'operator',
-        id: 'operator',
         store: [
 	        ['Equals', '='],
 	        ['GreaterThan', '>'],
@@ -27,25 +27,24 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
 	        ['Empty', 'blank']
         ],
         typeAhead: true,
+        value: '>',
         width: 55
     },{
         xtype: 'numberfield',
         allowDecimals: false,
         hideTrigger: true,
         keyNavEnabled: false,
-        id: 'numberfilter',
         mouseWheelEnabled: false,
         name: 'textfilter',
         text: 'Value'        
     }],
     listeners: {
-        beforeRender: function () {
-            var form = Ext.ComponentQuery.query('numberfilter')[0],
-                combo = form.child("#operator"),
-                textfield = form.child("#numberfilter");
+        beforeRender: function (target) {
+            var combo = target.child('combo[name=operator]'),
+                textfield = target.child('textfield[name=textfilter]');
             
-            combo.setValue(form.record.data.operator);
-            textfield.setValue(form.record.data.value);
+            combo.setValue(target.record.data.operator);
+            textfield.setValue(target.record.data.value);
         }
     },
     applyFilter: function() {
@@ -59,5 +58,23 @@ Ext.define('PICS.view.report.filter.NumberFilter', {
             this.record.set('not', false);
         }        
         this.superclass.applyFilter();
+    },
+    constructor: function (config) {
+        if (config.displayMode === 'docked') {
+            this.items.push({
+                xtype: 'button',
+                itemId: 'apply',
+                action: 'apply',
+                listeners: {
+                    click: function () {
+                        this.up().applyFilter(true);
+                    }
+                },
+                text: 'Apply',
+                cls: 'x-btn-default-small'
+            });
+            this.items.splice(1,1); //remove NOT combo
+        }
+        this.callParent(arguments);
     }
 });

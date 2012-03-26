@@ -2,42 +2,54 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
     extend: 'Ext.form.Panel',
     alias: ['widget.basefilter'],
 
-    constructor:function(config){
-        this.callParent(arguments);
-        this.buttonSetup();
-    },  
     border: false,
     defaults: {
       border: false
     },
     items: [{
         xtype: 'panel',
-        id: "basePanel",
+        bodyStyle: 'background:transparent;',         
         html: "Field Name"
     }],
-    bbar: [{
-		xtype: 'button',
-		itemId: 'apply',
-		action: 'apply',
-		// disabled: true,
-	    text: 'Apply',
-	    cls: 'x-btn-default-small'	    
-    }],
+    record: null,    
     applyFilter: function() {
         //console.log("base applyFilter");
     },
-    buttonSetup: function () {
-        var tbar = this.getDockedComponent(0),
-            button = tbar.child("button");
-            
-        button.addListener("click", this.applyFilter, this); 
+    constructor: function (config) {
+        if (config) {
+            if (config.displayMode === 'docked') {
+                this.width = 425;
+                this.layout = 'hbox',
+                this.bodyStyle = 'background:transparent;border:0px;';
+                this.displayMode = 'docked'; 
+            } else {
+                this.bbar = [{
+                    xtype: 'button',
+                    action: 'apply',
+                    cls: 'x-btn-default-small',
+                    itemId: 'apply',
+                    align: 'right',                
+                    listeners: {
+                        click: function (target) {
+                            target.up('basefilter').applyFilter();
+                        }
+                    },
+                    text: 'Apply'
+                },{
+                    xtype: 'checkbox',
+                    align: 'right',
+                    boxLabel: 'Dock',
+                    name: 'dockFilter',
+                    inputValue: '1'
+                }];
+            }
+        }
+        this.callParent(arguments);
     },
-    record: null,
     setRecord: function (record) {
-    	this.record = record;
-    	this.setTitle();
+        this.record = record;
     },
     setTitle: function () {
-        this.items.items[0].html = "<h1>" + this.record.data.field.data.text + "</h1>";        
+        this.items.items[0].html = "<h1>" + this.record.data.field.data.text + "</h1>";
     }
 });

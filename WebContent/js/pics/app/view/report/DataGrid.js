@@ -1,6 +1,6 @@
 Ext.define('PICS.view.report.DataGrid', {
-	extend: 'Ext.grid.Panel',
-	alias: ['widget.reportdatagrid'],
+    extend: 'Ext.grid.Panel',
+    alias: ['widget.reportdatagrid'],
     requires: [
         'PICS.view.report.LinkColumn'
     ],
@@ -19,9 +19,16 @@ Ext.define('PICS.view.report.DataGrid', {
         }];
         
         this.dockedItems = [{
+            xtype: 'toolbar',
+            id: 'filterToolbar',
+            align: 'stretch',
+            type: 'hbox',
+            height: 32,
+
+            dock: 'top'
+        }, {
             xtype: 'pagingtoolbar',
             store: 'report.ReportData',
-            
             dock: 'top'
         }, {
             xtype: 'pagingtoolbar',

@@ -5,6 +5,7 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
     id: 'test',
     items: [{
         xtype: 'panel',
+        bodyStyle: 'background:transparent;',        
         name: 'title'
     },{
         xtype: 'combo',
@@ -34,31 +35,34 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
         }),
         displayField: 'countryName',
         editable: false,
-        id: 'country',
         multiSelect: true,
         name: 'country',
         queryMode: 'local',
-        typeAhead: true,
         valueField: 'countryCode'
     }],
     listeners: {
-        beforeRender: function () {
-            var form = Ext.ComponentQuery.query('countryfilter')[0],
-                combo = form.child("#country"),
-                value = form.record.data.value;
+        beforeRender: function (target) {
+            var combo = target.child('combo[name=country]'),
+                value = target.record.data.value;
 
             (value) ? combo.setValue(value) : combo.setValue(''); 
         }
     },
     applyFilter: function() {
         var values = this.getValues(),
-        valuesFormat = "";
+        valuesFormat = "",
+        formatted = values.country;
         
-        for (x = 0; x < values.country.length; x++) {
+        if (values.country.length < 2) {
+            values.country[0] = values.country[0].replace(/'/g,'');
+            formatted = values.country[0].split(',');
+        }        
+        
+        for (x = 0; x < formatted.length; x++) {
             if (x !== 0) {
                 valuesFormat += ',';    
             }
-            valuesFormat += '\'' + values.country[x] + '\'';
+            valuesFormat += '\'' + formatted[x] + '\'';
         }
         this.record.set('value', valuesFormat);
         this.record.set('operator', 'In');
@@ -68,5 +72,23 @@ Ext.define('PICS.view.report.filter.CountryFilter', {
             this.record.set('not', false);
         }
         this.superclass.applyFilter();
-    }    
+    },
+    constructor: function (config) {
+        if (config.displayMode === 'docked') {
+            this.items.push({
+                xtype: 'button',
+                itemId: 'apply',
+                action: 'apply',
+                listeners: {
+                    click: function () {
+                        this.up().applyFilter(true);
+                    }
+                },
+                text: 'Apply',
+                cls: 'x-btn-default-small'
+            });
+            this.items.splice(1,1); //remove NOT combo
+        }
+        this.callParent(arguments);
+    }
 });
