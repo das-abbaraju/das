@@ -129,7 +129,7 @@ public class Strings {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append("'");
-			buffer.append(o);
+			buffer.append(escapeQuotes(String.valueOf(o)));
 			buffer.append("'");
 		}
 		return buffer.toString();
@@ -171,18 +171,6 @@ public class Strings {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append(o);
-		}
-		return buffer.toString();
-	}
-
-	public static String implodeForDB(List<String> collection, String delimiter) {
-		if (collection == null)
-			return "";
-		StringBuffer buffer = new StringBuffer();
-		for (String o : collection) {
-			if (buffer.length() > 0)
-				buffer.append(delimiter);
-			buffer.append(escapeQuotes(o));
 		}
 		return buffer.toString();
 	}
