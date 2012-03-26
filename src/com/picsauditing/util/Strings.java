@@ -129,7 +129,7 @@ public class Strings {
 			if (buffer.length() > 0)
 				buffer.append(delimiter);
 			buffer.append("'");
-			buffer.append(o);
+			buffer.append(escapeQuotes(String.valueOf(o)));
 			buffer.append("'");
 		}
 		return buffer.toString();
