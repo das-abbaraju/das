@@ -75,7 +75,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private int contactID;
 	private boolean generalContractor;
 	private ContractorOperator linkedAccount;
-	private Boolean autoApproveRelationships;
+	private boolean autoApproveRelationships;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -242,7 +242,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
-			if (autoApproveRelationships != null && autoApproveRelationships != operator.isAutoApproveRelationships()) {
+			if (autoApproveRelationships != operator.isAutoApproveRelationships()) {
 				if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
 					approveAllRelationships();
 				}
@@ -572,7 +572,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	 * @param autoApproveRelationships
 	 *            the autoApproveRelationships to set
 	 */
-	public void setAutoApproveRelationships(Boolean autoApproveRelationships) {
+	public void setAutoApproveRelationships(boolean autoApproveRelationships) {
 		this.autoApproveRelationships = autoApproveRelationships;
 	}
 
@@ -581,7 +581,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	 * @throws Exception
 	 * @throws RecordNotFoundException
 	 */
-	public Boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
+	public boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
 		if (operator == null)
 			findOperator();
 
