@@ -7,6 +7,7 @@ import java.util.List;
 
 public class OshaStatistics extends SafetyStatistics {
 
+	public static final int QUESTION_ID_PICS_SEVERITY_RATE_FOR_THE_GIVEN_YEAR = 9781;
 	public static final int QUESTION_ID_OTHER_RECORDABLES_FOR_THE_GIVEN_YEAR = 8817;
 	public static final int QUESTION_ID_JOB_TRANSFER_DAYS_FOR_THE_GIVEN_YEAR = 8816;
 	public static final int QUESTION_ID_JOB_TRANSFER_CASES_FOR_THE_GIVEN_YEAR = 8815;
@@ -25,9 +26,12 @@ public class OshaStatistics extends SafetyStatistics {
 		for (AuditData answer: data) {
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.TrirAbsolute, answer);
+				answerMap.put(OshaRateType.TrirNaics, answer);
+				answerMap.put(OshaRateType.TrirWIA, answer);
 			}
 			else if (answer.getQuestion().getId() == QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.LwcrAbsolute, answer);
+				answerMap.put(OshaRateType.LwcrNaics, answer);
 			}
 			else if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.Fatalities, answer);
@@ -56,6 +60,10 @@ public class OshaStatistics extends SafetyStatistics {
 			}
 			else if (answer.getQuestion().getId() == QUESTION_ID_DART_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.Dart, answer);
+				answerMap.put(OshaRateType.DartNaics, answer);
+			}
+			else if (answer.getQuestion().getId() == QUESTION_ID_PICS_SEVERITY_RATE_FOR_THE_GIVEN_YEAR) {
+				answerMap.put(OshaRateType.SeverityRate, answer);
 			}
 		}
 	}
