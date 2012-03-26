@@ -57,7 +57,7 @@
 				</td>
 			</s:if>
 			<td class="center"><s:property value="get('auditFor')" /></td>
-			<td><s:property value="get('SHAType')"/></td>
+			<td><s:property value="get('shaType')"/></td>
 			<td class="center"><s:property value="get('fatalities')" /></td>
 			<s:if test="showContact">
 				<td><s:property value="get('contactname')"/></td>

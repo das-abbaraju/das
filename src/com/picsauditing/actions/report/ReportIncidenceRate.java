@@ -1,15 +1,12 @@
 package com.picsauditing.actions.report;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Note;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.CohsStatistics;
+import com.picsauditing.jpa.entities.OshaStatistics;
+import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
 
@@ -38,33 +35,41 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		getFilter().setShowShaLocation(true);
 		getFilter().setShowCohsStats(true);
 
-		sql.addJoin("JOIN osha_audit os ON os.auditID = ca.id");
+		sql.addJoin("JOIN pqfData pd ON pd.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
 		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.conID = a.id AND fcc.criteriaID = 559");
-		sql.addWhere("(os.recordableTotal*200000/os.manHours >= " + getFilter().getIncidenceRate() + ")");
-		sql.addWhere("(os.recordableTotal*200000/os.manHours < " + getFilter().getIncidenceRateMax() + ")");
+		sql.addField("CASE WHEN pd.questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR + " THEN 'OSHA' WHEN pd.questionID = 11115 THEN 'MSHA' ELSE 'COHS' END AS shaType");
+		sql.addField("ROUND(fcc.answer, 2) trirAverage");
+		sql.addField("pd.answer AS incidenceRate");
+		sql.addField("pd.dateVerified");
+		sql.addField("n.trir");
+
+		setVerifiedAnnualUpdateFilter("pd.dateVerified" +
+				"");
+
+		if (filterOn(getFilter().getShaType())) {
+			int questionID = 0;
+
+			if (getFilter().getShaType().equals(OshaType.OSHA))
+				questionID = OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR;
+			else if (getFilter().getShaType().equals(OshaType.MSHA))
+				questionID = 11115;
+			else if (getFilter().getShaType().equals(OshaType.COHS))
+				questionID = CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR;
+
+			sql.addWhere("pd.questionID = " + questionID);
+
+			if (getFilter().getShaType().equals(OshaType.MSHA) || getFilter().getShaType().equals(OshaType.COHS)) {
+				getFilter().setVerifiedAnnualUpdate(0);
+			}
+		}
+
+		sql.addWhere("pd.answer = CONCAT('', 0 + pd.answer)");
+		sql.addWhere("(pd.answer >= " + getFilter().getIncidenceRate() + ")");
+		sql.addWhere("(pd.answer < " + getFilter().getIncidenceRateMax() + ")");
 		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < "
 				+ getFilter().getIncidenceRateAvgMax() + ")"
 				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
-		sql.addField("os.id AS oshaAuditID");
-		sql.addField("os.location");
-		sql.addField("os.description");
-		sql.addField("os.SHAType");
-		sql.addField("ROUND(fcc.answer, 2) trirAverage");
-		sql.addField("os.recordableTotal*200000/os.manHours AS incidenceRate");
-		sql.addField("os.verifiedDate");
-		sql.addField("os.cad7");
-		sql.addField("os.neer");
-		sql.addField("n.trir");
-
-		setVerifiedAnnualUpdateFilter("verifiedDate");
-
-		if (getFilter().getCad7() > 0) {
-			sql.addWhere("os.cad7 IS NOT NULL AND os.cad7 >= " + getFilter().getCad7());
-		}
-		if (getFilter().getNeer() > 0) {
-			sql.addWhere("os.neer IS NOT NULL AND os.neer >= " + getFilter().getNeer());
-		}
 	}
 
 	@Override
