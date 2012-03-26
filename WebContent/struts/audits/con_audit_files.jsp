@@ -29,7 +29,11 @@
 		
 		<script type="text/javascript">
 			function showAuditUpload(auditID, fileID, desc, question) {
-				url = 'AuditFileUpload.action?auditID='+auditID+'&fileID='+fileID+'&desc='+desc+'&question='+question;
+			    if (desc === null) {
+			        url = 'AuditFileUpload.action?auditID='+auditID+'&fileID='+fileID+'&question='+question;
+			    } else {
+			        url = 'AuditFileUpload.action?auditID='+auditID+'&fileID='+fileID+'&desc='+desc+'&question='+question;
+			    }
 				title = 'Upload';
 				pars = 'scrollbars=yes,resizable=yes,width=650,height=450,toolbar=0,directories=0,menubar=0';
 				fileUpload = window.open(url,title,pars);
