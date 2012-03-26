@@ -46,17 +46,17 @@ public class ChartManHours extends ChartSSAction {
 		chart.setXAxisName("Years");
 		chart.setyAxisName("Hours");
 		
-		SelectSQL sql = new SelectSQL("osha_audit oa");
+		SelectSQL sql = new SelectSQL("contractor_audit ca");
 		sql.addField("ca.auditFor AS label");
-		sql.addField("oa.manHours AS value");
+		sql.addField("pqf3.answer AS value");
 		sql.addField("pqf.answer + pqf2.answer AS link");
-		sql.addJoin("JOIN contractor_audit ca ON ca.id = oa.auditID");
 		sql.addJoin("JOIN pqfdata pqf ON pqf.auditID = ca.id");
 		sql.addJoin("JOIN pqfdata pqf2 ON pqf2.auditID = ca.id");
+		sql.addJoin("JOIN pqfdata pqf3 ON pqf3.auditID = ca.id");
 		sql.addWhere("ca.conID = " + conID);
-		sql.addWhere("oa.SHAType = 'OSHA'");
 		sql.addWhere("pqf.questionID = 2447");
 		sql.addWhere("pqf2.questionID = 2448");
+		sql.addWhere("pqf3.questionID = 8810");
 		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.YEAR, -7);
