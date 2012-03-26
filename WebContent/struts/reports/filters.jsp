@@ -622,12 +622,6 @@
 			</div>
 		</s:if>
 		
-		<s:if test="filter.showShaLocation">
-			<div class="filterOption">
-				<s:select list="#{'Corporate':getText('global.Corporate'), 'Division':getText('Filters.status.Division'),'Region':getText('Filters.status.Region'),'Site':getText('Filters.status.Site')}" headerKey="" headerValue="- %{getText('Filters.header.OshaLocation')} -" cssClass="forms" name="filter.shaLocation" />
-			</div>
-		</s:if>
-	
 		<s:if test="filter.showVerifiedAnnualUpdates">
 			<div class="filterOption">
 				<s:select list="#{'1':getText('global.Verified'),'2':getText('Filters.status.Unverified')}" headerKey="0" headerValue="- %{getText('Filters.header.VerifiedStats')} -" cssClass="forms" name="filter.verifiedAnnualUpdate" />
@@ -690,15 +684,6 @@
 				<s:textfield name="filter.incidenceRateAvg" cssClass="forms" size="10" />
 				<s:text name="Filters.label.To" />
 				<s:textfield name="filter.incidenceRateAvgMax" cssClass="forms" size="10" />
-			</div>
-		</s:if>
-	
-		<s:if test="filter.showCohsStats">
-			<div class="filterOption">
-				<s:text name="Filters.label.Cad7" />
-				<s:textfield name="filter.cad7" cssClass="forms" size="10" />
-				<s:text name="Filters.label.Neer" />
-				<s:textfield name="filter.neer" cssClass="forms" size="10" />
 			</div>
 		</s:if>
 	

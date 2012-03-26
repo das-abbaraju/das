@@ -578,11 +578,6 @@ public class AuditDataSave extends AuditActionSupport {
 				return false;
 			}
 
-			if ("Number".equals(questionType)) {
-				auditData.setAnswer(answer);
-				return true;
-			}
-
 			NumberFormat format = new DecimalFormat("#,##0");
 			if ("Decimal Number".equals(questionType))
 				format = new DecimalFormat("#,##0.000");
