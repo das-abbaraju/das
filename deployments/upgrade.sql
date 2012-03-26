@@ -353,6 +353,26 @@ select
 from osha_audit oa
 where oa.SHAType = "OSHA";
 
+-- Insert pqf data for file upload
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8811,
+  "(osha file conversion needed)",
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "OSHA";
+
 -- MSHA
 -- Total Man Hours
 replace into pqfdata

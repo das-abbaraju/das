@@ -44,8 +44,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("pd.dateVerified");
 		sql.addField("n.trir");
 
-		setVerifiedAnnualUpdateFilter("pd.dateVerified" +
-				"");
+		setVerifiedAnnualUpdateFilter("pd.dateVerified");
 
 		if (filterOn(getFilter().getShaType())) {
 			int questionID = 0;
