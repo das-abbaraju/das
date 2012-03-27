@@ -93,10 +93,18 @@ public class EmailBuilder {
 
 		// If we're using the default template, pull up the correct translation for the user we're sending the email to.
 		if (!edited && template.isTranslated()) {
+			String translatedBodyForUser = null;
+			String translatedSubjectForUser = null;
+			
 			if (template.getTranslatedBody() != null)
-				templateBody = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
+				translatedBodyForUser = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
 			if (template.getTranslatedSubject() != null)
-				templateSubject = getUserTranslation(locale, template.getTranslatedSubject().getTranslations());
+				translatedSubjectForUser = getUserTranslation(locale, template.getTranslatedSubject().getTranslations());
+			
+			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedBodyForUser))
+				templateBody = translatedBodyForUser;
+			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedSubjectForUser))
+				templateSubject = translatedSubjectForUser;
 		}
 
 		String subject = convertPicsTagsToVelocity(templateSubject, template.isAllowsVelocity());
@@ -175,7 +183,8 @@ public class EmailBuilder {
 	}
 
 	/**
-	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags like this ${token.name}
+	 * Convert tokens like this <TOKEN_NAME> in a given string to velocity tags
+	 * like this ${token.name}
 	 * 
 	 * @param text
 	 * @param allowsVelocity
@@ -302,8 +311,9 @@ public class EmailBuilder {
 	/**
 	 * Default value is false.<br />
 	 * <br />
-	 * A flag for whether templates were edited, not using the default template subject and body. If edited, we're not
-	 * going to pull up any translations and send out the email as is. MassMailer and everywhere else we edit the
+	 * A flag for whether templates were edited, not using the default template
+	 * subject and body. If edited, we're not going to pull up any translations
+	 * and send out the email as is. MassMailer and everywhere else we edit the
 	 * body/subject for an email should set this flag to true.
 	 * 
 	 * @param edited
