@@ -12,14 +12,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
@@ -34,7 +33,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
@@ -48,6 +46,8 @@ public class CaoSave extends AuditActionSupport {
 	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	protected int caoID = 0;
 	private int noteID = 0;
@@ -194,6 +194,7 @@ public class CaoSave extends AuditActionSupport {
 
 	public String refresh() throws RecordNotFoundException, NoRightsException {
 		findConAudit();
+		auditBuilder.recalculateCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, false);
 		getValidSteps();
 		auditDao.save(conAudit);
