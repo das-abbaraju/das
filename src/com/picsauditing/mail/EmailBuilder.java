@@ -91,16 +91,17 @@ public class EmailBuilder {
 			tokens.put("locale", locale);
 		}
 
-		// If we're using the default template, pull up the correct translation for the user we're sending the email to.
+		// If we're using the default template, pull up the correct translation
+		// for the user we're sending the email to.
 		if (!edited && template.isTranslated()) {
 			String translatedBodyForUser = null;
 			String translatedSubjectForUser = null;
-			
+
 			if (template.getTranslatedBody() != null)
 				translatedBodyForUser = getUserTranslation(locale, template.getTranslatedBody().getTranslations());
 			if (template.getTranslatedSubject() != null)
 				translatedSubjectForUser = getUserTranslation(locale, template.getTranslatedSubject().getTranslations());
-			
+
 			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedBodyForUser))
 				templateBody = translatedBodyForUser;
 			if (!I18nCache.DEFAULT_TRANSLATION.equals(translatedSubjectForUser))
@@ -236,11 +237,12 @@ public class EmailBuilder {
 	}
 
 	private String getUserTranslation(Locale locale, Collection<Translation> translations) {
-		String english = null;
+		String english = I18nCache.DEFAULT_TRANSLATION;
 		for (Translation translation : translations) {
-			if ("en".equals(translation.getLocale()))
+			if (I18nCache.DEFAULT_LANGUAGE.equals(translation.getLocale()))
 				english = translation.getValue();
-			if (locale.getLanguage().equals(translation.getLocale()))
+			if (locale.getLanguage().equals(translation.getLocale())
+					&& !I18nCache.DEFAULT_TRANSLATION.equals(translation.getValue()))
 				return translation.getValue();
 		}
 
