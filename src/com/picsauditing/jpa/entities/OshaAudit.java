@@ -22,11 +22,12 @@ import com.picsauditing.util.Testable;
  */
 public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_OSHA = 2033; // U.S.
+	public static final int CAT_ID_MSHA = 2256; // U.S.
 	public static final int CAT_ID_COHS = 2086; // Canada
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
 	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
 	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] {
-			CAT_ID_OSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
+			CAT_ID_OSHA, CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
 
 	protected ContractorAudit contractorAudit;
 
