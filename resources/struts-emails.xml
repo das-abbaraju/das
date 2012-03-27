@@ -1,0 +1,74 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.emails" extends="com.picsauditing">
+		<action name="MassMailer" class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mass_mailer.jsp</result>
+			<result name="emailConfirm">/struts/mail/emailconfirm.jsp</result>
+		</action>
+		
+		<action name="MassMailerAjax" class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mass_con_email_list.jsp</result>
+		</action>
+
+		<action name="MailEditorAjax" class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mail_editor.jsp</result>
+		</action>
+
+		<action name="MailPreviewAjax" class="com.picsauditing.mail.MassMailer">
+			<result>struts/mail/mail_preview.jsp</result>
+		</action>
+
+		<action name="EmailQueueList" class="com.picsauditing.mail.EmailQueueList">
+			<result>struts/mail/email_queue_list.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
+		</action>
+
+		<action name="ReportEmailError" class="com.picsauditing.mail.ReportEmailError">
+			<result>struts/mail/email_error.jsp</result>
+			<result name="preview">struts/mail/email_queue_preview.jsp</result>
+		</action>
+
+		<action name="EmailTemplateSave" class="com.picsauditing.mail.EmailTemplateSave">
+			<result>struts/mail/select_templates.jsp</result>
+		</action>
+
+		<action name="EmailWizard" class="com.picsauditing.mail.EmailWizard">
+			<result>struts/mail/mail_wizard.jsp</result>
+		</action>
+
+		<action name="ReportEmailWebinar" class="com.picsauditing.mail.ReportEmailWebinar">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportEmailWebinar</param>
+			<result>struts/mail/email_webinar.jsp</result>
+		</action>
+		
+		<action name="ReportEmailWebinarAjax" class="com.picsauditing.mail.ReportEmailWebinar">
+			<result>struts/mail/email_webinar_data.jsp</result>
+		</action>
+
+		<action name="ReportEmailSubscription"
+			class="com.picsauditing.actions.report.ReportEmailSubscription">
+			<result>struts/reports/report_email_user.jsp</result>
+		</action>
+
+		<action name="EmailUserUnsubscribe" class="com.picsauditing.mail.EmailUnsubscribe">
+			<result>struts/mail/unsubscribe_email.jsp</result>
+		</action>
+
+		<action name="EditEmailTemplate" class="com.picsauditing.mail.MassMailer">
+			<param name="editTemplate">true</param>
+			<result>struts/mail/emailTemplateEdit.jsp</result>
+		</action>
+
+		<action name="EditEmailTemplateAjax" class="com.picsauditing.mail.MassMailer">
+			<param name="editTemplate">true</param>
+			<result>struts/mail/editTemplateList.jsp</result>
+		</action>
+
+		<action name="EditEmailExclusions" class="com.picsauditing.mail.EmailExclusion">
+			<result>struts/mail/email_exclusion.jsp</result>
+		</action>
+	</package>
+</struts>

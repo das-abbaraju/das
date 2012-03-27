@@ -1,0 +1,73 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.employees" extends="com.picsauditing">
+		<action name="EmployeeList"
+			class="com.picsauditing.actions.report.ReportEmployeeList">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">EmployeeList</param>
+			<result>struts/reports/employee_list.jsp</result>
+		</action>
+
+		<action name="EmployeeListAjax"
+			class="com.picsauditing.actions.report.ReportEmployeeList">
+			<result>struts/reports/employee_list_data.jsp</result>
+		</action>
+
+		<action name="ManageEmployees"
+			class="com.picsauditing.actions.employees.ManageEmployees">
+			<result>struts/employees/manage_employees.jsp</result>
+			<result name="employees">struts/employees/manage_employees_form.jsp</result>
+			<result name="roles">struts/employees/manage_employee_roles.jsp</result>
+			<result name="sites">struts/employees/manage_employee_sites.jsp</result>
+			<result name="getSite">struts/employees/manage_employee_sites_edit.jsp</result>
+		</action>
+
+		<action name="ManageEmployeesUpload"
+			class="com.picsauditing.actions.employees.ImportEmployees">
+			<result>struts/employees/import_employees.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+
+		<action name="EmployeeNCCERUpload"
+			class="com.picsauditing.actions.employees.EmployeeNCCERUpload">
+			<result>struts/employees/employee_nccer_upload.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+		
+		<action name="EmployeePhotoUpload"
+			class="com.picsauditing.actions.employees.UploadEmployeePhoto">
+			<result>struts/employees/empPhoto.jsp</result>
+		</action>
+
+		<action name="EmployeePhotoStream" class="com.picsauditing.actions.employees.EmpImg">
+			<param name="button">photo</param>
+			<result name="photo" type="stream"></result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+
+		<action name="EmployeeDetail"
+			class="com.picsauditing.actions.employees.EmployeeDetail">
+			<result>struts/employees/employee_detail.jsp</result>
+		</action>
+		
+		<action name="EmployeeDashboard"
+			class="com.picsauditing.actions.employees.EmployeeDashboard">
+			<result>struts/employees/employee_dashboard.jsp</result>
+		</action>
+		
+		<action name="ReportEmployeeTurnover" class="com.picsauditing.actions.report.ReportEmployeeTurnover">
+			<result>struts/reports/report_employee_turnover.jsp</result>
+		</action>
+	</package>
+	
+	<!-- OQ / Operator Qualifications -->
+	<include file="struts-oq.xml" />
+	
+	<!-- HSE Competencies -->
+	<include file="struts-hse.xml" />
+	
+	<!-- Assessment Center/Assessment Management -->
+	<include file="struts-assessment-centers.xml" />
+</struts>

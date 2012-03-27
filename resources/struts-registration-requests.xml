@@ -1,0 +1,49 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.registration.requests" extends="com.picsauditing">
+		<action name="RequestNewContractor" class="com.picsauditing.actions.contractors.RequestNewContractor">
+			<result>/struts/contractors/con_new_registration.jsp</result>
+			<result name="backToReport" type="redirectAction">
+				<param name="actionName">ReportNewRequestedContractor</param>
+			</result>
+		</action>
+		
+		<action name="RequestNewContractorAjaxCheck"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="ajaxCheck">
+			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="RequestNewContractorMatchingList"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="matchingList">
+			<result>/struts/blank.jsp</result>
+		</action>		
+
+		<action name="OperatorUserListAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor">
+			<result>/struts/users/operator_users.jsp</result>
+		</action>
+		
+		<action name="OperatorTagsAjax"
+			class="com.picsauditing.actions.contractors.RequestNewContractor" method="loadTags">
+			<result>/struts/operators/op_tags.jsp</result>
+		</action>
+		
+		<action name="ReportNewRequestedContractor"	class="com.picsauditing.actions.report.ReportNewRequestedContractor">
+			<result>struts/reports/report_con_new_registration.jsp</result>
+		</action>
+
+		<action name="ReportNewRequestedContractorCSV"
+			class="com.picsauditing.actions.report.ReportNewRequestedContractor">
+			<param name="download">true</param>
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportNewReqConImport" class="com.picsauditing.actions.report.ReportNewReqConImport">
+			<result>struts/reports/report_con_new_reg_upload.jsp</result>
+			<result name="success">struts/reports/report_con_new_reg_upload.jsp</result>
+			<result name="input">/struts/blank.jsp</result>
+		</action>
+	</package>
+</struts>
