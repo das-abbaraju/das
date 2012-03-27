@@ -395,6 +395,8 @@
 							
 							<li>
 								<label>Auto Approves Contractors:</label>
+                                <input id="number_pending_not_approved" type="hidden" name="number_pending_not_approved" value="${pendingAndNotApprovedRelationshipCount}" />
+                                
 	                            <s:checkbox 
 	                                name="autoApproveRelationships" 
 	                                cssClass="checkbox"
