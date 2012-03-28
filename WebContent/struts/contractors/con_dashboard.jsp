@@ -326,17 +326,17 @@
 							</div>
 						</div>
 						
-						<s:iterator value="#{getText('global.DocuGUARD'): docuGUARD, getText('global.AuditGUARD'): auditGUARD, getText('global.InsureGUARD'): insureGUARD}">
-							<s:if test="value.size() > 0">
+						<s:iterator value="#{'global.DocuGUARD': docuGUARD, 'global.AuditGUARD': auditGUARD, 'global.InsureGUARD': insureGUARD}" var="widget">
+							<s:if test="#widget.value.size() > 0">
 								<div class="panel_placeholder">
 									<div class="panel">
 										<div class="panel_header">
-											<s:property value="key"/>
+                                            <s:text name="%{#widget.key}" />
 										</div>
 										<div class="panel_content">
 											<ul>
 												<pics:permission perm="ContractorDetails">
-													<s:if test="key == getText('global.DocuGUARD')">
+													<s:if test="#widget.key == 'global.DocuGUARD'">
 														<li>
 															<strong><a class="pdf" href="AuditPdfConverter.action?id=<s:property value="id"/>"><s:text name="ContractorView.DownloadPQF" /></a></strong>
 														</li>
