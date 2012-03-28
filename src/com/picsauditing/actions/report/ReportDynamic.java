@@ -43,6 +43,17 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
+	
+	@Override
+    public String execute() throws Exception {
+        checkReport();
+        addDefinition();
+
+        sql = builder.getSql();
+        builder.addPermissions(permissions);
+
+        return SUCCESS;
+    }
 
 	@Anonymous
 	public String availableBases() {
@@ -185,18 +196,7 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
-	@Override
-	public String execute() throws Exception {
-		checkReport();
-		addDefinition();
-
-		sql = builder.getSql();
-		builder.addPermissions(permissions);
-
-		return SUCCESS;
-	}
-
-	public boolean isCanEdit() {
+ 	public boolean isCanEdit() {
 		// while we're testing
 		if (permissions.isAdmin())
 			return true;
