@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="report">
 	<thead>
@@ -12,7 +13,7 @@
 			<tr>
 				<td><a href="ContractorView.action?id=<s:property value="get('id')"/>"><s:property value="get('name')"/></a></td>
 				<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:text name="%{get('atype.name')}" /></a></td>
-				<td class="center"><s:date name="get('statusChangedDate')" format="M/d/yy" /></td>
+				<td class="center"><s:date name="get('statusChangedDate')" format="%{getText('date.short')}" /></td>
 			</tr>
 		</s:iterator>
 	</s:if>

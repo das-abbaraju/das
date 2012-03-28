@@ -88,7 +88,7 @@
                     <s:property value="updatedBy2.name" />
                 </td>
     			<td>
-                    <s:date name="updateDate2" format="MM/dd/yyyy"/>
+                    <s:date name="updateDate2" format="%{getText('date.short')}"/>
                 </td>
     		</tr>
     	</s:iterator>

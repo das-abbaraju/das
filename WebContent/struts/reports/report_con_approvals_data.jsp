@@ -49,7 +49,7 @@
 					
 					<s:if test="permissions.operator">
 						<td>
-							<s:date name="get('dateAdded')" format="M/d/yy"/>
+							<s:date name="get('dateAdded')" format="%{getText('date.short')}"/>
 						</td>
 						<td>
 							<s:property value="getWorkStatusDesc(get('workStatus'))"/>

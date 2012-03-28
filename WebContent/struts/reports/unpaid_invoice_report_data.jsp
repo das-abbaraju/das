@@ -25,8 +25,8 @@
 			<td class="center"><s:if test="get('ccOnFile')">Yes</s:if><s:else>No</s:else></td>
 			<td class="center"><a href="InvoiceDetail.action?invoice.id=<s:property value="get('invoiceId')"/>"><s:property value="get('invoiceId')"/></a></td>
 			<td class="right">$<s:property value="get('totalAmount')"/></td>
-			<td class="right"><s:date name="get('invoicedDate')" format="M/d/yy"/></td>
-			<td class="right"><s:date name="get('dueDate')" format="M/d/yy"/></td>
+			<td class="right"><s:date name="get('invoicedDate')" format="%{getText('date.short')}"/></td>
+			<td class="right"><s:date name="get('dueDate')" format="%{getText('date.short')}"/></td>
 		</tr>
 	</s:iterator>
 	</tbody>
