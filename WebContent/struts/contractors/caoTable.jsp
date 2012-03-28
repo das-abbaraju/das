@@ -99,7 +99,7 @@
 						<td class="caoDate">
 							<s:if test="statusChangedDate == null"><s:text name="global.NA" /></s:if>
 							<s:else>
-								<s:date name="statusChangedDate" format="MMMM dd yyyy" />
+								<s:date name="statusChangedDate" format="%{getText('date.long')}" />
 							</s:else>
 						</td>
 						<!-- Suggested -->

@@ -184,7 +184,7 @@ $(function() {
 						<s:property value="#result.employee.lastName" />, <s:property value="#result.employee.firstName" />
 					</a>
 				</td>
-				<td class="center date"><s:date name="#result.expirationDate" format="MM/dd/yyyy" /></td>
+				<td class="center date"><s:date name="#result.expirationDate" format="%{getText('date.short')}" /></td>
 			</tr>
 		</s:iterator>
 	</tbody></table>

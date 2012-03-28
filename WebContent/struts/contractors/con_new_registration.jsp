@@ -383,7 +383,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="newContractor.holdDate" format="MM/dd/yyyy"/>
+									<s:date name="newContractor.holdDate" format="%{getText('date.short')}"/>
 								</li>
 							</s:if>
 							

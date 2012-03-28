@@ -96,7 +96,7 @@
 													
 													<s:if test="#audit.auditType.classType.policy">
 														<br />
-														<span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="MMM yyyy" /></span>
+														<span style="font-size: 10px"><s:date name="#audit.effectiveDate" format="%{getText('date.MonthAndYear')}" /></span>
 													</s:if>
 												</a>
 											</td>

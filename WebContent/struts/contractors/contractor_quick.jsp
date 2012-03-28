@@ -268,7 +268,7 @@
 				<label>
 					<s:text name="ContractorView.MemberSince" />:
 				</label>
-				<s:date name="contractor.membershipDate" format="M/d/yyyy" />
+				<s:date name="contractor.membershipDate" format="%{getText('date.short')}" />
 				<br />
 				<a href="BillingDetail.action?id=<s:property value="contractor.id" />">
 					<s:text name="BillingDetail.title" />

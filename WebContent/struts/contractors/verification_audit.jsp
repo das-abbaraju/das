@@ -104,7 +104,7 @@
 						<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-								<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+								<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 							</s:div>
 						</li>
 						<li>
@@ -208,7 +208,7 @@
 							<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 								<label>Verified:</label>
 								<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-									<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+									<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 								</s:div>
 							</li>
 							<li>
@@ -282,7 +282,7 @@
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.verifiedDate" format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/>
+								<s:date name="osha.verifiedDate" format="%{getText('date.short')}" /> by <s:property value="osha.auditor.name"/>
 							</s:div>
 						</li>
 						<li>

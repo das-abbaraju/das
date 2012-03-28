@@ -34,7 +34,7 @@
 				</li>
 				<li>
 					<label><s:text name="ScheduleAudit.label.AuditDate" />:</label>
-					<s:date name="availabilitySelected.startDate" format="EEEE, MMM d, yyyy" />
+					<s:date name="availabilitySelected.startDate" format="EEEE, %{getText('date.long')}" />
 				</li>
 				<li>
 					<label><s:text name="ScheduleAudit.label.AuditTime" />:</label>
@@ -102,7 +102,7 @@
 					<li>
                         <s:checkbox name="confirmed" />
 						<s:text name="ScheduleAudit.message.ConfirmMessage">
-							<s:param><s:date name="lastCancellationTime" format="MMMMM d, yyyy, h:mm a" /></s:param>
+							<s:param><s:date name="lastCancellationTime" format="MM%{getText('date.longtime')}" /></s:param>
 							<s:param value="%{conAudit.contractorAccount.country.getAmount(rescheduling)}" />
                             <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>

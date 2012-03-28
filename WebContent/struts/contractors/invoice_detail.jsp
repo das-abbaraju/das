@@ -114,7 +114,7 @@
 										<tr>
 											<td class="center">
 												<nobr>
-													<s:date name="invoice.creationDate" format="MMM d, yyyy" /> 
+													<s:date name="invoice.creationDate" format="%{getText('date.long')}" /> 
 													<s:set name="o" value="invoice" />
 													<s:include value="../who.jsp" />
 												</nobr>
@@ -244,7 +244,7 @@
 										<s:textfield name="invoice.dueDate" size="10" />
 									</s:if>
 									<s:else>
-										<s:date name="invoice.dueDate" format="MMM d, yyyy" />
+										<s:date name="invoice.dueDate" format="%{getText('date.long')}" />
 									</s:else>
 								</td>
 							</tr>
@@ -339,11 +339,11 @@
 										<s:iterator value="invoice.payments">
 											<pics:permission perm="Billing">
 												<a href="PaymentDetail.action?payment.id=<s:property value="payment.id" />">
-													<s:date name="payment.creationDate" format="MMM d, yyyy" />
+													<s:date name="payment.creationDate" format="%{getText('date.long')}" />
 												</a>
 											</pics:permission>
 											<pics:permission perm="Billing" negativeCheck="true">
-												<s:date name="payment.creationDate" format="MMM d, yyyy" />
+												<s:date name="payment.creationDate" format="%{getText('date.long')}" />
 											</pics:permission>
 											<br />
 											<span class="small">
