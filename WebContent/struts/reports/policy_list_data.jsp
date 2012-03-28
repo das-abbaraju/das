@@ -55,8 +55,8 @@
 		    <s:if test="permissions.operator || permissions.corporate">
 			    <td><s:text name="AuditStatus.%{get('auditStatus')}"/></td>
 		    </s:if>
-			<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
-			<td class="center"><s:date name="get('expiresDate')" format="M/d/yy" /></td>
+			<td class="center"><s:date name="get('createdDate')" format="%{getText('date.short')}" /></td>
+			<td class="center"><s:date name="get('expiresDate')" format="%{getText('date.short')}" /></td>
 		    <s:if test="permissions.operator || permissions.corporate">
 				<td class="center">
 					<s:if test="get('certID') != null">

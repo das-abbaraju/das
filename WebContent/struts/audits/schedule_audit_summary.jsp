@@ -25,7 +25,7 @@
             <ol>
             	<li>
                     <label><s:text name="ScheduleAudit.label.AuditDate" />:</label>
-                    <s:date name="conAudit.scheduledDate" format="EEEE, MMM d, yyyy" />
+                    <s:date name="conAudit.scheduledDate" format="%{getText('date.long')}" />
                 </li>
             	<li>
                     <label><s:text name="ScheduleAudit.label.AuditTime" />:</label>

@@ -192,13 +192,13 @@
 		<s:if test="#a.verified && !#q.hasRequirement">
 			<s:if test="permissions.picsEmployee">
     			<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-    				Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+    				Verified on <s:date name="#a.dateVerified" format="%{getText('date.long')}" /> by <s:property value="#a.auditor.name" />
     			</div>
             </s:if>
 			<s:else>
 				<span class="verified">
 					<s:text name="Audit.message.AnswerVerifiedOn">
-						<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+						<s:param><s:date name="#a.dateVerified" format="%{getText('date.long')}" /></s:param>
 					</s:text>
 				</span>	
 			</s:else>
@@ -219,7 +219,7 @@
 					<span class="verified-answer">
 						<img src="images/okCheck.gif" />
 						<s:text name="Audit.message.ClosedOn">
-							<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+							<s:param><s:date name="#a.dateVerified" format="%{getText('date.long')}" /></s:param>
 						</s:text>
 					</span>
 				</s:elseif>
@@ -248,7 +248,7 @@
 		<input class="verify" id="verifyButton_<s:property value="#q.id"/>" type="submit" value="<s:property value="#attr.verifyText"/>" />
 	
 		<div id="verify_details_<s:property value="#q.id"/>" style='display: <s:property value ="#attr.verifyDetailDisplay"/>;' class="verified">
-			Verified on <s:date name="#a.dateVerified" format="MMM d, yyyy" /> by <s:property value="#a.auditor.name" />
+			Verified on <s:date name="#a.dateVerified" format="%{getText('date.long')}" /> by <s:property value="#a.auditor.name" />
 		</div>
 	</s:if>
 </div>

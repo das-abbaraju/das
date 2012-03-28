@@ -280,7 +280,7 @@ fieldset.form {
 										</s:param>
 										<s:param>
 											<s:date name="co.forceOverallFlag.forceEnd"
-												format="MMM d, yyyy" />
+												format="%{getText('date.long')}" />
 										</s:param>
 										<s:param>
 											<s:property value="co.forceOverallFlag.forcedBy.name" />
@@ -307,7 +307,7 @@ fieldset.form {
 												</s:param>
 												<s:param>
 													<s:date name="#currentOp.forceOverallFlag.forceEnd"
-														format="MMM d, yyyy" />
+														format="%{getText('date.long')}" />
 												</s:param>
 												<s:param>
 													<s:property value="#currentOp.forceOverallFlag.forcedBy.name" />
@@ -345,7 +345,7 @@ fieldset.form {
 														</s:param>
 														<s:param>
 															<s:date name="#flagoverride.forceEnd"
-																format="MMM d, yyyy" />
+																format="%{getText('date.long')}" />
 														</s:param>
 														<s:param>
 															<s:property value="#flagoverride.updatedBy.name" />
@@ -383,7 +383,7 @@ fieldset.form {
 														</s:param>
 														<s:param>
 															<s:date name="#flagoverride.forceEnd"
-																format="MMM d, yyyy" />
+																format="%{getText('date.long')}" />
 														</s:param>
 														<s:param>
 															<s:property value="#flagoverride.updatedBy.name" />
@@ -606,7 +606,7 @@ fieldset.form {
 																	 '<s:date name="#cao.audit.effectiveDateLabel" format="yy" />
 																</s:elseif>
 																<s:else>
-																	 <s:property value="#cao.audit.auditFor" /> '<s:date name="#cao.audit.effectiveDateLabel" format="yy" />
+																	 <s:property value="#cao.audit.auditFor" /> '<s:date name="#cao.audit.effectiveDateLabel" format="%{getText('date.TwoDigitYear')}" />
 																</s:else>
 															</a>
 														</s:param>
@@ -665,7 +665,7 @@ fieldset.form {
 														<s:text name="ContractorFlag.ForceFlagTo"></s:text> <s:property
 															value="#flagoverride.forceFlag.smallIcon" escape="false" />
 														<s:text name="ContractorFlag.Until"></s:text> <s:date
-															name="#flagoverride.forceEnd" format="MMM d, yyyy" /> <a
+															name="#flagoverride.forceEnd" format="%{getText('date.long')}" /> <a
 														href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'><s:text
 																name="ContractorFlag.SearchNotes"></s:text>
 													</a> </span>

@@ -68,9 +68,9 @@
 				</td>
 				<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 				<td class="reportDate"><s:date name="[0].get('createdDate')"
-					format="M/d/yy" /></td>
+					format="%{getText('date.short')}" /></td>
 				<td class="reportDate"><s:date name="[0].get('current_expiresDate')"
-					format="M/d/yy" /></td>
+					format="%{getText('date.short')}" /></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">
 					<s:select onchange="saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
@@ -89,7 +89,7 @@
 					</nobr>
 				</td>
 				<td>
-				<s:date name="[0].get('scheduledDate')" format="MM/dd/yyyy hh:mm a"/>
+				<s:date name="[0].get('scheduledDate')" format="%{getText('date.shorttime')}"/>
 				</td>
 				<td>
 				<s:property value="[0].get('auditLocation')"/>

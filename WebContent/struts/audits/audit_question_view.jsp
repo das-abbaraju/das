@@ -99,7 +99,7 @@
 	<s:if test="#a.verified && !#q.hasRequirement">
 		<span class="verified">
 			<s:text name="Audit.message.AnswerVerifiedOn">
-				<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+				<s:param><s:date name="#a.dateVerified" format="%{getText('struts.date.format')}" /></s:param>
 			</s:text>
 		</span>
 	</s:if>
@@ -124,7 +124,7 @@
 				<span class="verified-answer">
 					<img src="images/okCheck.gif" />
 					<s:text name="Audit.message.ClosedOn">
-						<s:param><s:date name="#a.dateVerified" format="MMM d, yyyy" /></s:param>
+						<s:param><s:date name="#a.dateVerified" format="%{getText('struts.date.format')}" /></s:param>
 					</s:text>
 				</span>
 			</s:elseif>

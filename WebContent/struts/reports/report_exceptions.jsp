@@ -34,8 +34,8 @@
 					<td class="center"><s:property value="get('status')" /></td>
 					<td class="right"><s:property value="get('createdBy')" /></td>
 					<td class="right"><s:property value="get('updatedBy')" /></td>
-					<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
-					<td class="right"><s:if test="get('updateDate') != null" ><s:date name="get('updateDate')" format="M/d/yy"/></s:if><s:else>&nbsp;</s:else></td>
+					<td class="right"><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
+					<td class="right"><s:if test="get('updateDate') != null" ><s:date name="get('updateDate')" format="%{getText('date.short')}"/></s:if><s:else>&nbsp;</s:else></td>
 					<td class="center">
 						<s:if test="get('message') != null">
 							<input id="showMessageButton_<s:property value="get('id')" />" class="picsbutton positive" type="button" value="Show Message" onclick="$('#message_<s:property value="get('id')" />').fadeIn(1000); $('#hideMessageButton_<s:property value="get('id')" />').show(); $('#showMessageButton_<s:property value="get('id')" />').hide();"/>

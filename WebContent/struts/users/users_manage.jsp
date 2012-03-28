@@ -288,7 +288,7 @@
 									</li>				
 									<li>
 										<label>Date Created:</label>
-										<s:date name="user.creationDate" format="MM/d/yyyy" />
+										<s:date name="user.creationDate" format="M%{getText('date.short')}" />
 									</li>
 								</s:if>
 							</s:if>
