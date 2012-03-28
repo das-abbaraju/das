@@ -292,10 +292,14 @@
 						<li>
 							<label>Links:</label>
 							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
-						</li>	
+						</li>
 						<li>
-							<hr>
-						</li>						
+							<label>File:</label>
+							<s:if test="osha.getFileUploadId('OSHA') > 0">
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8810)">View File</a>
+							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2033&mode=Edit" target="_BLANK">Change File</a>
+							</s:if>
+						</li>		
 					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 						<li>
 							<label><s:property value="#auditData.question.name" escape="false"/></label>
