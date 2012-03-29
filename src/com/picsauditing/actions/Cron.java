@@ -156,8 +156,10 @@ public class Cron extends PicsActionSupport {
 			try {
 				// TODO - Move this to the db.picsauditing.com cron bash script
 				/*
-				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions ,certificates,contractor_info,"
-				 * + "forms,generalContractors,loginLog,users;
+				 * OPTIMIZE TABLE
+				 * OSHA,accounts,auditCategories,auditData,auditQuestions
+				 * ,certificates,contractor_info," +
+				 * "forms,generalContractors,loginLog,users;
 				 */
 			} catch (Throwable t) {
 				handleException(t);
@@ -388,7 +390,7 @@ public class Cron extends PicsActionSupport {
 
 	private void sendEmailPendingAccounts() throws Exception {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "u.email NOT IN ('" + exclude + "') AND ";
+		String where = "a.country IN ('US','CA') AND u.email NOT IN (" + exclude + ") AND ";
 		String where1Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 1 DAY)";
 		String where3Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String where2Week = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 2 WEEK)";
@@ -412,7 +414,8 @@ public class Cron extends PicsActionSupport {
 		List<ContractorAccount> pending2Week = contractorAccountDAO.findPendingAccounts(where2Week);
 		runAccountEmailBlast(pending2Week, 187, activationReminderNote);
 
-		// Pending accounts are reminded one last time that they have a week to activate
+		// Pending accounts are reminded one last time that they have a week to
+		// activate
 		List<ContractorAccount> pending1Month = contractorAccountDAO.findPendingAccounts(where1Month);
 		runAccountEmailBlast(pending1Month, 188, activationLastReminderNote);
 
@@ -511,12 +514,13 @@ public class Cron extends PicsActionSupport {
 	private void sendEmailContractorRegistrationRequest() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
-		// ignore all email accounts that have been sent a pending email within the last month
+		// ignore all email accounts that have been sent a pending email within
+		// the last month
 		List<String> emailsAlreadySent = emailQueueDAO.findPendingActivationEmails("1 MONTH");
 		emailExclusionList.addAll(emailsAlreadySent);
 
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND ";
+		String where = "c.country IN ('US','CA') AND c.email NOT IN (" + exclude + ") AND c.conID IS NULL AND ";
 
 		String where3Days = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String where1Week3Days = where
@@ -939,7 +943,6 @@ public class Cron extends PicsActionSupport {
 		stats.execute();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void checkRegistrationRequestsHoldDates() throws Exception {
 		List<ContractorRegistrationRequest> holdRequests = (List<ContractorRegistrationRequest>) dao.findWhere(
 				ContractorRegistrationRequest.class, "t.status = 'Hold'");
