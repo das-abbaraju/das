@@ -6,6 +6,13 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-5305 -- default all transporationRisks to low (per Mina)
+UPDATE contractor_info ci
+SET    ci.transportationRisk = 1
+WHERE  ci.id IN (SELECT a.id
+                 FROM   accounts a
+                 WHERE  a.transportationServices = 1 AND a.type = 'Contractor' AND a.status = 'Active');
+                 
 -- PICS-4542
 update accounts a 
 join operators o on a.id = o.id
