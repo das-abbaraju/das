@@ -949,6 +949,16 @@
 			</div>
 		</s:if>
 	
+		<s:if test="filter.showFlagOverrideHistory">
+			<br clear="all" />
+			<div class="filterOption">
+				<label>
+					<s:checkbox name="filter.flagOverrideHistory" />
+					<s:text name="Filters.label.ShowForcedFlagHistory" />
+				</label>
+			</div>
+		</s:if>
+		
 		<s:if test="filter.showContractorsWithPendingMembership">
 			<br clear="all" />
 			<div class="filterOption">
@@ -958,7 +968,7 @@
 				</label>
 			</div>
 		</s:if>
-		
+
 		<s:if test="filter.showPrimaryInformation">
 			<br clear="all" />
 			<div class="filterOption">
