@@ -63,7 +63,7 @@
 				$(window).bind('hashchange', function () {
 					var state = $.bbq.getState();
 					
-					if (state.subCat !== undefined) {
+					if (state.subCat !== undefined && $('#cathead_' + state.subCat).length) {
 						$.scrollTo('#cathead_' + state.subCat, 800, {
 							axis: 'y'
 						});
