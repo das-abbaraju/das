@@ -72,7 +72,7 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 	}
 
 	public List<ContractorRegistrationRequest> findActiveByDate(String whereClause) {
-		String sql = "SELECT * FROM contractor_registration_request c " + "WHERE c.status = 'Active' AND " + whereClause;
+		String sql = "SELECT * FROM contractor_registration_request c " + "WHERE c.status = 'Active' AND c.country in ('US', 'CA') AND " + whereClause;
 		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
 		return query.getResultList();
 	}

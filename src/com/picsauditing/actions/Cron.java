@@ -851,16 +851,13 @@ public class Cron extends PicsActionSupport {
 
 	private List<BasicDynaBean> getFlagChangeData() throws SQLException {
 		StringBuilder query = new StringBuilder();
-		query
-				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query
-				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query
-				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
