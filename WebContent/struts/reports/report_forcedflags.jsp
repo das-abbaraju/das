@@ -38,6 +38,7 @@
 			</s:if>
 			<td><a href="?orderBy=flag" ><s:text name="global.Flag" /></a></td>
 			<td><a href="?orderBy=fLabel" ><s:text name="ReportContractorsWithForcedFlags.header.FlagIssue" /></a></td>
+			<td><s:text name="ReportContractorsWithForcedFlags.header.FlagStatus" /></td>
 			<td><a href="?orderBy=u.name" ><s:text name="ReportContractorsWithForcedFlags.header.ForcedBy" /></a></td>
 			<td><a href="?orderBy=ff.forceBegin" ><s:text name="FlagDataOverride.creationDate" /></a></td>
 			<td><a href="?orderBy=ff.forceend" ><s:text name="FlagDataOverride.forceEnd" /></a></td>
@@ -66,6 +67,7 @@
 				</s:else>
 			</td>
 			<td class="center"><s:text name="%{get('fLabel')}" /></td>
+			<td class="center"><s:text name="%{get('flagActive')}" /></td>
 			<td title="<s:property value="get('forcedByAccount')"/>"><s:property value="get('forcedBy')"/></td>
 			<td><s:date name="get('forceBegin')" format="MMM d, yyyy" /></td>
 			<td><s:date name="get('forceend')" format="MMM d, yyyy" /></td>

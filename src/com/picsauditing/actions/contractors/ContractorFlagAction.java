@@ -43,6 +43,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.FlagOverrideHistory;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -229,12 +230,28 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (overrideAll == true) {
 			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
 					permissions.getAccountId());
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(co2);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+
 			co2.removeForceFlag();
 			co2.setAuditColumns(permissions);
 			contractorOperatorDao.save(co2);
 			contractor.incrementRecalculation();
 			noteText = "Removed the Forced flag for all the sites";
 		} else {
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(co);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+			
 			co.removeForceFlag();
 			noteText = "Removed the Forced flag for " + co.getOperatorAccount().getName();
 		}
@@ -346,6 +363,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData, null);
 		if (flagDataOverride != null) {
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(flagDataOverride);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+
 			for (Iterator<FlagCriteria> it = getFlagDataOverrides(null).keySet().iterator(); it.hasNext();) {
 				if (it.next().equals(flagDataOverride.getCriteria()))
 					it.remove();
