@@ -865,7 +865,7 @@ public class Cron extends PicsActionSupport {
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
 		query.append("where changes >= 10 and changes/total > .05 ");
-		query.append("order by operator, percent desc ");
+		query.append("order by percent desc ");
 
 		Database db = new Database();
 		List<BasicDynaBean> data = db.select(query.toString(), true);
