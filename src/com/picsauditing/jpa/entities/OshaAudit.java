@@ -114,6 +114,7 @@ public class OshaAudit implements OshaVisitable {
 	}
 
 	// TODO I can't find where this actually being used. Need code coverage testing. -- AA
+	// Answer: Line 65 in verification_detail.jsp line 298 in verification_audit.jsp -- Sober Alcoholic
 	public Integer getFileUploadId(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null
 				|| getSafetyStatistics(oshaType).getFileUpload().getQuestion() == null) {
