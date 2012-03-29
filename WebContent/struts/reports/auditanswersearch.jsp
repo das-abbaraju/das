@@ -65,7 +65,7 @@ function setId(Id) {
 			<td colspan="2"><a href="ContractorView.action?id=<s:property value="get('id')"/>"
 				><s:property value="get('name')" /></a></td>
 			<td><s:property value="get('auditStatus')"/></td>
-			<td><s:date name="get('statusChangedDate')" format="M/d/yy"/></td>
+			<td><s:date name="get('statusChangedDate')" format="%{getText('date.short')}"/></td>
 			<s:iterator value="auditQuestions">
 				<td><s:property value="%{get('answer' + id)}"/></td>
 			</s:iterator>

@@ -39,9 +39,9 @@
 					No
 				</s:else>
 			</td>
-			<td class="right"><s:date name="get('creationDate')" format="M/d/yy"/></td>
-			<td class="right"><s:date name="get('lastUpgradeDate')" format="M/d/yy"/></td>
-			<td class="right"><s:date name="get('paymentExpires')" format="M/d/yy"/></td>
+			<td class="right"><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
+			<td class="right"><s:date name="get('lastUpgradeDate')" format="%{getText('date.short')}"/></td>
+			<td class="right"><s:date name="get('paymentExpires')" format="%{getText('date.short')}"/></td>
 			<td><s:property value="get('fees')"/></td>
 		</tr>
 	</s:iterator>

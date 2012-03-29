@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 
 import org.apache.velocity.tools.generic.DateTool;
 
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
@@ -29,7 +31,8 @@ public class Strings {
 	}
 
 	/**
-	 * Are two strings equal to each other. One or both can be null. If both are null, then return true.
+	 * Are two strings equal to each other. One or both can be null. If both are
+	 * null, then return true.
 	 * 
 	 * @param value1
 	 * @param value2
@@ -73,10 +76,10 @@ public class Strings {
 			return "";
 		String singleQuote = "\'";
 		String backSlash = "\\";
-		
+
 		return value.replace(singleQuote, backSlash + singleQuote);
 	}
-	
+
 	public static String implode(int[] array) {
 		return implode(array, ",");
 	}
@@ -150,7 +153,7 @@ public class Strings {
 		}
 		return buffer.toString();
 	}
-	
+
 	public static String implode(Collection<? extends Object> collection, String delimiter) {
 		if (collection == null)
 			return "";
@@ -211,7 +214,8 @@ public class Strings {
 	}
 
 	/**
-	 * Take an arbitrary string and return an integer if it could be an accountID. Other wise return a 0 Examples: <br />
+	 * Take an arbitrary string and return an integer if it could be an
+	 * accountID. Other wise return a 0 Examples: <br />
 	 * 11883 returns 11883<br />
 	 * 11883.4 returns 11883<br />
 	 * Foobar returns 0
@@ -295,13 +299,16 @@ public class Strings {
 		/*
 		 * Old code for reference
 		 * 
-		 * String expression = "[A-Z0-9]+"; Pattern pattern = Pattern.compile(expression, Pattern.CANON_EQ); Matcher
-		 * matcher = pattern.matcher(name);
+		 * String expression = "[A-Z0-9]+"; Pattern pattern =
+		 * Pattern.compile(expression, Pattern.CANON_EQ); Matcher matcher =
+		 * pattern.matcher(name);
 		 * 
-		 * StringBuffer buf = new StringBuffer(); boolean found = false; while ((found = matcher.find())) {
-		 * System.out.println(matcher.group()); buf.append(matcher.group()); }
+		 * StringBuffer buf = new StringBuffer(); boolean found = false; while
+		 * ((found = matcher.find())) { System.out.println(matcher.group());
+		 * buf.append(matcher.group()); }
 		 * 
-		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return buf.toString();
+		 * // return name.toUpperCase().replaceAll("[^A-Z0-9]",""); return
+		 * buf.toString();
 		 */
 
 		// Remove all quotes
@@ -504,8 +511,8 @@ public class Strings {
 	}
 
 	/**
-	 * For computing the number of character differences between two strings Levenshtein Distance If needed, can be
-	 * optimized
+	 * For computing the number of character differences between two strings
+	 * Levenshtein Distance If needed, can be optimized
 	 * 
 	 * @param m
 	 * @param n
@@ -542,11 +549,17 @@ public class Strings {
 	}
 
 	public static String formatDateLong(Date d) {
-		return new DateTool().format("MMM d, yyyy", d);
+		I18nCache cache = I18nCache.getInstance();
+		Locale locale = TranslationActionSupport.getLocaleStatic();
+		String format = cache.getText("date.long", locale);
+		return new DateTool().format(format, d);
 	}
 
 	public static String formatDateShort(Date d) {
-		return new DateTool().format("MM/dd/yy", d);
+		I18nCache cache = I18nCache.getInstance();
+		Locale locale = TranslationActionSupport.getLocaleStatic();
+		String format = cache.getText("date.short", locale);
+		return new DateTool().format(format, d);
 	}
 
 }

@@ -104,7 +104,7 @@
 						<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-								<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+								<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 							</s:div>
 						</li>
 						<li>
@@ -208,7 +208,7 @@
 							<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 								<label>Verified:</label>
 								<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-									<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+									<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 								</s:div>
 							</li>
 							<li>
@@ -282,7 +282,7 @@
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.verifiedDate" format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/>
+								<s:date name="osha.verifiedDate" format="%{getText('date.short')}" /> by <s:property value="osha.auditor.name"/>
 							</s:div>
 						</li>
 						<li>
@@ -292,10 +292,14 @@
 						<li>
 							<label>Links:</label>
 							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
-						</li>	
+						</li>
 						<li>
-							<hr>
-						</li>						
+							<label>File:</label>
+							<s:if test="osha.getFileUploadId('OSHA') > 0">
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8810)">View File</a>
+							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2033&mode=Edit" target="_BLANK">Change File</a>
+							</s:if>
+						</li>		
 					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 						<li>
 							<label><s:property value="#auditData.question.name" escape="false"/></label>

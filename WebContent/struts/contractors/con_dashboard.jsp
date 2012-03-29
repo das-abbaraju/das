@@ -350,7 +350,7 @@
 																<s:property value="auditFor"/>
 															</s:if>
 															<s:else>
-																<s:date name="effectiveDate" format="MMM yyyy" />
+																<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
 															</s:else>
 														</a>
 													</li>

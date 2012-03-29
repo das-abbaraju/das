@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <table class="report">
 	<thead>
@@ -12,7 +13,7 @@
 			<s:iterator value="pendingWelcomeCalls" begin="0" end="%{pendingWelcomeCalls.size() > 9 ? 9 : pendingWelcomeCalls.size() - 1}">
 			<tr>
 				<td><a href="Audit.action?auditID=<s:property value="get('auditID')"/>"><s:property value="get('name')" /></a></td>
-				<td class="center"><s:date name="get('createdDate')" format="M/d/yy" /></td>
+				<td class="center"><s:date name="get('createdDate')" format="%{getText('date.short')}" /></td>
 				<td class="right"><s:property value="get('percentComplete')"/>%</td>
 			</tr>
 			</s:iterator>

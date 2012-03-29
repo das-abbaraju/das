@@ -65,6 +65,9 @@ public class OshaStatistics extends SafetyStatistics {
 			else if (answer.getQuestion().getId() == QUESTION_ID_PICS_SEVERITY_RATE_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.SeverityRate, answer);
 			}
+			else if (answer.getQuestion().getId() == 2034) {
+				answerMap.put(OshaRateType.EMR, answer);
+			}
 		}
 	}
 

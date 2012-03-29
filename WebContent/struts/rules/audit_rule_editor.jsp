@@ -170,7 +170,7 @@
 		<s:if test="rule != null">
 			<s:if test="rule.effectiveDate.after(new java.util.Date())">
 				<div class="alert">
-					This rule will not go into effect until <s:date name="rule.effectiveDate" format="MM/dd/yyyy"/>.
+					This rule will not go into effect until <s:date name="rule.effectiveDate" format="%{getText('date.short')}"/>.
 				</div>
 			</s:if>
 			<s:elseif test="!rule.current">

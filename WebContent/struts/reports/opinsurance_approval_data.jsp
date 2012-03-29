@@ -73,7 +73,7 @@
 						</s:iterator>
 					</s:if>
 					
-					<s:date name="get('expiresDate')" format="M/d/yy" />
+					<s:date name="get('expiresDate')" format="%{getText('date.short')}" />
 				</td>
 				
 				<s:if test="filter.primaryInformation">
