@@ -102,10 +102,7 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 	 */
 	@Override
 	public String toString() {
-
 		String fallback = getLocale();
-		if (fallback == null)
-			fallback = Locale.ENGLISH.toString();
 		if (translations.containsKey(fallback))
 			return translations.get(fallback).getValue();
 		else
@@ -153,12 +150,19 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		if (translations.containsKey(locale.toString())) {
 			return locale.toString();
 		}
+		
 		if (translations.containsKey(locale.getLanguage())) {
 			return locale.getLanguage();
 		}
+		
+		if (translations.containsKey(Locale.ENGLISH.getLanguage())) {
+			return Locale.ENGLISH.getLanguage();
+		}
+		
 		for (String anyLocale : translations.keySet()) {
 			return anyLocale;
 		}
+		
 		return null;
 	}
 
