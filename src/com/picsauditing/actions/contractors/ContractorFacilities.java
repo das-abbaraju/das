@@ -297,7 +297,7 @@ public class ContractorFacilities extends ContractorActionSupport {
 				}
 			}
 
-			if (button.equals("removeOperator")) {
+			if (button.equals("removeOperator") && (!permissions.isContractor() || contractor.getStatus().isPending())) {
 				facilityChanger.remove();
 				if (contractor.getNonCorporateOperators().size() == 0 && contractor.getStatus().isPending())
 					contractor.setRequestedBy(null);
@@ -343,11 +343,9 @@ public class ContractorFacilities extends ContractorActionSupport {
 			o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
 			o.setTransportationServices(1 == (Integer) d.get("transportationServices"));
 
-			if (contractor.isOnsiteServices() && o.isOnsiteServices() || 
-					contractor.isOffsiteServices() && o.isOffsiteServices() || 
-					contractor.isMaterialSupplier() && o.isMaterialSupplier() ||
-					contractor.isTransportationServices() && o.isTransportationServices()
-				)
+			if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
+					&& o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier()
+					|| contractor.isTransportationServices() && o.isTransportationServices())
 				searchResults.add(o);
 		}
 	}

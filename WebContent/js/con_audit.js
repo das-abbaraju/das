@@ -140,6 +140,7 @@ function _updateCategories() {
 				
 				$('#auditHeaderSideNav').html(me.filter('#audit_sidebar_refresh').html());
 				$('#caoTable').html(me.filter('#cao_table_refresh').html());
+				// TODO: wtf is this?
 				$('#auditScore').html(me.filter('#auditScore_refresh').html());
 				$('#auditHeader').removeClass('dirty');
 				
