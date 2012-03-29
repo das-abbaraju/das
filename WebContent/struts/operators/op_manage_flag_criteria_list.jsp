@@ -58,7 +58,7 @@
 						<s:if test="canEdit">
 							<span class="editable">
 								<input type="button" data-id="<s:property value="id" />" class="picsbutton editHurdle" value="<s:text name="button.Save" />" />
-								<s:select list="#{'Red':getText('FlagColor.Red'),'Amber':getText('FlagColor.Amber')}" name="newFlag" value="flag" />
+								<s:select list="#{'Red':getTextNullSafe('FlagColor.Red'),'Amber':getTextNullSafe('FlagColor.Amber')}" name="newFlag" value="flag" />
 								<s:text name="ManageFlagCriteriaOperator.text.FlagOn" />
 							</span>
 							
@@ -91,7 +91,7 @@
 									<s:elseif test="criteria.dataType == 'string'">
 										<span class="editable">
 											<s:radio 
-												list="#{'Yes':getText('YesNo.Yes'),'No':getText('YesNo.No')}" 
+												list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No')}" 
 												value="criteriaValue()" 
 												onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
 												theme="pics"

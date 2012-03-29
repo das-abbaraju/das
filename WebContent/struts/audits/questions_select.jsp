@@ -9,16 +9,16 @@
 	<br clear="all" />
 	<s:text name="QuestionAnswerSearch.label.Criteria" />
 	<s:select name="questions[99].criteria" value="" 
-		list="#{'':getText('QuestionAnswerSearch.status.NoCriteria'),
-			'=':getText('QuestionAnswerSearch.status.EqualTo'),
-			'!=':getText('QuestionAnswerSearch.status.NotEqualTo'),
-			'>':getText('QuestionAnswerSearch.status.GreaterThan'),
-			'>=':getText('QuestionAnswerSearch.status.GreaterOrEqualThan'),
-			'<':getText('QuestionAnswerSearch.status.LessThan'),
-			'<=':getText('QuestionAnswerSearch.status.LessOrEqualThan'),
-			'Contains':getText('QuestionAnswerSearch.status.Contains'),
-			'Begins With':getText('QuestionAnswerSearch.status.BeginsWith'),
-			'Ends With':getText('QuestionAnswerSearch.status.EndsWith')}"
+		list="#{'':getTextNullSafe('QuestionAnswerSearch.status.NoCriteria'),
+			'=':getTextNullSafe('QuestionAnswerSearch.status.EqualTo'),
+			'!=':getTextNullSafe('QuestionAnswerSearch.status.NotEqualTo'),
+			'>':getTextNullSafe('QuestionAnswerSearch.status.GreaterThan'),
+			'>=':getTextNullSafe('QuestionAnswerSearch.status.GreaterOrEqualThan'),
+			'<':getTextNullSafe('QuestionAnswerSearch.status.LessThan'),
+			'<=':getTextNullSafe('QuestionAnswerSearch.status.LessOrEqualThan'),
+			'Contains':getTextNullSafe('QuestionAnswerSearch.status.Contains'),
+			'Begins With':getTextNullSafe('QuestionAnswerSearch.status.BeginsWith'),
+			'Ends With':getTextNullSafe('QuestionAnswerSearch.status.EndsWith')}"
 		cssClass="forms" />
 	<s:text name="Filters.label.Answer" />
 	<s:textfield cssClass="forms" id="answer" name="questions[99].criteriaAnswer" size="25" value=""  />

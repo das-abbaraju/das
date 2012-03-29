@@ -110,7 +110,7 @@
 							
 							<s:radio 
 								name="isGroup" 
-								list="#{'Yes':getText('UsersManage.Groups'), 'No':getText('global.Users'), '':getText('UsersManage.Both')}" 
+								list="#{'Yes':getTextNullSafe('UsersManage.Groups'), 'No':getTextNullSafe('global.Users'), '':getTextNullSafe('UsersManage.Both')}"
 								value="isGroup"
 								theme="pics"
 								cssClass="inline" 
@@ -122,7 +122,7 @@
 							
 							<s:radio 
 								name="isActive" 
-								list="#{'Yes':getText('global.Active'), 'No':getText('UsersManage.Inactive'), '':getText('JS.Filters.status.All')}" 
+								list="#{'Yes':getTextNullSafe('global.Active'), 'No':getTextNullSafe('UsersManage.Inactive'), '':getTextNullSafe('JS.Filters.status.All')}" 
 								value="isActive"
 								theme="pics"
 								cssClass="inline"
