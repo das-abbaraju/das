@@ -6,6 +6,17 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-5305 default all transportation risks to low (per mina)
+UPDATE contractor_info ci
+SET    ci.transportationRisk = 1
+WHERE  ci.id IN (SELECT a.id
+                 FROM   accounts a
+                 WHERE  a.transportationServices = 1 AND a.type = 'Contractor' AND a.status = 'Active');
+
+-- PICS-4600
+update ref_country rc set rc.currency = 'EUR' where rc.isoCode in ('AL','AM','MD');
+--
+
 -- PICS-4542
 update accounts a 
 join operators o on a.id = o.id

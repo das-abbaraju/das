@@ -2321,6 +2321,13 @@
 		<action name="DataConversion" class="com.picsauditing.actions.DataConversion">
 			<result>/struts/data_conversion.jsp</result>
 		</action>
+		<action name="OshaFileConversion" class="com.picsauditing.actions.dev.OshaFileConversion">
+			<result>/struts/dev/osha_files_conversion.jsp</result>
+		</action>
+		
+		<action name="OshaFileConversionAjax" class="com.picsauditing.actions.dev.OshaFileConversionAjax">
+			<result type="json"></result>
+		</action>
 		
 		<action name="NameIndexUpdater" class="com.picsauditing.util.NameIndexUpdater">
 		</action>

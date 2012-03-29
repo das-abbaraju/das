@@ -482,8 +482,8 @@
 				</p>
 				<p>
 					<s:select
-						list="#{@vs@PERSONAL_EMAIL:getText('RequestNewContractor.PersonalEmail'),
-							@vs@DRAFT_EMAIL:getText('RequestNewContractor.DraftEmail')}"
+						list="#{@vs@PERSONAL_EMAIL:getTextNullSafe('RequestNewContractor.PersonalEmail'),
+							@vs@DRAFT_EMAIL:getTextNullSafe('RequestNewContractor.DraftEmail')}"
 						name="contactType"
 					/>
 				</p>

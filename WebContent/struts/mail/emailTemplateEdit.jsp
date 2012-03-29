@@ -119,7 +119,7 @@ function changeType(){
 <s:select
 	id="changeType"
 	name="type"
-	list="#{'Audit':getText('ListType.Audit'), 'Contractor':getText('ListType.Contractor'), 'User':getText('ListType.User')}"
+	list="#{'Audit':getTextNullSafe('ListType.Audit'), 'Contractor':getTextNullSafe('ListType.Contractor'), 'User':getTextNullSafe('ListType.User')}"
 	onchange="changeType(); return false;"
 />
 <table id="emailTemplateTable">	
