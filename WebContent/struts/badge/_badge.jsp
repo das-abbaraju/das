@@ -5,7 +5,7 @@
 <s:set var="hash">${param.hash}</s:set>
 <s:set var="size">${param.size}</s:set>
 
-<!-- PICS PICS Memebership Seal START -->
+<!-- PICS Membership Seal START -->
 <div class="pb-program" data-size="${size}"></div>
 <script type="text/javascript" src="${host}/badge/badge.js#pb-id=${hash}"></script>
-<!-- PICS PICS Memebership Seal END -->
+<!-- PICS Membership Seal END -->
