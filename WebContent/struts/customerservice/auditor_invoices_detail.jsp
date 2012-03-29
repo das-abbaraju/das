@@ -1,5 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<h1>Invoice <s:date name="auditList.get(0).paidDate" format="MMM d, yyyy"/>
+<h1>Invoice <s:date name="auditList.get(0).paidDate" format="%{getText('date.long')}"/>
 	<span class="sub"><s:property value="auditList.get(0).auditor.name"/></span>
 </h1>
 

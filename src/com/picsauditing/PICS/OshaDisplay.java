@@ -34,6 +34,7 @@ public class OshaDisplay {
 	private ContractorAccount contractor;
 	private Locale locale;
 	private List<ContractorOperator> contractorOperators;
+	private I18nCache i18nCache;
 
 	@Autowired
 	private NaicsDAO naicsDao;
@@ -50,6 +51,7 @@ public class OshaDisplay {
 		this.contractorOperators = contractorOperators;
 		this.contractor = contractor;
 		this.naicsDao = naicsDao;
+		this.i18nCache = I18nCache.getInstance();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -67,7 +69,7 @@ public class OshaDisplay {
 		}
 		yearsForAverageLabel.delete(0, 1);
 		columnNames.add(yearsForAverageLabel);
-		columnNames.add(I18nCache.getInstance().getText(
+		columnNames.add(i18nCache.getText(
 				"ContractorView.ContractorDashboard.Industry", locale));
 
 		return columnNames;
@@ -88,7 +90,7 @@ public class OshaDisplay {
 		for (OshaRateType rateType : oshaType.rates) {
 			StatisticsDisplayRow rateRow = new StatisticsDisplayRow(false);
 
-			rateRow.addCell(rateType.getI18nKey());
+			rateRow.addCell(i18nCache.getText(rateType.getI18nKey(), locale));
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);

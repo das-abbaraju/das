@@ -90,8 +90,8 @@ div.webcam_list {
 					<td style="font-size-adjust: 120%; font-weight: bold;"><s:property value="id" /></td>
 					<td class="center"><s:property value="%{active ? 'Y' : 'N'}" /></td>
 					<td><s:property value="contractor.name" /></td>
-					<td><s:date name="sentDate" format="MM/dd/yy" /></td>
-					<td><s:date name="receivedDate" format="MM/dd/yy" /></td>
+					<td><s:date name="sentDate" format="%{getText('date.short')}" /></td>
+					<td><s:date name="receivedDate" format="%{getText('date.short')}" /></td>
 					<td><s:property value="model" /></td>
 				</tr>
 			</s:iterator>

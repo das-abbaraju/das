@@ -562,9 +562,7 @@ public class AuditDataSave extends AuditActionSupport {
 			return true;
 
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
-			// Strip the commas, just in case they are in the wrong place
-			// We add them back in later
-			answer = answer.trim().replace(",", "");
+			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
 
 			boolean hasBadChar = false;
 			for (int i = 0; i < answer.length(); i++) {
@@ -576,6 +574,10 @@ public class AuditDataSave extends AuditActionSupport {
 			if (hasBadChar) {
 				addActionError(getText("AuditData.error.MustBeNumber"));
 				return false;
+			}
+			if ("Number".equals(questionType)) {
+				auditData.setAnswer(answer);
+				return true;
 			}
 
 			NumberFormat format = new DecimalFormat("#,##0");
@@ -605,6 +607,10 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {
+		return answer.trim().replaceAll(",","").replaceAll("^0+","");
 	}
 
 	private boolean isValidNAICScode(String code) {

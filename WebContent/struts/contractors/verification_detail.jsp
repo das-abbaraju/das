@@ -149,6 +149,30 @@
 						</td>
 					</s:iterator>
 				</tr>
+				<tr>
+					<td>TRIR:</td>
+					<s:iterator value="annualUpdates" id="audit">
+						<td class="center">
+							<s:iterator value="oshasUS">
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'TrirAbsolute')" />
+								</s:if>
+							</s:iterator>
+						</td>
+					</s:iterator>
+				</tr>
+				<tr>
+					<td>LWCR:</td>
+					<s:iterator value="annualUpdates" id="audit">
+						<td class="center">
+							<s:iterator value="oshasUS">
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'LwcrAbsolute')" />
+								</s:if>
+							</s:iterator>
+						</td>
+					</s:iterator>
+				</tr>
 			</s:if>
 
 			<s:if test="emrs.size() > 0">

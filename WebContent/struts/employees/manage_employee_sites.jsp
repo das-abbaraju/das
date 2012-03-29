@@ -222,7 +222,7 @@
 								<td>
 									<s:if test="jobSite.id > 0"><s:property value="#site.jobSite.label" /></s:if>
 								</td>
-								<td><s:date name="expirationDate" format="M/d/yyyy" /></td>
+								<td><s:date name="expirationDate" format="%{getText('date.short')}" /></td>
 							</tr>
 						</s:if>
 					</s:iterator>

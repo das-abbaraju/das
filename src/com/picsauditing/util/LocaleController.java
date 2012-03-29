@@ -11,7 +11,8 @@ public class LocaleController {
 	public static boolean isLocaleSupported(Permissions permissions) {
 		if (StringUtils.startsWith(permissions.getLocale().toString(), "en")
 				|| StringUtils.startsWith(permissions.getLocale().toString(), "fr")
-				|| StringUtils.startsWith(permissions.getLocale().toString(), "es"))
+				|| StringUtils.startsWith(permissions.getLocale().toString(), "es")
+				|| StringUtils.startsWith(permissions.getLocale().toString(), "de"))
 			return true;
 
 		return false;

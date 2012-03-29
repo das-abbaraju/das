@@ -98,9 +98,6 @@ public class ManageTranslations extends ReportActionSupport {
 
 						updateOtherLanguagesToQuestionable();
 					}
-					I18nCache.getInstance().clear();
-					flagClearCache();
-
 					out.put("success", true);
 				} catch (Exception e) {
 					out.put("success", false);

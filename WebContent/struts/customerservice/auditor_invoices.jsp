@@ -31,7 +31,7 @@ function getDetail(auditorID, paidDate) {
 	<s:iterator value="list">
 	<tr class="clickable" onclick="getDetail(<s:property value="get('auditor').id"/>,'<s:date name="get('paidDate')" format="yyyy-MM-dd"/>')">
 		<td>
-			<s:date name="get('paidDate')" format="M/d/yy"/>
+			<s:date name="get('paidDate')" format="%{getText('date.short')}"/>
 		</td>
 		<td>
 			<s:property value="get('auditor').name"/>

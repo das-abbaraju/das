@@ -122,7 +122,7 @@
 							$<s:property value="get('totalAmount')- get('amountApplied')"/>
 						</td>
 						<td class="right">
-							<s:date name="get('dueDate')" format="M/d/yy"/>
+							<s:date name="get('dueDate')" format="%{getText('date.short')}"/>
 						</td>
 						<td>
 							<s:property value="get('status')"/>

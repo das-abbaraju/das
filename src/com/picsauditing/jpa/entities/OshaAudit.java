@@ -17,16 +17,17 @@ import com.picsauditing.PICS.OshaVisitor;
 import com.picsauditing.util.Testable;
 
 /**
- * Decorator for ContractorAudit, specifically for when ContractorAudit is an
- * OSHa type, that adds OSHA-specific logic.
+ * Decorator for ContractorAudit, specifically for when ContractorAudit is an OSHa type, that adds OSHA-specific logic.
  */
 public class OshaAudit implements OshaVisitable {
 	public static final int CAT_ID_OSHA = 2033; // U.S.
+	public static final int CAT_ID_OSHA_ADDITIONAL = 2209; // U.S.
+	public static final int CAT_ID_MSHA = 2256; // U.S.
 	public static final int CAT_ID_COHS = 2086; // Canada
 	public static final int CAT_ID_UK_HSE = 2092; // U.K.
 	public static final int CAT_ID_FRANCE_NRIS = 1691; // France
-	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] {
-			CAT_ID_OSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
+	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] { CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL,
+			CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
 
 	protected ContractorAudit contractorAudit;
 
@@ -51,7 +52,7 @@ public class OshaAudit implements OshaVisitable {
 	public List<ContractorAuditOperator> getCaos() {
 		return contractorAudit.getOperatorsVisible();
 	}
-	
+
 	@Testable
 	List<AuditCatData> getCategories() {
 		return contractorAudit.getCategories();
@@ -91,10 +92,10 @@ public class OshaAudit implements OshaVisitable {
 				} else if (oshaType == OshaType.UK_HSE) {
 					safetyStatistics = new UkStatistics(year, contractorAudit.getData());
 				}
-				
+
 				if (safetyStatistics != null) {
 					safetyStatisticsMap.put(oshaType, safetyStatistics);
-					safetyStatistics.setVerified(isVerified(oshaType));					
+					safetyStatistics.setVerified(isVerified(oshaType));
 				}
 			}
 		}
@@ -108,64 +109,61 @@ public class OshaAudit implements OshaVisitable {
 		if (getSafetyStatistics(oshaType) == null) {
 			return Strings.EMPTY;
 		}
-		
+
 		return getSafetyStatistics(oshaType).getStats(rateType);
 	}
 
-	// TODO I can't find where this actually being used.  Need code coverage testing.   -- AA
+	// TODO I can't find where this actually being used. Need code coverage testing. -- AA
+	// Answer: Line 65 in verification_detail.jsp line 298 in verification_audit.jsp -- Sober Alcoholic
 	public Integer getFileUploadId(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getFileUpload() == null
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null
 				|| getSafetyStatistics(oshaType).getFileUpload().getQuestion() == null) {
 			return Integer.valueOf(-1);
 		}
-		
-		return getSafetyStatistics(oshaType).getFileUpload().getQuestion()
-				.getId();
+
+		return getSafetyStatistics(oshaType).getFileUpload().getQuestion().getId();
 	}
 
 	public List<AuditData> getQuestionsToVerify(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null) {
 			return Collections.emptyList();
 		}
-		
+
 		return getSafetyStatistics(oshaType).getQuestionsToVerify();
 	}
 
 	public Collection<AuditData> getAllQuestionsInOshaType(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getAnswerMap() == null) {
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null) {
 			return Collections.emptyList();
 		}
-		
+
 		return getSafetyStatistics(oshaType).getAnswerMap().values();
 	}
 
 	public boolean isEmpty(OshaType oshaType) {
-		return (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null 
-				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours).equals("0"));
+		return (getSafetyStatistics(oshaType) == null
+				|| getSafetyStatistics(oshaType).getStats(OshaRateType.Hours) == null || getSafetyStatistics(oshaType)
+				.getStats(OshaRateType.Hours).equals("0"));
 	}
-	
+
 	public String getComment(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getFileUpload() == null) {
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null) {
 			return Strings.EMPTY;
 		}
-				
+
 		return getSafetyStatistics(oshaType).getFileUpload().getComment();
 	}
-	
+
 	public AuditData stampOshaComment(OshaType oshaType, String comment) {
 		if (getSafetyStatistics(oshaType) == null) {
 			return null;
 		}
-		
+
 		AuditData fileUpload = getSafetyStatistics(oshaType).getFileUpload();
 		if (fileUpload != null) {
 			fileUpload.setComment(comment);
 		}
-		
+
 		return fileUpload;
 	}
 
@@ -196,27 +194,25 @@ public class OshaAudit implements OshaVisitable {
 			if (cao.isVisible() && cao.getStatus().isComplete())
 				return true;
 		}
-		
+
 		return false;
 	}
 
 	public boolean isVerified(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getAnswerMap() == null 
-				||getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
+				|| getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
 			return false;
 		}
-		
+
 		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).isVerified();
 	}
 
 	public Date verifiedDate(OshaType oshaType) {
-		if (getSafetyStatistics(oshaType) == null 
-				|| getSafetyStatistics(oshaType).getAnswerMap() == null
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
 				|| getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
 			return null;
 		}
-				
+
 		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getDateVerified();
 	}
 
@@ -225,7 +221,7 @@ public class OshaAudit implements OshaVisitable {
 			if (categoryId == safetyStatisticsCategory)
 				return true;
 		}
-		
+
 		return false;
 	}
 }

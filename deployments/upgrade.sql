@@ -425,7 +425,7 @@ replace into pqfdata
              updateDate)
 select
   oa.auditID,
-  1011,
+  10011,
   oa.lostWorkCases,
   oa.verifiedDate,
   oa.auditorID,
@@ -648,6 +648,86 @@ select
   oa.auditID,
   8845,
   oa.injuryIllnessCases,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- first aid injuries
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8846,
+  oa.firstAidInjuries,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- vehicle incidents
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8847,
+  oa.vehicleIncidents,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- km driven
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8848,
+  oa.totalkmDriven,
+  oa.verifiedDate,
+  oa.auditorID,
+  oa.creationDate,
+  oa.updateDate
+from osha_audit oa
+where oa.SHAType = "COHS";
+
+-- were there incidents?
+replace into pqfdata
+            (auditID,
+             questionID,
+             answer,
+             dateVerified,
+             auditorID,
+             creationDate,
+             updateDate)
+select 
+  oa.auditID,
+  8840,
+  'Yes',
   oa.verifiedDate,
   oa.auditorID,
   oa.creationDate,

@@ -17,7 +17,7 @@
 	<script type="text/javascript">
 	
 		var auditID = <s:property value="conAudit.id"/>;
-		var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
+		var startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}"/>';
 		
 		$(function() {
 			$('a.expedite').click(function() {

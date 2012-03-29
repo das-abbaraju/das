@@ -81,10 +81,11 @@ public class ContractorFlagETL {
 				if (flagCriteriaContractor != null) {
 					changes.add(flagCriteriaContractor);
 				}
-			} else if (flagCriteria.getMultiYearScope() != null && QUESTION_IDS_FOR_MULTI_YEAR.contains(flagCriteria.getQuestion().getId())) {
-				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
-				flagCriteriaContractor.setAnswer(MultiYearValueCalculator.calculateValueForMultiYear(contractor, flagCriteria));
-				changes.add(flagCriteriaContractor);
+				// TODO: remove or keep depending on how the flag changes are affected on 3/29/2012
+//			} else if (flagCriteria.getMultiYearScope() != null && QUESTION_IDS_FOR_MULTI_YEAR.contains(flagCriteria.getQuestion().getId())) {
+//				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
+//				flagCriteriaContractor.setAnswer(MultiYearValueCalculator.calculateValueForMultiYear(contractor, flagCriteria));
+//				changes.add(flagCriteriaContractor);
 			} else if (runAnnualUpdateFlaggingForCategoryOnMultiYearScope(flagCriteria)) {
 				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, true);
 				if (flagCriteriaContractor != null) {

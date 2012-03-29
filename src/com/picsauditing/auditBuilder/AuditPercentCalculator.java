@@ -26,6 +26,7 @@ import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
+import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.QuestionFunctionType;
 import com.picsauditing.jpa.entities.ScoreType;
 import com.picsauditing.jpa.entities.User;
@@ -144,6 +145,7 @@ public class AuditPercentCalculator {
 		
 		// Get a list of questions/answers for this category
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+
 			if (question.isValidQuestion(validDate)) {
 				AuditQuestion questionBeingReviewed = question;
 				boolean isRequired = questionBeingReviewed.isRequired();;
@@ -223,41 +225,7 @@ public class AuditPercentCalculator {
 							verifiedCount++;
 					} else {
 						if (isRequired) {
-							// Anything that requires verification, should be
-							// listed as Required.
-							// If we don't then it's possible that the verified
-							// count will be higher than the required total,
-							// resulting in a > 100% verified
-							if (answer.isVerified())
-								verifiedCount++;
-							// This is used for manual/implementation audits
-							// with questions with no requirements, so we need
-							// to increment the count so we can close it.
-							else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
-								verifiedCount++;
-							} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217) {
-								verifiedCount++;
-							} else if (catData.getAudit().getAuditType().isPqf()) {
-								boolean needsVerification = false;
-								for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
-									if (auditData.getQuestion().getCategory().equals(catData.getCategory())) {
-										needsVerification = true;
-										break;
-									}
-								}
-								if (!needsVerification)
-									verifiedCount++;
-							} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
-								verifiedCount = requiredCount;
-								// If the questions are explicited ignored from
-								// verification but still required then we
-								// should increase the verifiedCount so we can
-								// close it
-							} else if (!catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
-								// For audits without the submitted step we
-								// don't have to verify the questions
-								verifiedCount++;
-							}
+							verifiedCount = addVerifiedCount(catData, requiredCount, verifiedCount, answer);
 						}
 					}
 				}
@@ -272,6 +240,53 @@ public class AuditPercentCalculator {
 		catData.setScore(score);
 		catData.setScorePossible(scoreWeight);
 		// categoryDataDAO.save(catData);
+	}
+
+	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
+		AuditQuestion question = answer.getQuestion();
+		// Anything that requires verification, should be
+		// listed as Required.
+		// If we don't then it's possible that the verified
+		// count will be higher than the required total,
+		// resulting in a > 100% verified
+		if (answer.isVerified())
+			verifiedCount++;
+		// This is used for manual/implementation audits
+		// with questions with no requirements, so we need
+		// to increment the count so we can close it.
+		else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
+			verifiedCount++;
+		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217) {
+			verifiedCount++;
+		} else if (catData.getAudit().getAuditType().isPqf()) {
+			boolean needsVerification = false;
+			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
+				if (auditData.getQuestion().getCategory().equals(catData.getCategory())) {
+					needsVerification = true;
+					break;
+				}
+			}
+			if (!needsVerification)
+				verifiedCount++;
+		} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
+			verifiedCount = requiredCount;
+			// If the questions are explicited ignored from
+			// verification but still required then we
+			// should increase the verifiedCount so we can
+			// close it
+		} else if (!catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
+			// For audits without the submitted step we
+			// don't have to verify the questions
+			verifiedCount++;
+		}
+		int categoryId = catData.getCategory().getId();
+
+		// COHS, OSHA Additional Logs and MSHA are not verified
+		if (categoryId == OshaAudit.CAT_ID_COHS || categoryId == OshaAudit.CAT_ID_OSHA_ADDITIONAL
+				|| categoryId == OshaAudit.CAT_ID_MSHA) {
+			verifiedCount++;
+		}
+		return verifiedCount;
 	}
 
 	public void percentCalculateComplete(ContractorAudit conAudit) {
