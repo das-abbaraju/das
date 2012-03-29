@@ -121,7 +121,7 @@
                 function createModal(data) {
                     var modal = PICS.modal({
                         modal_class: 'modal schedule-audit-expedite-modal',
-                        title: translate('JS.ScheduleAudit.ExpediteFee.Titles'),
+                        title: translate('JS.ScheduleAudit.ExpediteFee.Title'),
                         content: data,
                         buttons: [{
                             html: [
