@@ -223,7 +223,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
-			if (permissions.canSeeAudit(audit.getAuditType()) && !audit.hasOnlyInvisibleCaos()) {
+			if (permissions.canSeeAudit(audit.getAuditType()) && audit.getOperatorsVisible().size() != 0) {
 				if (audit.getAuditType().getClassType().isPolicy())
 					insureGUARD.add(audit);
 				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().isAnnualAddendum())
