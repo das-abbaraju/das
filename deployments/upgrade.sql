@@ -6,6 +6,10 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-4600
+update ref_country rc set rc.currency = 'EUR' where rc.isoCode in ('AL','AM','MD');
+--
+
 -- PICS-4542
 update accounts a 
 join operators o on a.id = o.id
