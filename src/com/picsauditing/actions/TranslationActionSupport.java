@@ -24,10 +24,16 @@ import com.picsauditing.jpa.entities.Translatable;
 
 @SuppressWarnings("serial")
 public class TranslationActionSupport extends ActionSupport {
-
 	private Set<String> usedKeys = null;
 	private I18nCache i18nCache = I18nCache.getInstance();
 	static final protected String i18nTracing = "i18nTracing";
+
+	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
+			Locale.GERMAN };
+
+	public static Locale[] getSupportedLocales() {
+		return supportedLocales;
+	}
 
 	public static Locale getLocaleStatic() {
 		try {
