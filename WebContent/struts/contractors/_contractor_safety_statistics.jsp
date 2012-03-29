@@ -17,7 +17,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><s:property value="#stat" /></th>
+							<th><s:property value="getText(#stat.i18nKey)" /></th>
 							<s:iterator value="oshaDisplay.stats.get(#stat).get('columnNames')" var="colname">
 								<th><s:property value="#colname" /></th>
 							</s:iterator>

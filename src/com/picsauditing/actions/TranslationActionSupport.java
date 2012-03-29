@@ -135,6 +135,14 @@ public class TranslationActionSupport extends ActionSupport {
 		return getText(aTextName, null, Arrays.asList(args));
 	}
 
+	public String getTextNullSafe(String aTextName) {
+		return getText(aTextName, aTextName);
+	}
+
+	public String getTextNullSafeParameterized(String aTextName, Object... args) {
+		return getText(aTextName, aTextName, Arrays.asList(args));
+	}
+
 	public String getText(String aTextName, Object[] args) {
 		return getText(aTextName, null, Arrays.asList(args));
 	}

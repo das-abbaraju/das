@@ -9,7 +9,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class FileUtils {
 
@@ -238,54 +246,11 @@ public class FileUtils {
 	}
 
 	/**
-	 * This method will take and int and convert it into a folder structure
+	 * This method will take an int and convert it into a folder structure
 	 * where each folder contains up to a thousand subfolders and a thousand
 	 * child files. This is designed to be used as part of other algorithms
-	 * which build the whole path of a file. <br/>
-	 * <br/>
-	 * <strong>Some examples:</strong><br/>
-	 * <table border="1">
-	 * <tr>
-	 * <th>id</th>
-	 * <th>Expected Result</th>
-	 * </tr>
-	 * <tr>
-	 * <td>100</td>
-	 * <td>&nbsp;</td>
-	 * </tr>
-	 * <tr>
-	 * <td>1000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>10000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100000</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100001</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>100999</td>
-	 * <td>100/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>101000</td>
-	 * <td>101/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>1000000</td>
-	 * <td>100/000/</td>
-	 * </tr>
-	 * <tr>
-	 * <td>2215356</td>
-	 * <td>221/535/</td>
-	 * </tr>
-	 * </table>
+	 * which build the whole path of a file. In other words, it's a sinple
+	 * hashing algorithm. See the JUnit test for examples.
 	 * 
 	 * @param id
 	 *            the number to be converted into a path
@@ -383,5 +348,66 @@ public class FileUtils {
 		os.flush();
 		os.close();
 		return file;
+	}
+
+	/**
+	 * Creates a shell script (according to whatever shell script template is
+	 * provided) that could in some way manipulate a file (copy, move, delete,
+	 * convert, whatever). Support is provided for the file being manipulated to
+	 * be identified by a list of pairings of ID numbers (fromID and toID), and
+	 * also for the folder paths to hashed on those numbers (using the
+	 * thousandize() method). The template will be invoked once for each pairing
+	 * to build a combined script. The template is a Velocity template, so all
+	 * Velocity syntax is supported. Bindings are provided for the following
+	 * tokens:
+	 * 
+	 * ${sourceHashFolder} = FileUtils.thousandize(fromID)
+	 * 
+	 * ${destinationHashFolder} = FileUtils.thousandize(toID)
+	 * 
+	 * ${fromID} = asgiven
+	 * 
+	 * ${toID} = as given
+	 */
+	public static String massManipulateScript(Map<Integer, Integer> pairings, String scriptTemplate) {
+		StringBuffer script = new StringBuffer();
+		for (Integer fromID : pairings.keySet()) {
+			Integer toID = pairings.get(fromID);
+			script.append(singleManipulateScript(fromID, toID, scriptTemplate));
+		}
+		return script.toString();
+	}
+
+	/**
+	 * Creates a shell script (according to whatever shell script template is
+	 * provided) that could in some way manipulate a file (copy, move, delete,
+	 * convert, whatever). Support is provided for the file being manipulated to
+	 * be identified by a pair of ID numbers (fromID and toID), and also for the
+	 * folder paths to hashed on those numbers (using the thousandize() method).
+	 * The template is a Velocity template, so all Velocity syntax is supported.
+	 * Bindings are provided for the following tokens:
+	 * 
+	 * ${sourceHashFolder} = FileUtils.thousandize(fromID)
+	 * 
+	 * ${destinationHashFolder} = FileUtils.thousandize(toID) 
+	 * 
+	 * ${fromID} = asgiven 
+	 * 
+	 * ${toID} = as given
+	 */
+	public static String singleManipulateScript(int fromID, int toID, String scriptTemplate) {
+		String template = scriptTemplate;
+		Map<String, Object> tokens = new HashMap<String, Object>();
+		tokens.put("sourceHashFolder", FileUtils.thousandize(fromID));
+		tokens.put("destinationHashFolder", FileUtils.thousandize(toID));
+		tokens.put("fromID", fromID);
+		tokens.put("toID", toID);
+		String script = "";
+		try {
+			script = VelocityAdaptor.mergeTemplate(template, tokens);
+		} catch (Exception e) {
+			// do nothng
+		}
+		return script;
 	}
 }

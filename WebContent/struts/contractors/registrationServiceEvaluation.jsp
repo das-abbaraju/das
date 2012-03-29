@@ -111,7 +111,7 @@
 					<s:radio 
 						name="soleProprietor" 
 						value="contractor.soleProprietor"
-						list="#{'true':getText('YesNo.Yes'), 'false':getText('YesNo.No')}"
+						list="#{'true':getTextNullSafe('YesNo.Yes'), 'false':getTextNullSafe('YesNo.No')}"
 						cssClass="inline"
 					/>
 				</li>
@@ -122,7 +122,7 @@
 						<s:radio 
 							name="bidOnly" 
 							value="contractor.getAccountLevel().isBidOnly()" 
-							list="#{'true':getText('YesNo.Yes'), 'false':getText('YesNo.No')}"
+							list="#{'true':getTextNullSafe('YesNo.Yes'), 'false':getTextNullSafe('YesNo.No')}"
 							cssClass="inline" 
 						/>
 					</li>

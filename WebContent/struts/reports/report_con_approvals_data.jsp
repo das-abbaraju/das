@@ -71,7 +71,7 @@
 						<s:text name="ContractorApproval.ChangeStatusTo" />
 						
 						<s:radio 
-							list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('AccountStatus.Pending')}" 
+							list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('AccountStatus.Pending')}" 
 							name="workStatus"
 							theme="pics"
 							cssClass="workStatus inline"
