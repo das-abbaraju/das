@@ -251,7 +251,7 @@
 			</s:iterator>
 		</fieldset>
 		
-		<s:if test="osha != null">
+		<s:if test="!osha.isEmpty('OSHA')">
 			<fieldset class="form">
 				<h2 class="formLegend">OSHA</h2>
 					<s:if test="!osha.isVerified('OSHA')">
@@ -296,7 +296,7 @@
 						<li>
 							<label>File:</label>
 							<s:if test="osha.getFileUploadId('OSHA') > 0">
-							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8810)">View File</a>
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8811)">View File</a>
 							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2033&mode=Edit" target="_BLANK">Change File</a>
 							</s:if>
 						</li>		

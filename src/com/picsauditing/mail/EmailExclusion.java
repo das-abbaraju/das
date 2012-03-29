@@ -18,14 +18,16 @@ public class EmailExclusion extends ReportActionSupport {
 
 	public String execute() throws Exception {
 		permissions.tryPermission(OpPerms.EmailTemplates);
-		
-		String quoteSafeEmail = email.replace("'", "''");
+
+		String quoteSafeEmail = "";
+		if (email != null)
+			quoteSafeEmail = email.replace("'", "''");
 
 		if (button != null && button.toLowerCase().contains("save")) {
 			if (email != null && !email.isEmpty()) {
 				if (emailQueueDAO.findEmailAddressExclusionAlreadyExists(quoteSafeEmail))
 					addActionMessage(email + " already exists in the exclusion list");
-				else if (!Strings.isValidEmail(email)) 
+				else if (!Strings.isValidEmail(email))
 					addActionMessage(email + " is not a valid email address");
 				else {
 					addActionMessage("Added email to list. " + email + " will not receive email blast emails");
