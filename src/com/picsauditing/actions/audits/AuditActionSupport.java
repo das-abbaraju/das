@@ -307,6 +307,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 	
 	public boolean displayButton(ContractorAuditOperator cao, WorkflowStep step) {
 		if (cao != null && step != null) {
+			if (conAudit.getAuditType().isCorIecWaState()
+					&& !permissions.isAdmin()
+					&& step.getNewStatus().isResubmitted())
+				return false;
+			
 			if (!canContractorSubmitPQF(step)) {
 				return false;
 			}

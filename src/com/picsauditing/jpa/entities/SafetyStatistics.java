@@ -37,27 +37,12 @@ public abstract class SafetyStatistics {
 	public String getStats(OshaRateType rateType) {
 		AuditData auditData = answerMap.get(rateType);
 		if (auditData == null) {
-			logErrorInformation(rateType);
 			return null;
 		}
 		
 		return answerMap.get(rateType).getAnswer();
 	}
 	
-	private void logErrorInformation(OshaRateType rateType) {
-		StringBuilder error = new StringBuilder();
-		error.append("SafetyStatistics -> Configuration Error: rateType ").append(rateType)
-				.append(" is not in the answerMap.");
-		
-		if (fileUpload != null) {
-			error.append(" AuditData id = " + fileUpload.getId());
-		}
-		
-		error.append(" Year = " + year);
-		
-		System.out.println(error.toString());				
-	}
-
 	public HashMap<OshaRateType, AuditData> getAnswerMap() {
 		return answerMap;
 	}

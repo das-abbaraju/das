@@ -68,12 +68,16 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 
+		auditType = conAudit.getAuditType(); 
+		if (auditType.getId() == AuditType.WELCOME) {
+			categories.addAll(conAudit.getAuditType().getCategories());
+			return categories;
+		}
+
 		operators.clear();
 		if (auditOperators.size() == 0)
 			return categories;
 		
-		auditType = conAudit.getAuditType();
-
 		if (conAudit.getAuditType().getId() == AuditType.FIELD) { 
 			// field audits will only have caos that are manually specified (not by rules)
 			operators.put(conAudit.getRequestingOpAccount(), null);
@@ -161,6 +165,10 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		// account
 		OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
 		picsGlobal.setId(4);
+		
+		if (auditType != null && auditType.getId() == AuditType.WELCOME) {
+			caos.put(picsGlobal, new HashSet<OperatorAccount>());
+		}
 
 		for (OperatorAccount operator : operators.keySet()) {
 			AuditCategoryRule rule = operators.get(operator);

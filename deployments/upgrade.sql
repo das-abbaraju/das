@@ -6,6 +6,22 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-5331 Unable close out / complete welcome calls
+-- update category to applicable
+UPDATE
+audit_cat_data acd
+set acd.applies=1
+where acd.categoryID=130
+And acd.applies=0;
+
+-- update PICS-Global to be visible
+UPDATE 
+contractor_audit_operator cao
+join contractor_audit ca on ca.id = cao.auditID
+set cao.visible=1
+where ca.auditTypeID = 9
+And cao.opID = 4 and cao.visible=0;
+
 -- PICS-5305 default all transportation risks to low (per mina)
 UPDATE contractor_info ci
 SET    ci.transportationRisk = 1
