@@ -416,7 +416,8 @@
 		</action>
 		
 		<action name="ContractorApprovalCSV" class="com.picsauditing.actions.report.ReportContractorApproval">
-			<result>struts/reports/report_con_approvals_data.jsp</result>
+			<param name="download">true</param>
+			<result>struts/blank.jsp.jsp</result>
 		</action>
 
 		<!-- Operator Referrals -->
@@ -425,8 +426,7 @@
 			<result>struts/reports/report_client_site_referrals.jsp</result>
 		</action>
 
-		<action name="ReportClientSiteReferralsCSV"
-			class="com.picsauditing.actions.report.ReportClientSiteReferrals">
+		<action name="ReportClientSiteReferralsCSV" class="com.picsauditing.actions.report.ReportClientSiteReferrals">
 			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>

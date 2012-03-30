@@ -19,6 +19,8 @@ import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportContractorApproval extends ReportAccount {
@@ -155,5 +157,14 @@ public class ReportContractorApproval extends ReportAccount {
 			return "Yes";
 		else
 			return "No";
+	}
+	
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		
+		if (permissions.isOperator()) {
+			excelSheet.addColumn(new ExcelColumn("creationDate", "Date Added", ExcelCellType.Date), 400);
+			excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status", ExcelCellType.Enum));
+		}
 	}
 }
