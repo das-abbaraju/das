@@ -326,7 +326,7 @@
 							</div>
 						</div>
 						
-						<s:iterator value="#{'global.DocuGUARD': docuGUARD, 'global.AuditGUARD': auditGUARD, 'global.InsureGUARD': insureGUARD}" var="widget">
+						<s:iterator value="#{'global.DocuGUARD': docuGUARD, 'global.AuditGUARD': auditGUARD, 'global.InsureGUARD': insureGUARD, 'global.EmployeeGUARD': employeeGUARD}" var="widget">
 							<s:if test="#widget.value.size() > 0">
 								<div class="panel_placeholder">
 									<div class="panel">
