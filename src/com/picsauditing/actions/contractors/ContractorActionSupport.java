@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -380,7 +381,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+		if (isContractorHasEmployeeGuard() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add EmployeeGUARD
 			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
@@ -439,6 +440,17 @@ public class ContractorActionSupport extends AccountActionSupport {
 		PicsLogger.stop();
 		resetActiveAudits();
 		return menu;
+	}
+	
+	private boolean isContractorHasEmployeeGuard() {
+		for (ContractorTag tag : contractor.getOperatorTags()) {
+			if (tag.getTag().getTag().equals("HSE Competency")
+					|| tag.getTag().getTag()
+							.equals("Implementation Audit Plus")
+					|| tag.getTag().getTag().equals("Integrity Management"))
+				return true;
+		}
+		return false;
 	}
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {
