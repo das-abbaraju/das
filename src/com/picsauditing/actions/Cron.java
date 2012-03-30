@@ -156,8 +156,10 @@ public class Cron extends PicsActionSupport {
 			try {
 				// TODO - Move this to the db.picsauditing.com cron bash script
 				/*
-				 * OPTIMIZE TABLE OSHA,accounts,auditCategories,auditData,auditQuestions ,certificates,contractor_info,"
-				 * + "forms,generalContractors,loginLog,users;
+				 * OPTIMIZE TABLE
+				 * OSHA,accounts,auditCategories,auditData,auditQuestions
+				 * ,certificates,contractor_info," +
+				 * "forms,generalContractors,loginLog,users;
 				 */
 			} catch (Throwable t) {
 				handleException(t);
@@ -388,7 +390,7 @@ public class Cron extends PicsActionSupport {
 
 	private void sendEmailPendingAccounts() throws Exception {
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "u.email NOT IN ('" + exclude + "') AND ";
+		String where = "a.country IN ('US','CA') AND u.email NOT IN (" + exclude + ") AND ";
 		String where1Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 1 DAY)";
 		String where3Day = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String where2Week = where + "DATE(a.creationDate) = DATE_SUB(CURDATE(),INTERVAL 2 WEEK)";
@@ -412,7 +414,8 @@ public class Cron extends PicsActionSupport {
 		List<ContractorAccount> pending2Week = contractorAccountDAO.findPendingAccounts(where2Week);
 		runAccountEmailBlast(pending2Week, 187, activationReminderNote);
 
-		// Pending accounts are reminded one last time that they have a week to activate
+		// Pending accounts are reminded one last time that they have a week to
+		// activate
 		List<ContractorAccount> pending1Month = contractorAccountDAO.findPendingAccounts(where1Month);
 		runAccountEmailBlast(pending1Month, 188, activationLastReminderNote);
 
@@ -511,12 +514,13 @@ public class Cron extends PicsActionSupport {
 	private void sendEmailContractorRegistrationRequest() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 
-		// ignore all email accounts that have been sent a pending email within the last month
+		// ignore all email accounts that have been sent a pending email within
+		// the last month
 		List<String> emailsAlreadySent = emailQueueDAO.findPendingActivationEmails("1 MONTH");
 		emailExclusionList.addAll(emailsAlreadySent);
 
 		String exclude = Strings.implodeForDB(emailExclusionList, ",");
-		String where = "c.email NOT IN ('" + exclude + "') AND c.conID IS NULL AND ";
+		String where = "c.country IN ('US','CA') AND c.email NOT IN (" + exclude + ") AND c.conID IS NULL AND ";
 
 		String where3Days = where + "DATE(c.creationDate) = DATE_SUB(CURDATE(),INTERVAL 3 DAY)";
 		String where1Week3Days = where
@@ -851,21 +855,18 @@ public class Cron extends PicsActionSupport {
 
 	private List<BasicDynaBean> getFlagChangeData() throws SQLException {
 		StringBuilder query = new StringBuilder();
-		query
-				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query
-				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query
-				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
 		query.append("where changes >= 10 and changes/total > .05 ");
-		query.append("order by operator, percent desc ");
+		query.append("order by percent desc ");
 
 		Database db = new Database();
 		List<BasicDynaBean> data = db.select(query.toString(), true);
@@ -939,7 +940,6 @@ public class Cron extends PicsActionSupport {
 		stats.execute();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void checkRegistrationRequestsHoldDates() throws Exception {
 		List<ContractorRegistrationRequest> holdRequests = (List<ContractorRegistrationRequest>) dao.findWhere(
 				ContractorRegistrationRequest.class, "t.status = 'Hold'");

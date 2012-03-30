@@ -91,7 +91,7 @@
 		<s:if test="filter.showOpen">
 			<div class="filterOption">
 				<span><s:text name="global.Status" /> =</span>
-				<s:select cssClass="forms" list="#{1:getText('Filters.status.Open'),0:getText('Filters.status.Closed')}" name="filter.open" />
+				<s:select cssClass="forms" list="#{1:getTextNullSafe('Filters.status.Open'),0:getTextNullSafe('Filters.status.Closed')}" name="filter.open" />
 			</div>
 		</s:if>
 		
@@ -114,7 +114,7 @@
 				<a href="#" class="filterBox"><s:text name="Filters.label.AccountLevel" /></a> =
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span><br />
 				<span class="clearLink q_box select">
-					<s:select list="#{'Full':getText('Filters.status.Full'), 'ListOnly':getText('Filters.status.ListOnly')}" cssClass="forms" name="filter.accountLevel" multiple="true" size="3" />
+					<s:select list="#{'Full':getTextNullSafe('Filters.status.Full'), 'ListOnly':getTextNullSafe('Filters.status.ListOnly')}" cssClass="forms" name="filter.accountLevel" multiple="true" size="3" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
@@ -156,7 +156,7 @@
 					<s:textfield rel="Trade/true" name="filter.trade" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 					<s:radio 
-						list="#{2:getText('Filters.status.Any'),1:getText('ContractorList.label.SelfPerformed'),0:getText('ContractorList.label.SubContracted')}" 
+						list="#{2:getTextNullSafe('Filters.status.Any'),1:getTextNullSafe('ContractorList.label.SelfPerformed'),0:getTextNullSafe('ContractorList.label.SubContracted')}" 
 						name="filter.showSelfPerformedTrade"
 						theme="pics"
 						cssClass="inline"
@@ -192,7 +192,7 @@
 		<s:if test="filter.showWorkStatus">
 			<div class="filterOption">
 				<a href="#"><s:text name="Filters.label.WorkStatus" /></a> =
-				<s:select list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('Filters.status.Pending'),'C':getText('ContractorOperator.WorkStatusContractor')}" headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
+				<s:select list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ContractorOperator.WorkStatusContractor')}" headerKey="" headerValue="Any" cssClass="forms" name="filter.workStatus" />
 			</div>
 		</s:if>
 		
@@ -208,7 +208,7 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:select list="#{1:getText('LowMedHigh.Low'), 2:getText('LowMedHigh.Med'), 3:getText('LowMedHigh.High')}" cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
+					<s:select list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}" cssClass="forms" name="filter.riskLevel" multiple="true" size="3" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
@@ -220,7 +220,7 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:select list="#{1:getText('LowMedHigh.Low'), 2:getText('LowMedHigh.Med'), 3:getText('LowMedHigh.High')}" cssClass="forms" name="filter.productRiskLevel" multiple="true" size="3" />
+					<s:select list="#{1:getTextNullSafe('LowMedHigh.Low'), 2:getTextNullSafe('LowMedHigh.Med'), 3:getTextNullSafe('LowMedHigh.High')}" cssClass="forms" name="filter.productRiskLevel" multiple="true" size="3" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
@@ -232,7 +232,7 @@
 				<span class="q_status"><s:text name="JS.Filters.status.All" /></span>
 				<br />
 				<span class="clearLink q_box select">
-					<s:select list="#{'Onsite':getText('ContractorType.Onsite'), 'Offsite':getText('ContractorType.Offsite'), 'Transportation':getText('ContractorType.Transportation'), 'Material Supplier':getText('ContractorType.Material')}" cssClass="forms" name="filter.service" multiple="true" size="3" />
+					<s:select list="#{'Onsite':getTextNullSafe('ContractorType.Onsite'), 'Offsite':getTextNullSafe('ContractorType.Offsite'), 'Transportation':getTextNullSafe('ContractorType.Transportation'), 'Material Supplier':getTextNullSafe('ContractorType.Material')}" cssClass="forms" name="filter.service" multiple="true" size="3" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 				</span>
 			</div>
@@ -252,7 +252,7 @@
 	
 		<s:if test="filter.showCcOnFile">
 			<div class="filterOption">
-				<s:select list="#{'1':getText('YesNo.Yes'),'0':getText('YesNo.No')}" headerKey="2" headerValue="- %{getText('global.CreditCard')} -" cssClass="forms" name="filter.ccOnFile" />
+				<s:select list="#{'1':getTextNullSafe('YesNo.Yes'),'0':getTextNullSafe('YesNo.No')}" headerKey="2" headerValue="- %{getText('global.CreditCard')} -" cssClass="forms" name="filter.ccOnFile" />
 			</div>
 		</s:if>
 	
@@ -282,7 +282,7 @@
 						<s:textfield rel="Operator" name="filter.operator" cssClass="tokenAuto" />
 						<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 						<s:radio 
-							list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+							list="#{'false':getTextNullSafe('JS.Filters.status.All'),'true':getTextNullSafe('Filters.status.Any')}" 
 							name="filter.showAnyOperator"
 							theme="pics"
 							cssClass="inline"
@@ -352,7 +352,7 @@
 					<s:textfield rel="Operator" name="filter.caoOperator" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 					<s:radio 
-						list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+						list="#{'false':getTextNullSafe('JS.Filters.status.All'),'true':getTextNullSafe('Filters.status.Any')}" 
 						name="filter.showAnyCAOOperator"
 						theme="pics"
 						cssClass="inline"
@@ -515,7 +515,7 @@
 		<s:if test="filter.showConLicense">
 			<br clear="all" />
 			<div class="filterOption">
-				<s:select name="filter.validLicense" list="#{'Valid':getText('Filters.status.Valid'),'UnValid':getText('Filters.status.Invalid'),'All':getText('JS.Filters.status.All')}" cssClass="forms" />
+				<s:select name="filter.validLicense" list="#{'Valid':getTextNullSafe('Filters.status.Valid'),'UnValid':getTextNullSafe('Filters.status.Invalid'),'All':getTextNullSafe('JS.Filters.status.All')}" cssClass="forms" />
 			</div>
 		</s:if>
 		
@@ -624,7 +624,7 @@
 		
 		<s:if test="filter.showVerifiedAnnualUpdates">
 			<div class="filterOption">
-				<s:select list="#{'1':getText('global.Verified'),'2':getText('Filters.status.Unverified')}" headerKey="0" headerValue="- %{getText('Filters.header.VerifiedStats')} -" cssClass="forms" name="filter.verifiedAnnualUpdate" />
+				<s:select list="#{'1':getTextNullSafe('global.Verified'),'2':getTextNullSafe('Filters.status.Unverified')}" headerKey="0" headerValue="- %{getText('Filters.header.VerifiedStats')} -" cssClass="forms" name="filter.verifiedAnnualUpdate" />
 			</div>
 		</s:if>
 	
@@ -706,7 +706,7 @@
 				<span>
 					<s:text name="ContractorAccount.billingState" />:
 					<s:radio 
-						list="#{'Activations':getText('Filters.status.Activations'),'Renewals':getText('Filters.status.Renewals'),'Upgrades':getText('Filters.status.Upgrades'),'All':getText('JS.Filters.status.All')}" 
+						list="#{'Activations':getTextNullSafe('Filters.status.Activations'),'Renewals':getTextNullSafe('Filters.status.Renewals'),'Upgrades':getTextNullSafe('Filters.status.Upgrades'),'All':getTextNullSafe('JS.Filters.status.All')}" 
 						name="filter.billingState"
 						theme="pics"
 						cssClass="inline" 

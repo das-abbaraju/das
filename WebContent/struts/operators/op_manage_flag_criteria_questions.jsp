@@ -23,7 +23,7 @@
 			</td>
 			<td><nobr>
 				<span class="flagImage"><s:text name="FlagColor.Red.smallIcon" /></span>
-				<s:select list="#{'Red':getText('FlagColor.Red'),'Amber':getText('FlagColor.Amber')}"
+				<s:select list="#{'Red':getTextNullSafe('FlagColor.Red'),'Amber':getTextNullSafe('FlagColor.Amber')}"
 					name="newFlag" onchange="getFlag(this)" />
 			</nobr></td>
 			<s:if test="!insurance">
@@ -43,7 +43,7 @@
 				<s:if test="allowCustomValue">
 					<s:property value="descriptionBeforeHurdle" />
 					<s:if test="dataType == 'boolean'">
-						<s:select name="newHurdle" list="#{'true':getText('global.True'),'false':getText('global.False')}" value="defaultValue"></s:select>
+						<s:select name="newHurdle" list="#{'true':getTextNullSafe('global.True'),'false':getTextNullSafe('global.False')}" value="defaultValue"></s:select>
 					</s:if>
 					<s:elseif test="dataType == 'number'">
 						<s:if test="question.questionType == 'AMBest'">

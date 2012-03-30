@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +16,6 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.OrderBy;
 
 import com.picsauditing.util.Strings;
 
@@ -82,8 +82,13 @@ public class Invoice extends Transaction {
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
-	@OrderBy(clause = "feeID")
 	public List<InvoiceItem> getItems() {
+		Collections.sort(items, new Comparator<InvoiceItem>() {
+			@Override
+			public int compare(InvoiceItem o1, InvoiceItem o2) {
+				return o1.getInvoiceFee().getDisplayOrder().compareTo(o2.getInvoiceFee().getDisplayOrder());
+			}
+		});
 		return items;
 	}
 

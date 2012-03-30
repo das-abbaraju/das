@@ -141,7 +141,7 @@
 				<div style="height:28px;">
 					<s:radio 
 						name="newStatuses" 
-						list="#{'Approved':getText('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getText('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getText('ReportInsuranceApproval.MarkNA')}"
+						list="#{'Approved':getTextNullSafe('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getTextNullSafe('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getTextNullSafe('ReportInsuranceApproval.MarkNA')}"
 						theme="pics"
 						cssClass="statusSelects inline"
 					/>

@@ -222,7 +222,7 @@ public class I18nCache implements Serializable {
 			AppTranslation newTranslation = new AppTranslation();
 			newTranslation.setKey(key);
 			newTranslation.setLocale(translationFromCache.getLocale());
-			newTranslation.setValue(Strings.escapeQuotes(translationFromCache.getValue()));
+			newTranslation.setValue(translationFromCache.getValue());
 			newTranslation.setSourceLanguage(sourceLanguage);
 			newTranslation.setQualityRating(TranslationQualityRating.Good);
 			newTranslation.setApplicable(true);
