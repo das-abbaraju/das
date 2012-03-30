@@ -74,8 +74,10 @@ public class ManageFlagCriteria extends RequiredLanguagesSupport {
 	}
 
 	public String edit() {
-		if (criteria == null)
+		if (criteria == null) {
 			criteria = new FlagCriteria();
+			addUserPreferredLanguage(criteria);
+		}
 
 		return INPUT;
 	}

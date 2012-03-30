@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.BaseHistoryRequiringLanguages;
+import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.BaseTableRequiringLanguages;
 
 @SuppressWarnings("serial")
@@ -51,6 +53,25 @@ public abstract class RequiredLanguagesSupport extends PicsActionSupport {
 		availableLocales.removeAll(getSelectedLocales());
 
 		return availableLocales;
+	}
+
+	public void addUserPreferredLanguage(BaseTable entity) {
+		if (entity.getId() == 0
+				&& (entity instanceof BaseHistoryRequiringLanguages || entity instanceof BaseTableRequiringLanguages)) {
+			List<String> preferredLanguage = new ArrayList<String>();
+			preferredLanguage.add(permissions.getLocale().getLanguage());
+
+			if (entity instanceof BaseHistoryRequiringLanguages)
+				((BaseHistoryRequiringLanguages) entity).setLanguages(preferredLanguage);
+			if (entity instanceof BaseTableRequiringLanguages)
+				((BaseTableRequiringLanguages) entity).setLanguages(preferredLanguage);
+		}
+	}
+
+	public void addUserPreferredLanguage(BaseHistoryRequiringLanguages entity) {
+		List<String> preferredLanguage = new ArrayList<String>();
+		preferredLanguage.add(permissions.getLocale().getLanguage());
+		entity.setLanguages(preferredLanguage);
 	}
 
 	abstract protected void fillSelectedLocales();

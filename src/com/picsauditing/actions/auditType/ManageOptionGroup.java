@@ -57,8 +57,10 @@ public class ManageOptionGroup extends ManageOptionComponent {
 	@Override
 	@RequiredPermission(value = OpPerms.ManageAudits, type = OpType.Edit)
 	public String editAjax() throws Exception {
-		if (group == null)
+		if (group == null) {
 			group = new AuditOptionGroup();
+			addUserPreferredLanguage(group);
+		}
 
 		return "edit";
 	}
