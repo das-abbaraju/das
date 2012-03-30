@@ -562,4 +562,11 @@ public class Strings {
 		return new DateTool().format(format, d);
 	}
 
+	public static String capitalize(String uncapitalized) {
+		if (!isEmpty(uncapitalized)) {
+			return uncapitalized.substring(0, 1).toUpperCase() + uncapitalized.substring(1, uncapitalized.length());
+		}
+
+		return null;
+	}
 }

@@ -45,11 +45,13 @@
 		<s:include value="/struts/layout/chat.jsp" />
 	</s:if>
 	
-	<s:if test="actionName == 'Registration'">
+	<s:if test="actionName == 'Registration' && (configEnvironment || i18nReady)">
 		<s:form id="locale" cssClass="locale-form">
 			<s:select
 				label=""
-				list="#{'en': 'English', 'fr': 'Français', 'es': 'Español', 'de': 'Deutsch'}"
+				list="@com.picsauditing.actions.TranslationActionSupport@getSupportedLocales()"
+				listKey="language"
+				listValue="%{@com.picsauditing.util.Strings@capitalize(getDisplayLanguage(language))}"
 				name="request_locale"
 				value="locale"
 			/>

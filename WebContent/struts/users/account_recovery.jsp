@@ -16,22 +16,7 @@
 		<script type="text/javascript" src="js/account_recovery.js"></script>
 	</head>
 	<body>
-		<s:if test="configEnvironment || i18nReady">
-			<ul class="locales">
-				<li>
-					<a href="?request_locale=en">English</a>
-				</li>
-				<li>
-					<a href="?request_locale=fr">Français</a>
-				</li>
-				<li>
-					<a href="?request_locale=es">Español</a>
-				</li>
-                <li>
-                    <a href="?request_locale=de">Deutsch</a>
-                </li>
-			</ul> 
-		</s:if>
+		<s:include value="_supportedLocales.jsp" />
 		
 		<h1><s:text name="AccountRecovery.title" /></h1>
 		
