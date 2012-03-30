@@ -610,7 +610,7 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {
-		return answer.trim().replaceAll(",","").replaceAll("^0+","");
+		return answer.trim().replaceAll(",","").replaceAll("^0+(?!$)","");
 	}
 
 	private boolean isValidNAICScode(String code) {
