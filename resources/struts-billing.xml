@@ -1,0 +1,77 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.billing" extends="com.picsauditing">
+		<action name="ReportBilling" class="com.picsauditing.actions.report.ReportBilling">
+			<param name="reportName">Billing Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
+			<result>struts/reports/report_billing.jsp</result>
+		</action>
+
+		<action name="ReportBillingAjax" class="com.picsauditing.actions.report.ReportBilling">
+			<result>struts/reports/report_billing_data.jsp</result>
+		</action>
+		<action name="ReportUnpaidInvoices"
+			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
+			<param name="reportName">Unpaid Invoices Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
+			<result>struts/reports/unpaid_invoice_report.jsp</result>
+		</action>
+		<action name="ReportUnpaidInvoicesAjax"
+			class="com.picsauditing.actions.report.ReportUnpaidInvoices">
+			<result>struts/reports/unpaid_invoice_report_data.jsp</result>
+		</action>
+		<action name="ReportExpiredCreditCards"
+			class="com.picsauditing.actions.report.ReportExpiredCreditCards">
+			<param name="reportName">Expired Credit Card Report</param>
+			<param name="filter.ajax">true</param>
+			<param name="filter.allowMailMerge">true</param>
+			<result>struts/reports/report_expired_creditcards.jsp</result>
+		</action>
+		<action name="ReportExpiredCreditCardsAjax"
+			class="com.picsauditing.actions.report.ReportExpiredCreditCards">
+			<result>struts/reports/report_expired_creditcards_data.jsp</result>
+		</action>
+		<action name="BillingDetail"
+			class="com.picsauditing.actions.contractors.BillingDetail">
+			<result>struts/contractors/billing_detail.jsp</result>
+		</action>
+		<action name="InvoiceDetail"
+			class="com.picsauditing.actions.contractors.InvoiceDetail">
+			<result>struts/contractors/invoice_detail.jsp</result>
+		</action>
+		<action name="BillingAddress"
+			class="com.picsauditing.actions.contractors.BillingAddress">
+			<result>struts/contractors/billing_address.jsp</result>
+		</action>
+		<action name="PaymentDetail"
+			class="com.picsauditing.actions.contractors.PaymentDetail">
+			<result>struts/contractors/payment_detail.jsp</result>
+		</action>
+		<action name="PaymentDetailAjax"
+			class="com.picsauditing.actions.contractors.PaymentDetail">
+			<result>struts/contractors/credit_card.jsp</result>
+		</action>
+		<action name="ConInvoiceMaintain"
+			class="com.picsauditing.actions.contractors.ConInvoiceMaintain">
+			<result>struts/contractors/invoice_maintain.jsp</result>
+			<exception-mapping exception="java.util.InputMismatchException"
+				result="success" />
+			<result name="BillingDetail" type="redirectAction">
+				<param name="actionName">BillingDetail</param>
+				<param name="id">${contractor.id}</param>
+			</result>
+		</action>
+		<action name="ReportContractorUnpaidInvoices"
+			class="com.picsauditing.actions.report.ReportContractorUnpaidInvoice">
+			<param name="reportName">Invoice Search Report</param>
+			<result>struts/reports/report_con_unpaidinvoice.jsp</result>
+		</action>
+		<action name="QBSyncList" class="com.picsauditing.actions.report.ReportQBSyncList">
+			<result>struts/reports/report_qb_sync_list.jsp</result>
+		</action>
+	</package>
+</struts>

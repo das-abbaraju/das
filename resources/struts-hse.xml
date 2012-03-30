@@ -1,0 +1,71 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.employees.hse" extends="com.picsauditing.employees">
+		<action name="ReportCompetencyByEmployee"
+			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
+			<result>/struts/reports/report_competency_employee.jsp</result>
+		</action>
+		<action name="ReportCompetencyByEmployeeCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyByEmployee">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportCompetencyByAccount"
+			class="com.picsauditing.actions.report.ReportCompetencyByAccount">
+			<result>/struts/reports/report_competency_account.jsp</result>
+		</action>
+		<action name="ReportCompetencyByAccountCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyByAccount">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportCompetencyDetail"
+			class="com.picsauditing.actions.report.ReportCompetencyDetail">
+			<result>/struts/reports/report_competency_detail.jsp</result>
+		</action>
+
+		<action name="ReportCompetencyDetailCSV"
+			class="com.picsauditing.actions.report.ReportCompetencyDetail">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="JobCompetencyMatrix" class="com.picsauditing.actions.employees.JobCompetencyMatrix">
+			<result>/struts/employees/job_competency_matrix.jsp</result>
+		</action>
+
+		<action name="EmployeeCompetencies" class="com.picsauditing.actions.employees.EmployeeCompetencies">
+			<param name="filter.destinationAction">EmployeeCompetencies</param>
+			<result>/struts/employees/employee_competencies.jsp</result>
+		</action>
+		
+		<action name="EmployeeCompetenciesCSV" class="com.picsauditing.actions.employees.EmployeeCompetencies">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="DefineCompetencies" class="com.picsauditing.actions.employees.DefineCompetencies">
+			<result>struts/employees/op_define_competencies.jsp</result>
+		</action>
+
+		<action name="CategorySuggestAjax" class="com.picsauditing.actions.employees.CategorySuggest">
+			<result>struts/employees/category_suggest.jsp</result>
+		</action>
+
+		<action name="ManageJobRoles" class="com.picsauditing.actions.employees.ManageJobRoles">
+			<result>struts/employees/manage_roles.jsp</result>
+			<result name="role">struts/employees/manage_roles_role.jsp</result>
+			<result name="competencies">struts/employees/manage_roles_competencies.jsp</result>
+			<result name="suggest">struts/employees/role_suggest.jsp</result>
+			<result name="description">struts/employees/manage_roles_description.jsp</result>
+		</action>
+
+		<action name="RoleSuggestAjax" class="com.picsauditing.actions.employees.RoleSuggest">
+			<result>struts/employees/role_suggest.jsp</result>
+		</action>
+	</package>
+</struts>
