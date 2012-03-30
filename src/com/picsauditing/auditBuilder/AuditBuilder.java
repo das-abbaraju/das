@@ -434,7 +434,7 @@ public class AuditBuilder {
 
 	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Incomplete))
+			if (cao.getStatus().after(AuditStatus.Incomplete) && cao.isVisible())
 				return true;
 		}
 		return false;
