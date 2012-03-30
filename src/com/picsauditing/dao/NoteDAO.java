@@ -195,6 +195,17 @@ public class NoteDAO extends PicsDAO {
 
 		return beans;
 	}
+	
+	/**
+	 * Returns a list of Note objects wrapped as an ActivityBean object because the new standard for display
+	 * on the notes page is ActivitBean.
+	 */
+	public List<ActivityBean> getActivity(int accountID, Permissions permissions, String where, int firstResult, int limit) {
+		List<Note> notes = getNotes(accountID, permissions, where, firstResult, limit);
+		ArrayList<ActivityBean> activity = new ArrayList<ActivityBean>();
+		accumulateNotes(activity, notes, limit);
+		return activity;
+	}
 
 	private Date extractEarliestDate(List<Note> notes, int limit) {
 		Date earliestDate;
