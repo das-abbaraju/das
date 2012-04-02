@@ -40,6 +40,11 @@
 					</tbody>
 				</table>
 			</s:iterator>
+			<a class="weighted-industry-average"
+				href="javascript:;"
+				data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
+				title="<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" />"
+			>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
 					
 		<div class="clear"></div>
 			</div>
