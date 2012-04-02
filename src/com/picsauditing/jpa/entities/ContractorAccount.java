@@ -180,7 +180,7 @@ public class ContractorAccount extends Account implements JSONable {
 
 			@Override
 			public boolean check(ContractorOperator t) {
-				return !t.getOperatorAccount().isCorporate();
+				return !t.getOperatorAccount().isCorporate() && t.getOperatorAccount().getStatus().isActive();
 			}
 		}.grep(this.operators);
 	}
