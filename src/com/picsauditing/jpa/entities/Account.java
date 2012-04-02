@@ -139,7 +139,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.nameIndex = Strings.indexName(this.name);
 	}
 
-	@Column(length = 400)
+	@Column(name = "dbaName", length = 400)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
 	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getDbaName() {
@@ -180,7 +180,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.address3 = address3;
 	}
 
-	@Column(length = 35)
+	@Column(name = "city", length = 35)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	@ReportField(category = FieldCategory.Contact)
 	public String getCity() {
@@ -215,7 +215,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.state = state;
 	}
 
-	@Column(length = 15)
+	@Column(name = "zip", length = 15)
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 3)
 	@ReportField(category = FieldCategory.Contact)
 	public String getZip() {
@@ -275,7 +275,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		return full.toString();
 	}
 
-	@Column(length = 25)
+	@Column(name = "phone", length = 25)
 	@IndexableField(type = IndexValueType.PHONETYPE, weight = 2)
 	@ReportField(category = FieldCategory.Contact)
 	public String getPhone() {
@@ -286,7 +286,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.phone = phone;
 	}
 
-	@Column(length = 20)
+	@Column(name = "fax", length = 20)
 	@ReportField(category = FieldCategory.Contact)
 	public String getFax() {
 		return this.fax;
@@ -357,7 +357,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(name = "status", nullable = false)
 	@ReportField(filterType = FilterType.AccountStatus)
 	public AccountStatus getStatus() {
 		return status;
