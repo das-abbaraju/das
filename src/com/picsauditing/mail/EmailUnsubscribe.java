@@ -3,10 +3,9 @@ package com.picsauditing.mail;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import org.apache.struts2.interceptor.ServletRequestAware;
-
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.NoteDAO;
@@ -21,40 +20,37 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class EmailUnsubscribe extends PicsActionSupport implements ServletRequestAware {
-	protected UserDAO userDAO;
-	protected EmailSubscriptionDAO emailSubscriptionDAO;
-	protected NoteDAO noteDAO;
-	
-	protected HttpServletRequest request;
+public class EmailUnsubscribe extends PicsActionSupport {
+	@Autowired
+	private UserDAO userDAO;
+	@Autowired
+	private EmailSubscriptionDAO emailSubscriptionDAO;
+	@Autowired
+	private NoteDAO noteDAO;
 
-	public EmailUnsubscribe(UserDAO userDAO, EmailSubscriptionDAO emailSubscriptionDAO, NoteDAO noteDAO) {
-		this.userDAO = userDAO;
-		this.emailSubscriptionDAO = emailSubscriptionDAO;
-		this.noteDAO = noteDAO;
-	}
+	private int id;
+	private String sub;
 
+	@Anonymous
 	public String execute() {
-		String userIDstring = request.getParameter("id");
-		String subString = request.getParameter("sub");
-		if (Strings.isEmpty(userIDstring) || Strings.isEmpty(subString)) {
-			addActionError("Cannot unsubscribe from " + subString +" email. Please log in to your account and edit your email preferences.");
+		if (id == 0 || Strings.isEmpty(sub)) {
+			addActionError("Cannot unsubscribe from " + sub
+					+ " email. Please log in to your account and edit your email preferences.");
 			return SUCCESS;
 		}
-		
-		int userID = Integer.parseInt(userIDstring);
-		User user = userDAO.find(userID);
+
+		User user = userDAO.find(id);
 		if (user != null) {
-			List<EmailSubscription> emList = emailSubscriptionDAO.findByUserId(userID);
+			List<EmailSubscription> emList = emailSubscriptionDAO.findByUserId(id);
 			Iterator<EmailSubscription> eIterator = emList.iterator();
-			while(eIterator.hasNext()) {
+			while (eIterator.hasNext()) {
 				EmailSubscription eSubscription = eIterator.next();
-				if(eSubscription.getSubscription().toString().equals(subString)) {
+				if (eSubscription.getSubscription().toString().equals(sub)) {
 					emailSubscriptionDAO.remove(eSubscription);
 				}
 			}
-			
-			String newNote = user.getName() + " unsubscribed from " + subString;
+
+			String newNote = user.getName() + " unsubscribed from " + sub;
 			Note note = new Note();
 			note.setAccount(user.getAccount());
 			note.setAuditColumns(permissions);
@@ -70,14 +66,20 @@ public class EmailUnsubscribe extends PicsActionSupport implements ServletReques
 		return SUCCESS;
 	}
 
-	@Override
-	public void setServletRequest(HttpServletRequest request) {
-		this.request = request;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public void setId(String id) {
+	public int getId() {
+		return id;
 	}
 
-	public void setSub(String type) {
+	public void setSub(String sub) {
+		this.sub = sub;
 	}
+
+	public String getSub() {
+		return sub;
+	}
+
 }

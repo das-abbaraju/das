@@ -1423,6 +1423,11 @@ div.blockDialog {
 	margin-top: 10px;
 }
 
+.translation-list .quality-rating li
+{
+	overflow: hidden;
+}
+
 .translation-list .content.view-mode .view .text *
 {
 	line-height: normal;
