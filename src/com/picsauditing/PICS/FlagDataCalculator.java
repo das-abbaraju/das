@@ -63,7 +63,7 @@ public class FlagDataCalculator {
 				FlagColor flag = FlagColor.Green;
 				if (contractorCriteria.containsKey(key)) {
 					Boolean flagged = isFlagged(fco, contractorCriteria.get(key));
-					if (flagged != null && flagged) {
+					if (flagged != null) {
 						if (overrides != null) {
 							FlagDataOverride override = hasForceDataFlag(key, operator);
 							if (override != null)
