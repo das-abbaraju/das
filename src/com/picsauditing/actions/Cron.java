@@ -51,6 +51,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -71,6 +72,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
@@ -228,6 +230,16 @@ public class Cron extends PicsActionSupport {
 
 			emailExclusionList.clear();
 
+			endTask();
+		} catch (Throwable t) {
+			handleException(t);
+		}
+		
+		try {
+			startTask("\nSending email about upcoming implementation audits...");
+			
+			sendUpcomingImplementationAuditEmail();
+			
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -509,6 +521,20 @@ public class Cron extends PicsActionSupport {
 								+ emailBuilder.getSentTo(), NoteCategory.Registration);
 			}
 		}
+	}
+	
+	private void sendUpcomingImplementationAuditEmail() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 7);
+
+		List<ContractorAudit> caList = contractorAuditDAO
+				.findScheduledAuditsByAuditId(AuditType.OFFICE,
+						DateBean.setToStartOfDay(cal.getTime()),
+						DateBean.setToEndOfDay(cal.getTime()));
+		for (ContractorAudit ca : caList) {
+			EventSubscriptionBuilder.notifyUpcomingImplementationAudit(ca);
+		}
+
 	}
 
 	private void sendEmailContractorRegistrationRequest() throws Exception {
