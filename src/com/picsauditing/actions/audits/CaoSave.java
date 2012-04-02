@@ -38,6 +38,7 @@ import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -296,6 +297,9 @@ public class CaoSave extends AuditActionSupport {
 			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
 					Account.PicsID, null, null);
 		}
+		
+		if (cao.getAudit().getAuditType().isPqf() && newStatus.isSubmitted())
+			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
 
 		caoDAO.save(cao);
 		
