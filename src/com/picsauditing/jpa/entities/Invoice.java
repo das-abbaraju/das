@@ -31,6 +31,7 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+	private List<InvoiceItem> itemsByFeeId = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
 
 	@Transient
@@ -94,6 +95,30 @@ public class Invoice extends Transaction {
 
 	public void setItems(List<InvoiceItem> items) {
 		this.items = items;
+	}
+
+	/**
+	 * This is used by the QBWebConnector Adaptor to ensure that all Tax items
+	 * come before any other Fee item in an invoice for proper tax handling.
+	 * 
+	 * @return
+	 */
+	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	public List<InvoiceItem> getItemsByFeeId() {
+		Collections.sort(itemsByFeeId, new Comparator<InvoiceItem>() {
+			@Override
+			public int compare(InvoiceItem o1, InvoiceItem o2) {
+				Integer int1 = o1.getInvoiceFee().getId();
+				Integer int2 = o2.getInvoiceFee().getId();
+
+				return int1.compareTo(int2);
+			}
+		});
+		return itemsByFeeId;
+	}
+
+	public void setItemsByFeeId(List<InvoiceItem> itemsByFeeId) {
+		this.itemsByFeeId = itemsByFeeId;
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
