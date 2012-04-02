@@ -11,7 +11,6 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +34,6 @@ import com.picsauditing.util.PermissionQueryBuilder;
 
 @SuppressWarnings("unchecked")
 public class ContractorAuditDAO extends PicsDAO {
-	@Autowired
-	private ContractorAuditOperatorDAO caoDao;
 
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {

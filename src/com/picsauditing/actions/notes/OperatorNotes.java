@@ -37,13 +37,14 @@ public class OperatorNotes extends OperatorActionSupport {
 		return returnType;
 	}
 
+	@Deprecated
 	public List<Note> getNotes() {
 		return super.getNotes(getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
 	
 	public List<ActivityBean> getActivity() {
 		return noteDao.getActivity(id, permissions, "status IN (1,2)" + getFilters(), filter.getFirstResult(), filter.getLimit());
-	} 
+	}
 
 	private String getFilters() {
 		String filterString = "";
