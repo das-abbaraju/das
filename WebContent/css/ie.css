@@ -82,3 +82,15 @@ ul.radio label
 {
 	width: 600px;
 }
+
+/* Translations */
+
+.translation-list .rate
+{
+	padding-right: 7px;
+}
+
+.translation-list .applicable .is-applicable
+{
+	padding: 0px;
+}
