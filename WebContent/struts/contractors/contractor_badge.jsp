@@ -37,6 +37,16 @@
     
     <div id="${actionName}-page">
         <s:text name="ContractorBadge.Information" />
+
+		<s:if test="!taskCompleted">        
+	        <s:url var="con_badge" action="ContractorBadge" method="save">
+	        	<s:param name="contractor" value="%{contractor.id}" />
+	        </s:url>
+	        
+	        <a href="${con_badge}">
+	        	<s:text name="ContractorBadge.Confirm" />
+	        </a>
+        </s:if>
         
         <ul class="badges">
             <li>
