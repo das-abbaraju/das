@@ -414,6 +414,8 @@ public class OpenTasks extends TranslationActionSupport {
 						hasMembershipSealAnswer = true;
 					}
 				}
+				
+				break;
 			}
 		}
 
