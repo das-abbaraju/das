@@ -256,6 +256,8 @@ public class ProfileEdit extends PicsActionSupport {
 					subList.add(subscription);
 				} else if (permissions.isRequiresOQ() && subscription.isRequiresOQ()) {
 					subList.add(subscription);
+				} else if (permissions.isPicsEmployee() && subscription.isRequiredForAdmin()) {
+					subList.add(subscription);
 				}
 			}
 		}
