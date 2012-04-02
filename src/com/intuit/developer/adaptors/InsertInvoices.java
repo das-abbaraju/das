@@ -106,7 +106,7 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.setIsToBeEmailed("false");
 
 				if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
-					for (InvoiceItem item : invoiceJPA.getItemsByFeeId()) {
+					for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
 
 						InvoiceLineAdd lineItem = factory.createInvoiceLineAdd();
 
