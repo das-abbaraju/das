@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
+import com.picsauditing.actions.contractors.ContractorBadge;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.AssessmentResultStage;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -56,6 +58,8 @@ public class OpenTasks extends TranslationActionSupport {
 		gatherTasksAboutAudits(); // uses hasImportPQF, importPQFComplete
 		gatherTasksAboutWebCamShipments();
 		gatherTasksAboutOperatorQualification();
+		gatherTasksAboutMembershipSeal(contractor);
+
 		return openTasks;
 	}
 
@@ -165,24 +169,16 @@ public class OpenTasks extends TranslationActionSupport {
 		if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 			if (contractor.getWebcam() != null && contractor.getWebcam().getTrackingNumber() != null
 					&& contractor.getWebcam().getTrackingNumber().trim().length() > 0) {
-				
-				String carrier = contractor.getWebcam().getCarrier(); 
+
+				String carrier = contractor.getWebcam().getCarrier();
 
 				if (carrier != null) {
 					if (carrier.equals("FedEx")) {
-						openTasks.add(
-							getTextParameterized(
-								"ContractorWidget.message.WebcamHasShippedFedEx", 
-								contractor.getWebcam().getTrackingNumber()
-							)
-						);
+						openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShippedFedEx", contractor
+								.getWebcam().getTrackingNumber()));
 					} else if (carrier.equals("Purolator")) {
-						openTasks.add(
-							getTextParameterized(
-								"ContractorWidget.message.WebcamHasShippedPurolator",
-								contractor.getWebcam().getTrackingNumber()
-							)
-						);
+						openTasks.add(getTextParameterized("ContractorWidget.message.WebcamHasShippedPurolator",
+								contractor.getWebcam().getTrackingNumber()));
 					} else {
 						openTasks.add(getText("ContractorWidget.message.WebcamHasShippedGeneric"));
 					}
@@ -209,6 +205,13 @@ public class OpenTasks extends TranslationActionSupport {
 						openTasks.add(getText("ContractorWidget.message.AssessmentResultsNeedMatching"));
 					}
 			}
+		}
+	}
+
+	private void gatherTasksAboutMembershipSeal(ContractorAccount contractor) {
+		if (!hasPQFMembershipSealAnswer(contractor)) {
+			openTasks.add(getTextParameterized("ContractorWidget.PicsMembershipSeal",
+					String.valueOf(contractor.getId())));
 		}
 	}
 
@@ -400,5 +403,22 @@ public class OpenTasks extends TranslationActionSupport {
 			}
 		}
 		return false;
+	}
+
+	private boolean hasPQFMembershipSealAnswer(ContractorAccount contractor) {
+		boolean hasMembershipSealAnswer = false;
+		for (ContractorAudit pqf : contractor.getAudits()) {
+			if (pqf.getAuditType().isPqf()) {
+				for (AuditData data : pqf.getData()) {
+					if (data.getQuestion().getId() == ContractorBadge.MEMBERSHIP_TAG_QUESTION) {
+						hasMembershipSealAnswer = true;
+					}
+				}
+				
+				break;
+			}
+		}
+
+		return hasMembershipSealAnswer;
 	}
 }

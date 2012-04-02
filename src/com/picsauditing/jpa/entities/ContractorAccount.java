@@ -317,7 +317,7 @@ public class ContractorAccount extends Account implements JSONable {
 		}
 	}
 
-	@Column(nullable = false)
+	@Column(name = "safetyRisk", nullable = false)
 	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getSafetyRisk() {
 		return safetyRisk;
@@ -337,7 +337,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.safetyRiskVerified = safetyRiskVerified;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "productRisk", nullable = false)
 	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getProductRisk() {
 		return productRisk;
@@ -357,7 +357,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.productRiskVerified = productRiskVerified;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "transportationRisk", nullable = false)
 	@ReportField(category = FieldCategory.Classification, filterType = FilterType.LowMedHigh)
 	public LowMedHigh getTransportationRisk() {
 		return transportationRisk;
@@ -430,7 +430,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return "Yes".equals(mustPay);
 	}
 
-	@Column(nullable = false)
+	@Column(name = "payingFacilities", nullable = false)
 	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Integer, requiredPermissions = OpPerms.Billing)
 	public int getPayingFacilities() {
 		return this.payingFacilities;
