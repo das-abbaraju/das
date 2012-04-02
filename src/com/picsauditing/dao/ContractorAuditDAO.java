@@ -346,6 +346,21 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAudit> findScheduledAuditsByAuditId(int auditId, Date startDate, Date endDate) {
+		String hql = "SELECT ca FROM ContractorAudit ca "
+				+ " WHERE ca.auditType.scheduled = true AND ca.scheduledDate >= :startDate AND ca.scheduledDate <= :endDate "
+				+ " AND ca.contractorAccount.status = 'Active'"
+				+ " AND ca.auditType.id = :auditId ";
+		hql += " AND ca IN (SELECT cao.audit FROM ca.operators cao where cao.status != 'NotApplicable' AND cao.visible = 1)";
+		hql += " ORDER BY ca.scheduledDate, ca.id";
+		Query query = em.createQuery(hql);
+		query.setParameter("auditId", auditId);
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+
+		return query.getResultList();
+	}
+
 	public List findAuditorBatches(int auditorID, Date startDate) {
 		String hql = "SELECT NEW MAP(ca.paidDate as paidDate, ca.auditor as auditor, COUNT(*) as total) FROM ContractorAudit ca WHERE ";
 		if (auditorID > 0) {
@@ -420,4 +435,13 @@ public class ContractorAuditDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<ContractorAudit> findUpcomingScheduledAudits(int auditTypeId) {
+		String hql = "SELECT ca FROM ContractorAudit ca "
+				+ "WHERE ca.auditType.id = :auditTypeID "
+				+ "AND ca.contractorAccount.status='Active' "
+				+ "AND ca.scheduledDate < DATEADD";
+		Query query = em.createQuery(hql);
+		query.setParameter("auditTypeID", auditTypeId);
+		return query.getResultList();
+	}
 }

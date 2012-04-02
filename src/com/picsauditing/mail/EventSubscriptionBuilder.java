@@ -144,6 +144,10 @@ public class EventSubscriptionBuilder {
 	public static void pqfSubmittedForCao(ContractorAuditOperator cao) {
 		
 	}
+	
+	public static void notifyUpcomingImplementationAudit(ContractorAudit audit) {
+		
+	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,
 			Set<ContractorAudit> expiringPolicies) throws IOException {

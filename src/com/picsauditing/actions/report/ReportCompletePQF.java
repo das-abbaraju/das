@@ -68,7 +68,11 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 	}
 
 	public String sendEmail() throws Exception {
-		if (sendMail.length > 0 && scheduledDate != null) {
+		if (sendMail == null || sendMail.length == 0) {
+			addActionError("Please select a contractor to email.");
+		}
+
+		if (sendMail != null && sendMail.length > 0 && scheduledDate != null) {
 			for (int i = 0; i < sendMail.length; i++) {
 				ContractorAudit conAudit = contractorAuditDAO.find(Integer.parseInt(sendMail[i]));
 
@@ -89,6 +93,7 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 					EmailQueue email = emailBuilder.build();
 					email.setViewableById(Account.EVERYONE);
 					emailSender.send(email);
+					addActionMessage("Sent Email");
 
 					Note note = new Note();
 					note.setAccount(conAudit.getContractorAccount());
