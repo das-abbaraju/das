@@ -1,10 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="pics-taglib"%>
 
 <s:if test="steps.size() > 0">
-	<div class="workflow_step_area"/>
+	<div class="workflow_step_area">
 		<h3><s:property value="workFlow.name"/></h3>
 		<s:hidden name="workflowID" value="%{workFlow.id}"/>
 		<table class="report" id="workflowStepsTable">
@@ -48,7 +47,7 @@
 							<s:if test="emailTemplate.id > 0">
 								<s:url var="email_template_link" action="EditEmailTemplate">
 									<s:param name="type" value="%{emailTemplate.listType}" />
-									<s:param name="template" value="%{emailTemplate.id}" />
+									<s:param name="templateID" value="%{emailTemplate.id}" />
 								</s:url>
 								<a href="${email_template_link}" class="go">Go</a>
 							</s:if>
