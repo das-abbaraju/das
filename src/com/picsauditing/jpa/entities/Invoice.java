@@ -104,7 +104,8 @@ public class Invoice extends Transaction {
 	 */
 	@Transient
 	public List<InvoiceItem> getItemsSortedByTaxFirst() {
-		List<InvoiceItem> items = getItems();
+		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+		items.addAll(getItems());
 		Collections.sort(items, new Comparator<InvoiceItem>() {
 			@Override
 			public int compare(InvoiceItem o1, InvoiceItem o2) {
