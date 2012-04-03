@@ -72,7 +72,8 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		if (answerMap == null)
 			answerMap = auditDataDao.findAnswers(auditID);
 		
-		for (AuditCatData auditCatData : conAudit.getCategories()) {
+		List<AuditCatData> auditCatDataList = dao.findWhere(AuditCatData.class, "auditID=" + auditID);
+		for (AuditCatData auditCatData : auditCatDataList) {
 			if (auditCatData.isApplies() && getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
 				loadRequirementsQuestions(auditCatData);
 			}
