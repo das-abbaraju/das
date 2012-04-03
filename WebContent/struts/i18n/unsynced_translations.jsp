@@ -26,7 +26,7 @@
 				<s:submit
 					action="UnsyncedTranslations"
 					method="sendToTarget"
-					value="Send to Config"
+					value="Send to Target"
 					cssClass="picsbutton"
 				/>
 				
@@ -52,10 +52,10 @@
 								Locale
 							</th>
 							<th>
-								Local Translation
+								<s:property value="local" /> Translation
 							</th>
 							<th>
-								Config Translation
+								<s:property value="target" /> Translation
 							</th>
 						</tr>
 					</thead>
@@ -93,11 +93,10 @@
 				<div>
 					<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 				</div>
-				
 				<s:submit
 					action="UnsyncedTranslations"
 					method="sendToTarget"
-					value="Send to Config"
+					value="Send to Target"
 					cssClass="picsbutton"
 				/>
 			</s:form>
