@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
 import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditCategoryDataDAO;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.CertificateDAO;
@@ -65,6 +66,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private ContractorAuditDAO conAuditDAO;
+	@Autowired
+	private AuditPercentCalculator auditPercentCalculator;
 
 	protected int auditID = 0;
 	protected int categoryID = 0;

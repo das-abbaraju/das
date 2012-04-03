@@ -138,7 +138,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 					invoice.setIsToBeEmailed("false");
 
 					if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
-						for (InvoiceItem item : invoiceJPA.getItemsByFeeId()) {
+						for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
 
 							InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
@@ -232,7 +232,7 @@ public class UpdateInvoices extends CustomerAdaptor {
 						invoice.setIsToBeEmailed("false");
 
 						if (!(invoiceJPA.getStatus().equals(TransactionStatus.Void))) {
-							for (InvoiceItem item : invoiceJPA.getItemsByFeeId()) {
+							for (InvoiceItem item : invoiceJPA.getItemsSortedByTaxFirst()) {
 
 								InvoiceLineMod lineItem = factory.createInvoiceLineMod();
 
