@@ -198,7 +198,7 @@ public class NoteDAO extends PicsDAO {
 	
 	/**
 	 * Returns a list of Note objects wrapped as an ActivityBean object because the new standard for display
-	 * on the notes page is ActivitBean.
+	 * on the notes page is ActivityBean.
 	 */
 	public List<ActivityBean> getActivity(int accountID, Permissions permissions, String where, int firstResult, int limit) {
 		List<Note> notes = getNotes(accountID, permissions, where, firstResult, limit);

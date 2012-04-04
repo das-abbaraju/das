@@ -12,12 +12,11 @@ import com.picsauditing.jpa.entities.SafetyStatistics;
 import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
 
-
 public class OshaOrganizer implements OshaVisitor {
 
 	// OSHA Audits will be sorted by their auditYears
 	Map<OshaType, Map<Integer, SafetyStatistics>> safetyStatisticsData = new HashMap<OshaType, Map<Integer, SafetyStatistics>>();
-	
+
 	/**
 	 * For the given OshaType, determine (up to) the three most resent years for
 	 * which we data.
@@ -27,13 +26,13 @@ public class OshaOrganizer implements OshaVisitor {
 	@Testable
 	public YearList mostRecentThreeYears(OshaType type) {
 		YearList yearList = new YearList();
-		
+
 		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
 			for (int year : safetyStatisticsData.get(type).keySet()) {
 				yearList.add(year);
 			}
 		}
-		
+
 		return yearList;
 	}
 
@@ -44,18 +43,18 @@ public class OshaOrganizer implements OshaVisitor {
 	 * @param year
 	 * @return
 	 */
-	public boolean isVerified(OshaType oshaType, MultiYearScope scope) {		
+	public boolean isVerified(OshaType oshaType, MultiYearScope scope) {
 		if (!scope.isIndividualYearScope()) {
 			return determineMultiYearVerificationStatus(oshaType);
-		} 
-		
+		}
+
 		YearList yearList = mostRecentThreeYears(oshaType);
 		return determineVerificationStatus(oshaType, yearList.getYearForScope(scope));
 	}
-	
+
 	private boolean determineMultiYearVerificationStatus(OshaType oshaType) {
 		YearList yearList = mostRecentThreeYears(oshaType);
-		
+
 		boolean result = true;
 		for (MultiYearScope scope : MultiYearScope.getListOfIndividualYearScopes()) {
 			Integer year = yearList.getYearForScope(scope);
@@ -66,12 +65,12 @@ public class OshaOrganizer implements OshaVisitor {
 
 		return result;
 	}
-	
+
 	private boolean determineVerificationStatus(OshaType oshaType, Integer year) {
 		if (year == null) {
 			return false;
 		}
-		
+
 		boolean verified = false;
 		Map<Integer, SafetyStatistics> statisticsByYear = safetyStatisticsData.get(oshaType);
 		if (statisticsByYear != null) {
@@ -80,14 +79,14 @@ public class OshaOrganizer implements OshaVisitor {
 				verified = stats.isVerified();
 			}
 		}
-		
+
 		return verified;
 	}
 
 	/**
-	 * Returns the contractor's rate for a specified year, OshaType and RateType. 
-	 * If a value is not found for the given parameters this method will
-	 * return -1 (since rates are always positive).
+	 * Returns the contractor's rate for a specified year, OshaType and
+	 * RateType. If a value is not found for the given parameters this method
+	 * will return -1 (since rates are always positive).
 	 * 
 	 * @param type
 	 * @param scope
@@ -100,22 +99,21 @@ public class OshaOrganizer implements OshaVisitor {
 		if (scope == MultiYearScope.ThreeYearAverage) {
 			int avgCount = 0;
 			BigDecimal rate = new BigDecimal(0);
-			
+
 			for (MultiYearScope yearScope : MultiYearScope.getListOfIndividualYearScopes()) {
 				BigDecimal value = getRateForSpecficYear(type, years.getYearForScope(yearScope), rateType);
-								
+
 				if (value != null) {
 					rate = rate.add(value);
 					avgCount++;
 				}
 			}
-			
+
 			if (avgCount == 0)
 				return -1;
 
 			return rate.divide(new BigDecimal(avgCount), 2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
-		}
-		else {
+		} else {
 			Integer yearWeWant = years.getYearForScope(scope);
 			if (yearWeWant != null && yearWeWant > 0) {
 				BigDecimal rate = getRateForSpecficYear(type, yearWeWant, rateType);
@@ -123,7 +121,7 @@ public class OshaOrganizer implements OshaVisitor {
 					return rate.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();
 				}
 			}
-			
+
 			return -1;
 		}
 	}
@@ -133,12 +131,11 @@ public class OshaOrganizer implements OshaVisitor {
 			Map<Integer, SafetyStatistics> typeMap = safetyStatisticsData.get(type);
 			SafetyStatistics stats = typeMap.get(year);
 			String value = stats.getStats(rateType);
-		
+
 			if (value != null) {
 				try {
 					return new BigDecimal(value);
-				}
-				catch (NumberFormatException valueIsNotAValidNumberSoJustReturnNull) {
+				} catch (NumberFormatException valueIsNotAValidNumberSoJustReturnNull) {
 					if (QuestionFunction.MISSING_PARAMETER.equals(value)) {
 						return null;
 					}
@@ -146,24 +143,23 @@ public class OshaOrganizer implements OshaVisitor {
 				}
 			}
 		}
-		
+
 		return null;
 	}
-
 
 	public SafetyStatistics getStatistic(OshaType type, MultiYearScope scope) {
 		Integer year = this.mostRecentThreeYears(type).getYearForScope(scope);
 		if (year == null) {
 			return null;
 		}
-		
+
 		return safetyStatisticsData.get(type).get(year);
 	}
 
 	public String getAnswer2(OshaType oshaType, MultiYearScope scope) {
 		YearList yearList = mostRecentThreeYears(oshaType);
-		yearList.getYearForScope(scope);	
-		
+		yearList.getYearForScope(scope);
+
 		StringBuilder answer2 = new StringBuilder();
 		if (scope.isIndividualYearScope()) {
 			Integer year = yearList.getYearForScope(scope);
@@ -175,39 +171,38 @@ public class OshaOrganizer implements OshaVisitor {
 				Integer year = yearList.getYearForScope(yearScope);
 				if (year != null) {
 					if (answer2.length() != 0) {
-						answer2.append(", ").append(year.intValue()); 
-					}
-					else {
+						answer2.append(", ").append(year.intValue());
+					} else {
 						answer2.append(year.intValue());
 					}
 				}
 			}
 		}
-		
+
 		if (isVerified(oshaType, scope)) {
 			answer2.append("<br/><span class=\"verified\">Verified</span>");
 		}
-		
+
 		return answer2.toString();
 	}
-	
+
 	@Override
 	public void gatherData(SafetyStatistics safetyStatistics) {
 		Map<Integer, SafetyStatistics> innerMap = safetyStatisticsData.get(safetyStatistics.getOshaType());
 		if (innerMap == null) {
 			innerMap = new HashMap<Integer, SafetyStatistics>();
 		}
-		
+
 		innerMap.put(safetyStatistics.getYear(), safetyStatistics);
-		safetyStatisticsData.put(safetyStatistics.getOshaType(), innerMap);	
+		safetyStatisticsData.put(safetyStatistics.getOshaType(), innerMap);
 	}
-	
+
 	public boolean hasOshaType(OshaType oshaType) {
-		return safetyStatisticsData.get(oshaType) != null && safetyStatisticsData.get(oshaType).size() > 0;
+		return (safetyStatisticsData.get(oshaType) != null && safetyStatisticsData.get(oshaType).size() > 0);
 	}
-	
+
 	public int size() {
 		return safetyStatisticsData.size();
 	}
-	
+
 }

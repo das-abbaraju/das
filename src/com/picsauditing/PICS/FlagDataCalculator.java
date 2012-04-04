@@ -27,7 +27,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
-import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -82,7 +81,7 @@ public class FlagDataCalculator {
 						data.setAuditColumns(new User(User.SYSTEM));
 
 						/*
-						 * This logic is intended, if the critera is an AU then we only add if the account is full and
+						 * This logic is intended, if the criteria is an AU then we only add if the account is full and
 						 * not a sole proprietor
 						 */
 						if (data.getCriteria().getAuditType() != null
