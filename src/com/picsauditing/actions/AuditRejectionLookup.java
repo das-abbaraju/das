@@ -10,30 +10,31 @@ import com.picsauditing.PICS.DBBean;
 import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings("serial")
-public class AuditRejectionLookup extends PicsActionSupport { 
-	
-	private static final String TRANSLATION_KEY_FOR_REJECTION_CODE = "Insurance.Rejection.Reason.Code.%";
-	
+public class AuditRejectionLookup extends PicsActionSupport {
+
+	private static final String TRANSLATION_KEY_PREFIX = "Insurance.Rejection.Reason.Code.";
+	private static final String TRANSLATION_KEY_FOR_REJECTION_CODE = TRANSLATION_KEY_PREFIX + "%";
+
 	@Override
 	public String execute() throws Exception {
 		SelectSQL selectSQL = new SelectSQL("app_translation");
 		selectSQL.addField("msgKey");
 		selectSQL.addField("msgValue");
 		selectSQL.addWhere(buildWhereClause());
-		
-		Connection conn =  DBBean.getDBConnection();
+
+		Connection conn = DBBean.getDBConnection();
 		ResultSet results = conn.createStatement().executeQuery(selectSQL.toString());
-		
+
 		populateJsonArray(results);
-		
+
 		return SUCCESS;
 	}
-	
+
 	private String buildWhereClause() {
-		return ("locale = '" + getLocaleStatic().getLanguage() 
-				+  "' AND msgKey LIKE '" + TRANSLATION_KEY_FOR_REJECTION_CODE + "'");
+		return ("locale = '" + getLocaleStatic().getLanguage() + "' AND msgKey LIKE '"
+				+ TRANSLATION_KEY_FOR_REJECTION_CODE + "'");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void populateJsonArray(ResultSet results) throws Exception {
 		while (results.next()) {
@@ -43,16 +44,15 @@ public class AuditRejectionLookup extends PicsActionSupport {
 			jsonArray.add(jsonObject);
 		}
 	}
-	
+
 	private String parseCode(String msgKey) {
 		if (!Strings.isNullOrEmpty(msgKey)) {
-			int index = msgKey.lastIndexOf(".");
-			if (index > -1 && index != (msgKey.length() - 1)) {
-				return msgKey.substring(index + 1);
+			if (msgKey.length() > TRANSLATION_KEY_PREFIX.length()) {
+				return msgKey.substring(TRANSLATION_KEY_PREFIX.length());
 			}
 		}
-		
+
 		return Strings.nullToEmpty(msgKey);
 	}
-	
+
 }
