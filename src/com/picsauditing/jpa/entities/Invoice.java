@@ -31,7 +31,6 @@ public class Invoice extends Transaction {
 	private Date paidDate; // MAX(Payment.creationDate)
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
-	private List<InvoiceItem> itemsSortedByTaxFirst = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
 
 	@Transient
@@ -103,9 +102,11 @@ public class Invoice extends Transaction {
 	 * 
 	 * @return
 	 */
-	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })
+	@Transient
 	public List<InvoiceItem> getItemsSortedByTaxFirst() {
-		Collections.sort(itemsSortedByTaxFirst, new Comparator<InvoiceItem>() {
+		List<InvoiceItem> items = new ArrayList<InvoiceItem>();
+		items.addAll(getItems());
+		Collections.sort(items, new Comparator<InvoiceItem>() {
 			@Override
 			public int compare(InvoiceItem o1, InvoiceItem o2) {
 				Integer int1 = o1.getInvoiceFee().getId();
@@ -114,11 +115,7 @@ public class Invoice extends Transaction {
 				return int1.compareTo(int2);
 			}
 		});
-		return itemsSortedByTaxFirst;
-	}
-
-	public void setItemsSortedByTaxFirst(List<InvoiceItem> itemsSortedByTaxFirst) {
-		this.itemsSortedByTaxFirst = itemsSortedByTaxFirst;
+		return items;
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.REMOVE })
