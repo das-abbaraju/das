@@ -661,7 +661,7 @@ fieldset.form {
 												</a>
 												<div id="cluetip<s:property value="#flagoverride.id"/>">
 													<span
-														title='<s:text name="ContractorFlag.ByTitle"><s:param><s:property value="#flagoverride.updatedBy.name" /></s:param><s:param><s:property value="#flagoverride.updatedBy.account.name"/></s:param><s:param><s:if test="#flagoverride.updatedBy.account.corporate"> <s:text name="ContractorFlag.ForAllSites" /></s:if></s:param></s:text>'>
+														title='<s:property value="getTextParameterized('ContractorFlag.ByTitle', #flagoverride.updatedBy.name, #flagoverride.updatedBy.account.name, #flagoverride.updatedBy.account.corporate)" />'>
 														<s:text name="ContractorFlag.ForceFlagTo"></s:text> <s:property
 															value="#flagoverride.forceFlag.smallIcon" escape="false" />
 														<s:text name="ContractorFlag.Until"></s:text> <s:date
