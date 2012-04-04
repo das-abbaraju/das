@@ -30,12 +30,15 @@ import com.picsauditing.util.YearList;
  */
 public class OshaDisplay {
 
+	private static final String EMPTY_CELL = ""; 
+	
 	private OshaOrganizer oshaOrganizer;
 	private ContractorAccount contractor;
 	private Locale locale;
 	private List<ContractorOperator> contractorOperators;
 	private I18nCache i18nCache;
 	private List<String> columnNames;
+	
 
 	@Autowired
 	private NaicsDAO naicsDao;
@@ -97,6 +100,9 @@ public class OshaDisplay {
 				if (answer != null && answer >= 0) {
 					rateRow.addCell(answer.toString());
 				}
+				else {
+					rateRow.addCell(EMPTY_CELL);
+				}
 			}
 
 			if (rateType.isHasIndustryAverage()) {
@@ -104,7 +110,7 @@ public class OshaDisplay {
 						.find(contractor.getNaics().getCode()), rateType);
 				rateRow.addCell(industryAverage.toString());
 			} else {
-				rateRow.addCell("");
+				rateRow.addCell(EMPTY_CELL);
 			}
 
 			rows.add(rateRow);
@@ -155,7 +161,7 @@ public class OshaDisplay {
 							.get(scope);
 					if (flagCriteriaForThisYear == null
 							|| flagCriteriaForThisYear.size() == 0) {
-						hurdleRow.addCell("");
+						hurdleRow.addCell(EMPTY_CELL);
 					} else {
 						StringBuilder display = new StringBuilder();
 						for (FlagCriteriaOperator fco : flagCriteriaForThisYear) {
@@ -181,7 +187,7 @@ public class OshaDisplay {
 	private void addEmptyCellsToRowForPadding(StatisticsDisplayRow hurdleRow) {
 		int emptyCellsToAddForThisRow = columnNames.size() + 1 - hurdleRow.size();
 		for (int i = 0; i < emptyCellsToAddForThisRow; i++) {
-			hurdleRow.addCell("");
+			hurdleRow.addCell(EMPTY_CELL);
 		}
 	}
 
