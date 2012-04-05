@@ -207,13 +207,22 @@ public class OshaAudit implements OshaVisitable {
 		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).isVerified();
 	}
 
-	public Date verifiedDate(OshaType oshaType) {
+	public Date getVerifiedDate(OshaType oshaType) {
 		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
 				|| getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
 			return null;
 		}
 
 		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getDateVerified();
+	}
+	
+	public User getAuditor(OshaType oshaType) {
+		if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
+				|| getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
+			return null;
+		}
+
+		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getAuditor();
 	}
 
 	public static boolean isSafetyStatisticsCategory(int categoryId) {

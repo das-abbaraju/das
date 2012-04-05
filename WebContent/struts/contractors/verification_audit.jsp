@@ -256,9 +256,11 @@
 				<h2 class="formLegend">OSHA</h2>
 					<s:if test="!osha.isVerified('OSHA')">
 						<s:set name="verifyText" value="'Verify'"/>
+						<s:set name="displayVerified" value="'none'"/>
 					</s:if>
 					<s:else>
 						<s:set name="verifyText" value="'Unverify'"/>
+						<s:set name="displayVerified" value="'block'"/>
 					</s:else>
 					
 					<input 
@@ -269,20 +271,12 @@
 						value="<s:property value="#attr.verifyText"/>"
 					/>				
 				<s:div id="status_%{osha.id}"></s:div>
-					
-				<s:if test="osha.verified">
-					<s:set name="displayVerified" value="'block'"/>
-				</s:if>
-				<s:else>
-					<s:set name="displayVerified" value="'none'"/>
-				</s:else>
-
 				<div>
 					<ol>
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.verifiedDate" format="%{getText('date.short')}" /> by <s:property value="osha.auditor.name"/>
+								<s:date name="osha.getVerifiedDate('OSHA')" format="%{getText('date.short')}" /> by <s:property value="osha.getAuditor('OSHA').name"/>
 							</s:div>
 						</li>
 						<li>
