@@ -126,12 +126,11 @@ public class NoteDAO extends PicsDAO {
 
 		String permWhere = "";
 		if (permissions.isOperator() || permissions.isCorporate())
-			permWhere += "(w.cao.operator.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+			permWhere += "AND (w.cao.operator.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
 		
 		Query query = em
 				.createQuery("FROM ContractorAuditOperatorWorkflow w JOIN FETCH w.cao c JOIN FETCH c.audit a WHERE a.contractorAccount.id = :accountID "
-						+ whereForWorkflow + " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate AND (" + permWhere
-						+ ") ");
+						+ whereForWorkflow + " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate " + permWhere + " ");
 		query.setParameter("accountID", accountID);
 		query.setParameter("earliestDate", earliestDate);
 		query.setParameter("latestDate", latestDate);
