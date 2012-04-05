@@ -212,12 +212,6 @@ public class MultiYearValueCalculator {
 	public static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
 		Map<String, OshaResult> oshaResults = buildOshaResultsList(audits);
 
-//		if (oshaResults.size() == 4) {
-//			oshaResults.remove(0);
-//		} else if (oshaResults.size() > 4) {
-//			throw new RuntimeException("Found [" + oshaResults.size() + "] EMRs");
-//		}
-
 		return oshaResults;
 	}
 

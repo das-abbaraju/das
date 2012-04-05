@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.QuestionFunction;
 import com.picsauditing.jpa.entities.SafetyStatistics;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
 
@@ -132,7 +133,7 @@ public class OshaOrganizer implements OshaVisitor {
 			SafetyStatistics stats = typeMap.get(year);
 			String value = stats.getStats(rateType);
 
-			if (value != null) {
+			if (!Strings.isEmpty(value)) {
 				try {
 					return new BigDecimal(value);
 				} catch (NumberFormatException valueIsNotAValidNumberSoJustReturnNull) {
