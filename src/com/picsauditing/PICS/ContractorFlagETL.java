@@ -25,8 +25,10 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
@@ -231,47 +233,35 @@ public class ContractorFlagETL {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor
+			Map<String, OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor
 					.getSortedAnnualUpdates());
 
-			if (CollectionUtils.isNotEmpty(oshaResults)) {
+			if (!oshaResults.isEmpty()) {
+				YearList yearList = new YearList();
 				Float answer = null;
 				String answer2 = "";
 				boolean verified = true; // Has the data been verified?
 
+				for (String year:oshaResults.keySet()) {
+					yearList.add(year);
+				}
+				
 				try {
 					switch (flagCriteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults);
+						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults.values());
 						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult
 								.getAnswer())) : null;
 						verified = oshaResult.isVerified();
 						answer2 = "Years: " + oshaResult.getYear();
 						break;
 					case ThreeYearsAgo:
-						if (oshaResults.size() >= 3) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 3);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case TwoYearsAgo:
-						if (oshaResults.size() >= 2) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 2);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case LastYearOnly:
-						if (oshaResults.size() >= 1) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 1);
-							if (result != null && isLast2Years(result.getYear())) {
+						Integer year = yearList.getYearForScope(flagCriteria.getMultiYearScope());
+						if (year != null) {
+							OshaResult result = oshaResults.get(year.toString());
+							if (result != null) {
 								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
 								verified = result.isVerified();
 								answer2 = "Year: " + result.getYear();

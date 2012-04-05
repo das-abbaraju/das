@@ -1,6 +1,5 @@
 package com.picsauditing.flags;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,13 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.PICS.flags.MultiYearValueCalculator;
 import com.picsauditing.PICS.flags.OshaResult;
 import com.picsauditing.dao.AmBestDAO;
@@ -34,11 +29,10 @@ import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaRule;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
+import com.picsauditing.util.YearList;
 
 /**
  * This class is no longer being called anywhere in the PICS code, so 
@@ -254,46 +248,34 @@ public class FlagCalculator {
 		String hurdle = getHurdle(rule);
 
 		if (criteria.getQuestion().getId() == AuditQuestion.EMR) {
-			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor.getSortedAnnualUpdates());			
+			Map<String, OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor.getSortedAnnualUpdates());			
 
-			if (CollectionUtils.isNotEmpty(oshaResults)) {
+			if (!oshaResults.isEmpty()) {
 				Float answer = null;
 				// TODO: refactor this code and remove answer2 and verified if they are not being used
 				String answer2 = "";
 				boolean verified = true; // Has the data been verified?
+				YearList yearList = new YearList();
+
+				for (String year:oshaResults.keySet()) {
+					yearList.add(year);
+				}
 
 				try {
 					switch (criteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults); 
+						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults.values()); 
 						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult.getAnswer())) : null;
 						verified = oshaResult.isVerified();
 						answer2 = "Years: " + oshaResult.getYear();						
 						break;
 					case ThreeYearsAgo:
-						if (oshaResults.size() >= 3) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 3);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case TwoYearsAgo:
-						if (oshaResults.size() >= 2) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 2);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case LastYearOnly:
-						if (oshaResults.size() >= 1) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 1);
-							if (result != null && isLast2Years(result.getYear())) {
+						Integer year = yearList.getYearForScope(criteria.getMultiYearScope());
+						if (year != null) {
+							OshaResult result = oshaResults.get(year.toString());
+							if (result != null) {
 								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
 								verified = result.isVerified();
 								answer2 = "Year: " + result.getYear();

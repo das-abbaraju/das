@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
@@ -163,7 +164,7 @@ public class CaoSave extends AuditActionSupport {
 			saveMessage += getText(status.getI18nKey("button")) + " " + Strings.implode(auditNames, ", ") + " for "
 					+ Strings.implode(accountNames, ", ") + "";
 
-			// "Explain why you are changing the status to " + status;
+			// Explain why you are changing the status (used for Complete, Reject, Approve)
 			if (noteRequired)
 				noteMessage += getText("Audit.message.ExplainStatusChange",
 						new Object[] { getText(status.getI18nKey()) });
@@ -171,26 +172,32 @@ public class CaoSave extends AuditActionSupport {
 			if (status.isIncomplete() && Strings.isEmpty(note) && conAudit != null) {
 				if (conAudit.getAuditType().isPqf()) {
 					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-					for (AuditData ad : temp) {
-						if (!ad.isVerified() && !Strings.isEmpty(ad.getComment())) {
-							note += ad.getQuestion().getColumnHeaderOrQuestion() + " Comment : " + ad.getComment();
-							note += "\n";
-						}
-					}
+					generateNote(temp);
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
-					for (AuditData auditData : conAudit.getData()) {
-						if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
-							note += auditData.getQuestion().getColumnHeaderOrQuestion() + " Comment : "
-									+ auditData.getComment();
-							note += "\n";
-						}
-					}
+					generateNote(conAudit.getData());
 				}
 			}
 		} else
 			return ERROR;
 
 		return "caoNoteSave";
+	}
+	
+	private void generateNote(List<AuditData> auditDataList) {
+		if (CollectionUtils.isEmpty(auditDataList)) {
+			return;
+		}
+		
+		for (AuditData auditData : auditDataList) {
+			if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
+				if (note == null) {
+					note = "";
+				}
+			
+//				note += auditData.getQuestion().getColumnHeaderOrQuestion() + " ";
+				note += "Comment : " + auditData.getComment() + "\n";
+			}
+		}
 	}
 
 	public String refresh() throws RecordNotFoundException, NoRightsException {

@@ -1,6 +1,7 @@
 package com.picsauditing.PICS.flags;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -208,20 +209,20 @@ public class MultiYearValueCalculator {
 	/**
 	 * Get a map of the last 3 years of applicable EMR data (verified or not)
 	 */
-	public static List<OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
-		List<OshaResult> oshaResults = buildOshaResultsList(audits);
+	public static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
+		Map<String, OshaResult> oshaResults = buildOshaResultsList(audits);
 
-		if (oshaResults.size() == 4) {
-			oshaResults.remove(0);
-		} else if (oshaResults.size() > 4) {
-			throw new RuntimeException("Found [" + oshaResults.size() + "] EMRs");
-		}
+//		if (oshaResults.size() == 4) {
+//			oshaResults.remove(0);
+//		} else if (oshaResults.size() > 4) {
+//			throw new RuntimeException("Found [" + oshaResults.size() + "] EMRs");
+//		}
 
 		return oshaResults;
 	}
 
-	static List<OshaResult> buildOshaResultsList(List<ContractorAudit> audits) {
-		List<OshaResult> oshaResults = new ArrayList<OshaResult>();
+	static Map<String, OshaResult> buildOshaResultsList(List<ContractorAudit> audits) {
+		Map<String, OshaResult> oshaResults = new HashMap<String, OshaResult>();
 		int count = 0;
 
 		for (ContractorAudit audit : audits) {
@@ -245,7 +246,7 @@ public class MultiYearValueCalculator {
 
 								OshaResult oshaResult = new OshaResult.Builder().verified(verified).answer(answerValue)
 										.year(audit.getAuditFor()).build();
-								oshaResults.add(oshaResult);
+								oshaResults.put(audit.getAuditFor(), oshaResult);
 							}
 						}
 					}
@@ -259,7 +260,7 @@ public class MultiYearValueCalculator {
 	/**
 	 * Calculate the Average EMR
 	 */
-	public static OshaResult calculateAverageEMR(List<OshaResult> values) {
+	public static OshaResult calculateAverageEMR(Collection<OshaResult> values) {
 		OshaResult oshaResult = null;
 		if (values != null && !values.isEmpty()) {
 			return oshaResult;
