@@ -125,8 +125,8 @@
                         content: data,
                         buttons: [{
                             html: [
-                                '<a href="javascript:;" class="btn cancel-expedite"><s:text name="JS.button.Cancel" /></a>',
-                                '<a href="javascript:;" class="btn success accept-expedite"><s:text name="JS.button.Accept" /></a>'
+                                '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.button.Cancel') + '</a>',
+                                '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.button.Accept') + '</a>'
                             ].join('')
                         }]
                     });

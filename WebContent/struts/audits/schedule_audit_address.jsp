@@ -23,6 +23,8 @@
 	
 	<s:form cssClass="schedule-audit-form schedule-audit-address-form">
 		<s:hidden name="auditID" />
+        <s:hidden id="conAudit_latitude" name="conAudit.latitude" />
+        <s:hidden id="conAudit_longitude" name="conAudit.longitude" />
 		
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="ScheduleAudit.label.ContactPerson" /></h2>
@@ -101,8 +103,5 @@
 				<s:submit id="submitButton" cssStyle="display: none;" cssClass="picsbutton positive" method="address" value="%{getText('button.Next') + ' >>'}" />
 			</div>
 		</fieldset>
-		
-		<s:hidden id="conAudit_latitude" name="conAudit.latitude" />
-		<s:hidden id="conAudit_longitude" name="conAudit.longitude" />
 	</s:form>
 </div>
