@@ -67,10 +67,6 @@ public class ReportActionSupport extends PicsActionSupport {
 		if (showPage > 0)
 			report.setCurrentPage(showPage);
 
-		// TODO: remove, because this is just for testing to see if the result set size is
-		// causing the warnings on the Terracotta servers
-		report.setLimit(1);		
-		
 		data = report.getPage();
 
 		logFilter();
@@ -175,7 +171,7 @@ public class ReportActionSupport extends PicsActionSupport {
 
 	private void logFilter() {
 		try {
-			AppPropertyDAO appPropertyDAO = SpringUtils.getBean("AppPropertyDAO");
+			AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 			AppProperty filterlog = appPropertyDAO.find("filterlog.enabled");
 			if (filterlog != null && filterlog.getValue().equals("1")) {
 				Set<String> params = new HashSet<String>();

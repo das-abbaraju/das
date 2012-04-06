@@ -39,14 +39,8 @@ public class Report extends TranslationActionSupport {
 		}
 		Database db = new Database();
 		List<BasicDynaBean> pageData = db.select(sql.toString(unionSql), true);
-		if (pageData.size() > 50) {
-			pageData = pageData.subList(0, 50);
-		}
-		
-//		returnedRows = pageData.size();
-//		allRows = db.getAllRows();
-		returnedRows = 1;
-		allRows = 1;
+		returnedRows = pageData.size();
+		allRows = db.getAllRows();
 		return pageData;
 	}
 

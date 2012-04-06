@@ -523,12 +523,10 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * @return
 	 */
 	public int getContractorCount() {
-		return 0;
-		
-//		if (permissions.isOperator() || permissions.isCorporate()) {
-//			return operatorAccountDAO.getContractorCount(permissions.getAccountId(), permissions);
-//		}
-//		return contractorAccountDAO.getActiveContractorCounts("");
+		if (permissions.isOperator() || permissions.isCorporate()) {
+			return operatorAccountDAO.getContractorCount(permissions.getAccountId(), permissions);
+		}
+		return contractorAccountDAO.getActiveContractorCounts("");
 	}
 
 	public List<Integer> getIds() {

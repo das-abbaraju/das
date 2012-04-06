@@ -13,7 +13,7 @@
 	</s:text>
 </div>
 
-<!--<s:include value="filters.jsp" />-->
+<s:include value="filters.jsp" />
 
 <div id="report_data">
 <s:include value="contractors_list_data.jsp"></s:include>
