@@ -98,8 +98,10 @@ $(function() {
 				<label><s:text name="ManageResources.ExistingFiles" />:</label>
 				<table class="report">
 					<thead>
-						<th><s:text name="ManageResources.Language" /></th>
-						<th><s:text name="ManageResources.Action" /></th>
+						<tr>
+							<th><s:text name="ManageResources.Language" /></th>
+							<th><s:text name="global.Action" /></th>
+						</tr>
 					</thead>
 					<tbody>
 						<tr>
