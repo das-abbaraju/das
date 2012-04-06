@@ -1,0 +1,47 @@
+package com.picsauditing.jpa.entities;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "workflow_state")
+@SuppressWarnings("serial")
+public class WorkflowState extends BaseTable {
+	private Workflow workflow;
+	private AuditStatus status;
+	private boolean hasRequirements;
+
+	@ManyToOne
+	@JoinColumn(name = "workflowID", nullable = false)
+	public Workflow getWorkflow() {
+		return workflow;
+	}
+
+	public void setWorkflow(Workflow workflow) {
+		this.workflow = workflow;
+	}
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	public AuditStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AuditStatus status) {
+		this.status = status;
+	}
+
+	public boolean isHasRequirements() {
+		return hasRequirements;
+	}
+
+	public void setHasRequirements(boolean hasRequirements) {
+		this.hasRequirements = hasRequirements;
+	}
+
+}
