@@ -1,0 +1,59 @@
+.flagCategories td {
+	padding-right: 10px;
+	vertical-align: top;
+}
+
+fieldset.form {
+	margin: 0 0 0 0;
+	padding: 0 0 10px 0;
+	border-style: none;
+	border-top: none;
+	background-color: transparent;
+	width: 100%;
+	float: none;
+	clear: both;
+	position: relative;
+	color: #404245;
+}
+
+.label-txt {
+	float: none;
+	width: 100%;
+	display: block;
+	margin: 0 0 5px 0;
+	text-align: left;
+	font-size: 15px;
+	font-weight: bold;
+	color: #003768;
+	line-height: 15px;
+	white-space: nowrap;
+}
+
+#tabs ul,#tabs ul li {
+	list-style: none;
+}
+
+#info-box {
+	float: right;
+	display: block;
+	width: 40%;
+}
+
+.override_form {
+	display: none;
+}
+
+.override_wrap {
+	float: left;
+	width: 100%;
+	text-align: center;
+	display: none
+}
+
+.clickable .override_wrap {
+	display: inline;
+}
+
+.override_form .override_wrap {
+	display: inline;
+}
