@@ -69,7 +69,7 @@ public class ReportActionSupport extends PicsActionSupport {
 
 		// TODO: remove, because this is just for testing to see if the result set size is
 		// causing the warnings on the Terracotta servers
-		report.setLimit(50);		
+		report.setLimit(1);		
 		
 		data = report.getPage();
 
