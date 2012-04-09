@@ -4,7 +4,11 @@
 
 <html>
 	<head>
-		<title>Flag Status for <s:property value="contractor.name" /></title>
+		<title>
+			<s:text name="ContractorFlag.title">
+				<s:param value="%{contractor.name}" />
+			</s:text>
+		</title>
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
@@ -54,55 +58,6 @@
 		</style>
 		
 		<s:include value="../jquery.jsp" />
-		
-		<script type="text/javascript">
-			$(function() {
-				$('.datepicker').datepicker({
-					changeMonth: true,
-					changeYear:true,
-					yearRange: '1940:'+ (new Date().getFullYear()+5),
-					showOn: 'button',
-					buttonImage: 'images/icon_calendar.gif',
-					buttonImageOnly: true,
-					buttonText: 'Choose a date...',
-					constrainInput: true,
-					showAnim: 'fadeIn'
-				});
-				$('.cluetip').cluetip({
-					arrows: true,
-					cluetipClass: 'jtip',
-					local: true,
-					clickThrough: false
-				});		
-				$("#tabs").tabs();
-			
-				$('a.override_table_link').click(function(e) {
-					e.preventDefault();
-				});
-			
-				$('tr._override_.clickable').live('click', function() {
-					$(this).removeClass('clickable').removeClass('tr-hover-clickable').find('div.override_form').fadeIn('fast');
-				});
-			
-				$('.override_hide').click(function() {
-					var me = $(this);
-					me.parent().fadeOut('fast',function(){
-						me.parents('tr._override_').addClass('clickable');
-					});
-				});
-			});
-			
-			function checkReason(id) {
-				var text = $('#' + id + '_override').find('[name="forceNote"]').val();
-			
-				if (text == null || text == '') {
-					alert("Please fill in reason");
-					return false;
-				} else {
-					return true;
-				}
-			}
-		</script>
 	</head>
 	<body>
 		<div id="tabs-1">
@@ -112,16 +67,16 @@
 					<thead>
 						<tr>
 							<td>
-								Flag
+								<s:text name="global.Flag" />
 							</td>
 							<td>
-								Description
+								<s:text name="global.Description" />
 							</td>
 							<td>
-								Value
+								<s:text name="ContractorFlag.Value" />
 							</td>
 							<td>
-								Override Detail
+								<s:text name="ContractorFlag.OverrideDetail" />
 							</td>
 						</tr>
 					</thead>
@@ -143,9 +98,9 @@
 											<s:if test="#opCriteria != null">
 												<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
 													<s:property value="#opCriteria.replaceHurdle" />
-													<a href="#" onclick="return false;" class="help cluetip" rel="#cluetip<s:property value="#opCriteria.id" />" title="Statistics"></a>
+													<a href="javascript:;" class="help cluetip" rel="#cluetip<s:property value="#opCriteria.id" />" title="Statistics"></a>
 													<div id="cluetip<s:property value="#opCriteria.id" />">
-														The statistics provided must have a status other than pending to be calculated.
+														<s:text name="ContractorFlag.StatusNotPending" />
 													</div>
 												</s:if>
 												<s:else>
@@ -157,8 +112,13 @@
 										<!-- flagoverride info -->
 										<td>
 											<s:if test="#flagoverride != null">
-												<span style="display: none;" title='By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>'>
-													Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+												<span style="display: none;" title="<s:property value="getTextParameterized('ContractorFlag.ByTitle', #flagoverride.updatedBy.name, #flagoverride.updatedBy.account.name, #flagoverride.updatedBy.account.corporate)" />">
+													<s:text name="ContractorFlag.ManualForceFlagShort">
+														<s:param>
+															<s:property value="#flagoverride.forceFlag.smallIcon" escape="false" />
+														</s:param>
+														<s:param value="%{#flagoverride.forceEnd}" />
+													</s:text>
 													<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>View Notes</a>
 												</span>
 											</s:if>
@@ -207,10 +167,10 @@
 										<!-- Override Detail -->
 										<td class="center">
 											<s:if test="#flagoverride != null">
-												<a href="#" onclick="return false;" class="cluetip help" rel="#cluetip<s:property value="#flagoverride.id"/>" title="Location"></a>	
+												<a href="javascript:;" class="cluetip help" rel="#cluetip<s:property value="#flagoverride.id"/>" title="Location"></a>	
 												<div id="cluetip<s:property value="#flagoverride.id"/>">
 													<span title='By <s:property value="#flagoverride.updatedBy.name" /> from <s:property value="#flagoverride.updatedBy.account.name"/><s:if test="#flagoverride.updatedBy.account.corporate"> for all the sites</s:if>'>
-														Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="MMM d, yyyy" />
+														Manual Force Flag <s:property value="#flagoverride.forceFlag.smallIcon" escape="false" /> until <s:date name="#flagoverride.forceEnd" format="%{getText('date.long')}" />
 														<a href='ContractorNotes.action?id=<s:property value="contractor.id"/>&amp;filter.userID=<s:property value="#flagoverride.updatedBy.id"/>&amp;filter.category=Flags&amp;filter.keyword=Forced'>Search For Related Notes</a>
 													</span>
 												</div>						
@@ -303,10 +263,58 @@
 				</table>
 			</s:if>
 			<s:else>
-				This contractor has completed all requirements.
+				<s:text name="ContractorFlag.ContractorCompletedAllRequirements" />
 			</s:else>
 		</div>
 	
 		<div id="caldiv1" style="position:absolute; visibility:hidden; background-color:white; layer-background-color:white;"></div>
+		<script type="text/javascript">
+			$(function() {
+				$('.datepicker').datepicker({
+					changeMonth: true,
+					changeYear:true,
+					yearRange: '1940:'+ (new Date().getFullYear()+5),
+					showOn: 'button',
+					buttonImage: 'images/icon_calendar.gif',
+					buttonImageOnly: true,
+					buttonText: 'Choose a date...',
+					constrainInput: true,
+					showAnim: 'fadeIn'
+				});
+				$('.cluetip').cluetip({
+					arrows: true,
+					cluetipClass: 'jtip',
+					local: true,
+					clickThrough: false
+				});		
+				$("#tabs").tabs();
+			
+				$('a.override_table_link').click(function(e) {
+					e.preventDefault();
+				});
+			
+				$('tr._override_.clickable').live('click', function() {
+					$(this).removeClass('clickable').removeClass('tr-hover-clickable').find('div.override_form').fadeIn('fast');
+				});
+			
+				$('.override_hide').click(function() {
+					var me = $(this);
+					me.parent().fadeOut('fast',function(){
+						me.parents('tr._override_').addClass('clickable');
+					});
+				});
+			});
+			
+			function checkReason(id) {
+				var text = $('#' + id + '_override').find('[name="forceNote"]').val();
+			
+				if (text == null || text == '') {
+					alert("Please fill in reason");
+					return false;
+				} else {
+					return true;
+				}
+			}
+		</script>
 	</body>
 </html>

@@ -113,6 +113,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 		if ("Add New".equals(button)) {
 			auditType = new AuditType();
+			addUserPreferredLanguage(auditType);
+
 			return SUCCESS;
 		}
 
@@ -120,12 +122,15 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			if (category == null)
 				category = new AuditCategory();
 
-			if (question != null && category != null && category.getId() > 0)
+			if (question != null && category != null && category.getId() > 0) {
 				question.setCategory(category);
-
+				addUserPreferredLanguage(question);
+			}
 
 			if (auditType != null && auditType.getId() > 0)
 				category.setAuditType(auditType);
+
+			addUserPreferredLanguage(category);
 
 			return SUCCESS;
 		}

@@ -15,6 +15,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		getFilter().setShowStatus(true);
 		getFilter().setShowInsuranceLimits(false);
 		getFilter().setShowOpertorTagName(false);
+		getFilter().setShowFlagOverrideHistory(true);
 	}
 	
 	@Override
@@ -27,14 +28,26 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		skipPermissions = true;
 		super.buildQuery();
 		
-		String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label FROM"+ 
-		" (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label FROM generalcontractors gc" +
+		String forceFlagsJoin = "JOIN (SELECT conid,opid,forcebegin,forceend,forcedby,forceflag,label, flagActive FROM"+ 
+		" (SELECT gc.subid as conid, gc.genid as opid, gc.forcebegin, gc.forceend, gc.forcedBy, gc.forceflag, 'FlagCriteria.Overall' AS label, 'ReportContractorsWithForcedFlags.FlagStatus.Active' AS flagActive FROM generalcontractors gc" +
 		" WHERE gc.forceFlag IS NOT NULL" +
 		" UNION" +
-		" SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label FROM flag_data_override fdo"+
+		" SELECT fdo.conid, fdo.opid, fdo.updateDate as forcebegin, fdo.forceend, fdo.updatedBy as forcedby, fdo.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label, 'ReportContractorsWithForcedFlags.FlagStatus.Active' AS flagActive FROM flag_data_override fdo"+
 		" JOIN flag_criteria fc1 ON fdo.criteriaID = fc1.id"+
-		" WHERE fdo.forceFlag IS NOT NULL) t"+
-		" ) ff ON a.id = ff.conid";
+		" WHERE fdo.forceFlag IS NOT NULL";
+		
+		if (getFilter().isFlagOverrideHistory()) {
+			forceFlagsJoin += " UNION" +
+			" SELECT foh.conid, foh.opid, foh.forcebegin as forcebegin, foh.updateDate as forceend, foh.forceBy as forcedby, foh.forceflag, 'FlagCriteria.Overall' as label , " +
+			" CASE foh.deleted WHEN 0 THEN 'ReportContractorsWithForcedFlags.FlagStatus.Expired' ELSE 'ReportContractorsWithForcedFlags.FlagStatus.Canceled' END AS flagActive FROM flag_override_history foh " +
+			" WHERE foh.criteriaID is NULL" +
+			" UNION" +
+			" SELECT foh.conid, foh.opid, foh.forcebegin as forcebegin, foh.updateDate as forceend, foh.forceBy as forcedby, foh.forceflag, CONCAT('FlagCriteria.', fc1.id, '.label') as label, " +
+			" CASE foh.deleted WHEN 0 THEN 'ReportContractorsWithForcedFlags.FlagStatus.Expired' ELSE 'ReportContractorsWithForcedFlags.FlagStatus.Canceled' END AS flagActive FROM flag_override_history foh" + 
+			" JOIN flag_criteria fc1 ON foh.criteriaID = fc1.id ";
+		}
+		
+		forceFlagsJoin += " ) t ) ff ON a.id = ff.conid";
 		
 		sql.addJoin(forceFlagsJoin);
 		sql.addJoin("JOIN accounts o ON o.id = ff.opid");
@@ -62,6 +75,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		sql.addField("u.name AS forcedBy");
 		sql.addField("fa.name AS forcedByAccount");
 		sql.addField("gc.workStatus");
+		sql.addField("ff.flagActive");
 		
 		if (filterOn(getFilter().getOperator())) {
 			String list = Strings.implode(getFilter().getOperator(), ",");
@@ -72,6 +86,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		
 		if (download) {
 			sql.addField("ff.forceFlag");
+			sql.addField("flagActive");
 		}
 	}
 	
@@ -82,6 +97,7 @@ public class ReportContractorsWithForcedFlags extends ReportAccount {
 		excelSheet.addColumn(new ExcelColumn("opName"));
 		excelSheet.addColumn(new ExcelColumn("forceFlag", "Flag"));
 		excelSheet.addColumn(new ExcelColumn("fLabel", "Flag Issue", ExcelCellType.Translated));
+		excelSheet.addColumn(new ExcelColumn("flagActive", "Flag Status", ExcelCellType.Translated));
 		excelSheet.addColumn(new ExcelColumn("forcedBy", "Forced By"));
 		excelSheet.addColumn(new ExcelColumn("forceBegin", "Start Date", ExcelCellType.Date));
 		excelSheet.addColumn(new ExcelColumn("forceend", "End Date", ExcelCellType.Date));

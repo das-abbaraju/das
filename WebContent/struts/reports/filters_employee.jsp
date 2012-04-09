@@ -66,7 +66,7 @@
 					<s:textfield rel="Operator" name="filter.operators" cssClass="tokenAuto" />
 					<a class="clearLink" href="#"><s:text name="Filters.status.Clear" /></a>
 					<s:radio 
-						list="#{'false':getText('JS.Filters.status.All'),'true':getText('Filters.status.Any')}" 
+						list="#{'false':getTextNullSafe('JS.Filters.status.All'),'true':getTextNullSafe('Filters.status.Any')}" 
 						name="filter.showAnyOperator"
 						theme="pics"
 						cssClass="inline"

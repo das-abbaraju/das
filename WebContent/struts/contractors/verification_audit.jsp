@@ -104,7 +104,7 @@
 						<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-								<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+								<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 							</s:div>
 						</li>
 						<li>
@@ -208,7 +208,7 @@
 							<li id="verified_<s:property value="question.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 								<label>Verified:</label>
 								<s:div cssStyle="display:inline;" id="verify_details_%{question.id}">
-									<s:date name="dateVerified" format="MM/dd/yyyy" /> by <s:property value="auditor.name"/>
+									<s:date name="dateVerified" format="%{getText('date.short')}" /> by <s:property value="auditor.name"/>
 								</s:div>
 							</li>
 							<li>
@@ -251,14 +251,16 @@
 			</s:iterator>
 		</fieldset>
 		
-		<s:if test="osha != null">
+		<s:if test="!osha.isEmpty('OSHA')">
 			<fieldset class="form">
 				<h2 class="formLegend">OSHA</h2>
 					<s:if test="!osha.isVerified('OSHA')">
 						<s:set name="verifyText" value="'Verify'"/>
+						<s:set name="displayVerified" value="'none'"/>
 					</s:if>
 					<s:else>
 						<s:set name="verifyText" value="'Unverify'"/>
+						<s:set name="displayVerified" value="'block'"/>
 					</s:else>
 					
 					<input 
@@ -269,20 +271,12 @@
 						value="<s:property value="#attr.verifyText"/>"
 					/>				
 				<s:div id="status_%{osha.id}"></s:div>
-					
-				<s:if test="osha.verified">
-					<s:set name="displayVerified" value="'block'"/>
-				</s:if>
-				<s:else>
-					<s:set name="displayVerified" value="'none'"/>
-				</s:else>
-
 				<div>
 					<ol>
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
 							<label>Verified:</label>
 							<s:div cssStyle="display:inline;" id="verify_details_%{osha.id}">
-								<s:date name="osha.verifiedDate" format="MM/dd/yyyy" /> by <s:property value="osha.auditor.name"/>
+								<s:date name="osha.getVerifiedDate('OSHA')" format="%{getText('date.short')}" /> by <s:property value="osha.getAuditor('OSHA').name"/>
 							</s:div>
 						</li>
 						<li>
@@ -292,10 +286,14 @@
 						<li>
 							<label>Links:</label>
 							<a href="http://www.osha.gov/dep/fatcat/dep_fatcat.html" target="_BLANK">OSHA Fatalities</a>
-						</li>	
+						</li>
 						<li>
-							<hr>
-						</li>						
+							<label>File:</label>
+							<s:if test="osha.getFileUploadId('OSHA') > 0">
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8810)">View File</a>
+							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2033&mode=Edit" target="_BLANK">Change File</a>
+							</s:if>
+						</li>		
 					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
 						<li>
 							<label><s:property value="#auditData.question.name" escape="false"/></label>

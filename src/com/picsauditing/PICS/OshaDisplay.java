@@ -30,10 +30,15 @@ import com.picsauditing.util.YearList;
  */
 public class OshaDisplay {
 
+	private static final String EMPTY_CELL = ""; 
+	
 	private OshaOrganizer oshaOrganizer;
 	private ContractorAccount contractor;
 	private Locale locale;
 	private List<ContractorOperator> contractorOperators;
+	private I18nCache i18nCache;
+	private List<String> columnNames;
+	
 
 	@Autowired
 	private NaicsDAO naicsDao;
@@ -50,24 +55,24 @@ public class OshaDisplay {
 		this.contractorOperators = contractorOperators;
 		this.contractor = contractor;
 		this.naicsDao = naicsDao;
+		this.i18nCache = I18nCache.getInstance();
 	}
 
-	@SuppressWarnings("unchecked")
-	private List getColumnNames(OshaType oshaType) {
-		List columnNames = new ArrayList();
+	private List<String> getColumnNames(OshaType oshaType) {
+		columnNames = new ArrayList<String>();
 		YearList yearList = oshaOrganizer.mostRecentThreeYears(oshaType);
 		StringBuilder yearsForAverageLabel = new StringBuilder();
 		for (MultiYearScope yearScope : YEAR_SCOPES) {
 			Integer year = yearList.getYearForScope(yearScope);
 			if (year != null) {
-				columnNames.add(year);
+				columnNames.add(year.toString());
 				yearsForAverageLabel.append(", ");
 				yearsForAverageLabel.append(year);
 			}
 		}
 		yearsForAverageLabel.delete(0, 1);
-		columnNames.add(yearsForAverageLabel);
-		columnNames.add(I18nCache.getInstance().getText(
+		columnNames.add(yearsForAverageLabel.toString());
+		columnNames.add(i18nCache.getText(
 				"ContractorView.ContractorDashboard.Industry", locale));
 
 		return columnNames;
@@ -88,21 +93,24 @@ public class OshaDisplay {
 		for (OshaRateType rateType : oshaType.rates) {
 			StatisticsDisplayRow rateRow = new StatisticsDisplayRow(false);
 
-			rateRow.addCell(rateType.getI18nKey());
+			rateRow.addCell(i18nCache.getText(rateType.getI18nKey(), locale));
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
 				if (answer != null && answer >= 0) {
 					rateRow.addCell(answer.toString());
 				}
+				else {
+					rateRow.addCell(EMPTY_CELL);
+				}
 			}
 
 			if (rateType.isHasIndustryAverage()) {
-				Float industryAverage = getIndustryAverage(naicsDao
+				String industryAverage = getIndustryAverage(naicsDao
 						.find(contractor.getNaics().getCode()), rateType);
 				rateRow.addCell(industryAverage.toString());
 			} else {
-				rateRow.addCell("");
+				rateRow.addCell(EMPTY_CELL);
 			}
 
 			rows.add(rateRow);
@@ -114,11 +122,18 @@ public class OshaDisplay {
 		return rows;
 	}
 
-	private Float getIndustryAverage(Naics naics, OshaRateType rateType) {
-		if (rateType == OshaRateType.LwcrAbsolute)
-			return naics.getLwcr();
-		else if (rateType == OshaRateType.TrirAbsolute)
-			return naics.getTrir();
+	private String getIndustryAverage(Naics naics, OshaRateType rateType) {
+		if (rateType == OshaRateType.LwcrAbsolute) {
+			return String.valueOf(naics.getLwcr());
+		}
+		else if (rateType == OshaRateType.TrirAbsolute) {
+			if (contractor.hasWiaCriteria()) { 
+				return String.valueOf(contractor.getWeightedIndustryAverage()) + "*";
+			}
+			else {
+				return String.valueOf(naics.getTrir());
+			}
+		}
 		return null;
 	}
 
@@ -146,7 +161,7 @@ public class OshaDisplay {
 							.get(scope);
 					if (flagCriteriaForThisYear == null
 							|| flagCriteriaForThisYear.size() == 0) {
-						hurdleRow.addCell("");
+						hurdleRow.addCell(EMPTY_CELL);
 					} else {
 						StringBuilder display = new StringBuilder();
 						for (FlagCriteriaOperator fco : flagCriteriaForThisYear) {
@@ -162,10 +177,18 @@ public class OshaDisplay {
 				if (hasFlagCriteria) {
 					hurdleRateRows.add(hurdleRow);
 				}
+				addEmptyCellsToRowForPadding(hurdleRow);
 			}
 		}
 
 		return hurdleRateRows;
+	}
+
+	private void addEmptyCellsToRowForPadding(StatisticsDisplayRow hurdleRow) {
+		int emptyCellsToAddForThisRow = columnNames.size() + 1 - hurdleRow.size();
+		for (int i = 0; i < emptyCellsToAddForThisRow; i++) {
+			hurdleRow.addCell(EMPTY_CELL);
+		}
 	}
 
 	private Map<MultiYearScope, Set<FlagCriteriaOperator>> generateOperatorFlagCriteriaMap(

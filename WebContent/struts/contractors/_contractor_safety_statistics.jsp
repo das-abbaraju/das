@@ -17,7 +17,7 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><s:property value="#stat" /></th>
+							<th><s:property value="getText(#stat.i18nKey)" /></th>
 							<s:iterator value="oshaDisplay.stats.get(#stat).get('columnNames')" var="colname">
 								<th><s:property value="#colname" /></th>
 							</s:iterator>
@@ -40,6 +40,11 @@
 					</tbody>
 				</table>
 			</s:iterator>
+			<a class="weighted-industry-average"
+				href="javascript:;"
+				data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
+				title="<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" />"
+			>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
 					
 		<div class="clear"></div>
 			</div>

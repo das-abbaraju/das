@@ -174,7 +174,9 @@
             }
             
             function showOption() {
-            	if ($('#questionTypes select').val() == 'MultipleChoice' || $('#questionTypes select').val() == 'Tagit') {
+            	if ($('#questionTypes select').val() == 'MultipleChoice' || 
+            	        $('#questionTypes select').val() == 'Tagit' ||
+            	        $('#questionTypes select').val() == 'MultiSelect') {
             		$('#optionTypesArea').show();
             		toggleOtherOptionType();
             	} else {

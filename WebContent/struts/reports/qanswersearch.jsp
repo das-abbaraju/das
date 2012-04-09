@@ -79,7 +79,7 @@ $(function() {
 				<s:hidden name="questions[%{#stat.index}].id" value="%{id}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteria" value="%{criteria}"></s:hidden>
 				<s:hidden name="questions[%{#stat.index}].criteriaAnswer" value="%{criteriaAnswer}"></s:hidden>
-				<s:if test="columnHeader != null && columnHeader.size() > 0"><s:property value="columnHeader"/>: </s:if><s:property value="expandedNumber"/>: <s:property value="name"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
+				<s:if test="columnHeader != null && columnHeader.size() > 0"><s:property value="columnHeader.toString()"/>: </s:if><s:property value="expandedNumber"/>: <s:property value="name"/> <s:property value="criteria"/> <s:property value="criteriaAnswer"/>
 				<button type="submit" class="picsbutton negative" name="button" value="Remove" id="<s:property value="id"/>"><s:text name="button.Remove" /></button>
 			</div>
 		</div>

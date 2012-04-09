@@ -8,6 +8,14 @@
 	</div>
 </s:if>
 <s:else>
+	<div class="right">
+		<a 
+			class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
+			href="javascript: download('ContractorApproval');" 
+			title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
+		><s:text name="global.Download" /></a>
+	</div>
+
 	<div>
 		<s:property value="report.pageLinksWithDynamicForm" escape="false" />
 	</div>
@@ -49,7 +57,7 @@
 					
 					<s:if test="permissions.operator">
 						<td>
-							<s:date name="get('dateAdded')" format="M/d/yy"/>
+							<s:date name="get('dateAdded')" format="%{getText('date.short')}"/>
 						</td>
 						<td>
 							<s:property value="getWorkStatusDesc(get('workStatus'))"/>
@@ -71,7 +79,7 @@
 						<s:text name="ContractorApproval.ChangeStatusTo" />
 						
 						<s:radio 
-							list="#{'Y':getText('YesNo.Yes'),'N':getText('YesNo.No'),'P':getText('AccountStatus.Pending')}" 
+							list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('AccountStatus.Pending')}" 
 							name="workStatus"
 							theme="pics"
 							cssClass="workStatus inline"

@@ -1,6 +1,7 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +17,7 @@ import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class OshaSave extends PicsActionSupport {
-	
+
 	private OshaType oshaType;
 	private ContractorAudit audit;
 	private boolean verify;
@@ -31,25 +32,34 @@ public class OshaSave extends PicsActionSupport {
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private ContractorAuditDAO contractorAuditDao;
-	
+
 	public String execute() {
 		oshaAudit = new OshaAudit(audit);
-		
+
 		if (verify) {
 			verifiedDate = new Date();
 			auditor = getUser();
 		}
-		for (AuditData auditData: oshaAudit.getAllQuestionsInOshaType(oshaType)) {
+
+		List<AuditData> auditDataList = auditDataDao.findDataByCategory(audit.getId(), oshaType.categoryId);
+		if (auditDataList == null) { 
+			addActionError("Error locating data for verification.");
+			return SUCCESS;
+		}
+		
+		for (AuditData auditData : auditDataList) {
 			auditData.setVerified(verify);
 			auditData.setDateVerified(verifiedDate);
 			auditData.setAuditor(auditor);
 			auditDataDao.save(auditData);
 		}
-		auditPercentCalculator.percentCalculateComplete(audit);
+
+		auditPercentCalculator.percentCalculateComplete(audit, true);
 		contractorAuditDao.save(audit);
+		
 		return SUCCESS;
 	}
-	
+
 	public String stampOshaComment() {
 		oshaAudit = new OshaAudit(audit);
 		auditDataDao.save(oshaAudit.stampOshaComment(oshaType, comment));

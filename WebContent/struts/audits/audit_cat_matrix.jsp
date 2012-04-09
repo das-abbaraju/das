@@ -34,7 +34,7 @@
 						<s:text name="AuditType" />
 						<s:select
 							id="select_audit_type"
-							list="#{100:getText('AuditType.100.name')}"
+							list="#{100:getTextNullSafe('AuditType.100.name')}"
 							headerKey="0"
 							headerValue="%{getText('global.SelectAuditType')}" 
 							name="auditType"

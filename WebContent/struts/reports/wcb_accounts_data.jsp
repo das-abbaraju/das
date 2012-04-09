@@ -33,7 +33,7 @@
 			</td>
 			<td><s:property value="get('id')"/></td>
 			<td><s:property value="get('province')"/></td>
-			<td><s:date name="get('creationDate')" format="M/d/yy"/></td>
+			<td><s:date name="get('creationDate')" format="%{getText('date.short')}"/></td>
 		</tr>
 	</s:iterator>
 </table>

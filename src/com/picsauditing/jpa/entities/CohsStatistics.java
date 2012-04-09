@@ -23,8 +23,11 @@ public class CohsStatistics extends SafetyStatistics {
 		for (AuditData answer : data) {
 			if (answer.getQuestion().getId() == QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.TrirAbsolute, answer);
+				answerMap.put(OshaRateType.TrirNaics, answer);
+				answerMap.put(OshaRateType.TrirWIA, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.LwcrAbsolute, answer);
+				answerMap.put(OshaRateType.LwcrNaics, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR) {
 				answerMap.put(OshaRateType.Fatalities, answer);
 			} else if (answer.getQuestion().getId() == QUESTION_ID_HOURS_FOR_THE_GIVEN_YEAR) {

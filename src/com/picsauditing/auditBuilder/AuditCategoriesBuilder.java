@@ -68,12 +68,16 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
 		Set<AuditCategory> categories = new HashSet<AuditCategory>();
 
+		auditType = conAudit.getAuditType(); 
+		if (auditType.getId() == AuditType.WELCOME) {
+			categories.addAll(conAudit.getAuditType().getCategories());
+			return categories;
+		}
+
 		operators.clear();
 		if (auditOperators.size() == 0)
 			return categories;
 		
-		auditType = conAudit.getAuditType();
-
 		if (conAudit.getAuditType().getId() == AuditType.FIELD) { 
 			// field audits will only have caos that are manually specified (not by rules)
 			operators.put(conAudit.getRequestingOpAccount(), null);
@@ -161,20 +165,19 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		// account
 		OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
 		picsGlobal.setId(4);
-
+		
 		for (OperatorAccount operator : operators.keySet()) {
 			AuditCategoryRule rule = operators.get(operator);
 			if (rule == null) {
 				// This operator doesn't require any categories, so I'm just going to ignore it for now
 			} else {
-				OperatorAccount governingBody = rule.getOperatorAccount();
-				if (governingBody == null || 
-						(auditType != null && (auditType.isDesktop() || auditType.isImplementation())))
-					governingBody = picsGlobal;
+				OperatorAccount governingBody = determineGoverningBody(rule.getOperatorAccount());
 				if (!caos.containsKey(governingBody))
 					caos.put(governingBody, new HashSet<OperatorAccount>());
-				// Add the operator (caop) to one and only one governingBody (cao)
-				if (auditType != null && auditType.getId() == AuditType.FIELD && auditFor != null) {
+				// Add the operator (caop) to one and only one governingBody
+				// (cao)
+				if (auditType != null && auditType.getId() == AuditType.FIELD
+						&& auditFor != null) {
 					caos.get(governingBody).add(auditFor);
 					break;
 				} else {
@@ -182,7 +185,29 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 				}
 			}
 		}
+		
+		if (auditType != null && auditType.getId() == AuditType.WELCOME && caos.isEmpty()) {
+			caos.put(picsGlobal, new HashSet<OperatorAccount>());
+		}
+
+
 		return caos;
+	}
+
+	private OperatorAccount determineGoverningBody(OperatorAccount governingBody) {
+		OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
+		picsGlobal.setId(4);
+		
+		if ((auditType != null && (auditType.getId() == AuditType.WELCOME
+						|| auditType.isDesktop() || auditType
+						.isImplementation()))) {
+			return picsGlobal;
+		}
+		
+		if (governingBody == null)
+			return picsGlobal;
+		
+		return governingBody;
 	}
 
 	@Testable

@@ -67,7 +67,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private String name;
 	private Map<UserAccountRole, List<AccountUser>> managers;
 
-	private int accountUserId;
+	private AccountUser accountUser;
 	private AccountUser salesRep = null;
 	private AccountUser accountRep = null;
 	private Country country;
@@ -75,7 +75,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private int contactID;
 	private boolean generalContractor;
 	private ContractorOperator linkedAccount;
-	private Boolean autoApproveRelationships;
+	private boolean autoApproveRelationships;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
@@ -126,8 +126,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	public String remove() {
-		if (accountUserId > 0) {
-			accountUserDAO.remove(accountUserId);
+		if (accountUser != null) {
+			accountUserDAO.remove(accountUser);
 		}
 
 		return SUCCESS;
@@ -170,8 +170,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return SUCCESS;
 	}
 
-	public String copyToChildAccounts() {
-		AccountUser accountUser = accountUserDAO.find(accountUserId);
+	public String copyToChildAccounts() throws Exception {
 		for (Facility facility : operator.getOperatorFacilities()) {
 			if (facility.getOperator().getStatus().isActiveDemo()) {
 				boolean hasAccountRep = false;
@@ -197,9 +196,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				}
 			}
 		}
-		addActionMessage("Successfully Copied to all child operators");
 
-		return SUCCESS;
+		addActionMessage("Successfully Copied to all child operators");
+		// Redirecting because we don't want to hit this same method over and
+		// over again.
+		return "redirect";
 	}
 
 	public String saveRole() {
@@ -242,7 +243,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 
 		if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
-			if (autoApproveRelationships != null && autoApproveRelationships != operator.isAutoApproveRelationships()) {
+			if (autoApproveRelationships != operator.isAutoApproveRelationships()) {
 				if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
 					approveAllRelationships();
 				}
@@ -470,12 +471,12 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return UserAccountRole.values();
 	}
 
-	public int getAccountUserId() {
-		return accountUserId;
+	public AccountUser getAccountUser() {
+		return accountUser;
 	}
 
-	public void setAccountUserId(int accountUserId) {
-		this.accountUserId = accountUserId;
+	public void setAccountUser(AccountUser accountUser) {
+		this.accountUser = accountUser;
 	}
 
 	public AccountUser getSalesRep() {
@@ -572,7 +573,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	 * @param autoApproveRelationships
 	 *            the autoApproveRelationships to set
 	 */
-	public void setAutoApproveRelationships(Boolean autoApproveRelationships) {
+	public void setAutoApproveRelationships(boolean autoApproveRelationships) {
 		this.autoApproveRelationships = autoApproveRelationships;
 	}
 
@@ -581,7 +582,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	 * @throws Exception
 	 * @throws RecordNotFoundException
 	 */
-	public Boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
+	public boolean getAutoApproveRelationships() throws RecordNotFoundException, Exception {
 		if (operator == null)
 			findOperator();
 

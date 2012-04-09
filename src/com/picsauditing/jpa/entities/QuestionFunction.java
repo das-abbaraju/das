@@ -437,7 +437,7 @@ public enum QuestionFunction {
 	// France NRIS standard normalizer for frequency rate.
 	private static final BigDecimal FRANCE_FREQUENCY_RATE_NORMALIZER = new BigDecimal(1000000);
 	
-	private static final String MISSING_PARAMETER = "Audit.missingParameter";
+	public static final String MISSING_PARAMETER = "Audit.missingParameter";
 	
 	public abstract Object calculate(FunctionInput input)  throws NumberFormatException;;
 

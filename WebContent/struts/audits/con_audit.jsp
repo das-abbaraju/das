@@ -48,17 +48,17 @@
 		
 		<s:if test="conAudit.auditType.classType.policy && conAudit.hasCaoStatus('Incomplete') && problems.size() > 0">
 			<div id="auditProblems">
-				There are problems with your audit, please click here to review them.  You can also click on the status for each operator with an <span class="problemCao">icon</span> to see more info.
+				<s:text name="Audit.ProblemsWithAudit" />
 			</div>
 			<div id="problems">
 				<table class="report" style="margin: 0 auto;">
 					<thead>
 						<tr>
 							<th>
-								Operator
+								<s:text name="global.Operator" />
 							</th>
 							<th>
-								Problem
+								<s:text name="Audit.Problem" />
 							</th>
 						</tr>
 					</thead>
@@ -76,7 +76,7 @@
 					</tbody>
 				</table>
 				
-				<div class="bottom">Hide</div>
+				<div class="bottom"><s:text name="button.Hide" /></div>
 			</div>
 			<div id="problemsHide"></div>
 		</s:if>

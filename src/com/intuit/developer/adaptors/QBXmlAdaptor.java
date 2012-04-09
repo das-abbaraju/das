@@ -137,8 +137,6 @@ public class QBXmlAdaptor {
 			return nullSafeSubString(zipCode, 0, 7);
 		if (country.isFrance())
 			return nullSafeSubString(zipCode, 0, 8);
-		if (country.isUK())
-			return nullSafeSubString(zipCode, 0, 9);
 
 		return nullSafeSubString(zipCode, 0, 9);
 	}
@@ -152,8 +150,6 @@ public class QBXmlAdaptor {
 			return nullSafeSubString(city, 0, 25);
 		if (country.isFrance())
 			return nullSafeSubString(city, 0, 24);
-		if (country.isUK())
-			return nullSafeSubString(city, 0, 23);
 
 		return nullSafeSubString(city, 0, 23);
 	}

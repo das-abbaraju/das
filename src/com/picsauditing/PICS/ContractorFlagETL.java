@@ -1,6 +1,5 @@
 package com.picsauditing.PICS;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,26 +25,27 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
-	
+
 	@Autowired
 	private FlagCriteriaDAO flagCriteriaDao;
 	@Autowired
 	private AuditDataDAO auditDataDao;
 	@Autowired
 	private FlagCriteriaContractorDAO flagCriteriaContractorDao;
-	
-	private static final List<Integer> QUESTION_IDS_FOR_MULTI_YEAR = Arrays.asList(11046, 3547);
 
 	public void calculate(ContractorAccount contractor) {
 		// get the information necessary to perform the flagging calculations
 		Set<FlagCriteria> distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();
 		Set<Integer> criteriaQuestionSet = getFlaggableAuditQuestionIds(distinctFlagCriteria);
-		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(), criteriaQuestionSet);
+		Map<Integer, AuditData> answerMap = auditDataDao.findAnswersByContractor(contractor.getId(),
+				criteriaQuestionSet);
 
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 		for (FlagCriteria flagCriteria : distinctFlagCriteria) {
@@ -55,17 +55,17 @@ public class ContractorFlagETL {
 
 		persistFlagCriteriaContractorChanges(contractor, changes);
 	}
-	
+
 	/**
 	 * Performs the calculation on an individual FlagCriteria
 	 * 
 	 * @param flagCriteria
 	 * @param contractor
 	 * @param answerMap
-	 * @return 
+	 * @return
 	 */
-	private Set<FlagCriteriaContractor> executeFlagCriteriaCalculation(FlagCriteria flagCriteria, ContractorAccount contractor, 
-			Map<Integer, AuditData> answerMap) {
+	private Set<FlagCriteriaContractor> executeFlagCriteriaCalculation(FlagCriteria flagCriteria,
+			ContractorAccount contractor, Map<Integer, AuditData> answerMap) {
 
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
@@ -81,10 +81,6 @@ public class ContractorFlagETL {
 				if (flagCriteriaContractor != null) {
 					changes.add(flagCriteriaContractor);
 				}
-			} else if (flagCriteria.getMultiYearScope() != null && QUESTION_IDS_FOR_MULTI_YEAR.contains(flagCriteria.getQuestion().getId())) {
-				FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, "");
-				flagCriteriaContractor.setAnswer(MultiYearValueCalculator.calculateValueForMultiYear(contractor, flagCriteria));
-				changes.add(flagCriteriaContractor);
 			} else if (runAnnualUpdateFlaggingForCategoryOnMultiYearScope(flagCriteria)) {
 				FlagCriteriaContractor flagCriteriaContractor = generateFlaggableData(flagCriteria, contractor, true);
 				if (flagCriteriaContractor != null) {
@@ -98,19 +94,20 @@ public class ContractorFlagETL {
 		if (flagCriteria.getOshaType() != null) {
 			performOshaFlagCalculations(contractor, changes, flagCriteria);
 		}
-		
+
 		return changes;
 	}
 
 	private boolean runAnnualUpdateFlaggingForCategoryOnMultiYearScope(FlagCriteria flagCriteria) {
-		return (flagCriteria.getQuestion().getCategory() != null
-				&& flagCriteria.getQuestion().getAuditType().isAnnualAddendum());
+		return (flagCriteria.getQuestion().getCategory() != null && flagCriteria.getQuestion().getAuditType()
+				.isAnnualAddendum());
 	}
-	
-	private FlagCriteriaContractor generateFlaggableData(FlagCriteria flagCriteria, ContractorAccount contractor, boolean applyCategory) {
+
+	private FlagCriteriaContractor generateFlaggableData(FlagCriteria flagCriteria, ContractorAccount contractor,
+			boolean applyCategory) {
 		FlagCriteriaContractor flagCriteriaContractor = null;
 		ContractorAudit annualUpdate = contractor.getCompleteAnnualUpdates().get(flagCriteria.getMultiYearScope());
-		
+
 		if (annualUpdate != null) {
 			if (checkForApplicableCategory(flagCriteria, annualUpdate, true)) {
 				for (AuditData data : annualUpdate.getData()) {
@@ -123,14 +120,14 @@ public class ContractorFlagETL {
 				}
 			}
 		}
-		
+
 		return flagCriteriaContractor;
 	}
 
-	private boolean checkForApplicableCategory(FlagCriteria flagCriteria, ContractorAudit annualUpdate, boolean applyCategory) {
-		return (applyCategory 
-				&& flagCriteria.getQuestion().getCategory() != null 
-				&& annualUpdate.isCategoryApplicable(flagCriteria.getQuestion().getCategory().getId()));
+	private boolean checkForApplicableCategory(FlagCriteria flagCriteria, ContractorAudit annualUpdate,
+			boolean applyCategory) {
+		return (applyCategory && flagCriteria.getQuestion().getCategory() != null && annualUpdate
+				.isCategoryApplicable(flagCriteria.getQuestion().getCategory().getId()));
 	}
 
 	/**
@@ -141,7 +138,7 @@ public class ContractorFlagETL {
 	 */
 	private Set<Integer> getFlaggableAuditQuestionIds(Set<FlagCriteria> distinctFlagCriteria) {
 		Set<Integer> criteriaQuestionSet = new HashSet<Integer>();
-		
+
 		for (FlagCriteria fc : distinctFlagCriteria) {
 			if (fc.getQuestion() != null) {
 				AuditType type = fc.getQuestion().getAuditType();
@@ -154,22 +151,23 @@ public class ContractorFlagETL {
 				}
 			}
 		}
-		
+
 		return criteriaQuestionSet;
 	}
 
 	/**
-	 * 	Non-EMR questions
-	 *	find answer in answerMap if it exists to related question
+	 * Non-EMR questions find answer in answerMap if it exists to related
+	 * question
 	 * 
 	 * @param contractor
 	 * @param changes
 	 * @param answerMap
 	 * @param flagCriteria
 	 */
-	private Set<FlagCriteriaContractor> performFlaggingForNonEMR(ContractorAccount contractor, Map<Integer, AuditData> answerMap, FlagCriteria flagCriteria) {
+	private Set<FlagCriteriaContractor> performFlaggingForNonEMR(ContractorAccount contractor,
+			Map<Integer, AuditData> answerMap, FlagCriteria flagCriteria) {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
-		
+
 		// can be null
 		final AuditData auditData = answerMap.get(flagCriteria.getQuestion().getId());
 		if (auditData != null && !Strings.isEmpty(auditData.getAnswer())) {
@@ -200,19 +198,20 @@ public class ContractorFlagETL {
 				changes.add(flagCriteriaContractor);
 			}
 		}
-		
+
 		return changes;
 	}
 
-	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData, FlagCriteriaContractor fcc) {
+	private void performFlaggingForAMBest(FlagCriteria flagCriteria, final AuditData auditData,
+			FlagCriteriaContractor fcc) {
 		AmBestDAO amBestDAO = SpringUtils.getBean("AmBestDAO");
 		AmBest amBest = amBestDAO.findByNaic(auditData.getComment());
-		
+
 		if (amBest != null) {
 			if (flagCriteria.getCategory().equals("Insurance AMB Rating")) {
 				fcc.setAnswer(Integer.toString(amBest.getRatingCode()));
 			}
-			
+
 			if (flagCriteria.getCategory().equals("Insurance AMB Class")) {
 				fcc.setAnswer(Integer.toString(amBest.getFinancialCode()));
 			}
@@ -220,57 +219,49 @@ public class ContractorFlagETL {
 	}
 
 	private void persistFlagCriteriaContractorChanges(ContractorAccount contractor, Set<FlagCriteriaContractor> changes) {
-		Iterator<FlagCriteriaContractor> flagCriteriaList = BaseTable.insertUpdateDeleteManaged(contractor.getFlagCriteria(), changes).iterator();
+		Iterator<FlagCriteriaContractor> flagCriteriaList = BaseTable.insertUpdateDeleteManaged(
+				contractor.getFlagCriteria(), changes).iterator();
 		while (flagCriteriaList.hasNext()) {
 			FlagCriteriaContractor criteriaData = flagCriteriaList.next();
 			contractor.getFlagCriteria().remove(criteriaData);
 			flagCriteriaContractorDao.remove(criteriaData);
 		}
 	}
-	
-	private Set<FlagCriteriaContractor> calculateFlagCriteriaForEMR(FlagCriteria flagCriteria, ContractorAccount contractor) {
+
+	private Set<FlagCriteriaContractor> calculateFlagCriteriaForEMR(FlagCriteria flagCriteria,
+			ContractorAccount contractor) {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			List<OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor.getSortedAnnualUpdates());
+			Map<String, OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor
+					.getSortedAnnualUpdates());
 
-			if (CollectionUtils.isNotEmpty(oshaResults)) {
+			if (!oshaResults.isEmpty()) {
+				YearList yearList = new YearList();
 				Float answer = null;
 				String answer2 = "";
 				boolean verified = true; // Has the data been verified?
 
+				for (String year:oshaResults.keySet()) {
+					yearList.add(year);
+				}
+				
 				try {
 					switch (flagCriteria.getMultiYearScope()) {
 					case ThreeYearAverage:
-						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults); 
-						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult.getAnswer())) : null;
+						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults.values());
+						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult
+								.getAnswer())) : null;
 						verified = oshaResult.isVerified();
-						answer2 = "Years: " + oshaResult.getYear();						
+						answer2 = "Years: " + oshaResult.getYear();
 						break;
 					case ThreeYearsAgo:
-						if (oshaResults.size() >= 3) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 3);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case TwoYearsAgo:
-						if (oshaResults.size() >= 2) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 2);
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
 					case LastYearOnly:
-						if (oshaResults.size() >= 1) {
-							OshaResult result = oshaResults.get(oshaResults.size() - 1);
-							if (result != null && isLast2Years(result.getYear())) {
+						Integer year = yearList.getYearForScope(flagCriteria.getMultiYearScope());
+						if (year != null) {
+							OshaResult result = oshaResults.get(year.toString());
+							if (result != null) {
 								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
 								verified = result.isVerified();
 								answer2 = "Year: " + result.getYear();
@@ -279,17 +270,12 @@ public class ContractorFlagETL {
 						break;
 					default:
 						throw new RuntimeException("Invalid MultiYear scope of "
-										+ flagCriteria.getMultiYearScope().toString()
-										+ " specified for flag criteria id "
-										+ flagCriteria.getId()
-										+ ", contractor id "
-										+ contractor.getId());
+								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
 					}
 				} catch (Throwable t) {
-					PicsLogger.log("Could not cast contractor: "
-							+ contractor.getId() + " and answer: "
-							+ ((answer != null) ? answer : "null")
-							+ " to a value for criteria: "
+					PicsLogger.log("Could not cast contractor: " + contractor.getId() + " and answer: "
+							+ ((answer != null) ? answer : "null") + " to a value for criteria: "
 							+ flagCriteria.getId());
 
 					answer = null; // contractor errors out somewhere
@@ -299,7 +285,8 @@ public class ContractorFlagETL {
 				}
 
 				if (answer != null) {
-					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria, answer.toString());
+					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
+							answer.toString());
 					fcc.setVerified(verified);
 
 					// conditionally add verified tag
@@ -317,7 +304,7 @@ public class ContractorFlagETL {
 				}
 			}
 		}
-		
+
 		return changes;
 	}
 
@@ -325,40 +312,43 @@ public class ContractorFlagETL {
 		int lastYear = DateBean.getCurrentYear() - 1;
 		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
 			return true;
-	
+
 		return false;
 	}
-		
-	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes, FlagCriteria flagCriteria) {
+
+	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes,
+			FlagCriteria flagCriteria) {
 		OshaOrganizer osha = contractor.getOshaOrganizer();
-		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(), flagCriteria.getOshaRateType());
+		Double answer = osha.getRate(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope(),
+				flagCriteria.getOshaRateType());
 		PicsLogger.log("Answer = " + answer);
 
 		if (answer != null && !answer.equals(Double.valueOf(-1))) {
-			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, Double.toString(answer));
+			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria,
+					Double.toString(answer));
 
 			String answer2 = osha.getAnswer2(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
 			flagCriteriaContractor.setAnswer2(answer2);
 
 			boolean verified = osha.isVerified(flagCriteria.getOshaType(), flagCriteria.getMultiYearScope());
 			flagCriteriaContractor.setVerified(verified);
-			
+
 			changes.add(flagCriteriaContractor);
 		} else { // the User did not provide an answer
-			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);			
+			FlagCriteriaContractor flagCriteriaContractor = checkForMissingAnswer(flagCriteria, contractor);
 			if (flagCriteriaContractor != null) {
 				changes.add(flagCriteriaContractor);
 			}
 		}
 	}
-	
+
 	private FlagCriteriaContractor checkForMissingAnswer(FlagCriteria flagCriteria, ContractorAccount contractor) {
 		if (flagCriteria.isFlaggableWhenMissing()) {
 			FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor(contractor, flagCriteria, null);
 			flagCriteriaContractor.setAnswer2(null);
 			return flagCriteriaContractor;
 		}
-		
+
 		return null;
 	}
 

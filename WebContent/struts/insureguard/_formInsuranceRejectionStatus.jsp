@@ -5,10 +5,5 @@
 <form class="insurance-rejection-status-form" action="CaoSaveAjax!save.action" method="POST">
     <s:hidden name="cao_id" value="%{#cao_id}" />
     
-    <input
-        class="insurance-rejection-tagit"
-        name="jsonArray"
-    />
-    
     <s:textarea name="note" cssClass="notes" />
 </form>

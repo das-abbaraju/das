@@ -1,0 +1,49 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.crons" extends="com.picsauditing">
+		<action name="Cron" class="com.picsauditing.actions.Cron">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ContractorCron" class="com.picsauditing.actions.ContractorCron">
+			<result>/struts/contractors/contractor_cron.jsp</result>
+			<result name="synchronize">/struts/contractors/contractor_cron_messages.jsp</result>
+		</action>
+
+		<action name="ContractorCronAjax" class="com.picsauditing.actions.ContractorCron">
+			<result type="action-messages"></result>
+		</action>
+
+		<action name="EmployeeQualificationCron" class="com.picsauditing.actions.employees.EmployeeQualificationCron">
+			<result>/struts/employees/employee_qual_cron.jsp</result>
+		</action>
+
+		<action name="SubscriptionCron" class="com.picsauditing.actions.SubscriptionCron">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="HuntsmanSync" class="com.picsauditing.actions.cron.HuntsmanSync">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="LoggerConfig" class="com.picsauditing.actions.LoggerConfig">
+			<result>/struts/misc/logger.jsp</result>
+		</action>
+
+		<action name="ClearCache" class="com.picsauditing.actions.ClearCacheAction">
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="OpenAuditsMailer" class="com.picsauditing.actions.audits.OpenAuditsMailer">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="MailCron" class="com.picsauditing.mail.MailCron"></action>
+
+		<action name="RunIndexer" class="com.picsauditing.util.IndexerNew">
+			<result>/struts/blank.jsp</result>
+		</action>
+	</package>
+</struts>

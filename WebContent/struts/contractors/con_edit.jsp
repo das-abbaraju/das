@@ -117,7 +117,7 @@
 								</li>
 								<li>
 									<label><s:text name="ContractorEdit.Details.DateCreated"/>:</label>
-									<s:date name="contractor.creationDate" format="MMM d, yyyy" />
+									<s:date name="contractor.creationDate" format="%{getText('date.long')}" />
 								</li>
 							</ol>
 						</fieldset>
@@ -399,7 +399,7 @@
 									</li>
 									<li>
 										<label>Upgrade Date:</label>
-										<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="MM/dd/yyyy" />" />
+										<input name="contractor.lastUpgradeDate" type="text" class="forms datepicker" size="10" value="<s:date name="contractor.lastUpgradeDate" format="%{getText('date.short')}" />" />
 									</li>
 									<li>
 										<label>Contractor Type:</label>

@@ -13,6 +13,8 @@
                     var timezone_element = element.find('#timezone');
                     timezone_element.bind('change', this.updateTimeZone);
                     
+                    element.delegate('.cal_times a', 'click', this.showScheduleAuditExpediteModal);
+                    
                     $('window').ready(function (event) {
                         that.updateTimeZone.apply(timezone_element, [event]);
                     });
@@ -38,6 +40,50 @@
                         $('#li_availability').append(data);
                     }
                 });
+            },
+            
+            showScheduleAuditExpediteModal: function (event) {
+                function createModal(data) {
+                    var modal = PICS.modal({
+                        modal_class: 'modal schedule-audit-expedite-modal',
+                        title: translate('JS.ScheduleAudit.ExpediteFee.Title'),
+                        content: data,
+                        buttons: [{
+                            html: [
+                                '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.button.Cancel') + '</a>',
+                                '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.button.Accept') + '</a>'
+                            ].join('')
+                        }]
+                    });
+                    
+                    return modal;
+                }
+                
+                var element = $(this);
+                var date = new Date(element.attr('data-date'));
+                var today = new Date();
+                var difference = date - today;
+                var day_difference = Math.ceil(difference/(1000 * 60 * 60 * 24));
+                
+                if (day_difference <= 10) {
+                    event.preventDefault();
+                    
+                    PICS.ajax({
+                        url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
+                        success: function (data, textStatus, XMLHttpRequest) {
+                            var modal = createModal(data);
+                            modal.show();
+                            
+                            $('.schedule-audit-expedite-modal').delegate('.accept-expedite', 'click', function (event) {
+                                window.location.href = element.attr('href');
+                            });
+                            
+                            $('.schedule-audit-expedite-modal').delegate('.cancel-expedite', 'click', function (event) {
+                                modal.hide();
+                            });
+                        }
+                    });
+                }
             },
             
             /**

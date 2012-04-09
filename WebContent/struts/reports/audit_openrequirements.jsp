@@ -31,7 +31,7 @@
 			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
 			<td><a href="ContractorAuditFileUpload.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property value="get('description')"/></a></td>
-			<td><s:date name="get('uploadDate')" format="M/d/yy" /></td>
+			<td><s:date name="get('uploadDate')" format="%{getText('date.short')}" /></td>
 		</tr>
 	</s:iterator>
 </table>

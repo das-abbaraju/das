@@ -39,7 +39,7 @@
 						<s:text name="ContractorNotes.Pending" />
 					</s:if>
 					<s:else>
-						<s:date name="sentDate" format="M/d/yy h:mm a" />
+						<s:date name="sentDate" format="%{getText('date.shorttime')}" />
 					</s:else>
 				</td>
 				<td>

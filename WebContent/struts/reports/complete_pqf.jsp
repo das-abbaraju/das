@@ -88,7 +88,7 @@
 							</a>
 						</td>
 						<td class="reportDate">
-							<s:date name="get('createdDate')" format="M/d/yy" />
+							<s:date name="get('createdDate')" format="%{getText('date.short')}" />
 						</td>
 						<td align="center">
 							<s:property value="get('percentComplete')" />

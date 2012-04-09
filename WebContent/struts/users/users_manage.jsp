@@ -110,7 +110,7 @@
 							
 							<s:radio 
 								name="isGroup" 
-								list="#{'Yes':'Groups', 'No':'Users', '':'Both'}" 
+								list="#{'Yes':getTextNullSafe('UsersManage.Groups'), 'No':getTextNullSafe('global.Users'), '':getTextNullSafe('UsersManage.Both')}"
 								value="isGroup"
 								theme="pics"
 								cssClass="inline" 
@@ -122,7 +122,7 @@
 							
 							<s:radio 
 								name="isActive" 
-								list="#{'Yes':'Active', 'No':'Inactive', '':'All'}" 
+								list="#{'Yes':getTextNullSafe('global.Active'), 'No':getTextNullSafe('UsersManage.Inactive'), '':getTextNullSafe('JS.Filters.status.All')}" 
 								value="isActive"
 								theme="pics"
 								cssClass="inline"
@@ -288,7 +288,7 @@
 									</li>				
 									<li>
 										<label>Date Created:</label>
-										<s:date name="user.creationDate" format="MM/d/yyyy" />
+										<s:date name="user.creationDate" format="M%{getText('date.short')}" />
 									</li>
 								</s:if>
 							</s:if>

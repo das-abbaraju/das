@@ -17,6 +17,7 @@
                 
                 // enter edit mode
             	$('.translation-list').delegate('.view-mode a.edit', 'click', this.showEditMode);
+            	$('.translation-list').delegate('.view-mode a.preview', 'click', this.showPreview);
             	
             	// ajax translation save
             	$('.translation-list').delegate('.edit-mode button.save', 'click', this.saveTranslation);
@@ -48,7 +49,6 @@
                         views.each(function (key, value) {
                             var element = $(this);
                             var text = element.find('div.text');
-                            
                             
                             if (text.height() > 18) {
                                 element.closest('.content').addClass('view-more');
@@ -198,6 +198,23 @@
                         view.addClass('all');
                     }
                 }
+            },
+            
+            showPreview: function (event) {
+                event.stopPropagation();
+                
+                var url = $(this).attr('data-url');
+                var key = $(this).attr('data-key');
+                var localeTo = $(this).attr('data-localeto');
+                
+                var preview_modal = PICS.modal({
+                   width: 600,
+                   title: 'Preview',
+                   content: '<iframe src="' + url + '?key=' + key + '&localeTo=' + localeTo
+                       + '" width="550" height="480"></iframe>'
+                });
+                
+                preview_modal.show();
             }
         }
     });

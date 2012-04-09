@@ -121,12 +121,12 @@
                 function createModal(data) {
                     var modal = PICS.modal({
                         modal_class: 'modal schedule-audit-expedite-modal',
-                        title: 'schedule_audit_edit.js:14',
+                        title: translate('JS.ScheduleAudit.ExpediteFee.Title'),
                         content: data,
                         buttons: [{
                             html: [
-                                '<a href="javascript:;" class="btn cancel-expedite">schedule_audit_edit.js:18(Cancel)</a>',
-                                '<a href="javascript:;" class="btn success accept-expedite">schedule_audit_edit.js:19(Accept)</a>'
+                                '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.button.Cancel') + '</a>',
+                                '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.button.Accept') + '</a>'
                             ].join('')
                         }]
                     });

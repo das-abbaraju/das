@@ -14,8 +14,6 @@ Locales:
 - Spanish
 --%>
 
-<s:set name="chat_icon_type">${param.chat_icon_type}</s:set>
-
 <s:set name="chat_url" value="%{protocol +
 	'://server.iad.liveperson.net/hc/90511184/' + 
 	'?cmd=file' + 
@@ -26,8 +24,6 @@ Locales:
 
 <span class="chat">
 	<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-        <s:set name="chat_icon" value="'images/chat-icon.png'" />
-        
-        <img src="${chat_icon}" /><span class="link"><s:text name="Header.Chat" /></span>
+        <span class="link"><s:text name="Header.Chat" /></span>
 	</a>
 </span>

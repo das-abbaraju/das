@@ -3,7 +3,6 @@ package com.picsauditing.strutsutil;
 import java.io.ByteArrayInputStream;
 
 import org.apache.struts2.dispatcher.StreamResult;
-import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
 import com.google.common.base.Joiner;
@@ -11,7 +10,8 @@ import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- * Custom result used to return JSON to the browser using the proper contentType.
+ * Custom result used to return JSON to the browser using the proper
+ * contentType.
  * 
  * @author kpartridge
  * 

@@ -88,11 +88,11 @@ public class UserAssignmentDAO extends PicsDAO {
 		where += " AND (state IS NULL OR state.isoCode = :state)";
 		// If you want the assignment to be based on any zip code starting
 		// with 9, then use 9% in the postalStart
-		where += " AND (postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart)";
+		where += " AND ((postalStart IS NULL OR postalStart < :postal OR :postal LIKE postalStart) AND country.isoCode = :country)";
 		// postalEnd works the same way as postalStart but with the added
 		// wildcard. This allows us to include 92604-1234 even though the
 		// end is 92604
-		where += " AND (postalEnd IS NULL OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%') )";
+		where += " AND ((postalEnd IS NULL OR postalEnd > :postal OR :postal LIKE CONCAT(postalEnd, '%')) AND country.isoCode = :country)";
 		// For these 3 cases, the contractor has to be null
 		where += " AND contractor IS NULL";
 		// contractor is used as an override. this has the highest priority.

@@ -887,7 +887,7 @@ public class UsersManage extends PicsActionSupport {
 
 				// don't use hibernate to pull up accounts
 				SelectAccount sql = new SelectAccount();
-				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending') AND name LIKE '" + like + "%'");
+				sql.addWhere("status IN ('Active', 'Deactivated', 'Pending', 'Demo') AND name LIKE '" + like + "%'");
 				sql.addOrderBy("a.name");
 				Database db = new Database();
 				return db.select(sql.toString(), true);

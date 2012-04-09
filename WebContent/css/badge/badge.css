@@ -1,11 +1,7 @@
-#ContractorBadge-page p
-{
-	
-}
-
 #ContractorBadge-page .badges
 {
 	list-style-type: none;
+	margin: 40px 0px 0px 20px;
 }
 
 #ContractorBadge-page .badges li

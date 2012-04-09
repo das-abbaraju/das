@@ -33,10 +33,10 @@
 			<td class="right"><s:property value="#stat.index + report.firstRowNumber" /></td>
 			<td><a href="ContractorView.action?id=<s:property value="[0].get('id')"/>"><s:property value="[0].get('name')"/></a></td>
 			<td><a href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:text name="%{[0].get('atype.name')}" /></a></td>
-			<td><s:date name="[0].get('scheduledDate')" format="M/d/yy" /></td>
-			<td><s:date name="[0].get('assignedDate')" format="M/d/yy" /></td>
-			<td><s:date name="[0].get('completedDate')" format="M/d/yy" /></td>
-			<td><s:date name="[0].get('expired')" format="M/d/yy" /></td>
+			<td><s:date name="[0].get('scheduledDate')" format="%{getText('date.short')}" /></td>
+			<td><s:date name="[0].get('assignedDate')" format="%{getText('date.short')}" /></td>
+			<td><s:date name="[0].get('completedDate')" format="%{getText('date.short')}" /></td>
+			<td><s:date name="[0].get('expired')" format="%{getText('date.short')}" /></td>
 			<td><s:property value="[0].get('auditStatus')"/></td>
 		</tr>
 	</s:iterator>

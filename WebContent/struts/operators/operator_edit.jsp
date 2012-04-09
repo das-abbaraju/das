@@ -9,8 +9,8 @@
 			<s:property value="operator.name" default="Create New Account" />
 		</title>
 		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
 		
 		<s:include value="../jquery.jsp" />
@@ -125,7 +125,7 @@
 						
 						<ol>
 							<li>
-								<label for="">
+								<label for="general_contractor_checkbox">
 									<s:text name="FacilitiesEdit.IsGeneralContractor" />:
 								</label>
 								<s:checkbox 
@@ -368,7 +368,7 @@
 								<label>
 									<s:text name="FacilitiesEdit.AccountSince" />:
 								</label>
-								<s:date name="operator.creationDate" format="MMMMM yyyy" />
+								<s:date name="operator.creationDate" format="MM%{getText('date.MonthAndYear')}" />
 							</li>
 						</s:if>
 					</ol>
@@ -395,6 +395,8 @@
 							
 							<li>
 								<label>Auto Approves Contractors:</label>
+                                <input id="number_pending_not_approved" type="hidden" name="number_pending_not_approved" value="${pendingAndNotApprovedRelationshipCount}" />
+                                
 	                            <s:checkbox 
 	                                name="autoApproveRelationships" 
 	                                cssClass="checkbox"
@@ -517,18 +519,20 @@
 								</s:else>
 								
 								<pics:fieldhelp title="Activation Fee Discount Percentage">
-									<p>The percentage based discount to give contractors associated with this Site on their Activation Fee. For instance a 25% discount would give a contractor an activation fee of $150 instead of $200.</p>
+									<p>
+										The percentage based discount to give contractors associated with this Site on their Activation Fee.
+										For instance a 25% discount would give a contractor an activation fee of $150 instead of $200.
+									</p>
 								</pics:fieldhelp>
 							</li>
 	                        <li>
 	                            <label>Discount Expiration Date:</label>
-	
 	                            <pics:permission perm="UserRolePicsOperator">
 	                                <s:textfield name="operator.discountExpiration" cssClass="datepicker"/>
 	                            </pics:permission>
 	                            <pics:permission negativeCheck="true" perm="UserRolePicsOperator">
 	                                <s:if test="operator.discountExpiration">
-	                                    <s:date name="operator.discountExpiration" format="date.long"/>
+	                                    <s:date name="operator.discountExpiration" format="%{getText('date.short')}" />
 	                                </s:if>
 	                                <s:else>
 	                                    <s:text name="JS.Filters.status.None" />
@@ -587,14 +591,22 @@
 																<s:date name="endDate" />
 															</td>
 															<td>
-																<a href="FacilitiesEdit!remove.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="remove">
+																<s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
+																	<s:param name="operator" value="%{operator.id}" />
+																	<s:param name="accountUser" value="%{id}" />
+																</s:url>
+																<a href="${facilities_edit_remove}" class="remove">
 																	<s:text name="button.Remove" />
 																</a>
 															</td>
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<a href="FacilitiesEdit!copyToChildAccounts.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="add">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
+																		<s:param name="operator" value="%{operator.id}" />
+																		<s:param name="accountUser" value="%{id}" />
+																	</s:url>
+																	<a href="${facilities_edit_copy}" class="add">
 																		<s:text name="FacilitiesEdit.CopyToChildAccounts" />
 																	</a>
 																</td>
@@ -612,14 +624,15 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
 																	/>
 																	&nbsp;&nbsp;
-																	<s:textfield cssClass="blueMain datepicker"
+																	<s:textfield
+																		cssClass="blueMain datepicker"
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
 																	/>
 																</nobr>
 															</td>
@@ -631,7 +644,14 @@
 												</s:iterator>
 												<tr>
 													<td colspan="4">
-														<s:select name="salesRep.user.id" list="userList" listKey="id" listValue="name" headerKey="0" headerValue="- Select a User -" />
+														<s:select
+															name="salesRep.user.id"
+															list="userList"
+															listKey="id"
+															listValue="name"
+															headerKey="0"
+															headerValue="- Select a User -"
+														/>
 													</td>
 													<td <s:if test="operator.corporate">colspan="2"</s:if>>
 														<s:hidden value="PICSSalesRep" name="salesRep.role" />
@@ -683,18 +703,24 @@
 																<s:date name="endDate" />
 															</td>
 															<td>
-																<a href="FacilitiesEdit!remove.action?operator=<s:property value="operator.id"/>&accountUserId=<s:property value="id"/>" class="remove">
-																	Remove
+																<s:url var="facilities_edit_remove" action="FacilitiesEdit" method="remove">
+																	<s:param name="operator" value="%{operator.id}" />
+																	<s:param name="accountUser" value="%{id}" />
+																</s:url>
+																<a href="${facilities_edit_remove}" class="remove">
+																	<s:text name="button.Remove" />
 																</a>
 															</td>
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<s:url action="FacilitiesEdit" method="copyToChildAccounts" var="copy_to_children">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
 																		<s:param name="operator" value="%{operator.id}" />
-																		<s:param name="accountUserId" value="%{id}" />
+																		<s:param name="accountUser" value="%{id}" />
 																	</s:url>
-																	<a href="${copy_to_children}" class="add">Copy To Child Accounts</a>
+																	<a href="${facilities_edit_copy}" class="add">
+																		<s:text name="FacilitiesEdit.CopyToChildAccounts" />
+																	</a>
 																</td>
 															</s:if>										
 														</tr>
@@ -710,14 +736,14 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, 'MM/dd/yyyy')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield cssClass="blueMain datepicker"
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, 'MM/dd/yyyy')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
 																	/>
 																</nobr>
 															</td>
@@ -779,10 +805,10 @@
 																	<s:property value="ownerPercent" />%
 																</td>
 																<td>
-																	<s:date name="startDate" format="MM/dd/yyyy" />
+																	<s:date name="startDate" format="%{getText('date.short')}" />
 																</td>
 																<td>
-																	<s:date name="endDate" format="MM/dd/yyyy" />
+																	<s:date name="endDate" format="%{getText('date.short')}" />
 																</td>
 															</tr>
 														</s:iterator>

@@ -219,7 +219,21 @@
                         <div class="content view-mode">
                             <div class="view">
                                 <div class="text">
-                                    <s:property value="value" escape="false" />
+                                	<s:if test="value.toLowerCase().contains('html>')">
+	                                   	<a
+	                                   		href="javascript:;"
+	                                   		class="preview"
+	                                   		data-url="ManageTranslationsAjax!preview.action"
+	                                   		data-key="${translation.key}"
+	                                   		data-localeto="${translation.locale}"
+	                                   	>
+	                                   		Preview
+	                                   	</a>
+	                                    <s:property value="value" />
+                                    </s:if>
+                                    <s:else>
+	                                    <s:property value="value" escape="false" />
+                                    </s:else>
                                 </div>
                                 
                                 <div class="actions">

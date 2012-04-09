@@ -21,13 +21,8 @@
 		<tr>
 			<td></td>
 			<th><a href="javascript: changeOrderBy('form1','a.name');"><s:text name="global.Contractor" /></a></th>
-			<td><s:text name="global.Location" /></td>
 			<td><s:text name="global.Type" /></td>
 			<td><s:text name="ReportIncidenceRate.Rate" /></td>
-			<s:if test="filter.shaType.toString().equals('COHS')">
-				<td><s:text name="Filters.label.Cad7" /></td>
-				<td><s:text name="Filters.label.Neer" /></td>
-			</s:if>
 			<td><s:text name="Filters.label.ForYear" /></td>
 		    <th><a href="javascript: changeOrderBy('form1','c.trirAverage');"><s:text name="global.Average" /></a></th>
 			<td><s:text name="ReportIncidenceRate.TrirIndustryAverage" /></td>
@@ -44,10 +39,6 @@
 			<s:if test="showTrade">
 				<td><s:text name="Trade" /></td>
 			</s:if>
-			<s:if test="filter.verifiedAnnualUpdate == 2">
-				<td><s:text name="global.Notes" /></td>
-				<td></td>
-			</s:if>
 		</tr>
 	</thead>
 	<!--TODO Add in the Contractor FlagColor-->
@@ -58,22 +49,11 @@
 			<td><a
 				href="Audit.action?auditID=<s:property value="[0].get('auditID')"/>"><s:property
 				value="[0].get('name')" /></a></td>
-			<td><s:if test="%{[0].get('location') == 'Corporate'}">
-				<s:property value="[0].get('location')" />
-			</s:if><s:else>
-				<s:property
-					value="%{[0].get('location')+'-'+[0].get('description')}" />
-			</s:else></td>
-			<td><s:property value="[0].get('SHAType')" /></td>
+			<td><s:property value="[0].get('shaType')" /></td>
 			<!--Need to fix this before the year end-->
 			<td class="right">
-				<s:property
-					value="%{new java.text.DecimalFormat('#,##0.00').format(get('incidenceRate'))}" />
+				<s:property	value="get('incidenceRate')" />
 			</td>
-			<s:if test="get('SHAType').toString().equals('COHS')">
-				<td><s:property value="%{new java.text.DecimalFormat('#,##0.00').format(get('cad7'))}"/></td>
-				<td><s:property value="%{new java.text.DecimalFormat('#,##0.00').format(get('neer'))}"/></td>
-			</s:if>
 			<td><s:property value="get('auditFor')" /></td>
 			<td><s:property value="get('trirAverage')" /></td>
 		    <td><s:property value="[0].get('trir')" /></td>
@@ -89,16 +69,6 @@
 			</s:if>
 			<s:if test="showTrade">
 				<td><s:property value="get('main_trade')"/></td>
-			</s:if>
-			<s:if test="filter.verifiedAnnualUpdate == 2">
-				<s:form action="ReportIncidenceRate" method="POST">
-					<s:hidden value="%{get('id')}" name="conID" />
-					<s:hidden value="%{get('oshaAuditID')}" name="oshaAuditID" />
-					<td><s:textarea name="auditorNotes" cols="15" rows="4" /></td>
-					<td>
-						<s:submit method="verify" cssClass="picsbutton positive" value="%{getText('button.Verify')}" />
-					</td>
-				</s:form>
 			</s:if>
 		</tr>
 	</s:iterator>
