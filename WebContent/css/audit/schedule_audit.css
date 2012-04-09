@@ -81,3 +81,9 @@
 {
     display: none;
 }
+
+.schedule-audit-expedite-modal
+{
+	font-size: 13px;
+	line-height: 16px;
+}
