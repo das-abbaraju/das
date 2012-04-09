@@ -80,6 +80,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=version%>" />
+        <link rel="stylesheet" href="css/insureguard/insureguard.css" type="text/css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=<%=version%>" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css" />
 		

@@ -72,7 +72,7 @@ public class UsersManage extends PicsActionSupport {
 
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
-	
+
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
@@ -167,7 +167,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 
 				if (userPerms.size() < 4) {
-					addActionError("Cannot inactivate this user");
+					addActionError(getText("UsersManage.CannotInactivate"));
 					user.setIsActive(YesNo.Yes); // Save everything but isActive
 					return SUCCESS;
 				}
@@ -223,8 +223,8 @@ public class UsersManage extends PicsActionSupport {
 			if (!userPerms.contains(OpPerms.ContractorAdmin)) {
 				if (conAdmin) {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() >= 3) {
-						addActionError("You can only have 1-3 users with the "
-								+ OpPerms.ContractorAdmin.getDescription() + " permission");
+						addActionError(getTextParameterized("UsersManage.1-3AdminUsers",
+								OpPerms.ContractorAdmin.getDescription()));
 						return SUCCESS;
 					}
 					user.addOwnedPermissions(OpPerms.ContractorAdmin, permissions.getUserId());
@@ -236,8 +236,8 @@ public class UsersManage extends PicsActionSupport {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() > 1) {
 						removeUserAccess(OpPerms.ContractorAdmin);
 					} else {
-						addActionError("You must have at least one user with the "
-								+ OpPerms.ContractorAdmin.getDescription() + " permission");
+						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+								OpPerms.ContractorAdmin.getDescription()));
 					}
 				}
 			}
@@ -250,8 +250,8 @@ public class UsersManage extends PicsActionSupport {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() > 1) {
 						removeUserAccess(OpPerms.ContractorBilling);
 					} else {
-						addActionError("You must have at least one user with the "
-								+ OpPerms.ContractorBilling.getDescription() + " permission");
+						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+								OpPerms.ContractorBilling.getDescription()));
 					}
 
 				}
@@ -265,8 +265,8 @@ public class UsersManage extends PicsActionSupport {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() > 1) {
 						removeUserAccess(OpPerms.ContractorSafety);
 					} else {
-						addActionError("You must have at least one user with the "
-								+ OpPerms.ContractorSafety.getDescription() + " permission");
+						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+								OpPerms.ContractorSafety.getDescription()));
 					}
 				}
 			}
@@ -279,14 +279,14 @@ public class UsersManage extends PicsActionSupport {
 					if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() > 1) {
 						removeUserAccess(OpPerms.ContractorInsurance);
 					} else {
-						addActionError("You must have at least one user with the "
-								+ OpPerms.ContractorInsurance.getDescription() + " permission");
+						addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+								OpPerms.ContractorInsurance.getDescription()));
 					}
 				}
 			}
 
 			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
-				addActionError("Please add a permission to this user");
+				addActionError(getText("UsersManage.AddPermissionToUser"));
 				return SUCCESS;
 			}
 		}
@@ -330,12 +330,12 @@ public class UsersManage extends PicsActionSupport {
 			user.setNeedsIndexing(true);
 			user = userDAO.save(user);
 			if (!user.isGroup())
-				addActionMessage("User saved successfully.");
+				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
 
 		} catch (ConstraintViolationException e) {
-			addActionError("That Username is already in use.  Please select another.");
+			addActionError(getText("UsersManage.UsernameInUse"));
 		} catch (DataIntegrityViolationException e) {
-			addActionError("That Username is already in use.  Please select another.");
+			addActionError(getText("UsersManage.UsernameInUse"));
 		} finally {
 			for (UserAccess userAccess : accessToBeRemoved) {
 				userAccessDAO.remove(userAccess);
@@ -410,16 +410,15 @@ public class UsersManage extends PicsActionSupport {
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
-				addActionError("Cannot remove the primary user for " + user.getAccount().getName()
-						+ ". Please switch the primary user of this account and then attempt to delete them.");
+				addActionError(getTextParameterized("UsersManage.CannotRemovePrimary", user.getAccount().getName()));
 				return SUCCESS;
 			}
 		}
 
 		user.setActive(false);
 		userDAO.save(user);
-		addActionMessage("Successfully removed "
-				+ (user.isGroup() ? "group: " + user.getName() : "user: " + user.getUsername()));
+		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
+				user.isGroup() ? user.getName() : user.getUsername()));
 		user = null;
 
 		return SUCCESS;
@@ -443,32 +442,27 @@ public class UsersManage extends PicsActionSupport {
 		// checking to see if primary account user is set
 		if (!isSaveAction && (!isPrimaryUserEstablished() || isUserPrimaryContact()))
 			setPrimaryAccount = true;
-				
+
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
 	}
-	
+
 	private boolean isPrimaryUserEstablished() {
-		return (account != null 
-				&& account.getPrimaryContact() != null);
+		return (account != null && account.getPrimaryContact() != null);
 	}
-	
+
 	private boolean isUserPrimaryContact() {
-		return (account != null 
-				&& account.getPrimaryContact() != null 
-				&& account.getPrimaryContact().equals(user)); 
+		return (account != null && account.getPrimaryContact() != null && account.getPrimaryContact().equals(user));
 	}
 
 	private boolean isOK() throws Exception {
 		if (user == null) {
-			addActionError("No user found");
+			addActionError(getText("UsersManage.NoUserFound"));
 			return false;
 		}
-		if (user.getName() == null || user.getName().length() == 0)
-			addActionError("Please enter a Display Name.");
-		else if (user.getName().length() < 3)
-			addActionError("Please enter a Display Name with more than 2 characters.");
+		if (user.getName() == null || user.getName().length() == 0 || user.getName().length() < 3)
+			addActionError(getText("UsersManage.EnterDisplayName"));
 
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
@@ -479,11 +473,12 @@ public class UsersManage extends PicsActionSupport {
 
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
-			addActionError("This username is NOT available. Please choose a different one.");
+			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
 		user = new User(temp, true);
 
-		// TODO: Move this into User-validation.xml and use struts 2 for this validation
+		// TODO: Move this into User-validation.xml and use struts 2 for this
+		// validation
 		String username = user.getUsername().trim();
 		if (Strings.isEmpty(username))
 			addActionError(getText("User.username.error.Empty"));
@@ -497,87 +492,88 @@ public class UsersManage extends PicsActionSupport {
 			addActionError(getText("User.username.error.Special"));
 
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
-			addActionError("Please enter a valid Email address.");
+			addActionError(getText("UsersManage.EnterValidEmail"));
 
 		if (user.getId() > 0) {
 			if (!Strings.isEmpty(password2)) {
 				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
-					addActionError("Passwords don't match");
+					addActionError(getText("UsersManage.PasswordsDoNotMatch"));
 
 				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
 				for (String error : errors)
 					addActionError(error);
 			}
-			
-			// Could not find an OpPerms type for the Primary User, so just using ContractorAccounts
+
+			// Could not find an OpPerms type for the Primary User, so just
+			// using ContractorAccounts
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
-			} 
-			
+			}
+
 			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}
-		
 
 		return getActionErrors().size() == 0;
 	}
-	
+
 	private boolean userRoleExists(OpPerms op) {
 		List<User> usersWithRole = user.getAccount().getUsersByRole(op);
-		if (user.hasPermission(op) && usersWithRole.size() > 1) { 
+		if (user.hasPermission(op) && usersWithRole.size() > 1) {
 			return true;
 		} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
 			return true;
 		} else
-		return false;
+			return false;
 	}
-	
-	
-	
+
 	private boolean validUserForRoleExists(User user, OpPerms userRole) {
 		if (OpPerms.ContractorAdmin != userRole && OpPerms.ContractorAccounts != userRole) {
-			throw new IllegalArgumentException("userRole can only be OpPerms.ContractorAccounts or OpPerms.ContractorAdmin!");
+			throw new IllegalArgumentException(
+					"userRole can only be OpPerms.ContractorAccounts or OpPerms.ContractorAdmin!");
 		}
-		
+
 		if (hasAtLeastOneActiveUserWithRole(user.getAccount(), userRole)) {
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasAtLeastOneActiveUserWithRole(Account account, OpPerms userRole) {
 		if (account != null && account.getPrimaryContact() != null) {
-			List<User> users = account.getUsers();			
+			List<User> users = account.getUsers();
 			return hasActiveUserForRole(users, account, userRole);
 		}
-		
+
 		return false;
 	}
-	
+
 	private boolean hasActiveUserForRole(List<User> users, Account account, OpPerms userRole) {
 		if (users != null && !users.isEmpty()) {
 			for (User user : users) {
-				// this is a special case, because when iterating over the users from the Account object,
-				// those users are from the database and may contain the user being Edited, but in
+				// this is a special case, because when iterating over the users
+				// from the Account object,
+				// those users are from the database and may contain the user
+				// being Edited, but in
 				// a different state than it is in this Action class instance
 				if (validateCurrentUserForRoleIsActive(user, userRole)) {
 					return true;
-				}
-				else if (verifyOtherUserIsActive(account, user, userRole)) {
+				} else if (verifyOtherUserIsActive(account, user, userRole)) {
 					return true;
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
-	 * The current user being edited should not have the User Role we are checking for in order 
-	 * for this to return true, because we are checking that another user will have the same 
-	 * role after this user has been updated.
+	 * The current user being edited should not have the User Role we are
+	 * checking for in order for this to return true, because we are checking
+	 * that another user will have the same role after this user has been
+	 * updated.
 	 * 
 	 * @param account
 	 * @param user
@@ -585,40 +581,28 @@ public class UsersManage extends PicsActionSupport {
 	 */
 	private boolean verifyOtherUserIsActive(Account account, User user, OpPerms userRole) {
 		if (OpPerms.ContractorAdmin == userRole) {
-			return (!this.user.equals(user) 
-					&& isUserForRoleActive(user, account, userRole) 
-					&& user.isActiveB() 
-					&& !conAdmin);
+			return (!this.user.equals(user) && isUserForRoleActive(user, account, userRole) && user.isActiveB() && !conAdmin);
 		}
-		
-		return (!this.user.equals(user) 
-				&& isUserForRoleActive(user, account, userRole) 
-				&& user.isActiveB() 
-				&& !setPrimaryAccount);
+
+		return (!this.user.equals(user) && isUserForRoleActive(user, account, userRole) && user.isActiveB() && !setPrimaryAccount);
 	}
 
 	private boolean validateCurrentUserForRoleIsActive(User user, OpPerms userRole) {
 		if (OpPerms.ContractorAdmin == userRole) {
-			return (this.user.equals(user) 
-					&& conAdmin 
-					&& this.user.isActiveB());
+			return (this.user.equals(user) && conAdmin && this.user.isActiveB());
 		}
-		
-		return (this.user.equals(user) 
-				&& setPrimaryAccount 
-				&& this.user.isActiveB());
+
+		return (this.user.equals(user) && setPrimaryAccount && this.user.isActiveB());
 	}
-	
+
 	private boolean isUserForRoleActive(User user, Account account, OpPerms userRole) {
 		if (OpPerms.ContractorAdmin == userRole) {
-			 return (user != null && user.isActiveB() && userHasRole(user, userRole));
+			return (user != null && user.isActiveB() && userHasRole(user, userRole));
 		}
-		
-		return (user != null 
-				&& account.getPrimaryContact().equals(user) 
-				&& user.isActiveB());
+
+		return (user != null && account.getPrimaryContact().equals(user) && user.isActiveB());
 	}
-	
+
 	private boolean userHasRole(User user, OpPerms userRole) {
 		List<UserAccess> roles = user.getOwnedPermissions();
 		for (UserAccess userAccess : roles) {
@@ -626,7 +610,7 @@ public class UsersManage extends PicsActionSupport {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -893,7 +877,7 @@ public class UsersManage extends PicsActionSupport {
 				return db.select(sql.toString(), true);
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -919,8 +903,7 @@ public class UsersManage extends PicsActionSupport {
 	public List<UserGroup> getCsrs() {
 		if (user.getId() == User.GROUP_CSR) {
 			return user.getMembers();
-		}
-		else if (!user.isGroup()) {
+		} else if (!user.isGroup()) {
 			for (UserGroup userGroup : user.getGroups()) {
 				if (userGroup.getGroup().getId() == User.GROUP_CSR) {
 					List<UserGroup> csrs = new ArrayList<UserGroup>(userGroup.getGroup().getMembers());
@@ -936,8 +919,7 @@ public class UsersManage extends PicsActionSupport {
 					return csrs;
 				}
 			}
-		} 
-			
+		}
 
 		return null;
 	}
