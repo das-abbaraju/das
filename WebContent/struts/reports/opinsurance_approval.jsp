@@ -6,8 +6,6 @@
     
     <s:include value="reportHeader.jsp" />
     
-    <link rel="stylesheet" href="css/insureguard/insureguard.css" type="text/css" />
-    
     <script type="text/javascript">
         $(function () {
         	$('.buttons').delegate('.searchByFlag', 'click', function () {

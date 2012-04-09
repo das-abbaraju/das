@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Strings;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -85,6 +87,14 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 	    
 	    String id = ServletActionContext.getRequest().getParameter("id");
 	    ServletActionContext.getRequest().setAttribute("id", id);
+	    
+	    String operatorVisible = ServletActionContext.getRequest().getParameter("operator_visible");
+	    
+	    if (BooleanUtils.toBoolean(operatorVisible)) {
+	        ServletActionContext.getRequest().setAttribute("operator_visible", true);
+	    } else {
+	        ServletActionContext.getRequest().setAttribute("operator_visible", false);
+	    }
 	    
 	    return "form";
 	}
