@@ -19,30 +19,25 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorRegistrationRequestDAO;
-import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.EmailAttachmentDAO;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorTagDAO;
-import com.picsauditing.dao.StateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequest;
 import com.picsauditing.jpa.entities.ContractorRegistrationRequestStatus;
-import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.EmailAttachment;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -52,29 +47,24 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class RequestNewContractor extends PicsActionSupport {
+public class RequestNewContractor extends AccountActionSupport {
+	@Autowired
+	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	protected ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
+	protected EmailAttachmentDAO attachmentDAO;
+	@Autowired
+	protected EmailTemplateDAO templateDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	protected OperatorTagDAO operatorTagDAO;
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
-	@Autowired
-	protected CountryDAO countryDAO;
-	@Autowired
-	protected StateDAO stateDAO;
-	@Autowired
-	protected ContractorAccountDAO contractorAccountDAO;
-	@Autowired
-	protected AccountDAO accountDAO;
-	@Autowired
-	protected EmailTemplateDAO templateDAO;
-	@Autowired
-	protected EmailAttachmentDAO attachmentDAO;
-	@Autowired
-	protected OperatorTagDAO operatorTagDAO;
+	
 	@Autowired
 	protected EmailSenderSpring emailSenderSpring;
 
@@ -457,22 +447,6 @@ public class RequestNewContractor extends PicsActionSupport {
 
 	public void setNewContractor(ContractorRegistrationRequest newContractor) {
 		this.newContractor = newContractor;
-	}
-
-	public List<Country> getCountryList() {
-		List<Country> countries = countryDAO.findAll();
-		Collections.sort(countries, new Comparator<Country>() {
-			@Override
-			public int compare(Country o1, Country o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
-		return countries;
-	}
-
-	public List<State> getStateList() {
-		return stateDAO.findAll();
 	}
 
 	public String getAddToNotes() {

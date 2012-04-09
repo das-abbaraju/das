@@ -21,6 +21,7 @@ import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
+import com.picsauditing.util.log.PicsLogger;
 
 /**
  * This is a collection of misc. business calculations that are applied to audit
@@ -206,10 +207,67 @@ public class MultiYearValueCalculator {
 		return null;
 	}
 
+	public static OshaResult calculateOshaResultsForEMR(FlagCriteria flagCriteria, ContractorAccount contractor) {
+		OshaResult oshaResult = null;
+
+		Map<String, OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor
+				.getSortedAnnualUpdates());
+
+		if (!oshaResults.isEmpty()) {
+			YearList yearList = new YearList();
+			Float answer = null;
+			String answer2 = "";
+			boolean verified = true; // We assume that the data has been verified
+
+			for (String year : oshaResults.keySet()) {
+				yearList.add(year);
+			}
+
+			try {
+				switch (flagCriteria.getMultiYearScope()) {
+				case ThreeYearAverage:
+					oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults.values());
+					answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult
+							.getAnswer())) : null;
+					verified = oshaResult.isVerified();
+					answer2 = "Years: " + oshaResult.getYear();
+					break;
+				case ThreeYearsAgo:
+				case TwoYearsAgo:
+				case LastYearOnly:
+					Integer year = yearList.getYearForScope(flagCriteria.getMultiYearScope());
+					if (year != null) {
+						oshaResult = oshaResults.get(year.toString());
+						if (oshaResult != null) {
+							answer = Float.valueOf(Strings.formatNumber(oshaResult.getAnswer()));
+							answer2 = "Year: " + oshaResult.getYear();
+						}
+					}
+					break;
+				default:
+					throw new RuntimeException("Invalid MultiYear scope of "
+							+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
+							+ flagCriteria.getId() + ", contractor id " + contractor.getId());
+				}
+				
+				oshaResult = new OshaResult.Builder().verified(verified).year(answer2).answer(answer == null ? null : answer.toString()).build();
+			} catch (Throwable t) {
+				PicsLogger.log("Could not cast contractor: " + contractor.getId() + " and answer: "
+						+ ((answer != null) ? answer : "null") + " to a value for criteria: " + flagCriteria.getId());
+
+				// The contractor errors out somewhere during the process of
+				// creating their data so we set the answer to null.
+				oshaResult = null;
+			}
+		}
+
+		return oshaResult;
+	}
+
 	/**
 	 * Get a map of the last 3 years of applicable EMR data (verified or not)
 	 */
-	public static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
+	static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
 		Map<String, OshaResult> oshaResults = buildOshaResultsList(audits);
 
 		return oshaResults;
@@ -230,10 +288,8 @@ public class MultiYearValueCalculator {
 						if (!Strings.isEmpty(answerValue)) {
 							count++;
 							if (answer.getQuestion().getId() != EMR_YES_NO_QUESTION_ID) {
-								boolean verified = true; // we assume that
-															// everything is
-															// verified until we
-															// prove otherwise
+								// we assume that everything is verified until we prove otherwise
+								boolean verified = true; 
 								if (answer.isUnverified()) {
 									verified = false;
 								}
@@ -256,7 +312,7 @@ public class MultiYearValueCalculator {
 	 */
 	public static OshaResult calculateAverageEMR(Collection<OshaResult> values) {
 		OshaResult oshaResult = null;
-		if (values != null && !values.isEmpty()) {
+		if (CollectionUtils.isEmpty(values)) {
 			return oshaResult;
 		}
 
@@ -268,7 +324,7 @@ public class MultiYearValueCalculator {
 			if (Strings.isEmpty(years)) {
 				years = singleResult.getYear();
 			} else {
-				years = ", " + singleResult.getYear();
+				years += ", " + singleResult.getYear();
 			}
 
 			if (!singleResult.isVerified()) {

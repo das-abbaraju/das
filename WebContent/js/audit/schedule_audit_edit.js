@@ -3,6 +3,7 @@
         methods: {
             init: function () {
                 var that = this;
+                var processing = false;
                 
                 if ($('#ScheduleAudit_edit_page').length) {
                     var form = $('.schedule-audit-edit-form');
@@ -31,6 +32,15 @@
                     // fee override
                     $('.reschedule-fee-override').bind('click', function (event) {
                         that.rescheduleFee.apply(that, [true]);
+                    });
+                    
+                    // prevent double submit
+                    form.bind('submit', function(event) {
+                        if (processing === false) {
+                            processing = true;
+                        } else {
+                            return false;
+                        }
                     });
                 }
             },

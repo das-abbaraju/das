@@ -85,13 +85,13 @@ function removeMember(userGroupID) {
 
 function checkUsername(username) {
 	$('#UserSave').attr({'disabled':'disabled'});
-	$('#username_status').html('checking availability of username...');
+	$('#username_status').html(translate('JS.UsersManage.CheckingAvailabilityOfUsername'));
 	var data = {
 		userID: currentUserID,
 		username: username
 	};
 	$('#username_status').load('user_ajax.jsp', data, function() {
-		if($('#username_status').html().indexOf('is NOT available. Please choose a different username.') == -1)
+		if($('#username_status').html().indexOf('error') == -1)
 			$('#UserSave').attr({'disabled': false});
 		}
 	);

@@ -36,20 +36,20 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class ReportNewReqConImport extends PicsActionSupport {
 	@Autowired
-	protected ContractorRegistrationRequestDAO crrDAO;
+	private ContractorRegistrationRequestDAO crrDAO;
 	@Autowired
-	protected StateDAO stateDAO;
+	private StateDAO stateDAO;
 	@Autowired
-	protected CountryDAO countryDAO;
+	private CountryDAO countryDAO;
 	@Autowired
-	protected AccountDAO accountDAO;
+	private AccountDAO accountDAO;
 	@Autowired
-	protected UserDAO userDAO;
+	private UserDAO userDAO;
 
 	private File file;
-	protected String fileContentType = null;
-	protected String fileFileName = null;
-	protected String fileName = null;
+	private String fileContentType = null;
+	private String fileFileName = null;
+	private String fileName = null;
 
 	public String save() throws Exception {
 		String extension = null;
@@ -57,13 +57,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 			if (!extension.equalsIgnoreCase("xls") && !extension.equalsIgnoreCase("xlsx")) {
 				file = null;
-				addActionError("Must be an Excel file");
+				addActionError(getText("ReportNewReqConImport.MustBeExcel"));
 				return SUCCESS;
 			}
 
 			importData(file);
 		} else if (file == null || file.length() == 0) {
-			addActionError("No file was selected");
+			addActionError(getText("ReportNewReqConImport.NoFileWasSelected"));
 		}
 
 		return SUCCESS;
@@ -133,7 +133,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			addActionError("Error reading in excel file, please check the format");
+			addActionError(getText("ReportNewReqConImport.CheckFormat"));
 		}
 
 		if (getActionErrors().size() == 0) {
@@ -143,8 +143,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 				crrDAO.save(crr);
 			}
 
-			addActionMessage("Successfully imported <b>" + requests.size() + "</b> registration request"
-					+ (requests.size() == 1 ? "" : "s"));
+			addActionMessage(getTextParameterized("ReportNewReqConImport.SuccessfullyImported", requests.size()));
 		}
 	}
 
@@ -176,13 +175,13 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 		if (Strings.isEmpty(crr.getContact()) || crr.getState() == null || crr.getCountry() == null
 				|| crr.getRequestedBy() == null)
-			addActionError("Missing required fields in row " + (j + 1));
+			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequiredFields", (j + 1)));
 
 		if (Strings.isEmpty(crr.getEmail()))
-			addActionError("Contact information is required. Missing email in row " + (j + 1));
+			addActionError(getTextParameterized("ReportNewReqConImport.ContactInformationRequired", (j + 1)));
 
 		if (Strings.isEmpty(crr.getRequestedByUserOther()) && crr.getRequestedByUser() == null)
-			addActionError("Missing requested by user field in row " + (j + 1));
+			addActionError(getTextParameterized("ReportNewReqConImport.MissingRequestedByUser", (j + 1)));
 
 		if (crr.getDeadline() == null)
 			crr.setDeadline(DateBean.addMonths(new Date(), 2));
