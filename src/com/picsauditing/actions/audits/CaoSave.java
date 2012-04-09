@@ -194,7 +194,6 @@ public class CaoSave extends AuditActionSupport {
 					note = "";
 				}
 			
-//				note += auditData.getQuestion().getColumnHeaderOrQuestion() + " ";
 				note += "Comment : " + auditData.getComment() + "\n";
 			}
 		}
