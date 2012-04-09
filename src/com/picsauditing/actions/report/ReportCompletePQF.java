@@ -93,7 +93,6 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 					EmailQueue email = emailBuilder.build();
 					email.setViewableById(Account.EVERYONE);
 					emailSender.send(email);
-					addActionMessage("Sent Email");
 
 					Note note = new Note();
 					note.setAccount(conAudit.getContractorAccount());
@@ -108,6 +107,8 @@ public class ReportCompletePQF extends ReportContractorAuditOperator {
 				}
 				contractorAuditDAO.save(conAudit);
 			}
+			
+			addActionMessage("Sent Email");
 		}
 
 		if (!filterOn(getFilter().getAuditStatus()))
