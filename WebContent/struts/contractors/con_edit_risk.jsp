@@ -21,7 +21,7 @@
 			<s:hidden name="id" />
 			
 			<fieldset class="form">
-				<h2 class="formLegend">Risk Levels</h2>
+				<h2 class="formLegend"><s:text name="ContractorEditRiskLevel.RiskLevels"/></h2>
 				
 				<ol>
 					<li>
