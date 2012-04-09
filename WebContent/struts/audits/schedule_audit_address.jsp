@@ -12,7 +12,6 @@
 	<s:include value="../jquery.jsp"></s:include>
 	
 	<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
-	<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
 	<script type="text/javascript" src="js/audit/schedule_audit_address.js?v=<s:property value="version"/>"></script>
 </head>
 

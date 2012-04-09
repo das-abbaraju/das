@@ -2,11 +2,9 @@ package com.picsauditing.PICS;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.flags.FlagAnswerParser;
@@ -25,10 +23,8 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
 
 public class ContractorFlagETL {
@@ -233,66 +229,20 @@ public class ContractorFlagETL {
 		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
 
 		if (flagCriteria.getQuestion().getId() == AuditQuestion.EMR) {
-			Map<String, OshaResult> oshaResults = MultiYearValueCalculator.getOshaResultsForEMR(contractor
-					.getSortedAnnualUpdates());
+			OshaResult oshaResult = MultiYearValueCalculator.calculateOshaResultsForEMR(flagCriteria, contractor);
+			if (oshaResult != null) {
 
-			if (!oshaResults.isEmpty()) {
-				YearList yearList = new YearList();
-				Float answer = null;
-				String answer2 = "";
-				boolean verified = true; // Has the data been verified?
-
-				for (String year:oshaResults.keySet()) {
-					yearList.add(year);
-				}
-				
-				try {
-					switch (flagCriteria.getMultiYearScope()) {
-					case ThreeYearAverage:
-						OshaResult oshaResult = MultiYearValueCalculator.calculateAverageEMR(oshaResults.values());
-						answer = (oshaResult.getAnswer() != null) ? Float.valueOf(Strings.formatNumber(oshaResult
-								.getAnswer())) : null;
-						verified = oshaResult.isVerified();
-						answer2 = "Years: " + oshaResult.getYear();
-						break;
-					case ThreeYearsAgo:
-					case TwoYearsAgo:
-					case LastYearOnly:
-						Integer year = yearList.getYearForScope(flagCriteria.getMultiYearScope());
-						if (year != null) {
-							OshaResult result = oshaResults.get(year.toString());
-							if (result != null) {
-								answer = Float.valueOf(Strings.formatNumber(result.getAnswer()));
-								verified = result.isVerified();
-								answer2 = "Year: " + result.getYear();
-							}
-						}
-						break;
-					default:
-						throw new RuntimeException("Invalid MultiYear scope of "
-								+ flagCriteria.getMultiYearScope().toString() + " specified for flag criteria id "
-								+ flagCriteria.getId() + ", contractor id " + contractor.getId());
-					}
-				} catch (Throwable t) {
-					PicsLogger.log("Could not cast contractor: " + contractor.getId() + " and answer: "
-							+ ((answer != null) ? answer : "null") + " to a value for criteria: "
-							+ flagCriteria.getId());
-
-					answer = null; // contractor errors out somewhere
-					// during the process of creating
-					// their data
-					// do not want to enter partially corrupt data
-				}
-
-				if (answer != null) {
+				if (oshaResult.getAnswer() != null) {
 					final FlagCriteriaContractor fcc = new FlagCriteriaContractor(contractor, flagCriteria,
-							answer.toString());
-					fcc.setVerified(verified);
+							oshaResult.getAnswer());
+					fcc.setVerified(oshaResult.isVerified());
 
 					// conditionally add verified tag
-					if (verified) {
-						answer2 += "<br/><span class=\"verified\">Verified</span>";
+					String answer2 = null;
+					if (oshaResult.isVerified()) {
+						answer2 = oshaResult.getYear() + "<br/><span class=\"verified\">Verified</span>";
 					}
+					
 					fcc.setAnswer2(answer2);
 
 					changes.add(fcc);
@@ -306,14 +256,6 @@ public class ContractorFlagETL {
 		}
 
 		return changes;
-	}
-
-	private boolean isLast2Years(String auditFor) {
-		int lastYear = DateBean.getCurrentYear() - 1;
-		if (Integer.toString(lastYear).equals(auditFor) || Integer.toString(lastYear - 1).equals(auditFor))
-			return true;
-
-		return false;
 	}
 
 	private void performOshaFlagCalculations(ContractorAccount contractor, Set<FlagCriteriaContractor> changes,
