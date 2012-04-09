@@ -312,7 +312,7 @@ public class MultiYearValueCalculator {
 	 */
 	public static OshaResult calculateAverageEMR(Collection<OshaResult> values) {
 		OshaResult oshaResult = null;
-		if (values != null && !values.isEmpty()) {
+		if (CollectionUtils.isEmpty(values)) {
 			return oshaResult;
 		}
 
@@ -324,7 +324,7 @@ public class MultiYearValueCalculator {
 			if (Strings.isEmpty(years)) {
 				years = singleResult.getYear();
 			} else {
-				years = ", " + singleResult.getYear();
+				years += ", " + singleResult.getYear();
 			}
 
 			if (!singleResult.isVerified()) {
