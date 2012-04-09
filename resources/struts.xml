@@ -93,7 +93,8 @@
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="java.lang.Exception" result="Exception" />
-			<exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException" result="GeneralContractorNotApprovedException" />
+			<exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException"
+				result="GeneralContractorNotApprovedException" />
 			<exception-mapping exception="com.picsauditing.access.NoRightsException" result="NoRightsException" />
 			<exception-mapping exception="com.picsauditing.access.RecordNotFoundException" result="RecordNotFoundException" />
 			<exception-mapping exception="com.picsauditing.access.NotLoggedInException" result="login-redirect" />
@@ -150,11 +151,6 @@
 		<action name="ContractorSummaryExternal" class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
 			<result type="json"></result>
 		</action>
-
-		<!--
-			<action name="error404" class="com.picsauditing.actions.Error404">
-			<result>struts/errors/404error.jsp</result> </action>
-		-->
 
 		<!-- Dashboard -->
 		<action name="Home" class="com.picsauditing.actions.Home">
@@ -245,10 +241,6 @@
 		<action name="ContractorFlagChangesAjaxCaoDetails" class="com.picsauditing.actions.flags.ContractorFlagChangesCaoDetails">
 			<result>struts/contractors/contractor_flag_changes_cao_details.jsp
 			</result>
-		</action>
-
-		<action name="OperatorFlagsCalculatorAjax" class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
-			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>
 		</action>
 
 		<action name="ContractorForms" class="com.picsauditing.actions.forms.ContractorForms">
@@ -351,9 +343,11 @@
 		<action name="HeaderSearchAjax" class="com.picsauditing.search.MainSearch">
 			<result>struts/blank.jsp</result>
 		</action>
+		
 		<action name="Search" class="com.picsauditing.search.MainSearch">
 			<result>struts/search.jsp</result>
 		</action>
+		
 		<action name="SearchAjax" class="com.picsauditing.search.MainSearch">
 			<result>struts/search.jsp</result>
 		</action>
@@ -541,78 +535,6 @@
 
 		<action name="CreateImportPQFAudit" class="com.picsauditing.util.CreateImportPQFAudit">
 			<result>/struts/blank.jsp</result>
-		</action>
-
-		<!-- Operator List -->
-		<action name="ReportAccountList"
-			class="com.picsauditing.actions.report.ReportOperatorCorporate">
-			<result>struts/reports/operator_corporate.jsp</result>
-		</action>
-		
-		<action name="OperatorSearchAjax"
-			class="com.picsauditing.actions.report.ReportOperatorCorporate">
-			<result>struts/reports/operator_corporate_data.jsp</result>
-		</action>
-		
-		<action name="FacilitiesEdit" class="com.picsauditing.actions.operators.FacilitiesEdit">
-			<result>struts/operators/operator_edit.jsp</result>
-			<interceptor-ref name="picsStack"/>
-			<interceptor-ref name="store">
-				<param name="operationMode">RETRIEVE</param>
-			</interceptor-ref>
-			<result name="redirect" type="redirectAction">
-				<param name="actionName">FacilitiesEdit</param>
-				<param name="operator">${operator.id}</param>
-			</result>
-			<result name="AutoApproveRelationshipModal">/struts/operators/_autoApproveRelationshipModal.jsp</result>
-		</action>
-		
-		<action name="FacilitiesEditCopyRepresentative" class="com.picsauditing.actions.operators.FacilitiesEdit" 
-			method="copyToChildAccounts">
-			<interceptor-ref name="picsStack"/>
-			<interceptor-ref name="store">
-				<param name="operationMode">STORE</param>
-			</interceptor-ref>
-			<result name="redirect" type="redirectAction">
-				<param name="actionName">FacilitiesEdit</param>
-				<param name="operator">${operator.id}</param>
-			</result>
-		</action>
-		
-		<action name="OperatorConfiguration" class="com.picsauditing.actions.operators.OperatorConfiguration">
-			<result>struts/operators/op_config.jsp</result>
-		</action>
-		
-		<action name="OperatorConfigurationAjax"
-			class="com.picsauditing.actions.operators.OperatorConfiguration">
-			<result name="category">struts/operators/op_config_included_cats.jsp</result>
-			<result name="audit">struts/operators/op_config_included_audits.jsp</result>
-			<result>/struts/blank.jsp</result>
-		</action>
-		
-		<action name="OperatorTags" class="com.picsauditing.actions.operators.OperatorTags">
-			<result>struts/operators/operator_tags.jsp</result>
-		</action>
-		
-		<action name="ContractorTagsAjax" class="com.picsauditing.actions.operators.OperatorTags">
-			<result>struts/contractors/remove_con_tags.jsp</result>
-		</action>
-		
-		<action name="ReportUntaggedContractors" class="com.picsauditing.actions.operators.ReportUntaggedContractors">
-			<result>struts/operators/report_untaggedcontractors.jsp</result>
-		</action>
-		
-		<action name="ReportUntaggedContractorsCSV" class="com.picsauditing.actions.operators.ReportUntaggedContractors">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-
-		<action name="AccountNameEditAjax" class="com.picsauditing.actions.operators.FacilitiesEdit">
-			<result>/struts/operators/operator_names.jsp</result>
-		</action>
-
-		<action name="OperatorQuickAjax" class="com.picsauditing.actions.operators.OperatorActionSupport">
-			<result>/struts/operators/operator_quick.jsp</result>
 		</action>
 
 		<!-- REPORTS Other -->
@@ -828,8 +750,7 @@
 			<result>struts/reports/complete_pqf.jsp</result>
 		</action>
 
-		<action name="ReportContractorsWithForcedFlags"
-			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+		<action name="ReportContractorsWithForcedFlags" class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
 
@@ -838,76 +759,49 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="ReportUserPermissionMatrix"
-			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
+		<action name="ReportUserPermissionMatrix" class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
 			<result>struts/reports/user_permission_matrix.jsp</result>
 		</action>
 		
-		<action name="ReportEmailSubscriptionMatrix"
-			class="com.picsauditing.actions.report.ReportEmailSubscriptionMatrix">
+		<action name="ReportEmailSubscriptionMatrix" class="com.picsauditing.actions.report.ReportEmailSubscriptionMatrix">
 			<result>struts/reports/email_subscription_matrix.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearch"
-			class="com.picsauditing.actions.report.ReportAnswerSearch">
+		<action name="QuestionAnswerSearch" class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<result>struts/reports/qanswersearch.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchCSV"
-			class="com.picsauditing.actions.report.ReportAnswerSearch">
+		<action name="QuestionAnswerSearchCSV" class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchByAudit"
-			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+		<action name="QuestionAnswerSearchByAudit" class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
 			<result>struts/reports/auditanswersearch.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchByAuditCSV"
-			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+		<action name="QuestionAnswerSearchByAuditCSV" class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="AuditDataUpdates"
-			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
+		<action name="AuditDataUpdates" class="com.picsauditing.actions.report.ReportAuditDataUpdate">
 			<result>struts/reports/audit_update.jsp</result>
 		</action>
 
-		<action name="ReportLifetimeMembership"
-			class="com.picsauditing.actions.report.ReportLifetimeMembership">
+		<action name="ReportLifetimeMembership" class="com.picsauditing.actions.report.ReportLifetimeMembership">
 			<result>struts/reports/lifetime_membership.jsp</result>
 		</action>
 
-		<action name="ReportContractorRiskLevel"
-			class="com.picsauditing.actions.report.ReportContractorRiskAssessment">
+		<action name="ReportContractorRiskLevel" class="com.picsauditing.actions.report.ReportContractorRiskAssessment">
 			<result>/struts/reports/report_con_risk.jsp</result>
 		</action>
 
-		<action name="ReportSalesReps"
-			class="com.picsauditing.actions.report.ReportSalesRepresentatives">
+		<action name="ReportSalesReps" class="com.picsauditing.actions.report.ReportSalesRepresentatives">
 			<result>struts/reports/report_sales.jsp</result>
 		</action>
 
-		<action name="OperatorFlagMatrix"
-			class="com.picsauditing.actions.report.OperatorFlagMatrix">
-			<result>struts/reports/flag_matrix.jsp</result>
-		</action>
-
-		<action name="OperatorFlagMatrixCSV"
-			class="com.picsauditing.actions.report.OperatorFlagMatrix">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-
-		<action name="ReportCriteriaOperatorsAjax"
-			class="com.picsauditing.actions.report.ReportCriteriaOperators">
-			<result>struts/reports/criteria_operators.jsp</result>
-		</action>
-
-		<action name="ReportContractorScore"
-			class="com.picsauditing.actions.report.ReportContractorScore">
+		<action name="ReportContractorScore" class="com.picsauditing.actions.report.ReportContractorScore">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportContractorScore</param>
 			<result>struts/reports/report_contractor_score.jsp</result>
@@ -1729,6 +1623,9 @@
 	
 	<!-- Registration Requests -->	
 	<include file="struts-registration-requests.xml" />
+	
+	<!-- Operator List -->
+	<include file="struts-operators.xml" />
 	
 	<!-- NOTES for CONTRACTORS and OPERATORS -->
 	<include file="struts-notes.xml" />
