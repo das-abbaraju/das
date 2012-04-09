@@ -585,6 +585,9 @@ public class DateBean {
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone, TimeZone destinationTimeZone) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(sourceDate);
+		if (sourceTimeZone == null) {
+			sourceTimeZone = c1.getTimeZone();
+		}
 
 		Calendar c2 = Calendar.getInstance();
 		c2.setTimeZone(sourceTimeZone);
