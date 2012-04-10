@@ -456,7 +456,7 @@ public class CaoSave extends AuditActionSupport {
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
 				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
 					if (oldAudit.getAuditType().equals(audit.getAuditType())) {
-						if (!audit.getAuditType().isHasMultiple()) {
+						if (!audit.getAuditType().isHasMultiple() && !audit.getAuditType().isRenewable()) {
 							oldAudit.setExpiresDate(new Date());
 							auditDao.save(oldAudit);
 						}
