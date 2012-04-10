@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaRateType;
 import com.picsauditing.jpa.entities.OshaType;
+import com.picsauditing.util.Numbers;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
@@ -98,7 +99,7 @@ public class OshaDisplay {
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
 				if (answer != null && answer >= 0) {
-					rateRow.addCell(answer.toString());
+					rateRow.addCell(Numbers.printDouble(answer));
 				}
 				else {
 					rateRow.addCell(EMPTY_CELL);
