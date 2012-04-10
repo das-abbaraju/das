@@ -461,9 +461,11 @@ public class UsersManage extends PicsActionSupport {
 			addActionError(getText("UsersManage.NoUserFound"));
 			return false;
 		}
-		if (user.getName() == null || user.getName().length() == 0 || user.getName().length() < 3)
+		
+		String displayName = user.getName().trim();
+		if (displayName == null || displayName.length() == 0 || displayName.length() < 3)
 			addActionError(getText("UsersManage.EnterDisplayName"));
-
+		
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
 
