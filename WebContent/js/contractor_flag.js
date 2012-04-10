@@ -50,8 +50,7 @@
             },
             
             checkReason: function(event) {
-                var form = $('#individual_flag_override_form');
-                var reason = form.find('textarea[name="forceNote"]').val();
+                var reason = $(this).form.find('textarea[name="forceNote"]').val();
                 
                 if (reason && $.trim(reason) != '') {
                     return true;
