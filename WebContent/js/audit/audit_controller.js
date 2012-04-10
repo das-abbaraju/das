@@ -7,10 +7,13 @@
                     
                     cao_table.delegate('.policy-reject', 'click', function (event) {
                         var element = $(this);
-                        var cao_id = element.find('.bCaoID').val();
                         
-                        cao_table.trigger('insurance-policy-reject', [cao_id, function () {
-                            console.log('finished');
+                        var audit_id = $('#auditID').val();
+                        var cao_id = element.find('.bCaoID').val();
+                        var status = element.find('.bStatus').val();
+                        
+                        element.trigger('reject', [cao_id, function () {
+                            cao_table.trigger('refresh', [audit_id, cao_id, status]);
                             
                             // close modal window
                             var modal = PICS.getClass('modal.Modal');

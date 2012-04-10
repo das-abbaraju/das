@@ -236,6 +236,36 @@ if (typeof Object.create !== 'function') {
                 return _classes;
             },
             
+            loading: function (selector) {
+                var element = $(selector);
+                var height = element.height();
+                
+                var loading = $('<div class="loading">');
+                loading.css({
+                    background: '#FFFFFF url(images/loaders/in-progress.gif) no-repeat center'
+                });
+                
+                if (height >= 500) {
+                    loading.css({
+                        height: 500,
+                        lineHeight: 500
+                    });
+                } else if (height > 50 && height < 500) {
+                    loading.css({
+                        height: height,
+                        lineHeight: height
+                    });
+                } else {
+                    loading.css({
+                        height: 30,
+                        lineHeight: 30,
+                        padding: 10
+                    });
+                }
+                
+                $(selector).html(loading);
+            },
+            
             /**
              * Modal
              * 

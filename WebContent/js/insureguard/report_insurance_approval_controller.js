@@ -12,7 +12,7 @@
                         var row = element.closest('tr');
                         var cao_id = row.attr('data-cao-id');
                         
-                        form.trigger('insurance-policy-approve', [cao_id, function () {
+                        element.trigger('approve', [cao_id, function () {
                             // disable policy row
                             row.addClass('disable');
                             
@@ -27,7 +27,7 @@
                         var row = element.closest('tr');
                         var cao_id = row.attr('data-cao-id');
                         
-                        form.trigger('insurance-policy-na', [cao_id, function () {
+                        element.trigger('na', [cao_id, function () {
                             // disable policy row
                             row.addClass('disable');
                             
@@ -41,7 +41,7 @@
                         var row = element.closest('tr');
                         var cao_id = row.attr('data-cao-id');
                         
-                        form.trigger('insurance-policy-reject', [cao_id, function () {
+                        element.trigger('reject', [cao_id, function () {
                             // close modal window
                             var modal = PICS.getClass('modal.Modal');
                             modal.hide();
@@ -59,7 +59,7 @@
                         var row = element.closest('tr');
                         var cao_id = row.attr('data-cao-id');
                         
-                        form.trigger('insurance-policy-revert', [cao_id, function () {
+                        element.trigger('revert', [cao_id, function () {
                             // enable policy row
                             row.removeClass('disable');
                             
