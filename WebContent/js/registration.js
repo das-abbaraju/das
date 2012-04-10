@@ -596,6 +596,14 @@
 			submit: function (event) {
 				var element = $(this);
 				var ccName = $('#transact_ccName', element);
+				var submit_element = $('#transact_button_SubmitPayment');
+				
+				// prevent double submit by "disabling" the submit button and returning false if processing
+				if (!submit_element.hasClass('disabled')) {
+				    submit_element.addClass('disabled');
+				} else {
+				    return false;
+				}
 				
 				element.find('.processing').show();
 				
