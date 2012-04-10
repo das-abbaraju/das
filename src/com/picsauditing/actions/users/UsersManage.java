@@ -749,12 +749,16 @@ public class UsersManage extends PicsActionSupport {
 		for (com.picsauditing.access.UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
 			if (perm.isGrantFlag())
-				list.add(perm.getOpPerm());
+				list.add(perm.getOpPerm());			
 		}
+		
+		
 		for (UserAccess perm : user.getOwnedPermissions()) {
 			// but these permissions, have already been granted
 			list.remove(perm.getOpPerm());
 		}
+		Collections.sort(list, COMPARATOR);
+		
 		return list;
 	}
 
@@ -820,7 +824,13 @@ public class UsersManage extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
+	private static Comparator<OpPerms> COMPARATOR = new Comparator<OpPerms>(){
+        public int compare(OpPerms o1, OpPerms o2){
+            return o1.getDescription().compareTo(o2.getDescription());
+        }
+    };
 
+	
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {
 

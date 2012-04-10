@@ -23,6 +23,7 @@ import javax.persistence.Transient;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
@@ -142,13 +143,13 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	private boolean isChildrenWorkStatusEqual(ApprovalStatus parentStatus) {
-		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'";
-		Set<Integer> idList = new HashSet<Integer>();
-		for (Facility f : getOperatorAccount().getOperatorFacilities())
-			if (f.getOperator().getStatus().isActiveDemo() && !f.getOperator().isAutoApproveRelationships())
-				idList.add(f.getOperator().getId());
-		String ids = Strings.implode(idList, ",");
-		where += " AND genid IN (" + ids + ")";
+		Set<Integer> idList = getFacilityOperatorIds();
+		if (CollectionUtils.isEmpty(idList)) {
+			return false;
+		}
+		
+		String ids = Strings.implode(idList, ",");		
+		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'" + " AND genid IN (" + ids + ")";
 
 		SelectSQL sql = new SelectSQL("generalcontractors", where);
 		sql.setLimit(1);
@@ -160,7 +161,20 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
 		return false;
+	}
+
+	@Transient
+	private Set<Integer> getFacilityOperatorIds() {
+		Set<Integer> idList = new HashSet<Integer>();
+		for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
+			if (facility.getOperator().getStatus().isActiveDemo() && !facility.getOperator().isAutoApproveRelationships()) {
+				idList.add(facility.getOperator().getId());
+			}
+		}
+		
+		return idList;
 	}
 
 	@Enumerated(EnumType.STRING)
