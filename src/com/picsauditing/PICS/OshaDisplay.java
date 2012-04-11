@@ -197,7 +197,7 @@ public class OshaDisplay {
 		Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = new HashMap<MultiYearScope, Set<FlagCriteriaOperator>>();
 		for (FlagCriteriaOperator fco : o.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().getOshaType() == oshaType
-					&& fco.getCriteria().getOshaRateType() == oshaRateType) {
+					&& isEquivalentRateTypes(fco.getCriteria().getOshaRateType(), oshaRateType)) {
 				MultiYearScope scope = fco.getCriteria().getMultiYearScope();
 				Set<FlagCriteriaOperator> flagCriteria = flagCriteriaForYear
 						.get(scope);
@@ -211,6 +211,19 @@ public class OshaDisplay {
 
 		return flagCriteriaForYear;
 	}
+
+	private boolean isEquivalentRateTypes(OshaRateType flagCriteriaRateType,
+			OshaRateType requestedRateType) {
+		if (flagCriteriaRateType == requestedRateType)
+			return true;
+		
+		if (flagCriteriaRateType.isTrir() && requestedRateType.isTrir())
+			return true;
+		
+		return false;
+	}
+	
+	
 
 	private String getFlagDescription(FlagCriteriaOperator fco) {
 		if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {
