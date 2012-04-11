@@ -3,12 +3,13 @@ Ext.define('PICS.view.report.Viewport', {
 
 
     requires: [
+        'PICS.view.layout.Footer',               
         'PICS.view.layout.Header',
         'PICS.view.layout.Menu',
         'PICS.view.report.DataGrid',
         'PICS.view.report.FilterOptions',
         'PICS.view.report.Header',
-        'PICS.view.report.SortToolbar'        
+        'PICS.view.report.SortToolbar'
     ],
     defaults: {
         border: false
@@ -37,6 +38,6 @@ Ext.define('PICS.view.report.Viewport', {
             }]
         },{
             region: 'south',
-            html: '&copy; 2012'
+            xtype: 'layoutfooter'
         }]
 });
