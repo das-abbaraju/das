@@ -32,11 +32,11 @@ public class I18nCache implements Serializable {
 	static public final String DEFAULT_LANGUAGE = "en";
 	static public final String DEFAULT_TRANSLATION = "Translation missing";
 
-	private transient static I18nCache INSTANCE;
-	private transient static Date LAST_CLEARED;
+	private static I18nCache INSTANCE;
+	private static Date LAST_CLEARED;
 	
-	private transient Table<String, String, String> cache;
-	private transient Map<String, Date> cacheUsage;
+	private Table<String, String, String> cache;
+	private Map<String, Date> cacheUsage;
 
 	private I18nCache() {
 	}
