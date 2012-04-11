@@ -1,50 +1,35 @@
 Ext.define('PICS.view.report.filter.BooleanFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
-    alias: ['widget.booleanfilter'],    
+    alias: ['widget.booleanfilter'],
 
     items: [{
-        xtype: 'panel',
-        bodyStyle: 'background:transparent;',        
-        name: 'title'
+        xtype: 'displayfield',
+        value: null
     },{
-        xtype: 'checkbox',
-        boxLabel  : 'On',
-        name      : 'boolean',
-        inputValue: '1'
+        xtype: 'form',
+        border: 0,
+        items: [{
+            xtype: 'checkbox',
+            boxLabel: 'On',
+            margin: '0 5 0 0',
+            name: 'operator',
+            flex: 1.5,
+            inputValue: '1',
+            listeners: {
+                change: function (obj, newval, oldval, options) {
+                    this.up('booleanfilter').record.set('value', newval);
+                }
+            }
+        }],
+        layout: 'hbox'  
     }],
-    listeners: {
-        beforeRender: function (target) {
-            var checkbox = target.child("checkbox");
-
-            checkbox.setValue(target.record.data.value);
-        }
-    },
-    applyFilter: function() {
-        var values = this.getValues();
-       
-        if (values.boolean === '1') {
-            this.record.set('value', values.boolean);
-        } else {
-            this.record.set('value', 0);
-        }
-        this.record.set('operator', 'Equals'); //TODO remove hack to get boolean working
-        this.superclass.applyFilter();
-    },
-    constructor: function (config) {
-        if (config.displayMode === 'docked') {
-            this.items.push({
-                xtype: 'button',
-                itemId: 'apply',
-                action: 'apply',
-                listeners: {
-                    click: function () {
-                        this.up().applyFilter(true);
-                    }
-                },
-                text: 'Apply',
-                cls: 'x-btn-default-small'
-            });
-        }
+    
+    title: 'Boolean',
+    
+    initComponent: function () {
+        var display = this.record.get('column');
+        this.items[0].value = display;
+        this.items[1].items[0].inputValue = this.record.get('value');
         this.callParent(arguments);
     }
 });

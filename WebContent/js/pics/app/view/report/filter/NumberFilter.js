@@ -1,80 +1,33 @@
 Ext.define('PICS.view.report.filter.NumberFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
     alias: ['widget.numberfilter'],
-
+    
     items: [{
+        xtype: 'displayfield',
+        value: null
+    },{
         xtype: 'panel',
-        bodyStyle: 'background:transparent;',        
-        name: 'title'
-    },{
-        xtype: 'combo',
-        editable: false,
-        name: 'not',
-        store: [
-            ['false', ' '],
-            ['true', 'not']
-        ],
-        width: 50
-    },{
-        xtype: 'combo',
-        name: 'operator',
-        store: [
-	        ['Equals', '='],
-	        ['GreaterThan', '>'],
-	        ['LessThan', '<'],
-	        ['GreaterThanOrEquals', '>='],
-	        ['LessThanOrEquals', '<='],	        
-	        ['Empty', 'blank']
-        ],
-        typeAhead: true,
-        value: '>',
-        width: 55
-    },{
-        xtype: 'numberfield',
-        allowDecimals: false,
-        hideTrigger: true,
-        keyNavEnabled: false,
-        mouseWheelEnabled: false,
-        name: 'textfilter',
-        text: 'Value'        
-    }],
-    listeners: {
-        beforeRender: function (target) {
-            var combo = target.child('combo[name=operator]'),
-                textfield = target.child('textfield[name=textfilter]');
-            
-            combo.setValue(target.record.data.operator);
-            textfield.setValue(target.record.data.value);
-        }
-    },
-    applyFilter: function() {
-        var values = this.getValues();
-
-        this.record.set('value', values.textfilter);
-        this.record.set('operator', values.operator);
-        if (values.not === 'true') {
-            this.record.set('not', true);    
-        } else {
-            this.record.set('not', false);
-        }        
-        this.superclass.applyFilter();
-    },
-    constructor: function (config) {
-        if (config.displayMode === 'docked') {
-            this.items.push({
-                xtype: 'button',
-                itemId: 'apply',
-                action: 'apply',
-                listeners: {
-                    click: function () {
-                        this.up().applyFilter(true);
-                    }
-                },
-                text: 'Apply',
-                cls: 'x-btn-default-small'
-            });
-            this.items.splice(1,1); //remove NOT combo
-        }
+        border: 0,
+        items: [{
+            xtype: 'combo',
+            margin: '0 5 0 0',
+            name: 'operator',
+            store: NUMBERSTORE,
+            flex: 1.5,
+            value: '='
+        }, {
+            xtype: 'textfield',     
+            flex: 2,
+            value: null
+        }],
+        layout: 'hbox'  
+    }], 
+    title: 'Number',
+    
+    initComponent: function () {
+        var display = this.record.get('column');
+        this.items[0].value = display;
+        this.items[1].items[1].value = this.record.get('value');
         this.callParent(arguments);
-    }
+    }   
 });

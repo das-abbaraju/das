@@ -1,42 +1,34 @@
 Ext.define('PICS.view.report.DataGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdatagrid'],
-    requires: [
-        'PICS.view.report.LinkColumn'
-    ],
-    store: 'report.ReportData',
-    
-    enableColumnHide: false,
-    id: 'dataGrid',
-    sortableColumns:  false,
-    title: 'Grid',
-    
-    initComponent: function () {
-        this.columns = [{
-            xtype: 'rownumberer',
-            
-            width: 27
-        }];
-        
-        this.dockedItems = [{
-            xtype: 'toolbar',
-            id: 'filterToolbar',
-            align: 'stretch',
-            type: 'hbox',
-            height: 32,
 
-            dock: 'top'
-        }, {
-            xtype: 'pagingtoolbar',
-            store: 'report.ReportData',
-            dock: 'top'
-        }, {
-            xtype: 'pagingtoolbar',
-            store: 'report.ReportData',
-            
-            dock: 'bottom'
-        }];
-        
-        this.callParent();
-    }
+    dockedItems: [{
+        xtype: 'reportsorttoolbar',
+        dock: 'top'
+    },{
+        xtype: 'pagingtoolbar',
+        displayInfo: true,
+        dock: 'top',
+        padding: '0 20 0 0',
+        store: 'report.ReportData'
+    },{
+        xtype: 'pagingtoolbar',
+        displayInfo: true,
+        dock: 'bottom',
+        padding: '0 20 0 0',
+        store: 'report.ReportData'
+    }],
+
+    columns: [{
+            header: 'Column',
+            dataIndex: 'column'
+        },{ 
+            header: 'Email',
+            dataIndex: 'email'
+        },{ 
+            header: 'Value', 
+            dataIndex: 'value'
+        }],
+    margin: '0 0 0 10',    
+    store: 'report.ReportData'
 });

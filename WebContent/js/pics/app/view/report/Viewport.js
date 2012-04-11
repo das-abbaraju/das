@@ -1,46 +1,42 @@
 Ext.define('PICS.view.report.Viewport', {
-    extend : 'Ext.container.Viewport',
+    extend: 'Ext.container.Viewport',
+
+
     requires: [
-       'PICS.view.layout.Footer',               
-       'PICS.view.layout.Menu',
-       'PICS.view.report.ColumnSelector',
-       'PICS.view.report.ColumnSelectorGrid',
-       'PICS.view.report.DataGrid',
-       'PICS.view.report.ReportOptions',
-       'PICS.view.report.ReportOptionsColumns',
-       'PICS.view.report.ReportOptionsFilters',
-       'PICS.view.report.ReportOptionsSorts'
+        'PICS.view.layout.Header',
+        'PICS.view.layout.Menu',
+        'PICS.view.report.DataGrid',
+        'PICS.view.report.FilterOptions',
+        'PICS.view.report.Header',
+        'PICS.view.report.SortToolbar'        
     ],
-    
+    defaults: {
+        border: false
+    },  
+    layout: 'border',
     items: [{
-        region: 'center',
-        
-        dockedItems: [{
-            xtype: 'layoutmenu',
-            dock: 'top',
-            height: 30
-        }],
-        items: [{
-            xtype: 'reportoptions',
-            region: 'west',
-            width: 300
-        }, {
-            xtype: 'tabpanel',
-            region: 'center',
-            id: 'main',
+            region: 'north',
             items: [{
+                xtype: 'layoutheader'
+            },{
+                xtype: 'layoutmenu'
+            }]
+        },{
+            region: 'center',
+            bodyStyle: 'background: #FFF',
+            layout: 'border',
+            items: [{
+                region: 'north',
+                xtype: 'reportheader'
+            },{
+                region: 'west',
+                xtype: 'filteroptions'
+            },{
+                region: 'center',
                 xtype: 'reportdatagrid'
-            }, {
-                title: 'Chart'
-            }],
-            title: 'Report'
-        }],
-        layout: 'border'
-    }, {
-        xtype: 'layoutfooter',
-        
-        region: 'south'
-    }],
-    layout : 'border',
-    title: 'Main'
+            }]
+        },{
+            region: 'south',
+            html: '&copy; 2012'
+        }]
 });
