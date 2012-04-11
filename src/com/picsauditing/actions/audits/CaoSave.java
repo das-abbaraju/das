@@ -259,6 +259,15 @@ public class CaoSave extends AuditActionSupport {
 		else
 			return SUCCESS;
 	}
+	
+	public String loadCaoTable() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
+	    setup();
+	    if (conAudit != null) {
+            getValidSteps();
+	    }
+	    
+	    return "caoTable";
+	}
 
 	private boolean isExpiredPolicy() {
 		return conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin());

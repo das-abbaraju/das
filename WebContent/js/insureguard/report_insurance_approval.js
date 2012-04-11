@@ -8,33 +8,37 @@
                 init: function () {
                     var that = this;
                     
-                    var form = $('#approveInsuranceForm'); 
+                    var form = $('#approveInsuranceForm');
                     
-                    form.bind('insurance-policy-approve', function (event, cao_id, success_callback) {
+                    form.delegate('.policy-approve', 'approve', function (event, cao_id, success_callback) {
                         that.policyApprove.apply(that, [cao_id, success_callback]);
                     });
                     
-                    form.bind('insurance-policy-na', function (event, cao_id, success_callback) {
+                    form.delegate('.policy-na', 'na', function (event, cao_id, success_callback) {
                         that.policyNotApplicable.apply(that, [cao_id, success_callback]);
                     });
                     
-                    form.bind('insurance-policy-reject', function (event, cao_id, success_callback) {
+                    form.delegate('.policy-reject', 'reject', function (event, cao_id, success_callback) {
                         that.showPolicyRejectModal.apply(that, [cao_id, false, success_callback]);
                     });
                     
-                    form.bind('insurance-policy-revert', function (event, cao_id, success_callback) {
+                    form.delegate('.policy-revert', 'revert', function (event, cao_id, success_callback) {
                         that.policyRevert.apply(that, [cao_id, success_callback]);
                     });
                     
                     var audit_header = $('#auditHeader');
                     
-                    audit_header.delegate('#caoTable', 'insurance-policy-reject', function (event, cao_id, success_callback) {
+                    audit_header.delegate('#caoTable .policy-reject', 'reject', function (event, cao_id, success_callback) {
                         that.showPolicyRejectModal.apply(that, [cao_id, true, success_callback]);
                     });
                 },
                 
                 // set policy to approved
                 policyApprove: function (cao_id, success_callback) {
+                    if (!cao_id) {
+                        throw 'insureguard.ReportInsuranceApproval:policyApprove requires cao_id';
+                    }
+                    
                     if (!xhr) {
                         var data = {
                             status: 'Approved',
@@ -59,6 +63,10 @@
                 
                 // set policy to not applicable
                 policyNotApplicable: function (cao_id, success_callback) {
+                    if (!cao_id) {
+                        throw 'insureguard.ReportInsuranceApproval:policyNotApplicable requires cao_id';
+                    }
+                    
                     if (!xhr) {
                         var data = {
                             status: 'NotApplicable',
@@ -83,7 +91,7 @@
                 
                 // set policy to rejected
                 policyReject: function (cao_id, success_callback) {
-                    if (cao_id == undefined) {
+                    if (!cao_id) {
                         throw 'insureguard.ReportInsuranceApproval:policyReject requires cao_id';
                     }
                     
@@ -139,6 +147,10 @@
                 
                 // revert policy's save action
                 policyRevert: function (cao_id, success_callback) {
+                    if (!cao_id) {
+                        throw 'insureguard.ReportInsuranceApproval:policyRevert requires cao_id';
+                    }
+                    
                     var that = this;
                     
                     if (!xhr) {
