@@ -1,0 +1,91 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.operators" extends="com.picsauditing">
+		<action name="ReportAccountList" class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate.jsp</result>
+		</action>
+		
+		<action name="OperatorSearchAjax" class="com.picsauditing.actions.report.ReportOperatorCorporate">
+			<result>struts/reports/operator_corporate_data.jsp</result>
+		</action>
+		
+		<action name="FacilitiesEdit" class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>struts/operators/operator_edit.jsp</result>
+			<interceptor-ref name="picsStack"/>
+			<interceptor-ref name="store">
+				<param name="operationMode">RETRIEVE</param>
+			</interceptor-ref>
+			<result name="redirect" type="redirectAction">
+				<param name="actionName">FacilitiesEdit</param>
+				<param name="operator">${operator.id}</param>
+			</result>
+			<result name="AutoApproveRelationshipModal">/struts/operators/_autoApproveRelationshipModal.jsp</result>
+		</action>
+		
+		<action name="FacilitiesEditCopyRepresentative" class="com.picsauditing.actions.operators.FacilitiesEdit" 
+			method="copyToChildAccounts">
+			<interceptor-ref name="picsStack"/>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+			<result name="redirect" type="redirectAction">
+				<param name="actionName">FacilitiesEdit</param>
+				<param name="operator">${operator.id}</param>
+			</result>
+		</action>
+		
+		<action name="OperatorConfiguration" class="com.picsauditing.actions.operators.OperatorConfiguration">
+			<result>struts/operators/op_config.jsp</result>
+		</action>
+		
+		<action name="OperatorConfigurationAjax" class="com.picsauditing.actions.operators.OperatorConfiguration">
+			<result name="category">struts/operators/op_config_included_cats.jsp</result>
+			<result name="audit">struts/operators/op_config_included_audits.jsp</result>
+			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="OperatorTags" class="com.picsauditing.actions.operators.OperatorTags">
+			<result>struts/operators/operator_tags.jsp</result>
+		</action>
+		
+		<action name="ContractorTagsAjax" class="com.picsauditing.actions.operators.OperatorTags">
+			<result>struts/contractors/remove_con_tags.jsp</result>
+		</action>
+		
+		<action name="ReportUntaggedContractors" class="com.picsauditing.actions.operators.ReportUntaggedContractors">
+			<result>struts/operators/report_untaggedcontractors.jsp</result>
+		</action>
+		
+		<action name="ReportUntaggedContractorsCSV" class="com.picsauditing.actions.operators.ReportUntaggedContractors">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="AccountNameEditAjax" class="com.picsauditing.actions.operators.FacilitiesEdit">
+			<result>/struts/operators/operator_names.jsp</result>
+		</action>
+
+		<action name="OperatorQuickAjax" class="com.picsauditing.actions.operators.OperatorActionSupport">
+			<result>/struts/operators/operator_quick.jsp</result>
+		</action>
+		
+		<action name="OperatorFlagsCalculatorAjax" class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
+			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>
+		</action>
+		
+				<action name="OperatorFlagMatrix" class="com.picsauditing.actions.report.OperatorFlagMatrix">
+			<result>struts/reports/flag_matrix.jsp</result>
+		</action>
+
+		<action name="OperatorFlagMatrixCSV" class="com.picsauditing.actions.report.OperatorFlagMatrix">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportCriteriaOperatorsAjax" class="com.picsauditing.actions.report.ReportCriteriaOperators">
+			<result>struts/reports/criteria_operators.jsp</result>
+		</action>
+	</package>
+</struts>

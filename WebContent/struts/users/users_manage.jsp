@@ -50,7 +50,7 @@
 	</s:if>
 	
 	<s:if test="account.assessment">
-		<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+		<a href="AssessmentCenterEdit.action?center=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 	</s:if>
 	
 	<s:if test="account.admin">PICS</s:if>
@@ -110,7 +110,7 @@
 					<s:param name="account" value="%{account.id}" />
 					<s:param name="isActive" value="%{isActive}" />
 					<s:param name="isGroup" value="%{isGroup}" />
-					<s:param name="userIsGroup" value="Yes" />
+					<s:param name="userIsGroup" value="'Yes'" />
 				</s:url>
 				<a href="${add_group}" class="add">
 					<s:text name="UsersManage.addGroup" />
@@ -120,7 +120,7 @@
 				<s:param name="account" value="%{account.id}" />
 				<s:param name="isActive" value="%{isActive}" />
 				<s:param name="isGroup" value="%{isGroup}" />
-				<s:param name="userIsGroup" value="No" />
+				<s:param name="userIsGroup" value="'No'" />
 			</s:url>
 			<a href="${add_user}" class="add">
 				<s:text name="UsersManage.addUser" />
@@ -175,7 +175,7 @@
 									</td>
 									<td style="font-weight: bold">
 										<a href="?account=<s:property value="get('accountID')"/>&user=<s:property value="get('id')"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
-											<s:property value="get('name')" />
+											<s:property value="get('name')" /> 
 										</a>
 									</td>
 									<td>
@@ -184,7 +184,7 @@
 								</s:if>
 								<s:else>
 									<td>
-										<s:text name="UsersManage.User" />
+										<s:text name="UsersManage.User" /> 
 									</td>
 									<td>
 										<a
@@ -243,7 +243,7 @@
 						<s:text name="UsersManage.UserGroupDetails">
 							<s:param value="%{user.group ? 1 : 0}" />
 						</s:text>
-					</h2>
+					</h2> 
 					
 					<ol>
 						<s:if test="account.users.size() > 1">
@@ -510,7 +510,7 @@
 						<div id="permissionReport" style="width: 600px">
 							<s:include value="user_save_permissions.jsp" />
 						</div>
-		
+					
 						<div id="groupReport">
 							<s:include value="user_save_groups.jsp" />
 						</div>
@@ -528,7 +528,7 @@
 						<div id="userSwitch">
 							<s:include value="user_save_userswitch.jsp" />
 						</div>
-					</s:if>
+					</s:if>					
 				</s:if>
 		
 				<s:if test="!user.group">
