@@ -26,6 +26,7 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
@@ -127,6 +128,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		sql.addField("a.country");
 		sql.addField("a.phone");
 		sql.addField("c.score");
+		
+		sql.addAudit(AuditType.PQF);
 
 		if (permissions.getAccountStatus().isDemo())
 			sql.addWhere("a.status IN ('Active','Demo')");

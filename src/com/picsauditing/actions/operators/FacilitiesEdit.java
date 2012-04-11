@@ -200,7 +200,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		addActionMessage("Successfully Copied to all child operators");
 		// Redirecting because we don't want to hit this same method over and
 		// over again.
-		return "redirect";
+		return REDIRECT;
 	}
 
 	public String saveRole() {
