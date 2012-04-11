@@ -50,7 +50,7 @@
 	</s:if>
 	
 	<s:if test="account.assessment">
-		<a href="AssessmentCenterEdit.action?id=<s:property value="account.id"/>"><s:property value="account.name" /></a>
+		<a href="AssessmentCenterEdit.action?center=<s:property value="account.id"/>"><s:property value="account.name" /></a>
 	</s:if>
 	
 	<s:if test="account.admin">PICS</s:if>
