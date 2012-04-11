@@ -37,6 +37,13 @@ public enum OshaRateType implements Translatable {
 	public boolean isHasIndustryAverage() {
 		return hasIndustryAverage;
 	}
+	
+	public boolean isTrir() {
+		if (this == TrirAbsolute || this == TrirNaics || this == TrirWIA)
+			return true;
+		
+		return false;
+	}
 
 	public String getDescriptionKey() {
 		return getI18nKey("description");

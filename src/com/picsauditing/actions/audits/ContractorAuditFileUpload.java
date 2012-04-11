@@ -72,8 +72,8 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 		
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			AuditCatData parentCatData = getCategories().get(auditCatData.getCategory().getTopParent());
-			boolean parentCatDataApplies = (parentCatData == null) ? true : parentCatData.isApplies();
-			if (auditCatData.isApplies() && parentCatDataApplies) {
+			boolean parentCatDataAppliesOrDoesntExist = (parentCatData == null) ? true : parentCatData.isApplies();
+			if (auditCatData.isApplies() && parentCatDataAppliesOrDoesntExist) {
 				loadRequirementsQuestions(auditCatData);
 			}
 		}
