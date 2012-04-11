@@ -40,7 +40,11 @@
     '?cmd=file' + 
     '&amp;file=visitorWantsToChat' +
     '&amp;site=90511184' + 
-    '&amp;imageUrl=' + protocol + '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a' + 
+    '&amp;imageUrl=' +
+    protocol +
+    '://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/' +
+    localeStatic.displayLanguage +
+    '/General/3a' +
     '&amp;referrer='}" />
 
 <s:if test="hasActionErrors()">
