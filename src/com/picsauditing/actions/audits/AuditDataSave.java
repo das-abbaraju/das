@@ -575,14 +575,18 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError(getText("AuditData.error.MustBeNumber"));
 				return false;
 			}
-			if ("Number".equals(questionType)) {
-				auditData.setAnswer(answer);
-				return true;
-			}
-
-			NumberFormat format = new DecimalFormat("#,##0");
-			if ("Decimal Number".equals(questionType))
+			
+			NumberFormat format;
+			if ("Decimal Number".equals(questionType)) {
 				format = new DecimalFormat("#,##0.000");
+			}
+			else if ("Number".equals(questionType)) {
+				format = new DecimalFormat("###0");
+			}
+			else {
+				format = new DecimalFormat("#,##0");
+			}
+			
 			BigDecimal value = new BigDecimal(answer);
 			auditData.setAnswer(format.format(value));
 		}
