@@ -560,7 +560,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 	}
 
 	public boolean isNeedsExpediteFee(Date newDate) {
-		if (newDate.after(conAudit.getScheduledDate()))
+		if (conAudit.getScheduledDate() != null && newDate.after(conAudit.getScheduledDate()))
 			return false;
 
 		if (newDate != null) {
