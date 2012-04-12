@@ -187,9 +187,9 @@ public class Registration extends ContractorActionSupport {
 	private void setLoginLog(Permissions permissions) {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteHost());
+		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
 
-		String serverName = ServletActionContext.getRequest().getServerName();
+		String serverName = ServletActionContext.getRequest().getLocalName();
 		if (isLiveEnvironment()) {
 			try {
 				// Need computer name instead of www

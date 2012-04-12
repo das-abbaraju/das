@@ -136,7 +136,8 @@ public class Cron extends PicsActionSupport {
 		HttpServletRequest request = ServletActionContext.getRequest();
 
 		report = new StringBuffer();
-		report.append("Running Cron Job on Server: " + request.getServerName() + "\n");
+		report.append("Running Cron Job on Server: " + request.getLocalName() + "\n");
+		report.append("Address: " + request.getLocalAddr() + "\n");
 		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n");
 		report.append("Starting Cron Job at: " + new Date().toString());
 		report.append("\n\n");

@@ -49,10 +49,10 @@ public class ExceptionAction extends PicsActionSupport {
 				StringBuilder email = new StringBuilder();
 				email.append("An error occurred on PICS\n\n");
 				email.append(createExceptionMessage());
-				email.append("\n\nServerName: " + request.getServerName());
+				email.append("\n\nServerName: " + request.getLocalName());
 				email.append("\nRequestURI: " + request.getRequestURI());
 				email.append("\nQueryString: " + request.getQueryString());
-				email.append("\nRemoteAddr: " + request.getRemoteAddr());
+				email.append("\nRemoteAddr: " + request.getLocalAddr());
 				if (permissions.isLoggedIn()) {
 					email.append("\nName: " + permissions.getName());
 					email.append("\nUsername: " + permissions.getUsername());
@@ -146,7 +146,8 @@ public class ExceptionAction extends PicsActionSupport {
 
 			StringBuilder email = new StringBuilder();
 			email.append("A user has reported an error on PICS\n");
-			email.append("\nRemoteAddr: " + request.getRemoteAddr());
+			email.append("\nServer: " + request.getLocalName());
+			email.append("\nRemoteAddr: " + request.getLocalAddr());
 			if (permissions.isLoggedIn()) {
 				email.append("\nName: " + permissions.getName());
 				email.append("\nUsername: " + permissions.getUsername());
