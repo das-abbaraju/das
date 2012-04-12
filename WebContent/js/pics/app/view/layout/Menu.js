@@ -8,14 +8,17 @@ Ext.define('PICS.view.layout.Menu', {
 
             toolbar.add(Ext.decode(response.responseText));
             
+            //TODO move search and tbfill to menu.action
             toolbar.add({
                 xtype: 'tbfill'
             },{
                 xtype: 'textfield',
                 name : 'searchTerm',
                 emptyText: 'enter search term'
-            },
-            'Search');
+            },{
+                xtype: 'tbtext',
+                text: 'Search'
+            });
         },
         url: 'Menu.action'
     },

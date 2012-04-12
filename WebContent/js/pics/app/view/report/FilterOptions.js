@@ -7,10 +7,9 @@ Ext.define('PICS.view.report.FilterOptions', {
     floatable: false,
     id: 'filteroptions',
     
-    bodyStyle: {
-        'border-bottom-width': '0px'
-    },
+    bodyCls: 'ext-no-bottom-border',
     dockedItems: [{
+        bodyCls: 'ext-no-bottom-border',
         dock: 'bottom',
         defaults: {
             border: false
@@ -32,7 +31,8 @@ Ext.define('PICS.view.report.FilterOptions', {
                 action: 'Update',
                 text: 'Update'
             }],
-            layout: 'hbox'
+            layout: 'hbox',
+                style: 'border-bottom-width: 0px',
         }]
     }],
     tbar: [{
@@ -45,7 +45,7 @@ Ext.define('PICS.view.report.FilterOptions', {
     }],
     title: 'Filter Options',
     width: 300,
-    
+    style: 'border-bottom-width: 0px',
     constructor: function () {
         this.callParent(arguments);
         /*var filter = Ext.create('PICS.view.report.filter.StringFilter');

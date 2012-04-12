@@ -1,7 +1,7 @@
 Ext.define('PICS.view.report.DataGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdatagrid'],
-
+    
     dockedItems: [{
         xtype: 'reportsorttoolbar',
         dock: 'top'
@@ -31,6 +31,7 @@ Ext.define('PICS.view.report.DataGrid', {
         store: 'report.ReportData'
     },{
         xtype: 'pagingtoolbar',
+        cls: 'ext-no-bottom-border',        
         displayInfo: true,
         dock: 'bottom',
         items: [{
@@ -56,6 +57,9 @@ Ext.define('PICS.view.report.DataGrid', {
     }],
 
     columns: [{
+            xtype: 'rownumberer',
+            width: 27
+        },{
             header: 'Column',
             dataIndex: 'column'
         },{ 

@@ -1,7 +1,6 @@
 Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
-
     requires: [
         'PICS.view.layout.Footer',               
         'PICS.view.layout.Header',
@@ -13,7 +12,7 @@ Ext.define('PICS.view.report.Viewport', {
     ],
     defaults: {
         border: false
-    },  
+    },
     layout: 'border',
     items: [{
             region: 'north',
@@ -24,8 +23,6 @@ Ext.define('PICS.view.report.Viewport', {
             }]
         },{
             region: 'center',
-            bodyStyle: 'background: #FFF',
-            layout: 'border',
             items: [{
                 region: 'north',
                 xtype: 'reportheader'
@@ -35,7 +32,8 @@ Ext.define('PICS.view.report.Viewport', {
             },{
                 region: 'center',
                 xtype: 'reportdatagrid'
-            }]
+            }],
+            layout: 'border',
         },{
             region: 'south',
             xtype: 'layoutfooter'

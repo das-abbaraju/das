@@ -3,29 +3,23 @@ Ext.define('PICS.view.report.Header', {
     alias: ['widget.reportheader'],
 
     border: false,
-    defaults: {
-        border: false
-    },
+    id: 'reportHeader',
+    items: [{
+        xtype: 'component',
+        autoEl: {
+            tag: 'h1',
+            html: 'Contractor List'
+        }
+    },{
+        xtype: 'tbfill'
+    },{
+        xtype: 'button',
+        text: 'Save Report'
+    }],    
     layout: {
         align: 'middle',
         type: 'hbox'
     },
-    items: [{
-        flex: 1,
-          xtype: 'component',
-          autoEl: {
-              tag: 'h1',
-              html: 'Contractor List'
-         },
-         style: {
-            fontSize: '25px'
-         }
-    },{
-        flex: 3
-    },{
-        xtype: 'button',
-        text: 'Save Report'
-    }],
     margin: '5 0',
     padding: '0 20'
 });
