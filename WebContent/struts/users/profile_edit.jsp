@@ -199,6 +199,9 @@
 								<tr>
 									<th><s:text name="Login.LoginDate" /></th>
 									<th><s:text name="Login.IPAddress" /></th>
+								<s:if test="permissions.isDeveloperEnvironment()">
+									<th><s:text name="Login.Server"/></th>
+								</s:if>
 									<th><s:text name="global.Notes" /></th>
 								</tr>
 							</thead>
@@ -208,6 +211,9 @@
 								<tr>
 									<td><s:date name="loginDate"/></td>
 									<td><s:property value="remoteAddress"/></td>
+								<s:if test="permissions.isDeveloperEnvironment()">
+									<td><s:property value="serverAddress"/></td>
+								</s:if>
 									<td>
 										<s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">
