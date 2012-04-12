@@ -9,15 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class FileUtils {
 
@@ -371,10 +365,20 @@ public class FileUtils {
 	 */
 	public static String massManipulateScript(Map<Integer, Integer> pairings, String scriptTemplate) {
 		StringBuffer script = new StringBuffer();
+		int count = 0;
+		VelocityAdaptor adaptor = new VelocityAdaptor();
 		for (Integer fromID : pairings.keySet()) {
+			if (count++ % 100 == 0) {
+				System.out.print(".");
+				if (count++ % 1000 == 0) {
+					System.out.println("");
+				}
+			}
 			Integer toID = pairings.get(fromID);
-			script.append(singleManipulateScript(fromID, toID, scriptTemplate));
+			script.append(singleManipulateScript(adaptor, fromID, toID, scriptTemplate));
 		}
+		System.out.println("");
+
 		return script.toString();
 	}
 
@@ -395,7 +399,7 @@ public class FileUtils {
 	 * 
 	 * ${toID} = as given
 	 */
-	public static String singleManipulateScript(int fromID, int toID, String scriptTemplate) {
+	public static String singleManipulateScript(VelocityAdaptor adaptor, int fromID, int toID, String scriptTemplate) {
 		String template = scriptTemplate;
 		Map<String, Object> tokens = new HashMap<String, Object>();
 		tokens.put("sourceHashFolder", FileUtils.thousandize(fromID));
@@ -404,7 +408,7 @@ public class FileUtils {
 		tokens.put("toID", toID);
 		String script = "";
 		try {
-			script = VelocityAdaptor.mergeTemplate(template, tokens);
+			script = adaptor.merge(template, tokens);
 		} catch (Exception e) {
 			// do nothng
 		}
