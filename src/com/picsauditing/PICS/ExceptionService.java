@@ -51,7 +51,7 @@ public class ExceptionService {
 		email.append("\n\nServerName: " + request.getLocalName());
 		email.append("\nRequestURI: " + request.getRequestURI());
 		email.append("\nQueryString: " + request.getQueryString());
-		email.append("\nRemoteAddr: " + request.getLocalAddr());
+		email.append("\nUser IP: " + request.getRemoteAddr());
 		if (permissions != null && permissions.isLoggedIn()) {
 			email.append("\nName: " + permissions.getName());
 			email.append("\nUsername: " + permissions.getUsername());
