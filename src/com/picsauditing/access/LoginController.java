@@ -357,7 +357,7 @@ public class LoginController extends PicsActionSupport {
 
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
-		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
+		loginLog.setRemoteAddress(getRequest().getRemoteHost());
 		
 		String serverName = getRequest().getServerName();
 		if (isLiveEnvironment()) {
