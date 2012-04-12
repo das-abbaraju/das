@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.apache.struts2.ServletActionContext;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.search.SelectAccount;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
@@ -42,7 +41,7 @@ public class ReportAccountQuick extends ReportAccount {
 			if (data.get(0).get("type").equals("Contractor"))
 				ServletActionContext.getResponse().sendRedirect("ContractorView.action?id=" + id);
 			else if (data.get(0).get("type").equals("Assessment"))
-				ServletActionContext.getResponse().sendRedirect("AssessmentCenterEdit.action?id=" + id);
+				ServletActionContext.getResponse().sendRedirect("AssessmentCenterEdit.action?center=" + id);
 			else
 				ServletActionContext.getResponse().sendRedirect("FacilitiesEdit.action?operator=" + id);
 		}

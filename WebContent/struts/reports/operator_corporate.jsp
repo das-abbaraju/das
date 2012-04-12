@@ -72,7 +72,7 @@ $(document).ready(function() {
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</s:if>
 				<s:else>
-					<a href="AssessmentCenterEdit.action?id=<s:property value="get('id')"/>"
+					<a href="AssessmentCenterEdit.action?center=<s:property value="get('id')"/>"
 						class="account<s:property value="get('status')" />"
 						title="<s:property value="get('name')" />"><s:property value="get('name')" /></a>
 				</s:else>
