@@ -269,7 +269,14 @@
 							<label>
 								<s:text name="UsersManage.DisplayName" />
 							</label>
-							<s:textfield name="user.name" size="30" />
+							<s:if test="user.isGroup.toString() == 'No'">
+								<s:textfield name="user.name" size="30" />
+							</s:if>
+							<s:else>
+								<s:textfield name="user.name" size="30" onchange="checkGroupName(this.value);" />
+								<span id="groupname_status"></span>
+							</s:else>
+							
 						</li>
 						
 						<s:if test="user.isGroup.toString() == 'No'">

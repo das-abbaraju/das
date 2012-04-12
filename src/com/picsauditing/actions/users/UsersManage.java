@@ -144,7 +144,7 @@ public class UsersManage extends PicsActionSupport {
 	public String save() throws Exception {
 		isSaveAction = true;
 		startup();
-
+		
 		user.setIsGroup(userIsGroup);
 
 		// Lazy init fix for isOk method
@@ -154,7 +154,7 @@ public class UsersManage extends PicsActionSupport {
 			userDAO.refresh(user); // Clear out ALL changes for the user
 			return SUCCESS;
 		}
-
+//a contractor user.		
 		if (user.getId() > 0 && account.isContractor()) {
 			if (!user.isActiveB()) {
 				Set<OpPerms> userPerms = new HashSet<OpPerms>();
@@ -173,7 +173,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		}
-
+//a user
 		if (user.getId() > 0) {
 			// We want to save data for an existing user
 			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
@@ -198,7 +198,7 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setId(permissions.getAccountId());
 			}
 		}
-
+//a group
 		if (user.isGroup()) {
 			// Create a unique username for this group
 			String username = "GROUP";
@@ -212,7 +212,7 @@ public class UsersManage extends PicsActionSupport {
 			user.addPasswordToHistory(user.getPassword(), maxHistory);
 			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 		}
-
+//a contractor
 		if (user.getAccount().isContractor()) {
 			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			userPerms = new HashSet<OpPerms>();
@@ -323,14 +323,29 @@ public class UsersManage extends PicsActionSupport {
 			newUser = true;
 		}
 
+		
+		
+		
 		try {
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
 
 			user.setNeedsIndexing(true);
-			user = userDAO.save(user);
+			if (user.isGroup()) {
+//check is the groupname is in use				
+				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
+					userDAO.save(user);
+				else{
+					addActionError(getText("UsersManage.GroupnameNotAvailable"));
+					userDAO.refresh(user); // Clear out ALL changes for the user
+					return SUCCESS;
+				}
+			} else	
+				user = userDAO.save(user);
+
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
+
 
 		} catch (ConstraintViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
@@ -346,7 +361,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
+		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {			
 			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
@@ -446,6 +461,7 @@ public class UsersManage extends PicsActionSupport {
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
+		
 	}
 
 	private boolean isPrimaryUserEstablished() {
@@ -472,7 +488,7 @@ public class UsersManage extends PicsActionSupport {
 		// Users only after this point
 		User temp = new User(user, true);
 		userDAO.refresh(user);
-
+		
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
