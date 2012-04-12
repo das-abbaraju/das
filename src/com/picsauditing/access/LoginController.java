@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -357,7 +358,14 @@ public class LoginController extends PicsActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-		loginLog.setServerAddress(getRequest().getServerName());
+		
+		String serverName = getRequest().getServerName();
+		if (isLiveEnvironment()) {
+			// Need computer name instead of www
+			serverName = InetAddress.getLocalHost().getHostName();
+		}
+		
+		loginLog.setServerAddress(serverName);
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		if (permissions.getAdminID() > 0)
