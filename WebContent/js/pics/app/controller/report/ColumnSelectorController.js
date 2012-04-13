@@ -17,12 +17,12 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
         'report.AvailableFieldsByCategory',
         'report.ReportsColumn',
         'report.ReportsFilter',
-        'report.ReportsSort'        
+        'report.ReportsSort'
     ],
-    
+
     init: function () {
         var me = this;
-        
+
         this.control({
             'reportcolumnselector button[action=add]':  {
                 click: this.addColumnToReportOptionsColumns
@@ -30,9 +30,9 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             'reportcolumnselector toolbar[dock=top] checkbox': {
                 change: function (component, newValue, oldValue, eOpts) {
                     var store = this.getReportAvailableFieldsByCategoryStore();
-                    
+
                     store.clearFilter();
-                    
+
                     me.toggleSelectedColumns();
                     me.search();
                 }
@@ -40,9 +40,9 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             'reportcolumnselector toolbar[dock=top] textfield': {
                 keyup: function (component, e, eOpts) {
                     var store = this.getReportAvailableFieldsByCategoryStore();
-                    
+
                     store.clearFilter();
-                    
+
                     me.toggleSelectedColumns();
                     me.search();
                 }
@@ -54,13 +54,13 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             }
         });
     },
-    
+
     addColumnToReportOptionsColumns: function(component, e, eOpts) {
         var window = this.getColumnSelector();
         var grid = this.getColumnSelectorGrid();
-        
+
         var selected = grid.getSelectionModel().getSelection();
-        
+
         if (selected.length > 0) {
             var store;
             if (window._column_type === "filter") {
@@ -90,16 +90,16 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
         }
-        
+
         this.application.fireEvent('refreshreport');
-        
+
         window.destroy();
     },
-    
+
     search: function () {
         var store = this.getReportAvailableFieldsByCategoryStore();
         var search = this.getSearchField();
-        
+
         store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
             property: [
                 'category',
@@ -110,30 +110,30 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             root: 'data'
         }));
     },
-    
+
     toggleSelectedColumns: function () {
         var field_store = this.getReportAvailableFieldsByCategoryStore();
         var hide_column_checkbox = this.getHideColumnCheckbox();
-        
+
         if (hide_column_checkbox.checked) {
             var window = this.getColumnSelector();
-            
+
             if (window._column_type === 'filter') {
                 store = this.getReportReportsFilterStore();
             } else if (window._column_type === 'column') {
                 store = this.getReportReportsColumnStore();
             } else if (window._column_type === 'sort') {
-                store = this.getReportReportsSortStore();                
+                store = this.getReportReportsSortStore();
             } else {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
-            
+
             var columns = [];
-            
+
             store.each(function (record) {
                 columns.push(record.get('name'));
             });
-            
+
             field_store.filter(function (item) {
                 return columns.indexOf(item.get('name')) == -1;
             });

@@ -8,7 +8,7 @@ Ext.Loader.setConfig({
 Ext.application({
     name: 'PICS',
     appFolder: 'js/pics/app',
-    
+
     constants: {
         TEXTSTORE: [
                     ['Contains', 'contains'],
@@ -31,34 +31,34 @@ Ext.application({
                     ['Empty', 'blank']
                 ]
     },
-    
+
     controllers: [
         'report.ColumnSelectorController',
         'report.FilterOptionsController',
         'report.ReportController',
         'report.ReportOptionsController'
-    ],    
-    
+    ],
+
     models: [
-        'report.AvailableField', 
+        'report.AvailableField',
         'report.Report',
-        'report.SimpleField', 
+        'report.SimpleField',
         'report.SimpleFilter',
         'report.SimpleSort'
     ],
-    
+
     stores: [
         'report.AvailableFields',
-        'report.AvailableFieldsByCategory',        
+        'report.AvailableFieldsByCategory',
         'report.ReportData',
         'report.Reports',
         'report.ReportsColumn',
         'report.ReportsFilter',
-        'report.ReportsSort'        
+        'report.ReportsSort'
     ],
-    
+
     launch: function () {
-        PICS.app = this; //save reference to application    
+        PICS.app = this; //save reference to application
         Ext.create('PICS.view.report.Viewport');
     }
 });

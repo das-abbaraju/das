@@ -2,6 +2,8 @@ Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
     requires: [
+        'PICS.view.report.ColumnSelector', //TODO load only when needed
+        'PICS.view.report.ColumnSelectorGrid', //TODO load only when needed               
         'PICS.view.layout.Footer',               
         'PICS.view.layout.Header',
         'PICS.view.layout.Menu',

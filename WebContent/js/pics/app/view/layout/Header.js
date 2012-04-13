@@ -13,7 +13,7 @@ Ext.define('PICS.view.layout.Header', {
         xtype: 'tbfill'
     },{
         xtype: 'tbtext',
-        text: '<a href="Home.action"><img src="images/*.png" /></a>'
+        //text: '<a href="Home.action"><img src="images/*.png" /></a>'
     },{
         xtype: 'tbspacer',
         width: 15
