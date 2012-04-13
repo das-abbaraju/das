@@ -1,6 +1,9 @@
 Ext.define('PICS.view.report.DataGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdatagrid'],
+    requires: [
+        'PICS.view.report.LinkColumn'
+    ],    
 
     columns: [{
         xtype: 'rownumberer',

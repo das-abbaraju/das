@@ -33,7 +33,7 @@ Ext.define('PICS.view.report.Viewport', {
                 region: 'center',
                 xtype: 'reportdatagrid'
             }],
-            layout: 'border',
+            layout: 'border'
         },{
             region: 'south',
             xtype: 'layoutfooter'

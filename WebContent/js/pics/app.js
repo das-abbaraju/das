@@ -31,9 +31,13 @@ Ext.application({
                     ['Empty', 'blank']
                 ]
     },
+    
     controllers: [
-        'report.ReportController'
-    ],
+        'report.ColumnSelectorController',
+        'report.FilterOptionsController',
+        'report.ReportController',
+        'report.ReportOptionsController'
+    ],    
     
     models: [
         'report.AvailableField', 
