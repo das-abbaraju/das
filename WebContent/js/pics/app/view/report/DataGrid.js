@@ -1,7 +1,11 @@
 Ext.define('PICS.view.report.DataGrid', {
     extend: 'Ext.grid.Panel',
     alias: ['widget.reportdatagrid'],
-    
+
+    columns: [{
+        xtype: 'rownumberer',
+        width: 27
+    }],
     dockedItems: [{
         xtype: 'reportsorttoolbar',
         dock: 'top'
@@ -10,7 +14,7 @@ Ext.define('PICS.view.report.DataGrid', {
         displayInfo: true,
         dock: 'top',
         items: [{
-          xtype: 'tbseparator'  
+          xtype: 'tbseparator'
         },{
             xtype: 'combo',
             editable: false,
@@ -31,11 +35,11 @@ Ext.define('PICS.view.report.DataGrid', {
         store: 'report.ReportData'
     },{
         xtype: 'pagingtoolbar',
-        cls: 'ext-no-bottom-border',        
+        cls: 'ext-no-bottom-border',
         displayInfo: true,
         dock: 'bottom',
         items: [{
-          xtype: 'tbseparator'  
+          xtype: 'tbseparator'
         },{
             xtype: 'combo',
             editable: false,
@@ -52,23 +56,10 @@ Ext.define('PICS.view.report.DataGrid', {
             value: '10',
             width: 50
         }],
-        padding: '0 20 0 0',        
+        padding: '0 20 0 0',
         store: 'report.ReportData'
     }],
-
-    columns: [{
-            xtype: 'rownumberer',
-            width: 27
-        },{
-            header: 'Column',
-            dataIndex: 'column'
-        },{ 
-            header: 'Email',
-            dataIndex: 'email'
-        },{ 
-            header: 'Value', 
-            dataIndex: 'value'
-        }],
-    margin: '0 0 0 10',    
+    id: 'dataGrid',
+    margin: '0 0 0 10',
     store: 'report.ReportData'
 });

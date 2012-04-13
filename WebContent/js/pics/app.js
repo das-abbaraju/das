@@ -31,8 +31,11 @@ Ext.application({
                     ['Empty', 'blank']
                 ]
     },
-    controllers: ['PICS.controller.report.ReportController'],
+    controllers: [
+        'report.ReportController'
+    ],
     stores: [
+        'report.AvailableFields',             
         'report.ReportData'
     ],
     

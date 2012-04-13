@@ -14,7 +14,6 @@ Ext.define('PICS.view.report.DataGrid', {
     initComponent: function () {
         this.columns = [{
             xtype: 'rownumberer',
-            
             width: 27
         }];
         

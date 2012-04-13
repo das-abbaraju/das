@@ -3,22 +3,21 @@ Ext.define('PICS.store.report.Reports', {
 	model : 'PICS.model.report.Report',
 	
 	listeners: {
-        load: {
-            fn: function(store, records, successful, operation, options) {
-            	var report = store.first();
-            	
-            	if (report) {
-            		this.loadStoreColumn('report.ReportsColumn', report.columns());
-            		this.loadStoreFilter('report.ReportsFilter', report.filters());
-            		this.loadStoreSort('report.ReportsSort', report.sorts());            		
-            	}
-            }
-        }
+	    load: function (store, records, successful, operation, options) {
+                var report = store.first();
+
+                if (report) {
+                    this.loadStoreColumn('report.ReportsColumn', report.columns());
+                    this.loadStoreFilter('report.ReportsFilter', report.filters());
+                    this.loadStoreSort('report.ReportsSort', report.sorts());                 
+                }
+	        
+	    }
     },
     
     loadStoreColumn: function(store_name, child) {
     	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
-    	
+
     	var records = [];
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],

@@ -3,7 +3,7 @@ Ext.define('PICS.store.report.AvailableFields', {
 	model : 'PICS.model.report.AvailableField',
 	
 	autoLoad: false,
-	data: availableFields,
+	data: availableFields,  //global JS var
 	proxy: {
 	    reader: {
             root: 'fields',
