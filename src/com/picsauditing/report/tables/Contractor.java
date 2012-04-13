@@ -19,6 +19,16 @@ public class Contractor extends BaseTable {
 		contractorName = addField(prefix + "Name", accountAlias + ".name", FilterType.AccountName);
 		contractorName.setUrl("ContractorView.action?id={accountID}");
 		contractorName.setWidth(300);
+
+		QueryField contractorEdit;
+		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
+		contractorEdit.setUrl("ContractorEdit.action?id={accountID}");
+		contractorEdit.setWidth(300);
+
+		QueryField contractorAudits;
+		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
+		contractorAudits.setUrl("ContractorDocuments.action?id={accountID}");
+		contractorAudits.setWidth(300);
 	}
 
 	public void addJoins() {

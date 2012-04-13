@@ -25,9 +25,10 @@ public class JpaFieldExtractor {
 					if (!Strings.isEmpty(fieldAnnotation.sql())) {
 						queryField.setSql(fieldAnnotation.sql().replace("{ALIAS}", alias));
 					} else {
-						queryField.setSql(alias + "." + fieldName.toLowerCase());
 						Column columnAnnotation = getColumnAnnotation(method);
-						if (columnAnnotation != null && !Strings.isEmpty(columnAnnotation.name())) {
+						if (columnAnnotation == null) {
+							queryField.setSql(alias + "." + fieldName.toLowerCase());
+						} else {
 							queryField.setSql(alias + "." + columnAnnotation.name());
 						}
 					}

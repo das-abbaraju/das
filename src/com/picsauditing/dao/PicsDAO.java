@@ -22,10 +22,6 @@ abstract public class PicsDAO {
 	protected EntityManager em;
 	protected QueryMetaData queryMetaData = null;
 
-	public EntityManager getEntityManager() {
-		return em;
-	}
-	
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
@@ -171,7 +167,8 @@ abstract public class PicsDAO {
 		sql.addField("t.*");
 
 		if (locale != null)
-			sql.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
+			sql
+					.addWhere("(tr.locale = :locale OR (tr.locale != :locale AND tr.locale = :lang) OR ( tr.locale != :locale AND tr.locale != :lang AND tr.locale = :default))");
 
 		Query query = em.createNativeQuery(sql.toString(), cls);
 		query.setParameter("value", value);
