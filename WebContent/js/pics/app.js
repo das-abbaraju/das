@@ -34,9 +34,23 @@ Ext.application({
     controllers: [
         'report.ReportController'
     ],
+    
+    models: [
+        'report.AvailableField', 
+        'report.Report',
+        'report.SimpleField', 
+        'report.SimpleFilter',
+        'report.SimpleSort'
+    ],
+    
     stores: [
-        'report.AvailableFields',             
-        'report.ReportData'
+        'report.AvailableFields',
+        'report.AvailableFieldsByCategory',        
+        'report.ReportData',
+        'report.Reports',
+        'report.ReportsColumn',
+        'report.ReportsFilter',
+        'report.ReportsSort'        
     ],
     
     launch: function () {
