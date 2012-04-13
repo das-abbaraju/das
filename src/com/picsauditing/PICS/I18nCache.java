@@ -32,11 +32,11 @@ public class I18nCache implements Serializable {
 	static public final String DEFAULT_LANGUAGE = "en";
 	static public final String DEFAULT_TRANSLATION = "Translation missing";
 
-	private static I18nCache INSTANCE;
-	private static Date LAST_CLEARED;
+	private transient static I18nCache INSTANCE;
+	private transient static Date LAST_CLEARED;
 	
-	private Table<String, String, String> cache;
-	private Map<String, Date> cacheUsage;
+	private transient Table<String, String, String> cache;
+	private transient Map<String, Date> cacheUsage;
 
 	private I18nCache() {
 	}
@@ -222,7 +222,7 @@ public class I18nCache implements Serializable {
 			AppTranslation newTranslation = new AppTranslation();
 			newTranslation.setKey(key);
 			newTranslation.setLocale(translationFromCache.getLocale());
-			newTranslation.setValue(Strings.escapeQuotes(translationFromCache.getValue()));
+			newTranslation.setValue(translationFromCache.getValue());
 			newTranslation.setSourceLanguage(sourceLanguage);
 			newTranslation.setQualityRating(TranslationQualityRating.Good);
 			newTranslation.setApplicable(true);

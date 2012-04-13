@@ -14,6 +14,7 @@
 <%@ page import="com.picsauditing.dao.AppPropertyDAO" %>
 <%@ page import="com.picsauditing.jpa.entities.AppProperty" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
+<%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
 <%@ page import="com.picsauditing.util.URLUtils" %>
@@ -22,7 +23,7 @@
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
 
-	String version = com.picsauditing.actions.PicsActionSupport.getVersion();
+	String version = PicsOrganizerVersion.getVersion();
 	Permissions permissions = (Permissions)session.getAttribute("permissions");
 	if (permissions == null) {
 		permissions = new Permissions();
@@ -80,6 +81,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
 		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=version%>" />
+        <link rel="stylesheet" href="css/insureguard/insureguard.css" type="text/css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=<%=version%>" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css" />
 		
@@ -256,7 +258,11 @@
 							"&amp;site=90511184" +
 							"&amp;channel=web" +
 							"&amp;ver=1" +
-							"&amp;imageUrl=" + protocol + "://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" + locale.getDisplayLanguage() +"/General/3a";
+							"&amp;imageUrl=" +
+							protocol +
+							"://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/" +
+							locale.getDisplayLanguage() +
+							"/General/3a";
 							
 						if ("1".equals(System.getProperty("pics.debug")) || !liveChatEnabled) {
 							chatIcon = "";
@@ -280,9 +286,9 @@
 						
 						<a id="_lpChatBtn"
 							class="liveperson-chat"
-							href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a"
+							href="<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a"
 							target="chat90511184"
-							onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
+							onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" >
 							
 							<% if (!Strings.isEmpty(chatIcon)) { %>
 								<img src="<%= chatIcon %>" />
@@ -318,9 +324,9 @@
 						<%  if(item.getName().equals("Online Chat"))  {
 								if (liveChatEnabled) { %>
 								<a id="_lpChatBtn"
-									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'
+									href='<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;byhref=1&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a'
 									target='chat90511184'
-									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
+									onClick="lpButtonCTTUrl = '<%= protocol %>://server.iad.liveperson.net/hc/90511184/?cmd=file&amp;file=visitorWantsToChat&amp;site=90511184&amp;imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a&amp;referrer='+escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;" ><span><%=item.getName()%></span></a>
 						<% 		}
 							} else {
 							String dataFields = "";
@@ -364,7 +370,7 @@
 		
 		<script
 			type="text/javascript"
-			src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/English/General/3a'>
+			src='<%= protocol %>://server.iad.liveperson.net/hc/90511184/x.js?cmd=file&file=chatScript3&site=90511184&&imageUrl=<%= protocol %>://server.iad.liveperson.net/hcp/Gallery/ChatButton-Gallery/<%=locale.getDisplayLanguage() %>/General/3a'>
 		</script>
 		<!-- END LivePerson -->
 		<%	} %>

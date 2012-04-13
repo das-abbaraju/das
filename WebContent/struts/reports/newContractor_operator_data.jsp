@@ -71,7 +71,7 @@
         		</pics:permission>
                 
         		<td>
-                    <s:text name="NewContractorSearch.label.Action" />
+                    <s:text name="global.Action" />
                 </td>
                 
         		<s:if test="showContact">

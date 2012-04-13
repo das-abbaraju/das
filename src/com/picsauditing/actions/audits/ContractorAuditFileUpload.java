@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.ContractorAuditFileDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditFile;
@@ -73,7 +71,9 @@ public class ContractorAuditFileUpload extends AuditActionSupport {
 			answerMap = auditDataDao.findAnswers(auditID);
 		
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
-			if (auditCatData.isApplies() && getCategories().get(auditCatData.getCategory().getTopParent()).isApplies()) {
+			AuditCatData parentCatData = getCategories().get(auditCatData.getCategory().getTopParent());
+			boolean parentCatDataAppliesOrDoesntExist = (parentCatData == null) ? true : parentCatData.isApplies();
+			if (auditCatData.isApplies() && parentCatDataAppliesOrDoesntExist) {
 				loadRequirementsQuestions(auditCatData);
 			}
 		}

@@ -137,7 +137,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 
 			sql.addJoin(String.format("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID IN (%s)", Strings
 					.implode(opIDs)));
-			sql.addJoin(String.format("JOIN accounts o ON o.id = gc.genID AND o.status IN (%s)", accountStatus));
 			sql.addJoin(String.format(
 					"LEFT JOIN (SELECT subID FROM generalcontractors WHERE genID = %d) gcw ON gcw.subID = a.id",
 					permissions.getAccountId()));
@@ -198,14 +197,13 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 		// Fields
 		sql2.addField("ca.id");
 		sql2.addField("ca.conID");
-		sql2.addField("caop.opID");
 		sql2.addField(String.format(
 				"CASE cao.status WHEN 'Pending' THEN NULL ELSE CONCAT(cao.status, ' on ', %s) END status", dateFormat));
 		sql2.addField(String.format("%s changedDate", dateFormat));
 		// Wheres
 		sql2.addWhere(String.format("ca.auditTypeID = %d", auditTypeID));
-		// Order bys
-		sql2.addOrderBy("ca.creationDate DESC");
+		
+		sql2.addGroupBy("ca.conID");
 
 		return String.format("LEFT JOIN (%1$s) ca%2$d ON ca%2$d.conID = a.id", sql2.toString(), auditTypeID);
 	}

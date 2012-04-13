@@ -19,7 +19,7 @@
 						</s:if>
 					</tr>
 					<tr>
-						<td class="center"><nobr> <s:date name="invoice.creationDate" format="MMM d, yyyy" /> <s:set
+						<td class="center"><nobr> <s:date name="invoice.creationDate" format="%{getText('date.long')}" /> <s:set
 							name="o" value="invoice"></s:set> <s:include value="../who.jsp"></s:include> </nobr></td>
 						<s:if test="invoice.id > 0">
 							<td class="center"><s:property value="invoice.id" /></td>
@@ -45,7 +45,7 @@
 					<s:property value="invoice.poNumber" />
 				</td>
 				<td class="center">
-					<s:date name="invoice.dueDate" format="MMM d, yyyy" />
+					<s:date name="invoice.dueDate" format="%{getText('date.long')}" />
 				</td>
 			</tr>
 		</table>

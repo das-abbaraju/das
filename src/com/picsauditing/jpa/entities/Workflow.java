@@ -23,6 +23,7 @@ public class Workflow extends BaseTable {
 	private String name;
 	private boolean hasRequirements;
 	private List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+	private List<WorkflowState> states = new ArrayList<WorkflowState>();
 
 	@Column(nullable = false)
 	public String getName() {
@@ -40,6 +41,15 @@ public class Workflow extends BaseTable {
 
 	public void setSteps(List<WorkflowStep> steps) {
 		this.steps = steps;
+	}
+
+	@OneToMany(mappedBy = "workflow", cascade = { CascadeType.ALL })
+	public List<WorkflowState> getStates() {
+		return states;
+	}
+
+	public void setStates(List<WorkflowState> states) {
+		this.states = states;
 	}
 
 	@Transient

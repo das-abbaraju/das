@@ -1,0 +1,86 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.employees.oq" extends="com.picsauditing.employees">
+		<action name="EmployeeAssessmentResults"
+			class="com.picsauditing.actions.employees.EmployeeAssessmentResults">
+			<result>struts/employees/employee_assessment_results.jsp</result>
+		</action>
+
+		<action name="ManageProjects"
+			class="com.picsauditing.actions.operators.ManageJobSites">
+			<result>/struts/operators/op_job_sites.jsp</result>
+			<result name="getTasks">/struts/operators/op_job_sites_tasks.jsp</result>
+			<result name="newTasks">/struts/operators/op_job_sites_new_tasks.jsp</result>
+			<result name="editSite">/struts/operators/op_job_sites_edit.jsp</result>
+		</action>
+
+		<action name="ManageJobTasksOperator"
+			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
+			<result>struts/operators/op_manage_job_tasks.jsp</result>
+		</action>
+
+		<action name="ManageJobTasksOperatorCSV"
+			class="com.picsauditing.actions.operators.ManageJobTasksOperator">
+			<param name="download">true</param>
+			<result>struts/blank.jsp</result>
+		</action>
+
+		<action name="ManageJobTaskCriteria"
+			class="com.picsauditing.actions.operators.ManageJobTaskCriteria">
+			<result>struts/operators/op_manage_job_task_criteria.jsp</result>
+		</action>
+
+		<action name="ReportOQ" class="com.picsauditing.actions.report.oq.ReportOQ">
+			<result>/struts/reports/report_oq.jsp</result>
+		</action>
+
+		<action name="ReportOQCSV" class="com.picsauditing.actions.report.oq.ReportOQ">
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportOQEmployees"
+			class="com.picsauditing.actions.report.oq.ReportOQEmployees">
+			<result>/struts/employees/employee_qualification_report.jsp</result>
+		</action>
+
+		<action name="ReportOQEmployeesCSV"
+			class="com.picsauditing.actions.report.oq.ReportOQEmployees">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportOQChanges"
+			class="com.picsauditing.actions.report.oq.ReportOQChanges">
+			<result>/struts/reports/report_oq_changes.jsp</result>
+		</action>
+		
+		<action name="ReportAssessmentTests"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<result>/struts/reports/oq/report_assessment_tests.jsp</result>
+		</action>
+
+		<action name="ReportAssessmentTestsAjax"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<result>/struts/reports/oq/report_assessment_tests_data.jsp</result>
+		</action>
+
+		<action name="ReportAssessmentTestsCSV"
+			class="com.picsauditing.actions.report.oq.ReportAssessmentTest">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+
+		<action name="ReportNewProjects"
+			class="com.picsauditing.actions.report.oq.ReportNewJobSite">
+			<result>/struts/reports/oq/report_new_job_site.jsp</result>
+			<result name="employees">/struts/reports/oq/report_new_job_site_employees.jsp</result>
+		</action>
+		
+		<action name="ReportEmployeeTraining"
+			class="com.picsauditing.actions.report.ReportEmployeeTraining">
+			<result>/struts/reports/report_employee_training.jsp</result>
+		</action>
+	</package>
+</struts>

@@ -54,7 +54,7 @@
 	
 	<s:if test="filter.showActive">
 		<div class="filterOption"><s:text name="AccountStatus.Active" />: 
-			<s:select cssClass="forms" list="#{'Yes':getText('YesNo.Yes'),'No':getText('YesNo.No'),'':getText('JS.Filters.status.All')}" name="filter.active" />
+			<s:select cssClass="forms" list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No'),'':getTextNullSafe('JS.Filters.status.All')}" name="filter.active" />
 		</div>
 	</s:if>
 	
@@ -75,7 +75,7 @@
 			<a href="#" onclick="toggleBox('form1_company_type'); return false;"><s:text name="Filters.label.CompanyType" /></a> =
 			<span id="form1_company_type_query"><s:text name="JS.Filters.status.All" /></span><br />
 			<span id="form1_company_type_select" style="display: none" class="clearLink">
-				<s:select list="#{'Contractor':getText('global.Contractor'),'Operator':getText('global.Operator'),'Corporate':getText('global.Corporate')}" multiple="true" 
+				<s:select list="#{'Contractor':getTextNullSafe('global.Contractor'),'Operator':getTextNullSafe('global.Operator'),'Corporate':getTextNullSafe('global.Corporate')}" multiple="true" 
 					cssClass="forms" name="filter.companyType" id="form1_company_type" /><br />
 				<a class="clearLink" href="#" onclick="clearSelected('form1_company_type'); return false;"><s:text name="Filters.status.Clear" /></a>
 			</span>

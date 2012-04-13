@@ -10,7 +10,7 @@
 					<s:text name="global.Operator" />
 				</th>
 				<th colspan="2">
-					<s:text name="NewContractorSearch.label.Action" />
+					<s:text name="global.Action" />
 				</th>
 			</tr>
 		</thead>

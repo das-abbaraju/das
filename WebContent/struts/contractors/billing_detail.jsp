@@ -39,11 +39,11 @@
 							</li>
 							<li>
 								<label title="The Date the Account was Created."><s:text name="BillingDetail.Info.RegistrationDate" />:</label>
-								<s:date name="contractor.creationDate" format="MMM d, yyyy" />
+								<s:date name="contractor.creationDate" format="%{getText('date.long')}" />
 							</li>
 							<li>
 								<label title="The Date the Activation/Reactivation Fee was Paid."><s:text name="BillingDetail.Info.ActivationDate" />:</label>
-								<s:date name="contractor.membershipDate" format="MMM d, yyyy" />
+								<s:date name="contractor.membershipDate" format="%{getText('date.long')}" />
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Info.WillBeRenewed" />:</label>
@@ -57,7 +57,7 @@
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Info.RenewalDate" />:</label>
-								<s:date name="contractor.paymentExpires" format="MMM d, yyyy" />
+								<s:date name="contractor.paymentExpires" format="%{getText('date.long')}" />
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Info.PaymentMethod" />:</label>
@@ -157,7 +157,7 @@
 							</li>
 							<li>
 								<label><s:text name="BillingDetail.Facilities.LastUpgradeDate" />:</label>
-								<s:date name="contractor.lastUpgradeDate" format="MMM d, yyyy" />
+								<s:date name="contractor.lastUpgradeDate" format="%{getText('date.long')}" />
 							</li>
 						</ol>
 					</fieldset>

@@ -160,7 +160,7 @@
 										</td>
 										<td>
 											<s:if test="#audit.effectiveDate !=null" >
-												<s:date name="#audit.effectiveDate" format="M/d/yy" />
+												<s:date name="#audit.effectiveDate" format="%{getText('date.short')}" />
 											</s:if>
 										</td>
 										<td>

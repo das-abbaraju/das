@@ -15,6 +15,7 @@ import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
@@ -138,6 +139,14 @@ public class EventSubscriptionBuilder {
 			contractorInsuranceSubscription.setLastSent(new Date());
 			subscriptionDAO.save(contractorInsuranceSubscription);
 		}
+	}
+	
+	public static void pqfSubmittedForCao(ContractorAuditOperator cao) {
+		
+	}
+	
+	public static void notifyUpcomingImplementationAudit(ContractorAudit audit) {
+		
 	}
 
 	private static void sendInsuranceEmail(EmailSubscription insuranceSubscription,

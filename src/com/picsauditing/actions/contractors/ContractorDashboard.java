@@ -90,6 +90,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	private List<ContractorAudit> docuGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> auditGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorAudit> insureGUARD = new ArrayList<ContractorAudit>();
+	private List<ContractorAudit> employeeGUARD = new ArrayList<ContractorAudit>();
 	private List<ContractorOperator> generalContractorsNeedingApproval;
 	private List<AuditData> servicesPerformed = null;
 	private Map<Integer, FlagCriteriaContractor> fccMap = null;
@@ -228,6 +229,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 					insureGUARD.add(audit);
 				else if (audit.getAuditType().getClassType().isPqf() || audit.getAuditType().isAnnualAddendum())
 					docuGUARD.add(audit);
+				else if (audit.getAuditType().getClassType().isImEmployee())
+					employeeGUARD.add(audit);
 				else
 					auditGUARD.add(audit);
 			}
@@ -325,6 +328,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<ContractorAudit> getInsureGUARD() {
 		return insureGUARD;
+	}
+
+	public List<ContractorAudit> getEmployeeGUARD() {
+		return employeeGUARD;
+	}
+
+	public void setEmployeeGUARD(List<ContractorAudit> employeeGUARD) {
+		this.employeeGUARD = employeeGUARD;
 	}
 
 	public List<AuditData> getServicesPerformed() {

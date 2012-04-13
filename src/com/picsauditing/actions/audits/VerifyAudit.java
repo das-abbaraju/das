@@ -13,10 +13,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class VerifyAudit extends AuditActionSupport {
 

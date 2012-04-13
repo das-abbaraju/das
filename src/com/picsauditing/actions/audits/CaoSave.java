@@ -12,14 +12,14 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.parser.Parser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RecordNotFoundException;
+import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditData;
@@ -34,12 +34,12 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,6 +48,8 @@ public class CaoSave extends AuditActionSupport {
 	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private EmailSenderSpring emailSender;
+	@Autowired
+	private AuditBuilder auditBuilder;
 
 	protected int caoID = 0;
 	private int noteID = 0;
@@ -162,7 +164,7 @@ public class CaoSave extends AuditActionSupport {
 			saveMessage += getText(status.getI18nKey("button")) + " " + Strings.implode(auditNames, ", ") + " for "
 					+ Strings.implode(accountNames, ", ") + "";
 
-			// "Explain why you are changing the status to " + status;
+			// Explain why you are changing the status (used for Complete, Reject, Approve)
 			if (noteRequired)
 				noteMessage += getText("Audit.message.ExplainStatusChange",
 						new Object[] { getText(status.getI18nKey()) });
@@ -170,20 +172,9 @@ public class CaoSave extends AuditActionSupport {
 			if (status.isIncomplete() && Strings.isEmpty(note) && conAudit != null) {
 				if (conAudit.getAuditType().isPqf()) {
 					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-					for (AuditData ad : temp) {
-						if (!ad.isVerified() && !Strings.isEmpty(ad.getComment())) {
-							note += ad.getQuestion().getColumnHeaderOrQuestion() + " Comment : " + ad.getComment();
-							note += "\n";
-						}
-					}
+					generateNote(temp);
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
-					for (AuditData auditData : conAudit.getData()) {
-						if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
-							note += auditData.getQuestion().getColumnHeaderOrQuestion() + " Comment : "
-									+ auditData.getComment();
-							note += "\n";
-						}
-					}
+					generateNote(conAudit.getData());
 				}
 			}
 		} else
@@ -191,9 +182,26 @@ public class CaoSave extends AuditActionSupport {
 
 		return "caoNoteSave";
 	}
+	
+	private void generateNote(List<AuditData> auditDataList) {
+		if (CollectionUtils.isEmpty(auditDataList)) {
+			return;
+		}
+		
+		for (AuditData auditData : auditDataList) {
+			if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
+				if (note == null) {
+					note = "";
+				}
+			
+				note += "Comment : " + auditData.getComment() + "\n";
+			}
+		}
+	}
 
 	public String refresh() throws RecordNotFoundException, NoRightsException {
 		findConAudit();
+		auditBuilder.recalculateCategories(conAudit);
 		auditPercentCalculator.percentCalculateComplete(conAudit, false);
 		getValidSteps();
 		auditDao.save(conAudit);
@@ -251,6 +259,15 @@ public class CaoSave extends AuditActionSupport {
 		else
 			return SUCCESS;
 	}
+	
+	public String loadCaoTable() throws RecordNotFoundException, EmailException, IOException, NoRightsException {
+	    setup();
+	    if (conAudit != null) {
+            getValidSteps();
+	    }
+	    
+	    return "caoTable";
+	}
 
 	private boolean isExpiredPolicy() {
 		return conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin());
@@ -295,6 +312,9 @@ public class CaoSave extends AuditActionSupport {
 			addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
 					Account.PicsID, null, null);
 		}
+		
+		if (cao.getAudit().getAuditType().isPqf() && newStatus.isSubmitted())
+			EventSubscriptionBuilder.pqfSubmittedForCao(cao);
 
 		caoDAO.save(cao);
 		
@@ -445,7 +465,7 @@ public class CaoSave extends AuditActionSupport {
 			for (ContractorAudit oldAudit : audit.getContractorAccount().getAudits()) {
 				if (!oldAudit.equals(audit) && !oldAudit.isExpired()) {
 					if (oldAudit.getAuditType().equals(audit.getAuditType())) {
-						if (!audit.getAuditType().isHasMultiple()) {
+						if (!audit.getAuditType().isHasMultiple() && !audit.getAuditType().isRenewable()) {
 							oldAudit.setExpiresDate(new Date());
 							auditDao.save(oldAudit);
 						}

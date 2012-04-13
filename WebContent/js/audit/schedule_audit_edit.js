@@ -3,6 +3,7 @@
         methods: {
             init: function () {
                 var that = this;
+                var processing = false;
                 
                 if ($('#ScheduleAudit_edit_page').length) {
                     var form = $('.schedule-audit-edit-form');
@@ -31,6 +32,15 @@
                     // fee override
                     $('.reschedule-fee-override').bind('click', function (event) {
                         that.rescheduleFee.apply(that, [true]);
+                    });
+                    
+                    // prevent double submit
+                    form.bind('submit', function(event) {
+                        if (processing === false) {
+                            processing = true;
+                        } else {
+                            return false;
+                        }
                     });
                 }
             },
@@ -121,12 +131,12 @@
                 function createModal(data) {
                     var modal = PICS.modal({
                         modal_class: 'modal schedule-audit-expedite-modal',
-                        title: 'schedule_audit_edit.js:14',
+                        title: translate('JS.ScheduleAudit.ExpediteFee.Title'),
                         content: data,
                         buttons: [{
                             html: [
-                                '<a href="javascript:;" class="btn cancel-expedite">schedule_audit_edit.js:18(Cancel)</a>',
-                                '<a href="javascript:;" class="btn success accept-expedite">schedule_audit_edit.js:19(Accept)</a>'
+                                '<a href="javascript:;" class="btn cancel-expedite">' + translate('JS.button.Cancel') + '</a>',
+                                '<a href="javascript:;" class="btn success accept-expedite">' + translate('JS.button.Accept') + '</a>'
                             ].join('')
                         }]
                     });
@@ -143,7 +153,7 @@
                 var difference = new_date - today;
                 var day_difference = Math.ceil(difference/(1000 * 60 * 60 * 24));
                 
-                if (day_difference <= 10) {
+                if (day_difference <= 10 && date < original_date) {
                     PICS.ajax({
                         url: 'ScheduleAudit!ajaxScheduleAuditExpediteModal.action',
                         success: function (data, textStatus, XMLHttpRequest) {

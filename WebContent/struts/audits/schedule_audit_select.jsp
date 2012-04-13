@@ -11,13 +11,12 @@
 	
 	<s:include value="../jquery.jsp"></s:include>
 	
-	<script type="text/javascript" src="js/schedule_audit.js?v=<s:property value="version"/>"></script>
 	<script type="text/javascript" src="js/audit/schedule_audit_select.js?v=<s:property value="version"/>"></script>
     
 	<script type="text/javascript">
 	
 		var auditID = <s:property value="conAudit.id"/>;
-		var startDate = '<s:date name="availableSet.latest" format="MM/dd/yyyy"/>';
+		var startDate = '<s:date name="availableSet.latest" format="%{getText('date.short')}"/>';
 		
 		$(function() {
 			$('a.expedite').click(function() {

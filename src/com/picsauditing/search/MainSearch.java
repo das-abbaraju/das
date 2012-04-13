@@ -29,6 +29,14 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class MainSearch extends PicsActionSupport implements Preparable {
+	@Autowired
+	private AccountDAO accountDAO;
+	@Autowired
+	private ContractorAuditDAO contractorAuditDAO;
+	@Autowired
+	private EmployeeDAO empDAO;
+	@Autowired
+	private UserDAO userDAO;
 
 	protected String searchTerm;
 
@@ -43,15 +51,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	protected Database db = new Database();
 	protected SearchEngine searchEngine = null;
-
-	@Autowired
-	private AccountDAO accountDAO;
-	@Autowired
-	private UserDAO userDAO;
-	@Autowired
-	private EmployeeDAO empDAO;
-	@Autowired
-	private ContractorAuditDAO contractorAuditDAO;
 
 	private final int PAGEBREAK = 50;
 	private static final String ignoreTerms = "'united states','us','contractor','inc','user','operator', 'and'";
@@ -78,29 +77,25 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			if (record != null)
 				redirect(record.getViewLink());
 			else
-				addActionError("An Error occured with your search result, please try again.");
+				addActionError(getText("MainSearch.ErrorOccuredTryAgain"));
 
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
 
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if (terms == null || terms.isEmpty()) {
-				addActionMessage("No searchable terms, please try again");
+				addActionMessage(getText("MainSearch.NoSearchableTerms"));
 				return SUCCESS;
-			}
-			else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee())
-			{
+			} else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee()) {
 				int auditID = Integer.parseInt(terms.get(1));
 				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				if (audit != null)
 					redirect(audit.getViewLink());
-			}
-			else
-			{
+			} else {
 				// if corporate then build list of contractors in their system
 				ht = searchEngine.getConIds(permissions);
-				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", startIndex, 50, false,
-						true);
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", startIndex,
+						50, false, true);
 				List<BasicDynaBean> queryList = db.select(query, true);
 				totalRows = db.getAllRows();
 
@@ -131,20 +126,16 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		} else { // autosuggest/complete
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if (terms == null || terms.isEmpty()) {
-				output = "NULL|-" + searchTerm
-						+ "- did not return any results. Please try different a different search|";
+				output = "NULL|" + getTextParameterized("MainSearch.NoReturnedResults", searchTerm) + "|";
 				return BLANK;
-			}
-			else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee())
-			{
+			} else if (terms.get(0).equalsIgnoreCase("Audit") && terms.size() == 2 && permissions.isPicsEmployee()) {
 				int auditID = Integer.parseInt(terms.get(1));
 				ContractorAudit audit = contractorAuditDAO.find(auditID);
 				if (audit != null)
 					output = audit.getSearchText();
-			}
-			else
-			{
-				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", 0, 10, false, false);
+			} else {
+				String query = searchEngine.buildQuery(permissions, terms, "i1.indexType NOT IN ('T','G')", 0, 10,
+						false, false);
 				List<BasicDynaBean> queryList = db.select(query, true);
 				totalRows = db.getAllRows();
 				if (queryList != null && queryList.size() > 0)
@@ -181,8 +172,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			if (permissions.isOperatorCorporate()) {
 				if (viewThis instanceof ContractorAccount) {
 					/*
-					 * if this is a contractor, we only want to redirect it to its viewAction if the operator can view
-					 * it otherwise we want to send them to the SearchForNew page.
+					 * if this is a contractor, we only want to redirect it to
+					 * its viewAction if the operator can view it otherwise we
+					 * want to send them to the SearchForNew page.
 					 */
 					if (checkCon(viewThis.getId())) {
 						redirect(viewAction);
@@ -201,7 +193,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 			for (Indexable value : records)
 				sb.append(value.getSearchText());
 		}
-		output = sb.toString() + "FULL|Click to do a full search|" + searchTerm.replace(" ", "+");
+		output = sb.toString() + "FULL|" + getText("MainSearch.ClickFullSearch") + "|" + searchTerm.replace(" ", "+");
 	}
 
 	@SuppressWarnings("unchecked")

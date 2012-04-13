@@ -1,0 +1,77 @@
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="com.picsauditing.employees.assessments" extends="com.picsauditing.employees">
+		<action name="ManageUnmappedEmployees" class="com.picsauditing.actions.employees.ManageUnmappedEmployees">
+			<result>struts/employees/manage_unmapped_employees.jsp</result>
+		</action>
+		
+		<action name="AssessmentCenterEdit" class="com.picsauditing.actions.report.oq.AssessmentEdit">
+			<interceptor-ref name="picsStack"/>
+			<interceptor-ref name="store">
+				<param name="operationMode">RETRIEVE</param>
+			</interceptor-ref>
+			<result>struts/reports/oq/assessment_edit.jsp</result>
+		</action>
+		
+		<action name="AssessmentCenterSave" class="com.picsauditing.actions.report.oq.AssessmentEdit" method="save">
+			<interceptor-ref name="picsStack"/>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+			<result name="redirect" type="redirectAction">
+				<param name="actionName">AssessmentCenterEdit</param>
+				<param name="center">${center.id}</param>
+			</result>
+		</action>
+		
+		<action name="AssessmentCenterDelete" class="com.picsauditing.actions.report.oq.AssessmentEdit" method="delete">
+			<interceptor-ref name="picsStack"/>
+			<interceptor-ref name="store">
+				<param name="operationMode">STORE</param>
+			</interceptor-ref>
+			<result name="redirect" type="redirectAction">
+				<param name="actionName">AssessmentCenterEdit</param>
+				<param name="center">${center.id}</param>
+			</result>
+		</action>
+
+		<action name="ManageImportData" class="com.picsauditing.actions.report.oq.ManageImportData">
+			<result>struts/reports/oq/manage_import_data.jsp</result>
+		</action>
+
+		<action name="ManageImportDataUploadAjax" class="com.picsauditing.actions.report.oq.ManageImportDataUpload">
+			<result>struts/reports/oq/manage_import_data_upload.jsp</result>
+		</action>
+
+		<action name="ManageAssessmentTests" class="com.picsauditing.actions.report.oq.ManageAssessmentTests">
+			<result>struts/reports/oq/manage_assessment_tests.jsp</result>
+		</action>
+
+		<action name="ManageAssessmentTestsAjax" class="com.picsauditing.actions.report.oq.ManageAssessmentTests">
+			<result>struts/reports/oq/manage_assessment_tests_form.jsp</result>
+		</action>
+
+		<action name="ManageUnmappedTests" class="com.picsauditing.actions.report.oq.ManageUnmappedTests">
+			<result>struts/reports/oq/manage_unmapped_tests.jsp</result>
+		</action>
+
+		<action name="ManageAssessmentResults" class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
+			<result>struts/reports/oq/manage_assessment_results.jsp</result>
+		</action>
+
+		<action name="ManageAssessmentResultsAjax" class="com.picsauditing.actions.report.oq.ManageAssessmentResults">
+			<result>struts/reports/oq/manage_assessment_results_form.jsp</result>
+			<result name="getEmployees">struts/reports/oq/manage_assessment_results_employees.jsp</result>
+		</action>
+
+		<action name="ManageUnmappedCompanies" class="com.picsauditing.actions.report.oq.ManageUnmappedCompanies">
+			<result>struts/reports/oq/manage_unmapped_companies.jsp</result>
+		</action>
+
+		<action name="ManageMappedCompanies" class="com.picsauditing.actions.report.oq.ManageMappedCompanies">
+			<result>struts/reports/oq/manage_mapped_companies.jsp</result>
+		</action>
+	</package>
+</struts>

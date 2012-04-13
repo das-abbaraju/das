@@ -65,6 +65,9 @@
 					<td>
 						<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
 					</td>
+					<td>
+						<s:text name="global.OverrideUntil" />
+					</td>
 					
 					<s:if test="permissions.operator">
 						<td>
@@ -195,6 +198,11 @@
 							<pics:permission perm="ContractorDetails">
 								</a>
 							</pics:permission>
+						</td>
+						<td>
+							<s:if test='get("forceEnd") != null'>
+								<s:date name="get('forceEnd')" format="%{getText('date.short')}" />
+							</s:if>
 						</td>
 						<s:if test="permissions.operator">
 							<td>

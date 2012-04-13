@@ -1,6 +1,9 @@
+# Ignore all dotfiles...
+.*
+# except for .gitignore
+!.gitignore
+
 /target
-/.project
-/.classpath
-/.settings
 /bin
-/.externalToolBuilders
+*.log
+*.log.1

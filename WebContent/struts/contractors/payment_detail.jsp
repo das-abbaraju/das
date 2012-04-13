@@ -73,7 +73,7 @@
 									</li>
 									<li>
 										<label>Date:</label>
-										<s:date name="payment.creationDate" format="M/d/yy" />
+										<s:date name="payment.creationDate" format="%{getText('date.short')}" />
 									</li>
 									<li>
 										<label>Amount:</label>
@@ -153,7 +153,7 @@
 									</li>
 									<li>
 										<label>Date:</label>
-										<s:date name="new java.util.Date()" format="M/d/yy" />
+										<s:date name="new java.util.Date()" format="%{getText('date.short')}" />
 									</li>
 									<li>
 										<label>Payment Amount:</label>
@@ -243,7 +243,7 @@
 								<a href="InvoiceDetail.action?invoice.id=<s:property value="invoice.id" />"><s:property value="invoice.id" /></a>
 							</td>
 							<td>
-								<s:date name="invoice.creationDate" format="M/d/yy" />
+								<s:date name="invoice.creationDate" format="%{getText('date.short')}" />
 							</td>
 							<td>
 								<s:property value="invoice.totalAmount" />
@@ -268,7 +268,7 @@
 								<a href=""><s:property value="refund.id" /></a>
 							</td>
 							<td>
-								<s:date name="refund.creationDate" format="M/d/yy" />
+								<s:date name="refund.creationDate" format="%{getText('date.short')}" />
 							</td>
 							<td>
 								<s:property value="refund.totalAmount" />
@@ -320,7 +320,7 @@
 									<a href="InvoiceDetail.action?invoice.id=<s:property value="id"/>"><span class="invoiceID"><s:property value="id" /></span></a>
 								</td>
 								<td class="center">
-									<s:date name="creationDate" format="M/d/yy" />
+									<s:date name="creationDate" format="%{getText('date.short')}" />
 								</td>
 								<td class="right">
 									<s:property value="totalAmount" /> <s:property value="payment.currency"/>

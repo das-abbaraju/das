@@ -39,7 +39,8 @@ import com.picsauditing.util.SelectOption;
 import com.picsauditing.util.Strings;
 
 /**
- * Mass emailing tool that can send emails to a list of contractors based on contractorID or auditID
+ * Mass emailing tool that can send emails to a list of contractors based on
+ * contractorID or auditID
  * 
  * @author Trevor
  * 
@@ -53,6 +54,8 @@ public class MassMailer extends RequiredLanguagesSupport {
 	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
+	private EmailBuilder emailBuilder;
+	@Autowired
 	private EmailQueueDAO emailQueueDAO;
 	@Autowired
 	private EmailTemplateDAO emailTemplateDAO;
@@ -64,10 +67,11 @@ public class MassMailer extends RequiredLanguagesSupport {
 	private Set<Integer> ids = null;
 	private ListType type;
 
+	final public static int BLANK_EMAIL = -1;
 	private int templateID = 0; // 0 means no template selected at all
 	private int removeID;
 	private int previewID = 0;
-	final public static int BLANK_EMAIL = -1;
+	
 	private String templateName;
 	private String templateSubject;
 	private String templateBody;
@@ -86,12 +90,7 @@ public class MassMailer extends RequiredLanguagesSupport {
 	private ArrayList<SelectOption> list = new ArrayList<SelectOption>();
 	private List<String> templateLanguages = null;
 
-	private EmailBuilder emailBuilder;
 	private EmailQueue emailPreview;
-
-	public MassMailer() {
-		this.emailBuilder = new EmailBuilder();
-	}
 
 	@RequiredPermission(value = OpPerms.EmailTemplates)
 	public String execute() throws Exception {
@@ -198,7 +197,8 @@ public class MassMailer extends RequiredLanguagesSupport {
 					try {
 						addTokens(id);
 						EmailQueue email = emailBuilder.build();
-						// I really think we should be saving this. Not sure why we
+						// I really think we should be saving this. Not sure why
+						// we
 						// weren't
 						if (templateID < 0)
 							email.setEmailTemplate(null);
@@ -549,7 +549,7 @@ public class MassMailer extends RequiredLanguagesSupport {
 	public void setTemplateLanguages(List<String> templateLanguages) {
 		this.templateLanguages = templateLanguages;
 	}
-	
+
 	@Override
 	protected void fillSelectedLocales() {
 		if (templateLanguages != null) {

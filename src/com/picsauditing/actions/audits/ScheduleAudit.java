@@ -194,15 +194,16 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 				createInvoice(rescheduling, notes);
 			}
-			
+
 			if (isNeedsExpediteFee(scheduledDateInServerTime))
-				createExpediteInvoiceAndEmail();
+				createExpediteInvoiceAndEmail(scheduledDateInServerTime);
 
 			conAudit.setScheduledDate(scheduledDateInServerTime);
 			conAudit.setContractorConfirm(null);
 		}
 
-		// When a new auditor gets selected, that auditor should get a confirmation email
+		// When a new auditor gets selected, that auditor should get a
+		// confirmation email
 		if (permissions.getUserId() != conAudit.getAuditor().getId() || changedAuditor)
 			conAudit.setAuditorConfirm(null);
 
@@ -212,9 +213,9 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 		addActionMessage("Audit Saved Successfully");
 		// check for a time overlap here
-		List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(), DateBean
-				.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120), DateBean.addField(conAudit
-				.getScheduledDate(), Calendar.MINUTE, 120));
+		List<ContractorAudit> conflicts = auditDao.findScheduledAudits(conAudit.getAuditor().getId(),
+				DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, -120),
+				DateBean.addField(conAudit.getScheduledDate(), Calendar.MINUTE, 120));
 		if (conflicts.size() > 1) {
 			addActionMessage(getText("ScheduleAudit.message.Overlap"));
 			for (ContractorAudit cAudit : conflicts) {
@@ -262,7 +263,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		}
 		if (availabilitySelectedID > 0) {
 			conAudit.setConductedOnsite(availabilitySelected.isConductedOnsite(conAudit));
-			conAudit.setNeedsCamera(true); // Assume yes until they say otherwise
+			conAudit.setNeedsCamera(true); // Assume yes until they say
+											// otherwise
 			return "confirm";
 		}
 		addActionError(getText("ScheduleAudit.error.FailedToSelectTime"));
@@ -327,24 +329,24 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		addActionMessage(getText("ScheduleAudit.message.AuditNowScheduled"));
 
 		if (needsExpediteFee) {
-			createExpediteInvoiceAndEmail();
+			createExpediteInvoiceAndEmail(availabilitySelected.getStartDate());
 		}
 
 		return "summary";
 	}
-	
+
 	public String ajaxScheduleAuditExpediteModal() {
-	    // TODO:
-	    if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
-            throw new RuntimeException("forward 404");
-        }
-	    
-	    return "ScheduleAuditExpediteModal";
+		// TODO:
+		if (!AjaxUtils.isAjax(ServletActionContext.getRequest())) {
+			throw new RuntimeException("forward 404");
+		}
+
+		return "ScheduleAuditExpediteModal";
 	}
-	
-	public void createExpediteInvoiceAndEmail() throws Exception {
-		String notes = String.format("%s was scheduled within 10 business days, requiring an expedite fee.",
-				conAudit.getAuditType().getName());
+
+	public void createExpediteInvoiceAndEmail(Date startTime) throws Exception {
+		String notes = String.format("%s was scheduled within 10 business days, requiring an expedite fee.", conAudit
+				.getAuditType().getName());
 
 		createInvoice(expedite, notes);
 
@@ -362,7 +364,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 					+ conAudit.getContractorAccount().getName());
 			email.setBody(conAudit.getContractorContact() + " from " + conAudit.getContractorAccount().getName()
 					+ " has requested a Rush " + getText(conAudit.getAuditType().getI18nKey("name")) + " on "
-					+ DateBean.format(availabilitySelected.getStartDate(), "MMM dd h:mm a, z")
+					+ DateBean.format(startTime, "MMM dd h:mm a, z")
 					+ " and requires a webcam to be sent overnight.\n\nThank you,\nPICS");
 			email.setToAddresses(Strings.implode(emails));
 			email.setFromAddress("\"PICS Auditing\"<audits@picsauditing.com>");
@@ -557,21 +559,24 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		return false;
 	}
 
-	public boolean isNeedsExpediteFee(Date date) {
-		if (date != null) {
+	public boolean isNeedsExpediteFee(Date newDate) {
+		if (conAudit.getScheduledDate() != null && newDate.after(conAudit.getScheduledDate()))
+			return false;
+
+		if (newDate != null) {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 
 			Calendar compare = Calendar.getInstance();
-			compare.setTime(date);
+			compare.setTime(newDate);
 			compare.set(Calendar.HOUR_OF_DAY, 0);
 			compare.set(Calendar.MINUTE, 0);
 			compare.set(Calendar.SECOND, 0);
 
 			cal.set(Calendar.ZONE_OFFSET, compare.get(Calendar.ZONE_OFFSET));
-			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 14;
+			return compare.getTime().after(cal.getTime()) && DateBean.getDateDifference(compare.getTime()) < 10;
 		}
 
 		return false;

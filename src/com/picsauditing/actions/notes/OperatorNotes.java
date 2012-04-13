@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.operators.OperatorActionSupport;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Note;
@@ -13,9 +12,10 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OperatorNotes extends OperatorActionSupport {
+	
 	private String returnType = SUCCESS;
 	private ReportFilterNote filter = new ReportFilterNote();
-
+	
 	public OperatorNotes() {
 		this.subHeading = "Notes";
 	}
@@ -37,8 +37,13 @@ public class OperatorNotes extends OperatorActionSupport {
 		return returnType;
 	}
 
+	@Deprecated
 	public List<Note> getNotes() {
 		return super.getNotes(getFilters(), filter.getFirstResult(), filter.getLimit());
+	}
+	
+	public List<ActivityBean> getActivity() {
+		return noteDao.getActivity(id, permissions, "status IN (1,2)" + getFilters(), filter.getFirstResult(), filter.getLimit());
 	}
 
 	private String getFilters() {

@@ -21,11 +21,6 @@
                         this.openModalForNumbers);
 
                 $('#contractor_dashboard').delegate(
-                        '#contractor_operator_numbers_form input.closeButton',
-                        'click',
-                        this.closeModalForNumbers);
-
-                $('#contractor_dashboard').delegate(
                         '#contractor_operator_numbers_form',
                         'submit',
                         this.updateContractorOperatorNumbers);
@@ -61,8 +56,8 @@
                 var previouslyVisible = $('#contractorWatch .watch:visible');
                 var oldText = previouslyVisible.html();
 
-                previouslyVisible.html('<img src="images/ajax_process.gif" alt="Loading" />' + 
-                        translate('JS.ContractorView.' + action + 'Watch'));
+                previouslyVisible.html('<img src="images/ajax_process.gif" alt="Loading" />'
+                        + translate('JS.ContractorView.' + action + 'Watch'));
 
                 PICS.ajax({
                     url : 'ContractorView!' + method + 'Watch.action',
@@ -103,8 +98,18 @@
                             height : 550,
                             width : 700,
                             title : name,
+                            modal_class: 'modal contractor-operator-number-modal',
                             content : data
                         });
+                        
+                        $('.contractor-operator-number-modal').delegate(
+                            '.negative.closeButton',
+                            'click',
+                            function(event) {
+                                var modal = PICS.getClass('modal.Modal');
+                                modal.hide();
+                            }
+                        );
                     },
                     complete : function(XMLHttpRequest, textStatus) {
                         if (_modal) {
@@ -112,14 +117,6 @@
                         }
                     }
                 });
-            },
-
-            closeModalForNumbers : function(event) {
-                event.preventDefault();
-
-                if (_modal) {
-                    _modal.hide();
-                }
             },
 
             updateContractorOperatorNumbers : function(event) {
@@ -133,11 +130,9 @@
                     data : data,
                     success : function(data, textStatus, XMLHttpRequest) {
                         if (data.indexOf('error') > 0) {
-                            element.parent().parent()
-                                    .html(data);
+                            element.parent().parent().html(data);
                         } else {
-                            $('#contractor_operator_numbers')
-                                    .html(data);
+                            $('#contractor_operator_numbers').html(data);
 
                             if (_modal) {
                                 _modal.hide();
@@ -162,8 +157,7 @@
                             number : number
                         },
                         success : function(data, textStatus, XMLHttpRequest) {
-                            $('#contractor_operator_numbers')
-                                    .html(data);
+                            $('#contractor_operator_numbers').html(data);
                         }
                     });
                 }
@@ -178,8 +172,8 @@
                     url : 'ContractorView!updateGeneralContractor.action',
                     data : {
                         approveGeneralContractorRelationship : approved,
-                        contractor: contractor,
-                        opID: operator
+                        contractor : contractor,
+                        opID : operator
                     },
                     success : function(data,textStatus, XMLHttpRequest) {
                         $('#contractor_dashboard #con_pending_gcs').html(data);

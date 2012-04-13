@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
@@ -43,6 +43,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.FlagOverrideHistory;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -56,13 +57,19 @@ import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
 public class ContractorFlagAction extends ContractorActionSupport {
-
+	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
+	@Autowired
 	protected ContractorOperatorDAO contractorOperatorDao;
+	@Autowired
 	protected FacilitiesDAO facDAO;
+	@Autowired
 	protected FlagDataDAO flagDataDAO;
+	@Autowired
 	protected FlagDataOverrideDAO flagDataOverrideDAO;
+	@Autowired
 	protected NaicsDAO naicsDAO;
+	@Autowired
 	protected OperatorAccountDAO opDAO;
 
 	protected int opID;
@@ -87,25 +94,11 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	private String fileFileName;
 	private InputStream inputStream;
 
-	public ContractorFlagAction(ContractorAccountDAO accountDao, ContractorAuditDAO auditDao,
-			ContractorOperatorDAO contractorOperatorDao, FlagDataDAO flagDataDAO,
-			FlagDataOverrideDAO flagDataOverrideDAO, FacilitiesDAO facDAO, NaicsDAO naicsDAO,
-			ContractorAuditOperatorDAO caoDAO) {
-		this.contractorOperatorDao = contractorOperatorDao;
-		this.flagDataDAO = flagDataDAO;
-		this.flagDataOverrideDAO = flagDataOverrideDAO;
-		this.facDAO = facDAO;
-		this.naicsDAO = naicsDAO;
-		this.caoDAO = caoDAO;
-		subHeading = getText("ContractorFlag.FlagStatus");
-	}
-
 	public String execute() throws Exception {
-		if (!forceLogin())
-			return LOGIN;
+		subHeading = getText("ContractorFlag.FlagStatus");
 		limitedView = true;
 		findContractor();
-		
+
 		try {
 			PicsLogger.start("ContractorFlagAction");
 			contractor.incrementRecalculation();
@@ -114,81 +107,22 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 			if (!canFindOperator())
 				return BLANK;
-			
+
 		} catch (Exception ignore) {
 		} finally {
 			PicsLogger.stop();
 		}
 
-		// TODO: This is here to solve the LazyInitializationException. Find a
-		// better way to do this.
-		contractor.getFlagCriteria().size();
-
 		return SUCCESS;
 	}
-	
-	private boolean canFindOperator() {
-		if (opID == 0 && (permissions.isOperator() ||  permissions.isCorporate()))
-			opID = permissions.getAccountId();
-		
-		if (permissions.isCorporate() && permissions.getAccountId() == opID) {
-			displayCorporate = true;
-		}
 
-		// can't view unrelated co links
-		if (permissions.isCorporate()) {
-			// check to see if corporate id pulls anything with this op id,
-			// if not then give error
-			if (opID != permissions.getAccountId()) {
-				Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
-				if (f == null) {
-					addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
-					return false;
-				}
-			}
-		} else if (permissions.isContractor()) {
-			if (id != permissions.getAccountId()) {
-				// check to see if con id and id match
-				addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
-				return false;
-			}
-		}
-
-		co = contractorOperatorDao.find(id, opID);
-		if (co == null) {
-			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
-			return false;
-		}
-		
-		int i = 0;
-		if (displayCorporate) {
-			operatorIds = new int[getActiveOperators().size() + 1];
-			for (ContractorOperator co1 : getActiveOperators()) {
-				operatorIds[i++] = co1.getOperatorAccount().getId();
-			}
-		} else {
-			operatorIds = new int[1];
-		}
-		operatorIds[i] = opID;
-		
-		if (permissions.hasPermission(OpPerms.EditForcedFlags)) {
-			if (permissions.isCorporate() || permissions.isAdmin()) {
-				permittedToForceFlags = true;
-			} else if (permissions.isOperator() && permissions.getAccountId() == opID) {
-				permittedToForceFlags = true;
-			}
-		}
-		
-		return true;
-	}
-	
 	public String approveFlag() throws Exception {
 		findContractor();
 		if (!canFindOperator())
 			return BLANK;
 
 		co.resetBaseline(permissions);
-		
+
 		contractorOperatorDao.save(co);
 		try {
 			this.redirect("ContractorFlag.action?id=" + id + "&opID=" + opID);
@@ -197,7 +131,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return completeAction("");
 	}
-	
+
 	public String recalculate() throws Exception {
 		findContractor();
 		if (!canFindOperator())
@@ -212,41 +146,57 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		return SUCCESS;
 	}
-	
+
 	public String cancelOverride() throws Exception {
 		findContractor();
 		if (!canFindOperator())
 			return BLANK;
-		
+
 		try {
-		permissions.tryPermission(OpPerms.EditForcedFlags);
+			permissions.tryPermission(OpPerms.EditForcedFlags);
 		} catch (Exception x) {
 			return SUCCESS;
 		}
-		
+
 		String noteText = "";
-		
+
 		if (overrideAll == true) {
 			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
 					permissions.getAccountId());
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(co2);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+
 			co2.removeForceFlag();
 			co2.setAuditColumns(permissions);
 			contractorOperatorDao.save(co2);
 			contractor.incrementRecalculation();
 			noteText = "Removed the Forced flag for all the sites";
 		} else {
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(co);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+
 			co.removeForceFlag();
 			noteText = "Removed the Forced flag for " + co.getOperatorAccount().getName();
 		}
 
 		return completeAction(noteText);
 	}
-	
+
 	public String forceOverallFlag() throws Exception {
 		findContractor();
 		if (!canFindOperator())
 			return BLANK;
-		
+
 		String noteText = "";
 
 		if (forceFlag == null || forceFlag.equals(co.getForceFlag()))
@@ -276,10 +226,10 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			co.setForcedBy(getUser());
 			noteText = "Forced the flag to " + forceFlag + " for " + co.getOperatorAccount().getName();
 		}
-		
+
 		return completeAction(noteText);
 	}
-	
+
 	public String forceIndividualFlag() throws Exception {
 		findContractor();
 		if (!canFindOperator())
@@ -297,8 +247,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
-		FlagDataOverride flagOverride = flagDataOverrideDAO.findByConAndOpAndCrit(contractor.getId(), opID,
-				flagData.getCriteria().getId());
+		FlagDataOverride flagOverride = flagDataOverrideDAO.findByConAndOpAndCrit(contractor.getId(), opID, flagData
+				.getCriteria().getId());
 		if (flagOverride == null) {
 			flagOverride = new FlagDataOverride();
 			flagOverride.setContractor(contractor);
@@ -311,7 +261,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		flagOverride.setForceflag(forceFlag);
 		flagOverride.setForceEnd(forceEnd);
 		flagOverride.setCriteria(flagData.getCriteria());
-		if (flagData.getCriteria().getMultiYearScope() != null && flagData.getCriteria().getMultiYearScope().isIndividualYearScope()) {
+		if (flagData.getCriteria().getMultiYearScope() != null
+				&& flagData.getCriteria().getMultiYearScope().isIndividualYearScope()) {
 			flagOverride.setYear(getAppropriateAnnualAuditYear(flagData.getCriteria()));
 		}
 		flagOverride.setAuditColumns(new User(permissions.getUserId()));
@@ -321,20 +272,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				+ " for " + co.getOperatorAccount().getName();
 		return completeAction(noteText);
 	}
-	
-	private String getAppropriateAnnualAuditYear(FlagCriteria criteria) {
-		YearList yearList = new YearList();
-		for (ContractorAudit conAudit:contractor.getSortedAnnualUpdates()) {
-			if (conAudit.hasCaoStatus(AuditStatus.Complete)) {
-				yearList.add(conAudit.getAuditFor());
-			}
-		}
-		
-		Integer year = yearList.getYearForScope(criteria.getMultiYearScope());
-		
-		return ((year == null)?null:year.toString());
-	}
-	
+
 	public String cancelDataOverride() throws Exception {
 		findContractor();
 		if (!canFindOperator())
@@ -346,6 +284,14 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 		FlagDataOverride flagDataOverride = isFlagDataOverride(flagData, null);
 		if (flagDataOverride != null) {
+			// save history
+			FlagOverrideHistory foh = new FlagOverrideHistory();
+			foh.setOverride(flagDataOverride);
+			foh.setAuditColumns(permissions);
+			foh.setDeleted(true);
+			foh.setDeleteReason(noteText);
+			dao.save(foh);
+
 			for (Iterator<FlagCriteria> it = getFlagDataOverrides(null).keySet().iterator(); it.hasNext();) {
 				if (it.next().equals(flagDataOverride.getCriteria()))
 					it.remove();
@@ -358,42 +304,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				flagDataOverrideDAO.remove(flagDataOverride);
 		}
 		return completeAction(noteText);
-	}
-	
-	private String completeAction(String noteText) {
-		try {
-			if (!Strings.isEmpty(noteText)) {
-				Note note = new Note();
-				note.setAccount(co.getContractorAccount());
-				note.setAuditColumns(permissions);
-				note.setNoteCategory(NoteCategory.Flags);
-				note.setViewableByOperator(permissions);
-				note.setCanContractorView(true);
-
-				note.setSummary(noteText);
-
-				if (!Strings.isEmpty(forceNote))
-					note.setBody(forceNote);
-
-				// Check if there's an attachment
-				note = getNoteDao().save(note);
-				if (!isFileOkay(note))
-					return SUCCESS;
-
-				// If everything's okay, now save
-				getNoteDao().save(note);
-			}
-			co.setFlagLastUpdated(new Date());
-			co.setAuditColumns(permissions);
-			contractorOperatorDao.save(co);
-
-			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
-			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
-					+ "&redirectUrl=" + redirectUrl);
-		} catch (Exception x) {
-		}
-
-		return SUCCESS;
 	}
 
 	public int getOpID() {
@@ -415,23 +325,24 @@ public class ContractorFlagAction extends ContractorActionSupport {
 	public FlagColor[] getFlagList() {
 		return FlagColor.values();
 	}
-	
+
 	public List<ContractorOperator> getCorporateOverrides() {
 		ArrayList<ContractorOperator> corporateOverrides = new ArrayList<ContractorOperator>();
 		HashMap<String, ContractorOperator> uniqueCorporateOverrides = new HashMap<String, ContractorOperator>();
-		
-		for (ContractorOperator co:getActiveOperators()) {
+
+		for (ContractorOperator co : getActiveOperators()) {
 			ContractorOperator forceOverallConOp = co.getForceOverallFlag();
 			if (forceOverallConOp != null && forceOverallConOp.getForceFlag() != null) {
-				String key = forceOverallConOp.getForceFlag().toString() + "|" + forceOverallConOp.getForceEnd().toString() + "|"
-						+ forceOverallConOp.getForcedBy().getId() + "|";
+				String key = forceOverallConOp.getForceFlag().toString() + "|"
+						+ forceOverallConOp.getForceEnd().toString() + "|" + forceOverallConOp.getForcedBy().getId()
+						+ "|";
 				if (!uniqueCorporateOverrides.containsKey(key))
 					uniqueCorporateOverrides.put(key, forceOverallConOp);
 			}
 		}
-		
+
 		corporateOverrides.addAll(uniqueCorporateOverrides.values());
-		
+
 		return corporateOverrides;
 	}
 
@@ -534,6 +445,26 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		this.inputStream = inputStream;
 	}
 
+	public void setFlagCounts(Map<FlagColor, Integer> flagCounts) {
+		this.flagCounts = flagCounts;
+	}
+
+	public boolean isDisplayCorporate() {
+		return displayCorporate;
+	}
+
+	public void setDisplayCorporate(boolean displayCorporate) {
+		this.displayCorporate = displayCorporate;
+	}
+
+	public boolean isPermittedToForceFlags() {
+		return permittedToForceFlags;
+	}
+
+	public void setPermittedToForceFlags(boolean permittedToForceFlags) {
+		this.permittedToForceFlags = permittedToForceFlags;
+	}
+
 	public boolean isCanSeeAudit(ContractorAuditOperator cao) {
 		if (permissions.isContractor() && cao.getAudit().getAuditType().isCanContractorView())
 			return true;
@@ -550,13 +481,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Set<FlagData> flagData = co.getFlagDatas();
 
 			List<FlagData> flagDataList = new ArrayList<FlagData>(flagData);
-			
+
 			if (displayCorporate) {
 				for (ContractorOperator co2 : getActiveOperators()) {
 					flagDataList.addAll(co2.getFlagDatas());
 				}
 			}
-			
+
 			Collections.sort(flagDataList, new ByOrderCategoryLabel());
 
 			for (FlagData flagData2 : flagDataList) {
@@ -591,7 +522,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		if (op == null)
 			op = co.getOperatorAccount();
 		Map<FlagCriteria, List<FlagDataOverride>> flagDataOverrides = getFlagDataOverrides(op);
-		
+
 		if (flagDataOverrides != null && flagDataOverrides.size() > 0) {
 			List<FlagDataOverride> flOverride = flagDataOverrides.get(flagData.getCriteria());
 			if (flOverride != null && flOverride.size() > 0) {
@@ -634,7 +565,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		} else if (fc.getOshaRateType() != null) {
 			addLabel = false;
 			String rate = answer;
-			answer = getTextParameterized("ContractorFlag.OshaAnswer", fc.getOshaType().name(), getText(fc.getOshaRateType().getDescriptionKey()), fcc.getAnswer2().split("<br/>")[0]);
+			answer = getTextParameterized("ContractorFlag.OshaAnswer", fc.getOshaType().name(), getText(fc
+					.getOshaRateType().getDescriptionKey()), fcc.getAnswer2().split("<br/>")[0]);
 			if (fc.getOshaRateType().equals(OshaRateType.Fatalities)) {
 				Double value = Double.parseDouble(rate);
 				answer += value.intValue();
@@ -713,22 +645,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
-	private class ByOrderCategoryLabel implements Comparator<FlagData> {
-
-		public int compare(FlagData o1, FlagData o2) {
-			FlagCriteria f1 = o1.getCriteria();
-			FlagCriteria f2 = o2.getCriteria();
-
-			if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
-				if (f1.getCategory().equals(f2.getCategory())) {
-					return f1.getLabel().compareTo(f2.getLabel());
-				} else
-					return f1.getCategory().compareTo(f2.getCategory());
-			} else
-				return f1.getDisplayOrder() - f2.getDisplayOrder();
-		}
-	}
-
 	public boolean canForceDataFlag(FlagDataOverride flagOverride) {
 		if (flagOverride == null) {
 			if (permissions.getAccountId() == opID || permissions.isCorporate())
@@ -754,50 +670,6 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return false;
 	}
 
-	private Naics getBroaderNaics(boolean lwcr, Naics naics) {
-		if ((lwcr && naics.getLwcr() > 0) || (!lwcr && naics.getTrir() > 0) || naics == null)
-			return naics;
-		else {
-			Naics naics2 = naicsDAO.find(naics.getCode().substring(0, naics.getCode().length() - 1));
-			return getBroaderNaics(lwcr, naics2);
-		}
-	}
-
-	private boolean isFileOkay(Note note) {
-		if (file != null) {
-			String extension = "";
-			if (fileFileName.indexOf(".") != -1) {
-				extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
-			}
-
-			// will fail for "" too
-			if (!FileUtils.checkFileExtension(extension)) {
-				addActionError(getText("ContractorFlag.error.FileTypeNotSuppoprted"));
-				return false;
-			}
-			// delete old files
-			File[] files = getFiles(note.getId());
-			for (File file : files)
-				FileUtils.deleteFile(file);
-
-			try {
-				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
-						PICSFileType.note_attachment.filename(note.getId()), extension, true);
-			} catch (Exception e) {
-				return false;
-			}
-
-			note.setAttachment(fileFileName);
-		}
-
-		return true;
-	}
-
-	private File[] getFiles(int noteID) {
-		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(noteID));
-		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
-	}
-
 	@SuppressWarnings("unchecked")
 	public ArrayListMultimap<AuditType, ContractorAuditOperator> getMissingAudits() {
 		if (missingAudits == null) {
@@ -809,7 +681,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			}
 
 			String where = "t.audit.contractorAccount.id = " + id + " AND t.visible = 1 "
-					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id IN (" + Strings.implode(operatorIds, ",") + "))";
+					+ "AND t IN (SELECT cao FROM ContractorAuditOperatorPermission WHERE operator.id IN ("
+					+ Strings.implode(operatorIds, ",") + "))";
 			List<ContractorAuditOperator> list = (List<ContractorAuditOperator>) caoDAO.findWhere(
 					ContractorAuditOperator.class, where, 0);
 			missingAudits = ArrayListMultimap.create();
@@ -817,33 +690,16 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			Map<AuditType, FlagCriteria> auditTypeToFlagCriteria = getAuditTypeToFlagCriteria();
 			for (ContractorAuditOperator cao : list) {
 				if (!cao.getAudit().isExpired())
-					addCaoToMissingAudits(cao,  auditTypeToFlagCriteria);
+					addCaoToMissingAudits(cao, auditTypeToFlagCriteria);
 			}
 		}
 		return missingAudits;
-	}
-	
-	private void addCaoToMissingAudits(ContractorAuditOperator cao, Map<AuditType, FlagCriteria> auditTypeToFlagCriteria) {
-		AuditType auditType = cao.getAudit().getAuditType();
-		
-		if (auditTypeToFlagCriteria.get(auditType) == null
-				|| auditTypeToFlagCriteria.get(auditType).getRequiredStatus() == cao.getStatus()) {
-			return;
-		}
-		
-		for (ContractorAuditOperator aCao:missingAudits.get(auditType)) {
-			if (aCao.getAudit().getId() == cao.getAudit().getId()) {
-				return;
-			}
-		}
-		
-		missingAudits.put(auditType, cao);
 	}
 
 	public Map<AuditType, FlagCriteria> getAuditTypeToFlagCriteria() {
 		Map<AuditType, FlagCriteria> result = new LinkedHashMap<AuditType, FlagCriteria>();
 		if (displayCorporate) {
-			for (ContractorOperator co1: getActiveOperators()) {
+			for (ContractorOperator co1 : getActiveOperators()) {
 				for (FlagData fd : co1.getFlagDatas()) {
 					if (fd.getCriteria().getAuditType() != null)
 						result.put(fd.getCriteria().getAuditType(), fd.getCriteria());
@@ -861,8 +717,8 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public FlagCriteriaOperator getApplicableOperatorCriteria(FlagData fd) {
 		List<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
-		
-		OperatorAccount operator = (displayCorporate) ? fd.getOperator():co.getOperatorAccount();
+
+		OperatorAccount operator = (displayCorporate) ? fd.getOperator() : co.getOperatorAccount();
 
 		for (FlagCriteriaOperator fco : operator.getFlagCriteriaInherited()) {
 			if (fco.getCriteria().equals(fd.getCriteria())
@@ -911,23 +767,184 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		return flagCounts;
 	}
 
-	public void setFlagCounts(Map<FlagColor, Integer> flagCounts) {
-		this.flagCounts = flagCounts;
+	private boolean canFindOperator() {
+		if (opID == 0 && (permissions.isOperator() || permissions.isCorporate()))
+			opID = permissions.getAccountId();
+
+		if (permissions.isCorporate() && permissions.getAccountId() == opID) {
+			displayCorporate = true;
+		}
+
+		// can't view unrelated co links
+		if (permissions.isCorporate()) {
+			// check to see if corporate id pulls anything with this op id,
+			// if not then give error
+			if (opID != permissions.getAccountId()) {
+				Facility f = facDAO.findByCorpOp(permissions.getAccountId(), opID);
+				if (f == null) {
+					addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
+					return false;
+				}
+			}
+		} else if (permissions.isContractor()) {
+			if (id != permissions.getAccountId()) {
+				// check to see if con id and id match
+				addActionError(getText("ContractorFlag.error.NoPermissionViewFacility"));
+				return false;
+			}
+		}
+
+		co = contractorOperatorDao.find(id, opID);
+		if (co == null) {
+			addActionError(getText("ContractorFlag.error.ContractorNotAtSite"));
+			return false;
+		}
+
+		int i = 0;
+		if (displayCorporate) {
+			operatorIds = new int[getActiveOperators().size() + 1];
+			for (ContractorOperator co1 : getActiveOperators()) {
+				operatorIds[i++] = co1.getOperatorAccount().getId();
+			}
+		} else {
+			operatorIds = new int[1];
+		}
+		operatorIds[i] = opID;
+
+		if (permissions.hasPermission(OpPerms.EditForcedFlags)) {
+			if (permissions.isCorporate() || permissions.isAdmin()) {
+				permittedToForceFlags = true;
+			} else if (permissions.isOperator() && permissions.getAccountId() == opID) {
+				permittedToForceFlags = true;
+			}
+		}
+
+		return true;
 	}
 
-	public boolean isDisplayCorporate() {
-		return displayCorporate;
+	private String getAppropriateAnnualAuditYear(FlagCriteria criteria) {
+		YearList yearList = new YearList();
+		for (ContractorAudit conAudit : contractor.getSortedAnnualUpdates()) {
+			if (conAudit.hasCaoStatus(AuditStatus.Complete)) {
+				yearList.add(conAudit.getAuditFor());
+			}
+		}
+
+		Integer year = yearList.getYearForScope(criteria.getMultiYearScope());
+
+		return ((year == null) ? null : year.toString());
 	}
 
-	public void setDisplayCorporate(boolean displayCorporate) {
-		this.displayCorporate = displayCorporate;
+	private String completeAction(String noteText) {
+		try {
+			if (!Strings.isEmpty(noteText)) {
+				Note note = new Note();
+				note.setAccount(co.getContractorAccount());
+				note.setAuditColumns(permissions);
+				note.setNoteCategory(NoteCategory.Flags);
+				note.setViewableByOperator(permissions);
+				note.setCanContractorView(true);
+
+				note.setSummary(noteText);
+
+				if (!Strings.isEmpty(forceNote))
+					note.setBody(forceNote);
+
+				// Check if there's an attachment
+				note = getNoteDao().save(note);
+				if (!isFileOkay(note))
+					return SUCCESS;
+
+				// If everything's okay, now save
+				getNoteDao().save(note);
+			}
+			co.setFlagLastUpdated(new Date());
+			co.setAuditColumns(permissions);
+			contractorOperatorDao.save(co);
+
+			String redirectUrl = "ContractorFlag.action?id=" + id + "%26opID=" + opID;
+			return redirect("ContractorCronAjax.action?conID=" + id + "&opID=" + opID + "&steps=Flag&steps=WaitingOn"
+					+ "&redirectUrl=" + redirectUrl);
+		} catch (Exception x) {
+		}
+
+		return SUCCESS;
 	}
 
-	public boolean isPermittedToForceFlags() {
-		return permittedToForceFlags;
+	private Naics getBroaderNaics(boolean lwcr, Naics naics) {
+		if ((lwcr && naics.getLwcr() > 0) || (!lwcr && naics.getTrir() > 0) || naics == null)
+			return naics;
+		else {
+			Naics naics2 = naicsDAO.find(naics.getCode().substring(0, naics.getCode().length() - 1));
+			return getBroaderNaics(lwcr, naics2);
+		}
 	}
 
-	public void setPermittedToForceFlags(boolean permittedToForceFlags) {
-		this.permittedToForceFlags = permittedToForceFlags;
+	private boolean isFileOkay(Note note) {
+		if (file != null) {
+			String extension = "";
+			if (fileFileName.indexOf(".") != -1) {
+				extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
+			}
+
+			// will fail for "" too
+			if (!FileUtils.checkFileExtension(extension)) {
+				addActionError(getText("ContractorFlag.error.FileTypeNotSuppoprted"));
+				return false;
+			}
+			// delete old files
+			File[] files = getFiles(note.getId());
+			for (File file : files)
+				FileUtils.deleteFile(file);
+
+			try {
+				FileUtils.moveFile(file, getFtpDir(), "files/" + FileUtils.thousandize(note.getId()),
+						PICSFileType.note_attachment.filename(note.getId()), extension, true);
+			} catch (Exception e) {
+				return false;
+			}
+
+			note.setAttachment(fileFileName);
+		}
+
+		return true;
+	}
+
+	private File[] getFiles(int noteID) {
+		File dir = new File(getFtpDir() + "/files/" + FileUtils.thousandize(noteID));
+		return FileUtils.getSimilarFiles(dir, PICSFileType.note_attachment.filename(noteID));
+	}
+
+	private void addCaoToMissingAudits(ContractorAuditOperator cao, Map<AuditType, FlagCriteria> auditTypeToFlagCriteria) {
+		AuditType auditType = cao.getAudit().getAuditType();
+
+		if (auditTypeToFlagCriteria.get(auditType) == null
+				|| auditTypeToFlagCriteria.get(auditType).getRequiredStatus() == cao.getStatus()) {
+			return;
+		}
+
+		for (ContractorAuditOperator aCao : missingAudits.get(auditType)) {
+			if (aCao.getAudit().getId() == cao.getAudit().getId()) {
+				return;
+			}
+		}
+
+		missingAudits.put(auditType, cao);
+	}
+
+	private class ByOrderCategoryLabel implements Comparator<FlagData> {
+
+		public int compare(FlagData o1, FlagData o2) {
+			FlagCriteria f1 = o1.getCriteria();
+			FlagCriteria f2 = o2.getCriteria();
+
+			if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
+				if (f1.getCategory().equals(f2.getCategory())) {
+					return f1.getLabel().compareTo(f2.getLabel());
+				} else
+					return f1.getCategory().compareTo(f2.getCategory());
+			} else
+				return f1.getDisplayOrder() - f2.getDisplayOrder();
+		}
 	}
 }

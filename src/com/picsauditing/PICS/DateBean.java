@@ -520,6 +520,18 @@ public class DateBean {
 		return calendar.getTime();
 	}
 	
+	public static Date setToStartOfDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+
+		calendar.set(Calendar.HOUR, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return calendar.getTime();
+	}
+	
 	/**
 	 * Returns the integer year of the date argument or
 	 * zero if the date is null.
@@ -573,6 +585,9 @@ public class DateBean {
 	public static Date convertTime(Date sourceDate, TimeZone sourceTimeZone, TimeZone destinationTimeZone) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(sourceDate);
+		if (sourceTimeZone == null) {
+			sourceTimeZone = c1.getTimeZone();
+		}
 
 		Calendar c2 = Calendar.getInstance();
 		c2.setTimeZone(sourceTimeZone);

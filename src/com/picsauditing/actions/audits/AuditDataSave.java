@@ -49,8 +49,9 @@ public class AuditDataSave extends AuditActionSupport {
 	private static final long serialVersionUID = 1103112846482868309L;
 	
 	private static final int OSHA_INCIDENT_QUESTION_ID = 8838;
-	// also need to do this for the COHS
+	private static final int COHS_INCIDENT_QUESTION_ID = 8840;
 	private static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] {8812, 8813, 8814, 8815, 8816, 8817};
+	private static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] {8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847};
 		
 	private AuditData auditData = null;
 	private String[] multiAnswer;
@@ -358,7 +359,26 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDataDao.save(auditData);
 				}
 			}
+		} else if (newCopy.getQuestion().getId() == COHS_INCIDENT_QUESTION_ID) {
+			if (newCopy.getAnswer().equals(NO)) {
+				for (int incidentQuestionId : COHS_INCIDENT_RELATED_QUESTION_IDS) {
+					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(), incidentQuestionId);
+					if (auditData == null) {
+						auditData = new AuditData();
+						auditData.setId(0);
+						auditData.setAudit(conAudit);
+						AuditQuestion auditQuestion = questionDao.find(incidentQuestionId);
+						auditData.setQuestion(auditQuestion);					
+					}			
+
+					auditData.setAuditColumns(permissions);
+					auditData.setAnswer("0");
+
+					auditDataDao.save(auditData);
+				}
+			}
 		}
+
 	}
 	
 	private void checkUniqueCode(ContractorAudit tempAudit) {
@@ -562,9 +582,7 @@ public class AuditDataSave extends AuditActionSupport {
 			return true;
 
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
-			// Strip the commas, just in case they are in the wrong place
-			// We add them back in later
-			answer = answer.trim().replace(",", "");
+			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
 
 			boolean hasBadChar = false;
 			for (int i = 0; i < answer.length(); i++) {
@@ -577,15 +595,18 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError(getText("AuditData.error.MustBeNumber"));
 				return false;
 			}
-
-			if ("Number".equals(questionType)) {
-				auditData.setAnswer(answer);
-				return true;
-			}
-
-			NumberFormat format = new DecimalFormat("#,##0");
-			if ("Decimal Number".equals(questionType))
+			
+			NumberFormat format;
+			if ("Decimal Number".equals(questionType)) {
 				format = new DecimalFormat("#,##0.000");
+			}
+			else if ("Number".equals(questionType)) {
+				format = new DecimalFormat("###0");
+			}
+			else {
+				format = new DecimalFormat("#,##0");
+			}
+			
 			BigDecimal value = new BigDecimal(answer);
 			auditData.setAnswer(format.format(value));
 		}
@@ -610,6 +631,10 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		return true;
+	}
+
+	public static String trimWhitespaceLeadingZerosAndAllCommas(String answer) {
+		return answer.trim().replaceAll(",","").replaceAll("^0+(?!$)","");
 	}
 
 	private boolean isValidNAICScode(String code) {

@@ -20,7 +20,8 @@ public class FlagAnswerParser {
 		}
 		
 		if (auditData.isMultipleChoice()
-				&& ("YesNoNA".equals(auditData.getQuestion().getOption().getUniqueCode()) || "Yes/No".equals(auditData
+				&& ("YesNoNA".equals(auditData.getQuestion().getOption()
+						.getUniqueCode()) || "YesNo".equals(auditData
 						.getQuestion().getOption().getUniqueCode()))) {
 			return parseForManual(flagCriteria, cType, answer);
 		}
@@ -37,7 +38,9 @@ public class FlagAnswerParser {
 			return parseForNumber(answer);
 		}
 		
-		System.out.println("Failed to parse type " + cType + " " + qType);
+		System.out.println("Failed to parse type " + cType + " " + qType
+				+ " for flagCriteria #" + flagCriteria.getId()
+				+ ", and question#" + auditData.getQuestion().getId());
 		
 		return "";
 	}

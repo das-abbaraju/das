@@ -1,7 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"  errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <s:set name="verifiedPercent" value="0" />
 <s:if test="auditData">
-	{"dateVerified" : "<s:date name="auditData.dateVerified" format="MM/dd/yyyy" />", 
+	{"dateVerified" : "<s:date name="auditData.dateVerified" format="%{getText('date.short')}" />", 
 	"who" : "<s:property value="auditData.auditor.name"/>", 
 	"percentVerified" :
 		<s:iterator value="auditData.audit.operators" id="cao">
@@ -12,7 +13,7 @@
 	}
 </s:if>
 <s:elseif test="oshaAudit">
-	{"dateVerified" : "<s:date name="verifiedDate" format="MM/dd/yyyy" />", 
+	{"dateVerified" : "<s:date name="verifiedDate" format="%{getText('date.short')}" />", 
 	"who" : "<s:property value="auditor.name"/>", 
 	"percentVerified" :
 		<s:iterator value="oshaAudit.caos" id="cao">

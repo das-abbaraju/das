@@ -383,7 +383,7 @@
 									<label>
 										<s:text name="ContractorRegistrationRequest.label.holdDate" />:
 									</label>
-									<s:date name="newContractor.holdDate" format="MM/dd/yyyy"/>
+									<s:date name="newContractor.holdDate" format="%{getText('date.short')}"/>
 								</li>
 							</s:if>
 							
@@ -482,8 +482,8 @@
 				</p>
 				<p>
 					<s:select
-						list="#{@vs@PERSONAL_EMAIL:getText('RequestNewContractor.PersonalEmail'),
-							@vs@DRAFT_EMAIL:getText('RequestNewContractor.DraftEmail')}"
+						list="#{@vs@PERSONAL_EMAIL:getTextNullSafe('RequestNewContractor.PersonalEmail'),
+							@vs@DRAFT_EMAIL:getTextNullSafe('RequestNewContractor.DraftEmail')}"
 						name="contactType"
 					/>
 				</p>

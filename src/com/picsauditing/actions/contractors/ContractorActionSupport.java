@@ -36,6 +36,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
+import com.picsauditing.jpa.entities.ContractorTag;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -248,6 +249,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 * @return
 	 */
 	public List<MenuComponent> getAuditMenu() {
+		final int MAX_MENU_ITEM = 10;
+		boolean addMoreMenu = false;
+		
 		// PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
 		PicsLogger.start("ContractorActionSupport.getAuditMenu");
 
@@ -304,14 +308,21 @@ public class ContractorActionSupport extends AccountActionSupport {
 			// Add the PQF
 			MenuComponent subMenu = new MenuComponent(getText("AuditType.1.name"), "ContractorDocuments.action?id="
 					+ id);
+			addMoreMenu = false;
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			while (iter.hasNext()) {
 				ContractorAudit audit = iter.next();
 				if (audit.getAuditType().getClassType().isPqf()) {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
-						MenuComponent childMenu = createMenuItem(subMenu, audit);
-						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
+						if (subMenu.getChildren().size() < MAX_MENU_ITEM || audit.getAuditType().isPqf()) {
+							MenuComponent childMenu = createMenuItem(subMenu,
+									audit);
+							childMenu.setUrl("Audit.action?auditID="
+									+ audit.getId());
+						}
+						
+						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
 
 						// Put Trades menu after 'PQF' menu entry
 						if (audit.getAuditType().isPqf()) {
@@ -325,6 +336,10 @@ public class ContractorActionSupport extends AccountActionSupport {
 					}
 					iter.remove();
 				}
+			}
+			
+			if (addMoreMenu) {
+				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id);
 			}
 			menu.add(subMenu);
 		}
@@ -380,7 +395,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 
-		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) {
+		if (isContractorHasEmployeeGuard() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add EmployeeGUARD
 			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
@@ -419,11 +434,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 		if (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety)) { // Add
 			// All Other Audits
+
 			MenuComponent subMenu = new MenuComponent(getText("global.AuditGUARD"), "ContractorDocuments.action?id="
-					+ id + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
+					+ id + "#auditguard");
+			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
-					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0) {
+					if (subMenu.getChildren().size() < MAX_MENU_ITEM && (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
@@ -431,14 +448,33 @@ public class ContractorActionSupport extends AccountActionSupport {
 						if (!Strings.isEmpty(audit.getAuditFor()))
 							linkText = audit.getAuditFor() + " " + linkText;
 						childMenu.setName(linkText);
+						
+						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
 					}
 				}
 			}
+
+			if (addMoreMenu) {
+				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id="
+						+ id + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
+			}
+
 			addSubMenu(menu, subMenu);
 		}
 		PicsLogger.stop();
 		resetActiveAudits();
 		return menu;
+	}
+	
+	private boolean isContractorHasEmployeeGuard() {
+		for (ContractorTag tag : contractor.getOperatorTags()) {
+			if (tag.getTag().getTag().equals("HSE Competency")
+					|| tag.getTag().getTag()
+							.equals("Implementation Audit Plus")
+					|| tag.getTag().getTag().equals("Integrity Management"))
+				return true;
+		}
+		return false;
 	}
 
 	private void addSubMenu(List<MenuComponent> menu, MenuComponent subMenu) {

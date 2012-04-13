@@ -121,14 +121,16 @@ public class NoteDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-
 	private List<ContractorAuditOperatorWorkflow> getCaowsInDateRange(int accountID, Permissions permissions,
 			String whereForWorkflow, Date earliestDate, Date latestDate) {
-		// Make sure the where string is a valid SQL expression
 
+		String permWhere = "";
+		if (permissions.isOperator() || permissions.isCorporate())
+			permWhere += "AND (w.cao.operator.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
+		
 		Query query = em
 				.createQuery("FROM ContractorAuditOperatorWorkflow w JOIN FETCH w.cao c JOIN FETCH c.audit a WHERE a.contractorAccount.id = :accountID "
-						+ whereForWorkflow + " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate");
+						+ whereForWorkflow + " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate " + permWhere + " ");
 		query.setParameter("accountID", accountID);
 		query.setParameter("earliestDate", earliestDate);
 		query.setParameter("latestDate", latestDate);
@@ -194,6 +196,17 @@ public class NoteDAO extends PicsDAO {
 		sortByDateDesc(beans);
 
 		return beans;
+	}
+	
+	/**
+	 * Returns a list of Note objects wrapped as an ActivityBean object because the new standard for display
+	 * on the notes page is ActivityBean.
+	 */
+	public List<ActivityBean> getActivity(int accountID, Permissions permissions, String where, int firstResult, int limit) {
+		List<Note> notes = getNotes(accountID, permissions, where, firstResult, limit);
+		ArrayList<ActivityBean> activity = new ArrayList<ActivityBean>();
+		accumulateNotes(activity, notes, limit);
+		return activity;
 	}
 
 	private Date extractEarliestDate(List<Note> notes, int limit) {

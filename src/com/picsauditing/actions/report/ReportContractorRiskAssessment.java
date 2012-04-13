@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.core.ProducerCallback;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
@@ -70,17 +69,13 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				+ "WHEN 7678 THEN 'Business Interruption: ' ELSE 'Product Safety: ' END, "
 				+ "d.answer) SEPARATOR '<br />') answer", new int[] { AuditQuestion.PRODUCT_CRITICAL_ASSESSMENT,
 				AuditQuestion.PRODUCT_SAFETY_CRITICAL_ASSESSMENT });
-		String transportationRisk = getRiskSQL(TRANSPORTATION, null);
 
 		if (SAFETY.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + safetyRisk + ") r ON r.id = a.id");
 		} else if (PRODUCT.equals(getFilter().getRiskType())) {
 			sql.addJoin("JOIN (" + productRisk + ") r ON r.id = a.id");
-		} else if (TRANSPORTATION.equals(getFilter().getRiskType())) {
-			sql.addJoin("JOIN (" + transportationRisk + ") r ON r.id = a.id");
 		} else {
-			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + "\nUNION\n" + transportationRisk
-					+ ") r ON r.id = a.id");
+			sql.addJoin("JOIN (" + safetyRisk + "\nUNION\n" + productRisk + ") r ON r.id = a.id");
 		}
 
 		sql.addField("r.riskType");
@@ -95,7 +90,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		if (!Strings.isEmpty(type)) {
 			if (con == null)
 				con = contractorAccountDAO.find(conID);
-			
+
 			String noteMessage = type + " risk adjusted from ";
 
 			if (SAFETY.equals(type)) {
@@ -130,9 +125,9 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 				con.setProductRiskVerified(new Date());
 			} else if (TRANSPORTATION.equals(type)) {
 				LowMedHigh currentTransportationRisk = con.getTransportationRisk();
-				
+
 				noteMessage += currentTransportationRisk.name() + " to " + manuallySetRisk.name();
-				
+
 				con.setTransportationRisk(manuallySetRisk);
 				con.setTransportationRiskVerified(new Date());
 			}
@@ -161,10 +156,10 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 	@RequiredPermission(value = OpPerms.RiskRank)
 	public String reject() throws Exception {
 		recallWizardSessionFilter();
-		
+
 		if (con == null)
 			con = contractorAccountDAO.find(conID);
-		
+
 		String noteMessage = "Rejected " + type.toLowerCase() + " adjustment from ";
 
 		if (type.equals(SAFETY)) {
@@ -229,7 +224,6 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		risks.add(getText("JS.Filters.status.All"));
 		risks.add(SAFETY);
 		risks.add(PRODUCT);
-		risks.add(TRANSPORTATION);
 
 		return risks;
 	}
@@ -279,6 +273,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 			sql2.addField("'' answer");
 		}
 
+		sql2.addWhere("c.accountLevel = 'Full'");
 		sql2.addWhere("a.status = 'Active'");
 		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL "
 				+ "OR DATE_ADD(c.%1$sRiskVerified, INTERVAL 3 YEAR) < NOW()", type.toLowerCase()));

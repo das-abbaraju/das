@@ -28,7 +28,7 @@
                 var property = '';
                 
                 if (object.hasOwnProperty(j)) {
-                    property = '"' + key + '"' + ':' + '"' + value.replace('"', '\\"') + '"';
+                    property = '"' + key + '"' + ':' + '"' + value.replace(/"/g, '\\"') + '"';
                 }
                 
                 properties.push(property);

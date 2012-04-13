@@ -58,6 +58,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String JSONP = "jsonp";
 	public static final String JSON_ARRAY = "jsonArray";
 	public static final String CHART_XML = "chartXML";
+	public static final String REDIRECT = "redirect";
 
 	@Autowired
 	protected BasicDAO dao;
@@ -398,16 +399,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		String requestURL = getRequestURL().toString();
 		String requestURI = getRequestURI();
 		String requestHost = requestURL.replace(requestURI, "");
-
-		return requestHost;
-	}
-
-	public String getRequestHostActual() {
-		String requestHost = getRequestHost();
-
-		if (isLocalhostEnvironment()) {
-			requestHost += "/picsWeb2";
-		}
 
 		return requestHost;
 	}

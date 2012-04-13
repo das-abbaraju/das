@@ -141,8 +141,7 @@ public class BillingCalculatorSingle {
 				hasInsureGUARD = true;
 				operatorsRequiringInsureGUARD.addAll(detail.operators);
 			}
-			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee()
-					|| auditType.getClassType().isEmployee())
+			if (auditType.getId() == AuditType.IMPLEMENTATIONAUDITPLUS || auditType.getClassType().isEmployee())
 				hasEmployeeAudits = true;
 			if (auditType.getId() == AuditType.HSE_COMPETENCY)
 				hasHseCompetency = true;

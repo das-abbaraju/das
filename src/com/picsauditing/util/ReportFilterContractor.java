@@ -64,6 +64,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showSoleProprietership = true;
 	protected boolean showAccountLevel = false;
 	protected boolean showLocation = false;
+	protected boolean showFlagOverrideHistory = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -111,6 +112,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean soleProprietership = false;
 	protected String[] accountLevel;
 	protected String riskType;
+	protected boolean flagOverrideHistory = false;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -738,6 +740,22 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	// Insurance Limit Filters
+
+	public boolean isShowFlagOverrideHistory() {
+		return showFlagOverrideHistory;
+	}
+
+	public void setShowFlagOverrideHistory(boolean showFlagOverrideHistory) {
+		this.showFlagOverrideHistory = showFlagOverrideHistory;
+	}
+
+	public boolean isFlagOverrideHistory() {
+		return flagOverrideHistory;
+	}
+
+	public void setFlagOverrideHistory(boolean flagOverrideHistory) {
+		this.flagOverrideHistory = flagOverrideHistory;
+	}
 
 	public boolean isShowInsuranceLimits() {
 		return showInsuranceLimits;
