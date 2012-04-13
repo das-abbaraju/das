@@ -10,9 +10,9 @@ Ext.define('PICS.view.report.Header', {
             tag: 'h1',
             html: 'Contractor List'
         }
-    },{
+    }, {
         xtype: 'tbfill'
-    },{
+    }, {
         xtype: 'button',
         text: 'Save Report'
     }],    

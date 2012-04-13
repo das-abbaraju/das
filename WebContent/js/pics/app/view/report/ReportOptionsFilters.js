@@ -13,7 +13,6 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		xtype: 'rownumberer'
     	}, {
     		xtype: 'gridcolumn',
-    		
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
@@ -40,6 +39,7 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
     		            } else {
     		                (value === '1') ? operator = 'isTrue' : operator = 'isFalse';        
     		            }
+    		            
     		            formattedData += operator;
     		        } else {
     		            formattedData += operator + " '" + value + "'";    
@@ -51,16 +51,16 @@ Ext.define('PICS.view.report.ReportOptionsFilters', {
                 }
                 
                 record.docked = {
-                        value: false,
-                        id: ''
+                    value: false,
+                    id: ''
                 }
+                
     		    formatFilterDisplay();
 
     		    return formattedData; 
     		}
     	}, {
             xtype: 'actioncolumn',
-            
             hideable: false,
             items: [{
                 icon: 'images/cross.png',

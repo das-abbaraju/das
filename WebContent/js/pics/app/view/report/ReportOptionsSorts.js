@@ -22,33 +22,32 @@ Ext.define('PICS.view.report.ReportOptionsSorts', {
             xtype: 'rownumberer'
         }, {
             xtype: 'gridcolumn',
-
             dataIndex: 'column',
             flex: 1,
             hideable: false,
             sortable: false,
+            text: 'Column',
+            
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
                 return record.data.field.get('text');
-            },
-            text: 'Column'            
+            }
         }, {
             xtype: 'gridcolumn',
-            
             dataIndex: 'ascending',
             flex: 1,
             hideable: false,
             sortable: false,
+            text: 'Direction',
+            
             renderer: function (value, metaData, record, rowIndex, colIndex, store) {
                 if (record.data.direction === 'ASC') {
                     return 'Ascending'
                 } else {
                     return 'Descending'
                 }
-            },
-            text: 'Direction',            
+            }
         }, {
             xtype: 'actioncolumn',
-            
             hideable: false,
             items: [{
                 icon: 'images/cross.png',

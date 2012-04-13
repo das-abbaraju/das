@@ -13,7 +13,6 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
     		xtype: 'rownumberer'
     	}, {
     		xtype: 'gridcolumn',
-    		
     		dataIndex: 'name',
     		flex: 1,
     		hideable: false,
@@ -25,7 +24,6 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
             }
     	}, {
     	    xtype: 'actioncolumn',
-    	    
     	    hideable: false,
     	    items: [{
     	        icon: 'images/cross.png',
@@ -49,7 +47,6 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
         }
     }, {
     	xtype: 'fieldset',
-    	
         flex: 1,
         items: [{
             xtype: 'displayfield',

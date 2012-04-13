@@ -37,6 +37,7 @@ Ext.define('PICS.view.report.ReportOptions', {
         handles: 'e'
     },
     title: 'Report Options',
+    
 	initComponent: function () {
         this.callParent();
     }
