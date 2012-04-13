@@ -527,9 +527,11 @@
 						<div id="memberReport">
 							<s:include value="user_save_members.jsp" />
 						</div>
-					</s:if>
+					</s:if>					
 				</s:if>
 		
+				<s:include value="user_switch_accts.jsp" />
+										
 				<s:if test="permissions.admin">
 					<s:if test="user.group">
 						<div id="userSwitch">

@@ -29,6 +29,7 @@ import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -36,6 +37,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -81,7 +83,8 @@ public class UsersManage extends PicsActionSupport {
 	protected UserAccessDAO userAccessDAO;
 	@Autowired
 	protected UserGroupDAO userGroupDAO;
-
+	@Autowired
+	protected UserSwitchDAO userSwitchDao;
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
@@ -817,7 +820,11 @@ public class UsersManage extends PicsActionSupport {
 		list.remove(user);
 		return list;
 	}
-
+	
+	public List<UserSwitch> getSwitchTos() {
+		return userSwitchDao.findByUserId(user.getId());
+	}
+	
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
 
