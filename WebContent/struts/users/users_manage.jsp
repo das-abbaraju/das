@@ -529,8 +529,9 @@
 						</div>
 					</s:if>					
 				</s:if>
-		
-				<s:include value="user_switch_accts.jsp" />
+				<s:if test="permissions.admin">				
+					<s:include value="user_switch_accts.jsp" />
+				</s:if>
 										
 				<s:if test="permissions.admin">
 					<s:if test="user.group">
