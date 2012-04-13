@@ -11,14 +11,26 @@ Ext.define('PICS.model.report.Report', {
     // WAY TO MUCH BLIND DEPENDENCY
     parameters: {},
 
-    fields: [
-        { name: 'id', type: 'int' },
-        { name: 'modelType', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'description', type: 'string' },
-        { name: 'filterExpression', type: 'string' },
-        { name: 'rowsPerPage', type: 'int', defaultValue: 100 }
-    ],
+    fields: [{
+        name: 'id',
+        type: 'int'
+    }, {
+        name: 'modelType',
+        type: 'string'
+    }, {
+        name: 'name',
+        type: 'string'
+    }, {
+        name: 'description',
+        type: 'string'
+    }, {
+        name: 'filterExpression',
+        type: 'string'
+    }, {
+        name: 'rowsPerPage',
+        type: 'int',
+        defaultValue: 100
+    }],
     hasMany: [{
         model: 'PICS.model.report.SimpleColumn', 
         name: 'columns'

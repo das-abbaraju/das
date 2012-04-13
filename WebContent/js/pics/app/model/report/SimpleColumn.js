@@ -7,12 +7,18 @@ Ext.define('PICS.model.report.SimpleColumn', {
 	    getterName: 'getAvailableField',
 	    setterName: 'setAvailableField'
 	},
-	fields: [
-        { name: 'name', type: 'string' },
-        { name: 'method', type: 'string' },
-        { name: 'option', type: 'string' },
-        { name: 'renderer' }
-    ],
+	fields: [{
+	    name: 'name',
+	    type: 'string'
+    }, {
+        name: 'method',
+        type: 'string'
+    }, {
+        name: 'option',
+        type: 'string'
+    }, {
+        name: 'renderer'
+    }],
     
     // TODO: refactor these relationships
     // so confusing - this is used to create a report row model on the fly in the report controller
