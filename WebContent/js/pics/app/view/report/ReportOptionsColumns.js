@@ -50,16 +50,13 @@ Ext.define('PICS.view.report.ReportOptionsColumns', {
         flex: 1,
         items: [{
             xtype: 'displayfield',
-            
             fieldLabel: 'Field',
             value: 'Status'
         }, {
             xtype: 'combobox',
-            
             fieldLabel: 'Operator'
         }, {
             xtype: 'radiogroup',
-            
             fieldLabel: 'Type',
             items: [{
                 xtype: 'radiofield',

@@ -7,12 +7,11 @@ Ext.define('PICS.controller.report.FilterController', {
         ref: 'dockFilter',
         selector: 'reportdatagrid #filterToolbar'
     }],
-
     stores: [
         'report.ReportsFilter'
     ],
+    
     filterStyle: null,
-
     toolbarDockedItemsMax: 2,    
     
     dockFilter: function (target) {
@@ -26,6 +25,7 @@ Ext.define('PICS.controller.report.FilterController', {
         } else {
             removeFromToolbar();
         }
+        
         function addToToolbar () {
             var type = filterPanel.record.data.field.data.filterType,
                 panel = baseObj.setFilterPanelType(type),
@@ -35,29 +35,33 @@ Ext.define('PICS.controller.report.FilterController', {
             dockedFilter.setTitle(true);
             toolbar.add(dockedFilter);
         }
+        
         function removeFromToolbar() {
             toolbar.remove(filterPanel.position);
             filterPanel.position = null;
         }
     },
+    
     init: function() {
         this.control({
-            "reportoptionsfilters gridpanel":  {
+            'reportoptionsfilters gridpanel':  {
                 itemclick: this.showFilterOptions
             },
             'basefilter button[action=apply]': {
                 click: function () {
                     this.application.fireEvent('refreshreport');
-                }                
+                }
             },
             'basefilter checkbox[name=dockFilter]': {
                 change: this.dockFilter
             }
         });
     },
+    
     setFilterPanelType: function (type) {
         var filterPanel = '';
         console.log(type);
+        
         if (type === "String") {
             filterPanel = 'PICS.view.report.filter.StringFilter';
         } else if (type === "AccountName") {
@@ -83,9 +87,10 @@ Ext.define('PICS.controller.report.FilterController', {
         } else {
             console.log(type + " is not supported at this time");
         }
-        return filterPanel;
         
+        return filterPanel;
     },
+    
     showFilterOptions: function (view, record, item, index, e, options) {
         var filterPanel = Ext.ComponentQuery.query('#filterPanel' + index)[0],
             filterOptions = this.getFilterOptions(),
@@ -104,6 +109,7 @@ Ext.define('PICS.controller.report.FilterController', {
         } else {
             createFilterOptionsPanel();
         }
+        
         function updateDockedFilterIds() {
             var filterName = '',
                 recordName = '',
@@ -112,19 +118,23 @@ Ext.define('PICS.controller.report.FilterController', {
                 
             store.each(function(item, recordIndex) {
                 recordName = item.data.field.get('text');
+                
                 for (y = 0; y < filterToolbar.items.items.length; y++) {
                     filterName = filterToolbar.items.items[y].record.data.field.get('text');
+                    
                     if (filterName === recordName) {
                         filterToolbar.items.items[y].id = 'dockedfilterPanel' + recordIndex;
                     }
                 }
             });
         }
+        
         function hideOpenFilters() {
             for (x = 0; x < filterOptions.items.items.length; x++) {
                 filterOptions.items.items[x].hide();
             }
-        }        
+        }
+        
         function createFilterOptionsPanel() {
             var type = record.data.field.data.filterType,
                 panel = baseObj.setFilterPanelType(type),

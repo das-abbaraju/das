@@ -10,14 +10,13 @@ Ext.define('PICS.view.report.ReportOptions', {
         items: [{
 			xtype: 'button',
 			action: 'save',
-			// disabled: true,
 		    text: 'Save'
-        },{
+        }, {
 			xtype: 'button',
 			action: 'refresh',
 		    text: 'Refresh'
         }]
-    },{
+    }, {
         xtype: 'tabpanel',
         flex: 1,
         activeTab: 0,

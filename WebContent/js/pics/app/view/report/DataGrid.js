@@ -46,7 +46,7 @@ Ext.define('PICS.view.report.DataGrid', {
         displayInfo: true,
         dock: 'bottom',
         items: [{
-          xtype: 'tbseparator'
+            xtype: 'tbseparator'
         }, {
             xtype: 'combo',
             editable: false,

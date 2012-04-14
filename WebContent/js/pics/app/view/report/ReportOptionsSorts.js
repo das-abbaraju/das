@@ -68,7 +68,7 @@ Ext.define('PICS.view.report.ReportOptionsSorts', {
                 dragText: 'Drag and drop to reorganize',
                 ptype: 'gridviewdragdrop'
             }
-        }        
+        
     }],
     layout: {
         align: 'stretch',
