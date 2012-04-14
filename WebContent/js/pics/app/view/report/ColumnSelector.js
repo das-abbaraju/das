@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
         action: 'add',
         scope: this,
         text: 'Add'
-    },{
+    }, {
         handler: this.close,
         scope: this,
         text: 'Cancel'

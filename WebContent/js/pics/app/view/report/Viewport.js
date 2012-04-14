@@ -23,20 +23,20 @@ Ext.define('PICS.view.report.Viewport', {
         },{
             xtype: 'layoutmenu'
         }]
-    },{
+    }, {
         region: 'center',
         items: [{
             region: 'north',
             xtype: 'reportheader'
-        },{
+        }, {
             region: 'west',
             xtype: 'filteroptions'
-        },{
+        }, {
             region: 'center',
             xtype: 'reportdatagrid'
         }],
         layout: 'border'
-    },{
+    }, {
         region: 'south',
         xtype: 'layoutfooter'
     }]
