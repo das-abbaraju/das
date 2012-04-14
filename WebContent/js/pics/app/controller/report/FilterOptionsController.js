@@ -16,8 +16,8 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
         'report.ReportsColumn',
         'report.ReportsFilter',
         'report.ReportsSort'
-    ],    
-    
+    ],
+
     init: function() {
         this.control({
             'filteroptions button[action=add-filter]': {
@@ -27,16 +27,14 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
     },
     showColumnSelector: function(component, e, options) {
         var window = this.getReportColumnSelector();
-        
+
         if (!window) {
-            var grid = component.up('gridpanel');
-            
             var store = this.getReportAvailableFieldsByCategoryStore();
             store.clearFilter();
-            
+
             window = Ext.create('PICS.view.report.ColumnSelector');
-            window._column_type = grid._column_type;
+            window._column_type = 'filter';
             window.show();
         }
-    }    
+    }
 });

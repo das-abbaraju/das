@@ -16,7 +16,7 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
         'report.ReportsFilter',
         'report.ReportsSort'
     ],
-    
+
     init: function () {
         this.control({
             'reportoptions grid actioncolumn': {
@@ -33,34 +33,34 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
             }
         });
     },
-    
+
     removeColumn: function(view, cell, row, col, e) {
         var target = e.getTarget();
-        
+
         if (target && typeof target.className == 'string') {
             if (target.className.search('remove-column|remove-filter|remove-sort') !== -1) {
                 var grid = view.up('grid');
                 var store;
-                
+
                 if (grid._column_type === 'filter') {
                     store = this.getReportReportsFilterStore();
                 } else if (grid._column_type === 'column') {
                     store = this.getReportReportsColumnStore();
                 } else if (grid._column_type === 'sort') {
-                    store = this.getReportReportsSortStore();                
+                    store = this.getReportReportsSortStore();
                 } else {
                     throw 'grid._column_type is ' + grid._column_type + ' - must be (filter|column)';
                 }
-                
+
                 grid.getSelectionModel().select(row, false);
-                
-                var selected = grid.getSelectionModel().getSelection(); 
-                
+
+                var selected = grid.getSelectionModel().getSelection();
+
                 store.remove(selected);
                 this.application.fireEvent('refreshreport');
-                
+
                 //destroy docked filter options
-                var dockedfilterOptions = Ext.ComponentQuery.query('#dockedfilterPanel' + row)[0]; 
+                var dockedfilterOptions = Ext.ComponentQuery.query('#dockedfilterPanel' + row)[0];
                 if (dockedfilterOptions) {
                     console.log('destroying docked filter options');
                     dockedfilterOptions.destroy();
@@ -68,18 +68,18 @@ Ext.define('PICS.controller.report.ReportOptionsController', {
             }
         }
     },
-    
+
     showColumnSelector: function(component, e, options) {
         var window = this.getReportColumnSelector();
-        
+
         if (!window) {
             var grid = component.up('gridpanel');
-            
+
             var store = this.getReportAvailableFieldsByCategoryStore();
             store.clearFilter();
-            
+
             window = Ext.create('PICS.view.report.ColumnSelector');
-            
+
             window._column_type = grid._column_type;
             window.show();
         }

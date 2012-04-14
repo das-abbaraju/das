@@ -5,8 +5,18 @@ Ext.define('PICS.controller.report.ReportController', {
     refs: [{
         ref: 'dataGrid',
         selector: 'reportdatagrid'
+    },{
+        ref: 'reportColumnSelector',
+        selector: 'reportcolumnselector'
+    }, {
+        ref: 'reportOptionsColumnsGrid',
+        selector: 'reportoptionscolumns grid'
+    }, {
+        ref: 'reportOptionsFiltersGrid',
+        selector: 'reportoptionsfilters grid'
     }],
     stores: [
+        'report.AvailableFieldsByCategory',
         'report.ReportData',
         'report.Reports',
         'report.ReportsColumn',
@@ -112,7 +122,10 @@ Ext.define('PICS.controller.report.ReportController', {
         this.control({
             'reportdatagrid': {
                 beforerender: this.configureColumnMenu
-            }
+            },
+            'reportsorttoolbar button[action=add-column]': {
+                click: this.showColumnSelector
+            },
         });
 
         this.application.on({
@@ -245,5 +258,18 @@ Ext.define('PICS.controller.report.ReportController', {
         }
         grid.columns[columnIndex].destroy();
         grid.getView().refresh();
+    },
+    showColumnSelector: function(component, e, options) {
+        var window = this.getReportColumnSelector();
+
+        if (!window) {
+            var store = this.getReportAvailableFieldsByCategoryStore();
+            store.clearFilter();
+
+            window = Ext.create('PICS.view.report.ColumnSelector');
+
+            window._column_type = 'column';
+            window.show();
+        }
     }
 });
