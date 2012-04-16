@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -10,54 +9,74 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.util.Testable;
-
 public class DBBean implements InitializingBean {
-	private static DataSource staticDataSource;
-	private DataSource dataSource;
-
-	public DataSource getDataSource() {
-		return dataSource;
-	}
-
-	@Autowired
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
-
+	
+	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
+	private static DataSource dataSource;
+	
+	// volatile to use as part of the double-locking pattern
+	private static volatile DataSource staticDataSource;
+	
+	/**
+	 * Enforce the singleton nature of this class by making the 
+	 * constructor private 
+	 */
+	private DBBean() {}
+	
+	/**
+	 * Use double-locking to improve the performance and ensure that only one
+	 * instance of the staticDataSource is created.
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
 	public static Connection getDBConnection() throws SQLException {
-		if (staticDataSource == null) {
-			try {
-				staticDataSource = getJdbcPics();
-			} catch (NamingException ne) {
-				ne.printStackTrace();
-				return null;
+		DataSource result = staticDataSource;
+		if (result == null) {
+			synchronized(DBBean.class) {
+				result = staticDataSource;
+				if (result == null) {
+					try {
+						staticDataSource = result = getJdbcPics();
+					} catch (NamingException ne) {
+						ne.printStackTrace();
+						return null;
+					}
+				}
 			}
 		}
-		return staticDataSource.getConnection();
+		
+		return result.getConnection();
 	}
 
-	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
-	// The following field is just to support the unit test that proves that this code is threadsafe
-	public static AtomicInteger serviceLocatorCount = new AtomicInteger();
-
-	private static synchronized com.picsauditing.PICS.PICSDBLocator getServiceLocator() {
+	private static DataSource getJdbcPics() throws NamingException {
+		if (dataSource == null) {
+			return (DataSource) getServiceLocator().getDataSource("java:comp/env/jdbc/pics");
+		}
+		
+		return dataSource;
+	}
+	
+	private static com.picsauditing.PICS.PICSDBLocator getServiceLocator() {
 		if (serviceLocator == null) {
 			serviceLocator = new com.picsauditing.PICS.PICSDBLocator();
-			serviceLocatorCount.addAndGet(1);
 		}
+		
 		return serviceLocator;
 	}
 
-	@Testable
-	static DataSource getJdbcPics() throws NamingException {
-		return (DataSource) getServiceLocator().getDataSource("java:comp/env/jdbc/pics");
-	}
-
+	/**
+	 * Used by Spring InitializingBean
+	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		assert dataSource != null;
 		staticDataSource = dataSource;
+	}
+	
+	@Autowired
+	public void setDataSource(DataSource dataSource) {
+		DBBean.dataSource = dataSource;
 	}
 
 }
