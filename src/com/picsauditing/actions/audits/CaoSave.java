@@ -7,10 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -218,19 +216,9 @@ public class CaoSave extends AuditActionSupport {
 	 */
 	@SuppressWarnings("unchecked")
 	public String saveRejectionReasons() throws RecordNotFoundException, EmailException, IOException, NoRightsException, ParseException {
-	    // TODO: figure out how to get this working with Struts, rather than pulling it out of the request
-		String jsonArrayRequest = ServletActionContext.getRequest().getParameter("jsonArrayValue");
-	    if (Strings.isEmpty(jsonArrayRequest)) {
-            return save();
-	    }
-	    
-	    JSONParser parser = new JSONParser();
-	    Object object = parser.parse(jsonArrayRequest);
-	    JSONArray array = (JSONArray) object;
-	    	            
-        JSONArray reasonCodes = new JSONArray();
-        for (int index = 0; index < array.size(); index++) {
-            JSONObject jsonObject = (JSONObject) array.get(index);
+	    JSONArray reasonCodes = new JSONArray();
+        for (int index = 0; index < jsonArray.size(); index++) {
+            JSONObject jsonObject = (JSONObject) jsonArray.get(index);
             reasonCodes.add(jsonObject.get("id"));
         }
 

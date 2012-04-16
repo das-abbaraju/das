@@ -199,6 +199,9 @@
 								<tr>
 									<th><s:text name="Login.LoginDate" /></th>
 									<th><s:text name="Login.IPAddress" /></th>
+								<s:if test="permissions.isDeveloperEnvironment()">
+									<th><s:text name="Login.Server"/></th>
+								</s:if>
 									<th><s:text name="global.Notes" /></th>
 								</tr>
 							</thead>
@@ -208,6 +211,9 @@
 								<tr>
 									<td><s:date name="loginDate"/></td>
 									<td><s:property value="remoteAddress"/></td>
+								<s:if test="permissions.isDeveloperEnvironment()">
+									<td><s:property value="serverAddress"/></td>
+								</s:if>
 									<td>
 										<s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">
@@ -228,36 +234,7 @@
 		
 		<s:if test="!permissions.contractor">
 			<div id="tab_switch" style="display: none;">
-				<h3>
-					<s:text name="ProfileEdit.label.SwitchAccounts" />
-				</h3>
-				
-				<table class="report">
-					<thead>
-						<tr>
-							<td><s:text name="global.Account" /></td>
-							<td><s:text name="ProfileEdit.header.UserRole" /></td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								<a href="Login.action?button=switch&switchToUser=<s:property value="u.id" />"><s:property
-								value="u.account.name" /></a>
-							</td>
-							<td><s:text name="ProfileEdit.header.Primary" /></td>
-						</tr>
-						
-						<s:iterator value="switchTos">
-						<tr>
-							<td>
-								<a href="Login.action?button=switch&switchToUser=<s:property value="switchTo.id" />"><s:property value="switchTo.account.name" /></a>
-							</td>
-							<td><s:property value="switchTo.name" /></td>
-						</tr>
-						</s:iterator>
-					</tbody>
-				</table>
+				<s:include value="user_switch_accts.jsp" />
 			</div>
 		</s:if>
 		

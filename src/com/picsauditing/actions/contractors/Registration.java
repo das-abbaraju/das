@@ -2,7 +2,9 @@ package com.picsauditing.actions.contractors;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -186,7 +188,18 @@ public class Registration extends ContractorActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
-		loginLog.setServerAddress(ServletActionContext.getRequest().getServerName());
+
+		String serverName = ServletActionContext.getRequest().getLocalName();
+		if (isLiveEnvironment()) {
+			try {
+				// Need computer name instead of www
+				serverName = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException justUseRequestServerName) {
+			}
+		}
+		
+		loginLog.setServerAddress(serverName);
+		
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		userLoginLogDAO.save(loginLog);

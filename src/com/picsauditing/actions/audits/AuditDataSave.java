@@ -49,8 +49,9 @@ public class AuditDataSave extends AuditActionSupport {
 	private static final long serialVersionUID = 1103112846482868309L;
 	
 	private static final int OSHA_INCIDENT_QUESTION_ID = 8838;
-	// also need to do this for the COHS
+	private static final int COHS_INCIDENT_QUESTION_ID = 8840;
 	private static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] {8812, 8813, 8814, 8815, 8816, 8817};
+	private static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] {8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847};
 		
 	private AuditData auditData = null;
 	private String[] multiAnswer;
@@ -358,7 +359,26 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDataDao.save(auditData);
 				}
 			}
+		} else if (newCopy.getQuestion().getId() == COHS_INCIDENT_QUESTION_ID) {
+			if (newCopy.getAnswer().equals(NO)) {
+				for (int incidentQuestionId : COHS_INCIDENT_RELATED_QUESTION_IDS) {
+					AuditData auditData = auditDataDao.findAnswerToQuestion(this.auditData.getAudit().getId(), incidentQuestionId);
+					if (auditData == null) {
+						auditData = new AuditData();
+						auditData.setId(0);
+						auditData.setAudit(conAudit);
+						AuditQuestion auditQuestion = questionDao.find(incidentQuestionId);
+						auditData.setQuestion(auditQuestion);					
+					}			
+
+					auditData.setAuditColumns(permissions);
+					auditData.setAnswer("0");
+
+					auditDataDao.save(auditData);
+				}
+			}
 		}
+
 	}
 	
 	private void checkUniqueCode(ContractorAudit tempAudit) {

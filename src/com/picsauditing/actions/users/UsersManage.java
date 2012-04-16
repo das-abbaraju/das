@@ -29,6 +29,7 @@ import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.EmailQueue;
@@ -36,6 +37,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.jpa.entities.UserLoginLog;
+import com.picsauditing.jpa.entities.UserSwitch;
 import com.picsauditing.jpa.entities.YesNo;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
@@ -81,7 +83,8 @@ public class UsersManage extends PicsActionSupport {
 	protected UserAccessDAO userAccessDAO;
 	@Autowired
 	protected UserGroupDAO userGroupDAO;
-
+	@Autowired
+	protected UserSwitchDAO userSwitchDao;
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
@@ -144,7 +147,7 @@ public class UsersManage extends PicsActionSupport {
 	public String save() throws Exception {
 		isSaveAction = true;
 		startup();
-
+		
 		user.setIsGroup(userIsGroup);
 
 		// Lazy init fix for isOk method
@@ -154,7 +157,7 @@ public class UsersManage extends PicsActionSupport {
 			userDAO.refresh(user); // Clear out ALL changes for the user
 			return SUCCESS;
 		}
-
+//a contractor user.		
 		if (user.getId() > 0 && account.isContractor()) {
 			if (!user.isActiveB()) {
 				Set<OpPerms> userPerms = new HashSet<OpPerms>();
@@ -173,7 +176,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		}
-
+//a user
 		if (user.getId() > 0) {
 			// We want to save data for an existing user
 			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
@@ -198,7 +201,7 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setId(permissions.getAccountId());
 			}
 		}
-
+//a group
 		if (user.isGroup()) {
 			// Create a unique username for this group
 			String username = "GROUP";
@@ -212,7 +215,7 @@ public class UsersManage extends PicsActionSupport {
 			user.addPasswordToHistory(user.getPassword(), maxHistory);
 			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 		}
-
+//a contractor
 		if (user.getAccount().isContractor()) {
 			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			userPerms = new HashSet<OpPerms>();
@@ -323,14 +326,29 @@ public class UsersManage extends PicsActionSupport {
 			newUser = true;
 		}
 
+		
+		
+		
 		try {
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
 
 			user.setNeedsIndexing(true);
-			user = userDAO.save(user);
+			if (user.isGroup()) {
+//check is the groupname is in use				
+				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
+					userDAO.save(user);
+				else{
+					addActionError(getText("UsersManage.GroupnameNotAvailable"));
+					userDAO.refresh(user); // Clear out ALL changes for the user
+					return SUCCESS;
+				}
+			} else	
+				user = userDAO.save(user);
+
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
+
 
 		} catch (ConstraintViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
@@ -346,7 +364,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
+		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {			
 			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
@@ -446,6 +464,7 @@ public class UsersManage extends PicsActionSupport {
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
+		
 	}
 
 	private boolean isPrimaryUserEstablished() {
@@ -472,7 +491,7 @@ public class UsersManage extends PicsActionSupport {
 		// Users only after this point
 		User temp = new User(user, true);
 		userDAO.refresh(user);
-
+		
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
@@ -801,7 +820,11 @@ public class UsersManage extends PicsActionSupport {
 		list.remove(user);
 		return list;
 	}
-
+	
+	public List<UserSwitch> getSwitchTos() {
+		return userSwitchDao.findByUserId(user.getId());
+	}
+	
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
 

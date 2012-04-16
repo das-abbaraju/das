@@ -269,7 +269,14 @@
 							<label>
 								<s:text name="UsersManage.DisplayName" />
 							</label>
-							<s:textfield name="user.name" size="30" />
+							<s:if test="user.isGroup.toString() == 'No'">
+								<s:textfield name="user.name" size="30" />
+							</s:if>
+							<s:else>
+								<s:textfield name="user.name" size="30" onchange="checkGroupName(this.value);" />
+								<span id="groupname_status"></span>
+							</s:else>
+							
 						</li>
 						
 						<s:if test="user.isGroup.toString() == 'No'">
@@ -520,9 +527,12 @@
 						<div id="memberReport">
 							<s:include value="user_save_members.jsp" />
 						</div>
-					</s:if>
+					</s:if>					
 				</s:if>
-		
+				<s:if test="permissions.admin">				
+					<s:include value="user_switch_accts.jsp" />
+				</s:if>
+										
 				<s:if test="permissions.admin">
 					<s:if test="user.group">
 						<div id="userSwitch">
@@ -541,6 +551,11 @@
 								<th>
 									<s:text name="Login.IPAddress" />
 								</th>
+							<s:if test="permissions.isDeveloperEnvironment()">
+								<th>
+									<s:text name="Login.Server"/>
+								</th>								
+							</s:if>
 								<th>
 									<s:text name="global.Notes" />
 								</th>
@@ -557,6 +572,11 @@
 											<s:property value="remoteAddress" />
 										</a>
 									</td>
+								<s:if test="permissions.isDeveloperEnvironment()">
+									<td>
+										<s:property value="serverAddress"/>
+									</td>								
+								</s:if>	
 									<td>
 										<s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">

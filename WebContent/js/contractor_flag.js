@@ -50,7 +50,7 @@
             },
             
             checkReason: function(event) {
-                var reason = $(this).form.find('textarea[name="forceNote"]').val();
+                var reason = $(this).find('textarea[name="forceNote"]').val();
                 
                 if (reason && $.trim(reason) != '') {
                     return true;

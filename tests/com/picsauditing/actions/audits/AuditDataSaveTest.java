@@ -21,6 +21,11 @@ public class AuditDataSaveTest {
 		assertEquals("10.10", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas(",010.10"));
 		assertEquals("10.10", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("0,010.10"));
 		assertEquals("0", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("0"));
+		assertEquals("0", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("00"));
+		assertEquals("0", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("000"));
+		assertEquals(".0", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("000.0"));
+		assertEquals(".00", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("000.00"));
+		assertEquals(".01", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("0.01"));
 		assertEquals("1", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("01"));
 		assertEquals("1", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("001"));
 		assertEquals("1.01", AuditDataSave.trimWhitespaceLeadingZerosAndAllCommas("  01.01"));

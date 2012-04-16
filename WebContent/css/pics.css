@@ -1550,3 +1550,23 @@ div.blockDialog {
 	font-size: 13px;
 	line-height: 16px;
 }
+
+/* referral program */
+
+.referral-program img
+{
+	float: left;
+	margin-right: 20px;
+}
+
+.referral-program .summary
+{
+	float: left;
+	width: 70%;
+}
+
+.referral-program p
+{
+	font-size: 15px;
+	padding: 12px 0px;	
+}
