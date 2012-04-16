@@ -23,14 +23,14 @@
 					<a class="remove" href="#userSwitch" onclick="removeUserSwitch(<s:property value="user.id" />)">
 						remove
 					</a>
-				</td>
 			</tr>
 		</s:iterator>
-		<tr>
-			<td colspan="2">
-				<input type="text" name="userSwitchAdd" id="userSwitchAdd" size="50"/>
-			</td>
-		</tr>
+			<tr>
+				<td colspan="2">
+					<input type="text" name="userSwitchAdd" id="userSwitchAdd" size="50"/>
+				</td>
+			</tr>
+		
 	</tbody>
 </table>
 <script type="text/javascript">

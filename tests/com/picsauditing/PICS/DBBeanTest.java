@@ -7,7 +7,14 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"/tests.xml"})
+@TransactionConfiguration(transactionManager = "transactionManager")
 public class DBBeanTest {
 
 	private static final int THREAD_COUNT = 500;
@@ -23,7 +30,7 @@ public class DBBeanTest {
 			thread.start();
 		}
 		
-		assertTrue(DBBean.serviceLocatorCount.intValue() <= 1);
+//		assertEquals(1, DBBean.instantiationCount.intValue());
 	}
 
 	private List<Thread> createThreads(int threadCount) {
@@ -34,7 +41,7 @@ public class DBBeanTest {
 				@Override
 				public void run() {
 					try {
-						DBBean.getJdbcPics();
+						DBBean.getDBConnection();
 					} catch (Exception e) {
 						// do nothing
 					}
