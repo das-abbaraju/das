@@ -1,15 +1,16 @@
 Ext.define('PICS.view.report.ColumnSelector', {
     extend: 'Ext.window.Window',
     alias: ['widget.reportcolumnselector'],
-
+    requires: ['PICS.view.report.ColumnSelectorGrid'],
+    
     buttons: [{
-            action: 'add',
-            scope: this,
-            text: 'Add'
-        },{
-            handler: this.close,
-            scope: this,
-            text: 'Cancel'
+        action: 'add',
+        scope: this,
+        text: 'Add'
+    }, {
+        handler: this.close,
+        scope: this,
+        text: 'Cancel'
     }],
     height: 500,
     items: [{
@@ -33,18 +34,4 @@ Ext.define('PICS.view.report.ColumnSelector', {
     }],
     title: 'Select Report Columns',
     width: 400
-/*
-    initComponent: function() {
-        this.buttons = [{
-            action: 'add',
-            scope: this,
-            text: 'Add'
-        },{
-            handler: this.close,
-            scope: this,
-            text: 'Cancel'
-        }];
-
-        this.callParent(arguments);
-    }   */
 });
