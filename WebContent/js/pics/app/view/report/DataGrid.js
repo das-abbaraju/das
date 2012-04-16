@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.DataGrid', {
         'PICS.view.report.LinkColumn',
         'PICS.view.report.SortToolbar'        
     ],
-    store: 'report.ReportData'
+    store: 'report.ReportData',
 
     columns: [{
         xtype: 'rownumberer',
