@@ -5,7 +5,7 @@
 <table class="report">
 <thead>
 	<tr>
-		<th colspan="3">Inherit Permissions From</th>
+		<th colspan="3"><s:text name="User.inheritpermission" /></th>
 	</tr>
 </thead>
 <tbody>
@@ -36,18 +36,20 @@
 	</s:if>
 </s:iterator>
 </s:sort>
-<s:if test="addableGroups.size > 0">
+
 	<tr id="addGroupButton">
-		<td colspan="3"><button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide();">Show Groups to Add</button></td>
+		<td colspan="3"><button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide(); $('#hideGroupButton').show()">Show Groups to Add</button></td>
 	</tr>
-</s:if>
+
 <s:iterator value="addableGroups">
 	<tr class="addableGroup">
 		<td><s:property value="account.name"/></td>
 		<td><a href="?accountId=<s:property value="account.id"/>&user=<s:property value="id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>" style="font-style: italic; color: red;"><s:property value="name"/></a></td>
-		<td><a class="add" href="#" style="font-style: italic; color: red;" 
-			onclick="addGroup(<s:property value="id"/>); return false;">add</a></td>
+		<td><a class="add" href="#" style="font-style: italic; color: red;" onclick="addGroup(<s:property value="id"/>); return false;">add</a></td>
 	</tr>
 </s:iterator>
+<tr class="hideGroupButton" id="hideGroupButton">
+		<td colspan="3"><button class="picsbutton" onclick="$('.addableGroup').hide(); $('#hideGroupButton').hide(); $('#addGroupButton').show()">Hide Groups</button></td>
+	</tr>
 </tbody>
 </table>
