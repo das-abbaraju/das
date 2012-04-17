@@ -77,6 +77,11 @@ public class AuditFileUpload extends AuditActionSupport {
 						addActionError(getText("AuditFileUpload.error.FileMissing"));
 						return SUCCESS;
 					}
+					if(Strings.isEmpty(fileName)) {
+						addActionError(getText("AuditFileUpload.error.ProvideDescription"));
+						file = null;
+						return SUCCESS;
+					}
 					if (contractorAuditFile == null) {
 						contractorAuditFile = new ContractorAuditFile();
 						contractorAuditFile.setAudit(conAudit);

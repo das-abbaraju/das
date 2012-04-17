@@ -27,10 +27,8 @@
 			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
 			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
 			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
-			<interceptor name="validation" 
-				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
-			<interceptor name="jsonValidation" 
-				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
+			<interceptor name="validation" class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
+			<interceptor name="jsonValidation" class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 
 			<interceptor-stack name="picsStack">
 				<interceptor-ref name="exception" />
@@ -437,23 +435,6 @@
 		<action name="ReportContractorTradeConflict"
 			class="com.picsauditing.actions.report.ReportContractorTradeConflict">
 			<result>struts/reports/contractor_trade_conflicts.jsp</result>
-		</action>
-
-		<!-- User List -->
-		<action name="UserList" class="com.picsauditing.actions.report.ReportUser">
-			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">UserList</param>
-			<result>struts/reports/report_users.jsp</result>
-		</action>
-		<action name="UserListAjax" class="com.picsauditing.actions.report.ReportUser">
-			<result>struts/reports/report_users_data.jsp</result>
-		</action>
-		<action name="UserSearchAjax" class="com.picsauditing.actions.report.ReportUser2">
-			<result>struts/reports/report_user_search.jsp</result>
-		</action>
-		<action name="UserListCSV" class="com.picsauditing.actions.report.ReportUser">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
 		</action>
 
 		<!-- Audit List -->
@@ -1221,75 +1202,6 @@
 			<result name="table">struts/audits/audit_cat_matrix_table.jsp</result>
 		</action>
 
-		<!-- Users -->
-		<action name="UserProfileAjax" class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/widgets/user_profile.jsp</result>
-			<result name="department">struts/users/users_department_suggest.jsp
-			</result>
-		</action>
-
-		<action name="ProfileEdit" class="com.picsauditing.actions.users.ProfileEdit">
-			<result>struts/users/profile_edit.jsp</result>
-		</action>
-
-		<action name="UserEmailSubscriptionSaveAjax" class="com.picsauditing.mail.EmailSubscriptionSave">
-			<result>struts/mail/email_subscription_save.jsp</result>
-		</action>
-
-		<action name="UsersManage" class="com.picsauditing.actions.users.UsersManage">
-			<result>struts/users/users_manage.jsp</result>
-		</action>
-
-		<action name="NewUserManage" class="com.picsauditing.actions.users.UsersManage">
-			<result>struts/users/users_groups.jsp</result>
-		</action>
-
-		<action name="UsersManageAjax" class="com.picsauditing.actions.users.UsersManage">
-			<result name="suggest">struts/users/users_manage_move_suggest.jsp
-			</result>
-			<result name="department">struts/users/users_department_suggest.jsp
-			</result>
-		</action>
-
-		<action name="UserAccessSaveAjax" class="com.picsauditing.actions.users.UserAccessSave">
-			<result>struts/users/user_save_permissions.jsp</result>
-		</action>
-
-		<action name="UserAccessUpdateAjax" class="com.picsauditing.actions.users.UserAccessUpdate">
-			<result>struts/blank.jsp</result>
-		</action>
-
-		<action name="UserGroupSaveAjax" class="com.picsauditing.actions.users.UserGroupSave">
-			<result>struts/users/user_save_groups.jsp</result>
-			<result name="member">
-				struts/users/user_save_members.jsp
-			</result>
-			<result name="userswitch">
-				struts/users/user_save_userswitch.jsp
-			</result>
-		</action>
-
-		<action name="ManageUserPermissions"
-			class="com.picsauditing.actions.users.ManageUserPermissions">
-			<result>/struts/users/user_manage_permissions.jsp</result>
-		</action>
-
-		<action name="ManageUserPermissionsAjax" class="com.picsauditing.actions.users.UserAccessSave">
-			<result type="json"></result>
-		</action>
-
-		<action name="{type}AssignmentMatrix"
-			class="com.picsauditing.actions.users.UserAssignmentMatrix">
-			<result name="input">struts/blank.jsp</result>
-			<result>struts/users/user_assignment.jsp</result>
-		</action>
-
-		<action name="CSRAssignmentMatrixCSV"
-			class="com.picsauditing.actions.users.UserAssignmentMatrix">
-			<param name="download">true</param>
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<!-- Charts and Graphs -->
 		<action name="ChartXMLFlagCount" class="com.picsauditing.actions.chart.ChartFlagCount">
 		</action>
@@ -1633,7 +1545,11 @@
 	<!-- Email Wizard/Templates/Mailer -->
 	<include file="struts-emails.xml" />
 	
+	<!-- Users / CSR & Auditor Assignments / User List -->
+	<include file="struts-users.xml" />
+	
 	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment Centers -->
+	<include file="struts-employees.xml" />
 	<include file="struts-employees.xml" />
 
 	<!-- I18n -->

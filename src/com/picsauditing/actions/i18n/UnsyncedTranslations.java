@@ -60,6 +60,10 @@ public class UnsyncedTranslations extends ReportActionSupport {
 
 		return execute();
 	}
+	
+	public String bringFromTarget() throws Exception {
+		return execute();
+	}
 
 	public ReportFilterTranslation getFilter() {
 		return filter;

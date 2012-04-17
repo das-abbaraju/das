@@ -325,7 +325,7 @@ public class PicsMenu {
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
 			menuItems.put("Manage Translations", "ManageTranslations.action");
-			
+
 			if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
 				menuItems.put("Import/Export Translations", "TranslationETL.action");
 				menuItems.put("Unsynced Translations", "UnsyncedTranslations.action");
@@ -371,8 +371,7 @@ public class PicsMenu {
 		}
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
-			MenuComponent tracing = subMenu.addChild("View Traced Translations",
-					"ManageTranslations.action?showDoneButton=true");
+			MenuComponent tracing = subMenu.addChild("View Traced Translations", "ManageTranslations.action");
 			tracing.setHtmlId("tracing_open");
 			tracing.setTarget("_BLANK");
 			tracing.addDataField("url", "ManageTranslationsAjax.action?button=tracingOnClearAjax");

@@ -14,28 +14,36 @@
 	<tbody> 
 		<s:iterator value="user.switchFroms">
 			<tr>
-				<td><a href="?accountId=<s:property value="user.account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>"><s:property value="user.name"/> - <s:property value="user.id"/></a></td>
-				<td><a class="remove" href="#userSwitch" onclick="removeUserSwitch(<s:property value="user.id" />)">remove</a></td>
+				<td>
+					<a href="?accountId=<s:property value="user.account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
+						<s:property value="user.name"/> - <s:property value="user.id"/>
+					</a>
+				</td>
+				<td>
+					<a class="remove" href="#userSwitch" onclick="removeUserSwitch(<s:property value="user.id" />)">
+						remove
+					</a>
 			</tr>
 		</s:iterator>
-		<tr>
-			<td colspan="2">
-				<input type="text" name="userSwitchAdd" id="userSwitchAdd" size="50"/>
-			</td>
-		</tr>
+			<tr>
+				<td colspan="2">
+					<input type="text" name="userSwitchAdd" id="userSwitchAdd" size="50"/>
+				</td>
+			</tr>
+		
 	</tbody>
 </table>
 <script type="text/javascript">
-jQuery('#userSwitchAdd').autocomplete('UserSearchAjax.action', {
-		minChars: 1,
-		extraParams: {
-			'filter.search': function() {return jQuery('#userSwitchAdd').val();}
-		},
-		formatResult: function(data,i,count) {
-			return '';
+	jQuery('#userSwitchAdd').autocomplete('UserSearchAjax.action', {
+			minChars: 1,
+			extraParams: {
+				'filter.search': function() {return jQuery('#userSwitchAdd').val();}
+			},
+			formatResult: function(data,i,count) {
+				return '';
+			}
 		}
-	}
-).result(function(event, data) {
-	addUserSwitch(data[1]);
-});
+	).result(function(event, data) {
+		addUserSwitch(data[1]);
+	});
 </script>
