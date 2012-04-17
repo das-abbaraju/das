@@ -107,8 +107,8 @@ public enum FeeClass implements Translatable {
 	Misc;
 
 	private static final Date InsureGUARDPricingEffectiveDate = DateBean.parseDate("2012-01-01");
+	private static final Date Jan2013InsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date BASFInsureGUARDAndAuditGUARDPricingEffectiveDate = DateBean.parseDate("2012-02-04");
-	private static final Date AIAndOldcasteInsureGUARDPricingEffectiveDate = DateBean.parseDate("2013-01-01");
 	private static final Date SuncorInsureGUARDPricingEffectiveDate = DateBean.parseDate("2014-02-01");
 
 	public boolean isPaymentExpiresNeeded() {
@@ -170,9 +170,10 @@ public enum FeeClass implements Translatable {
 	protected Map<Integer, Date> getExclusions() {
 		Map<Integer, Date> exclusions = new HashMap<Integer, Date>();
 		exclusions.put(OperatorAccount.BASF, BASFInsureGUARDAndAuditGUARDPricingEffectiveDate);
-		exclusions.put(OperatorAccount.AI, AIAndOldcasteInsureGUARDPricingEffectiveDate);
-		exclusions.put(OperatorAccount.Oldcastle, AIAndOldcasteInsureGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.AI, Jan2013InsureGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.Oldcastle, Jan2013InsureGUARDPricingEffectiveDate);
 		exclusions.put(OperatorAccount.SUNCOR, SuncorInsureGUARDPricingEffectiveDate);
+		exclusions.put(OperatorAccount.SUNOCO, Jan2013InsureGUARDPricingEffectiveDate);
 		return exclusions;
 	}
 }
