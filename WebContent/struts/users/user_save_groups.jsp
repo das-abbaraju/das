@@ -5,7 +5,7 @@
 <table class="report">
 <thead>
 	<tr>
-		<th colspan="3"><s:text name="User.inheritpermission" /></th>
+		<th colspan="3"><s:text name="UserGroupSave.InheritPermissionsFrom" /></th>
 	</tr>
 </thead>
 <tbody>
