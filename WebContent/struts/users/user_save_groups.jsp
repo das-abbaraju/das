@@ -60,7 +60,7 @@
 <s:if test="addableGroups.size > 0">
 	<tr id="addGroupButton">
 		<td colspan="3">
-			<button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide();">
+			<button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide(); $('#hideGroupButton').show()">
 				<s:text name="UserGroupSave.ShowGroupsToAdd" />
 			</button>
 		</td>
