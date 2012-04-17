@@ -1502,10 +1502,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
-			<result>struts/i18n/translate_js.jsp</result>
-		</action>
-		
 		<!-- Configuration Changes -->
 		<action name="ConfigChanges" class="com.picsauditing.actions.report.ConfigChanges">
 			<result>/struts/reports/config_changes.jsp</result>
@@ -1549,7 +1545,6 @@
 	<include file="struts-users.xml" />
 	
 	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment Centers -->
-	<include file="struts-employees.xml" />
 	<include file="struts-employees.xml" />
 
 	<!-- I18n -->
