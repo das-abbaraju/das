@@ -212,7 +212,8 @@ public class ContractorAccount extends Account implements JSONable {
 		this.jobSites = jobSites;
 	}
 
-	@Column(length = 100)
+	@Column(name = "taxID", length = 100)
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Integer)
 	public String getTaxId() {
 		return this.taxId;
 	}
@@ -1327,6 +1328,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return balance < halfMembership;
 	}
 
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean getSoleProprietor() {
 		return soleProprietor;
 	}

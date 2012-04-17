@@ -22,13 +22,14 @@ import com.picsauditing.report.fields.SimpleReportFilter;
 import com.picsauditing.report.fields.SimpleReportSort;
 import com.picsauditing.report.models.ModelBase;
 import com.picsauditing.report.models.ModelFactory;
-import com.picsauditing.report.tables.BaseTable;
+import com.picsauditing.report.tables.BaseReportTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 	private ModelBase base;
 	private List<SimpleReportColumn> includedColumns = new ArrayList<SimpleReportColumn>();
+	private List<SimpleReportFilter> includedFilters = new ArrayList<SimpleReportFilter>();
 	private Map<String, QueryField> availableFields = new TreeMap<String, QueryField>();
 	private SimpleReportDefinition definition = new SimpleReportDefinition();
 	private SelectSQL sql;
@@ -60,16 +61,16 @@ public class SqlBuilder {
 		sql.setFromTable(from);
 	}
 
-	private void addAvailableFields(BaseTable table) {
+	private void addAvailableFields(BaseReportTable table) {
 		// We may be able to use the ModelBase.getAvailableFields...
 		availableFields.putAll(table.getFields());
-		for (BaseTable join : table.getJoins()) {
+		for (BaseReportTable join : table.getJoins()) {
 			addAvailableFields(join);
 		}
 	}
 
-	private void addJoins(BaseTable table) {
-		for (BaseTable join : table.getJoins()) {
+	private void addJoins(BaseReportTable table) {
+		for (BaseReportTable join : table.getJoins()) {
 			if (isJoinNeeded(join)) {
 				String joinSyntax = "";
 				if (!join.isInnerJoin())
@@ -84,11 +85,11 @@ public class SqlBuilder {
 		}
 	}
 
-	private boolean isJoinNeeded(BaseTable table) {
+	private boolean isJoinNeeded(BaseReportTable table) {
 		if (table.isInnerJoin())
 			return true;
 
-		for (BaseTable join : table.getJoins()) {
+		for (BaseReportTable join : table.getJoins()) {
 			if (isJoinNeeded(join))
 				return true;
 		}
@@ -96,6 +97,10 @@ public class SqlBuilder {
 		for (QueryField field : table.getFields().values()) {
 			for (SimpleReportColumn column : includedColumns) {
 				if (column.getAvailableFieldName().equals(field.getName()))
+					return true;
+			}
+			for (SimpleReportFilter filter : includedFilters) {
+				if (filter.getColumn().equals(field.getName()))
 					return true;
 			}
 		}
@@ -240,6 +245,7 @@ public class SqlBuilder {
 			if (!isAggregate(filter.getColumn()) && !isAggregate(filter.getColumn2())) {
 				String filterExp = toFilterSql(filter);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
+				includedFilters.add(filter);
 				whereIndex++;
 			}
 		}
@@ -249,6 +255,7 @@ public class SqlBuilder {
 			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
 				String filterExp = toFilterSql(filter);
 				sql.addHaving(filterExp);
+				includedFilters.add(filter);
 			}
 		}
 	}
@@ -315,14 +322,15 @@ public class SqlBuilder {
 			return columnToSQL(convertColumn(filter.getColumn2()));
 		}
 
+		String value = filter.getValue();
+
 		// date filter
 		if (getQueryFieldFromSimpleColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
-			QueryDateParameter parameter = new QueryDateParameter(filter.getValue());
+			QueryDateParameter parameter = new QueryDateParameter(value);
 			
-			return "'" + DateBean.toDBFormat(parameter.getTime()) + "'";
+			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()),"");
 		}
 
-		String value = filter.getValue();
 		switch (filter.getOperator()) {
     		case BeginsWith:
     			return "'" + value + "%'";

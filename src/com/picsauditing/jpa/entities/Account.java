@@ -126,7 +126,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.name = name;
 	}
 
-	@Column(length = 50)
+	@Column(name = "nameIndex", length = 50)
+	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getNameIndex() {
 		return this.nameIndex;
 	}
@@ -472,6 +473,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * 
 	 * @return
 	 */
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isRequiresOQ() {
 		return requiresOQ;
 	}
@@ -488,7 +490,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.needsIndexing = needsIndex;
 	}
 
-	@ReportField(category = FieldCategory.Billing, width = 200)
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isOnsiteServices() {
 		return onsiteServices;
 	}
@@ -497,6 +499,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.onsiteServices = onsiteServices;
 	}
 
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isOffsiteServices() {
 		return offsiteServices;
 	}
@@ -505,6 +508,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.offsiteServices = offsiteServices;
 	}
 
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isMaterialSupplier() {
 		return materialSupplier;
 	}
@@ -513,6 +517,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 		this.materialSupplier = materialSupplier;
 	}
 
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isTransportationServices() {
 		return transportationServices;
 	}
@@ -526,6 +531,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * 
 	 * @return
 	 */
+	@ReportField(category = FieldCategory.Classification, filterType = FilterType.Boolean, width = 200)
 	public boolean isRequiresCompetencyReview() {
 		return requiresCompetencyReview;
 	}

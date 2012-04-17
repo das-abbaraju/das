@@ -1,11 +1,16 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.fields.QueryField;
 
-public class ContractorAudit extends BaseTable {
+public class ContractorAudit extends BaseReportTable {
 
 	public ContractorAudit() {
 		super("contractor_audit", "audit", "ca", "ca.conID = a.id");
+	}
+
+	public ContractorAudit(String prefix, String alias, String toForeignKey, String fromForeignKey) {
+		super("contractor_audit", prefix, alias, alias + "."+ toForeignKey +" = " + fromForeignKey);
 	}
 
 	public ContractorAudit(String prefix, String alias, String foreignKey) {
@@ -18,23 +23,24 @@ public class ContractorAudit extends BaseTable {
 
 	public void addFields() {
 		addField(prefix + "ID", alias + ".id", FilterType.Integer);
-		addField(prefix + "For", alias + ".auditFor", FilterType.String);
 		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
-		addField(prefix + "ExpirationDate", alias + ".expiresDate", FilterType.Date);
-		addField(prefix + "ScheduledDate", alias + ".scheduledDate", FilterType.Date);
-		addField(prefix + "AssignedDate", alias + ".assignedDate", FilterType.Date);
-		addField(prefix + "Location", alias + ".auditLocation", FilterType.String);
-		addField(prefix + "Score", alias + ".score", FilterType.Integer);
-		addField(prefix + "AuditorID", alias + ".auditorID", FilterType.Integer);
-		addField(prefix + "ClosingAuditorID", alias + ".closingAuditorID", FilterType.Integer);
-		addField(prefix + "ContractorConfirmation", alias + ".contractorConfirm", FilterType.Date);
-		addField(prefix + "AuditorConfirmation", alias + ".auditorConfirm", FilterType.Date);
+
+		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
+
+		QueryField auditTypeName; 
+		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String);
+		auditTypeName.translate("AuditType", "name");
+		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");
+		auditTypeName.setWidth(300);
 	}
 
 	public void addJoins() {
-		addLeftJoin(new AuditType(prefix + "Type", alias + ".auditTypeID"));
+		AuditType auditTypeLeftJoin = new AuditType(prefix + "Type", alias + ".auditTypeID");
+		auditTypeLeftJoin.setParentPrefix(prefix);
+		auditTypeLeftJoin.setParentPrefix(alias);
+		addLeftJoin(auditTypeLeftJoin);
+
 		addLeftJoin(new User(prefix + "Auditor", alias + ".auditorID"));
 		addLeftJoin(new User(prefix + "ClosingAuditor", alias + ".closingAuditorID"));
-		// joinToOshaAudit("oshaAudit", alias + ".id");
 	}
 }

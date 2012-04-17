@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class ContractorAuditOperator extends BaseTable {
+public class ContractorAuditOperator extends BaseReportTable {
 
 	public ContractorAuditOperator() {
 		super("contractor_audit_operator", "auditOperator", "cao", "cao.auditID = ca.id AND cao.visible = 1");

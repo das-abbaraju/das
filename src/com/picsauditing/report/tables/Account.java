@@ -2,7 +2,7 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class Account extends BaseTable {
+public class Account extends BaseReportTable {
 
 	public Account() {
 		super("accounts", "account", "a", "");
@@ -21,10 +21,6 @@ public class Account extends BaseTable {
 		addField(prefix + "CreationDate", alias + ".creationDate", FilterType.Date);
 		
 		addFields(com.picsauditing.jpa.entities.Account.class);
-		addField(prefix + "Onsite", alias + ".onsiteServices", FilterType.Boolean).setCategory(FieldCategory.Classification);
-		addField(prefix + "Offsite", alias + ".offsiteServices", FilterType.Boolean).setCategory(FieldCategory.Classification);
-		addField(prefix + "Transportation", alias + ".transportationServices", FilterType.Boolean).setCategory(FieldCategory.Classification);
-		addField(prefix + "MaterialSupplier", alias + ".materialSupplier", FilterType.Boolean).setCategory(FieldCategory.Classification);
 	}
 
 	public void addJoins() {

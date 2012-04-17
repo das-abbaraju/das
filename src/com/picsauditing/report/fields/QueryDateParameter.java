@@ -1,8 +1,9 @@
 package com.picsauditing.report.fields;
 
+
+import java.util.Calendar;
 import java.util.Date;
 
-import com.ibm.icu.util.Calendar;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
@@ -39,14 +40,19 @@ public class QueryDateParameter {
 			}
 			cal.add(convertPeriod(period), amount);
 
+			date = cal.getTime();
 		} catch (NumberFormatException nfe) {
 			Date parsedDate = DateBean.parseDate(value);
 			if (parsedDate != null) {
 				cal.setTime(parsedDate);
 			}
+			else
+			{
+				date = null;
+				System.out.println("replaced with current day");
+			}
 		}
 
-		date = cal.getTime();
 	}
 
 	private int convertPeriod(char period) {

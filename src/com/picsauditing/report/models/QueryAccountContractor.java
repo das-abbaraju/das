@@ -7,8 +7,8 @@ public class QueryAccountContractor extends QueryAccount {
 		super();
 		from.removeField("accountName");
 		from.removeField("accountType");
-
-		Contractor contractor = new Contractor(from.getAlias());
+		
+		Contractor contractor = new Contractor(from.getPrefix(), from.getAlias());
 		from.addAllFieldsAndJoins(contractor);
 	}
 

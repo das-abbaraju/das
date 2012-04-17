@@ -32,6 +32,8 @@ import org.json.simple.JSONObject;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.search.IndexOverrideWeight;
 import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
@@ -151,8 +153,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.subscriptions = u.getSubscriptions();
 	}
 
-	@Column(length = 100, nullable = false, unique = true)
+	@Column(name = "username", length = 100, nullable = false, unique = true)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 6)
+	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getUsername() {
 		return username;
 	}
@@ -176,8 +179,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.isGroup = isGroup;
 	}
 
-	@Column(length = 100)
+	@Column(name = "email", length = 100)
 	@IndexableField(type = IndexValueType.EMAILTYPE, weight = 5)
+	@ReportField(filterType = FilterType.String, width = 200)
 	public String getEmail() {
 		return email;
 	}
@@ -195,8 +199,9 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.emailConfirmedDate = emailConfirmedDate;
 	}
 
-	@Column(length = 255, nullable = false)
+	@Column(name = "name", length = 255, nullable = false)
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
+	@ReportField(filterType = FilterType.AccountName, width = 200)
 	public String getName() {
 		return name;
 	}
@@ -336,7 +341,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		return (getLockUntil() != null) ? new Date().before(getLockUntil()) : false;
 	}
 
-	@Column(length = 50)
+	@Column(name = "phone", length = 50)
+	@ReportField(filterType = FilterType.String, width = 200)
 	public String getPhone() {
 		return phone;
 	}
