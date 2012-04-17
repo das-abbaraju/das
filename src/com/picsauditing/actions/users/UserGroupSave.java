@@ -12,20 +12,24 @@ public class UserGroupSave extends UsersManage {
 	protected int memberId;
 	protected int groupId;
 	protected int userGroupId;
-	protected User user;
+	//protected User user;
 	@Autowired
 	protected UserSwitchDAO userSwitchDAO;
 
 	public String execute() throws Exception {
 		super.execute();
+		user = userDAO.find(user.getId());
+		
+		
 		if (user == null) {
 			addActionError("user is not set");
 			return SUCCESS;
 		}
-
+		
 		if ("AddGroup".equals(button)) {
 			User newGroup = userDAO.find(groupId);
 			addUserToGroup(user, newGroup);
+			
 			return SUCCESS;
 		}
 		if ("RemoveGroup".equals(button)) {

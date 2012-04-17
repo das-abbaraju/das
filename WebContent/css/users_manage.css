@@ -1,10 +1,10 @@
 .user-password,
 .addableGroup,
-.addableMember
+.addableMember, 
+.hideGroupButton
 {
 	display: none;
 }
-
 div.autocomplete
 {
 	position: absolute;

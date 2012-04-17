@@ -275,17 +275,6 @@
                         </pics:fieldhelp>
                     </li>
                     <li>
-                        <label>Required By Operator:</label>
-                        <s:textfield name="operatorID" value="%{auditType.account.id}" />
-                        
-                        <pics:fieldhelp title="Required By Operator">
-                            <p>
-                                Add the operator or corporateID only if requested by 1 account.
-                                We may be removing this field soon in favor of Audit Type Rules.
-                            </p>
-                        </pics:fieldhelp>
-                    </li>
-                    <li>
                         <label>Months to Expire:</label>
                         <s:textfield name="auditType.monthsToExpire" />
                         
