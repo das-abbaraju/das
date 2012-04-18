@@ -8,7 +8,7 @@
     <s:hidden name="cao_id" value="%{#cao_id}" />
     
     <s:if test="#operator_visible == 'true'">
-        <input class="insurance-rejection-tagit" name="jsonArray" />
+        <!-- <input class="insurance-rejection-tagit" name="jsonArray" />-->
     </s:if>
     
     <s:textarea name="note" cssClass="notes" />
