@@ -99,7 +99,9 @@
     </script> 
 </head>
 <body>
-    <h1>You do not have permission to access this page.</h1>
+    <h1>
+    	<s:text name="Exception.NoRights.Title" />
+    </h1>
     <div class="alert"><%=message%></div>
     
     <% if (debugging) { %>
@@ -107,29 +109,26 @@
     <% } else { %>
     	<div style="padding-bottom:15px;" >
     		<input class="picsbutton" type="button" value="&lt;&lt;" onclick="window.history.back().back()" />
-    		<input class="picsbutton" type="button" value="Report to PICS Engineers" onclick="$('#user_message').toggle(); return false;" />
+    		<input class="picsbutton" type="button" value="<s:text name="Exception.ReportToPicsEngineers" />" onclick="$('#user_message').toggle(); return false;" />
     	</div>
         
     	<div id="user_message" style="display:none;">
     		<form id="response_form" method="post" action="" style="width:650px;">
     			<fieldset class="form">
     				<div style="padding:2ex;">
-    					We apologize for this inconvenience.<br />If you continue to receive this message and 
-    					believe it is an error, please report it to us using the form below or call Customer 
-    					Service at 949.936.4598
-    					
-                        <label style="padding-top: 2ex;">Priority:</label>
+    				    <s:text name="Exception.Form.Text" />
+                        <label style="padding-top: 2ex;"><s:text name="global.Priority" />:</label>
     					<span>
-    						Low&nbsp;&nbsp;&nbsp;
+    						<s:text name="LowMedHigh.Low" />&nbsp;&nbsp;&nbsp;
     						<input type="radio" name="priority" value="1" checked />1
     						<input type="radio" name="priority" value="2" />2
     						<input type="radio" name="priority" value="3" />3
     						<input type="radio" name="priority" value="4" />4
     						<input type="radio" name="priority" value="5" />5
-    						&nbsp;&nbsp;&nbsp;High<br/>
+    						&nbsp;&nbsp;&nbsp;<s:text name="LowMedHigh.High" /><br/>
     					</span>
                         
-    					Please tell us what you were trying to do:
+    					<s:text name="Exception.Form.Message" />:
     					<div>
         					<table>
         						<tr>
@@ -140,7 +139,7 @@
         						<tr>
         							<td>
         								<span>
-        									<input class="picsbutton" style="float:right;" type="submit" value="Submit" onclick="$('#backButton').fadeIn(1500)"/>
+        									<input class="picsbutton" style="float:right;" type="submit" value="<s:text name="AuditStatus.Submitted.button" />" onclick="$('#backButton').fadeIn(1500)"/>
         								</span>
         							</td>
         						</tr>		
