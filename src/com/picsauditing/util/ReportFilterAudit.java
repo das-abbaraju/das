@@ -64,7 +64,7 @@ public class ReportFilterAudit extends ReportFilterContractor {
 	protected double incidenceRateAvgMax = 100;
 	protected int amBestRating;
 	protected int amBestClass;
-	protected int verifiedAnnualUpdate = 1;
+	protected int verifiedAnnualUpdate;
 	protected OshaType shaType;
 	protected OshaType shaTypeFlagCriteria;
 	protected String shaLocation;
