@@ -9,20 +9,24 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.UserAccess;
 
 @SuppressWarnings("serial")
 public class ManageUserPermissions extends ContractorActionSupport {
-	@Autowired
-	protected UserAccessDAO userAccessDAO;
-
 	protected List<User> userList;
 
 	static public OpPerms[] permissionTypes = new OpPerms[] { OpPerms.ContractorAdmin, OpPerms.ContractorBilling,
 			OpPerms.ContractorSafety, OpPerms.ContractorInsurance };
 
+	@Autowired
+	protected UserAccessDAO userAccessDAO;
+
+	public ManageUserPermissions() {
+		this.subHeading = "Manage User Permissions";
+	}
+
 	public String execute() throws Exception {
-		this.subHeading = getText("ManageUserPermissions.title");
+		if (!forceLogin())
+			return LOGIN;
 
 		if (permissions.isAdmin() || permissions.isContractor()) {
 			if (permissions.isContractor()) {
@@ -44,14 +48,5 @@ public class ManageUserPermissions extends ContractorActionSupport {
 
 	public void setUserList(List<User> userList) {
 		this.userList = userList;
-	}
-
-	public boolean isUserHasPermission(User user, OpPerms permission) {
-		for (UserAccess userAccess : user.getOwnedPermissions()) {
-			if (permission.equals(userAccess.getOpPerm()))
-				return true;
-		}
-
-		return false;
 	}
 }

@@ -60,7 +60,7 @@
 <s:if test="addableGroups.size > 0">
 	<tr id="addGroupButton">
 		<td colspan="3">
-			<button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide();">
+			<button class="picsbutton" onclick="$('.addableGroup').show(); $('#addGroupButton').hide(); $('#hideGroupButton').show()">
 				<s:text name="UserGroupSave.ShowGroupsToAdd" />
 			</button>
 		</td>
@@ -81,5 +81,8 @@
 		</td>
 	</tr>
 </s:iterator>
+<tr class="hideGroupButton" id="hideGroupButton">
+		<td colspan="3"><button class="picsbutton" onclick="$('.addableGroup').hide(); $('#hideGroupButton').hide(); $('#addGroupButton').show()">Hide Groups</button></td>
+	</tr>
 </tbody>
 </table>
