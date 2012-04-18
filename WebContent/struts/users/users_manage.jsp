@@ -159,7 +159,7 @@
 								</td>
 								<td>
 									<s:text name="User.lastLogin" />
-								</td>
+								</td>								
 							</tr>
 						</thead>
 						
@@ -181,6 +181,7 @@
 									<td>
 										<s:text name="global.NA" />
 									</td>
+									
 								</s:if>
 								<s:else>
 									<td>
@@ -428,15 +429,7 @@
 						</s:if>
 						
 						<s:if test="user.id > 0">
-							<li>
-								<label><s:text name="global.Active" /></label>
-								<s:radio 
-									list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No')}" 
-									name="user.isActive"
-									theme="pics"
-									cssClass="inline" 
-								/>
-							</li>
+							
 							
 							<s:if test="permissions.isAdmin()">
 								<!-- Move User to Account -->
@@ -474,7 +467,7 @@
 										<pics:permission perm="SwitchUser">
 											<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 												<s:text name="UsersManage.SwitchToThisUser" />
-											</a>
+											</a>										
 										</pics:permission>
 									</s:if>
 								</li>
@@ -495,17 +488,33 @@
 				</fieldset>
 				
 				<fieldset class="form submit">
-					<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
-					<pics:permission perm="EditUsers" type="Delete">
-						<s:if test="user.id > 0 && !account.contractor">
-							<s:submit
-								method="delete"
-								cssClass="picsbutton negative"
-								value="%{getText('button.Delete')}"
-								onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');"
-							/>
-						</s:if>
-					</pics:permission>
+					
+					<s:if test="user.activeB">
+						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
+						<pics:permission perm="EditUsers" type="Delete">
+							<s:if test="user.id > 0 && !account.contractor">
+								<s:submit
+									method="inActivate"
+									cssClass="picsbutton negative"
+									value="%{getText('button.Inactivate')}"
+									onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');"
+								/>
+							</s:if>
+						</pics:permission>
+					</s:if>
+					<s:if test="!user.activeB">
+						<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+						<pics:permission perm="EditUsers" type="Delete">
+							<s:if test="user.id > 0 && !account.contractor">
+								<s:submit
+									method="delete"
+									cssClass="picsbutton negative"
+									value="%{getText('button.Delete')}"
+									onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');"
+								/>
+							</s:if>
+						</pics:permission>
+					</s:if>
 				</fieldset>
 			</s:form>
 					
@@ -529,9 +538,9 @@
 						</div>
 					</s:if>					
 				</s:if>
-				<s:if test="permissions.admin">				
-					<s:include value="user_switch_accts.jsp" />
-				</s:if>
+<!-- LW: Estevan specified everyone should be able to see user_switch_accts page. -->								
+				<s:include value="user_switch_accts.jsp" />
+				
 										
 				<s:if test="permissions.admin">
 					<s:if test="user.group">
