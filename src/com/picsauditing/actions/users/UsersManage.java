@@ -23,6 +23,7 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -440,9 +441,10 @@ public class UsersManage extends PicsActionSupport {
 		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String inActivate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -459,9 +461,10 @@ public class UsersManage extends PicsActionSupport {
 
 		return SUCCESS;
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String activate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -479,9 +482,10 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 		
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
 	public String delete() throws Exception {		
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
