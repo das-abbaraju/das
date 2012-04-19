@@ -36,7 +36,7 @@
 			</td>
 			<td><s:property value="operatorName"/></td>
 			<s:if test="canManageForm">
-				<td><a href="ManageResources.action?id=<s:property value="#resource.id" />" class="edit"><s:text name="button.Edit" /></a></td>
+				<td><s:if test="isEditableByUser(#resource)" ><a href="ManageResources.action?id=<s:property value="#resource.id" />" class="edit"><s:text name="button.Edit" /></a></s:if></td>
 			</s:if>
 		</tr>
 	</s:iterator>
