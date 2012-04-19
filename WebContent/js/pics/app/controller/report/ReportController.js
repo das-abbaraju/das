@@ -17,7 +17,7 @@ Ext.define('PICS.controller.report.ReportController', {
     }],
     stores: [
         'report.AvailableFieldsByCategory',
-        'report.ReportData',
+        'report.Data',
         'report.Reports',
         'report.ReportsColumn',
         'report.ReportsFilter',
@@ -204,7 +204,7 @@ Ext.define('PICS.controller.report.ReportController', {
             function configureReportDataStore(model) {
                 // TODO: typecheck model + existence
 
-                var data_store = me.getReportReportDataStore();
+                var data_store = me.getReportDataStore();
 
                 data_store.removeAll(true);
                 data_store.proxy.reader.setModel(model);
