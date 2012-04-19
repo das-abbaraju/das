@@ -12,10 +12,7 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
         selector: 'reportoptionsfilters grid'
     }],
     stores: [
-        'report.AvailableFieldsByCategory',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportsSort'
+        'report.AvailableFieldsByCategory'
     ],
 
     init: function() {

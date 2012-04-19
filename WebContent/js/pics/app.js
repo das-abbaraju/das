@@ -50,10 +50,7 @@ Ext.application({
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
         'report.Data',
-        'report.Reports',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportsSort'
+        'report.Reports'
     ],
 
     launch: function () {
