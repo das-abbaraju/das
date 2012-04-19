@@ -112,16 +112,23 @@ public class ContractorCron extends PicsActionSupport {
 
 		// PicsLogger.start("ContractorCron");
 
-		if (conID > 0) {
-			run(conID, opID);
-		} else {
-			addActionError("You must supply a contractor id.");
-		}
+		try {
+			if (conID > 0) {
+				run(conID, opID);
+			} else {
+				addActionError("You must supply a contractor id.");
+			}
 
-		// PicsLogger.stop();
+			// PicsLogger.stop();
 
-		if (!Strings.isEmpty(redirectUrl)) {
-			return redirect(redirectUrl);
+			if (!Strings.isEmpty(redirectUrl)) {
+				return redirect(redirectUrl);
+			}
+		} catch (Exception e) {
+			if (!Strings.isEmpty(redirectUrl)) {
+				return redirect(redirectUrl);
+			}
+			throw e;
 		}
 
 		return SUCCESS;
