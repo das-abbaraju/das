@@ -46,8 +46,7 @@ public class LoginController extends PicsActionSupport {
 	private String username;
 	private String password;
 	private String key;
-	private int switchToUser;		
-	private int switchToUserId;
+	private int switchToUser;
 
 	@Anonymous
 	@Override
@@ -116,7 +115,7 @@ public class LoginController extends PicsActionSupport {
 					// We're trying to login as another PICS user
 					// Double check they also have the Dev permission too
 					if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
-						logAttempt();
+						logAttempt();						
 						addActionError("You must be a PICS Software Developer to switch to another PICS user.");
 						return SUCCESS;
 					}
@@ -173,14 +172,14 @@ public class LoginController extends PicsActionSupport {
 			cookie.setMaxAge(ONE_HOUR * 24);
 			getResponse().addCookie(cookie);
 			//LW: check to see if there is switchtouseid exist, which comes from redirect from another server.  if it does, then after log in, redirect it. 
-			if (switchToUserId > 0){
+			if (switchToUser > 0){
 				if (permissions.hasPermission(OpPerms.SwitchUser)) {					
 					int adminID = 0;
-					if (permissions.getUserId() != switchToUserId)
+					if (permissions.getUserId() != switchToUser)
 						adminID = permissions.getUserId();
 	
 					boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-					user = userDAO.find(switchToUserId);
+					user = userDAO.find(switchToUser);
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
 					permissions.setAdminID(adminID);
@@ -435,12 +434,12 @@ public class LoginController extends PicsActionSupport {
 	public void setSwitchToUser(int switchToUser) {
 		this.switchToUser = switchToUser;
 	}
-	public void setSwitchToUserId(int switchToUserId){
-		this.switchToUserId = switchToUserId;		
+	
+	public int getSwitchToUser() {
+		return switchToUser;
 	}
-	public int getSwitchToUserId(){
-		return this.switchToUserId;
-	}
+
+	
 	public void setUsern(String usern) {
 		this.username = usern;
 	}
