@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
-public class SimpleReportFilter implements JSONable {
+public class ReportFilter implements JSONable {
 	private String column;
 	private boolean not = false;
 	private QueryFilterOperator operator;

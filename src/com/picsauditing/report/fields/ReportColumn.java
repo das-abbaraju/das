@@ -5,18 +5,15 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
-public class SimpleReportColumn implements JSONable {
+public class ReportColumn implements JSONable {
 	private String name;
 	private QueryFunction function = null;
 	private String option;
-	private boolean hidden = false;
-	// We are thinking about adding the render field to support custom renderers per report
-	private String renderer = null;
 
-	public SimpleReportColumn() {
+	public ReportColumn() {
 	}
 
-	public SimpleReportColumn(String name) {
+	public ReportColumn(String name) {
 		this.name = name;
 	}
 
@@ -75,17 +72,4 @@ public class SimpleReportColumn implements JSONable {
 	public void setOption(String option) {
 		this.option = option;
 	}
-
-	public String getRenderer() {
-		return renderer;
-	}
-
-	public void setRenderer(String renderer) {
-		this.renderer = renderer;
-	}
-
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-
 }

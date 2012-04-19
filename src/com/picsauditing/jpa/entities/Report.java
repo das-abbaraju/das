@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.SimpleReportDefinition;
+import com.picsauditing.report.ReportDefinition;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
 
@@ -78,7 +78,7 @@ public class Report extends BaseTable {
 
 		if (full) {
 			obj.put("description", description);
-			SimpleReportDefinition definition = new SimpleReportDefinition(parameters);
+			ReportDefinition definition = new ReportDefinition(parameters);
 			if (definition.getColumns().size() > 0)
 				obj.put("columns", JSONUtilities.convertFromList(definition.getColumns()));
 			if (definition.getFilters().size() > 0)

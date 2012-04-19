@@ -1,9 +1,7 @@
 package com.picsauditing.report;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -17,9 +15,9 @@ import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.fields.SimpleReportColumn;
-import com.picsauditing.report.fields.SimpleReportFilter;
-import com.picsauditing.report.fields.SimpleReportSort;
+import com.picsauditing.report.fields.ReportColumn;
+import com.picsauditing.report.fields.ReportFilter;
+import com.picsauditing.report.fields.ReportSort;
 import com.picsauditing.report.models.ModelBase;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.tables.BaseReportTable;
@@ -28,15 +26,12 @@ import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 	private ModelBase base;
-	private List<SimpleReportColumn> includedColumns = new ArrayList<SimpleReportColumn>();
-	private List<SimpleReportFilter> includedFilters = new ArrayList<SimpleReportFilter>();
 	private Map<String, QueryField> availableFields = new TreeMap<String, QueryField>();
-	private SimpleReportDefinition definition = new SimpleReportDefinition();
+	private ReportDefinition definition = new ReportDefinition();
 	private SelectSQL sql;
 
 	public SelectSQL getSql() {
 		sql = new SelectSQL();
-		includedColumns.clear();
 		availableFields.clear();
 
 		if (base == null)
@@ -95,11 +90,11 @@ public class SqlBuilder {
 		}
 
 		for (QueryField field : table.getFields().values()) {
-			for (SimpleReportColumn column : includedColumns) {
+			for (ReportColumn column : definition.getColumns()) {
 				if (column.getAvailableFieldName().equals(field.getName()))
 					return true;
 			}
-			for (SimpleReportFilter filter : includedFilters) {
+			for (ReportFilter filter : definition.getFilters()) {
 				if (filter.getColumn().equals(field.getName()))
 					return true;
 			}
@@ -111,7 +106,7 @@ public class SqlBuilder {
 	private void addFieldsAndGroupBy() {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
-		for (SimpleReportColumn column : definition.getColumns()) {
+		for (ReportColumn column : definition.getColumns()) {
 			QueryField field = getQueryFieldFromSimpleColumn(column);
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
@@ -123,7 +118,6 @@ public class SqlBuilder {
 					sql.addGroupBy(columnSQL);
 				}
 				sql.addField(columnSQL + " AS `" + column.getName() + "`");
-				includedColumns.add(column);
 			}
 		}
 
@@ -137,15 +131,14 @@ public class SqlBuilder {
 		}
 
 		for (String fieldName : dependentFields) {
-			SimpleReportColumn column = new SimpleReportColumn(fieldName);
+			ReportColumn column = new ReportColumn(fieldName);
 			String columnSQL = columnToSQL(column);
 			sql.addField(columnSQL + " AS `" + fieldName + "`");
-			includedColumns.add(column);
 		}
 	}
 
 	private boolean isFieldIncluded(String fieldName) {
-		for (SimpleReportColumn column : includedColumns) {
+		for (ReportColumn column : definition.getColumns()) {
 			if (column.getName().equals(fieldName))
 				return true;
 		}
@@ -153,7 +146,7 @@ public class SqlBuilder {
 	}
 
 	private boolean usesGroupBy() {
-		for (SimpleReportColumn column : definition.getColumns()) {
+		for (ReportColumn column : definition.getColumns()) {
 			if (getQueryFieldFromSimpleColumn(column) != null) {
 				if (isAggregate(column.getName())) {
 					return true;
@@ -163,14 +156,14 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private QueryField getQueryFieldFromSimpleColumn(SimpleReportColumn column) {
+	private QueryField getQueryFieldFromSimpleColumn(ReportColumn column) {
 		return availableFields.get(column.getAvailableFieldName().toUpperCase());
 	}
 
 	private boolean isAggregate(String columnName) {
 		if (columnName == null)
 			return false;
-		SimpleReportColumn column = convertColumn(columnName);
+		ReportColumn column = convertColumn(columnName);
 		if (column == null)
 			return false;
 		if (column.getFunction() == null)
@@ -179,7 +172,7 @@ public class SqlBuilder {
 		return column.getFunction().isAggregate();
 	}
 
-	private String columnToSQL(SimpleReportColumn column) {
+	private String columnToSQL(ReportColumn column) {
 		QueryField field = getQueryFieldFromSimpleColumn(column);
 		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
@@ -218,10 +211,10 @@ public class SqlBuilder {
 			return;
 		}
 		
-		Set<SimpleReportFilter> whereFilters = new HashSet<SimpleReportFilter>();
-		Set<SimpleReportFilter> havingFilters = new HashSet<SimpleReportFilter>();
+		Set<ReportFilter> whereFilters = new HashSet<ReportFilter>();
+		Set<ReportFilter> havingFilters = new HashSet<ReportFilter>();
 		
-		for (SimpleReportFilter filter : definition.getFilters()) {
+		for (ReportFilter filter : definition.getFilters()) {
 			// TODO we might want to verify the filter is properly defined before including it
 			// if (filter.isFullyDefined()) { }
 			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
@@ -241,43 +234,41 @@ public class SqlBuilder {
 		}
 
 		int whereIndex = 0;
-		for (SimpleReportFilter filter : whereFilters) {
+		for (ReportFilter filter : whereFilters) {
 			if (!isAggregate(filter.getColumn()) && !isAggregate(filter.getColumn2())) {
 				String filterExp = toFilterSql(filter);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
-				includedFilters.add(filter);
 				whereIndex++;
 			}
 		}
 		sql.addWhere(where);
 
-		for (SimpleReportFilter filter : havingFilters) {
+		for (ReportFilter filter : havingFilters) {
 			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
 				String filterExp = toFilterSql(filter);
 				sql.addHaving(filterExp);
-				includedFilters.add(filter);
 			}
 		}
 	}
 
-	private SimpleReportColumn convertColumn(String columnName) {
+	private ReportColumn convertColumn(String columnName) {
 		if (columnName == null)
 			return null;
-		for (SimpleReportColumn column : definition.getColumns()) {
+		for (ReportColumn column : definition.getColumns()) {
 			if (column.getName().equals(columnName))
 				return column;
 		}
 		return null;
 	}
 
-	private String toFilterSql(SimpleReportFilter filter) {
+	private String toFilterSql(ReportFilter filter) {
 		if (!filter.isValid())
 			return "true";
 
-		SimpleReportColumn column = convertColumn(filter.getColumn());
+		ReportColumn column = convertColumn(filter.getColumn());
 
 		if (column == null) {
-			column = new SimpleReportColumn(filter.getColumn());
+			column = new ReportColumn(filter.getColumn());
 		}
 
 		String columnSQL = toColumnSql(column);
@@ -309,7 +300,7 @@ public class SqlBuilder {
 		}
 	}
 
-	private String toColumnSql(SimpleReportColumn column) {
+	private String toColumnSql(ReportColumn column) {
 		String columnSQL = columnToSQL(column);
 
 		if (column.getName().equals("accountName"))
@@ -317,7 +308,7 @@ public class SqlBuilder {
 		return columnSQL;
 	}
 
-	private String toValueSql(SimpleReportFilter filter, SimpleReportColumn column) {
+	private String toValueSql(ReportFilter filter, ReportColumn column) {
 		if (!Strings.isEmpty(filter.getColumn2())) {
 			return columnToSQL(convertColumn(filter.getColumn2()));
 		}
@@ -358,10 +349,10 @@ public class SqlBuilder {
 			return;
 		}
 
-		for (SimpleReportSort sort : definition.getOrderBy()) {
+		for (ReportSort sort : definition.getOrderBy()) {
 
 			String orderBy = sort.getColumn();
-			SimpleReportColumn column = getColumn(sort.getColumn());
+			ReportColumn column = getColumn(sort.getColumn());
 			if (column == null) {
 				QueryField field = availableFields.get(sort.getColumn().toUpperCase());
 				if (field != null && field.getSql() != null)
@@ -386,8 +377,8 @@ public class SqlBuilder {
 		sql.setSQL_CALC_FOUND_ROWS(true);
 	}
 
-	private SimpleReportColumn getColumn(String name) {
-		for (SimpleReportColumn column : includedColumns) {
+	private ReportColumn getColumn(String name) {
+		for (ReportColumn column : definition.getColumns()) {
 			if (column.getName().equals(name))
 				return column;
 		}
@@ -405,19 +396,15 @@ public class SqlBuilder {
 		this.base = base;
 	}
 
-	public SimpleReportDefinition getDefinition() {
+	public ReportDefinition getDefinition() {
 		return definition;
 	}
 
-	public void setDefinition(SimpleReportDefinition definition) {
+	public void setDefinition(ReportDefinition definition) {
 		this.definition = definition;
 	}
 
 	public Map<String, QueryField> getAvailableFields() {
 		return availableFields;
-	}
-
-	public List<SimpleReportColumn> getIncludedColumns() {
-		return includedColumns;
 	}
 }

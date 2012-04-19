@@ -8,16 +8,16 @@ import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.fields.SimpleReportColumn;
-import com.picsauditing.report.fields.SimpleReportFilter;
-import com.picsauditing.report.fields.SimpleReportSort;
+import com.picsauditing.report.fields.ReportColumn;
+import com.picsauditing.report.fields.ReportFilter;
+import com.picsauditing.report.fields.ReportSort;
 import com.picsauditing.report.models.QueryAccount;
 import com.picsauditing.report.models.QueryAccountContractor;
 import com.picsauditing.search.SelectSQL;
 
 public class SqlBuilderTest {
 	private SqlBuilder builder;
-	private SimpleReportDefinition definition = new SimpleReportDefinition();
+	private ReportDefinition definition = new ReportDefinition();
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,9 +37,9 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testAccountColumns() {
-		definition.getColumns().add(new SimpleReportColumn("accountID"));
-		definition.getColumns().add(new SimpleReportColumn("accountName"));
-		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
+		definition.getColumns().add(new ReportColumn("accountID"));
+		definition.getColumns().add(new ReportColumn("accountName"));
+		definition.getColumns().add(new ReportColumn("accountStatus"));
 
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
@@ -61,8 +61,8 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testContractorColumns() {
-		definition.getColumns().add(new SimpleReportColumn("contractorName"));
-		definition.getColumns().add(new SimpleReportColumn("contractorScore"));
+		definition.getColumns().add(new ReportColumn("contractorName"));
+		definition.getColumns().add(new ReportColumn("contractorScore"));
 
 		builder.setBase(new QueryAccountContractor());
 		SelectSQL sql = builder.getSql();
@@ -72,9 +72,9 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testLeftJoinUser() throws Exception {
-		definition.getColumns().add(new SimpleReportColumn("accountID"));
-		definition.getColumns().add(new SimpleReportColumn("accountName"));
-		definition.getColumns().add(new SimpleReportColumn("accountContactName"));
+		definition.getColumns().add(new ReportColumn("accountID"));
+		definition.getColumns().add(new ReportColumn("accountName"));
+		definition.getColumns().add(new ReportColumn("accountContactName"));
 
 		builder.setBase(new QueryAccount());
 		SelectSQL sql = builder.getSql();
@@ -85,8 +85,8 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testFilters() {
-		definition.getColumns().add(new SimpleReportColumn("accountName"));
-		SimpleReportFilter filter = new SimpleReportFilter();
+		definition.getColumns().add(new ReportColumn("accountName"));
+		ReportFilter filter = new ReportFilter();
 		filter.setColumn("accountName");
 		filter.setOperator(QueryFilterOperator.BeginsWith);
 		filter.setValue("Trevor's");
@@ -100,11 +100,11 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testFiltersWithComplexColumn() {
-		SimpleReportColumn column = new SimpleReportColumn("AccountCreationDateYear");
+		ReportColumn column = new ReportColumn("AccountCreationDateYear");
 		column.setFunction(QueryFunction.Year);
 		definition.getColumns().add(column);
 
-		SimpleReportFilter filter = new SimpleReportFilter();
+		ReportFilter filter = new ReportFilter();
 		filter.setColumn("AccountCreationDateYear");
 		filter.setOperator(QueryFilterOperator.GreaterThan);
 		filter.setValue("2010");
@@ -119,8 +119,8 @@ public class SqlBuilderTest {
 
 	@Test
 	public void testGroupBy() {
-		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
-		SimpleReportColumn column = new SimpleReportColumn("accountStatusCount");
+		definition.getColumns().add(new ReportColumn("accountStatus"));
+		ReportColumn column = new ReportColumn("accountStatusCount");
 		column.setFunction(QueryFunction.Count);
 		definition.getColumns().add(column);
 
@@ -134,20 +134,20 @@ public class SqlBuilderTest {
 	@Test
 	public void testHaving() {
 		// {"filters":[{"column":"contractorName","operator":"BeginsWith","value":"Da"}]}
-		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
-		SimpleReportColumn column = new SimpleReportColumn("accountNameCount");
+		definition.getColumns().add(new ReportColumn("accountStatus"));
+		ReportColumn column = new ReportColumn("accountNameCount");
 		column.setFunction(QueryFunction.Count);
 		definition.getColumns().add(column);
 
 		{
-			SimpleReportFilter filter = new SimpleReportFilter();
+			ReportFilter filter = new ReportFilter();
 			filter.setColumn("accountNameCount");
 			filter.setOperator(QueryFilterOperator.GreaterThan);
 			filter.setValue("5");
 			definition.getFilters().add(filter);
 		}
 		{
-			SimpleReportFilter filter = new SimpleReportFilter();
+			ReportFilter filter = new ReportFilter();
 			filter.setColumn("accountName");
 			filter.setOperator(QueryFilterOperator.BeginsWith);
 			filter.setValue("A");
@@ -166,7 +166,7 @@ public class SqlBuilderTest {
 	public void testGroupByContractorName() {
 		builder.setBase(new QueryAccountContractor());
 
-		SimpleReportColumn contractorNameCount = new SimpleReportColumn("contractorNameCount");
+		ReportColumn contractorNameCount = new ReportColumn("contractorNameCount");
 		contractorNameCount.setFunction(QueryFunction.Count);
 		definition.getColumns().add(contractorNameCount);
 		
@@ -180,12 +180,12 @@ public class SqlBuilderTest {
 	public void testSorts() {
 		builder.setBase(new QueryAccount());
 
-		SimpleReportSort sort = new SimpleReportSort("accountStatus");
+		ReportSort sort = new ReportSort("accountStatus");
 		definition.getOrderBy().add(sort);
 		SelectSQL sql = builder.getSql();
 		assertContains("ORDER BY a.status", sql.toString());
 
-		definition.getColumns().add(new SimpleReportColumn("accountStatus"));
+		definition.getColumns().add(new ReportColumn("accountStatus"));
 		sql = builder.getSql();
 		assertContains("ORDER BY accountStatus", sql.toString());
 
