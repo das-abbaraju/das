@@ -7,13 +7,13 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.fields.SimpleReportColumn;
-import com.picsauditing.report.fields.SimpleReportFilter;
-import com.picsauditing.report.fields.SimpleReportSort;
+import com.picsauditing.report.fields.ReportColumn;
+import com.picsauditing.report.fields.ReportFilter;
+import com.picsauditing.report.fields.ReportSort;
 
 @SuppressWarnings("unchecked")
-public class SimpleReportDefinitionTest {
-	private SimpleReportDefinition definition = new SimpleReportDefinition();
+public class ReportDefinitionTest {
+	private ReportDefinition definition = new ReportDefinition();
 	private JSONObject jsonObj = new JSONObject();
 
 	@Test
@@ -27,8 +27,8 @@ public class SimpleReportDefinitionTest {
 	@Test
 	public void testColumns() {
 		JSONArray list = new JSONArray();
-		list.add(new SimpleReportColumn("AccountID").toJSON(true));
-		list.add(new SimpleReportColumn("AccountName").toJSON(true));
+		list.add(new ReportColumn("AccountID").toJSON(true));
+		list.add(new ReportColumn("AccountName").toJSON(true));
 		jsonObj.put("columns", list);
 		definition.fromJSON(jsonObj);
 		assertEquals(2, definition.getColumns().size());
@@ -43,7 +43,7 @@ public class SimpleReportDefinitionTest {
 		JSONArray list = new JSONArray();
 		jsonObj.put("filters", list);
 
-		SimpleReportFilter filter = new SimpleReportFilter();
+		ReportFilter filter = new ReportFilter();
 		filter.setColumn("AccountID");
 		filter.setOperator(QueryFilterOperator.Equals);
 		filter.setValue("123");
@@ -61,7 +61,7 @@ public class SimpleReportDefinitionTest {
 	@Test
 	public void testSort() {
 		JSONArray list = new JSONArray();
-		JSONObject sortJson = new SimpleReportSort("AccountID").toJSON(true);
+		JSONObject sortJson = new ReportSort("AccountID").toJSON(true);
 		list.add(sortJson);
 		jsonObj.put("sorts", list);
 		definition.fromJSON(jsonObj);

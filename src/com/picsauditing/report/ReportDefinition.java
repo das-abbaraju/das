@@ -9,16 +9,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.report.fields.SimpleReportColumn;
-import com.picsauditing.report.fields.SimpleReportFilter;
-import com.picsauditing.report.fields.SimpleReportSort;
+import com.picsauditing.report.fields.ReportColumn;
+import com.picsauditing.report.fields.ReportFilter;
+import com.picsauditing.report.fields.ReportSort;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 
-public class SimpleReportDefinition implements JSONable {
-	private List<SimpleReportColumn> columns = new ArrayList<SimpleReportColumn>();
-	private List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
-	private List<SimpleReportSort> orderBy = new ArrayList<SimpleReportSort>();
+public class ReportDefinition implements JSONable {
+	private List<ReportColumn> columns = new ArrayList<ReportColumn>();
+	private List<ReportFilter> filters = new ArrayList<ReportFilter>();
+	private List<ReportSort> orderBy = new ArrayList<ReportSort>();
 	
 	/**
 	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
@@ -26,10 +26,10 @@ public class SimpleReportDefinition implements JSONable {
 	private String filterExpression;
 	private int rowsPerPage = 100;
 
-	public SimpleReportDefinition() {
+	public ReportDefinition() {
 	}
 
-	public SimpleReportDefinition(String json) {
+	public ReportDefinition(String json) {
 		if (StringUtils.isEmpty(json)) {
 			return;
 		}
@@ -37,27 +37,27 @@ public class SimpleReportDefinition implements JSONable {
 		fromJSON(obj);
 	}
 
-	public List<SimpleReportColumn> getColumns() {
+	public List<ReportColumn> getColumns() {
 		return columns;
 	}
 
-	public void setColumns(List<SimpleReportColumn> columns) {
+	public void setColumns(List<ReportColumn> columns) {
 		this.columns = columns;
 	}
 
-	public List<SimpleReportSort> getOrderBy() {
+	public List<ReportSort> getOrderBy() {
 		return orderBy;
 	}
 
-	public void setOrderBy(List<SimpleReportSort> orderBy) {
+	public void setOrderBy(List<ReportSort> orderBy) {
 		this.orderBy = orderBy;
 	}
 
-	public List<SimpleReportFilter> getFilters() {
+	public List<ReportFilter> getFilters() {
 		return filters;
 	}
 
-	public void setFilters(List<SimpleReportFilter> filters) {
+	public void setFilters(List<ReportFilter> filters) {
 		this.filters = filters;
 	}
 
@@ -112,15 +112,15 @@ public class SimpleReportDefinition implements JSONable {
 		this.orderBy = parseSortList(json.get("sorts"));
 	}
 
-	private List<SimpleReportFilter> parseQueryFilterList(Object obj) {
-		List<SimpleReportFilter> filters = new ArrayList<SimpleReportFilter>();
+	private List<ReportFilter> parseQueryFilterList(Object obj) {
+		List<ReportFilter> filters = new ArrayList<ReportFilter>();
 
 		if (obj == null)
 			return filters;
 
 		JSONArray filterArray = (JSONArray) obj;
 		for (Object filterObj : filterArray) {
-			SimpleReportFilter filter = new SimpleReportFilter();
+			ReportFilter filter = new ReportFilter();
 			if (filterObj instanceof JSONObject) {
 				filter.fromJSON((JSONObject) filterObj);
 				filters.add(filter);
@@ -130,15 +130,15 @@ public class SimpleReportDefinition implements JSONable {
 		return filters;
 	}
 
-	private List<SimpleReportColumn> parseColumnList(Object obj) {
-		List<SimpleReportColumn> fields = new ArrayList<SimpleReportColumn>();
+	private List<ReportColumn> parseColumnList(Object obj) {
+		List<ReportColumn> fields = new ArrayList<ReportColumn>();
 
 		if (obj == null)
 			return fields;
 
 		JSONArray fieldArray = (JSONArray) obj;
 		for (Object fieldObj : fieldArray) {
-			SimpleReportColumn field = new SimpleReportColumn();
+			ReportColumn field = new ReportColumn();
 			if (fieldObj instanceof JSONObject) {
 				field.fromJSON((JSONObject) fieldObj);
 				fields.add(field);
@@ -148,15 +148,15 @@ public class SimpleReportDefinition implements JSONable {
 		return fields;
 	}
 
-	private List<SimpleReportSort> parseSortList(Object obj) {
-		List<SimpleReportSort> fields = new ArrayList<SimpleReportSort>();
+	private List<ReportSort> parseSortList(Object obj) {
+		List<ReportSort> fields = new ArrayList<ReportSort>();
 
 		if (obj == null)
 			return fields;
 
 		JSONArray fieldArray = (JSONArray) obj;
 		for (Object fieldObj : fieldArray) {
-			SimpleReportSort field = new SimpleReportSort();
+			ReportSort field = new ReportSort();
 			if (fieldObj instanceof JSONObject) {
 				field.fromJSON((JSONObject) fieldObj);
 				fields.add(field);
@@ -166,7 +166,7 @@ public class SimpleReportDefinition implements JSONable {
 		return fields;
 	}
 
-	public SimpleReportDefinition merge(SimpleReportDefinition definition) {
+	public ReportDefinition merge(ReportDefinition definition) {
 		if (definition != null) {
 			columns.addAll(definition.getColumns());
 			orderBy.addAll(definition.getOrderBy());

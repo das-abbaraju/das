@@ -49,7 +49,6 @@ public class QueryDateParameter {
 			else
 			{
 				date = null;
-				System.out.println("replaced with current day");
 			}
 		}
 

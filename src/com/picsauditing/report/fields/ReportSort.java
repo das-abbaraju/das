@@ -6,14 +6,14 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 
-public class SimpleReportSort implements JSONable {
+public class ReportSort implements JSONable {
 	private String column;
 	private boolean ascending = true;
 
-	public SimpleReportSort() {
+	public ReportSort() {
 	}
 
-	public SimpleReportSort(String column) {
+	public ReportSort(String column) {
 		this.column = column;
 	}
 

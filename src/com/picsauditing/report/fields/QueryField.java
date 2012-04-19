@@ -34,23 +34,10 @@ public class QueryField implements JSONAware {
 	private ExtFieldType type = ExtFieldType.Auto;
 	private String url;
 	private JavaScript renderer;
-	// private JavaScript editor;
 	private String preTranslation;
 	private String postTranslation;
 	private FieldCategory category = FieldCategory.General;
 	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
-
-	// xtype : 'actioncolumn',
-	/*
-	 * items : [ { icon : 'images/edit_pencil.png', tooltip : 'Edit', handler :
-	 * function(grid, rowIndex, colIndex) { var record =
-	 * grid.getStore().getAt(rowIndex); alert("Edit " + record.data.accountID);
-	 * } } ] OR renderer : function(value, metaData, record) { return Ext.String
-	 * .format( '<a href="ContractorEdit.action?id={0}">Edit</a>',
-	 * record.data.accountID);
-	 */
-	
-	
 
 	public QueryField(ReportField annotation) {
 		this.filterType = annotation.filterType();
@@ -117,17 +104,6 @@ public class QueryField implements JSONAware {
 	public QueryField translate(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;
-		return this;
-	}
-
-	public QueryField addRenderer(Renderer renderer) {
-		this.renderer = renderer;
-		return this;
-	}
-
-	public QueryField addRenderer(String action, String[] parameters) {
-		this.width = 200;
-		this.renderer = new Renderer(action, parameters);
 		return this;
 	}
 
