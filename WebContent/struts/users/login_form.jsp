@@ -8,8 +8,8 @@
 <div class="loginForm">
 	<s:form id="login">
 	<!-- grab the switchToUser parameters if its passed to this page when switch servers.-->		
-		<s:hidden id="switchToUserId" name="switchToUserId" value="1029"/>
-		<!--<s:hidden id="switchToUserId" name="switchToUserId" value="%{#parameters['switchToUser']}"/>-->
+		
+		<s:hidden id="switchToUserId" name="switchToUserId" value="%{#parameters['switchToUser']}"/>
 		<fieldset class="form">
 		<h2 class="formLegend"><s:text name="Login.h1" /></h2>
 		<ol>
