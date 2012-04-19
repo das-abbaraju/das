@@ -838,7 +838,7 @@ public class UsersManage extends PicsActionSupport {
 			// but these permissions, have already been granted
 			list.remove(perm.getOpPerm());
 		}
-		Collections.sort(list, COMPARATOR);
+		Collections.sort(list, OpPerms.PermissionComparator);
 
 		return list;
 	}
@@ -920,12 +920,6 @@ public class UsersManage extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
-
-	private static Comparator<OpPerms> COMPARATOR = new Comparator<OpPerms>() {
-		public int compare(OpPerms o1, OpPerms o2) {
-			return o1.getDescription().compareTo(o2.getDescription());
-		}
-	};
 
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {
