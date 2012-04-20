@@ -23,6 +23,7 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -46,6 +47,10 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
@@ -88,8 +93,7 @@ public class UsersManage extends PicsActionSupport {
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
-		startup();
-
+		startup();		
 		if ("department".equalsIgnoreCase(button))
 			return "department";
 
@@ -147,7 +151,7 @@ public class UsersManage extends PicsActionSupport {
 	public String save() throws Exception {
 		isSaveAction = true;
 		startup();
-		
+
 		user.setIsGroup(userIsGroup);
 
 		// Lazy init fix for isOk method
@@ -157,7 +161,7 @@ public class UsersManage extends PicsActionSupport {
 			userDAO.refresh(user); // Clear out ALL changes for the user
 			return SUCCESS;
 		}
-//a contractor user.		
+		// a contractor user.
 		if (user.getId() > 0 && account.isContractor()) {
 			if (!user.isActiveB()) {
 				Set<OpPerms> userPerms = new HashSet<OpPerms>();
@@ -176,7 +180,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		}
-//a user
+		// a user
 		if (user.getId() > 0) {
 			// We want to save data for an existing user
 			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
@@ -201,7 +205,7 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setId(permissions.getAccountId());
 			}
 		}
-//a group
+		// a group
 		if (user.isGroup()) {
 			// Create a unique username for this group
 			String username = "GROUP";
@@ -215,7 +219,7 @@ public class UsersManage extends PicsActionSupport {
 			user.addPasswordToHistory(user.getPassword(), maxHistory);
 			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 		}
-//a contractor
+		// a contractor
 		if (user.getAccount().isContractor()) {
 			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			userPerms = new HashSet<OpPerms>();
@@ -326,29 +330,26 @@ public class UsersManage extends PicsActionSupport {
 			newUser = true;
 		}
 
-		
-		
-		
 		try {
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
 
 			user.setNeedsIndexing(true);
+			
 			if (user.isGroup()) {
-//check is the groupname is in use				
+				// LW: check is the groupname is in use
 				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
 					userDAO.save(user);
-				else{
+				else {
 					addActionError(getText("UsersManage.GroupnameNotAvailable"));
 					userDAO.refresh(user); // Clear out ALL changes for the user
 					return SUCCESS;
 				}
-			} else	
+			} else
 				user = userDAO.save(user);
 
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-
 
 		} catch (ConstraintViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
@@ -364,11 +365,30 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {			
+		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
 			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
 		return SUCCESS;
+	}
+
+	// LW encrypting string
+	private String ScrambleString(String input) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			byte[] messageDigest = md.digest(input.getBytes());
+			BigInteger number = new BigInteger(1, messageDigest);
+			String hashtext = number.toString(16);
+			// Now we need to zero pad it if you actually want the full 32
+			// chars.
+			while (hashtext.length() < 32) {
+				hashtext = "0" + hashtext;
+			}
+			return hashtext;
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	public String unlock() throws Exception {
@@ -421,10 +441,51 @@ public class UsersManage extends PicsActionSupport {
 		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
-
-	public String delete() throws Exception {
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	public String inActivate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		if (!user.isGroup()) {
+			// This user is a user (not a group)
+			if (user.equals(user.getAccount().getPrimaryContact())) {
+				addActionError(getTextParameterized("UsersManage.CannotInactivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+
+		user.setActive(false);
+		userDAO.save(user);		
+		addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
+				user.isGroup() ? user.getName() : user.getUsername()));
+		
+
+		return SUCCESS;
+	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	public String activate() throws Exception{
+		startup();
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		if (!user.isGroup()) {
+			// This user is a user (not a group)
+			if (user.equals(user.getAccount().getPrimaryContact())) {
+				addActionError(getTextParameterized("UsersManage.CannotActivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+
+		user.setActive(true);
+		userDAO.save(user);
+		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
+				user.isGroup() ? user.getName() : user.getUsername()));
+		
+
+		return SUCCESS;
+		
+	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
+	public String delete() throws Exception {		
+		startup();
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -433,7 +494,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		user.setActive(false);
+		user.setUsername("DELETE-"+user.getId()+"-"+ScrambleString(user.getUsername()));
 		userDAO.save(user);
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
@@ -464,7 +525,7 @@ public class UsersManage extends PicsActionSupport {
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
-		
+
 	}
 
 	private boolean isPrimaryUserEstablished() {
@@ -480,18 +541,18 @@ public class UsersManage extends PicsActionSupport {
 			addActionError(getText("UsersManage.NoUserFound"));
 			return false;
 		}
-		
+
 		String displayName = user.getName().trim();
 		if (displayName == null || displayName.length() == 0 || displayName.length() < 3)
 			addActionError(getText("UsersManage.EnterDisplayName"));
-		
+
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
 		User temp = new User(user, true);
 		userDAO.refresh(user);
-		
+
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
@@ -770,22 +831,20 @@ public class UsersManage extends PicsActionSupport {
 		for (com.picsauditing.access.UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
 			if (perm.isGrantFlag())
-				list.add(perm.getOpPerm());			
+				list.add(perm.getOpPerm());
 		}
-		
-		
+
 		for (UserAccess perm : user.getOwnedPermissions()) {
 			// but these permissions, have already been granted
 			list.remove(perm.getOpPerm());
 		}
-		Collections.sort(list, COMPARATOR);
-		
+		Collections.sort(list, OpPerms.PermissionComparator);
+
 		return list;
 	}
 
 	public List<User> getAddableGroups() {
 		List<User> list = new ArrayList<User>();
-
 		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
 			return list;
 
@@ -800,31 +859,43 @@ public class UsersManage extends PicsActionSupport {
 		// list.add(group);
 		// }
 
-		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
-				&& permissions.getAccountId() != account.getId()) {
-			// This is an admin looking at another account (not PICS)
-			// Add the non-PICS groups too
-			List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
-			for (User group : nonPicsGroups) {
-				// Add the groups owned by PICS but that are for
-				// Operator/Corporate/Contractors/etc
-				if (!group.getName().startsWith("PICS") && !list.contains(group))
-					list.add(group);
+		try {
+			if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
+					&& permissions.getAccountId() != account.getId()) {
+				// This is an admin looking at another account (not PICS)
+				// Add the non-PICS groups too
+				List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
+				for (User group : nonPicsGroups) {
+					// Add the groups owned by PICS but that are for
+					// Operator/Corporate/Contractors/etc
+					if (!group.getName().startsWith("PICS") && !list.contains(group))
+						list.add(group);
+				}
 			}
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("test " + e);
 
-		for (UserGroup userGroup : user.getGroups()) {
-			// but these groups, have already been added
-			list.remove(userGroup.getGroup());
 		}
-		list.remove(user);
+		
+		try {
+			for (UserGroup userGroup : user.getGroups()) {
+				// but these groups, have already been added
+				list.remove(userGroup.getGroup());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("test 2" + e);
+
+		}
+		list.remove(user);		
 		return list;
 	}
-	
+
 	public List<UserSwitch> getSwitchTos() {
 		return userSwitchDao.findByUserId(user.getId());
 	}
-	
+
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
 
@@ -849,13 +920,7 @@ public class UsersManage extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
-	private static Comparator<OpPerms> COMPARATOR = new Comparator<OpPerms>(){
-        public int compare(OpPerms o1, OpPerms o2){
-            return o1.getDescription().compareTo(o2.getDescription());
-        }
-    };
 
-	
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {
 

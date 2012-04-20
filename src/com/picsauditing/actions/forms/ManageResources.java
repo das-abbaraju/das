@@ -342,17 +342,20 @@ public class ManageResources extends PicsActionSupport {
 	public List<Account> getFacilities() {
 		if (operator != null) {
 			ArrayList<Integer> ids = new ArrayList<Integer>();
-			ids.add(1100);
+				if (permissions.isAdmin()) {
+					ids.add(1100);
+				}
 			ids.add(operator.getId());
 			for (Facility facility :operator.getCorporateFacilities()) {
 				ids.add(facility.getId());
 			}
 			for (OperatorAccount oa :operator.getParentOperators()) {
-				ids.add(oa.getId());
+				if (permissions.isAdmin() || !Account.PICS_CORPORATE.contains(oa.getId()))
+					ids.add(oa.getId());
 			}
 			@SuppressWarnings("unchecked")
 			List<Account> list = (List<Account>) dao.findWhere(Account.class,
-					"t.id IN (" + Strings.implode(ids) + ")", 0,
+					"t.id IN (" + Strings.implode(ids) + ") AND t.type IN ('Operator', 'Corporate') ", 0,
 					"CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
 			return list;
 		} else {

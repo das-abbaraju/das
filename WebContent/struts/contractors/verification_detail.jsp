@@ -138,7 +138,7 @@
 					</s:iterator>
 				</tr>
 				<tr>
-					<td>Number of On Job Transfer OR Restricted Days:</td>
+				<td>Number of On Job Transfer OR Restricted Days:</td>
 					<s:iterator value="annualUpdates" id="audit">
 						<td class="center">
 							<s:iterator value="oshasUS">
@@ -149,6 +149,18 @@
 						</td>
 					</s:iterator>
 				</tr>
+				<tr>
+				<td>Other Recordable Cases:</td>
+					<s:iterator value="annualUpdates" id="audit">
+						<td class="center">
+							<s:iterator value="oshasUS">
+								<s:if test="auditFor.equals(#audit.auditFor)">
+									<s:property value="getSpecificRate('OSHA', 'OtherRecordables')" />
+								</s:if>
+							</s:iterator>
+						</td>
+					</s:iterator>
+				</tr>				
 				<tr>
 					<td>TRIR:</td>
 					<s:iterator value="annualUpdates" id="audit">
