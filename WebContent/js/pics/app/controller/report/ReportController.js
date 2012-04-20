@@ -16,12 +16,10 @@ Ext.define('PICS.controller.report.ReportController', {
         selector: 'reportoptionsfilters grid'
     }],
     stores: [
+        'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.ReportData',
-        'report.Reports',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportsSort'
+        'report.Data',
+        'report.Reports'
     ],
 
     configureColumnMenu: function (grid) {
@@ -77,9 +75,9 @@ Ext.define('PICS.controller.report.ReportController', {
             return false;
         }
 
-        var column_store = this.getReportReportsColumnStore();
-        var filter_store = this.getReportReportsFilterStore();
-        var sort_store = this.getReportReportsSortStore();
+        var column_store = report.columns();
+        var filter_store = report.filters();
+        var sort_store = report.sorts();
 
         function configureReportParameters() {
             function getFieldDataFromStore(store) {
@@ -112,7 +110,7 @@ Ext.define('PICS.controller.report.ReportController', {
             delete data.modelType;
             delete data.summary;
             delete data.description;
-
+            
             return Ext.encode(data);
         }
 
@@ -134,17 +132,17 @@ Ext.define('PICS.controller.report.ReportController', {
         });
     },
     onLaunch: function () {
-        var store = this.getReportReportsStore();
-
-        // popuplate report store
-        // report store populates report columns store
-        // report store populates report filters store
-        // TODO: pull reportParameters from server instead of dumping in a global JS var
-        store.loadRawData({
-            report: reportParameters //global JS var
+        this.getReportAvailableFieldsStore().load({
+            scope: this,
+            callback: function(records, operation, success) {
+                this.getReportReportsStore().load({
+                    scope: this,
+                    callback: function(records, operation, success) {
+                        this.refreshReport();
+                    }
+                });
+            }
         });
-
-        this.refreshReport();
     },
     refreshReport: function () {
         var report_store = this.getReportReportsStore();
@@ -157,9 +155,9 @@ Ext.define('PICS.controller.report.ReportController', {
         }
 
         var me = this;
-        var column_store = this.getReportReportsColumnStore();
-        var filter_store = this.getReportReportsFilterStore();
-        var sort_store = this.getReportReportsSortStore();
+        var column_store = report.columns();
+        var filter_store = report.filters();
+        var sort_store = report.sorts();
 
         function buildReportDataStoreUrl(report_parameters) {
             var url = 'ReportDynamic!data.action?';
@@ -177,12 +175,12 @@ Ext.define('PICS.controller.report.ReportController', {
 
         function buildReportDataStore() {
             function generateReportRowFields() {
-                var column_store = me.getReportReportsColumnStore();
+                var column_store = me.getReportReportsStore().first().columns();
                 var fields = [];
 
                 column_store.each(function (record) {
                     var report_row_field = record.convertRecordToReportRowField();
-
+                    
                     fields.push(report_row_field);
                 });
 
@@ -197,18 +195,18 @@ Ext.define('PICS.controller.report.ReportController', {
 
                     fields: fields
                 });
-
+                
                 return model;
             }
 
             function configureReportDataStore(model) {
                 // TODO: typecheck model + existence
 
-                var data_store = me.getReportReportDataStore();
+                var data_store = me.getReportDataStore();
 
                 data_store.removeAll(true);
                 data_store.proxy.reader.setModel(model);
-
+                
                 return data_store;
             }
 
@@ -221,21 +219,20 @@ Ext.define('PICS.controller.report.ReportController', {
 
         var report_parameters = this.getReportParameters();
         var report_data_store_url = buildReportDataStoreUrl(report_parameters);
-
         var report_data_store = buildReportDataStore();
-        report_data_store.proxy.url = report_data_store_url;
 
+        report_data_store.proxy.url = report_data_store_url;
+        
         // Run the report
         report_data_store.load({
             callback: function(records, operation, success) {
                 if (success) {
                     var data_grid = me.getDataGrid();
-                    var columns = column_store.data.items;
+                    var columns = me.getReportReportsStore().first().columns().data.items;
                     var new_columns = [{
                         xtype: 'rownumberer',
                         width: 27
                     }];
-
                     for(var i = 0; i < columns.length; i++) {
                         new_columns.push(columns[i].toGridColumn());
                     }

@@ -15,9 +15,7 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
     }],
     stores: [
         'report.AvailableFieldsByCategory',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportsSort'
+        'report.Reports'
     ],
 
     init: function () {
@@ -58,14 +56,13 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
     addColumnToReportOptionsColumns: function(component, e, eOpts) {
         var window = this.getColumnSelector();
         var grid = this.getColumnSelectorGrid();
-
         var selected = grid.getSelectionModel().getSelection();
 
         if (selected.length > 0) {
             var store;
             if (window._column_type === "filter") {
-                store = this.getReportReportsFilterStore();
-                colStore = this.getReportReportsColumnStore();
+                store = this.getReportReportsStore().first().filters();
+                colStore = this.getReportReportsStore().first().columns();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleFilter());
                     if (colStore.findRecord("name", field.get('name')) === null) {
@@ -73,13 +70,13 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                     }
                 });
             } else if (window._column_type === "column") {
-                store = this.getReportReportsColumnStore();
+                store = this.getReportReportsStore().first().columns();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleColumn());
                 });
             } else if (window._column_type === "sort") {
-                store = this.getReportReportsSortStore();
-                colStore = this.getReportReportsColumnStore();
+                store = this.getReportReportsStore().first().sorts();
+                colStore = this.getReportReportsStore().first().columns();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleSort());
                     if (colStore.findRecord("name", field.get('name')) === null) {
@@ -119,11 +116,11 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             var window = this.getColumnSelector();
 
             if (window._column_type === 'filter') {
-                store = this.getReportReportsFilterStore();
+                store = this.getReportReportsStore().first().filters();
             } else if (window._column_type === 'column') {
-                store = this.getReportReportsColumnStore();
+                store = this.getReportReportsStore().first().columns();
             } else if (window._column_type === 'sort') {
-                store = this.getReportReportsSortStore();
+                store = this.getReportReportsStore().first().sorts();
             } else {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }

@@ -2,6 +2,7 @@ Ext.define('PICS.store.report.Reports', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.Report',
 	
+	autoLoad: false,
 	listeners: {
 	    load: function (store, records, successful, operation, options) {
                 var report = store.first();
@@ -11,7 +12,6 @@ Ext.define('PICS.store.report.Reports', {
                     this.loadStoreFilter('report.ReportsFilter', report.filters());
                     this.loadStoreSort('report.ReportsSort', report.sorts());                 
                 }
-	        
 	    }
     },
     
@@ -26,9 +26,6 @@ Ext.define('PICS.store.report.Reports', {
     		item.setAvailableField(field);
     		records.push(item);
     	}
-    	
-    	var store = Ext.StoreManager.get(store_name);
-    	store.loadRecords(records);
     },
     
     loadStoreFilter: function(store_name, child) {
@@ -43,9 +40,6 @@ Ext.define('PICS.store.report.Reports', {
     		item.setAvailableField(field);
     		records.push(item);
     	}
-    	
-    	var store = Ext.StoreManager.get(store_name);
-    	store.loadRecords(records);
     },
     loadStoreSort: function(store_name, child) {
         // TODO refactor these two methods
@@ -59,9 +53,6 @@ Ext.define('PICS.store.report.Reports', {
             item.setAvailableField(field);
             records.push(item);
         }
-        
-        var store = Ext.StoreManager.get(store_name);
-        store.loadRecords(records);
     },    
     proxy: {
         // TODO: refactor proxy + figure out better writer
@@ -86,5 +77,11 @@ Ext.define('PICS.store.report.Reports', {
         	}
         },
         type: 'ajax'
-    }
+    },
+    constructor: function () {
+        var url = Ext.Object.fromQueryString(document.location.search);
+        this.proxy.url = 'ReportDynamic!getReportParameters.action?report=' + url.report;
+        this.callParent(arguments);
+        
+    }    
 });

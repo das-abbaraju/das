@@ -3,7 +3,6 @@ Ext.define('PICS.store.report.AvailableFields', {
 	model : 'PICS.model.report.AvailableField',
 	
 	autoLoad: false,
-	data: availableFields,  //global JS var
 	proxy: {
 	    reader: {
             root: 'fields',
@@ -24,5 +23,10 @@ Ext.define('PICS.store.report.AvailableFields', {
     		text: name + " (deprecated)",
     		width: 50
     	});
+    },
+    constructor: function () {
+        var url = Ext.Object.fromQueryString(document.location.search);
+        this.proxy.url = 'ReportDynamic!availableFields.action?report=' + url.report;
+        this.callParent(arguments);
     }
 });

@@ -182,6 +182,12 @@ public class ReportDynamic extends PicsActionSupport {
 		return dao.findWhere(Report.class, "id > 0", 100);
 	}
 
+	public String getReportParameters() {
+		json.put("report", report.toJSON(true));
+		json.put("success", true);
+		return JSON;		
+	}
+	
 	@Anonymous
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao

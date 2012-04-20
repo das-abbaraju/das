@@ -5,7 +5,7 @@ Ext.define('PICS.view.report.DataGrid', {
         'PICS.view.report.LinkColumn',
         'PICS.view.report.SortToolbar'        
     ],
-    store: 'report.ReportData',
+    store: 'report.Data',
 
     columns: [{
         xtype: 'rownumberer',
@@ -16,7 +16,7 @@ Ext.define('PICS.view.report.DataGrid', {
         dock: 'top'
     }, {
         xtype: 'pagingtoolbar',
-        store: 'report.ReportData',
+        store: 'report.Data',
         
         displayInfo: true,
         dock: 'top',
@@ -41,7 +41,7 @@ Ext.define('PICS.view.report.DataGrid', {
         padding: '0 20 0 0'
     }, {
         xtype: 'pagingtoolbar',
-        store: 'report.ReportData',
+        store: 'report.Data',
         
         cls: 'ext-no-bottom-border',
         displayInfo: true,

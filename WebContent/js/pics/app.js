@@ -49,11 +49,8 @@ Ext.application({
     stores: [
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.ReportData',
-        'report.Reports',
-        'report.ReportsColumn',
-        'report.ReportsFilter',
-        'report.ReportsSort'
+        'report.Data',
+        'report.Reports'
     ],
 
     launch: function () {

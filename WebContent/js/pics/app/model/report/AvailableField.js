@@ -22,7 +22,6 @@ Ext.define('PICS.model.report.AvailableField', {
         	'name': this.get('name'),
         	'type': this.get('type')
         });
-        
         column.setAvailableField(this);
         
         return column;
