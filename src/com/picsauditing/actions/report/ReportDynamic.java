@@ -109,6 +109,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		addDefinition();
 
+		builder.setReport(report);
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 		builder.addPaging(page);
@@ -133,6 +134,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			checkReport();
+			builder.setReport(report);
 			builder.getSql();
 
 			json.put("modelType", report.getModelType().toString());

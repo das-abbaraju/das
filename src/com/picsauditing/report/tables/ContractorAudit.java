@@ -35,10 +35,7 @@ public class ContractorAudit extends BaseReportTable {
 	}
 
 	public void addJoins() {
-		AuditType auditTypeLeftJoin = new AuditType(prefix + "Type", alias + ".auditTypeID");
-		auditTypeLeftJoin.setParentPrefix(prefix);
-		auditTypeLeftJoin.setParentPrefix(alias);
-		addLeftJoin(auditTypeLeftJoin);
+		addLeftJoin(new AuditType(prefix + "Type", alias + ".auditTypeID"));
 
 		addLeftJoin(new User(prefix + "Auditor", alias + ".auditorID"));
 		addLeftJoin(new User(prefix + "ClosingAuditor", alias + ".closingAuditorID"));

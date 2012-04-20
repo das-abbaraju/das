@@ -155,7 +155,6 @@ public class SelectAccount extends SelectSQL {
 			this.addField("gc.flag");
 			this.addField("lower(gc.flag) AS lflag");
 			this.addField("gc.forceEnd");
-			this.addWhere("gc.genID = " + permissions.getAccountId());
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 
