@@ -23,6 +23,7 @@ import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
@@ -212,6 +213,12 @@ public class UsersManage extends PicsActionSupport {
 			username += user.getName();
 
 			user.setUsername(username);
+			//LW: verify is the group name is duplicate in the current system.
+			if (userDAO.duplicateUsername(user.getUsername(), user.getId())){
+				addActionError(getText("UsersManage.GroupnameNotAvailable"));
+				userDAO.refresh(user); // Clear out ALL changes for the user
+				return SUCCESS;
+			}
 		} else {
 			int maxHistory = 0;
 			// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
@@ -335,17 +342,7 @@ public class UsersManage extends PicsActionSupport {
 
 			user.setNeedsIndexing(true);
 			
-			if (user.isGroup()) {
-				// LW: check is the groupname is in use
-				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
-					userDAO.save(user);
-				else {
-					addActionError(getText("UsersManage.GroupnameNotAvailable"));
-					userDAO.refresh(user); // Clear out ALL changes for the user
-					return SUCCESS;
-				}
-			} else
-				user = userDAO.save(user);
+			user = userDAO.save(user);
 
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
@@ -440,9 +437,10 @@ public class UsersManage extends PicsActionSupport {
 		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String inActivate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -459,9 +457,10 @@ public class UsersManage extends PicsActionSupport {
 
 		return SUCCESS;
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
 	public String activate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -479,9 +478,10 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 		
 	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
 	public String delete() throws Exception {		
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -811,6 +811,7 @@ public class UsersManage extends PicsActionSupport {
 			sql.addOrderBy("isGroup");
 			sql.addOrderBy("name");
 			sql.addWhere("accountID = " + account.getId());
+			sql.addWhere("username not like 'DELETE-%'");
 			if ("Yes".equals(isGroup) || "No".equals(isGroup))
 				sql.addWhere("isGroup = '" + isGroup + "'");
 
@@ -834,7 +835,7 @@ public class UsersManage extends PicsActionSupport {
 			// but these permissions, have already been granted
 			list.remove(perm.getOpPerm());
 		}
-		Collections.sort(list, COMPARATOR);
+		Collections.sort(list, OpPerms.PermissionComparator);
 
 		return list;
 	}
@@ -916,12 +917,6 @@ public class UsersManage extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
-
-	private static Comparator<OpPerms> COMPARATOR = new Comparator<OpPerms>() {
-		public int compare(OpPerms o1, OpPerms o2) {
-			return o1.getDescription().compareTo(o2.getDescription());
-		}
-	};
 
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {

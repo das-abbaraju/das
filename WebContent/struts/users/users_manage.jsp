@@ -467,7 +467,10 @@
 										<pics:permission perm="SwitchUser">
 											<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 												<s:text name="UsersManage.SwitchToThisUser" />
-											</a>										
+											</a>														
+											<a class="picsbutton" href="http://beta.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+												<s:text name="UsersManage.SwitchToThisUserBeta" />
+											</a>						
 										</pics:permission>
 									</s:if>
 								</li>

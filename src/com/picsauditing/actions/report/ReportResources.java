@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.search.SelectSQL;
@@ -151,6 +152,18 @@ public class ReportResources extends ReportActionSupport {
 		this.id = id;
 	}
 
+	public boolean isEditableByUser(Resource resource) {
+		if (permissions.isAdmin())
+			return true;
+		if (Account.PICS_CORPORATE.contains(resource.getOperatorId()))
+			return false;
+		if (permissions.getAccountId() == resource.getOperatorId())
+			return true;
+		if (permissions.getCorporateParent().contains(resource.getOperatorId()))
+			return true;
+		return false;
+	}
+	
 	public String getLoc() {
 		return loc;
 	}
