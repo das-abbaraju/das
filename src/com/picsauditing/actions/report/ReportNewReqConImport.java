@@ -2,6 +2,7 @@ package com.picsauditing.actions.report;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -114,20 +115,18 @@ public class ReportNewReqConImport extends PicsActionSupport {
 
 			for (int i = 0; i < wb.getNumberOfSheets(); i++) {
 				Sheet sheet = wb.getSheetAt(i);
-
-				for (int j = 0; j <= sheet.getLastRowNum(); j++) {
-					Row row = sheet.getRow(j);
-
+				for(Row row : sheet) {
+					// skip the header
 					if (row.getCell(0).getRichStringCellValue().getString().contains("Account"))
 						continue;
-
+					
+					// skip empty row: Assuming that no company name = empty row
+					if (getValue(row,0) == null)
+						continue;
+					
 					ContractorRegistrationRequest crr = createdRegistrationRequest(row);
 
-					// Assuming that no company name = empty row
-					if (crr.getName() == null)
-						continue;
-
-					checkRequestForErrors(j, crr);
+					checkRequestForErrors(row.getRowNum(), crr);
 
 					requests.add(crr);
 				}
@@ -147,17 +146,40 @@ public class ReportNewReqConImport extends PicsActionSupport {
 		}
 	}
 
+	
+
 	private ContractorRegistrationRequest createdRegistrationRequest(Row row) {
 		ContractorRegistrationRequest crr = new ContractorRegistrationRequest();
 		crr.setName((String) getValue(row, 0));
 		crr.setContact((String) getValue(row, 1));
-		crr.setPhone((String) getValue(row, 2));
+		Object phoneValue = getValue(row, 2);
+		if(phoneValue != null) {
+			if (phoneValue instanceof Double) {
+				BigDecimal phoneValueDec = new BigDecimal((Double)phoneValue);
+				crr.setPhone(phoneValueDec.toString());
+			}
+			else{
+				crr.setPhone(phoneValue.toString());
+			}
+		}
+		
 		crr.setEmail((String) getValue(row, 3));
 		crr.setTaxID((String) getValue(row, 4));
 		crr.setAddress((String) getValue(row, 5));
 		crr.setCity((String) getValue(row, 6));
 		crr.setState((State) getValue(row, 7));
-		crr.setZip(getValue(row, 8).toString());
+		
+		Object zipcode = getValue(row, 8);
+		if(zipcode != null) {
+			if (zipcode instanceof Double) {
+				BigDecimal zipcodeDec = new BigDecimal((Double)zipcode);
+				crr.setPhone(zipcodeDec.toString());
+			}
+			else{
+				crr.setPhone(zipcode.toString());
+			}
+		}
+		
 		crr.setCountry((Country) getValue(row, 9));
 		crr.setRequestedBy((OperatorAccount) getValue(row, 10));
 		crr.setRequestedByUser((User) getValue(row, 11));
@@ -261,7 +283,7 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			if (cell == 13 && !Strings.isEmpty(value.toString()))
 				value = row.getCell(cell).getDateCellValue();
 
-			if (isDebugging() && value != null && !value.toString().equals(""))
+			if (isDebugging() && value != null && !value.toString().equals("")) 
 				System.out.println(cell + ": " + value.toString());
 
 			if (value != null && value.toString() == "")

@@ -25,7 +25,7 @@
 						<s:text name="ReportNewReqConImport.title" />
 					</h1>
 					<s:include value="../actionMessages.jsp" />
-					<a href="resources/RequestNewContractors.xls">
+					<a href="//www.picsorganizer.com/Resources!download.action?id=1854&loc=en">
 						<s:text name="ReportNewReqConImport.Template" />
 					</a>
 					<div>
