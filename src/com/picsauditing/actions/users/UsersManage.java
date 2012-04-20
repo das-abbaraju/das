@@ -213,6 +213,12 @@ public class UsersManage extends PicsActionSupport {
 			username += user.getName();
 
 			user.setUsername(username);
+			//LW: verify is the group name is duplicate in the current system.
+			if (userDAO.duplicateUsername(user.getUsername(), user.getId())){
+				addActionError(getText("UsersManage.GroupnameNotAvailable"));
+				userDAO.refresh(user); // Clear out ALL changes for the user
+				return SUCCESS;
+			}
 		} else {
 			int maxHistory = 0;
 			// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
@@ -336,17 +342,7 @@ public class UsersManage extends PicsActionSupport {
 
 			user.setNeedsIndexing(true);
 			
-			if (user.isGroup()) {
-				// LW: check is the groupname is in use
-				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
-					userDAO.save(user);
-				else {
-					addActionError(getText("UsersManage.GroupnameNotAvailable"));
-					userDAO.refresh(user); // Clear out ALL changes for the user
-					return SUCCESS;
-				}
-			} else
-				user = userDAO.save(user);
+			user = userDAO.save(user);
 
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
@@ -815,6 +811,7 @@ public class UsersManage extends PicsActionSupport {
 			sql.addOrderBy("isGroup");
 			sql.addOrderBy("name");
 			sql.addWhere("accountID = " + account.getId());
+			sql.addWhere("username not like 'DELETE-%'");
 			if ("Yes".equals(isGroup) || "No".equals(isGroup))
 				sql.addWhere("isGroup = '" + isGroup + "'");
 
