@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -141,6 +143,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isAlpha;
 	}
+	
+	public boolean isBetaEnvironment() throws UnknownHostException {
+	    Boolean isBeta = getRequestHost().contains("beta");
+	    String server = InetAddress.getLocalHost().getHostName();
+	    
+	    return isBeta || server.equals("organizer1") || server.equals("organizer2");
+	}
 
 	public boolean isConfigurationEnvironment() {
 		Boolean isConfiguration = getRequestHost().contains("config");
@@ -148,8 +157,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return isConfiguration;
 	}
 
-	public boolean isLiveEnvironment() {
-		return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment());
+	public boolean isLiveEnvironment() throws UnknownHostException {
+		return !(isAlphaEnvironment() || isConfigurationEnvironment() || isLocalhostEnvironment() || isBetaEnvironment());
 	}
 
 	public boolean isLocalhostEnvironment() {
@@ -157,7 +166,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isLocalhost;
 	}
-
+	
 	public boolean isI18nReady() {
 		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
 	}
