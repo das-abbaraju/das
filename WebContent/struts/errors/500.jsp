@@ -1,9 +1,7 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="/css/pics.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="/css/forms.css?" />
+<link rel="stylesheet" type="text/css" media="screen" href="/css/pics.css?v=${version}" />
+<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css?v=${version}" />
 </head>
 <body>
 <div id="main">

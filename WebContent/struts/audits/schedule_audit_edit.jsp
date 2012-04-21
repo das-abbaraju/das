@@ -16,11 +16,11 @@
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/audit/schedule_audit.css?v=<s:property value="version"/>" />
-	<link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/timeentry/jquery.timeentry.css?v=${version}" />
 	
 	<s:include value="../jquery.jsp"></s:include>
 	
-	<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
+	<script src="js/jquery/timeentry/jquery.timeentry.min.js?v=${version}" type="text/javascript"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 
     <script type="text/javascript" src="js/audit/schedule_audit_edit.js?v=<s:property value="version"/>"></script>

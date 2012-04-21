@@ -78,7 +78,7 @@
         });
     </script>
     
-    <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+    <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
 </head>
 <body>
     <h1><s:text name="ReportInsuranceApproval.title" /></h1>

@@ -7,7 +7,7 @@
 	</title>
 	
 	<s:include value="../jquery.jsp"/>
-	<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
+	<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 	<script type="text/javascript" src="js/mass_mailer.js?v=<s:property value="version"/>"></script>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />

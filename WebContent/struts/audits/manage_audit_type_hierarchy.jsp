@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js"></script>
+<script type="text/javascript" src="js/jquery/jsTree/jquery.jstree.js?v=${version}"></script>
 <script type="text/javascript">
 $(function() {
 	$('#audit-list').change(function() {
