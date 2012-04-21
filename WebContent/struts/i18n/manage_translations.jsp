@@ -219,7 +219,7 @@
                         <div class="content view-mode">
                             <div class="view">
                                 <div class="text">
-                                	<s:if test="value.toLowerCase().contains('html>')">
+                                	<s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
 	                                   	<a
 	                                   		href="javascript:;"
 	                                   		class="preview"
