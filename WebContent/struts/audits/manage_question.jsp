@@ -9,12 +9,12 @@
         <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css?v=${version}" />
         
         <s:include value="../jquery.jsp"/>
         
-        <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
-        <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js?v=${version}"></script>
+        <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js?v=${version}"></script>
         
         <script type="text/javascript">
             $(function(){

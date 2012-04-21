@@ -20,6 +20,11 @@
     background: url(../images/environment/purple.jpg) repeat;
 }
 
+.environment.beta
+{
+    background: url(../images/environment/blue.jpg) repeat;
+}
+
 .environment a,
 .environment span
 {

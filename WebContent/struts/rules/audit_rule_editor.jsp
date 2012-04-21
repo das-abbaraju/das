@@ -6,8 +6,8 @@
 	<head>
 		<title><s:property value="ruleType"/> Rule Editor</title>
 		
-		<link rel="stylesheet" href="css/reports.css"/>
-		<link rel="stylesheet" href="css/forms.css"/>
+		<link rel="stylesheet" href="css/reports.css?v=${version}" />
+		<link rel="stylesheet" href="css/forms.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp"/>
 		

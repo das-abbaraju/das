@@ -5,12 +5,12 @@
 <html>
 	<head>
 		<title>Home</title>
-        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
+        <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css?v=${version}">
 	</head>
 	<body>
 		<script type="text/javascript">
 			var dashboard = <s:property value="dashboard" escape="false" />;
 		</script>
-		<script type="text/javascript" src="js/pics/dashboard.js"></script>
+		<script type="text/javascript" src="js/pics/dashboard.js?v=${version}"></script>
 	</body>
 </html>

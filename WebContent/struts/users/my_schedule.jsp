@@ -7,9 +7,9 @@
 	<head>
 		<title>My Schedule</title>
 		
-		<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css">
-		<link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
-		<link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
+		<link rel="stylesheet" href="js/jquery/weekcalendar/jquery.weekcalendar.css?v=${version}">
+		<link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css?v=${version}">
+		<link href="js/jquery/timeentry/jquery.timeentry.css?v=${version}" media="screen" type="text/css" rel="stylesheet">
 		
 		<style>
 		.cal-availability, .cal-availability a, .cal-availability .fc-event-time {
@@ -58,9 +58,9 @@
 		
 		<s:include value="../jquery.jsp" />
 		
-		<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js"></script>
-		<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
-		<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="js/jquery/weekcalendar/jquery.weekcalendar.js.min.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js?v=${version}"></script>
+		<script src="js/jquery/timeentry/jquery.timeentry.min.js?v=${version}" type="text/javascript"></script>
 		
 		
 		<script type="text/javascript">

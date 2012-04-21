@@ -4,18 +4,18 @@
 <html>
 <head>
 <title><s:text name="TradeTaxonomy.title"/></title>
-<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/reports.css?v=%{version}" />" />
-<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/trades.css?v=%{version}" />" />
-<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/rules.css?v=%{version}" />" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/reports.css?v=${version}" />" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/trades.css?v=${version}" />" />
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/css/rules.css?v=${version}" />" />
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="<s:url value="/js/jquery/jsTree/jquery.jstree.js?v=%{version}" />"></script>
+<script type="text/javascript" src="<s:url value="/js/jquery/jsTree/jquery.jstree.js?v=${version}" />"></script>
 
-<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/js/jquery/blockui/blockui.css" />" />
-<script type="text/javascript" src="<s:url value="/js/jquery/blockui/jquery.blockui.js" />"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="<s:url value="/js/jquery/blockui/blockui.css?v=${version}" />" />
+<script type="text/javascript" src="<s:url value="/js/jquery/blockui/jquery.blockui.js?v=${version}" />"></script>
 <pics:permission perm="ManageTrades" type="Edit">
-	<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_admin.js?v=%{version}" />"></script>
+	<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_admin.js?v=${version}" />"></script>
 </pics:permission>
-<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_common.js?v=%{version}" />"></script>
+<script type="text/javascript" src="<s:url value="/js/trade_taxonomy_common.js?v=${version}" />"></script>
 <script>
 var ajaxUrl = 'TradeTaxonomy!tradeAjax.action?trade=';
 </script>

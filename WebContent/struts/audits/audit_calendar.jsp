@@ -6,8 +6,8 @@
 <title><s:text name="AuditCalendar.subheading" /></title>
 <s:include value="../jquery.jsp" />
 
-<link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css">
-<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js"></script>
+<link rel="stylesheet" href="js/jquery/fullcalendar/fullcalendar.css?v=${version}">
+<script type="text/javascript" src="js/jquery/fullcalendar/fullcalendar.min.js?v=${version}"></script>
 
 <link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>"/>
 

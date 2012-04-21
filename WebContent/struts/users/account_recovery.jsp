@@ -12,7 +12,7 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="css/account_recovery.css?v=<s:property value="version"/>" />
 	
 	<s:include value="../jquery.jsp"/>
-	<script type="text/javascript" src="js/account_recovery.js"></script>
+	<script type="text/javascript" src="js/account_recovery.js?v=${version}"></script>
 </head>
 <body>
 	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">

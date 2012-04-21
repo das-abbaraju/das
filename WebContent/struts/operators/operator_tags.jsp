@@ -13,7 +13,7 @@
 
 		<s:include value="../jquery.jsp"/>
 		
-		<script type="text/javascript" src="js/operator_tags.js"></script>
+		<script type="text/javascript" src="js/operator_tags.js?v=${version}"></script>
 	</head>
 	<body>
 		<s:include value="../actionMessages.jsp" />
