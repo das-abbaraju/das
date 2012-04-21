@@ -6,8 +6,8 @@
 <s:include value="../jquery.jsp"/>
 <script src="js/validate_contractor.js?v=<s:property value="version"/>" type="text/javascript"></script>
 <script src="js/notes.js?v=<s:property value="version"/>" type="text/javascript"></script>
-<script src="js/FusionCharts.js" type="text/javascript"></script>
-<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+<script src="js/FusionCharts.js?v=${version}" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>"/>
 <link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" /> 

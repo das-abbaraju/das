@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
-<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
+<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js?v=${version}"></script>
 <script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
 

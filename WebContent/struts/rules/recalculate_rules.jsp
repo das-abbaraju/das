@@ -4,8 +4,8 @@
 <html>
 <head>
 <title><s:if test="categoryRule">Category </s:if><s:else>Audit Type </s:else>Rule Editor</title>
-<link rel="stylesheet" href="css/reports.css"/>
-<link rel="stylesheet" href="css/forms.css"/>
+<link rel="stylesheet" href="css/reports.css?v=${version}" />
+<link rel="stylesheet" href="css/forms.css?v=${version}" />
 </head>
 <body>
 <h1>Recalculate Rules</h1>

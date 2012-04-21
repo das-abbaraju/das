@@ -9,10 +9,10 @@
 		</title>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=1" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/con_new_registration.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/con_new_registration.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp" />	
 	</head>
@@ -245,8 +245,8 @@
 				</fieldset>
 			</s:form>
 		</div>
-		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
-		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-		<script type="text/javascript" src="js/client_site_new_referral.js"></script>
+		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
+		<script type="text/javascript" src="js/client_site_new_referral.js?v=${version}"></script>
 	</body>
 </html>

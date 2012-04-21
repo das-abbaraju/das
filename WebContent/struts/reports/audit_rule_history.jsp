@@ -5,8 +5,8 @@
 <head>
 <title>Audit Rule History</title>
 <s:include value="./reportHeader.jsp" />
-<link rel="stylesheet" href="css/reports.css"/>
-<link rel="stylesheet" href="css/forms.css"/>
+<link rel="stylesheet" href="css/reports.css?v=${version}" />
+<link rel="stylesheet" href="css/forms.css?v=${version}" />
 <script>
 $(function() {
 	$('.datepicker').datepicker({

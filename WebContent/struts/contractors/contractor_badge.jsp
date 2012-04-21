@@ -29,8 +29,8 @@
 	<title>${contractor.name}</title>
     
     <link rel="stylesheet" type="text/css" media="screen" href="css/badge/badge.css?v=${version}" />
-    <script type="text/javascript" src="js/badge/badge.js"></script>
-    <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js"></script>
+    <script type="text/javascript" src="js/badge/badge.js?v=${version}"></script>
+    <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js?v=${version}"></script>
 </head>
 <body>
 	<s:include value="conHeader.jsp"/>

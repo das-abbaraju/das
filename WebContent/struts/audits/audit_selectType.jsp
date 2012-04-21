@@ -4,8 +4,8 @@
 <head>
 <title>Audit Management</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
-<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
+<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
 <script type="text/javascript">
 var dtable;
 $(function() {
