@@ -25,7 +25,7 @@ public class QueryField implements JSONAware {
 	private String name;
 	private String sql;
 	private FilterType filterType = FilterType.String;
-	private int width = 0;
+	private int width = 200;
 	private boolean visible = true;
 	private boolean filterable = true;
 	private boolean sortable = true;

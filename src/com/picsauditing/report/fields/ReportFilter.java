@@ -11,6 +11,7 @@ public class ReportFilter implements JSONable {
 	private QueryFilterOperator operator;
 	private String column2;
 	private String value;
+	private QueryField field;
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
@@ -24,6 +25,8 @@ public class ReportFilter implements JSONable {
 			json.put("column2", column2);
 		if (value != null)
 			json.put("value", value);
+		if (field != null)
+			json.put("field", field.toJSONObject());
 		return json;
 	}
 
@@ -40,6 +43,7 @@ public class ReportFilter implements JSONable {
 
 		this.column2 = (String) json.get("column2");
 		this.value = (String) json.get("value");
+		this.field = (QueryField) json.get("field");
 	}
 
 	private void parseNot(JSONObject json) {
@@ -104,5 +108,13 @@ public class ReportFilter implements JSONable {
 			return false;
 		
 		return true;
+	}
+
+	public QueryField getField() {
+		return field;
+	}
+
+	public void setField(QueryField field) {
+		this.field = field;
 	}
 }

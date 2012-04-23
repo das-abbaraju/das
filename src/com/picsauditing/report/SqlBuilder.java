@@ -107,7 +107,7 @@ public class SqlBuilder {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
 		for (ReportColumn column : definition.getColumns()) {
-			QueryField field = getQueryFieldFromSimpleColumn(column);
+			QueryField field = getQueryFieldFromReportColumn(column);
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
@@ -148,7 +148,7 @@ public class SqlBuilder {
 
 	private boolean usesGroupBy() {
 		for (ReportColumn column : definition.getColumns()) {
-			if (getQueryFieldFromSimpleColumn(column) != null) {
+			if (getQueryFieldFromReportColumn(column) != null) {
 				if (isAggregate(column.getName())) {
 					return true;
 				}
@@ -157,8 +157,16 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private QueryField getQueryFieldFromSimpleColumn(ReportColumn column) {
+	private QueryField getQueryFieldFromReportColumn(ReportColumn column) {
 		return availableFields.get(column.getAvailableFieldName().toUpperCase());
+	}
+
+	private QueryField getQueryFieldFromReportFilter(ReportFilter filter) {
+		return availableFields.get(filter.getColumn().toUpperCase());
+	}
+
+	private QueryField getQueryFieldFromReportSort(ReportSort sort) {
+		return availableFields.get(sort.getColumn().toUpperCase());
 	}
 
 	private boolean isAggregate(String columnName) {
@@ -174,7 +182,7 @@ public class SqlBuilder {
 	}
 
 	private String columnToSQL(ReportColumn column) {
-		QueryField field = getQueryFieldFromSimpleColumn(column);
+		QueryField field = getQueryFieldFromReportColumn(column);
 		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
 			return fieldSQL;
@@ -220,8 +228,10 @@ public class SqlBuilder {
 			// if (filter.isFullyDefined()) { }
 			if (isAggregate(filter.getColumn()) || isAggregate(filter.getColumn2())) {
 				havingFilters.add(filter);
+				filter.setField(getQueryFieldFromReportFilter(filter));
 			} else {
 				whereFilters.add(filter);
+				filter.setField(getQueryFieldFromReportFilter(filter));
 			}
 		}
 
@@ -317,7 +327,7 @@ public class SqlBuilder {
 		String value = filter.getValue();
 
 		// date filter
-		if (getQueryFieldFromSimpleColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
+		if (getQueryFieldFromReportColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			
 			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()),"");
@@ -363,6 +373,7 @@ public class SqlBuilder {
 			if (!sort.isAscending())
 				orderBy += " DESC";
 			sql.addOrderBy(orderBy);
+			sort.setField(getQueryFieldFromReportSort(sort));
 		}
 	}
 

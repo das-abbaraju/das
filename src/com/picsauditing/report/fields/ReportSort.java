@@ -9,6 +9,7 @@ import com.picsauditing.jpa.entities.JSONable;
 public class ReportSort implements JSONable {
 	private String column;
 	private boolean ascending = true;
+	private QueryField field;
 
 	public ReportSort() {
 	}
@@ -23,6 +24,8 @@ public class ReportSort implements JSONable {
 		json.put("column", column);
 		if (!ascending)
 			json.put("direction", "DESC");
+		if (field != null)
+			json.put("field", field.toJSONObject());
 		return json;
 	}
 
@@ -35,6 +38,7 @@ public class ReportSort implements JSONable {
 		String direction = (String) json.get("direction");
 		if (direction != null && direction.equals("DESC"))
 			this.ascending = false;
+		this.field = (QueryField) json.get("field");
 	}
 
 	// We might want to consider moving this to QueryField
@@ -59,4 +63,11 @@ public class ReportSort implements JSONable {
 		this.ascending = ascending;
 	}
 
+	public QueryField getField() {
+		return field;
+	}
+
+	public void setField(QueryField field) {
+		this.field = field;
+	}
 }
