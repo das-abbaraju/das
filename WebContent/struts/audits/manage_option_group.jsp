@@ -6,14 +6,14 @@
 <title>Manage Option Group</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
+<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
 <style type="text/css">
 .dataTables_info {
 	width: 100% !important;
 }
 </style>
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
 <pics:permission perm="ManageAudits" type="Edit">
 <script type="text/javascript">
 var dtable;

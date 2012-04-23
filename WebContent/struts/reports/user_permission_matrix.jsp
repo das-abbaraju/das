@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js"></script>
+<script type="text/javascript" src="js/jquery/autocompletefb/jquery.autocompletefb.js?v=${version}"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocompletefb/jquery.autocompletefb.css" />
 <script type="text/javascript">
 var ac_users = <s:property value="tableDisplay.rowsJSON" escape="false"/>;

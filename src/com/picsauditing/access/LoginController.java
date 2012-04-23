@@ -10,12 +10,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -40,6 +42,8 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	@Autowired
+	protected AppPropertyDAO appPropertyDAO;
 
 	private User user;
 	private String email;
@@ -143,6 +147,7 @@ public class LoginController extends PicsActionSupport {
 			username = permissions.getUsername();
 		} else {
 			// Normal login, via the actual Login.action page
+			
 			PicsLogger.start("Login", "Normal login");			
 			permissions.clear();			
 			String error = canLogin();
@@ -170,8 +175,8 @@ public class LoginController extends PicsActionSupport {
 			
 			Cookie cookie = new Cookie("username", username);
 			cookie.setMaxAge(ONE_HOUR * 24);
-			getResponse().addCookie(cookie);
-			//LW: check to see if there is switchtouseid exist, which comes from redirect from another server.  if it does, then after log in, redirect it. 
+			getResponse().addCookie(cookie);			
+			//check to see if there is switchtouseid exist, which comes from redirect from another server.  if it does, then after log in, redirect it. 
 			if (switchToUser > 0){
 				if (permissions.hasPermission(OpPerms.SwitchUser)) {					
 					int adminID = 0;
@@ -325,6 +330,7 @@ public class LoginController extends PicsActionSupport {
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
+		
 		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
 			String cookieFromURL = "";
@@ -338,7 +344,7 @@ public class LoginController extends PicsActionSupport {
 					getResponse().addCookie(cookie);
 				}
 				if ("username".equals(cookiesA[i].getName()))
-					cookieUsername = cookiesA[i].getValue();
+					cookieUsername = cookiesA[i].getValue();			
 			}
 			if (!Strings.isEmpty(cookieUsername) && !cookieUsername.equals(permissions.getUsername())) {
 				// If they are switching users, just send them back to the Home
@@ -350,6 +356,8 @@ public class LoginController extends PicsActionSupport {
 				getResponse().addCookie(cookie);
 			}
 
+			setBetaTestingCookie();
+			
 			if (cookieFromURL.length() > 0) {
 				redirect(cookieFromURL);
 				return;
@@ -371,6 +379,30 @@ public class LoginController extends PicsActionSupport {
 		return;
 	}
 
+	private void setBetaTestingCookie() {
+		String maxBetaLevel = appPropertyDAO.getProperty("BETA_maxLevel");
+		int betaMax = NumberUtils.toInt(maxBetaLevel, 0);
+		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(betaMax);
+		
+		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
+					
+		Cookie cookie = new Cookie ("USE_BETA", userBetaTester + "");						
+		if (userBetaTester){
+			cookie.setMaxAge(365 * 24 * 60 * 60);
+		} else{
+			cookie.setMaxAge(0);
+		}
+		getResponse().addCookie(cookie);
+	}
+
+	public void printCookie(){
+		Cookie[] cookiesA = getRequest().getCookies();
+		if (cookiesA != null) {			
+			for (int i = 0; i < cookiesA.length; i++) {
+				System.out.println("cookie name "+cookiesA[i].getName()+" cookie value "+cookiesA[i].getValue());
+			}
+		}
+	}
 	private void logAttempt() throws Exception {
 		if (user == null)
 			return;

@@ -2,8 +2,8 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <html>
 <head>
-<script type="text/javascript" src="js/jquery/jcrop/js/jquery.Jcrop.min.js"></script>
-<link rel="stylesheet" type="text/css" href="js/jquery/jcrop/css/jquery.Jcrop.css" media="screen" />
+<script type="text/javascript" src="js/jquery/jcrop/js/jquery.Jcrop.min.js?v=${version}"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/jcrop/css/jquery.Jcrop.css?v=${version}" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
