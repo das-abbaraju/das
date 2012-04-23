@@ -340,8 +340,8 @@ public class LoginController extends PicsActionSupport {
 				cookie.setMaxAge(ONE_SECOND);
 				getResponse().addCookie(cookie);
 			}
-
-			setBetaTestingCookie();
+			if (switchToUser==0 && switchServerToUser == 0) 
+				setBetaTestingCookie();
 			
 			if (cookieFromURL.length() > 0) {
 				redirect(cookieFromURL);
