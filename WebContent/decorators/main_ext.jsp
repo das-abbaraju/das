@@ -66,10 +66,10 @@
 		<meta http-equiv="Cache-Control" content="no-cache" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		
-		<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css">
-		<script type="text/javascript" src="js/extjs/ext-all.js"></script>
+		<link rel="stylesheet" type="text/css" href="js/extjs/resources/css/ext-all.css?v=${version}">
+		<script type="text/javascript" src="js/extjs/ext-all.js?v=${version}"></script>
 		
-		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
+		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}" /><!--<![endif]-->
 		
 		<script type="text/javascript" src="<%= pageIsSecure ? "https" : "http" %>://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 		<script type="text/javascript" src="TranslateJS.action"></script>
@@ -88,12 +88,12 @@
 		
 		<!--CSS FIXES FOR INTERNET EXPLORER -->
 		<!--[if IE]>
-			<link rel="stylesheet" href="css/ie.css" type="text/css" />
+			<link rel="stylesheet" href="css/ie.css?v=${version}" type="text/css" />
 		<![endif]-->
 		
 		<!-- compliance patch for microsoft browsers -->
 		<!--[if lt IE 7]>
-			<link rel="stylesheet" href="css/ie6.css" type="text/css" />
+			<link rel="stylesheet" href="css/ie6.css?v=${version}" type="text/css" />
 		<![endif]-->
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>

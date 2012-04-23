@@ -12,39 +12,39 @@ Note: 1.7.2 version affects the website in the followings ways, upgrading jquery
 --%>
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
 		
-<script type="text/javascript" src="js/core.js"></script>
-<script type="text/javascript" src="js/main.js"></script>
-<script type="text/javascript" src="js/ajax.js"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap-modal.js"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap-tooltip.js"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap-popover.js"></script>
+<script type="text/javascript" src="js/core.js?v=${version}"></script>
+<script type="text/javascript" src="js/main.js?v=${version}"></script>
+<script type="text/javascript" src="js/ajax.js?v=${version}"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap-modal.js?v=${version}"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap-tooltip.js?v=${version}"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap-popover.js?v=${version}"></script>
 
-<script type="text/javascript" src="js/jquery/tagit/jquery.tagit.js"></script>
+<script type="text/javascript" src="js/jquery/tagit/jquery.tagit.js?v=${version}"></script>
 
-<script type="text/javascript" src="js/audit_category_matrix.js"></script>
-<script type="text/javascript" src="js/con_audit_new.js"></script>
-<script type="text/javascript" src="js/contractor_dashboard.js"></script>
-<script type="text/javascript" src="js/contractor_flag.js"></script>
-<script type="text/javascript" src="js/contractor_safety_statistics.js"></script>
-<script type="text/javascript" src="js/header_search.js"></script>
-<script type="text/javascript" src="js/modal.js"></script>
-<script type="text/javascript" src="js/operator_edit.js"></script>
-<script type="text/javascript" src="js/registration.js"></script>
-<script type="text/javascript" src="js/registration_request_report.js"></script>
-<script type="text/javascript" src="js/subcontractors_report.js"></script>
-<script type="text/javascript" src="js/trade.js"></script>
-<script type="text/javascript" src="js/translation_trace.js"></script>
-<script type="text/javascript" src="js/translation_unsynced.js"></script>
-<script type="text/javascript" src="js/utility.js"></script>
-<script type="text/javascript" src="js/workflow_manage.js"></script>
-<script type="text/javascript" src="js/audit/audit.js"></script>
-<script type="text/javascript" src="js/audit/audit_controller.js"></script>
-<script type="text/javascript" src="js/insureguard/report_insurance_approval.js"></script>
-<script type="text/javascript" src="js/insureguard/report_insurance_approval_controller.js"></script>
+<script type="text/javascript" src="js/audit_category_matrix.js?v=${version}"></script>
+<script type="text/javascript" src="js/con_audit_new.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor_dashboard.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor_flag.js?v=${version}"></script>
+<script type="text/javascript" src="js/contractor_safety_statistics.js?v=${version}"></script>
+<script type="text/javascript" src="js/header_search.js?v=${version}"></script>
+<script type="text/javascript" src="js/modal.js?v=${version}"></script>
+<script type="text/javascript" src="js/operator_edit.js?v=${version}"></script>
+<script type="text/javascript" src="js/registration.js?v=${version}"></script>
+<script type="text/javascript" src="js/registration_request_report.js?v=${version}"></script>
+<script type="text/javascript" src="js/subcontractors_report.js?v=${version}"></script>
+<script type="text/javascript" src="js/trade.js?v=${version}"></script>
+<script type="text/javascript" src="js/translation_trace.js?v=${version}"></script>
+<script type="text/javascript" src="js/translation_unsynced.js?v=${version}"></script>
+<script type="text/javascript" src="js/utility.js?v=${version}"></script>
+<script type="text/javascript" src="js/workflow_manage.js?v=${version}"></script>
+<script type="text/javascript" src="js/audit/audit.js?v=${version}"></script>
+<script type="text/javascript" src="js/audit/audit_controller.js?v=${version}"></script>
+<script type="text/javascript" src="js/insureguard/report_insurance_approval.js?v=${version}"></script>
+<script type="text/javascript" src="js/insureguard/report_insurance_approval_controller.js?v=${version}"></script>
 
 <%-- struts utils --%>
-<script type="text/javascript" src="js/utils.js"></script>
+<script type="text/javascript" src="js/utils.js?v=${version}"></script>
 <script type="text/javascript" src="TranslateJS.action"></script>
 
-<!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js"></script><![endif]-->
+<!--[if IE 6]><script src="js/jquery/supersleight/supersleight.plugin.js?v=${version}"></script><![endif]-->
 <!--[if IE 6]><script>$('body').supersleight({shim: 'images/x.gif'});</script><![endif]-->

@@ -8,7 +8,7 @@
 <meta http-equiv="Expires" content="0" />
 <title><s:text name="ManageEmployeesUpload.title" /></title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
-<script type="text/javascript" src="js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.min.js?v=${version}"></script>
 <script type="text/javascript">
 $(function() {
 	$('#content').delegate('.closeButton', 'click', function(e) {

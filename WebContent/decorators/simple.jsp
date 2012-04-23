@@ -11,7 +11,7 @@
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
 		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=PicsActionSupport.getVersion()%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=PicsActionSupport.getVersion()%>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=PicsActionSupport.getVersion()%>" />

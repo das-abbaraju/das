@@ -150,7 +150,7 @@
 			</tr>
 		</table>
 		<s:include value="../jquery.jsp" />
-		<script type="text/javascript" src="js/core.js"></script>
-		<script type="text/javascript" src="js/employee_manage_job_roles.js"></script>
+		<script type="text/javascript" src="js/core.js?v=${version}"></script>
+		<script type="text/javascript" src="js/employee_manage_job_roles.js?v=${version}"></script>
 	</body>
 </html>

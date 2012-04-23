@@ -1076,17 +1076,6 @@ button .ui-icon {
 	font-size: 0;
 }
 
-/************** Beta logo ******************/
-div.beta {
-	float: right;
-	margin-left: 10px;
-	margin-bottom: 10px;
-	height: 100px;
-	width: 98px;
-	background-image: url(../images/beta.jpg);
-	clear: right;
-}
-
 /** blockUI ajaxDialog **/
 div.blockDialog {
 	display: none;

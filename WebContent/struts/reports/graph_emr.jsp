@@ -3,7 +3,7 @@
 <html>
 <head>
 <title><s:text name="GraphEmrRates.title" /></title>
-<script src="js/FusionCharts.js" type="text/javascript"></script>
+<script src="js/FusionCharts.js?v=${version}" type="text/javascript"></script>
 </head>
 <body>
 <h1><s:text name="GraphEmrRates.title" /></h1>

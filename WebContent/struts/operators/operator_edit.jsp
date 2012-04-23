@@ -11,7 +11,7 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp" />
 	</head>
