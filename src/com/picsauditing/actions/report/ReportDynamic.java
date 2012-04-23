@@ -182,7 +182,8 @@ public class ReportDynamic extends PicsActionSupport {
 		return dao.findWhere(Report.class, "id > 0", 100);
 	}
 
-	public String getReportParameters() {
+	public String getReportParameters() throws Exception {
+		buildSQL();
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
 		return JSON;		
@@ -331,6 +332,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private void addDefinition() {
 		ReportDefinition definition = new ReportDefinition(report.getParameters());
+		report.setDefinition(definition);
 		builder.setDefinition(definition);
 	}
 

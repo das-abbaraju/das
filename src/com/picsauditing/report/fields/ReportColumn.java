@@ -9,6 +9,7 @@ public class ReportColumn implements JSONable {
 	private String name;
 	private QueryFunction function = null;
 	private String option;
+	private QueryField field;
 
 	public ReportColumn() {
 	}
@@ -26,6 +27,8 @@ public class ReportColumn implements JSONable {
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
+		if (field != null)
+			json.put("field", field.toJSONObject());
 		return json;
 	}
 
@@ -38,6 +41,7 @@ public class ReportColumn implements JSONable {
 			this.function = QueryFunction.valueOf(methodName);
 			this.option = (String) json.get("option");
 		}
+		this.field = (QueryField) json.get("field");
 	}
 
 	public String getName() {
@@ -71,5 +75,13 @@ public class ReportColumn implements JSONable {
 
 	public void setOption(String option) {
 		this.option = option;
+	}
+
+	public QueryField getField() {
+		return field;
+	}
+
+	public void setField(QueryField field) {
+		this.field = field;
 	}
 }

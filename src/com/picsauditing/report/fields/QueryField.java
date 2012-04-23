@@ -101,6 +101,21 @@ public class QueryField implements JSONAware {
 		return toJSONObject().toJSONString();
 	}
 
+//	public void fromJSONObject(JSONObject json) {
+//		this.name = (String) json.get("name");
+//		this.name = (String) json.get("text");
+//		this.width = Integer.parseInt((String)json.get("width"));
+//		this.visible = Boolean.parseBoolean((String)json.get("visible"));
+//		this.filterable = Boolean.parseBoolean((String)json.get("filterable"));
+//		this.sortable = Boolean.parseBoolean((String)json.get("sortable"));
+//		this.hidden = Boolean.parseBoolean((String)json.get("hidden"));
+//		this.flex = Integer.parseInt((String)json.get("flex"));
+//		this.url = (String) json.get("url");
+//		this.renderer = (Renderer) json.get("renderer");
+//		this.filterType = (FilterType) json.get("filterType");
+//		this.type = (ExtFieldType) json.get("type");
+//	}
+//
 	public QueryField translate(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;

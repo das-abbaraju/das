@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
@@ -24,6 +25,7 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private Account sharedWith;
+	private ReportDefinition definition;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -78,14 +80,31 @@ public class Report extends BaseTable {
 
 		if (full) {
 			obj.put("description", description);
-			ReportDefinition definition = new ReportDefinition(parameters);
-			if (definition.getColumns().size() > 0)
-				obj.put("columns", JSONUtilities.convertFromList(definition.getColumns()));
-			if (definition.getFilters().size() > 0)
-				obj.put("filters", JSONUtilities.convertFromList(definition.getFilters()));
-			if (definition.getOrderBy().size() > 0)
-				obj.put("sorts", JSONUtilities.convertFromList(definition.getOrderBy()));
+			ReportDefinition defaultDefinition;
+			
+			if (this.definition == null) {
+				defaultDefinition = new ReportDefinition(parameters);
+			}
+			else {
+				defaultDefinition = this.definition;
+			}
+			
+			if (defaultDefinition.getColumns().size() > 0)
+				obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
+			if (defaultDefinition.getFilters().size() > 0)
+				obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
+			if (defaultDefinition.getOrderBy().size() > 0)
+				obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getOrderBy()));
 		}
 		return obj;
+	}
+
+	@Transient
+	public ReportDefinition getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(ReportDefinition definition) {
+		this.definition = definition;
 	}
 }

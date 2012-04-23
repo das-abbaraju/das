@@ -118,6 +118,7 @@ public class SqlBuilder {
 					sql.addGroupBy(columnSQL);
 				}
 				sql.addField(columnSQL + " AS `" + column.getName() + "`");
+				column.setField(field);
 			}
 		}
 
