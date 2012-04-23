@@ -158,7 +158,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Only includes the Active/Pending/Demo operator accounts, not corporate accounts or Deleted/Deactivated Operators
+	 * Only includes the Active/Pending/Demo operator accounts, not corporate
+	 * accounts or Deleted/Deactivated Operators
 	 * 
 	 * @return
 	 */
@@ -180,7 +181,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 			@Override
 			public boolean check(ContractorOperator t) {
-				return !t.getOperatorAccount().isCorporate() && !t.getOperatorAccount().getStatus().isDeactivated();
+				return !t.getOperatorAccount().isCorporate() && !t.getOperatorAccount().getStatus().isDeactivated()
+						&& !t.getOperatorAccount().getStatus().isDeleted();
 			}
 		}.grep(this.operators);
 	}
@@ -412,8 +414,8 @@ public class ContractorAccount extends Account implements JSONable {
 
 	// //// BILLING/ACCOUNT - related columns //////
 	/**
-	 * Determines if this contractor must pay or not. It allows for PICS to grant "free" lifetime accounts to certain
-	 * contractors. Yes or No
+	 * Determines if this contractor must pay or not. It allows for PICS to
+	 * grant "free" lifetime accounts to certain contractors. Yes or No
 	 */
 	@Column(name = "mustPay", nullable = false, length = 3)
 	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Boolean, sql = "CASE mustPay WHEN 'Yes' THEN 1 ELSE 0 END")
@@ -524,7 +526,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the contractor was invoiced for their most recent activation/reactivation fee
+	 * The date the contractor was invoiced for their most recent
+	 * activation/reactivation fee
 	 * 
 	 * @return
 	 */
@@ -551,8 +554,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The date the lastPayment expires and the contractor is due to pay another "period's" membership fee. This should
-	 * NEVER be null.
+	 * The date the lastPayment expires and the contractor is due to pay another
+	 * "period's" membership fee. This should NEVER be null.
 	 * 
 	 * @return
 	 */
@@ -568,7 +571,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Used to determine if we need to calculate the flagColor, audits and billing
+	 * Used to determine if we need to calculate the flagColor, audits and
+	 * billing
 	 * 
 	 * @return
 	 */
@@ -653,7 +657,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * Returns a list of the trades in a sorted order This is needed for the struts iterator for the trade cloud
+	 * Returns a list of the trades in a sorted order This is needed for the
+	 * struts iterator for the trade cloud
 	 */
 	@Transient
 	public List<ContractorTrade> getTradesSorted() {
@@ -810,7 +815,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The last day someone added a facility to this contractor. This is used to prorate upgrade amounts
+	 * The last day someone added a facility to this contractor. This is used to
+	 * prorate upgrade amounts
 	 * 
 	 * @return
 	 */
@@ -890,16 +896,17 @@ public class ContractorAccount extends Account implements JSONable {
 		boolean foundEmployeeGUARDMembership = false;
 		boolean foundImportPQFFee = false;
 		/**
-		 * TRUE if we found the most recent membership activation/reactivation or renewal. We're not looking for
-		 * upgrades here.
+		 * TRUE if we found the most recent membership activation/reactivation
+		 * or renewal. We're not looking for upgrades here.
 		 */
 		boolean foundMembership = false;
 		boolean foundMembershipDate = false;
 		boolean foundPaymentExpires = false;
 
 		/**
-		 * Go through the list of invoices in reverse order (most recent first). Find the first invoice with a
-		 * membership line and grab all the invoiceFees.
+		 * Go through the list of invoices in reverse order (most recent first).
+		 * Find the first invoice with a membership line and grab all the
+		 * invoiceFees.
 		 */
 		for (Invoice invoice : getSortedInvoices()) {
 			if (!invoice.getStatus().isVoid()) {
@@ -938,8 +945,8 @@ public class ContractorAccount extends Account implements JSONable {
 										FeeClass.InsureGUARD, this.getPayingFacilities());
 								setCurrentFee(newInsureGUARDFee, getCountry().getAmount(newInsureGUARDFee));
 							} else {
-								setCurrentFee(invoiceItem.getInvoiceFee(), getCountry().getAmount(
-										invoiceItem.getInvoiceFee()));
+								setCurrentFee(invoiceItem.getInvoiceFee(),
+										getCountry().getAmount(invoiceItem.getInvoiceFee()));
 							}
 
 							// DocuGUARD overrides Bid/List Only membership
@@ -1088,7 +1095,8 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel(); con.getFees().getDocuGUARD().getNewLevel();
+	 * con.getFees().get(FeeClass.DocuGUARD).getNewLevel();
+	 * con.getFees().getDocuGUARD().getNewLevel();
 	 * 
 	 * @return
 	 */
@@ -1167,17 +1175,23 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * The following are states of Billing Status: Membership Canceled Contractor is not active and membership is not
-	 * set to renew:<br />
+	 * The following are states of Billing Status: Membership Canceled
+	 * Contractor is not active and membership is not set to renew:<br />
 	 * <br>
 	 * <b>Current</b> means the contractor doesn't owe anything right now<br>
-	 * <b>Activation</b> means the contractor is not active and has never been active<br>
-	 * <b>Reactivation</b> means the contractor was active, but is no longer active anymore<br>
+	 * <b>Activation</b> means the contractor is not active and has never been
+	 * active<br>
+	 * <b>Reactivation</b> means the contractor was active, but is no longer
+	 * active anymore<br>
 	 * <b>Upgrade</b> The number of facilities a contractor is at has increased.<br>
-	 * <b>Do not renew</b> means the contractor has asked not to renew their account<br>
-	 * <b>Membership Canceled</b> means the contractor closed their account and doesn't want to renew<br>
-	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration Date is past.<br>
-	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is in the next 30 Days<br>
+	 * <b>Do not renew</b> means the contractor has asked not to renew their
+	 * account<br>
+	 * <b>Membership Canceled</b> means the contractor closed their account and
+	 * doesn't want to renew<br>
+	 * <b>Renewal Overdue</b> Contractor is active and the Membership Expiration
+	 * Date is past.<br>
+	 * <b>Renewal</b> Contractor is active and the Membership Expiration Date is
+	 * in the next 30 Days<br>
 	 * <b>Not Calculated</b> New Membership level is null<br>
 	 * <b>Past Due</b> Inovice is open and not paid by due date
 	 * 
@@ -1565,8 +1579,9 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	/**
-	 * This grabs a list of all General Contractor operators that this contractor works for, regardless of the
-	 * ContractorOperator type relationship.
+	 * This grabs a list of all General Contractor operators that this
+	 * contractor works for, regardless of the ContractorOperator type
+	 * relationship.
 	 */
 	@Transient
 	public List<OperatorAccount> getGeneralContractorOperatorAccounts() {
@@ -1601,17 +1616,18 @@ public class ContractorAccount extends Account implements JSONable {
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
 	}
-	
+
 	@Transient
 	public boolean hasAtLeastOneNonGCOperator(OperatorAccount gco) {
-		List<OperatorAccount> gcOperators = gco.getGcContractor().getContractorAccount().getNonGeneralContractorOperators();
+		List<OperatorAccount> gcOperators = gco.getGcContractor().getContractorAccount()
+				.getNonGeneralContractorOperators();
 		List<OperatorAccount> conOperators = getOperatorAccounts();
-		
+
 		for (OperatorAccount gcOp : gcOperators) {
 			if (conOperators.contains(gcOp))
 				return true;
 		}
-		
+
 		return false;
 	}
 }

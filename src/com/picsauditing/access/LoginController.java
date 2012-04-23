@@ -51,6 +51,7 @@ public class LoginController extends PicsActionSupport {
 	private String password;
 	private String key;
 	private int switchToUser;
+	private int switchServerToUser;
 
 	@Anonymous
 	@Override
@@ -109,7 +110,7 @@ public class LoginController extends PicsActionSupport {
 		// Autologin functionality if the reset button is passed, otherwise
 		// perform
 		// other login procedures
-		if (switchToUser > 0) {
+		if (switchToUser > 0) {				
 			if (permissions.getUserId() == switchToUser) {
 				// Switch back to myself
 				user = getUser();
@@ -126,30 +127,13 @@ public class LoginController extends PicsActionSupport {
 				}
 			}
 
-			if (permissions.hasPermission(OpPerms.SwitchUser)) {
-				int adminID = 0;
-				if (permissions.getUserId() != switchToUser)
-					adminID = permissions.getUserId();
-
-				boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-
-				permissions.login(user);
-				LocaleController.setLocaleOfNearestSupported(permissions);
-				permissions.setAdminID(adminID);
-				if (translator)
-					permissions.setTranslatorOn();
-				password = "switchUser";
-			} else {
-				// TODO Verify the user has access to login
-				permissions.setAccountPerms(user);
-				password = "switchAccount";
-			}
+			switchToUser(switchToUser);
 			username = permissions.getUsername();
 		} else {
 			// Normal login, via the actual Login.action page
 			
-			PicsLogger.start("Login", "Normal login");			
-			permissions.clear();			
+			PicsLogger.start("Login", "Normal login");
+			permissions.clear();
 			String error = canLogin();
 			if (error.length() > 0) {
 				logAttempt();
@@ -163,7 +147,6 @@ public class LoginController extends PicsActionSupport {
 				user.setForcePasswordReset(true);
 				user.setResetHash("");
 			}
-
 			
 			// /////////////////			
 			PicsLogger.log("logging in user: " + user.getUsername());			
@@ -177,25 +160,8 @@ public class LoginController extends PicsActionSupport {
 			cookie.setMaxAge(ONE_HOUR * 24);
 			getResponse().addCookie(cookie);			
 			//check to see if there is switchtouseid exist, which comes from redirect from another server.  if it does, then after log in, redirect it. 
-			if (switchToUser > 0){
-				if (permissions.hasPermission(OpPerms.SwitchUser)) {					
-					int adminID = 0;
-					if (permissions.getUserId() != switchToUser)
-						adminID = permissions.getUserId();
-	
-					boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-					user = userDAO.find(switchToUser);
-					permissions.login(user);
-					LocaleController.setLocaleOfNearestSupported(permissions);
-					permissions.setAdminID(adminID);
-					if (translator)
-						permissions.setTranslatorOn();
-					password = "switchUser";
-				} else {
-					// TODO Verify the user has access to login
-					permissions.setAccountPerms(user);
-					password = "switchAccount";
-				}
+			if (switchServerToUser > 0){
+				switchToUser(switchServerToUser);
 			}
 				
 			PicsLogger.stop();
@@ -205,12 +171,31 @@ public class LoginController extends PicsActionSupport {
 			ActionContext.getContext().getSession().put("permissions", permissions);
 		else
 			ActionContext.getContext().getSession().clear();
-		logAttempt();
+		logAttempt();		
 		postLogin();
 
 		return SUCCESS;
 	}
+	private void switchToUser(int userID) throws Exception{
+		if (permissions.hasPermission(OpPerms.SwitchUser)) {					
+			int adminID = 0;
+			if (permissions.getUserId() != switchServerToUser)
+				adminID = permissions.getUserId();
 
+			boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
+			user = userDAO.find(userID);
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions.setAdminID(adminID);
+			if (translator)
+				permissions.setTranslatorOn();
+			password = "switchUser";
+		} else {
+			// TODO Verify the user has access to login
+			permissions.setAccountPerms(user);
+			password = "switchAccount";
+		}
+	}
 	/**
 	 * Method to log in via an ajax overlay
 	 * 
@@ -463,6 +448,9 @@ public class LoginController extends PicsActionSupport {
 		this.password = password;
 	}
 
+	public void setSwitchServerToUser(int switchServerToUser){
+		this.switchServerToUser = switchServerToUser;
+	}
 	public void setSwitchToUser(int switchToUser) {
 		this.switchToUser = switchToUser;
 	}
