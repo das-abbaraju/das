@@ -367,8 +367,12 @@ public class AuditPercentCalculator {
 				}
 
 				percentVerified = (int) Math.floor(100 * verified / required);
-				if (percentVerified >= 100)
+				if (percentVerified >= 100) {
 					percentVerified = 100;
+				}
+			} else {
+				percentComplete = 100;
+				percentVerified = 100;
 			}
 
 			cao.setPercentComplete(percentComplete);
