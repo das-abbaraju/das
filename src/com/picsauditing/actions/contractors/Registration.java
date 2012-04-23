@@ -190,16 +190,16 @@ public class Registration extends ContractorActionSupport {
 		loginLog.setRemoteAddress(ServletActionContext.getRequest().getRemoteAddr());
 
 		String serverName = ServletActionContext.getRequest().getLocalName();
-		if (isLiveEnvironment()) {
-			try {
+		try {
+			if (isLiveEnvironment()) {
 				// Need computer name instead of www
 				serverName = InetAddress.getLocalHost().getHostName();
-			} catch (UnknownHostException justUseRequestServerName) {
 			}
+		} catch (UnknownHostException justUseRequestServerName) {
 		}
-		
+
 		loginLog.setServerAddress(serverName);
-		
+
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
 		userLoginLogDAO.save(loginLog);
@@ -322,8 +322,9 @@ public class Registration extends ContractorActionSupport {
 	}
 
 	/**
-	 * This shouldn't be getting called either. After the first step of registration the Contractor account is created
-	 * and this should redirect to ConEdit
+	 * This shouldn't be getting called either. After the first step of
+	 * registration the Contractor account is created and this should redirect
+	 * to ConEdit
 	 */
 	@Override
 	public String nextStep() throws Exception {
