@@ -26,11 +26,31 @@ public class DBBeanTest {
 	@Test
 	public void testThreadsafe() throws Exception {
 		List<Thread> threads = createThreads(THREAD_COUNT);
+		
+		// The reason this needs to be done, is that the DBBean's staticDataSource
+		// field gets set by afterPropertiesSet() method overridden in its implementation
+		// of the InitializingBean.
+		DBBean.staticDataSource = null;
+		
 		for (Thread thread : threads) {
 			thread.start();
 		}
 		
-//		assertEquals(1, DBBean.instantiationCount.intValue());
+		boolean allThreadsDone = false;
+		while (!allThreadsDone) {
+			int total = 0;
+			for (Thread thread : threads) {
+				if (Thread.State.TERMINATED == thread.getState()) {
+					total++;
+				}
+			}
+			
+			if (total == THREAD_COUNT) {
+				allThreadsDone = true;
+			}
+		}
+		
+		assertEquals(1, DBBean.instantiationCount.intValue());
 	}
 
 	private List<Thread> createThreads(int threadCount) {
@@ -41,9 +61,9 @@ public class DBBeanTest {
 				@Override
 				public void run() {
 					try {
-						DBBean.getDBConnection();
+						DBBean.getDBConnection().close();
 					} catch (Exception e) {
-						// do nothing
+						System.out.println("Thread exception during JUnit test!");
 					}
 				}
 			}));

@@ -2,6 +2,7 @@ package com.picsauditing.PICS;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -9,13 +10,19 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.util.Testable;
+
 public class DBBean implements InitializingBean {
 	
 	private static com.picsauditing.PICS.PICSDBLocator serviceLocator;
 	private static DataSource dataSource;
 	
 	// volatile to use as part of the double-locking pattern
-	private static volatile DataSource staticDataSource;
+	@Testable
+	static volatile DataSource staticDataSource;
+	
+	@Testable
+	static AtomicInteger instantiationCount = new AtomicInteger(0); 
 	
 	/**
 	 * Enforce the singleton nature of this class by making the 
@@ -38,6 +45,7 @@ public class DBBean implements InitializingBean {
 				if (result == null) {
 					try {
 						staticDataSource = result = getJdbcPics();
+						DBBean.instantiationCount.getAndIncrement();
 					} catch (NamingException ne) {
 						ne.printStackTrace();
 						return null;
