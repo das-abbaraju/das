@@ -59,6 +59,7 @@
 							size="35"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_name"></div>
 						<div id="match_name"></div>
 					</li>
@@ -68,6 +69,7 @@
 							name="newContractor.contact"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_contact"></div>
 						<div id="match_contact"></div>
 					</li>
@@ -78,6 +80,7 @@
 							size="20"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
 					</li>
@@ -89,6 +92,7 @@
 							id="email"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_email"></div>
 						<div id="match_email"></div>
 					</li>
@@ -122,7 +126,7 @@
 							listValue="name"
 							value="%{newContractor.country == null ? permissions.country : newContractor.country.isoCode}"
 						/>
-							
+						<span class="redMain">*</span>	
 						<div class="fieldhelp">
 							<h3>
 								<s:text name="Country" />
@@ -180,7 +184,7 @@
 							listValue="name" 
 							value="%{newContractor.requestedBy.id}"
 						/>
-						
+						<span class="redMain">*</span>
 						<div class="fieldhelp">
 							<h3>
 								<s:text name="ContractorRegistrationRequest.requestedBy" />
@@ -204,6 +208,7 @@
 							onchange="checkDate(this)"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 					</li>
 					<li>
 						<s:textarea

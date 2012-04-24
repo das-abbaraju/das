@@ -32,7 +32,7 @@ public abstract class BaseTranslatable implements Translatable {
 
 		return result;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Transient
 	private List<String> getRequiredLanguagesForEntity() {
@@ -43,12 +43,13 @@ public abstract class BaseTranslatable implements Translatable {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	@PostLoad
 	public void postLoad() throws Exception {
 		for (Field field : getTranslatableFields()) {
 			I18nCache i18nCache = I18nCache.getInstance();
 			TranslatableString translatable = new TranslatableString();
+			translatable.setKey(this.getI18nKey(field.getName()));
 			Map<String, String> translationCache = i18nCache.getText(getI18nKey(field.getName()));
 			for (String key : translationCache.keySet()) {
 				translatable.putTranslation(key, translationCache.get(key), false);
