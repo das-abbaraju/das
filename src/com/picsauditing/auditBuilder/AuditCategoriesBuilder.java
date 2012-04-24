@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditData;
@@ -171,7 +172,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			if (rule == null) {
 				// This operator doesn't require any categories, so I'm just going to ignore it for now
 			} else {
-				OperatorAccount governingBody = determineGoverningBody(rule.getOperatorAccount());
+				
+				OperatorAccount governingBody = determineGoverningBody(rule.getOperatorAccount(), operator);
 				if (!caos.containsKey(governingBody))
 					caos.put(governingBody, new HashSet<OperatorAccount>());
 				// Add the operator (caop) to one and only one governingBody
@@ -190,11 +192,10 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			caos.put(picsGlobal, new HashSet<OperatorAccount>());
 		}
 
-
 		return caos;
 	}
 
-	private OperatorAccount determineGoverningBody(OperatorAccount governingBody) {
+	private OperatorAccount determineGoverningBody(OperatorAccount governingBody, OperatorAccount operator) {
 		OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
 		picsGlobal.setId(4);
 		
@@ -203,7 +204,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 						.isImplementation()))) {
 			return picsGlobal;
 		}
-		
+
+		if (auditType != null && auditType.isPqf()
+				&& Account.PICS_CORPORATE.contains(governingBody.getId())) {
+			return operator;
+		}
+
 		if (governingBody == null)
 			return picsGlobal;
 		

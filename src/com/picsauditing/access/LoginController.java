@@ -10,12 +10,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -29,7 +31,8 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 /**
- * Populate the permissions object in session with appropriate login credentials and access/permission data
+ * Populate the permissions object in session with appropriate login credentials
+ * and access/permission data
  */
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
@@ -40,6 +43,8 @@ public class LoginController extends PicsActionSupport {
 	protected UserDAO userDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDAO;
+	@Autowired
+	protected AppPropertyDAO appPropertyDAO;
 
 	private User user;
 	private String email;
@@ -47,6 +52,7 @@ public class LoginController extends PicsActionSupport {
 	private String password;
 	private String key;
 	private int switchToUser;
+	private int switchServerToUser;
 
 	@Anonymous
 	@Override
@@ -54,9 +60,9 @@ public class LoginController extends PicsActionSupport {
 		if (button == null) {
 			// ServletActionContext.getRequest().getSession().invalidate();
 			return SUCCESS;
-		}		
+		}
 		loadPermissions(false);
-		
+
 		if ("logout".equals(button)) {
 			// The msg parameter is passed on Permissions.java when a session
 			// has timed out and login is required again.
@@ -74,11 +80,20 @@ public class LoginController extends PicsActionSupport {
 			permissions.clear();
 
 			if (adminID > 0) {
+				
+					
 				// Re login the admin on logout
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
 				LocaleController.setLocaleOfNearestSupported(permissions);
+				if (ActionContext.getContext().getSession().get("redirect").equals("true")){
+					if (isLiveEnvironment())
+						redirect("http://beta.picsorganizer.com");
+					if (isAlphaEnvironment())
+						redirect("http://localhost:8080/");
+					ActionContext.getContext().getSession().remove("redirect");
+				}
 				postLogin();
 				return SUCCESS;
 			}
@@ -115,36 +130,20 @@ public class LoginController extends PicsActionSupport {
 					// We're trying to login as another PICS user
 					// Double check they also have the Dev permission too
 					if (!permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
-						logAttempt();						
+						logAttempt();
 						addActionError("You must be a PICS Software Developer to switch to another PICS user.");
 						return SUCCESS;
 					}
 				}
 			}
 
-			if (permissions.hasPermission(OpPerms.SwitchUser)) {
-				int adminID = 0;
-				if (permissions.getUserId() != switchToUser)
-					adminID = permissions.getUserId();
-
-				boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-
-				permissions.login(user);
-				LocaleController.setLocaleOfNearestSupported(permissions);
-				permissions.setAdminID(adminID);
-				if (translator)
-					permissions.setTranslatorOn();
-				password = "switchUser";
-			} else {
-				// TODO Verify the user has access to login
-				permissions.setAccountPerms(user);
-				password = "switchAccount";
-			}
+			switchToUser(switchToUser);
 			username = permissions.getUsername();
 		} else {
 			// Normal login, via the actual Login.action page
-			PicsLogger.start("Login", "Normal login");			
-			permissions.clear();			
+
+			PicsLogger.start("Login", "Normal login");
+			permissions.clear();
 			String error = canLogin();
 			if (error.length() > 0) {
 				logAttempt();
@@ -159,40 +158,25 @@ public class LoginController extends PicsActionSupport {
 				user.setResetHash("");
 			}
 
-			
-			// /////////////////			
-			PicsLogger.log("logging in user: " + user.getUsername());			
+			// /////////////////
+			PicsLogger.log("logging in user: " + user.getUsername());
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
-			
-			user.setLastLogin(new Date());			
+
+			user.setLastLogin(new Date());
 			userDAO.save(user);
-			
+
 			Cookie cookie = new Cookie("username", username);
 			cookie.setMaxAge(ONE_HOUR * 24);
 			getResponse().addCookie(cookie);
-			//LW: check to see if there is switchtouseid exist, which comes from redirect from another server.  if it does, then after log in, redirect it. 
-			if (switchToUser > 0){
-				if (permissions.hasPermission(OpPerms.SwitchUser)) {					
-					int adminID = 0;
-					if (permissions.getUserId() != switchToUser)
-						adminID = permissions.getUserId();
-	
-					boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
-					user = userDAO.find(switchToUser);
-					permissions.login(user);
-					LocaleController.setLocaleOfNearestSupported(permissions);
-					permissions.setAdminID(adminID);
-					if (translator)
-						permissions.setTranslatorOn();
-					password = "switchUser";
-				} else {
-					// TODO Verify the user has access to login
-					permissions.setAccountPerms(user);
-					password = "switchAccount";
-				}
+			// check to see if there is switchtouseid exist, which comes from
+			// redirect from another server. if it does, then after log in,
+			// redirect it.
+			if (switchServerToUser > 0) {
+				switchToUser(switchServerToUser);
+				ActionContext.getContext().getSession().put("redirect", "true");
 			}
-				
+
 			PicsLogger.stop();
 		}
 
@@ -204,6 +188,27 @@ public class LoginController extends PicsActionSupport {
 		postLogin();
 
 		return SUCCESS;
+	}
+
+	private void switchToUser(int userID) throws Exception {
+		if (permissions.hasPermission(OpPerms.SwitchUser)) {
+			int adminID = 0;
+			if (permissions.getUserId() != switchServerToUser)
+				adminID = permissions.getUserId();
+
+			boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
+			user = userDAO.find(userID);
+			permissions.login(user);
+			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions.setAdminID(adminID);
+			if (translator)
+				permissions.setTranslatorOn();
+			password = "switchUser";
+		} else {
+			// TODO Verify the user has access to login
+			permissions.setAccountPerms(user);
+			password = "switchAccount";
+		}
 	}
 
 	/**
@@ -237,14 +242,15 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	/**
-	 * Figure out if the current username/password is a valid user or account that can actually login. But don't
-	 * actually login yet
+	 * Figure out if the current username/password is a valid user or account
+	 * that can actually login. But don't actually login yet
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
 	private String canLogin() throws Exception {
-		// TODO: Move this into User-validation.xml and use struts 2 for this validation
+		// TODO: Move this into User-validation.xml and use struts 2 for this
+		// validation
 		if (Strings.isEmpty(username))
 			return getText("User.username.error.Empty");
 		else if (username.length() < 3)
@@ -309,7 +315,7 @@ public class LoginController extends PicsActionSupport {
 				return getTextParameterized("Login.ResetCodeExpired", user.getUsername());
 			}
 		}
-		
+
 		user.setFailedAttempts(0);
 		user.setLockUntil(null); // it's no longer locked
 
@@ -325,6 +331,7 @@ public class LoginController extends PicsActionSupport {
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
+
 		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
 			String cookieFromURL = "";
@@ -349,6 +356,8 @@ public class LoginController extends PicsActionSupport {
 				cookie.setMaxAge(ONE_SECOND);
 				getResponse().addCookie(cookie);
 			}
+			if (switchToUser == 0 && switchServerToUser == 0)
+				setBetaTestingCookie();
 
 			if (cookieFromURL.length() > 0) {
 				redirect(cookieFromURL);
@@ -371,6 +380,31 @@ public class LoginController extends PicsActionSupport {
 		return;
 	}
 
+	private void setBetaTestingCookie() {
+		String maxBetaLevel = appPropertyDAO.getProperty("BETA_maxLevel");
+		int betaMax = NumberUtils.toInt(maxBetaLevel, 0);
+		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(betaMax);
+
+		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
+
+		Cookie cookie = new Cookie("USE_BETA", userBetaTester + "");
+		if (userBetaTester) {
+			cookie.setMaxAge(365 * 24 * 60 * 60);
+		} else {
+			cookie.setMaxAge(0);
+		}
+		getResponse().addCookie(cookie);
+	}
+
+	public void printCookie() {
+		Cookie[] cookiesA = getRequest().getCookies();
+		if (cookiesA != null) {
+			for (int i = 0; i < cookiesA.length; i++) {
+				System.out.println("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
+			}
+		}
+	}
+
 	private void logAttempt() throws Exception {
 		if (user == null)
 			return;
@@ -378,13 +412,13 @@ public class LoginController extends PicsActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-		
+
 		String serverName = getRequest().getLocalName();
 		if (isLiveEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();
 		}
-		
+
 		loginLog.setServerAddress(serverName);
 		loginLog.setSuccessful(permissions.isLoggedIn());
 		loginLog.setUser(user);
@@ -431,15 +465,18 @@ public class LoginController extends PicsActionSupport {
 		this.password = password;
 	}
 
+	public void setSwitchServerToUser(int switchServerToUser) {
+		this.switchServerToUser = switchServerToUser;
+	}
+
 	public void setSwitchToUser(int switchToUser) {
 		this.switchToUser = switchToUser;
 	}
-	
+
 	public int getSwitchToUser() {
 		return switchToUser;
 	}
 
-	
 	public void setUsern(String usern) {
 		this.username = usern;
 	}

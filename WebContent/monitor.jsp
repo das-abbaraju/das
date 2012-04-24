@@ -10,7 +10,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Cache Info</title>
-<link rel="stylesheet" href="css/reports.css"/>
+<link rel="stylesheet" href="css/reports.css?v=${version}" />
 </head>
 <body>
 <h2>EhCache Statistics</h2>

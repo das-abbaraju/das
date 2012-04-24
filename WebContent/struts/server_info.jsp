@@ -1,6 +1,6 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
-<link rel="stylesheet" href="css/reports.css" />
+<link rel="stylesheet" href="css/reports.css?v=${version}" />
 
 <h2 style="padding-bottom:15px;">Operating System Info</h2>
 <table class="report">

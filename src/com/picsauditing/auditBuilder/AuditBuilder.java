@@ -217,6 +217,7 @@ public class AuditBuilder {
 	 */
 	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
 		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<OperatorAccount, ContractorAuditOperator>();
+		HashSet<ContractorAuditOperator> pqfCaosToComplete = new HashSet<ContractorAuditOperator>();
 		HashSet<ContractorAuditOperator> pqfCaosToResubmit = new HashSet<ContractorAuditOperator>();
 		HashSet<ContractorAuditOperator> pqfCaosToSubmit = new HashSet<ContractorAuditOperator>();
 		HashSet<Integer> operatorsGoingVisibleIds = new HashSet<Integer>();
@@ -278,10 +279,15 @@ public class AuditBuilder {
 				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
 					caop.setPreviousCao(prevCao);
-					if ((prevCao.getStatus().isComplete() || prevCao.getStatus().isResubmit())
-							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds.contains(cao.getOperator()
-									.getId()))) {
+					if (prevCao.getStatus().isComplete()
+							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds
+									.contains(cao.getOperator().getId()))) {
+						pqfCaosToComplete.add(cao);
+					} else if (prevCao.getStatus().isResubmit()
+							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds
+									.contains(cao.getOperator().getId()))) {
 						pqfCaosToResubmit.add(cao);
+
 					} else if (prevCao.getStatus().isSubmitted()
 							&& (cao.getStatus().isPending() || operatorsGoingVisibleIds.contains(cao.getOperator()
 									.getId()))) {
@@ -296,6 +302,32 @@ public class AuditBuilder {
 		// These caos are invisible->visible, pending, or totally new
 		// All operators under this cao will no longer be red flagged for missing/incomplete PQFs
 		// and will now be green flagged.  Not exactly right but at least nobody will be complaining.
+		if (conAudit.getAuditType().isPqf() && !pqfCaosToComplete.isEmpty()) {
+			Iterator<ContractorAuditOperator> list = pqfCaosToComplete.iterator();
+			while (list.hasNext()) {
+				ContractorAuditOperator cao = list.next();
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Complete, null);
+				if (caow != null) {
+					caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
+							.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+					caow.setCreatedBy(systemUser);
+					contractorAuditOperatorDAO.save(caow);
+				}
+			}
+		}
+		if (conAudit.getAuditType().isPqf() && !pqfCaosToResubmit.isEmpty()) {
+			Iterator<ContractorAuditOperator> list = pqfCaosToResubmit.iterator();
+			while (list.hasNext()) {
+				ContractorAuditOperator cao = list.next();
+				ContractorAuditOperatorWorkflow caow = cao.changeStatus(AuditStatus.Resubmit, null);
+				if (caow != null) {
+					caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
+							.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+					caow.setCreatedBy(systemUser);
+					contractorAuditOperatorDAO.save(caow);
+				}
+			}
+		}
 		if (conAudit.getAuditType().isPqf() && !pqfCaosToResubmit.isEmpty()) {
 			Iterator<ContractorAuditOperator> list = pqfCaosToResubmit.iterator();
 			while (list.hasNext()) {

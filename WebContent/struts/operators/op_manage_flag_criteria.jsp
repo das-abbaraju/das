@@ -11,7 +11,7 @@
 	
 	<s:include value="../jquery.jsp"/>
 	
-	<script type="text/javascript" src="js/op_manage_flag_criteria.js"></script>
+	<script type="text/javascript" src="js/op_manage_flag_criteria.js?v=${version}"></script>
 	
 	<script>
 	function getFlag(selectObject) {

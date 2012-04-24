@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" media="screen"
 	href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"></s:include>
-<script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js"></script>
+<script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js?v=${version}"></script>
 <script type="text/javascript">
 function showImport() {
 	$('#translationsArea').val('').show();

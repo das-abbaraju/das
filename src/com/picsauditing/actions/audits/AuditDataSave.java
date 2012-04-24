@@ -51,7 +51,7 @@ public class AuditDataSave extends AuditActionSupport {
 	private static final int OSHA_INCIDENT_QUESTION_ID = 8838;
 	private static final int COHS_INCIDENT_QUESTION_ID = 8840;
 	private static final int[] OSHA_INCIDENT_RELATED_QUESTION_IDS = new int[] {8812, 8813, 8814, 8815, 8816, 8817};
-	private static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] {8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847};
+	private static final int[] COHS_INCIDENT_RELATED_QUESTION_IDS = new int[] {8841, 8842, 8843, 8844, 11119, 8845, 8846, 8847, 11117, 11118};
 		
 	private AuditData auditData = null;
 	private String[] multiAnswer;

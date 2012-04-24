@@ -467,10 +467,22 @@
 										<pics:permission perm="SwitchUser">
 											<a class="picsbutton" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 												<s:text name="UsersManage.SwitchToThisUser" />
-											</a>														
-											<a class="picsbutton" href="http://beta.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-												<s:text name="UsersManage.SwitchToThisUserBeta" />
-											</a>						
+											</a>																									
+											<s:if test="isBetaEnvironment()">
+												<a class="picsbutton" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+													<s:text name="UsersManage.SwitchToThisUserStable" />
+												</a>			
+											</s:if>
+											<s:if test="isLocalhostEnvironment()">
+												<a class="picsbutton" href="http://alpha.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+													<s:text name="UsersManage.SwitchToThisUserAlpha" />
+												</a>			
+											</s:if>
+											<s:if test="isAlphaEnvironment()">
+												<a class="picsbutton" href="http://beta.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+													<s:text name="UsersManage.SwitchToThisUserBeta" />
+												</a>			
+											</s:if>
 										</pics:permission>
 									</s:if>
 								</li>
