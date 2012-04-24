@@ -474,8 +474,8 @@ public class UsersManage extends PicsActionSupport {
 		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
 		
-
-		return SUCCESS;
+		//when an user is reactived, refresh the page to change the isactive status.
+		return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		
 	}
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
@@ -588,7 +588,7 @@ public class UsersManage extends PicsActionSupport {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
 
-			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {
+			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}
