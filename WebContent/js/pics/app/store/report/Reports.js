@@ -1,59 +1,57 @@
 Ext.define('PICS.store.report.Reports', {
 	extend : 'Ext.data.Store',
 	model : 'PICS.model.report.Report',
-	
+
 	autoLoad: false,
 	listeners: {
 	    load: function (store, records, successful, operation, options) {
                 var report = store.first();
 
                 if (report) {
-                    this.loadStoreColumn('report.ReportsColumn', report.columns());
-                    this.loadStoreFilter('report.ReportsFilter', report.filters());
-                    this.loadStoreSort('report.ReportsSort', report.sorts());                 
+                    this.loadStoreColumn(report.columns());
+                    this.loadStoreFilter(report.filters());
+                    this.loadStoreSort(report.sorts());
                 }
 	    }
     },
-    
-    loadStoreColumn: function(store_name, child) {
+    loadStoreColumn: function(child) {
     	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
 
     	var records = [];
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
     		field = available_fields_store.findField(item.get('name'));
-    		
+
     		item.setAvailableField(field);
     		records.push(item);
     	}
     },
-    
-    loadStoreFilter: function(store_name, child) {
+    loadStoreFilter: function(child) {
     	// TODO refactor these two methods
     	var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
     	var records = [];
-    	
+
     	for(i = 0; i < child.data.length; i++) {
     		var item = child.data.items[i],
     		field = available_fields_store.findField(item.get('column'));
-    		
+
     		item.setAvailableField(field);
     		records.push(item);
     	}
     },
-    loadStoreSort: function(store_name, child) {
+    loadStoreSort: function(child) {
         // TODO refactor these two methods
         var available_fields_store = Ext.StoreManager.get('report.AvailableFields');
         var records = [];
-        
+
         for(i = 0; i < child.data.length; i++) {
             var item = child.data.items[i],
             field = available_fields_store.findField(item.get('column'));
-            
+
             item.setAvailableField(field);
             records.push(item);
         }
-    },    
+    },
     proxy: {
         // TODO: refactor proxy + figure out better writer
         // url parameter is important and must be null????
@@ -82,6 +80,5 @@ Ext.define('PICS.store.report.Reports', {
         var url = Ext.Object.fromQueryString(document.location.search);
         this.proxy.url = 'ReportDynamic!getReportParameters.action?report=' + url.report;
         this.callParent(arguments);
-        
-    }    
+    }
 });
