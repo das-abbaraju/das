@@ -1,20 +1,47 @@
 Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
-	fields: [
-        { name: 'category', type: 'string' },
-        { name: 'dateFormat', type: 'string' },
-        { name: 'filterable', type: 'boolean', defaultValue: true },
-        { name: 'filterType', type: 'string' },
-        { name: 'help', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'renderer', type: 'string' },
-        { name: 'sortable', type: 'boolean', defaultValue: true },
-        { name: 'text', type: 'string' },
-        { name: 'type', type: 'string' },
-        { name: 'visible', type: 'boolean', defaultValue: true },
-        { name: 'width', type: 'int', defaultValue: 0 }
-    ],
+	fields: [{
+	    name: 'category', 
+	    type: 'string'
+    }, {
+        name: 'dateFormat',
+        type: 'string'
+    }, {
+        name: 'filterable',
+        type: 'boolean',
+        defaultValue: true
+    }, {
+        name: 'filterType',
+        type: 'string'
+    }, {
+        name: 'help',
+        type: 'string'
+    }, {
+        name: 'name',
+        type: 'string'
+    }, {
+        name: 'renderer',
+        type: 'string'
+    }, {
+        name: 'sortable',
+        type: 'boolean',
+        defaultValue: true
+    }, {
+        name: 'text',
+        type: 'string'
+    }, {
+        name: 'type',
+        type: 'string'
+    }, {
+        name: 'visible',
+        type: 'boolean',
+        defaultValue: true
+    }, {
+        name: 'width',
+        type: 'int',
+        defaultValue: 0
+    }],
     
     createSimpleColumn: function () {
         // TODO: what the heck is type it does not exist??????
