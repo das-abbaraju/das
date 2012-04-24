@@ -52,7 +52,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
 	static public int PICS_CORPORATE_ID = 14;
-	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7, 8);
+	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11);
 	// Assessment Centers
 	static public int ASSESSMENT_NCCER = 11069;
 

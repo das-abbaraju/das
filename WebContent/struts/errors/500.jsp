@@ -8,7 +8,7 @@
 <div id="bodyholder" style="margin-top: 50px; height: 250px;">
 <div id="content">
 <h1>HTTP 500 ERROR</h1>
-<div id="error">We could reach the page you tried to connect to.
+<div id="error">We could not reach the page you tried to connect to.
 Please refresh to return to PICS. If you believe this was caused by a
 bug on our website, then please let <a href="/Contact.action">us
 know</a>.</div>
