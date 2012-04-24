@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.ExceptionService;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.auditBuilder.AuditBuilder;
@@ -93,6 +94,8 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private ExceptionService exceptionService;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
@@ -126,6 +129,7 @@ public class ContractorCron extends PicsActionSupport {
 			}
 		} catch (Exception e) {
 			if (!Strings.isEmpty(redirectUrl)) {
+				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #" + conID);
 				return redirect(redirectUrl);
 			}
 			throw e;
