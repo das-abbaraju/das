@@ -268,4 +268,8 @@ public class NoteEditor extends AccountActionSupport {
 	public List<Employee> getEmployeeList() {
 		return employeeDAO.findByAccount(account);
 	}
+
+	public String getAccountType() {
+		return accountDAO.find(id).getType();
+	}
 }
