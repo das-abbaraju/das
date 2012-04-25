@@ -7,8 +7,12 @@ Ext.define('PICS.model.report.SimpleSort', {
         getterName: 'getAvailableField',
         setterName: 'setAvailableField'
     },
-    fields: [
-        { name: 'column', type: 'string' },
-        { name: 'direction', type: 'string', defaultValue: 'ASC' }
-    ]
+    fields: [{
+        name: 'column',
+        type: 'string'
+    }, {
+        name: 'direction',
+        type: 'string',
+        defaultValue: 'ASC'
+    }]
 });
