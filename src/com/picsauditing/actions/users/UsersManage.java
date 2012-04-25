@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
@@ -19,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.PasswordValidator;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -56,9 +55,7 @@ import java.security.NoSuchAlgorithmException;
 public class UsersManage extends PicsActionSupport {
 	protected User user;
 	protected Account account;
-
-	private String password1;
-	private String password2;
+	
 	private boolean sendActivationEmail = false;
 	private boolean setPrimaryAccount = false;
 
@@ -98,16 +95,7 @@ public class UsersManage extends PicsActionSupport {
 			return "department";
 
 		if (user == null)
-			return SUCCESS;
-
-		if ("resetPassword".equals(button)) {
-			// Seeding the time in the reset hash so that each one will be
-			// guaranteed unique
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			userDAO.save(user);
-
-			addActionMessage(sendRecoveryEmail(user));
-		}
+			return SUCCESS;		
 
 		if ("Suggest".equalsIgnoreCase(button))
 			return "suggest";
@@ -181,14 +169,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 		// a user
-		if (user.getId() > 0) {
-			// We want to save data for an existing user
-			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
-				user.setEncryptedPassword(password2);
-				user.setForcePasswordReset(false);
-			}
-
-		} else {
+		if (user.getId() < 0){ 			
 			// We want to save a new user
 			final String randomPassword = Long.toString(new Random().nextLong());
 			user.setEncryptedPassword(randomPassword);
@@ -572,16 +553,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
 			addActionError(getText("UsersManage.EnterValidEmail"));
 
-		if (user.getId() > 0) {
-			if (!Strings.isEmpty(password2)) {
-				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
-					addActionError(getText("UsersManage.PasswordsDoNotMatch"));
-
-				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
-				for (String error : errors)
-					addActionError(error);
-			}
-
+		if (user.getId() > 0) {			
 			// Could not find an OpPerms type for the Primary User, so just
 			// using ContractorAccounts
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
@@ -730,22 +702,6 @@ public class UsersManage extends PicsActionSupport {
 
 	public void setAccount(Account account) {
 		this.account = account;
-	}
-
-	public String getPassword1() {
-		return password1;
-	}
-
-	public void setPassword1(String password1) {
-		this.password1 = password1;
-	}
-
-	public String getPassword2() {
-		return password2;
-	}
-
-	public void setPassword2(String password2) {
-		this.password2 = password2;
 	}
 
 	public boolean isSendActivationEmail() {
