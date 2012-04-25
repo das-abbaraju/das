@@ -207,40 +207,8 @@ public class AuditDataSave extends AuditActionSupport {
 			}
 
 			if (!auditData.getAnswer().isEmpty()) {
-				// 3669, 3675, 3673, 3674, 6516
-				if (questionId == 3669) {
-					// At least one job role
-					ContractorAccount contractor = auditData.getAudit().getContractorAccount();
-					if (contractor.getJobRoles().isEmpty()) {
-						addActionError("You need to submit at least one job role.");
-						return SUCCESS;
-					}
-				} else if (questionId == 3675) {
-					// At least one competency for each job role
-					List<JobRole> jobRoles = auditData.getAudit().getContractorAccount().getJobRoles();
-					for (JobRole role : jobRoles) {
-						if (role.getJobCompetencies().isEmpty()) {
-							addActionError("You need to assign at least one competency for each job role.");
-							return SUCCESS;
-						}
-					}
-				} else if (questionId == 3673) {
-					// At least one employee
-					ContractorAccount contractor = auditData.getAudit().getContractorAccount();
-					if (contractor.getEmployees().isEmpty()) {
-						addActionError("You need to enter at least one employee.");
-						return SUCCESS;
-					}
-				} else if (questionId == 3674) {
-					// Each employee must have at least one job role
-					List<Employee> employees = auditData.getAudit().getContractorAccount().getEmployees();
-					for (Employee e : employees) {
-						if (e.getEmployeeRoles().isEmpty()) {
-							addActionError("You need to assign at least one job role to each employee.");
-							return SUCCESS;
-						}
-					}
-				}
+				if (!areAllHSEJobRoleQuestionsAnswered(questionId, auditData.getAudit().getContractorAccount()))
+					return SUCCESS;
 			}
 
 			auditDataDao.save(auditData);
@@ -376,6 +344,36 @@ public class AuditDataSave extends AuditActionSupport {
 		return SUCCESS;
 	}
 
+	private boolean areAllHSEJobRoleQuestionsAnswered(int questionId, ContractorAccount contractor) {
+		if (questionId == 3669) {
+			if (contractor.getJobRoles().isEmpty()) {
+				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRole"));
+				return false;
+			}
+		} else if (questionId == 3675) {
+			for (JobRole role : contractor.getJobRoles()) {
+				if (role.getJobCompetencies().isEmpty()) {
+					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.CompetencyForEachJobRole"));
+					return false;
+				}
+			}
+		} else if (questionId == 3673) {
+			if (contractor.getEmployees().isEmpty()) {
+				addActionError(getText("EmployeeGUARD.Error.AtLeastOne.Employee"));
+				return false;
+			}
+		} else if (questionId == 3674) {
+			for (Employee e : contractor.getEmployees()) {
+				if (e.getEmployeeRoles().isEmpty()) {
+					addActionError(getText("EmployeeGUARD.Error.AtLeastOne.JobRoleForEachEmployee"));
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * This is a special case where the Contractor can say they have not had any
 	 * incidents this year and the questions related to the number of incidents
@@ -460,8 +458,10 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 		if ("policyExpirationDatePlusMonthsToExpire".equals(auditData.getQuestion().getUniqueCode())
 				&& !StringUtils.isEmpty(auditData.getAnswer())) {
-			boolean isExpireDateUnspecified = tempAudit.getAuditType().getMonthsToExpire() == null;
-			int monthsToExpire = isExpireDateUnspecified ? 12 : tempAudit.getAuditType().getMonthsToExpire();
+			int monthsToExpire = 12;
+			Integer specifiedMonthsToExpire = tempAudit.getAuditType().getMonthsToExpire();
+			if (specifiedMonthsToExpire != null)
+				monthsToExpire = specifiedMonthsToExpire.intValue();
 
 			Date expiresDate = DateBean.getNextDayMidnight(DateBean.parseDate(auditData.getAnswer()));
 			if (!DateBean.isNullDate(expiresDate)) {
