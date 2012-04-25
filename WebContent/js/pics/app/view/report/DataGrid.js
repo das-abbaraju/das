@@ -43,7 +43,6 @@ Ext.define('PICS.view.report.DataGrid', {
         xtype: 'pagingtoolbar',
         store: 'report.Data',
         
-        cls: 'ext-no-bottom-border',
         displayInfo: true,
         dock: 'bottom',
         items: [{

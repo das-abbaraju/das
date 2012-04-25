@@ -2,7 +2,7 @@ Ext.define('PICS.view.report.Viewport', {
     extend: 'Ext.container.Viewport',
 
     requires: [
-        'PICS.view.layout.Footer',               
+        'PICS.view.layout.Footer',
         'PICS.view.layout.Header',
         'PICS.view.layout.Menu',
         'PICS.view.report.DataGrid',

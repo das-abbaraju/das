@@ -2,14 +2,13 @@ Ext.define('PICS.view.report.FilterOptions', {
     extend: 'Ext.panel.Panel',
     alias: ['widget.filteroptions'],
 
-    buttonAlign: 'right',
+    autoScroll: true,
     collapsible: true,
-    floatable: false,
-    id: 'filteroptions',
-    bodyCls: 'ext-no-bottom-border',
+    defaults: {
+        border: false
+    },
     dockedItems: [{
         xtype: 'form',
-        bodyCls: 'ext-no-bottom-border',
         defaults: {
             border: false
         },
@@ -17,7 +16,7 @@ Ext.define('PICS.view.report.FilterOptions', {
         items: [{
             html: 'Advanced',
             margin: '0 0 5 0',
-            padding: '0 10'            
+            padding: '0 10'
         }, {
             xtype: 'form',
             items: [{
@@ -30,11 +29,29 @@ Ext.define('PICS.view.report.FilterOptions', {
                 text: 'Update'
             }],
             layout: 'hbox',
-            padding: '0 10 10 10',
-            style: 'border-bottom-width: 0px',
+            padding: '0 10 10 10'
         }]
     }],
-    style: 'border-bottom-width: 0px',
+    floatable: false,
+    id: 'filteroptions',
+    items: [{
+        buttonAlign: 'right',
+        buttons: [{
+            action: 'search',
+            text: 'Search'
+        }],
+        width: 300
+    }, {
+        xtype: 'panel',
+        id: 'filterDetails'
+    }, {
+        buttonAlign: 'right',
+        buttons: [{
+            action: 'search',
+            text: 'Search'
+        }],
+        width: 300
+    }],
     tbar: [{
         xtype: 'tbfill'
     }, {
@@ -44,11 +61,11 @@ Ext.define('PICS.view.report.FilterOptions', {
         text: 'Add Filter'
     }],
     title: 'Filter Options',
-    width: 300,
-    
+    width: 320,
+
     constructor: function () {
         this.callParent(arguments);
         /*var filter = Ext.create('PICS.view.report.filter.StringFilter');
         this.add(filter);*/
     }
-});    
+});
