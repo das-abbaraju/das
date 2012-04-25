@@ -162,17 +162,19 @@ public class AuditDataSave extends AuditActionSupport {
 
 					if (answerChanged) {
 						if (isAudit && !isAnnualUpdate) {
+							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
+							if (question.getOkAnswer() != null
+									&& question.getOkAnswer().contains(
+											auditData.getAnswer())
+									&& permissions.isAdmin()) {
+								newCopy.setDateVerified(new Date());
+								newCopy.setAuditor(getUser());
+							}
 							if (newCopy.isVerified()
 									&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR
 											|| newCopy.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
 								newCopy.setDateVerified(null);
 								newCopy.setAuditor(null);
-							}
-							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-							if (question.getOkAnswer() != null
-									&& question.getOkAnswer().contains(auditData.getAnswer())) {
-								newCopy.setDateVerified(new Date());
-								newCopy.setAuditor(getUser());
 							}
 						} else if (newCopy.isVerified()) {
 							newCopy.setDateVerified(null);
