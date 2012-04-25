@@ -153,8 +153,9 @@ public class AuditPdfConverter extends AuditActionSupport {
 
 	private void handleQuestion(Document document, AuditQuestion auditQuestion, AnswerMap answerMap, int indentLevel)
 			throws DocumentException {
-		if (auditQuestion.getTitle() != null && auditQuestion.getTitle().exists()) {
-			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle().getStripTags(), questionTitleFont);
+		if (auditQuestion.getTitle() != null && auditQuestion.getTitle().isExists()) {
+			Paragraph questionTitleParagraph = new Paragraph(20, auditQuestion.getTitle().getStripTags(),
+					questionTitleFont);
 			questionTitleParagraph.setIndentationLeft(indentLevel + 30);
 			document.add(questionTitleParagraph);
 		}
