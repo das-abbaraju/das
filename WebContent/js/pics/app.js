@@ -34,9 +34,9 @@ Ext.application({
 
     controllers: [
         'report.ColumnSelectorController',
-        'report.FilterOptionsController',
-        'report.ReportController'
-    ],
+        'report.ReportController',
+        'report.FilterOptionsController'
+        ],
 
     models: [
         'report.AvailableField',
