@@ -8,8 +8,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
         scope: this,
         text: 'Add'
     }, {
-        handler: this.close,
-        scope: this,
+        action: 'close',
         text: 'Cancel'
     }],
     height: 500,

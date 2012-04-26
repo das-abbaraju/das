@@ -3,6 +3,12 @@ Ext.define('PICS.view.report.filter.StringFilter', {
     alias: ['widget.stringfilter'],
 
     border: false,
+    listeners: {
+      render: function () {
+          //console.log('render string');
+      }  
+        
+    },
     items: [{
         layout: {
             type: 'hbox',
@@ -10,11 +16,10 @@ Ext.define('PICS.view.report.filter.StringFilter', {
         },
         items: [{
             xtype: 'displayfield',
-            id: 'panelNumber',
-            value: null
-        }, {
-            xtype: 'displayfield',
-            margin: '0 0 0 5',
+            fieldLabel: null,
+            labelSeparator: '',
+            labelPad: 5,
+            labelWidth: 'auto',
             name: 'filterName',
             value: null
         }]
@@ -49,10 +54,10 @@ Ext.define('PICS.view.report.filter.StringFilter', {
     record: null,
     constructor: function (data) {
         this.record = data.record;
-        
+
         this.callParent(arguments);
 
-        this.child('panel #panelNumber').setValue(this.panelNumber);
+        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
         this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
         this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
         this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));

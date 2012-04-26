@@ -58,7 +58,7 @@
 #filteroptions-body {
 	border-bottom: 0px;
 }
-#filteroptions #panelNumber .x-form-display-field {
+#filteroptions .x-form-item-label-left {
 	font-size: 14px;
 	font-weight: bold;
 }

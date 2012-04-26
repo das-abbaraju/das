@@ -25,6 +25,11 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             'reportcolumnselector button[action=add]':  {
                 click: this.addColumnToReportOptionsColumns
             },
+            'reportcolumnselector button[action=close]':  {
+                click: function () {
+                    this.getColumnSelector().close();
+                }
+            },
             'reportcolumnselector toolbar[dock=top] checkbox': {
                 change: function (component, newValue, oldValue, eOpts) {
                     var store = this.getReportAvailableFieldsByCategoryStore();
@@ -62,18 +67,16 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             var store;
             if (window._column_type === "filter") {
                 store = this.getReportReportsStore().first().filters();
-                colStore = this.getReportReportsStore().first().columns();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleFilter());
-                    if (colStore.findRecord("name", field.get('name')) === null) {
-                        colStore.add(field.createSimpleColumn());
-                    }
                 });
+                this.application.fireEvent('refreshfilters');
             } else if (window._column_type === "column") {
                 store = this.getReportReportsStore().first().columns();
                 Ext.Array.forEach(selected, function (field) {
                     store.add(field.createSimpleColumn());
                 });
+                this.application.fireEvent('refreshreport');
             } else if (window._column_type === "sort") {
                 store = this.getReportReportsStore().first().sorts();
                 colStore = this.getReportReportsStore().first().columns();
@@ -87,9 +90,6 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
         }
-
-        this.application.fireEvent('refreshreport');
-
         window.destroy();
     },
 

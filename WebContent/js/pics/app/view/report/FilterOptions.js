@@ -7,7 +7,8 @@ Ext.define('PICS.view.report.FilterOptions', {
     defaults: {
         border: false
     },
-    dockedItems: [{
+    /*Do not show until implemented*/
+    /*dockedItems: [{
         xtype: 'form',
         defaults: {
             border: false
@@ -31,7 +32,7 @@ Ext.define('PICS.view.report.FilterOptions', {
             layout: 'hbox',
             padding: '0 10 10 10'
         }]
-    }],
+    }],*/
     floatable: false,
     id: 'filteroptions',
     items: [{

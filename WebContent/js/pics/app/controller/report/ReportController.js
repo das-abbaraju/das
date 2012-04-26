@@ -81,15 +81,14 @@ Ext.define('PICS.controller.report.ReportController', {
                     scope: this,
                     callback: function(records, operation, success) {
                         this.refreshReport();
-                        //this.refreshFilters();
+                        this.refreshFilters();
                     }
                 });
             }
         });
     },
     refreshFilters: function () {
-        var filterOptions = this.getController('report.FilterOptionsController');
-        filterOptions.loadFilters();
+        this.application.fireEvent('refreshfilters');
     },
     refreshReport: function () {
         this.getReportDataStore().populateGrid();
