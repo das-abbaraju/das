@@ -156,9 +156,9 @@ public class ChangePassword extends PicsActionSupport {
 		user = dao.save(user);
 		if (source.equalsIgnoreCase("manage"))
 			url = "UsersManage.action?account=" + user.getAccount() + "&user=" + user.getId() + "&isActive="
-					+ user.getIsActive() + "&isGroup=" + user.getIsGroup();
+					+ user.getIsActive() + "&isGroup=" + user.getIsGroup()+"&msg="+getText("global.Password.saved");
 		else
-			url = "ProfileEdit.action?success";
+			url = "ProfileEdit.action?msg="+getText("global.Password.saved");
 		this.redirect(url);
 		return SUCCESS;
 	}
