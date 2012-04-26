@@ -93,7 +93,7 @@ Ext.define('PICS.controller.report.ReportController', {
             menu.add(removeColumn);
         });
     },
-    
+
     refreshFilters: function () {
         this.application.fireEvent('refreshfilters');
     },
