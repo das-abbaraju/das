@@ -156,6 +156,10 @@ public class SelectAccount extends SelectSQL {
 			this.addField("lower(gc.flag) AS lflag");
 			this.addField("gc.forceEnd");
 			this.addWhere("gc.genID = " + permissions.getAccountId());
+			
+			this.addJoin("LEFT JOIN flag_data_override fdo on fdo.conID=a.id and fdo.forceEnd > NOW() and fdo.opID="
+					+ permissions.getAccountId());
+			this.addField("MIN(fdo.forceEnd) as 'dataForceEnd'");
 		}
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 
