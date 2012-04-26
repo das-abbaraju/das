@@ -294,9 +294,14 @@ public class MultiYearValueCalculator {
 									verified = false;
 								}
 
-								OshaResult oshaResult = new OshaResult.Builder().verified(verified).answer(answerValue)
-										.year(audit.getAuditFor()).build();
-								oshaResults.put(audit.getAuditFor(), oshaResult);
+								if (answer.getQuestion().isVisibleInAudit(audit)) {
+									OshaResult oshaResult = new OshaResult.Builder()
+											.verified(verified)
+											.answer(answerValue)
+											.year(audit.getAuditFor()).build();
+									oshaResults.put(audit.getAuditFor(),
+											oshaResult);
+								}
 							}
 						}
 					}
@@ -306,7 +311,7 @@ public class MultiYearValueCalculator {
 
 		return oshaResults;
 	}
-
+	
 	/**
 	 * Calculate the Average EMR
 	 */
