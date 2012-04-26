@@ -188,8 +188,13 @@
 								<s:if test='get("forceEnd") != null'>
 								<a 
 									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/> Forced until <s:date name="get('forceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('forceEnd')" format="%{getText('date.short')}" /> - Click to view details">
 								</s:if>
+								<s:elseif test='get("dataForceEnd") != null'>
+								<a 
+									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('dataForceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+								</s:elseif>
 								<s:else>
 								<a 
 									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
@@ -201,7 +206,7 @@
 							
 							
 							<pics:permission perm="ContractorDetails">
-								<s:if test='get("forceEnd") != null'>*</s:if></a>
+								<s:if test='get("forceEnd") != null || get("dataForceEnd") != null'>*</s:if></a>
 							</pics:permission>
 						</td>
 						<s:if test="permissions.operator">

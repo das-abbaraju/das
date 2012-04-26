@@ -111,9 +111,7 @@
 			<result name="forgot">struts/users/account_recovery.jsp</result>
 			<result name="overlay">/struts/users/login_form.jsp</result>
 		</action>
-		<action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
-			<result>struts/users/password.jsp</result>
-		</action>
+
 		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
 		</action>
 

@@ -65,7 +65,7 @@ public class Home extends ContractorActionSupport {
 			column.add(widget);
 			usedWidgets.add(widget);
 		}
-		
+
 		return SUCCESS;
 	}
 
