@@ -11,7 +11,8 @@
 		</s:if>
 	</title>
 
-	<link rel="stylesheet" type="text/css" media="screen" href="css/users_manage.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/users_manage.css?v=${version}" />
 	
 	<s:include value="../jquery.jsp" />
 	
