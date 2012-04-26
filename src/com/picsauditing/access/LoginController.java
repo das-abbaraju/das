@@ -80,19 +80,20 @@ public class LoginController extends PicsActionSupport {
 			permissions.clear();
 
 			if (adminID > 0) {
-				
-					
+
 				// Re login the admin on logout
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
 				LocaleController.setLocaleOfNearestSupported(permissions);
-				if (ActionContext.getContext().getSession().get("redirect").equals("true")){
-					if (isLiveEnvironment())
-						redirect("http://beta.picsorganizer.com");
-					if (isAlphaEnvironment())
-						redirect("http://localhost:8080/");
-					ActionContext.getContext().getSession().remove("redirect");
+				if (ActionContext.getContext().getSession().get("redirect") != null) {
+					if (ActionContext.getContext().getSession().get("redirect").equals("true")) {
+						if (isLiveEnvironment())
+							redirect("http://beta.picsorganizer.com");
+						if (isAlphaEnvironment())
+							redirect("http://localhost:8080/");
+						ActionContext.getContext().getSession().remove("redirect");
+					}
 				}
 				postLogin();
 				return SUCCESS;
