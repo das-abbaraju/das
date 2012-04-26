@@ -288,27 +288,13 @@ public class SqlBuilder {
 		String operand = filter.getOperator().getOperand();
 		
 		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
-			if (filter.isNot()) {
-				return columnSQL + " NOT IS NULL OR " + columnSQL + " != ''";
-			} else {
-				return columnSQL + " IS NULL OR " + columnSQL + " = ''";
-			}
+			return columnSQL + " IS NULL OR " + columnSQL + " = ''";
+		}
+		else if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
+			return columnSQL + " NOT IS NULL OR " + columnSQL + " != ''";
 		}
 		
-		if (!filter.isNot())
-			return columnSQL + " " + operand + " " + valueSql;
-
-		switch (filter.getOperator()) {
-		case Equals:
-			return columnSQL + " !" + operand + " " + valueSql;
-		case GreaterThan:
-		case GreaterThanOrEquals:
-		case LessThan:
-		case LessThanOrEquals:
-			return "NOT " + columnSQL + " " + operand + " " + valueSql;
-		default:
-			return columnSQL + " NOT " + operand + " " + valueSql;
-		}
+		return columnSQL + " " + operand + " " + valueSql;
 	}
 
 	private String toColumnSql(ReportColumn column) {
@@ -341,8 +327,7 @@ public class SqlBuilder {
     		case Contains:
     			return "'%" + value + "%'";
     		case In:
-    		case InReport:
-    			// this only supports numbers, no strings or dates
+    			// TODO this only supports numbers, no strings or dates, change it so that it does support more. 
     			return "(" + value + ")";
     		case Empty:
     			// TODO

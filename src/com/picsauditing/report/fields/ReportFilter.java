@@ -7,7 +7,6 @@ import com.picsauditing.util.Strings;
 
 public class ReportFilter implements JSONable {
 	private String column;
-	private boolean not = false;
 	private QueryFilterOperator operator;
 	private String column2;
 	private String value;
@@ -19,8 +18,6 @@ public class ReportFilter implements JSONable {
 		json.put("column", column);
 		if (operator != null)
 			json.put("operator", operator.toString());
-		if (not)
-			json.put("not", true);
 		if (column2 != null)
 			json.put("column2", column2);
 		if (value != null)
@@ -38,19 +35,11 @@ public class ReportFilter implements JSONable {
 		if (column == null)
 			return;
 
-		parseNot(json);
 		parseOperator(json);
 
 		this.column2 = (String) json.get("column2");
 		this.value = (String) json.get("value");
 		this.field = (QueryField) json.get("field");
-	}
-
-	private void parseNot(JSONObject json) {
-		this.not = false;
-		Boolean not = (Boolean) json.get("not");
-		if (not != null && not == true)
-			this.not = true;
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -77,14 +66,6 @@ public class ReportFilter implements JSONable {
 
 	public void setOperator(QueryFilterOperator operator) {
 		this.operator = operator;
-	}
-
-	public boolean isNot() {
-		return not;
-	}
-
-	public void setNot(boolean not) {
-		this.not = not;
 	}
 
 	public String getValue() {
