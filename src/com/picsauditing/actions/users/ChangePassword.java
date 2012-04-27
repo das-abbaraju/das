@@ -61,7 +61,7 @@ public class ChangePassword extends PicsActionSupport {
 		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
 		userDAO.save(user);
 
-		addActionMessage(sendRecoveryEmail(u));
+		addActionMessage(sendRecoveryEmail(user));
 		return SUCCESS;
 	}
 
