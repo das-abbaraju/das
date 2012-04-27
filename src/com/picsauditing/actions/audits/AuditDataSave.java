@@ -154,7 +154,8 @@ public class AuditDataSave extends AuditActionSupport {
 						newCopy.setDateVerified(new Date());
 						newCopy.setAuditor(getUser());
 					}
-				} else {
+				} 
+				 {
 					// update mode
 					if (commentChanged) {
 						newCopy.setComment(auditData.getComment());
@@ -176,7 +177,7 @@ public class AuditDataSave extends AuditActionSupport {
 								newCopy.setDateVerified(null);
 								newCopy.setAuditor(null);
 							}
-						} else if (newCopy.isVerified()) {
+						} else if (newCopy.isVerified() && !verifyButton) {
 							newCopy.setDateVerified(null);
 							newCopy.setAuditor(null);
 						}
