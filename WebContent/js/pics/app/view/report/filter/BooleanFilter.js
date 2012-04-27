@@ -2,34 +2,52 @@ Ext.define('PICS.view.report.filter.BooleanFilter', {
     extend: 'PICS.view.report.filter.BaseFilter',
     alias: ['widget.booleanfilter'],
 
+    border: false,
     items: [{
-        xtype: 'displayfield',
-        value: null
+        layout: {
+            type: 'hbox',
+            align: 'middle'
+        },
+        items: [{
+            xtype: 'displayfield',
+            fieldLabel: null,
+            labelSeparator: '',
+            labelPad: 5,
+            labelWidth: 'auto',
+            name: 'filterName',
+            value: null
+        }]
     },{
         xtype: 'form',
         border: 0,
         items: [{
             xtype: 'checkbox',
-            boxLabel: 'On',
-            margin: '0 5 0 0',
-            name: 'operator',
+            boxLabel: 'True',
+            margin: '0 5 0 10',
+            name: 'filterValue',
             flex: 1.5,
-            inputValue: '1',
+            inputValue: null,
             listeners: {
                 change: function (obj, newval, oldval, options) {
-                    this.up('booleanfilter').record.set('value', newval);
+                    var record = this.up('booleanfilter').record;
+                    if (newval === false) {
+                        record.set('value', 0);
+                    } else {
+                        record.set('value', 1);
+                    }
                 }
             }
         }],
-        layout: 'hbox'  
+        layout: 'hbox'
     }],
-    
-    title: 'Boolean',
-    
-    initComponent: function () {
-        var display = this.record.get('column');
-        this.items[0].value = display;
-        this.items[1].items[0].inputValue = this.record.get('value');
+    record: null,
+    constructor: function (data) {
+        this.record = data.record;
+
         this.callParent(arguments);
+
+        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
+        this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
+        this.child('panel checkbox[name=filterValue]').setValue(this.record.get('not'));
     }
 });

@@ -1,14 +1,15 @@
-Ext.define('PICS.model.report.SimpleSort', {
+Ext.define('PICS.model.report.Sort', {
     extend: 'Ext.data.Model',
 
-    belongsTo: {
+    associations: [{
+        type: 'hasOne',
         model: 'PICS.model.report.AvailableField',
-        foreignKey: 'field',        
+        associationKey: 'field',
         getterName: 'getAvailableField',
         setterName: 'setAvailableField'
-    },
+    }],
     fields: [{
-        name: 'column',
+        name: 'name',
         type: 'string'
     }, {
         name: 'direction',

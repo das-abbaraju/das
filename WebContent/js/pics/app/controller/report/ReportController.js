@@ -8,8 +8,8 @@ Ext.define('PICS.controller.report.ReportController', {
     alias: ['widget.reportdatacontroller'],
 
     refs: [{
-        ref: 'dataGrid',
-        selector: 'reportdatagrid'
+        ref: 'dataSetGrid',
+        selector: 'reportdatasetgrid'
     },{
         ref: 'reportColumnSelector',
         selector: 'reportcolumnselector'
@@ -17,13 +17,13 @@ Ext.define('PICS.controller.report.ReportController', {
     stores: [
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.Data',
+        'report.DataSets',
         'report.Reports'
     ],
 
     init: function () {
         this.control({
-            'reportdatagrid': {
+            'reportdatasetgrid': {
                 beforerender: this.configureColumnMenu
             },
             'reportsorttoolbar button[action=add-column]': {
@@ -99,7 +99,7 @@ Ext.define('PICS.controller.report.ReportController', {
     },
     
     refreshReport: function () {
-        this.getReportDataStore().populateGrid();
+        this.getReportDataSetsStore().populateGrid();
     },
     
     removeColumn: function (activeMenuItem) {

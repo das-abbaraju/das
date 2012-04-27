@@ -10,46 +10,43 @@ Ext.application({
     appFolder: 'js/pics/app',
 
     constants: {
-        TEXTSTORE: [
-                    ['Contains', 'contains'],
-                    ['BeginsWith', 'beginswith'],
-                    ['EndsWith', 'endswith'],
-                    ['Equals', 'equals'],
-                    ['Empty', 'blank']
-                ],
-        NUMBERSTORE: [
-                    ['Equals', '='],
-                    ['GreaterThan', '>'],
-                    ['LessThan', '<'],
-                    ['GreaterThanOrEquals', '>='],
-                    ['LessThanOrEquals', '<='],
-                    ['Empty', 'blank']
-                ],
         COUNTRIES: [
-                    ['United States', 'US'],
-                    ['United Kingdom', 'UK'],
-                    ['Empty', 'blank']
-                ]
+            ['United States', 'US'],
+            ['United Kingdom', 'UK'],
+            ['Empty', 'blank']
+        ],
+        NUMBERSTORE: [
+            ['Equals', '='],
+            ['GreaterThan', '>'],
+            ['LessThan', '<'],
+            ['GreaterThanOrEquals', '>='],
+            ['LessThanOrEquals', '<='],
+            ['Empty', 'blank']
+        ],
+        TEXTSTORE: [
+            ['Contains', 'contains'],
+            ['BeginsWith', 'beginswith'],
+            ['EndsWith', 'endswith'],
+            ['Equals', 'equals'],
+            ['Empty', 'blank']
+        ]
     },
 
     controllers: [
         'report.ColumnSelectorController',
         'report.ReportController',
         'report.FilterOptionsController'
-        ],
+    ],
 
     models: [
         'report.AvailableField',
-        'report.Report',
-        'report.SimpleField',
-        'report.SimpleFilter',
-        'report.SimpleSort'
+        'report.Report'
     ],
 
     stores: [
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.Data',
+        'report.DataSets',
         'report.Reports'
     ],
 

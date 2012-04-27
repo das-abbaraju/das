@@ -1,11 +1,11 @@
-Ext.define('PICS.view.report.DataGrid', {
+Ext.define('PICS.view.report.DataSetGrid', {
     extend: 'Ext.grid.Panel',
-    alias: ['widget.reportdatagrid'],
+    alias: ['widget.reportdatasetgrid'],
     requires: [
         'PICS.view.report.LinkColumn',
         'PICS.view.report.SortToolbar'        
     ],
-    store: 'report.Data',
+    store: 'report.DataSets',
 
     columns: [{
         xtype: 'rownumberer',
@@ -16,7 +16,7 @@ Ext.define('PICS.view.report.DataGrid', {
         dock: 'top'
     }, {
         xtype: 'pagingtoolbar',
-        store: 'report.Data',
+        store: 'report.DataSets',
         
         displayInfo: true,
         dock: 'top',
@@ -41,9 +41,8 @@ Ext.define('PICS.view.report.DataGrid', {
         padding: '0 20 0 0'
     }, {
         xtype: 'pagingtoolbar',
-        store: 'report.Data',
+        store: 'report.DataSets',
         
-        cls: 'ext-no-bottom-border',
         displayInfo: true,
         dock: 'bottom',
         items: [{

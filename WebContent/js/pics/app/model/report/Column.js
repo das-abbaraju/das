@@ -1,12 +1,16 @@
-Ext.define('PICS.model.report.SimpleColumn', {
+Ext.define('PICS.model.report.Column', {
 	extend: 'Ext.data.Model',
 
-	belongsTo: {
-	    model: 'PICS.model.report.AvailableField',
-	    foreignKey: 'field',
-	    getterName: 'getAvailableField',
-	    setterName: 'setAvailableField'
-	},
+	// http://www.sencha.com/forum/showthread.php?180111-4.1-B2-HasOne-constructor-does-not-work
+	associations: [{
+        type: 'hasOne',
+        model: 'PICS.model.report.AvailableField',
+        associationKey: 'field',
+        getterName: 'getAvailableField',
+        setterName: 'setAvailableField'
+    }],
+    
+    // TODO: figure out what these are for
 	fields: [{
 	    name: 'name',
 	    type: 'string'
@@ -14,45 +18,95 @@ Ext.define('PICS.model.report.SimpleColumn', {
         name: 'method',
         type: 'string'
     }, {
-        name: 'option', type: 'string'
+        name: 'option',
+        type: 'string'
     }, {
         name: 'renderer'
     }],
     
-    // TODO: refactor these relationships
-    // so confusing - this is used to create a report row model on the fly in the report controller
-    convertRecordToReportRowField: function () {
-        var available_field = this.data.field;
-        var field = {};
+    toDataSetModelField: function () {
+        var available_field = this.getAvailableField();
+        var name = available_field.get('name');
+        var type = available_field.get('type');
         
-        field.name = available_field.get('name');
+        var model_field = {
+            //convert: null,
+            //dateFormat: null,
+            //defaultValue: '',
+            //mapping: null,
+            //persist: true,
+            //sortDir: 'ASC',
+            //sortType: null,
+            //useNull: false,
+            name: name,
+            type: type
+        };
         
-        if (available_field.get('type')) {
-            field.type = available_field.get('type');
-            
-            if (field.type == 'date') {
-                field.dateFormat = 'time';
-            }
+        if (type == 'date') {
+            model_field.dateFormat = 'time';
         }
         
-        return field;
+        return model_field;
     },
     
-    // TODO: not sure if this is used anymore
-    toStoreField: function () {
-		var field = this.data.field.toStoreField();
-		
-		field.name = this.get('name');
-		
-		return field;
-    },
-    
-    toGridColumn: function () {
-    	var gridColumn = this.data.field.toGridColumn();
-    	
-    	gridColumn.dataIndex = this.get('name');
-    	// TODO add in method, option
-    	
-    	return gridColumn;
+    toDataSetGridColumn: function () {
+        var available_field = this.getAvailableField();
+        var data_set_column = {};
+        
+        data_set_column.dataIndex = available_field.get('name');
+        data_set_column.text = available_field.get('text');
+        
+        var type = available_field.get('type');
+        
+        switch(type) {
+            case 'boolean':
+                data_set_column.align = 'center';
+                data_set_column.width = 50;
+                data_set_column.renderer = function (value) {
+                    if (value) {
+                        return '<img src="images/tick.png" width="16" height="16" />';
+                    }
+                    
+                    return '';
+                };
+                
+                break;
+            case 'date':
+            case 'datetime':
+                data_set_column.xtype = 'datecolumn';
+                data_set_column.format = 'n/j/Y';
+                
+                break;
+            case 'float':
+                data_set_column.xtype = 'numbercolumn';
+                data_set_column.align = 'right';
+                data_set_column.width = 75;
+                
+                break;
+            case 'int':
+                data_set_column.xtype = 'numbercolumn';
+                data_set_column.align = 'right';
+                data_set_column.format = '0,000';
+                data_set_column.width = 75;
+                
+                break;
+            default:
+                break;
+        }
+        
+        var url = available_field.get('url');
+        
+        if (url) {
+            data_set_column.xtype = 'linkcolumn';
+            data_set_column.url = url;
+        }
+        
+        var renderer = available_field.get('renderer');
+        
+        if (renderer) {
+            data_set_column.renderer = renderer;
+        }
+        
+        return data_set_column;
     }
 });

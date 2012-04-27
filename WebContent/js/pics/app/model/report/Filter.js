@@ -1,19 +1,16 @@
-Ext.define('PICS.model.report.SimpleFilter', {
+Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
-    belongsTo: {
-	    model: 'PICS.model.report.AvailableField',
-	    foreignKey: 'field',
-	    getterName: 'getAvailableField',
-	    setterName: 'setAvailableField'
-    },
+    associations: [{
+        type: 'hasOne',
+        model: 'PICS.model.report.AvailableField',
+        associationKey: 'field',
+        getterName: 'getAvailableField',
+        setterName: 'setAvailableField'
+    }],
     fields: [{
-        name: 'column',
+        name: 'name',
         type: 'string'
-    }, {
-        name: 'not',
-        type: 'boolean',
-        defaultValue: false
     }, {
         name: 'operator',
         type: 'string'
