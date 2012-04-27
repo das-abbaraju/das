@@ -15,6 +15,7 @@ import java.util.Vector;
 
 import javax.naming.NoPermissionException;
 
+import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,6 +42,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.search.Database;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
@@ -638,10 +640,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (operator == null)
 			findOperator();
 
-		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
-				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
-
-		return pendingAndNotApprovedCount;
+//		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
+//				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
+//		return pendingAndNotApprovedCount;
+		
+		// TODO refactor this crap
+		
+		Database db = new Database();
+		String sql = "SELECT count(*) total FROM generalcontractors gc WHERE gc.genID = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')";
+		List<BasicDynaBean> results = db.select(sql, false);
+		if (results.size() != 1)
+			return 0;
+		
+		return Integer.parseInt(results.get(0).get("total").toString());
 	}
 
 	// TODO: This should be converted to Struts2 Validation
