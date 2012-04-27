@@ -1,8 +1,12 @@
 package com.picsauditing.report.fields;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.util.Strings;
 
 public class ReportFilter implements JSONable {
@@ -51,6 +55,46 @@ public class ReportFilter implements JSONable {
 
 		this.operator = QueryFilterOperator.valueOf(object.toString());
 	}
+	
+	/*DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String), AccountType, AccountLevel, Trades, Country, StateProvince */
+
+	@SuppressWarnings("unchecked")
+	public static JSONArray getAccountStatusList() {
+		AccountStatus[] list = AccountStatus.values();
+		
+		JSONArray json = new JSONArray();
+		for (AccountStatus accountStatus : list) {
+			json.add(accountStatus.toString());
+		}
+		
+		return json;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray getAuditStatusList() {
+		AuditStatus[] list = AuditStatus.values();
+		
+		JSONArray json = new JSONArray();
+		for (AuditStatus auditStatus : list) {
+			json.add(auditStatus.toString());
+		}
+		
+		return json;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray getLowMedHighList() {
+		LowMedHigh[] list = LowMedHigh.values();
+		
+		JSONArray json = new JSONArray();
+		for (LowMedHigh lowMedHigh : list) {
+			json.add(lowMedHigh.toString());
+		}
+		
+		return json;
+	}
+	
+
 
 	public String getColumn() {
 		return column;
