@@ -320,15 +320,20 @@ public class SqlBuilder {
 		}
 
 		switch (filter.getOperator()) {
+			case NotBeginsWith:
     		case BeginsWith:
     			return "'" + value + "%'";
+    		case NotEndsWith:
     		case EndsWith:
     			return "'%" + value + "'";
+    		case NotContains:
     		case Contains:
     			return "'%" + value + "%'";
+    		case NotIn:
     		case In:
     			// TODO this only supports numbers, no strings or dates, change it so that it does support more. 
     			return "(" + value + ")";
+    		case NotEmpty:
     		case Empty:
     			// TODO
 		}

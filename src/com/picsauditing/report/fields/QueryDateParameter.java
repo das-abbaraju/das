@@ -45,6 +45,7 @@ public class QueryDateParameter {
 			Date parsedDate = DateBean.parseDate(value);
 			if (parsedDate != null) {
 				cal.setTime(parsedDate);
+				date = cal.getTime();
 			}
 			else
 			{
