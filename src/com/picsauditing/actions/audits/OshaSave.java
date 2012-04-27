@@ -1,10 +1,12 @@
 package com.picsauditing.actions.audits;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -14,6 +16,7 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OshaAudit;
 import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class OshaSave extends PicsActionSupport {
@@ -25,6 +28,7 @@ public class OshaSave extends PicsActionSupport {
 	private Date verifiedDate = null;
 	private User auditor = null;
 	private String comment;
+	private HashMap<Integer, String> oshaAnswers;
 
 	@Autowired
 	private AuditDataDAO auditDataDao;
@@ -51,6 +55,10 @@ public class OshaSave extends PicsActionSupport {
 			auditData.setVerified(verify);
 			auditData.setDateVerified(verifiedDate);
 			auditData.setAuditor(auditor);
+			String[] parameter = (String[]) ActionContext.getContext().getParameters().get("oshaQuestion_" + auditData.getQuestion().getId());
+			if (parameter != null && parameter.length > 0) {
+				auditData.setAnswer(parameter[0]);
+			}
 			auditDataDao.save(auditData);
 		}
 
@@ -58,6 +66,14 @@ public class OshaSave extends PicsActionSupport {
 		contractorAuditDao.save(audit);
 		
 		return SUCCESS;
+	}
+
+	public HashMap<Integer, String> getOshaAnswers() {
+		return oshaAnswers;
+	}
+
+	public void setOshaAnswers(HashMap<Integer, String> oshaAnswers) {
+		this.oshaAnswers = oshaAnswers;
 	}
 
 	public String stampOshaComment() {
