@@ -1,12 +1,18 @@
 package com.picsauditing.actions.users;
 
+import java.net.URLEncoder;
+import java.security.acl.Permission;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -19,11 +25,15 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.interceptors.SecurityInterceptor;
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.Subscription;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -38,18 +48,19 @@ public class ProfileEdit extends PicsActionSupport {
 	protected EmailSubscriptionDAO emailSubscriptionDAO;
 	@Autowired
 	protected UserLoginLogDAO loginLogDao;
+	@Autowired
+	protected UserDAO userDAO;
 
 	protected User u;
-	protected String password1;
-	protected String password2;
+	
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
 
 	private boolean goEmailSub = false;
 
 	/**
-	 * This method needs to be anonymous to prevent the user from redirecting on login if the {@link User}'s
-	 * forcePasswordReset is true.
+	 * This method needs to be anonymous to prevent the user from redirecting on
+	 * login if the {@link User}'s forcePasswordReset is true.
 	 */
 	@Anonymous
 	public String execute() throws Exception {
@@ -65,7 +76,8 @@ public class ProfileEdit extends PicsActionSupport {
 	@Anonymous
 	public String save() throws Exception {
 
-		// Need to clear the user dao to prevent Hibernate from flushing the changes.
+		// Need to clear the user dao to prevent Hibernate from flushing the
+		// changes.
 		dao.clear();
 
 		String loginResult = checkProfileEditLogin();
@@ -78,7 +90,8 @@ public class ProfileEdit extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		// TODO: Move this into User-validation.xml and use struts 2 for this validation
+		// TODO: Move this into User-validation.xml and use struts 2 for this
+		// validation
 		String username = u.getUsername().trim();
 		if (Strings.isEmpty(username)) {
 			addActionError(getText("User.username.error.Empty"));
@@ -101,68 +114,26 @@ public class ProfileEdit extends PicsActionSupport {
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
 
-		/*
-		 * Some browsers (i.e. Chrome) store the user's password in the first password field. We will assume that if the
-		 * confirm password has a value that the user is attempting to change their password.
-		 */
-		if (!Strings.isEmpty(password2)) {
-			boolean forcedReset = u.isForcePasswordReset();
-			if (!password1.equals(password2)) {
-				addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
-			}
-
-			if (!Strings.isEmpty(u.getEmail()) && !Strings.isValidEmail(u.getEmail())) {
-				addActionError(getText("ProfileEdit.error.EnterValidEmail"));
-			}
-
-			if (getActionErrors().size() > 0) {
-				return SUCCESS;
-			}
-
-			// Set password to the encrypted version
-			u.setEncryptedPassword(password1);
-
-			/*
-			 * TODO: this doesn't seem to to anything at the moment.
-			 * 
-			 * Also, these passwords should not be saved in plain text.
-			 */
-			int maxHistory = 0;
-			u.addPasswordToHistory(password1, maxHistory);
-
-			// If the user is changing their password, they are no longer forced to reset.
-			u.setForcePasswordReset(false);
-			permissions.setForcePasswordReset(false);
-
-			/*
-			 * If the user came to profile edit as a result of a forcedPasswordReset, they will have the `url` field
-			 * set.
-			 */
-			if (!Strings.isEmpty(url) && forcedReset) {
-				u = dao.save(u);
-				return redirect(url);
-			}
-
-		}
-
 		u = dao.save(u);
 
 		/*
-		 * This redirct is required if the user happened to change their locale, as we would be stuck in a request for
-		 * the previous locale.
+		 * This redirct is required if the user happened to change their locale,
+		 * as we would be stuck in a request for the previous locale.
 		 */
 		this.redirect("ProfileEdit.action?success");
 
 		return SUCCESS;
 	}
+	
 
 	public String department() {
 		return "department";
 	}
 
 	/**
-	 * This method is used instead of the {@link SecurityInterceptor} method, since the user cannot be redirected on
-	 * this page due to the possibility of a `forcePasswordReset`.
+	 * This method is used instead of the {@link SecurityInterceptor} method,
+	 * since the user cannot be redirected on this page due to the possibility
+	 * of a `forcePasswordReset`.
 	 * 
 	 * @return
 	 * @throws Exception
@@ -172,15 +143,18 @@ public class ProfileEdit extends PicsActionSupport {
 		loadPermissions();
 
 		/*
-		 * This should only be null on the `execute` method, since there are no querystring parameters.
+		 * This should only be null on the `execute` method, since there are no
+		 * querystring parameters.
 		 * 
-		 * If the user is set, we have to leave it alone, since the `u` object could be modified.
+		 * If the user is set, we have to leave it alone, since the `u` object
+		 * could be modified.
 		 */
 		if (u == null) {
 			u = dao.find(permissions.getUserId());
 		}
 
-		// If the user is not logged in, they should be redirected to the login page.
+		// If the user is not logged in, they should be redirected to the login
+		// page.
 		if (!permissions.isLoggedIn()) {
 			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
 			return LOGIN;
@@ -208,13 +182,6 @@ public class ProfileEdit extends PicsActionSupport {
 		this.u = u;
 	}
 
-	public void setPassword1(String password1) {
-		this.password1 = password1;
-	}
-
-	public void setPassword2(String password2) {
-		this.password2 = password2;
-	}
 
 	public List<UserSwitch> getSwitchTos() {
 		return userSwitchDao.findByUserId(u.getId());
@@ -286,7 +253,8 @@ public class ProfileEdit extends PicsActionSupport {
 	}
 
 	/**
-	 * This method is triggered as a result of a redirect when the user saves his/her profile.
+	 * This method is triggered as a result of a redirect when the user saves
+	 * his/her profile.
 	 * 
 	 * @param success
 	 *            this parameter is not used.
