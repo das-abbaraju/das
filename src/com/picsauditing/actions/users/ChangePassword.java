@@ -150,6 +150,12 @@ public class ChangePassword extends PicsActionSupport {
 					user = dao.save(user);
 					return redirect(url);
 				}
+			} else {
+				if (Strings.isEmpty(password1))
+					addActionError(getText("global.Password.needBothPassword"));
+				else
+					addActionError(getText("global.Password.needConfirmedPassword"));
+				return SUCCESS;
 			}
 		}
 
