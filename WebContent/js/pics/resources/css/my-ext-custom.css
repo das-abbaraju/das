@@ -1,7 +1,4 @@
 /* general */
-.ext-no-bottom-border {
-	border-bottom: 0px;
-}
 .ext-icon {
     cursor: pointer;
     cursor: hand;
@@ -58,7 +55,24 @@
 #filteroptions .x-panel-header-text {
     font-size: 18px;
 }
+#filteroptions-body {
+	border-bottom: 0px;
+}
+#filteroptions .x-form-item-label-left {
+	font-size: 14px;
+	font-weight: bold;
+}
+#filteroptions .x-docked-bottom {
+	border-top-width: 1px !important;
+}
+#filteroptions .x-panel-body-docked-bottom {
+	border-bottom: 0px;
+}
 
+/*Data Grid*/
+#dataGrid .x-toolbar-docked-bottom {
+    border-bottom: 0px;	
+}
 /* footer */
 #footer {
     background: none;
