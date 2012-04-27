@@ -91,7 +91,7 @@
 		
 		<s:if test="contractor.accountLevel.bidOnly">
 			<div class="alert">
-				This is a Bid Only Contractor Account.
+				<s:text name="ContractorView.BidOnlyUpgradeAlert" />
 			</div>
 		</s:if>
 		
@@ -140,11 +140,12 @@
 									<label><s:text name="Country" />:</label>
 									<s:select
 										list="countryList"
-										name="contractor.country.isoCode" id="contractorCountry"
-										listKey="isoCode" listValue="name"
+										name="contractor.country.isoCode"
+										id="contractorCountry"
+										listKey="isoCode"
+										listValue="name"
 										value="contractor.country.isoCode"
-										onchange="countryChanged(this.value)"
-									/>
+										onchange="countryChanged(this.value)" />
 								</li>
 								<li id="state_li"></li>
 								
@@ -156,13 +157,20 @@
 								</s:if>
 								
 								<li>
-									<s:select name="contractor.timezone" value="contractor.timezone.iD" theme="form" list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
+									<s:select
+										name="contractor.timezone"
+										value="contractor.timezone.iD"
+										theme="form"
+										list="@com.picsauditing.util.TimeZoneUtil@TIME_ZONES" />
 								</li>
 								
 								<s:if test="contractor.demo || configEnvironment || i18nReady">
 									<li>
 										<label><s:text name="ContractorEdit.PrimaryAddress.DefaultLanguage"/>:</label>
-										<s:select name="contractor.locale" listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))" list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
+										<s:select
+											name="contractor.locale"
+											listValue="@org.apache.commons.lang.StringUtils@capitalize(getDisplayName(language))"
+											list="@com.picsauditing.jpa.entities.AppTranslation@getLocales()" />
 									</li>
 								</s:if>
 								
@@ -289,7 +297,9 @@
 									</label>
 									<s:file name="logo" size="35" label="Testing" />
 									<br />
-									(Allowed formats: jpg, gif, png)
+									<s:text name="global.AllowedFormats">
+										<s:param>jpg, gif, png</s:param>
+									</s:text>
 								</li>
 								<li>
 									<label>
@@ -297,7 +307,9 @@
 									</label>
 									<s:file name="brochure" size="35" />
 									<br />
-									(Allowed formats: pdf, doc, jpg, gif, png)
+									<s:text name="global.AllowedFormats">
+										<s:param>pdf, doc, jpg, gif, png</s:param>
+									</s:text>
 								</li>
 								<li>
 									<s:checkbox name="contractor.showInDirectory" theme="formhelp" />
@@ -309,10 +321,10 @@
 									</s:if>
 								</li>
 								<li>
-									<label>Auto Approves General Contractors:</label>
 									<s:checkbox 
 										name="contractor.autoApproveRelationships" 
 										cssClass="checkbox"
+										theme="formhelp"
 									/>
 								</li>
 								<li>
