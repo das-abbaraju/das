@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.Vector;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.exception.ConstraintViolationException;
@@ -47,10 +46,6 @@ import com.picsauditing.search.SelectAccount;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 @SuppressWarnings("serial")
 public class UsersManage extends PicsActionSupport {
@@ -350,25 +345,6 @@ public class UsersManage extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	// LW encrypting string
-	private String ScrambleString(String input) {
-		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] messageDigest = md.digest(input.getBytes());
-			BigInteger number = new BigInteger(1, messageDigest);
-			String hashtext = number.toString(16);
-			// Now we need to zero pad it if you actually want the full 32
-			// chars.
-			while (hashtext.length() < 32) {
-				hashtext = "0" + hashtext;
-			}
-			return hashtext;
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-
-	}
-
 	public String unlock() throws Exception {
 		startup();
 
@@ -472,7 +448,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		user.setUsername("DELETE-"+user.getId()+"-"+ScrambleString(user.getUsername()));
+		user.setUsername("DELETE-"+user.getId()+"-"+Strings.hashUrlSafe(user.getUsername()));
 		userDAO.save(user);
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
