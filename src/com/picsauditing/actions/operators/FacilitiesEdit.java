@@ -647,7 +647,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		// TODO refactor this crap
 		
 		Database db = new Database();
-		String sql = "SELECT count(*) total FROM generalcontractors gc WHERE gc.genID = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')";
+		String sql = "SELECT count(*) total FROM generalcontractors gc WHERE gc.genID = " + operator.getId() + " AND (gc.workStatus = 'P' OR gc.workStatus = 'N')";
 		List<BasicDynaBean> results = db.select(sql, false);
 		if (results.size() != 1)
 			return 0;
