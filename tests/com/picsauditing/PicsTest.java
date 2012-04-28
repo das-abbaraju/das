@@ -13,15 +13,16 @@ import com.picsauditing.dao.PicsDAO;
 public abstract class PicsTest {
 	@Mock protected EntityManager em;
 	
-	protected void autowireEMInjectedDAOs(Object objectToAutowire) throws InstantiationException, IllegalAccessException {
-		Class<?> classOfObject = objectToAutowire.getClass();
+	@SuppressWarnings("unchecked")
+	protected <T> void autowireEMInjectedDAOs(Object objectToAutowire) throws InstantiationException, IllegalAccessException {
+		Class<T> classOfObject = (Class<T>) objectToAutowire.getClass();
 		while(null != classOfObject) {
 			autowireEMInjectedDAOs(objectToAutowire, classOfObject);
-			classOfObject = classOfObject.getSuperclass();
+			classOfObject = (Class<T>) classOfObject.getSuperclass();
 		}
 	}		
 	
-	protected void autowireEMInjectedDAOs(Object objectToAutowire, Class<?> classOfObject) throws InstantiationException, IllegalAccessException {		
+	protected <T> void autowireEMInjectedDAOs(Object objectToAutowire, Class<T> classOfObject) throws InstantiationException, IllegalAccessException {		
 		Field[] fields = classOfObject.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field field = fields[i];
@@ -37,10 +38,11 @@ public abstract class PicsTest {
 		}
 	}
 
-	protected void wireIfDAOAnnotation(Object objectToAutowire, Field field, Annotation annotation)
+	@SuppressWarnings("unchecked")
+	protected <T> void wireIfDAOAnnotation(Object objectToAutowire, Field field, Annotation annotation)
 			throws InstantiationException, IllegalAccessException {
 		if (annotation instanceof Autowired) {
-			Class<?> classOfField = field.getType();
+			Class<T> classOfField = (Class<T>)field.getType();
 			if (PicsDAO.class.isAssignableFrom(classOfField)) {
 				PicsDAO dao = (PicsDAO)classOfField.newInstance();
 				dao.setEntityManager(em);
@@ -49,18 +51,20 @@ public abstract class PicsTest {
 		}
 	}
 	
-	protected void forceSetPrivateField(Object objectToForceSet, String fieldname, Object fieldValue) {
-		Class<?> classOfObject = objectToForceSet.getClass();
+	@SuppressWarnings("unchecked")
+	protected <T> void forceSetPrivateField(Object objectToForceSet, String fieldname, Object fieldValue) {
+		Class<T> classOfObject = (Class<T>)objectToForceSet.getClass();
 		forceSetPrivateField(classOfObject, objectToForceSet, fieldname, fieldValue);
 	}
 	
-	protected void forceSetPrivateField(Class<?> classOfObject, Object objectToForceSet, String fieldname, Object fieldValue) {
+	@SuppressWarnings("unchecked")
+	protected <T> void forceSetPrivateField(Class<T> classOfObject, Object objectToForceSet, String fieldname, Object fieldValue) {
 	    try {
 	        Field field = classOfObject.getDeclaredField(fieldname);
 	        field.setAccessible(true);
 	        field.set(objectToForceSet, fieldValue);
 	      } catch (NoSuchFieldException x) {
-	    	  Class<?> superClass = classOfObject.getSuperclass();
+	    	  Class<T> superClass = (Class<T>)classOfObject.getSuperclass();
 	    	  if (null == superClass) {
 	    		  x.printStackTrace();
 	    	  } else {
