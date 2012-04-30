@@ -640,19 +640,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (operator == null)
 			findOperator();
 
-//		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
-//				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
-//		return pendingAndNotApprovedCount;
-		
-		// TODO refactor this crap
-		
-		Database db = new Database();
-		String sql = "SELECT count(*) total FROM generalcontractors gc WHERE gc.genID = " + operator.getId() + " AND (gc.workStatus = 'P' OR gc.workStatus = 'N')";
-		List<BasicDynaBean> results = db.select(sql, false);
-		if (results.size() != 1)
-			return 0;
-		
-		return Integer.parseInt(results.get(0).get("total").toString());
+		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
+				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
+		return pendingAndNotApprovedCount;
 	}
 
 	// TODO: This should be converted to Struts2 Validation
