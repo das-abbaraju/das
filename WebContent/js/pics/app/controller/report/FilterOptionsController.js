@@ -13,6 +13,26 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
         'report.Reports'
     ],
 
+    init: function() {
+        this.control({
+            'filteroptions button[action=add-filter]': {
+                click: this.showColumnSelector
+            },
+            'filteroptions button[action=search]': {
+                click: function () {
+                    PICS.app.fireEvent('refreshreport');
+                }
+            },
+            'filteroptions button[action=remove-filter]': {
+                click: this.removeFilter
+            }
+        });
+        this.application.on({
+            refreshfilters: this.refreshFilters,
+            scope: this
+        });
+    },
+
     generateFilterPanels: function () {
         var filterContainer = Ext.create('Ext.panel.Panel', {border: false}),
             count = 0,
@@ -37,39 +57,37 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
         this.getFilterOptions().removeAll();
 
         filterContainer = this.generateFilterPanels();
-        
+
         this.getFilterOptions().add(filterContainer);
     },
-    init: function() {
-        this.control({
-            'filteroptions button[action=add-filter]': {
-                click: this.showColumnSelector
-            },
-            'filteroptions button[action=search]': {
-                click: function () {
-                    console.log('search click');
-                    PICS.app.fireEvent('refreshreport');
-                }
-            }
-        });
-        this.application.on({
-            refreshfilters: this.refreshFilters,
-            scope: this
-        });
+
+    removeFilter: function (component, e, options) {
+        var record = component.up('basefilter').record,
+        store = this.getReportReportsStore().first().filters();
+
+        store.remove(record);
+        PICS.app.fireEvent('refreshfilters');
+        PICS.app.fireEvent('refreshreport');
     },
+
     setFilterPanelClass: function (type) {
         var panelClass = '';
-
         switch (type) {
-            case 'String': panelClass = 'PICS.view.report.filter.StringFilter'; break;
             case 'AccountName': panelClass = 'PICS.view.report.filter.StringFilter'; break;
             case 'Boolean': panelClass = 'PICS.view.report.filter.BooleanFilter'; break;
-            case 'Number': panelClass = 'PICS.view.report.filter.NumberFilter'; break;
-            case 'Integer': panelClass = 'PICS.view.report.filter.NumberFilter'; break;
+            case 'Date': panelClass = 'PICS.view.report.filter.DateFilter'; break;
+            case 'Float': panelClass = 'PICS.view.report.filter.FloatFilter'; break;
+            case 'Integer': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
+            case 'Number': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
+            case 'String': panelClass = 'PICS.view.report.filter.StringFilter'; break;
             default: panelClass = null; break;
         }
+        /*if (type !== 'Float') {
+            panelClass = null;
+        }*/
         return panelClass;
     },
+
     showColumnSelector: function(component, e, options) {
         var window = this.getReportColumnSelector();
 

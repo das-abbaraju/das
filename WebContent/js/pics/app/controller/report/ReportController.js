@@ -1,10 +1,15 @@
+/**
+ * Report Controller
+ * 
+ * Controls report refresh
+ */
 Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
     alias: ['widget.reportdatacontroller'],
 
     refs: [{
-        ref: 'dataGrid',
-        selector: 'reportdatagrid'
+        ref: 'dataSetGrid',
+        selector: 'reportdatasetgrid'
     },{
         ref: 'reportColumnSelector',
         selector: 'reportcolumnselector'
@@ -12,12 +17,41 @@ Ext.define('PICS.controller.report.ReportController', {
     stores: [
         'report.AvailableFields',
         'report.AvailableFieldsByCategory',
-        'report.Data',
+        'report.DataSets',
         'report.Reports'
     ],
 
+    init: function () {
+        this.control({
+            'reportdatasetgrid': {
+                beforerender: this.configureColumnMenu
+            },
+            'reportsorttoolbar button[action=add-column]': {
+                click: this.showColumnSelector
+            },
+        });
+
+        this.application.on({
+            refreshreport: this.refreshReport,
+            scope: this
+        });
+    },
+    
+    onLaunch: function () {
+        this.getReportAvailableFieldsStore().load();
+        
+        this.getReportReportsStore().load({
+            scope: this,
+            callback: function(records, operation, success) {
+                this.refreshReport();
+                this.refreshFilters();
+            }
+        });
+    },
+    
     configureColumnMenu: function (grid) {
         var controllerHandle = this;
+        
         grid.columns[0].ownerCt.on('menucreate', function (container, menu, opts) {
             //delete existing column hide menu
             menu.remove(menu.items.items[3], true);
@@ -26,8 +60,8 @@ Ext.define('PICS.controller.report.ReportController', {
             var options = {
                 xtype: 'menu',
                 border: false,
-                floating: false,
                 enableScrolling: false,
+                floating: false,
                 items: [{
                     text: 'Options',
                     menu: {
@@ -45,8 +79,8 @@ Ext.define('PICS.controller.report.ReportController', {
 
             var removeColumn = {
                 xtype: 'menu',
-                floating: false,
                 border: false,
+                floating: false,
                 items: [{
                     text: 'Remove',
                     handler: function (button, event) {
@@ -54,45 +88,20 @@ Ext.define('PICS.controller.report.ReportController', {
                     }
                 }]
             };
+            
             menu.add(options);
             menu.add(removeColumn);
         });
     },
-    init: function () {
-        this.control({
-            'reportdatagrid': {
-                beforerender: this.configureColumnMenu
-            },
-            'reportsorttoolbar button[action=add-column]': {
-                click: this.showColumnSelector
-            },
-        });
 
-        this.application.on({
-            refreshreport: this.refreshReport,
-            scope: this
-        });
-    },
-    onLaunch: function () {
-        this.getReportAvailableFieldsStore().load({
-            scope: this,
-            callback: function(records, operation, success) {
-                this.getReportReportsStore().load({
-                    scope: this,
-                    callback: function(records, operation, success) {
-                        this.refreshReport();
-                        this.refreshFilters();
-                    }
-                });
-            }
-        });
-    },
     refreshFilters: function () {
         this.application.fireEvent('refreshfilters');
     },
+    
     refreshReport: function () {
-        this.getReportDataStore().populateGrid();
+        this.getReportDataSetsStore().populateGrid();
     },
+    
     removeColumn: function (activeMenuItem) {
         var column_store = this.getReportReportsStore().first().columns(),
             colIndex = column_store.find('name', activeMenuItem);
@@ -100,6 +109,7 @@ Ext.define('PICS.controller.report.ReportController', {
         column_store.removeAt(colIndex);
         this.refreshReport();
     },
+    
     showColumnSelector: function(component, e, options) {
         var window = this.getReportColumnSelector();
 
