@@ -121,8 +121,15 @@ abstract public class PicsDAO {
 	}
 
 	public <T extends BaseTable> int getCount(Class<T> clazz, String where) {
-		List<T> results = findWhere(clazz, where);
-		return results.size();
+		Query q = em.createQuery("SELECT COUNT(*) FROM " + clazz.getName() + " WHERE " + where);
+		int result = 0;
+		try {
+			result = (Integer) q.getSingleResult();
+		} catch (Exception e) {
+			result = 0;
+		}
+		
+		return result;
 	}
 
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String name, String value) {
