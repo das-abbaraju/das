@@ -25,7 +25,6 @@ Ext.application({
         ],
         TEXTSTORE: [
             ['Contains', 'contains'],
-<<<<<<< HEAD
             ['NotContains', 'does not contain'],
             ['BeginsWith', 'beginswith'],
             ['NotBeginsWith', 'does not begin with'],
@@ -33,11 +32,6 @@ Ext.application({
             ['NotEndsWith', 'does not end with'],
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
-=======
-            ['BeginsWith', 'beginswith'],
-            ['EndsWith', 'endswith'],
-            ['Equals', 'equals'],
->>>>>>> branch 'dynamicReports' of gerrit.picsauditing.com:/PICSORG
             ['Empty', 'blank']
         ]
     },
