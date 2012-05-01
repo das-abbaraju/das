@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -30,9 +31,11 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.mock.SearchEngineMockPolicy;;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class })
+@MockPolicy(SearchEngineMockPolicy.class)
 public class RegistrationAddClientSiteTest extends PicsTest {
 	RegistrationAddClientSite registrationAddClientSite;
 	ContractorAccount contractor;
