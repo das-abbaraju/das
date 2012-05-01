@@ -21,7 +21,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.QueryData;
-import com.picsauditing.report.ReportDefinition;
+import com.picsauditing.report.Definition;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.QueryField;
 import com.picsauditing.report.models.ModelType;
@@ -331,7 +331,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private void addDefinition() {
-		ReportDefinition definition = new ReportDefinition(report.getParameters());
+		Definition definition = new Definition(report.getParameters());
 		report.setDefinition(definition);
 		builder.setDefinition(definition);
 	}

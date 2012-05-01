@@ -14,7 +14,7 @@ public class AccountTest {
 		assertTrue(account.getFields().size() > 10);
 		System.out.println(account.getFields().size());
 		
-		Contractor contractor = new Contractor("a");
+		Contractor contractor = new Contractor("account", "a");
 		for (String fieldName : contractor.getFields().keySet()) {
 			System.out.println(fieldName + ": " + contractor.getFields().get(fieldName));
 		}

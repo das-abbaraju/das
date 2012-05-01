@@ -1,0 +1,184 @@
+package com.picsauditing.report;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fields.Column;
+import com.picsauditing.report.fields.Filter;
+import com.picsauditing.report.fields.Sort;
+import com.picsauditing.util.JSONUtilities;
+import com.picsauditing.util.Strings;
+
+public class Definition implements JSONable {
+	private List<Column> columns = new ArrayList<Column>();
+	private List<Filter> filters = new ArrayList<Filter>();
+	private List<Sort> orderBy = new ArrayList<Sort>();
+	
+	/**
+	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
+	 */
+	private String filterExpression;
+	private int rowsPerPage = 100;
+
+	public Definition() {
+	}
+
+	public Definition(String json) {
+		if (StringUtils.isEmpty(json)) {
+			return;
+		}
+		JSONObject obj = (JSONObject) JSONValue.parse(json);
+		fromJSON(obj);
+	}
+
+	public List<Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<Column> columns) {
+		this.columns = columns;
+	}
+
+	public List<Sort> getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(List<Sort> orderBy) {
+		this.orderBy = orderBy;
+	}
+
+	public List<Filter> getFilters() {
+		return filters;
+	}
+
+	public void setFilters(List<Filter> filters) {
+		this.filters = filters;
+	}
+
+	public String getFilterExpression() {
+		return filterExpression;
+	}
+
+	public void setFilterExpression(String filterExpression) {
+		// Check this is valid
+		// Should only contain 0-9,(,),AND,OR,SPACE
+		this.filterExpression = filterExpression;
+	}
+
+	public int getRowsPerPage() {
+		return rowsPerPage;
+	}
+
+	public void setRowsPerPage(int rowsPerPage) {
+		if (rowsPerPage <= 0)
+			// TODO Set to 10 while we're testing...before release, bump it to 100
+			this.rowsPerPage = 10;
+		else
+			this.rowsPerPage = rowsPerPage;
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = new JSONObject();
+		if (rowsPerPage > 0)
+			json.put("rowsPerPage", rowsPerPage);
+		if (filterExpression != null)
+			json.put("filterExpression", filterExpression);
+		if (columns.size() > 0)
+			json.put("columns", JSONUtilities.convertFromList(columns));
+		if (filters.size() > 0)
+			json.put("filters", JSONUtilities.convertFromList(filters));
+		if (orderBy.size() > 0)
+			json.put("sorts", JSONUtilities.convertFromList(orderBy));
+
+		return json;
+	}
+
+	public void fromJSON(JSONObject json) {
+		if (json == null)
+			return;
+		setRowsPerPage(JSONUtilities.convertToInteger(json, "rowsPerPage"));
+
+		this.filterExpression = (String) json.get("filterExpression");
+
+		this.filters = parseQueryFilterList(json.get("filters"));
+		this.columns = parseColumnList(json.get("columns"));
+		this.orderBy = parseSortList(json.get("sorts"));
+	}
+
+	private List<Filter> parseQueryFilterList(Object obj) {
+		List<Filter> filters = new ArrayList<Filter>();
+
+		if (obj == null)
+			return filters;
+
+		JSONArray filterArray = (JSONArray) obj;
+		for (Object filterObj : filterArray) {
+			Filter filter = new Filter();
+			if (filterObj instanceof JSONObject) {
+				filter.fromJSON((JSONObject) filterObj);
+				filters.add(filter);
+			}
+		}
+
+		return filters;
+	}
+
+	private List<Column> parseColumnList(Object obj) {
+		List<Column> fields = new ArrayList<Column>();
+
+		if (obj == null)
+			return fields;
+
+		JSONArray fieldArray = (JSONArray) obj;
+		for (Object fieldObj : fieldArray) {
+			Column field = new Column();
+			if (fieldObj instanceof JSONObject) {
+				field.fromJSON((JSONObject) fieldObj);
+				fields.add(field);
+			}
+		}
+
+		return fields;
+	}
+
+	private List<Sort> parseSortList(Object obj) {
+		List<Sort> fields = new ArrayList<Sort>();
+
+		if (obj == null)
+			return fields;
+
+		JSONArray fieldArray = (JSONArray) obj;
+		for (Object fieldObj : fieldArray) {
+			Sort field = new Sort();
+			if (fieldObj instanceof JSONObject) {
+				field.fromJSON((JSONObject) fieldObj);
+				fields.add(field);
+			}
+		}
+
+		return fields;
+	}
+
+	public Definition merge(Definition definition) {
+		if (definition != null) {
+			columns.addAll(definition.getColumns());
+			orderBy.addAll(definition.getOrderBy());
+			filters.addAll(definition.getFilters());
+			if (!Strings.isEmpty(definition.getFilterExpression())) {
+				if (Strings.isEmpty(filterExpression))
+					filterExpression = definition.getFilterExpression();
+				else
+					filterExpression = filterExpression + " AND " + definition.getFilterExpression();
+			}
+		}
+
+		return definition;
+	}
+}

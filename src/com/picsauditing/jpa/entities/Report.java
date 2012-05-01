@@ -11,7 +11,7 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
 
-import com.picsauditing.report.ReportDefinition;
+import com.picsauditing.report.Definition;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.util.JSONUtilities;
 
@@ -25,7 +25,7 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private Account sharedWith;
-	private ReportDefinition definition;
+	private Definition definition;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -80,10 +80,10 @@ public class Report extends BaseTable {
 
 		if (full) {
 			obj.put("description", description);
-			ReportDefinition defaultDefinition;
+			Definition defaultDefinition;
 			
 			if (this.definition == null) {
-				defaultDefinition = new ReportDefinition(parameters);
+				defaultDefinition = new Definition(parameters);
 			}
 			else {
 				defaultDefinition = this.definition;
@@ -100,11 +100,11 @@ public class Report extends BaseTable {
 	}
 
 	@Transient
-	public ReportDefinition getDefinition() {
+	public Definition getDefinition() {
 		return definition;
 	}
 
-	public void setDefinition(ReportDefinition definition) {
+	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}
 }

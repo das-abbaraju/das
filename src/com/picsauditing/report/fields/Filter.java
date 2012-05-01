@@ -1,0 +1,133 @@
+package com.picsauditing.report.fields;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.util.Strings;
+
+public class Filter implements JSONable {
+	private String name;
+	private QueryFilterOperator operator;
+	private String value;
+	private QueryField field;
+
+	@SuppressWarnings("unchecked")
+	public JSONObject toJSON(boolean full) {
+		JSONObject json = new JSONObject();
+		json.put("name", name);
+		if (operator != null)
+			json.put("operator", operator.toString());
+		if (value != null)
+			json.put("value", value);
+		if (field != null)
+			json.put("field", field.toJSONObject());
+		return json;
+	}
+
+	public void fromJSON(JSONObject json) {
+		if (json == null)
+			return;
+
+		name = (String) json.get("name");
+		if (name == null)
+			return;
+
+		parseOperator(json);
+
+		this.value = (String) json.get("value");
+		this.field = (QueryField) json.get("field");
+	}
+
+	private void parseOperator(JSONObject json) {
+		String object = (String)json.get("operator");
+		if (Strings.isEmpty(object)) {
+			operator = QueryFilterOperator.Equals;
+			return;
+		}
+
+		this.operator = QueryFilterOperator.valueOf(object.toString());
+	}
+	
+	/*DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String), AccountType, AccountLevel, Trades, Country, StateProvince */
+
+	@SuppressWarnings("unchecked")
+	public static JSONArray getAccountStatusList() {
+		AccountStatus[] list = AccountStatus.values();
+		
+		JSONArray json = new JSONArray();
+		for (AccountStatus accountStatus : list) {
+			json.add(accountStatus.toString());
+		}
+		
+		return json;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray getAuditStatusList() {
+		AuditStatus[] list = AuditStatus.values();
+		
+		JSONArray json = new JSONArray();
+		for (AuditStatus auditStatus : list) {
+			json.add(auditStatus.toString());
+		}
+		
+		return json;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static JSONArray getLowMedHighList() {
+		LowMedHigh[] list = LowMedHigh.values();
+		
+		JSONArray json = new JSONArray();
+		for (LowMedHigh lowMedHigh : list) {
+			json.add(lowMedHigh.toString());
+		}
+		
+		return json;
+	}
+	
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public QueryFilterOperator getOperator() {
+		return operator;
+	}
+
+	public void setOperator(QueryFilterOperator operator) {
+		this.operator = operator;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public boolean isValid() {
+		if (value == null)
+			return false;
+		
+		return true;
+	}
+
+	public QueryField getField() {
+		return field;
+	}
+
+	public void setField(QueryField field) {
+		this.field = field;
+	}
+}
