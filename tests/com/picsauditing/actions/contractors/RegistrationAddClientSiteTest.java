@@ -27,14 +27,16 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PICS.SmartFacilitySuggest;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.mock.SearchEngineMockPolicy;
 import com.picsauditing.strutsutil.AjaxUtils;
-import com.picsauditing.mock.SearchEngineMockPolicy;;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class })
+@PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class, SmartFacilitySuggest.class })
 @MockPolicy(SearchEngineMockPolicy.class)
 public class RegistrationAddClientSiteTest extends PicsTest {
 	RegistrationAddClientSite registrationAddClientSite;
@@ -55,26 +57,26 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 		session.put("permissions", permissions);
 
 		ActionContext actionContext = mock(ActionContext.class);
-		when(actionContext.getSession()).thenReturn(session);
-
 		PowerMockito.mockStatic(ActionContext.class);
-		when(ActionContext.getContext()).thenReturn(actionContext);
-
 		PowerMockito.mockStatic(AjaxUtils.class);
+		PowerMockito.mockStatic(SmartFacilitySuggest.class);
+
+		when(actionContext.getSession()).thenReturn(session);
+		when(ActionContext.getContext()).thenReturn(actionContext);
+		when(ServletActionContext.getRequest()).thenReturn(request);
 
 		registrationAddClientSite = PowerMockito.spy(new RegistrationAddClientSite());
 		autowireEMInjectedDAOs(registrationAddClientSite);
 
 		contractor = EntityFactory.makeContractor();
-		results = new ArrayList<OperatorAccount>();
 
-		when(em.find(ContractorAccount.class, contractor.getId())).thenReturn(contractor);
-		when(ServletActionContext.getRequest()).thenReturn(request);
-		when(permissions.getAccountId()).thenReturn(contractor.getId());
 		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(contractor.getId());
+		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
+		when(em.find(ContractorAccount.class, contractor.getId())).thenReturn(contractor);
 		PowerMockito.doReturn(true).when(registrationAddClientSite, "checkPermissionToView");
-		// when(registrationAddClientSite.checkPermissionToView()).thenReturn(true);
 
+		results = new ArrayList<OperatorAccount>();
 		for (int i = 0; i < 3; i++) {
 			results.add(EntityFactory.makeOperator());
 		}
@@ -83,10 +85,8 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 	@Test
 	public void testEmptySearchValue() throws Exception {
 		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
-		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(false);
 
 		registrationAddClientSite.setSearchValue(null);
-
 		registrationAddClientSite.search();
 
 		PowerMockito.verifyPrivate(registrationAddClientSite, times(1)).invoke("loadSearchResults");
@@ -94,21 +94,26 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 
 	@Test
 	public void testNotEmptySearchValue() throws Exception {
-		registrationAddClientSite.setSearchValue("Hello World");
+		List<OperatorAccount> subList = results.subList(0, 1);
 
+		when(em.createNativeQuery(anyString(), eq(OperatorAccount.class))).thenReturn(query);
+		when(query.getResultList()).thenReturn(subList);
+
+		registrationAddClientSite.setSearchValue("Hello World");
 		registrationAddClientSite.search();
 
 		PowerMockito.verifyPrivate(registrationAddClientSite, never()).invoke("loadSearchResults");
+
+		assertEquals(subList, registrationAddClientSite.getSearchResults());
 	}
 
 	@Test
 	public void testSearchForOperators() throws Exception {
 		// for testing not empty search value
-		registrationAddClientSite.setSearchValue("*");
-
 		when(em.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(results);
 
+		registrationAddClientSite.setSearchValue("*");
 		registrationAddClientSite.search();
 
 		assertEquals(results, registrationAddClientSite.getSearchResults());
@@ -126,5 +131,23 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(false);
 
 		assertEquals(ActionSupport.SUCCESS, registrationAddClientSite.search());
+	}
+
+	@Test
+	public void testRemoveExistingOperatorsFromSearch() throws Exception {
+		List<OperatorAccount> searchResults = results.subList(0, 1);
+
+		for (OperatorAccount operator : results) {
+			EntityFactory.addContractorOperator(contractor, operator);
+		}
+
+		when(em.createNativeQuery(anyString(), eq(OperatorAccount.class))).thenReturn(query);
+		when(query.getResultList()).thenReturn(searchResults);
+
+		registrationAddClientSite.setSearchValue("Hello World");
+		registrationAddClientSite.search();
+
+		PowerMockito.verifyPrivate(registrationAddClientSite, never()).invoke("loadSearchResults");
+		assertEquals(new ArrayList<OperatorAccount>(), registrationAddClientSite.getSearchResults());
 	}
 }
