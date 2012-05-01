@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.hamcrest.Matchers.*;
 
-
 import java.util.Locale;
 
 import org.junit.Before;
@@ -18,7 +17,6 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
@@ -28,21 +26,18 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(I18nCache.class)
 public class ManageJobSitesTest extends PicsTest {
 	ManageJobSites manageJobSites;
 	User user;
 
-	@Mock private Permissions permissions;
-	@Mock private I18nCache i18nCache;
+	@Mock
+	private Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		
-		mockStatic(I18nCache.class);
-		Mockito.when(I18nCache.getInstance()).thenReturn(i18nCache);
+
+		super.setUp();
 
 		manageJobSites = new ManageJobSites();
 		autowireEMInjectedDAOs(manageJobSites);
@@ -67,22 +62,20 @@ public class ManageJobSitesTest extends PicsTest {
 		// test subheading not null
 		// test success
 		forceSetPrivateField(permissions, "accountType", "Operator");
-		
-		when(i18nCache.hasKey(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en")))))
-		.thenReturn(Boolean.TRUE);
-		when(i18nCache.getText(eq("ManageProjects.title"), 
-				Matchers.argThat(equalTo(new Locale("en"))), 
-				anyVararg())).thenReturn("Projects");
-		
+
+		when(i18nCache.hasKey(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))))).thenReturn(
+				Boolean.TRUE);
+		when(i18nCache.getText(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))), anyVararg()))
+				.thenReturn("Projects");
+
 		assertEquals(ActionSupport.SUCCESS, manageJobSites.execute());
-		//assertTrue(permissions.isOperatorCorporate());
-		//assertNotNull(manageJobSites.getOperator());
+		// assertTrue(permissions.isOperatorCorporate());
+		// assertNotNull(manageJobSites.getOperator());
 	}
 
-/*	@Test
-	public void testNullOperator() throws Exception {
-		manageJobSites.execute();
-		assertFalse(permissions.isOperatorCorporate());
-		assertNull(manageJobSites.getOperator());
-	}*/
+	/*
+	 * @Test public void testNullOperator() throws Exception {
+	 * manageJobSites.execute(); assertFalse(permissions.isOperatorCorporate());
+	 * assertNull(manageJobSites.getOperator()); }
+	 */
 }

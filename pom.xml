@@ -224,6 +224,12 @@
 			<artifactId>hibernate-entitymanager
 			</artifactId>
 			<version>3.3.1.ga</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javassist</artifactId>
+					<groupId>jboss</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>concurrent</groupId>
@@ -310,6 +316,12 @@
       		<artifactId>powermock-module-junit4</artifactId>
       		<version>1.4.12</version>
       		<scope>test</scope>
+      		<exclusions>
+      			<exclusion>
+      				<artifactId>javassist</artifactId>
+      				<groupId>org.javassist</groupId>
+      			</exclusion>
+      		</exclusions>
    		</dependency>
    		<dependency>
       		<groupId>org.powermock</groupId>
@@ -572,6 +584,11 @@
 			<groupId>org.hibernatespatial</groupId>
 			<artifactId>hibernate-spatial-mysql</artifactId>
 			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
 		</dependency>
 	</dependencies>
 </project>
