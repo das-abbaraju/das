@@ -129,4 +129,18 @@ public class ContractorOperatorDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	public List<Integer> getContractorIdsForOperator(String where) {
+		if (Strings.isEmpty(where))
+			throw new IllegalArgumentException("The where clause cannot be an empty String.");
+					
+		try {
+			Query query = em.createQuery("SELECT contractorAccount.id FROM ContractorOperator WHERE " + where);
+			return query.getResultList();
+		} catch (Exception e) {
+			System.out.println("An error occurred in the ContractorOperatorDAO - " + e.getMessage());
+		}
+		
+		return Collections.emptyList();
+	}
+	
 }
