@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 @Entity
@@ -116,6 +117,17 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	
+	@Transient
+	public boolean isTopCaowUserNote() {
+		if (caoWorkflow != null && caoWorkflow.size() > 1) {
+			ContractorAuditOperatorWorkflow caow = caoWorkflow.get(0);
+			if (caow.getStatus().equals(caow.getPreviousStatus()) && !Strings.isEmpty(caow.getNotes())) {
+				return true;
+			}
+		}
+		return true; // TODO kirk changed to false
 	}
 
 	@Enumerated(EnumType.STRING)
