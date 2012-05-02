@@ -37,7 +37,7 @@ public class SearchEngine {
 
 	/**
 	 * Gets ids of contractors in a users system
-	 * 
+	 *
 	 * @param perm
 	 *            Permission of user doing search
 	 * @return Hashtable of ids of contractors in the users system
@@ -69,7 +69,7 @@ public class SearchEngine {
 
 	/**
 	 * Builds a query for finding common terms in a search term
-	 * 
+	 *
 	 * @param terms
 	 *            The terms used in the search
 	 * @param ignore
@@ -104,7 +104,7 @@ public class SearchEngine {
 
 	/**
 	 * Builds the Query based on term and returns it as a string
-	 * 
+	 *
 	 * @param currPerm
 	 *            permissions to use, pass in null to do an unrestricted search
 	 * @param terms
@@ -195,6 +195,10 @@ public class SearchEngine {
 		sql.append("\n ) t").append(terms.size());
 
 		if (currPerm != null) {
+			String accountStatuses = "'Active','Pending'";
+			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
+				accountStatuses += ",'Demo'";
+
 			if (currPerm.isCorporate()) {
 				sql.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
 						.append("((SELECT f.opID id, 'O' rType FROM facilities f WHERE f.corporateID =")
@@ -202,14 +206,14 @@ public class SearchEngine {
 				sql.append("\nUNION\n")
 						.append("(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a JOIN operators o USING(id) WHERE o.parentID =")
 						.append(currPerm.getAccountId())
-						.append(")) AS acc on a.id = acc.id AND a.status IN ('Active','Pending')\n)\n");
+						.append(")) AS acc on a.id = acc.id AND a.status IN (" + accountStatuses + ")\n)\n");
 				if (fullSearch) {
-					sql.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN ('Active','Pending'))\n");
+					sql.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN (" + accountStatuses + "))\n");
 				} else {
 					sql.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
 							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId())
-							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN ('Active','Pending'))\n");
+							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses + "))\n");
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
@@ -235,7 +239,7 @@ public class SearchEngine {
 				sql.append("\nJOIN ((\nSELECT a.name rName, a.id, acc.rType FROM accounts a JOIN \n")
 						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc WHERE gc.genID =")
 						.append(currPerm.getAccountId())
-						.append(") AS acc ON a.id = acc.id WHERE a.status IN ('Active','Pending') )");
+						.append(") AS acc ON a.id = acc.id WHERE a.status IN (" + accountStatuses + ") )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
 							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
@@ -348,7 +352,7 @@ public class SearchEngine {
 
 	/**
 	 * Builds string array of terms from a string containing the search term
-	 * 
+	 *
 	 * @param check
 	 *            The String to use to build the terms
 	 * @param sort
@@ -382,7 +386,7 @@ public class SearchEngine {
 
 	/**
 	 * Sorts the terms based on commonality
-	 * 
+	 *
 	 * @param terms
 	 *            List of terms to sort
 	 * @param onlyValid
