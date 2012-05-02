@@ -1,6 +1,7 @@
 package com.picsauditing.actions.rules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,8 +18,6 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCategoryRule> {
@@ -78,7 +77,8 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 						+ " OR t.rootCategory IS NULL)) OR t.auditCategory.id = " + category.getId() + ")");
 			} else {
 				if (comparisonRule.getAuditType() != null) {
-					whereClauses.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId());
+					whereClauses
+							.add("t.auditType IS NULL OR t.auditType.id = " + comparisonRule.getAuditType().getId());
 				}
 			}
 			if (comparisonRule.getOperatorAccount() != null) {

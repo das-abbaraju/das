@@ -390,16 +390,24 @@
                     </tr>
                 </s:if>
 				<tr>
-					<td style="padding: 15px;">
-						<s:text name="InvoiceDetail.Comments" />
-						<s:if test="edit">
-							<br />
-							<s:textarea name="invoice.notes" cols="60" rows="4" />
-						</s:if>
-						<s:else>
-							<s:property value="invoice.notes" />
+					<td style="padding-top:15px; padding-bottom:15px;">
+                		<s:if test="edit">                			
+                			<div style="float:left; width:50%; align:center">
+                				<s:text name="InvoiceDetail.Comments" /> <s:text name="Invoice.ThankYou" />
+                				<textarea name="invoice.notes" rows="4" cols="60" placeholder="Enter additional comments here...">${invoice.notes}</textarea>
+                			</div>
+							<div style="float:left; width:47%; align:center">
+								<s:text name="Invoice.ClientSiteText" />
+								<s:textarea name="invoice.clientSites" cols="60" rows="4" />
+							</div>
+                		</s:if>
+                		<s:else>
+                			<div style="align:center">
+                				<s:text name="InvoiceDetail.Comments" />
+                				<s:property value="fullNote()" />
+                			</div>
 						</s:else>
-					</td>
+                	</td>
 				</tr>
 				<tr>
 					<td>

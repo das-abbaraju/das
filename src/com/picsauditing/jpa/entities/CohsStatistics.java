@@ -1,9 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class CohsStatistics extends SafetyStatistics {
 

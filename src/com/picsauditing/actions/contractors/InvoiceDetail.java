@@ -436,4 +436,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public String getCountry() {
 		return country;
 	}
+	
+	public String fullNote() {
+		return (Strings.nullToBlank(invoice.getNotes()) + " " + getText("Invoice.ThankYou") + 
+				" " + getText("Invoice.ClientSiteText") + " " + Strings.nullToBlank(invoice.getClientSites())).trim();
+	}
 }

@@ -363,4 +363,12 @@ public class StringsTest  {
 				Strings.escapeQuotes("ab" + singleQuote + singleQuote));
 	}
 	
+	@Test
+	public void nullToBlank() {
+		assertEquals("", Strings.nullToBlank(null));
+		assertEquals("", Strings.nullToBlank(""));
+		assertEquals("  ", Strings.nullToBlank("  "));
+		assertEquals(" This is a test ", Strings.nullToBlank(" This is a test "));
+	}
+	
 }
