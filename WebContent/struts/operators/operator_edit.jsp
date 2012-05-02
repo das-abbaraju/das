@@ -748,7 +748,7 @@
 																</nobr>
 															</td>
 															<td>
-																<input type="submit" class="picsbutton positive" name="button" value="Save Role" />
+																<s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role" />
 															</td>
 														</tr>
 													</s:if>
