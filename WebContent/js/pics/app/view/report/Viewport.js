@@ -9,12 +9,10 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.report.FilterOptions',
         'PICS.view.report.Header'
     ],
-    defaults: {
-        border: false
-    },
     layout: 'border',
     items: [{
         region: 'north',
+        id: 'layoutNorth',
         items: [{
             xtype: 'layoutheader'
         }, {
@@ -22,6 +20,7 @@ Ext.define('PICS.view.report.Viewport', {
         }]
     }, {
         region: 'center',
+        id: 'layoutCenter',
         items: [{
             region: 'north',
             xtype: 'reportheader'

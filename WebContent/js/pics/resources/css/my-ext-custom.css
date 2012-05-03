@@ -17,6 +17,12 @@
 }
 
 /* header */
+#layoutNorth-body {
+	border: 0px;
+}
+#layoutCenter-body {
+    border-top: 0px;
+}
 #layoutHeader {
     background: none;
     border: 0px;
