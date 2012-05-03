@@ -57,7 +57,7 @@ Ext.define('PICS.model.report.AvailableField', {
         var filter = Ext.create('PICS.model.report.Filter', {
         	'name': this.get('name')
         });
-        
+
         filter.setAvailableField(this);
         
         return filter;

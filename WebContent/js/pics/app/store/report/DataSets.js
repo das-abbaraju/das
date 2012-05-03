@@ -1,6 +1,6 @@
 /**
  * Data Sets Class
- * 
+ *
  * Dynamically generates associated Data Model Class
  */
 Ext.define('PICS.store.report.DataSets', {
@@ -17,10 +17,10 @@ Ext.define('PICS.store.report.DataSets', {
         },
         type: 'ajax'
     },
-    
+
     /**
      * Get Report JSON
-     * 
+     *
      * Builds a jsonified version of the report to be sent to the server
      */
     getReportJSON: function () {
@@ -31,36 +31,36 @@ Ext.define('PICS.store.report.DataSets', {
         if (!report) {
             throw 'Data.getReportJSON missing report';
         }
-        
+
         function convertStoreToDataObject(store) {
             var data = [];
-            
+
             store.each(function (record) {
                 var item = {};
-                
+
                 record.fields.each(function (field) {
                     item[field.name] = record.get(field.name);
                 });
-                
+
                 data.push(item);
             });
-            
+
             return data;
         }
-        
+
         report_data = report.data;
         report_data.columns = convertStoreToDataObject(report.columns());
         report_data.filters = convertStoreToDataObject(report.filters());
         report_data.sorts = convertStoreToDataObject(report.sorts());
-        
+
         return Ext.encode(report_data);
     },
-    
+
     /**
      * Configure Proxy Url
-     * 
+     *
      * Build the remote proxy url so the store data can be properly fetched by the server
-     * 
+     *
      * @param report
      */
     configureProxyUrl: function (report) {
@@ -70,7 +70,7 @@ Ext.define('PICS.store.report.DataSets', {
         if (!report) {
             throw 'Data.getReportJSON missing report';
         }
-        
+
         var report_json = this.getReportJSON();
         var url = 'ReportDynamic!data.action?';
         var parameters = {};
@@ -85,10 +85,10 @@ Ext.define('PICS.store.report.DataSets', {
 
         this.proxy.url = url + Ext.Object.toQueryString(parameters);
     },
-    
+
     /**
      * Reload Report Data Set
-     * 
+     *
      * Refresh the report grid
      */
     reloadReportDataSet: function () {
@@ -98,28 +98,28 @@ Ext.define('PICS.store.report.DataSets', {
         if (!report) {
             throw 'Data.getReportJSON missing report';
         }
-        
+
         var data_set_grid = Ext.ComponentQuery.query('reportdatasetgrid')[0];
         var column_store = report.columns();
         var data_set_columns = [{
             xtype: 'rownumberer',
             width: 27
         }];
-        
+
         // See http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
         // generate data grid columns
         column_store.each(function (record) {
             data_set_columns.push(record.toDataSetGridColumn());
         });
-        
+
         data_set_grid.reconfigure(null, data_set_columns);
     },
-    
+
     /**
      * Reload Store Data
-     * 
+     *
      * Fetch new data from the server by making a request to the configured proxy url
-     * 
+     *
      * @param callback
      */
     reloadStoreData: function (callback) {
@@ -130,7 +130,7 @@ Ext.define('PICS.store.report.DataSets', {
             if (!report) {
                 throw 'Data.getReportJSON missing report';
             }
-            
+
             var column_store = report.columns();
             var model_fields = [];
 
@@ -138,10 +138,10 @@ Ext.define('PICS.store.report.DataSets', {
             column_store.each(function (record) {
                 model_fields.push(record.toDataSetModelField());
             });
-            
+
             return model_fields;
         }
-        
+
         function generateDataSetModel(model_fields) {
             var model = Ext.define('PICS.model.report.DataSet', {
                 extend: 'Ext.data.Model',
@@ -151,22 +151,22 @@ Ext.define('PICS.store.report.DataSets', {
 
             return model;
         }
-        
+
         // dynamically create model for DataSets Store
         var model_fields = generateDataSetModelFieldsFromColumnStore();
         var model = generateDataSetModel(model_fields);
-        
+
         // remove all data from DataSets Store
         this.removeAll(true);
         this.proxy.reader.setModel(model);
-        
+
         // reload store data
         this.load(callback);
     },
-    
+
     populateGrid: function () {
         this.configureProxyUrl();
-        
+
         this.reloadStoreData({
             callback: function(records, operation, success) {
                 if (success) {
@@ -176,5 +176,5 @@ Ext.define('PICS.store.report.DataSets', {
                 }
             }
         });
-    }    
+    }
 });
