@@ -39,7 +39,6 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceItem;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
 
