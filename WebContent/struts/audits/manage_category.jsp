@@ -135,7 +135,11 @@
 					</li>
 					<li>
 						<label>Help Text:</label>
-						<s:textarea name="category.helpText" cssStyle="width: 480px;" rows="5" />
+						<s:textarea 
+							name="category.helpText"
+							cssStyle="width: 480px;"
+							rows="5"
+							value="%{category.helpText.exists ? category.helpText : ''}" />
 					</li>
 					
 					<s:if test="category.auditType.dynamicCategories">

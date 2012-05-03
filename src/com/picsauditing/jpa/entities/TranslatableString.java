@@ -130,7 +130,8 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		translation = translation.trim();
 
 		return translation.length() > 0
-				&& !translation.toLowerCase().equals(I18nCache.DEFAULT_TRANSLATION.toLowerCase());
+				&& !translation.toLowerCase().equals(I18nCache.DEFAULT_TRANSLATION.toLowerCase())
+				&& !translation.equals(key);
 	}
 
 	/**
