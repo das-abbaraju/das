@@ -618,13 +618,13 @@
 																	<s:textfield
 																		name="operator.accountUsers[%{#role.index}].ownerPercent"
 																		value="%{ownerPercent}" size="3"
-																	/>%
+																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield
@@ -632,7 +632,7 @@
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
 																	/>
 																</nobr>
 															</td>
@@ -730,25 +730,25 @@
 																	<s:textfield
 																		name="operator.accountUsers[%{#role.index}].ownerPercent"
 																		value="%{ownerPercent}" size="3"
-																	/>%
+																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield cssClass="blueMain datepicker"
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
 																	/>
 																</nobr>
 															</td>
 															<td>
-																<input type="submit" class="picsbutton positive" name="button" value="Save Role" />
+																<s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role" />
 															</td>
 														</tr>
 													</s:if>
@@ -802,7 +802,7 @@
 																	<s:property value="#key.description" />
 																</td>
 																<td>
-																	<s:property value="ownerPercent" />%
+																	<s:property value="ownerPercent" />
 																</td>
 																<td>
 																	<s:date name="startDate" format="%{getText('date.short')}" />

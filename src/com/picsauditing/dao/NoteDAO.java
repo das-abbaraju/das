@@ -1,9 +1,9 @@
 package com.picsauditing.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -25,8 +25,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.NoteStatus;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("unchecked")
 public class NoteDAO extends PicsDAO {
@@ -127,10 +125,12 @@ public class NoteDAO extends PicsDAO {
 		String permWhere = "";
 		if (permissions.isOperator() || permissions.isCorporate())
 			permWhere += "AND (w.cao.operator.id IN (" + Strings.implode(permissions.getVisibleAccounts(), ",") + "))";
-		
+
 		Query query = em
 				.createQuery("FROM ContractorAuditOperatorWorkflow w JOIN FETCH w.cao c JOIN FETCH c.audit a WHERE a.contractorAccount.id = :accountID "
-						+ whereForWorkflow + " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate " + permWhere + " ");
+						+ whereForWorkflow
+						+ " AND w.updateDate > :earliestDate AND w.updateDate <= :latestDate "
+						+ permWhere + " ");
 		query.setParameter("accountID", accountID);
 		query.setParameter("earliestDate", earliestDate);
 		query.setParameter("latestDate", latestDate);
@@ -197,12 +197,13 @@ public class NoteDAO extends PicsDAO {
 
 		return beans;
 	}
-	
+
 	/**
-	 * Returns a list of Note objects wrapped as an ActivityBean object because the new standard for display
-	 * on the notes page is ActivityBean.
+	 * Returns a list of Note objects wrapped as an ActivityBean object because
+	 * the new standard for display on the notes page is ActivityBean.
 	 */
-	public List<ActivityBean> getActivity(int accountID, Permissions permissions, String where, int firstResult, int limit) {
+	public List<ActivityBean> getActivity(int accountID, Permissions permissions, String where, int firstResult,
+			int limit) {
 		List<Note> notes = getNotes(accountID, permissions, where, firstResult, limit);
 		ArrayList<ActivityBean> activity = new ArrayList<ActivityBean>();
 		accumulateNotes(activity, notes, limit);
@@ -251,7 +252,7 @@ public class NoteDAO extends PicsDAO {
 	private void accumulateWorkflowChanges(List<ActivityBean> beans, List<ContractorAuditOperatorWorkflow> caows,
 			NoteCategory[] filterCategory) {
 		ActivityBean bean;
-		for (ContractorAuditOperatorWorkflow caow: caows) {
+		for (ContractorAuditOperatorWorkflow caow : caows) {
 			bean = new ActivityBeanAudit();
 
 			ContractorAudit audit = caow.getCao().getAudit();

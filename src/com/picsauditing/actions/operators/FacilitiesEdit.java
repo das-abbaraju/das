@@ -115,7 +115,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public String addRole() {
 		AccountUser accountUser = new AccountUser();
-		if (accountRep.getUser().getId() > 0)
+		if (accountRep != null && accountRep.getUser().getId() > 0)
 			accountUser = accountRep;
 		else
 			accountUser = salesRep;

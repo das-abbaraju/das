@@ -1,5 +1,6 @@
 package com.picsauditing.PICS;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
@@ -33,8 +34,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Adds and removed contractors from operator accounts
@@ -294,14 +293,14 @@ public class FacilityChanger {
 
 		return creationDateQueue.peekFirst();
 	}
-	
+
 	private boolean addedByOperatorCorporate() {
 		if (permissions.isOperator() && permissions.getAccountId() == operator.getId())
 			return true;
-		
+
 		if (permissions.isCorporate() && permissions.getOperatorChildren().contains(operator.getId()))
 			return true;
-		
+
 		return false;
 	}
 }

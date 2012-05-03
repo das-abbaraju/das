@@ -2,16 +2,16 @@ package com.picsauditing.util;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.MultiYearScope;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 /**
- * A utility class that simply helps to keep track of a list of years (e.g. for determining the last three years that
- * contribute to a three year average, which may not be contiguous)
+ * A utility class that simply helps to keep track of a list of years (e.g. for
+ * determining the last three years that contribute to a three year average,
+ * which may not be contiguous)
  */
 public class YearList {
 	List<Integer> yearList;
