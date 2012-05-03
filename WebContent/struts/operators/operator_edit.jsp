@@ -618,7 +618,7 @@
 																	<s:textfield
 																		name="operator.accountUsers[%{#role.index}].ownerPercent"
 																		value="%{ownerPercent}" size="3"
-																	/>
+																	/>%
 																	&nbsp;&nbsp;
 																	<s:textfield
 																		cssClass="blueMain datepicker" size="10"
@@ -730,7 +730,7 @@
 																	<s:textfield
 																		name="operator.accountUsers[%{#role.index}].ownerPercent"
 																		value="%{ownerPercent}" size="3"
-																	/>
+																	/>%
 																	&nbsp;&nbsp;
 																	<s:textfield
 																		cssClass="blueMain datepicker" size="10"
@@ -802,7 +802,7 @@
 																	<s:property value="#key.description" />
 																</td>
 																<td>
-																	<s:property value="ownerPercent" />
+																	<s:property value="ownerPercent" />%
 																</td>
 																<td>
 																	<s:date name="startDate" format="%{getText('date.short')}" />
