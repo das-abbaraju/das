@@ -45,7 +45,7 @@ Ext.define('PICS.view.report.filter.DateFilter', {
         this.add(dateFilter);
         
         this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
+        this.child('panel displayfield[name=filterName]').setValue(this.record.get('name'));
         this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
         this.child('panel datefield[name=filterValue]').setValue(this.record.get('value'));
     }

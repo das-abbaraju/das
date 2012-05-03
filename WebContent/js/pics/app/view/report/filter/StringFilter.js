@@ -40,7 +40,7 @@ Ext.define('PICS.view.report.filter.StringFilter', {
         this.add(stringFilter);
        
         this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('column'));
+        this.child('panel displayfield[name=filterName]').setValue(this.record.get('name'));
         this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
         this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));        
     }
