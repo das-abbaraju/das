@@ -37,12 +37,10 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 		if (permissions.isOperatorCorporate()) {
 			sql.addField("d.answer certID");
 
-			sql.addJoin("LEFT JOIN (SELECT d.auditID, d.answer FROM pqfdata d "
-					+ "JOIN audit_question aq ON aq.id = d.questionID AND aq.questionType = 'FileCertificate' "
-					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID IN "
-					+ "(" + Strings.implode(permissions.getVisibleAccounts()) + ")"
-					+ " JOIN audit_type atype ON atype.id = acr.auditTypeID AND atype.classType = 'Policy'"
-					+ ") d ON d.auditID = ca.id");
+			sql.addJoin("LEFT JOIN pqfdata d ON d.auditID = ca.id AND d.questionID IN "
+					+ "(SELECT aq.id FROM audit_question aq "
+					+ "JOIN audit_category_rule acr ON acr.catID = aq.categoryID AND acr.opID IN (" + Strings.implode(permissions.getVisibleAccounts()) + ")"
+					+ "WHERE aq.questionType = 'FileCertificate')");
 		}
 
 		getFilter().setShowAuditFor(false);
