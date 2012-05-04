@@ -365,6 +365,10 @@ public class OpenTasks extends TranslationActionSupport {
 							needed++;
 						}
 					} else if (conAudit.getAuditType().getWorkFlow().isHasRequirements()) {
+						if (conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
+								&& cao.getStatus().isPending()) {
+							continue;
+						}
 						if (cao.getStatus().before(AuditStatus.Complete)) {
 							needed++;
 						}
