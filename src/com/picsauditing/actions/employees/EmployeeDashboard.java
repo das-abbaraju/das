@@ -25,7 +25,7 @@ import com.picsauditing.util.Strings;
 public class EmployeeDashboard extends ContractorDocuments {
 	@Autowired
 	protected EmployeeDAO employeeDAO;
-	
+
 	private List<Employee> activeEmployees;
 	private List<Integer> selectedEmployeeIds = new ArrayList<Integer>();
 	private Integer selectedOperatorId;
@@ -43,21 +43,21 @@ public class EmployeeDashboard extends ContractorDocuments {
 		findContractor();
 		loadActiveEmployees();
 	}
-	
+
 	private OperatorAccount findOperator() {
-		for (ContractorOperator operator:contractor.getNonCorporateOperators()) {
+		for (ContractorOperator operator : contractor.getNonCorporateOperators()) {
 			if (operator.getOperatorAccount().getId() == selectedOperatorId) {
 				return operator.getOperatorAccount();
 			}
 		}
 		return null;
 	}
-	
+
 	public boolean isCanAddAudits() {
 		return (permissions.isAdmin() || permissions.hasPermission(OpPerms.ManageAudits, OpType.Edit))
 				&& (employeeGuardAddableIds.size() > 0);
 	}
-	
+
 	public boolean isCanEditEmploy() {
 		return permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)
 				|| permissions.hasPermission(OpPerms.ManageEmployees, OpType.Edit);
@@ -77,7 +77,8 @@ public class EmployeeDashboard extends ContractorDocuments {
 
 			for (Employee employee : contractor.getEmployees()) {
 				if (employee.isActive()) {
-					activeEmployees.add(employee);
+					activeEmployees = employeeDAO.findWhere("accountID = " + account.getId()
+							+ " and STATUS <> 'Deleted'");
 				}
 			}
 
@@ -100,23 +101,23 @@ public class EmployeeDashboard extends ContractorDocuments {
 
 		}
 	}
-	
-	public List<Employee> getActiveEmployees() throws Exception{
+
+	public List<Employee> getActiveEmployees() throws Exception {
 		return activeEmployees;
 	}
 
 	public void setActiveEmployees(List<Employee> activeEmployees) {
 		this.activeEmployees = activeEmployees;
 	}
-	
+
 	public String getAuditName(ContractorAudit audit) {
 		String auditName = "";
-		
+
 		if (!Strings.isEmpty(audit.getAuditFor()))
 			auditName = audit.getAuditFor() + " ";
-		
+
 		auditName += getText(audit.getAuditType().getI18nKey("name"));
-		
+
 		if (audit.getEffectiveDateLabel() != null) {
 			auditName += " '" + DateBean.format(audit.getEffectiveDateLabel(), "yy");
 		}

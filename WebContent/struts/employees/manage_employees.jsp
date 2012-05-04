@@ -23,7 +23,7 @@
 			div.dataTables_length { width: 35%; }
 			.newJobSite, #siteEditBox { display: none; }
 			#newJobSiteForm { display: none; clear: both; }
-			<s:if test="employee.id == 0 || employee.active">
+			<s:if test="employee.id == 0 || employee.status.toString().equals('Active')">
 				#termDate { display: none; }
 			</s:if>
 		</style>
@@ -144,7 +144,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="account.employees" id="e">
+								<s:iterator value="activeEmployees" id="e">
 									<tr>
 										<td>
 											<s:property value="#e.id" />
