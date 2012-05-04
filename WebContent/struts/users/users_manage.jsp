@@ -442,7 +442,7 @@
 					<s:if test="user.activeB">
 						<s:submit method="save" cssClass="picsbutton positive"
 							value="%{getText('button.Save')}" />
-						<pics:permission perm="EditUsers" type="Delete">
+						<pics:permission perm="EditUsers" type="Edit">
 							<s:if test="user.id > 0 && !account.contractor">
 								<s:submit method="inActivate" cssClass="picsbutton negative"
 									value="%{getText('button.Inactivate')}"
