@@ -94,18 +94,6 @@
                         />
                     </li>
                     
-                    <s:if test="conAudit.contractorAccount.webcam.id > 0">
-                        <li>
-                            <label><s:text name="ScheduleAudit.label.CurrentWebcam" />:</label>
-                            <s:property value="conAudit.contractorAccount.webcam" />
-                        </li>
-                    </s:if>
-                    <s:else>
-                        <li>
-                            <s:checkbox name="conAudit.needsCamera" theme="form" /> 
-                            <label class="input" for="ScheduleAudit_conAudit_needsCamera"><s:text name="ScheduleAudit.message.ShipWebcam" /></label>
-                        </li>
-                    </s:else>
                 </ol>
             </fieldset>
             
@@ -178,8 +166,6 @@
             
             <fieldset class="form submit">
                 <div>
-                    <input type="button" id="verifyButton" class="picsbutton" value="<s:text name="ScheduleAudit.button.VerifyAddress" />" />
-                    
                     <s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
                 </div>
             </fieldset>

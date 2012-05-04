@@ -423,6 +423,13 @@ a.preview {
 	zoom: 1;
 }
 
+a.note {
+	padding-left: 18px;
+	margin-left: 2px;
+	background: url('../images/postit.png') no-repeat left center;
+	zoom: 1;
+}
+
 a.add {
 	padding-left: 18px;
 	margin-left: 2px;
