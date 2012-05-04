@@ -440,24 +440,18 @@
 				<fieldset class="form submit">
 
 					<s:if test="user.activeB">
-						<s:submit method="save" cssClass="picsbutton positive"
-							value="%{getText('button.Save')}" />
-						<pics:permission perm="EditUsers" type="Edit">
-							<s:if test="user.id > 0 && !account.contractor">
-								<s:submit method="inActivate" cssClass="picsbutton negative"
-									value="%{getText('button.Inactivate')}"
-									onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
+						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
+						<pics:permission perm="EditUsers" type="Edit">							
+							<s:if test="user.id > 0">
+								<s:submit method="inActivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
 							</s:if>
 						</pics:permission>
 					</s:if>
 					<s:if test="!user.activeB">
-						<s:submit method="activate" cssClass="picsbutton positive"
-							value="%{getText('button.Activate')}" />
-						<pics:permission perm="EditUsers" type="Delete">
-							<s:if test="user.id > 0 && !account.contractor">
-								<s:submit method="delete" cssClass="picsbutton negative"
-									value="%{getText('button.Delete')}"
-									onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');" />
+						<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+						<pics:permission perm="EditUsers" type="Delete">							
+							<s:if test="user.id > 0">
+								<s:submit method="delete" cssClass="picsbutton negative" value="%{getText('button.Delete')}" onclick="return confirm('%{getText('UsersManage.confirm.Delete')}');" />
 							</s:if>
 						</pics:permission>
 					</s:if>
