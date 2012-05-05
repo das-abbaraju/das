@@ -817,7 +817,7 @@
 					<s:select
 						name="filter.auditorId"
 						cssClass="forms"
-						list="auditorList"
+						list="safetyList"
 						listKey="id"
 						listValue="name"
 						multiple="true"
@@ -844,7 +844,7 @@
 					<s:select
 						name="filter.closingAuditorId"
 						cssClass="forms"
-						list="auditorList"
+						list="safetyList"
 						listKey="id"
 						listValue="name"
 						multiple="true"

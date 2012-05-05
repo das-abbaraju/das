@@ -121,6 +121,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	protected Account account; // Current logged in user's account
 	private Set<User> auditorList;
+	private Set<User> safetyList;
 
 	@Deprecated
 	public static final String getVersion() {
@@ -459,6 +460,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
 		}
 		return auditorList;
+	}
+	public Set<User> getSafetyList() {
+		if (safetyList == null) {			
+			safetyList = new TreeSet<User>();
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));					
+		}		
+		return safetyList;
 	}
 
 	static public String format(float number) {

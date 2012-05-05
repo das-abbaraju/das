@@ -89,7 +89,7 @@
 		
 		<div id="message"></div>
 		
-		<s:select list="auditors" name="currentUserID" id="currentUserID" listKey="id" listValue="name"/>
+		<s:select list="safetyList" name="currentUserID" id="currentUserID" listKey="id" listValue="name"/>
 		
 		<div id="thinkingDiv" style="float:right"></div>
 		<div id="schedule_tabs" class="ui-tabs">

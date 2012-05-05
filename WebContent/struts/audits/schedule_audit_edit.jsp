@@ -82,7 +82,7 @@
                     </li>
                     <li>
                         <label><s:text name="global.SafetyProfessional" />:</label>
-                        <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/>
+                        <s:select list="safetyList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/>
                     </li>
                     <li>
                         <label><s:text name="global.Location" />:</label>
