@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import com.opensymphony.xwork2.Action;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.jpa.entities.AccountUser;
@@ -24,6 +25,8 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 
 public class FacilitiesEditTest extends PicsTest {
+	private int NON_ZERO_OPERATOR_ID = 123;
+	
 	FacilitiesEdit facilitiesEdit;
 	User user;
 	
@@ -41,9 +44,9 @@ public class FacilitiesEditTest extends PicsTest {
 		// the copy of user.id to permisions.userId happens only on loadPermissions which
 		// happens in login, which we are not doing here. stub it
 		when(permissions.getUserId()).thenReturn(user.getId());
-		forceSetPrivateField(facilitiesEdit, "permissions", permissions);
+		PicsTestUtil.forceSetPrivateField(facilitiesEdit, "permissions", permissions);
 		
-		when(operator.getId()).thenReturn(123);
+		when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
 		facilitiesEdit.setOperator(operator);
 	}
 	

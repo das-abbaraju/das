@@ -2,29 +2,22 @@ package com.picsauditing.actions.operators;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.hamcrest.Matchers.*;
 
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.SpringUtils;
 
 public class ManageJobSitesTest extends PicsTest {
 	ManageJobSites manageJobSites;
@@ -46,7 +39,7 @@ public class ManageJobSitesTest extends PicsTest {
 		// the copy of user.id to permisions.userId happens only on
 		// loadPermissions which
 		// happens in login, which we are not doing here. stub it
-		forceSetPrivateField(manageJobSites, "permissions", permissions);
+		PicsTestUtil.forceSetPrivateField(manageJobSites, "permissions", permissions);
 	}
 
 	@Test
@@ -61,7 +54,7 @@ public class ManageJobSitesTest extends PicsTest {
 		// test operator null
 		// test subheading not null
 		// test success
-		forceSetPrivateField(permissions, "accountType", "Operator");
+		PicsTestUtil.forceSetPrivateField(permissions, "accountType", "Operator");
 
 		when(i18nCache.hasKey(eq("ManageProjects.title"), Matchers.argThat(equalTo(new Locale("en"))))).thenReturn(
 				Boolean.TRUE);
