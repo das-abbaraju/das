@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
@@ -20,6 +21,7 @@ public class BetaPoolTest {
 		assertTrue(BetaPool.isUserBetaTester(permissions, BetaPool.Global));
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testGlobal() throws Exception {
 		Permissions permissions = EntityFactory.makePermission();

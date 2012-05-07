@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 //import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,6 +30,7 @@ public class AuditRejectionLookupTest /* extends StrutsSpringJUnit4TestCase */ {
 		action = new AuditRejectionLookup();
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testExecute() throws Exception {
 		setUpBasicModelObjects();

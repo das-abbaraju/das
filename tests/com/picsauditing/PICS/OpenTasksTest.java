@@ -7,6 +7,7 @@ import java.util.Date;
 
 //import org.apache.struts2.StrutsSpringJUnit4TestCase;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,6 +54,7 @@ public class OpenTasksTest /* extends  StrutsSpringJUnit4TestCase */ {
 		assertTrue(action.isOpenTaskNeeded(manualAudit, user ,permissions ));
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesMissing() throws Exception {
 		setUpBasicModelObjects();
@@ -62,6 +64,7 @@ public class OpenTasksTest /* extends  StrutsSpringJUnit4TestCase */ {
 		assertContains("<a href=\"https://www.picsorganizer.com/ContractorTrades.action?id="+contractor.getId()+"\">",action.openTasks.get(0));
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesSuppliedButNeedsUpdate() throws Exception {
 		setUpBasicModelObjects();
