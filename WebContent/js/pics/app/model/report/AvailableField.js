@@ -2,7 +2,7 @@ Ext.define('PICS.model.report.AvailableField', {
 	extend: 'Ext.data.Model',
 
 	fields: [{
-	    name: 'category', 
+	    name: 'category',
 	    type: 'string'
     }, {
         name: 'dateFormat',
@@ -42,34 +42,45 @@ Ext.define('PICS.model.report.AvailableField', {
         type: 'int',
         defaultValue: 0
     }],
-    
+
     createColumn: function () {
         var column = Ext.create('PICS.model.report.Column', {
         	'name': this.get('name')
         });
-        
-        column.setAvailableField(this);
-        
+
+        column.set(this.data);
+
         return column;
     },
-    
+
     createFilter: function () {
         var filter = Ext.create('PICS.model.report.Filter', {
-        	'name': this.get('name')
+            'name': this.get('name')
         });
 
-        filter.setAvailableField(this);
-        
+        filter.set(this.data);
+
+        //set default operator
+        if (filter.get('operator') === "") {
+            filter.set('operator', 'Contains');
+        }
+
         return filter;
     },
-    
+
     createSort: function () {
         var sort = Ext.create('PICS.model.report.Sort', {
             'name': this.get('name')
         });
-        
+
         sort.setAvailableField(this);
-        
+
         return sort;
+    },
+
+    //hack to override ajax request and prevent ExtJs Error
+    proxy: {
+        type: 'memory'
     }
 });
+

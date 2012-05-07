@@ -12,7 +12,7 @@ Ext.define('PICS.store.report.AvailableFields', {
 	autoLoad: false,
 	listeners: {
         load: function (store, records, successful, operation, options) {
-            var available_fields_by_category_store = Ext.StoreManager.lookup('report.AvailableFieldsByCategory');
+            var available_fields_by_category_store = Ext.StoreManager.get('report.AvailableFieldsByCategory');
             
             available_fields_by_category_store.data = store.data;
         }

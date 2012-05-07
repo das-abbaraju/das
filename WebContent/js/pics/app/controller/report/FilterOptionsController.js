@@ -40,7 +40,7 @@ Ext.define('PICS.controller.report.FilterOptionsController', {
             store = this.getReportReportsStore().first().filters();
 
         store.each(function (record) {
-            var type = record.getAvailableField().get('filterType'),
+            var type = record.getAvailableField().get('filterType') || record.get('filterType'),
                 panelClass = me.setFilterPanelClass(type),
                 filterPanel = null;
             
