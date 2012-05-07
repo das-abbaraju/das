@@ -33,12 +33,11 @@
 		</ol>
 	</fieldset>
 	<fieldset class="form submit">
-		<s:submit value="%{getText('button.Save')}"
-			cssClass="picsbutton positive" method="changePassword" />
+		<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="changePassword" />		
 
 		<s:if test="source=='manage' && user.id != u.id">
 			<s:if test="hasProfileEdit">
-				<s:submit value="%{getText('UsersManage.SendResetPasswordEmail')}" cssClass="picsbutton positive" method="emailPassword" />
+				<s:submit value="%{getText('UsersManage.SendResetPasswordEmail')}" cssClass="picsbutton neutral" method="emailPassword" />
 			</s:if>			
 		</s:if>
 	</fieldset>
