@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Test;
+import org.junit.Ignore;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
@@ -20,6 +21,7 @@ import com.picsauditing.PICS.DateBean;
  */
 public class ContractorAuditTest {
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testIsExpiringSoon_ExpirationIsToday() {
 		ContractorAudit contractorAudit = new ContractorAudit();
