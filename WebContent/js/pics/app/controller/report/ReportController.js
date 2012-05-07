@@ -45,6 +45,7 @@ Ext.define('PICS.controller.report.ReportController', {
             callback: function(records, operation, success) {
                 this.refreshReport();
                 this.refreshFilters();
+                this.refreshSorts();
             }
         });
     },
@@ -100,6 +101,10 @@ Ext.define('PICS.controller.report.ReportController', {
     
     refreshReport: function () {
         this.getReportDataSetsStore().populateGrid();
+    },
+    
+    refreshSorts: function () {
+        this.application.fireEvent('refreshsorts');
     },
     
     removeColumn: function (activeMenuItem) {

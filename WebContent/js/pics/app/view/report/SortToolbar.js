@@ -1,10 +1,13 @@
 Ext.define('PICS.view.report.SortToolbar', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportsorttoolbar'],
+    requires: ['PICS.view.report.SortButtons'],
     
     items: [{
         xtype: 'tbtext',
         text: 'Sort on these fields:'
+    }, {
+        xtype: 'sortbuttons'
     }, {
         xtype: 'tbfill'
     }, {

@@ -39,7 +39,8 @@ Ext.application({
     controllers: [
         'report.ColumnSelectorController',
         'report.ReportController',
-        'report.FilterOptionsController'
+        'report.FilterOptionsController',
+        'report.SortController'        
     ],
 
     models: [
