@@ -219,7 +219,7 @@
 					</a>
 				</li>
 				
-				<s:if test="hasProfileEdit && !user.group">
+				<s:if test="!user.group">
 					<li>
 						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
 							<s:text name="button.password" />

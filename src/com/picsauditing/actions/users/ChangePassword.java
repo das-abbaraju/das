@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
@@ -17,6 +18,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.util.SpringUtils;
@@ -167,6 +169,18 @@ public class ChangePassword extends PicsActionSupport {
 			url = "ProfileEdit.action?msg="+getText("global.Password.saved");
 		this.redirect(url);
 		return SUCCESS;
+	}
+	public boolean isHasProfileEdit() {
+		if (user.getAccount().isContractor())
+			return true;
+		
+		for (UserAccess userAccess : user.getPermissions()) {
+			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+				return true;
+			}
+
+		}
+		return false;
 	}
 
 	public void setU(User u) {

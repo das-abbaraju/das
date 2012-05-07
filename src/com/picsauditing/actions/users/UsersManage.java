@@ -878,20 +878,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		};
 	}
-
-	public boolean isHasProfileEdit() {
-		if (user.getAccount().isContractor())
-			return true;
-
-		for (UserAccess userAccess : user.getPermissions()) {
-			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
-				return true;
-			}
-
-		}
-		return false;
-	}
-
+	
 	public List<BasicDynaBean> getAccountList() throws SQLException {
 		if (user != null) {
 			if (permissions.isAdmin()) {
