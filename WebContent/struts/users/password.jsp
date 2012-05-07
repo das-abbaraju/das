@@ -7,12 +7,9 @@
 <head>
 <title><s:text name="ProfileEdit.title"></s:text></title>
 
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
 
 <s:include value="../jquery.jsp" />
 
@@ -61,13 +58,15 @@
 
 
 	<s:if test="source=='manage'">
-		<a href="UsersManage.action?account=<s:property value="account.id"/>"><s:text
-				name="UsersManage.title" /></a>
-		&gt; <a
-			href="UsersManage.action?account=<s:property value="user.account"/>&user=<s:property value="user.id"/>&isActive=<s:property value="user.isActive"/>&isGroup=<s:property value="user.isGroup"/>"><s:property
-				value="user.name" /></a>
-		&gt;
-				<a href="Password.action?user=<s:property value="user.id"/>"><s:text name="button.password" /></a>
+		<a href="UsersManage.action?account=<s:property value="account.id"/>">
+			<s:text name="UsersManage.title" />
+		</a>
+		&gt; <a	href="UsersManage.action?account=<s:property value="user.account"/>&user=<s:property value="user.id"/>&isActive=<s:property value="user.isActive"/>&isGroup=<s:property value="user.isGroup"/>">
+				<s:property value="user.name" />
+			</a>
+		&gt; <a href="Password.action?user=<s:property value="user.id"/>">
+				<s:text name="button.password" />
+			</a>
 	</s:if>
 	<s:else>
 		<a href="ProfileEdit.action"><s:text name="ProfileEdit.title" /></a>

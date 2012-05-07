@@ -1546,3 +1546,13 @@ div.blockDialog {
 	font-size: 13px;
 	line-height: 16px;
 }
+
+/* profile edit */
+#saveProfileForm .change-password
+{
+	float: right;
+	margin-right: 50px;
+	text-decoration: none;
+	
+	
+}

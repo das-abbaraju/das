@@ -1,87 +1,85 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="s" uri="/struts-tags"%>
-<%@ taglib prefix="pics" uri="pics-taglib"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="pics" uri="pics-taglib" %>
 
-<html>
 <head>
-<title><s:text name="ProfileEdit.title"></s:text></title>
-
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/forms.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/reports.css?v=<s:property value="version"/>" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="css/audit.css?v=<s:property value="version"/>" />
-
-<s:include value="../jquery.jsp" />
-
-<script type="text/javascript">
-			function checkUsername(username) {
-				startThinking({div: 'username_status', message: translate('JS.ProfileEdit.message.CheckingAvailabilityOfUsername')});
-				var data = {userID: <s:property value="u.id"/>, username: username};
-				$('#username_status').load('user_ajax.jsp', data);
-			}
-		
-			function save(subscription, id, timeperiod) {
-			    var data = {
-		    	    'eu.id': id, 
-		    	    'eu.subscription': subscription,
-		    	    'addSubscription': $('#add'+subscription).is(':checked'),
-		    	    goEmailSub: false
-		   	    };
-		
-				if(timeperiod != null) {
-					data['eu.timePeriod']= $(timeperiod).val();
-				}	
-			    var divName = 'td'+subscription;
-				startThinking({'div':divName});
-		
-				$('#'+divName).load('UserEmailSubscriptionSaveAjax.action',data,function() {
-						$(this).effect('highlight', {color: '#FFFF11'}, 1000)
-					}
-				);
-		
-			}
-		
-			function showTab(tabName) {
-				$('#tab_profile').hide();
-				$('#link_tab_profile').removeClass('current');
-				$('#tab_permissions').hide();
-				$('#link_tab_permissions').removeClass('current');				
-				<s:if test="eList.size > 0">
-					$('#tab_subscriptions').hide();
-					$('#link_tab_subscriptions').removeClass('current');
-				</s:if>
-				<s:if test="switchTos.size > 0">
-					$('#tab_switch').hide();
-					$('#link_tab_switch').removeClass('current');
-				</s:if>
-				
-				$('#'+tabName).show();
-				$('#link_'+tabName).addClass('current');
+	<title><s:text name="ProfileEdit.title"></s:text></title>
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
+	
+	<s:include value="../jquery.jsp" />
+	
+	<script type="text/javascript">
+		function checkUsername(username) {
+			startThinking({div: 'username_status', message: translate('JS.ProfileEdit.message.CheckingAvailabilityOfUsername')});
+			var data = {userID: <s:property value="u.id"/>, username: username};
+			$('#username_status').load('user_ajax.jsp', data);
+		}
+	
+		function save(subscription, id, timeperiod) {
+		    var data = {
+	    	    'eu.id': id, 
+	    	    'eu.subscription': subscription,
+	    	    'addSubscription': $('#add'+subscription).is(':checked'),
+	    	    goEmailSub: false
+	   	    };
+	
+			if(timeperiod != null) {
+				data['eu.timePeriod']= $(timeperiod).val();
 			}
 			
-			$(function () {
-				$('#navlist').delegate('#link_tab_profile', 'click', function(e) {
-					e.preventDefault();
-					showTab('tab_profile');
-				}).delegate('#link_tab_switch', 'click', function(e) {
-					e.preventDefault();
-					showTab('tab_switch');
-				}).delegate('#link_tab_subscriptions', 'click', function(e) {
-					e.preventDefault();
-					showTab('tab_subscriptions');								
-				}).delegate('#link_tab_permissions', 'click', function(e) {
-					e.preventDefault();
-					showTab('tab_permissions');
-				});
-				$('#departmentSuggest').autocomplete('UserProfileAjax!department.action?user=<s:property value="user.id"/>').result(function(event, data){
-					$('#departmentRole').val(data[3])
-				});
+		    var divName = 'td'+subscription;
+			startThinking({'div':divName});
+	
+			$('#'+divName).load('UserEmailSubscriptionSaveAjax.action',data,function() {
+					$(this).effect('highlight', {color: '#FFFF11'}, 1000)
+				}
+			);
+	
+		}
+	
+		function showTab(tabName) {
+			$('#tab_profile').hide();
+			$('#link_tab_profile').removeClass('current');
+			$('#tab_permissions').hide();
+			$('#link_tab_permissions').removeClass('current');		
+			
+			<s:if test="eList.size > 0">
+				$('#tab_subscriptions').hide();
+				$('#link_tab_subscriptions').removeClass('current');
+			</s:if>
+			<s:if test="switchTos.size > 0">
+				$('#tab_switch').hide();
+				$('#link_tab_switch').removeClass('current');
+			</s:if>
+			
+			$('#'+tabName).show();
+			$('#link_'+tabName).addClass('current');
+		}
+		
+		$(function () {
+			$('#navlist').delegate('#link_tab_profile', 'click', function(e) {
+				e.preventDefault();
+				showTab('tab_profile');
+			}).delegate('#link_tab_switch', 'click', function(e) {
+				e.preventDefault();
+				showTab('tab_switch');
+			}).delegate('#link_tab_subscriptions', 'click', function(e) {
+				e.preventDefault();
+				showTab('tab_subscriptions');								
+			}).delegate('#link_tab_permissions', 'click', function(e) {
+				e.preventDefault();
+				showTab('tab_permissions');
 			});
-		</script>
-
+			
+			$('#departmentSuggest').autocomplete('UserProfileAjax!department.action?user=<s:property value="user.id"/>').result(function(event, data){
+				$('#departmentRole').val(data[3])
+			});
+		});
+	</script>
 </head>
 <body>
 	<h1>
@@ -92,24 +90,37 @@
 
 	<div id="internalnavcontainer">
 		<ul id="navlist">
-			<li><a id="link_tab_profile" href="#" class="current"><s:text
-						name="button.Edit" /></a></li>
-			<li><a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>"> <s:text
-						name="button.password" />
-			</a></li>
+			<li>
+				<a id="link_tab_profile" href="#" class="current">
+					<s:text name="button.Edit" />
+				</a>
+			</li>
+			<li>
+				<a href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>"> 
+					<s:text	name="button.password" />
+				</a>
+			</li>
 			<s:if test="switchTos.size > 0">
-				<li><a id="link_tab_switch" href="#"><s:text
-							name="ProfileEdit.label.SwitchAccounts" /></a></li>
+				<li>
+					<a id="link_tab_switch" href="#">
+						<s:text name="ProfileEdit.label.SwitchAccounts" />
+					</a>
+				</li>
 			</s:if>
 
 			<s:if test="eList.size > 0">
-				<li><a id="link_tab_subscriptions" href="#"><s:text
-							name="ProfileEdit.label.EmailSubscriptions" /></a></li>
+				<li>
+					<a id="link_tab_subscriptions" href="#">
+						<s:text name="ProfileEdit.label.EmailSubscriptions" />
+					</a>
+				</li>
 			</s:if>
 
 			<s:if test="!permissions.contractor">
-				<li><a id="link_tab_permissions" href="#"><s:text
-							name="ProfileEdit.label.Permissions" /></a></li>
+				<li><a id="link_tab_permissions" href="#">
+						<s:text name="ProfileEdit.label.Permissions" />
+					</a>
+				</li>
 			</s:if>
 		</ul>
 	</div>
@@ -125,8 +136,8 @@
 	<div id="tab_profile">
 		<table style="width: 100%">
 			<tr>
-				<td style="width: 50%;"><s:form id="saveProfileForm"
-						cssClass="form">
+				<td style="width: 50%;">
+					<s:form id="saveProfileForm" cssClass="form">
 						<s:hidden name="url" />
 						<s:hidden name="u" value="%{u.id}" />
 
@@ -136,15 +147,29 @@
 							</h2>
 
 							<ol>
-								<li><label><s:text
-											name="ProfileEdit.AssignedToAccount"></s:text>:</label> <s:property
-										value="u.account.name" /></li>
-								<li><s:textfield name="u.name" theme="form" /></li>
-								<li><s:textfield id="departmentSuggest" name="u.department"
-										size="15" theme="formhelp" /></li>
-								<li><s:textfield name="u.email" theme="form" /></li>
-								<li><s:textfield name="u.phone" theme="form" /></li>
-								<li><s:textfield name="u.fax" theme="form" /></li>
+								<li>
+									<label><s:text name="ProfileEdit.AssignedToAccount"></s:text>:</label>
+									<s:property value="u.account.name" />
+								</li>
+								<li>
+									<s:textfield name="u.name" theme="form" />
+								</li>
+								<li>
+									<s:textfield id="departmentSuggest" name="u.department" size="15" theme="formhelp" />
+								</li>
+								<li>
+									<s:textfield name="u.email" theme="form" />
+								</li>
+								<li>
+									<s:textfield name="u.username" size="30" onchange="checkUsername(this.value);" theme="form" /> 
+									<span id="username_status"></span>
+								</li>
+								<li>
+									<s:textfield name="u.phone" theme="form" />
+								</li>
+								<li>
+									<s:textfield name="u.fax" theme="form" />
+								</li>
 
 								<s:if test="u.account.demo || u.account.admin || i18nReady">
 									<li><s:select name="u.locale"
@@ -162,13 +187,16 @@
 							</ol>
 						</fieldset>
 
-
-
 						<fieldset class="form submit">
-							<s:submit value="%{getText('button.Save')}"
-								cssClass="picsbutton positive" method="save" />
+							<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="save" />						
+								
+							<a class="change-password btn" href="ChangePassword.action?source=profile&user=<s:property value="u.id"/>">
+								<s:text name="button.password" />
+							</a>
 						</fieldset>
-					</s:form></td>
+						
+					</s:form>
+				</td>
 				<td style="width: 20px;">&nbsp;</td>
 				<td style="vertical-align: top;">
 					<h3>
@@ -306,4 +334,3 @@
 		</s:iterator>
 	</div>
 </body>
-</html>
