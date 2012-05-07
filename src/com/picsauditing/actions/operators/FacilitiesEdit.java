@@ -18,6 +18,7 @@ import javax.naming.NoPermissionException;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
@@ -101,6 +102,25 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		generalContractor = operator.isGeneralContractor();
 		linkedAccount = operator.getGcContractor();
+
+		return SUCCESS;
+	}
+
+	public String create() throws NoRightsException {
+		if ("Corporate".equals(getCreateType())) {
+			if (!isCanEditCorp()) {
+				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+			}
+		} else {
+			setCreateType("Operator");
+			if (!isCanEditOp()) {
+				throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+			}
+		}
+
+		operator = new OperatorAccount();
+		operator.setType(getCreateType());
+		operator.setCountry(new Country(permissions.getCountry()));
 
 		return SUCCESS;
 	}
