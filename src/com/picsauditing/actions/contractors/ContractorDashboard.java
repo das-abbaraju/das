@@ -251,6 +251,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 	
 	private void calculateEarliestIndividualFlagSummaries() {
+		if (co == null) 
+			return;
 		earliestIndividualFlagOverride = null;
 		Date now = new Date();
 		for (FlagDataOverride fdo : co.getOverrides()) {
