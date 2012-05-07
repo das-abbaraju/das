@@ -217,7 +217,7 @@
 						<s:textfield name="user.username" autocomplete="off" />
 				 	</li>
 					<li>
-						<s:password name="user.password" label="global.Password" autocomplete="off" />
+						<s:password name="user.password" label="global.Password" autocomplete="off"  />
 					</li>
 					<li>
 						<s:password name="confirmPassword" label="global.ConfirmPassword" autocomplete="off" />
