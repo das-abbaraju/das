@@ -59,7 +59,7 @@
                     
                     <div id="clip_container_80" class="clip_container">
                         <a href="javascript:;" id="clip_button_80">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     
                     <div id="clip_container_100" class="clip_container">
                         <a href="javascript:;" id="clip_button_100">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                     
                     <div id="clip_container_150" class="clip_container">
                         <a href="javascript:;" id="clip_button_150">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
