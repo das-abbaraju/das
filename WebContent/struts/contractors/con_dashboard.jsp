@@ -205,12 +205,21 @@
 												</a>
 											</p>
 											
-											<s:if test="co.forcedFlag">
+											<s:if test="co.forcedFlag || individualFlagOverrideCount > 0">
 												<div class="co_force" style="border: 2px solid #A84D10; background-color: #FFC; padding: 10px;">
-													<s:text name="ContractorView.ManualForceFlag">
-														<s:param><s:property value="co.forceFlag.smallIcon" escape="false" /></s:param>
-														<s:param value="%{co.forceEnd}" />
-													</s:text>
+													<s:if test="co.forcedFlag" >
+														<s:text name="ContractorView.ManualForceFlag">
+															<s:param><s:property value="co.forceFlag.smallIcon" escape="false" /></s:param>
+															<s:param value="%{co.forceEnd}" />
+														</s:text>
+													</s:if>
+													<s:if test="individualFlagOverrideCount > 0" >
+														<s:if test="co.forcedFlag" ><br /></s:if>
+														<s:text name="ContractorView.IndividualForceFlag" >
+															<s:param value="individualFlagOverrideCount" />
+															<s:param><s:date name="earliestIndividualFlagOverride" format="MMM dd, yyyy" /></s:param>
+														</s:text>
+													</s:if>
 												</div>
 											</s:if>
 										</div>
