@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -47,6 +48,7 @@ import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
+import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -104,6 +106,9 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private OshaOrganizer oshaOrganizer;
 	private OshaDisplay oshaDisplay;
+	
+	private Date earliestIndividualFlagOverride = null;
+	private int individualFlagOverrideCount = 0;
 
 	@Override
 	public String execute() throws Exception {
@@ -222,6 +227,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 			co = contractor.getNonCorporateOperators().get(0);
 			opID = co.getOperatorAccount().getId();
 		}
+		
+		calculateEarliestIndividualFlagSummaries();
 
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
 			if (permissions.canSeeAudit(audit.getAuditType()) && !audit.hasOnlyInvisibleCaos()) {
@@ -241,6 +248,19 @@ public class ContractorDashboard extends ContractorActionSupport {
 		oshaDisplay = new OshaDisplay(oshaOrganizer, contractor.getLocale(), getActiveOperators(), contractor, naicsDao);
 
 		return SUCCESS;
+	}
+	
+	private void calculateEarliestIndividualFlagSummaries() {
+		earliestIndividualFlagOverride = null;
+		Date now = new Date();
+		for (FlagDataOverride fdo : co.getOverrides()) {
+			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now)) {
+				individualFlagOverrideCount++;
+				if (earliestIndividualFlagOverride == null || fdo.getForceEnd().before(earliestIndividualFlagOverride)) {
+					earliestIndividualFlagOverride = fdo.getForceEnd();
+				}
+			}
+		}
 	}
 
 	@RequiredPermission(value = OpPerms.ContractorWatch, type = OpType.Edit)
@@ -509,6 +529,23 @@ public class ContractorDashboard extends ContractorActionSupport {
 			}
 		}
 		return flagCounts;
+	}
+
+	public Date getEarliestIndividualFlagOverride() {
+		return earliestIndividualFlagOverride;
+	}
+
+	public void setEarliestIndividualFlagOverride(
+			Date earliestIndividualFlagOverride) {
+		this.earliestIndividualFlagOverride = earliestIndividualFlagOverride;
+	}
+
+	public int getIndividualFlagOverrideCount() {
+		return individualFlagOverrideCount;
+	}
+
+	public void setIndividualFlagOverrideCount(int individualFlagOverrideCount) {
+		this.individualFlagOverrideCount = individualFlagOverrideCount;
 	}
 
 	private ContractorWatch getExistingContractorWatch() {
