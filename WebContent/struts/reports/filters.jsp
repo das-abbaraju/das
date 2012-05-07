@@ -476,7 +476,7 @@
 				<s:select
 					list="#{'1':getTextNullSafe('YesNo.Yes'),'0':getTextNullSafe('YesNo.No')}"
 					headerKey="2"
-					headerValue="- %{getTextNulLSafe('global.CreditCard')} -"
+					headerValue="- %{getTextNullSafe('global.CreditCard')} -"
 					cssClass="forms"
 					name="filter.ccOnFile" />
 			</div>
