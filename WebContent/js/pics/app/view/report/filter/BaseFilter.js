@@ -9,7 +9,7 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
         anchor: '100%',
         border: 0
     },
-    
+
    items: [{
         layout: {
             type: 'hbox',
@@ -30,9 +30,9 @@ Ext.define('PICS.view.report.filter.BaseFilter', {
             action: 'remove-filter',
             icon: 'images/cross.png',
             iconCls: 'remove-filter',
-            tooltip: 'Remove'            
+            tooltip: 'Remove'
         }]
-    }],    
+    }],
     layout: 'anchor',
     record: null,
     width: 300

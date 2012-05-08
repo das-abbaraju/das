@@ -1,138 +1,103 @@
 Ext.define('PICS.controller.report.FilterController', {
     extend: 'Ext.app.Controller',
+
     refs: [{
+        ref: 'reportColumnSelector',
+        selector: 'reportcolumnselector'
+    }, {
         ref: 'filterOptions',
-        selector: 'reportoptionsfilters #options'
-    },{
-        ref: 'dockFilter',
-        selector: 'reportdatagrid #filterToolbar'
+        selector: 'filteroptions #filterDetails'
     }],
-
     stores: [
-        'report.ReportsFilter'
+        'report.AvailableFieldsByCategory',
+        'report.Reports'
     ],
-    filterStyle: null,
 
-    toolbarDockedItemsMax: 2,    
-    
-    dockFilter: function (target) {
-        var filterPanel = target.up('basefilter'),
-            toolbar = this.getDockFilter(),
-            baseObj = this;
-        
-        if (!filterPanel.position) {
-            filterPanel.position = 'docked' + filterPanel.id
-            addToToolbar();
-        } else {
-            removeFromToolbar();
-        }
-        function addToToolbar () {
-            var type = filterPanel.record.data.field.data.filterType,
-                panel = baseObj.setFilterPanelType(type),
-                dockedFilter = Ext.create(panel, {displayMode: 'docked', id: filterPanel.position});
-            
-            dockedFilter.record = filterPanel.record;
-            dockedFilter.setTitle(true);
-            toolbar.add(dockedFilter);
-        }
-        function removeFromToolbar() {
-            toolbar.remove(filterPanel.position);
-            filterPanel.position = null;
-        }
-    },
     init: function() {
         this.control({
-            "reportoptionsfilters gridpanel":  {
-                itemclick: this.showFilterOptions
+            'filteroptions button[action=add-filter]': {
+                click: this.showColumnSelector
             },
-            'basefilter button[action=apply]': {
+            'filteroptions button[action=search]': {
                 click: function () {
-                    this.application.fireEvent('refreshreport');
-                }                
+                    PICS.app.fireEvent('refreshreport');
+                }
             },
-            'basefilter checkbox[name=dockFilter]': {
-                change: this.dockFilter
+            'filteroptions button[action=remove-filter]': {
+                click: this.removeFilter
             }
         });
+        this.application.on({
+            refreshfilters: this.refreshFilters,
+            scope: this
+        });
     },
-    setFilterPanelType: function (type) {
-        var filterPanel = '';
-        console.log(type);
-        if (type === "String") {
-            filterPanel = 'PICS.view.report.filter.StringFilter';
-        } else if (type === "AccountName") {
-            filterPanel = 'PICS.view.report.filter.StringFilter';
-        } else if (type === "Boolean") {
-            filterPanel = 'PICS.view.report.filter.BooleanFilter';
-        } else if (type === "Float") {
-            filterPanel = 'PICS.view.report.filter.FloatFilter';
-        } else if (type === "Number") {
-            filterPanel = 'PICS.view.report.filter.NumberFilter';
-        } else if (type === "Integer") {
-            filterPanel = 'PICS.view.report.filter.NumberFilter';
-        } else if (type === "AccountType") {
-            filterPanel = 'PICS.view.report.filter.AccountTypeFilter';
-        } else if (type === "AccountStatus") {
-            filterPanel = 'PICS.view.report.filter.AccountStatusFilter';
-        } else if (type === "StateProvince") {
-            filterPanel = 'PICS.view.report.filter.StateFilter';            
-        } else if (type === "Country") {
-            filterPanel = 'PICS.view.report.filter.CountryFilter';
-        } else if (type === "Date") {
-            filterPanel = 'PICS.view.report.filter.DateFilter';
-        } else {
-            console.log(type + " is not supported at this time");
-        }
-        return filterPanel;
-        
-    },
-    showFilterOptions: function (view, record, item, index, e, options) {
-        var filterPanel = Ext.ComponentQuery.query('#filterPanel' + index)[0],
-            filterOptions = this.getFilterOptions(),
-            baseObj = this;
+
+    generateFilterPanels: function () {
+        var filterContainer = Ext.create('Ext.panel.Panel', {border: false}),
+            count = 0,
+            me = this,
+            store = this.getReportReportsStore().first().filters();
+
+        store.each(function (record) {
+            var type = record.getAvailableField().get('filterType') || record.get('filterType'),
+                panelClass = me.setFilterPanelClass(type),
+                filterPanel = null;
             
-        if (!record.store) {
-            filterOptions.removeAll();
-            updateDockedFilterIds();
-            return;
-        }
-        
-        hideOpenFilters();
-        
-        if (filterPanel) {
-            filterPanel.show();
-        } else {
-            createFilterOptionsPanel();
-        }
-        function updateDockedFilterIds() {
-            var filterName = '',
-                recordName = '',
-                store = baseObj.getReportReportsFilterStore(),
-                filterToolbar = baseObj.getDockFilter();
-                
-            store.each(function(item, recordIndex) {
-                recordName = item.data.field.get('text');
-                for (y = 0; y < filterToolbar.items.items.length; y++) {
-                    filterName = filterToolbar.items.items[y].record.data.field.get('text');
-                    if (filterName === recordName) {
-                        filterToolbar.items.items[y].id = 'dockedfilterPanel' + recordIndex;
-                    }
-                }
-            });
-        }
-        function hideOpenFilters() {
-            for (x = 0; x < filterOptions.items.items.length; x++) {
-                filterOptions.items.items[x].hide();
+            if (panelClass !== null) {
+                filterPanel = Ext.create(panelClass, {record: record, panelNumber: ++count});
+                filterContainer.add(filterPanel);
             }
-        }        
-        function createFilterOptionsPanel() {
-            var type = record.data.field.data.filterType,
-                panel = baseObj.setFilterPanelType(type),
-                filterPanel = Ext.create(panel, {id: 'filterPanel' + index});
-            
-            filterPanel.setRecord(record);
-            filterPanel.setTitle();
-            filterOptions.add(filterPanel);
+        });
+        return filterContainer;
+    },
+    refreshFilters: function () {
+        var filterContainer = null;
+
+        this.getFilterOptions().removeAll();
+
+        filterContainer = this.generateFilterPanels();
+
+        this.getFilterOptions().add(filterContainer);
+    },
+
+    removeFilter: function (component, e, options) {
+        var record = component.up('basefilter').record,
+        store = this.getReportReportsStore().first().filters();
+
+        store.remove(record);
+        PICS.app.fireEvent('refreshfilters');
+        PICS.app.fireEvent('refreshreport');
+    },
+
+    setFilterPanelClass: function (type) {
+        var panelClass = '';
+        switch (type) {
+            case 'AccountName': panelClass = 'PICS.view.report.filter.StringFilter'; break;
+            case 'Boolean': panelClass = 'PICS.view.report.filter.BooleanFilter'; break;
+            case 'Date': panelClass = 'PICS.view.report.filter.DateFilter'; break;
+            case 'Float': panelClass = 'PICS.view.report.filter.FloatFilter'; break;
+            case 'Integer': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
+            case 'Number': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
+            case 'String': panelClass = 'PICS.view.report.filter.StringFilter'; break;
+            default: panelClass = null; break;
+        }
+        /*if (type !== 'Float') {
+            panelClass = null;
+        }*/
+        return panelClass;
+    },
+
+    showColumnSelector: function(component, e, options) {
+        var window = this.getReportColumnSelector();
+
+        if (!window) {
+            var store = this.getReportAvailableFieldsByCategoryStore();
+            store.clearFilter();
+
+            window = Ext.create('PICS.view.report.ColumnSelector');
+            window._column_type = 'filter';
+            window.show();
         }
     }
 });
