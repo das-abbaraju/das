@@ -99,22 +99,12 @@ abstract public class PicsDAO {
 		return findWhere(clazz, where, 0);
 	}
 
-	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {
-		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY t.id");
-		if (limit > 0)
-			q.setMaxResults(limit);
-		return q.getResultList();
+	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {		
+		return findWhere(clazz, where, limit, " ORDER BY t.id");
 	}
 
 	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit, String orderBy) {
 		Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE " + where + " ORDER BY " + orderBy);
-		if (limit > 0)
-			q.setMaxResults(limit);
-		return q.getResultList();
-	}
-
-	public List findWhere(String className, String where, int limit) {
-		Query q = em.createQuery("FROM " + className + " t WHERE " + where + " ORDER BY t.id");
 		if (limit > 0)
 			q.setMaxResults(limit);
 		return q.getResultList();

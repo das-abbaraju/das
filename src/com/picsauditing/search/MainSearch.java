@@ -197,7 +197,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		output = sb.toString() + "FULL|" + getText("MainSearch.ClickFullSearch") + "|" + searchTerm.replace(" ", "+");
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AbstractIndexableTable> getRecords(List<BasicDynaBean> queryList) {
 		ArrayListMultimap<Class<? extends AbstractIndexableTable>, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
@@ -220,9 +219,9 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				recordsList.add(searchRecord);
 			}
 		}
+		
 		for (Class<? extends AbstractIndexableTable> key : indexableMap.keySet()) {
-			List<AbstractIndexableTable> list = accountDAO.findWhere(key.getName(),
-					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
+			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key, "t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
 				for (AbstractIndexableTable indexEntry : list) {
 					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
@@ -230,6 +229,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				}
 			}
 		}
+		
 		return recordsList.getRecordsOnly(false);
 	}
 
