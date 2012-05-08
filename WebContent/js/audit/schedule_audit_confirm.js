@@ -25,11 +25,19 @@
                 var check_webcam_confirm = $('#ScheduleAudit_webcamConfirm');
                 
                 var confirm = $('.schedule-audit-confirm-form #ScheduleAudit__confirm');
-                
-                if (check_read_instructions.is(':checked') && check_confirmed.is(':checked') && check_webcam_confirm.is(':checked')) {
-                    confirm.show();
+
+                if ($('webcamConfirm').length == 0) {
+                    if (check_read_instructions.is(':checked') && check_confirmed.is(':checked')) {
+                        confirm.show();
+                    } else {
+                        confirm.hide();
+                    }    
                 } else {
-                    confirm.hide();
+                    if (check_read_instructions.is(':checked') && check_confirmed.is(':checked') && check_webcam_confirm.is(':checked')) {
+                        confirm.show();
+                    } else {
+                        confirm.hide();
+                    }
                 }
             }
         }
