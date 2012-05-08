@@ -100,7 +100,7 @@ abstract public class PicsDAO {
 	}
 
 	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit) {		
-		return findWhere(clazz, where, limit, " ORDER BY t.id");
+		return findWhere(clazz, where, limit, " t.id");
 	}
 
 	public <T extends BaseTable> List<T> findWhere(Class<T> clazz, String where, int limit, String orderBy) {
