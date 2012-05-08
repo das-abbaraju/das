@@ -68,16 +68,6 @@ Ext.define('PICS.model.report.AvailableField', {
         return filter;
     },
 
-    createSort: function () {
-        var sort = Ext.create('PICS.model.report.Sort', {
-            'name': this.get('name')
-        });
-
-        sort.setAvailableField(this);
-
-        return sort;
-    },
-
     //hack to override ajax request and prevent ExtJs Error
     proxy: {
         type: 'memory'

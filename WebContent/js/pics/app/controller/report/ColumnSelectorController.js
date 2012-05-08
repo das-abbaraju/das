@@ -82,14 +82,6 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
                 });
                 
                 this.application.fireEvent('refreshfilters');
-            } else if (window._column_type === "sort") {
-                var sort_store = report.sorts();
-                
-                Ext.Array.forEach(selected, function (field) {
-                    sort_store.add(field.createSort());
-                });
-                
-                this.application.fireEvent('refreshreport');
             } else {
                 throw 'columnSelector.column_type is ' + window.column_type + ' - must be (filter|column)';
             }
