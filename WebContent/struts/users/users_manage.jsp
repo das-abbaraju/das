@@ -52,30 +52,32 @@
 	</s:if>
 
 	<s:if test="account.operatorCorporate">
-		<a
-			href="FacilitiesEdit.action?operator=<s:property value="account.id"/>"><s:property
-				value="account.name" /></a>
+		<a href="FacilitiesEdit.action?operator=<s:property value="account.id"/>">
+			<s:property value="account.name" />
+		</a>
 	</s:if>
 
 	<s:if test="account.assessment">
-		<a
-			href="AssessmentCenterEdit.action?center=<s:property value="account.id"/>"><s:property
-				value="account.name" /></a>
+		<a href="AssessmentCenterEdit.action?center=<s:property value="account.id"/>">
+			<s:property value="account.name" />
+		</a>
 	</s:if>
 
 	<s:if test="account.admin">PICS</s:if>
 
 	&gt;
-	<a href="UsersManage.action?account=<s:property value="account.id"/>"><s:text
-			name="UsersManage.title" /></a>
+		<a href="UsersManage.action?account=<s:property value="account.id"/>">
+			<s:text	name="UsersManage.title" />
+		</a>
 
 	<s:if test="user.id > 0">
-		&gt; <a href="?user=<s:property value="user.id"/>"><s:property
-				value="user.name" /></a>
+		&gt; <a href="?user=<s:property value="user.id"/>">
+				<s:property value="user.name" />
+			</a>
 	</s:if>
 
-	<s:if test="user.id == 0">&gt; <s:text
-			name="UsersManage.NewUser" />
+	<s:if test="user.id == 0">
+		&gt; <s:text name="UsersManage.NewUser" />
 	</s:if>
 
 	<div id="manage_controls"
@@ -161,7 +163,6 @@
 				</a>
 			</s:if>
 		</div>
-
 		<table>
 			<tr>
 				<td>
@@ -210,7 +211,7 @@
 
 	<div id="user_edit">
 		<s:include value="../actionMessages.jsp" />
-
+		<fieldset class="form submit">
 		<s:if test="user != null">
 			<ul class="manage-users-actions">
 				<li>
@@ -258,7 +259,9 @@
 						</s:if>
 					</pics:permission>
 				</s:if>
-			</div>
+			</ul>
+		</fieldset>
+	</div>
 
 			<s:form id="UserSave">
 				<s:if test="user.locked">
@@ -315,9 +318,10 @@
 
 							<li><s:textfield name="user.email" size="40" theme="form" />
 							</li>
-							<li><s:textfield name="user.username" size="30"
-									onchange="checkUsername(this.value);" theme="form" /> <span
-								id="username_status"></span></li>
+							<li>
+								<s:textfield name="user.username" size="30" onchange="checkUsername(this.value);" theme="form" /> 
+								<span id="username_status"></span>
+							</li>
 
 							<s:if test="user.id == 0">
 								<li><label> <s:text
