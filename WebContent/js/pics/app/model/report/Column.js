@@ -70,6 +70,9 @@ Ext.define('PICS.model.report.Column', {
             type = available_field.get('type'),
             url = available_field.get('url'),
 
+        //prevents header click sort
+        data_set_column.sortable = false;
+        
         data_set_column.dataIndex = name;
         data_set_column.text = text;
 
