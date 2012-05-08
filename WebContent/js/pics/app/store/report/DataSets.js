@@ -164,7 +164,7 @@ Ext.define('PICS.store.report.DataSets', {
         this.load(callback);
     },
 
-    populateGrid: function () {
+    buildDataSetGrid: function () {
         this.configureProxyUrl();
 
         this.reloadStoreData({
