@@ -415,7 +415,8 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
 
 		String serverName = getRequest().getLocalName();
-		if (isLiveEnvironment()) {
+		
+		if (isLiveEnvironment()|| isBetaEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();
 		}
@@ -428,8 +429,8 @@ public class LoginController extends PicsActionSupport {
 
 		loginLogDAO.save(loginLog);
 	}
-
-	/* GETTER & SETTERS */
+	
+	/* GElTTER & SETTERS */
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
