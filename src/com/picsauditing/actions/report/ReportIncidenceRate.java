@@ -62,11 +62,17 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 				getFilter().setVerifiedAnnualUpdate(0);
 			}
 		}
-
-		sql.addWhere("pd.answer = CONCAT('', 0 + pd.answer)");
+		else {  // default to OSHA, MSHA, and COHS
+			sql.addWhere("pd.questionID = " + OshaStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR + 
+					     " OR pd.questionID = 11115" +
+					     " OR pd.questionID = " + CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
+			
+		}
+		
+		sql.addWhere("pd.answer <> 'Audit.missingParameter'"); 
 		sql.addWhere("(pd.answer >= " + getFilter().getIncidenceRate() + ")");
 		sql.addWhere("(pd.answer < " + getFilter().getIncidenceRateMax() + ")");
-		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + "AND c.trirAverage < "
+		sql.addWhere("(c.trirAverage >= " + getFilter().getIncidenceRateAvg() + " AND c.trirAverage < "
 				+ getFilter().getIncidenceRateAvgMax() + ")"
 				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
 		sql.addGroupBy("ca.auditFor");
@@ -76,9 +82,9 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("auditFor", getText("Filters.label.ForYear"), ExcelCellType.Integer), 30);
-		excelSheet.addColumn(new ExcelColumn("location", getText("ReportIncidenceRate.Location")));
-		excelSheet.addColumn(new ExcelColumn("description", getText("global.Description")));
-		excelSheet.addColumn(new ExcelColumn("SHAType", getText("Filters.label.SHAType")));
+//		excelSheet.addColumn(new ExcelColumn("auditLocation", getText("ReportIncidenceRate.Location")));
+//		excelSheet.addColumn(new ExcelColumn("description", getText("global.Description")));
+		excelSheet.addColumn(new ExcelColumn("shaType", getText("Filters.label.SHAType")));
 		excelSheet
 				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));

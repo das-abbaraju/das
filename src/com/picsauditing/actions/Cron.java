@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.picsauditing.PICS.DateBean;
@@ -847,10 +848,12 @@ public class Cron extends PicsActionSupport {
 		sendFlagChangesEmail("flagchanges@picsauditing.com", data);
 
 		Map<String, List<BasicDynaBean>> amMap = sortResultsByAccountManager(data);
-		for (String accountMgr : amMap.keySet()) {
-			if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
-				List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
-				sendFlagChangesEmail(accountMgr, flagChanges);
+		if (!CollectionUtils.isEmpty(amMap)) {
+			for (String accountMgr : amMap.keySet()) {
+				if (!Strings.isEmpty(accountMgr) && amMap.get(accountMgr) != null && amMap.get(accountMgr).size() > 0) {
+					List<BasicDynaBean> flagChanges = amMap.get(accountMgr);
+					sendFlagChangesEmail(accountMgr, flagChanges);
+				}
 			}
 		}
 	}
@@ -873,9 +876,12 @@ public class Cron extends PicsActionSupport {
 		Map<String, List<BasicDynaBean>> amMap = new TreeMap<String, List<BasicDynaBean>>();
 		for (BasicDynaBean bean : data) {
 			String accountMgr = (String) bean.get("accountManager");
-			if (amMap.get(accountMgr) == null)
-				amMap.put(accountMgr, new ArrayList<BasicDynaBean>());
-			amMap.get(accountMgr).add(bean);
+			if (accountMgr != null) {
+				if (amMap.get(accountMgr) == null)
+					amMap.put(accountMgr, new ArrayList<BasicDynaBean>());
+			
+				amMap.get(accountMgr).add(bean);
+			}
 		}
 		return amMap;
 	}

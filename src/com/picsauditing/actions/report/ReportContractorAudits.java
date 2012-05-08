@@ -251,6 +251,7 @@ public class ReportContractorAudits extends ReportAccount {
 
 		if (download) {
 			addExcelColumns();
+			
 			String filename = this.getClass().getName().replace("com.picsauditing.actions.report.", "");
 			excelSheet.setName(filename);
 			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
