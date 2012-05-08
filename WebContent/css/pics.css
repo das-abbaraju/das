@@ -1553,6 +1553,11 @@ div.blockDialog {
 	float: right;
 	margin-right: 50px;
 	text-decoration: none;
-	
-	
+}
+/* user change password */
+#userSavePassword .cancel-password
+{
+	float: right;
+	margin-right: 50px;
+	text-decoration: none;
 }

@@ -5,7 +5,7 @@
 <div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 	<s:include value="../actionMessages.jsp" />
 	
-	<s:form cssClass="form">
+	<s:form cssClass="form" id="userSavePassword">
 		<s:hidden name="url" />
 		<s:hidden name="source" value="%{source}" />
 		<fieldset>
@@ -42,8 +42,18 @@
 			<s:if test="source=='manage' && user.id != u.id">
 				<s:if test="hasProfileEdit">
 					<s:submit value="%{getText('UsersManage.SendResetPasswordEmail')}" cssClass="btn" method="emailPassword" />
-				</s:if>			
+				</s:if>						
+			</s:if> 
+			<s:if test="source=='manage'">
+				<a class="cancel-password btn" href="UsersManage.action?account=<s:property value="account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
+					<s:text name="JS.button.Cancel" />
+				</a>
 			</s:if>
+			<s:else>
+				<a class="cancel-password btn" href="ProfileEdit.action"/>
+					<s:text name="JS.button.Cancel" />
+				</a>
+			</s:else>
 		</fieldset>
 	</s:form>
 </div>
