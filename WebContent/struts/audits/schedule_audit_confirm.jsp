@@ -90,10 +90,12 @@
                             <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>
 					</li>
-					<li>
-						<s:checkbox name="webcamConfirm" />
-						<s:text name="ScheduleAudit.message.WebcamConfirm" />
-					</li>
+					<s:if test="!conAudit.conductedOnsite">
+						<li>
+							<s:checkbox name="webcamConfirm" />
+							<s:text name="ScheduleAudit.message.WebcamConfirm" />
+						</li>
+					</s:if>
 				</ol>
 				
 				<s:submit cssClass="picsbutton positive" method="confirm" value="%{getText('ScheduleAudit.button.ConfirmAudit')}" />

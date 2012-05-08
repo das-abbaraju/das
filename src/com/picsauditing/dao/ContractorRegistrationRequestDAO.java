@@ -14,10 +14,22 @@ import com.picsauditing.jpa.entities.WaitingOn;
 public class ContractorRegistrationRequestDAO extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorRegistrationRequest save(ContractorRegistrationRequest o) {
-		if (o.getId() == 0) {
-			em.persist(o);
-		} else {
+		// check for existing entry based on name and requestedById
+		String name = o.getName();
+		int opId = o.getRequestedBy().getId();
+		List<ContractorRegistrationRequest> existingRecords = findByNameAndRequestedById(name, opId);
+		
+		if (o.getId() != 0) {
 			o = em.merge(o);
+		} else {
+			if(existingRecords.size() == 1) { // exist
+				ContractorRegistrationRequest existingRecord = existingRecords.get(0);
+				o.setId(existingRecord.getId());
+				o = em.merge(o);
+			}
+			else  {// new record
+				em.persist(o);
+			}
 		}
 		return o;
 	}
@@ -74,6 +86,13 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 	public List<ContractorRegistrationRequest> findActiveByDate(String whereClause) {
 		String sql = "SELECT * FROM contractor_registration_request c " + "WHERE c.status = 'Active' AND " + whereClause;
 		Query query = em.createNativeQuery(sql, ContractorRegistrationRequest.class);
+		return query.getResultList();
+	}
+	
+	public List<ContractorRegistrationRequest> findByNameAndRequestedById(String contractorName, int opID) {
+		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.name = ? AND c.requestedBy.id = ? ");
+		query.setParameter(1, contractorName);
+		query.setParameter(2, opID);
 		return query.getResultList();
 	}
 }
