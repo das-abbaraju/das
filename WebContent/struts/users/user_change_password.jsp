@@ -60,7 +60,7 @@
 				</a>
 			</s:if>
 			<s:else>
-				<a class="cancel-password btn" href="ProfileEdit.action"/>
+				<a class="cancel-password" href="ProfileEdit.action"/>
 					<s:text name="JS.button.Cancel" />
 				</a>
 			</s:else>
