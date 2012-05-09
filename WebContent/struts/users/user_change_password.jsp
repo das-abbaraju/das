@@ -30,9 +30,19 @@
 				</s:else>
 				<li>
 					<s:password name="password1" label="global.Password" theme="form" />
+					<pics:fieldhelp title="Password Requirement">
+						<p>
+							<s:text name="UsersManage.SetPassword" />
+						</p>  
+					</pics:fieldhelp>
 				</li>
 				<li>
 					<s:password name="password2" label="ProfileEdit.ConfirmPassword" theme="form" />
+					<pics:fieldhelp title="Password Requirement">
+						<p>
+							<s:text name="UsersManage.SetPassword" />
+						</p>  
+					</pics:fieldhelp>
 				</li>
 			</ol>
 		</fieldset>
