@@ -7,10 +7,16 @@
 	<head>
 		<link rel="stylesheet" type="text/css" media="screen" href="/css/pics.css" />
 		<link rel="stylesheet" type="text/css" media="screen" href="/css/forms.css" />
+		<style type="text/css">
+			#bodyholder
+			{
+				margin-top: 50px;
+			}
+		</style>
 	</head>
 	<body>
 		<div id="main">
-			<div id="bodyholder" style="margin-top: 50px;">
+			<div id="bodyholder">
 				<div id="content">
 					<h1>HTTP 500 ERROR</h1>
 					<div id="error">
@@ -22,11 +28,18 @@
 								StringWriter sw = new StringWriter();
 								exception.printStackTrace(new PrintWriter(sw));
 								String exceptionStack = sw.toString();
+								String cookies = "";
+								
+								for (Cookie cookie : request.getCookies()) {
+									//application.log("HTTP 500 ERROR page reached, logging cookie\n" + cookie.getName() + ":" cookie.getValue());
+									cookies += cookie.getName() + ": " + cookie.getValue() + "\n";
+								}
 								
 								application.log("HTTP 500 ERROR page reached, logging exception", exception);
+								application.log("HTTP 500 ERROR page reached, logging cookies\n" + cookies);
 						%>
 							<pre>
-<%=exceptionStack %>
+<%= cookies + "\n" + exceptionStack %>
 							</pre>
 						<%
 							}
