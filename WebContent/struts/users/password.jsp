@@ -64,13 +64,17 @@
 		&gt; <a	href="UsersManage.action?account=<s:property value="user.account"/>&user=<s:property value="user.id"/>&isActive=<s:property value="user.isActive"/>&isGroup=<s:property value="user.isGroup"/>">
 				<s:property value="user.name" />
 			</a>
-		&gt; <a href="Password.action?user=<s:property value="user.id"/>">
+		&gt; <a href="ChangePassword.action?source=<s:property value="source" />&user=<s:property value="user.id" />">
 				<s:text name="button.password" />
 			</a>
 	</s:if>
 	<s:else>
-		<a href="ProfileEdit.action"><s:text name="ProfileEdit.title" /></a>
-		&gt; <a href="Password.action"><s:text name="button.password" /></a>
+		<a href="ProfileEdit.action"/>
+			<s:text name="ProfileEdit.title" />
+		</a>
+		&gt; <a href="ChangePassword.action?source=<s:property value="source" />&user=<s:property value="user.id" /> ">
+			<s:text name="button.password" />
+		</a>
 	</s:else>
 	<s:include value="../actionMessages.jsp"></s:include>
 
