@@ -92,9 +92,13 @@
 		
 		<s:if test="#questions.size() > 0">
 			<div class="columns-<s:property value="#category.columns" />">
+				<s:set name = "questionsPerColumn" value="#questions.size() / (#category.columns)" />
 				<s:iterator status="status" begin="1" end="#category.columns">
-					<s:set name="begin" value="#status.index * (#questions.size() / #category.columns)" />
-					<s:set name="end" value="(#status.index + 1) * (#questions.size() / #category.columns) - 1" />
+					<s:set name="begin" value="#status.index * #questionsPerColumn" />
+					<s:set name="end" value="(#status.index + 1) * #questionsPerColumn - 1" />
+					<s:if test="#status.index + 1 == #category.columns">
+						<s:set name="end" value="#questions.size() - 1" />
+					</s:if>
 
 					<ul class="column column<s:property value="#status.count" />">
 						<s:iterator value="#questions" var="q" begin="#begin" end="#end">
