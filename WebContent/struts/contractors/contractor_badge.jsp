@@ -95,5 +95,7 @@
                 </div>
             </li>
         </ul>
+        <s:text name="ContractorBadge.Footnote" />
+        
     </div>
 </body>
