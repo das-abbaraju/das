@@ -55,7 +55,7 @@
 				</s:if>						
 			</s:if> 
 			<s:if test="source=='manage'">
-				<a class="cancel-password btn" href="UsersManage.action?account=<s:property value="account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
+				<a class="cancel-password" href="UsersManage.action?account=<s:property value="account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
 					<s:text name="JS.button.Cancel" />
 				</a>
 			</s:if>
