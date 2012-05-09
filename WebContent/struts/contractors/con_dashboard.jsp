@@ -269,6 +269,11 @@
 										</s:if>
 										
 									<p>
+										<s:text name="ContractorAccount.type" />:
+										<s:property value="commaSeparatedContractorTypes" /> 
+									</p>
+									
+									<p>
 										<s:text name="global.SafetyRisk" />:
 										<strong>
 											<s:if test="contractor.safetyRisk != null">
@@ -521,11 +526,6 @@
 										<a href="mailto:<s:property value="contractor.auditor.email"/>" class="email">
 											<s:property value="contractor.auditor.email"/>
 										</a>
-									</p>
-									
-									<p>
-										<s:text name="ContractorAccount.type" />:
-										<s:property value="commaSeparatedContractorTypes" /> 
 									</p>
 									
 									<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
