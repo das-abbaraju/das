@@ -447,7 +447,9 @@
 						<s:submit method="save" cssClass="picsbutton positive" value="%{getText('button.Save')}" />
 						<pics:permission perm="EditUsers" type="Edit">							
 							<s:if test="user.id > 0">
-								<s:submit method="inActivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
+								<s:if test="!setPrimaryAccount">
+									<s:submit method="inActivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" onclick="return confirm('%{getText('UsersManage.confirm.Inactivate')}');" />
+								</s:if>
 							</s:if>
 						</pics:permission>
 					</s:if>
