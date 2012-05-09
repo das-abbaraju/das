@@ -155,44 +155,45 @@ public class AuditDataSave extends AuditActionSupport {
 						newCopy.setAuditor(getUser());
 					}
 				} 
-				 {
-					// update mode
-					if (commentChanged) {
-						newCopy.setComment(auditData.getComment());
-					}
 
-					if (answerChanged) {
-						if (isAudit && !isAnnualUpdate) {
-							AuditQuestion question = questionDao.find(auditData.getQuestion().getId());
-							if (question.getOkAnswer() != null
-									&& question.getOkAnswer().contains(
-											auditData.getAnswer())
-									&& permissions.isAdmin()) {
-								newCopy.setDateVerified(new Date());
-								newCopy.setAuditor(getUser());
-							}
-							if (newCopy.isVerified()
-									&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR
-											|| newCopy.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
-								newCopy.setDateVerified(null);
-								newCopy.setAuditor(null);
-							}
-						} else if (newCopy.isVerified() && !verifyButton) {
+				// update mode
+				if (commentChanged) {
+					newCopy.setComment(auditData.getComment());
+				}
+
+				if (answerChanged) {
+					if (isAudit && !isAnnualUpdate) {
+						AuditQuestion question = questionDao.find(auditData
+								.getQuestion().getId());
+						if (question.getOkAnswer() != null
+								&& question.getOkAnswer().contains(
+										auditData.getAnswer())
+								&& permissions.isAdmin()) {
+							newCopy.setDateVerified(new Date());
+							newCopy.setAuditor(getUser());
+						}
+						if (newCopy.isVerified()
+								&& (newCopy.getAudit().getAuditType().getId() == AuditType.COR || newCopy
+										.getAudit().getAuditType().getId() == AuditType.IEC_AUDIT)) {
 							newCopy.setDateVerified(null);
 							newCopy.setAuditor(null);
 						}
-
-						if (!checkAnswerFormat(auditData, newCopy)) {
-							auditData = newCopy;
-							return SUCCESS;
-						}
-
-						if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted) && permissions.isPicsEmployee())
-							newCopy.setWasChanged(YesNo.Yes);
-
-						newCopy.setAnswer(auditData.getAnswer());
-
+					} else if (newCopy.isVerified()) {
+						newCopy.setDateVerified(null);
+						newCopy.setAuditor(null);
 					}
+
+					if (!checkAnswerFormat(auditData, newCopy)) {
+						auditData = newCopy;
+						return SUCCESS;
+					}
+
+					if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)
+							&& permissions.isPicsEmployee())
+						newCopy.setWasChanged(YesNo.Yes);
+
+					newCopy.setAnswer(auditData.getAnswer());
+
 				}
 
 				auditData = newCopy;
@@ -216,10 +217,19 @@ public class AuditDataSave extends AuditActionSupport {
 
 			auditDataDao.save(auditData);
 
+			if (conAudit == null) {
+				findConAudit();
+			}
+			if (conAudit == null) {
+				addActionError(getText("Audit.error.AuditNotFound"));
+				return SUCCESS;
+			}
+			
+			checkUniqueCode(conAudit);
+
 			if (auditData.getAudit() != null) {
 				ContractorAudit tempAudit = null;
 				if (!auditDao.isContained(auditData.getAudit())) {
-					findConAudit();
 					tempAudit = conAudit;
 				} else
 					tempAudit = auditData.getAudit();
@@ -243,8 +253,6 @@ public class AuditDataSave extends AuditActionSupport {
 					}
 				}
 				contractorAccountDao.save(contractor);
-
-				checkUniqueCode(tempAudit);
 
 				if (auditData.getQuestion().isRecalculateCategories()) {
 					auditBuilder.recalculateCategories(tempAudit);
