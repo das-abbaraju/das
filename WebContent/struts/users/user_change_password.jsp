@@ -33,7 +33,7 @@
 					<s:password name="password1" label="global.Password" theme="form" />
 					<pics:fieldhelp title="Password Requirement">
 						<p>
-							<s:text name="User.password.fieldhelp" />
+							<s:text name="global.Password.fieldhelp" />
 						</p>  
 					</pics:fieldhelp>
 				</li>
