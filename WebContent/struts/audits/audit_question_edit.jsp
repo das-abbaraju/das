@@ -122,11 +122,12 @@
 			<nobr>
 				<s:if test="#a.id > 0 && #a.answer.length() > 0">
 					<a href="DownloadAuditData.action?auditID=<s:property value="auditID"/>&auditData.question.id=<s:property value="#q.id"/>" target="_BLANK"><s:text name="Audit.link.ViewFile" /></a>
+					<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:text name="Audit.EditFile" />" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 				</s:if>
 				<s:else>
 					<s:text name="Audit.message.FileNotUploaded" />
+					<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:text name="Audit.AddFile" />" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 				</s:else>
-				<input id="show_button_<s:property value="#q.id"/>" type="button" value="<s:if test="#a.id > 0 && #a.answer.length() > 0">Edit</s:if><s:else>Add</s:else> File" class="fileUpload" title="Opens in new window (please disable your popup blocker)" />
 			</nobr>
 		</s:if>
 		
