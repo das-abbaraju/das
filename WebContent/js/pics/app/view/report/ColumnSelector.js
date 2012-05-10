@@ -11,6 +11,7 @@ Ext.define('PICS.view.report.ColumnSelector', {
         action: 'close',
         text: 'Cancel'
     }],
+    columnSelectorType: null,    
     height: 500,
     items: [{
         xtype: 'reportcolumnselectorgrid'

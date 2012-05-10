@@ -37,11 +37,11 @@ Ext.application({
     },
 
     controllers: [
-        'report.ColumnSelectorController',
         'report.ReportController',
         'report.DataSetController',
         'report.FilterController',
-        'report.SortController'
+        'report.SortController',
+        'report.ColumnSelectorController'
     ],
 
     models: [

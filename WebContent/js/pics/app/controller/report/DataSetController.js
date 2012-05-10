@@ -14,7 +14,7 @@ Ext.define('PICS.controller.report.DataSetController', {
             'menuitem[name=removeColumn]': {
                 click: function (menuItem, event, options) {
                     var columnName = menuItem.up('menu').ownerCt.activeHeader.dataIndex;
-                    
+
                     me.removeColumn(columnName);
                 }
             },
@@ -30,6 +30,11 @@ Ext.define('PICS.controller.report.DataSetController', {
                     var columnName = menuItem.up('menu').ownerCt.activeHeader.dataIndex;
 
                     this.getController('report.SortController').addSortItem(columnName, 'DESC');
+                }
+            },
+            'reportsorttoolbar button[action=add-column]': {
+                click: function () {
+                    PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'column'});
                 }
             }
         });
@@ -57,7 +62,7 @@ Ext.define('PICS.controller.report.DataSetController', {
                     cls: 'x-hmenu-sort-desc',
                     name: 'sortDESC',
                     text: 'Sort Descending',
-                }, {                    
+                }, {
                     text: 'Options',
                     menu: {
                         xtype: 'menu',

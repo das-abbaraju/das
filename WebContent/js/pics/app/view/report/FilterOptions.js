@@ -62,11 +62,5 @@ Ext.define('PICS.view.report.FilterOptions', {
         text: 'Add Filter'
     }],
     title: 'Filter Options',
-    width: 320,
-
-    constructor: function () {
-        this.callParent(arguments);
-        /*var filter = Ext.create('PICS.view.report.filter.StringFilter');
-        this.add(filter);*/
-    }
+    width: 320
 });

@@ -8,6 +8,7 @@ Ext.define('PICS.controller.report.FilterController', {
         ref: 'filterOptions',
         selector: 'filteroptions #filterDetails'
     }],
+
     stores: [
         'report.AvailableFieldsByCategory',
         'report.Reports'
@@ -16,7 +17,9 @@ Ext.define('PICS.controller.report.FilterController', {
     init: function() {
         this.control({
             'filteroptions button[action=add-filter]': {
-                click: this.showColumnSelector
+                click: function () {
+                    PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'filter'});
+                }
             },
             'filteroptions button[action=search]': {
                 click: function () {
@@ -43,7 +46,7 @@ Ext.define('PICS.controller.report.FilterController', {
             var type = record.getAvailableField().get('filterType') || record.get('filterType'),
                 panelClass = me.setFilterPanelClass(type),
                 filterPanel = null;
-            
+
             if (panelClass !== null) {
                 filterPanel = Ext.create(panelClass, {record: record, panelNumber: ++count});
                 filterContainer.add(filterPanel);
@@ -51,6 +54,7 @@ Ext.define('PICS.controller.report.FilterController', {
         });
         return filterContainer;
     },
+
     refreshFilters: function () {
         var filterContainer = null;
 
