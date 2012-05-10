@@ -62,6 +62,32 @@ where pd.questionID=8840 and pd.answer='No'
 and pd2.questionID=2066 and pd2.answer='Yes' 
 and (pd3.questionID=11117 OR pd3.questionID=11118);
 
+-- PICS-5733 Update policies not set to expire
+-- auto 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 15 and ca.expiresDate is null 
+and pd.questionID=2111 and pd.answer is NOT NULL and pd.answer!=''; 
+-- gl 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 13 and ca.expiresDate is null 
+and pd.questionID=2082 and pd.answer is NOT NULL and pd.answer!=''; 
+-- el 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 16 and ca.expiresDate is null 
+and pd.questionID=2117 and pd.answer is NOT NULL and pd.answer!=''; 
+-- wc 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 14 and ca.expiresDate is null 
+and pd.questionID=2105 and pd.answer is NOT NULL and pd.answer!='';
+
 -- PICS-5758
 insert into user_assignment (userID, createdBy, updatedBy, creationDate, updateDate, assignmentType, country) values (26330, 941, 941, '2012-05-09 12:00', '2012-05-09 12:00', 'CSR', 'AL');
 insert into user_assignment (userID, createdBy, updatedBy, creationDate, updateDate, assignmentType, country) values (26330, 941, 941, '2012-05-09 12:00', '2012-05-09 12:00', 'CSR', 'AM');
