@@ -1,13 +1,16 @@
 package com.picsauditing.auditBuilder;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTest;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -17,7 +20,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
-public class AuditBuilderTest extends TestCase {
+public class AuditBuilderTest extends PicsTest {
 	ContractorAccount contractor1;
 	ContractorAudit conAudit1PQF;
 	AuditType pqf;
@@ -33,11 +36,15 @@ public class AuditBuilderTest extends TestCase {
 	AuditCategoriesBuilder catBuilder;
 	Set<AuditCategory> categories;
 	Map<OperatorAccount, Set<OperatorAccount>> caos;
+	
+	AuditBuilder auditBuilder = new AuditBuilder();
 
 	/**
 	 * Setup Contractors and Audit Types and Categories
 	 */
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		autowireEMInjectedDAOs(auditBuilder);
 		contractor1 = EntityFactory.makeContractor();
 		conAudit1PQF = EntityFactory.makeContractorAudit(1, contractor1);
 		pqf = conAudit1PQF.getAuditType();
@@ -48,6 +55,7 @@ public class AuditBuilderTest extends TestCase {
 		catBuilder = new AuditCategoriesBuilder(catRuleCache, contractor1);
 	}
 
+	@Test
 	public void testBuilder() {
 		{
 			// Include the PQF for Everyone
@@ -101,14 +109,9 @@ public class AuditBuilderTest extends TestCase {
 		}
 	}
 
-	public void testBuilder1() {
-		contractor1.setOnsiteServices(true);
-		contractor1.setMaterialSupplier(true);
-	}
-	
+	@Test
 	public void testAuditTypes() {
 		AuditTypeRule rule;
-		ContractorAccount contractor;
 
 		// clear out old rules
 		typeRules.clear();
@@ -123,7 +126,6 @@ public class AuditBuilderTest extends TestCase {
 		typeRuleCache.initialize(typeRules);
 		
 		// initialize contractor
-		contractor = EntityFactory.makeContractor();
 		EntityFactory.addContractorOperator(contractor1, EntityFactory.makeOperator());
 
 		
@@ -133,5 +135,10 @@ public class AuditBuilderTest extends TestCase {
 
 		assertEquals(1, auditTypes.size()); // should get
 
+	}
+	
+	@Test
+	public void testBuildAudits() {
+		
 	}
 }
