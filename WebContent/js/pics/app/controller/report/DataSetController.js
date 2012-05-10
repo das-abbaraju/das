@@ -36,6 +36,11 @@ Ext.define('PICS.controller.report.DataSetController', {
                 click: function () {
                     PICS.app.fireEvent('showcolumnselector', {columnSelectorType: 'column'});
                 }
+            },
+            'reportdatasetgrid pagingtoolbar button[itemId=refresh]': {
+                click: function () {
+                    PICS.app.fireEvent('refreshreport');
+                }
             }
         });
     },
