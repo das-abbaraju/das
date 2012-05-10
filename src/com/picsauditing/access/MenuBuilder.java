@@ -52,53 +52,53 @@ public class MenuBuilder {
 
 	public void buildContractorMenu(Permissions permissions) {
 		MenuComponent subMenu;
-		// Don't show a menu for Contractors, they will use their sub menu
-		// for now
-		if (permissions.getAccountStatus().isActiveDemo()) {
-			subMenu = menu.addChild(getText("global.Home"), "ContractorView.action");
-
-			// Don't show for insurance only users
-			if (!permissions.isInsuranceOnlyContractorUser()) {
-				subMenu = menu.addChild(getText("global.Company"));
-				subMenu.addChild(getText("menu.Contractor.WhereWeWork"), "ContractorFacilities.action");
-				subMenu.addChild(getText("menu.Contractor.ActivityLog"), "ContractorNotes.action");
-			}
-
-			if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
-				subMenu = menu.addChild(getText("button.Edit"));
-				subMenu.addChild(getText("menu.Contractor.CompanyAccount"), "ContractorEdit.action");
-				subMenu.addChild(getText("global.Users"), "UsersManage.action");
-				subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action");
-				if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
-					subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action");
-				if (permissions.isRequiresCompetencyReview()) {
-					subMenu = menu.addChild(getText("global.HSECompetencies"));
-					subMenu.addChild(getTitle("ManageJobRoles"), "ManageJobRoles.action");
-					subMenu.addChild(getTitle("EmployeeCompetencies"), "EmployeeCompetencies.action");
-				}
-				if (permissions.isRequiresOQ()) {
-					subMenu = menu.addChild(getText("global.OperatorQualification"));
-					subMenu.addChild(getTitle("ReportOQEmployees"),
-							"ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
-					subMenu.addChild(getTitle("ReportOQChanges"), "ReportOQChanges.action");
-					subMenu.addChild(getTitle("ReportNewProjects"), "ReportNewProjects.action");
-				}
-			}
-
-			if (permissions.hasPermission(OpPerms.ContractorBilling)) {
-				subMenu = menu.addChild(getText("menu.Billing"));
-				subMenu.addChild(getText("menu.Contractor.BillingDetails"), "BillingDetail.action");
-				subMenu.addChild(getText("menu.Contractor.PaymentOptions"), "ContractorPaymentOptions.action");
-			}
-
-			menu.addChild(getText("global.Resources"), "ContractorForms.action");
-
-			subMenu = addSupportLink(menu);
-			addChildAction(subMenu, "ProfileEdit");
-		} else {
+		// Don't show a menu for Contractors, they will use their sub menu for now
+		if (!permissions.getAccountStatus().isActiveDemo()) {
 			subMenu = menu.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action");
 			addSupportLink(menu);
+			return;
 		}
+
+		subMenu = menu.addChild(getText("global.Home"), "ContractorView.action");
+
+		// Don't show for insurance only users
+		if (!permissions.isInsuranceOnlyContractorUser()) {
+			subMenu = menu.addChild(getText("global.Company"));
+			subMenu.addChild(getText("menu.Contractor.WhereWeWork"), "ContractorFacilities.action");
+			subMenu.addChild(getText("menu.Contractor.ActivityLog"), "ContractorNotes.action");
+		}
+
+		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {
+			subMenu = menu.addChild(getText("button.Edit"));
+			subMenu.addChild(getText("menu.Contractor.CompanyAccount"), "ContractorEdit.action");
+			subMenu.addChild(getText("global.Users"), "UsersManage.action");
+			subMenu.addChild(getTitle("ContractorTrades"), "ContractorTrades.action");
+			if (permissions.isRequiresOQ() || permissions.isRequiresCompetencyReview())
+				subMenu.addChild(getTitle("ManageEmployees"), "ManageEmployees.action");
+			if (permissions.isRequiresCompetencyReview()) {
+				subMenu = menu.addChild(getText("global.HSECompetencies"));
+				subMenu.addChild(getTitle("ManageJobRoles"), "ManageJobRoles.action");
+				subMenu.addChild(getTitle("EmployeeCompetencies"), "EmployeeCompetencies.action");
+			}
+			if (permissions.isRequiresOQ()) {
+				subMenu = menu.addChild(getText("global.OperatorQualification"));
+				subMenu.addChild(getTitle("ReportOQEmployees"),
+						"ReportOQEmployees.action?orderBy=e.lastName,e.firstName");
+				subMenu.addChild(getTitle("ReportOQChanges"), "ReportOQChanges.action");
+				subMenu.addChild(getTitle("ReportNewProjects"), "ReportNewProjects.action");
+			}
+		}
+
+		if (permissions.hasPermission(OpPerms.ContractorBilling)) {
+			subMenu = menu.addChild(getText("menu.Billing"));
+			subMenu.addChild(getText("menu.Contractor.BillingDetails"), "BillingDetail.action");
+			subMenu.addChild(getText("menu.Contractor.PaymentOptions"), "ContractorPaymentOptions.action");
+		}
+
+		menu.addChild(getText("global.Resources"), "ContractorForms.action");
+
+		subMenu = addSupportLink(menu);
+		addChildAction(subMenu, "ProfileEdit");
 	}
 
 	public void buildAssessmentCenter() {
@@ -250,6 +250,7 @@ public class MenuBuilder {
 				|| permissions.hasPermission(OpPerms.ManageAssessment))
 			subMenu.addChild("Manage Accounts",
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending");
+
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
 			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
@@ -518,7 +519,6 @@ public class MenuBuilder {
 
 		MenuComponent subMenu = menu.addChild(contractor.getName(), "ContractorSummary.action?id=" + contractor.getId());
 		subMenu.addChild("Users", "ManageReports.action?id=");
-		
 	}
 
 	private void addHelp() {
@@ -527,7 +527,7 @@ public class MenuBuilder {
 		subMenu.addChild("Help Center", "help.jsp");
 		MenuComponent tools = subMenu.addChild("Tools", "help.jsp");
 		tools.addChild("Cron", "cron.jsp");
-		
+
 		subMenu.addChild("About PICS Organizer", "about.jsp");
 	}
 
