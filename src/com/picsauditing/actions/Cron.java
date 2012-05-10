@@ -236,12 +236,12 @@ public class Cron extends PicsActionSupport {
 		} catch (Throwable t) {
 			handleException(t);
 		}
-		
+
 		try {
 			startTask("\nSending email about upcoming implementation audits...");
-			
+
 			sendUpcomingImplementationAuditEmail();
-			
+
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
@@ -524,15 +524,13 @@ public class Cron extends PicsActionSupport {
 			}
 		}
 	}
-	
+
 	private void sendUpcomingImplementationAuditEmail() {
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.DATE, 7);
 
-		List<ContractorAudit> caList = contractorAuditDAO
-				.findScheduledAuditsByAuditId(AuditType.OFFICE,
-						DateBean.setToStartOfDay(cal.getTime()),
-						DateBean.setToEndOfDay(cal.getTime()));
+		List<ContractorAudit> caList = contractorAuditDAO.findScheduledAuditsByAuditId(AuditType.OFFICE, DateBean
+				.setToStartOfDay(cal.getTime()), DateBean.setToEndOfDay(cal.getTime()));
 		for (ContractorAudit ca : caList) {
 			EventSubscriptionBuilder.notifyUpcomingImplementationAudit(ca);
 		}
@@ -863,12 +861,26 @@ public class Cron extends PicsActionSupport {
 		emailBuilder.setTemplate(55);
 		emailBuilder.setFromAddress("\"PICS System\"<info@picsauditing.com>");
 		emailBuilder.addToken("changes", flagChanges);
+		int totalFlagChanges = sumFlagChanges(flagChanges);
+		emailBuilder.addToken("totalFlagChanges", totalFlagChanges);
 		emailBuilder.setToAddresses(accountMgr);
 		EmailQueue email = emailBuilder.build();
 		email.setPriority(90);
 		email.setViewableById(Account.PicsID);
 		emailQueueDAO.save(email);
 		emailBuilder.clear();
+	}
+
+	private int sumFlagChanges(List<BasicDynaBean> flagChanges) {
+		int totalChanges = 0;
+		for (BasicDynaBean flagChangesByOperator : flagChanges) {
+			try {
+				String numberOfChanges = flagChangesByOperator.get("changes").toString();
+				totalChanges += Integer.parseInt(numberOfChanges);
+			} catch (Exception justIgnoreIt) {
+			}
+		}
+		return totalChanges;
 	}
 
 	private Map<String, List<BasicDynaBean>> sortResultsByAccountManager(List<BasicDynaBean> data) {
@@ -879,7 +891,7 @@ public class Cron extends PicsActionSupport {
 			if (accountMgr != null) {
 				if (amMap.get(accountMgr) == null)
 					amMap.put(accountMgr, new ArrayList<BasicDynaBean>());
-			
+
 				amMap.get(accountMgr).add(bean);
 			}
 		}
@@ -888,13 +900,16 @@ public class Cron extends PicsActionSupport {
 
 	private List<BasicDynaBean> getFlagChangeData() throws SQLException {
 		StringBuilder query = new StringBuilder();
-		query.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
+		query
+				.append("select id, operator, accountManager, changes, total, round(changes * 100 / total) as percent from ( ");
 		query.append("select o.id, o.name operator, concat(u.name, ' <', u.email, '>') accountManager, ");
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
-		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
+		query
+				.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query
+				.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
 		query.append("group by o.id) t ");
