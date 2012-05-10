@@ -220,15 +220,6 @@
                             <div class="view">
                                 <div class="text">
                                 	<s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
-	                                   	<a
-	                                   		href="javascript:;"
-	                                   		class="preview"
-	                                   		data-url="ManageTranslationsAjax!preview.action"
-	                                   		data-key="${translation.key}"
-	                                   		data-localeto="${translation.locale}"
-	                                   	>
-	                                   		Preview
-	                                   	</a>
 	                                    <s:property value="value" />
                                     </s:if>
                                     <s:else>
@@ -259,6 +250,16 @@
                                             />
                                         </div>
                                     </div>
+                                    
+                                    <a
+                                        href="javascript:;"
+                                        class="preview-translation btn small"
+                                        data-url="ManageTranslationsAjax!preview.action"
+                                        data-key="${translation.key}"
+                                        data-localeto="${translation.locale}"
+                                    >
+                                        Preview
+                                    </a>
                                     
                                     <a href="javascript:;" class="edit btn small primary">Edit</a>
                                 </div>
