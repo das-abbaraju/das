@@ -15,16 +15,16 @@ update email_template t set t.body = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1
 <div style="width: 750px; background-color: #002240; padding: 0 15px 0 15px; margin: 0; color: #6699CC; font-weight: normal; font-family: sans-serif; font-size: 11px; border-bottom: 3px solid #4686bf; border-left: 1px solid #002240; border-right: 1px solid #002240;">
 &nbsp;</div>
 <div style="width: 750px; padding: 15px; margin: 0; background-color: white; line-height: 18px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; border-left: 1px solid #002240; border-right: 1px solid #002240;">
-Below is a list of Operators who have had at least 10 total flag changes as well as 5% of their total flag colors change recently. Please review each one for errors. If you find a flag error, please work with your manager or IT to resolve the problems ASAP. If the flags are due to a valid change, then approve each one and consider reaching out to the operator\'s primary contact to discuss the impact of the changes.
+Below is a list of Client Sites who have had at least 10 total flag changes as well as 5% of their total flag colors change recently. Please review each one for errors. If you find a flag error, please work with your manager or IT to resolve the problems ASAP. If the flags are due to a valid change, then approve each one and consider reaching out to the client site\'s primary contact to discuss the impact of the changes.
 #if(${changes.size()} > 0)
-<h3 style="color: rgb(168, 77, 16)">Operator Flag Changes</h3>
+<h3 style="color: rgb(168, 77, 16)">Client Site Flag Changes</h3>
 <div>
-<strong>Total Flag Differences: </strong>${totalFlagChanges}<strong>  |  Total Operators Affected: </strong>${changes.size()}
+<strong>Total Flag Differences: </strong>${totalFlagChanges}<strong>  |  Total Client Sites Affected: </strong>${changes.size()}
 </div>
 <table style="border-collapse: collapse; border: 2px solid #003768; background: #f9f9f9;">
  <thead>
   <tr style="vertical-align: middle; font-size: 13px;font-weight: bold; background: #003768; color: #FFF;">
-   <td style="border: 1px solid #e0e0e0; padding: 4px;">Operator</td>
+   <td style="border: 1px solid #e0e0e0; padding: 4px;">Client Site</td>
    <td style="border: 1px solid #e0e0e0; padding: 4px;">Changes</td>
    <td style="border: 1px solid #e0e0e0; padding: 4px;">Percent</td>
   </tr>
@@ -61,6 +61,32 @@ set pd3.answer='0.00'
 where pd.questionID=8840 and pd.answer='No' 
 and pd2.questionID=2066 and pd2.answer='Yes' 
 and (pd3.questionID=11117 OR pd3.questionID=11118);
+
+-- PICS-5733 Update policies not set to expire
+-- auto 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 15 and ca.expiresDate is null 
+and pd.questionID=2111 and pd.answer is NOT NULL and pd.answer!=''; 
+-- gl 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 13 and ca.expiresDate is null 
+and pd.questionID=2082 and pd.answer is NOT NULL and pd.answer!=''; 
+-- el 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 16 and ca.expiresDate is null 
+and pd.questionID=2117 and pd.answer is NOT NULL and pd.answer!=''; 
+-- wc 
+UPDATE contractor_audit ca 
+join pqfdata pd on ca.id = pd.auditID 
+set ca.expiresDate = Date_Add(str_to_date(pd.answer, '%m/%d/%Y'), interval 1 DAY) 
+where ca.auditTypeID = 14 and ca.expiresDate is null 
+and pd.questionID=2105 and pd.answer is NOT NULL and pd.answer!='';
 
 -- PICS-5758
 insert into user_assignment (userID, createdBy, updatedBy, creationDate, updateDate, assignmentType, country) values (26330, 941, 941, '2012-05-09 12:00', '2012-05-09 12:00', 'CSR', 'AL');
