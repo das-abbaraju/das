@@ -531,7 +531,7 @@ public class MenuBuilder {
 		subMenu.addChild("About PICS Organizer", "about.jsp");
 	}
 
-	public void cleanupMenus() {
+	public void handleSingleChildMenu() {
 		/*
 		Iterator<MenuComponent> iterator = menu.getChildren().iterator();
 		while (iterator.hasNext()) {

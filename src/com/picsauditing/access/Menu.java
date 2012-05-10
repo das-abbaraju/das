@@ -9,11 +9,11 @@ import com.picsauditing.jpa.entities.Report;
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
 	private ContractorAccount contractor = null;
-	private MenuBuilder builder = new MenuBuilder();
 
 	public String execute() throws Exception {
 		loadPermissions();
 
+		MenuBuilder builder = new MenuBuilder();
 		if (!permissions.isLoggedIn()) {
 			builder.buildNotLoggedIn();
 		} else if (permissions.isContractor()) {
@@ -26,7 +26,7 @@ public class Menu extends PicsActionSupport {
 			builder.buildNew(permissions, reports, contractor);
 		}
 
-		builder.cleanupMenus();
+		builder.handleSingleChildMenu();
 
 		jsonArray = MenuWriter.exportMenuToExtJS(builder.getMenu());
 
