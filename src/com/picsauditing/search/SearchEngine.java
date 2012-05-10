@@ -37,7 +37,7 @@ public class SearchEngine {
 
 	/**
 	 * Gets ids of contractors in a users system
-	 *
+	 * 
 	 * @param perm
 	 *            Permission of user doing search
 	 * @return Hashtable of ids of contractors in the users system
@@ -69,13 +69,14 @@ public class SearchEngine {
 
 	/**
 	 * Builds a query for finding common terms in a search term
-	 *
+	 * 
 	 * @param terms
 	 *            The terms used in the search
 	 * @param ignore
 	 *            (Optional) List of terms to explicitly ignore
 	 * @param total
-	 *            count of the term is divided by this to see if it's included in this query
+	 *            count of the term is divided by this to see if it's included
+	 *            in this query
 	 * @return A String containing the search query
 	 */
 	public String buildCommonTermQuery(List<String> terms, String ignore, int total) {
@@ -104,7 +105,7 @@ public class SearchEngine {
 
 	/**
 	 * Builds the Query based on term and returns it as a string
-	 *
+	 * 
 	 * @param currPerm
 	 *            permissions to use, pass in null to do an unrestricted search
 	 * @param terms
@@ -116,7 +117,8 @@ public class SearchEngine {
 	 * @param limit
 	 *            Limit for Search
 	 * @param buildCommon
-	 *            If True then skip over total rows and various other parts of query
+	 *            If True then skip over total rows and various other parts of
+	 *            query
 	 * @param fullSearch
 	 *            True for full search, false for 10 result ajax search
 	 * @return A string that is the query to run using db.select
@@ -196,6 +198,8 @@ public class SearchEngine {
 
 		if (currPerm != null) {
 			String accountStatuses = "'Active','Pending'";
+			String employeeStatuses = "'Active', 'Inactive'";
+			String userName = "'DELETE-%'";
 			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
 				accountStatuses += ",'Demo'";
 
@@ -208,16 +212,19 @@ public class SearchEngine {
 						.append(currPerm.getAccountId())
 						.append(")) AS acc on a.id = acc.id AND a.status IN (" + accountStatuses + ")\n)\n");
 				if (fullSearch) {
-					sql.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN (" + accountStatuses + "))\n");
+					sql.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE type = 'Contractor' AND status IN ("
+							+ accountStatuses + "))\n");
 				} else {
 					sql.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
 							.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\nJOIN facilities f ON f.opID = gc.genID AND f.corporateID =")
 							.append(currPerm.getAccountId())
-							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses + "))\n");
+							.append(" GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses
+									+ "))\n");
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n"
+							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.username not like "
+									+ userName + " JOIN\n"
 									+ "((select f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
@@ -225,7 +232,8 @@ public class SearchEngine {
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
-							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e join\n"
+							"\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
+									+ employeeStatuses + ") join\n"
 									+ "((SELECT f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id from operators o where o.parentID =")
@@ -242,17 +250,30 @@ public class SearchEngine {
 						.append(") AS acc ON a.id = acc.id WHERE a.status IN (" + accountStatuses + ") )");
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.accountID =")
-							.append(currPerm.getAccountId()).append(')');
+							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.username not like "
+									+ userName + " and u.accountID =").append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
-							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e JOIN "
+							"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
+									+ employeeStatuses + ") JOIN "
 									+ "generalcontractors gc ON gc.subID = e.accountID WHERE gc.genID =")
 							.append(currPerm.getAccountId()).append(")");
 				}
 				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
+			} else {
+				/*
+				sql.append(
+						"\nJOIN\n((SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.username not like "
+								+ userName + " )");
+				sql.append(
+						"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
+								+ employeeStatuses + ") )");
+
+				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
+				*/
 			}
+
 		}
 
 		sql.append("\nGROUP BY foreignKey, indexType");
@@ -273,7 +294,6 @@ public class SearchEngine {
 
 		PicsLogger.log(sql.toString());
 		PicsLogger.stop();
-
 		return sql.toString();
 	}
 
@@ -352,7 +372,7 @@ public class SearchEngine {
 
 	/**
 	 * Builds string array of terms from a string containing the search term
-	 *
+	 * 
 	 * @param check
 	 *            The String to use to build the terms
 	 * @param sort
@@ -386,7 +406,7 @@ public class SearchEngine {
 
 	/**
 	 * Sorts the terms based on commonality
-	 *
+	 * 
 	 * @param terms
 	 *            List of terms to sort
 	 * @param onlyValid

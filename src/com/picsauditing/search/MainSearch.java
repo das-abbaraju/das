@@ -82,7 +82,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
-
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if (terms == null || terms.isEmpty()) {
 				addActionMessage(getText("MainSearch.NoSearchableTerms"));

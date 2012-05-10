@@ -200,6 +200,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
 		employee = null;
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+				
+		employee.setNeedsIndexing(true);
 		
 		return SUCCESS;
 	}
