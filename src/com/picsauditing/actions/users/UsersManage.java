@@ -316,8 +316,8 @@ public class UsersManage extends PicsActionSupport {
 		try {
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
-
-			user.setNeedsIndexing(true);
+			//auto indexing, no longer need to call it.	
+			//user.setNeedsIndexing(true);
 			
 			user = userDAO.save(user);
 
@@ -448,7 +448,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		user.setUsername("DELETE-"+user.getId()+"-"+Strings.hashUrlSafe(user.getUsername()));
+		user.setUsername("DELETE-"+user.getId()+"-"+Strings.hashUrlSafe(user.getUsername()));	
 		userDAO.save(user);
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
