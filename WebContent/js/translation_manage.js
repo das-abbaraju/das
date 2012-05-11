@@ -17,7 +17,7 @@
                 
                 // enter edit mode
             	$('.translation-list').delegate('.view-mode a.edit', 'click', this.showEditMode);
-            	$('.translation-list').delegate('.view-mode a.preview', 'click', this.showPreview);
+            	$('.translation-list').delegate('.view-mode a.preview-translation', 'click', this.showPreview);
             	
             	// ajax translation save
             	$('.translation-list').delegate('.edit-mode button.save', 'click', this.saveTranslation);
