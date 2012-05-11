@@ -1,6 +1,6 @@
 package com.picsauditing.actions.report;
 
-import org.apache.catalina.session.PersistentManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
