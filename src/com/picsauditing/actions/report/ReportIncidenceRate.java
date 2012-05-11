@@ -1,5 +1,6 @@
 package com.picsauditing.actions.report;
 
+import org.apache.catalina.session.PersistentManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
@@ -22,20 +23,26 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 
 	@Override
 	public void checkPermissions() throws Exception {
-		
-		permissions.tryPermission(OpPerms.TRIRReport);		
+		permissions.tryPermission(OpPerms.TRIRReport);
 	}
 
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		System.out.println("1");
+		PersistentManager manager = new PersistentManager();
+		int idleSwap =0;
+		idleSwap = manager.getMaxIdleSwap();		
+		System.out.println("maxidleswap "+idleSwap);
+		//set max idle swap time to 15 min
+		manager.setMaxIdleSwap(900);
+		 idleSwap = manager.getMaxIdleSwap();
+		System.out.println("maxidleswap "+idleSwap);
 		getFilter().setShowIncidenceRate(true);
 		getFilter().setShowIncidenceRateAvg(true);
 		getFilter().setShowShaType(true);
 		getFilter().setShowShaLocation(true);
 		getFilter().setShowCohsStats(true);
-		System.out.println("2");
+
 		sql.addJoin("JOIN pqfData pd ON pd.auditID = ca.id");
 		sql.addJoin("JOIN naics n ON n.code = a.naics");
 		sql.addJoin("JOIN flag_criteria_contractor fcc ON fcc.conID = a.id AND fcc.criteriaID = 559");
@@ -44,9 +51,9 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 		sql.addField("pd.answer AS incidenceRate");
 		sql.addField("pd.dateVerified");
 		sql.addField("n.trir");
-		System.out.println("3");
+
 		setVerifiedAnnualUpdateFilter("pd.dateVerified");
-		System.out.println("4");
+
 		if (filterOn(getFilter().getShaType())) {
 			int questionID = 0;
 
@@ -69,7 +76,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 					     " OR pd.questionID = " + CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR);
 			
 		}
-		System.out.println("5");
+		
 		sql.addWhere("pd.answer <> 'Audit.missingParameter'"); 
 		sql.addWhere("(pd.answer >= " + getFilter().getIncidenceRate() + ")");
 		sql.addWhere("(pd.answer < " + getFilter().getIncidenceRateMax() + ")");
@@ -77,7 +84,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 				+ getFilter().getIncidenceRateAvgMax() + ")"
 				+ (getFilter().getIncidenceRateAvg() == -1.0f ? " OR c.trirAverage IS NULL" : ""));
 		sql.addGroupBy("ca.auditFor");
-		System.out.println("sql "+sql.toString());
 	}
 
 	@Override
@@ -87,7 +93,8 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 //		excelSheet.addColumn(new ExcelColumn("auditLocation", getText("ReportIncidenceRate.Location")));
 //		excelSheet.addColumn(new ExcelColumn("description", getText("global.Description")));
 		excelSheet.addColumn(new ExcelColumn("shaType", getText("Filters.label.SHAType")));
-		excelSheet.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
+		excelSheet
+				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trirAverage", getText("global.Average"), ExcelCellType.Double));
 		excelSheet.addColumn(new ExcelColumn("trir", getText("ReportIncidenceRate.TrirIndustryAverage"), ExcelCellType.Double));
 	}
