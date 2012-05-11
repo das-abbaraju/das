@@ -108,7 +108,14 @@
 							</s:div>
 						</li>
 						<li>
-							<label>Comment:</label>
+							<label>
+							<s:if test="question.id == 1331" >
+							Number Of Pages:
+							</s:if>
+							<s:else>
+							Comment:
+							</s:else>
+							</label> 
 							<s:textfield 
 								onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" 
 								id="comment_%{question.id}" 
@@ -212,7 +219,7 @@
 								</s:div>
 							</li>
 							<li>
-								<label>Comment:</label> 
+								<label>Comment:</label> 	
 								
 								<s:if test="question.category.parent.id == 152">
 									<s:select 

@@ -59,11 +59,13 @@ public class ContractorRegistrationRequestDAO extends PicsDAO {
 	}
 
 	public List<ContractorRegistrationRequest> findByOp(int opID, boolean open, WaitingOn handledBy, int limit) {
-		Query query = em.createQuery("FROM ContractorRegistrationRequest c WHERE c.requestedBy.id = ? "
-				+ "AND c.open = ? AND c.handledBy = ? ORDER BY c.deadline, c.lastContactDate");
+		StringBuilder sqlStr = new StringBuilder("SELECT c FROM ContractorRegistrationRequest c WHERE c.requestedBy.id = ?");
+		if(open == true) {
+			sqlStr.append(" AND status = 'Active'");
+		}
+		sqlStr.append(" ORDER BY c.deadline, c.lastContactDate");
+		Query query = em.createQuery(sqlStr.toString());
 		query.setParameter(1, opID);
-		query.setParameter(2, open);
-		query.setParameter(3, handledBy);
 		query.setMaxResults(limit);
 		return query.getResultList();
 	}
