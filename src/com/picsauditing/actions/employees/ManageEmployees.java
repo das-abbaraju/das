@@ -1,6 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -19,7 +18,6 @@ import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.EmployeeDAO;
@@ -48,7 +46,6 @@ import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserStatus;
-
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -178,7 +175,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	}
 
 	public String inactivate() throws Exception {
-		employee.setStatus(UserStatus.Inactive);
+		employee.setStatus(UserStatus.Inactive);		
 		employeeDAO.save(employee);
 		addActionMessage("Employee " + employee.getDisplayName() + " Successfully inactivated.");
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
@@ -200,9 +197,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
 		employee = null;
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
-				
-		employee.setNeedsIndexing(true);
-		
+
 		return SUCCESS;
 	}
 
