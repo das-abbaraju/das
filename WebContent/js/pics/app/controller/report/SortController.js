@@ -52,7 +52,7 @@ Ext.define('PICS.controller.report.SortController', {
                 'name': columnName,
                 'direction': selectedDirection
             });
-            
+
             sortStore.add(sortItem);
 
             button = this.createSortButton(sortItem);
@@ -64,18 +64,18 @@ Ext.define('PICS.controller.report.SortController', {
     },
 
     createSortButton: function (record) {
-        var button = [];
+        var buttons = [],
+            sortContainer = Ext.create('Ext.toolbar.Toolbar');
 
         var sort = {
             action: 'sort-report',
             text: record.get('name'),
             icon: '../js/pics/resources/themes/images/default/grid/sort_asc.gif',
             iconAlign: 'right',
-            record: record,
-            draggable: true
+            record: record
         };
         if (record.get('direction') === 'DESC') {
-            button.icon = '../js/pics/resources/themes/images/default/grid/sort_desc.gif';
+            sort.icon = '../js/pics/resources/themes/images/default/grid/sort_desc.gif';
         }
 
         var remove = {
@@ -87,11 +87,13 @@ Ext.define('PICS.controller.report.SortController', {
             tooltip: 'Remove'
         };
 
-        button.push(sort, remove);
+        buttons.push(sort, remove);
 
-        return button;
+        sortContainer.add(buttons);
+
+        return sortContainer;
     },
-    
+
     refreshSorts: function () {
         this.getSortButtons().removeAll();
         this.addReportStoreSorts();
@@ -116,9 +118,9 @@ Ext.define('PICS.controller.report.SortController', {
             component.setIcon('../js/pics/resources/themes/images/default/grid/sort_asc.gif');
             component.record.set('direction', 'ASC')
         }
-        PICS.app.fireEvent('refreshreport');        
+        PICS.app.fireEvent('refreshreport');
     },
-    
+
     sortItemExists: function (columnName) {
         var sortStore = this.getReportReportsStore().first().sorts(),
             duplicateSort = [];
@@ -131,7 +133,7 @@ Ext.define('PICS.controller.report.SortController', {
 
         return (duplicateSort.length > 0) ? true : false;
     },
-    
+
     updateSortItemDirection: function (columnName, selectedDirection) {
         var previousDirection = '',
             sortStore = this.getReportReportsStore().first().sorts(),
@@ -140,8 +142,8 @@ Ext.define('PICS.controller.report.SortController', {
         previousDirection = sortStore.findRecord('name', columnName).get('direction');
 
         if (selectedDirection !== previousDirection) {
-            var component = toolbar.child('button[text=' + columnName + ']');
+            var component = toolbar.child('toolbar button[text=' + columnName + ']');
             this.setSortItemProperties(component);
         }
-    }    
+    }
 });
