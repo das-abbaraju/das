@@ -76,6 +76,42 @@ public class KeepAliveTest {
 	}
 
 	@Test
+	public void testTimeoutIsParsedCorrectly() throws Exception {
+		when(request.getParameterValues("timeout")).thenReturn(new String[] { "1" });
+		keepAlive.getKeepAliveStatus();
+		assertEquals(1.0, keepAlive.getTimeoutInSeconds(), 0.1);
+
+		when(request.getParameterValues("timeout")).thenReturn(new String[] { "2.5" });
+		keepAlive.getKeepAliveStatus();
+		assertEquals(2.5, keepAlive.getTimeoutInSeconds(), 0.01);
+
+		when(request.getParameterValues("timeout")).thenReturn(new String[] { "3.3333" });
+		keepAlive.getKeepAliveStatus();
+		assertEquals(3.3333, keepAlive.getTimeoutInSeconds(), 0.0001);
+	}
+
+	@Test
+	public void testTimeoutIsEmpty() throws Exception {
+		when(request.getParameterValues("timeout")).thenReturn(new String[] {});
+		keepAlive.getKeepAliveStatus();
+		assertEquals(3.0, keepAlive.getTimeoutInSeconds(), 0.0001);
+	}
+
+	@Test
+	public void testTimeoutIsNull() {
+		when(request.getParameterValues("timeout")).thenReturn(null);
+		keepAlive.getKeepAliveStatus();
+		assertEquals(3.0, keepAlive.getTimeoutInSeconds(), 0.0001);
+	}
+
+	@Test
+	public void testTimeoutIsString() {
+		when(request.getParameterValues("timeout")).thenReturn(new String[] { "Hello World" });
+		keepAlive.getKeepAliveStatus();
+		assertEquals(3.0, keepAlive.getTimeoutInSeconds(), 0.0001);
+	}
+
+	@Test
 	public void testSystemLoadUnderLoadFactor() throws Exception {
 		when(operatingSystemMXBean.getSystemLoadAverage()).thenReturn(1.0);
 		when(database.execute(anyString())).thenReturn(true);

@@ -29,9 +29,11 @@ public class KeepAlive {
 
 	public String getKeepAliveStatus() {
 		setLoadFactor();
+		setTimeoutInSeconds();
+		double systemLoadAverage = operatingSystemMXBean.getSystemLoadAverage();
 
-		if (operatingSystemMXBean.getSystemLoadAverage() > loadFactor) {
-			return String.format(SYSTEM_LOAD, operatingSystemMXBean.getSystemLoadAverage());
+		if (systemLoadAverage > loadFactor) {
+			return String.format(SYSTEM_LOAD, systemLoadAverage);
 		} else if (!isDatabaseAccessible()) {
 			return DATABASE_UNACCESSIBLE;
 		} else if (!isSiteLoadedBeforeTimeout()) {
@@ -45,20 +47,27 @@ public class KeepAlive {
 		return loadFactor;
 	}
 
-	public double getTimeoutInSeconds() {
-		return timeoutInSeconds;
-	}
-
-	public void setTimeoutInSeconds(double timeoutInSeconds) {
-		this.timeoutInSeconds = timeoutInSeconds;
-	}
-
 	private void setLoadFactor() {
 		String[] loadFactors = request.getParameterValues("load_factor");
 
 		try {
 			if (loadFactors != null && loadFactors.length > 0) {
 				loadFactor = Float.parseFloat(loadFactors[0].toString());
+			}
+		} catch (Exception e) {
+		}
+	}
+
+	public double getTimeoutInSeconds() {
+		return timeoutInSeconds;
+	}
+
+	public void setTimeoutInSeconds() {
+		String[] timeout = request.getParameterValues("timeout");
+
+		try {
+			if (timeout != null && timeout.length > 0) {
+				timeoutInSeconds = Double.parseDouble(timeout[0].toString());
 			}
 		} catch (Exception e) {
 		}
@@ -76,14 +85,11 @@ public class KeepAlive {
 	}
 
 	private boolean isSiteLoadedBeforeTimeout() {
-		long now = System.currentTimeMillis();
-		double diff = 999.0;
-
 		if (urlConnector.connect(getLoginPageForEnvironment())) {
-			diff = (System.currentTimeMillis() - now) / 1000;
+			return true;
 		}
 
-		return diff < timeoutInSeconds;
+		return false;
 	}
 
 	private String getLoginPageForEnvironment() {
@@ -98,7 +104,9 @@ public class KeepAlive {
 			try {
 				URL url = new URL(urlToConnect);
 				URLConnection urlConnection = url.openConnection();
-				urlConnection.connect();
+				urlConnection.setReadTimeout((int) (timeoutInSeconds * 1000));
+				urlConnection.setConnectTimeout((int) (timeoutInSeconds * 1000));
+				urlConnection.getContent();
 			} catch (Exception e) {
 				return false;
 			}
