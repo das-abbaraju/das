@@ -385,9 +385,13 @@
     											
     											<s:iterator value="value">
     												<li>
-    													<a href="Audit.action?auditID=<s:property value="id"/>"><s:property value="auditType.name"/>
+    													<a href="Audit.action?auditID=<s:property value="id"/>">
+    														<s:property value="auditType.name"/>
+    														<s:if test="employee != null">
+    															<s:property value="employee.name" />
+    														</s:if>
     														<s:if test="auditFor != null">
-    															<s:property value="auditFor"/>
+    															<s:property value="auditFor"/>	    													
     														</s:if>
     														<s:else>
     															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
