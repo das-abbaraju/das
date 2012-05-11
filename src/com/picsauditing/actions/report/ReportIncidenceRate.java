@@ -29,14 +29,7 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 	@Override
 	public void buildQuery() {
 		super.buildQuery();
-		PersistentManager manager = new PersistentManager();
-		int idleSwap =0;
-		idleSwap = manager.getMaxIdleSwap();		
-		System.out.println("maxidleswap "+idleSwap);
-		//set max idle swap time to 15 min
-		manager.setMaxIdleSwap(900);
-		 idleSwap = manager.getMaxIdleSwap();
-		System.out.println("maxidleswap "+idleSwap);
+		
 		getFilter().setShowIncidenceRate(true);
 		getFilter().setShowIncidenceRateAvg(true);
 		getFilter().setShowShaType(true);
