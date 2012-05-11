@@ -12,8 +12,16 @@ import com.picsauditing.search.Database;
 public class KeepAlive {
 	private float loadFactor = 3f;
 	private double timeoutInSeconds = 3.0;
+
 	private HttpServletRequest request;
-	private OperatingSystemMXBean os = ManagementFactory.getOperatingSystemMXBean();
+	private OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+	private Database database = new Database();
+	private URLConnector urlConnector = new URLConnector();
+
+	public static final String SYSTEM_OK = "SYSTEM OK";
+	public static final String SYSTEM_LOAD = "SYSTEM LOAD = %.2f";
+	public static final String DATABASE_UNACCESSIBLE = "DATABASE UNACCESSIBLE";
+	public static final String PAGE_TIMED_OUT = "PAGE TIMED OUT";
 
 	public KeepAlive(HttpServletRequest request) {
 		this.request = request;
@@ -21,19 +29,16 @@ public class KeepAlive {
 
 	public String getKeepAliveStatus() {
 		setLoadFactor();
-		String status = "";
 
-		if (os.getSystemLoadAverage() > loadFactor) {
-			status = "SYSTEM LOAD = " + os.getSystemLoadAverage();
+		if (operatingSystemMXBean.getSystemLoadAverage() > loadFactor) {
+			return String.format(SYSTEM_LOAD, operatingSystemMXBean.getSystemLoadAverage());
 		} else if (!isDatabaseAccessible()) {
-			status = "DATABASE UNACCESSIBLE";
+			return DATABASE_UNACCESSIBLE;
 		} else if (!isSiteLoadedBeforeTimeout()) {
-			status = "PAGE TIMED OUT";
-		} else {
-			status = "SYSTEM OK";
+			return PAGE_TIMED_OUT;
 		}
 
-		return status;
+		return SYSTEM_OK;
 	}
 
 	public float getLoadFactor() {
@@ -60,11 +65,10 @@ public class KeepAlive {
 	}
 
 	private boolean isDatabaseAccessible() {
-		Database db = new Database();
 		boolean dbAccessible = false;
 
 		try {
-			dbAccessible = db.execute("SELECT 1");
+			dbAccessible = database.execute("SELECT 1");
 		} catch (Exception e) {
 		}
 
@@ -75,22 +79,31 @@ public class KeepAlive {
 		long now = System.currentTimeMillis();
 		double diff = 999.0;
 
-		try {
-			URL organizer = new URL(determineUrlForEnvironment() + "/Login.action");
-			URLConnection connection = organizer.openConnection();
-			connection.connect();
-
+		if (urlConnector.connect(getLoginPageForEnvironment())) {
 			diff = (System.currentTimeMillis() - now) / 1000;
-		} catch (Exception e) {
 		}
 
 		return diff < timeoutInSeconds;
 	}
 
-	private String determineUrlForEnvironment() {
+	private String getLoginPageForEnvironment() {
 		String requestURL = request.getRequestURL().toString();
 		String requestURI = request.getRequestURI();
 
-		return requestURL.replaceAll(requestURI, "");
+		return requestURL.replaceAll(requestURI, "") + "/Login.action";
+	}
+
+	public class URLConnector {
+		public boolean connect(String urlToConnect) {
+			try {
+				URL url = new URL(urlToConnect);
+				URLConnection urlConnection = url.openConnection();
+				urlConnection.connect();
+			} catch (Exception e) {
+				return false;
+			}
+
+			return true;
+		}
 	}
 }
