@@ -262,16 +262,17 @@ public class SearchEngine {
 				}
 				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			} else {
-				/*
-				sql.append(
-						"\nJOIN\n((SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.username not like "
-								+ userName + " )");
-				sql.append(
-						"\nUNION\n(SELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in ("
-								+ employeeStatuses + ") )");
-
-				sql.append("\n) AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
-				*/
+				sql.append("\nJOIN ((\nSELECT a.name rName, a.id id, acc.rType FROM accounts a JOIN\n")
+						.append("((SELECT f.opID id, 'O' rType FROM facilities f )")
+						.append("\nUNION\n(SELECT a.id, IF(a.type = 'Corporate', 'CO', 'O') rType FROM accounts a ")
+						.append("JOIN operators o USING(id) )) AS acc on a.id = acc.id AND a.status IN (" + accountStatuses + ")\n)\n")
+						.append("UNION\n(SELECT name rName, id, 'C' rType FROM accounts WHERE status IN (" + accountStatuses + "))\n")
+						.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
+						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\n")
+						.append("JOIN facilities f ON f.opID = gc.genID GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses + "))\n")
+						.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.username not like " + userName + " )")
+						.append("\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in (" + employeeStatuses + "))")
+						.append(") AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			}
 
 		}
