@@ -47,6 +47,8 @@ public class SqlBuilderTest {
 		assertEquals(3, sql.getFields().size());
 
 		assertContains("a.id AS `accountID`", sql.toString());
+		assertContains("a.name AS `accountName`", sql.toString());
+		assertContains("a.status AS `accountStatus`", sql.toString());
 	}
 
 	@Test

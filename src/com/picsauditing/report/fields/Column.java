@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
 public class Column implements JSONable {
+
 	private String fieldName;
 	private QueryFunction function = null;
 	private String option;
@@ -23,12 +24,14 @@ public class Column implements JSONable {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
 		if (function != null) {
-			json.put("method", function.toString());
+			json.put("function", function.toString());
 			if (!Strings.isEmpty(option))
 				json.put("option", option);
 		}
+
 		if (field != null)
 			json.put("field", field.toJSONObject());
+
 		return json;
 	}
 
@@ -36,9 +39,9 @@ public class Column implements JSONable {
 		if (json == null)
 			return;
 		this.fieldName = (String) json.get("name");
-		String methodName = (String) json.get("method");
-		if (!Strings.isEmpty(methodName)) {
-			this.function = QueryFunction.valueOf(methodName);
+		String functionName = (String) json.get("function");
+		if (!Strings.isEmpty(functionName)) {
+			this.function = QueryFunction.valueOf(functionName);
 			this.option = (String) json.get("option");
 		}
 		this.field = (Field) json.get("field");
@@ -51,9 +54,11 @@ public class Column implements JSONable {
 	public String getAvailableFieldName() {
 		if (function == null)
 			return fieldName;
+
 		int startOfFunction = fieldName.lastIndexOf(function.toString());
 		if (startOfFunction < 0)
 			return fieldName;
+
 		return fieldName.substring(0, startOfFunction);
 	}
 

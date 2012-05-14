@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import com.picsauditing.jpa.entities.JSONable;
 
 public class Sort implements JSONable {
+
 	private String fieldName;
 	private boolean ascending = true;
 	private Field field;

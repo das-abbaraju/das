@@ -19,11 +19,9 @@ import com.picsauditing.util.Strings;
  * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
  */
 public class Field implements JSONAware {
-	/**
-	 * aka field or alias
-	 */
+
 	private String name;
-	private String sql;
+	private String databaseColumnName;
 	private FilterType filterType = FilterType.String;
 	private int width = 200;
 	private boolean visible = true;
@@ -43,14 +41,14 @@ public class Field implements JSONAware {
 		this.filterType = annotation.filterType();
 		// TODO other options
 	}
-	
-	public Field(String name, String sql, FilterType filterType) {
-		this(name, sql, filterType, false);
+
+	public Field(String name, String databaseColumnName, FilterType filterType) {
+		this(name, databaseColumnName, filterType, false);
 	}
 
-	public Field(String name, String sql, FilterType filterType, boolean isDefault) {
+	public Field(String name, String databaseColumnName, FilterType filterType, boolean isDefault) {
 		this.name = name;
-		this.sql = sql;
+		this.databaseColumnName = databaseColumnName;
 		this.filterType = filterType;
 
 		if (filterType != null) {
@@ -145,11 +143,11 @@ public class Field implements JSONAware {
 		this.name = name;
 	}
 	public String getSql() {
-		return sql;
+		return databaseColumnName;
 	}
 
-	public void setSql(String sql) {
-		this.sql = sql;
+	public void setSql(String databaseColumnName) {
+		this.databaseColumnName = databaseColumnName;
 	}
 
 	public void setFilterType(FilterType filterType) {
@@ -187,7 +185,7 @@ public class Field implements JSONAware {
 	public Set<String> getDependentFields() {
 		Set<String> dependent = new HashSet<String>();
 		if (!Strings.isEmpty(url)) {
-			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}"); 
+			Pattern fieldVariablePattern = Pattern.compile("\\{(\\w+)\\}");
 			Matcher urlFieldMatcher = fieldVariablePattern.matcher(url);
 			while(urlFieldMatcher.find()) {
 				dependent.add(urlFieldMatcher.group(1));

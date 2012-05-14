@@ -25,6 +25,7 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
+
 	private ModelBase base;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
@@ -42,7 +43,7 @@ public class SqlBuilder {
 
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
-		addOrderBy();
+		addOrderByClauses();
 
 		addJoins(base.getFrom());
 
@@ -59,8 +60,8 @@ public class SqlBuilder {
 	private void addAvailableFields(BaseReportTable table) {
 		// We may be able to use the ModelBase.getAvailableFields...
 		availableFields.putAll(table.getFields());
-		for (BaseReportTable join : table.getJoins()) {
-			addAvailableFields(join);
+		for (BaseReportTable joinTable : table.getJoins()) {
+			addAvailableFields(joinTable);
 		}
 	}
 
@@ -107,7 +108,7 @@ public class SqlBuilder {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
 		for (Column column : definition.getColumns()) {
-			Field field = getQueryFieldFromReportColumn(column);
+			Field field = getFieldFromFieldName(column.getName());
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
@@ -148,7 +149,7 @@ public class SqlBuilder {
 
 	private boolean usesGroupBy() {
 		for (Column column : definition.getColumns()) {
-			if (getQueryFieldFromReportColumn(column) != null) {
+			if (getFieldFromFieldName(column.getName()) != null) {
 				if (isAggregate(column.getName())) {
 					return true;
 				}
@@ -157,16 +158,8 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private Field getQueryFieldFromReportColumn(Column column) {
-		return availableFields.get(column.getAvailableFieldName().toUpperCase());
-	}
-
-	private Field getQueryFieldFromReportFilter(Filter filter) {
-		return availableFields.get(filter.getName().toUpperCase());
-	}
-
-	private Field getQueryFieldFromReportSort(Sort sort) {
-		return availableFields.get(sort.getName().toUpperCase());
+	private Field getFieldFromFieldName(String fieldName) {
+		return availableFields.get(fieldName.toUpperCase());
 	}
 
 	private boolean isAggregate(String columnName) {
@@ -182,10 +175,11 @@ public class SqlBuilder {
 	}
 
 	private String columnToSQL(Column column) {
-		Field field = getQueryFieldFromReportColumn(column);
+		Field field = getFieldFromFieldName(column.getName());
 		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
 			return fieldSQL;
+
 		switch (column.getFunction()) {
 		case Average:
 			return "AVG(" + fieldSQL + ")";
@@ -212,6 +206,7 @@ public class SqlBuilder {
 		case Year:
 			return "YEAR(" + fieldSQL + ")";
 		}
+
 		return fieldSQL;
 	}
 
@@ -228,11 +223,11 @@ public class SqlBuilder {
 			// if (filter.isFullyDefined()) { }
 			if (isAggregate(filter.getName())) {
 				havingFilters.add(filter);
-				filter.setField(getQueryFieldFromReportFilter(filter));
 			} else {
 				whereFilters.add(filter);
-				filter.setField(getQueryFieldFromReportFilter(filter));
 			}
+
+			filter.setField(getFieldFromFieldName(filter.getName()));
 		}
 
 		String where = definition.getFilterExpression();
@@ -302,6 +297,7 @@ public class SqlBuilder {
 
 		if (column.getName().equals("accountName"))
 			columnSQL = "a.nameIndex";
+
 		return columnSQL;
 	}
 
@@ -309,7 +305,8 @@ public class SqlBuilder {
 		String value = filter.getValue();
 
 		// date filter
-		if (getQueryFieldFromReportColumn(column).getType().equals(ExtFieldType.Date) && column.getFunction() == null) {
+		ExtFieldType fieldType = getFieldFromFieldName(column.getName()).getType();
+		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			
 			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()),"");
@@ -337,7 +334,7 @@ public class SqlBuilder {
 		return "'" + value + "'";
 	}
 
-	private void addOrderBy() {
+	private void addOrderByClauses() {
 		if (definition.getSorts().size() == 0) {
 			if (usesGroupBy()) {
 				return;
@@ -347,19 +344,19 @@ public class SqlBuilder {
 		}
 
 		for (Sort sort : definition.getSorts()) {
+			String fieldName = sort.getName();
 
-			String orderBy = sort.getName();
-			Column column = getName(sort.getName());
+			Column column = getColumnFromFieldName(fieldName);
 			if (column == null) {
-				Field field = availableFields.get(sort.getName().toUpperCase());
+				Field field = availableFields.get(fieldName.toUpperCase());
 				if (field != null && field.getSql() != null)
-					orderBy = field.getSql();
+					fieldName = field.getSql();
 			}
 
 			if (!sort.isAscending())
-				orderBy += " DESC";
-			sql.addOrderBy(orderBy);
-			sort.setField(getQueryFieldFromReportSort(sort));
+				fieldName += " DESC";
+			sql.addOrderBy(fieldName);
+			sort.setField(getFieldFromFieldName(sort.getName()));
 		}
 	}
 
@@ -375,9 +372,9 @@ public class SqlBuilder {
 		sql.setSQL_CALC_FOUND_ROWS(true);
 	}
 
-	private Column getName(String name) {
+	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : definition.getColumns()) {
-			if (column.getName().equals(name))
+			if (column.getName().equals(fieldName))
 				return column;
 		}
 		return null;

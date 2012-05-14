@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.util.Strings;
 
 public class Filter implements JSONable {
+
 	private String fieldName;
 	private QueryFilterOperator operator;
 	private String value;

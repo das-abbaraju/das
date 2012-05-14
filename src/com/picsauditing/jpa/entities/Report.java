@@ -80,13 +80,10 @@ public class Report extends BaseTable {
 
 		if (full) {
 			obj.put("description", description);
-			Definition defaultDefinition;
 			
-			if (this.definition == null) {
+			Definition defaultDefinition = this.definition;
+			if (defaultDefinition == null) {
 				defaultDefinition = new Definition(parameters);
-			}
-			else {
-				defaultDefinition = this.definition;
 			}
 			
 			if (defaultDefinition.getColumns().size() > 0)
