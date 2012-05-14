@@ -6,22 +6,22 @@ import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.util.Strings;
 
 public class Column implements JSONable {
-	private String name;
+	private String fieldName;
 	private QueryFunction function = null;
 	private String option;
-	private QueryField field;
+	private Field field;
 
 	public Column() {
 	}
 
-	public Column(String name) {
-		this.name = name;
+	public Column(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		json.put("name", name);
+		json.put("name", fieldName);
 		if (function != null) {
 			json.put("method", function.toString());
 			if (!Strings.isEmpty(option))
@@ -35,30 +35,30 @@ public class Column implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		this.name = (String) json.get("name");
+		this.fieldName = (String) json.get("name");
 		String methodName = (String) json.get("method");
 		if (!Strings.isEmpty(methodName)) {
 			this.function = QueryFunction.valueOf(methodName);
 			this.option = (String) json.get("option");
 		}
-		this.field = (QueryField) json.get("field");
+		this.field = (Field) json.get("field");
 	}
 
 	public String getName() {
-		return name;
+		return fieldName;
 	}
 
 	public String getAvailableFieldName() {
 		if (function == null)
-			return name;
-		int startOfFunction = name.lastIndexOf(function.toString());
+			return fieldName;
+		int startOfFunction = fieldName.lastIndexOf(function.toString());
 		if (startOfFunction < 0)
-			return name;
-		return name.substring(0, startOfFunction);
+			return fieldName;
+		return fieldName.substring(0, startOfFunction);
 	}
 
-	public void setName(String field) {
-		this.name = field;
+	public void setName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	public QueryFunction getFunction() {
@@ -77,11 +77,11 @@ public class Column implements JSONable {
 		this.option = option;
 	}
 
-	public QueryField getField() {
+	public Field getField() {
 		return field;
 	}
 
-	public void setField(QueryField field) {
+	public void setField(Field field) {
 		this.field = field;
 	}
 }

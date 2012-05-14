@@ -1,7 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 
 public class User extends BaseReportTable {
 
@@ -18,7 +18,7 @@ public class User extends BaseReportTable {
 
 		addFields(com.picsauditing.jpa.entities.User.class);
 
-		QueryField userName;
+		Field userName;
 		userName = addField(prefix + "Name", alias + ".name", FilterType.AccountName);
 		userName.setUrl("UsersManage.action?user={" + prefix + "ID}\">{" + prefix + "Name}");
 		userName.setWidth(300);

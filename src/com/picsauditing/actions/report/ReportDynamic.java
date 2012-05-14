@@ -23,7 +23,7 @@ import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.SqlBuilder;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
@@ -164,7 +164,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
 
-		for (QueryField field : builder.getAvailableFields().values()) {
+		for (Field field : builder.getAvailableFields().values()) {
 			if (isCanSeeQueryField(field)) {
 				JSONObject obj = field.toJSONObject();
 				obj.put("category", translateCategory(field.getCategory().toString()));
@@ -207,7 +207,7 @@ public class ReportDynamic extends PicsActionSupport {
 			builder = new SqlBuilder();
 			builder.setReport(fakeReport);
 			builder.getSql();
-			for (QueryField field : builder.getAvailableFields().values()) {
+			for (Field field : builder.getAvailableFields().values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
 				saveTranslation(existing, key + ".help");
@@ -242,7 +242,7 @@ public class ReportDynamic extends PicsActionSupport {
 		dao.save(translation);
 	}
 
-	private String translateLabel(QueryField field) {
+	private String translateLabel(Field field) {
 		String translatedText = getText("Report." + field.getName());
 		if (translatedText == null)
 			translatedText = "?" + field.getName();
@@ -273,7 +273,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 				} else {
 
-					QueryField field = builder.getAvailableFields().get(column.toUpperCase());
+					Field field = builder.getAvailableFields().get(column.toUpperCase());
 					if (field == null) {
 						// TODO we get nulls if the column name is custom such
 						// as contractorNameCount. Convert this to
@@ -311,7 +311,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return false;
 	}
 
-	private boolean isCanSeeQueryField(QueryField field) {
+	private boolean isCanSeeQueryField(Field field) {
 		if (field.getRequiredPermissions().size() == 0)
 			return true;
 

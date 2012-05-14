@@ -181,7 +181,7 @@ public class SqlBuilderTest {
 		builder.setBase(new QueryAccount());
 
 		Sort sort = new Sort("accountStatus");
-		definition.getOrderBy().add(sort);
+		definition.getSorts().add(sort);
 		SelectSQL sql = builder.getSql();
 		assertContains("ORDER BY a.status", sql.toString());
 

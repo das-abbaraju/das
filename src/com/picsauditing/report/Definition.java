@@ -18,8 +18,8 @@ import com.picsauditing.util.Strings;
 public class Definition implements JSONable {
 	private List<Column> columns = new ArrayList<Column>();
 	private List<Filter> filters = new ArrayList<Filter>();
-	private List<Sort> orderBy = new ArrayList<Sort>();
-	
+	private List<Sort> sorts = new ArrayList<Sort>();
+
 	/**
 	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
 	 */
@@ -45,12 +45,12 @@ public class Definition implements JSONable {
 		this.columns = columns;
 	}
 
-	public List<Sort> getOrderBy() {
-		return orderBy;
+	public List<Sort> getSorts() {
+		return sorts;
 	}
 
-	public void setOrderBy(List<Sort> orderBy) {
-		this.orderBy = orderBy;
+	public void setSorts(List<Sort> sorts) {
+		this.sorts = sorts;
 	}
 
 	public List<Filter> getFilters() {
@@ -94,8 +94,8 @@ public class Definition implements JSONable {
 			json.put("columns", JSONUtilities.convertFromList(columns));
 		if (filters.size() > 0)
 			json.put("filters", JSONUtilities.convertFromList(filters));
-		if (orderBy.size() > 0)
-			json.put("sorts", JSONUtilities.convertFromList(orderBy));
+		if (sorts.size() > 0)
+			json.put("sorts", JSONUtilities.convertFromList(sorts));
 
 		return json;
 	}
@@ -109,7 +109,7 @@ public class Definition implements JSONable {
 
 		this.filters = parseQueryFilterList(json.get("filters"));
 		this.columns = parseColumnList(json.get("columns"));
-		this.orderBy = parseSortList(json.get("sorts"));
+		this.sorts = parseSortList(json.get("sorts"));
 	}
 
 	private List<Filter> parseQueryFilterList(Object obj) {
@@ -169,7 +169,7 @@ public class Definition implements JSONable {
 	public Definition merge(Definition definition) {
 		if (definition != null) {
 			columns.addAll(definition.getColumns());
-			orderBy.addAll(definition.getOrderBy());
+			sorts.addAll(definition.getSorts());
 			filters.addAll(definition.getFilters());
 			if (!Strings.isEmpty(definition.getFilterExpression())) {
 				if (Strings.isEmpty(filterExpression))

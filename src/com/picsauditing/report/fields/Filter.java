@@ -10,15 +10,15 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.util.Strings;
 
 public class Filter implements JSONable {
-	private String name;
+	private String fieldName;
 	private QueryFilterOperator operator;
 	private String value;
-	private QueryField field;
+	private Field field;
 
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		json.put("name", name);
+		json.put("name", fieldName);
 		if (operator != null)
 			json.put("operator", operator.toString());
 		if (value != null)
@@ -32,14 +32,14 @@ public class Filter implements JSONable {
 		if (json == null)
 			return;
 
-		name = (String) json.get("name");
-		if (name == null)
+		fieldName = (String) json.get("name");
+		if (fieldName == null)
 			return;
 
 		parseOperator(json);
 
 		this.value = (String) json.get("value");
-		this.field = (QueryField) json.get("field");
+		this.field = (Field) json.get("field");
 	}
 
 	private void parseOperator(JSONObject json) {
@@ -51,53 +51,51 @@ public class Filter implements JSONable {
 
 		this.operator = QueryFilterOperator.valueOf(object.toString());
 	}
-	
+
 	/*DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String), AccountType, AccountLevel, Trades, Country, StateProvince */
 
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAccountStatusList() {
 		AccountStatus[] list = AccountStatus.values();
-		
+
 		JSONArray json = new JSONArray();
 		for (AccountStatus accountStatus : list) {
 			json.add(accountStatus.toString());
 		}
-		
+
 		return json;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAuditStatusList() {
 		AuditStatus[] list = AuditStatus.values();
-		
+
 		JSONArray json = new JSONArray();
 		for (AuditStatus auditStatus : list) {
 			json.add(auditStatus.toString());
 		}
-		
+
 		return json;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static JSONArray getLowMedHighList() {
 		LowMedHigh[] list = LowMedHigh.values();
-		
+
 		JSONArray json = new JSONArray();
 		for (LowMedHigh lowMedHigh : list) {
 			json.add(lowMedHigh.toString());
 		}
-		
+
 		return json;
 	}
-	
-
 
 	public String getName() {
-		return name;
+		return fieldName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	public QueryFilterOperator getOperator() {
@@ -119,15 +117,15 @@ public class Filter implements JSONable {
 	public boolean isValid() {
 		if (value == null)
 			return false;
-		
+
 		return true;
 	}
 
-	public QueryField getField() {
+	public Field getField() {
 		return field;
 	}
 
-	public void setField(QueryField field) {
+	public void setField(Field field) {
 		this.field = field;
 	}
 }

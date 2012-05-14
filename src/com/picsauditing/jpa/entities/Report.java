@@ -93,8 +93,8 @@ public class Report extends BaseTable {
 				obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
 			if (defaultDefinition.getFilters().size() > 0)
 				obj.put("filters", JSONUtilities.convertFromList(defaultDefinition.getFilters()));
-			if (defaultDefinition.getOrderBy().size() > 0)
-				obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getOrderBy()));
+			if (defaultDefinition.getSorts().size() > 0)
+				obj.put("sorts", JSONUtilities.convertFromList(defaultDefinition.getSorts()));
 		}
 		return obj;
 	}
