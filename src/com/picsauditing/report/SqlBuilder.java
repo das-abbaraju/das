@@ -277,19 +277,18 @@ public class SqlBuilder {
 			column = new Column(filter.getName());
 		}
 
-		String columnSQL = toColumnSql(column);
-		String valueSql = toValueSql(filter, column);
-		
-		String operand = filter.getOperator().getOperand();
-		
+		String columnSql = toColumnSql(column);
+
 		if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
-			return columnSQL + " IS NULL OR " + columnSQL + " = ''";
+			return columnSql + " IS NULL OR " + columnSql + " = ''";
+		} else if (filter.getOperator().equals(QueryFilterOperator.NotEmpty)) {
+			return columnSql + " IS NOT NULL OR " + columnSql + " != ''";
 		}
-		else if (filter.getOperator().equals(QueryFilterOperator.Empty)) {
-			return columnSQL + " NOT IS NULL OR " + columnSQL + " != ''";
-		}
-		
-		return columnSQL + " " + operand + " " + valueSql;
+
+		String operand = filter.getOperator().getOperand();
+		String valueSql = toValueSql(filter, column);
+
+		return columnSql + " " + operand + " " + valueSql;
 	}
 
 	private String toColumnSql(Column column) {
