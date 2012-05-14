@@ -13,7 +13,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.ExtFieldType;
 import com.picsauditing.report.fields.QueryDateParameter;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.Column;
 import com.picsauditing.report.fields.Filter;
@@ -26,7 +26,7 @@ import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 	private ModelBase base;
-	private Map<String, QueryField> availableFields = new TreeMap<String, QueryField>();
+	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
@@ -89,7 +89,7 @@ public class SqlBuilder {
 				return true;
 		}
 
-		for (QueryField field : table.getFields().values()) {
+		for (Field field : table.getFields().values()) {
 			for (Column column : definition.getColumns()) {
 				if (column.getAvailableFieldName().equals(field.getName()))
 					return true;
@@ -107,7 +107,7 @@ public class SqlBuilder {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
 		for (Column column : definition.getColumns()) {
-			QueryField field = getQueryFieldFromReportColumn(column);
+			Field field = getQueryFieldFromReportColumn(column);
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
@@ -157,15 +157,15 @@ public class SqlBuilder {
 		return false;
 	}
 
-	private QueryField getQueryFieldFromReportColumn(Column column) {
+	private Field getQueryFieldFromReportColumn(Column column) {
 		return availableFields.get(column.getAvailableFieldName().toUpperCase());
 	}
 
-	private QueryField getQueryFieldFromReportFilter(Filter filter) {
+	private Field getQueryFieldFromReportFilter(Filter filter) {
 		return availableFields.get(filter.getName().toUpperCase());
 	}
 
-	private QueryField getQueryFieldFromReportSort(Sort sort) {
+	private Field getQueryFieldFromReportSort(Sort sort) {
 		return availableFields.get(sort.getName().toUpperCase());
 	}
 
@@ -182,7 +182,7 @@ public class SqlBuilder {
 	}
 
 	private String columnToSQL(Column column) {
-		QueryField field = getQueryFieldFromReportColumn(column);
+		Field field = getQueryFieldFromReportColumn(column);
 		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
 			return fieldSQL;
@@ -338,7 +338,7 @@ public class SqlBuilder {
 	}
 
 	private void addOrderBy() {
-		if (definition.getOrderBy().size() == 0) {
+		if (definition.getSorts().size() == 0) {
 			if (usesGroupBy()) {
 				return;
 			}
@@ -346,12 +346,12 @@ public class SqlBuilder {
 			return;
 		}
 
-		for (Sort sort : definition.getOrderBy()) {
+		for (Sort sort : definition.getSorts()) {
 
 			String orderBy = sort.getName();
 			Column column = getName(sort.getName());
 			if (column == null) {
-				QueryField field = availableFields.get(sort.getName().toUpperCase());
+				Field field = availableFields.get(sort.getName().toUpperCase());
 				if (field != null && field.getSql() != null)
 					orderBy = field.getSql();
 			}
@@ -402,7 +402,7 @@ public class SqlBuilder {
 		this.definition = definition;
 	}
 
-	public Map<String, QueryField> getAvailableFields() {
+	public Map<String, Field> getAvailableFields() {
 		return availableFields;
 	}
 }

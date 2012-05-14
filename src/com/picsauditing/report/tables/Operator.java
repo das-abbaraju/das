@@ -1,7 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 
 public class Operator extends BaseReportTable {
 
@@ -19,7 +19,7 @@ public class Operator extends BaseReportTable {
 
 	public void addFields() {
 		// TODO: We need to find a way to pass the parent prefix/alias to here for us to use.
-		QueryField operatorName;
+		Field operatorName;
 		operatorName = addField(prefix + "Name", "a.name", FilterType.AccountName);
 		operatorName.setUrl("FacilitiesEdit.action?operator={accountID}");
 		operatorName.setWidth(300);

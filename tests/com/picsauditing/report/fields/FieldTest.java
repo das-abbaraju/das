@@ -6,11 +6,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-public class QueryFieldTest {
+public class FieldTest {
 
 	@Test
 	public void testUrlSingle() {
-		QueryField field = new QueryField("contractorName", "a.name", FilterType.AccountName);
+		Field field = new Field("contractorName", "a.name", FilterType.AccountName);
 		field.setUrl("Test.action?id={accountID}");
 
 		Set<String> dependentFields = field.getDependentFields();
@@ -20,7 +20,7 @@ public class QueryFieldTest {
 	
 	@Test
 	public void testUrlDouble() {
-		QueryField field = new QueryField("contractorName", "a.name", FilterType.AccountName);
+		Field field = new Field("contractorName", "a.name", FilterType.AccountName);
 		field.setUrl("Test.action?id={accountID}&name={reportName}");
 
 		Set<String> dependentFields = field.getDependentFields();

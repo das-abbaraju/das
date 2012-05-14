@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 import com.picsauditing.search.SelectSQL;
 
 public class Todo {
@@ -12,20 +12,20 @@ public class Todo {
 	private Map<String, String> joins = new HashMap<String, String>();
 	private String defaultSort = null;
 
-	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin) {
+	private Field addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin) {
 		return addQueryField(dataIndex, sql, filterType, false);
 	}
 
-	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, boolean makeDefault) {
-		QueryField field = new QueryField(dataIndex, sql, filterType, makeDefault);
+	private Field addQueryField(String dataIndex, String sql, FilterType filterType, boolean makeDefault) {
+		Field field = new Field(dataIndex, sql, filterType, makeDefault);
 		return field;
 	}
 
-	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType) {
+	private Field addQueryField(String dataIndex, String sql, FilterType filterType) {
 		return addQueryField(dataIndex, sql, filterType, false);
 	}
 	
-	private QueryField addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin,
+	private Field addQueryField(String dataIndex, String sql, FilterType filterType, String requireJoin,
 			boolean makeDefault) {
 		return addQueryField(dataIndex, sql, filterType, false);
 	}
@@ -99,7 +99,7 @@ public class Todo {
 		addQueryField("employeeLocation", "e.location", FilterType.String);
 		addQueryField("employeeSSN", "e.ssn", FilterType.Integer);
 		addQueryField("employeeTwicExpiration", "e.twicExpiration", FilterType.Date);
-		QueryField employeeClassification = addQueryField("employeeClassification", "e.classification", FilterType.Enum);
+		Field employeeClassification = addQueryField("employeeClassification", "e.classification", FilterType.Enum);
 		employeeClassification.translate("EmployeeClassification", "description");
 		addQueryField("employeeActive", "e.active", FilterType.Boolean);
 	}
@@ -174,13 +174,13 @@ public class Todo {
 		sql.addJoin("contractor_trade child ON child.conID = a.id");
 		sql.addJoin("ref_trade tChild ON tChild.id = child.tradeID");
 
-		QueryField contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Integer,
+		Field contractorTradeParentID = addQueryField("contractorTradeParentID", "tParent.id", FilterType.Integer,
 				true);
 		contractorTradeParentID.translate("Trade", "name");
 		addQueryField("contractorTradeParentIndexStart", "tParent.indexStart", FilterType.Integer);
 		addQueryField("contractorTradeParentIndexEnd", "tParent.indexEnd", FilterType.Integer);
 
-		QueryField contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Integer,
+		Field contractorTradeChildID = addQueryField("contractorTradeChildID", "tChild.id", FilterType.Integer,
 				true);
 		contractorTradeChildID.translate("Trade", "name");
 		addQueryField("contractorTradeChildIndexStart", "tChild.indexStart", FilterType.Integer);
@@ -258,7 +258,7 @@ public class Todo {
 		addQueryField("auditDataAnswer", "pd.answer", FilterType.String, true);
 		addQueryField("auditDataDateVerified", "pd.dateVerified", FilterType.Date);
 		addQueryField("auditDataQuestionID", "pd.questionID", FilterType.Integer);
-		QueryField auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID", FilterType.String, true);
+		Field auditDataQuestion = addQueryField("auditDataQuestion", "pd.questionID", FilterType.String, true);
 		auditDataQuestion.translate("AuditQuestion", "name");
 		addQueryField("auditDataUpdateDate", "pd.updateDate", FilterType.Date);
 	}

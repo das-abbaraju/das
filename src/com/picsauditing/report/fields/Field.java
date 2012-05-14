@@ -18,7 +18,7 @@ import com.picsauditing.util.Strings;
  * This is based largely on the Grid Column API from Sencha
  * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
  */
-public class QueryField implements JSONAware {
+public class Field implements JSONAware {
 	/**
 	 * aka field or alias
 	 */
@@ -39,16 +39,16 @@ public class QueryField implements JSONAware {
 	private FieldCategory category = FieldCategory.General;
 	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
 
-	public QueryField(ReportField annotation) {
+	public Field(ReportField annotation) {
 		this.filterType = annotation.filterType();
 		// TODO other options
 	}
 	
-	public QueryField(String name, String sql, FilterType filterType) {
+	public Field(String name, String sql, FilterType filterType) {
 		this(name, sql, filterType, false);
 	}
 
-	public QueryField(String name, String sql, FilterType filterType, boolean isDefault) {
+	public Field(String name, String sql, FilterType filterType, boolean isDefault) {
 		this.name = name;
 		this.sql = sql;
 		this.filterType = filterType;
@@ -116,7 +116,7 @@ public class QueryField implements JSONAware {
 //		this.type = (ExtFieldType) json.get("type");
 //	}
 //
-	public QueryField translate(String prefix, String suffix) {
+	public Field translate(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;
 		return this;
@@ -204,7 +204,7 @@ public class QueryField implements JSONAware {
 		return category;
 	}
 
-	public QueryField setCategory(FieldCategory category) {
+	public Field setCategory(FieldCategory category) {
 		this.category = category;
 		return this;
 	}
@@ -221,17 +221,17 @@ public class QueryField implements JSONAware {
 		return requiredPermissions;
 	}
 
-	public QueryField requirePermission(OpPerms opPerm) {
+	public Field requirePermission(OpPerms opPerm) {
 		this.requiredPermissions.add(opPerm);
 		return this;
 	}
 
-	public QueryField setVisible(boolean visible) {
+	public Field setVisible(boolean visible) {
 		this.visible = visible;
 		return this;
 	}
 
-	public QueryField setFilterable(boolean filterable) {
+	public Field setFilterable(boolean filterable) {
 		this.filterable = filterable;
 		return this;
 	}

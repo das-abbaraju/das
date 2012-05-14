@@ -1,7 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 
 public class Contractor extends BaseReportTable {
 
@@ -15,17 +15,17 @@ public class Contractor extends BaseReportTable {
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
 
-		QueryField contractorName;
+		Field contractorName;
 		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName);
 		contractorName.setUrl("ContractorView.action?id={" + parentPrefix + "ID}");
 		contractorName.setWidth(300);
 
-		QueryField contractorEdit;
+		Field contractorEdit;
 		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
 		contractorEdit.setUrl("ContractorEdit.action?id={" + parentPrefix + "ID}");
 		contractorEdit.setWidth(300);
 
-		QueryField contractorAudits;
+		Field contractorAudits;
 		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
 		contractorAudits.setUrl("ContractorDocuments.action?id={" + parentPrefix + "ID}");
 		contractorAudits.setWidth(300);

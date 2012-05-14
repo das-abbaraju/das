@@ -1,7 +1,7 @@
 package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
-import com.picsauditing.report.fields.QueryField;
+import com.picsauditing.report.fields.Field;
 
 public class ContractorAudit extends BaseReportTable {
 
@@ -27,7 +27,7 @@ public class ContractorAudit extends BaseReportTable {
 
 		addFields(com.picsauditing.jpa.entities.ContractorAudit.class);
 
-		QueryField auditTypeName; 
+		Field auditTypeName;
 		auditTypeName = addField(prefix + "Name", alias + ".auditTypeID", FilterType.String);
 		auditTypeName.translate("AuditType", "name");
 		auditTypeName.setUrl("Audit.action?auditID={" + prefix + "ID}");

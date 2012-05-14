@@ -65,8 +65,8 @@ public class DefinitionTest {
 		list.add(sortJson);
 		jsonObj.put("sorts", list);
 		definition.fromJSON(jsonObj);
-		assertEquals(1, definition.getOrderBy().size());
-		assertEquals("AccountID", definition.getOrderBy().get(0).getName());
+		assertEquals(1, definition.getSorts().size());
+		assertEquals("AccountID", definition.getSorts().get(0).getName());
 
 		String notTestingNow = sortJson.toJSONString();
 
