@@ -177,7 +177,7 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	public String inactivate() throws Exception {
 		employee.setStatus(UserStatus.Inactive);		
 		employeeDAO.save(employee);
-		addActionMessage("Employee " + employee.getDisplayName() + " Successfully inactivated.");
+		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
 		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 
 		return SUCCESS;
