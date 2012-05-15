@@ -9,15 +9,14 @@ import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.Field;
 
 public abstract class BaseReportTable {
+
 	protected boolean innerJoin = true;
 	protected String table;
 	protected String prefix;
 	protected String alias;
-	protected String parentPrefix;
-	protected String parentAlias;
 	protected String where;
-	protected Map<String, Field> fields = new HashMap<String, Field>();
-	protected List<BaseReportTable> joins = new ArrayList<BaseReportTable>();
+	protected Map<String, Field> availableFields = new HashMap<String, Field>();
+	protected List<BaseReportTable> joinedTables = new ArrayList<BaseReportTable>();
 
 	public BaseReportTable(String table, String prefix, String alias, String where) {
 		this.table = table;
@@ -64,22 +63,6 @@ public abstract class BaseReportTable {
 		this.alias = alias;
 	}
 
-	public String getParentPrefix() {
-		return parentPrefix;
-	}
-
-	public void setParentPrefix(String parentPrefix) {
-		this.parentPrefix = parentPrefix;
-	}
-
-	public String getParentAlias() {
-		return parentAlias;
-	}
-
-	public void setParentAlias(String parentAlias) {
-		this.parentAlias = parentAlias;
-	}
-
 	public String getWhere() {
 		return where;
 	}
@@ -88,18 +71,19 @@ public abstract class BaseReportTable {
 		this.where = where;
 	}
 
-	public Map<String, Field> getFields() {
-		return fields;
+	public Map<String, Field> getAvailableFieldsMap() {
+		return availableFields;
 	}
 
 	public void removeField(String name) {
-		fields.remove(name.toUpperCase());
+		availableFields.remove(name.toUpperCase());
 	}
 
 	protected Field addField(String sql, FilterType filter) {
 		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
 		if (sql.equals("id"))
 			name = alias + "ID";
+
 		String fullSql = alias + "." + sql;
 		return addField(name, fullSql, filter);
 	}
@@ -107,36 +91,36 @@ public abstract class BaseReportTable {
 	protected Field addField(String name, String sql, FilterType filter) {
 		Field field = new Field(name, sql, filter);
 		// We don't want to be case sensitive when matching names
-		fields.put(name.toUpperCase(), field);
+		availableFields.put(name.toUpperCase(), field);
 		return field;
 	}
 
 	public List<BaseReportTable> getJoins() {
-		return joins;
+		return joinedTables;
 	}
 
-	public BaseReportTable addJoin(BaseReportTable join) {
-		joins.add(join);
-		return join;
+	public BaseReportTable addJoin(BaseReportTable table) {
+		joinedTables.add(table);
+		return table;
 	}
 
-	public BaseReportTable addLeftJoin(BaseReportTable join) {
-		joins.add(join);
-		join.setLeftJoin();
-		return join;
+	public BaseReportTable addLeftJoin(BaseReportTable table) {
+		joinedTables.add(table);
+		table.setLeftJoin();
+		return table;
 	}
 
-	public BaseReportTable addAllFieldsAndJoins(BaseReportTable join) {
-		joins.add(join);
-		join.addFields();
-		join.addJoins();
+	public BaseReportTable addAllFieldsAndJoins(BaseReportTable table) {
+		joinedTables.add(table);
+		table.addFields();
+		table.addJoins();
 
-		return join;
+		return table;
 	}
 
 	public void addFields(@SuppressWarnings("rawtypes") Class clazz) {
 		for (Field field : JpaFieldExtractor.addFields(clazz, prefix, alias)) {
-			fields.put(field.getName().toUpperCase(), field);
+			availableFields.put(field.getName().toUpperCase(), field);
 		}
 	}
 

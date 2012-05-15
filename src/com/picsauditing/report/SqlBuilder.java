@@ -26,7 +26,7 @@ import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 
-	private ModelBase base;
+	private ModelBase baseModel;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
 	private SelectSQL sql;
@@ -35,31 +35,32 @@ public class SqlBuilder {
 		sql = new SelectSQL();
 		availableFields.clear();
 
-		if (base == null)
+		if (baseModel == null)
 			return sql;
 		
 		setFrom();
-		addAvailableFields(base.getFrom());
+		addAvailableFields(baseModel.getFrom());
 
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
 		addOrderByClauses();
 
-		addJoins(base.getFrom());
+		addJoins(baseModel.getFrom());
 
 		return sql;
 	}
 
 	private void setFrom() {
-		String from = base.getFrom().getTable();
-		if (!Strings.isEmpty(base.getFrom().getAlias()))
-			from += " AS " + base.getFrom().getAlias();
+		String from = baseModel.getFrom().getTable();
+		if (!Strings.isEmpty(baseModel.getFrom().getAlias()))
+			from += " AS " + baseModel.getFrom().getAlias();
+
 		sql.setFromTable(from);
 	}
 
 	private void addAvailableFields(BaseReportTable table) {
 		// We may be able to use the ModelBase.getAvailableFields...
-		availableFields.putAll(table.getFields());
+		availableFields.putAll(table.getAvailableFieldsMap());
 		for (BaseReportTable joinTable : table.getJoins()) {
 			addAvailableFields(joinTable);
 		}
@@ -85,12 +86,12 @@ public class SqlBuilder {
 		if (table.isInnerJoin())
 			return true;
 
-		for (BaseReportTable join : table.getJoins()) {
-			if (isJoinNeeded(join))
+		for (BaseReportTable joinTable : table.getJoins()) {
+			if (isJoinNeeded(joinTable))
 				return true;
 		}
 
-		for (Field field : table.getFields().values()) {
+		for (Field field : table.getAvailableFieldsMap().values()) {
 			for (Column column : definition.getColumns()) {
 				if (column.getAvailableFieldName().equals(field.getName()))
 					return true;
@@ -114,7 +115,7 @@ public class SqlBuilder {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
 				}
-				String columnSQL = columnToSQL(column);
+				String columnSQL = columnToSql(column);
 				if (usesGroupBy && !isAggregate(column.getFieldName())) {
 					sql.addGroupBy(columnSQL);
 				}
@@ -134,7 +135,7 @@ public class SqlBuilder {
 
 		for (String fieldName : dependentFields) {
 			Column column = new Column(fieldName);
-			String columnSQL = columnToSQL(column);
+			String columnSQL = columnToSql(column);
 			sql.addField(columnSQL + " AS `" + fieldName + "`");
 		}
 	}
@@ -174,40 +175,40 @@ public class SqlBuilder {
 		return column.getFunction().isAggregate();
 	}
 
-	private String columnToSQL(Column column) {
+	private String columnToSql(Column column) {
 		Field field = getFieldFromFieldName(column.getFieldName());
-		String fieldSQL = field.getSql();
+		String fieldSql = field.getSql();
 		if (column.getFunction() == null)
-			return fieldSQL;
+			return fieldSql;
 
 		switch (column.getFunction()) {
 		case Average:
-			return "AVG(" + fieldSQL + ")";
+			return "AVG(" + fieldSql + ")";
 		case Count:
-			return "COUNT(" + fieldSQL + ")";
+			return "COUNT(" + fieldSql + ")";
 		case CountDistinct:
-			return "COUNT(DISTINCT " + fieldSQL + ")";
+			return "COUNT(DISTINCT " + fieldSql + ")";
 		case Date:
-			return "DATE(" + fieldSQL + ")";
+			return "DATE(" + fieldSql + ")";
 		case LowerCase:
-			return "LOWER(" + fieldSQL + ")";
+			return "LOWER(" + fieldSql + ")";
 		case Max:
-			return "MAX(" + fieldSQL + ")";
+			return "MAX(" + fieldSql + ")";
 		case Min:
-			return "MIN(" + fieldSQL + ")";
+			return "MIN(" + fieldSql + ")";
 		case Month:
-			return "MONTH(" + fieldSQL + ")";
+			return "MONTH(" + fieldSql + ")";
 		case Round:
-			return "ROUND(" + fieldSQL + ")";
+			return "ROUND(" + fieldSql + ")";
 		case Sum:
-			return "SUM(" + fieldSQL + ")";
+			return "SUM(" + fieldSql + ")";
 		case UpperCase:
-			return "UPPER(" + fieldSQL + ")";
+			return "UPPER(" + fieldSql + ")";
 		case Year:
-			return "YEAR(" + fieldSQL + ")";
+			return "YEAR(" + fieldSql + ")";
 		}
 
-		return fieldSQL;
+		return fieldSql;
 	}
 
 	private void addRuntimeFilters() {
@@ -292,7 +293,7 @@ public class SqlBuilder {
 	}
 
 	private String toColumnSql(Column column) {
-		String columnSQL = columnToSQL(column);
+		String columnSQL = columnToSql(column);
 
 		if (column.getFieldName().equals("accountName"))
 			columnSQL = "a.nameIndex";
@@ -338,7 +339,7 @@ public class SqlBuilder {
 			if (usesGroupBy()) {
 				return;
 			}
-			sql.addOrderBy(base.getDefaultSort());
+			sql.addOrderBy(baseModel.getDefaultSort());
 			return;
 		}
 
@@ -360,7 +361,7 @@ public class SqlBuilder {
 	}
 
 	public void addPermissions(Permissions permissions) {
-		String where = this.base.getWhereClause(permissions);
+		String where = this.baseModel.getWhereClause(permissions);
 		sql.addWhere(where);
 	}
 
@@ -382,12 +383,12 @@ public class SqlBuilder {
 	// Setters
 
 	public ModelBase setReport(Report report) {
-		this.base = ModelFactory.getBase(report.getModelType());
-		return this.base;
+		this.baseModel = ModelFactory.getBase(report.getModelType());
+		return this.baseModel;
 	}
 
 	public void setBase(ModelBase base) {
-		this.base = base;
+		this.baseModel = base;
 	}
 
 	public Definition getDefinition() {
