@@ -32,11 +32,11 @@
 						<label>Hierarchy:</label>
 						<div class="trade-section">
 							<s:iterator value="tradeClassification" var="atrade" status="stat">
-								<s:if test="isStringEmpty(#atrade.name2)">
-									<s:property value="#atrade.name"/>
+								<s:if test="#atrade.name2.exists">
+									<s:property value="#atrade.name2"/>
 								</s:if>
 								<s:else>
-									<s:property value="#atrade.name2"/>
+									<s:property value="#atrade.name"/>
 								</s:else>
 								
 								<s:if test="!#stat.last">&gt;</s:if>

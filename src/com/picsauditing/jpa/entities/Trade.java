@@ -369,8 +369,9 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * The name of this trade that's commonly used to describe it. Does not need the parent trade to make sense. Can
-	 * stand alone in a list and be understood.
+	 * The name of this trade that's commonly used to describe it. Does not need
+	 * the parent trade to make sense. Can stand alone in a list and be
+	 * understood.
 	 */
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 6)
@@ -383,7 +384,8 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * The short version of the trade, typically only included when in context with its parent trades
+	 * The short version of the trade, typically only included when in context
+	 * with its parent trades
 	 */
 	@Transient
 	@IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 8)
@@ -405,8 +407,8 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	}
 
 	/**
-	 * Is this trade equal to t or a child of t? For example, Residential Construction is a childOf Residential
-	 * Construction and Construction.
+	 * Is this trade equal to t or a child of t? For example, Residential
+	 * Construction is a childOf Residential Construction and Construction.
 	 * 
 	 * @param candidateParent
 	 * @return
@@ -488,7 +490,7 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 
 	@Transient
 	public String getNodeDisplay() {
-		if (name2 == null || name2.toString() == null) {
+		if (name2 == null || !name2.isExists()) {
 			return name.toString();
 		} else {
 			return name2.toString();
@@ -516,11 +518,11 @@ public class Trade extends AbstractIndexableTable implements Hierarchical<Trade>
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = super.toJSON(full);
 
-		if (name != null)
+		if (name != null && name.isExists())
 			json.put("name", name.toString());
-		if (name2 != null)
+		if (name2 != null && name2.isExists())
 			json.put("name2", name2.toString());
-		if (help != null)
+		if (help != null && help.isExists())
 			json.put("name2", help.toString());
 
 		if (getProductI() && getServiceI())
