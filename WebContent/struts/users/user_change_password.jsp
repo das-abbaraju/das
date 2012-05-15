@@ -30,7 +30,7 @@
 					
 				</s:else>
 				<li>
-					<s:password name="password1" label="global.Password" theme="form" />
+					<s:password name="password1" label="global.Password.new" theme="form" />
 					<pics:fieldhelp title="Password Requirement">
 						<p>
 							<s:text name="global.Password.fieldhelp" />
