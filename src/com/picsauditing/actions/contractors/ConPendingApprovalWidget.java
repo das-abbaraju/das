@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
@@ -26,8 +27,17 @@ public class ConPendingApprovalWidget extends PicsActionSupport {
 	}
 
 	public Map<ContractorAccount, Date> getPendingApprovalContractors() {
-		List<ContractorOperator> coList = contractorOperatorDAO.findPendingApprovalContractors(
+		
+		List<ContractorOperator> coList = new ArrayList <ContractorOperator>();
+				
+		if (permissions.isPicsEmployee()){
+			coList = contractorOperatorDAO.findPendingApprovalContractors(
+				permissions.getAccountId(), false, permissions.isCorporate());			
+		} else {						
+			coList = contractorOperatorDAO.findPendingApprovalContractorsNoDemo(
 				permissions.getAccountId(), false, permissions.isCorporate());
+		}
+		
 
 		Map<ContractorAccount, Date> contractorPendingApproval = new TreeMap<ContractorAccount, Date>();
 		ListIterator<ContractorOperator> coIterator = coList.listIterator(); 
