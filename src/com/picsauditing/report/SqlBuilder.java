@@ -72,9 +72,11 @@ public class SqlBuilder {
 				String joinSyntax = "";
 				if (!join.isInnerJoin())
 					joinSyntax += "LEFT ";
+
 				joinSyntax += "JOIN " + join.getTable();
 				if (!Strings.isEmpty(join.getAlias()))
 					joinSyntax += " AS " + join.getAlias();
+
 				joinSyntax += " ON " + join.getWhere();
 				sql.addJoin(joinSyntax);
 				addJoins(join);
@@ -115,10 +117,12 @@ public class SqlBuilder {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
 				}
+
 				String columnSQL = columnToSql(column);
 				if (usesGroupBy && !isAggregate(column.getFieldName())) {
 					sql.addGroupBy(columnSQL);
 				}
+
 				sql.addField(columnSQL + " AS `" + column.getFieldName() + "`");
 				column.setField(field);
 			}
@@ -177,7 +181,7 @@ public class SqlBuilder {
 
 	private String columnToSql(Column column) {
 		Field field = getFieldFromFieldName(column.getFieldName());
-		String fieldSql = field.getSql();
+		String fieldSql = field.getDatabaseColumnName();
 		if (column.getFunction() == null)
 			return fieldSql;
 
@@ -349,8 +353,8 @@ public class SqlBuilder {
 			Column column = getColumnFromFieldName(fieldName);
 			if (column == null) {
 				Field field = availableFields.get(fieldName.toUpperCase());
-				if (field != null && field.getSql() != null)
-					fieldName = field.getSql();
+				if (field != null && field.getDatabaseColumnName() != null)
+					fieldName = field.getDatabaseColumnName();
 			}
 
 			if (!sort.isAscending())

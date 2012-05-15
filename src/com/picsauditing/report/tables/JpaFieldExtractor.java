@@ -23,13 +23,13 @@ public class JpaFieldExtractor {
 					field.setName(prefix + fieldName);
 					fields.add(field);
 					if (!Strings.isEmpty(fieldAnnotation.sql())) {
-						field.setSql(fieldAnnotation.sql().replace("{ALIAS}", alias));
+						field.setDatabaseColumnName(fieldAnnotation.sql().replace("{ALIAS}", alias));
 					} else {
 						Column columnAnnotation = getColumnAnnotation(method);
 						if (columnAnnotation == null) {
-							field.setSql(alias + "." + fieldName.toLowerCase());
+							field.setDatabaseColumnName(alias + "." + fieldName.toLowerCase());
 						} else {
-							field.setSql(alias + "." + columnAnnotation.name());
+							field.setDatabaseColumnName(alias + "." + columnAnnotation.name());
 						}
 					}
 				}

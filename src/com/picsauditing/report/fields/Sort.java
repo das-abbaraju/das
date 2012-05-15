@@ -46,7 +46,7 @@ public class Sort implements JSONable {
 
 	// We might want to consider moving this to QueryField
 	public String toSQL(Map<String, Field> availableFields) {
-		String fieldSQL = availableFields.get(fieldName).getSql();
+		String fieldSQL = availableFields.get(fieldName).getDatabaseColumnName();
 		return fieldSQL;
 	}
 

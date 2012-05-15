@@ -124,14 +124,17 @@ public class Field implements JSONAware {
 		String key = value;
 		if (!Strings.isEmpty(preTranslation))
 			key = preTranslation + "." + key;
+
 		if (!Strings.isEmpty(postTranslation))
 			key = key + "." + postTranslation;
+
 		return key;
 	}
 
 	public boolean isTranslated() {
 		if (preTranslation == null && postTranslation == null)
 			return false;
+
 		return true;
 	}
 
@@ -142,11 +145,11 @@ public class Field implements JSONAware {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getSql() {
+	public String getDatabaseColumnName() {
 		return databaseColumnName;
 	}
 
-	public void setSql(String databaseColumnName) {
+	public void setDatabaseColumnName(String databaseColumnName) {
 		this.databaseColumnName = databaseColumnName;
 	}
 

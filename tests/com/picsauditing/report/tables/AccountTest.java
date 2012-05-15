@@ -9,7 +9,7 @@ public class AccountTest {
 	@Test
 	public void testAccountFields() {
 		Account account = new Account();
-		assertEquals("a.name", account.getAvailableFieldsMap().get("ACCOUNTNAME").getSql());
+		assertEquals("a.name", account.getAvailableFieldsMap().get("ACCOUNTNAME").getDatabaseColumnName());
 		assertEquals("accountName", account.getAvailableFieldsMap().get("ACCOUNTNAME").getName());
 		assertTrue(account.getAvailableFieldsMap().size() > 10);
 		System.out.println(account.getAvailableFieldsMap().size());
