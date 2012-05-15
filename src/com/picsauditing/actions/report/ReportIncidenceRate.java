@@ -83,8 +83,6 @@ public class ReportIncidenceRate extends ReportAnnualAddendum {
 	protected void addExcelColumns() {
 		super.addExcelColumns();
 		excelSheet.addColumn(new ExcelColumn("auditFor", getText("Filters.label.ForYear"), ExcelCellType.Integer), 30);
-//		excelSheet.addColumn(new ExcelColumn("auditLocation", getText("ReportIncidenceRate.Location")));
-//		excelSheet.addColumn(new ExcelColumn("description", getText("global.Description")));
 		excelSheet.addColumn(new ExcelColumn("shaType", getText("Filters.label.SHAType")));
 		excelSheet
 				.addColumn(new ExcelColumn("incidenceRate", getText("ReportIncidenceRate.Rate"), ExcelCellType.Double));
