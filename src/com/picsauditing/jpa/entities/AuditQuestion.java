@@ -723,7 +723,7 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 	@Transient
 	public boolean isVisibleInAudit(ContractorAudit audit) {
 		for (AuditCatData category:audit.getCategories()) {
-			if (category.getId() == this.getCategory().getId())
+			if (category.getCategory().getId() == this.getCategory().getId())
 				return category.isApplies();
 		}
 		
