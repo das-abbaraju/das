@@ -13,18 +13,20 @@ import java.util.Random;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
-
+import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -69,7 +71,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-
+	private boolean toggleSwitch = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -83,6 +85,9 @@ public class UsersManage extends PicsActionSupport {
 	protected UserGroupDAO userGroupDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDao;
+	@Autowired
+	protected AppPropertyDAO appPropertyDAO;
+	
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
@@ -119,7 +124,7 @@ public class UsersManage extends PicsActionSupport {
 				conInsurance = true;
 			}
 		}
-
+		InitToggleSwitchUser();
 		return SUCCESS;
 	}
 
@@ -458,7 +463,22 @@ public class UsersManage extends PicsActionSupport {
 
 		return SUCCESS;
 	}
+	private void InitToggleSwitchUser() {
+		String maxBetaLevel = appPropertyDAO.getProperty("Toggle.SwitchUserServer");
+		int betaMax = NumberUtils.toInt(maxBetaLevel, 0);
+		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(betaMax);
 
+		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
+
+		setToggleSwitch (userBetaTester);
+	}
+	public boolean getToggleSwitch() {
+		return toggleSwitch;
+	}
+
+	public void setToggleSwitch(boolean toggleSwitch) {
+		this.toggleSwitch = toggleSwitch;
+	}
 	private void startup() throws Exception {
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
