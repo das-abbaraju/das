@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
@@ -78,6 +79,7 @@ import com.picsauditing.search.Database;
 import com.picsauditing.util.EbixLoader;
 import com.picsauditing.util.IndexerEngine;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.business.OperatorUtil;
 import com.picsauditing.util.log.PicsLogger;
 
 @SuppressWarnings("serial")
@@ -905,7 +907,7 @@ public class Cron extends PicsActionSupport {
 		new Database().executeUpdate(query);
 	}
 
-	public void sendFlagChangesEmails() throws Exception {
+	private void sendFlagChangesEmails() throws Exception {
 		List<BasicDynaBean> data = getFlagChangeData();
 		if (data.isEmpty())
 			return;
@@ -940,13 +942,20 @@ public class Cron extends PicsActionSupport {
 
 	private int sumFlagChanges(List<BasicDynaBean> flagChanges) {
 		int totalChanges = 0;
+		if (CollectionUtils.isEmpty(flagChanges)) {
+			return totalChanges;
+		}
+		
 		for (BasicDynaBean flagChangesByOperator : flagChanges) {
 			try {
-				String numberOfChanges = flagChangesByOperator.get("changes").toString();
-				totalChanges += Integer.parseInt(numberOfChanges);
-			} catch (Exception justIgnoreIt) {
+				Object operatorFlagChanges = flagChangesByOperator.get("changes");
+				if (operatorFlagChanges != null) {
+					totalChanges += NumberUtils.toInt(operatorFlagChanges.toString(), 0);
+				}				
+			} catch (Exception ignore) {
 			}
 		}
+		
 		return totalChanges;
 	}
 
@@ -972,7 +981,8 @@ public class Cron extends PicsActionSupport {
 		query.append("count(*) total, sum(case when gc.flag = gc.baselineFlag THEN 0 ELSE 1 END) changes ");
 		query.append("from generalcontractors gc ");
 		query.append("join accounts c on gc.subID = c.id and c.status = 'Active' ");
-		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (10403,2723) ");
+		query.append("join accounts o on gc.genID = o.id and o.status = 'Active' and o.type = 'Operator' and o.id not in (" + 
+				Strings.implode(OperatorUtil.operatorsIdsUsedForInternalPurposes()) + ") ");
 		query.append("LEFT join account_user au on au.accountID = o.id and au.role = 'PICSAccountRep' and startDate < now() ");
 		query.append("and endDate > now() ");
 		query.append("LEFT join users u on au.userID = u.id ");
