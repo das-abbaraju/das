@@ -20,12 +20,14 @@ public class Filter implements JSONable {
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
 		json.put("name", fieldName);
+
 		if (operator != null)
 			json.put("operator", operator.toString());
 		if (value != null)
 			json.put("value", value);
 		if (field != null)
 			json.put("field", field.toJSONObject());
+
 		return json;
 	}
 
@@ -91,11 +93,11 @@ public class Filter implements JSONable {
 		return json;
 	}
 
-	public String getName() {
+	public String getFieldName() {
 		return fieldName;
 	}
 
-	public void setName(String fieldName) {
+	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
 

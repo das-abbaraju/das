@@ -33,12 +33,14 @@ public class Sort implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
+
 		this.fieldName = (String) json.get("name");
 
 		this.ascending = true;
 		String direction = (String) json.get("direction");
 		if (direction != null && direction.equals("DESC"))
 			this.ascending = false;
+
 		this.field = (Field) json.get("field");
 	}
 
@@ -48,11 +50,11 @@ public class Sort implements JSONable {
 		return fieldSQL;
 	}
 
-	public String getName() {
+	public String getFieldName() {
 		return fieldName;
 	}
 
-	public void setName(String fieldName) {
+	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
 

@@ -22,7 +22,7 @@ public class ColumnTest {
 	public void testNameOnly() {
 		jsonObj.put("name", "AccountName");
 		column.fromJSON(jsonObj);
-		assertEquals("AccountName", column.getName());
+		assertEquals("AccountName", column.getFieldName());
 
 		String expected = "{\"name\":\"AccountName\"}";
 		assertEquals(expected, column.toJSON(true).toJSONString());
@@ -41,20 +41,20 @@ public class ColumnTest {
 
 	@Test
 	public void testGetAvailableFieldNameSimple() {
-		column.setName("AccountName");
+		column.setFieldName("AccountName");
 		assertEquals("AccountName", column.getAvailableFieldName());
 	}
 	
 	@Test
 	public void testGetAvailableFieldNameWithFunction() {
-		column.setName("AccountNameUpperCase");
+		column.setFieldName("AccountNameUpperCase");
 		column.setFunction(QueryFunction.UpperCase);
 		assertEquals("AccountName", column.getAvailableFieldName());
 	}
 	
 	@Test
 	public void testGetAvailableFieldNameWithDuplicate() {
-		column.setName("FirstYearDateYear");
+		column.setFieldName("FirstYearDateYear");
 		column.setFunction(QueryFunction.Year);
 		assertEquals("FirstYearDate", column.getAvailableFieldName());
 	}

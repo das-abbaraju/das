@@ -96,7 +96,7 @@ public class SqlBuilder {
 					return true;
 			}
 			for (Filter filter : definition.getFilters()) {
-				if (filter.getName().equals(field.getName()))
+				if (filter.getFieldName().equals(field.getName()))
 					return true;
 			}
 		}
@@ -108,17 +108,17 @@ public class SqlBuilder {
 		Set<String> dependentFields = new HashSet<String>();
 		boolean usesGroupBy = usesGroupBy();
 		for (Column column : definition.getColumns()) {
-			Field field = getFieldFromFieldName(column.getName());
+			Field field = getFieldFromFieldName(column.getFieldName());
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
 					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
 				}
 				String columnSQL = columnToSQL(column);
-				if (usesGroupBy && !isAggregate(column.getName())) {
+				if (usesGroupBy && !isAggregate(column.getFieldName())) {
 					sql.addGroupBy(columnSQL);
 				}
-				sql.addField(columnSQL + " AS `" + column.getName() + "`");
+				sql.addField(columnSQL + " AS `" + column.getFieldName() + "`");
 				column.setField(field);
 			}
 		}
@@ -141,7 +141,7 @@ public class SqlBuilder {
 
 	private boolean isFieldIncluded(String fieldName) {
 		for (Column column : definition.getColumns()) {
-			if (column.getName().equals(fieldName))
+			if (column.getFieldName().equals(fieldName))
 				return true;
 		}
 		return false;
@@ -149,8 +149,8 @@ public class SqlBuilder {
 
 	private boolean usesGroupBy() {
 		for (Column column : definition.getColumns()) {
-			if (getFieldFromFieldName(column.getName()) != null) {
-				if (isAggregate(column.getName())) {
+			if (getFieldFromFieldName(column.getFieldName()) != null) {
+				if (isAggregate(column.getFieldName())) {
 					return true;
 				}
 			}
@@ -175,7 +175,7 @@ public class SqlBuilder {
 	}
 
 	private String columnToSQL(Column column) {
-		Field field = getFieldFromFieldName(column.getName());
+		Field field = getFieldFromFieldName(column.getFieldName());
 		String fieldSQL = field.getSql();
 		if (column.getFunction() == null)
 			return fieldSQL;
@@ -221,13 +221,13 @@ public class SqlBuilder {
 		for (Filter filter : definition.getFilters()) {
 			// TODO we might want to verify the filter is properly defined before including it
 			// if (filter.isFullyDefined()) { }
-			if (isAggregate(filter.getName())) {
+			if (isAggregate(filter.getFieldName())) {
 				havingFilters.add(filter);
 			} else {
 				whereFilters.add(filter);
 			}
 
-			filter.setField(getFieldFromFieldName(filter.getName()));
+			filter.setField(getFieldFromFieldName(filter.getFieldName()));
 		}
 
 		String where = definition.getFilterExpression();
@@ -241,7 +241,7 @@ public class SqlBuilder {
 
 		int whereIndex = 0;
 		for (Filter filter : whereFilters) {
-			if (!isAggregate(filter.getName())) {
+			if (!isAggregate(filter.getFieldName())) {
 				String filterExp = toFilterSql(filter);
 				where = where.replace("{" + whereIndex + "}", "(" + filterExp + ")");
 				whereIndex++;
@@ -250,7 +250,7 @@ public class SqlBuilder {
 		sql.addWhere(where);
 
 		for (Filter filter : havingFilters) {
-			if (isAggregate(filter.getName())) {
+			if (isAggregate(filter.getFieldName())) {
 				String filterExp = toFilterSql(filter);
 				sql.addHaving(filterExp);
 			}
@@ -261,7 +261,7 @@ public class SqlBuilder {
 		if (columnName == null)
 			return null;
 		for (Column column : definition.getColumns()) {
-			if (column.getName().equals(columnName))
+			if (column.getFieldName().equals(columnName))
 				return column;
 		}
 		return null;
@@ -271,10 +271,10 @@ public class SqlBuilder {
 		if (!filter.isValid())
 			return "true";
 
-		Column column = convertColumn(filter.getName());
+		Column column = convertColumn(filter.getFieldName());
 
 		if (column == null) {
-			column = new Column(filter.getName());
+			column = new Column(filter.getFieldName());
 		}
 
 		String columnSql = toColumnSql(column);
@@ -294,7 +294,7 @@ public class SqlBuilder {
 	private String toColumnSql(Column column) {
 		String columnSQL = columnToSQL(column);
 
-		if (column.getName().equals("accountName"))
+		if (column.getFieldName().equals("accountName"))
 			columnSQL = "a.nameIndex";
 
 		return columnSQL;
@@ -304,7 +304,7 @@ public class SqlBuilder {
 		String value = filter.getValue();
 
 		// date filter
-		ExtFieldType fieldType = getFieldFromFieldName(column.getName()).getType();
+		ExtFieldType fieldType = getFieldFromFieldName(column.getFieldName()).getType();
 		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
 			
@@ -343,7 +343,7 @@ public class SqlBuilder {
 		}
 
 		for (Sort sort : definition.getSorts()) {
-			String fieldName = sort.getName();
+			String fieldName = sort.getFieldName();
 
 			Column column = getColumnFromFieldName(fieldName);
 			if (column == null) {
@@ -355,7 +355,7 @@ public class SqlBuilder {
 			if (!sort.isAscending())
 				fieldName += " DESC";
 			sql.addOrderBy(fieldName);
-			sort.setField(getFieldFromFieldName(sort.getName()));
+			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 		}
 	}
 
@@ -373,7 +373,7 @@ public class SqlBuilder {
 
 	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : definition.getColumns()) {
-			if (column.getName().equals(fieldName))
+			if (column.getFieldName().equals(fieldName))
 				return column;
 		}
 		return null;

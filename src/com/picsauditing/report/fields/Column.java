@@ -38,6 +38,7 @@ public class Column implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
+
 		this.fieldName = (String) json.get("name");
 		String functionName = (String) json.get("function");
 		if (!Strings.isEmpty(functionName)) {
@@ -47,8 +48,12 @@ public class Column implements JSONable {
 		this.field = (Field) json.get("field");
 	}
 
-	public String getName() {
+	public String getFieldName() {
 		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	public String getAvailableFieldName() {
@@ -60,10 +65,6 @@ public class Column implements JSONable {
 			return fieldName;
 
 		return fieldName.substring(0, startOfFunction);
-	}
-
-	public void setName(String fieldName) {
-		this.fieldName = fieldName;
 	}
 
 	public QueryFunction getFunction() {

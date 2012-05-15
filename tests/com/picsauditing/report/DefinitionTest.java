@@ -32,7 +32,7 @@ public class DefinitionTest {
 		jsonObj.put("columns", list);
 		definition.fromJSON(jsonObj);
 		assertEquals(2, definition.getColumns().size());
-		assertEquals("AccountID", definition.getColumns().get(0).getName());
+		assertEquals("AccountID", definition.getColumns().get(0).getFieldName());
 
 		String expected = "{\"rowsPerPage\":10,\"columns\":[{\"name\":\"AccountID\"},{\"name\":\"AccountName\"}]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
@@ -44,7 +44,7 @@ public class DefinitionTest {
 		jsonObj.put("filters", list);
 
 		Filter filter = new Filter();
-		filter.setName("AccountID");
+		filter.setFieldName("AccountID");
 		filter.setOperator(QueryFilterOperator.Equals);
 		filter.setValue("123");
 		list.add(filter.toJSON(true));
@@ -52,7 +52,7 @@ public class DefinitionTest {
 
 		definition.fromJSON(jsonObj);
 		assertEquals(1, definition.getFilters().size());
-		assertEquals("AccountID", definition.getFilters().get(0).getName());
+		assertEquals("AccountID", definition.getFilters().get(0).getFieldName());
 
 		String expected = "{\"rowsPerPage\":10,\"filters\":[" + notTestingNow + "]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
@@ -66,7 +66,7 @@ public class DefinitionTest {
 		jsonObj.put("sorts", list);
 		definition.fromJSON(jsonObj);
 		assertEquals(1, definition.getSorts().size());
-		assertEquals("AccountID", definition.getSorts().get(0).getName());
+		assertEquals("AccountID", definition.getSorts().get(0).getFieldName());
 
 		String notTestingNow = sortJson.toJSONString();
 

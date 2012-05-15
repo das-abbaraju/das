@@ -35,7 +35,7 @@ public class FilterTest {
 		jsonObj.put("operator", "BeginsWith");
 		jsonObj.put("value", "Trevor's");
 		filter.fromJSON(jsonObj);
-		assertEquals("AccountName", filter.getName());
+		assertEquals("AccountName", filter.getFieldName());
 		assertEquals(QueryFilterOperator.BeginsWith, filter.getOperator());
 		assertEquals("Trevor's", filter.getValue());
 

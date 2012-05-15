@@ -89,7 +89,7 @@ public class SqlBuilderTest {
 	public void testFilters() {
 		definition.getColumns().add(new Column("accountName"));
 		Filter filter = new Filter();
-		filter.setName("accountName");
+		filter.setFieldName("accountName");
 		filter.setOperator(QueryFilterOperator.BeginsWith);
 		filter.setValue("Trevor's");
 		definition.getFilters().add(filter);
@@ -107,7 +107,7 @@ public class SqlBuilderTest {
 		definition.getColumns().add(column);
 
 		Filter filter = new Filter();
-		filter.setName("AccountCreationDateYear");
+		filter.setFieldName("AccountCreationDateYear");
 		filter.setOperator(QueryFilterOperator.GreaterThan);
 		filter.setValue("2010");
 
@@ -143,14 +143,14 @@ public class SqlBuilderTest {
 
 		{
 			Filter filter = new Filter();
-			filter.setName("accountNameCount");
+			filter.setFieldName("accountNameCount");
 			filter.setOperator(QueryFilterOperator.GreaterThan);
 			filter.setValue("5");
 			definition.getFilters().add(filter);
 		}
 		{
 			Filter filter = new Filter();
-			filter.setName("accountName");
+			filter.setFieldName("accountName");
 			filter.setOperator(QueryFilterOperator.BeginsWith);
 			filter.setValue("A");
 			definition.getFilters().add(filter);

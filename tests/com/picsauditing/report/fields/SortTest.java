@@ -22,7 +22,7 @@ public class SortTest {
 	public void testNameOnly() {
 		jsonObj.put("column", "AccountName");
 		sort.fromJSON(jsonObj);
-		assertEquals("AccountName", sort.getName());
+		assertEquals("AccountName", sort.getFieldName());
 
 		String expected = "{\"column\":\"AccountName\"}";
 		assertEquals(expected, sort.toJSON(true).toJSONString());
