@@ -40,11 +40,12 @@ public class AuditBuilderTest extends PicsTest {
 	AuditCategoriesBuilder catBuilder;
 	Set<AuditCategory> categories;
 	Map<OperatorAccount, Set<OperatorAccount>> caos;
-	
+
 	AuditBuilder auditBuilder = new AuditBuilder();
 	AuditTypeRuleCache abTypeRuleCache = new AuditTypeRuleCache();
 	AuditCategoryRuleCache abCatRuleCache = new AuditCategoryRuleCache();
-	@Mock AuditPercentCalculator abAuditPercentCalculatior = new AuditPercentCalculator();
+	@Mock
+	AuditPercentCalculator abAuditPercentCalculatior = new AuditPercentCalculator();
 
 	/**
 	 * Setup Contractors and Audit Types and Categories
@@ -52,12 +53,15 @@ public class AuditBuilderTest extends PicsTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		
+
 		autowireEMInjectedDAOs(auditBuilder);
-//		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", abTypeRuleCache);
-//		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", abCatRuleCache);
-//		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", abAuditPercentCalculatior);
-		
+		// PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
+		// abTypeRuleCache);
+		// PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache",
+		// abCatRuleCache);
+		// PicsTestUtil.forceSetPrivateField(auditBuilder,
+		// "auditPercentCalculator", abAuditPercentCalculatior);
+
 		contractor1 = EntityFactory.makeContractor();
 		conAudit1PQF = EntityFactory.makeContractorAudit(1, contractor1);
 		pqf = conAudit1PQF.getAuditType();
@@ -82,10 +86,12 @@ public class AuditBuilderTest extends PicsTest {
 		typeRuleCache.initialize(typeRules);
 		catRuleCache.initialize(catRules);
 
-		// Contractor has no operators, so should needs zero audits and categories
+		// Contractor has no operators, so should needs zero audits and
+		// categories
 		auditTypes = typeBuilder.calculate();
 		assertEquals(0, auditTypes.size());
-		categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
+		categories = catBuilder.calculate(conAudit1PQF,
+				contractor1.getOperatorAccounts());
 		assertEquals(0, categories.size());
 
 		OperatorAccount operator1 = EntityFactory.makeOperator();
@@ -94,7 +100,8 @@ public class AuditBuilderTest extends PicsTest {
 		// Now we should have 1 audit and 2 categories for the single operator
 		auditTypes = typeBuilder.calculate();
 		assertEquals(1, auditTypes.size());
-		categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
+		categories = catBuilder.calculate(conAudit1PQF,
+				contractor1.getOperatorAccounts());
 		assertEquals(2, categories.size());
 		caos = catBuilder.getCaos();
 		assertEquals(1, caos.size());
@@ -106,7 +113,8 @@ public class AuditBuilderTest extends PicsTest {
 			rule.setAuditCategory(pqfCategory2);
 
 			catRuleCache.initialize(catRules);
-			categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
+			categories = catBuilder.calculate(conAudit1PQF,
+					contractor1.getOperatorAccounts());
 			assertEquals(1, categories.size());
 		}
 		{
@@ -117,7 +125,8 @@ public class AuditBuilderTest extends PicsTest {
 			rule.setOperatorAccount(operator1);
 
 			catRuleCache.initialize(catRules);
-			categories = catBuilder.calculate(conAudit1PQF, contractor1.getOperatorAccounts());
+			categories = catBuilder.calculate(conAudit1PQF,
+					contractor1.getOperatorAccounts());
 			assertEquals(2, categories.size());
 		}
 	}
@@ -129,19 +138,19 @@ public class AuditBuilderTest extends PicsTest {
 		// clear out old rules
 		typeRules.clear();
 		typeRuleCache.clear();
-		
+
 		// create rules
 		rule = new AuditTypeRule();
 		rule.setAuditType(EntityFactory.makeAuditType(50));
 		typeRules.add(rule);
-		
+
 		// initialize cache
 		typeRuleCache.initialize(typeRules);
-		
-		// initialize contractor
-		EntityFactory.addContractorOperator(contractor1, EntityFactory.makeOperator());
 
-		
+		// initialize contractor
+		EntityFactory.addContractorOperator(contractor1,
+				EntityFactory.makeOperator());
+
 		// typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor1);
 		// Now we should have 1 audit and 2 categories for the single operator
 		auditTypes = typeBuilder.calculate();
@@ -149,7 +158,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertEquals(1, auditTypes.size()); // should get
 
 	}
-	
+
 	@Test
 	public void testBuildAudits() {
 		// clear out old rules
@@ -172,9 +181,11 @@ public class AuditBuilderTest extends PicsTest {
 		EntityFactory.addContractorOperator(contractor, operator);
 
 //		when(auditBuilder.).thenReturn(user.getId());
-		auditBuilder.buildAudits(contractor);
+//		when(em.find(AuditType.class, auditType.getId()).thenReturn(EntityFactory.makeAuditType(17));
+
+//		auditBuilder.buildAudits(contractor);
 	}
-	
+
 	private void addTypeRules(int auditTypeID, OperatorAccount operator) {
 		AuditTypeRule rule = new AuditTypeRule();
 		AuditType auditType = EntityFactory.makeAuditType(auditTypeID);
@@ -183,8 +194,8 @@ public class AuditBuilderTest extends PicsTest {
 			rule.setOperatorAccount(operator);
 		typeRules.add(rule);
 	}
-	
+
 	private void addCategoryRules() {
-		
+
 	}
 }
