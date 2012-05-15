@@ -1,16 +1,20 @@
 package com.picsauditing.auditBuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
@@ -38,13 +42,22 @@ public class AuditBuilderTest extends PicsTest {
 	Map<OperatorAccount, Set<OperatorAccount>> caos;
 	
 	AuditBuilder auditBuilder = new AuditBuilder();
+	AuditTypeRuleCache abTypeRuleCache = new AuditTypeRuleCache();
+	AuditCategoryRuleCache abCatRuleCache = new AuditCategoryRuleCache();
+	@Mock AuditPercentCalculator abAuditPercentCalculatior = new AuditPercentCalculator();
 
 	/**
 	 * Setup Contractors and Audit Types and Categories
 	 */
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		
 		autowireEMInjectedDAOs(auditBuilder);
+//		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", abTypeRuleCache);
+//		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", abCatRuleCache);
+//		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", abAuditPercentCalculatior);
+		
 		contractor1 = EntityFactory.makeContractor();
 		conAudit1PQF = EntityFactory.makeContractorAudit(1, contractor1);
 		pqf = conAudit1PQF.getAuditType();
@@ -139,6 +152,39 @@ public class AuditBuilderTest extends PicsTest {
 	
 	@Test
 	public void testBuildAudits() {
+		// clear out old rules
+		typeRules.clear();
+		catRules.clear();
+
+		addTypeRules(AuditType.INTEGRITYMANAGEMENT, null);
+
+		// Include All categories by default
+		catRules.add(new AuditCategoryRule());
+		
+		abTypeRuleCache.initialize(typeRules);
+		abCatRuleCache.initialize(catRules);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", abTypeRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", abCatRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", abAuditPercentCalculatior);
+		
+		ContractorAccount contractor = EntityFactory.makeContractor();
+		OperatorAccount operator = EntityFactory.makeOperator();
+		EntityFactory.addContractorOperator(contractor, operator);
+
+//		when(auditBuilder.).thenReturn(user.getId());
+		auditBuilder.buildAudits(contractor);
+	}
+	
+	private void addTypeRules(int auditTypeID, OperatorAccount operator) {
+		AuditTypeRule rule = new AuditTypeRule();
+		AuditType auditType = EntityFactory.makeAuditType(auditTypeID);
+		rule.setAuditType(auditType);
+		if (operator != null)
+			rule.setOperatorAccount(operator);
+		typeRules.add(rule);
+	}
+	
+	private void addCategoryRules() {
 		
 	}
 }
