@@ -124,6 +124,9 @@ public class UsersManage extends PicsActionSupport {
 				conInsurance = true;
 			}
 		}
+		if (user.equals(user.getAccount().getPrimaryContact())) {
+			addActionError(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
+		}
 		InitToggleSwitchUser();
 		return SUCCESS;
 	}
