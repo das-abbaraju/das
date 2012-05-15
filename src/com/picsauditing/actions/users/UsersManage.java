@@ -347,15 +347,17 @@ public class UsersManage extends PicsActionSupport {
 
 	public String unlock() throws Exception {
 		startup();
-
-		if (!isOK()) {
+		
+		if (!isOK()) {		
 			userDAO.clear();
 			return SUCCESS;
 		}
-
-		user.setLockUntil(null);
+		
+		user.setLockUntil(null);		
 		userDAO.save(user);
-		return SUCCESS;
+		
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
+				+ "&msg=User Account has been unlocked");
 	}
 
 	public String move() throws Exception {
@@ -547,12 +549,15 @@ public class UsersManage extends PicsActionSupport {
 
 	private boolean userRoleExists(OpPerms op) {
 		List<User> usersWithRole = user.getAccount().getUsersByRole(op);
-		if (user.hasPermission(op) && usersWithRole.size() > 1) {
-			return true;
-		} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
-			return true;
+		if (usersWithRole.size() != 0){
+			if (user.hasPermission(op) && usersWithRole.size() > 1) {
+				return true;
+			} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
+				return true;
+			} 
 		} else
 			return false;
+		return false;
 	}
 
 	private boolean validUserForRoleExists(User user, OpPerms userRole) {
