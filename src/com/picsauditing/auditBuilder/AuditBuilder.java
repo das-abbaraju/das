@@ -449,7 +449,7 @@ public class AuditBuilder {
 	}
 
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
-		if (cao.getAudit().getRequestingOpAccount() != null) {
+		if (cao.getAudit().getRequestingOpAccount() != null ) {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
