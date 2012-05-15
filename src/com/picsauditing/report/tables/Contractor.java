@@ -5,29 +5,29 @@ import com.picsauditing.report.fields.Field;
 
 public class Contractor extends BaseReportTable {
 
-	public Contractor(String parentPrefix, String parentAlias) {
-		super("contractor_info", "contractor", "c", parentAlias + ".id = c.id AND " + parentAlias
+	public Contractor(String prefix, String alias) {
+		super("contractor_info", "contractor", "c", alias + ".id = c.id AND " + alias
 				+ ".type = 'Contractor'");
-		this.parentPrefix = parentPrefix;
-		this.parentAlias = parentAlias;
+		this.prefix = prefix;
+		this.alias = alias;
 	}
 
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
 
 		Field contractorName;
-		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName);
-		contractorName.setUrl("ContractorView.action?id={" + parentPrefix + "ID}");
+		contractorName = addField(prefix + "Name", alias + ".name", FilterType.AccountName);
+		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
 		contractorName.setWidth(300);
 
 		Field contractorEdit;
 		contractorEdit = addField(prefix + "Edit", "'Edit'", FilterType.String);
-		contractorEdit.setUrl("ContractorEdit.action?id={" + parentPrefix + "ID}");
+		contractorEdit.setUrl("ContractorEdit.action?id={" + prefix + "ID}");
 		contractorEdit.setWidth(300);
 
 		Field contractorAudits;
 		contractorAudits = addField(prefix + "Audits", "'Audits'", FilterType.String);
-		contractorAudits.setUrl("ContractorDocuments.action?id={" + parentPrefix + "ID}");
+		contractorAudits.setUrl("ContractorDocuments.action?id={" + prefix + "ID}");
 		contractorAudits.setWidth(300);
 	}
 
