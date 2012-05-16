@@ -565,9 +565,9 @@ public class UsersManage extends PicsActionSupport {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
 
-			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
-				addActionError(getText("UsersManage.Error.AdminUser"));
-			}
+			//if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
+			//	addActionError(getText("UsersManage.Error.AdminUser"));
+			//}
 		}
 
 		return getActionErrors().size() == 0;
@@ -580,10 +580,11 @@ public class UsersManage extends PicsActionSupport {
 				return true;
 			} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
 				return true;
-			} 
+			} else{
+				return false;
+			}
 		} else
-			return false;
-		return false;
+			return false;		
 	}
 
 	private boolean validUserForRoleExists(User user, OpPerms userRole) {
