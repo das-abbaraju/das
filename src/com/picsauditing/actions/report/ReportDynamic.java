@@ -20,6 +20,7 @@ import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.SqlBuilder;
@@ -61,13 +62,66 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String delete() throws Exception {
-		permissions.tryPermission(OpPerms.Report, OpType.Delete);
-		checkReport();
-		dao.remove(report);
-		return SUCCESS;
+		if (isValidUser("delete")) {
+			permissions.tryPermission(OpPerms.Report, OpType.Delete);
+			checkReport();
+			dao.remove(report);
+		} else {
+			json.put("success", false);
+			json.put("error", "Invalid User, cannot delete reports that are not your own.");
+		}
+
+		return JSON;
 	}
 
-	public String save() {
+	public String edit() {
+		if (isValidUser("edit")) {
+			save(report);
+		} else {
+			json.put("success", false);
+			json.put("error", "Invalid User, cannot edit reports that are not your own.");
+		}
+
+		return JSON;
+	}
+
+	public String create() {
+		if (isValidUser("create")) {
+			Report newReport = new Report();
+			newReport.setModelType(report.getModelType());
+			newReport.setName(report.getName());
+			newReport.setDescription(report.getDescription());
+			newReport.setParameters(report.getParameters());
+			newReport.setSharedWith(report.getSharedWith());
+
+			save(newReport);
+		} else {
+			json.put("success", false);
+			json.put("error", "Invalid User, does not have permission.");
+		}
+
+		return JSON;
+	}
+
+	private boolean isValidUser(String action) {
+		if (report.getCreatedBy() == null || isReportOwner())
+			return true;
+		else if (action.equals("create"))
+			if (isBaseReport() || permissions.hasPermission(OpPerms.Report))
+				return true;
+
+		return false;
+	}
+
+	private boolean isBaseReport() {
+		return report.getCreatedBy().getId() == User.SYSTEM;
+	}
+
+	private boolean isReportOwner() {
+		return permissions.getUserId() == report.getCreatedBy().getId();
+	}
+
+	private String save(Report report) {
 		try {
 			checkReport();
 
