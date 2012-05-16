@@ -564,10 +564,14 @@ public class UsersManage extends PicsActionSupport {
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
-
-			//if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
-			//	addActionError(getText("UsersManage.Error.AdminUser"));
-			//}
+			/*
+			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
+				addActionError(getText("UsersManage.Error.AdminUser"));
+			}
+			*/
+			if (isActive.equals("No")) {				
+				addActionError(getText("UsersManage.Error.AdminUser"));
+			}
 		}
 
 		return getActionErrors().size() == 0;
