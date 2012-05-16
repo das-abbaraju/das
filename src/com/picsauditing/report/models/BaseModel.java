@@ -7,7 +7,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.tables.BaseReportTable;
 
-abstract public class ModelBase {
+public abstract class BaseModel {
 	protected BaseReportTable primaryTable;
 	protected String defaultSort = null;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();

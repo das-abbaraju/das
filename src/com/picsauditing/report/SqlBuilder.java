@@ -18,7 +18,7 @@ import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.Column;
 import com.picsauditing.report.fields.Filter;
 import com.picsauditing.report.fields.Sort;
-import com.picsauditing.report.models.ModelBase;
+import com.picsauditing.report.models.BaseModel;
 import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.tables.BaseReportTable;
 import com.picsauditing.search.SelectSQL;
@@ -26,7 +26,7 @@ import com.picsauditing.util.Strings;
 
 public class SqlBuilder {
 
-	private ModelBase baseModel;
+	private BaseModel baseModel;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
 	private SelectSQL sql;
@@ -370,12 +370,12 @@ public class SqlBuilder {
 
 	// Setters
 
-	public ModelBase setReport(Report report) {
+	public BaseModel setReport(Report report) {
 		this.baseModel = ModelFactory.getBase(report.getModelType());
 		return this.baseModel;
 	}
 
-	public void setBase(ModelBase base) {
+	public void setBase(BaseModel base) {
 		this.baseModel = base;
 	}
 

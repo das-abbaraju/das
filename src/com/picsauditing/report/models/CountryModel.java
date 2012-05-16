@@ -6,8 +6,8 @@ import com.picsauditing.report.tables.Country;
  * Sample URL: 
  * ReportDynamic!data.action?report.modelType=Country&report.parameters={"rowsPerPage":1000,"columns":[{"name":"countryCode"},{"name":"countryName"}]}
  */
-public class QueryCountry extends ModelBase {
-	public QueryCountry() {
+public class CountryModel extends BaseModel {
+	public CountryModel() {
 		super();
 		primaryTable = new Country();
 		primaryTable.addFields();

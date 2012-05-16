@@ -2,8 +2,8 @@ package com.picsauditing.report.models;
 
 import com.picsauditing.report.tables.ContractorAudit;
 
-public class QueryAccountContractorAudit extends QueryAccountContractor {
-	public QueryAccountContractorAudit() {
+public class AccountContractorAuditModel extends AccountContractorModel {
+	public AccountContractorAuditModel() {
 		super();
 
 		ContractorAudit conAudit = new ContractorAudit();
