@@ -19,7 +19,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.MultiYearScope;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.Testable;
 import com.picsauditing.util.YearList;
 import com.picsauditing.util.log.PicsLogger;
 
@@ -56,8 +55,7 @@ public class MultiYearValueCalculator {
 		return calculateValueForMultiYear(criteria, audits);
 	}
 
-	@Testable
-	static List<ContractorAudit> buildMultiYearAudits(List<ContractorAudit> audits) {
+	private static List<ContractorAudit> buildMultiYearAudits(List<ContractorAudit> audits) {
 		if (CollectionUtils.isEmpty(audits)) {
 			return Collections.emptyList();
 		}
@@ -80,8 +78,7 @@ public class MultiYearValueCalculator {
 	 * @param yearList
 	 * @return
 	 */
-	@Testable
-	static List<ContractorAudit> buildAuditsForFlagCriteria(Map<String, ContractorAudit> auditsByYear, YearList yearList) {
+	private static List<ContractorAudit> buildAuditsForFlagCriteria(Map<String, ContractorAudit> auditsByYear, YearList yearList) {
 		List<ContractorAudit> auditsForFlagCriteria = new ArrayList<ContractorAudit>();
 		auditsForFlagCriteria.add(retrieveAuditForScope(auditsByYear, yearList, MultiYearScope.LastYearOnly));
 		auditsForFlagCriteria.add(retrieveAuditForScope(auditsByYear, yearList, MultiYearScope.TwoYearsAgo));
@@ -89,8 +86,7 @@ public class MultiYearValueCalculator {
 		return auditsForFlagCriteria;
 	}
 
-	@Testable
-	static void retrieveAnnualUpdatesForFlagCriteriaProcessing(List<ContractorAudit> audits,
+	private static void retrieveAnnualUpdatesForFlagCriteriaProcessing(List<ContractorAudit> audits,
 			Map<String, ContractorAudit> auditsByYear, YearList yearList) {
 		yearList.setToday(new Date());
 
@@ -105,14 +101,12 @@ public class MultiYearValueCalculator {
 		}
 	}
 
-	@Testable
-	static boolean auditIsCompleteAnnualUpdate(ContractorAudit audit) {
+	private static boolean auditIsCompleteAnnualUpdate(ContractorAudit audit) {
 		return (audit != null && audit.getAuditType() != null && audit.getAuditType().isAnnualAddendum() && audit
 				.hasCaoStatusAfter(AuditStatus.Resubmitted));
 	}
 
-	@Testable
-	static ContractorAudit retrieveAuditForScope(Map<String, ContractorAudit> auditsByYear, YearList yearList,
+	private static ContractorAudit retrieveAuditForScope(Map<String, ContractorAudit> auditsByYear, YearList yearList,
 			MultiYearScope multiYearScope) {
 		Integer yearForScope = yearList.getYearForScope(multiYearScope);
 		if (yearForScope != null) {
@@ -132,7 +126,6 @@ public class MultiYearValueCalculator {
 	 * @param audits
 	 * @return
 	 */
-	@Testable
 	public static String calculateValueForMultiYear(FlagCriteria criteria, List<ContractorAudit> audits) {
 		Number result = null;
 
@@ -166,8 +159,7 @@ public class MultiYearValueCalculator {
 		return null;
 	}
 
-	@Testable
-	static Double findValueForSpecificYear(List<ContractorAudit> audits, FlagCriteria criteria, int yearsBack) {
+	private static Double findValueForSpecificYear(List<ContractorAudit> audits, FlagCriteria criteria, int yearsBack) {
 		if (yearsBack < 1) {
 			throw new IllegalArgumentException("MultiYearValueCalculator: Years back must be greater than 0.");
 		} else if (CollectionUtils.isEmpty(audits) || audits.size() < yearsBack || (audits.get(yearsBack - 1) == null)) {
@@ -177,8 +169,7 @@ public class MultiYearValueCalculator {
 		return findValueInAuditData(criteria, audits.get(yearsBack - 1).getData());
 	}
 
-	@Testable
-	static Number calculateMultiYearSum(FlagCriteria criteria, List<ContractorAudit> audits) {
+	private static Number calculateMultiYearSum(FlagCriteria criteria, List<ContractorAudit> audits) {
 		if (!"Check Box".equals(criteria.getQuestion().getQuestionType())) {
 			List<Double> values = findValuesForMathematicalFunction(criteria, audits);
 			Double result = addValues(values);
@@ -195,7 +186,7 @@ public class MultiYearValueCalculator {
 	 * @param audits
 	 * @return
 	 */
-	static Double calculateMultiYearAverage(FlagCriteria criteria, List<ContractorAudit> audits) {
+	private static Double calculateMultiYearAverage(FlagCriteria criteria, List<ContractorAudit> audits) {
 		List<Double> values = findValuesForMathematicalFunction(criteria, audits);
 		Double sum = addValues(values);
 
@@ -207,6 +198,9 @@ public class MultiYearValueCalculator {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
 	public static OshaResult calculateOshaResultsForEMR(FlagCriteria flagCriteria, ContractorAccount contractor) {
 		OshaResult oshaResult = null;
 
@@ -267,13 +261,13 @@ public class MultiYearValueCalculator {
 	/**
 	 * Get a map of the last 3 years of applicable EMR data (verified or not)
 	 */
-	static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
+	private static Map<String, OshaResult> getOshaResultsForEMR(List<ContractorAudit> audits) {
 		Map<String, OshaResult> oshaResults = buildOshaResultsList(audits);
 
 		return oshaResults;
 	}
 
-	static Map<String, OshaResult> buildOshaResultsList(List<ContractorAudit> audits) {
+	private static Map<String, OshaResult> buildOshaResultsList(List<ContractorAudit> audits) {
 		Map<String, OshaResult> oshaResults = new HashMap<String, OshaResult>();
 		int count = 0;
 
@@ -354,8 +348,7 @@ public class MultiYearValueCalculator {
 		return oshaResult;
 	}
 
-	@Testable
-	static int totalNonNullValues(List<Double> values) {
+	private static int totalNonNullValues(List<Double> values) {
 		int count = 0;
 		for (Double value : values) {
 			if (value != null) {
@@ -366,8 +359,7 @@ public class MultiYearValueCalculator {
 		return count;
 	}
 
-	@Testable
-	static Double addValues(List<Double> values) {
+	private static Double addValues(List<Double> values) {
 		if (CollectionUtils.isEmpty(values)) {
 			return null;
 		}
@@ -386,8 +378,7 @@ public class MultiYearValueCalculator {
 		return total;
 	}
 
-	@Testable
-	static List<Double> findValuesForMathematicalFunction(FlagCriteria criteria, List<ContractorAudit> audits) {
+	private static List<Double> findValuesForMathematicalFunction(FlagCriteria criteria, List<ContractorAudit> audits) {
 		if (CollectionUtils.isEmpty(audits)) {
 			return null;
 		}
@@ -403,8 +394,7 @@ public class MultiYearValueCalculator {
 		return values;
 	}
 
-	@Testable
-	static Integer countSelectedCheckBoxes(FlagCriteria criteria, List<ContractorAudit> audits) {
+	private static Integer countSelectedCheckBoxes(FlagCriteria criteria, List<ContractorAudit> audits) {
 		if (CollectionUtils.isEmpty(audits)) {
 			return null;
 		}
@@ -420,8 +410,7 @@ public class MultiYearValueCalculator {
 		return total;
 	}
 
-	@Testable
-	static int totalCheckBoxSelectedForQuestion(FlagCriteria criteria, List<AuditData> auditDataList) {
+	private static int totalCheckBoxSelectedForQuestion(FlagCriteria criteria, List<AuditData> auditDataList) {
 		for (AuditData auditData : auditDataList) {
 			if (checkBoxQuestionWithAnswer(criteria, auditData)) {
 				return 1;
@@ -431,8 +420,7 @@ public class MultiYearValueCalculator {
 		return 0;
 	}
 
-	@Testable
-	static Double findValueInAuditData(FlagCriteria criteria, List<AuditData> auditDataList) {
+	private static Double findValueInAuditData(FlagCriteria criteria, List<AuditData> auditDataList) {
 		Double value = null;
 		for (AuditData auditData : auditDataList) {
 			if (questionWithNumericAnswer(criteria, auditData)) {
