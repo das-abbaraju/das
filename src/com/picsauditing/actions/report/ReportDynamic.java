@@ -103,11 +103,18 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	public String getUserStatus() {
+		json.put("reportOwner", isReportOwner());
+		json.put("hasPermission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
+		
+		return JSON;
+	}
+
 	private boolean isValidUser(String action) {
-		if (report.getCreatedBy() == null || isReportOwner())
+		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment())
 			return true;
 		else if (action.equals("create"))
-			if (isBaseReport() || permissions.hasPermission(OpPerms.Report))
+			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
 				return true;
 
 		return false;
@@ -352,17 +359,6 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		json.put("data", rows);
-	}
-
-	public boolean isCanEdit() {
-		// while we're testing
-		if (permissions.isAdmin())
-			return true;
-		if (!permissions.hasPermission(OpPerms.Report, OpType.Edit))
-			return false;
-		if (report.getCreatedBy().getId() == permissions.getUserId())
-			return true;
-		return false;
 	}
 
 	private boolean isCanSeeQueryField(Field field) {
