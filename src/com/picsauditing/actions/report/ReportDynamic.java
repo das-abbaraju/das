@@ -30,7 +30,7 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
@@ -400,6 +400,25 @@ public class ReportDynamic extends PicsActionSupport {
 
 		json.put("message", message);
 		showSQL = true;
+	}
+
+	public String getList(String fieldName) {
+		try {
+			ensureValidReport();
+			Field field = builder.getAvailableFields().get(fieldName);
+			validateFieldConditionsForFilterList(field);
+			
+			json.put("report", report.toJSON(true));
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+		return JSON;
+	}
+
+	private void validateFieldConditionsForFilterList(Field field) throws Exception {
+		if(field == null)
+			throw new Exception("Available field undefined");
 	}
 
 	public Report getReport() {
