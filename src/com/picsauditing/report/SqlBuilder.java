@@ -39,21 +39,22 @@ public class SqlBuilder {
 			return sql;
 		
 		setFrom();
-		addAvailableFields(baseModel.getFrom());
+		addAvailableFields(baseModel.getPrimaryTable());
 
 		addFieldsAndGroupBy();
 		addRuntimeFilters();
 		addOrderByClauses();
 
-		addJoins(baseModel.getFrom());
+		addJoins(baseModel.getPrimaryTable());
 
 		return sql;
 	}
 
 	private void setFrom() {
-		String from = baseModel.getFrom().getTable();
-		if (!Strings.isEmpty(baseModel.getFrom().getAlias()))
-			from += " AS " + baseModel.getFrom().getAlias();
+		String from = baseModel.getPrimaryTable().getTableName();
+		String alias = baseModel.getPrimaryTable().getAlias();
+		if (!Strings.isEmpty(alias))
+			from += " AS " + alias;
 
 		sql.setFromTable(from);
 	}
@@ -67,44 +68,21 @@ public class SqlBuilder {
 	}
 
 	private void addJoins(BaseReportTable table) {
-		for (BaseReportTable join : table.getJoins()) {
-			if (isJoinNeeded(join)) {
-				String joinSyntax = "";
-				if (!join.isInnerJoin())
-					joinSyntax += "LEFT ";
-
-				joinSyntax += "JOIN " + join.getTable();
-				if (!Strings.isEmpty(join.getAlias()))
-					joinSyntax += " AS " + join.getAlias();
-
-				joinSyntax += " ON " + join.getWhere();
-				sql.addJoin(joinSyntax);
-				addJoins(join);
-			}
-		}
-	}
-
-	private boolean isJoinNeeded(BaseReportTable table) {
-		if (table.isInnerJoin())
-			return true;
-
 		for (BaseReportTable joinTable : table.getJoins()) {
-			if (isJoinNeeded(joinTable))
-				return true;
-		}
+			if (joinTable.isJoinNeeded(definition)) {
+				String joinExpression = "";
+				if (!joinTable.isInnerJoin())
+					joinExpression += "LEFT ";
 
-		for (Field field : table.getAvailableFieldsMap().values()) {
-			for (Column column : definition.getColumns()) {
-				if (column.getAvailableFieldName().equals(field.getName()))
-					return true;
-			}
-			for (Filter filter : definition.getFilters()) {
-				if (filter.getFieldName().equals(field.getName()))
-					return true;
+				joinExpression += "JOIN " + joinTable.getTableName();
+				if (!Strings.isEmpty(joinTable.getAlias()))
+					joinExpression += " AS " + joinTable.getAlias();
+
+				joinExpression += " ON " + joinTable.getWhereClause();
+				sql.addJoin(joinExpression);
+				addJoins(joinTable);
 			}
 		}
-
-		return false;
 	}
 
 	private void addFieldsAndGroupBy() {
@@ -118,12 +96,12 @@ public class SqlBuilder {
 					dependentFields.addAll(field.getDependentFields());
 				}
 
-				String columnSQL = columnToSql(column);
+				String columnSql = columnToSql(column);
 				if (usesGroupBy && !isAggregate(column.getFieldName())) {
-					sql.addGroupBy(columnSQL);
+					sql.addGroupBy(columnSql);
 				}
 
-				sql.addField(columnSQL + " AS `" + column.getFieldName() + "`");
+				sql.addField(columnSql + " AS `" + column.getFieldName() + "`");
 				column.setField(field);
 			}
 		}
@@ -139,8 +117,8 @@ public class SqlBuilder {
 
 		for (String fieldName : dependentFields) {
 			Column column = new Column(fieldName);
-			String columnSQL = columnToSql(column);
-			sql.addField(columnSQL + " AS `" + fieldName + "`");
+			String columnSql = columnToSql(column);
+			sql.addField(columnSql + " AS `" + fieldName + "`");
 		}
 	}
 
@@ -170,9 +148,11 @@ public class SqlBuilder {
 	private boolean isAggregate(String columnName) {
 		if (columnName == null)
 			return false;
+
 		Column column = convertColumn(columnName);
 		if (column == null)
 			return false;
+
 		if (column.getFunction() == null)
 			return false;
 
@@ -216,10 +196,9 @@ public class SqlBuilder {
 	}
 
 	private void addRuntimeFilters() {
-		if (definition.getFilters().size() == 0) {
+		if (definition.getFilters().isEmpty())
 			return;
-		}
-		
+
 		Set<Filter> whereFilters = new HashSet<Filter>();
 		Set<Filter> havingFilters = new HashSet<Filter>();
 		
@@ -265,10 +244,12 @@ public class SqlBuilder {
 	private Column convertColumn(String columnName) {
 		if (columnName == null)
 			return null;
+
 		for (Column column : definition.getColumns()) {
 			if (column.getFieldName().equals(columnName))
 				return column;
 		}
+
 		return null;
 	}
 
@@ -339,10 +320,10 @@ public class SqlBuilder {
 	}
 
 	private void addOrderByClauses() {
-		if (definition.getSorts().size() == 0) {
-			if (usesGroupBy()) {
+		if (definition.getSorts().isEmpty()) {
+			if (usesGroupBy())
 				return;
-			}
+
 			sql.addOrderBy(baseModel.getDefaultSort());
 			return;
 		}
@@ -359,6 +340,7 @@ public class SqlBuilder {
 
 			if (!sort.isAscending())
 				fieldName += " DESC";
+
 			sql.addOrderBy(fieldName);
 			sort.setField(getFieldFromFieldName(sort.getFieldName()));
 		}
@@ -372,6 +354,7 @@ public class SqlBuilder {
 	public void addPaging(int page) {
 		if (page > 1)
 			sql.setStartRow((page - 1) * definition.getRowsPerPage());
+
 		sql.setLimit(definition.getRowsPerPage());
 		sql.setSQL_CALC_FOUND_ROWS(true);
 	}
@@ -381,6 +364,7 @@ public class SqlBuilder {
 			if (column.getFieldName().equals(fieldName))
 				return column;
 		}
+
 		return null;
 	}
 

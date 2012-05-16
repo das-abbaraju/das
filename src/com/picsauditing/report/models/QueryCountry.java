@@ -9,10 +9,10 @@ import com.picsauditing.report.tables.Country;
 public class QueryCountry extends ModelBase {
 	public QueryCountry() {
 		super();
-		from = new Country();
-		from.addFields();
-		from.addJoins();
+		primaryTable = new Country();
+		primaryTable.addFields();
+		primaryTable.addJoins();
 		
-		defaultSort = from.getAlias() + ".isoCode";
+		defaultSort = primaryTable.getAlias() + ".isoCode";
 	}
 }

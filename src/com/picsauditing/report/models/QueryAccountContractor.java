@@ -5,11 +5,11 @@ import com.picsauditing.report.tables.Contractor;
 public class QueryAccountContractor extends QueryAccount {
 	public QueryAccountContractor() {
 		super();
-		from.removeField("accountName");
-		from.removeField("accountType");
+		primaryTable.removeField("accountName");
+		primaryTable.removeField("accountType");
 		
-		Contractor contractor = new Contractor(from.getPrefix(), from.getAlias());
-		from.addAllFieldsAndJoins(contractor);
+		Contractor contractor = new Contractor(primaryTable.getPrefix(), primaryTable.getAlias());
+		primaryTable.addAllFieldsAndJoins(contractor);
 	}
 
 }

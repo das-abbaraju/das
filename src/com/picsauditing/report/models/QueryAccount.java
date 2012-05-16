@@ -7,11 +7,11 @@ import com.picsauditing.util.PermissionQueryBuilder;
 public class QueryAccount extends ModelBase {
 	public QueryAccount() {
 		super();
-		from = new Account();
-		from.addFields();
-		from.addJoins();
+		primaryTable = new Account();
+		primaryTable.addFields();
+		primaryTable.addJoins();
 
-		defaultSort = from.getAlias() + ".name";
+		defaultSort = primaryTable.getAlias() + ".name";
 	}
 
 	@Override

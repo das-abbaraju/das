@@ -56,7 +56,7 @@ public class Column implements JSONable {
 		this.fieldName = fieldName;
 	}
 
-	public String getAvailableFieldName() {
+	public String getFieldNameWithoutFunction() {
 		if (function == null)
 			return fieldName;
 

@@ -7,6 +7,6 @@ public class QueryAccountContractorAudit extends QueryAccountContractor {
 		super();
 
 		ContractorAudit conAudit = new ContractorAudit();
-		from.addAllFieldsAndJoins(conAudit);
+		primaryTable.addAllFieldsAndJoins(conAudit);
 	}
 }

@@ -40,22 +40,22 @@ public class ColumnTest {
 	}
 
 	@Test
-	public void testGetAvailableFieldNameSimple() {
+	public void testGetFieldNameWithoutFunctionSimple() {
 		column.setFieldName("AccountName");
-		assertEquals("AccountName", column.getAvailableFieldName());
+		assertEquals("AccountName", column.getFieldNameWithoutFunction());
 	}
-	
+
 	@Test
-	public void testGetAvailableFieldNameWithFunction() {
+	public void testGetFieldNameWithoutFunctionWithFunction() {
 		column.setFieldName("AccountNameUpperCase");
 		column.setFunction(QueryFunction.UpperCase);
-		assertEquals("AccountName", column.getAvailableFieldName());
+		assertEquals("AccountName", column.getFieldNameWithoutFunction());
 	}
-	
+
 	@Test
-	public void testGetAvailableFieldNameWithDuplicate() {
+	public void testGetFieldNameWithoutFunctionWithDuplicate() {
 		column.setFieldName("FirstYearDateYear");
 		column.setFunction(QueryFunction.Year);
-		assertEquals("FirstYearDate", column.getAvailableFieldName());
+		assertEquals("FirstYearDate", column.getFieldNameWithoutFunction());
 	}
 }

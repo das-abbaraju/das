@@ -5,24 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.Definition;
+import com.picsauditing.report.fields.Column;
+import com.picsauditing.report.fields.Filter;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.Field;
 
 public abstract class BaseReportTable {
 
 	protected boolean innerJoin = true;
-	protected String table;
+	protected String tableName;
 	protected String prefix;
 	protected String alias;
-	protected String where;
+	protected String whereClause;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected List<BaseReportTable> joinedTables = new ArrayList<BaseReportTable>();
 
-	public BaseReportTable(String table, String prefix, String alias, String where) {
-		this.table = table;
+	public BaseReportTable(String tableName, String prefix, String alias, String whereClause) {
+		this.tableName = tableName;
 		this.prefix = prefix;
 		this.alias = alias;
-		this.where = where;
+		this.whereClause = whereClause;
 
 		addFields();
 	}
@@ -39,12 +42,12 @@ public abstract class BaseReportTable {
 		this.innerJoin = false;
 	}
 
-	public String getTable() {
-		return table;
+	public String getTableName() {
+		return tableName;
 	}
 
-	public void setTable(String table) {
-		this.table = table;
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	public String getPrefix() {
@@ -63,12 +66,12 @@ public abstract class BaseReportTable {
 		this.alias = alias;
 	}
 
-	public String getWhere() {
-		return where;
+	public String getWhereClause() {
+		return whereClause;
 	}
 
-	public void setWhere(String where) {
-		this.where = where;
+	public void setWhereClause(String whereClause) {
+		this.whereClause = whereClause;
 	}
 
 	public Map<String, Field> getAvailableFieldsMap() {
@@ -122,6 +125,32 @@ public abstract class BaseReportTable {
 		for (Field field : JpaFieldExtractor.addFields(clazz, prefix, alias)) {
 			availableFields.put(field.getName().toUpperCase(), field);
 		}
+	}
+
+	public boolean isJoinNeeded(Definition definition) {
+		if (isInnerJoin())
+			return true;
+
+		for (BaseReportTable joinTable : getJoins()) {
+			if (joinTable.isJoinNeeded(definition))
+				return true;
+		}
+
+		if (definition == null)
+			return false;
+
+		for (Field field : getAvailableFieldsMap().values()) {
+			for (Column column : definition.getColumns()) {
+				if (column.getFieldNameWithoutFunction().equals(field.getName()))
+					return true;
+			}
+			for (Filter filter : definition.getFilters()) {
+				if (filter.getFieldName().equals(field.getName()))
+					return true;
+			}
+		}
+
+		return false;
 	}
 
 }
