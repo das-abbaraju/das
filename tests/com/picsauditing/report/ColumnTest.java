@@ -1,9 +1,13 @@
-package com.picsauditing.report.fields;
+package com.picsauditing.report;
 
 import static org.junit.Assert.*;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
+
+import com.picsauditing.report.fields.QueryFunction;
+
+import com.picsauditing.report.Column;
 
 @SuppressWarnings("unchecked")
 public class ColumnTest {

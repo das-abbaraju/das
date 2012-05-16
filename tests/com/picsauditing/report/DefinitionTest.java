@@ -7,9 +7,6 @@ import org.json.simple.JSONObject;
 import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
-import com.picsauditing.report.fields.Column;
-import com.picsauditing.report.fields.Filter;
-import com.picsauditing.report.fields.Sort;
 
 @SuppressWarnings("unchecked")
 public class DefinitionTest {

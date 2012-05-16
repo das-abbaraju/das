@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
-import com.picsauditing.report.fields.Column;
-import com.picsauditing.report.fields.Filter;
-import com.picsauditing.report.fields.FilterType;
+import com.picsauditing.report.Filter;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FilterType;
 
 public abstract class BaseTable {
 

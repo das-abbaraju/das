@@ -1,8 +1,10 @@
-package com.picsauditing.report.fields;
+package com.picsauditing.report;
 
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.QueryFunction;
 import com.picsauditing.util.Strings;
 
 public class Column implements JSONable {

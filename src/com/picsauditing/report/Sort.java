@@ -1,10 +1,11 @@
-package com.picsauditing.report.fields;
+package com.picsauditing.report;
 
 import java.util.Map;
 
 import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
+import com.picsauditing.report.fields.Field;
 
 public class Sort implements JSONable {
 

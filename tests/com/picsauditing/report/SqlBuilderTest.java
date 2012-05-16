@@ -8,9 +8,6 @@ import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.fields.QueryFunction;
-import com.picsauditing.report.fields.Column;
-import com.picsauditing.report.fields.Filter;
-import com.picsauditing.report.fields.Sort;
 import com.picsauditing.report.models.AccountModel;
 import com.picsauditing.report.models.AccountContractorModel;
 import com.picsauditing.search.SelectSQL;

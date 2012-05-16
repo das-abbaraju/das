@@ -1,9 +1,13 @@
-package com.picsauditing.report.fields;
+package com.picsauditing.report;
 
 import static org.junit.Assert.*;
 
 import org.json.simple.JSONObject;
 import org.junit.Test;
+
+import com.picsauditing.report.fields.QueryFilterOperator;
+
+import com.picsauditing.report.Filter;
 
 @SuppressWarnings("unchecked")
 public class FilterTest {

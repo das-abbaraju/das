@@ -1,4 +1,4 @@
-package com.picsauditing.report.fields;
+package com.picsauditing.report;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -7,6 +7,8 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.jpa.entities.LowMedHigh;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.util.Strings;
 
 public class Filter implements JSONable {

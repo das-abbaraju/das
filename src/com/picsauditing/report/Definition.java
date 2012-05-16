@@ -9,9 +9,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import com.picsauditing.jpa.entities.JSONable;
-import com.picsauditing.report.fields.Column;
-import com.picsauditing.report.fields.Filter;
-import com.picsauditing.report.fields.Sort;
 import com.picsauditing.util.JSONUtilities;
 import com.picsauditing.util.Strings;
 
