@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -485,6 +489,45 @@ public class UsersManage extends PicsActionSupport {
 	public void setToggleSwitch(boolean toggleSwitch) {
 		this.toggleSwitch = toggleSwitch;
 	}
+	
+	@RequiredPermission(value = OpPerms.SwitchUser)
+	public String switchUserToDifferentServer() throws Exception {
+		// remove the cookie the switch to beta
+		removeBetaMaxCookie();
+
+		// get the sessionid form the cookie
+		String sessionID = getJSessionID();
+
+		// do not create new sessionid
+		HttpSession sessionid = ServletActionContext.getRequest().getSession(false);
+		sessionid.setAttribute("JSESSIONID", sessionID);
+		// query the app_session to look the sessionID, if exist, do the
+		// redirect, else do nothing.
+		ServletActionContext.getResponse().sendRedirect("Login.action?button=login&switchToUser=" + user.getId());		
+		return SUCCESS;
+	}
+
+	private String getJSessionID() {
+		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
+		String jSessionID = "";
+		if (cookiesA != null) {
+			for (int i = 0; i < cookiesA.length; i++) {
+				if (cookiesA[i].getName().equals("JSESSIONID")) {
+					jSessionID = cookiesA[i].getValue();
+				}
+			}
+		}
+		return jSessionID;
+	}
+
+	private void removeBetaMaxCookie() {
+		Cookie cookie = new Cookie("USER_BETA", "");
+		cookie.setMaxAge(0);
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+
+	
 	private void startup() throws Exception {
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
@@ -539,7 +582,7 @@ public class UsersManage extends PicsActionSupport {
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
-		user = new User(temp, true);
+		//user = new User(temp, true);
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
@@ -564,12 +607,10 @@ public class UsersManage extends PicsActionSupport {
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
-
 			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}
-
 		return getActionErrors().size() == 0;
 	}
 
@@ -580,10 +621,11 @@ public class UsersManage extends PicsActionSupport {
 				return true;
 			} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
 				return true;
-			} 
+			} else{
+				return false;
+			}
 		} else
-			return false;
-		return false;
+			return false;		
 	}
 
 	private boolean validUserForRoleExists(User user, OpPerms userRole) {
