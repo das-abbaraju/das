@@ -61,6 +61,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
+import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -841,6 +842,12 @@ public class ContractorCron extends PicsActionSupport {
 					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
 							&& contractor.isFinanciallyReadyForAudits()) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+						if (ua == null) {
+							List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
+							if (uaList != null && uaList.size() > 0) {
+								ua = uaList.get(0);
+							}
+						}
 						if (ua != null) {
 							audit.setAuditor(ua.getUser());
 							audit.setAssignedDate(new Date());
