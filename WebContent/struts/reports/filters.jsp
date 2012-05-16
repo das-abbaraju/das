@@ -264,7 +264,7 @@
 					name="filter.taxID"
 					cssClass="forms"
 					size="9"
-					title="%{getTextNulLSafe('Filters.MustBe9Digits')}" />
+					title="%{getTextNullSafe('Filters.MustBe9Digits')}" />
 			</div>
 		</s:if>
 
@@ -365,7 +365,7 @@
 					list="filter.waitingOnList"
 					listValue="%{getTextNullSafe(value.i18nKey)}"
 					headerKey=""
-					headerValue="- %{getTextNulLSafe('global.WaitingOn')} -"
+					headerValue="- %{getTextNullSafe('global.WaitingOn')} -"
 					cssClass="forms"
 					name="filter.waitingOn" />
 			</div>
