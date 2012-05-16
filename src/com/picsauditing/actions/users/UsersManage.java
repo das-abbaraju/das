@@ -539,7 +539,7 @@ public class UsersManage extends PicsActionSupport {
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
-		user = new User(temp, true);
+		//user = new User(temp, true);
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
@@ -564,16 +564,10 @@ public class UsersManage extends PicsActionSupport {
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
-			/*
 			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
-			*/
-			if (isActive.equals("No")) {				
-				addActionError(getText("UsersManage.Error.AdminUser"));
-			}
 		}
-
 		return getActionErrors().size() == 0;
 	}
 
