@@ -86,12 +86,14 @@ public class LoginController extends PicsActionSupport {
 
 				permissions.login(user);
 				LocaleController.setLocaleOfNearestSupported(permissions);
-				if (ActionContext.getContext().getSession().get("redirect") != null) {
-					if (ActionContext.getContext().getSession().get("redirect").equals("true")) {
-						if (isLiveEnvironment())
-							redirect("http://beta.picsorganizer.com");
-						if (isAlphaEnvironment())
-							redirect("http://localhost:8080/");
+				if (isLiveEnvironment()){
+					if (ActionContext.getContext().getSession().get("redirect") != null) {
+						if (ActionContext.getContext().getSession().get("redirect").equals("true")) {
+							//reset beta cookie
+							setBetaTestingCookie();
+							//redirect to original site.
+							redirect("http://www.picsorganizer.com");
+						}
 						ActionContext.getContext().getSession().remove("redirect");
 					}
 				}

@@ -501,6 +501,7 @@ public class UsersManage extends PicsActionSupport {
 		// do not create new sessionid
 		HttpSession sessionid = ServletActionContext.getRequest().getSession(false);
 		sessionid.setAttribute("JSESSIONID", sessionID);
+		sessionid.setAttribute("redirect", "true");
 		// query the app_session to look the sessionID, if exist, do the
 		// redirect, else do nothing.
 		ServletActionContext.getResponse().sendRedirect("Login.action?button=login&switchToUser=" + user.getId());		
