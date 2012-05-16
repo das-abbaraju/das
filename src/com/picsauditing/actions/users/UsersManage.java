@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -485,6 +489,45 @@ public class UsersManage extends PicsActionSupport {
 	public void setToggleSwitch(boolean toggleSwitch) {
 		this.toggleSwitch = toggleSwitch;
 	}
+	
+	@RequiredPermission(value = OpPerms.SwitchUser)
+	public String switchUserToDifferentServer() throws Exception {
+		// remove the cookie the switch to beta
+		removeBetaMaxCookie();
+
+		// get the sessionid form the cookie
+		String sessionID = getJSessionID();
+
+		// do not create new sessionid
+		HttpSession sessionid = ServletActionContext.getRequest().getSession(false);
+		sessionid.setAttribute("JSESSIONID", sessionID);
+		// query the app_session to look the sessionID, if exist, do the
+		// redirect, else do nothing.
+		ServletActionContext.getResponse().sendRedirect("Login.action?button=login&switchToUser=" + user.getId());		
+		return SUCCESS;
+	}
+
+	private String getJSessionID() {
+		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
+		String jSessionID = "";
+		if (cookiesA != null) {
+			for (int i = 0; i < cookiesA.length; i++) {
+				if (cookiesA[i].getName().equals("JSESSIONID")) {
+					jSessionID = cookiesA[i].getValue();
+				}
+			}
+		}
+		return jSessionID;
+	}
+
+	private void removeBetaMaxCookie() {
+		Cookie cookie = new Cookie("USER_BETA", "");
+		cookie.setMaxAge(0);
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+
+	
 	private void startup() throws Exception {
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);

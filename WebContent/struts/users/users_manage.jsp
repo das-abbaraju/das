@@ -257,6 +257,15 @@
 								</a>
 							</li>
 						</s:if>
+						<s:if test="toggleSwitch">
+							<s:if test="!isLiveEnvironment()">
+								<li>
+									<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
+										<s:text name="UsersManage.SwitchToThisUserStable" />
+									</a>
+								</li>	
+							</s:if>
+						</s:if>
 					</pics:permission>
 				</s:if>
 			</ul>
