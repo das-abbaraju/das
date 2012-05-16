@@ -3,9 +3,9 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.Field;
 
-public class Contractor extends BaseReportTable {
+public class ContractorTable extends BaseTable {
 
-	public Contractor(String prefix, String alias) {
+	public ContractorTable(String prefix, String alias) {
 		super("contractor_info", "contractor", "c", alias + ".id = c.id AND " + alias
 				+ ".type = 'Contractor'");
 		this.prefix = prefix;
@@ -32,8 +32,8 @@ public class Contractor extends BaseReportTable {
 	}
 
 	public void addJoins() {
-		addLeftJoin(new User(prefix + "CustomerService", alias + ".welcomeAuditor_id"));
-		addLeftJoin(new Account(prefix + "RequestedByOperator", alias + ".requestedByID"));
-		addLeftJoin(new ContractorAudit(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND " + prefix + "PQF.auditTypeID = 1"));
+		addLeftJoin(new UserTable(prefix + "CustomerService", alias + ".welcomeAuditor_id"));
+		addLeftJoin(new AccountTable(prefix + "RequestedByOperator", alias + ".requestedByID"));
+		addLeftJoin(new ContractorAuditTable(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND " + prefix + "PQF.auditTypeID = 1"));
 	}
 }

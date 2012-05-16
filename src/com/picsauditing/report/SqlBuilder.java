@@ -20,7 +20,7 @@ import com.picsauditing.report.fields.Filter;
 import com.picsauditing.report.fields.Sort;
 import com.picsauditing.report.models.BaseModel;
 import com.picsauditing.report.models.ModelFactory;
-import com.picsauditing.report.tables.BaseReportTable;
+import com.picsauditing.report.tables.BaseTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
@@ -59,16 +59,16 @@ public class SqlBuilder {
 		sql.setFromTable(from);
 	}
 
-	private void addAvailableFields(BaseReportTable table) {
+	private void addAvailableFields(BaseTable table) {
 		// We may be able to use the ModelBase.getAvailableFields...
 		availableFields.putAll(table.getAvailableFieldsMap());
-		for (BaseReportTable joinTable : table.getJoins()) {
+		for (BaseTable joinTable : table.getJoins()) {
 			addAvailableFields(joinTable);
 		}
 	}
 
-	private void addJoins(BaseReportTable table) {
-		for (BaseReportTable joinTable : table.getJoins()) {
+	private void addJoins(BaseTable table) {
+		for (BaseTable joinTable : table.getJoins()) {
 			if (joinTable.isJoinNeeded(definition)) {
 				String joinExpression = "";
 				if (!joinTable.isInnerJoin())

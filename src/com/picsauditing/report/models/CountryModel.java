@@ -1,6 +1,6 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.Country;
+import com.picsauditing.report.tables.CountryTable;
 
 /**
  * Sample URL: 
@@ -9,7 +9,7 @@ import com.picsauditing.report.tables.Country;
 public class CountryModel extends BaseModel {
 	public CountryModel() {
 		super();
-		primaryTable = new Country();
+		primaryTable = new CountryTable();
 		primaryTable.addFields();
 		primaryTable.addJoins();
 		

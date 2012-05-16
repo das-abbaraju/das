@@ -3,13 +3,13 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.Field;
 
-public class User extends BaseReportTable {
+public class UserTable extends BaseTable {
 
-	public User(String prefix, String alias, String foreignKey) {
+	public UserTable(String prefix, String alias, String foreignKey) {
 		super("users", prefix, alias, alias + ".id = " + foreignKey);
 	}
 
-	public User(String alias, String foreignKey) {
+	public UserTable(String alias, String foreignKey) {
 		super("users", alias, alias, alias + ".id = " + foreignKey);
 	}
 
@@ -25,6 +25,6 @@ public class User extends BaseReportTable {
 	}
 
 	public void addJoins() {
-		addJoin(new Account(prefix + "Account", alias + ".accountID"));
+		addJoin(new AccountTable(prefix + "Account", alias + ".accountID"));
 	}
 }

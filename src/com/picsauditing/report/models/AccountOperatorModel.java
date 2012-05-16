@@ -1,14 +1,14 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.Operator;
+import com.picsauditing.report.tables.OperatorTable;
 
 public class AccountOperatorModel extends AccountModel {
 	public AccountOperatorModel() {
 		super();
 		primaryTable.removeField("accountName");
 
-		Operator operator = new Operator();
-		primaryTable.addAllFieldsAndJoins(operator);
+		OperatorTable operatorTable = new OperatorTable();
+		primaryTable.addAllFieldsAndJoins(operatorTable);
 	}
 
 }

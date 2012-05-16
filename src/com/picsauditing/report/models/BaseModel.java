@@ -5,14 +5,14 @@ import java.util.Map;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.BaseReportTable;
+import com.picsauditing.report.tables.BaseTable;
 
 public abstract class BaseModel {
-	protected BaseReportTable primaryTable;
+	protected BaseTable primaryTable;
 	protected String defaultSort = null;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 
-	public BaseReportTable getPrimaryTable() {
+	public BaseTable getPrimaryTable() {
 		return primaryTable;
 	}
 

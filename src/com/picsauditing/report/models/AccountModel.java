@@ -1,13 +1,13 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.report.tables.Account;
+import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.util.PermissionQueryBuilder;
 
 public class AccountModel extends BaseModel {
 	public AccountModel() {
 		super();
-		primaryTable = new Account();
+		primaryTable = new AccountTable();
 		primaryTable.addFields();
 		primaryTable.addJoins();
 

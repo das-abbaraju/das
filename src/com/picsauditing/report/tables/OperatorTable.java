@@ -3,17 +3,17 @@ package com.picsauditing.report.tables;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.fields.Field;
 
-public class Operator extends BaseReportTable {
+public class OperatorTable extends BaseTable {
 
-	public Operator() {
+	public OperatorTable() {
 		super("operators", "operator", "o", "a.id = o.id AND a.type in ('Operator','Corporate')");
 	}
 
-	public Operator(String prefix, String alias, String foreignKey) {
+	public OperatorTable(String prefix, String alias, String foreignKey) {
 		super("operators", prefix, alias, alias + ".id = " + foreignKey);
 	}
 
-	public Operator(String alias, String foreignKey) {
+	public OperatorTable(String alias, String foreignKey) {
 		super("operators", alias, alias, alias + ".id = " + foreignKey);
 	}
 
@@ -36,10 +36,10 @@ public class Operator extends BaseReportTable {
 	}
 
 	public void addJoins() {
-		addLeftJoin(new User(prefix + "InsuranceRep", alias + ".insuranceAuditor_id"));
-		addLeftJoin(new Account(prefix + "ParentOperator", alias + ".parentID"));
-		addLeftJoin(new Account(prefix + "InheritedFlagCriteria", alias + ".inheritFlagCriteria"));
-		addLeftJoin(new Account(prefix + "InheritedInsuranceCriteria", alias + ".inheritInsuranceCriteria"));
-		addLeftJoin(new Account(prefix + "Reporting", alias + ".reportingID"));
+		addLeftJoin(new UserTable(prefix + "InsuranceRep", alias + ".insuranceAuditor_id"));
+		addLeftJoin(new AccountTable(prefix + "ParentOperator", alias + ".parentID"));
+		addLeftJoin(new AccountTable(prefix + "InheritedFlagCriteria", alias + ".inheritFlagCriteria"));
+		addLeftJoin(new AccountTable(prefix + "InheritedInsuranceCriteria", alias + ".inheritInsuranceCriteria"));
+		addLeftJoin(new AccountTable(prefix + "Reporting", alias + ".reportingID"));
 	}
 }

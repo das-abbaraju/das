@@ -1,12 +1,12 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.ContractorAudit;
+import com.picsauditing.report.tables.ContractorAuditTable;
 
 public class AccountContractorAuditModel extends AccountContractorModel {
 	public AccountContractorAuditModel() {
 		super();
 
-		ContractorAudit conAudit = new ContractorAudit();
-		primaryTable.addAllFieldsAndJoins(conAudit);
+		ContractorAuditTable conAuditTable = new ContractorAuditTable();
+		primaryTable.addAllFieldsAndJoins(conAuditTable);
 	}
 }

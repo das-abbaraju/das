@@ -1,6 +1,6 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.report.tables.Contractor;
+import com.picsauditing.report.tables.ContractorTable;
 
 public class AccountContractorModel extends AccountModel {
 	public AccountContractorModel() {
@@ -8,8 +8,8 @@ public class AccountContractorModel extends AccountModel {
 		primaryTable.removeField("accountName");
 		primaryTable.removeField("accountType");
 
-		Contractor contractor = new Contractor(primaryTable.getPrefix(), primaryTable.getAlias());
-		primaryTable.addAllFieldsAndJoins(contractor);
+		ContractorTable contractorTable = new ContractorTable(primaryTable.getPrefix(), primaryTable.getAlias());
+		primaryTable.addAllFieldsAndJoins(contractorTable);
 	}
 
 }

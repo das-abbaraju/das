@@ -2,17 +2,17 @@ package com.picsauditing.report.tables;
 
 import com.picsauditing.report.fields.FilterType;
 
-public class AuditType extends BaseReportTable {
+public class AuditTypeTable extends BaseTable {
 
-	public AuditType() {
+	public AuditTypeTable() {
 		super("audit_type", "auditType", "atype", "atype.id = ca.auditTypeID");
 	}
 
-	public AuditType(String prefix, String alias, String foreignKey) {
+	public AuditTypeTable(String prefix, String alias, String foreignKey) {
 		super("audit_type", prefix, alias, alias + ".id = " + foreignKey);
 	}
 
-	public AuditType(String alias, String foreignKey) {
+	public AuditTypeTable(String alias, String foreignKey) {
 		super("audit_type", alias, alias, alias + ".id = " + foreignKey);
 	}
 
