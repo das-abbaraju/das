@@ -40,13 +40,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Override
 	public String execute() throws Exception {
-		checkReport();
-		addDefinition();
-
-		builder.setReport(report);
-		sql = builder.getSql();
-		builder.addPermissions(permissions);
-
 		return SUCCESS;
 	}
 

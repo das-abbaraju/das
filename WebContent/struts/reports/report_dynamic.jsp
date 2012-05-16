@@ -9,10 +9,6 @@
         <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
 	</head>
 	<body>
-		<script type="text/javascript">
-			var availableFields = <s:property value="availableFields" escape="false" />;
-			var reportParameters = <s:property value="report.toJSON(true)" escape="false" />;
-		</script>
 		<script type="text/javascript" src="js/pics/app.js"></script>
 	</body>
 </html>
