@@ -86,8 +86,6 @@ public class BillingDetail extends ContractorActionSupport {
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0)
 				invoice.setQbSync(true);
 
-			String notes = "";
-
 			// Calculate the due date for the invoice
 			if (contractor.getBillingStatus().equals("Activation")) {
 				invoice.setDueDate(new Date());
@@ -112,13 +110,7 @@ public class BillingDetail extends ContractorActionSupport {
 			// Make sure the invoice isn't due within 7 days for active accounts
 			if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
 				invoice.setDueDate(DateBean.addDays(new Date(), 7));
-			// End of Due date
 
-			notes += getText("Invoice.ThankYou");
-			// AppProperty prop = appPropDao.find("invoice_comment");
-			// if (prop != null) {
-			// notes = prop.getValue();
-			// }
 			// Add the list of operators if this invoice has a membership level
 			// on it
 			boolean hasMembership = false;
@@ -126,11 +118,10 @@ public class BillingDetail extends ContractorActionSupport {
 				if (item.getInvoiceFee().isMembership())
 					hasMembership = true;
 			}
+			
 			if (hasMembership) {
-				notes += " "
-						+ getTextParameterized("Invoice.ClientSiteList", billingService.getOperatorsString(contractor));
-			}
-			invoice.setNotes(notes);
+				invoice.setNotes(billingService.getOperatorsString(contractor));
+			}			
 
 			contractor.getInvoices().add(invoice);
 

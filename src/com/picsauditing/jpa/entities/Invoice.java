@@ -29,7 +29,6 @@ public class Invoice extends Transaction {
 	private String poNumber;
 	private String notes;
 	private Date paidDate; // MAX(Payment.creationDate)
-	private String clientSites;
 
 	private List<InvoiceItem> items = new ArrayList<InvoiceItem>();
 	private List<PaymentAppliedToInvoice> payments = new ArrayList<PaymentAppliedToInvoice>();
@@ -80,14 +79,6 @@ public class Invoice extends Transaction {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
-	}
-	
-	public String getClientSites() {
-		return clientSites;
-	}
-	
-	public void setClientSites(String clientSites) {
-		this.clientSites = clientSites;
 	}
 
 	@OneToMany(mappedBy = "invoice", cascade = { CascadeType.ALL })

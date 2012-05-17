@@ -589,7 +589,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setDueDate(new Date());
 		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
-		invoice.setNotes(notes + " " + getText("Invoice.ThankYou"));
+		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
 		invoice.setQbSync(true);
 		invoice = invoiceDAO.save(invoice);
