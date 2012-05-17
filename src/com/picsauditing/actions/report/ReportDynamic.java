@@ -32,6 +32,7 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+
 	private Report report;
 	private int page = 1;
 	private boolean showSQL;
@@ -45,7 +46,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String find() {
 		try {
-			checkReport();
+			ensureValidReport();
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -57,7 +58,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String delete() throws Exception {
 		if (isValidUser("delete")) {
 			permissions.tryPermission(OpPerms.Report, OpType.Delete);
-			checkReport();
+			ensureValidReport();
 			dao.remove(report);
 		} else {
 			json.put("success", false);
@@ -105,11 +106,12 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private boolean isValidUser(String action) {
-		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment())
+		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment()) {
 			return true;
-		else if (action.equals("create"))
+		} else if (action.equals("create")) {
 			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
 				return true;
+		}
 
 		return false;
 	}
@@ -124,7 +126,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String save(Report report) {
 		try {
-			checkReport();
+			ensureValidReport();
 
 			report.setAuditColumns(permissions);
 			dao.save(report);
@@ -159,8 +161,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	// This is in the wrong class, should be in SqlBuilder
 	private void buildSQL() throws Exception {
-		checkReport();
+		ensureValidReport();
 
 		addDefinition();
 
@@ -188,7 +191,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			checkReport();
+			ensureValidReport();
 			builder.setReport(report);
 			builder.getSql();
 
@@ -356,17 +359,18 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private boolean isCanSeeQueryField(Field field) {
-		if (field.getRequiredPermissions().size() == 0)
+		if (field.getRequiredPermissions().isEmpty())
 			return true;
 
 		for (OpPerms requiredPermission : field.getRequiredPermissions()) {
 			if (permissions.hasPermission(requiredPermission))
 				return true;
 		}
+
 		return false;
 	}
 
-	private void checkReport() throws Exception {
+	private void ensureValidReport() throws Exception {
 		if (report == null)
 			throw new RuntimeException("Please provide a saved or ad hoc report to run");
 
@@ -386,6 +390,7 @@ public class ReportDynamic extends PicsActionSupport {
 		if (message == null) {
 			message = e.toString();
 		}
+
 		json.put("message", message);
 		showSQL = true;
 	}
@@ -405,5 +410,4 @@ public class ReportDynamic extends PicsActionSupport {
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
 	}
-
 }
