@@ -7,17 +7,22 @@ Ext.define('PICS.view.report.FilterOptions', {
     defaults: {
         border: false
     },
-    /*Do not show until implemented*/
-    /*dockedItems: [{
+    dockedItems: [{
         xtype: 'form',
         defaults: {
             border: false
         },
         dock: 'bottom',
         items: [{
-            html: 'Advanced',
+            xtype: 'button',
+            cls: 'tooltipIcon',
+            icon: 'js/pics/resources/images/tools/question_mark.png',
+            iconAlign: 'right',
             margin: '0 0 5 0',
-            padding: '0 10'
+            padding: '0 10',
+            scale: 'small',
+            text: 'Advanced',
+            tooltip: 'Advanced Filter Search'
         }, {
             xtype: 'form',
             items: [{
@@ -32,7 +37,7 @@ Ext.define('PICS.view.report.FilterOptions', {
             layout: 'hbox',
             padding: '0 10 10 10'
         }]
-    }],*/
+    }],
     floatable: false,
     id: 'filteroptions',
     items: [{

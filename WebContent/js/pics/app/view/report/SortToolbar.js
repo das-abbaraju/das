@@ -2,17 +2,22 @@ Ext.define('PICS.view.report.SortToolbar', {
     extend: 'Ext.toolbar.Toolbar',
     alias: ['widget.reportsorttoolbar'],
     requires: ['PICS.view.report.SortButtons'],
-    
+
     items: [{
-        xtype: 'tbtext',
-        text: 'Sort on these fields:'
+        xtype: 'button',
+        cls: 'tooltipIcon',
+        icon: 'js/pics/resources/images/tools/question_mark.png',
+        iconAlign: 'right',
+        scale: 'small',
+        text: 'Sort on these fields:',
+        tooltip: 'Drag to change sort priority'
     }, {
         xtype: 'sortbuttons'
     }, {
         xtype: 'tbfill'
     }, {
         xtype: 'tbtext',
-        text: 'Download' 
+        text: 'Download'
     }, {
         xtype: 'tbspacer'
     }, {
@@ -44,8 +49,8 @@ Ext.define('PICS.view.report.SortToolbar', {
         xtype: 'tbspacer'
     }, {
         xtype: 'button',
-        action: 'add-column', 
+        action: 'add-column',
         icon: 'js/pics/resources/images/dd/drop-add.gif',
         text: 'Add Column'
-    }]    
+    }]
 });
