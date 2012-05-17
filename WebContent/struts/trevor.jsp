@@ -2,7 +2,7 @@
 
 <link rel="stylesheet" type="text/css" href="css/pics.css">
 <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
-        
+
 <script type="text/javascript" src="js/pics/extjs/bootstrap.js"></script>
 
 <nav id="site_navigation"></nav>
@@ -18,15 +18,17 @@ Ext.Loader.setConfig({
     }
 });
 
-Ext.onReady(function ()  {
-    var menu = Ext.create('PICS.view.layout.Menu', {
-        renderTo: 'site_navigation'
-    });
-    
-    Ext.EventManager.onWindowResize(function () {
-        menu.doLayout();
-    });
-});
+window.onload = function () {
+    Ext.onReady(function ()  {
+        var menu = Ext.create('PICS.view.layout.Menu', {
+            renderTo: 'site_navigation'
+        });
+
+        Ext.EventManager.onWindowResize(function () {
+            menu.doLayout();
+        });
+    })
+};
 
 </script>
 
