@@ -88,6 +88,7 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setSharedWith(report.getSharedWith());
 
 			save(newReport);
+			report = newReport;
 		} else {
 			json.put("success", false);
 			json.put("error", "Invalid User, does not have permission.");
