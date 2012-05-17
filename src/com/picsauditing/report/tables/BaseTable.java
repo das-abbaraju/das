@@ -17,6 +17,8 @@ public abstract class BaseTable {
 	protected String tableName;
 	protected String prefix;
 	protected String alias;
+	protected String parentPrefix;
+	protected String parentAlias;
 	protected String whereClause;
 	protected Map<String, Field> availableFields = new HashMap<String, Field>();
 	protected List<BaseTable> joinedTables = new ArrayList<BaseTable>();
@@ -66,6 +68,21 @@ public abstract class BaseTable {
 		this.alias = alias;
 	}
 
+	public String getParentPrefix() {
+		return parentPrefix;
+	}
+
+	public void setParentPrefix(String parentPrefix) {
+		this.parentPrefix = parentPrefix;
+	}
+
+	public String getParentAlias() {
+		return parentAlias;
+	}
+
+	public void setParentAlias(String parentAlias) {
+		this.parentAlias = parentAlias;
+	}
 	public String getWhereClause() {
 		return whereClause;
 	}

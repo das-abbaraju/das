@@ -5,18 +5,20 @@ import com.picsauditing.report.fields.FilterType;
 
 public class ContractorTable extends BaseTable {
 
-	public ContractorTable(String prefix, String alias) {
-		super("contractor_info", "contractor", "c", alias + ".id = c.id AND " + alias
+	public ContractorTable(String parentPrefix, String parentAlias) {
+		super("contractor_info", "contractor", "c", parentAlias + ".id = c.id AND " + parentAlias
 				+ ".type = 'Contractor'");
-		this.prefix = prefix;
-		this.alias = alias;
+		this.parentPrefix = parentPrefix;
+		this.parentAlias = parentAlias;
 	}
 
 	public void addFields() {
 		addFields(com.picsauditing.jpa.entities.ContractorAccount.class);
 
+		addField(prefix + "ID", alias + ".id", FilterType.Integer).setWidth(80);
+
 		Field contractorName;
-		contractorName = addField(prefix + "Name", alias + ".name", FilterType.AccountName);
+		contractorName = addField(prefix + "Name", parentAlias + ".name", FilterType.AccountName);
 		contractorName.setUrl("ContractorView.action?id={" + prefix + "ID}");
 		contractorName.setWidth(300);
 
