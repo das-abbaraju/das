@@ -1608,6 +1608,10 @@
 		<action name="AuditRejectLookupAjax" class="com.picsauditing.actions.AuditRejectionLookup">
 			<result type="jsonArray"></result>
 		</action>
+		
+		<action name="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium">
+			<result>/struts/selenium/reset_selenium.jsp</result>
+		</action>		
 	</package>
 	
 	<!-- Registration -->	
