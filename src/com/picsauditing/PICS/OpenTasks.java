@@ -21,18 +21,17 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.LocaleController;
-import com.picsauditing.util.Testable;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
+	
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDao;
 
 	private boolean hasImportPQF = false;
 	private boolean importPQFComplete = false;
 	private boolean openReq = false;
-	@Testable
-	ArrayList<String> openTasks;
+	private ArrayList<String> openTasks;
 	private ContractorAccount contractor;
 	private User user;
 	private Permissions permissions;
@@ -63,8 +62,7 @@ public class OpenTasks extends TranslationActionSupport {
 		return openTasks;
 	}
 
-	@Testable
-	void initializeForGatheringTasks(ContractorAccount contractor, User user) {
+	private void initializeForGatheringTasks(ContractorAccount contractor, User user) {
 		this.contractor = contractor;
 		this.user = user;
 		establishPermissions(user);
@@ -86,8 +84,7 @@ public class OpenTasks extends TranslationActionSupport {
 
 	}
 
-	@Testable
-	void gatherTasksAboutDeclaringTrades() {
+	private void gatherTasksAboutDeclaringTrades() {
 		// check if trades need review
 		if (contractor.getTrades().size() == 0) {
 			openTasks.add(getTextParameterized("ContractorWidget.message.NoTradesSelected", contractor.getId()));
@@ -345,8 +342,7 @@ public class OpenTasks extends TranslationActionSupport {
 		}
 	}
 
-	@Testable
-	boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
+	private boolean isOpenTaskNeeded(ContractorAudit conAudit, User user, Permissions permissions) {
 		int needed = 0;
 
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
