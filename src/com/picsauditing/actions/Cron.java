@@ -416,7 +416,7 @@ public class Cron extends PicsActionSupport {
 
 		String activationReminderNote = "Sent Activation Reminder Email to ";
 		String activationLastReminderNote = "Sent Activation Last Chance Reminder Email to ";
-		String deactivationNote = "This account has been deactivated. Notification Email sent to ";
+		String deactivationNote = "Final email sent to Contractor and Client Site. Notification Email sent to ";
 
 		// Pending accounts are reminded to finish registration at 1 day
 		List<ContractorAccount> pending1stReminder = contractorAccountDAO.findPendingAccounts(where1stReminder);
@@ -603,7 +603,7 @@ public class Cron extends PicsActionSupport {
 		String reminderNote = sdf.format(new Date()) + " - Email has been sent to remind contractor to register.\n\n";
 		String lastChanceNote = sdf.format(new Date())
 				+ " - Email has been sent to contractor warning them that this is their last chance to register.\n\n";
-		String finalAndExpirationNote = sdf.format(new Date()) + " - Registration request has expired.\n\n";
+		String finalAndExpirationNote = sdf.format(new Date()) + " - Final email sent to Contractor and Client Site.\n\n";
 
 		// First notification: 3 days
 		List<ContractorRegistrationRequest> crrList1stReminder = contractorRegistrationRequestDAO
