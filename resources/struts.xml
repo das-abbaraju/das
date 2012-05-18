@@ -146,10 +146,6 @@
 			<result>struts/misc/expiration_date_synchronizer.jsp</result>
 		</action>
 
-		<action name="ResetSelenium" class="com.picsauditing.actions.ResetSelenium">
-			<result>struts/blank.jsp</result>
-		</action>
-
 		<action name="ContractorSummaryExternal" class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
 			<result type="json"></result>
 		</action>
