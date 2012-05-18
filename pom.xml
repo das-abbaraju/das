@@ -33,6 +33,10 @@
 			<id>Hibernate Spatial repo</id>
 			<url>http://www.hibernatespatial.org/repository</url>
 		</repository>
+		<repository>
+			<id>Maven Cobertura Repo</id>
+			<url>http://mvnrepository.com/artifact/org.codehaus.mojo/cobertura-maven-plugin</url>
+		</repository>		
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -40,7 +44,22 @@
 			<url>http://maven.picsauditing.com</url>
 		</pluginRepository>
 	</pluginRepositories>
-
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+					</formats>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+	
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>tests</testSourceDirectory>
@@ -89,6 +108,35 @@
 					<server>alpha</server>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.5.1</version>
+            	<executions>
+                	<execution>
+                    	<id>site</id>
+                    	<phase>pre-site</phase>
+                    	<goals>
+                        	<goal>clean</goal>
+                    	</goals>
+                	</execution>
+                	<execution>
+                    	<id>instrument</id>
+                    	<phase>site</phase>
+                    	<goals>
+                        	<goal>instrument</goal>
+                        	<goal>cobertura</goal>
+                    	</goals>
+                	</execution>
+            	</executions>				
+				<configuration>
+					<instrumentation>
+						<excludes>
+							<exclude>**/*Test.class</exclude>
+						</excludes>
+					</instrumentation>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -101,7 +149,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.1</version>
+			<version>2.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -116,8 +164,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
-			<artifactId>struts2-sitemesh-plugin
-			</artifactId>
+			<artifactId>struts2-sitemesh-plugin</artifactId>
 			<version>2.2.3</version>
 		</dependency>
 		<dependency>
@@ -177,6 +224,12 @@
 			<artifactId>hibernate-entitymanager
 			</artifactId>
 			<version>3.3.1.ga</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javassist</artifactId>
+					<groupId>jboss</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>concurrent</groupId>
@@ -246,6 +299,43 @@
 			<version>4.4</version>
 		</dependency>
 		<dependency>
+			  <!-- needs extra dependencies: objenesis & hamcrest -->
+			  <groupId>org.mockito</groupId>
+			  <artifactId>mockito-core</artifactId>  
+			  <version>1.9.0</version> 
+			  <scope>test</scope>
+		</dependency>
+   		<dependency>
+      		<groupId>org.hamcrest</groupId>
+      		<artifactId>hamcrest-all</artifactId>
+      		<version>1.1</version>
+      		<scope>test</scope>
+   		</dependency>		
+   		<dependency>
+      		<groupId>org.powermock</groupId>
+      		<artifactId>powermock-module-junit4</artifactId>
+      		<version>1.4.12</version>
+      		<scope>test</scope>
+      		<exclusions>
+      			<exclusion>
+      				<artifactId>javassist</artifactId>
+      				<groupId>org.javassist</groupId>
+      			</exclusion>
+      		</exclusions>
+   		</dependency>
+   		<dependency>
+      		<groupId>org.powermock</groupId>
+      		<artifactId>powermock-api-mockito</artifactId>
+      		<version>1.4.12</version>
+      		<scope>test</scope>
+   		</dependency>
+   		<dependency>
+      		<groupId>net.sourceforge.cobertura</groupId>
+      		<artifactId>cobertura</artifactId>
+      		<version>1.9.4.1</version>
+      		<scope>test</scope>
+   		</dependency>   		
+  		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			<version>2.4.6</version>
@@ -494,6 +584,11 @@
 			<groupId>org.hibernatespatial</groupId>
 			<artifactId>hibernate-spatial-mysql</artifactId>
 			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
 		</dependency>
 	</dependencies>
 </project>

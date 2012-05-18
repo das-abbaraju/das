@@ -36,6 +36,9 @@ public class AuditFileUpload extends AuditActionSupport {
 		
 		if (fileID > 0) {
 			contractorAuditFile = contractorAuditFileDAO.find(fileID);
+			if (contractorAuditFile != null) {
+				fileName = contractorAuditFile.getDescription();
+			}
 		}
 		
 		if (button != null) {
@@ -77,11 +80,6 @@ public class AuditFileUpload extends AuditActionSupport {
 						addActionError(getText("AuditFileUpload.error.FileMissing"));
 						return SUCCESS;
 					}
-					if(Strings.isEmpty(fileName)) {
-						addActionError(getText("AuditFileUpload.error.ProvideDescription"));
-						file = null;
-						return SUCCESS;
-					}
 					if (contractorAuditFile == null) {
 						contractorAuditFile = new ContractorAuditFile();
 						contractorAuditFile.setAudit(conAudit);
@@ -89,7 +87,6 @@ public class AuditFileUpload extends AuditActionSupport {
 				}
 				String extension = null;
 				if (file != null && file.length() > 0) {
-					fileName = fileFileName;
 					extension = fileFileName.substring(fileFileName.lastIndexOf(".") + 1);
 					if (!FileUtils.checkFileExtension(extension)) {
 						file = null;
@@ -104,6 +101,10 @@ public class AuditFileUpload extends AuditActionSupport {
 					}
 					contractorAuditFile.setFileType(extension);
 				}
+				
+				if (Strings.isEmpty(fileName))
+					fileName = fileFileName;
+				
 				if (!Strings.isEmpty(desc))
 					fileName = desc + " "+ fileName;
 				

@@ -11,11 +11,14 @@ import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class WatchListManager extends PicsActionSupport {
@@ -93,10 +96,16 @@ public class WatchListManager extends PicsActionSupport {
 	}
 
 	public List<ContractorWatch> getWatchLists() {
+		List<Integer> contractorIds = coDAO.getContractorIdsForOperator("operatorAccount.id = " + permissions.getAccountId() 
+				+ " AND workStatus in ('" + ApprovalStatus.C + "', '" + ApprovalStatus.Y + "')");
+		
+		String baseQuery = "c.contractor.status = '" + AccountStatus.Active + "' " 
+					+ "AND c.contractor.id IN (" + Strings.implode(contractorIds) + ") ";
 		if (permissions.isOperator())
-			return userDAO.findContractorWatchWhere("c.user.account.id = " + permissions.getAccountId());
+			return userDAO.findContractorWatchWhere(baseQuery + "AND c.user.account.id = " + permissions.getAccountId());
+		
 		if (permissions.isCorporate())
-			return userDAO.findContractorWatchWhere("c.user.account IN (SELECT o FROM OperatorAccount o "
+			return userDAO.findContractorWatchWhere(baseQuery + "AND c.user.account IN (SELECT o FROM OperatorAccount o "
 					+ "WHERE o.parent.id = " + permissions.getAccountId() + ") " + "OR c.user.account.id = "
 					+ permissions.getAccountId());
 

@@ -63,6 +63,9 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 
 							caoDAO.save(toSave);
 							autoExpireOldAudits(conAudit, newStatus);
+							
+							conAudit.getContractorAccount().incrementRecalculation();
+							dao.save(conAudit.getContractorAccount());
 						}
 					}
 				}

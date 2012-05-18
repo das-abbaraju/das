@@ -56,6 +56,10 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public static int GROUP_CSR = 959;
 	public static int GROUP_MANAGER = 981;
 	public static int GROUP_MARKETING = 10801;
+	public static int GROUP_DEVELOPER = 33885;
+	public static int GROUP_STAKEHOLDER = 64680;
+	public static int GROUP_BETATESTER = 64681;
+	public static int GROUP_SAFETY = 65744;
 	public static int CONTRACTOR = 12;
 	protected boolean needsIndexing = true;
 	private static final int GROUP_SU = 9; // Group that automatically has ALL

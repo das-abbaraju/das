@@ -719,6 +719,16 @@ public class AuditQuestion extends BaseHistoryRequiringLanguages implements Comp
 			return true;
 		return false;
 	}
+	
+	@Transient
+	public boolean isVisibleInAudit(ContractorAudit audit) {
+		for (AuditCatData category:audit.getCategories()) {
+			if (category.getCategory().getId() == this.getCategory().getId())
+				return category.isApplies();
+		}
+		
+		return false;
+	}
 
 	@Transient
 	public boolean isAffectsAudit() {

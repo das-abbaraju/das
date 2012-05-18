@@ -354,13 +354,7 @@ public class BillingCalculatorSingle {
 		// Make sure the invoice isn't due within 7 days for active accounts
 		if (contractor.getStatus().isActive() && DateBean.getDateDifference(invoice.getDueDate()) < 7)
 			invoice.setDueDate(DateBean.addDays(new Date(), 7));
-		// End of Due date
 
-		notes += i18nCache.getText("Invoice.ThankYou", user != null ? user.getLocale() : Locale.ENGLISH);
-		// AppProperty prop = appPropDao.find("invoice_comment");
-		// if (prop != null) {
-		// notes = prop.getValue();
-		// }
 		// Add the list of operators if this invoice has a membership level
 		// on it
 		boolean hasMembership = false;
@@ -368,11 +362,10 @@ public class BillingCalculatorSingle {
 			if (item.getInvoiceFee().isMembership())
 				hasMembership = true;
 		}
+		
 		if (hasMembership) {
-			notes += i18nCache.getText("Invoice.ClientSiteList", user != null ? user.getLocale() : Locale.ENGLISH,
-					getOperatorsString(contractor));
-		}
-		invoice.setNotes(notes);
+			invoice.setNotes(getOperatorsString(contractor));
+		}		
 
 		for (InvoiceItem item : invoiceItems) {
 			item.setInvoice(invoice);

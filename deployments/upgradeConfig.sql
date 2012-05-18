@@ -13,3 +13,9 @@ from audit_question aq
 where 1 
 and aq.columnHeader is not NULL 
 and aq.columnHeader !='';
+
+-- PICS-5810
+-- Clear out tag for Shell OGP
+update flag_criteria_operator fcc
+set fcc.tagID = NULL, updatedBy=37745, updateDate=NOW()
+where fcc.tagID=465;

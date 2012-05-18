@@ -18,11 +18,11 @@
 			<s:if test="trade.trade.parent != null">
 				<div class="trade-section">
 					<s:iterator value="tradeClassification" var="atrade">
-						<s:if test="isStringEmpty(#atrade.name2)">
-							<s:set name="trade_name" value="#atrade.name" />
+						<s:if test="#atrade.name2.exists">
+							<s:set name="trade_name" value="#atrade.name2" />
 						</s:if>
 						<s:else>
-							<s:set name="trade_name" value="#atrade.name2" />
+							<s:set name="trade_name" value="#atrade.name" />
 						</s:else>
 						
 						<a href="ContractorTrades!tradeAjax.action?contractor=${contractor.id}&trade.trade=${atrade.id}" class="trade">${trade_name}</a> &gt;
@@ -33,7 +33,7 @@
 	
 		<h3>${trade.trade.name}</h3>
 		
-		<s:if test="!isStringEmpty(trade.trade.help)">
+		<s:if test="trade.trade.help.exists">
 			<div id="trade_description" class="trade-section">
 				<s:property value="trade.trade.help" />
 			</div>
@@ -67,11 +67,11 @@
 							<s:iterator value="trade.trade.children" var="atrade">
 								<li class="trade-child">
 									<a href="ContractorTrades!tradeAjax.action?contractor=<s:property value="contractor.id"/>&trade.trade=<s:property value="#atrade.id"/>" class="trade">
-										<s:if test="isStringEmpty(#atrade.name2)">
-											<s:property value="#atrade.name"/>
+										<s:if test="#atrade.name2.exists">
+											<s:property value="#atrade.name2"/>
 										</s:if>
 										<s:else>
-											<s:property value="#atrade.name2"/>
+											<s:property value="#atrade.name"/>
 										</s:else>
 									</a>
 								</li>

@@ -82,7 +82,7 @@
 			</div>
 		</pics:permission>
 		
-		<s:if test="#category.helpText.exists()">
+		<s:if test="#category.helpText.exists">
 			<div class="helpbox"><s:property value="#category.helpText" escape="false"/></div>
 		</s:if>
 		
@@ -92,9 +92,13 @@
 		
 		<s:if test="#questions.size() > 0">
 			<div class="columns-<s:property value="#category.columns" />">
+				<s:set name = "questionsPerColumn" value="#questions.size() / (#category.columns)" />
 				<s:iterator status="status" begin="1" end="#category.columns">
-					<s:set name="begin" value="#status.index * (#questions.size() / #category.columns)" />
-					<s:set name="end" value="(#status.index + 1) * (#questions.size() / #category.columns) - 1" />
+					<s:set name="begin" value="#status.index * #questionsPerColumn" />
+					<s:set name="end" value="(#status.index + 1) * #questionsPerColumn - 1" />
+					<s:if test="#status.index + 1 == #category.columns">
+						<s:set name="end" value="#questions.size() - 1" />
+					</s:if>
 
 					<ul class="column column<s:property value="#status.count" />">
 						<s:iterator value="#questions" var="q" begin="#begin" end="#end">
@@ -102,7 +106,7 @@
 							<s:set name="hidden" value="!#q.isVisible(answerMap)" />
 							
 							<s:if test="previewCat || #q.isValidQuestion(conAudit.validDate)">
-								<s:if test="#q.title != null && #q.title.exists() && !#hidden">
+								<s:if test="#q.title != null && #q.title.exists && !#hidden">
 									<h4 class="groupTitle<s:if test="#hidden"> hide</s:if>" id="title_<s:property value="#q.id"/>">
 										<s:property value="#q.title" escape="false"/>
 									</h4>

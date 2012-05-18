@@ -1,5 +1,6 @@
 package com.picsauditing.actions.audits;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -226,7 +227,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			}
 		}
 
-		return "edit";
+		return redirect("ScheduleAudit!edit.action?auditID=" + conAudit.getId());
 	}
 
 	public String address() throws Exception {
@@ -588,7 +589,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 		invoice.setCurrency(contractor.getCountry().getCurrency());
 		invoice.setDueDate(new Date());
 		invoice.setTotalAmount(contractor.getCountry().getAmount(fee));
-		invoice.setNotes(notes + " " + getText("Invoice.ThankYou"));
+		invoice.setNotes(notes);
 		invoice.setAuditColumns(permissions);
 		invoice.setQbSync(true);
 		invoice = invoiceDAO.save(invoice);
@@ -667,5 +668,10 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	public void setSelectedTimeZone(TimeZone selectedTimeZone) {
 		this.selectedTimeZone = selectedTimeZone;
+	}
+
+	public String redirect(String url) throws IOException {
+		ServletActionContext.getResponse().sendRedirect(url);
+		return BLANK;
 	}
 }

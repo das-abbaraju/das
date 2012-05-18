@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,9 @@ import javax.persistence.Transient;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
 @Entity
@@ -116,6 +120,30 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 
 	public void setVisible(boolean visible) {
 		this.visible = visible;
+	}
+	
+	@Transient
+	public boolean isTopCaowUserNote() {
+		if (caoWorkflow != null && caoWorkflow.size() > 0) {
+			List<ContractorAuditOperatorWorkflow> sortedCoaws = new ArrayList<ContractorAuditOperatorWorkflow>(caoWorkflow);
+			Collections.sort(sortedCoaws, new Comparator<ContractorAuditOperatorWorkflow>() {
+				@Override
+				public int compare(ContractorAuditOperatorWorkflow caow1,
+						ContractorAuditOperatorWorkflow coaw2) {
+					if (caow1 != null && caow1.getCreationDate().before(coaw2.getCreationDate()))
+						return 1;
+					else if (caow1 != null && caow1.getCreationDate().after(coaw2.getCreationDate()))
+						return -1;
+					return 0;
+				}
+			});
+			
+			ContractorAuditOperatorWorkflow caow = sortedCoaws.get(0);
+			if (caow.getStatus().equals(caow.getPreviousStatus()) && !Strings.isEmpty(caow.getNotes())) {
+				return true;
+			}
+		}
+		return false; 
 	}
 
 	@Enumerated(EnumType.STRING)

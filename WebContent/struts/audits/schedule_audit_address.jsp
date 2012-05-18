@@ -24,6 +24,19 @@
 		<s:hidden name="auditID" />
         <s:hidden id="conAudit_latitude" name="conAudit.latitude" />
         <s:hidden id="conAudit_longitude" name="conAudit.longitude" />
+        
+        <pics:permission perm="AuditEdit" type="Edit">
+	        <fieldset class="form">
+	        	<h2 class="formLegend"><s:text name="ScheduleAudit.button.EditScheduleManually" /></h2>
+	        	<ol>
+		        	<li>
+						<a class="picsbutton" href="ScheduleAudit!edit.action?auditID=<s:property value="auditID" />">
+							<s:text name="ScheduleAudit.button.EditScheduleManually" />
+						</a>
+					</li>
+				</ol>
+	        </fieldset>
+        </pics:permission>
 		
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="ScheduleAudit.label.ContactPerson" /></h2>

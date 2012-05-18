@@ -19,10 +19,10 @@ public class EmailExclusion extends ReportActionSupport {
 	public String execute() throws Exception {
 		permissions.tryPermission(OpPerms.EmailTemplates);
 		
-		String quoteSafeEmail = email.replace("'", "''");
+		if (email != null && !email.isEmpty()) {
+			String quoteSafeEmail = email.replace("'", "''");
 
-		if (button != null && button.toLowerCase().contains("save")) {
-			if (email != null && !email.isEmpty()) {
+			if (button != null && button.toLowerCase().contains("save")) {
 				if (emailQueueDAO.findEmailAddressExclusionAlreadyExists(quoteSafeEmail))
 					addActionMessage(email + " already exists in the exclusion list");
 				else if (!Strings.isValidEmail(email)) 
@@ -31,10 +31,10 @@ public class EmailExclusion extends ReportActionSupport {
 					addActionMessage("Added email to list. " + email + " will not receive email blast emails");
 					emailQueueDAO.addEmailAddressExclusions(quoteSafeEmail);
 				}
+			} else if (button != null && button.toLowerCase().contains("remove")) {
+				addActionMessage("Removed email from list. " + email + " will now receive email blast emails");
+				emailQueueDAO.removeEmailAddressExclusions(quoteSafeEmail);
 			}
-		} else if (button != null && button.toLowerCase().contains("remove")) {
-			addActionMessage("Removed email from list. " + email + " will now receive email blast emails");
-			emailQueueDAO.removeEmailAddressExclusions(quoteSafeEmail);
 		}
 
 		SelectSQL sql = new SelectSQL("email_exclusion ee");

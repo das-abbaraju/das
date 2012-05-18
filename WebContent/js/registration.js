@@ -476,7 +476,7 @@
 				element.each(function (key, value) {
 					var html = $(this).html();
 					var label = $(this).siblings('label');
-					var input = $(this).siblings('input[type=text], select');
+					var input = $(this).siblings('input[type=text], input[type=password], select');
 					
 					label.attr('title', label.html().replace(':', ''));
 					label.attr('data-content', html.replace('"', "'"));

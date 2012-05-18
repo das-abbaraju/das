@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "workflow_state")
@@ -15,6 +16,7 @@ public class WorkflowState extends BaseTable {
 	private Workflow workflow;
 	private AuditStatus status;
 	private boolean hasRequirements;
+	private TranslatableString name;
 
 	@ManyToOne
 	@JoinColumn(name = "workflowID", nullable = false)
@@ -35,6 +37,16 @@ public class WorkflowState extends BaseTable {
 	public void setStatus(AuditStatus status) {
 		this.status = status;
 	}
+
+	@Transient
+	public TranslatableString getName() {
+		return this.name;
+	}
+
+	public void setName(TranslatableString name) {
+		this.name = name;
+	}
+
 
 	public boolean isHasRequirements() {
 		return hasRequirements;

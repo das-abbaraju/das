@@ -3,6 +3,7 @@ package com.picsauditing.report;
 import static org.junit.Assert.*;
 
 import org.json.simple.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.report.fields.QueryFunction;
@@ -32,6 +33,7 @@ public class ColumnTest {
 		assertEquals(expected, column.toJSON(true).toJSONString());
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testFunction() {
 		jsonObj.put("name", "AccountNameUpperCase");

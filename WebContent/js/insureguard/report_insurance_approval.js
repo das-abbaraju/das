@@ -126,7 +126,7 @@
                                 status: 'Incomplete',
                                 caoIDs: cao_id,
                                 insurance: true,
-                                jsonArrayValue: json,
+                                jsonArray: json,
                                 note: note
                             };
                             

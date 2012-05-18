@@ -9,7 +9,7 @@
 	
 	<s:include value="../jquery.jsp"/>
 	
-	<script type="text/javascript" src="js/login.js"></script>
+	<script type="text/javascript" src="js/login.js?v=${version}"></script>
 </head>
 <body>
 

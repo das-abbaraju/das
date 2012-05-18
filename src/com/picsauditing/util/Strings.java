@@ -569,4 +569,12 @@ public class Strings {
 
 		return null;
 	}
+	
+	public static String nullToBlank(String value) {
+		if (value == null) {
+			return "";
+		}
+		
+		return value;
+	}
 }

@@ -65,9 +65,6 @@
 					<td>
 						<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
 					</td>
-					<td>
-						<s:text name="global.OverrideUntil" />
-					</td>
 					
 					<s:if test="permissions.operator">
 						<td>
@@ -188,21 +185,29 @@
 					<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
 						<td class="center">
 							<pics:permission perm="ContractorDetails">
+								<s:if test='get("forceEnd") != null'>
 								<a 
 									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/> - Click to view details">
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('forceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+								</s:if>
+								<s:elseif test='get("dataForceEnd") != null'>
+								<a 
+									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
+									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('dataForceEnd')" format="%{getText('date.short')}" /> - Click to view details">
+								</s:elseif>
+								<s:else>
+								<a 
+									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
+									title="<s:property value="get('flag')"/> - Click to view details" >
+								</s:else>
 							</pics:permission>
 							
 							<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0">
 							
+							
 							<pics:permission perm="ContractorDetails">
-								</a>
+								<s:if test='get("forceEnd") != null || get("dataForceEnd") != null'>*</s:if></a>
 							</pics:permission>
-						</td>
-						<td>
-							<s:if test='get("forceEnd") != null'>
-								<s:date name="get('forceEnd')" format="%{getText('date.short')}" />
-							</s:if>
 						</td>
 						<s:if test="permissions.operator">
 							<td>

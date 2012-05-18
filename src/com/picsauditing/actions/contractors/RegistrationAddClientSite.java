@@ -42,7 +42,6 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	public RegistrationAddClientSite() {
 		this.noteCategory = NoteCategory.OperatorChanges;
 		this.currentStep = ContractorRegistrationStep.Clients;
-		this.subHeading = getText("RegistrationAddClientSite.title");
 	}
 
 	@Override
@@ -50,6 +49,8 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		if (permissions.isOperator())
 			throw new NoPermissionException(getText("ContractorFacilities.error.OperatorCannotView"));
 		findContractor();
+
+		subHeading = getText("RegistrationAddClientSite.title");
 
 		return SUCCESS;
 	}
@@ -71,7 +72,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	public void ajaxAdd() throws Exception {
 		findContractor();
 		contractor.setRenew(true);
-		
+
 		checkServiceTypeRestrictions();
 
 		facilityChanger.setContractor(contractor);
@@ -88,7 +89,7 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		facilityChanger.setOperator(operator.getId());
 		facilityChanger.remove();
 	}
-	
+
 	public void checkServiceTypeRestrictions() {
 		int on = (operator.isOnsiteServices() ? 1 : 0);
 		int off = (operator.isOffsiteServices() ? 1 : 0);
@@ -108,6 +109,18 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	}
 
 	public String search() throws Exception {
+		// FInd contractor
+		// CHeck search value
+		// if search value empty run default search
+		// else if search value is *
+		// find all the operators
+		// else create search engine
+		// use engine to build list of terms
+		// use engine to build query
+		// find using query
+		// from results remove all operators contractor is already associated
+		// with
+		// return ajax page or normal page
 		findContractor();
 
 		if (Strings.isEmpty(searchValue)) {
@@ -123,6 +136,10 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 				String select = searchEngine.buildNativeOperatorSearch(permissions, terms);
 
 				searchResults = operatorDao.nativeClientSiteSearch(select);
+
+				// If searchResults returns a GC Free operator,
+				// search for their operators and make free operator
+				// nonselectable somehow.
 			}
 		}
 		searchResults.removeAll(contractor.getOperatorAccounts());

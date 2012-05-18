@@ -32,7 +32,7 @@
 	</div>
 </s:if>
 
-<form>
+<form id="pqf_verification">
 	<s:if test="conAudit.auditType.pqf">
 		<s:if test="pqfQuestions.size > 0">
 			<fieldset class="form" style="clear: none; float: left; width: 50%; margin: 0.5em;">
@@ -108,7 +108,14 @@
 							</s:div>
 						</li>
 						<li>
-							<label>Comment:</label>
+							<label>
+							<s:if test="question.id == 1331" >
+							Number Of Pages:
+							</s:if>
+							<s:else>
+							Comment:
+							</s:else>
+							</label> 
 							<s:textfield 
 								onblur="return setComment( %{conAudit.id}, %{question.id}, %{id}, %{question.category.id} );" 
 								id="comment_%{question.id}" 
@@ -212,7 +219,7 @@
 								</s:div>
 							</li>
 							<li>
-								<label>Comment:</label> 
+								<label>Comment:</label> 	
 								
 								<s:if test="question.category.parent.id == 152">
 									<s:select 
@@ -252,25 +259,28 @@
 		</fieldset>
 		
 		<s:if test="!osha.isEmpty('OSHA')">
-			<fieldset class="form">
+			<fieldset class="form osha-verification">
 				<h2 class="formLegend">OSHA</h2>
-					<s:if test="!osha.isVerified('OSHA')">
-						<s:set name="verifyText" value="'Verify'"/>
-						<s:set name="displayVerified" value="'none'"/>
-					</s:if>
-					<s:else>
-						<s:set name="verifyText" value="'Unverify'"/>
-						<s:set name="displayVerified" value="'block'"/>
-					</s:else>
-					
-					<input 
-						id="verify_<s:property value="osha.id"/>" 
-						name="verify" 
-						type="button" 
-						onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,'OSHA');" 
-						value="<s:property value="#attr.verifyText"/>"
-					/>				
+				
+				<s:if test="!osha.isVerified('OSHA')">
+					<s:set name="verifyText" value="'Verify'"/>
+					<s:set name="displayVerified" value="'none'"/>
+				</s:if>
+				<s:else>
+					<s:set name="verifyText" value="'Unverify'"/>
+					<s:set name="displayVerified" value="'block'"/>
+				</s:else>
+				
+				<input 
+					id="verify_<s:property value="osha.id"/>" 
+					name="verify" 
+					type="button" 
+					onclick="return toggleOSHAVerify(<s:property value="osha.id"/>,'OSHA');" 
+					value="<s:property value="#attr.verifyText"/>"
+				/>
+								
 				<s:div id="status_%{osha.id}"></s:div>
+				
 				<div>
 					<ol>
 						<li id="verified_<s:property value="osha.id"/>" style="display: <s:property value="#attr.displayVerified"/>;">
@@ -290,16 +300,17 @@
 						<li>
 							<label>File:</label>
 							<s:if test="osha.getFileUploadId('OSHA') > 0">
-							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8810)">View File</a>
+							<a href="#" onClick="openOsha(<s:property value="osha.id" />,8811)">View File</a>
 							<a href="Audit.action?auditID=<s:property value="osha.id" />&catID=2033&mode=Edit" target="_BLANK">Change File</a>
 							</s:if>
 						</li>		
-					<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
-						<li>
-							<label><s:property value="#auditData.question.name" escape="false"/></label>
-							<s:textfield name="#auditData.answer" cssClass="oshanum" />
-						</li>	
-					</s:iterator>	
+						
+						<s:iterator value="osha.getQuestionsToVerify('OSHA')" id="auditData">
+							<li>
+								<label><s:property value="#auditData.question.name" escape="false"/></label>
+								<s:textfield name="oshaQuestion_%{#auditData.question.id}" value="%{#auditData.answer}" cssClass="oshanum" />
+							</li>	
+						</s:iterator>	
 					</ol>
 				</div>
 			</fieldset>

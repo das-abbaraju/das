@@ -1,12 +1,12 @@
 package com.picsauditing.PICS;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 
-import com.ibm.icu.util.Calendar;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -91,11 +91,11 @@ public class SmartFacilitySuggest {
 
 	static public List<BasicDynaBean> getSimilarOperators(ContractorAccount contractor, int limit) throws SQLException {
 		String opIDs = Strings.implodeIDs(contractor.getOperatorAccounts());
-		
+
 		if (Strings.isEmpty(opIDs)) {
 			return Collections.emptyList();
-		}		
-		
+		}
+
 		SelectSQL sql = new SelectSQL("stats_gco_count s");
 		sql.addJoin("JOIN accounts a ON s.opID2 = a.id");
 		sql.addJoin("JOIN stats_gco_count s2 ON s2.opID = s.opID2 AND s2.opID2 IS NULL");

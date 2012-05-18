@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<s:property value="version"/>" />
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js?v=${version}"></script>
 		<script>window.jQuery || document.write('<script src="js/jquery/jquery-1.7.1.min.js">\x3C/script>')</script>
 		<script type="text/javascript">
 			$(function() {
@@ -25,7 +25,7 @@
 						<s:text name="ReportNewReqConImport.title" />
 					</h1>
 					<s:include value="../actionMessages.jsp" />
-					<a href="resources/RequestNewContractors.xls">
+					<a href="//www.picsorganizer.com/Resources!download.action?id=1854&loc=en">
 						<s:text name="ReportNewReqConImport.Template" />
 					</a>
 					<div>

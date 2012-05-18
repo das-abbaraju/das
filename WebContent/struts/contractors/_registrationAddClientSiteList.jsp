@@ -19,7 +19,7 @@
 				</span>
 				
 				<s:if test="#client_site_list_position == 'left'">
-					<span class="add btn success">+ <s:text name="JS.RegistrationAddClientSite.AddSite"/></span>
+					<span id="${result.id}" class="add btn success">+ <s:text name="JS.RegistrationAddClientSite.AddSite"/></span>
 				</s:if>
 				<s:else>
 					<span class="remove btn error">- <s:text name="JS.RegistrationAddClientSite.RemoveSite"/></span>

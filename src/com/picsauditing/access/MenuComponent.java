@@ -67,6 +67,11 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
             return false;
         return url.length() > 0;
     }
+    
+    public boolean hasHtmlID () {
+    	if (htmlId == null) return false;
+    	return htmlId.length() > 0;
+    }
 
     public String getUrl() {
         return url;
@@ -117,21 +122,19 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     }
 
     public MenuComponent addChild(String name) {
-        MenuComponent child = new MenuComponent(name);
-        
-        child.setId(this.children.size() + (100 * this.id));
-        child.setLevel(this.level + 1);
-        
-        this.children.add(child);
-        
-        return child;
+    	return addChild(name, null, null);
+    }
+    
+    public MenuComponent addChild(String name, String url) {
+    	return addChild(name, url, null);
     }
 
-    public MenuComponent addChild(String name, String url) {
+    public MenuComponent addChild(String name, String url, String htmlID) {
         MenuComponent child = new MenuComponent(name, url);
         
         child.setId(this.children.size() + (100 * this.id));
         child.setLevel(this.level + 1);
+        child.setHtmlId(htmlID);
         
         this.children.add(child);
         

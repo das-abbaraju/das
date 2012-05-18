@@ -21,8 +21,8 @@
 		<link rel="stylesheet" type="text/css" href="css/contractor_flag_matrix_print.css?v=${version}" />
 		
 		<!-- CSS FIXES FOR INTERNET EXPLORER -->
-		<!--[if IE]><link rel="stylesheet" href="css/ie.css" type="text/css" /><![endif]-->
-		<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css" type="text/css" /><![endif]-->
+		<!--[if IE]><link rel="stylesheet" href="css/ie.css?v=${version}" type="text/css" /><![endif]-->
+		<!--[if lt IE 7]><link rel="stylesheet" href="css/ie6.css?v=${version}" type="text/css" /><![endif]-->
 		
 		<!-- JS FIXES FOR INTERNET EXPLORER -->
 		<!--[if lt IE 9]>

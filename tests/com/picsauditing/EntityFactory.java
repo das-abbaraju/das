@@ -44,7 +44,7 @@ public class EntityFactory {
 		string.putTranslation(Locale.ENGLISH.getLanguage(), value, false);
 		return string;
 	}
-	
+
 	static public OperatorAccount makeOperator() {
 		OperatorAccount operator = new OperatorAccount();
 		operator.setId(counter++);
@@ -72,6 +72,7 @@ public class EntityFactory {
 		contractor.setProductRisk(LowMedHigh.Med);
 		contractor.setCountry(new Country("US"));
 		contractor.setOnsiteServices(true);
+		contractor.setZip("99999");
 		return contractor;
 	}
 
@@ -109,7 +110,7 @@ public class EntityFactory {
 		OshaAudit oshaAudit = new OshaAudit(audit);
 		return oshaAudit;
 	}
-	
+
 	static public AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
 		AuditCatData auditCatData = new AuditCatData();
 		auditCatData.setAudit(conAudit);
@@ -128,18 +129,16 @@ public class EntityFactory {
 		auditCategory.setName(makeTranslatableString(name));
 		return auditCategory;
 	}
-	
+
 	// TODO: FIX ME
 	static public OshaAudit makeShaLogs(ContractorAudit conAudit, int manHours) {
-		/*OshaAudit oshaAudit = new OshaAudit();
-		oshaAudit.setConAudit(conAudit);
-		oshaAudit.setType(OshaType.OSHA);
-		oshaAudit.setCorporate(true);
-		oshaAudit.setFatalities(1);
-		oshaAudit.setManHours(manHours);
-		oshaAudit.setLostWorkCases(12);
-		oshaAudit.setRecordableTotal(134);
-		return oshaAudit;*/
+		/*
+		 * OshaAudit oshaAudit = new OshaAudit();
+		 * oshaAudit.setConAudit(conAudit); oshaAudit.setType(OshaType.OSHA);
+		 * oshaAudit.setCorporate(true); oshaAudit.setFatalities(1);
+		 * oshaAudit.setManHours(manHours); oshaAudit.setLostWorkCases(12);
+		 * oshaAudit.setRecordableTotal(134); return oshaAudit;
+		 */
 		return null;
 	}
 
@@ -176,14 +175,14 @@ public class EntityFactory {
 	static public AuditData makeAuditData(String answer) {
 		return makeAuditData(answer, makeAuditQuestion());
 	}
-	
+
 	static public AuditData makeAuditData(String answer, AuditQuestion question) {
 		AuditData data = new AuditData();
 		data.setQuestion(question);
 		data.setAnswer(answer);
 		return data;
 	}
-	
+
 	static public AuditData makeAuditData(String answer, int id) {
 		AuditQuestion question = makeAuditQuestion();
 		question.setId(id);
@@ -194,6 +193,7 @@ public class EntityFactory {
 		User user = makeUser();
 		return makePermission(user);
 	}
+
 	static public Permissions makePermission(User user) {
 		Permissions permission = new Permissions();
 		try {
@@ -228,7 +228,7 @@ public class EntityFactory {
 		catData.setCategory(category);
 		return catData;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit, AuditStatus status) {
 		ContractorAuditOperator cao = new ContractorAuditOperator();
@@ -237,7 +237,8 @@ public class EntityFactory {
 		cao.setVisible(true);
 		return cao;
 	}
+
 	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit) {
-		return makeContractorAuditOperator(audit, AuditStatus.Complete );
+		return makeContractorAuditOperator(audit, AuditStatus.Complete);
 	}
 }

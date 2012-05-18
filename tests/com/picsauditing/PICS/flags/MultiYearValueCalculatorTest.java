@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.jpa.entities.AuditData;
@@ -14,97 +16,93 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.FlagCriteria;
 
+@PrepareForTest(MultiYearValueCalculator.class)
 public class MultiYearValueCalculatorTest {
 
 	@Test
-	public void addValues_EmptyList() {
-		assertNull(MultiYearValueCalculator.addValues(null));
-		assertNull(MultiYearValueCalculator.addValues(new ArrayList<Double>()));
+	public void addValues_EmptyList() throws Exception {
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "addValues", (List<Double>) null));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "addValues", new ArrayList<Double>()));
 	}
 	
 	@Test
-	public void addValues() {
+	public void addValues() throws Exception {
 		List<Double> values = new ArrayList<Double>();
 		values.add(1.0);
 		values.add(2.0);
-		assertEquals(new Double(3.0), MultiYearValueCalculator.addValues(values));		
+		assertEquals(new Double(3.0), Whitebox.invokeMethod(MultiYearValueCalculator.class, "addValues", values));		
 	}
 	
 	@Test
-	public void addValues_WithSomeNullsInList() {
+	public void addValues_WithSomeNullsInList() throws Exception {
 		List<Double> values = new ArrayList<Double>();
 		values.add(2.0);
 		values.add(null);
 		values.add(3.0);
-		assertEquals(new Double(5.0), MultiYearValueCalculator.addValues(values));		
+		assertEquals(new Double(5.0), Whitebox.invokeMethod(MultiYearValueCalculator.class, "addValues", values));		
 	}
 	
 	@Test
-	public void addValues_AllNullsInList() {
+	public void addValues_AllNullsInList() throws Exception {
 		List<Double> values = new ArrayList<Double>();
 		values.add(null);
 		values.add(null);
 		values.add(null);
 		values.add(null);
-		assertEquals(null, MultiYearValueCalculator.addValues(values));		
+		assertEquals(null, Whitebox.invokeMethod(MultiYearValueCalculator.class, "addValues", values));		
 	}
 	
 	@Test
-	public void getValueForSpecificYear_NullValueInList() {
+	public void getValueForSpecificYear_NullValueInList() throws Exception {
 		List<ContractorAudit> audits = Arrays.asList((ContractorAudit) null);
-		assertNull(MultiYearValueCalculator.findValueForSpecificYear(audits, new FlagCriteria(), 1));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueForSpecificYear", audits, new FlagCriteria(), 1));
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void getValueForSpecificYear_IllegalArgumentException() {
-		MultiYearValueCalculator.findValueForSpecificYear(null, new FlagCriteria(), 0);
+	public void getValueForSpecificYear_IllegalArgumentException() throws Exception {
+		Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueForSpecificYear", (ContractorAudit) null, new FlagCriteria(), 0);
 	}
 	
 	@Test
-	public void getValueForSpecificYear_FailsValidationCheckAtBeginningOfMethod() {		
+	public void getValueForSpecificYear_FailsValidationCheckAtBeginningOfMethod() throws Exception {		
 		List<ContractorAudit> audits = Arrays.asList((ContractorAudit) null);
-		assertNull(MultiYearValueCalculator.findValueForSpecificYear(audits, new FlagCriteria(), 1));
-		assertNull(MultiYearValueCalculator.findValueForSpecificYear(null, new FlagCriteria(), 1));
-		assertNull(MultiYearValueCalculator.findValueForSpecificYear(new ArrayList<ContractorAudit>(), new FlagCriteria(), 1));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueForSpecificYear", audits, new FlagCriteria(), 1));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueForSpecificYear", (ContractorAudit) null, new FlagCriteria(), 1));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueForSpecificYear", new ArrayList<ContractorAudit>(), new FlagCriteria(), 1));
 	}
 	
 	@Test
-	public void calculateMultiYearSum() {
-		
-	}
-	
-	@Test
-	public void totalNonNullValues_OnlyNullValues() {
+	public void totalNonNullValues_OnlyNullValues() throws Exception {
 		List<Double> values = Arrays.asList((Double) null, (Double) null);
-		assertEquals(0, MultiYearValueCalculator.totalNonNullValues(values));
+		assertEquals(0, Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalNonNullValues", values));
 	}
 	
 	@Test
-	public void totalNonNullValues_MixNullAndDoubleValues() {
+	public void totalNonNullValues_MixNullAndDoubleValues() throws Exception {
 		List<Double> values = Arrays.asList((Double) null, Double.valueOf(123), (Double) null, Double.valueOf(456));
-		assertEquals(2, MultiYearValueCalculator.totalNonNullValues(values));
+		assertEquals(2, Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalNonNullValues", values));
 	}
 	
 	@Test
-	public void totalNonNullValues_DoubleValuesOnly() {
+	public void totalNonNullValues_DoubleValuesOnly() throws Exception {
 		List<Double> values = Arrays.asList(Double.valueOf(123), Double.valueOf(456), Double.valueOf(5));
-		assertEquals(3, MultiYearValueCalculator.totalNonNullValues(values));
+		assertEquals(3, Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalNonNullValues", values));
 	}
 	
 	@Test
-	public void findValuesForMathematicalFunction_NoAudits() {
-		assertNull(MultiYearValueCalculator.countSelectedCheckBoxes(new FlagCriteria(), null));
-		assertNull(MultiYearValueCalculator.countSelectedCheckBoxes(new FlagCriteria(), new ArrayList<ContractorAudit>()));
+	public void findValuesForMathematicalFunction_NoAudits() throws Exception {
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "countSelectedCheckBoxes", new FlagCriteria(), null));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "countSelectedCheckBoxes", new FlagCriteria(), new ArrayList<ContractorAudit>()));
 	}
 	
 	@Test
-	public void countSelectedCheckBoxes_NoAudits() {
-		assertNull(MultiYearValueCalculator.countSelectedCheckBoxes(new FlagCriteria(), null));
-		assertNull(MultiYearValueCalculator.countSelectedCheckBoxes(new FlagCriteria(), new ArrayList<ContractorAudit>()));
+	public void countSelectedCheckBoxes_NoAudits() throws Exception {
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "countSelectedCheckBoxes", new FlagCriteria(), null));
+		assertNull(Whitebox.invokeMethod(MultiYearValueCalculator.class, "countSelectedCheckBoxes", new FlagCriteria(), new ArrayList<ContractorAudit>()));
 	}
 	
 	@Test
-	public void getTotalCheckBoxCount_Valid_Checked_Answers_For_2_Questions() {
+	public void getTotalCheckBoxCount_Valid_Checked_Answers_For_2_Questions() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(11);
@@ -120,60 +118,60 @@ public class MultiYearValueCalculatorTest {
 		audit.setData(setupAuditDataList());
 		audits.add(audit);
 		
-		assertEquals(Integer.valueOf(2), MultiYearValueCalculator.countSelectedCheckBoxes(criteria, audits));
+		assertEquals(Integer.valueOf(2), Whitebox.invokeMethod(MultiYearValueCalculator.class, "countSelectedCheckBoxes", criteria, audits));
 	}
 	
 	@Test
-	public void totalCheckBoxSelectedForQuestion_FoundOne() {
+	public void totalCheckBoxSelectedForQuestion_FoundOne() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(11);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		int result = MultiYearValueCalculator.totalCheckBoxSelectedForQuestion(criteria, setupAuditDataList());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
 		assertEquals(1, result);
 	}
 	
 	@Test
-	public void totalCheckBoxSelectedForQuestion_Not_Found() {
+	public void totalCheckBoxSelectedForQuestion_Not_Found() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(8);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		int result = MultiYearValueCalculator.totalCheckBoxSelectedForQuestion(criteria, setupAuditDataList());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
 		assertEquals(0, result);
 	}
 	
 	@Test
-	public void totalCheckBoxSelectedForQuestion_Invalid_Answer() {
+	public void totalCheckBoxSelectedForQuestion_Invalid_Answer() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(10);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		int result = MultiYearValueCalculator.totalCheckBoxSelectedForQuestion(criteria, setupAuditDataList());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
 		assertEquals(0, result);
 	}
 
 	@Test
-	public void getValueFromAuditData_ValidNumericAnswer() {
+	public void getValueFromAuditData_ValidNumericAnswer() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(9);
 		criteria.setQuestion(question);
 		criteria.setDataType(FlagCriteria.NUMBER);
-		assertEquals(Double.valueOf(123), MultiYearValueCalculator.findValueInAuditData(criteria, setupAuditDataList()));
+		assertEquals(Double.valueOf(123), Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueInAuditData", criteria, setupAuditDataList()));
 	}
 	
 	@Test
-	public void getValueFromAuditData_InvalidNumericAnswer() {
+	public void getValueFromAuditData_InvalidNumericAnswer() throws Exception {
 		FlagCriteria criteria = new FlagCriteria();
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(10);
 		criteria.setQuestion(question);
 		criteria.setDataType(FlagCriteria.NUMBER);
-		assertEquals(Double.valueOf(0.0), MultiYearValueCalculator.findValueInAuditData(criteria, setupAuditDataList()));
+		assertEquals(Double.valueOf(0.0), Whitebox.invokeMethod(MultiYearValueCalculator.class, "findValueInAuditData", criteria, setupAuditDataList()));
 	}
 	
 	private List<AuditData> setupAuditDataList() {

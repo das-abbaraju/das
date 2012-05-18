@@ -70,6 +70,11 @@ fieldset.submit .picsbutton.positive {
 	float: left;
 	margin-left: 5em;
 }
+fieldset.submit .picsbutton.neutral {
+	float: left;
+	margin-left: 5em;
+	background-color: gray;
+}
 fieldset.submit .picsbutton.negative {
 	float: right;
 	margin-right: 5em;

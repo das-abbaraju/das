@@ -1,28 +1,34 @@
 package com.picsauditing.PICS;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTest;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 
-public class FlagDataCalculatorTest extends TestCase {
+//@RunWith(PowerMockRunner.class)
+public class FlagDataCalculatorTest { // extends PicsTest {
 
-	/* Create the main variables */
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;
 	private FlagCriteriaOperator fcOp;
@@ -30,15 +36,22 @@ public class FlagDataCalculatorTest extends TestCase {
 	List<FlagCriteriaContractor> conCrits;
 	List<FlagCriteriaOperator> opCrits;
 	Map<AuditType, List<ContractorAuditOperator>> caoMap;
+	private ContractorAccount contractor;
+	private ContractorAudit ca;
+	private OperatorAccount operator;
+	private ContractorAuditOperator cao;
+	
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		//super.setUp();
+		
+		contractor = EntityFactory.makeContractor();
+		ca = EntityFactory.makeContractorAudit(1, contractor);
+		operator = EntityFactory.makeOperator();
+		cao = EntityFactory.makeContractorAuditOperator(ca);
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-
-		/* Create the main variables */
-
-		ContractorAccount contractor = EntityFactory.makeContractor();
-
+		
 		fc = new FlagCriteria();
 		fc.setId(1);
 		fc.setCategory("Safety");
@@ -68,9 +81,115 @@ public class FlagDataCalculatorTest extends TestCase {
 		caoMap = null;
 	}
 
-	/*****
-	 * Unit Tests
-	 ************/
+	@Test
+	public void testFlagCAO_noRequiredStatus() throws Exception {
+		boolean flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertTrue("if the criteria has no required status, flagCAO should be true", flagCAO); 
+	}
+
+	@Test
+	public void testFlagCAO_CaoStatusAfterRequiredStatus() throws Exception {
+		boolean flagCAO;
+		fc.setRequiredStatus(AuditStatus.Submitted);
+		// cao.changeStatus is doing db interaction and permission testing which is not
+		// relevant to this test.... so.... violate encapsulation.
+		Whitebox.setInternalState(cao, "status", AuditStatus.Complete);
+
+		fc.setRequiredStatusComparison(">");
+		flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertFalse("compare is '>', cao status is after criteria required status, flagCAO should be false", flagCAO);
+		
+		fc.setRequiredStatusComparison("=");
+		flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertTrue("compare is '=', cao status is after criteria required status, flagCAO should be true", flagCAO); 
+
+		fc.setRequiredStatusComparison("!=");
+		flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertFalse("compare is '!=', cao status is after criteria required status, flagCAO should be false", flagCAO);
+
+		fc.setRequiredStatusComparison("<");
+		flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertTrue("compare is '<', cao status is after criteria required status, flagCAO should be true", flagCAO); 
+
+		fc.setRequiredStatusComparison("");
+		flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		assertTrue("compare is default (blank), cao status is after criteria required status, flagCAO should be true", flagCAO); 
+
+	}
+	
+	/* TODO
+	 * public void testFlagCAO_CaoStatusBeforeRequiredStatus() throws Exception {
+	 * public void testFlagCAO_CaoStatusEqualRequiredStatus() throws Exception {
+	 * public void testFlagCAO_CaoStatusMissing() throws Exception {
+	 * public void testFlagCAO_RequiredStatusMissing() throws Exception {
+	 */
+	
+	@Test
+	public void testIsAuditVisibleToOperator_noCAOs() throws Exception {
+		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		assertFalse("with no operators, the audit should not be visible", isAuditVisible); 
+	}
+
+	@Test
+	public void testIsAuditVisibleToOperator_caoNotVisible() throws Exception {
+		cao.setVisible(false);
+		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+		operators.add(cao);
+		ca.setOperators(operators);
+		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		assertFalse("if the cao is not visible, the audit should not be visible", isAuditVisible);
+	}
+
+	@Test
+	public void testIsAuditVisibleToOperator_caoNoPermissions() throws Exception {
+		cao.setVisible(true);
+		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+		operators.add(cao);
+		ca.setOperators(operators);
+		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		assertFalse("if the cao has no permissions, the audit should not be visible", isAuditVisible);
+	}
+
+	@Test
+	public void testIsAuditVisibleToOperator_caoWrongPermissions() throws Exception {
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		OperatorAccount anotherOp = EntityFactory.makeOperator();
+		caop.setOperator(anotherOp);
+		List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
+		caoPermissions.add(caop);
+		cao.setCaoPermissions(caoPermissions);
+		cao.setVisible(true);
+		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+		operators.add(cao);
+		ca.setOperators(operators);
+		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		assertFalse("if the cao has wrong permissions, the audit should not be visible", isAuditVisible);
+	}
+
+	@Test
+	public void testIsAuditVisibleToOperator_caoOneWrongOneRightPermissions() throws Exception {
+		List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
+		
+		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
+		caop1.setOperator(operator);
+		caoPermissions.add(caop1);
+		
+		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		OperatorAccount anotherOp = EntityFactory.makeOperator();
+		caop.setOperator(anotherOp);
+		caoPermissions.add(caop);
+		
+		cao.setCaoPermissions(caoPermissions);
+		cao.setVisible(true);
+		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+		operators.add(cao);
+		ca.setOperators(operators);
+		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		assertTrue("if the cao has correct permissions, the audit should be visible", isAuditVisible);
+	}
+
+	
+	@Test
 	public void testGreen() {
 		assertNull(getSingle()); // Green flags are ignored
 	}

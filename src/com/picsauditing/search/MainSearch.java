@@ -18,6 +18,7 @@ import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.EmployeeDAO;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.jpa.entities.AbstractIndexableTable;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -46,7 +47,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 	protected String searchType = "";
 	protected String pageLinks;
 
-	protected List<Indexable> fullList;
+	protected List<AbstractIndexableTable> fullList;
 	protected Hashtable<Integer, Integer> ht;
 
 	protected Database db = new Database();
@@ -81,7 +82,6 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 			return BLANK;
 		} else if ("search".equals(button)) { // full view and paging
-
 			List<String> terms = searchEngine.buildTerm(searchTerm, true, true);
 			if (terms == null || terms.isEmpty()) {
 				addActionMessage(getText("MainSearch.NoSearchableTerms"));
@@ -163,8 +163,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		return true;
 	}
 
-	private List<Indexable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
-		List<Indexable> records = getRecords(queryList);
+	private List<AbstractIndexableTable> getFullResults(List<BasicDynaBean> queryList) throws IOException {
+		List<AbstractIndexableTable> records = getRecords(queryList);
 		if (records.size() == 1) {
 			Indexable viewThis = records.get(0);
 			String viewAction = viewThis.getViewLink();
@@ -188,7 +188,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 	private void getResults(List<BasicDynaBean> queryList) {
 		StringBuilder sb = new StringBuilder();
-		List<Indexable> records = getRecords(queryList);
+		List<AbstractIndexableTable> records = getRecords(queryList);
 		if (records.size() > 0) {
 			for (Indexable value : records)
 				sb.append(value.getSearchText());
@@ -196,9 +196,8 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		output = sb.toString() + "FULL|" + getText("MainSearch.ClickFullSearch") + "|" + searchTerm.replace(" ", "+");
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Indexable> getRecords(List<BasicDynaBean> queryList) {
-		ArrayListMultimap<Class, Integer> indexableMap = ArrayListMultimap.create();
+	public List<AbstractIndexableTable> getRecords(List<BasicDynaBean> queryList) {
+		ArrayListMultimap<Class<? extends AbstractIndexableTable>, Integer> indexableMap = ArrayListMultimap.create();
 		SearchList recordsList = new SearchList();
 		for (BasicDynaBean bdb : queryList) {
 			String check = (String) bdb.get("indexType");
@@ -219,16 +218,17 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				recordsList.add(searchRecord);
 			}
 		}
-		for (Class key : indexableMap.keySet()) {
-			List<Indexable> list = accountDAO.findWhere(key.getName(),
-					"t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
+		
+		for (Class<? extends AbstractIndexableTable> key : indexableMap.keySet()) {
+			List<? extends AbstractIndexableTable> list = accountDAO.findWhere(key, "t.id IN (" + Strings.implode(indexableMap.get(key)) + ")", 0);
 			if (list != null) {
-				for (Indexable indexEntry : list) {
+				for (AbstractIndexableTable indexEntry : list) {
 					SearchItem searchRecord = new SearchItem(key, indexEntry.getId(), indexEntry);
 					recordsList.add(searchRecord);
 				}
 			}
 		}
+		
 		return recordsList.getRecordsOnly(false);
 	}
 
@@ -272,11 +272,11 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 		this.totalRows = totalRows;
 	}
 
-	public List<Indexable> getFullList() {
+	public List<AbstractIndexableTable> getFullList() {
 		return fullList;
 	}
 
-	public void setFullList(List<Indexable> fullList) {
+	public void setFullList(List<AbstractIndexableTable> fullList) {
 		this.fullList = fullList;
 	}
 
@@ -312,15 +312,15 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 
 class SearchItem {
 	public int id;
-	public Class<? extends Indexable> type = null;
-	public Indexable record = null;
+	public Class<? extends AbstractIndexableTable> type = null;
+	public AbstractIndexableTable record = null;
 
-	public SearchItem(Class<? extends Indexable> type, int id) {
+	public SearchItem(Class<? extends AbstractIndexableTable> type, int id) {
 		this.type = type;
 		this.id = id;
 	}
 
-	public SearchItem(Class<? extends Indexable> type, int id, Indexable record) {
+	public SearchItem(Class<? extends AbstractIndexableTable> type, int id, AbstractIndexableTable record) {
 		this.type = type;
 		this.id = id;
 		this.record = record;
@@ -370,8 +370,8 @@ class SearchList {
 		return item;
 	}
 
-	public List<Indexable> getRecordsOnly(boolean nullsAllowed) {
-		List<Indexable> recordsOnly = new ArrayList<Indexable>();
+	public List<AbstractIndexableTable> getRecordsOnly(boolean nullsAllowed) {
+		List<AbstractIndexableTable> recordsOnly = new ArrayList<AbstractIndexableTable>();
 		for (SearchItem item : data) {
 			if (nullsAllowed)
 				recordsOnly.add(item.record);

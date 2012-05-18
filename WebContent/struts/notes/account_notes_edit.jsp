@@ -75,7 +75,9 @@
 					</li>
 					<li>
 						<label>
-							<s:text name="NoteEditor.CanView" />
+							<s:text name="NoteEditor.CanViewParam">
+								<s:param><s:property value="getAccountType()"/> </s:param>
+							</s:text>
 						</label>
 						<s:checkbox name="note.canContractorView"></s:checkbox>
 					</li>

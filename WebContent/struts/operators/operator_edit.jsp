@@ -11,7 +11,7 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/calendar.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp" />
 	</head>
@@ -624,7 +624,7 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield
@@ -632,7 +632,7 @@
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
 																	/>
 																</nobr>
 															</td>
@@ -736,19 +736,19 @@
 																		cssClass="blueMain datepicker" size="10"
 																		name="operator.accountUsers[%{#role.index}].startDate"
 																		id="startDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(startDate, getText('date.short'))}"
 																	/>
 																	&nbsp;&nbsp;
 																	<s:textfield cssClass="blueMain datepicker"
 																		size="10"
 																		name="operator.accountUsers[%{#role.index}].endDate"
 																		id="endDate[%{id}]"
-																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, '%{getText('date.short')}')}"
+																		value="%{@com.picsauditing.PICS.DateBean@format(endDate, getText('date.short'))}"
 																	/>
 																</nobr>
 															</td>
 															<td>
-																<input type="submit" class="picsbutton positive" name="button" value="Save Role" />
+																<s:submit cssClass="picsbutton positive" method="saveRole" value="Save Role" />
 															</td>
 														</tr>
 													</s:if>

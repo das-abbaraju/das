@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jsoup.Jsoup;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.util.Strings;
 
 public class TranslatableString implements Comparable<TranslatableString>, Serializable {
@@ -16,9 +17,18 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 	private static final long serialVersionUID = 782714396254144725L;
 
 	private Map<String, Translation> translations = new HashMap<String, Translation>();
+	private String key;
 
 	public Collection<Translation> getTranslations() {
 		return translations.values();
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public void putTranslation(String locale, String translation, boolean insert) {
@@ -106,22 +116,24 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		if (translations.containsKey(fallback))
 			return translations.get(fallback).getValue();
 		else
-			return null;
+			return key;
 	}
-	
+
 	// TODO Carey change to isExists
-	public boolean exists() {
-	    String translation = toString();
-	    
-	    if (translation == null) {
-	        return false;
-	    }
-	    
-	    translation = translation.trim();
-	    
-	    return translation.length() > 0 && !translation.equals("Translation missing");
+	public boolean isExists() {
+		String translation = toString();
+
+		if (translation == null) {
+			return false;
+		}
+
+		translation = translation.trim();
+
+		return translation.length() > 0
+				&& !translation.toLowerCase().equals(I18nCache.DEFAULT_TRANSLATION.toLowerCase())
+				&& !translation.equals(key);
 	}
-	
+
 	/**
 	 * Strip Tags
 	 * 
@@ -130,7 +142,7 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 	 * @return
 	 */
 	public String getStripTags() {
-	    return Jsoup.parse(toString()).body().text();
+		return Jsoup.parse(toString()).body().text();
 	}
 
 	@Override
@@ -150,19 +162,19 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		if (translations.containsKey(locale.toString())) {
 			return locale.toString();
 		}
-		
+
 		if (translations.containsKey(locale.getLanguage())) {
 			return locale.getLanguage();
 		}
-		
+
 		if (translations.containsKey(Locale.ENGLISH.getLanguage())) {
 			return Locale.ENGLISH.getLanguage();
 		}
-		
+
 		for (String anyLocale : translations.keySet()) {
 			return anyLocale;
 		}
-		
+
 		return null;
 	}
 

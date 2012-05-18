@@ -6,7 +6,7 @@
 
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 
-<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js"></script>
+<script type="text/javascript" src="js/jquery/translate/jquery.translate-1.4.7-debug-all.js?v=${version}"></script>
 <script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript" src="js/filters.js?v=<s:property value="version"/>"></script>
 
@@ -219,16 +219,7 @@
                         <div class="content view-mode">
                             <div class="view">
                                 <div class="text">
-                                	<s:if test="value.toLowerCase().contains('html>')">
-	                                   	<a
-	                                   		href="javascript:;"
-	                                   		class="preview"
-	                                   		data-url="ManageTranslationsAjax!preview.action"
-	                                   		data-key="${translation.key}"
-	                                   		data-localeto="${translation.locale}"
-	                                   	>
-	                                   		Preview
-	                                   	</a>
+                                	<s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
 	                                    <s:property value="value" />
                                     </s:if>
                                     <s:else>
@@ -259,6 +250,18 @@
                                             />
                                         </div>
                                     </div>
+                                    
+                                    <s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
+                                        <a
+                                            href="javascript:;"
+                                            class="preview-translation btn small"
+                                            data-url="ManageTranslationsAjax!preview.action"
+                                            data-key="${translation.key}"
+                                            data-localeto="${translation.locale}"
+                                        >
+                                            Preview
+                                        </a>
+                                    </s:if>
                                     
                                     <a href="javascript:;" class="edit btn small primary">Edit</a>
                                 </div>

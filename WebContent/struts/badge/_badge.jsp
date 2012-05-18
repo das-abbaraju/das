@@ -6,6 +6,5 @@
 <s:set var="size">${param.size}</s:set>
 
 <!-- PICS Membership Tag START -->
-<div class="pb-program" data-size="${size}"></div>
-<script type="text/javascript" src="${host}/badge/badge.js#pb-id=${hash}"></script>
+<script type="text/javascript" data-size="${size}" src="${host}/badge/badge.js#pb-id=${hash}"></script>
 <!-- PICS Membership Tag END -->

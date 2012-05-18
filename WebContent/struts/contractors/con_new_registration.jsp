@@ -9,10 +9,10 @@
 		</title>
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=1" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/con_new_registration.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/fancybox/jquery.fancybox-1.3.1.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/con_new_registration.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp" />	
 	</head>
@@ -59,6 +59,7 @@
 							size="35"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_name"></div>
 						<div id="match_name"></div>
 					</li>
@@ -68,6 +69,7 @@
 							name="newContractor.contact"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_contact"></div>
 						<div id="match_contact"></div>
 					</li>
@@ -78,6 +80,7 @@
 							size="20"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_phone"></div>
 						<div id="match_phone"></div>
 					</li>
@@ -89,6 +92,7 @@
 							id="email"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 						<div id="think_email"></div>
 						<div id="match_email"></div>
 					</li>
@@ -122,7 +126,7 @@
 							listValue="name"
 							value="%{newContractor.country == null ? permissions.country : newContractor.country.isoCode}"
 						/>
-							
+						<span class="redMain">*</span>	
 						<div class="fieldhelp">
 							<h3>
 								<s:text name="Country" />
@@ -180,7 +184,7 @@
 							listValue="name" 
 							value="%{newContractor.requestedBy.id}"
 						/>
-						
+						<span class="redMain">*</span>
 						<div class="fieldhelp">
 							<h3>
 								<s:text name="ContractorRegistrationRequest.requestedBy" />
@@ -204,6 +208,7 @@
 							onchange="checkDate(this)"
 							theme="formhelp"
 						/>
+						<span class="redMain">*</span>
 					</li>
 					<li>
 						<s:textarea
@@ -527,8 +532,8 @@
 				</table>
 			</div>
 		</div>
-		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
-		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+		<script type="text/javascript" src="js/jquery/fancybox/jquery.fancybox-1.3.1.pack.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
 		<script type="text/javascript">
 			var chooseADate = '<s:text name="javascript.ChooseADate" />';
 			var name ='<s:property value="permissions.name" />'; 
@@ -565,6 +570,6 @@
 				);
 			}
 		</script>
-		<script type="text/javascript" src="js/con_new_registration.js"></script>
+		<script type="text/javascript" src="js/con_new_registration.js?v=${version}"></script>
 	</body>
 </html>

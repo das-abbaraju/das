@@ -161,11 +161,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 						+ " to " + Strings.implode(createdItemNames, ", "), getUser());
 				message = getText("InvoiceDetail.message.ChangedLevel");
 
-				String notes = getText("Invoice.ThankYou");
-				notes += " "
-						+ getTextParameterized("Invoice.ClientSiteList", billingService.getOperatorsString(contractor));
-
-				invoice.setNotes(notes);
+				invoice.setNotes(billingService.getOperatorsString(contractor));
 				contractor.syncBalance();
 			}
 
@@ -436,4 +432,5 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 	public String getCountry() {
 		return country;
 	}
+
 }

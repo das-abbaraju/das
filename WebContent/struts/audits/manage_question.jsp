@@ -9,12 +9,12 @@
         <link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/rules.css?v=<s:property value="version"/>" />
-        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/mcdropdown/css/jquery.mcdropdown.min.css?v=${version}" />
         
         <s:include value="../jquery.jsp"/>
         
-        <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js"></script>
-        <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js"></script>
+        <script type="text/javascript" src="js/jquery/jquery.bgiframe.min.js?v=${version}"></script>
+        <script type="text/javascript" src="js/jquery/mcdropdown/jquery.mcdropdown.min.js?v=${version}"></script>
         
         <script type="text/javascript">
             $(function(){
@@ -265,9 +265,12 @@
                         </s:include>
             		</li>
             		<li>
-                        <label>Title:</label>
-            			<s:textfield name="question.title" size="65"/>
-            		</li>
+	                    <label>Title:</label>
+						<s:textfield
+							name="question.title"
+							size="65"
+							value="%{question.title.exists ? question.title : ''}" />
+					</li>
             		<li>
                         <label>Required:</label>
             			<s:checkbox name="question.required" />
@@ -294,8 +297,12 @@
                     
             		<li>
                         <label>Column Header:</label>
-            			<s:textfield name="question.columnHeader" size="20" maxlength="30"/>
-            		</li>
+						<s:textfield
+							name="question.columnHeader"
+							size="20"
+							maxlength="30"
+							value="%{question.columnHeader.exists ? question.columnHeader : ''}" />
+					</li>
             		<li>
                         <label>Field Identifier:</label>
             			<s:textfield name="question.uniqueCode" size="20" maxlength="50"/>
@@ -440,7 +447,9 @@
             		</li>
             		<li>
                         <label>Requirement</label>
-            			<s:textarea name="question.requirement" />
+            			<s:textarea
+            				name="question.requirement"
+            				value="%{question.requirement.exists ? question.requirement : ''}" />
                         
                         <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.requirement</s:param>
@@ -533,9 +542,12 @@
             		</li>
             		<li>
                         <label>Help Text:</label>
-            			<s:textarea name="question.helpText" rows="4"></s:textarea>
-                        
-                        <s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
+						<s:textarea
+							name="question.helpText"
+							rows="4"
+							value="%{question.helpText.exists ? question.helpText : ''}" />
+	
+						<s:include value="/struts/translation/_listAllTranslationsForKey.jsp">
                             <s:param name="translation_key">AuditQuestion.${question.id}.helpText</s:param>
                             <s:param name="include_locale_static">true</s:param>
                         </s:include>

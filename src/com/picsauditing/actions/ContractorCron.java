@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.picsauditing.PICS.BillingCalculatorSingle;
 import com.picsauditing.PICS.ContractorFlagETL;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.ExceptionService;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.auditBuilder.AuditBuilder;
@@ -60,6 +61,7 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserAssignment;
+import com.picsauditing.jpa.entities.UserAssignmentType;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EventSubscriptionBuilder;
@@ -93,6 +95,8 @@ public class ContractorCron extends PicsActionSupport {
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
 	private BillingCalculatorSingle billingService;
+	@Autowired
+	private ExceptionService exceptionService;
 
 	static private Set<ContractorCron> manager = new HashSet<ContractorCron>();
 
@@ -112,16 +116,24 @@ public class ContractorCron extends PicsActionSupport {
 
 		// PicsLogger.start("ContractorCron");
 
-		if (conID > 0) {
-			run(conID, opID);
-		} else {
-			addActionError("You must supply a contractor id.");
-		}
+		try {
+			if (conID > 0) {
+				run(conID, opID);
+			} else {
+				addActionError("You must supply a contractor id.");
+			}
 
-		// PicsLogger.stop();
+			// PicsLogger.stop();
 
-		if (!Strings.isEmpty(redirectUrl)) {
-			return redirect(redirectUrl);
+			if (!Strings.isEmpty(redirectUrl)) {
+				return redirect(redirectUrl);
+			}
+		} catch (Exception e) {
+			if (!Strings.isEmpty(redirectUrl)) {
+				exceptionService.sendExceptionEmail(permissions, e, "Error in Contractor Cron calculating account id #" + conID);
+				return redirect(redirectUrl);
+			}
+			throw e;
 		}
 
 		return SUCCESS;
@@ -830,6 +842,12 @@ public class ContractorCron extends PicsActionSupport {
 					if (audit.getAuditor() == null && pqfCompleteSafetyManualVerified
 							&& contractor.isFinanciallyReadyForAudits()) {
 						ua = userAssignmentDAO.findByContractor(contractor, audit.getAuditType());
+						if (ua == null) {
+							List<UserAssignment> uaList = userAssignmentDAO.findByType(UserAssignmentType.Auditor);
+							if (uaList != null && uaList.size() > 0) {
+								ua = uaList.get(0);
+							}
+						}
 						if (ua != null) {
 							audit.setAuditor(ua.getUser());
 							audit.setAssignedDate(new Date());

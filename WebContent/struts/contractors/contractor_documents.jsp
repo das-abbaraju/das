@@ -10,7 +10,7 @@
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/notes.css?v=${version}" />
 		
 		<s:include value="../jquery.jsp"/>
 		

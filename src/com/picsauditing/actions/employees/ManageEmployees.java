@@ -1,6 +1,5 @@
 package com.picsauditing.actions.employees;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,7 +45,7 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.FileUtils;
+import com.picsauditing.jpa.entities.UserStatus;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -81,6 +80,8 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 	private EmployeeSite esSite = new EmployeeSite();
 	private JobSite jobSite = new JobSite();
 
+	private List<Employee> activeEmployees;
+
 	public ManageEmployees() {
 		noteCategory = NoteCategory.Employee;
 	}
@@ -107,10 +108,12 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 		if (account == null)
 			account = accountDAO.find(permissions.getAccountId());
 
-}
+	}
 
 	@Override
 	public String execute() throws Exception {
+		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+
 		if (audit != null) {
 			account = audit.getContractorAccount();
 		}
@@ -167,24 +170,56 @@ public class ManageEmployees extends AccountActionSupport implements Preparable 
 			addNote("Added employee " + employee.getDisplayName(), LowMedHigh.Med);
 
 		return redirect("ManageEmployees.action?"
-				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account=" + account.getId()) + "#employee="
-				+ employee.getId());
+				+ (audit != null ? "audit=" + audit.getId() + "&questionId=" + questionId : "account="
+						+ account.getId()) + "#employee=" + employee.getId());
 	}
 
-	public String delete() throws Exception {
-		employeeDAO.refresh(employee);
-		employeeDAO.remove(employee);
-		addActionMessage("Employee " + employee.getDisplayName() + " Successfully Deleted.");
-		File f = new File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) + "emp_" + employee.getId()
-				+ ".jpg");
-		if (f != null) {
-			f.delete();
-		}
-		employee = null;
+	public String inactivate() throws Exception {
+		employee.setStatus(UserStatus.Inactive);		
+		employeeDAO.save(employee);
+		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deactivated.");
+		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
 
 		return SUCCESS;
 	}
 
+	public String activate() throws Exception {
+		employee.setStatus(UserStatus.Active);
+		employeeDAO.save(employee);
+
+		return this.redirect("ManageEmployees.action?id=" + employee.getAccount().getId() + "#employee="
+				+ employee.getId());
+	}
+
+	public String delete() throws Exception {
+		employee.setStatus(UserStatus.Deleted);
+		employeeDAO.save(employee);
+		addActionMessage("Employee " + employee.getDisplayName() + " Successfully deleted.");
+		employee = null;
+		activeEmployees = employeeDAO.findWhere("accountID = " + account.getId() + " and STATUS <> 'Deleted'");
+
+		return SUCCESS;
+	}
+
+	public List<Employee> getActiveEmployees() {
+		return activeEmployees;
+
+	}
+
+	public void setActiveEmployees(List<Employee> activeEmployees) {
+		this.activeEmployees = activeEmployees;
+	}
+
+	/*
+	 * public String delete() throws Exception { employeeDAO.refresh(employee);
+	 * employeeDAO.remove(employee); addActionMessage("Employee " +
+	 * employee.getDisplayName() + " Successfully Deleted."); File f = new
+	 * File(getFtpDir() + "/files/" + FileUtils.thousandize(employee.getId()) +
+	 * "emp_" + employee.getId() + ".jpg"); if (f != null) { f.delete(); }
+	 * employee = null;
+	 * 
+	 * return SUCCESS; }
+	 */
 	public String addRoleAjax() throws Exception {
 		JobRole jobRole = roleDAO.find(childID);
 		if (employee != null && jobRole != null) {

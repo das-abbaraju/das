@@ -27,6 +27,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
@@ -52,7 +53,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	static public int PRIVATE = 2;
 	static public int PicsID = 1100;
 	static public int PICS_CORPORATE_ID = 14;
-	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7, 8);
+	static public List<Integer> PICS_CORPORATE = Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11);
 	// Assessment Centers
 	static public int ASSESSMENT_NCCER = 11069;
 
@@ -334,7 +335,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * North American Industry Classification System http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
+	 * North American Industry Classification System
+	 * http://www.census.gov/eos/www/naics/ NAICS replaced the SIC in 1997
 	 * 
 	 * @return
 	 */
@@ -369,7 +371,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * True if QuickBooks Web Connector needs to pull this record into QuickBooks
+	 * True if QuickBooks Web Connector needs to pull this record into
+	 * QuickBooks
 	 * 
 	 * @return
 	 */
@@ -468,8 +471,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Operator Qualification regulation, and if Contractor, do they work for an operator who does
-	 * too?
+	 * Are they subject to Operator Qualification regulation, and if Contractor,
+	 * do they work for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -527,7 +530,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * Are they subject to Competency Reviews, and if Contractor, do they work for an operator who does too?
+	 * Are they subject to Competency Reviews, and if Contractor, do they work
+	 * for an operator who does too?
 	 * 
 	 * @return
 	 */
@@ -555,8 +559,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	/**
-	 * The date HSAN accredited the Training Provider to provide training services. If HSAN training providers use a lot
-	 * more custom fields then we'll create a new table for this and other fields.
+	 * The date HSAN accredited the Training Provider to provide training
+	 * services. If HSAN training providers use a lot more custom fields then
+	 * we'll create a new table for this and other fields.
 	 * 
 	 * @return
 	 */
@@ -751,8 +756,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Transient
 	public String getSearchText() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|').append(
-				this.name).append('|');
+		sb.append(this.getReturnType()).append('|').append(this.type).append('|').append(this.id).append('|')
+				.append(this.name).append('|');
 		if (this.city != null)
 			sb.append(this.city);
 		if (this.state != null)

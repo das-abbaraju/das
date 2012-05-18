@@ -1,21 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
-
-<html>
-	<head>
-		<title><s:text name="AccountRecovery.title" /></title>
-		
-		<meta name="accountrecovery" content="Account_Recovery">
-		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/account_recovery.css?v=<s:property value="version"/>" />
-		
-		<s:include value="../jquery.jsp"/>
-		
-		<script type="text/javascript" src="js/account_recovery.js"></script>
-	</head>
-	<body>
+<%@ page import="java.util.Locale" %>
+<%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
+<head>
+	<title><s:text name="AccountRecovery.title" /></title>
+	
+	<meta name="accountrecovery" content="Account_Recovery">
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<s:property value="version"/>" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/account_recovery.css?v=<s:property value="version"/>" />
+	
+	<s:include value="../jquery.jsp"/>
+	<script type="text/javascript" src="js/account_recovery.js?v=${version}"></script>
+</head>
+<body>
+	<div id="${actionName}_${methodName}_page" class="${actionName}-page page">
 		<s:include value="_supportedLocales.jsp" />
 		
 		<h1><s:text name="AccountRecovery.title" /></h1>
@@ -79,5 +79,8 @@
 		</s:form>
 		
 		<s:include value="../actionMessages.jsp"></s:include>
-	</body>
-</html>
+	</div>
+	<script type="text/javascript">
+		RecaptchaState.lang = '<%=TranslationActionSupport.getLocaleStatic().getLanguage()%>';
+	</script>
+</body>

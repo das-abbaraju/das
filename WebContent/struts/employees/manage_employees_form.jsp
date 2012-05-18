@@ -7,7 +7,7 @@ $(function() {
 	setupEmployee();
 	
 	<s:if test="employee.id != 0">
-		<s:if test="employee.active">
+		<s:if test="employee.status.toString().equals('Active')">
 			$('#termDate').hide();
 		</s:if>
 		<s:else>
@@ -50,7 +50,6 @@ $(function() {
 						list="@com.picsauditing.jpa.entities.EmployeeClassification@values()" 
 						listValue="getText(getI18nKey('description'))" theme="formhelp" />
 				</li>
-				<li><s:checkbox name="employee.active" id="employeeActive" theme="formhelp" /></li>
 				<li>
 					<s:textfield name="employee.hireDate" value="%{maskDateFormat(employee.hireDate)}"
 						cssClass="datepicker" theme="formhelp" />
@@ -151,8 +150,14 @@ $(function() {
 	<s:if test="!selectRolesSites">
 		<fieldset class="form submit">
 			<s:if test="auditID > 0 && employee.id == 0"><s:hidden name="button" value="Continue" /></s:if>
-			<s:submit method="save" cssClass="picsbutton positive" value="%{auditID > 0 && employee.id == 0 ? getText('button.Continue') : getText('button.Save')}" />
-			<s:submit method="delete" cssClass="picsbutton negative" id="deleteEmployee" value="%{getText('button.Delete')}" />
+			<s:if test="employee.status.toString().equals('Active')">
+				<s:submit method="save" cssClass="picsbutton positive" value="%{auditID > 0 && employee.id == 0 ? getText('button.Continue') : getText('button.Save')}" />
+				<s:submit method="inactivate" cssClass="picsbutton negative" value="%{getText('button.Inactivate')}" />
+			</s:if>
+			<s:else>
+				<s:submit method="activate" cssClass="picsbutton positive" value="%{getText('button.Activate')}" />
+				<s:submit method="delete" cssClass="picsbutton negative" id="deleteEmployee" value="%{getText('button.Delete')}" />
+			</s:else>
 		</fieldset>
 	</s:if>
 	<s:else>

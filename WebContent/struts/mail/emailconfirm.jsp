@@ -4,7 +4,7 @@
 <html>
 <head>
 <title><s:text name="EmailWizard.ConfirmationPage" /></title>
-<link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/emailwizard.css?v=${version}" />
 </head>
 <body>
 <h1><s:text name="EmailWizard.EmailConfirmation" /></h1>

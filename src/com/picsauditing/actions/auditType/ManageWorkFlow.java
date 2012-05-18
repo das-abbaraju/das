@@ -9,7 +9,9 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.WorkFlowDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.EmailTemplate;
+import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.Workflow;
+import com.picsauditing.jpa.entities.WorkflowState;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import com.picsauditing.util.Strings;
 
@@ -21,7 +23,10 @@ public class ManageWorkFlow extends PicsActionSupport {
 	protected int id;
 	protected int stepID;
 	protected int emailTemplateID;
+	protected int statusID;
 
+	protected AuditStatus status;
+	protected String label;
 	protected AuditStatus oldStatus;
 	protected AuditStatus newStatus;
 	protected boolean noteRequired;
@@ -70,6 +75,14 @@ public class ManageWorkFlow extends PicsActionSupport {
 					addActionError("No new status");
 					return "steps";
 				}
+				if (oldStatus != null && !workFlow.isHasState(oldStatus)) {
+					addActionError("Old state must be one of the workflow's states.");
+					return "steps";
+				}
+				if (!workFlow.isHasState(newStatus)) {
+					addActionError("New state must be one of the workflow's states.");
+					return "steps";
+				}
 				WorkflowStep ws = new WorkflowStep();
 				ws.setWorkflow(workFlow);
 				ws.setAuditColumns(permissions);
@@ -81,6 +94,30 @@ public class ManageWorkFlow extends PicsActionSupport {
 					ws.setEmailTemplate(null);
 				ws.setNoteRequired(noteRequired);
 				workFlowDAO.save(ws);
+				return "steps";
+			}
+			// add
+			if ("addStatus".equalsIgnoreCase(button) && workFlow != null) {
+				if (status == null) {
+					addActionError("No status selected.");
+					return "steps";
+				}
+				if (workFlow.isHasState(status)) {
+					addActionError("Workflow already has this state.");
+					return "steps";
+				}
+				WorkflowState ws = new WorkflowState();
+				ws.setWorkflow(workFlow);
+				ws.setAuditColumns(permissions);
+				ws.setStatus(status);
+				if (Strings.isEmpty(label))
+					label = status.name();
+				TranslatableString name = new TranslatableString();
+				name.putTranslation("en", label, true);
+				ws.setName(name);
+				dao.save(ws);
+				workFlow.getStates().add(ws);
+				dao.save(workFlow);
 				return "steps";
 			}
 			// edit
@@ -95,6 +132,14 @@ public class ManageWorkFlow extends PicsActionSupport {
 				}
 			}
 			if ("editStep".equalsIgnoreCase(button)) {
+				if (oldStatus != null && !workFlow.isHasState(oldStatus)) {
+					addActionError("Old status must be one of the workflow's states.");
+					return "steps";
+				}
+				if (!workFlow.isHasState(newStatus)) {
+					addActionError("New status must be one of the workflow's states.");
+					return "steps";
+				}
 				WorkflowStep ws = workFlowDAO.getWorkFlowStepById(stepID);
 				ws.setAuditColumns(permissions);
 				ws.setOldStatus(oldStatus);
@@ -117,10 +162,26 @@ public class ManageWorkFlow extends PicsActionSupport {
 				}
 				return "steps";
 			}
+			if ("deleteStatus".equalsIgnoreCase(button)) {
+				WorkflowState ws = dao.find(WorkflowState.class, statusID);
+				if (ws == null) {
+					addActionError("Could not delete state, please try again.");
+					return "steps";
+				}
+				
+				if (workFlow.isUsingState(ws.getStatus())) {
+					addActionError("Could not delete state; it is in use.");
+					return "steps";
+					
+				}
+				workFlowDAO.remove(ws);
+				
+				return "steps";
+			}
 		}
 		return SUCCESS;
 	}
-
+	
 	public List<Workflow> getWorkflowList() {
 		return workFlowDAO.findAll();
 	}
@@ -211,4 +272,30 @@ public class ManageWorkFlow extends PicsActionSupport {
 	public void setEmailTemplateID(int emailTemplateID) {
 		this.emailTemplateID = emailTemplateID;
 	}
+
+	public int getStatusID() {
+		return statusID;
+	}
+
+	public void setStatusID(int statusID) {
+		this.statusID = statusID;
+	}
+
+	public AuditStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(AuditStatus status) {
+		this.status = status;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	
 }

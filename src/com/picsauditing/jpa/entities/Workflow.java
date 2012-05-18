@@ -78,7 +78,26 @@ public class Workflow extends BaseTable {
 		}
 		return false;
 	}
+	
+	@Transient
+	public boolean isHasState(AuditStatus status) {
+		for (WorkflowState state : states) {
+			if (state.getStatus().equals(status))
+				return true;
+		}
+		return false;
+	}
 
+	@Transient
+	public boolean isUsingState(AuditStatus status) {
+		for (WorkflowStep step : steps) {
+			if ((step.getOldStatus() != null && step.getOldStatus().equals(status))
+					|| step.getNewStatus().equals(status))
+				return true;
+		}
+		return false;
+	}
+	
 	public boolean isHasRequirements() {
 		return hasRequirements;
 	}

@@ -1,27 +1,53 @@
 package com.picsauditing.dao;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.jpa.entities.Naics;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/tests.xml" })
-@TransactionConfiguration(transactionManager = "transactionManager")
 public class NaicsDAOTest {
-	@Autowired
-	NaicsDAO naicsDAO;
-	private Naics naics;
+	private NaicsDAO naicsDAO;
+
+	@Mock
+	private EntityManager em;
 
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		
+		naicsDAO = new NaicsDAO();
+		naicsDAO.setEntityManager(em);
+		
+		List<Naics> naicsList = new ArrayList();
+		naicsList.add(constructNaics("52", 0.9, 0.8));
+		naicsList.add(constructNaics("52212", 0.0, 0.0));
+		
+		naicsList.add(constructNaics("541", 0.0, 0.50));
+		naicsList.add(constructNaics("5412", 0.0, 0.0));
+		naicsList.add(constructNaics("54121", 0.0, 0.0));
+
+		for (Naics naics : naicsList) {
+			when(em.find(Naics.class, naics.getCode())).thenReturn(naics);
+		}
+	}
+
+	private Naics constructNaics(String code, double trir, double lwcr) {
+		Naics naics = new Naics();
+		naics.setCode(code);
+		naics.setTrir((float) trir);
+		naics.setLwcr((float) lwcr);
+		return naics;
 	}
 
 	/*
@@ -35,7 +61,7 @@ public class NaicsDAOTest {
 	 */
 	@Test
 	public void testFindParent() throws Exception {
-		naics = naicsDAO.findParent("52212");
+		Naics naics = naicsDAO.findParent("52212");
 		assertEquals("52", naics.getCode());
 		assertNull( naicsDAO.findParent("52"));
 	}
@@ -50,7 +76,7 @@ public class NaicsDAOTest {
 	 */
 	@Test
 	public void testGetBroaderNaicsForTrir() {
-		naics = naicsDAO.find("52212");
+		Naics naics = naicsDAO.find("52212");
 		assertEquals(0.0, naics.getTrir(), 0.01);
 		naics = naicsDAO.getBroaderNaics(false,naics);
 		assertEquals("52", naics.getCode());
@@ -66,7 +92,7 @@ public class NaicsDAOTest {
 	 */
 	@Test
 	public void testGetBroaderNaicsForLcwr() {
-		naics = naicsDAO.find("54121");
+		Naics naics = naicsDAO.find("54121");
 		assertEquals(0.0, naics.getLwcr(), 0.01);
 		naics = naicsDAO.getBroaderNaics(true,naics);
 		assertEquals("541", naics.getCode());
@@ -82,7 +108,7 @@ public class NaicsDAOTest {
 	 */
 	@Test
 	public void testGetBroaderNaicsForDart() {
-		naics = naicsDAO.find("54121");
+		Naics naics = naicsDAO.find("54121");
 		// FIXME Currenty, we actually have DART data loaded in the LWCR column, so we're just using LWCR for both.
 		// assertEquals(0.0, naics.getDart(), 0.01);
 		assertEquals(0.0, naics.getLwcr(), 0.01);

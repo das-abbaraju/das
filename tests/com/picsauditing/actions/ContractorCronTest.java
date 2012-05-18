@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -136,6 +137,7 @@ public class ContractorCronTest {
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Incomplete, then it should be in the expiring audit list.
 	 */
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testContractorAccountOverlappingWCBsIncomplete() {
 		ContractorCron contractorCron = new ContractorCron();
@@ -154,6 +156,7 @@ public class ContractorCronTest {
 	 * If there there are overlapping WCBs, one is expiring and the other has a status of
 	 * Pending, then it should be in the expiring audit list.
 	 */
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testContractorAccountOverlappingWCBsPending() {
 		ContractorCron contractorCron = new ContractorCron();
