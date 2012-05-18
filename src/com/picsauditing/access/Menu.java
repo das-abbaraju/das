@@ -14,23 +14,32 @@ public class Menu extends PicsActionSupport {
 		loadPermissions();
 
 		MenuBuilder builder = new MenuBuilder();
+		MenuComponent menu = null;
+
 		if (!permissions.isLoggedIn()) {
-			builder.buildNotLoggedIn();
+			menu = builder.buildNotLoggedIn();
 		} else if (permissions.isContractor()) {
-			builder.buildContractorMenu(permissions);
+			menu = builder.buildContractorMenu(permissions);
 		} else if (permissions.isAssessment()) {
-			builder.buildAssessmentCenter();
+			menu = builder.buildAssessmentCenter();
 		} else {
-			@SuppressWarnings("unchecked")
 			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
-			builder.buildNew(permissions, reports, contractor);
+			menu = builder.buildGeneric(permissions, reports, contractor);
 		}
 
-		builder.handleSingleChildMenu();
+		handleSingleChildMenu(menu);
 
-		jsonArray = MenuWriter.exportMenuToExtJS(builder.getMenu());
+		jsonArray = MenuWriter.exportMenuToExtJS(menu);
 
 		return JSON_ARRAY;
+	}
+
+	private void handleSingleChildMenu(MenuComponent menu) {
+		if (menu == null)
+			return;
+
+		if (menu.getChildren().size() == 1)
+			menu = menu.getChildren().get(0);
 	}
 
 	public ContractorAccount getContractor() {
@@ -40,5 +49,4 @@ public class Menu extends PicsActionSupport {
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
-
 }
