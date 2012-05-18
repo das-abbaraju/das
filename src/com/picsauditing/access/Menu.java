@@ -8,6 +8,8 @@ import com.picsauditing.jpa.entities.Report;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
+
+	// This should not be part of Menu.java
 	private ContractorAccount contractor = null;
 
 	public String execute() throws Exception {

@@ -20,7 +20,6 @@ import com.picsauditing.util.Strings;
 public class MenuBuilder {
 
 	private I18nCache i18nCache = I18nCache.getInstance();
-	private MenuComponent internalMenu = new MenuComponent();
 
 	public MenuComponent buildGeneric(Permissions permissions, List<Report> reports, ContractorAccount contractor) {
 		MenuComponent menu = new MenuComponent();
@@ -183,15 +182,16 @@ public class MenuBuilder {
 	}
 
 	// This isn't even being called anywhere
-	// TODO change this to return a MenuComponent
-	public void buildOperatorCorporateOrPics(Permissions permissions) {
+	public MenuComponent buildOperatorCorporateOrPics(Permissions permissions) {
+		MenuComponent menu = new MenuComponent();
+
 		if (permissions.hasPermission(OpPerms.ImportPQF)) {
-			MenuComponent importPqfMenu = internalMenu.addChild(getTitle("ReportImportPQFs"));
+			MenuComponent importPqfMenu = menu.addChild(getTitle("ReportImportPQFs"));
 			importPqfMenu.addChild(getTitle("ReportImportPQFs"), "ReportImportPQFs.action");
 		}
 
 		// TODO Contractor menu
-		MenuComponent contractorMenu = internalMenu.addChild(getText("global.Contractors"));
+		MenuComponent contractorMenu = menu.addChild(getText("global.Contractors"));
 		if (permissions.hasPermission(OpPerms.AllContractors) || permissions.isOperatorCorporate()) {
 			contractorMenu.addChild(getTitle("ContractorList"), "ContractorList.action");
 		}
@@ -228,7 +228,7 @@ public class MenuBuilder {
 			addChildAction(contractorMenu, "WatchListManager");
 
 		// TODO AuditGUARD
-		MenuComponent auditGuardMenu = internalMenu.addChild(getText("global.AuditGUARD"));
+		MenuComponent auditGuardMenu = menu.addChild(getText("global.AuditGUARD"));
 		if (permissions.isAuditor()) {
 			auditGuardMenu.addChild("My Audits", "AuditListAuditor.action?filter.auditStatus=Pending");
 			auditGuardMenu.addChild("My Audit History", "MyAuditHistory.action");
@@ -263,7 +263,7 @@ public class MenuBuilder {
 			auditGuardMenu.addChild("Auditor Assignment", "AuditorAssignmentMatrix.action");
 
 		// TODO Customer service
-		MenuComponent customerServiceMenu = internalMenu.addChild("Customer Service");
+		MenuComponent customerServiceMenu = menu.addChild("Customer Service");
 		if (permissions.isAdmin()) {
 			customerServiceMenu.addChild("Assign Contractors", "ContractorAssigned.action");
 		}
@@ -284,7 +284,7 @@ public class MenuBuilder {
 			customerServiceMenu.addChild("CSR Assignment", "CSRAssignmentMatrix.action");
 
 		// TODO Accounting
-		MenuComponent accountingMenu = internalMenu.addChild("Accounting");
+		MenuComponent accountingMenu = menu.addChild("Accounting");
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			accountingMenu.addChild("Billing Report", "ReportBilling.action?filter.status=Active&filter.status=Pending");
 			accountingMenu.addChild("Unpaid Invoices Report", "ReportUnpaidInvoices.action");
@@ -298,7 +298,7 @@ public class MenuBuilder {
 		}
 
 		// TODO InsureGUARD
-		MenuComponent insureGuardMenu = internalMenu.addChild(getText("global.InsureGUARD"));
+		MenuComponent insureGuardMenu = menu.addChild(getText("global.InsureGUARD"));
 		if (permissions.hasPermission(OpPerms.InsuranceCerts)) {
 			addChildAction(insureGuardMenu, "ReportPolicyList");
 		}
@@ -314,7 +314,7 @@ public class MenuBuilder {
 		}
 
 		// TODO Management
-		MenuComponent managementMenu = internalMenu.addChild(getText("menu.Management"));
+		MenuComponent managementMenu = menu.addChild(getText("menu.Management"));
 		if (permissions.hasPermission(OpPerms.ManageCorporate)
 				|| permissions.hasPermission(OpPerms.ManageOperators)
 				|| permissions.hasPermission(OpPerms.ManageAssessment)) {
@@ -379,7 +379,7 @@ public class MenuBuilder {
 		}
 
 		// TODO Configuration
-		MenuComponent configMenu = internalMenu.addChild(getText("menu.Configuration"));
+		MenuComponent configMenu = menu.addChild(getText("menu.Configuration"));
 		HashMap<String, String> menuItems = new HashMap<String, String>();
 
 		if (permissions.hasPermission(OpPerms.Translator)) {
@@ -436,7 +436,7 @@ public class MenuBuilder {
 
 		// TODO Development
 		if (permissions.hasPermission(OpPerms.DevelopmentEnvironment)) {
-			MenuComponent devMenu = internalMenu.addChild("Dev");
+			MenuComponent devMenu = menu.addChild("Dev");
 			devMenu.addChild("System Logging", "LoggerConfig.action");
 			devMenu.addChild("Page Logging", "PageLogger.action");
 			devMenu.addChild("Clear Cache", "ClearCache.action");
@@ -455,7 +455,7 @@ public class MenuBuilder {
 		}
 
 		// TODO Reports
-		MenuComponent reportsMenu = internalMenu.addChild(getText("menu.Reports"));
+		MenuComponent reportsMenu = menu.addChild(getText("menu.Reports"));
 
 		// remove this hack
 		if (permissions.getAccountId() == 6228) {
@@ -539,7 +539,7 @@ public class MenuBuilder {
 
 		// TODO HSE Competency Review
 		if (permissions.isRequiresCompetencyReview()) {
-			MenuComponent hseCompetencyMenu = internalMenu.addChild(getText("global.HSECompetencies"));
+			MenuComponent hseCompetencyMenu = menu.addChild(getText("global.HSECompetencies"));
 
 			if (permissions.hasPermission(OpPerms.DefineCompetencies))
 				hseCompetencyMenu.addChild(getTitle("DefineCompetencies"), "DefineCompetencies.action");
@@ -552,7 +552,7 @@ public class MenuBuilder {
 
 		// TODO Operator Qualification
 		if (permissions.isRequiresOQ()) {
-			MenuComponent operatorQualMenu = internalMenu.addChild(getText("global.OperatorQualification"));
+			MenuComponent operatorQualMenu = menu.addChild(getText("global.OperatorQualification"));
 
 			if (permissions.hasPermission(OpPerms.ManageJobTasks))
 				operatorQualMenu.addChild(getTitle("ManageJobTasksOperator"), "ManageJobTasksOperator.action");
@@ -570,8 +570,10 @@ public class MenuBuilder {
 			reportsMenu.addChild("Report WCB Accounts", "ReportWcbAccounts.action");
 
 		if (permissions.isOperatorCorporate()) {
-			addSupportLink(internalMenu);
+			addSupportLink(menu);
 		}
+
+		return menu;
 	}
 
 	private MenuComponent addSupportLink(MenuComponent menu) {
@@ -592,10 +594,5 @@ public class MenuBuilder {
 
 	private String getTitle(String key) {
 		return getText(key + ".title");
-	}
-
-	// TODO Remove this
-	public MenuComponent getMenu() {
-		return internalMenu;
 	}
 }
