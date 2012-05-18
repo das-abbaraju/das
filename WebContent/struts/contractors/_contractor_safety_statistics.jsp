@@ -29,27 +29,30 @@
 						</tr>
 					</thead>
 					<tbody>	
-                        <s:set var="is_odd" value="true" />
-                        
 						<s:iterator value="oshaDisplay.stats.get(#stat).get('data')" var="row">
-							<tr class="<s:if test="#row.hurdleRates">hurdle</s:if><s:else>rate-type <s:if test="#is_odd == true">odd</s:if></s:else>">
-								<s:iterator value="#row.cells" var="celldata" status="stat">
-									<td>
-										<span class="rate-type">
-                                            <s:property value="#celldata" escape="false" />
-                                        </span>
-                                        
-                                        <s:if test="#stat.index == 0 && !#row.hurdleRates">
-                                            <a href="javascript:;" class="rate-type-tooltip" title="<s:text name="global.Edit" />"><img src="images/help-icon.png" /></a>
-                                            <s:property value="#celldata.I18nKey" />
-                                        </s:if>
-									</td>
-								</s:iterator>
-							</tr>
-                            
-							<s:if test="!#row.hurdleRates">
-								<s:set var="is_odd" value="%{!#is_odd}" />
-							</s:if>
+								<tr class="<s:if test="#row.hurdleRate">hurdle</s:if><s:else>rate-type <s:if test="#is_odd == true">odd</s:if></s:else>">
+								<td>
+									<s:if test="!#row.hurdleRate" >
+										<a href="javascript:;" class="rate-type-tooltip"
+										title="<s:property value="getText(#row.title + '.helpText')" />"><img src="images/help-icon.png" /></a>
+										<s:property value="getText(#row.title)" />
+									</s:if>
+									<s:else>
+										<s:property value="#row.operator.name" />
+									</s:else>
+								</td>
+									<s:iterator value="#row.cells" var="celldata" status="stat">
+										<td>
+											<span class="rate-type">
+	                                            <s:property value="#celldata" escape="false" />
+	                                        </span>
+										</td>
+									</s:iterator>
+								</tr>
+	                            
+								<s:if test="!#row.hurdleRate">
+									<s:set var="is_odd" value="%{!#is_odd}" />
+								</s:if>
 						</s:iterator>
 					</tbody>
 				</table>

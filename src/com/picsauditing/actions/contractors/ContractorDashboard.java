@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.google.common.base.Objects;
 import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
-import com.picsauditing.PICS.OshaDisplay;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.GeneralContractorNotApprovedException;
 import com.picsauditing.access.NoRightsException;
@@ -56,6 +55,7 @@ import com.picsauditing.jpa.entities.OperatorTag;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.oshadisplay.OshaDisplay;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
