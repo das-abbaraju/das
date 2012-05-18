@@ -32,7 +32,10 @@ public class AppPropertyDAO extends PicsDAO {
 
 	public List<AppProperty> findAll() {
 		Query query = em.createQuery("FROM AppProperty");
-
+		return query.getResultList();
+	}
+	public List<AppProperty> getPropertyList(String where){		
+		Query query = em.createQuery("FROM AppProperty "+where);		
 		return query.getResultList();
 	}
 

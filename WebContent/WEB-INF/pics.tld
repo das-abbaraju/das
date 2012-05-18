@@ -41,6 +41,30 @@
 	</tag>
 	
 	<tag>
+		<name>toggle</name>
+		<description>toggle between show and hide new features</description>
+		<tag-class>com.picsauditing.tags.ToggleFeature</tag-class>
+		<attribute>
+			<description>name of the toggle</description>
+			<name>toggleName</name>
+			<required>true</required>		
+			<rtexprvalue>true</rtexprvalue>	
+		</attribute>
+		<attribute>
+			<description>user id to switch to</description>
+			<name>userID</name>
+			<required>false</required>		
+			<rtexprvalue>true</rtexprvalue>	
+		</attribute>
+		<attribute>
+			<description>description goes on the button</description>
+			<name>toggleTitle</name>
+			<required>false</required>		
+			<rtexprvalue>true</rtexprvalue>	
+		</attribute>
+	</tag>
+	
+	<tag>
 		<description>Prints a link to the help center at help.picsauditing.com</description>
 		<name>help</name>
 		<tag-class>com.picsauditing.tags.HelpLink</tag-class>
@@ -78,7 +102,7 @@
 		</attribute>
 		<body-content>JSP</body-content>
 	</tag>
-	
+		
 	<tag>
 		<name>autocomplete</name>
 		<description>Create an autocomplete control</description>
