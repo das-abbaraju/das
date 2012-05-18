@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -12,6 +15,8 @@ public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
 
 	private SafetyRisks data;
 
+	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache.class);
+	
 	public List<AuditTypeRule> getRules(ContractorAccount contractor) {
 		List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
 		if (getData() == null)
@@ -37,7 +42,7 @@ public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
 			long startTime = System.currentTimeMillis();
 			initialize(dao.findAllRules(AuditTypeRule.class));
 			long endTime = System.currentTimeMillis();
-			System.out.println("Filled AuditTypeRuleCache in " + (endTime - startTime) + "ms");
+			logger.info("Filled AuditTypeRuleCache in {} ms", (endTime - startTime));
 		}
 	}
 

@@ -3,6 +3,8 @@ package com.picsauditing.actions;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.search.Database;
 
@@ -17,6 +19,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 	protected boolean switchOrder = false;
 	private int rowCount = 0;
 	
+	private final Logger logger = LoggerFactory.getLogger(ContractorFlagDifference.class);
 	@Override
 	public String execute() throws Exception {
 		
@@ -69,7 +72,7 @@ public class ContractorFlagDifference extends PicsActionSupport {
 		}
 		
 		sql += baseWhere + where + " " + orderBy + "  LIMIT 100";
-		System.out.println(sql);
+		logger.debug(sql);
 		data = db.select(sql, true);
 		rowCount  = db.getAllRows();
 		return SUCCESS;

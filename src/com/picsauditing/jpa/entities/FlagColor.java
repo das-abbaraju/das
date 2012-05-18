@@ -64,7 +64,6 @@ public enum FlagColor implements Translatable {
 			return color1;
 
 		if (color1 == null) {
-			// System.out.println("WARNING: oldColor == null");
 			return color2;
 		}
 

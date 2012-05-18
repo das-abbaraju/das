@@ -15,6 +15,8 @@ import java.util.Set;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.math.NumberUtils;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -90,6 +92,8 @@ public class UsersManage extends PicsActionSupport {
 	
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
+	private final Logger logger = LoggerFactory.getLogger(UsersManage.class);
+	
 	public String execute() throws Exception {
 		startup();		
 		if ("department".equalsIgnoreCase(button))
@@ -834,8 +838,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("test " + e);
+			logger.error(e.getMessage());
 
 		}
 		
@@ -845,9 +848,7 @@ public class UsersManage extends PicsActionSupport {
 				list.remove(userGroup.getGroup());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("test 2" + e);
-
+			logger.error("test 2 {}", e.getMessage());
 		}
 		list.remove(user);		
 		return list;

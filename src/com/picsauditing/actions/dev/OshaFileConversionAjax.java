@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.DBBean;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.util.FileUtils;
@@ -18,7 +21,7 @@ public class OshaFileConversionAjax extends PicsActionSupport {
 	// private static final String BASE_FOLDER = "~/oshatest";
 
 	private static final long serialVersionUID = 753348519512350112L;
-
+	private final Logger logger = LoggerFactory.getLogger(OshaFileConversionAjax.class);
 	@Override
 	public String execute() throws Exception {
 		String sql = "select oa.id,pd.id from osha_audit oa\n" 
@@ -33,12 +36,12 @@ public class OshaFileConversionAjax extends PicsActionSupport {
 		// selectSQL.addWhere(buildWhereClause());
 
 		Connection conn = DBBean.getDBConnection();
-		System.out.println("Running SQL = "+sql);
+		logger.debug("Running SQL = {}", sql);
 		ResultSet results = conn.createStatement().executeQuery(sql);
 
-		System.out.println("Calling populatePairings()");
+		logger.debug("Calling populatePairings()");
 		Map<Integer, Integer> pairings = populatePairings(results);
-		System.out.println("Pairings found = "+pairings.size());
+		logger.debug("Pairings found = {}", pairings.size());
 		String scriptTemplate = "\r\n# osha_${fromID} -> data_${toID}\r\n" +
 				"files=`ls "+BASE_FOLDER+"/${sourceHashFolder}osha_${fromID}.*`\r\n" + 
 				"for i in $files; do \r\n" + 
@@ -47,9 +50,9 @@ public class OshaFileConversionAjax extends PicsActionSupport {
 				"	mkdir -p "+BASE_FOLDER+"/${destinationHashFolder}\r\n" + 
 				"	mv -f $i "+BASE_FOLDER+"/${destinationHashFolder}data_${toID}.${ext}\r\n" + 
 				"done\r\n";
-		System.out.println("Generating script");
+		logger.debug("Generating script");
 		String script = FileUtils.massManipulateScript(pairings, scriptTemplate);
-		System.out.println("Saving script");
+		logger.debug("Saving script");
 		FileWriter fw = new FileWriter(new File(SCRIPT_FILE_NAME));
 		fw.write("echo '-- Update Script for PICS-3156 (OSHA Rewrite)' > pics-3156.sql");
 		fw.write(script);

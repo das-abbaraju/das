@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PicsLogger {
 
 	protected static ThreadLocal<MyLogger> myLogger = new ThreadLocal<MyLogger>();
@@ -12,7 +15,13 @@ public class PicsLogger {
 	protected static String dateFormat = "MMMdd HH:mm:ss.SSS";
 	protected static boolean outputOn = false;
 	protected static StringBuilder output = new StringBuilder();
+	
+	private final static Logger LOG = LoggerFactory.getLogger(PicsLogger.class);
 
+	/**
+	 * Need to use Logger directly
+	 */
+	@Deprecated
 	static public void log(String message) {
 
 		MyLogger logger = getLogger();
@@ -47,7 +56,8 @@ public class PicsLogger {
 			}
 		}
 		if (shouldLog) {
-			System.out.println(formatDate(new Date()) + ": " + message);
+//			System.out.println(formatDate(new Date()) + ": " + message);
+			LOG.info(message);
 		}
 		if (outputOn)
 			output.append(message + "\n");
@@ -97,7 +107,7 @@ public class PicsLogger {
 			logger.pop();
 			return millis;
 		}
-		System.out.println("WARNING: pop called with nothing to pop");
+//		System.out.println("WARNING: pop called with nothing to pop");
 		return 0;
 	}
 

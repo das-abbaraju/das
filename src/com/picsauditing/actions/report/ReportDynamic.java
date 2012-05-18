@@ -17,6 +17,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
@@ -44,6 +46,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
 
+	private final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 	@Anonymous
 	public String availableBases() {
 		JSONArray rows = new JSONArray();
@@ -66,7 +69,7 @@ public class ReportDynamic extends PicsActionSupport {
 			saveTranslation(existing, "Report.Category." + category);
 		}
 		for (ModelType type : ModelType.values()) {
-			System.out.println("-- filling fields for " + type);
+			logger.debug("-- filling fields for {}", type);
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 			builder = new SqlBuilder();
@@ -90,16 +93,16 @@ public class ReportDynamic extends PicsActionSupport {
 			translation.setQualityRating(TranslationQualityRating.Bad);
 			translation.setValue("?" + key);
 			translation.setAuditColumns(permissions);
-			System.out.println("Adding " + key);
+			logger.debug("Adding {}", key);
 			existing.put(key, translation);
 		} else {
 			Calendar yesterday = Calendar.getInstance();
 			yesterday.add(Calendar.DAY_OF_YEAR, -1);
 			if (translation.getLastUsed().after(yesterday.getTime())) {
-				System.out.println("Already updated " + key);
+				logger.info("Already updated {}", key);
 				return;
 			}
-			System.out.println("Updating " + key);
+			logger.info("Updating {}", key);
 		}
 		translation.setLastUsed(new Date());
 		translation.setApplicable(true);
@@ -145,7 +148,7 @@ public class ReportDynamic extends PicsActionSupport {
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(request.getInputStream(), writer, "UTF-8");
 		String params = writer.toString();
-		System.out.println(params);
+		logger.info(params);
 	}
 
 	public String availableFields() {
@@ -254,8 +257,8 @@ public class ReportDynamic extends PicsActionSupport {
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
 			showSQL = true;
-			System.out.println("Slow Query: " + sql.toString());
-			System.out.println("Time to query: " + queryTime + " ms");
+			logger.info("Slow Query: {}", sql.toString());
+			logger.info("Time to query: {} ms", queryTime);
 		}
 
 		return new QueryData(rows);

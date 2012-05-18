@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -139,9 +142,10 @@ public class WaitingOnCalculator {
 			}
 		}
 
-		if (caos.size() > 1)
-			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString()
-					+ " on auditID = " + conAudit.getId());
+		if (caos.size() > 1) {
+			Logger logger = LoggerFactory.getLogger(WaitingOnCalculator.class);
+			logger.warn("WARNING: Found {} matching caos for {} on auditID = {}", new Object[] {caos.size(),operator.toString(),conAudit.getId()});
+		}
 
 		return caos;
 	}

@@ -7,13 +7,16 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ContractorOperatorDAO extends PicsDAO {
-
+	private final Logger logger = LoggerFactory.getLogger(ContractorOperatorDAO.class);
 	public void remove(int id) {
 		ContractorOperator row = find(id);
 		remove(row);
@@ -162,7 +165,7 @@ public class ContractorOperatorDAO extends PicsDAO {
 			Query query = em.createQuery("SELECT contractorAccount.id FROM ContractorOperator WHERE " + where);
 			return query.getResultList();
 		} catch (Exception e) {
-			System.out.println("An error occurred in the ContractorOperatorDAO - " + e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 		return Collections.emptyList();

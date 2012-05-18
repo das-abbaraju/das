@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -14,7 +16,7 @@ import com.picsauditing.jpa.entities.YesNo;
 public class HuntsmanSync extends PicsActionSupport {
 
 	private AppPropertyDAO appPropDao = null;
-
+	private final Logger logger = LoggerFactory.getLogger(HuntsmanSync.class);
 	public HuntsmanSync(AppPropertyDAO appPropDao) {
 		this.appPropDao = appPropDao;
 	}
@@ -75,18 +77,18 @@ public class HuntsmanSync extends PicsActionSupport {
 								else
 									yn = YesNo.No;
 
-								System.out.println(contractorId + " " + yn);
+								logger.debug("{} {}", contractorId, yn);
 
 							} else {
 								// maybe append this to a report that gets
 								// emailed
-								System.out.println("bad data");
+								logger.info("bad data");
 							}
 						}
 					}
 				} else {
 					// maybe append this to a report that gets emailed
-					System.out.println("unable to open connection: " + ftp.getReplyCode() + ":" + ftp.getReplyString());
+					logger.error("unable to open connection: {}:{}", ftp.getReplyCode(), ftp.getReplyString());
 				}
 			}
 		}

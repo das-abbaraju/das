@@ -23,6 +23,8 @@ import javax.persistence.Transient;
 
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.PicsDAO;
@@ -226,7 +228,8 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 
 			return id == other.getId();
 		} catch (Exception e) {
-			System.out.println("Error comparing BaseTable objects: " + e.getMessage());
+			Logger logger = LoggerFactory.getLogger(BaseTable.class);
+			logger.error("Error comparing BaseTable objects: {}", e.getMessage());
 			return false;
 		}
 	}

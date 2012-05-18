@@ -23,6 +23,8 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -123,6 +125,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> auditorList;
 	private Set<User> safetyList;
 
+	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+	
 	@Deprecated
 	public static final String getVersion() {
 		return PicsOrganizerVersion.getVersion();
@@ -218,15 +222,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					System.out.println("Autologging In user " + autoLoginID
-							+ ". Remove pics.autoLogin from startup to remove this feature.");
+					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
 					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
 					ActionContext.getContext().getSession().put("permissions", permissions);
 				} catch (Exception e) {
-					System.out.println("Problem autologging in.  Id supplied was: " + autoLoginID);
+					logger.error("Problem autologging in.  Id supplied was: {}", autoLoginID);
 				}
 			}
 		}
@@ -245,7 +248,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				return false;
 			}
 		} catch (Exception e) {
-			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
 
@@ -264,7 +267,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				return false;
 			}
 		} catch (Exception e) {
-			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
 		return true;
@@ -293,7 +296,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			User user = dao.find(userId);
 			return user;
 		} catch (Exception e) {
-			System.out.println("Error finding user: " + e.getMessage());
+			logger.error("Error finding user: {}", e.getMessage());
 			return null;
 		}
 	}
@@ -562,8 +565,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 					ActionContext.getContext().getParameters().remove(name);
 					ActionContext.getContext().getParameters().put(name, null);
 				} catch (Exception e) {
-					System.out.println("Error cleaning up parameter");
-					e.printStackTrace();
+					logger.error("Error cleaning up parameter");
+					logger.error("{}", e.getStackTrace());
 				}
 			}
 		}
