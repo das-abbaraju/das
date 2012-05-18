@@ -335,7 +335,7 @@
 							} %>
 							<a
 								<%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>
-								id="<%= item.getHtmlId() %>"
+								<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : "" %>
 								<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"") : "" %>
 								<%=dataFields %>
 							>
