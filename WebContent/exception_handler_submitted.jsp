@@ -5,7 +5,7 @@
 <head>
 <jsp:include page="/struts/jquery.jsp" />
 <link rel="stylesheet" type="text/css" media="screen"
-	href="/css/forms.css" />
+	href="/css/forms.css?v=${version}" />
 <title>PICS Error</title>
 </head>
 

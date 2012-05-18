@@ -5,8 +5,8 @@
  * where hash is base64("3:Ancon Marine");
  *
  * Author: Carey Hinoki
- * Date: 2-27-2012
- * Version: 1.1
+ * Date: 5-9-2012
+ * Version: 1.2
  */
 
 (function () {
@@ -193,86 +193,55 @@
             // general link
             path: '//www.picsauditing.com/contractor/',
             
-            // html id
-            container_id: 'pics_badge_container'
+            // html class
+            container_class: 'pics_badge_container'
         };
-        
-        // element storage
-        var element;
-        var script_element;
-        var style_element;
-        var container_element;
-        var badge_element;
-        var badge_link_element;
-        var link_element;
         
         return {
             init: function () {
-                element = this.findBadgeElement();
+                var script_element = this.findScriptElement();
                 
-                if (!element) {
-                    throw 'Unable to find contractor badge element';
+                this.configureBadgeSize(script_element);
+                
+                // parse contractor id + name from hash include
+                this.configureBadgeIdAndName(script_element);
+                
+                // create badge + link parts
+                var style_element = this.initBadgeCSS();
+                var container_element = this.initBadgeContainer();
+                var badge_element = this.initBadge();
+                var link_element = this.initLink();
+                
+                // render badge + link to screen
+                this.render(script_element, style_element, container_element, badge_element, link_element);
+            },
+            
+            findScriptElement: function () {
+                var script_element;
+                var elements = document.getElementsByTagName('script');
+                
+                if (elements.length > 0) {
+                    script_element = elements[elements.length - 1];
+
+                    if (script_element) {
+                        return script_element;
+                    }
                 }
-                
-                this.configureBadgeElement(element);
-                this.parseBadgeSize(element);
-                
-                script_element = this.findScriptElement(element);
                 
                 if (!script_element) {
                     throw 'Unable to find contractor script element';
                 }
-                
-                // parse contractor id + name from hash include
-                this.parseContractorHash(script_element.src);
-                
-                // create badge + link parts
-                this.initBadgeCSS();
-                this.initBadgeContainer();
-                this.initBadge();
-                this.initLink();
-                
-                // render badge + link to screen
-                this.render();
             },
             
-            findBadgeElement: function () {
-                var elements = document.getElementsByClassName('pb-program');
-                
-                if (elements.length) {
-                    return elements[0];
-                } else {
-                    return null;
-                }
-            },
-            
-            configureBadgeElement: function (element) {
-                element.removeAttribute('class');
-            },
-            
-            findScriptElement: function (element) {
-                var element = element.nextSibling;
-                
-                if (element.nodeName && element.nodeName.toLowerCase() == 'script') {
-                    return element;
-                } else {
-                    while (element && element.nodeType != 1) {
-                        element = element.nextSibling;
-                    }
-                    
-                    return element;
-                }
-            },
-            
-            parseBadgeSize: function (element) {
-                var data_size = element.attributes['data-size'];
+            configureBadgeSize: function (script_element) {
+                var data_size = script_element.attributes['data-size'];
                 
                 config.badge_size = data_size ? data_size.value || 80 : 80;
             },
             
-            parseContractorHash: function (src) {
+            configureBadgeIdAndName: function (script_element) {
                 var a = document.createElement('a');
-                a.href = src;
+                a.href = script_element.src;
                 
                 // obtain hash from js inclusion
                 var decoded_hash = Base64.decode(a.hash.replace('#pb-id=', ''));
@@ -284,7 +253,7 @@
             },
             
             initBadgeCSS: function () {
-                style_element = document.createElement('style');
+                var style_element = document.createElement('style');
                 style_element.type = 'text/css';
                 
                 var css = [
@@ -293,35 +262,37 @@
                     '#pics_badge_container_100 a { font-size: 11px; }',
                     '#pics_badge_container_150 a { font-size: 13px; }',
                     '.pics_badge_container a:hover { text-decoration: underline; }'
-                ];
-                
-                css = css.join('');
+                ].join('');
                 
                 if (navigator.appName == 'Microsoft Internet Explorer') {
                     style_element.styleSheet.cssText = css;
                 } else {
                     style_element.appendChild(document.createTextNode(css));
                 }
+                
+                return style_element;
             },
             
             initBadgeContainer: function () {
-                container_element = document.createElement('div');
-                container_element.id = config.container_id + '_' + config.badge_size;
-                container_element.className = config.container_id;
+                var container_element = document.createElement('div');
+                container_element.id = config.container_class + '_' + config.badge_size;
+                container_element.className = config.container_class;
                 container_element.style.width = config.badge_size + "px";
+                
+                return container_element;
             },
             
             initBadge: function () {
                 var logo;
                 
-                badge_element = document.createElement('img');
-                badge_element.alt = 'Contractor Prequalification, Contractor Management, Supplier Relationship Management';
-                badge_element.title = 'Contractor Prequalification, Contractor Management, Supplier Relationship Management';
+                var badge_image_element = document.createElement('img');
+                badge_image_element.alt = 'Contractor Prequalification, Contractor Management, Supplier Relationship Management';
+                badge_image_element.title = 'Contractor Prequalification, Contractor Management, Supplier Relationship Management';
                 
-                badge_link_element = document.createElement('a');
-                badge_link_element.href = config.badge_url;
-                badge_link_element.style.width = config.badge_size;
-                badge_link_element.target = '_blank';
+                var badge_element = document.createElement('a');
+                badge_element.href = config.badge_url;
+                badge_element.style.width = config.badge_size;
+                badge_element.target = '_blank';
                 
                 switch (config.badge_size) {
                     case '150':
@@ -335,29 +306,34 @@
                         break;
                 }
                 
-                badge_element.src = config.badge_path + logo;
+                badge_image_element.src = config.badge_path + logo;
+                
+                badge_element.appendChild(badge_image_element);
+                
+                return badge_element; 
             },
             
             initLink: function () {
-                link_element = document.createElement('a');
-                
+                var link_element = document.createElement('a');
                 link_element.href = config.path + config.id;
                 link_element.target = '_blank';
                 link_element.title = config.name;
                 
                 link_element.appendChild(document.createTextNode(config.name));
+                
+                return link_element;
             }, 
             
-            render: function () {
-                var parent_element = element.parentNode;
+            render: function (script_element, style_element, container_element, badge_element, link_element) {
+                var parent_element = script_element.parentNode;
                 
+                // add stylesheet to head
                 document.getElementsByTagName('head')[0].appendChild(style_element);
                 
-                badge_link_element.appendChild(badge_element);
-                container_element.appendChild(badge_link_element);
+                container_element.appendChild(badge_element);
                 container_element.appendChild(link_element);
                 
-                parent_element.replaceChild(container_element, element);
+                parent_element.insertBefore(container_element, script_element);
                 parent_element.removeChild(script_element);
             }
         }

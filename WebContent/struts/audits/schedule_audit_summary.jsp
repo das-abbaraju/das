@@ -48,12 +48,7 @@
         		<li>
                     <label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
                     
-        			<s:if test="conAudit.needsCamera">
-                        <s:text name="ScheduleAudit.message.MailWebcam" />: <s:property value="conAudit.fullAddress"/>
-                    </s:if>
-        			<s:else>
-                        <s:text name="ScheduleAudit.message.HasWebcam" />
-                    </s:else>
+					<s:text name="ScheduleAudit.message.WebcamSummary" />
         		</li>
         	</s:else>
             

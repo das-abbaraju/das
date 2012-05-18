@@ -58,23 +58,6 @@
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<a href="http://help.picsorganizer.com/display/contractors/Implementation+Audit" class="help" style="font-size: 10px" target="_BLANK"><s:text name="ScheduleAudit.help.WebAudit" /></a>
 					</li>
-					<li>
-						<label><s:text name="ScheduleAudit.label.VideoCamera" />:</label>
-						<s:radio
-							name="conAudit.needsCamera"
-							list="#{false: getText('ScheduleAudit.message.HasWebcam'), true: getText('ScheduleAudit.message.NoWebcam')}"
-							theme="pics"
-						/>
-						
-						<p>
-							<b>*<s:text name="ScheduleAudit.message.MailWebcam" /></b>:
-						</p>
-						<p>
-							<s:property value="conAudit.fullAddress" />
-						</p>
-						
-						<a class="edit" href="ScheduleAudit.action?auditID=<s:property value="conAudit.id" />"><s:text name="ScheduleAudit.link.ChangeAddress" /></a>
-					</li>
 				</s:else>
 		
 				<li>
@@ -107,6 +90,12 @@
                             <s:param value="%{conAudit.contractorAccount.country.currency.symbol}" />
 						</s:text>
 					</li>
+					<s:if test="!conAudit.conductedOnsite">
+						<li>
+							<s:checkbox name="webcamConfirm" />
+							<s:text name="ScheduleAudit.message.WebcamConfirm" />
+						</li>
+					</s:if>
 				</ol>
 				
 				<s:submit cssClass="picsbutton positive" method="confirm" value="%{getText('ScheduleAudit.button.ConfirmAudit')}" />

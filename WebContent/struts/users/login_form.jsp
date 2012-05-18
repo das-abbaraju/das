@@ -7,6 +7,10 @@
 
 <div class="loginForm">
 	<s:form id="login">
+	<!-- grab the switchToUser parameters if its passed to this page when switch servers.-->				
+		<s:if test="switchToUser>0">					
+			<s:hidden id="switchServerToUser" name="switchServerToUser" value="%{switchToUser}" />
+		</s:if>
 		<fieldset class="form">
 		<h2 class="formLegend"><s:text name="Login.h1" /></h2>
 		<ol>

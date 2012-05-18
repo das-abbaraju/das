@@ -135,7 +135,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public String addRole() {
 		AccountUser accountUser = new AccountUser();
-		if (accountRep.getUser().getId() > 0)
+		if (accountRep != null && accountRep.getUser().getId() > 0)
 			accountUser = accountRep;
 		else
 			accountUser = salesRep;
@@ -660,7 +660,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
 				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
-
 		return pendingAndNotApprovedCount;
 	}
 

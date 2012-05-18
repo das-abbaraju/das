@@ -29,8 +29,8 @@
 	<title>${contractor.name}</title>
     
     <link rel="stylesheet" type="text/css" media="screen" href="css/badge/badge.css?v=${version}" />
-    <script type="text/javascript" src="js/badge/badge.js"></script>
-    <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js"></script>
+    <script type="text/javascript" src="js/badge/badge.js?v=${version}"></script>
+    <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js?v=${version}"></script>
 </head>
 <body>
 	<s:include value="conHeader.jsp"/>
@@ -59,7 +59,7 @@
                     
                     <div id="clip_container_80" class="clip_container">
                         <a href="javascript:;" id="clip_button_80">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     
                     <div id="clip_container_100" class="clip_container">
                         <a href="javascript:;" id="clip_button_100">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
@@ -89,11 +89,12 @@
                     
                     <div id="clip_container_150" class="clip_container">
                         <a href="javascript:;" id="clip_button_150">
-                            <s:text name="ContractorBadge.CopyToClipboard" />
+                            <s:text name="global.CopyToClipboard" />
                         </a>
                     </div>
                 </div>
             </li>
         </ul>
+        
     </div>
 </body>

@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.net.ftp.FTPClient;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -100,12 +101,15 @@ public class EbixLoader {
 									status = AuditStatus.Complete;
 
 								try {
-									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);
-									List<ContractorAudit> audits = contractorAuditDAO.findWhere(900, "auditType.id = "
-											+ AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
-											+ conAccount.getId(), "");
+									List<ContractorAudit> audits = null;
+									ContractorAccount conAccount = contractorAccountDAO.find(contractorId);									
+									if (conAccount != null) {									
+										audits = contractorAuditDAO.findWhere(900, "auditType.id = " 
+												+ AuditType.HUNTSMAN_EBIX + " and contractorAccount.id = "
+												+ conAccount.getId(), "");
+									}
 
-									if (audits == null || audits.size() == 0) {
+									if (CollectionUtils.isEmpty(audits)) {
 										PicsLogger.log("WARNING: Ebix record found for contractor "
 												+ conAccount.getId() + " but no Ebix Compliance audit was found");
 										continue;

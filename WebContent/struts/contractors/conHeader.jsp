@@ -159,8 +159,9 @@ function loadResults(data, noteText) {
 	});
 }
 
-function loadStatus(caoID){
-	$('#caoAjax').load('CaoSaveAjax!showHistory.action', {auditID: $('#auditID').val(), caoID: caoID}, function() {
+function loadStatus(caoID, addUserNote){
+    addUserNote = addUserNote || false;
+	$('#caoAjax').load('CaoSaveAjax!showHistory.action', {auditID: $('#auditID').val(), caoID: caoID, addUserNote: addUserNote}, function() {
 		$.blockUI({
 			message: $('#caoAjax'),
 			css: {
@@ -187,6 +188,7 @@ function loadStatus(caoID){
 					auditID: $('#auditID').val(), caoID: caoID, noteID: parent,
 					note: $('#'+parent+' .ac_cao_notes textarea').val()}, function(){
 						$.unblockUI();
+						$('#refresh_cao').click();
 						return false;
 				});
 			});
@@ -202,7 +204,11 @@ function loadStatus(caoID){
 	        $.unblockUI();
 	        
 	        return false;
-	    });			
+	    });
+		
+		if (addUserNote) {
+		    $('.editNote:first').click();
+		}
 	});
 }
 </script>

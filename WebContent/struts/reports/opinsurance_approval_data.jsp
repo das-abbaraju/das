@@ -135,21 +135,6 @@
                 </td>
 			</tr>
 		</s:iterator>
-		
-		<tr>
-			<td colspan="<s:property value="filter.primaryInformation ? 11 : 10" />">
-				<div style="height:28px;">
-					<s:radio 
-						name="newStatuses" 
-						list="#{'Approved':getTextNullSafe('ReportInsuranceApproval.ApproveSelected'),'Incomplete':getTextNullSafe('ReportInsuranceApproval.RejectSelected'),'NotApplicable':getTextNullSafe('ReportInsuranceApproval.MarkNA')}"
-						theme="pics"
-						cssClass="statusSelects inline"
-					/>
-				</div>
-				
-				<a class="picsbutton positive" href="#"><s:text name="ReportInsuranceApproval.SaveChanges" /></a>
-			</td>
-		</tr>
 	</table>
 	
 	<div>

@@ -73,7 +73,7 @@
 					format="%{getText('date.short')}" /></td>
 				<td><nobr>
 				<s:if test="[0].get('hasAuditor')">
-					<s:select onchange="saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="auditorList" listKey="id"
+					<s:select onchange="saveAuditor(%{[0].get('auditID')}, this.value)" cssClass="blueMain" list="safetyList" listKey="id"
 						listValue="name" value="%{[0].get('auditorID')}"
 						id="%{'auditor_'.concat([0].get('auditID'))}" headerKey="" headerValue="- Safety Professional -" />
 					<s:if test="[0].get('isScheduled') && [0].get('auditorConfirm') == NULL">

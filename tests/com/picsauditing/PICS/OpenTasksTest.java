@@ -1,20 +1,31 @@
 package com.picsauditing.PICS;
 
 import static org.junit.Assert.*;
-import static com.picsauditing.util.Assert.*;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-//import org.apache.struts2.StrutsSpringJUnit4TestCase;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
-import com.picsauditing.EntityFactory;
+import static org.mockito.Mockito.*;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
+
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -25,51 +36,92 @@ import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.Workflow;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"/tests.xml"})
-@TransactionConfiguration(transactionManager = "transactionManager")
-public class OpenTasksTest /* extends  StrutsSpringJUnit4TestCase */ {
-	private static final int ANTEA_SPECIFIC_AUDIT = 181;
-	private OpenTasks action;
-	private ContractorAccount contractor;
-	// private Map<OperatorAccount, Set<OperatorAccount>> caos;
-	private User user;
-	private Permissions permissions;
-	private OperatorAccount operator;
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(OpenTasks.class)
+public class OpenTasksTest {
+	
+	OpenTasks openTasks;
 
+	@Mock Account account;
+	@Mock AuditType auditType;
+	@Mock ContractorAccount contractor;
+	@Mock ContractorAudit audit;
+	@Mock ContractorAuditOperator cao;
+	@Mock User user;
+	@Mock Permissions permissions;
+	@Mock OperatorAccount operator;
+	@Mock Workflow workFlow;
+
+	private static final int ANTEA_SPECIFIC_AUDIT = 181;
+	
 	@Before
 	public void setUp() throws Exception {
-		action = new OpenTasks();
+		openTasks = new OpenTasks();
+		
+		MockitoAnnotations.initMocks(this);
 	}
 
+	@Test(expected = NullPointerException.class)
+	public void testIsOpenTaskNeeded() throws Exception {
+		when(audit.getOperators()).thenReturn(null);
+		Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+	}
+	
 	@Test
 	public void testIsOpenTaskNeeded_PendingManualAudit() throws Exception {
-		setUpBasicModelObjects();
-		ContractorAudit manualAudit = setUpAudit(AuditType.DESKTOP, Workflow.MANUAL_AUDIT_WORKFLOW);
-		manualAudit.getAuditType().setCanContractorEdit(false);
-		
-		ContractorAuditOperator cao = EntityFactory.addCao(manualAudit, operator);
-		cao.changeStatus(AuditStatus.Pending,permissions);
-		assertTrue(action.isOpenTaskNeeded(manualAudit, user ,permissions ));
+		when(cao.isVisible()).thenReturn(true);
+		when(cao.getStatus()).thenReturn(AuditStatus.Pending);
+		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
+		when(workFlow.getId()).thenReturn(Workflow.MANUAL_AUDIT_WORKFLOW);
+		when(auditType.isCanContractorEdit()).thenReturn(true);
+		when(auditType.getId()).thenReturn(AuditType.DESKTOP);
+		when(audit.getAuditType()).thenReturn(auditType);
+		when(account.isAdmin()).thenReturn(false);
+		when(user.getAccount()).thenReturn(account);
+		when(permissions.hasPermission(any(OpPerms.class)))
+				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
+	
+		boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		assertTrue(result);
 	}
 
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesMissing() throws Exception {
-		setUpBasicModelObjects();
-		action.initializeForGatheringTasks(contractor, user);
-		action.gatherTasksAboutDeclaringTrades();
-		assertEquals(1,action.openTasks.size());
-		assertContains("<a href=\"https://www.picsorganizer.com/ContractorTrades.action?id="+contractor.getId()+"\">",action.openTasks.get(0));
+		OpenTasks mock = Mockito.mock(OpenTasks.class);
+		
+		@SuppressWarnings("unchecked")
+		Set<ContractorTrade> mockSet = Mockito.mock(HashSet.class);
+		when(mockSet.size()).thenReturn(0);
+		
+		when(contractor.getTrades()).thenReturn(mockSet);	
+		when(contractor.getId()).thenReturn(12);
+		PicsTestUtil.forceSetPrivateField(mock, "contractor", contractor);
+		ArrayList<String> something = new ArrayList<String>();
+		PicsTestUtil.forceSetPrivateField(mock, "openTasks", something);
+		when(mock.getTextParameterized(any(String.class), anyVararg())).thenReturn("Trades missing!");
+		Whitebox.invokeMethod(mock, "gatherTasksAboutDeclaringTrades");	
+		
+		assertEquals("Trades missing!", something.get(0));
 	}
 
 	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesSuppliedButNeedsUpdate() throws Exception {
-		setUpBasicModelObjects();
-		contractor.getTrades().add(new ContractorTrade());
-		action.initializeForGatheringTasks(contractor, user);
-		action.gatherTasksAboutDeclaringTrades();
-		assertEquals(1,action.openTasks.size());
-		assertContains("<a href=\"https://www.picsorganizer.com/ContractorTrades.action?id="+contractor.getId()+"\">",action.openTasks.get(0));
+		OpenTasks mock = Mockito.mock(OpenTasks.class);
+		
+		@SuppressWarnings("unchecked")
+		Set<ContractorTrade> mockSet = Mockito.mock(HashSet.class);
+		when(mockSet.size()).thenReturn(1);
+		
+		when(contractor.getTrades()).thenReturn(mockSet);	
+		when(contractor.getId()).thenReturn(12);
+		when(contractor.isNeedsTradesUpdated()).thenReturn(true);
+		PicsTestUtil.forceSetPrivateField(mock, "contractor", contractor);
+		ArrayList<String> something = new ArrayList<String>();
+		PicsTestUtil.forceSetPrivateField(mock, "openTasks", something);
+		when(mock.getTextParameterized(any(String.class), anyVararg())).thenReturn("Update your trades!");
+		Whitebox.invokeMethod(mock, "gatherTasksAboutDeclaringTrades");	
+		
+		assertEquals("Update your trades!", something.get(0));
 	}
 
 	/*
@@ -77,43 +129,65 @@ public class OpenTasksTest /* extends  StrutsSpringJUnit4TestCase */ {
 	 */
 	@Test
 	public void testIsOpenTaskNeeded_SubmittedAnteaSpecificAudit() throws Exception {
-		setUpBasicModelObjects();
-		ContractorAudit audit = setUpAudit(ANTEA_SPECIFIC_AUDIT, Workflow.PQF_WORKFLOW);
-		
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
-		cao.changeStatus(AuditStatus.Submitted,permissions);
-		
-		assertFalse(action.isOpenTaskNeeded(audit, user ,permissions ));
+		when(cao.isVisible()).thenReturn(true);
+		when(cao.getStatus()).thenReturn(AuditStatus.Submitted);
+		when(audit.getOperators()).thenReturn(Arrays.asList(cao));
+		when(workFlow.getId()).thenReturn(Workflow.PQF_WORKFLOW);
+		when(auditType.isCanContractorEdit()).thenReturn(true);
+		when(auditType.getId()).thenReturn(ANTEA_SPECIFIC_AUDIT);
+		when(audit.getAuditType()).thenReturn(auditType);
+		when(account.isAdmin()).thenReturn(false);
+		when(user.getAccount()).thenReturn(account);
+		when(permissions.hasPermission(any(OpPerms.class)))
+				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
+	
+		boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		assertFalse(result);
 	}
 
-
+	@Test(expected = NullPointerException.class)
+	public void testGatherTasksAboutDeclaringTrades_NullPointerException() throws Exception {
+		when(contractor.getTrades()).thenReturn(null);
+		PicsTestUtil.forceSetPrivateField(openTasks, "contractor", contractor);
+		Whitebox.invokeMethod(openTasks, "gatherTasksAboutDeclaringTrades");
+	}
+	
+	@Test
 	public void testGatherTasksAboutDeclaringTrades_tradesSuppliedAndUpToDate() throws Exception {
-		setUpBasicModelObjects();
-		contractor.getTrades().add(new ContractorTrade());
-		contractor.setTradesUpdated(new Date());
-		action.initializeForGatheringTasks(contractor, user);
-		action.gatherTasksAboutDeclaringTrades();
-		assertEquals(0,action.openTasks.size());
-		assertTrue(true);
-	}
-
-	private ContractorAudit setUpAudit(int auditType, int workflowId) {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(auditType,contractor);
+		OpenTasks mock = Mockito.mock(OpenTasks.class);
 		
-		Workflow workFlow = new Workflow();
-		workFlow.setId(workflowId);
+		@SuppressWarnings("unchecked")
+		Set<ContractorTrade> mockSet = Mockito.mock(HashSet.class);
+		when(mockSet.size()).thenReturn(1);
+		
+		when(contractor.getTrades()).thenReturn(mockSet);	
+		when(contractor.getId()).thenReturn(12);
+		when(contractor.isNeedsTradesUpdated()).thenReturn(false);
+		PicsTestUtil.forceSetPrivateField(mock, "contractor", contractor);
+		ArrayList<String> something = new ArrayList<String>();
+		PicsTestUtil.forceSetPrivateField(mock, "openTasks", something);
 
-		audit.getAuditType().setWorkFlow(workFlow);
-		audit.getAuditType().setCanContractorEdit(true);
-		return audit;
+		Whitebox.invokeMethod(mock, "gatherTasksAboutDeclaringTrades");	
+		
+		assertTrue(something.isEmpty());
+	}	
+	
+	private Answer<Boolean> buildAnswerForSpecificPermission(final OpPerms permission) {
+		return new Answer<Boolean>() {
+
+			@Override
+			public Boolean answer(InvocationOnMock invocation) throws Throwable {
+				if (invocation != null && ArrayUtils.isNotEmpty(invocation.getArguments())) {
+					Object argument = invocation.getArguments()[0];
+					if (argument instanceof OpPerms) {
+						return (permission == (OpPerms) argument);
+					}
+				}
+					
+				return false;
+			}
+			
+		};
 	}
-	private void setUpBasicModelObjects() {
-		user = EntityFactory.makeUser();
-		permissions = EntityFactory.makePermission(user);
-
-		contractor = EntityFactory.makeContractor();
-		operator = EntityFactory.makeOperator();
-	}
-
-
+	
 }

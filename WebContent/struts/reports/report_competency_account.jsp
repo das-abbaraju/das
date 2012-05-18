@@ -4,7 +4,7 @@
 <head>
 <title><s:text name="%{scope}.title" /></title>
 <s:include value="reportHeader.jsp" />
-<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
+<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js?v=${version}"></script>
 <script type="text/javascript">
 $(function() {
 	$.mask.definitions['S']='[X0-9]';

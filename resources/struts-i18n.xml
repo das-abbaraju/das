@@ -29,5 +29,9 @@
 		<action name="UnsyncedTranslations" class="com.picsauditing.actions.i18n.UnsyncedTranslations">
 			<result>struts/i18n/unsynced_translations.jsp</result>
 		</action>
+		
+		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
+			<result>struts/i18n/translate_js.jsp</result>
+		</action>
 	</package>
 </struts>

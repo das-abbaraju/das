@@ -256,7 +256,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 		excelSheet.addColumn(new ExcelColumn("atype.name", getText("AuditType"), ExcelCellType.Translated));
 		
 		excelSheet.addColumn(new ExcelColumn("caoAccountName", getText("Audit.header.OperatorScope")));
-
+		excelSheet.addColumn(new ExcelColumn("auditStatus", getText("Filters.label.Status"), ExcelCellType.String));
 
 		if (permissions.isOperator() || permissions.isAdmin()) {
 

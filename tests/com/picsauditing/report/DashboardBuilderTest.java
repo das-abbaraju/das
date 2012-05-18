@@ -2,6 +2,7 @@ package com.picsauditing.report;
 
 import static org.junit.Assert.*;
 import org.json.simple.JSONArray;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.picsauditing.jpa.entities.Dashboard;
@@ -23,6 +24,7 @@ public class DashboardBuilderTest {
 		assertEquals("[{\"panels\":[{\"type\":\"Html\",\"url\":\"test.html\"}]}]", result.toString());
 	}
 
+	@Ignore("Not ready to run yet.")
 	@Test
 	public void testReport() {
 		DashboardWidget widget = dashboard.addWidget(WidgetType.Report, 1);

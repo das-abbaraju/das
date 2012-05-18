@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
@@ -51,6 +52,10 @@ public class OshaSave extends PicsActionSupport {
 			auditData.setVerified(verify);
 			auditData.setDateVerified(verifiedDate);
 			auditData.setAuditor(auditor);
+			String[] parameter = (String[]) ActionContext.getContext().getParameters().get("oshaQuestion_" + auditData.getQuestion().getId());
+			if (parameter != null && parameter.length > 0) {
+				auditData.setAnswer(parameter[0]);
+			}
 			auditDataDao.save(auditData);
 		}
 

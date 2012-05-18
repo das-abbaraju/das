@@ -10,20 +10,20 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 		
 		<s:include value="../jquery.jsp"/>
-		<script type="text/javascript" src="js/manage_employees.js"></script>
-		<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js"></script>
+		<script type="text/javascript" src="js/manage_employees.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/jquery.maskedinput-1.2.2.min.js?v=${version}"></script>
 		
-		<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js"></script>
-		<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css"/>
+		<script type="text/javascript" src="js/jquery/dataTables/jquery.dataTables.min.js?v=${version}"></script>
+		<link rel="stylesheet" href="js/jquery/dataTables/css/dataTables.css?v=${version}"/>
 		
-		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css" />
+		<script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/blockui/blockui.css?v=${version}" />
 		<style>
 			div.dataTables_filter { width: 65%; }
 			div.dataTables_length { width: 35%; }
 			.newJobSite, #siteEditBox { display: none; }
 			#newJobSiteForm { display: none; clear: both; }
-			<s:if test="employee.id == 0 || employee.active">
+			<s:if test="employee.id == 0 || employee.status.toString().equals('Active')">
 				#termDate { display: none; }
 			</s:if>
 		</style>
@@ -144,7 +144,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<s:iterator value="account.employees" id="e">
+								<s:iterator value="activeEmployees" id="e">
 									<tr>
 										<td>
 											<s:property value="#e.id" />

@@ -6,8 +6,8 @@
 <title><s:property value="type"/> Assignment Matrix</title>
 <link rel="stylesheet" type="text/css" media="screen" href="css/reports.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp"/>
-<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
-<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js"></script>
+<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
+<script type="text/javascript" src="js/jquery/scrollTo/jquery.scrollTo-min.js?v=${version}"></script>
 <script type="text/javascript" src="js/ReportSearch.js?v=<s:property value="version"/>"></script>
 <script type="text/javascript">
 $(function() {

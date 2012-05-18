@@ -1,5 +1,6 @@
 package com.picsauditing.dao;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -86,7 +87,9 @@ public class ContractorOperatorDAO extends PicsDAO {
 		} else {
 			where += "co.operatorAccount.id = " + opID;
 		}
+		
 		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active','Demo')";
+	
 
 		if (includeBidding) {
 			where += " AND co.contractorAccount.accountLevel = 'BidOnly'";
@@ -95,10 +98,32 @@ public class ContractorOperatorDAO extends PicsDAO {
 		}
 		if (!isCorporate)
 			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";
-		Query query = em.createQuery(where);
+		
+		Query query = em.createQuery(where);		
 		return query.getResultList();
 	}
+	public List<ContractorOperator> findPendingApprovalContractorsNoDemo(int opID, boolean includeBidding, boolean isCorporate) {
+		String where = "SELECT co FROM ContractorOperator co WHERE ";
+		if (isCorporate) {
+			where += "co.operatorAccount IN " + "(SELECT f.operator FROM Facility f WHERE f.corporate.id = " + opID
+					+ ")";
+		} else {
+			where += "co.operatorAccount.id = " + opID;
+		}		
+		
+		where += " AND co.workStatus = 'P' AND co.contractorAccount.status IN ('Active', operatorAccount.status) and co.contractorAccount.name not like '%^%'";		
 
+		if (includeBidding) {
+			where += " AND co.contractorAccount.accountLevel = 'BidOnly'";
+		} else {
+			where += " AND co.contractorAccount.accountLevel = 'Full'";
+		}
+		if (!isCorporate)
+			where += " GROUP BY co.contractorAccount ORDER BY co.creationDate DESC";		
+		Query query = em.createQuery(where);		
+		return query.getResultList();
+	}
+	
 	public List<ContractorOperator> findExpiredForceFlags() {
 		Query query = em.createQuery("FROM ContractorOperator WHERE forceFlag IS NOT NULL AND forceEnd < :now");
 		query.setParameter("now", new Date());
@@ -129,4 +154,18 @@ public class ContractorOperatorDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	public List<Integer> getContractorIdsForOperator(String where) {
+		if (Strings.isEmpty(where))
+			throw new IllegalArgumentException("The where clause cannot be an empty String.");
+					
+		try {
+			Query query = em.createQuery("SELECT contractorAccount.id FROM ContractorOperator WHERE " + where);
+			return query.getResultList();
+		} catch (Exception e) {
+			System.out.println("An error occurred in the ContractorOperatorDAO - " + e.getMessage());
+		}
+		
+		return Collections.emptyList();
+	}
+	
 }

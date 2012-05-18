@@ -20,9 +20,9 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/registration.css?v=${version}" />
 		
 		<!-- CSS FIXES FOR INTERNET EXPLORER -->
-		<!--[if IE]><link rel="stylesheet" href="css/ie.css" type="text/css" /><![endif]-->
-		<!--[if IE 6]><link rel="stylesheet" href="css/ie6.css" type="text/css" /><![endif]-->
-		<!--[if IE 7]><link rel="stylesheet" href="css/ie7.css" type="text/css" /><![endif]-->
+		<!--[if IE]><link rel="stylesheet" href="css/ie.css?v=${version}" type="text/css" /><![endif]-->
+		<!--[if IE 6]><link rel="stylesheet" href="css/ie6.css?v=${version}" type="text/css" /><![endif]-->
+		<!--[if IE 7]><link rel="stylesheet" href="css/ie7.css?v=${version}" type="text/css" /><![endif]-->
 		
 		<!-- JS FIXES FOR INTERNET EXPLORER -->
 		<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->

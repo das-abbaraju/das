@@ -4,6 +4,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,6 +25,7 @@ import com.picsauditing.jpa.entities.AuditorSchedule;
 import com.picsauditing.jpa.entities.AuditorVacation;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.SpringUtils;
 
 @SuppressWarnings("serial")
 public class MySchedule extends PicsActionSupport implements Preparable {
@@ -38,7 +41,7 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 	private AuditorVacationDAO auditorVacationDAO;
 	private ContractorAuditDAO contractorAuditDAO;
 	private UserDAO userDAO;
-
+	private Set<User> safetyList;
 	private String type = "Schedule";
 
 	private long start;
@@ -342,7 +345,14 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 		List<User> auditors = userDAO.findAuditors();
 		return auditors;
 	}
-
+	public Set<User> getSafetyList() {
+		if (safetyList == null) {			
+			safetyList = new TreeSet<User>();
+			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));					
+		}		
+		return safetyList;
+	}
 	public List<AuditorSchedule> getSchedules() {
 		if (schedules == null) {
 			schedules = auditorScheduleDAO.findByAuditorID(currentUser.getId());

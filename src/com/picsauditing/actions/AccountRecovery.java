@@ -36,12 +36,12 @@ public class AccountRecovery extends PicsActionSupport {
 	}
 	
 	@Anonymous
-	public String findName() {
+	public String findName() {		
 		if (email == null || email.equals("")) {
 			addActionError(getText("AccountRecovery.error.NoEmail"));
 			return SUCCESS;
 		}
-
+		
 		if (!Strings.isValidEmail(email)) {
 			addActionError(getText("AccountRecovery.error.InvalidEmail"));
 			return SUCCESS;
@@ -50,6 +50,11 @@ public class AccountRecovery extends PicsActionSupport {
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		List<User> matchingUsers = userDAO.findByEmail(email);
+		//if username starts with DELETED, remove from the matchingUsers list.
+		for (int count=0; count< matchingUsers.size(); count++){
+			if (matchingUsers.get(count).getUsername().startsWith("DELETE-"))
+				matchingUsers.remove(count);			
+		}
 
 		if (matchingUsers.size() == 0) {
 			addActionError(getText("AccountRecovery.error.EmailNotFound"));
@@ -91,7 +96,7 @@ public class AccountRecovery extends PicsActionSupport {
 	
 	@Anonymous
 	public String resetPassword() {
-		if (username == null || username.equals("")) {
+		if (username == null || username.equals("")||username.startsWith("DELETE-")) {
 			addActionError(getText("AccountRecovery.error.NoUserName"));
 			return SUCCESS;
 		}
@@ -110,11 +115,16 @@ public class AccountRecovery extends PicsActionSupport {
 			return SUCCESS;
 		}
 
-		try {
+		try {			
 			user = userDAO.findName(username);
-			if (user == null)
+			//LW if the user has an inactive status, then not allow them to recover the password.
+			if (!user.isActiveB()){
+				addActionError(getText("AccountRecovery.error.UserNotActive"));
+				throw new Exception(getText("AccountRecovery.error.UserNotActive"));				
+			}
+			if (user == null)				
 				throw new Exception(getText("AccountRecovery.error.UserNotFound"));
-
+			
 			// Seeding the time in the reset hash so that each one will be
 			// guaranteed unique
 			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));

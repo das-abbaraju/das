@@ -11,20 +11,26 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-import java.util.Vector;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.PICS.PasswordValidator;
+import com.picsauditing.access.BetaPool;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserAccessDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
@@ -51,9 +57,7 @@ import com.picsauditing.util.Strings;
 public class UsersManage extends PicsActionSupport {
 	protected User user;
 	protected Account account;
-
-	private String password1;
-	private String password2;
+	
 	private boolean sendActivationEmail = false;
 	private boolean setPrimaryAccount = false;
 
@@ -71,7 +75,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-
+	private boolean toggleSwitch = false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -85,25 +89,18 @@ public class UsersManage extends PicsActionSupport {
 	protected UserGroupDAO userGroupDAO;
 	@Autowired
 	protected UserSwitchDAO userSwitchDao;
+	@Autowired
+	protected AppPropertyDAO appPropertyDAO;
+	
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
 	public String execute() throws Exception {
-		startup();
-
+		startup();		
 		if ("department".equalsIgnoreCase(button))
 			return "department";
 
 		if (user == null)
-			return SUCCESS;
-
-		if ("resetPassword".equals(button)) {
-			// Seeding the time in the reset hash so that each one will be
-			// guaranteed unique
-			user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
-			userDAO.save(user);
-
-			addActionMessage(sendRecoveryEmail(user));
-		}
+			return SUCCESS;		
 
 		if ("Suggest".equalsIgnoreCase(button))
 			return "suggest";
@@ -131,7 +128,13 @@ public class UsersManage extends PicsActionSupport {
 				conInsurance = true;
 			}
 		}
-
+		if (user.equals(user.getAccount().getPrimaryContact())) {
+			addActionMessage(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
+		}
+		if (!user.isActiveB()){
+			addAlertMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
+		}
+		InitToggleSwitchUser();
 		return SUCCESS;
 	}
 
@@ -147,7 +150,7 @@ public class UsersManage extends PicsActionSupport {
 	public String save() throws Exception {
 		isSaveAction = true;
 		startup();
-		
+
 		user.setIsGroup(userIsGroup);
 
 		// Lazy init fix for isOk method
@@ -157,7 +160,7 @@ public class UsersManage extends PicsActionSupport {
 			userDAO.refresh(user); // Clear out ALL changes for the user
 			return SUCCESS;
 		}
-//a contractor user.		
+		// a contractor user.
 		if (user.getId() > 0 && account.isContractor()) {
 			if (!user.isActiveB()) {
 				Set<OpPerms> userPerms = new HashSet<OpPerms>();
@@ -176,15 +179,8 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		}
-//a user
-		if (user.getId() > 0) {
-			// We want to save data for an existing user
-			if (!Strings.isEmpty(password2) && password2.equals(password1)) {
-				user.setEncryptedPassword(password2);
-				user.setForcePasswordReset(false);
-			}
-
-		} else {
+		// a user
+		if (user.getId() < 0){ 			
 			// We want to save a new user
 			final String randomPassword = Long.toString(new Random().nextLong());
 			user.setEncryptedPassword(randomPassword);
@@ -201,7 +197,7 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setId(permissions.getAccountId());
 			}
 		}
-//a group
+		// a group
 		if (user.isGroup()) {
 			// Create a unique username for this group
 			String username = "GROUP";
@@ -209,13 +205,19 @@ public class UsersManage extends PicsActionSupport {
 			username += user.getName();
 
 			user.setUsername(username);
+			//LW: verify is the group name is duplicate in the current system.
+			if (userDAO.duplicateUsername(user.getUsername(), user.getId())){
+				addActionError(getText("UsersManage.GroupnameNotAvailable"));
+				userDAO.refresh(user); // Clear out ALL changes for the user
+				return SUCCESS;
+			}
 		} else {
 			int maxHistory = 0;
 			// TODO u.getAccount().getPasswordPreferences().getMaxHistory()
 			user.addPasswordToHistory(user.getPassword(), maxHistory);
 			user.setPhoneIndex(Strings.stripPhoneNumber(user.getPhone()));
 		}
-//a contractor
+		// a contractor
 		if (user.getAccount().isContractor()) {
 			Set<OpPerms> userPerms = new HashSet<OpPerms>();
 			userPerms = new HashSet<OpPerms>();
@@ -326,29 +328,16 @@ public class UsersManage extends PicsActionSupport {
 			newUser = true;
 		}
 
-		
-		
-		
 		try {
 			if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null)
 				user.getAccount().setPrimaryContact(user);
-
-			user.setNeedsIndexing(true);
-			if (user.isGroup()) {
-//check is the groupname is in use				
-				if (!userDAO.duplicateUsername(user.getUsername(), user.getId()))
-					userDAO.save(user);
-				else{
-					addActionError(getText("UsersManage.GroupnameNotAvailable"));
-					userDAO.refresh(user); // Clear out ALL changes for the user
-					return SUCCESS;
-				}
-			} else	
-				user = userDAO.save(user);
+			//auto indexing, no longer need to call it.	
+			//user.setNeedsIndexing(true);
+			
+			user = userDAO.save(user);
 
 			if (!user.isGroup())
 				addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-
 
 		} catch (ConstraintViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
@@ -364,7 +353,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {			
+		if (newUser && (user.getAccount().isAdmin() || user.getAccount().isOperatorCorporate())) {
 			this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
 		}
 
@@ -373,15 +362,17 @@ public class UsersManage extends PicsActionSupport {
 
 	public String unlock() throws Exception {
 		startup();
-
-		if (!isOK()) {
+		
+		if (!isOK()) {		
 			userDAO.clear();
 			return SUCCESS;
 		}
-
-		user.setLockUntil(null);
+		
+		user.setLockUntil(null);		
 		userDAO.save(user);
-		return SUCCESS;
+		
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
+				+ "&msg=User Account has been unlocked");
 	}
 
 	public String move() throws Exception {
@@ -421,10 +412,51 @@ public class UsersManage extends PicsActionSupport {
 		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
 				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
 	}
-
-	public String delete() throws Exception {
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	public String inActivate() throws Exception{
 		startup();
-		permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		if (!user.isGroup()) {
+			// This user is a user (not a group)
+			if (user.equals(user.getAccount().getPrimaryContact())) {
+				addActionError(getTextParameterized("UsersManage.CannotInactivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+
+		user.setActive(false);
+		userDAO.save(user);		
+		addActionMessage(getTextParameterized("UsersManage.UserInactivated", user.isGroup() ? 1 : 0,
+				user.isGroup() ? user.getName() : user.getUsername()));
+		
+
+		return SUCCESS;
+	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
+	public String activate() throws Exception{
+		startup();
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Edit);
+		if (!user.isGroup()) {
+			// This user is a user (not a group)
+			if (user.equals(user.getAccount().getPrimaryContact())) {
+				addActionError(getTextParameterized("UsersManage.CannotActivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+
+		user.setActive(true);
+		userDAO.save(user);
+		addActionMessage(getTextParameterized("UsersManage.UserActivated", user.isGroup() ? 1 : 0,
+				user.isGroup() ? user.getName() : user.getUsername()));
+		
+		//when an user is reactived, refresh the page to change the isactive status.
+		return this.redirect("UsersManage.action?account=" + account.getId() + "&user=" + user.getId());
+		
+	}
+	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Delete)
+	public String delete() throws Exception {		
+		startup();
+		//permissions.tryPermission(OpPerms.EditUsers, OpType.Delete);
 		if (!user.isGroup()) {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
@@ -433,7 +465,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		}
 
-		user.setActive(false);
+		user.setUsername("DELETE-"+user.getId()+"-"+Strings.hashUrlSafe(user.getUsername()));	
 		userDAO.save(user);
 		addActionMessage(getTextParameterized("UsersManage.SuccessfullyRemoved", user.isGroup() ? 1 : 0,
 				user.isGroup() ? user.getName() : user.getUsername()));
@@ -441,7 +473,62 @@ public class UsersManage extends PicsActionSupport {
 
 		return SUCCESS;
 	}
+	private void InitToggleSwitchUser() {
+		String maxBetaLevel = appPropertyDAO.getProperty("Toggle.SwitchUserServer");
+		int betaMax = NumberUtils.toInt(maxBetaLevel, 0);
+		BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(betaMax);
 
+		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
+
+		setToggleSwitch (userBetaTester);
+	}
+	public boolean getToggleSwitch() {
+		return toggleSwitch;
+	}
+
+	public void setToggleSwitch(boolean toggleSwitch) {
+		this.toggleSwitch = toggleSwitch;
+	}
+	
+	@RequiredPermission(value = OpPerms.SwitchUser)
+	public String switchUserToDifferentServer() throws Exception {
+		// remove the cookie the switch to beta
+		removeBetaMaxCookie();
+
+		// get the sessionid form the cookie
+		String sessionID = getJSessionID();
+
+		// do not create new sessionid
+		HttpSession sessionid = ServletActionContext.getRequest().getSession(false);
+		sessionid.setAttribute("JSESSIONID", sessionID);
+		sessionid.setAttribute("redirect", "true");
+		// query the app_session to look the sessionID, if exist, do the
+		// redirect, else do nothing.
+		ServletActionContext.getResponse().sendRedirect("Login.action?button=login&switchToUser=" + user.getId());		
+		return SUCCESS;
+	}
+
+	private String getJSessionID() {
+		Cookie[] cookiesA = ServletActionContext.getRequest().getCookies();
+		String jSessionID = "";
+		if (cookiesA != null) {
+			for (int i = 0; i < cookiesA.length; i++) {
+				if (cookiesA[i].getName().equals("JSESSIONID")) {
+					jSessionID = cookiesA[i].getValue();
+				}
+			}
+		}
+		return jSessionID;
+	}
+
+	private void removeBetaMaxCookie() {
+		Cookie cookie = new Cookie("USER_BETA", "");
+		cookie.setMaxAge(0);
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+
+	
 	private void startup() throws Exception {
 		if (permissions.isContractor())
 			permissions.tryPermission(OpPerms.ContractorAdmin);
@@ -464,7 +551,7 @@ public class UsersManage extends PicsActionSupport {
 		// Default isActive to show all for contractors
 		if (account != null && account.isContractor())
 			isActive = "All";
-		
+
 	}
 
 	private boolean isPrimaryUserEstablished() {
@@ -480,23 +567,23 @@ public class UsersManage extends PicsActionSupport {
 			addActionError(getText("UsersManage.NoUserFound"));
 			return false;
 		}
-		
+
 		String displayName = user.getName().trim();
 		if (displayName == null || displayName.length() == 0 || displayName.length() < 3)
 			addActionError(getText("UsersManage.EnterDisplayName"));
-		
+
 		if (user.isGroup())
 			return (getActionErrors().size() == 0);
 
 		// Users only after this point
 		User temp = new User(user, true);
 		userDAO.refresh(user);
-		
+
 		boolean hasduplicate = userDAO.duplicateUsername(temp.getUsername().trim(), temp.getId());
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
-		user = new User(temp, true);
+		//user = new User(temp, true);
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
@@ -515,38 +602,31 @@ public class UsersManage extends PicsActionSupport {
 		if (user.getEmail() == null || user.getEmail().length() == 0 || !Strings.isValidEmail(user.getEmail()))
 			addActionError(getText("UsersManage.EnterValidEmail"));
 
-		if (user.getId() > 0) {
-			if (!Strings.isEmpty(password2)) {
-				if (!password1.equals(password2) && !password1.equals(user.getPassword()))
-					addActionError(getText("UsersManage.PasswordsDoNotMatch"));
-
-				Vector<String> errors = PasswordValidator.validateContractor(user, password1);
-				for (String error : errors)
-					addActionError(error);
-			}
-
+		if (user.getId() > 0) {			
 			// Could not find an OpPerms type for the Primary User, so just
 			// using ContractorAccounts
 			if (!validUserForRoleExists(user, OpPerms.ContractorAccounts)) {
 				addActionError(getText("UsersManage.Error.PrimaryUser"));
 			}
-
-			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {
+			if (!userRoleExists(OpPerms.ContractorAdmin) && isActive.equals("No")) {				
 				addActionError(getText("UsersManage.Error.AdminUser"));
 			}
 		}
-
 		return getActionErrors().size() == 0;
 	}
 
 	private boolean userRoleExists(OpPerms op) {
 		List<User> usersWithRole = user.getAccount().getUsersByRole(op);
-		if (user.hasPermission(op) && usersWithRole.size() > 1) {
-			return true;
-		} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
-			return true;
+		if (usersWithRole.size() != 0){
+			if (user.hasPermission(op) && usersWithRole.size() > 1) {
+				return true;
+			} else if (!user.hasPermission(op) && usersWithRole.size() > 0) {
+				return true;
+			} else{
+				return false;
+			}
 		} else
-			return false;
+			return false;		
 	}
 
 	private boolean validUserForRoleExists(User user, OpPerms userRole) {
@@ -675,22 +755,6 @@ public class UsersManage extends PicsActionSupport {
 		this.account = account;
 	}
 
-	public String getPassword1() {
-		return password1;
-	}
-
-	public void setPassword1(String password1) {
-		this.password1 = password1;
-	}
-
-	public String getPassword2() {
-		return password2;
-	}
-
-	public void setPassword2(String password2) {
-		this.password2 = password2;
-	}
-
 	public boolean isSendActivationEmail() {
 		return sendActivationEmail;
 	}
@@ -754,6 +818,7 @@ public class UsersManage extends PicsActionSupport {
 			sql.addOrderBy("isGroup");
 			sql.addOrderBy("name");
 			sql.addWhere("accountID = " + account.getId());
+			sql.addWhere("username not like 'DELETE-%'");
 			if ("Yes".equals(isGroup) || "No".equals(isGroup))
 				sql.addWhere("isGroup = '" + isGroup + "'");
 
@@ -770,22 +835,20 @@ public class UsersManage extends PicsActionSupport {
 		for (com.picsauditing.access.UserAccess perm : permissions.getPermissions()) {
 			// I can grant these permissions
 			if (perm.isGrantFlag())
-				list.add(perm.getOpPerm());			
+				list.add(perm.getOpPerm());
 		}
-		
-		
+
 		for (UserAccess perm : user.getOwnedPermissions()) {
 			// but these permissions, have already been granted
 			list.remove(perm.getOpPerm());
 		}
-		Collections.sort(list, COMPARATOR);
-		
+		Collections.sort(list, OpPerms.PermissionComparator);
+
 		return list;
 	}
 
 	public List<User> getAddableGroups() {
 		List<User> list = new ArrayList<User>();
-
 		if (!permissions.hasPermission(OpPerms.EditUsers, OpType.Edit))
 			return list;
 
@@ -800,31 +863,43 @@ public class UsersManage extends PicsActionSupport {
 		// list.add(group);
 		// }
 
-		if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
-				&& permissions.getAccountId() != account.getId()) {
-			// This is an admin looking at another account (not PICS)
-			// Add the non-PICS groups too
-			List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
-			for (User group : nonPicsGroups) {
-				// Add the groups owned by PICS but that are for
-				// Operator/Corporate/Contractors/etc
-				if (!group.getName().startsWith("PICS") && !list.contains(group))
-					list.add(group);
+		try {
+			if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
+					&& permissions.getAccountId() != account.getId()) {
+				// This is an admin looking at another account (not PICS)
+				// Add the non-PICS groups too
+				List<User> nonPicsGroups = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
+				for (User group : nonPicsGroups) {
+					// Add the groups owned by PICS but that are for
+					// Operator/Corporate/Contractors/etc
+					if (!group.getName().startsWith("PICS") && !list.contains(group))
+						list.add(group);
+				}
 			}
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("test " + e);
 
-		for (UserGroup userGroup : user.getGroups()) {
-			// but these groups, have already been added
-			list.remove(userGroup.getGroup());
 		}
-		list.remove(user);
+		
+		try {
+			for (UserGroup userGroup : user.getGroups()) {
+				// but these groups, have already been added
+				list.remove(userGroup.getGroup());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("test 2" + e);
+
+		}
+		list.remove(user);		
 		return list;
 	}
-	
+
 	public List<UserSwitch> getSwitchTos() {
 		return userSwitchDao.findByUserId(user.getId());
 	}
-	
+
 	public List<User> getAddableMembers() {
 		List<User> list = new ArrayList<User>();
 
@@ -849,13 +924,7 @@ public class UsersManage extends PicsActionSupport {
 		UserLoginLogDAO loginLogDao = SpringUtils.getBean("UserLoginLogDAO");
 		return loginLogDao.findRecentLogins(user.getId(), 10);
 	}
-	private static Comparator<OpPerms> COMPARATOR = new Comparator<OpPerms>(){
-        public int compare(OpPerms o1, OpPerms o2){
-            return o1.getDescription().compareTo(o2.getDescription());
-        }
-    };
 
-	
 	public Comparator<UserGroup> getGroupNameComparator() {
 		return new Comparator<UserGroup>() {
 
@@ -883,20 +952,7 @@ public class UsersManage extends PicsActionSupport {
 			}
 		};
 	}
-
-	public boolean isHasProfileEdit() {
-		if (user.getAccount().isContractor())
-			return true;
-
-		for (UserAccess userAccess : user.getPermissions()) {
-			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
-				return true;
-			}
-
-		}
-		return false;
-	}
-
+	
 	public List<BasicDynaBean> getAccountList() throws SQLException {
 		if (user != null) {
 			if (permissions.isAdmin()) {

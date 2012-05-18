@@ -1,7 +1,6 @@
 package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;

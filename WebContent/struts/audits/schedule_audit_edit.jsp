@@ -16,11 +16,11 @@
 	
 	<link rel="stylesheet" type="text/css" media="screen" href="css/audit.css?v=<s:property value="version"/>" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/audit/schedule_audit.css?v=<s:property value="version"/>" />
-	<link href="js/jquery/timeentry/jquery.timeentry.css" media="screen" type="text/css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/timeentry/jquery.timeentry.css?v=${version}" />
 	
 	<s:include value="../jquery.jsp"></s:include>
 	
-	<script src="js/jquery/timeentry/jquery.timeentry.min.js" type="text/javascript"></script>
+	<script src="js/jquery/timeentry/jquery.timeentry.min.js?v=${version}" type="text/javascript"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.6&sensor=false&key=<s:property value="@com.picsauditing.actions.audits.ScheduleAudit@GOOGLE_API_KEY"/>"></script>
 
     <script type="text/javascript" src="js/audit/schedule_audit_edit.js?v=<s:property value="version"/>"></script>
@@ -82,7 +82,7 @@
                     </li>
                     <li>
                         <label><s:text name="global.SafetyProfessional" />:</label>
-                        <s:select list="auditorList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/>
+                        <s:select list="safetyList" listKey="id" listValue="name" name="auditor.id" value="conAudit.auditor.id"/>
                     </li>
                     <li>
                         <label><s:text name="global.Location" />:</label>
@@ -94,18 +94,6 @@
                         />
                     </li>
                     
-                    <s:if test="conAudit.contractorAccount.webcam.id > 0">
-                        <li>
-                            <label><s:text name="ScheduleAudit.label.CurrentWebcam" />:</label>
-                            <s:property value="conAudit.contractorAccount.webcam" />
-                        </li>
-                    </s:if>
-                    <s:else>
-                        <li>
-                            <s:checkbox name="conAudit.needsCamera" theme="form" /> 
-                            <label class="input" for="ScheduleAudit_conAudit_needsCamera"><s:text name="ScheduleAudit.message.ShipWebcam" /></label>
-                        </li>
-                    </s:else>
                 </ol>
             </fieldset>
             
@@ -178,8 +166,6 @@
             
             <fieldset class="form submit">
                 <div>
-                    <input type="button" id="verifyButton" class="picsbutton" value="<s:text name="ScheduleAudit.button.VerifyAddress" />" />
-                    
                     <s:submit cssClass="picsbutton positive" method="save" value="%{getText('button.Save')}" />
                 </div>
             </fieldset>

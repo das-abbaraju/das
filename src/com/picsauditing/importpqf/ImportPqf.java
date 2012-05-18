@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,8 +24,6 @@ import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public abstract class ImportPqf {
 	@Autowired
@@ -53,7 +52,7 @@ public abstract class ImportPqf {
 			// dumpQuestions(questions);
 		}
 		transformPqf(conAudit);
-//		 System.out.println(log);
+		// System.out.println(log);
 	}
 
 	/**
@@ -152,11 +151,11 @@ public abstract class ImportPqf {
 				}
 			}
 		}
-		
+
 		if (auditPercentCalculator == null) {
 			auditPercentCalculator = (AuditPercentCalculator) SpringUtils.getBean("AuditPercentCalculator");
 		}
-		
+
 		auditPercentCalculator.percentCalculateComplete(pqfAudit, true);
 
 		int percent = 0;
@@ -366,10 +365,12 @@ public abstract class ImportPqf {
 					break;
 				}
 
-				if (question.equals(match)) { // exact match, answer on following line
+				if (question.equals(match)) { // exact match, answer on
+												// following line
 					option.setQuestionFound(true);
 					match = "";
-				} else if (match.startsWith(question)) { // match, answer on line
+				} else if (match.startsWith(question)) { // match, answer on
+															// line
 					option.setQuestionFound(true);
 					match = match.substring(question.length()).trim();
 				} else if (isMatchPQFSpecific(question, match)) {
@@ -515,7 +516,8 @@ public abstract class ImportPqf {
 	}
 
 	/**
-	 * Method for "last-chance" processing of answer. Used for hard-coding some question processing
+	 * Method for "last-chance" processing of answer. Used for hard-coding some
+	 * question processing
 	 * 
 	 * @param option
 	 * @param response
@@ -568,9 +570,11 @@ public abstract class ImportPqf {
 		if (curIndex + 1 < questions.size()) {
 			String nextQuestion = questions.get(curIndex + 1).getName().toString();
 
-			if (nextQuestion.equals(match)) { // exact match, answer on following line
+			if (nextQuestion.equals(match)) { // exact match, answer on
+												// following line
 				return true;
-			} else if (match.startsWith(nextQuestion)) { // match, answer on line
+			} else if (match.startsWith(nextQuestion)) { // match, answer on
+															// line
 				return true;
 			} else if (nextQuestion.startsWith(match)) { // might have answer
 				return true;
@@ -581,7 +585,8 @@ public abstract class ImportPqf {
 	}
 
 	/**
-	 * Last chance for PQF-specific import can determine if at answer stopping point
+	 * Last chance for PQF-specific import can determine if at answer stopping
+	 * point
 	 * 
 	 * @param option
 	 * @param match
@@ -614,7 +619,8 @@ public abstract class ImportPqf {
 	}
 
 	/**
-	 * Used to determine if match is an "exact" match of a question for PQF-specific conditions
+	 * Used to determine if match is an "exact" match of a question for
+	 * PQF-specific conditions
 	 * 
 	 * @param question
 	 * @param match
@@ -639,7 +645,8 @@ public abstract class ImportPqf {
 	}
 
 	/**
-	 * Used to determine if match is a partial match of a question for PQF-specific conditions
+	 * Used to determine if match is a partial match of a question for
+	 * PQF-specific conditions
 	 * 
 	 * @param question
 	 * @param match

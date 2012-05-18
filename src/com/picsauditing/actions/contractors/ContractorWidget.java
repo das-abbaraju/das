@@ -60,11 +60,11 @@ public class ContractorWidget extends ContractorActionSupport {
 
 	private CreditCard creditCard;
 
-	public List<String> getOpenTasks() {
-		if (openTasks == null) {
+	public List<String> getOpenTasks() throws Exception {
+			findContractor();
 			User currentUser = userDAO.find(permissions.getUserId());
 			openTasks = tasks.getOpenTasks(contractor, currentUser);
-		}
+
 		return openTasks;
 	}
 

@@ -130,7 +130,8 @@
 						<td class="caoStatus<s:if test="!systemEdit"> hoverable</s:if><s:else> systemEdit</s:else>">
 							<s:if test="!systemEdit">
 								<span class="caoDisplay">
-									<a onclick="loadStatus(<s:property value="#currentCao.id"/>)" class="showPointer preview <s:property value="status.color"/>"><s:text name="%{status.getI18nKey()}" /></a>
+									<s:if test="permissions.admin"><a onclick="loadStatus(<s:property value="#currentCao.id"/>, true)" class="showPointer add" title="Add a note"></a></s:if>
+									<a onclick="loadStatus(<s:property value="#currentCao.id"/>, false)" class="showPointer <s:if test="#currentCao.topCaowUserNote" >note </s:if><s:else>preview </s:else><s:property value="status.color"/>"><s:text name="%{status.getI18nKey()}" /></a>
 								</span>
 							</s:if>
                             

@@ -71,33 +71,33 @@
 		<meta http-equiv="Cache-Control" content="no-cache" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" href="css/print.css?v=<%=version%>" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" href="css/print.css?v=${version}" />
 		
-		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=<%=version%>" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css" />
-		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=<%=version%>" /><!--<![endif]-->
-		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=<%=version%>" />
-        <link rel="stylesheet" href="css/insureguard/insureguard.css" type="text/css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=<%=version%>" />
-        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/pics.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/menu1.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/forms.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/contractorstatistics.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/jquery/autocomplete/jquery.autocomplete.css?v=${version}" />
+		<!--[if !IE 6]><!--><link rel="stylesheet" type="text/css" media="screen" href="css/style.css?v=${version}" /><!--<![endif]-->
+		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
 		
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 		
-		<script type="text/javascript" src="js/jquery/util/jquery.utils.js"></script>
-		<script type="text/javascript" src="js/chrome.js"></script>
-		<script type="text/javascript" src="js/pics_main.js?v=<%=version%>"></script>
-		<script type="text/javascript" src="js/notes.js?v=<%=version%>"></script>
-		<script type="text/javascript" src="js/jquery/jquery.form.js"></script>
-		<script type="text/javascript" src="js/jquery/jquery.cookie.js"></script>
-		<script type="text/javascript" src="js/jquery/facebox/facebox.js"></script>
-		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js"></script>
-		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
-		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js"></script>
-		<script type="text/javascript" src="js/main_search.js"></script>
+		<script type="text/javascript" src="js/jquery/util/jquery.utils.js?v=${version}"></script>
+		<script type="text/javascript" src="js/chrome.js?v=${version}"></script>
+		<script type="text/javascript" src="js/pics_main.js?v=${version}"></script>
+		<script type="text/javascript" src="js/notes.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/jquery.form.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/jquery.cookie.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/facebox/facebox.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/autocomplete/jquery.autocomplete.min.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
+		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
+		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
 		
 		<script type="text/javascript">
 			$(function() {
@@ -156,16 +156,16 @@
 		
 		<!--CSS FIXES FOR INTERNET EXPLORER -->
 		<!--[if IE]>
-			<link rel="stylesheet" href="css/ie.css" type="text/css" />
+			<link rel="stylesheet" href="css/ie.css?v=${version}" type="text/css" />
 		<![endif]-->
         
         <!--[if IE 7]>
-            <link rel="stylesheet" href="css/ie7.css" type="text/css" />
+            <link rel="stylesheet" href="css/ie7.css?v=${version}" type="text/css" />
         <![endif]-->
 		
 		<!-- compliance patch for microsoft browsers -->
 		<!--[if lt IE 7]>
-			<link rel="stylesheet" href="css/ie6.css" type="text/css" />
+			<link rel="stylesheet" href="css/ie6.css?v=${version}" type="text/css" />
 		<![endif]-->
 	</head>
 	<body onload="<decorator:getProperty property="body.onload" />" onunload="<decorator:getProperty property="body.onunload" />"<% if(debugMode) { %>class="debugging"<% } %>>
@@ -335,7 +335,7 @@
 							} %>
 							<a
 								<%=item.hasUrl() ? ("href=\""+item.getUrl()+"\"") : "" %>
-								id="<%= item.getHtmlId() %>"
+								<%=item.hasHtmlID() ? ("id=\"subMenu_" + item.getHtmlId() + "\"") : "" %>
 								<%=!Strings.isEmpty(item.getTarget()) ? ("target=\"" + item.getTarget() + "\"") : "" %>
 								<%=dataFields %>
 							>

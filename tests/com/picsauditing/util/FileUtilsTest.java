@@ -92,7 +92,9 @@ public class FileUtilsTest {
 				+ "for i in $files; do \r\n" + "	ext=`echo $i|awk -F . '{print $NF}'`\r\n"
 				+ "	mkdir -p /var/pics/www_files/files/${destinationHashFolder}\r\n"
 				+ "	mv $i /var/pics/www_files/files/${destinationHashFolder}data_${toID}.${ext}\r\n" + "done\r\n";
-		String shellScript = FileUtils.singleManipulateScript(123456, 654321, scriptTemplate);
+		VelocityAdaptor adaptor = new VelocityAdaptor();
+
+		String shellScript = FileUtils.singleManipulateScript(adaptor,123456, 654321, scriptTemplate);
 		String expected = "\r\n# osha_123456 -> data_654321\r\n"
 				+ "files=`ls /var/pics/www_files/files/123/osha_123456.*`\r\n" + "for i in $files; do \r\n"
 				+ "	ext=`echo $i|awk -F . '{print $NF}'`\r\n" + "	mkdir -p /var/pics/www_files/files/654/\r\n"

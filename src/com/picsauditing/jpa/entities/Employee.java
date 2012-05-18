@@ -19,6 +19,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
@@ -27,6 +29,7 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.search.IndexableOverride;
 import com.picsauditing.util.Strings;
+ 
 
 @SuppressWarnings("serial")
 @Entity
@@ -39,6 +42,7 @@ public class Employee extends AbstractIndexableTable {
 	private Account account;
 	private EmployeeClassification classification = EmployeeClassification.FullTime;
 	private boolean active = true;
+	private UserStatus status = UserStatus.Active;
 	private boolean needsIndexing = false;
 	private String picsNumber;
 	private Date hireDate;
@@ -121,7 +125,14 @@ public class Employee extends AbstractIndexableTable {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
+	//@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.UserStatus") })
+	@Enumerated(EnumType.STRING)
+	public UserStatus getStatus(){
+		return status;
+	}
+	public void setStatus(UserStatus status){
+		this.status = status;
+	}
 	/**
 	 * PICS Worker Number aka Worker Access Code
 	 * 
@@ -321,7 +332,7 @@ public class Employee extends AbstractIndexableTable {
 		json.put("lastName", lastName);
 		json.put("account", account.toJSON());
 		json.put("classification", classification == null ? null : classification.toString());
-		json.put("status", active);
+		json.put("status", status);
 		json.put("hireDate", hireDate == null ? null : hireDate.getTime());
 		json.put("fireDate", fireDate == null ? null : fireDate.getTime());
 		json.put("title", title);

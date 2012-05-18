@@ -60,6 +60,7 @@ public class CaoSave extends AuditActionSupport {
 	private List<Integer> caoIDs = new ArrayList<Integer>();
 	private AuditStatus status;
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = null;
+	private boolean addUserNote=false;
 
 	// Insurance Policies
 	private List<ContractorAuditOperator> caoList;
@@ -70,8 +71,13 @@ public class CaoSave extends AuditActionSupport {
 	private FlagDataCalculator flagCalculator;
 
 	public String showHistory() {
-		if (caoID > 0)
+		if (caoID > 0) {
+			if (addUserNote) {
+				createUserNote();
+			}
+
 			caoWorkflow = caowDAO.findByCaoID(caoID);
+		}
 
 		if (caoWorkflow == null) {
 			addActionError(getText("CaoSave.ErrorPullingUpRecord"));
@@ -79,6 +85,21 @@ public class CaoSave extends AuditActionSupport {
 		}
 
 		return "caoStatus";
+	}
+	
+	private void createUserNote() {
+		ContractorAuditOperator cao = dao.find(ContractorAuditOperator.class, caoID);
+		
+		if (cao == null)
+			return;
+
+		ContractorAuditOperatorWorkflow caow = new ContractorAuditOperatorWorkflow();
+		caow.setCao(cao);
+		caow.setAuditColumns(permissions);
+		caow.setPreviousStatus(cao.getStatus());
+		caow.setStatus(cao.getStatus());
+		
+		caoDAO.save(caow);
 	}
 
 	public String editNote() {
@@ -261,6 +282,14 @@ public class CaoSave extends AuditActionSupport {
 		return conAudit.isExpired() && !(conAudit.getAuditType().getClassType().isPolicy() && permissions.isAdmin());
 	}
 
+	public boolean isAddUserNote() {
+		return addUserNote;
+	}
+
+	public void setAddUserNote(boolean addUserNote) {
+		this.addUserNote = addUserNote;
+	}
+
 	private void save(int id) throws RecordNotFoundException, EmailException, IOException {
 		ContractorAuditOperator cao = getCaoByID(id);
 		if (cao == null)
@@ -281,13 +310,11 @@ public class CaoSave extends AuditActionSupport {
 		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Incomplete))
 			updateFlag(cao);
 
-		// we need to handle the PQF specific's
-		if (insurance) {
-			ContractorAccount con = cao.getAudit().getContractorAccount();
-			con.incrementRecalculation();
-			contractorAccountDao.save(con);
-		} else
-			checkNewStatus(step, cao);
+		ContractorAccount con = cao.getAudit().getContractorAccount();
+		con.incrementRecalculation();
+		contractorAccountDao.save(con);
+
+		checkNewStatus(step, cao);
 
 		if (step.getEmailTemplate() != null) {
 			sendStatusChangeEmail(step, cao);

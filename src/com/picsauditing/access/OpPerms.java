@@ -1,6 +1,8 @@
+
 package com.picsauditing.access;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.picsauditing.jpa.entities.Translatable;
@@ -157,7 +159,7 @@ public enum OpPerms implements Translatable{
 	private boolean forAdmin;
 	private boolean forContractor;
 	private boolean forOperator;
-
+	
 	OpPerms(String description, String help, boolean edit, boolean delete) {
 		this.description = description;
 		this.helpText = help;
@@ -177,7 +179,13 @@ public enum OpPerms implements Translatable{
 		this.forContractor = con;
 		this.forOperator = op;
 	}
-
+	
+	public static Comparator<OpPerms> PermissionComparator = new Comparator<OpPerms>() {
+		public int compare(OpPerms o1, OpPerms o2) {
+			return o1.getDescription().compareTo(o2.getDescription());
+		}
+	};
+	
 	public String getDescription() {
 		return description;
 	}

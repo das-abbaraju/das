@@ -1,8 +1,5 @@
 package com.picsauditing.actions.report;
 
-import com.picsauditing.jpa.entities.CohsStatistics;
-import com.picsauditing.jpa.entities.OshaStatistics;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

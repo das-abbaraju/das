@@ -1,10 +1,10 @@
 .user-password,
 .addableGroup,
-.addableMember
+.addableMember, 
+.hideGroupButton
 {
 	display: none;
 }
-
 div.autocomplete
 {
 	position: absolute;
@@ -34,4 +34,22 @@ div.autocomplete ul li
 	margin: 0;
 	padding: 2px;
 	cursor: pointer;
+}
+
+.manage-users-actions
+{
+	margin: 0px 10px;
+	overflow: hidden;
+}
+
+.manage-users-actions li
+{
+	float: left;
+	list-style-type: none;
+	margin-right: 10px;
+}
+
+.manage-users-actions li a
+{
+	text-decoration: none;
 }

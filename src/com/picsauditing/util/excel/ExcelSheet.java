@@ -71,7 +71,6 @@ public class ExcelSheet {
 
 		short col = 0;
 		for (ExcelColumn column : columns.values()) {
-
 			HSSFCellStyle cellStyle = wb.createCellStyle();
 
 			if (ExcelCellType.Date.equals(column.getCellType()))
@@ -90,7 +89,7 @@ public class ExcelSheet {
 			sheet.setDefaultColumnStyle(col, cellStyle);
 			col++;
 		}
-
+			
 		HSSFFont headerFont = wb.createFont();
 		headerFont.setFontHeightInPoints((short) 12);
 		headerFont.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
@@ -117,6 +116,7 @@ public class ExcelSheet {
 				c.setCellStyle(headerStyle);
 				columnCount++;
 			}
+	
 		}
 
 		for (int i = 0; i < data.size(); i++) {
@@ -149,7 +149,10 @@ public class ExcelSheet {
 						c.setCellValue(new HSSFRichTextString(translated));
 					} else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
-				} catch (Exception e) {
+				} catch(IllegalArgumentException iae) {
+					c.setCellValue(new HSSFRichTextString(""));
+				}
+				catch (Exception e) {
 					if (!Strings.isEmpty(row.get(column.getName()).toString()))
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 					else

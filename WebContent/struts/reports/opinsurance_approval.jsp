@@ -14,71 +14,11 @@
         		$('[name="filter.recommendedFlag"]').val(flag);
         		
         		return clickSearch('form1');
-        	});
-        	
-        	$('#report_data').delegate('.positive', 'click', function (e) {
-        		e.preventDefault();
-        		
-        		var caoIDs = new Array();
-        		
-        		$('#approveInsuranceForm').find('input[name="caoIDs"]:checked').each(function() {
-        			caoIDs.push($(this).val());
-        		});
-        
-        		var status = $('#approveInsuranceForm').find('input[name="newStatuses"]:checked').val();
-        		
-        		if (status == undefined) {
-        			alert("Please choose a status");
-        			
-        			return false;
-        		}
-        		
-        		var data = {
-        			status: status,
-        			caoIDs: caoIDs,
-        			insurance: true
-        		};
-        
-        		$('#noteAjax').load('CaoSaveAjax!loadStatus.action', data, function () {
-        	        $.blockUI({
-        	            message: $('#noteAjax'), 
-        	            css: {
-        	                width: '350px'
-    	                }
-        	        });
-        	         
-        	        if($('.clearOnce').val()=='') {
-        				$('#clearOnceField').val(0);
-        	        }
-        			
-        		    $('#yesButton').click(function () {
-        		        $.blockUI({
-        		            message: 'Saving Status, please wait...'
-    		            });
-        		        
-        		        data.note = $('#addToNotes').val();
-        		        data.insurance = true;
-        		        
-        		        $.post('CaoSaveAjax!save.action', data, function () {
-        		            $.unblockUI();
-        		            
-        		            clickSearch('form1');
-    		            });
-        		    });
-        		     
-        		    $('#noButton').click(function(){
-        		        $.unblockUI();
-        		        
-        		        return false;
-        		    });
-        		});
-        	}).delegate('#setAllCheckboxes', 'click', function () {
-        		$('.massCheckable').attr('checked', $(this).is(':checked'));
-        	});
+        	}); 	
         });
     </script>
     
-    <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js"></script>
+    <script type="text/javascript" src="js/jquery/blockui/jquery.blockui.js?v=${version}"></script>
 </head>
 <body>
     <h1><s:text name="ReportInsuranceApproval.title" /></h1>

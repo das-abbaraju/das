@@ -111,7 +111,9 @@
 			<result name="forgot">struts/users/account_recovery.jsp</result>
 			<result name="overlay">/struts/users/login_form.jsp</result>
 		</action>
-
+		<action name="ChangePassword" class="com.picsauditing.actions.users.ChangePassword">
+			<result>struts/users/password.jsp</result>
+		</action>
 		<action name="LoginAjax" class="com.picsauditing.access.LoginAjax">
 		</action>
 
@@ -142,10 +144,6 @@
 
 		<action name="ExpirationDateSynchronizer" class="com.picsauditing.util.ExpirationDateSynchronizer">
 			<result>struts/misc/expiration_date_synchronizer.jsp</result>
-		</action>
-
-		<action name="ResetSelenium" class="com.picsauditing.actions.ResetSelenium">
-			<result>struts/blank.jsp</result>
 		</action>
 
 		<action name="ContractorSummaryExternal" class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
@@ -1590,10 +1588,6 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="TranslateJS" class="com.picsauditing.actions.TranslateJS">
-			<result>struts/i18n/translate_js.jsp</result>
-		</action>
-		
 		<!-- Configuration Changes -->
 		<action name="ConfigChanges" class="com.picsauditing.actions.report.ConfigChanges">
 			<result>/struts/reports/config_changes.jsp</result>
@@ -1610,6 +1604,10 @@
 		<action name="AuditRejectLookupAjax" class="com.picsauditing.actions.AuditRejectionLookup">
 			<result type="jsonArray"></result>
 		</action>
+		
+		<action name="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium">
+			<result>/struts/selenium/reset_selenium.jsp</result>
+		</action>		
 	</package>
 	
 	<!-- Registration -->	

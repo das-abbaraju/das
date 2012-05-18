@@ -390,16 +390,23 @@
                     </tr>
                 </s:if>
 				<tr>
-					<td style="padding: 15px;">
-						<s:text name="InvoiceDetail.Comments" />
-						<s:if test="edit">
-							<br />
-							<s:textarea name="invoice.notes" cols="60" rows="4" />
+					<td style="padding-top:15px; padding-bottom:15px;">
+                		<s:if test="edit">
+							<div style="float:left; width:98%; align:center">
+                				<s:text name="InvoiceDetail.Comments" /> <s:if test="!invoice.status.void" > <s:text name="Invoice.ThankYou" /> <s:text name="Invoice.ClientSiteText" /> </s:if>
+                				<br />
+                				<textarea name="invoice.notes" rows="4" cols="60">${invoice.notes}</textarea>
+                			</div>				
 						</s:if>
 						<s:else>
-							<s:property value="invoice.notes" />
+							<s:text name="InvoiceDetail.Comments" />
+							<s:if test="!invoice.status.void">
+								<s:text name="Invoice.ThankYou" />
+								<s:text name="Invoice.ClientSiteText" />
+							</s:if>
+							<s:property value="invoice.notes"/>
 						</s:else>
-					</td>
+                	</td>
 				</tr>
 				<tr>
 					<td>

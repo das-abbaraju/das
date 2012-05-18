@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="css/reports.css?v=<s:property value="version"/>" />
 <link rel="stylesheet" href="css/forms.css?v=<s:property value="version"/>" />
 <s:include value="../jquery.jsp" />
-<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js"></script>
+<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 <script type="text/javascript">
 
 function loadForm(id) {

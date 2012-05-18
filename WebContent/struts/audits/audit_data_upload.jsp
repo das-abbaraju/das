@@ -30,7 +30,7 @@ function closePage() {
 
 <h1><s:text name="AuditDataUpload.UploadFile">
 	<s:param><s:property value="conAudit.auditFor" /></s:param>
-	<s:param><s:property value="auditData.question.columnHeader.toString()" /></s:param>
+	<s:param><s:if test="auditData.question.columnHeader.exists" ><s:property value="auditData.question.columnHeader.toString()" /></s:if></s:param>
 	</s:text> <span class="sub">
 	<s:iterator value="auditData.question.category.ancestors" status="stat">
 		<s:property value="name"/> <s:if test="!#stat.last">&gt;</s:if>
