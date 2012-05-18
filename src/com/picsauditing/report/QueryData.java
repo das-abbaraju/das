@@ -9,6 +9,7 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 
 public class QueryData {
+
 	private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
 	public QueryData(List<BasicDynaBean> rows) {

@@ -99,6 +99,12 @@ public abstract class BaseTable {
 		availableFields.remove(name.toUpperCase());
 	}
 
+	protected void addField(String fieldName, Field field) {
+		availableFields.put(fieldName.toUpperCase(), field);
+	}
+
+	// TODO this should be: addField(String, Field)
+	// Method chaining should only be for a single class
 	protected Field addField(String sql, FilterType filter) {
 		String name = alias + sql.substring(0, 1).toUpperCase() + sql.substring(1);
 		if (sql.equals("id"))
@@ -108,10 +114,12 @@ public abstract class BaseTable {
 		return addField(name, fullSql, filter);
 	}
 
-	protected Field addField(String name, String sql, FilterType filter) {
-		Field field = new Field(name, sql, filter);
+	// TODO this should be: void addField(String, Field).
+	// Method chaining should only be for a single class
+	protected Field addField(String fieldName, String sql, FilterType filter) {
+		Field field = new Field(fieldName, sql, filter);
 		// We don't want to be case sensitive when matching names
-		availableFields.put(name.toUpperCase(), field);
+		availableFields.put(fieldName.toUpperCase(), field);
 		return field;
 	}
 
