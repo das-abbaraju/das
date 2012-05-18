@@ -1248,6 +1248,19 @@ div.blockDialog {
 
 /* Contractor Safety Statistics */
 
+.contractor-safety-statistics td span.rate-type
+{
+	float: left;
+}
+
+.contractor-safety-statistics a.rate-type-tooltip
+{
+	display: block;
+	float: right;
+	height: 16px;
+	width: 16px;
+}
+
 .contractor-safety-statistics .panel_header .hurdle-rate
 {
 	float: right;

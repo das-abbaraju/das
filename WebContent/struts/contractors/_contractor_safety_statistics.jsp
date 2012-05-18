@@ -17,22 +17,36 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><s:property value="getText(#stat.i18nKey)" /></th>
+							<th>
+                                <s:property value="getText(#stat.i18nKey)" />
+                            </th>
+                            
 							<s:iterator value="oshaDisplay.stats.get(#stat).get('columnNames')" var="colname">
-								<th><s:property value="#colname" /></th>
+								<th>
+                                    <s:property value="#colname" />
+                                </th>
 							</s:iterator>
 						</tr>
 					</thead>
 					<tbody>	
-				 	<s:set var="is_odd" value="true" />			
+                        <s:set var="is_odd" value="true" />
+                        
 						<s:iterator value="oshaDisplay.stats.get(#stat).get('data')" var="row">
-							<tr <s:if test="#row.hurdleRates">class="hurdle"</s:if> <s:elseif test="#is_odd == true">class="odd"</s:elseif>>
-								<s:iterator value="#row.cells" var="celldata">
+							<tr class="<s:if test="#row.hurdleRates">hurdle</s:if><s:else>rate-type <s:if test="#is_odd == true">odd</s:if></s:else>">
+								<s:iterator value="#row.cells" var="celldata" status="stat">
 									<td>
-										<s:property value="#celldata" escape="false"/>
+										<span class="rate-type">
+                                            <s:property value="#celldata" escape="false" />
+                                        </span>
+                                        
+                                        <s:if test="#stat.index == 0 && !#row.hurdleRates">
+                                            <a href="javascript:;" class="rate-type-tooltip" title="<s:text name="global.Edit" />"><img src="images/help-icon.png" /></a>
+                                            <s:property value="#celldata.I18nKey" />
+                                        </s:if>
 									</td>
 								</s:iterator>
 							</tr>
+                            
 							<s:if test="!#row.hurdleRates">
 								<s:set var="is_odd" value="%{!#is_odd}" />
 							</s:if>
@@ -40,13 +54,14 @@
 					</tbody>
 				</table>
 			</s:iterator>
+            
 			<a class="weighted-industry-average"
 				href="javascript:;"
 				data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
 				title="<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" />"
 			>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
 					
-		<div class="clear"></div>
-			</div>
+            <div class="clear"></div>
+		</div>
 	</div>
 </div>

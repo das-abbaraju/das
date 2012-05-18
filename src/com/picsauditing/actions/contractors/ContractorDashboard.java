@@ -106,7 +106,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	private OshaOrganizer oshaOrganizer;
 	private OshaDisplay oshaDisplay;
-	
+
 	private Date earliestIndividualFlagOverride = null;
 	private int individualFlagOverrideCount = 0;
 
@@ -227,7 +227,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			co = contractor.getNonCorporateOperators().get(0);
 			opID = co.getOperatorAccount().getId();
 		}
-		
+
 		calculateEarliestIndividualFlagSummaries();
 
 		for (ContractorAudit audit : auditDao.findNonExpiredByContractor(id)) {
@@ -249,11 +249,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 	private void calculateEarliestIndividualFlagSummaries() {
-		if (co == null) 
+		if (co == null)
 			return;
+
 		earliestIndividualFlagOverride = null;
+
 		Date now = new Date();
 		for (FlagDataOverride fdo : co.getOverrides()) {
 			if (fdo.getForceEnd() != null && fdo.getForceEnd().after(now)) {
