@@ -32,6 +32,9 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings({ "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+	private static final String CREATE = "create";
+	private static final String EDIT = "edit";
+	private static final String DELETE = "delete";
 	private Report report;
 	private int page = 1;
 	private boolean showSQL;
@@ -55,7 +58,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String delete() throws Exception {
-		if (isValidUser("delete")) {
+		if (isValidUser(DELETE)) {
 			permissions.tryPermission(OpPerms.Report, OpType.Delete);
 			checkReport();
 			dao.remove(report);
@@ -68,7 +71,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String edit() {
-		if (isValidUser("edit")) {
+		if (isValidUser(EDIT)) {
 			save(report);
 		} else {
 			json.put("success", false);
@@ -79,7 +82,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String create() {
-		if (isValidUser("create")) {
+		if (isValidUser(CREATE)) {
 			Report newReport = new Report();
 			newReport.setModelType(report.getModelType());
 			newReport.setName(report.getName());
@@ -98,8 +101,12 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getUserStatus() {
+		json.put("isDeveloper", permissions.isDeveloperEnvironment());
 		json.put("reportOwner", isReportOwner());
 		json.put("hasPermission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
+		json.put("userCanEdit", isValidUser(EDIT));
+		json.put("userCanCreate", isValidUser(CREATE));
+		json.put("userCanDelete", isValidUser(DELETE));
 		
 		return JSON;
 	}
@@ -107,7 +114,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean isValidUser(String action) {
 		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment())
 			return true;
-		else if (action.equals("create"))
+		else if (action.equals(CREATE))
 			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
 				return true;
 
