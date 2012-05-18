@@ -2,17 +2,19 @@ package com.picsauditing.actions.contractors;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.BrainTreeService;
+import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.PICS.OpenTasks;
 import com.picsauditing.PICS.SmartFacilitySuggest;
-import com.picsauditing.PICS.BrainTreeService.CreditCard;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Invoice;
@@ -64,7 +66,10 @@ public class ContractorWidget extends ContractorActionSupport {
 			findContractor();
 			User currentUser = userDAO.find(permissions.getUserId());
 			openTasks = tasks.getOpenTasks(contractor, currentUser);
-
+			HashSet<String> openTasksSet = new HashSet<String>();
+			for (int i=0; i<openTasks.size(); i++)
+				openTasksSet.add(openTasks.get(i));
+			openTasks = new ArrayList<String>(openTasksSet);
 		return openTasks;
 	}
 
