@@ -29,12 +29,12 @@ public class ResetSeleniumTest {
 	public void setup() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		
-		testList = spy(new ArrayList<SeleniumTestingAccount>());
+		testList = new ArrayList<SeleniumTestingAccount>();
 		testList.add(new SeleniumTestingAccount("Huey", "fffff", "Duck"));
 		testList.add(new SeleniumTestingAccount("Dewey", "ggggg", "Duck"));
 		testList.add(new SeleniumTestingAccount("Lewey", "hhhhh", "Duck"));
-		//Be careful here: If inject this mock, modify it, and then call a function
-		//that returns the mock again, your changes will persist!
+		//Be careful here: If inject this list, modify it, and then call a function
+		//that returns the list again, your changes will persist!
 		
 		PowerMockito.mockStatic(SeleniumDAO.class);
 		classUnderTest = PowerMockito.spy(new ResetSelenium());
