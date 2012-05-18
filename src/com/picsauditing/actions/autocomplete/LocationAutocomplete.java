@@ -15,6 +15,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public class LocationAutocomplete extends AutocompleteActionSupport<Autocompleteable> {
 

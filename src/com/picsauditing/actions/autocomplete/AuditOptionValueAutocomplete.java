@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.Autocompleteable;
 import com.picsauditing.util.Strings;
 
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public class AuditOptionValueAutocomplete extends AutocompleteActionSupport<Autocompleteable> {
 

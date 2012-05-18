@@ -402,7 +402,7 @@ public class ReportDynamic extends PicsActionSupport {
 		showSQL = true;
 	}
 
-	public String getList(String fieldName) {
+	public String getList(String fieldName, String searchQuery) {
 		try {
 			ensureValidReport();
 			Field field = builder.getAvailableFields().get(fieldName);

@@ -19,7 +19,7 @@ import com.picsauditing.util.Strings;
  * http://docs.sencha.com/ext-js/4-0/#!/api/Ext.grid.column.Column
  */
 public class Field implements JSONAware {
-
+	// TODO: Should we add the return type class which is set during reflection?
 	private String name;
 	private String databaseColumnName;
 	private FilterType filterType = FilterType.String;

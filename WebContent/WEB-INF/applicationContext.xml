@@ -122,6 +122,16 @@
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 
+	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>

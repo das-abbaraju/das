@@ -13,6 +13,7 @@ import com.picsauditing.jpa.entities.Autocompleteable;
  * @author kpartridge
  * 
  */
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings({ "serial", "unchecked" })
 public abstract class AutocompleteActionSupport<T extends Autocompleteable> extends PicsActionSupport {
 

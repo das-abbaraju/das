@@ -3,7 +3,7 @@ package com.picsauditing.report.fields;
 public enum FilterType {
 	String(ExtFieldType.String), Integer(ExtFieldType.Int), Float(ExtFieldType.Float), Boolean(ExtFieldType.Boolean), Date(ExtFieldType.Date), DateTime(
 			ExtFieldType.Date), AccountName(ExtFieldType.String), AccountStatus, AccountType, LowMedHigh(
-			ExtFieldType.String), AccountLevel, AuditStatus, Trades, Country, StateProvince , Enum, List;
+			ExtFieldType.String), AccountLevel, AuditStatus, Enum, Autocomplete, List;
 
 	/**
 	 * We might want to add sortTypes later on to support alternative sorting
