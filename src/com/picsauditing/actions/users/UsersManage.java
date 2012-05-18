@@ -132,7 +132,7 @@ public class UsersManage extends PicsActionSupport {
 			addActionMessage(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
 		}
 		if (!user.isActiveB()){
-			addActionMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
+			addAlertMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
 		}
 		InitToggleSwitchUser();
 		return SUCCESS;

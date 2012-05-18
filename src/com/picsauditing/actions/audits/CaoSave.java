@@ -310,13 +310,11 @@ public class CaoSave extends AuditActionSupport {
 		if (cao.getAudit().getAuditType().getClassType().isPolicy() && cao.getStatus().after(AuditStatus.Incomplete))
 			updateFlag(cao);
 
-		// we need to handle the PQF specific's
-		if (insurance) {
-			ContractorAccount con = cao.getAudit().getContractorAccount();
-			con.incrementRecalculation();
-			contractorAccountDao.save(con);
-		} else
-			checkNewStatus(step, cao);
+		ContractorAccount con = cao.getAudit().getContractorAccount();
+		con.incrementRecalculation();
+		contractorAccountDao.save(con);
+
+		checkNewStatus(step, cao);
 
 		if (step.getEmailTemplate() != null) {
 			sendStatusChangeEmail(step, cao);
