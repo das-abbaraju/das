@@ -35,6 +35,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
+
 	private Report report;
 	private int page = 1;
 	private boolean showSQL;
@@ -48,7 +49,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String find() {
 		try {
-			checkReport();
+			ensureValidReport();
 			json.put("report", report.toJSON(true));
 			json.put("success", true);
 		} catch (Exception e) {
@@ -60,7 +61,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String delete() throws Exception {
 		if (isValidUser(DELETE)) {
 			permissions.tryPermission(OpPerms.Report, OpType.Delete);
-			checkReport();
+			ensureValidReport();
 			dao.remove(report);
 		} else {
 			json.put("success", false);
@@ -101,22 +102,23 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getUserStatus() {
-		json.put("isDeveloper", permissions.isDeveloperEnvironment());
-		json.put("reportOwner", isReportOwner());
-		json.put("hasPermission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
-		json.put("userCanEdit", isValidUser(EDIT));
-		json.put("userCanCreate", isValidUser(CREATE));
-		json.put("userCanDelete", isValidUser(DELETE));
-		
+		json.put("is_developer", permissions.isDeveloperEnvironment());
+		json.put("is_owner", isReportOwner());
+		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
+		json.put("user_can_edit", isValidUser(EDIT));
+		json.put("user_can_create", isValidUser(CREATE));
+		json.put("user_can_delete", isValidUser(DELETE));
+
 		return JSON;
 	}
 
 	private boolean isValidUser(String action) {
-		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment())
+		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment()) {
 			return true;
-		else if (action.equals(CREATE))
+		} else if (action.equals(CREATE)) {
 			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
 				return true;
+		}
 
 		return false;
 	}
@@ -131,7 +133,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String save(Report report) {
 		try {
-			checkReport();
+			ensureValidReport();
 
 			report.setAuditColumns(permissions);
 			dao.save(report);
@@ -166,8 +168,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	// This is in the wrong class, should be in SqlBuilder
 	private void buildSQL() throws Exception {
-		checkReport();
+		ensureValidReport();
 
 		addDefinition();
 
@@ -195,7 +198,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String availableFields() {
 		try {
-			checkReport();
+			ensureValidReport();
 			builder.setReport(report);
 			builder.getSql();
 
@@ -248,9 +251,9 @@ public class ReportDynamic extends PicsActionSupport {
 		buildSQL();
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
-		return JSON;		
+		return JSON;
 	}
-	
+
 	@Anonymous
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao
@@ -363,17 +366,18 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private boolean isCanSeeQueryField(Field field) {
-		if (field.getRequiredPermissions().size() == 0)
+		if (field.getRequiredPermissions().isEmpty())
 			return true;
 
 		for (OpPerms requiredPermission : field.getRequiredPermissions()) {
 			if (permissions.hasPermission(requiredPermission))
 				return true;
 		}
+
 		return false;
 	}
 
-	private void checkReport() throws Exception {
+	private void ensureValidReport() throws Exception {
 		if (report == null)
 			throw new RuntimeException("Please provide a saved or ad hoc report to run");
 
@@ -393,6 +397,7 @@ public class ReportDynamic extends PicsActionSupport {
 		if (message == null) {
 			message = e.toString();
 		}
+
 		json.put("message", message);
 		showSQL = true;
 	}
@@ -412,5 +417,4 @@ public class ReportDynamic extends PicsActionSupport {
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
 	}
-
 }

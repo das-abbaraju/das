@@ -8,6 +8,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.util.Strings;
 
 public class QueryDateParameter {
+
 	private Date date = new Date();
 
 	public QueryDateParameter(String value) {
