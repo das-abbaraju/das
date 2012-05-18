@@ -44,7 +44,7 @@ public class MenuBuilder {
 		if (menu == null || reports == null)
 			return;
 
-		MenuComponent myReportsMenu = internalMenu.addChild("My Reports");
+		MenuComponent myReportsMenu = menu.addChild("My Reports");
 		for (Report report : reports) {
 			myReportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}
@@ -58,6 +58,7 @@ public class MenuBuilder {
 
 		String url = "ContractorSummary.action?id=" + contractor.getId();
 		MenuComponent contractorSummaryMenu = menu.addChild(contractor.getName(), url);
+		// This doesn't make sense
 		contractorSummaryMenu.addChild("Users", "ManageReports.action?id=");
 	}
 
@@ -245,7 +246,7 @@ public class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.ContractorDetails) && !permissions.isOperatorCorporate())
 			addChildAction(auditGuardMenu, "ReportCAOByStatusList");
 		if (permissions.hasPermission(OpPerms.AssignAudits)) {
-			String url = "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17"; 
+			String url = "AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17";
 			auditGuardMenu.addChild("Sched. &amp; Assign", url);
 		}
 		if (permissions.isAdmin())
@@ -273,7 +274,7 @@ public class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.AuditVerification))
 			customerServiceMenu.addChild("Pending PQF", "ReportCompletePQF.action?filter.auditStatus=Pending");
 		if (permissions.hasPermission(OpPerms.AuditVerification)) {
-			String url = "PqfVerification.action?filter.status=Active"; 
+			String url = "PqfVerification.action?filter.status=Active";
 			if (permissions.hasGroup(User.GROUP_CSR))
 				url += "&filter.conAuditorId=" + permissions.getShadowedUserID();
 
@@ -317,7 +318,7 @@ public class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.ManageCorporate)
 				|| permissions.hasPermission(OpPerms.ManageOperators)
 				|| permissions.hasPermission(OpPerms.ManageAssessment)) {
-			String url = "ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending"; 
+			String url = "ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending";
 			managementMenu.addChild("Manage Accounts", url);
 		}
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
