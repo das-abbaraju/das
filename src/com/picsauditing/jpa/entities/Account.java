@@ -27,7 +27,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
 
 import com.picsauditing.PICS.Utilities;
@@ -35,6 +34,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.AutocompleteType;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.IndexValueType;
@@ -196,7 +196,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Country)
+	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country)
 	public Country getCountry() {
 		return country;
 	}
@@ -208,7 +208,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "state")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(category = FieldCategory.Contact, filterType = FilterType.StateProvince)
+	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.State)
 	public State getState() {
 		return this.state;
 	}

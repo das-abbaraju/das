@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.StateDAO;
 import com.picsauditing.jpa.entities.Autocompleteable;

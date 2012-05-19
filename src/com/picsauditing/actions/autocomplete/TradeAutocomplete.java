@@ -19,7 +19,6 @@ public final class TradeAutocomplete extends AutocompleteActionSupport<Trade> {
 	// extraArgs: restrictTrades
 	private boolean extraArgs;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Collection<Trade> getItems() {
 		if (itemKeys == null) {

@@ -23,6 +23,7 @@ public class Field implements JSONAware {
 	private String name;
 	private String databaseColumnName;
 	private FilterType filterType = FilterType.String;
+	private AutocompleteType autocompleteType = AutocompleteType.None;
 	private int width = 200;
 	private boolean visible = true;
 	private boolean filterable = true;
@@ -37,8 +38,10 @@ public class Field implements JSONAware {
 	private FieldCategory category = FieldCategory.General;
 	private Set<OpPerms> requiredPermissions = new HashSet<OpPerms>();
 
+	// Currently autocomplete is only supported via entity annotations
 	public Field(ReportField annotation) {
 		this.filterType = annotation.filterType();
+		this.setAutocompleteType(annotation.autocomplete());
 		// TODO other options
 	}
 
@@ -155,6 +158,14 @@ public class Field implements JSONAware {
 
 	public void setFilterType(FilterType filterType) {
 		this.filterType = filterType;
+	}
+
+	public void setAutocompleteType(AutocompleteType autocompleteType) {
+		this.autocompleteType = autocompleteType;
+	}
+
+	public AutocompleteType getAutocompleteType() {
+		return autocompleteType;
 	}
 
 	public void setWidth(int width) {

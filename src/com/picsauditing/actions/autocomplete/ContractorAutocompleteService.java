@@ -9,25 +9,19 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
-@SuppressWarnings("serial")
-public class ContractorAutocomplete extends AutocompleteActionSupport<ContractorAccount> {
-
+public class ContractorAutocompleteService extends AutocompleteService<ContractorAccount> {
 	@Autowired
 	private ContractorAccountDAO dao;
 
 	@Override
-	protected Collection<ContractorAccount> getItems() {
-		if (itemKeys == null) {
-			if (!Strings.isEmpty(q)) {
-				if (isSearchDigit())
-					return dao.findWhere("a.id LIKE '%" + Strings.escapeQuotes(q) + "%'");
-				else
-					return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(q) + "%'");
-			}
-		} else if (itemKeys.length > 0) {
-			return dao.findWhere("a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")");
+	protected Collection<ContractorAccount> getItems(String q) {
+		if (!Strings.isEmpty(q)) {
+			if (isSearchDigit(q))
+				return dao.findWhere("a.id LIKE '%" + Strings.escapeQuotes(q) + "%'");
+			else
+				return dao.findWhere("a.name LIKE '%" + Strings.escapeQuotes(q) + "%'");
 		}
+
 		return Collections.emptyList();
 	}
 

@@ -7,6 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.report.fields.AutocompleteType;
 import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.report.tables.FieldCategory;
 
@@ -15,6 +16,8 @@ import com.picsauditing.report.tables.FieldCategory;
 public @interface ReportField {
 	FilterType filterType() default FilterType.String;
 
+	AutocompleteType autocomplete() default AutocompleteType.None;
+	
 	int width() default 0;
 
 	boolean visible() default true;

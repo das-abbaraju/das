@@ -122,15 +122,19 @@
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
 
-	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
-	<bean id="LocationAutocomplete" class=" com.picsauditing.actions.autocomplete.LocationAutocomplete" scope="prototype" />
+	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
+	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />
+	<bean id="AuditQuestionAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditQuestionAutocompleteService" />
+	<bean id="AuditTypeAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditTypeAutocompleteService" />
+	<bean id="ContractorAutocompleteService" class=" com.picsauditing.actions.autocomplete.ContractorAutocompleteService" />
+	<bean id="CountryAutocompleteService" class=" com.picsauditing.actions.autocomplete.CountryAutocompleteService" />
+	<bean id="LocationAutocompleteService" class=" com.picsauditing.actions.autocomplete.LocationAutocompleteService" />
+	<bean id="StateAutocompleteService" class=" com.picsauditing.actions.autocomplete.StateAutocompleteService" />
+	<bean id="OperatorAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorAutocompleteService" />
+	<bean id="OperatorTagAutocompleteService" class=" com.picsauditing.actions.autocomplete.OperatorTagAutocompleteService" />
+	<bean id="OptionGroupAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionGroupAutocompleteService" />
+	<bean id="OptionValueAutocompleteService" class=" com.picsauditing.actions.autocomplete.OptionValueAutocompleteService" />
+	<bean id="TradeAutocompleteService" class=" com.picsauditing.actions.autocomplete.TradeAutocompleteService" />
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 

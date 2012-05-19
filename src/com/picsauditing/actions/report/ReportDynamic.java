@@ -11,18 +11,20 @@ import java.util.Map;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
@@ -32,6 +34,9 @@ import com.picsauditing.search.SelectSQL;
 
 @SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+	@Autowired
+	private ReportFilterAutocompleter reportFilterAutocompleter;
+
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
@@ -406,9 +411,11 @@ public class ReportDynamic extends PicsActionSupport {
 		try {
 			ensureValidReport();
 			Field field = builder.getAvailableFields().get(fieldName);
-			validateFieldConditionsForFilterList(field);
-			
-			json.put("report", report.toJSON(true));
+			validate(field);
+
+			JSONObject autoCompleteResults = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field
+					.getAutocompleteType(), searchQuery, permissions);
+			json.put("autocompleteResults", autoCompleteResults);
 			json.put("success", true);
 		} catch (Exception e) {
 			jsonException(e);
@@ -416,8 +423,8 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	private void validateFieldConditionsForFilterList(Field field) throws Exception {
-		if(field == null)
+	private void validate(Field field) throws Exception {
+		if (field == null)
 			throw new Exception("Available field undefined");
 	}
 
