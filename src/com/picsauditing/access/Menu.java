@@ -17,21 +17,16 @@ public class Menu extends PicsActionSupport {
 
 		MenuComponent menu = new MenuComponent();
 
+		// Should be a User object, not Permissions
 		if (!permissions.isLoggedIn()) {
-			MenuBuilder.addNotLoggedInMenu(menu);
+			MenuBuilder.buildNotLoggedInMenubar(menu);
+		} else if (permissions.isContractor()) {
+			MenuBuilder.buildContractorMenubar(menu, permissions);
+		} else if (permissions.isAssessment()) {
+			MenuBuilder.buildAssessmentMenubar(menu);
 		} else {
-			MenuBuilder.addDashboardMenu(menu);
-
 			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
-			MenuBuilder.addMyReportsMenu(menu, reports);
-
-			if (permissions.isContractor())
-				MenuBuilder.addContractorMenu(menu, permissions);
-			if (permissions.isAssessment())
-				MenuBuilder.addAssessmentCenterMenu(menu);
-
-			MenuBuilder.addManagementMenu(menu, permissions);
-			MenuBuilder.addHelpMenu(menu);
+			MenuBuilder.buildGeneralMenubar(menu, permissions, reports);
 		}
 
 		handleSingleChildMenu(menu);
