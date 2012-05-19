@@ -9,24 +9,29 @@ import com.picsauditing.jpa.entities.Report;
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
 
-	// This should not be part of Menu.java
+	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
 
 	public String execute() throws Exception {
 		loadPermissions();
 
-		MenuBuilder builder = new MenuBuilder();
-		MenuComponent menu = null;
+		MenuComponent menu = new MenuComponent();
 
 		if (!permissions.isLoggedIn()) {
-			menu = builder.buildNotLoggedIn();
-		} else if (permissions.isContractor()) {
-			menu = builder.buildContractorMenu(permissions);
-		} else if (permissions.isAssessment()) {
-			menu = builder.buildAssessmentCenter();
+			MenuBuilder.addNotLoggedInMenu(menu);
 		} else {
+			MenuBuilder.addDashboardMenu(menu);
+
 			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
-			menu = builder.buildGeneric(permissions, reports, contractor);
+			MenuBuilder.addMyReportsMenu(menu, reports);
+
+			if (permissions.isContractor())
+				MenuBuilder.addContractorMenu(menu, permissions);
+			if (permissions.isAssessment())
+				MenuBuilder.addAssessmentCenterMenu(menu);
+
+			MenuBuilder.addManagementMenu(menu, permissions);
+			MenuBuilder.addHelpMenu(menu);
 		}
 
 		handleSingleChildMenu(menu);

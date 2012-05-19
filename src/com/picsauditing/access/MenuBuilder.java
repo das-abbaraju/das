@@ -19,27 +19,20 @@ import com.picsauditing.util.Strings;
  */
 public class MenuBuilder {
 
-	private I18nCache i18nCache = I18nCache.getInstance();
+	private static I18nCache i18nCache = I18nCache.getInstance();
 
-	public MenuComponent buildGeneric(Permissions permissions, List<Report> reports, ContractorAccount contractor) {
-		MenuComponent menu = new MenuComponent();
-
-		addDashboard(menu);
-		addMyReports(menu, reports);
-		addContractor(menu, contractor);
-		addHelp(menu);
-
-		return menu;
+	// We don't want people to instanciate this class
+	private MenuBuilder() {
 	}
 
-	private void addDashboard(MenuComponent menu) {
+	public static void addDashboardMenu(MenuComponent menu) {
 		if (menu == null)
 			return;
 
 		menu.addChild("Dashboard", "Home.action");
 	}
 
-	private void addMyReports(MenuComponent menu, List<Report> reports) {
+	public static void addMyReportsMenu(MenuComponent menu, List<Report> reports) {
 		if (menu == null || reports == null)
 			return;
 
@@ -51,7 +44,7 @@ public class MenuBuilder {
 		myReportsMenu.addChild("Manage Reports", "ManageReports.action");
 	}
 
-	private void addContractor(MenuComponent menu, ContractorAccount contractor) {
+	public static void addContractorSummaryMenu(MenuComponent menu, ContractorAccount contractor) {
 		if (menu == null || contractor == null)
 			return;
 
@@ -59,9 +52,35 @@ public class MenuBuilder {
 		MenuComponent contractorSummaryMenu = menu.addChild(contractor.getName(), url);
 		// This doesn't make sense
 		contractorSummaryMenu.addChild("Users", "ManageReports.action?id=");
+		//MenuComponent contractorsMenu = menu.addChild("Contractors", "Contractors.action");
 	}
 
-	private void addHelp(MenuComponent menu) {
+	public static void addManagementMenu(MenuComponent menu, Permissions permissions) {
+		if (menu == null || permissions == null)
+			return;
+
+		MenuComponent managementMenu = menu.addChild("Management");
+		managementMenu.addChild("Edit Profile");
+		managementMenu.addChild("My Schedule");
+
+		managementMenu.addChild("Audit Calendar");
+		managementMenu.addChild("Answer Updates");
+		managementMenu.addChild("Manage Webcams");
+		managementMenu.addChild("Asign Webcams");
+
+		MenuComponent emailMenu = managementMenu.addChild("Email");
+		emailMenu.addChild("Email Subscripions");
+		emailMenu.addChild("Email Wizard");
+		emailMenu.addChild("Email Webinar");
+		emailMenu.addChild("Email Queue");
+		emailMenu.addChild("Email Error Report");
+
+		if (permissions.isDeveloperEnvironment()) {
+			managementMenu.addChild("Debug");
+		}
+	}
+
+	public static void addHelpMenu(MenuComponent menu) {
 		MenuComponent helpMenu = menu.addChild("Help");
 		helpMenu.addChild("Contact PICS", "contact.jsp");
 		helpMenu.addChild("Help Center", "help.jsp");
@@ -98,20 +117,16 @@ public class MenuBuilder {
 		return url;
 	}
 
-	public MenuComponent buildNotLoggedIn() {
-		MenuComponent menu = new MenuComponent();
+	public static void addNotLoggedInMenu(MenuComponent menu) {
 		menu.addChild(getText("global.Home"), "index.jsp");
-		return menu;
 	}
 
-	public MenuComponent buildContractorMenu(Permissions permissions) {
-		MenuComponent menu = new MenuComponent();
-
+	public static void addContractorMenu(MenuComponent menu, Permissions permissions) {
 		// Don't show a menu for Contractors, they will use their sub menu for now
 		if (!permissions.getAccountStatus().isActiveDemo()) {
 			menu.addChild(getText("Registration.CompanyDetails.heading"), "ContractorEdit.action");
 			addSupportLink(menu);
-			return menu;
+			return;
 		}
 
 		menu.addChild(getText("global.Home"), "ContractorView.action");
@@ -157,13 +172,9 @@ public class MenuBuilder {
 
 		MenuComponent supportLinkMenu = addSupportLink(menu);
 		addChildAction(supportLinkMenu, "ProfileEdit");
-
-		return menu;
 	}
 
-	public MenuComponent buildAssessmentCenter() {
-		MenuComponent menu = new MenuComponent();
-
+	public static void addAssessmentCenterMenu(MenuComponent menu) {
 		MenuComponent managementMenu = menu.addChild("Management");
 		managementMenu.addChild("Imported Data", "ManageImportData.action");
 		managementMenu.addChild("Assessment Tests", "ManageAssessmentTests.action");
@@ -177,8 +188,6 @@ public class MenuBuilder {
 		editMenu.addChild("Users", "UsersManage.action");
 
 		addSupportLink(menu);
-
-		return menu;
 	}
 
 	// This isn't even being called anywhere
@@ -576,7 +585,7 @@ public class MenuBuilder {
 		return menu;
 	}
 
-	private MenuComponent addSupportLink(MenuComponent menu) {
+	private static MenuComponent addSupportLink(MenuComponent menu) {
 		MenuComponent contactMenu = menu.addChild(getText("menu.Support"), "Contact.action");
 		// We may want to add the Contact page as a child menu after we have
 		// more "Support" options
@@ -584,15 +593,15 @@ public class MenuBuilder {
 		return contactMenu;
 	}
 
-	private void addChildAction(MenuComponent menu, String actionName) {
+	private static void addChildAction(MenuComponent menu, String actionName) {
 		menu.addChild(getTitle(actionName), actionName + ".action");
 	}
 
-	private String getText(String key) {
+	private static String getText(String key) {
 		return i18nCache.getText(key, TranslationActionSupport.getLocaleStatic());
 	}
 
-	private String getTitle(String key) {
+	private static String getTitle(String key) {
 		return getText(key + ".title");
 	}
 }
