@@ -92,7 +92,6 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setSharedWith(report.getSharedWith());
 
 			save(newReport);
-			report = newReport;
 		} else {
 			json.put("success", false);
 			json.put("error", "Invalid User, does not have permission.");
@@ -138,6 +137,7 @@ public class ReportDynamic extends PicsActionSupport {
 			report.setAuditColumns(permissions);
 			dao.save(report);
 			json.put("success", true);
+			json.put("reportID", report.getId());
 		} catch (Exception e) {
 			jsonException(e);
 		}
