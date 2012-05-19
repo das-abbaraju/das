@@ -1,5 +1,8 @@
 package com.picsauditing.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Latitude/Longitude/Elevation object used for geo calculations
@@ -44,7 +47,8 @@ public class Location {
 			Location other = (Location) obj;
 			return (other.getElevation() == elevation && other.getLatitude() == latitude && other.getLongitude() == longitude);
 		} catch (Exception e) {
-			System.out.println("Error comparing BaseTable objects: " + e.getMessage());
+			Logger logger = LoggerFactory.getLogger(Location.class);
+			logger.error("Error comparing BaseTable objects: {}", e.getMessage());
 			return false;
 		}
 	}

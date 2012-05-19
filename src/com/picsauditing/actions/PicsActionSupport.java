@@ -610,7 +610,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
-			// System.out.println("unable to format as money: " + answer);
+			 logger.error("unable to format as money: {}", answer);
 		}
 		return response;
 	}

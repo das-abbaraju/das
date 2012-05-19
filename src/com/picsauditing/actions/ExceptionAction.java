@@ -196,11 +196,12 @@ public class ExceptionAction extends PicsActionSupport {
 			try {
 				emailSender.send(mail);
 			} catch (Exception e) {
-				System.out.println("PICS Exception Handler ... sending email via SendGrid");
+				Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
+				logger.error("PICS Exception Handler ... sending email via SendGrid");
 				GridSender sendMail = new GridSender(user, password);
 				mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 				sendMail.sendMail(mail);
-				System.out.println(mail.getBody());
+				logger.error(mail.getBody());
 			}
 		} catch (Exception e) {
 			return "Exception";

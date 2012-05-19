@@ -56,7 +56,6 @@ public class PicsLogger {
 			}
 		}
 		if (shouldLog) {
-//			System.out.println(formatDate(new Date()) + ": " + message);
 			LOG.info(message);
 		}
 		if (outputOn)
@@ -107,7 +106,6 @@ public class PicsLogger {
 			logger.pop();
 			return millis;
 		}
-//		System.out.println("WARNING: pop called with nothing to pop");
 		return 0;
 	}
 

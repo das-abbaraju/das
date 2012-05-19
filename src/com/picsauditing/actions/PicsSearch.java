@@ -272,11 +272,11 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		if(check.matches(ALL_NUMS)){
 			// If less than 10, it's an id, else phone and id
 			if(check.length()<=10){
-				System.out.println("Id");
+				logger.info("Id");
 				possibleFields.put(SearchFields.Id, check);
 				return;
 			} else {
-				System.out.println("ID or Phone");
+				logger.info("ID or Phone");
 				possibleFields.put(SearchFields.Id, check);
 				possibleFields.put(SearchFields.Phone, check.substring(0, 10)); // phone logic
 				return;
@@ -285,7 +285,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		// Still could be a phone number
 		check = check.replaceAll("\\D", "");
 		if(check.length()>=10){
-			System.out.println("Phone");
+			logger.info("Phone");
 			possibleFields.put(SearchFields.Phone, check.substring(0, 10)); // phone logic
 		} 
 	}

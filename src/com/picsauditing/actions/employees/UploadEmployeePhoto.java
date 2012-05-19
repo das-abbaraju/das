@@ -144,7 +144,8 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 				employee.setPhoto(FileUtils.getExtension(f.getName()));
 				employeeDAO.save(employee);
 			} catch (IOException e) {
-				System.out.println("Could not crop image");
+				Logger logger = LoggerFactory.getLogger(UploadEmployeePhoto.class);
+				logger.error("Could not crop image");
 				addActionError("Error with cropping image");
 			} finally {
 				bImg.flush();

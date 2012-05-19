@@ -5,6 +5,8 @@ import java.io.Writer;
 
 import org.apache.struts2.components.Component;
 import org.apache.velocity.app.event.implement.EscapeHtmlReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.jpa.entities.Autocompleteable;
@@ -22,7 +24,7 @@ public class Autocomplete extends Component {
 	private String extraParams;
 	private int minChars = 1;
 	private int cacheLength = 10;
-
+    
 	public Autocomplete(ValueStack stack) {
 		super(stack);
 	}
@@ -108,7 +110,8 @@ public class Autocomplete extends Component {
 
 			writer.write(result);
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			Logger logger = LoggerFactory.getLogger(Autocomplete.class);
+			logger.error(e.getMessage());
 		}
 		return true;
 	};
