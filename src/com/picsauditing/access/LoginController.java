@@ -38,7 +38,7 @@ import com.picsauditing.util.log.PicsLogger;
 public class LoginController extends PicsActionSupport {
 
 	private static final int ONE_SECOND = 1;
-	private static final int ONE_HOUR = 3600;
+	private static final int SECONDS_PER_HOUR = 3600;
 	@Autowired
 	protected UserDAO userDAO;
 	@Autowired
@@ -170,7 +170,7 @@ public class LoginController extends PicsActionSupport {
 			userDAO.save(user);
 
 			Cookie cookie = new Cookie("username", username);
-			cookie.setMaxAge(ONE_HOUR * 24);
+			cookie.setMaxAge(SECONDS_PER_HOUR * 24);
 			getResponse().addCookie(cookie);
 			// check to see if there is switchtouseid exist, which comes from
 			// redirect from another server. if it does, then after log in,
@@ -216,7 +216,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Method to log in via an ajax overlay
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -235,7 +235,7 @@ public class LoginController extends PicsActionSupport {
 
 	/**
 	 * Result for when the user is not logged in during an ajax request.
-	 * 
+	 *
 	 * @return
 	 */
 	@Anonymous
@@ -247,7 +247,7 @@ public class LoginController extends PicsActionSupport {
 	/**
 	 * Figure out if the current username/password is a valid user or account
 	 * that can actually login. But don't actually login yet
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -330,7 +330,8 @@ public class LoginController extends PicsActionSupport {
 	 * After we're logged in, now what should we do?
 	 */
 	private void postLogin() throws Exception {
-		MenuComponent menu = PicsMenu.getMenu(permissions);
+		//MenuComponent menu = PicsMenu.getMenu(permissions);
+		MenuComponent menu = MenuBuilder.buildOldStyleMenubar(permissions);
 
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
@@ -347,9 +348,11 @@ public class LoginController extends PicsActionSupport {
 					cookie.setMaxAge(ONE_SECOND);
 					getResponse().addCookie(cookie);
 				}
+
 				if ("username".equals(cookiesA[i].getName()))
 					cookieUsername = cookiesA[i].getValue();
 			}
+
 			if (!Strings.isEmpty(cookieUsername) && !cookieUsername.equals(permissions.getUsername())) {
 				// If they are switching users, just send them back to the Home
 				// Page
@@ -359,6 +362,7 @@ public class LoginController extends PicsActionSupport {
 				cookie.setMaxAge(ONE_SECOND);
 				getResponse().addCookie(cookie);
 			}
+
 			if (switchToUser == 0 && switchServerToUser == 0)
 				setBetaTestingCookie();
 
@@ -367,15 +371,18 @@ public class LoginController extends PicsActionSupport {
 				return;
 			}
 		}
+
 		String url = null;
 		if (permissions.isContractor()) {
 			ContractorAccount cAccount = (ContractorAccount) user.getAccount();
 
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
 			url = step.getUrl();
+		} else {
+			//url = PicsMenu.getHomePage(menu, permissions);
+			url = MenuBuilder.getHomePage(menu, permissions);
+		}
 
-		} else
-			url = PicsMenu.getHomePage(menu, permissions);
 		if (url == null)
 			throw new Exception(getText("Login.NoPermissionsOrDefaultPage"));
 
@@ -417,7 +424,7 @@ public class LoginController extends PicsActionSupport {
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
 
 		String serverName = getRequest().getLocalName();
-		
+
 		if (isLiveEnvironment()|| isBetaEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();
@@ -431,7 +438,7 @@ public class LoginController extends PicsActionSupport {
 
 		loginLogDAO.save(loginLog);
 	}
-	
+
 	/* GElTTER & SETTERS */
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
