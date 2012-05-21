@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,9 @@ import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
+import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
@@ -186,10 +193,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private QueryData queryData() throws SQLException {
-		Database db = new Database();
 		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
+		List<BasicDynaBean> rows = runSQL();
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
@@ -199,6 +204,13 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return new QueryData(rows);
+	}
+
+	private List<BasicDynaBean> runSQL() throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
+		return rows;
 	}
 
 	public String availableFields() {
@@ -259,7 +271,36 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	@Anonymous
+	public String download() throws Exception {
+		ExcelSheet excelSheet = new ExcelSheet();
+		
+		buildSQL();
+
+		if (builder.getDefinition().getColumns().size() > 0) {
+			List<BasicDynaBean> rawData = runSQL();
+
+			excelSheet.setData(rawData);
+			
+			excelSheet = builder.extractColumnsToExcel(excelSheet);
+
+			String filename = this.getClass().getSimpleName();
+			excelSheet.setName(filename);
+			
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+		}
+		
+		return JSON;
+	}
+
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao
 				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");

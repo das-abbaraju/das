@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.report.fields.ExtFieldType;
@@ -20,6 +21,8 @@ import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.tables.BaseTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
+import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
 
@@ -45,6 +48,16 @@ public class SqlBuilder {
 		addJoins(baseModel.getPrimaryTable());
 
 		return sql;
+	}
+
+	@Anonymous
+	public ExcelSheet extractColumnsToExcel(ExcelSheet excelSheet) {
+		for (String field : sql.getFields()) {
+			String alias = SelectSQL.getAlias(field);
+			excelSheet.addColumn(new ExcelColumn(alias, alias));
+		}
+		
+		return excelSheet;
 	}
 
 	private void setFrom() {
