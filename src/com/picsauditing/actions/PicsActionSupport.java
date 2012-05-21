@@ -635,7 +635,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public synchronized Collection<String> getAlertMessages() {
 		return alertMessages;
 	}
-
+	public synchronized void clearMessage(){
+		alertMessages = null;
+	}
 	/**
 	 * @return the i18n text to use for this page's title
 	 */
