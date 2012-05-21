@@ -82,6 +82,12 @@ public class ManageTranslations extends ReportActionSupport {
 							addActionError("Missing Translation Key");
 							throw new Exception("Missing Translation Key");
 						}
+						if (isInvalid(translation)) {
+							addActionError("Invalid Translation Key");
+							translation.setKey("");
+							throw new Exception("Invalid Translation Key");
+						}
+						
 						translation.setAuditColumns(permissions);
 
 						if (Strings.isEmpty(translation.getSourceLanguage())
@@ -129,6 +135,15 @@ public class ManageTranslations extends ReportActionSupport {
 		}
 
 		return SUCCESS;
+	}
+
+	private boolean isInvalid(AppTranslation xlatn) {
+		String transKey = xlatn.getKey();
+		return (null == transKey
+				|| transKey.isEmpty()
+				|| transKey.indexOf(" ") != -1
+				|| transKey.startsWith(".")
+				|| transKey.endsWith("."));
 	}
 
 	private void updateOtherLanguagesToQuestionable() {
