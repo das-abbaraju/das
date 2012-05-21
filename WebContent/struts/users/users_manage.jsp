@@ -233,13 +233,26 @@
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
 						</li>
+						<li>
+							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+								<s:text name="UsersManage.SwitchToThisUser" />
+							</a>
+						</li>
+						
+						<s:if test="isBetaEnvironment()">
+							<li>
+								<a class="btn" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+									<s:text name="UsersManage.SwitchToThisUserStable" />
+								</a>
+							</li>
+						</s:if>
 						
 						<s:if test="!isLiveEnvironment()">
 							<pics:if>
   								<pics:condition toggleName="SwitchUserServer" />
   								<pics:then>
-  									<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-										<s:text name="UsersManage.SwitchToThisUser" />
+  									<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
+										<s:text name="UsersManage.SwitchToThisUserStable" />
 									</a>
  								</pics:then>
  								<pics:else>
