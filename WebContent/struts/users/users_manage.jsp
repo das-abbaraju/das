@@ -232,12 +232,7 @@
 							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
-						</li>
-						<li>
-							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-								<s:text name="UsersManage.SwitchToThisUser" />
-							</a>
-						</li>
+						</li>						
 						
 						<s:if test="isBetaEnvironment()">
 							<li>
