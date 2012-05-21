@@ -234,33 +234,17 @@
 							</a>
 						</li>
 						
-						<s:if test="isBetaEnvironment()">
-							<li>
-								<a class="btn" href="http://stable.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserStable" />
-								</a>
-							</li>
-						</s:if>
-						
-						<s:if test="isLocalhostEnvironment()">
-							<li>
-								<a class="btn" href="http://alpha.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserAlpha" />
-								</a>
-							</li>
-						</s:if>
-						
-						<s:if test="isAlphaEnvironment()">
-							<li>
-								<a class="btn" href="http://beta.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserBeta" />
-								</a>
-							</li>
-						</s:if>
-						
-						
 						<s:if test="!isLiveEnvironment()">
-							<pics:toggle toggleName="SwitchUserServer" userID="${user.id}" toggleTitle="UsersManage.SwitchToThisUserStable" />									
+							<pics:if>
+  								<pics:condition toggleName="SwitchUserServer" />
+  								<pics:then>
+  									<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
+										<s:text name="UsersManage.SwitchToThisUser" />
+									</a>
+ 								</pics:then>
+ 								<pics:else>
+								</pics:else>
+ 							</pics:if>
 						</s:if>
 						
 					</pics:permission>

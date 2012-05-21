@@ -38,32 +38,38 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>
-	
+	</tag>	
 	<tag>
-		<name>toggle</name>
-		<description>toggle between show and hide new features</description>
-		<tag-class>com.picsauditing.tags.ToggleFeature</tag-class>
+		<name>if</name>
+		<tagclass>com.picsauditing.tags.IfTag</tagclass>
+		<info>if/condition/then/else tag.</info>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+
+	<tag>
+		<name>condition</name>
+		<tagclass>com.picsauditing.tags.IfConditionTag</tagclass>
+		<info>condition part of if/condition/then/else tag.</info>		
 		<attribute>
 			<description>name of the toggle</description>
 			<name>toggleName</name>
-			<required>true</required>		
-			<rtexprvalue>true</rtexprvalue>	
-		</attribute>
-		<attribute>
-			<description>user id to switch to</description>
-			<name>userID</name>
-			<required>false</required>		
-			<rtexprvalue>true</rtexprvalue>	
-		</attribute>
-		<attribute>
-			<description>description goes on the button</description>
-			<name>toggleTitle</name>
-			<required>false</required>		
-			<rtexprvalue>true</rtexprvalue>	
-		</attribute>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>		
 	</tag>
-	
+	<tag>
+		<name>then</name>
+		<tagclass>com.picsauditing.tags.IfThenTag</tagclass>
+		<info>then part of if/condition/then/else tag.</info>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+
+	<tag>
+		<name>else</name>
+		<tagclass>com.picsauditing.tags.IfElseTag</tagclass>
+		<info>else part of if/condition/then/else tag.</info>
+		<bodycontent>JSP</bodycontent>
+	</tag>
 	<tag>
 		<description>Prints a link to the help center at help.picsauditing.com</description>
 		<name>help</name>
@@ -102,7 +108,7 @@
 		</attribute>
 		<body-content>JSP</body-content>
 	</tag>
-		
+
 	<tag>
 		<name>autocomplete</name>
 		<description>Create an autocomplete control</description>
