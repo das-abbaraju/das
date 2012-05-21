@@ -701,5 +701,10 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>1.6.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.perf4j</groupId>
+			<artifactId>perf4j</artifactId>
+			<version>0.9.16</version>
+		</dependency>
 	</dependencies>
 </project>

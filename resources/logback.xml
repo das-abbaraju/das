@@ -24,4 +24,47 @@
   <root level="info">
     <appender-ref ref="FILE" />
   </root>
+  
+  <!-- Perf4J appenders -->
+
+    <appender name="graphExecutionTimes" class="org.perf4j.logback.GraphingStatisticsAppender">
+        <!-- Possible GraphTypes are Mean, Min, Max, StdDev, Count and TPS -->
+        <param name="GraphType" value="Mean"/>
+        <!-- The tags of the timed execution blocks to graph are specified here -->
+        <param name="TagNamesToGraph" value="PicsLogger, ReportNewRequestedContractor" />
+    </appender>
+
+    <appender name="graphExecutionTPS" class="org.perf4j.logback.GraphingStatisticsAppender">
+        <param name="GraphType" value="TPS" />
+        <param name="TagNamesToGraph" value="PicsLogger, ReportNewRequestedContractor" />
+    </appender>
+    
+      <!--
+       This AsyncCoalescingStatisticsAppender groups StopWatch log messages
+       into GroupedTimingStatistics messages which it sends on the
+       file appender defined below
+    -->
+    <appender name="CoalescingStatistics" class="org.perf4j.logback.AsyncCoalescingStatisticsAppender">
+        <param name="TimeSlice" value="10000"/>
+        <appender-ref ref="graphExecutionTimes"/>
+        <appender-ref ref="graphExecutionTPS"/>
+    </appender>
+    
+
+    <!-- This file appender is used to output aggregated performance statistics -->
+    <appender name="perf4jFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${destination}_perf4j.log</File>
+        <encoder>
+            <Pattern>%date %-5level [%thread] %msg%n</Pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${destination}_perf4j.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+ 
+    <logger name="org.perf4j.TimingLogger" additivity="false" level="info">
+        <appender-ref ref="CoalescingStatistics"/>
+        <appender-ref ref="perf4jFileAppender"/>
+    </logger>
+    
 </configuration>
