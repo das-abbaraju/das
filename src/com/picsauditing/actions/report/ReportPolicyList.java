@@ -3,6 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditTypeClass;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.excel.ExcelColumn;
 
 @SuppressWarnings("serial")
 public class ReportPolicyList extends ReportContractorAuditOperator {
@@ -47,5 +48,11 @@ public class ReportPolicyList extends ReportContractorAuditOperator {
 		getFilter().setShowAuditType(false);
 		getFilter().setShowPolicyType(true);
 		getFilter().setShowAMBest(true);
+	}
+	
+	protected void addExcelColumns() {
+		super.addExcelColumns();
+		excelSheet.addColumn(new ExcelColumn("auditID", "AmBest"));
+		excelSheet.setReportCAO(this);
 	}
 }
