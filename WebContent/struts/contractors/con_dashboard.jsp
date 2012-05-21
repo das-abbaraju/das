@@ -253,7 +253,7 @@
     												<s:iterator value="problems.getCriteria(#probcat)" id="probcrit">
     													<li>
     														<s:property value="problems.getWorstColor(#probcrit).smallIcon" escape="false"/>
-    														<s:property value="label"/>
+															<span title="<s:property value="getPercentComplete(#probcrit, opID)" />" ><s:property value="label" /></span>
     														<s:property value="getCriteriaLabel(#probcrit.id)"/>
     													</li>
     												</s:iterator>

@@ -39,6 +39,7 @@ import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
 import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTag;
@@ -46,6 +47,7 @@ import com.picsauditing.jpa.entities.ContractorType;
 import com.picsauditing.jpa.entities.ContractorWatch;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.MultiYearScope;
@@ -702,5 +704,48 @@ public class ContractorDashboard extends ContractorActionSupport {
 		}
 
 		return true;
+	}
+	
+	public String getPercentComplete(FlagCriteria criteria, int operatorId) {
+		String percentComplete = "";
+		if (criteria.getAuditType() != null) {
+			for (ContractorAudit audit:contractor.getAudits()) {
+				if (audit.getAuditType().equals(criteria.getAuditType())) {
+					if (percentComplete.length() > 0) percentComplete += ", ";
+					percentComplete += getPercentCompleteForOperator(audit, operatorId);
+				}
+			}
+		}
+		
+		if (percentComplete.length() > 0)
+			percentComplete = this.getTextParameterized("ContractorView.Complete", percentComplete);
+		return percentComplete;
+	} 
+	
+	private String getPercentCompleteForOperator(ContractorAudit audit, int operatorId) {
+		int lowestPercentComplete = 101;
+		String answer = "";
+		for (ContractorAuditOperator cao:audit.getOperators()) {
+			if (cao.isVisible() && cao.getPercentComplete() <= 100) {
+				if (lowestPercentComplete > cao.getPercentComplete())
+					lowestPercentComplete = cao.getPercentComplete();
+				for (ContractorAuditOperatorPermission caop : cao
+						.getCaoPermissions()) {
+					if (caop.getOperator().getId() == operatorId || caop.getOperator().getOperatorHeirarchy().contains(operatorId)) {
+						if (audit.getAuditType().isAnnualAddendum()) {
+							return audit.getAuditFor() + ": " + String.valueOf(cao.getPercentComplete()) + "%";
+						}
+						return String.valueOf(cao.getPercentComplete()) + "%";
+					}
+				}
+			}
+		}
+		
+		String prefix = "";
+		if (audit.getAuditType().isAnnualAddendum()) {
+			prefix = audit.getAuditFor() + ": ";
+		}
+
+		return (lowestPercentComplete <=  100) ? prefix + lowestPercentComplete + "%":"";
 	}
 }
