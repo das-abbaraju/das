@@ -9,21 +9,15 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.util.Strings;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
-@SuppressWarnings("serial")
-public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategory> {
+public class AuditCategoryAutocompleteService extends AutocompleteService<AuditCategory> {
 
 	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
 
-	protected Integer auditTypeID;
-
 	@Override
-	protected Collection<AuditCategory> getItems() {
+	protected Collection<AuditCategory> getItems(String q) {
 		String where = "";
-		if (auditTypeID != null && auditTypeID > 0)
-			where = "t.auditType.id =" + auditTypeID + " AND ";
-		if (isSearchDigit())
+		if (isSearchDigit(q))
 			return auditCategoryDAO.findWhere(where + "t.id LIKE '" + Strings.escapeQuotes(q) + "%'");
 		else
 			return auditCategoryDAO.findByTranslatableField(AuditCategory.class, "name",
@@ -37,8 +31,6 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 		outputBuffer.append(item.getId()).append("|");
 
 		// The display of the category
-		if (isSearchDigit())
-			outputBuffer.append("(").append(item.getId()).append(") ");
 		outputBuffer.append(item.getAuditType().getName().toString()).append(" &gt; ");
 
 		Iterator<AuditCategory> ancestors = item.getAncestors().iterator();
@@ -49,14 +41,6 @@ public class CategoryAutocomplete extends AutocompleteActionSupport<AuditCategor
 		}
 
 		return outputBuffer;
-	}
-
-	public Integer getAuditTypeID() {
-		return auditTypeID;
-	}
-
-	public void setAuditTypeID(Integer auditTypeID) {
-		this.auditTypeID = auditTypeID;
 	}
 
 }

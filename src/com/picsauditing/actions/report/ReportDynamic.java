@@ -8,30 +8,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.excel.ExcelCellType;
+import com.picsauditing.util.excel.ExcelColumn;
+import com.picsauditing.util.excel.ExcelSheet;
 
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+	@Autowired
+	private ReportFilterAutocompleter reportFilterAutocompleter;
+
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
@@ -181,10 +193,8 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private QueryData queryData() throws SQLException {
-		Database db = new Database();
 		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rows = db.select(sql.toString(), true);
-		json.put("total", db.getAllRows());
+		List<BasicDynaBean> rows = runSQL();
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
@@ -194,6 +204,13 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return new QueryData(rows);
+	}
+
+	private List<BasicDynaBean> runSQL() throws SQLException {
+		Database db = new Database();
+		List<BasicDynaBean> rows = db.select(sql.toString(), true);
+		json.put("total", db.getAllRows());
+		return rows;
 	}
 
 	public String availableFields() {
@@ -254,7 +271,36 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	@Anonymous
+	public String download() throws Exception {
+		ExcelSheet excelSheet = new ExcelSheet();
+		
+		buildSQL();
+
+		if (builder.getDefinition().getColumns().size() > 0) {
+			List<BasicDynaBean> rawData = runSQL();
+
+			excelSheet.setData(rawData);
+			
+			excelSheet = builder.extractColumnsToExcel(excelSheet);
+
+			String filename = this.getClass().getSimpleName();
+			excelSheet.setName(filename);
+			
+			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += ".xls";
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			wb.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+		}
+		
+		return JSON;
+	}
+
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao
 				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
@@ -400,6 +446,27 @@ public class ReportDynamic extends PicsActionSupport {
 
 		json.put("message", message);
 		showSQL = true;
+	}
+
+	public String getList(String fieldName, String searchQuery) {
+		try {
+			ensureValidReport();
+			Field field = builder.getAvailableFields().get(fieldName);
+			validate(field);
+
+			JSONObject autoCompleteResults = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field
+					.getAutocompleteType(), searchQuery, permissions);
+			json.put("autocompleteResults", autoCompleteResults);
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+		return JSON;
+	}
+
+	private void validate(Field field) throws Exception {
+		if (field == null)
+			throw new Exception("Available field undefined");
 	}
 
 	public Report getReport() {

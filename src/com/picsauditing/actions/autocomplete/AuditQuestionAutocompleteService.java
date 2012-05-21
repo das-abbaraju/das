@@ -8,16 +8,13 @@ import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditQuestion;
 
-@Deprecated // This should be getting phased out with the release of Dynamic Report filters
-@SuppressWarnings("serial")
-public final class AuditQuestionAutocomplete extends AutocompleteActionSupport<AuditQuestion> {
-
+public final class AuditQuestionAutocompleteService extends AutocompleteService<AuditQuestion> {
 	@Autowired
 	private AuditQuestionDAO auditQuestionDAO;
 
 	@Override
-	protected Collection<AuditQuestion> getItems() {
-		if (isSearchDigit())
+	protected Collection<AuditQuestion> getItems(String q) {
+		if (isSearchDigit(q))
 			return auditQuestionDAO.findWhere("t.id LIKE '" + q + "%'");
 		else
 			return auditQuestionDAO.findByTranslatableField(AuditQuestion.class, "name", Utilities.escapeHTML(q) + "%");

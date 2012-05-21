@@ -5,11 +5,11 @@ import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
 
+@Deprecated // This should be getting phased out with the release of Dynamic Report filters
 @SuppressWarnings("serial")
 public final class OperatorAutocomplete extends AutocompleteActionSupport<OperatorAccount> {
 
