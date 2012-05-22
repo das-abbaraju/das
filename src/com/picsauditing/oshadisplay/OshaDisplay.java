@@ -74,7 +74,9 @@ public class OshaDisplay {
 			}
 		}
 		yearsForAverageLabel.delete(0, 1);
-		columnNames.add(yearsForAverageLabel.toString());
+		columnNames.add(i18nCache.getText(
+				"ContractorView.ContractorDashboard.AverageLabel", locale,
+				yearsForAverageLabel.toString()));
 		columnNames.add(i18nCache.getText(
 				"ContractorView.ContractorDashboard.Industry", locale));
 
