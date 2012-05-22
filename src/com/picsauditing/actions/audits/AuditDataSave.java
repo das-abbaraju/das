@@ -215,6 +215,7 @@ public class AuditDataSave extends AuditActionSupport {
 					return SUCCESS;
 			}
 
+			
 			auditDataDao.save(auditData);
 
 			if (conAudit == null) {
@@ -673,7 +674,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Date".equals(questionType)) {
-			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
+//			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
 			Date newDate = DateBean.parseDate(answer);
 
 			if (newDate == null) {
@@ -683,7 +684,7 @@ public class AuditDataSave extends AuditActionSupport {
 				addActionError(getText("AuditData.error.DateOutOfRange"));
 				return false;
 			} else
-				auditData.setAnswer(s.format(newDate));
+				auditData.setAnswer(DateBean.toDBFormat(newDate));
 		}
 
 		if ("Check Box".equals(questionType)) {

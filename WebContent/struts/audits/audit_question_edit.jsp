@@ -87,8 +87,8 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Date'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="date text"/>
-			<span style="font-style: italic; font-size: 12px;"><s:text name="struts.date.format" /></span>
+			<input type="text" name="auditData.answer" value="<s:date name="%{parseDate(#a.answer)}" format="%{getText('date.short')}" />" />
+			<span style="font-style: italic; font-size: 12px;"><s:text name="date.short" /></span>
 		</s:if>
 		
 		<s:if test="#q.questionType == 'License'">
