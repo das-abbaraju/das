@@ -47,6 +47,13 @@ public class ReportDynamicTest {
 		assertTrue(bases.size() > 1);
 	}
 
+	@Test
+	public void testDownloadFromExcel() throws Exception {
+		assertEquals(ReportDynamic.SUCCESS, action.download());
+		
+		// TODO: Anything else to test?
+	}
+
 	public void testSaveTranslation()
 	{
 	

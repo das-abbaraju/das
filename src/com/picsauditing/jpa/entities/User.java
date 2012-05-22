@@ -100,7 +100,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private List<UserSwitch> switchFroms = new ArrayList<UserSwitch>();
 	private List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
 	private List<ContractorWatch> watchedContractors = new ArrayList<ContractorWatch>();
-
+	private List<Report> reports = new ArrayList<Report>();
+	
 	@Transient
 	public boolean isSuperUser() {
 		return (id == GROUP_SU);
@@ -444,6 +445,15 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	public void setWatchedContractors(List<ContractorWatch> watchedContractors) {
 		this.watchedContractors = watchedContractors;
+	}
+
+	@OneToMany(mappedBy = "createdBy", cascade = CascadeType.REMOVE)
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
 	}
 
 	@Transient
