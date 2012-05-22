@@ -63,7 +63,7 @@ Ext.define('PICS.store.report.DataSets', {
      *
      * @param report
      */
-    configureProxyUrl: function (report) {
+    configureProxyUrl: function () {
         var report_store = Ext.StoreManager.get('report.Reports');
         var report = report_store && report_store.first();
 
