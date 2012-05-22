@@ -7,29 +7,40 @@
 
 	<constant name="struts.url.includeParams" value="none" />
 	<constant name="struts.multipart.maxSize" value="1610612736" />
-	
-	<constant name="struts.enable.SlashesInActionNames" value="true"/>
-	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false"/>
+
+	<constant name="struts.enable.SlashesInActionNames" value="true" />
+	<constant name="struts.mapper.alwaysSelectFullNamespace"
+		value="false" />
 	<constant name="struts.patternMatcher" value="regex" />
 
 	<package name="com.picsauditing" extends="struts-default">
 		<result-types>
-			<result-type name="plain-text" class="com.picsauditing.strutsutil.PlainTextResult" />
-			<result-type name="action-messages" class="com.picsauditing.strutsutil.MessageResult" />
-			<result-type name="json" class="com.picsauditing.strutsutil.JSONResult" />
-			<result-type name="jsonp" class="com.picsauditing.strutsutil.JSONPResult" />
-			<result-type name="jsonArray" class="com.picsauditing.strutsutil.JSONArrayResult" />
+			<result-type name="plain-text"
+				class="com.picsauditing.strutsutil.PlainTextResult" />
+			<result-type name="action-messages"
+				class="com.picsauditing.strutsutil.MessageResult" />
+			<result-type name="json"
+				class="com.picsauditing.strutsutil.JSONResult" />
+			<result-type name="jsonp"
+				class="com.picsauditing.strutsutil.JSONPResult" />
+			<result-type name="jsonArray"
+				class="com.picsauditing.strutsutil.JSONArrayResult" />
 		</result-types>
 
 		<interceptors>
-			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor" />
-			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor" />
-			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
-			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
-			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
-			<interceptor name="validation" 
-				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
-			<interceptor name="jsonValidation" 
+			<interceptor name="http2https"
+				class="com.picsauditing.interceptors.PicsInterceptor" />
+			<interceptor name="i18n"
+				class="com.picsauditing.interceptors.I18nInterceptor" />
+			<interceptor name="security"
+				class="com.picsauditing.interceptors.SecurityInterceptor" />
+			<interceptor name="checkbox"
+				class="com.picsauditing.strutsutil.CheckboxInterceptor" />
+			<interceptor name="cachecontrol"
+				class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
+			<interceptor name="validation"
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+			<interceptor name="jsonValidation"
 				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 
 			<interceptor-stack name="picsStack">
@@ -57,7 +68,7 @@
 				<interceptor-ref name="validation">
 					<param name="excludeMethods">ajaxAdd,ajaxRemove,search,execute,input,back,cancel,browse</param>
 				</interceptor-ref>
-				<interceptor-ref name="jsonValidation"/>
+				<interceptor-ref name="jsonValidation" />
 				<interceptor-ref name="workflow">
 					<param name="excludeMethods">input,back,cancel,browse</param>
 				</interceptor-ref>
@@ -92,13 +103,19 @@
 			<result name="action-messages" type="action-messages"></result>
 		</global-results>
 		<global-exception-mappings>
-			<exception-mapping exception="java.lang.Exception" result="Exception" />
-			<exception-mapping exception="com.picsauditing.access.GeneralContractorNotApprovedException"
+			<exception-mapping exception="java.lang.Exception"
+				result="Exception" />
+			<exception-mapping
+				exception="com.picsauditing.access.GeneralContractorNotApprovedException"
 				result="GeneralContractorNotApprovedException" />
-			<exception-mapping exception="com.picsauditing.access.NoRightsException" result="NoRightsException" />
-			<exception-mapping exception="com.picsauditing.access.RecordNotFoundException" result="RecordNotFoundException" />
-			<exception-mapping exception="com.picsauditing.access.NotLoggedInException" result="login-redirect" />
-			<exception-mapping exception="com.picsauditing.access.AjaxNotLoggedInException" result="login-overlay" />
+			<exception-mapping exception="com.picsauditing.access.NoRightsException"
+				result="NoRightsException" />
+			<exception-mapping exception="com.picsauditing.access.RecordNotFoundException"
+				result="RecordNotFoundException" />
+			<exception-mapping exception="com.picsauditing.access.NotLoggedInException"
+				result="login-redirect" />
+			<exception-mapping exception="com.picsauditing.access.AjaxNotLoggedInException"
+				result="login-overlay" />
 		</global-exception-mappings>
 
 		<action name="ExceptionAction" class="com.picsauditing.actions.ExceptionAction">
@@ -121,7 +138,8 @@
 			<result>struts/users/account_recovery.jsp</result>
 		</action>
 
-		<action name="ContractorAgreement" class="com.picsauditing.actions.contractors.ContractorAgreement">
+		<action name="ContractorAgreement"
+			class="com.picsauditing.actions.contractors.ContractorAgreement">
 			<result>contractor_agreement.jsp</result>
 			<result name="print">contractor_agreement.jsp</result>
 		</action>
@@ -129,7 +147,7 @@
 		<action name="PrivacyPolicy" class="com.picsauditing.actions.PicsPolicy">
 			<result>privacy_policy.jsp</result>
 		</action>
-		
+
 		<action name="RefundPolicy" class="com.picsauditing.actions.PicsPolicy">
 			<result>refund_policy.jsp</result>
 		</action>
@@ -146,7 +164,8 @@
 			<result>struts/misc/expiration_date_synchronizer.jsp</result>
 		</action>
 
-		<action name="ContractorSummaryExternal" class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
+		<action name="ContractorSummaryExternal"
+			class="com.picsauditing.actions.contractors.ContractorSummaryExternal">
 			<result type="json"></result>
 		</action>
 
@@ -157,7 +176,7 @@
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
 		</action>
-		
+
 		<action name="Contact" class="com.picsauditing.access.ContactUs">
 			<result>struts/contact_pics.jsp</result>
 		</action>
@@ -165,107 +184,136 @@
 		<action name="ManageResources" class="com.picsauditing.actions.forms.ManageResources">
 			<result>struts/forms/manage_resources.jsp</result>
 		</action>
-		
+
 		<action name="Resources" class="com.picsauditing.actions.report.ReportResources">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">Resources</param>
 			<result>struts/reports/resources.jsp</result>
 		</action>
-		
+
 		<action name="ResourcesAjax" class="com.picsauditing.actions.report.ReportResources">
 			<result>struts/reports/resources_data.jsp</result>
 		</action>
 
 		<!-- Contractor Information -->
-		<action name="ContractorView" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorView"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/con_dashboard.jsp</result>
-			<result name="preview">struts/contractors/contractor_wia_preview.jsp</result>
-			<result name="pendingGcOperators">struts/contractors/con_dashboard_pending_gc_operators.jsp</result>
-			<result name="printFlagMatrix">struts/contractors/contractor_flag_matrix.jsp</result>
+			<result name="preview">struts/contractors/contractor_wia_preview.jsp
+			</result>
+			<result name="pendingGcOperators">struts/contractors/con_dashboard_pending_gc_operators.jsp
+			</result>
+			<result name="printFlagMatrix">struts/contractors/contractor_flag_matrix.jsp
+			</result>
 		</action>
 
-		<action name="ContractorViewAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorViewAjax"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/blank.jsp</result>
 		</action>
-		
-		<action name="ManageContractorOperatorNumber" class="com.picsauditing.actions.contractors.ManageContractorOperatorNumber">
+
+		<action name="ManageContractorOperatorNumber"
+			class="com.picsauditing.actions.contractors.ManageContractorOperatorNumber">
 			<result>/struts/contractors/contractor_operator_numbers.jsp</result>
-			<result name="input">/struts/contractors/contractor_operator_numbers_form.jsp</result>
+			<result name="input">/struts/contractors/contractor_operator_numbers_form.jsp
+			</result>
 		</action>
-		
+
 		<!-- Contractor Badge -->
-		<action name="ContractorBadge" class="com.picsauditing.actions.contractors.ContractorBadge">
+		<action name="ContractorBadge"
+			class="com.picsauditing.actions.contractors.ContractorBadge">
 			<result>/struts/contractors/contractor_badge.jsp</result>
 		</action>
 
-		<action name="AuditPdfConverter" class="com.picsauditing.actions.contractors.AuditPdfConverter">
+		<action name="AuditPdfConverter"
+			class="com.picsauditing.actions.contractors.AuditPdfConverter">
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorCertificate" class="com.picsauditing.actions.contractors.ContractorCertificate">
+		<action name="ContractorCertificate"
+			class="com.picsauditing.actions.contractors.ContractorCertificate">
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="TagNameEditAjax" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="TagNameEditAjax"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>struts/contractors/contractorOperator_tags.jsp</result>
 		</action>
 
 		<action name="StateListAjax" class="com.picsauditing.actions.StateList">
 			<result>struts/contractors/con_country.jsp</result>
-			<result name="registration">struts/contractors/_registrationCountryList.jsp</result>
+			<result name="registration">struts/contractors/_registrationCountryList.jsp
+			</result>
 		</action>
 
-		<action name="ContractorValidateAjax" class="com.picsauditing.actions.contractors.ContractorValidate">
+		<action name="ContractorValidateAjax"
+			class="com.picsauditing.actions.contractors.ContractorValidate">
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorFlag" class="com.picsauditing.actions.contractors.ContractorFlagAction">
+		<action name="ContractorFlag"
+			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag.jsp</result>
 		</action>
 
-		<action name="ContractorFlagAjax" class="com.picsauditing.actions.contractors.ContractorFlagAction">
+		<action name="ContractorFlagAjax"
+			class="com.picsauditing.actions.contractors.ContractorFlagAction">
 			<result>struts/contractors/contractor_flag_quick.jsp</result>
 		</action>
 
-		<action name="ContractorFlagChangesAjax" class="com.picsauditing.actions.flags.ContractorFlagChanges">
+		<action name="ContractorFlagChangesAjax"
+			class="com.picsauditing.actions.flags.ContractorFlagChanges">
 			<result>struts/contractors/contractor_flag_changes.jsp</result>
 		</action>
 
-		<action name="ContractorFlagChangesAjaxAddDetails" class="com.picsauditing.actions.flags.ContractorFlagChangesAddDetails">
-			<result>struts/contractors/contractor_flag_changes_add_details.jsp</result>
+		<action name="ContractorFlagChangesAjaxAddDetails"
+			class="com.picsauditing.actions.flags.ContractorFlagChangesAddDetails">
+			<result>struts/contractors/contractor_flag_changes_add_details.jsp
+			</result>
 		</action>
 
-		<action name="ContractorFlagChangesAjaxCaoDetails" class="com.picsauditing.actions.flags.ContractorFlagChangesCaoDetails">
-			<result>struts/contractors/contractor_flag_changes_cao_details.jsp</result>
+		<action name="ContractorFlagChangesAjaxCaoDetails"
+			class="com.picsauditing.actions.flags.ContractorFlagChangesCaoDetails">
+			<result>struts/contractors/contractor_flag_changes_cao_details.jsp
+			</result>
 		</action>
 
 		<action name="ContractorForms" class="com.picsauditing.actions.forms.ContractorForms">
 			<result>struts/forms/con_forms.jsp</result>
 		</action>
 
-		<action name="ContractorFacilities" class="com.picsauditing.actions.contractors.ContractorFacilities">
+		<action name="ContractorFacilities"
+			class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<result>/struts/contractors/contractor_facilities.jsp</result>
 		</action>
 
-		<action name="ContractorFacilityAjax" class="com.picsauditing.actions.contractors.ContractorFacilities">
+		<action name="ContractorFacilityAjax"
+			class="com.picsauditing.actions.contractors.ContractorFacilities">
 			<result>/struts/blank.jsp</result>
-			<result name="load">/struts/contractors/contractor_facilities_assigned.jsp</result>
-			<result name="search">/struts/contractors/contractor_facilities_results.jsp</result>
+			<result name="load">/struts/contractors/contractor_facilities_assigned.jsp
+			</result>
+			<result name="search">/struts/contractors/contractor_facilities_results.jsp
+			</result>
 		</action>
 
-		<action name="ContractorCertificatesAjax" class="com.picsauditing.actions.contractors.ContractorCertificates">
+		<action name="ContractorCertificatesAjax"
+			class="com.picsauditing.actions.contractors.ContractorCertificates">
 			<result>struts/contractors/contractor_certificates.jsp</result>
 		</action>
 
-		<action name="ContractorDocuments" class="com.picsauditing.actions.contractors.ContractorDocuments">
+		<action name="ContractorDocuments"
+			class="com.picsauditing.actions.contractors.ContractorDocuments">
 			<result>struts/contractors/contractor_documents.jsp</result>
 		</action>
 
-		<action name="ContractorDocumentsAjax" class="com.picsauditing.actions.contractors.ContractorDocuments">
-			<result>struts/contractors/contractor_documents_auditTypes.jsp</result>
+		<action name="ContractorDocumentsAjax"
+			class="com.picsauditing.actions.contractors.ContractorDocuments">
+			<result>struts/contractors/contractor_documents_auditTypes.jsp
+			</result>
 		</action>
 
-		<action name="ConInsureGUARD" class="com.picsauditing.actions.contractors.ConInsureGuard">
+		<action name="ConInsureGUARD"
+			class="com.picsauditing.actions.contractors.ConInsureGuard">
 			<param name="auditClass">Policy</param>
 			<param name="noteCategory">Insurance</param>
 			<result>struts/contractors/contractor_insureguard.jsp</result>
@@ -275,40 +323,48 @@
 			</result>
 		</action>
 
-		<action name="ContractorEdit" class="com.picsauditing.actions.contractors.ContractorEdit">
+		<action name="ContractorEdit"
+			class="com.picsauditing.actions.contractors.ContractorEdit">
 			<result>struts/contractors/con_edit.jsp</result>
 			<result name="ConList" type="redirectAction">
 				<param name="actionName">ContractorList</param>
 			</result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
-		
-		<action name="ContractorEditRiskLevel" class="com.picsauditing.actions.contractors.ContractorEditRiskLevel">
+
+		<action name="ContractorEditRiskLevel"
+			class="com.picsauditing.actions.contractors.ContractorEditRiskLevel">
 			<result>struts/contractors/con_edit_risk.jsp</result>
 		</action>
 
-		<action name="DownloadContractorFile" class="com.picsauditing.actions.contractors.ConFileUpload">
+		<action name="DownloadContractorFile"
+			class="com.picsauditing.actions.contractors.ConFileUpload">
 			<param name="button">download</param>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorQuick" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorQuick"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/contractor_quick.jsp</result>
 		</action>
 
-		<action name="ContractorQuickDocuments" class="com.picsauditing.actions.contractors.ContractorDashboard">
+		<action name="ContractorQuickDocuments"
+			class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/contractors/contractor_quick_documents.jsp</result>
 		</action>
 
-		<action name="ContractorJson" class="com.picsauditing.actions.contractors.ContractorJson"></action>
+		<action name="ContractorJson"
+			class="com.picsauditing.actions.contractors.ContractorJson"></action>
 
-		<action name="ContractorLogo" class="com.picsauditing.actions.contractors.ConFileUpload">
+		<action name="ContractorLogo"
+			class="com.picsauditing.actions.contractors.ConFileUpload">
 			<param name="button">logo</param>
 			<result name="logo" type="stream"></result>
 			<result name="input">/struts/blank.jsp</result>
 		</action>
 
-		<action name="ContractorPaymentOptions" class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
+		<action name="ContractorPaymentOptions"
+			class="com.picsauditing.actions.contractors.ContractorPaymentOptions">
 			<result>struts/contractors/con_payment_options.jsp</result>
 			<result name="requested" type="redirectAction">
 				<param name="actionName">ContractorFacilities</param>
@@ -316,7 +372,8 @@
 			</result>
 		</action>
 
-		<action name="ContractorPricing" class="com.picsauditing.actions.contractors.ContractorPricing">
+		<action name="ContractorPricing"
+			class="com.picsauditing.actions.contractors.ContractorPricing">
 			<result>con_pricing.jsp</result>
 		</action>
 
@@ -338,23 +395,23 @@
 		<action name="HeaderSearchAjax" class="com.picsauditing.search.MainSearch">
 			<result>struts/blank.jsp</result>
 		</action>
-		
+
 		<action name="Search" class="com.picsauditing.search.MainSearch">
 			<result>struts/search.jsp</result>
 		</action>
-		
+
 		<action name="SearchAjax" class="com.picsauditing.search.MainSearch">
 			<result>struts/search.jsp</result>
 		</action>
-		
+
 		<!-- Dynamic Reports -->
-		<action name="ReportDynamic"
-			class="com.picsauditing.actions.report.ReportDynamic">
+		<action name="ReportDynamic" class="com.picsauditing.actions.report.ReportDynamic">
 			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
-
-		<action name="Dashboard"
-			class="com.picsauditing.actions.DashboardHome">
+		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
+			<result>struts/report/report_manage.jsp</result>
+		</action>
+		<action name="Dashboard" class="com.picsauditing.actions.DashboardHome">
 			<result>struts/dashboard.jsp</result>
 		</action>
 
@@ -374,37 +431,43 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
-		
+
 		<!-- Subcontractor List -->
-		<action name="ReportSubcontractors" class="com.picsauditing.actions.report.ReportSubcontractors">
+		<action name="ReportSubcontractors"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportSubcontractors</param>
 			<result>struts/reports/report_subcontractors.jsp</result>
 		</action>
-		<action name="ReportSubcontractorsCSV" class="com.picsauditing.actions.report.ReportSubcontractors">
+		<action name="ReportSubcontractorsCSV"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
-		<action name="ReportSubcontractorsAjax" class="com.picsauditing.actions.report.ReportSubcontractors">
+		<action name="ReportSubcontractorsAjax"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
 			<result>struts/reports/report_subcontractors_data.jsp</result>
 		</action>
-		
+
 		<action name="BiddingContractorSearch"
 			class="com.picsauditing.actions.report.ReportBiddingContractors">
 			<result>struts/reports/report_biddingcontractors.jsp</result>
 		</action>
 
-		<action name="ContractorApproval" class="com.picsauditing.actions.report.ReportContractorApproval">
+		<action name="ContractorApproval"
+			class="com.picsauditing.actions.report.ReportContractorApproval">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ContractorApproval</param>
 			<result>struts/reports/report_con_approvals.jsp</result>
 		</action>
 
-		<action name="ContractorApprovalAjax" class="com.picsauditing.actions.report.ReportContractorApproval">
+		<action name="ContractorApprovalAjax"
+			class="com.picsauditing.actions.report.ReportContractorApproval">
 			<result>struts/reports/report_con_approvals_data.jsp</result>
 		</action>
-		
-		<action name="ContractorApprovalCSV" class="com.picsauditing.actions.report.ReportContractorApproval">
+
+		<action name="ContractorApprovalCSV"
+			class="com.picsauditing.actions.report.ReportContractorApproval">
 			<param name="download">true</param>
 			<result>struts/blank.jsp.jsp</result>
 		</action>
@@ -415,18 +478,20 @@
 			<result>struts/reports/report_client_site_referrals.jsp</result>
 		</action>
 
-		<action name="ReportClientSiteReferralsCSV" class="com.picsauditing.actions.report.ReportClientSiteReferrals">
+		<action name="ReportClientSiteReferralsCSV"
+			class="com.picsauditing.actions.report.ReportClientSiteReferrals">
 			<param name="download">true</param>
 			<result>struts/blank.jsp</result>
 		</action>
 
-		<action name="ReferNewClientSite" class="com.picsauditing.actions.operators.ReferNewClientSite">
+		<action name="ReferNewClientSite"
+			class="com.picsauditing.actions.operators.ReferNewClientSite">
 			<result>/struts/operators/client_site_new_referral.jsp</result>
 			<result name="backToReport" type="redirectAction">
 				<param name="actionName">ReportClientSiteReferrals</param>
 			</result>
 		</action>
-		
+
 		<action name="ReportActivityWatch"
 			class="com.picsauditing.actions.report.ReportActivityWatch">
 			<result>struts/reports/report_activity_watch.jsp</result>
@@ -533,16 +598,19 @@
 		</action>
 
 		<!-- REPORTS Other -->
-		<action name="NewContractorSearch" class="com.picsauditing.actions.report.ReportNewContractorSearch">
+		<action name="NewContractorSearch"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<param name="filter.ajax">true</param>
 			<result>struts/reports/newContractor_operator.jsp</result>
 		</action>
 
-		<action name="NewContractorSearchAjax" class="com.picsauditing.actions.report.ReportNewContractorSearch">
+		<action name="NewContractorSearchAjax"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<result>struts/reports/newContractor_operator_data.jsp</result>
 		</action>
 
-		<action name="NewContractorSearchCSV" class="com.picsauditing.actions.report.ReportNewContractorSearch">
+		<action name="NewContractorSearchCSV"
+			class="com.picsauditing.actions.report.ReportNewContractorSearch">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
@@ -596,17 +664,20 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="ReportAuditorEmrRates" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+		<action name="ReportAuditorEmrRates"
+			class="com.picsauditing.actions.report.ReportAuditorEmrRates">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportAuditorEmrRates</param>
 			<result>struts/reports/report_auditor_emr.jsp</result>
 		</action>
 
-		<action name="ReportAuditorEmrRatesAjax" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+		<action name="ReportAuditorEmrRatesAjax"
+			class="com.picsauditing.actions.report.ReportAuditorEmrRates">
 			<result>struts/reports/report_auditor_emr_data.jsp</result>
 		</action>
 
-		<action name="ReportAuditorEmrRatesCSV" class="com.picsauditing.actions.report.ReportAuditorEmrRates">
+		<action name="ReportAuditorEmrRatesCSV"
+			class="com.picsauditing.actions.report.ReportAuditorEmrRates">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
@@ -643,7 +714,8 @@
 
 		<action name="ReportContractorOperatorFlagMatrix"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlagMatrix">
-			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp</result>
+			<result>/struts/reports/report_contractorOperatorFlagMatrix.jsp
+			</result>
 		</action>
 
 		<action name="ReportContractorOperatorFlagMatrixCSV"
@@ -665,14 +737,17 @@
 		</action>
 		<action name="ReportContractorOperatorFlagAjax"
 			class="com.picsauditing.actions.report.ReportContractorOperatorFlag">
-			<result>struts/reports/report_contractorOperatorFlag_data.jsp</result>
+			<result>struts/reports/report_contractorOperatorFlag_data.jsp
+			</result>
 		</action>
 
-		<action name="ReportFlagChanges" class="com.picsauditing.actions.report.ReportFlagChanges">
+		<action name="ReportFlagChanges"
+			class="com.picsauditing.actions.report.ReportFlagChanges">
 			<result>/struts/reports/report_flagChanges.jsp</result>
 		</action>
 
-		<action name="ReportFlagChangesAjax" class="com.picsauditing.actions.report.ReportFlagChanges">
+		<action name="ReportFlagChangesAjax"
+			class="com.picsauditing.actions.report.ReportFlagChanges">
 		</action>
 
 		<action name="GraphTrirRates" class="com.picsauditing.actions.chart.GraphTrirRates">
@@ -737,66 +812,81 @@
 			<result>struts/users/multilogin_user.jsp</result>
 		</action>
 
-		<action name="ReportAuditAnalysis" class="com.picsauditing.actions.report.ReportAuditAnalysis">
+		<action name="ReportAuditAnalysis"
+			class="com.picsauditing.actions.report.ReportAuditAnalysis">
 			<result>struts/reports/audit_analysis.jsp</result>
 		</action>
 
-		<action name="ReportCompletePQF" class="com.picsauditing.actions.report.ReportCompletePQF">
+		<action name="ReportCompletePQF"
+			class="com.picsauditing.actions.report.ReportCompletePQF">
 			<result>struts/reports/complete_pqf.jsp</result>
 		</action>
 
-		<action name="ReportContractorsWithForcedFlags" class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+		<action name="ReportContractorsWithForcedFlags"
+			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<result>/struts/reports/report_forcedflags.jsp</result>
 		</action>
 
-		<action name="ReportConForcedFlagsCSV" class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
+		<action name="ReportConForcedFlagsCSV"
+			class="com.picsauditing.actions.report.ReportContractorsWithForcedFlags">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="ReportUserPermissionMatrix" class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
+		<action name="ReportUserPermissionMatrix"
+			class="com.picsauditing.actions.report.ReportUserPermissionMatrix">
 			<result>struts/reports/user_permission_matrix.jsp</result>
 		</action>
-		
-		<action name="ReportEmailSubscriptionMatrix" class="com.picsauditing.actions.report.ReportEmailSubscriptionMatrix">
+
+		<action name="ReportEmailSubscriptionMatrix"
+			class="com.picsauditing.actions.report.ReportEmailSubscriptionMatrix">
 			<result>struts/reports/email_subscription_matrix.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearch" class="com.picsauditing.actions.report.ReportAnswerSearch">
+		<action name="QuestionAnswerSearch"
+			class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<result>struts/reports/qanswersearch.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchCSV" class="com.picsauditing.actions.report.ReportAnswerSearch">
+		<action name="QuestionAnswerSearchCSV"
+			class="com.picsauditing.actions.report.ReportAnswerSearch">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchByAudit" class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+		<action name="QuestionAnswerSearchByAudit"
+			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
 			<result>struts/reports/auditanswersearch.jsp</result>
 		</action>
 
-		<action name="QuestionAnswerSearchByAuditCSV" class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
+		<action name="QuestionAnswerSearchByAuditCSV"
+			class="com.picsauditing.actions.report.ReportAnswerSearchByAudit">
 			<param name="download">true</param>
 			<result>/struts/blank.jsp</result>
 		</action>
 
-		<action name="AuditDataUpdates" class="com.picsauditing.actions.report.ReportAuditDataUpdate">
+		<action name="AuditDataUpdates"
+			class="com.picsauditing.actions.report.ReportAuditDataUpdate">
 			<result>struts/reports/audit_update.jsp</result>
 		</action>
 
-		<action name="ReportLifetimeMembership" class="com.picsauditing.actions.report.ReportLifetimeMembership">
+		<action name="ReportLifetimeMembership"
+			class="com.picsauditing.actions.report.ReportLifetimeMembership">
 			<result>struts/reports/lifetime_membership.jsp</result>
 		</action>
 
-		<action name="ReportContractorRiskLevel" class="com.picsauditing.actions.report.ReportContractorRiskAssessment">
+		<action name="ReportContractorRiskLevel"
+			class="com.picsauditing.actions.report.ReportContractorRiskAssessment">
 			<result>/struts/reports/report_con_risk.jsp</result>
 		</action>
 
-		<action name="ReportSalesReps" class="com.picsauditing.actions.report.ReportSalesRepresentatives">
+		<action name="ReportSalesReps"
+			class="com.picsauditing.actions.report.ReportSalesRepresentatives">
 			<result>struts/reports/report_sales.jsp</result>
 		</action>
 
-		<action name="ReportContractorScore" class="com.picsauditing.actions.report.ReportContractorScore">
+		<action name="ReportContractorScore"
+			class="com.picsauditing.actions.report.ReportContractorScore">
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportContractorScore</param>
 			<result>struts/reports/report_contractor_score.jsp</result>
@@ -854,7 +944,7 @@
 			class="com.picsauditing.actions.report.ReportWcbAccounts">
 			<result>struts/reports/wcb_accounts_data.jsp</result>
 		</action>
-		
+
 		<action name="ReportImportPQFs" class="com.picsauditing.actions.report.ReportImportPQFs">
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
@@ -1049,10 +1139,11 @@
 		</action>
 
 		<!-- Audits Manage -->
-		<action name="ManageAuditType" class="com.picsauditing.actions.auditType.ManageAuditType">
+		<action name="ManageAuditType"
+			class="com.picsauditing.actions.auditType.ManageAuditType">
 			<result>struts/audits/manage_audit_type.jsp</result>
 			<result name="top">struts/audits/audit_selectType.jsp</result>
-			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>			
+			<result name="workFlowSteps">struts/audits/workflow_steps.jsp</result>
 		</action>
 
 		<action name="ManageAuditTypeAjax"
@@ -1098,10 +1189,8 @@
 			<result>struts/audits/manage_transform_option.jsp</result>
 		</action>
 
-		<!--
-			TODO: find a way to consolidate these - is there an "insensitive"
-			flag on wildcards?
-		-->
+		<!-- TODO: find a way to consolidate these - is there an "insensitive" 
+			flag on wildcards? -->
 		<action name="ManageOptionGroup"
 			class="com.picsauditing.actions.auditType.ManageOptionGroup">
 			<result>struts/audits/manage_option_group.jsp</result>
@@ -1191,7 +1280,8 @@
 		<action name="AuditTypeRuleEditor"
 			class="com.picsauditing.actions.rules.AuditTypeRuleEditor">
 			<result>struts/rules/audit_rule_editor.jsp</result>
-			<result name="dependentAuditStatusSelect">struts/rules/_dependent_audit_status_select.jsp</result>
+			<result name="dependentAuditStatusSelect">struts/rules/_dependent_audit_status_select.jsp
+			</result>
 		</action>
 
 		<action name="AuditTypeRuleTableAjax"
@@ -1212,10 +1302,13 @@
 			<result>struts/reports/audit_rule_history_data.jsp</result>
 		</action>
 
-		<action name="AuditCategoryMatrix" class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
+		<action name="AuditCategoryMatrix"
+			class="com.picsauditing.actions.auditType.ManageAuditCategoryMatrix">
 			<result>struts/audits/audit_cat_matrix.jsp</result>
-			<result name="filters">struts/audits/audit_cat_matrix_filters.jsp</result>
-			<result name="toggle">struts/audits/audit_cat_matrix_categories.jsp</result>
+			<result name="filters">struts/audits/audit_cat_matrix_filters.jsp
+			</result>
+			<result name="toggle">struts/audits/audit_cat_matrix_categories.jsp
+			</result>
 			<result name="table">struts/audits/audit_cat_matrix_table.jsp</result>
 		</action>
 
@@ -1350,8 +1443,10 @@
 			<result name="confirm">struts/audits/schedule_audit_confirm.jsp</result>
 			<result name="summary">struts/audits/schedule_audit_summary.jsp</result>
 			<result name="edit">struts/audits/schedule_audit_edit.jsp</result>
-			<result name="picker">struts/audits/schedule_audit_select_content.jsp</result>
-			<result name="ScheduleAuditExpediteModal">/struts/audits/_schedule_audit_expedite_modal.jsp</result>
+			<result name="picker">struts/audits/schedule_audit_select_content.jsp
+			</result>
+			<result name="ScheduleAuditExpediteModal">/struts/audits/_schedule_audit_expedite_modal.jsp
+			</result>
 		</action>
 
 		<action name="AuditCalendar" class="com.picsauditing.actions.audits.AuditCalendar">
@@ -1369,10 +1464,8 @@
 			<result name="alternate">struts/trades/trade_alternates.jsp</result>
 		</action>
 
-		<!--
-			TODO: Added this to get around sitemesh decorating multipart forms.
-			Look into this later.
-		-->
+		<!-- TODO: Added this to get around sitemesh decorating multipart forms. 
+			Look into this later. -->
 		<action name="TradeTaxonomyAjax" class="com.picsauditing.actions.trades.TradeTaxonomy">
 			<result>struts/trades/trade_taxonomy.jsp</result>
 			<result name="edit">struts/trades/trade_taxonomy_edit.jsp</result>
@@ -1383,9 +1476,11 @@
 		<action name="ContractorTrades"
 			class="com.picsauditing.actions.trades.ContractorTradeAction">
 			<result>struts/trades/contractor_trade.jsp</result>
-			<result name="trade">struts/trades/contractor_trade_select_trades.jsp</result>
+			<result name="trade">struts/trades/contractor_trade_select_trades.jsp
+			</result>
 			<result name="cloud">struts/trades/contractor_trade_cloud.jsp</result>
-			<result name="preview">struts/trades/contractor_trade_preview.jsp</result>
+			<result name="preview">struts/trades/contractor_trade_preview.jsp
+			</result>
 		</action>
 
 		<!-- Autocomplete Ajax -->
@@ -1430,7 +1525,7 @@
 			<result>struts/misc/cache_statistics.jsp</result>
 			<result name="CacheElementList">struts/misc/cache_statistics_list.jsp</result>
 		</action>
-		
+
 		<action name="InterceptorConfig" class="com.picsauditing.actions.InterceptorConfig">
 			<result>/struts/blank.jsp</result>
 		</action>
@@ -1539,7 +1634,8 @@
 			<param name="filter.ajax">true</param>
 			<param name="filter.destinationAction">ReportInsuranceApproval</param>
 			<result>struts/reports/opinsurance_approval.jsp</result>
-			<result name="form">struts/insureguard/_formInsuranceRejectionStatus.jsp</result>
+			<result name="form">struts/insureguard/_formInsuranceRejectionStatus.jsp
+			</result>
 		</action>
 
 		<action name="ReportInsuranceApprovalAjax"
@@ -1565,14 +1661,15 @@
 		<action name="OshaFileConversion" class="com.picsauditing.actions.dev.OshaFileConversion">
 			<result>/struts/dev/osha_files_conversion.jsp</result>
 		</action>
-		
-		<action name="OshaFileConversionAjax" class="com.picsauditing.actions.dev.OshaFileConversionAjax">
+
+		<action name="OshaFileConversionAjax"
+			class="com.picsauditing.actions.dev.OshaFileConversionAjax">
 			<result type="json"></result>
 		</action>
-		
+
 		<action name="NameIndexUpdater" class="com.picsauditing.util.NameIndexUpdater">
 		</action>
-		
+
 		<!-- Taggit Actions -->
 		<action name="OptionGroupTagit" class="com.picsauditing.actions.tagit.OptionGroupTagit">
 		</action>
@@ -1584,7 +1681,8 @@
 
 		<!-- Remember to Categorize your new Struts pages -->
 
-		<action name="FileIndexingEngine" class="com.picsauditing.actions.files.FileIndexingEngine">
+		<action name="FileIndexingEngine"
+			class="com.picsauditing.actions.files.FileIndexingEngine">
 			<result>/struts/blank.jsp</result>
 		</action>
 
@@ -1592,51 +1690,54 @@
 		<action name="ConfigChanges" class="com.picsauditing.actions.report.ConfigChanges">
 			<result>/struts/reports/config_changes.jsp</result>
 		</action>
-		
-		<action name="AuditTypeRulesChangesAjax" class="com.picsauditing.actions.rules.AuditTypeRulesChangesAjax">
+
+		<action name="AuditTypeRulesChangesAjax"
+			class="com.picsauditing.actions.rules.AuditTypeRulesChangesAjax">
 			<result>/struts/rules/audit_rule_table.jsp</result>
 		</action>
-		
-		<action name="AuditCatRulesChangesAjax" class="com.picsauditing.actions.rules.AuditCatRulesChangesAjax">
+
+		<action name="AuditCatRulesChangesAjax"
+			class="com.picsauditing.actions.rules.AuditCatRulesChangesAjax">
 			<result>/struts/rules/audit_rule_table.jsp</result>
 		</action>
-		
+
 		<action name="AuditRejectLookupAjax" class="com.picsauditing.actions.AuditRejectionLookup">
 			<result type="jsonArray"></result>
 		</action>
-		
+
 		<action name="ResetSelenium" class="com.picsauditing.selenium.ResetSelenium">
 			<result>/struts/selenium/reset_selenium.jsp</result>
-		</action>		
+		</action>
 	</package>
-	
-	<!-- Registration -->	
+
+	<!-- Registration -->
 	<include file="struts-registration.xml" />
-	
+
 	<!-- Widgets -->
 	<include file="struts-widgets.xml" />
-	
-	<!-- Registration Requests -->	
+
+	<!-- Registration Requests -->
 	<include file="struts-registration-requests.xml" />
-	
+
 	<!-- Operator List -->
 	<include file="struts-operators.xml" />
-	
+
 	<!-- NOTES for CONTRACTORS and OPERATORS -->
 	<include file="struts-notes.xml" />
-	
+
 	<!-- Billing -->
 	<include file="struts-billing.xml" />
-	
+
 	<!-- Email Wizard/Templates/Mailer -->
 	<include file="struts-emails.xml" />
-	
-	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment Centers -->
+
+	<!-- EmployeeGUARD / OQ-Operator Qualification / HSE Competencies / Assessment 
+		Centers -->
 	<include file="struts-employees.xml" />
 
 	<!-- I18n -->
 	<include file="struts-i18n.xml" />
-	
+
 	<!-- Crons and Scheduled Tasks -->
 	<include file="struts-crons.xml" />
 </struts>
