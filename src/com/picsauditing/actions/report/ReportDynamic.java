@@ -35,8 +35,6 @@ import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.excel.ExcelCellType;
-import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings( { "unchecked", "serial" })
@@ -53,11 +51,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
-
-	@Override
-	public String execute() throws Exception {
-		return SUCCESS;
-	}
+	private String fileType = ".xls";
 
 	public String find() {
 		try {
@@ -103,7 +97,8 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setParameters(report.getParameters());
 			newReport.setSharedWith(report.getSharedWith());
 
-			save(newReport);
+			report = newReport;
+			save(report);
 		} else {
 			json.put("success", false);
 			json.put("error", "Invalid User, does not have permission.");
@@ -194,7 +189,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private QueryData queryData() throws SQLException {
 		long queryTime = Calendar.getInstance().getTimeInMillis();
-		List<BasicDynaBean> rows = runSQL();
+		List<BasicDynaBean> rawData = runSQL();
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
@@ -203,7 +198,7 @@ public class ReportDynamic extends PicsActionSupport {
 			System.out.println("Time to query: " + queryTime + " ms");
 		}
 
-		return new QueryData(rows);
+		return new QueryData(rawData);
 	}
 
 	private List<BasicDynaBean> runSQL() throws SQLException {
@@ -211,6 +206,36 @@ public class ReportDynamic extends PicsActionSupport {
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		json.put("total", db.getAllRows());
 		return rows;
+	}
+
+	public String download() throws Exception {
+		ExcelSheet excelSheet = new ExcelSheet();
+		
+		buildSQL();
+
+		if (builder.getDefinition().getColumns().size() > 0) {
+			List<BasicDynaBean> rawData = runSQL();
+
+			excelSheet.setData(rawData);
+			
+			excelSheet = builder.extractColumnsToExcel(excelSheet);
+
+			String filename = report.getName();
+			excelSheet.setName(filename);
+			
+			HSSFWorkbook workbook = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
+
+			filename += fileType;
+
+			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
+			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
+			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
+			workbook.write(outstream);
+			outstream.flush();
+			ServletActionContext.getResponse().flushBuffer();
+		}
+		
+		return SUCCESS;
 	}
 
 	public String availableFields() {
@@ -268,36 +293,6 @@ public class ReportDynamic extends PicsActionSupport {
 		buildSQL();
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
-		return JSON;
-	}
-
-	public String download() throws Exception {
-		ExcelSheet excelSheet = new ExcelSheet();
-		
-		buildSQL();
-
-		if (builder.getDefinition().getColumns().size() > 0) {
-			List<BasicDynaBean> rawData = runSQL();
-
-			excelSheet.setData(rawData);
-			
-			excelSheet = builder.extractColumnsToExcel(excelSheet);
-
-			String filename = this.getClass().getSimpleName();
-			excelSheet.setName(filename);
-			
-			HSSFWorkbook wb = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
-
-			filename += ".xls";
-
-			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
-			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
-			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
-			wb.write(outstream);
-			outstream.flush();
-			ServletActionContext.getResponse().flushBuffer();
-		}
-		
 		return JSON;
 	}
 
@@ -483,5 +478,13 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setShowSQL(boolean showSQL) {
 		this.showSQL = showSQL;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 }
