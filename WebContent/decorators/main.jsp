@@ -41,8 +41,8 @@
 		pageIsSecure = true;
 	String protocol = pageIsSecure ? "https" : "http";
 
-	//MenuComponent menu = PicsMenu.getMenu(permissions);
-	MenuComponent menu = MenuBuilder.buildOldStyleMenubar(permissions);
+	boolean useExtjsMenu = false;
+	MenuComponent menu = PicsMenu.getMenu(permissions);
 
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -102,6 +102,12 @@
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
+
+		<% if (useExtjsMenu) { %>
+        <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/ext-all.css" />
+		<script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
+		<script type="text/javascript" src="js/pics/main-menu.js"></script>
+		<% } %>
 
 		<script type="text/javascript">
 			$(function() {
@@ -221,6 +227,7 @@
 		<!-- !begin navigation -->
 		<div id="nav">
 			<div id="MainMenu">
+			<% if (!useExtjsMenu) { %>
 				<div id="tab">
 					<div id="navbar">
 						<ul>
@@ -234,6 +241,7 @@
 						</ul>
 					</div>
 				</div>
+			<% } %>
 			</div>
 		</div>
 		<!-- !end navigation -->
@@ -317,6 +325,7 @@
 			</div>
 		</div>
 
+		<% if (!useExtjsMenu) { %>
 		<!-- !begin subnavigation -->
 		<% for(MenuComponent submenu : menu.getChildren()) { %>
 		<div id="menu<%= submenu.getId()%>" class="dropmenudiv">
@@ -354,6 +363,7 @@
 		</div>
 		<% } %>
 		<!-- !end subnavigation -->
+		<% } %>
 
 		<%
 			if (!"1".equals(System.getProperty("pics.debug"))) {
