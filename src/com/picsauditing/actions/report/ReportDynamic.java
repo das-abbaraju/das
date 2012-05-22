@@ -15,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -141,7 +142,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return permissions.getUserId() == report.getCreatedBy().getId();
 	}
 
-	private String save(Report report) {
+	private void save(Report report) {
 		try {
 			ensureValidReport();
 
@@ -152,8 +153,6 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			jsonException(e);
 		}
-
-		return JSON;
 	}
 
 	public String data() {
@@ -428,6 +427,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 		if (report.getModelType() == null)
 			throw new RuntimeException("The report is missing its base");
+
+		new JSONParser().parse(report.getParameters());
 	}
 
 	private void addDefinition() {
