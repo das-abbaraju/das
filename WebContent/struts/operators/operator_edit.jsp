@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" errorPage="/exception_handler.jsp" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
-<%@page import="com.picsauditing.PICS.DateBean" %>
+<%@ page import="com.picsauditing.PICS.DateBean" %>
 
 <html>
 	<head>
@@ -509,7 +509,7 @@
 								</s:if>
 								<s:else>
 									<pics:permission perm="UserRolePicsOperator">
-	                                    % <s:textfield name="operator.scaledDiscountPercent" />
+	                                    <s:textfield name="operator.scaledDiscountPercent" /> %
 									</pics:permission>
 									<pics:permission negativeCheck="true" perm="UserRolePicsOperator">
 	                                    <s:text name="format.percent">

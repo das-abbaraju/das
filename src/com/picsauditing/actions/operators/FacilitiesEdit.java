@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Vector;
 
 import javax.naming.NoPermissionException;
 
@@ -47,6 +46,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class FacilitiesEdit extends OperatorActionSupport {
+
 	@Autowired
 	private AccountUserDAO accountUserDAO;
 	@Autowired
@@ -230,10 +230,11 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			return SUCCESS;
 		}
 
-		Vector<String> errors = validateAccount(operator);
+		List<String> errors = validateAccount(operator);
 		if (errors.size() > 0) {
 			operatorDao.clear();
 			operator = operatorDao.find(operator.getId());
+			List<Facility> operatorFacilities = operator.getOperatorFacilities();
 			for (Facility facility : operatorFacilities) {
 				if (!operatorFacilities.contains(facility)) {
 					facilities.add(facility.getOperator().getId());
@@ -242,6 +243,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			
 			for (String error : errors)
 				addActionError(error);
+			
 			return SUCCESS;
 		}
 
@@ -667,24 +669,24 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	}
 
 	// TODO: This should be converted to Struts2 Validation
-	private Vector<String> validateAccount(OperatorAccount operator) {
-		Vector<String> errorMessages = new Vector<String>();
+	private List<String> validateAccount(OperatorAccount operator) {
+		List<String> errorMessages = new ArrayList<String>();
 		if (Strings.isEmpty(operator.getName()))
-			errorMessages.addElement(getText("FacilitiesEdit.PleaseFillInCompanyName"));
+			errorMessages.add(getText("FacilitiesEdit.PleaseFillInCompanyName"));
 		else if (operator.getName().length() < 2)
-			errorMessages.addElement(getText("FacilitiesEdit.NameAtLeast2Chars"));
+			errorMessages.add(getText("FacilitiesEdit.NameAtLeast2Chars"));
 
 		if (operator.getCountry() == null) {
-			errorMessages.addElement(getText("FacilitiesEdit.SelectCountry"));
+			errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
 		}
 
 		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
 				|| operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
-			errorMessages.addElement(getText("FacilitiesEdit.EnterValidRange"));
+			errorMessages.add(getText("FacilitiesEdit.EnterValidRange"));
 		}
 
 		if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) > 0 && operator.getDiscountExpiration() == null) {
-			errorMessages.addElement(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
+			errorMessages.add(getText("FacilitiesEdit.DiscountExpirationDateRequired"));
 		}
 
 		return errorMessages;
