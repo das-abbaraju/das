@@ -35,6 +35,7 @@ import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings( { "unchecked", "serial" })
@@ -52,6 +53,9 @@ public class ReportDynamic extends PicsActionSupport {
 	private SelectSQL sql = new SelectSQL();
 	private SqlBuilder builder = new SqlBuilder();
 	private String fileType = ".xls";
+
+	private String fieldName;
+	private String searchQuery;
 
 	public String find() {
 		try {
@@ -443,20 +447,57 @@ public class ReportDynamic extends PicsActionSupport {
 		showSQL = true;
 	}
 
-	public String getList(String fieldName, String searchQuery) {
+	public String list() {
 		try {
-			ensureValidReport();
-			Field field = builder.getAvailableFields().get(fieldName);
-			validate(field);
+			if (Strings.isEmpty(fieldName))
+				throw new Exception("Please pass a fieldName when calling list");
 
-			JSONObject autoCompleteResults = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field
-					.getAutocompleteType(), searchQuery, permissions);
-			json.put("autocompleteResults", autoCompleteResults);
+			if (Strings.isEmpty(searchQuery)) {
+				json = getEnumList();
+			} else {
+				json = getAutocompleteList();
+			}
+
 			json.put("success", true);
 		} catch (Exception e) {
 			jsonException(e);
 		}
 		return JSON;
+	}
+
+	private JSONObject getAutocompleteList() throws Exception {
+		ensureValidReport();
+		Field field = builder.getAvailableFields().get(fieldName);
+		validate(field);
+
+		return reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(), searchQuery,
+				permissions);
+	}
+
+	private JSONObject getEnumList() throws Exception {
+		ensureValidReport();
+		Field field = builder.getAvailableFields().get(fieldName);
+		validate(field);
+
+		if (!field.getFieldClass().isEnum())
+			throw new Exception(field.getName() + " is not an enum and cannot be displayed as an enum list.");
+
+		return renderEnumFieldAsJson(field);
+	}
+
+	private JSONObject renderEnumFieldAsJson(Field field) {
+		JSONObject enumResults = new JSONObject();
+		JSONArray jsonResult = new JSONArray();
+		for (Object enumValue : field.getFieldClass().getEnumConstants()) {
+			JSONObject valueJson = new JSONObject();
+			valueJson.put("id", enumValue.toString());
+			String translationKey = field.getFieldClass().getSimpleName().toString() + "." + enumValue.toString();
+			valueJson.put("name", getText(translationKey));
+			jsonResult.add(valueJson);
+		}
+
+		enumResults.put("result", jsonResult);
+		return enumResults;
 	}
 
 	private void validate(Field field) throws Exception {
