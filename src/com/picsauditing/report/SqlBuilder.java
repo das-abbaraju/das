@@ -223,9 +223,6 @@ public class SqlBuilder {
 			}
 
 			filter.setField(getFieldFromFieldName(filter.getFieldName()));
-			if (filter.isHasTranslations()) {
-				setTranslationKeys(filter);
-			}
 		}
 
 		String where = definition.getFilterExpression();
@@ -253,20 +250,6 @@ public class SqlBuilder {
 				sql.addHaving(filterExp);
 			}
 		}
-	}
-
-	private void setTranslationKeys(Filter filter) {
-		if (Strings.isEmpty(filter.getValue()))
-			return;
-
-		String[] values = filter.getValue().split(",");
-		String[] translationKeyArray = new String[values.length];
-		for (int i = 0; i < values.length; i++) {
-			translationKeyArray[i] = filter.getField().getPreTranslation() + values[i] + filter.getField().getPostTranslation();
-		}
-		
-		String translationKeys = StringUtils.join(translationKeyArray,",");
-		filter.setValueNames(translationKeys);
 	}
 
 	private Column convertColumn(String columnName) {

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
@@ -29,6 +30,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.Filter;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
@@ -188,6 +190,10 @@ public class ReportDynamic extends PicsActionSupport {
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 		builder.addPaging(page);
+
+		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
+			translateFilterValueNames(builder.getDefinition().getFilters());
+		}
 	}
 
 	private QueryData queryData() throws SQLException {
@@ -494,6 +500,26 @@ public class ReportDynamic extends PicsActionSupport {
 	private void validate(Field field) throws Exception {
 		if (field == null)
 			throw new Exception("Available field undefined");
+	}
+
+	private void translateFilterValueNames(List<Filter> filters) {
+		for (Filter filter : filters) {
+			if (filter.isHasTranslations()) {
+				if (Strings.isEmpty(filter.getValue()))
+					return;
+
+				String[] values = filter.getValue().split(",");
+				String[] translationValueNameArray = new String[values.length];
+				for (int i = 0; i < values.length; i++) {
+					String translationKey = filter.getField().getPreTranslation() + values[i]
+							+ filter.getField().getPostTranslation();
+					translationValueNameArray[i] = getText(translationKey);
+				}
+
+				String translatedValueNames = StringUtils.join(translationValueNameArray, ",");
+				filter.setValueNames(translatedValueNames);
+			}
+		}
 	}
 
 	public Report getReport() {
