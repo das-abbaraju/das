@@ -33,7 +33,11 @@ public enum FilterType {
 		return fieldType;
 	}
 	
-	public boolean isList() {
-		return this == Enum || this == Autocomplete;
+	public boolean isEnum() {
+		return this == Enum;
+	}
+
+	public boolean isAutocomplete() {
+		return this == Autocomplete;
 	}
 }

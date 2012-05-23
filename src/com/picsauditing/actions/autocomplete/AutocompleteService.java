@@ -60,7 +60,7 @@ public abstract class AutocompleteService<T extends Autocompleteable> {
 
 	public JSONObject formatTokenJson(T item) {
 		JSONObject o = new JSONObject();
-		o.put("id", item.getAutocompleteResult());
+		o.put("id", item.getAutocompleteItem());
 		o.put("name", item.getAutocompleteValue());
 		return o;
 	}

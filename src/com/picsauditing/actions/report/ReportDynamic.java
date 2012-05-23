@@ -55,8 +55,8 @@ public class ReportDynamic extends PicsActionSupport {
 	private SqlBuilder builder = new SqlBuilder();
 	private String fileType = ".xls";
 
-	private String fieldName;
-	private String searchQuery;
+	private String fieldName = "";
+	private String searchQuery = "";
 
 	public String find() {
 		try {
@@ -453,10 +453,20 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			if (Strings.isEmpty(searchQuery)) {
-				json = getEnumList();
+			ensureValidReport();
+			builder.setReport(report);
+			builder.getSql();
+
+			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
+			validate(field);
+
+			if (field.getFilterType().isEnum()) {
+				json = renderEnumFieldAsJson(field);
+			} else if (field.getFilterType().isAutocomplete()) {
+				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
+						searchQuery, permissions);
 			} else {
-				json = getAutocompleteList();
+				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}
 
 			json.put("success", true);
@@ -464,32 +474,6 @@ public class ReportDynamic extends PicsActionSupport {
 			jsonException(e);
 		}
 		return JSON;
-	}
-
-	private JSONObject getAutocompleteList() throws Exception {
-		ensureValidReport();
-		builder.setReport(report);
-		builder.getSql();
-		
-		Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
-		validate(field);
-
-		return reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(), searchQuery,
-				permissions);
-	}
-
-	private JSONObject getEnumList() throws Exception {
-		ensureValidReport();
-		builder.setReport(report);
-		builder.getSql();
-		
-		Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
-		validate(field);
-
-		if (!field.getFieldClass().isEnum())
-			throw new Exception(field.getName() + " is not an enum and cannot be displayed as an enum list.");
-
-		return renderEnumFieldAsJson(field);
 	}
 
 	private JSONObject renderEnumFieldAsJson(Field field) {

@@ -59,6 +59,20 @@ public final class OperatorAutocompleteService extends AutocompleteService<Opera
 
 		return json;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public final JSONObject tokenJson(String q, Permissions p) {
+		JSONObject json = new JSONObject();
+
+		JSONArray result = new JSONArray();
+		for (OperatorAccount item : getItems(q, p)) {
+			result.add(formatTokenJson(item));
+		}
+
+		json.put("result", result);
+
+		return json;
+	}
 
 	@Override
 	protected Collection<OperatorAccount> getItems(String q) {
