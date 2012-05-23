@@ -330,9 +330,6 @@ public class LoginController extends PicsActionSupport {
 	 * After we're logged in, now what should we do?
 	 */
 	private void postLogin() throws Exception {
-		//MenuComponent menu = PicsMenu.getMenu(permissions);
-		MenuComponent menu = MenuBuilder.buildOldStyleMenubar(permissions);
-
 		// Find out if the user previously timed out on a page, we'll forward
 		// back there below
 
@@ -379,8 +376,15 @@ public class LoginController extends PicsActionSupport {
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
 			url = step.getUrl();
 		} else {
-			//url = PicsMenu.getHomePage(menu, permissions);
-			url = MenuBuilder.getHomePage(menu, permissions);
+			//boolean useDynamicReports = permissions.isUsingDynamicReports();
+			boolean useDynamicReports = false;
+			if (useDynamicReports) {
+				// TODO get this to work
+				//url = MenuBuilder.getHomePage(permissions);
+			} else {
+				MenuComponent menu = PicsMenu.getMenu(permissions);
+				url = PicsMenu.getHomePage(menu, permissions);
+			}
 		}
 
 		if (url == null)

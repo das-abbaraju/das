@@ -41,8 +41,12 @@
 		pageIsSecure = true;
 	String protocol = pageIsSecure ? "https" : "http";
 
-	boolean useExtjsMenu = false;
-	MenuComponent menu = PicsMenu.getMenu(permissions);
+	// TODO - Add this in
+	//boolean useDynamicReports = permissions.isUsingDynamicReports();
+	boolean useDynamicReports = false;
+	MenuComponent menu = new MenuComponent();
+	if (!useDynamicReports)
+		menu = PicsMenu.getMenu(permissions);
 
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -88,6 +92,7 @@
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
+        <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/ext-all.css" />
 
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
 
@@ -102,10 +107,9 @@
 		<script type="text/javascript" src="js/jquery/bbq/jquery.ba-bbq.min.js?v=${version}"></script>
 		<script type="text/javascript" src="js/jquery/jquery.ajaxQueue.js?v=${version}"></script>
 		<script type="text/javascript" src="js/main_search.js?v=${version}"></script>
-
-		<% if (useExtjsMenu) { %>
-        <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/ext-all.css" />
 		<script type="text/javascript" src="js/pics/extjs/ext-all.js"></script>
+
+		<% if (useDynamicReports) { %>
 		<script type="text/javascript" src="js/pics/main-menu.js"></script>
 		<% } %>
 
@@ -227,7 +231,7 @@
 		<!-- !begin navigation -->
 		<div id="nav">
 			<div id="MainMenu">
-			<% if (!useExtjsMenu) { %>
+			<% if (!useDynamicReports) { %>
 				<div id="tab">
 					<div id="navbar">
 						<ul>
@@ -325,7 +329,7 @@
 			</div>
 		</div>
 
-		<% if (!useExtjsMenu) { %>
+		<% if (!useDynamicReports) { %>
 		<!-- !begin subnavigation -->
 		<% for(MenuComponent submenu : menu.getChildren()) { %>
 		<div id="menu<%= submenu.getId()%>" class="dropmenudiv">

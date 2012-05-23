@@ -148,52 +148,6 @@ public class MenuBuilder {
 		addSupportLinkSubmenu(menu);
 	}
 
-	public static MenuComponent buildOldStyleMenubar(Permissions permissions) {
-		System.out.println("building old style menubar with MenuBuilder.");
-		MenuComponent menu = new MenuComponent();
-
-		if (!permissions.isLoggedIn()) {
-			MenuBuilder.buildNotLoggedInMenubar(menu);
-			return menu;
-		} else if (permissions.isContractor()) {
-			MenuBuilder.buildContractorMenubar(menu, permissions);
-			return menu;
-		} else if (permissions.isAssessment()) {
-			MenuBuilder.buildAssessmentMenubar(menu);
-			return menu;
-		}
-
-		addImportPqfSubmenu(menu, permissions);
-
-		addContractorSubmenu(menu, permissions);
-
-		addAuditGuardSubmenu(menu, permissions);
-
-		addCustomerServiceSubmenu(menu, permissions);
-
-		addAccountingSubmenu(menu, permissions);
-
-		addInsureGuardSubmenu(menu, permissions);
-
-		addManagementSubmenu(menu, permissions);
-
-		addConfigurationSubmenu(menu, permissions);
-
-		addDevelopmentSubmenu(menu, permissions);
-
-		addReportsSubmenu(menu, permissions);
-
-		addHseCompetencySubmenu(menu, permissions);
-
-		addOperatorQualificationSubmenu(menu, permissions);
-
-		if (permissions.isOperatorCorporate()) {
-			addSupportLinkSubmenu(menu);
-		}
-
-		return menu;
-	}
-
 	private static void addAccountingSubmenu(MenuComponent menu, Permissions permissions) {
 		if (menu == null || permissions == null)
 			return;
