@@ -54,48 +54,26 @@ Ext.define('PICS.controller.report.ReportSaveController', {
         });
     },
 
-    getReportDescription: function () {
-        return {
-            name: this.getReportSave().child('panel textfield[name=reportName]').getValue(),
-            description: this.getReportSave().child('panel textarea[name=reportDescription]').getValue()
+    configureSaveWindow: function (type) {
+        if (type === 'save') {
+            this.createReportSaveWindow('Save', 'save');
+        } else if (type === 'copy') {
+            this.createReportSaveWindow('Copy', 'copy');
+        } else if (type === 'create') {
+            this.createReportSaveWindow('Create', 'create');
         }
-    },
-
-    saveReport: function () {
-        var save_url = 'ReportDynamic!edit.action?',
-            me = this,
-            report = this.getReportReportsStore().first();
-            reportDescription = this.getReportDescription();
-
-        report.set('name', reportDescription.name);
-        report.set('description', reportDescription.description);
-
-        save_url = save_url + this.getReportParameters();
-        
-        this.getReportSave().close();
-
-        Ext.Ajax.request({
-           url: save_url,
-           success: function (result) {
-               var result = Ext.decode(result.responseText);
-               me.application.fireEvent('refreshreport');
-           }
-        });        
     },
 
     createNewReport: function () {
         var create_url = 'ReportDynamic!create.action?',
-            me = this,
-            report = this.getReportReportsStore().first();
-            reportDescription = this.getReportDescription();
+            me = this;
 
-        report.set('name', reportDescription.name);
-        report.set('description', reportDescription.description);
+        this.setReportName();
 
         create_url = create_url + this.getReportParameters();
 
         this.getReportSave().close();
-        
+
         Ext.Ajax.request({
            url: create_url,
            success: function (result) {
@@ -103,6 +81,24 @@ Ext.define('PICS.controller.report.ReportSaveController', {
                document.location = 'ReportDynamic.action?report=' + result.reportID;
            }
         });
+    },
+
+    createReportSaveWindow: function (name, action) {
+         var window = Ext.create('PICS.view.report.ReportSave', {
+            title: name + " Report",
+            buttons: [{
+                action: action,
+                text: name
+            }, {
+                action: 'cancel',
+                name: 'cancel',
+                text: 'Cancel'
+            }]
+        });
+
+        this.setReportWindowFormValues(window);
+
+        window.show();
     },
 
     getReportParameters: function () {
@@ -124,92 +120,45 @@ Ext.define('PICS.controller.report.ReportSaveController', {
 
         parameters['report.parameters'] = report_json;
 
+        parameters['report.name'] = report.get('name');
+
+        parameters['report.description'] = report.get('description');
+
         return Ext.Object.toQueryString(parameters);
     },
 
-    configureSaveWindow: function (type) {
-        if (type === 'save') {
-            this.openSaveWindow();
-        } else if (type === 'copy') {
-            this.openCopyWindow();
-        } else if (type === 'create') {
-            this.openCreateWindow();
-        }
-    },
+    saveReport: function () {
+        var save_url = 'ReportDynamic!edit.action?',
+            me = this;
 
-    openCopyWindow: function () {
-        var window = Ext.create('PICS.view.report.ReportSave', {
-            title: "Copy Report",
-            buttons: [{
-                action: 'copy',
-                name: 'copy',
-                text: 'Copy'
-            }, {
-                action: 'cancel',
-                name: 'cancel',
-                text: 'Cancel'
-            }]
+        this.setReportName();
+
+        save_url = save_url + this.getReportParameters();
+
+        this.getReportSave().close();
+
+        Ext.Ajax.request({
+           url: save_url,
+           success: function (result) {
+               var result = Ext.decode(result.responseText);
+               me.application.fireEvent('refreshreport');
+           }
         });
-
-        this.setFormValues(window);
-
-        window.show();
     },
 
-    openCreateWindow: function () {
-        var window = Ext.create('PICS.view.report.ReportSave', {
-            title: "Create Report",
-            buttons: [{
-                action: 'create',
-                name: 'create',
-                text: 'Create'
-            }, {
-                action: 'cancel',
-                name: 'cancel',
-                text: 'Cancel'
-            }]
-        });
-
-        this.setFormValues(window);
-
-        window.show();
-    },
-
-    openSaveWindow: function () {
-        var window = Ext.create('PICS.view.report.ReportSave', {
-            title: "Save Report",
-            buttons: [{
-                action: 'save',
-                name: 'save',
-                text: 'Save'
-            }, {
-                action: 'cancel',
-                name: 'cancel',
-                text: 'Cancel'
-            }]
-        });
-
-        this.setFormValues(window);
-
-        window.show();
-    },
-
-    setFormValues: function (window) {
+    setReportWindowFormValues: function (window) {
         var report = this.getReportReportsStore().first();
 
         window.child('panel textfield[name=reportName]').setValue(report.get('name'));
         window.child('panel textfield[name=reportDescription]').setValue(report.get('description'));
     },
 
-    showReportSaveWindow: function (type) {
-        var me = this,
-            reportShow = this.getReportSave();
+    setReportName: function () {
+        var report = this.getReportReportsStore().first(),
+            name = this.getReportSave().child('panel textfield[name=reportName]').getValue(),
+            description = this.getReportSave().child('panel textarea[name=reportDescription]').getValue();
 
-        if (!reportShow) {
-
-            reportShow = Ext.create('PICS.view.report.ReportSave', {saveWindowType: type});
-
-            reportShow.show();
-        }
+        report.set('name', name);
+        report.set('description', description);
     }
 });
