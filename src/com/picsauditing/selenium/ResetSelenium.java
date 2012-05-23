@@ -5,12 +5,13 @@ import java.util.List;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.Account;
 
 @SuppressWarnings("serial")
 public class ResetSelenium extends PicsActionSupport {
 	
-	private List<SeleniumTestingAccount> accountsInDB;
-	private List<String> accountsSelectedForDeletion; //This should always be a list of account IDs.
+	private List<Account> accountsInDB;
+	private List<Integer> accountsSelectedForDeletion; //This should always be a list of account IDs.
 	private String userSpecifiedAccount = null; //This will be an account name passed in as a request parameter.
 	
 	@Anonymous
@@ -34,16 +35,16 @@ public class ResetSelenium extends PicsActionSupport {
 	@Anonymous
 	public String deleteAll () throws Exception {
 		establishAccountsAvailableForDeletion();
-		List<String> allAccountIDs = new ArrayList<String>();
-		for (SeleniumTestingAccount account : accountsInDB)
+		List<Integer> allAccountIDs = new ArrayList<Integer>();
+		for (Account account : accountsInDB)
 			allAccountIDs.add(account.getId());
 		accountsSelectedForDeletion = allAccountIDs;
 		return delete();
 	}
 
 	private void performMultipleDeletion() throws Exception {
-		List<SeleniumTestingAccount> deletables = new ArrayList<SeleniumTestingAccount>();
-		for (SeleniumTestingAccount account : accountsInDB)
+		List<Account> deletables = new ArrayList<Account>();
+		for (Account account : accountsInDB)
 			if (accountsSelectedForDeletion.contains(account.getId())) 
 				deletables.add(account);
 		
@@ -51,9 +52,9 @@ public class ResetSelenium extends PicsActionSupport {
 	}
 
 	private void deleteSingleAccount(String name) throws Exception {
-		for (SeleniumTestingAccount account : accountsInDB)
+		for (Account account : accountsInDB)
 			if (account.getName().equalsIgnoreCase(name)) {
-				List<SeleniumTestingAccount> deleteMe = new ArrayList<SeleniumTestingAccount>();
+				List<Account> deleteMe = new ArrayList<Account>();
 				deleteMe.add(account);
 				SeleniumDAO.delete(deleteMe);
 				return;
@@ -64,11 +65,11 @@ public class ResetSelenium extends PicsActionSupport {
 		if (null == accountsInDB || accountsInDB.isEmpty()) accountsInDB = SeleniumDAO.AvailableTestingAccounts();
 	}
 	
-	public List<SeleniumTestingAccount> getDBAccounts () {
+	public List<Account> getDBAccounts () {
 		return accountsInDB;
 	}
 	
-	public void setDBAccounts (List<String> accounts) {
+	public void setDBAccounts (List<Integer> accounts) {
 		accountsSelectedForDeletion = accounts;
 	}
 	
