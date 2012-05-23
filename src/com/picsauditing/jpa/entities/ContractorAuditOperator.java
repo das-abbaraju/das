@@ -10,15 +10,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -63,8 +63,9 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.operator = operator;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
+	@ReportField(filterType = FilterType.Enum)
 	public AuditStatus getStatus() {
 		return status;
 	}
@@ -155,6 +156,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.flag = flag;
 	}
 
+	@ReportField(filterType = FilterType.Date)
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -163,6 +165,7 @@ public class ContractorAuditOperator extends BaseTable implements Comparable<Con
 		this.statusChangedDate = statusChangedDate;
 	}
 
+	@ReportField(filterType = FilterType.Integer)
 	public int getPercentComplete() {
 		return percentComplete;
 	}

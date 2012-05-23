@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.models.ModelType;
@@ -61,7 +62,7 @@ public class Report extends BaseTable {
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
-
+	
 	@ManyToOne
 	@JoinColumn(name = "sharedWith")
 	public Account getSharedWith() {
