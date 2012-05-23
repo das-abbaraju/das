@@ -128,7 +128,7 @@
 					<s:param name="isGroup" value="%{isGroup}" />
 					<s:param name="userIsGroup" value="'Yes'" />
 				</s:url>
-				<a href="${add_group}" class="add"> <s:text
+				<a href="${add_group}" class="add" id="add_group"> <s:text
 						name="UsersManage.addGroup" />
 				</a>
 			</s:if>
@@ -138,7 +138,7 @@
 				<s:param name="isGroup" value="%{isGroup}" />
 				<s:param name="userIsGroup" value="'No'" />
 			</s:url>
-			<a href="${add_user}" class="add"> <s:text
+			<a href="${add_user}" class="add" id="add_user"> <s:text
 					name="UsersManage.addUser" />
 			</a>
 

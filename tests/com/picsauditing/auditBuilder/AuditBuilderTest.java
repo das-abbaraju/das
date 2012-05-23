@@ -1,6 +1,9 @@
 package com.picsauditing.auditBuilder;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +12,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -16,36 +20,39 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditRule;
+import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorType;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.QuestionComparator;
+import com.picsauditing.jpa.entities.Trade;
 
 public class AuditBuilderTest extends PicsTest {
-	ContractorAccount contractor1;
-	ContractorAudit conAudit1PQF;
-	AuditType pqf;
-	AuditCategory pqfCategory2;
-
+	AuditBuilder auditBuilder = new AuditBuilder();
+	
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
 	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
 	AuditTypesBuilder typeBuilder;
-	Set<AuditTypeDetail> auditTypes;
-
+	
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
 	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
 	AuditCategoriesBuilder catBuilder;
-	Set<AuditCategory> categories;
-	Map<OperatorAccount, Set<OperatorAccount>> caos;
-
-	AuditBuilder auditBuilder = new AuditBuilder();
-	AuditTypeRuleCache abTypeRuleCache = new AuditTypeRuleCache();
-	AuditCategoryRuleCache abCatRuleCache = new AuditCategoryRuleCache();
+	
 	@Mock
-	AuditPercentCalculator abAuditPercentCalculatior = new AuditPercentCalculator();
+	AuditPercentCalculator auditPercentCalculatior = new AuditPercentCalculator();
+
+	ContractorAccount contractor;
+	OperatorAccount operator;
 
 	/**
 	 * Setup Contractors and Audit Types and Categories
@@ -55,147 +62,233 @@ public class AuditBuilderTest extends PicsTest {
 		MockitoAnnotations.initMocks(this);
 
 		autowireEMInjectedDAOs(auditBuilder);
-		// PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
-		// abTypeRuleCache);
-		// PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache",
-		// abCatRuleCache);
-		// PicsTestUtil.forceSetPrivateField(auditBuilder,
-		// "auditPercentCalculator", abAuditPercentCalculatior);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache",
+				typeRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache",
+				catRuleCache);
+		PicsTestUtil.forceSetPrivateField(auditBuilder,
+				"auditPercentCalculator", auditPercentCalculatior);
 
-		contractor1 = EntityFactory.makeContractor();
-		conAudit1PQF = EntityFactory.makeContractorAudit(1, contractor1);
-		pqf = conAudit1PQF.getAuditType();
-		EntityFactory.addCategories(pqf, 101, "PQF Category 1");
-		pqfCategory2 = EntityFactory.addCategories(pqf, 102, "PQF Category 2");
-
-		typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor1);
-		catBuilder = new AuditCategoriesBuilder(catRuleCache, contractor1);
-	}
-
-	@Test
-	public void testBuilder() {
-		{
-			// Include the PQF for Everyone
-			AuditTypeRule rule = new AuditTypeRule();
-			rule.setAuditType(pqf);
-			typeRules.add(rule);
-
-			// Include All categories by default
-			catRules.add(new AuditCategoryRule());
-		}
-		typeRuleCache.initialize(typeRules);
-		catRuleCache.initialize(catRules);
-
-		// Contractor has no operators, so should needs zero audits and
-		// categories
-		auditTypes = typeBuilder.calculate();
-		assertEquals(0, auditTypes.size());
-		categories = catBuilder.calculate(conAudit1PQF,
-				contractor1.getOperatorAccounts());
-		assertEquals(0, categories.size());
-
-		OperatorAccount operator1 = EntityFactory.makeOperator();
-		EntityFactory.addContractorOperator(contractor1, operator1);
-
-		// Now we should have 1 audit and 2 categories for the single operator
-		auditTypes = typeBuilder.calculate();
-		assertEquals(1, auditTypes.size());
-		categories = catBuilder.calculate(conAudit1PQF,
-				contractor1.getOperatorAccounts());
-		assertEquals(2, categories.size());
-		caos = catBuilder.getCaos();
-		assertEquals(1, caos.size());
-
-		{
-			AuditCategoryRule rule = new AuditCategoryRule();
-			catRules.add(rule);
-			rule.setInclude(false);
-			rule.setAuditCategory(pqfCategory2);
-
-			catRuleCache.initialize(catRules);
-			categories = catBuilder.calculate(conAudit1PQF,
-					contractor1.getOperatorAccounts());
-			assertEquals(1, categories.size());
-		}
-		{
-			AuditCategoryRule rule = new AuditCategoryRule();
-			catRules.add(rule);
-			rule.setInclude(true);
-			rule.setAuditCategory(pqfCategory2);
-			rule.setOperatorAccount(operator1);
-
-			catRuleCache.initialize(catRules);
-			categories = catBuilder.calculate(conAudit1PQF,
-					contractor1.getOperatorAccounts());
-			assertEquals(2, categories.size());
-		}
-	}
-
-	@Test
-	public void testAuditTypes() {
-		AuditTypeRule rule;
-
-		// clear out old rules
 		typeRules.clear();
 		typeRuleCache.clear();
+		catRules.clear();
+		catRuleCache.clear();
 
-		// create rules
-		rule = new AuditTypeRule();
-		rule.setAuditType(EntityFactory.makeAuditType(50));
-		typeRules.add(rule);
-
-		// initialize cache
-		typeRuleCache.initialize(typeRules);
-
-		// initialize contractor
-		EntityFactory.addContractorOperator(contractor1,
-				EntityFactory.makeOperator());
-
-		// typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor1);
-		// Now we should have 1 audit and 2 categories for the single operator
-		auditTypes = typeBuilder.calculate();
-
-		assertEquals(1, auditTypes.size()); // should get
-
+		contractor = EntityFactory.makeContractor();
+		operator = EntityFactory.makeOperator();
+		contractor.getOperatorAccounts().add(operator);
+		EntityFactory.addContractorOperator(contractor, operator);
 	}
 
 	@Test
-	public void testBuildAudits() {
-		// clear out old rules
-		typeRules.clear();
-		catRules.clear();
-
-		addTypeRules(AuditType.INTEGRITYMANAGEMENT, null);
-
-		// Include All categories by default
-		catRules.add(new AuditCategoryRule());
+	public void testAuditTypeBuilderCategoryBuildere() {
+		// set up audit type
+		AuditType pqfType = EntityFactory.makeAuditType(AuditType.PQF);
+		EntityFactory.addCategories(pqfType, 101, "PQF Category 1");
+		EntityFactory.addCategories(pqfType, 102, "PQF Category 2");
 		
-		abTypeRuleCache.initialize(typeRules);
-		abCatRuleCache.initialize(catRules);
-		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", abTypeRuleCache);
-		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", abCatRuleCache);
-		PicsTestUtil.forceSetPrivateField(auditBuilder, "auditPercentCalculator", abAuditPercentCalculatior);
+		// set up rules
+		addTypeRules((new RuleParameters()).setAuditType(pqfType));
+		for (AuditCategory category:pqfType.getCategories()) {
+			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setAuditCategory(category));
+		}
 		
-		ContractorAccount contractor = EntityFactory.makeContractor();
-		OperatorAccount operator = EntityFactory.makeOperator();
-		EntityFactory.addContractorOperator(contractor, operator);
-
-//		when(auditBuilder.).thenReturn(user.getId());
-//		when(em.find(AuditType.class, auditType.getId()).thenReturn(EntityFactory.makeAuditType(17));
-
-//		auditBuilder.buildAudits(contractor);
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
+		
+		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
+		assertEquals(1, auditTypes.size());
+		
+		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
+		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit,
+				contractor.getOperatorAccounts());
+		assertEquals(2, categories.size());
 	}
 
-	private void addTypeRules(int auditTypeID, OperatorAccount operator) {
+	
+	@Test
+	public void testBuildAudits_ReviewCompetency() {
+		addTypeRules((new RuleParameters())
+				.setAuditTypeId(AuditType.INTEGRITYMANAGEMENT));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+				.thenReturn(
+						EntityFactory
+								.makeAuditType(AuditType.INTEGRITYMANAGEMENT));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(1, contractor.getAudits().size());
+	}
+
+	private void addTypeRules(RuleParameters params) {
 		AuditTypeRule rule = new AuditTypeRule();
-		AuditType auditType = EntityFactory.makeAuditType(auditTypeID);
-		rule.setAuditType(auditType);
-		if (operator != null)
-			rule.setOperatorAccount(operator);
+		if (params != null) {
+			fillAuditRule(params, rule);
+			rule.setManuallyAdded(params.manuallyAdded);
+			rule.setDependentAuditStatus(params.dependentAuditStatus);
+			rule.setDependentAuditType(params.dependentAuditType);
+		}
+
 		typeRules.add(rule);
+		typeRuleCache.initialize(typeRules);
 	}
 
-	private void addCategoryRules() {
+	private void addCategoryRules(RuleParameters params) {
+		AuditCategoryRule rule = new AuditCategoryRule();
+		if (params != null) {
+			fillAuditRule(params, rule);
+			rule.setAuditCategory(params.auditCategory);
+			rule.setRootCategory(params.rootCategory);
+		}
+
+		catRules.add(rule);
+		catRuleCache.initialize(catRules);
+	}
+	
+	private void fillAuditRule(RuleParameters params, AuditRule rule) {
+		rule.setPriority(params.priority);
+		rule.setInclude(params.include);
+		if (params.auditTypeId != 0) {
+			rule.setAuditType(EntityFactory
+					.makeAuditType(params.auditTypeId));
+		} else {
+			rule.setAuditType(params.auditType);
+		}
+		rule.setSafetyRisk(params.safetyRisk);
+		rule.setProductRisk(params.productRisk);
+		rule.setOperatorAccount(params.operatorAccount);
+		rule.setContractorType(params.contractorType);
+		rule.setTag(params.tag);
+		rule.setTrade(params.trade);
+		rule.setQuestion(params.question);
+		rule.setQuestionAnswer(params.questionAnswer);
+		rule.setQuestionComparator(params.questionComparator);
+		rule.setSoleProprietor(params.soleProprietor);
+		rule.setAccountLevel(params.accountLevel);
+	}
+
+	public class RuleParameters {
+		protected int priority = 0;
+		protected boolean include = true;
+		public int auditTypeId = 0;
+		public AuditType auditType;
+		public LowMedHigh safetyRisk;
+		public LowMedHigh productRisk;
+		public OperatorAccount operatorAccount;
+		protected ContractorType contractorType;
+		protected OperatorTag tag;
+		protected Trade trade;
+		protected AuditQuestion question;
+		protected QuestionComparator questionComparator;
+		protected String questionAnswer;
+		protected Boolean soleProprietor;
+		protected AccountLevel accountLevel;
+		private AuditType dependentAuditType;
+		private AuditStatus dependentAuditStatus;
+		private boolean manuallyAdded = false;
+		public AuditCategory auditCategory;
+		public Boolean rootCategory;
+
+		public void setPriority(int priority) {
+			this.priority = priority;
+		}
+
+		public RuleParameters setInclude(boolean include) {
+			this.include = include;
+			return this;
+		}
+
+		public RuleParameters setAuditTypeId(int auditTypeId) {
+			this.auditTypeId = auditTypeId;
+			return this;
+		}
+
+		public RuleParameters setAuditType(AuditType auditType) {
+			this.auditType = auditType;
+			return this;
+		}
+
+		public RuleParameters setSafetyRisk(LowMedHigh safetyRisk) {
+			this.safetyRisk = safetyRisk;
+			return this;
+		}
+
+		public RuleParameters setProductRisk(LowMedHigh productRisk) {
+			this.productRisk = productRisk;
+			return this;
+		}
+
+		public RuleParameters setOperatorAccount(OperatorAccount operatorAccount) {
+			this.operatorAccount = operatorAccount;
+			return this;
+		}
+
+		public RuleParameters setContractorType(ContractorType contractorType) {
+			this.contractorType = contractorType;
+			return this;
+		}
+
+		public RuleParameters setTag(OperatorTag tag) {
+			this.tag = tag;
+			return this;
+		}
+
+		public RuleParameters setTrade(Trade trade) {
+			this.trade = trade;
+			return this;
+		}
+
+		public RuleParameters setQuestion(AuditQuestion question) {
+			this.question = question;
+			return this;
+		}
+
+		public RuleParameters setQuestionComparator(
+				QuestionComparator questionComparator) {
+			this.questionComparator = questionComparator;
+			return this;
+		}
+
+		public RuleParameters setQuestionAnswer(String questionAnswer) {
+			this.questionAnswer = questionAnswer;
+			return this;
+		}
+
+		public RuleParameters setSoleProprietor(Boolean soleProprietor) {
+			this.soleProprietor = soleProprietor;
+			return this;
+		}
+
+		public RuleParameters setAccountLevel(AccountLevel accountLevel) {
+			this.accountLevel = accountLevel;
+			return this;
+		}
+
+		public RuleParameters setAuditCategory(AuditCategory auditCategory) {
+			this.auditCategory = auditCategory;
+			return this;
+		}
+
+		public RuleParameters setRootCategory(Boolean rootCategory) {
+			this.rootCategory = rootCategory;
+			return this;
+		}
+
+		public RuleParameters setDependentAuditType(AuditType dependentAuditType) {
+			this.dependentAuditType = dependentAuditType;
+			return this;
+		}
+
+		public RuleParameters setDependentAuditStatus(AuditStatus dependentAuditStatus) {
+			this.dependentAuditStatus = dependentAuditStatus;
+			return this;
+		}
+
+		public RuleParameters setManuallyAdded(boolean manuallyAdded) {
+			this.manuallyAdded = manuallyAdded;
+			return this;
+		}
 
 	}
 }
