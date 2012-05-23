@@ -1368,7 +1368,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@ReportField(category = FieldCategory.Billing, filterType = FilterType.AccountLevel)
+	@ReportField(category = FieldCategory.Billing, filterType = FilterType.Enum)
 	public AccountLevel getAccountLevel() {
 		return accountLevel;
 	}

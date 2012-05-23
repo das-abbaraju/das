@@ -213,19 +213,19 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String download() throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
-		
+
 		buildSQL();
 
 		if (builder.getDefinition().getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
 
 			excelSheet.setData(rawData);
-			
+
 			excelSheet = builder.extractColumnsToExcel(excelSheet);
 
 			String filename = report.getName();
 			excelSheet.setName(filename);
-			
+
 			HSSFWorkbook workbook = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
 			filename += fileType;
@@ -237,7 +237,7 @@ public class ReportDynamic extends PicsActionSupport {
 			outstream.flush();
 			ServletActionContext.getResponse().flushBuffer();
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -468,7 +468,10 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private JSONObject getAutocompleteList() throws Exception {
 		ensureValidReport();
-		Field field = builder.getAvailableFields().get(fieldName);
+		builder.setReport(report);
+		builder.getSql();
+		
+		Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
 		validate(field);
 
 		return reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(), searchQuery,
@@ -477,7 +480,10 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private JSONObject getEnumList() throws Exception {
 		ensureValidReport();
-		Field field = builder.getAvailableFields().get(fieldName);
+		builder.setReport(report);
+		builder.getSql();
+		
+		Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
 		validate(field);
 
 		if (!field.getFieldClass().isEnum())
@@ -528,5 +534,21 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
 	}
 }
