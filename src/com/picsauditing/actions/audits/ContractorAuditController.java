@@ -15,7 +15,6 @@ import java.util.TreeSet;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.MenuComponent;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
@@ -613,10 +612,6 @@ public class ContractorAuditController extends AuditActionSupport {
 
 	public void setOperatorIds(Set<Integer> operatorIds) {
 		this.operatorIds = operatorIds;
-	}
-	
-	public Date parseDate(String auditDataAnswer) {
-		return DateBean.parseDate(auditDataAnswer);
 	}
 
 }

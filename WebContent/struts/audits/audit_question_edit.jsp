@@ -87,7 +87,7 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Date'">
-			<input type="text" name="auditData.answer" value="<s:date name="%{parseDate(#a.answer)}" format="%{getText('date.short')}" />" />
+			<s:textfield name="auditData.answer" value="%{#a.getAnswerInDate(getText('date.short'))}" cssClass="date text"/>
 			<span style="font-style: italic; font-size: 12px;"><s:text name="date.short" /></span>
 		</s:if>
 		
