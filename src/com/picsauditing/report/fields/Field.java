@@ -188,6 +188,10 @@ public class Field implements JSONAware {
 		return type;
 	}
 
+	public FilterType getFilterType() {
+		return filterType;
+	}
+
 	public void setType(ExtFieldType type) {
 		this.type = type;
 	}
@@ -254,5 +258,13 @@ public class Field implements JSONAware {
 
 	public Class<?> getFieldClass() {
 		return fieldClass;
+	}
+
+	public String getPreTranslation() {
+		return preTranslation;
+	}
+
+	public String getPostTranslation() {
+		return postTranslation;
 	}
 }

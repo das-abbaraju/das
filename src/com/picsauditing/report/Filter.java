@@ -16,6 +16,7 @@ public class Filter implements JSONable {
 	private String fieldName;
 	private QueryFilterOperator operator;
 	private String value;
+	private String valueNames;
 	private Field field;
 
 	@SuppressWarnings("unchecked")
@@ -132,5 +133,17 @@ public class Filter implements JSONable {
 
 	public void setField(Field field) {
 		this.field = field;
+	}
+
+	public void setValueNames(String valueNames) {
+		this.valueNames = valueNames;
+	}
+
+	public String getValueNames() {
+		return valueNames;
+	}
+
+	public boolean isHasTranslations() {
+		return field.getFilterType().isList();
 	}
 }

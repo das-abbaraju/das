@@ -361,7 +361,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
-	@ReportField(filterType = FilterType.AccountStatus)
+	@ReportField(filterType = FilterType.Enum, i18nKeyPrefix = "AccountStatus")
 	public AccountStatus getStatus() {
 		return status;
 	}
@@ -440,7 +440,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	 * @return
 	 */
 	@IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
-	@ReportField(filterType = FilterType.AccountType)
+	@ReportField(filterType = FilterType.List, i18nKeyPrefix = "Account", i18nKeySuffix = "type")
 	public String getType() {
 		return type;
 	}
