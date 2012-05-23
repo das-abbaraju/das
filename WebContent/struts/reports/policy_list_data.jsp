@@ -9,12 +9,18 @@
 
 <pics:permission perm="ContractorDetails">
 <s:if test="!filter.allowMailMerge">
-	<div class="right"><a 
+	<div class="right">
+		<s:if test="reports.addRows <= 40000" >
+		<a 
 		class="excel" 
 		<s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
 		href="javascript: download('ReportPolicyList');" 
 		title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
-		><s:text name="global.Download" /></a></div>
+		><s:text name="global.Download" /></a>
+		</s:if>
+		<selse><s:text name="ReportPolicyList.TooMany" /></selse>
+	</div>
+		
 </s:if>
 </pics:permission>
 
