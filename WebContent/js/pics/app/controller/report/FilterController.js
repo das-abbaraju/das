@@ -7,6 +7,9 @@ Ext.define('PICS.controller.report.FilterController', {
     }, {
         ref: 'filterOptions',
         selector: 'filteroptions #filterDetails'
+    }, {
+        ref: 'filterExpression',
+        selector: 'filteroptions textfield[name=filterexpression]'
     }],
 
     stores: [
@@ -26,6 +29,11 @@ Ext.define('PICS.controller.report.FilterController', {
                     PICS.app.fireEvent('refreshreport');
                 }
             },
+            'filteroptions button[action=update]': {
+                click: function () {
+                    this.applyFilterExpression();
+                }
+            },
             'filteroptions button[action=remove-filter]': {
                 click: this.removeFilter
             }
@@ -34,6 +42,18 @@ Ext.define('PICS.controller.report.FilterController', {
             refreshfilters: this.refreshFilters,
             scope: this
         });
+    },
+
+    applyFilterExpression: function () {
+        var report = this.getReportReportsStore().first();
+
+        var expression = this.getFilterExpression().value;
+
+        //michael, do something here with 'expression' or I will disintegrate you with my sorceress
+
+
+        report.set('filterExpression', expression);
+        PICS.app.fireEvent('refreshreport');
     },
 
     generateFilterPanels: function () {
