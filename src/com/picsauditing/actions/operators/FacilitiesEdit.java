@@ -41,6 +41,7 @@ import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WaitingOn;
+import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
@@ -59,6 +60,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private UserDAO userDAO;
 	@Autowired
 	private UserSwitchDAO userSwitchDAO;
+	@Autowired
+	private FacilitiesEditModel facilitiesEditModel;
 
 	private String createType;
 	private List<Integer> facilities;
@@ -340,9 +343,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			}
 		}
 
-		// Automatically add/update the PICS corporate accounts
-		addPicsConsortium();
+		facilitiesEditModel.addPicsGlobal(operator, permissions);
 
+		facilitiesEditModel.addPicsCountry(operator, permissions);
+		
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
@@ -720,65 +724,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		else {
 			parents.add(currentOperator.getParent());
 			findParentAccounts(currentOperator.getParent(), parents);
-		}
-	}
-
-	private void addPicsConsortium() {
-		boolean picsGlobal = false;
-		boolean picsCountrySpecific = false;
-
-		for (Facility f : operator.getCorporateFacilities()) {
-			if (f.getCorporate().getId() == 4)
-				picsGlobal = true;
-
-			if ((operator.getCountry().getIsoCode().equals("US") && f.getCorporate().getId() == 5)
-					|| (operator.getCountry().getIsoCode().equals("CA") && f.getCorporate().getId() == 6)
-					|| (operator.getCountry().getIsoCode().equals("AE") && f.getCorporate().getId() == 7))
-				picsCountrySpecific = true;
-		}
-
-		if (!picsGlobal) {
-			Facility f = new Facility();
-			f.setCorporate(new OperatorAccount());
-			f.getCorporate().setId(4);
-			f.setAuditColumns(permissions);
-			f.setOperator(operator);
-			facilitiesDAO.save(f);
-			operator.getCorporateFacilities().add(f);
-		}
-
-		if (!picsCountrySpecific) {
-			// Clear out other country specific PICS Consortium accounts
-			Iterator<Facility> iterator = operator.getCorporateFacilities().iterator();
-			while (iterator.hasNext()) {
-				Facility f = iterator.next();
-
-				if (f.getCorporate().getId() >= 5 && f.getCorporate().getId() <= 7) {
-					if ((operator.getCountry().getIsoCode().equals("US") && f.getCorporate().getId() != 5)
-							|| (operator.getCountry().getIsoCode().equals("CA") && f.getCorporate().getId() != 6)
-							|| (operator.getCountry().getIsoCode().equals("AE") && f.getCorporate().getId() != 7)) {
-						iterator.remove();
-						facilitiesDAO.remove(f);
-					}
-				}
-			}
-
-			Facility f = new Facility();
-			f.setCorporate(new OperatorAccount());
-			f.setAuditColumns(permissions);
-			f.setOperator(operator);
-
-			if (operator.getCountry().getIsoCode().equals("US"))
-				f.getCorporate().setId(5);
-			else if (operator.getCountry().getIsoCode().equals("CA"))
-				f.getCorporate().setId(6);
-			else if (operator.getCountry().getIsoCode().equals("AE"))
-				f.getCorporate().setId(7);
-
-			if (f.getCorporate().getId() > 0) {
-				facilitiesDAO.save(f);
-				operator.getCorporateFacilities().add(f);
-			}
 		}
 	}
 

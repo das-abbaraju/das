@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
@@ -399,6 +400,8 @@ public class OperatorAccount extends Account {
 	}
 
 	@OneToMany(mappedBy = "operator")
+	@Cascade({org.hibernate.annotations.CascadeType.ALL,
+		org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
