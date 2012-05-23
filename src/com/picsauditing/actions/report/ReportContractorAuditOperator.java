@@ -190,7 +190,7 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			List<AuditData> answers = new ArrayList<AuditData>();
 			for(int i=0; i<theseAudits.size(); i +=1000) {
 				List<Integer> ids = new Vector<Integer>();
-				ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size())?i+100:theseAudits.size() -1));
+				ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size())?i+1000:theseAudits.size() -1));
 				answers.addAll(auditDataDao.findPolicyData(ids));
 			}
 
