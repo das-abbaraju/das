@@ -538,6 +538,7 @@
 	                                    <s:text name="JS.Filters.status.None" />
 	                                </s:else>
 	                            </pics:permission>
+	                            <s:property value="%{getText('date.short')}" />
 	                        </li>
 	                    </ol>
 					</fieldset>
