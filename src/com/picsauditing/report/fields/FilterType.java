@@ -10,7 +10,6 @@ public enum FilterType {
 	 * 
 	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.SortTypes
 	 */
-	private int reportID = 0;
 	private String sortType = null;
 	/**
 	 * @see http://docs.sencha.com/ext-js/4-0/#!/api/Ext.data.Types
@@ -25,10 +24,6 @@ public enum FilterType {
 	private FilterType(ExtFieldType type) {
 		fieldType = type;
 	}
-	
-	private FilterType(int reportID) {
-		this.reportID = reportID;
-	}
 
 	public String getSortType() {
 		return sortType;
@@ -40,9 +35,5 @@ public enum FilterType {
 	
 	public boolean isList() {
 		return this == List;
-	}
-
-	public int getReportID() {
-		return reportID;
 	}
 }
