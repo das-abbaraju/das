@@ -248,9 +248,6 @@
 									<s:text name="UsersManage.SwitchToThisUserStable" />
 								</a>
 							</pics:toggle>
-							<pics:toggleElse>
-								else
-							</pics:toggleElse>
 						</s:if>
 						
 					</pics:permission>
