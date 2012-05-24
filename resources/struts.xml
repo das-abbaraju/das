@@ -1332,6 +1332,10 @@
 			class="com.picsauditing.actions.chart.OperatorFlagHistory">
 		</action>
 
+		<action name="OperatorFlagYearHistoryAjax"
+			class="com.picsauditing.actions.chart.OperatorFlagYearHistory">
+		</action>
+
 		<action name="ChartXMLFlagCategoryCount"
 			class="com.picsauditing.actions.chart.ChartFlagCategoryCount">
 		</action>

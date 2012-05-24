@@ -444,8 +444,7 @@ public class DateBean {
 	 * @return
 	 */
 	public static Date getFirstofMonth(Date startDate, int months) {
-		if (startDate == null || months == 0)
-			return null;
+		if (startDate == null) return null;
 
 		Calendar calendar = initializeCalendarWithOffset(startDate, Calendar.MONTH, months);
 		calendar.set(Calendar.DATE, 1);

@@ -118,12 +118,6 @@ public class DateBeanTest  {
 	}
 	
 	@Test
-	public void testGetFirstOfMonthWithZeroMonths() {
-		Date result = DateBean.getFirstofMonth(new Date(), 0);
-		assertNull(result);
-	}
-	
-	@Test
 	public void testAddDaysWithNullDate() {
 		Date result = DateBean.addDays(null, 6);
 		assertNull(result);
@@ -265,6 +259,19 @@ public class DateBeanTest  {
 		assertEquals(1, result.get(Calendar.DATE));
 		assertEquals(Calendar.JULY, result.get(Calendar.MONTH));
 		assertEquals(2011, result.get(Calendar.YEAR));
+	}
+	
+	@Test
+	public void testGetFirstofMonth_ThisMonth() {
+		Calendar now = Calendar.getInstance();
+		Calendar result = Calendar.getInstance();
+		
+		Date date = DateBean.getFirstofMonth(now.getTime(), 0);
+		result.setTime(date);
+		
+		assertEquals(1, result.get(Calendar.DATE));
+		assertEquals(now.get(Calendar.MONTH), result.get(Calendar.MONTH));
+		assertEquals(now.get(Calendar.YEAR), result.get(Calendar.YEAR));
 	}
 	
 	@Test

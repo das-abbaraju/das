@@ -1,6 +1,9 @@
 package com.picsauditing;
 
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 
@@ -41,5 +44,32 @@ public abstract class PicsTest {
 	protected void autowireEMInjectedDAOs(Object objectToAutowire) 
 			throws InstantiationException,IllegalAccessException {
 		testUtil.autowireEMInjectedDAOs(objectToAutowire, em);
+	}
+	
+	protected void mockI18nCacheForEnglishMonthNames() {
+		when(i18nCache.hasKey("Month.Jan", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Jan", Locale.ENGLISH, (Object[])null)).thenReturn("January");
+		when(i18nCache.hasKey("Month.Feb", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Feb", Locale.ENGLISH, (Object[])null)).thenReturn("February");
+		when(i18nCache.hasKey("Month.Mar", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Mar", Locale.ENGLISH, (Object[])null)).thenReturn("March");
+		when(i18nCache.hasKey("Month.Apr", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Apr", Locale.ENGLISH, (Object[])null)).thenReturn("April");
+		when(i18nCache.hasKey("Month.May", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.May", Locale.ENGLISH, (Object[])null)).thenReturn("May");
+		when(i18nCache.hasKey("Month.Jun", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Jun", Locale.ENGLISH, (Object[])null)).thenReturn("June");
+		when(i18nCache.hasKey("Month.Jul", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Jul", Locale.ENGLISH, (Object[])null)).thenReturn("July");
+		when(i18nCache.hasKey("Month.Aug", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Aug", Locale.ENGLISH, (Object[])null)).thenReturn("August");
+		when(i18nCache.hasKey("Month.Sep", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Sep", Locale.ENGLISH, (Object[])null)).thenReturn("September");
+		when(i18nCache.hasKey("Month.Oct", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Oct", Locale.ENGLISH, (Object[])null)).thenReturn("October");
+		when(i18nCache.hasKey("Month.Nov", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Nov", Locale.ENGLISH, (Object[])null)).thenReturn("November");
+		when(i18nCache.hasKey("Month.Dec", Locale.ENGLISH)).thenReturn(Boolean.TRUE);
+		when(i18nCache.getText("Month.Dec", Locale.ENGLISH, (Object[])null)).thenReturn("December");
 	}
 }
