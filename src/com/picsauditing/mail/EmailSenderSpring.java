@@ -30,8 +30,7 @@ public class EmailSenderSpring {
 
 		GridSender gridSender;
 		if (!Strings.isEmpty(email.getFromPassword())) {
-			// Use a specific email address like
-			// tallred@picsauditing.com
+			// TODO We don't use Gmail anymore. SendGrid only accepts a single username (info@pics) So we should remove this section
 			// We need the password to correctly authenticate with GMail
 			gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
 		} else {
