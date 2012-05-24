@@ -8,17 +8,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.dao.StateDAO;
-import com.picsauditing.jpa.entities.Autocompleteable;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.util.Strings;
 
-public class StateAutocompleteService extends AutocompleteService<Autocompleteable> {
+public class StateAutocompleteService extends AutocompleteService<State> {
 	@Autowired
 	protected StateDAO stateDAO;
 
 	@Override
-	protected Collection<Autocompleteable> getItems(String q) {
-		Collection<Autocompleteable> result = new HashSet<Autocompleteable>();
+	protected Collection<State> getItems(String q) {
+		Collection<State> result = new HashSet<State>();
 		if (!Strings.isEmpty(q)) {
 			if (q.length() == 2) {
 				// search both iso and translated fields for the 2 letter

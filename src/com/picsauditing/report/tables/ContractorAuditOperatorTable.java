@@ -18,9 +18,8 @@ public class ContractorAuditOperatorTable extends BaseTable {
 
 	public void addFields() {
 		addField(prefix + "ID", alias + ".id", FilterType.Integer);
-		addField(prefix + "Status", alias + ".status", FilterType.AuditStatus);
-		addField(prefix + "StatusChangedDate", alias + ".statusChangedDate", FilterType.Date);
-		addField(prefix + "PercentComplete", alias + ".percentComplete", FilterType.Integer);
+
+		addFields(com.picsauditing.jpa.entities.ContractorAuditOperator.class);
 	}
 
 	public void addJoins() {

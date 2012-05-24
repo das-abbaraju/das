@@ -28,10 +28,11 @@ Ext.define('PICS.view.report.FilterOptions', {
             items: [{
                 xtype: 'textfield',
                 margin: '0 5 0 0',
+                name: 'filterexpression',
                 size: 30
             }, {
                 xtype: 'button',
-                action: 'Update',
+                action: 'update',
                 text: 'Update'
             }],
             layout: 'hbox',

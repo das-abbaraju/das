@@ -25,7 +25,6 @@ import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
-
 	private BaseModel baseModel;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();
@@ -37,7 +36,7 @@ public class SqlBuilder {
 
 		if (baseModel == null)
 			return sql;
-		
+
 		setFrom();
 		addAvailableFields(baseModel.getPrimaryTable());
 
@@ -56,7 +55,7 @@ public class SqlBuilder {
 			String alias = SelectSQL.getAlias(field);
 			excelSheet.addColumn(new ExcelColumn(alias, alias));
 		}
-		
+
 		return excelSheet;
 	}
 
@@ -102,7 +101,8 @@ public class SqlBuilder {
 			Field field = getFieldFromFieldName(column.getFieldName());
 			if (field != null) {
 				if (column.getFunction() == null || !column.getFunction().isAggregate()) {
-					// For example: Don't add in accountID automatically if contractorName uses an aggregation like COUNT
+					// For example: Don't add in accountID automatically if
+					// contractorName uses an aggregation like COUNT
 					dependentFields.addAll(field.getDependentFields());
 				}
 
@@ -211,9 +211,10 @@ public class SqlBuilder {
 
 		Set<Filter> whereFilters = new HashSet<Filter>();
 		Set<Filter> havingFilters = new HashSet<Filter>();
-		
+
 		for (Filter filter : definition.getFilters()) {
-			// TODO we might want to verify the filter is properly defined before including it
+			// TODO we might want to verify the filter is properly defined
+			// before including it
 			// if (filter.isFullyDefined()) { }
 			if (isAggregate(filter.getFieldName())) {
 				havingFilters.add(filter);
@@ -303,29 +304,30 @@ public class SqlBuilder {
 		ExtFieldType fieldType = getFieldFromFieldName(column.getFieldName()).getType();
 		if (fieldType.equals(ExtFieldType.Date) && column.getFunction() == null) {
 			QueryDateParameter parameter = new QueryDateParameter(value);
-			
-			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()),"");
+
+			value = StringUtils.defaultIfEmpty(DateBean.toDBFormat(parameter.getTime()), "");
 		}
 
 		switch (filter.getOperator()) {
-			case NotBeginsWith:
-    		case BeginsWith:
-    			return "'" + value + "%'";
-    		case NotEndsWith:
-    		case EndsWith:
-    			return "'%" + value + "'";
-    		case NotContains:
-    		case Contains:
-    			return "'%" + value + "%'";
-    		case NotIn:
-    		case In:
-    			// TODO this only supports numbers, no strings or dates, change it so that it does support more. 
-    			return "(" + value + ")";
-    		case NotEmpty:
-    		case Empty:
-    			// TODO
+		case NotBeginsWith:
+		case BeginsWith:
+			return "'" + value + "%'";
+		case NotEndsWith:
+		case EndsWith:
+			return "'%" + value + "'";
+		case NotContains:
+		case Contains:
+			return "'%" + value + "%'";
+		case NotIn:
+		case In:
+			// TODO this only supports numbers, no strings or dates, change it
+			// so that it does support more.
+			return "(" + value + ")";
+		case NotEmpty:
+		case Empty:
+			// TODO
 		}
-		
+
 		return "'" + value + "'";
 	}
 

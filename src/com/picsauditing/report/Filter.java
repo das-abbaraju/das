@@ -16,6 +16,7 @@ public class Filter implements JSONable {
 	private String fieldName;
 	private QueryFilterOperator operator;
 	private String value;
+	private String valueNames;
 	private Field field;
 
 	@SuppressWarnings("unchecked")
@@ -48,7 +49,7 @@ public class Filter implements JSONable {
 	}
 
 	private void parseOperator(JSONObject json) {
-		String object = (String)json.get("operator");
+		String object = (String) json.get("operator");
 		if (Strings.isEmpty(object)) {
 			operator = QueryFilterOperator.Equals;
 			return;
@@ -57,7 +58,10 @@ public class Filter implements JSONable {
 		this.operator = QueryFilterOperator.valueOf(object.toString());
 	}
 
-	/*DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String), AccountType, AccountLevel, Trades, Country, StateProvince */
+	/*
+	 * DateTime(ExtFieldType.Date), AccountName(ExtFieldType.String),
+	 * AccountType, AccountLevel, Trades, Country, StateProvince
+	 */
 
 	@SuppressWarnings("unchecked")
 	public static JSONArray getAccountStatusList() {
@@ -132,5 +136,17 @@ public class Filter implements JSONable {
 
 	public void setField(Field field) {
 		this.field = field;
+	}
+
+	public void setValueNames(String valueNames) {
+		this.valueNames = valueNames;
+	}
+
+	public String getValueNames() {
+		return valueNames;
+	}
+
+	public boolean isHasTranslations() {
+		return field.getFilterType().isAutocomplete() || field.getFilterType().isEnum();
 	}
 }

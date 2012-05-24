@@ -13,13 +13,13 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
-public class CountryAutocompleteService extends AutocompleteService<Autocompleteable> {
+public class CountryAutocompleteService extends AutocompleteService<Country> {
 	@Autowired
 	protected CountryDAO countryDAO;
 
 	@Override
-	protected Collection<Autocompleteable> getItems(String q) {
-		Collection<Autocompleteable> result = new HashSet<Autocompleteable>();
+	protected Collection<Country> getItems(String q) {
+		Collection<Country> result = new HashSet<Country>();
 		if (!Strings.isEmpty(q)) {
 			if (q.length() == 2) {
 				// search both iso and translated fields for the 2 letter

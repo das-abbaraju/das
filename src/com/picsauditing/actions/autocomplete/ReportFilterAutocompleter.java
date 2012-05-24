@@ -33,27 +33,27 @@ public final class ReportFilterAutocompleter {
 	public JSONObject getFilterAutocompleteResultsJSON(AutocompleteType autocompleteFilter, String searchQuery, Permissions permissions) {
 		switch (autocompleteFilter) {
 		case Country:
-			return countryAutocompleteService.json(searchQuery);
+			return countryAutocompleteService.tokenJson(searchQuery);
 		case State:
-			return stateAutocompleteService.json(searchQuery);
+			return stateAutocompleteService.tokenJson(searchQuery);
 		case Trade:
-			return tradeAutocompleteService.json(searchQuery);
+			return tradeAutocompleteService.tokenJson(searchQuery);
 		case ClientSite:
-			return clientSiteAutocompleteService.json(searchQuery, permissions);
+			return clientSiteAutocompleteService.tokenJson(searchQuery, permissions);
 		case ClientSiteTag:
-			return clientSiteTagAutocompleteService.json(searchQuery);
+			return clientSiteTagAutocompleteService.tokenJson(searchQuery);
 		case Contractor:
-			return contractorAutocompleteService.json(searchQuery);
+			return contractorAutocompleteService.tokenJson(searchQuery);
 		case AuditQuestion:
-			return auditQuestionAutocompleteService.json(searchQuery);
+			return auditQuestionAutocompleteService.tokenJson(searchQuery);
 		case AuditType:
-			return auditTypeAutocompleteService.json(searchQuery);
+			return auditTypeAutocompleteService.tokenJson(searchQuery);
 		case AuditCategory:
-			return auditCategoryAuditcompleteService.json(searchQuery);
+			return auditCategoryAuditcompleteService.tokenJson(searchQuery);
 		case OptionGroup:
-			return optionGroupAutocompleteService.json(searchQuery);
+			return optionGroupAutocompleteService.tokenJson(searchQuery);
 		case OptionValue:
-			return optionValueAutocompleteService.json(searchQuery);
+			return optionValueAutocompleteService.tokenJson(searchQuery);
 		default:
 			return new JSONObject();
 		}

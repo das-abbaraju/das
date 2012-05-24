@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
@@ -29,6 +30,7 @@ import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.Definition;
+import com.picsauditing.report.Filter;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
@@ -55,8 +57,8 @@ public class ReportDynamic extends PicsActionSupport {
 	private SqlBuilder builder = new SqlBuilder();
 	private String fileType = ".xls";
 
-	private String fieldName;
-	private String searchQuery;
+	private String fieldName = "";
+	private String searchQuery = "";
 
 	public String find() {
 		try {
@@ -188,6 +190,10 @@ public class ReportDynamic extends PicsActionSupport {
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 		builder.addPaging(page);
+
+		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
+			translateFilterValueNames(builder.getDefinition().getFilters());
+		}
 	}
 
 	private QueryData queryData() throws SQLException {
@@ -213,19 +219,19 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String download() throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
-		
+
 		buildSQL();
 
 		if (builder.getDefinition().getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
 
 			excelSheet.setData(rawData);
-			
+
 			excelSheet = builder.extractColumnsToExcel(excelSheet);
 
 			String filename = report.getName();
 			excelSheet.setName(filename);
-			
+
 			HSSFWorkbook workbook = excelSheet.buildWorkbook(permissions.hasPermission(OpPerms.DevelopmentEnvironment));
 
 			filename += fileType;
@@ -237,7 +243,7 @@ public class ReportDynamic extends PicsActionSupport {
 			outstream.flush();
 			ServletActionContext.getResponse().flushBuffer();
 		}
-		
+
 		return SUCCESS;
 	}
 
@@ -453,10 +459,20 @@ public class ReportDynamic extends PicsActionSupport {
 			if (Strings.isEmpty(fieldName))
 				throw new Exception("Please pass a fieldName when calling list");
 
-			if (Strings.isEmpty(searchQuery)) {
-				json = getEnumList();
+			ensureValidReport();
+			builder.setReport(report);
+			builder.getSql();
+
+			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
+			validate(field);
+
+			if (field.getFilterType().isEnum()) {
+				json = renderEnumFieldAsJson(field);
+			} else if (field.getFilterType().isAutocomplete()) {
+				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
+						searchQuery, permissions);
 			} else {
-				json = getAutocompleteList();
+				throw new Exception(field.getFilterType() + " not supported by list function.");
 			}
 
 			json.put("success", true);
@@ -464,26 +480,6 @@ public class ReportDynamic extends PicsActionSupport {
 			jsonException(e);
 		}
 		return JSON;
-	}
-
-	private JSONObject getAutocompleteList() throws Exception {
-		ensureValidReport();
-		Field field = builder.getAvailableFields().get(fieldName);
-		validate(field);
-
-		return reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(), searchQuery,
-				permissions);
-	}
-
-	private JSONObject getEnumList() throws Exception {
-		ensureValidReport();
-		Field field = builder.getAvailableFields().get(fieldName);
-		validate(field);
-
-		if (!field.getFieldClass().isEnum())
-			throw new Exception(field.getName() + " is not an enum and cannot be displayed as an enum list.");
-
-		return renderEnumFieldAsJson(field);
 	}
 
 	private JSONObject renderEnumFieldAsJson(Field field) {
@@ -504,6 +500,26 @@ public class ReportDynamic extends PicsActionSupport {
 	private void validate(Field field) throws Exception {
 		if (field == null)
 			throw new Exception("Available field undefined");
+	}
+
+	private void translateFilterValueNames(List<Filter> filters) {
+		for (Filter filter : filters) {
+			if (filter.isHasTranslations()) {
+				if (Strings.isEmpty(filter.getValue()))
+					return;
+
+				String[] values = filter.getValue().split(",");
+				String[] translationValueNameArray = new String[values.length];
+				for (int i = 0; i < values.length; i++) {
+					String translationKey = filter.getField().getPreTranslation() + values[i]
+							+ filter.getField().getPostTranslation();
+					translationValueNameArray[i] = getText(translationKey);
+				}
+
+				String translatedValueNames = StringUtils.join(translationValueNameArray, ",");
+				filter.setValueNames(translatedValueNames);
+			}
+		}
 	}
 
 	public Report getReport() {
@@ -528,5 +544,21 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
 	}
 }
