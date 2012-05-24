@@ -18,8 +18,8 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
@@ -248,6 +248,7 @@ public class I18nCache implements Serializable {
 				if (insert != null) {
 					db.executeInsert(insert);
 				}
+				//basicDao.save(newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
@@ -285,10 +286,10 @@ public class I18nCache implements Serializable {
 				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d, %d)";
 
 		return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
-				translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
+				Strings.escapeQuotes(translationToinsert.getValue()), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
 				translationToinsert.isContentDriven() ? 1 : 0, translationToinsert.isApplicable() ? 1 : 0);
 	}
-
+	
 	private String buildUpdateStatement(AppTranslation translationToUpdate) {
 		String setClause = "SET msgValue = '%s', updateDate = NOW()";
 
