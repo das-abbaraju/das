@@ -72,7 +72,7 @@ public class AuditBuilderNewTest {
 		when(auditData.getAnswer()).thenReturn("Yes");
 		Whitebox.setInternalState(auditBuilder, "auditDataDAO", auditDataDAO);
 		
-		boolean isValid = 
+		Boolean isValid = 
 				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
 		
 		assertTrue(isValid);
@@ -90,7 +90,7 @@ public class AuditBuilderNewTest {
 		when(auditData.getAnswer()).thenReturn("No");
 		Whitebox.setInternalState(auditBuilder, "auditDataDAO", auditDataDAO);
 		
-		boolean isValid = 
+		Boolean isValid = 
 				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
 		
 		assertFalse(isValid);
@@ -107,7 +107,7 @@ public class AuditBuilderNewTest {
 			.thenReturn(null);
 		Whitebox.setInternalState(auditBuilder, "auditDataDAO", auditDataDAO);
 		
-		boolean isValid = 
+		Boolean isValid = 
 				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
 		
 		assertTrue(isValid);
@@ -119,7 +119,7 @@ public class AuditBuilderNewTest {
 		when(conAudit.getAuditType()).thenReturn(auditType);
 		when(conAudit.isExpired()).thenReturn(true);
 		
-		boolean isValid = 
+		Boolean isValid = 
 				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
 		
 		assertFalse(isValid);
@@ -130,7 +130,7 @@ public class AuditBuilderNewTest {
 		when(auditType.getId()).thenReturn(AuditType.PQF);
 		when(conAudit.getAuditType()).thenReturn(auditType);
 		
-		boolean isValid = 
+		Boolean isValid = 
 				Whitebox.invokeMethod(auditBuilder, "isValidCorAudit", conAudit);
 		
 		assertFalse(isValid);
