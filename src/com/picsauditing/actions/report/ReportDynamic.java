@@ -57,8 +57,8 @@ public class ReportDynamic extends PicsActionSupport {
 	private SqlBuilder builder = new SqlBuilder();
 	private String fileType = ".xls";
 
-	private String fieldName;
-	private String searchQuery;
+	private String fieldName = "";
+	private String searchQuery = "";
 
 	@Override
 	public String execute() throws Exception {
@@ -550,5 +550,21 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public void setFileType(String fileType) {
 		this.fileType = fileType;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
 	}
 }
