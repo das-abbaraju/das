@@ -22,30 +22,30 @@
 		<li><label><s:text name ="Contact.OfficeLocation" />: </label>
 				17701 Cowan Suite 140, Irvine, CA 92614
 		</li>
-		<li><label><s:text name="Contact.phone" />:</label><s:text name="PicsMainPhone" /></li>
+		<li><label><s:text name="User.phone" />:</label><s:text name="PicsMainPhone" /></li>
 		<li><label><s:text name="Contact.tollfree" />:</label><s:text name="PicsTollFreePhone" /></li>
-		<li><label><s:text name="Contact.fax" />:</label><s:text name="PicsFax" /></li>
-		<li><label><s:text name="Contact.email" />:</label>info@picsauditing.com</li>
+		<li><label><s:text name="User.fax" />:</label><s:text name="PicsFax" /></li>
+		<li><label><s:text name="User.email" />:</label>info@picsauditing.com</li>
 	</ol>
 	</fieldset>
 	<s:if test="permissions.loggedIn && !permissions.picsEmployee">
 		<fieldset class="form">
 			<s:if test="permissions.contractor">
-				<h2 class="formLegend"><s:text name="Contact.CSR" /></h2>
+				<h2 class="formLegend"><s:text name="Report.Category.CSR" /></h2>
 				<ol>
-					<li><label><s:text name="Contact.name" />:</label><s:property value="contractorAccount.auditor.name"/></li>
-					<li><label><s:text name="Contact.phone" />:</label><s:property value="contractorAccount.auditor.phone"/></li>
-					<li><label><s:text name="Contact.fax" />:</label><s:property value="contractorAccount.auditor.fax"/></li>
-					<li><label><s:text name="Contact.email" />:</label><s:property value="contractorAccount.auditor.email"/></li>
+					<li><label><s:text name="User.name" />:</label><s:property value="contractorAccount.auditor.name"/></li>
+					<li><label><s:text name="User.phone" />:</label><s:property value="contractorAccount.auditor.phone"/></li>
+					<li><label><s:text name="User.fax" />:</label><s:property value="contractorAccount.auditor.fax"/></li>
+					<li><label><s:text name="User.email" />:</label><s:property value="contractorAccount.auditor.email"/></li>
 				</ol>
 			</s:if>
 			<s:elseif test="permissions.operatorCorporate">
 				<h2 class="formLegend"><s:text name="Contact.AccountRep" /></h2>
 				<ol>
-					<li><label><s:text name="Contact.name" />:</label><s:property value="accountRepUser.name"/></li>
-					<li><label><s:text name="Contact.phone" />:</label><s:property value="accountRepUser.phone"/></li>
-					<li><label><s:text name="Contact.fax" />:</label><s:property value="accountRepUser.fax"/></li>
-					<li><label><s:text name="Contact.email" />:</label><s:property value="accountRepUser.email"/></li>
+					<li><label><s:text name="User.name" />:</label><s:property value="accountRepUser.name"/></li>
+					<li><label><s:text name="User.phone" />:</label><s:property value="accountRepUser.phone"/></li>
+					<li><label><s:text name="User.fax" />:</label><s:property value="accountRepUser.fax"/></li>
+					<li><label><s:text name="User.email" />:</label><s:property value="accountRepUser.email"/></li>
 				</ol>
 			</s:elseif>	
 		</fieldset>
