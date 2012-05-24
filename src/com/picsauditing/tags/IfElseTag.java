@@ -1,39 +1,21 @@
 package com.picsauditing.tags;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import org.apache.struts2.components.Component;
+import org.apache.struts2.components.Else;
+import org.apache.struts2.views.jsp.ComponentTagSupport;
+
+import com.opensymphony.xwork2.util.ValueStack;
 
 /**
  * The else part of an if tag.
  */
-@SuppressWarnings("serial")
-public class IfElseTag extends BodyTagSupport {
-	public int doStartTag() throws JspTagException {
-		IfTag parent = (IfTag) findAncestorWithClass(this, IfTag.class);
-		if (parent == null) {
-			throw new JspTagException("else not inside if");
-		} else if (!parent.hasCondition()) {
-			String warning = "condition tag must come before else tag";
-			throw new JspTagException(warning);
-		}
-		return (EVAL_BODY_TAG);
-	}
+public class IfElseTag extends ComponentTagSupport {
+	private static final long serialVersionUID = 8166807953193406785L;
 
-	public int doAfterBody() {
-		IfTag parent = (IfTag) findAncestorWithClass(this, IfTag.class);
-		if (!parent.getCondition()) {
-			try {
-				BodyContent body = getBodyContent();
-				JspWriter out = body.getEnclosingWriter();
-				out.print(body.getString());
-			} catch (IOException ioe) {
-				System.out.println("Error in IfElseTag: " + ioe);
-			}
-		}
-		return (SKIP_BODY);
-	}
+    public Component getBean(ValueStack stack, HttpServletRequest req, HttpServletResponse res) {
+        return new Else(stack);
+    }
 }

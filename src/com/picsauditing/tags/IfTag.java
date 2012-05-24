@@ -1,36 +1,55 @@
 package com.picsauditing.tags;
 
-import javax.servlet.jsp.tagext.TagSupport;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.math.NumberUtils;
+import org.apache.struts2.components.Component;
+import org.apache.struts2.components.If;
+import org.apache.struts2.views.jsp.ComponentTagSupport;
+
+import com.opensymphony.xwork2.util.ValueStack;
+import com.picsauditing.access.BetaPool;
+import com.picsauditing.access.Permissions;
 
 /**
  * A tag that acts like an if/then/else.
  */
-@SuppressWarnings("serial")
-public class IfTag extends TagSupport {
-	private boolean condition;
-	private boolean hasCondition = false;
 
-	public void setCondition(boolean condition) {
-		this.condition = condition;
-		hasCondition = true;
+public class IfTag extends ComponentTagSupport {
+	private static final long serialVersionUID = 4448870162549923833L;
+	private String name = null;
+
+	public Component getBean(ValueStack stack, HttpServletRequest req, HttpServletResponse res) {
+		return new If(stack);
 	}
 
-	public boolean getCondition() {
-		return (condition);
+	protected void populateParams() {
+		((If) getComponent()).setTest(isToggle(name) + "");
 	}
 
-	public void setHasCondition(boolean flag) {
-		this.hasCondition = flag;
+	private boolean isToggle(String name) {
+		HttpSession session = pageContext.getSession();
+		Permissions permissions = (Permissions) session.getAttribute("permissions");
+
+		Map<String, String> toggles = permissions.getToggles();
+
+		if (toggles.containsKey("Toggle." + name)) {
+			BetaPool betaPool = BetaPool.getBetaPoolByBetaLevel(NumberUtils.toInt(toggles.get("Toggle." + name), 0));
+			return BetaPool.isUserBetaTester(permissions, betaPool);
+		} else
+			return false;
 	}
 
-	/** Has the condition field been explicitly set? */
-
-	public boolean hasCondition() {
-		return (hasCondition);
+	public String getName() {
+		return name;
 	}
 
-	public int doStartTag() {
-		return (EVAL_BODY_INCLUDE);
+	public void setName(String name) {
+		this.name = name;
 	}
+
 }
-

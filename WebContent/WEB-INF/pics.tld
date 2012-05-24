@@ -40,35 +40,24 @@
 		</attribute>
 	</tag>	
 	<tag>
-		<name>if</name>
+		<name>toggle</name>
 		<tagclass>com.picsauditing.tags.IfTag</tagclass>
 		<info>if/condition/then/else tag.</info>
 		<bodycontent>JSP</bodycontent>
-	</tag>
-
-	<tag>
-		<name>condition</name>
-		<tagclass>com.picsauditing.tags.IfConditionTag</tagclass>
-		<info>condition part of if/condition/then/else tag.</info>		
 		<attribute>
 			<description>name of the toggle</description>
-			<name>toggleName</name>
+			<name>name</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 	<tag>
-		<name>then</name>
-		<tagclass>com.picsauditing.tags.IfThenTag</tagclass>
-		<info>then part of if/condition/then/else tag.</info>
-		<bodycontent>JSP</bodycontent>
-	</tag>
-
-	<tag>
-		<name>else</name>
+		<name>toggleElse</name>
 		<tagclass>com.picsauditing.tags.IfElseTag</tagclass>
 		<info>else part of if/condition/then/else tag.</info>
 		<bodycontent>JSP</bodycontent>
+		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 	<tag>
 		<description>Prints a link to the help center at help.picsauditing.com</description>
