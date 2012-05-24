@@ -60,6 +60,12 @@ public class ReportDynamic extends PicsActionSupport {
 	private String fieldName = "";
 	private String searchQuery = "";
 
+	@Override
+	public String execute() throws Exception {
+		// The report is loaded by a JavaScript request
+		return SUCCESS;
+	}
+
 	public String find() {
 		try {
 			ensureValidReport();

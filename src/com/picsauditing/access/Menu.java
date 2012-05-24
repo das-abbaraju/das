@@ -8,27 +8,18 @@ import com.picsauditing.jpa.entities.Report;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
+
+	// Why is this part of Menu.java?
 	private ContractorAccount contractor = null;
 
 	public String execute() throws Exception {
 		loadPermissions();
 
-		MenuBuilder builder = new MenuBuilder();
-		if (!permissions.isLoggedIn()) {
-			builder.buildNotLoggedIn();
-		} else if (permissions.isContractor()) {
-			builder.buildContractorMenu(permissions);
-		} else if (permissions.isAssessment()) {
-			builder.buildAssessmentCenter();
-		} else {
-			@SuppressWarnings("unchecked")
-			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
-			builder.buildNew(permissions, reports, contractor);
-		}
+		List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
 
-		builder.handleSingleChildMenu();
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions, reports);
 
-		jsonArray = MenuWriter.exportMenuToExtJS(builder.getMenu());
+		jsonArray = MenuWriter.exportMenuToExtJS(menu);
 
 		return JSON_ARRAY;
 	}
@@ -40,5 +31,4 @@ public class Menu extends PicsActionSupport {
 	public void setContractor(ContractorAccount contractor) {
 		this.contractor = contractor;
 	}
-
 }

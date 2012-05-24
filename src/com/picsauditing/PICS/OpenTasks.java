@@ -24,7 +24,7 @@ import com.picsauditing.util.LocaleController;
 
 @SuppressWarnings("serial")
 public class OpenTasks extends TranslationActionSupport {
-	
+
 	@Autowired
 	protected ContractorAuditDAO contractorAuditDao;
 
@@ -241,8 +241,8 @@ public class OpenTasks extends TranslationActionSupport {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 						&& !conAudit.getAuditType().isCorIecWaState()) {
 					Integer conAuditID = conAudit.getId();
-					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
-							auditName, showAuditFor, auditFor);
+					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(),
+							conAuditID, auditName, showAuditFor, auditFor);
 
 					if (!openReq) {
 						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
@@ -291,7 +291,7 @@ public class OpenTasks extends TranslationActionSupport {
 			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 					Integer conAuditID = conAudit.getId();
-					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
+					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(), conAuditID,
 							auditName, showAuditFor, auditFor);
 					if (conAudit.getAuditType().getId() == AuditType.COR) {
 						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
@@ -332,7 +332,7 @@ public class OpenTasks extends TranslationActionSupport {
 		} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY || conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
 				&& conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
 			Integer conAuditID = conAudit.getId();
-			String text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
+			String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(), conAuditID, auditName,
 					showAuditFor, auditFor);
 			if (!openReq) {
 				text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
@@ -414,7 +414,7 @@ public class OpenTasks extends TranslationActionSupport {
 						hasMembershipSealAnswer = true;
 					}
 				}
-				
+
 				break;
 			}
 		}

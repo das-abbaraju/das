@@ -949,6 +949,16 @@
 			<result>struts/reports/report_import_pqf.jsp</result>
 		</action>
 
+		<action name="QaAnalyzeFlagDifferences" method="executeFlags" 
+				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
+			<result>struts/reports/report_qa_flag_differences.jsp</result>
+		</action>
+
+		<action name="QaAnalyzeAuditDifferences" method="executeAudits" 
+				class="com.picsauditing.actions.qa.QaAnalyzeDatabaseDifferences">
+			<result>struts/reports/report_qa_audit_differences.jsp</result>
+		</action>
+
 		<!-- Audits View/Edit/Verify/Copy -->
 		<action name="Audit"
 			class="com.picsauditing.actions.audits.ContractorAuditController">

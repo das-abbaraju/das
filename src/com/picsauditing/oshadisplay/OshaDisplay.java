@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.oshadisplay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -25,7 +27,7 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.YearList;
 
 /**
- * This class is used for display safety statistics on the contractor dashboard.
+ * This class is used for displaying safety statistics on the contractor dashboard.
  * 
  * TODO: Turn this class into a bean and make it stateless.
  */
@@ -39,8 +41,8 @@ public class OshaDisplay {
 	private List<ContractorOperator> contractorOperators;
 	private I18nCache i18nCache;
 	private List<String> columnNames;
+	private YearList yearList;
 	
-
 	@Autowired
 	private NaicsDAO naicsDao;
 
@@ -61,7 +63,7 @@ public class OshaDisplay {
 
 	private List<String> getColumnNames(OshaType oshaType) {
 		columnNames = new ArrayList<String>();
-		YearList yearList = oshaOrganizer.mostRecentThreeYears(oshaType);
+		yearList = oshaOrganizer.mostRecentThreeYears(oshaType);
 		StringBuilder yearsForAverageLabel = new StringBuilder();
 		for (MultiYearScope yearScope : YEAR_SCOPES) {
 			Integer year = yearList.getYearForScope(yearScope);
@@ -72,7 +74,9 @@ public class OshaDisplay {
 			}
 		}
 		yearsForAverageLabel.delete(0, 1);
-		columnNames.add(yearsForAverageLabel.toString());
+		columnNames.add(i18nCache.getText(
+				"ContractorView.ContractorDashboard.AverageLabel", locale,
+				yearsForAverageLabel.toString()));
 		columnNames.add(i18nCache.getText(
 				"ContractorView.ContractorDashboard.Industry", locale));
 
@@ -88,28 +92,29 @@ public class OshaDisplay {
 		return info;
 	}
 
-	@SuppressWarnings("unchecked")
-	private List getData(OshaType oshaType) {
-		List rows = new ArrayList();
+	private List<OshaDisplayRow> getData(OshaType oshaType) {
+		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
-			StatisticsDisplayRow rateRow = new StatisticsDisplayRow(false);
+			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
 
-			rateRow.addCell(i18nCache.getText(rateType.getI18nKey(), locale));
+			rateRow.setOshaRateType(rateType);
 
 			for (MultiYearScope scope : YEAR_SCOPES) {
 				Double answer = oshaOrganizer.getRate(oshaType, scope, rateType);
-				if (answer != null && answer >= 0) {
-					rateRow.addCell(Numbers.printDouble(answer));
-				}
-				else {
-					rateRow.addCell(EMPTY_CELL);
+				if (yearList.getYearForScope(scope) != null
+					|| scope == MultiYearScope.ThreeYearAverage) {
+					if (answer != null && answer >= 0) {
+						rateRow.addCell(Numbers.printDouble(answer));
+					} else {
+						rateRow.addCell(EMPTY_CELL);
+					}
 				}
 			}
 
 			if (rateType.isHasIndustryAverage()) {
 				String industryAverage = getIndustryAverage(naicsDao
 						.find(contractor.getNaics().getCode()), rateType);
-				rateRow.addCell(industryAverage.toString());
+				rateRow.addCell(industryAverage);
 			} else {
 				rateRow.addCell(EMPTY_CELL);
 			}
@@ -138,9 +143,9 @@ public class OshaDisplay {
 		return null;
 	}
 
-	private List<StatisticsDisplayRow> generateHurdleRates(
+	private List<OshaDisplayRow> generateHurdleRates(
 			OshaRateType oshaRateType, OshaType oshaType) {
-		List<StatisticsDisplayRow> hurdleRateRows = new ArrayList<StatisticsDisplayRow>();
+		List<OshaDisplayRow> hurdleRateRows = new ArrayList<OshaDisplayRow>();
 
 		Set<OperatorAccount> inheritedOperators = new LinkedHashSet<OperatorAccount>();
 		for (ContractorOperator co : contractorOperators) {
@@ -152,44 +157,40 @@ public class OshaDisplay {
 			if (oshaType == o.getOshaType()) {
 				Map<MultiYearScope, Set<FlagCriteriaOperator>> flagCriteriaForYear = generateOperatorFlagCriteriaMap(
 						oshaRateType, oshaType, o);
-				StatisticsDisplayRow hurdleRow = new StatisticsDisplayRow(true);
-				hurdleRow.addCell(o.getName());
+				HurdleRateDisplayRow hurdleRow = new HurdleRateDisplayRow();
+				hurdleRow.setOperator(o);
 
 				boolean hasFlagCriteria = false;
 
 				for (MultiYearScope scope : YEAR_SCOPES) {
 					Set<FlagCriteriaOperator> flagCriteriaForThisYear = flagCriteriaForYear
 							.get(scope);
-					if (flagCriteriaForThisYear == null
-							|| flagCriteriaForThisYear.size() == 0) {
-						hurdleRow.addCell(EMPTY_CELL);
-					} else {
-						StringBuilder display = new StringBuilder();
-						for (FlagCriteriaOperator fco : flagCriteriaForThisYear) {
-							display.append(", ");
-							display.append(getFlagDescription(fco));
+					if (yearList.getYearForScope(scope) != null
+							|| scope == MultiYearScope.ThreeYearAverage) {
+						if (flagCriteriaForThisYear == null
+								|| flagCriteriaForThisYear.size() == 0) {
+							hurdleRow.addCell(EMPTY_CELL);
+						} else if (yearList.getYearForScope(scope) != null
+									|| scope == MultiYearScope.ThreeYearAverage) {
+							StringBuilder display = new StringBuilder();
+							for (FlagCriteriaOperator fco : flagCriteriaForThisYear) {
+								display.append(", ");
+								display.append(getFlagDescription(fco));
+							}
+							display.delete(0, 1);
+							hurdleRow.addCell(display.toString());
+	
+							hasFlagCriteria = true;
 						}
-						display.delete(0, 1);
-						hurdleRow.addCell(display.toString());
-
-						hasFlagCriteria = true;
 					}
 				}
 				if (hasFlagCriteria) {
 					hurdleRateRows.add(hurdleRow);
 				}
-				addEmptyCellsToRowForPadding(hurdleRow);
 			}
 		}
 
 		return hurdleRateRows;
-	}
-
-	private void addEmptyCellsToRowForPadding(StatisticsDisplayRow hurdleRow) {
-		int emptyCellsToAddForThisRow = columnNames.size() + 1 - hurdleRow.size();
-		for (int i = 0; i < emptyCellsToAddForThisRow; i++) {
-			hurdleRow.addCell(EMPTY_CELL);
-		}
 	}
 
 	private Map<MultiYearScope, Set<FlagCriteriaOperator>> generateOperatorFlagCriteriaMap(
@@ -222,8 +223,6 @@ public class OshaDisplay {
 		
 		return false;
 	}
-	
-	
 
 	private String getFlagDescription(FlagCriteriaOperator fco) {
 		if (OshaRateType.TrirWIA.equals(fco.getCriteria().getOshaRateType())) {

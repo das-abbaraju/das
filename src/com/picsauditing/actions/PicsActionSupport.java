@@ -205,8 +205,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
-		} else
+		} else {
 			permissions = (Permissions) ActionContext.getContext().getSession().get("permissions");
+		}
 
 		if (permissions == null) {
 			permissions = new Permissions();
@@ -635,7 +636,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public synchronized Collection<String> getAlertMessages() {
 		return alertMessages;
 	}
-
+	public synchronized void clearMessage(){
+		alertMessages = null;
+	}
 	/**
 	 * @return the i18n text to use for this page's title
 	 */

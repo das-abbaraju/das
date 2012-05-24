@@ -97,6 +97,19 @@ public class EntityFactory {
 		return conAudit;
 	}
 
+	/**
+	 * make an Active conAudit for the given contractor of the given typeID
+	 * 
+	 * @param auditTypeID
+	 * @return
+	 */
+	static public ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
+		ContractorAudit conAudit = new ContractorAudit();
+		conAudit.setAuditType(auditType);
+		conAudit.setContractorAccount(contractor);
+		return conAudit;
+	}
+
 	static public ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
 		ContractorAudit conAudit = new ContractorAudit();
 		conAudit.setAuditType(makeAuditType(auditTypeID));

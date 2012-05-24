@@ -320,8 +320,7 @@ public class SqlBuilder {
 			return "'%" + value + "%'";
 		case NotIn:
 		case In:
-			// TODO this only supports numbers, no strings or dates, change it
-			// so that it does support more.
+			value = addQuotesToValues(value);
 			return "(" + value + ")";
 		case NotEmpty:
 		case Empty:
@@ -329,6 +328,16 @@ public class SqlBuilder {
 		}
 
 		return "'" + value + "'";
+	}
+
+	private String addQuotesToValues(String value) {
+		String[] values = value.split(",");
+		for(String individualValue : values){
+			individualValue.trim();
+			individualValue = "'"+individualValue+"'";
+		}
+		value = StringUtils.join(values);
+		return value;
 	}
 
 	private void addOrderByClauses() {

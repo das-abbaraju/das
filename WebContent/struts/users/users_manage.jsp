@@ -128,7 +128,7 @@
 					<s:param name="isGroup" value="%{isGroup}" />
 					<s:param name="userIsGroup" value="'Yes'" />
 				</s:url>
-				<a href="${add_group}" class="add"> <s:text
+				<a href="${add_group}" class="add" id="add_group"> <s:text
 						name="UsersManage.addGroup" />
 				</a>
 			</s:if>
@@ -138,7 +138,7 @@
 				<s:param name="isGroup" value="%{isGroup}" />
 				<s:param name="userIsGroup" value="'No'" />
 			</s:url>
-			<a href="${add_user}" class="add"> <s:text
+			<a href="${add_user}" class="add" id="add_user"> <s:text
 					name="UsersManage.addUser" />
 			</a>
 
@@ -232,7 +232,7 @@
 							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
-						</li>
+						</li>						
 						
 						<s:if test="isBetaEnvironment()">
 							<li>
@@ -242,30 +242,17 @@
 							</li>
 						</s:if>
 						
-						<s:if test="isLocalhostEnvironment()">
-							<li>
-								<a class="btn" href="http://alpha.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserAlpha" />
+						<s:if test="!isLiveEnvironment()">
+							<pics:toggle name="SwitchUserServer">
+								<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
+									<s:text name="UsersManage.SwitchToThisUserStable" />
 								</a>
-							</li>
+							</pics:toggle>
+							<pics:toggleElse>
+								else
+							</pics:toggleElse>
 						</s:if>
 						
-						<s:if test="isAlphaEnvironment()">
-							<li>
-								<a class="btn" href="http://beta.picsorganizer.com/Login.action?button=login&switchToUser=<s:property value="user.id"/>">
-									<s:text name="UsersManage.SwitchToThisUserBeta" />
-								</a>
-							</li>
-						</s:if>
-						<s:if test="toggleSwitch">
-							<s:if test="!isLiveEnvironment()">
-								<li>
-									<a class="btn" href="UsersManage!switchUserToDifferentServer.action?user=<s:property value="user.id"/>" >
-										<s:text name="UsersManage.SwitchToThisUserStable" />
-									</a>
-								</li>	
-							</s:if>
-						</s:if>
 					</pics:permission>
 				</s:if>
 			</ul>

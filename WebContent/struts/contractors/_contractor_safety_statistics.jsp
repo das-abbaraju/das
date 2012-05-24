@@ -17,36 +17,54 @@
 				<table class="table">
 					<thead>
 						<tr>
-							<th><s:property value="getText(#stat.i18nKey)" /></th>
+							<th>
+                                <s:property value="getText(#stat.i18nKey)" />
+                            </th>
+                            
 							<s:iterator value="oshaDisplay.stats.get(#stat).get('columnNames')" var="colname">
-								<th><s:property value="#colname" /></th>
+								<th>
+                                    <s:property value="#colname" />
+                                </th>
 							</s:iterator>
 						</tr>
 					</thead>
 					<tbody>	
-				 	<s:set var="is_odd" value="true" />			
 						<s:iterator value="oshaDisplay.stats.get(#stat).get('data')" var="row">
-							<tr <s:if test="#row.hurdleRates">class="hurdle"</s:if> <s:elseif test="#is_odd == true">class="odd"</s:elseif>>
-								<s:iterator value="#row.cells" var="celldata">
-									<td>
-										<s:property value="#celldata" escape="false"/>
-									</td>
-								</s:iterator>
-							</tr>
-							<s:if test="!#row.hurdleRates">
-								<s:set var="is_odd" value="%{!#is_odd}" />
-							</s:if>
+								<tr class="<s:if test="#row.hurdleRate">hurdle</s:if><s:else>rate-type <s:if test="#is_odd == true">odd</s:if></s:else>">
+								<td>
+									<s:if test="!#row.hurdleRate" >
+										<a href="javascript:;" class="rate-type-tooltip"
+										title="<s:property value="getText(#row.title + '.helpText')" />"><img src="images/help-icon.png" /></a>
+										<s:property value="getText(#row.title)" />
+									</s:if>
+									<s:else>
+										<s:property value="#row.operator.name" />
+									</s:else>
+								</td>
+									<s:iterator value="#row.cells" var="celldata" status="stat">
+										<td>
+											<span class="rate-type">
+	                                            <s:property value="#celldata" escape="false" />
+	                                        </span>
+										</td>
+									</s:iterator>
+								</tr>
+	                            
+								<s:if test="!#row.hurdleRate">
+									<s:set var="is_odd" value="%{!#is_odd}" />
+								</s:if>
 						</s:iterator>
 					</tbody>
 				</table>
 			</s:iterator>
+            
 			<a class="weighted-industry-average"
 				href="javascript:;"
 				data-url="ContractorView!preview.action?contractor=<s:property value="contractor.id"/>" 
 				title="<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" />"
 			>*<s:text name="ContractorView.ContractorDashboard.WeightedIndustryAverage" /></a>
 					
-		<div class="clear"></div>
-			</div>
+            <div class="clear"></div>
+		</div>
 	</div>
 </div>

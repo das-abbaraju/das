@@ -19,6 +19,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
+import com.picsauditing.actions.report.ReportContractorAuditOperator;
+import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.util.Strings;
@@ -27,6 +29,7 @@ public class ExcelSheet {
 	private String name = "Report";
 	private Map<Integer, ExcelColumn> columns = new TreeMap<Integer, ExcelColumn>();
 	private List<BasicDynaBean> data;
+	private ReportContractorAuditOperator reportCAO;
 
 	private I18nCache i18nCache = I18nCache.getInstance();
 
@@ -147,6 +150,29 @@ public class ExcelSheet {
 						String key = row.get(column.getName()).toString();
 						String translated = i18nCache.getText(key, ActionContext.getContext().getLocale());
 						c.setCellValue(new HSSFRichTextString(translated));
+					} else if (column.getColumnHeader().equals("AmBest")) {
+						String value = "";
+						if (reportCAO != null
+								&& row.get(column.getName()) != null) {
+							try {
+								Object cellData = row.get(column.getName());
+								int auditId = Integer.parseInt(cellData
+										.toString());
+								List<AuditData> auditDataList = reportCAO
+										.getDataForAudit(auditId, "AMBest");
+								for (AuditData auditData : auditDataList) {
+									if (value.length() > 0)
+										value += ", ";
+									value += reportCAO
+											.getAMBestRatings(auditData
+													.getComment());
+								}
+							} catch (Exception e) {
+							}
+						}
+						c.setCellValue(new HSSFRichTextString(value
+								.replaceAll("<[^>]+>", "")
+								.replaceAll("Class", " Class").trim()));
 					} else
 						c.setCellValue(new HSSFRichTextString(row.get(column.getName()).toString()));
 				} catch(IllegalArgumentException iae) {
@@ -190,6 +216,14 @@ public class ExcelSheet {
 
 	public Map<Integer, ExcelColumn> getColumns() {
 		return columns;
+	}
+
+	public ReportContractorAuditOperator getReportCAO() {
+		return reportCAO;
+	}
+
+	public void setReportCAO(ReportContractorAuditOperator reportCAO) {
+		this.reportCAO = reportCAO;
 	}
 
 }
