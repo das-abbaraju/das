@@ -73,6 +73,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
+	private boolean usingDynamicReports=false;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 
@@ -315,7 +316,7 @@ public class UsersManage extends PicsActionSupport {
 			ug.setAuditColumns(permissions);
 			userGroupDAO.save(ug);
 		}
-
+		
 		// Send activation email if set
 		if (sendActivationEmail && user.getId() == 0)
 			addActionMessage(sendActivationEmail(user, permissions));
@@ -329,7 +330,8 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setPrimaryContact(user);
 			// auto indexing, no longer need to call it.
 			// user.setNeedsIndexing(true);
-
+			System.out.println("user.isUsingDynamicReports() "+isUsingDynamicReports());
+			user.setUsingDynamicReports(isUsingDynamicReports());
 			user = userDAO.save(user);
 
 			if (!user.isGroup())
@@ -1013,7 +1015,15 @@ public class UsersManage extends PicsActionSupport {
 	public void setNewUser(boolean newUser) {
 		this.newUser = newUser;
 	}
+	
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
 
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
+	}
+	
 	public void removeUserAccess(OpPerms perm) {
 		Iterator<UserAccess> permissions = user.getOwnedPermissions().iterator();
 		while (permissions.hasNext()) {
@@ -1077,4 +1087,5 @@ public class UsersManage extends PicsActionSupport {
 			return getText("AccountRecovery.error.ResetEmailError");
 		}
 	}
+	
 }
