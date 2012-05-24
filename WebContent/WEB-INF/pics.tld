@@ -38,8 +38,27 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>	
+	<tag>
+		<name>toggle</name>
+		<tagclass>com.picsauditing.tags.IfTag</tagclass>
+		<info>if/condition/then/else tag.</info>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<description>name of the toggle</description>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
-	
+	<tag>
+		<name>toggleElse</name>
+		<tagclass>com.picsauditing.tags.IfElseTag</tagclass>
+		<info>else part of if/condition/then/else tag.</info>
+		<bodycontent>JSP</bodycontent>
+		<dynamic-attributes>false</dynamic-attributes>
+	</tag>
 	<tag>
 		<description>Prints a link to the help center at help.picsauditing.com</description>
 		<name>help</name>
@@ -78,7 +97,7 @@
 		</attribute>
 		<body-content>JSP</body-content>
 	</tag>
-	
+
 	<tag>
 		<name>autocomplete</name>
 		<description>Create an autocomplete control</description>

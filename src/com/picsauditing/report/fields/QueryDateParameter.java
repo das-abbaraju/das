@@ -1,6 +1,5 @@
 package com.picsauditing.report.fields;
 
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,7 +28,7 @@ public class QueryDateParameter {
 			value = value.substring(1);
 		}
 
-		char period = value.charAt(value.length() - 1);
+		char periodChar = value.charAt(value.length() - 1);
 		String valueWithoutPeriod = value.substring(0, value.length() - 1);
 		Calendar cal = Calendar.getInstance();
 
@@ -39,7 +38,8 @@ public class QueryDateParameter {
 			if (!plusTime) {
 				amount *= -1;
 			}
-			cal.add(convertPeriod(period), amount);
+			int period = convertPeriod(periodChar);
+			cal.add(period, amount);
 
 			date = cal.getTime();
 		} catch (NumberFormatException nfe) {
@@ -57,17 +57,21 @@ public class QueryDateParameter {
 	}
 
 	private int convertPeriod(char period) {
-		if (period == 'y' || period == 'Y')
+		period = Character.toUpperCase(period);
+		switch (period) {
+		case 'Y':
 			return Calendar.YEAR;
-		if (period == 'm' || period == 'M')
+		case 'M':
 			return Calendar.MONTH;
-		if (period == 'd' || period == 'D')
+		case 'D':
 			return Calendar.DAY_OF_MONTH;
-		if (period == 'w' || period == 'W')
+		case 'W':
 			return Calendar.WEEK_OF_YEAR;
-		if (period == 'h' || period == 'H')
+		case 'H':
 			return Calendar.HOUR_OF_DAY;
-		return Calendar.DAY_OF_YEAR;
+		default:
+			return Calendar.DAY_OF_YEAR;
+		}
 	}
 
 	public Date getTime() {

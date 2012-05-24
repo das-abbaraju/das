@@ -187,7 +187,12 @@ public class ReportContractorAuditOperator extends ReportContractorAudits {
 			}
 
 			/***** Load our Policy Data *****/
-			List<AuditData> answers = auditDataDao.findPolicyData(theseAudits);
+			List<AuditData> answers = new ArrayList<AuditData>();
+			for(int i=0; i<theseAudits.size(); i +=1000) {
+				List<Integer> ids = new Vector<Integer>();
+				ids.addAll(theseAudits.subList(i, ((i + 1000) < theseAudits.size())?i+1000:theseAudits.size() -1));
+				answers.addAll(auditDataDao.findPolicyData(ids));
+			}
 
 			// Map<UniqueCode, Map<AuditID, List<AuditData>>>
 			questionData = new HashMap<String, Map<Integer, List<AuditData>>>();

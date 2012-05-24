@@ -25,5 +25,8 @@
 			<s:property escape="false"/><br />
 		</s:iterator>
 	</div>
-	<s:property value="alertMessages = null" />
+	<!--<s:property value="alertMessages = null" />-->
+	<s:property value="clearMessage()" />
+	
 </s:if>
+

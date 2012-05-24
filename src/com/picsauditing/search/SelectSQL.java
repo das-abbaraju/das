@@ -54,8 +54,12 @@ public class SelectSQL {
 			sql.append(combineArray(fields));
 		else
 			sql.append("*");
-		sql.append("\nFROM ");
-		sql.append(fromTable);
+		
+		if(!Strings.isEmpty(fromTable)) {
+			sql.append("\nFROM ");
+			sql.append(fromTable);
+		}
+		
 		for (String joinSQL : this.joinClause) {
 			sql.append("\n");
 			sql.append(joinSQL);

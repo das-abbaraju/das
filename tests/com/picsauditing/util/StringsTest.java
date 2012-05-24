@@ -7,35 +7,15 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import org.junit.Test;
 
 public class StringsTest  {
-
-	@Test
-	public void testEmail() throws AddressException {
-		// FIXME Why is this test here in StringsTest? -- Craig Jones
-		Address[] addresses = InternetAddress.parse("tallred@picsauditing.com");
-		assertEquals("tallred@picsauditing.com", addresses[0].toString());
-
-		addresses = InternetAddress.parse("tallred@picsauditing.com, kn@pics.com");
-		assertEquals("tallred@picsauditing.com", addresses[0].toString());
-		assertEquals("kn@pics.com", addresses[1].toString());
-
-		addresses = InternetAddress.parse("Trevor <tallred@picsauditing.com>");
-		assertEquals("Trevor <tallred@picsauditing.com>", addresses[0].toString());
-	}
 
 	@Test
 	public void testInsertSpaceNull() {
@@ -50,33 +30,6 @@ public class StringsTest  {
 	@Test
 	public void testInsertSpace3() {
 		assertEquals("a b c", Strings.insertSpaces("abc"));
-	}
-
-	@Test
-	public void testArray() {
-		// FIXME What is the purpose of this test? -- Craig Jones
-		List<String> list = new ArrayList<String>();
-		list.add("Hello");
-		addString(list);
-		addString(list);
-		assertEquals(3, list.size());
-	}
-
-	private void addString(List<String> list) {
-		list.add("World" + list.size());
-	}
-
-	@Test
-	public void testString() {
-		// FIXME What is the purpose of this test? -- Craig Jones
-		String color = "Green";
-		color = changeColor(color);
-		assertEquals("Red", color);
-	}
-
-	private String changeColor(String color) {
-		color = "Red";
-		return color;
 	}
 
 	@Test

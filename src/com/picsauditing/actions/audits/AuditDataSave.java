@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -673,8 +674,20 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Date".equals(questionType)) {
-			SimpleDateFormat s = new SimpleDateFormat("MM/dd/yyyy");
-			Date newDate = DateBean.parseDate(answer);
+			SimpleDateFormat s = new SimpleDateFormat(getText("date.short"));
+			Date newDate;
+			try {
+				newDate = s.parse(answer);
+			} catch (ParseException e) {
+				try {
+					SimpleDateFormat dbFormat = new SimpleDateFormat("yyyy-MM-dd");
+					newDate = dbFormat.parse(answer);
+				}
+				catch(ParseException err) {
+					addActionError(getText("AuditData.error.InvalidDate"));
+					return false;
+				}
+			}
 
 			if (newDate == null) {
 				addActionError(getText("AuditData.error.InvalidDate"));
@@ -682,8 +695,10 @@ public class AuditDataSave extends AuditActionSupport {
 			} else if (newDate.after(DateBean.parseDate("9999-12-31"))) {
 				addActionError(getText("AuditData.error.DateOutOfRange"));
 				return false;
-			} else
-				auditData.setAnswer(s.format(newDate));
+			} else {
+				String a = DateBean.toDBFormat(newDate);
+				auditData.setAnswer(a);
+			}
 		}
 
 		if ("Check Box".equals(questionType)) {

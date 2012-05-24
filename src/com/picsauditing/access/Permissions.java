@@ -2,8 +2,10 @@ package com.picsauditing.access;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -23,10 +25,11 @@ import com.picsauditing.jpa.entities.UserGroup;
 import com.picsauditing.strutsutil.AjaxUtils;
 
 /**
- * This is the main class that is stored for each user containing information if they are logged in, which groups
- * they're in, and what permission(s) they have
+ * This is the main class that is stored for each user containing information if
+ * they are logged in, which groups they're in, and what permission(s) they have
  * 
- * Warning: this class is stored in the session Make sure you keep the footprint very small
+ * Warning: this class is stored in the session Make sure you keep the footprint
+ * very small
  */
 public class Permissions implements Serializable {
 
@@ -42,6 +45,7 @@ public class Permissions implements Serializable {
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
 	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
+	private Map<String, String> toggles = new HashMap<String, String>();
 
 	private String username;
 	private String name;
@@ -93,7 +97,7 @@ public class Permissions implements Serializable {
 		gcContractor = false;
 		gcOperator = false;
 		gcFree = false;
-		
+
 		adminID = 0;
 		topAccountID = 0;
 
@@ -115,9 +119,11 @@ public class Permissions implements Serializable {
 			if (userID == 0)
 				throw new Exception("Missing User");
 
+			toggles.clear();
 			loggedIn = true;
 			forcePasswordReset = user.isForcePasswordReset();
 			active = user.isActiveB();
+
 			username = user.getUsername();
 			name = user.getName();
 			email = user.getEmail();
@@ -223,6 +229,10 @@ public class Permissions implements Serializable {
 		}
 	}
 
+	public Map<String, String> getToggles() {
+		return toggles;
+	}
+
 	public int getUserId() {
 		return userID;
 	}
@@ -304,7 +314,8 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * This gets the shadowed user from the User object, if it's set. Otherwise this returns the user's own id
+	 * This gets the shadowed user from the User object, if it's set. Otherwise
+	 * this returns the user's own id
 	 * 
 	 * @return user ID or shadowed user ID
 	 */
@@ -549,7 +560,7 @@ public class Permissions implements Serializable {
 	public boolean isGeneralContractor() {
 		return gcContractor || gcOperator;
 	}
-	
+
 	public boolean isGeneralContractorFree() {
 		return gcFree;
 	}
@@ -600,7 +611,8 @@ public class Permissions implements Serializable {
 	}
 
 	/**
-	 * Translators need the ability to switch accounts and retain the ability to do translations
+	 * Translators need the ability to switch accounts and retain the ability to
+	 * do translations
 	 */
 	public void setTranslatorOn() {
 		UserAccess ua = new UserAccess();

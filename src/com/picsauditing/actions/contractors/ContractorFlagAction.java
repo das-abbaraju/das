@@ -3,6 +3,7 @@ package com.picsauditing.actions.contractors;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +45,7 @@ import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.FlagOverrideHistory;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.Note;
 import com.picsauditing.jpa.entities.NoteCategory;
@@ -210,21 +212,29 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			return SUCCESS;
 		}
 
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		if (overrideAll == true) {
 			ContractorOperator co2 = contractorOperatorDao.find(co.getContractorAccount().getId(),
 					permissions.getAccountId());
+			FlagColor currentFlag = co2.getFlagColor();
 			co2.setForceEnd(forceEnd);
 			co2.setForceFlag(forceFlag);
 			co2.setForceBegin(new Date());
 			co2.setForcedBy(getUser());
 			contractorOperatorDao.save(co2);
-			noteText = "Forced the flag to " + forceFlag + " for all the sites";
+			noteText = "Forced the flag from " + currentFlag + " to "
+					+ forceFlag + " for all the sites until "
+					+ format.format(forceEnd);
+			
 		} else {
+			FlagColor currentFlag = co.getFlagColor();
 			co.setForceEnd(forceEnd);
 			co.setForceFlag(forceFlag);
 			co.setForceBegin(new Date());
 			co.setForcedBy(getUser());
-			noteText = "Forced the flag to " + forceFlag + " for " + co.getOperatorAccount().getName();
+			noteText = "Forced the flag from " + currentFlag + " to "
+					+ forceFlag + " for " + co.getOperatorAccount().getName()
+					+ "  until " + format.format(forceEnd);
 		}
 
 		return completeAction(noteText);
@@ -267,9 +277,13 @@ public class ContractorFlagAction extends ContractorActionSupport {
 		}
 		flagOverride.setAuditColumns(new User(permissions.getUserId()));
 		flagDataOverrideDAO.save(flagOverride);
-
-		String noteText = "Forced the flag to " + forceFlag + " for criteria " + flagData.getCriteria().getLabel()
-				+ " for " + co.getOperatorAccount().getName();
+		
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		String noteText = "Forced the flag from " + flagData.getFlag() + " to "
+				+ forceFlag + " for criteria "
+				+ flagData.getCriteria().getLabel() + " for "
+				+ co.getOperatorAccount().getName() + " until "
+				+ format.format(forceEnd);
 		return completeAction(noteText);
 	}
 
@@ -844,6 +858,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 				note.setNoteCategory(NoteCategory.Flags);
 				note.setViewableByOperator(permissions);
 				note.setCanContractorView(true);
+				note.setPriority(LowMedHigh.High);
 
 				note.setSummary(noteText);
 

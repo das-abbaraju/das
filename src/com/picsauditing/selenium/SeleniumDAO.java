@@ -7,13 +7,14 @@ import java.util.List;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 
+import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 
 public class SeleniumDAO {
 	
-	public static void delete (List<SeleniumTestingAccount> deletables) throws Exception{
+	public static void delete (List<Account> deletables) throws Exception{
 		if (CollectionUtils.isEmpty(deletables)) return;
 		
 		String accounts = Strings.implodeForDB(getAccountIDsFor(deletables), ",");
@@ -90,17 +91,17 @@ public class SeleniumDAO {
 		
 	}
 	
-	public static List<String> getAccountIDsFor(List<SeleniumTestingAccount> testingAccounts) {
-		List<String> IDs = new ArrayList<String>();
-		for (SeleniumTestingAccount account : testingAccounts)
+	public static List<Integer> getAccountIDsFor(List<Account> deletables) {
+		List<Integer> IDs = new ArrayList<Integer>();
+		for (Account account : deletables)
 			IDs.add(account.getId());
 		return IDs;
 	}
 	
 
-	public static List<SeleniumTestingAccount> AvailableTestingAccounts() {
+	public static List<Account> AvailableTestingAccounts() {
 		try {
-			ArrayList<SeleniumTestingAccount> accounts = new ArrayList<SeleniumTestingAccount>();
+			ArrayList<Account> accounts = new ArrayList<Account>();
 			Database db = new Database();
 
 			SelectSQL accountSQL = new SelectSQL("accounts");
@@ -110,14 +111,17 @@ public class SeleniumDAO {
 			accountSQL.addWhere("name LIKE 'Selenium Test%'");
 			List<BasicDynaBean> select = db.select(accountSQL.toString(), false);
 
-			for (BasicDynaBean row : select)
-				accounts.add(new SeleniumTestingAccount(
-						row.get("name").toString(), 
-						row.get("id").toString(), 
-						row.get("type").toString()));
-
+			for (BasicDynaBean row : select) {
+				Account account = new Account();
+				account.setId((Integer) row.get("id"));
+				account.setName(row.get("name").toString());
+				account.setType(row.get("type").toString());
+				accounts.add(account);
+			}
+			
 			return accounts;
 		} catch (SQLException e) {
+			//TODO : Throw and account for the SQLException.
 			throw new RuntimeException("SQL Error in SeleniumDAO", e);
 		}
 	}

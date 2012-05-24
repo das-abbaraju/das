@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.NoResultException;
 import javax.servlet.http.Cookie;
@@ -20,6 +23,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
@@ -86,12 +90,12 @@ public class LoginController extends PicsActionSupport {
 
 				permissions.login(user);
 				LocaleController.setLocaleOfNearestSupported(permissions);
-				if (isLiveEnvironment()){
+				if (isLiveEnvironment()) {
 					if (ActionContext.getContext().getSession().get("redirect") != null) {
 						if (ActionContext.getContext().getSession().get("redirect").equals("true")) {
-							//reset beta cookie
+							// reset beta cookie
 							setBetaTestingCookie();
-							//redirect to original site.
+							// redirect to original site.
 							redirect("http://www.picsorganizer.com");
 						}
 						ActionContext.getContext().getSession().remove("redirect");
@@ -165,6 +169,7 @@ public class LoginController extends PicsActionSupport {
 			PicsLogger.log("logging in user: " + user.getUsername());
 			permissions.login(user);
 			LocaleController.setLocaleOfNearestSupported(permissions);
+			permissions.getToggles().putAll(getApplicationToggles());
 
 			user.setLastLogin(new Date());
 			userDAO.save(user);
@@ -326,6 +331,17 @@ public class LoginController extends PicsActionSupport {
 		return "";
 	}
 
+	private Map<String, String> getApplicationToggles() {
+		List<AppProperty> toggleList = propertyDAO.getPropertyList("WHERE property LIKE 'Toggle.%'");
+		Map<String, String> toggles = new HashMap<String, String>();
+		if (toggleList != null) {
+			for (int i = 0; i < toggleList.size(); i++) {
+				toggles.put(toggleList.get(i).getProperty(), toggleList.get(i).getValue());
+			}
+		}
+		return toggles;
+	}
+
 	/**
 	 * After we're logged in, now what should we do?
 	 */
@@ -427,7 +443,7 @@ public class LoginController extends PicsActionSupport {
 
 		String serverName = getRequest().getLocalName();
 
-		if (isLiveEnvironment()|| isBetaEnvironment()) {
+		if (isLiveEnvironment() || isBetaEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();
 		}

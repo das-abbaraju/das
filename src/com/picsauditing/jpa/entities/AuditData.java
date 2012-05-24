@@ -1,5 +1,7 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -303,4 +305,13 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			}
 		};
 	}
+	
+	@Transient
+	public String getAnswerInDate(String format) throws ParseException {
+		SimpleDateFormat displayFormat = new SimpleDateFormat(format);
+		Date date = DateBean.parseDate(answer);
+		String dateStr = displayFormat.format(date);
+		return dateStr;
+	}
+	
 }
