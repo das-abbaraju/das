@@ -6,9 +6,6 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
--- PICS-5907 Red flag for contractor due to old flag data
-delete from flag_data_override where year='2008';
-
 -- PICS-4647 Operator Flag Changes email template update for new totals
 update email_template t set t.body = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
