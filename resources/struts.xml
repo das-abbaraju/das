@@ -158,7 +158,7 @@
 		<action name="Menu" class="com.picsauditing.access.Menu">
 		</action>
 		
-		<action name="Contact" class="com.picsauditing.access.ContactUs">
+		<action name="Contact" class="com.picsauditing.access.Contact">
 			<result>struts/contact_pics.jsp</result>
 		</action>
 
