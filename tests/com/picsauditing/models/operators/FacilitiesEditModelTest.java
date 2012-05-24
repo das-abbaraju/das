@@ -1,35 +1,23 @@
 package com.picsauditing.models.operators;
 
 import static org.junit.Assert.fail;
-
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 import org.junit.Before;
-
 import org.junit.Test;
-
 import org.mockito.Mock;
-
 import org.mockito.MockitoAnnotations;
-
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
-
 import com.picsauditing.PicsTest;
-
 import com.picsauditing.access.Permissions;
-
 import com.picsauditing.jpa.entities.Country;
-
 import com.picsauditing.jpa.entities.Facility;
-
 import com.picsauditing.jpa.entities.OperatorAccount;
-
 import com.picsauditing.jpa.entities.User;
 
 public class FacilitiesEditModelTest extends PicsTest {
@@ -40,7 +28,7 @@ public class FacilitiesEditModelTest extends PicsTest {
 	User user;
 	Country country;
 	List<Facility> corporateFacilities;
-	
+
 	@Mock
 	OperatorAccount operator;
 	@Mock
@@ -62,8 +50,7 @@ public class FacilitiesEditModelTest extends PicsTest {
 
 	@Test
 	public void testAddPicsGlobal() throws Exception {
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsGlobal", operator,
-				permissions);
+		Whitebox.invokeMethod(facilitiesEditModel, "addPicsGlobal", operator, permissions);
 		for (Facility facility : corporateFacilities) {
 			if (facility.getCorporate().getId() == OperatorAccount.PicsConsortium) {
 				return;
@@ -137,20 +124,18 @@ public class FacilitiesEditModelTest extends PicsTest {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
 		testAddPicsCountry("DE", FacilitiesEditModel.PICS_GERMANY);
 	}
-	
+
 	@Test
 	public void testCountryNotWithNoCorrespondingAccount() throws Exception {
 		String currentIsoCode = "UX";
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator,
-				permissions);
+		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate()
-					&& corporate.getId() != OperatorAccount.PicsConsortium) {
-					fail("Found unexpected PICS country " + corporate);
+			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
+				fail("Found unexpected PICS country " + corporate);
 			}
 		}
 	}
@@ -158,39 +143,33 @@ public class FacilitiesEditModelTest extends PicsTest {
 	@Test
 	public void testCountryNotWithNoCorrespondingAccount_usExisiting() throws Exception {
 		addCountryFacility(FacilitiesEditModel.PICS_US, "US");
-		
+
 		String currentIsoCode = "UX";
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator,
-				permissions);
+		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate()
-					&& corporate.getId() != OperatorAccount.PicsConsortium) {
-					fail("Found unexpected PICS country " + corporate);
+			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
+				fail("Found unexpected PICS country " + corporate);
 			}
 		}
 	}
-	
-	public void testAddPicsCountry(String currentIsoCode,
-			int picsCountryIdThatShouldBeSet) throws Exception {
+
+	public void testAddPicsCountry(String currentIsoCode, int picsCountryIdThatShouldBeSet) throws Exception {
 
 		country.setIsoCode(currentIsoCode);
 
-		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator,
-				permissions);
+		Whitebox.invokeMethod(facilitiesEditModel, "addPicsCountry", operator, permissions);
 		boolean foundExpectedCountry = false;
 
 		for (Facility facility : operator.getCorporateFacilities()) {
 			OperatorAccount corporate = facility.getCorporate();
-			if (corporate.isPicsCorporate()
-					&& corporate.getId() != OperatorAccount.PicsConsortium) {
+			if (corporate.isPicsCorporate() && corporate.getId() != OperatorAccount.PicsConsortium) {
 				if (facility.getCorporate().getId() == picsCountryIdThatShouldBeSet) {
 					foundExpectedCountry = true;
-				}
-				else {
+				} else {
 					fail("Found unexpected PICS country " + corporate);
 				}
 			}
