@@ -83,13 +83,13 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 
 	@Test
 	public void testFlagCAO_noRequiredStatus() throws Exception {
-		boolean flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+		Boolean flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
 		assertTrue("if the criteria has no required status, flagCAO should be true", flagCAO); 
 	}
 
 	@Test
 	public void testFlagCAO_CaoStatusAfterRequiredStatus() throws Exception {
-		boolean flagCAO;
+		Boolean flagCAO;
 		fc.setRequiredStatus(AuditStatus.Submitted);
 		// cao.changeStatus is doing db interaction and permission testing which is not
 		// relevant to this test.... so.... violate encapsulation.
@@ -126,7 +126,7 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 	
 	@Test
 	public void testIsAuditVisibleToOperator_noCAOs() throws Exception {
-		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertFalse("with no operators, the audit should not be visible", isAuditVisible); 
 	}
 
@@ -136,7 +136,7 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 		operators.add(cao);
 		ca.setOperators(operators);
-		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertFalse("if the cao is not visible, the audit should not be visible", isAuditVisible);
 	}
 
@@ -146,7 +146,7 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 		operators.add(cao);
 		ca.setOperators(operators);
-		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertFalse("if the cao has no permissions, the audit should not be visible", isAuditVisible);
 	}
 
@@ -162,7 +162,7 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 		operators.add(cao);
 		ca.setOperators(operators);
-		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertFalse("if the cao has wrong permissions, the audit should not be visible", isAuditVisible);
 	}
 
@@ -184,7 +184,7 @@ public class FlagDataCalculatorTest { // extends PicsTest {
 		List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 		operators.add(cao);
 		ca.setOperators(operators);
-		boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
+		Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);
 		assertTrue("if the cao has correct permissions, the audit should be visible", isAuditVisible);
 	}
 
