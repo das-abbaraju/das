@@ -17,7 +17,7 @@ public class QueryDateParameterTest {
 	public void setUp() {
 		cal = Calendar.getInstance();
 	}
-	
+
 	@Test
 	public void testConvertDateParameterNull() {
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("").getTime());
@@ -52,29 +52,27 @@ public class QueryDateParameterTest {
 	public void testConvertDateParameterMonths() {
 		cal.add(Calendar.MONTH, 23);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("23m").getTime());
-		
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -2);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-2M").getTime());
-		
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -12);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-12m").getTime());
-		
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -13);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-13m").getTime());
-		
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -22);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-22m").getTime());
-		
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -24);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-24m").getTime());
-		
-		// FIXME This is the darnest thing.  -22 and -24 work fine (above), but -23 makes things off by an hour.  I have no clue why. -- Craig
-		// While running this locally it looks like it was working okay, so I am going to let it run and see if it is still failing -- Alex
+
 		cal = Calendar.getInstance();
 		cal.add(Calendar.MONTH, -23);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-23m").getTime());
@@ -100,5 +98,5 @@ public class QueryDateParameterTest {
 		cal.add(Calendar.HOUR_OF_DAY, -4);
 		assertEqualsToTheSecond(cal.getTime(), new QueryDateParameter("-4H").getTime());
 	}
-	
+
 }

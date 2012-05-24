@@ -1,14 +1,13 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.Test;
-
-import com.google.common.base.Strings;
 
 public class DateBeanTest  {
 	
@@ -56,7 +55,7 @@ public class DateBeanTest  {
 	public void testTimeZone() throws Exception {
 		Date sourceDate = new Date(999999);
 		Date destDate = DateBean.convertTime(sourceDate, TimeZone.getTimeZone("US/Eastern"), TimeZone.getTimeZone("US/Pacific"));
-		assertEquals(sourceDate.getHours() - 3, destDate.getHours());
+		assertEquals(3, sourceDate.getHours() - destDate.getHours());
 	}
 	
 	@Test
