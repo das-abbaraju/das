@@ -376,11 +376,9 @@ public class LoginController extends PicsActionSupport {
 			ContractorRegistrationStep step = ContractorRegistrationStep.getStep(cAccount);
 			url = step.getUrl();
 		} else {
-			//boolean useDynamicReports = permissions.isUsingDynamicReports();
-			boolean useDynamicReports = false;
-			if (useDynamicReports) {
-				// TODO get this to work
-				//url = MenuBuilder.getHomePage(permissions);
+			if (user.isUsingDynamicReports()) {
+				MenuComponent menu = MenuBuilder.buildMenubar(permissions);
+				url = MenuBuilder.getHomePage(menu, permissions);
 			} else {
 				MenuComponent menu = PicsMenu.getMenu(permissions);
 				url = PicsMenu.getHomePage(menu, permissions);

@@ -15,33 +15,13 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		MenuComponent menu = new MenuComponent();
+		List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
 
-		// Should be a User object, not Permissions
-		if (!permissions.isLoggedIn()) {
-			MenuBuilder.buildNotLoggedInMenubar(menu);
-		} else if (permissions.isContractor()) {
-			MenuBuilder.buildContractorMenubar(menu, permissions);
-		} else if (permissions.isAssessment()) {
-			MenuBuilder.buildAssessmentMenubar(menu);
-		} else {
-			List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
-			MenuBuilder.buildGeneralMenubar(menu, permissions, reports);
-		}
-
-		handleSingleChildMenu(menu);
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions, reports);
 
 		jsonArray = MenuWriter.exportMenuToExtJS(menu);
 
 		return JSON_ARRAY;
-	}
-
-	private void handleSingleChildMenu(MenuComponent menu) {
-		if (menu == null)
-			return;
-
-		if (menu.getChildren().size() == 1)
-			menu = menu.getChildren().get(0);
 	}
 
 	public ContractorAccount getContractor() {

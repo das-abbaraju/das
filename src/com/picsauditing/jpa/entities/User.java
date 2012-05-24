@@ -92,6 +92,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private TimeZone timezone = null;
 	private Locale locale = Locale.ENGLISH;
 	private String department;
+	private boolean usingDynamicReports;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
 	private List<UserGroup> members = new ArrayList<UserGroup>();
@@ -841,5 +842,13 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	@Transient
 	public boolean hasPermission(OpPerms opPerm) {
 		return this.hasPermission(opPerm, OpType.View);
+	}
+
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
+
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
 	}
 }

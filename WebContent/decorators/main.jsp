@@ -13,7 +13,9 @@
 <%@ page import="com.picsauditing.access.PicsMenu" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
 <%@ page import="com.picsauditing.dao.AppPropertyDAO" %>
+<%@ page import="com.picsauditing.dao.UserDAO" %>
 <%@ page import="com.picsauditing.jpa.entities.AppProperty" %>
+<%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
 <%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
@@ -41,12 +43,21 @@
 		pageIsSecure = true;
 	String protocol = pageIsSecure ? "https" : "http";
 
-	// TODO - Add this in
-	//boolean useDynamicReports = permissions.isUsingDynamicReports();
+	UserDAO userDao = SpringUtils.getBean("UserDAO");
+	User user = userDao.find(permissions.getUserId());
 	boolean useDynamicReports = false;
+	if (user != null)
+		useDynamicReports = user.isUsingDynamicReports();
+
 	MenuComponent menu = new MenuComponent();
-	if (!useDynamicReports)
+	String homePageUrl = "";
+	if (useDynamicReports) {
+		menu = MenuBuilder.buildMenubar(permissions);
+		homePageUrl = MenuBuilder.getHomePage(menu, permissions);
+	} else {
 		menu = PicsMenu.getMenu(permissions);
+		homePageUrl = PicsMenu.getHomePage(menu, permissions);
+	}
 
 	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
 	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
@@ -196,7 +207,7 @@
 				<!-- !begin header -->
 				<tr>
 					<td id="logo">
-						<a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
+						<a href="<%= homePageUrl %>"><img src="images/logo_sm.png" alt="image" width="100" height="31" /></a>
 					</td>
 					<% if (permissions.isActive() && !permissions.isContractor()) { %>
 						<td id="headersearch">
@@ -218,7 +229,7 @@
 									<%=i18nCache.getText("Header.WelcomeNoLink", locale, permissions.getName()) %>
 								<% } %>
 							</span>
-						| <a href="<%= PicsMenu.getHomePage(PicsMenu.getMenu(permissions), permissions)%>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
+						| <a href="<%= homePageUrl %>"><%=i18nCache.getText("global.Home", locale) %></a> | <a href="http://www.picsauditing.com">PICS</a> | <a href="Login.action?button=logout"><%=i18nCache.getText("Header.Logout", locale) %></a>
 						<% } else { %>
 							<span id="name"><%=i18nCache.getText("Header.Welcome", locale)%></span> | <a href="Login.action"><%=i18nCache.getText("Header.Login", locale)%></a> | <a href="Registration.action"><%=i18nCache.getText("Header.Register", locale)%></a>
 						<% } %>

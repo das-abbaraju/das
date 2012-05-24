@@ -25,8 +25,31 @@ public class MenuBuilder {
 	private MenuBuilder() {
 	}
 
+	public static MenuComponent buildMenubar(Permissions permissions) {
+		return buildMenubar(permissions, null);
+	}
+
+	public static MenuComponent buildMenubar(Permissions permissions, List<Report> reports) {
+		MenuComponent menu = new MenuComponent();
+
+		// TODO add Operator/Corporate to this list
+		if (!permissions.isLoggedIn()) {
+			MenuBuilder.buildNotLoggedInMenubar(menu);
+		} else if (permissions.isContractor()) {
+			MenuBuilder.buildContractorMenubar(menu, permissions);
+		} else if (permissions.isAssessment()) {
+			MenuBuilder.buildAssessmentMenubar(menu);
+		} else {
+			MenuBuilder.buildGeneralMenubar(menu, permissions, reports);
+		}
+
+		handleSingleChildMenu(menu);
+
+		return menu;
+	}
+
 	// For Operators, Corporate users, and PICS employees
-	public static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<Report> reports) {
+	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<Report> reports) {
 		// New menus for Dynamic Reports
 		addDashboardSubmenu(menu);
 
@@ -42,10 +65,6 @@ public class MenuBuilder {
 		addAuditGuardSubmenu(menu, permissions);
 
 		addCustomerServiceSubmenu(menu, permissions);
-
-		addAccountingSubmenu(menu, permissions);
-
-		addInsureGuardSubmenu(menu, permissions);
 
 		addManagementSubmenu(menu, permissions);
 
@@ -64,16 +83,20 @@ public class MenuBuilder {
 		}
 
 		addHelpSubmenu(menu);
+
+		addSearchBox(menu);
+
+		addUserSettingsMenu(menu, permissions);
 	}
 
-	public static void buildNotLoggedInMenubar(MenuComponent menu) {
+	private static void buildNotLoggedInMenubar(MenuComponent menu) {
 		if (menu == null)
 			return;
 
 		menu.addChild(getText("global.Home"), "index.jsp");
 	}
 
-	public static void buildContractorMenubar(MenuComponent menu, Permissions permissions) {
+	private static void buildContractorMenubar(MenuComponent menu, Permissions permissions) {
 		if (menu == null || permissions == null)
 			return;
 
@@ -129,7 +152,7 @@ public class MenuBuilder {
 		addChildAction(supportLinkMenu, "ProfileEdit");
 	}
 
-	public static void buildAssessmentMenubar(MenuComponent menu) {
+	private static void buildAssessmentMenubar(MenuComponent menu) {
 		if (menu == null)
 			return;
 
@@ -712,6 +735,10 @@ public class MenuBuilder {
 		return contactMenu;
 	}
 
+	private static void addUserSettingsMenu(MenuComponent menu, Permissions permissions) {
+		menu.addChild(permissions.getName());
+	}
+
 	public static String getHomePage(MenuComponent menu, Permissions permissions) {
 		if (permissions.isContractor())
 			return "ContractorView.action";
@@ -738,12 +765,20 @@ public class MenuBuilder {
 		return url;
 	}
 
-	public static void addSearchBox(MenuComponent menu) {
-		//menu.addChild("SearchBox");
+	private static void addSearchBox(MenuComponent menu) {
+		menu.addChild("SearchBox");
 	}
 
 	private static void addChildAction(MenuComponent menu, String actionName) {
 		menu.addChild(getTitle(actionName), actionName + ".action");
+	}
+
+	private static void handleSingleChildMenu(MenuComponent menu) {
+		if (menu == null)
+			return;
+
+		if (menu.getChildren().size() == 1)
+			menu = menu.getChildren().get(0);
 	}
 
 	private static String getText(String key) {
