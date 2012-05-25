@@ -330,7 +330,6 @@ public class UsersManage extends PicsActionSupport {
 				user.getAccount().setPrimaryContact(user);
 			// auto indexing, no longer need to call it.
 			// user.setNeedsIndexing(true);
-			System.out.println("user.isUsingDynamicReports() "+isUsingDynamicReports());
 			user.setUsingDynamicReports(isUsingDynamicReports());
 			user = userDAO.save(user);
 

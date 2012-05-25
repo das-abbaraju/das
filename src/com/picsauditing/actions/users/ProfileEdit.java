@@ -1,18 +1,12 @@
 package com.picsauditing.actions.users;
 
-import java.net.URLEncoder;
-import java.security.acl.Permission;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.PasswordValidator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
@@ -25,15 +19,11 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.dao.UserSwitchDAO;
 import com.picsauditing.interceptors.SecurityInterceptor;
-import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserLoginLog;
 import com.picsauditing.jpa.entities.UserSwitch;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.Subscription;
-import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -57,6 +47,7 @@ public class ProfileEdit extends PicsActionSupport {
 	protected String url;
 
 	private boolean goEmailSub = false;
+	private boolean usingDynamicReports=false;
 
 	/**
 	 * This method needs to be anonymous to prevent the user from redirecting on
@@ -111,6 +102,8 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
+		u.setUsingDynamicReports(isUsingDynamicReports());
+
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
 
@@ -124,7 +117,7 @@ public class ProfileEdit extends PicsActionSupport {
 
 		return SUCCESS;
 	}
-	
+
 
 	public String department() {
 		return "department";
@@ -250,6 +243,14 @@ public class ProfileEdit extends PicsActionSupport {
 
 	public boolean isGoEmailSub() {
 		return goEmailSub;
+	}
+
+	public boolean isUsingDynamicReports() {
+		return usingDynamicReports;
+	}
+
+	public void setUsingDynamicReports(boolean usingDynamicReports) {
+		this.usingDynamicReports = usingDynamicReports;
 	}
 
 	/**
