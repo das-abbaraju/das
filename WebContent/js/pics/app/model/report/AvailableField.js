@@ -41,6 +41,9 @@ Ext.define('PICS.model.report.AvailableField', {
         name: 'width',
         type: 'int',
         defaultValue: 0
+    }, {
+        name: 'url',
+        type: 'string'
     }],
 
     createColumn: function () {

@@ -69,12 +69,15 @@ Ext.define('PICS.model.report.Column', {
             text = available_field.get('text'),
             type = available_field.get('type'),
             url = available_field.get('url'),
+            width = available_field.get('width')
 
         //prevents header click sort
         data_set_column.sortable = false;
-        
+
         data_set_column.dataIndex = name;
         data_set_column.text = text;
+
+        data_set_column.width = width;
 
         switch(type) {
             case 'boolean':
