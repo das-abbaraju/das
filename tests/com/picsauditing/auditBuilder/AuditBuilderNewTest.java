@@ -53,14 +53,6 @@ public class AuditBuilderNewTest {
 	}
 
 	@Test
-	public void testBuildAudits_UC() throws Exception {
-		
-		Whitebox.invokeMethod(auditBuilder, "buildAudits", contractorAccount);
-		
-		assertTrue(true);
-	}
-	
-	@Test
 	public void testIsValidCorAudit_IsValidAuditDataAnswerIsYes() throws Exception {
 		when(auditType.getId()).thenReturn(AuditType.COR);
 		when(conAudit.getAuditType()).thenReturn(auditType);
