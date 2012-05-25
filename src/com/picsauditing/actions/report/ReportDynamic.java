@@ -78,7 +78,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String delete() throws Exception {
-		if (isValidUser(DELETE)) {
+		if (userHasPermission(DELETE)) {
 			permissions.tryPermission(OpPerms.Report, OpType.Delete);
 			ensureValidReport();
 			dao.remove(report);
@@ -91,7 +91,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String edit() {
-		if (isValidUser(EDIT)) {
+		if (userHasPermission(EDIT)) {
 			save(report);
 		} else {
 			json.put("success", false);
@@ -102,7 +102,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String create() {
-		if (isValidUser(CREATE)) {
+		if (userHasPermission(CREATE)) {
 			Report newReport = new Report();
 			newReport.setModelType(report.getModelType());
 			newReport.setName(report.getName());
@@ -124,15 +124,15 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("is_developer", permissions.isDeveloperEnvironment());
 		json.put("is_owner", isReportOwner());
 		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
-		json.put("user_can_edit", isValidUser(EDIT));
-		json.put("user_can_create", isValidUser(CREATE));
-		json.put("user_can_delete", isValidUser(DELETE));
+		json.put("user_can_edit", userHasPermission(EDIT));
+		json.put("user_can_create", userHasPermission(CREATE));
+		json.put("user_can_delete", userHasPermission(DELETE));
 
 		return JSON;
 	}
 
-	private boolean isValidUser(String action) {
-		if (report.getCreatedBy() == null || isReportOwner() || permissions.isDeveloperEnvironment()) {
+	private boolean userHasPermission(String action) {
+		if (hasNoOwner() || isReportOwner() || permissions.isDeveloperEnvironment()) {
 			return true;
 		} else if (action.equals(CREATE)) {
 			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
@@ -140,6 +140,10 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return false;
+	}
+
+	private boolean hasNoOwner() {
+		return report.getCreatedBy() == null;
 	}
 
 	private boolean isBaseReport() {

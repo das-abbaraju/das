@@ -8,13 +8,13 @@ import com.picsauditing.report.fields.AutocompleteType;
 
 public final class ReportFilterAutocompleter {
 	@Autowired
-	OperatorAutocompleteService clientSiteAutocompleteService;
+	OperatorAutocompleteService operatorAutocompleteService;
 	@Autowired
 	CountryAutocompleteService countryAutocompleteService;
 	@Autowired
 	StateAutocompleteService stateAutocompleteService;
 	@Autowired
-	OperatorTagAutocompleteService clientSiteTagAutocompleteService;
+	OperatorTagAutocompleteService operatorTagAutocompleteService;
 	@Autowired
 	TradeAutocompleteService tradeAutocompleteService;
 	@Autowired
@@ -38,10 +38,10 @@ public final class ReportFilterAutocompleter {
 			return stateAutocompleteService.tokenJson(searchQuery);
 		case Trade:
 			return tradeAutocompleteService.tokenJson(searchQuery);
-		case ClientSite:
-			return clientSiteAutocompleteService.tokenJson(searchQuery, permissions);
-		case ClientSiteTag:
-			return clientSiteTagAutocompleteService.tokenJson(searchQuery);
+		case Operator:
+			return operatorAutocompleteService.tokenJson(searchQuery, permissions);
+		case OperatorTag:
+			return operatorTagAutocompleteService.tokenJson(searchQuery);
 		case Contractor:
 			return contractorAutocompleteService.tokenJson(searchQuery);
 		case AuditQuestion:

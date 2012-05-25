@@ -27,7 +27,7 @@ public class JpaFieldExtractor {
 						field.setDatabaseColumnName(fieldAnnotation.sql().replace("{ALIAS}", alias));
 					} else {
 						Column columnAnnotation = getColumnAnnotation(method);
-						if (columnAnnotation == null) {
+						if (columnAnnotation == null || Strings.isEmpty(columnAnnotation.name())) {
 							field.setDatabaseColumnName(alias + "." + fieldName.toLowerCase());
 						} else {
 							field.setDatabaseColumnName(alias + "." + columnAnnotation.name());
