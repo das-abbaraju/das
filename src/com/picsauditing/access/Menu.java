@@ -16,9 +16,8 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		//List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 0");
 		// TODO Change this to use the reports_user_reports table
-		List<Report> reports = new ArrayList<Report>();
+		List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 10");
 
 		MenuComponent menu = MenuBuilder.buildMenubar(permissions, reports);
 
