@@ -96,6 +96,7 @@ Ext.define('PICS.controller.report.FilterController', {
 
     setFilterPanelClass: function (type) {
         var panelClass = '';
+
         switch (type) {
             case 'AccountName': panelClass = 'PICS.view.report.filter.StringFilter'; break;
             case 'Boolean': panelClass = 'PICS.view.report.filter.BooleanFilter'; break;
@@ -104,11 +105,11 @@ Ext.define('PICS.controller.report.FilterController', {
             case 'Integer': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
             case 'Number': panelClass = 'PICS.view.report.filter.IntegerFilter'; break;
             case 'String': panelClass = 'PICS.view.report.filter.StringFilter'; break;
+            case 'Enum': panelClass = 'PICS.view.report.filter.ListFilter'; break;
+            case 'Autocomplete': panelClass = 'PICS.view.report.filter.AutocompleteFilter'; break;
             default: panelClass = null; break;
         }
-        /*if (type !== 'Float') {
-            panelClass = null;
-        }*/
+        //if (type !== 'Float') {panelClass = null;}  Override to show only a specific filterType
         return panelClass;
     },
 

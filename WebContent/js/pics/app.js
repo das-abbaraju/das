@@ -10,11 +10,6 @@ Ext.application({
     appFolder: 'js/pics/app',
 
     constants: {
-        COUNTRIES: [
-            ['United States', 'US'],
-            ['United Kingdom', 'UK'],
-            ['Empty', 'blank']
-        ],
         NUMBERSTORE: [
             ['Equals', '='],
             ['GreaterThan', '>'],
