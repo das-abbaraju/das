@@ -49,8 +49,47 @@ Ext.define('PICS.controller.report.FilterController', {
 
         var expression = this.getFilterExpression().value;
 
-        //michael, do something here with 'expression' or I will disintegrate you with my sorceress
+        // TODO write a real grammar and parser for our filter expression DSL
 
+        // Split into tokens
+        var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
+        expression = expression.replace(validTokenRegex, ' $& ');
+        var tokens = expression.trim().split(/ +/);
+        expression = '';
+
+        // Check for invalid tokens and make sure parens are balanced
+        var parenCount = 0;
+        for (var i = 0; i < tokens.length; i += 1) {
+            var token = tokens[i];
+            if (token.search(validTokenRegex) === -1)
+                return false;
+
+            if (token === '(') {
+                parenCount += 1;
+                expression += '{';
+            } else if (token === ')') {
+                parentCount -= 1;
+                expression += '}';
+            } else if (token.toUpperCase() === 'AND') {
+                expression += ' AND ';
+            } else if (token.toUpperCase() === 'OR') {
+                expression += ' OR ';
+            } else if (token.search(/[0-9]+/) !== -1) {
+                if (token === '0')
+                    return false;
+
+                // Convert from counting number to index
+                var indexNum = new Number(token) - 1;
+                expression += '{' + indexNum + '}';
+            } else {
+                return false;
+            }
+
+            if (parenCount < 0)
+                return false;
+        }
+        if (parenCount !== 0)
+            return false;
 
         report.set('filterExpression', expression);
         PICS.app.fireEvent('refreshreport');
