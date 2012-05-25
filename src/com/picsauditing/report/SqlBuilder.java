@@ -1,7 +1,9 @@
 package com.picsauditing.report;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -332,11 +334,13 @@ public class SqlBuilder {
 
 	private String addQuotesToValues(String value) {
 		String[] values = value.split(",");
+		List<String> quotedList = new ArrayList<String>();
 		for(String individualValue : values){
 			individualValue.trim();
 			individualValue = "'"+individualValue+"'";
+			quotedList.add(individualValue);
 		}
-		value = StringUtils.join(values);
+		value = StringUtils.join(quotedList.toArray());
 		return value;
 	}
 

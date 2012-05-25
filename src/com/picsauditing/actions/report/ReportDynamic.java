@@ -41,6 +41,10 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
+/**
+ * execute() from superclass
+ *
+ */
 @SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
 	@Autowired
@@ -59,12 +63,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private String fieldName = "";
 	private String searchQuery = "";
-
-	@Override
-	public String execute() throws Exception {
-		// The report is loaded by a JavaScript request
-		return SUCCESS;
-	}
 
 	public String find() {
 		try {
