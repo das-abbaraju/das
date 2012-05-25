@@ -354,6 +354,14 @@ public class Permissions implements Serializable {
 		return false;
 	}
 
+	public boolean has(OpPerms opPerm) {
+		return this.hasPermission(opPerm, OpType.View);
+	}
+
+	public boolean has(OpPerms opPerm, OpType oType) {
+		return this.hasPermission(opPerm, oType);
+	}
+
 	public boolean hasPermission(OpPerms opPerm) {
 		return this.hasPermission(opPerm, OpType.View);
 	}

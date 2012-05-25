@@ -13,24 +13,24 @@ public class MenuWriter {
     public static JSONArray exportMenuToExtJS(MenuComponent menu) {
         List<MenuComponent> menuItems = menu.getChildren();
 
-        JSONArray json = new JSONArray();
+        JSONArray jsonArray = new JSONArray();
 
         int menuSize = menuItems.size();
 
         for (int i = 0; i < menuSize; i++) {
             MenuComponent menuItem = menuItems.get(i);
 
-            json.add(convertMenuComponentToExtJS(menuItem));
+            jsonArray.add(convertMenuComponentToExtJS(menuItem));
 
             if (i < menuSize - 1 && menuItem.getLevel() == 1) {
                 MenuComponent separator = new MenuComponent();
                 separator.setXtype("tbseparator");
 
-                json.add(convertMenuComponentToExtJS(separator));
+                jsonArray.add(convertMenuComponentToExtJS(separator));
             }
         }
 
-        return json;
+        return jsonArray;
     }
 
     public static JSONObject convertMenuComponentToExtJS(MenuComponent menu) {
