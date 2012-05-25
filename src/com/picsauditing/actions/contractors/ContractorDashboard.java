@@ -191,7 +191,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setPriority(60);
+			emailQueue.setHighPriority();
 			emailQueue.setFromAddress("billing@picsauditing.com");
 			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());

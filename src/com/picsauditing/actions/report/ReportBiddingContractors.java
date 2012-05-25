@@ -159,7 +159,7 @@ public class ReportBiddingContractors extends ReportAccount {
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailBuilder.addToken("permissions", permissions);
 				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setPriority(100);
+				emailQueue.setCriticalPriority();
 				emailQueue.setFromAddress((templateId == 73) ? "PICS Billing <billing@picsauditing.com>"
 						: "PICS Info <info@picsauditing.com>");
 				emailQueue.setViewableById(permissions.getTopAccountID());

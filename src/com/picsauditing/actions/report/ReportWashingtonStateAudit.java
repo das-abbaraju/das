@@ -94,7 +94,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 
 			// TODO clean up email language?
 			EmailQueue email = new EmailQueue();
-			email.setPriority(50);
+			email.setMediumPriority();
 			email.setBody(permissions.getName() + " from " + permissions.getAccountName()
 					+ " has requested a field audit for " + con.getName());
 			email.setSubject(op.getName() + " requests a field audit");

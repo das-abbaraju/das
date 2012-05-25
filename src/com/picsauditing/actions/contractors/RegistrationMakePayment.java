@@ -194,7 +194,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						EmailQueue emailQueue;
 						try {
 							emailQueue = emailBuilder.build();
-							emailQueue.setPriority(90);
+							emailQueue.setVeryHighPriority();
 							emailQueue.setViewableById(Account.PicsID);
 
 							emailSender.send(emailQueue);

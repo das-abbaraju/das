@@ -321,7 +321,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		EmailQueue emailQueue;
 		try {
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(60);
+			emailQueue.setHighPriority();
 			emailQueue.setViewableById(Account.PicsID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {

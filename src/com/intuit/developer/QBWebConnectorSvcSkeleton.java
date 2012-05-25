@@ -264,7 +264,7 @@ public class QBWebConnectorSvcSkeleton {
 				try {
 					EmailQueue email = new EmailQueue();
 					email.setToAddresses("errors@picsauditing.com");
-					email.setPriority(40);
+					email.setMediumPriority();
 					email.setSubject("QBWebConnector Errors");
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());

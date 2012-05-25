@@ -156,7 +156,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						EmailQueue emailQueue;
 						try {
 							emailQueue = emailBuilder.build();
-							emailQueue.setPriority(90);
+							emailQueue.setVeryHighPriority();
 							emailQueue.setViewableById(Account.PicsID);
 							emailSender.send(emailQueue);
 						} catch (Exception e) {

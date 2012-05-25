@@ -82,7 +82,7 @@ public class ChangePassword extends PicsActionSupport {
 
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);

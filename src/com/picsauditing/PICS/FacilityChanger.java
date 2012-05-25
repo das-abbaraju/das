@@ -108,7 +108,7 @@ public class FacilityChanger {
 			emailBuilder.addToken("operator", operator);
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setPriority(60);
+			emailQueue.setHighPriority();
 			emailQueue.setViewableBy(operator.getTopAccount());
 			emailSender.send(emailQueue);
 		}
@@ -176,7 +176,7 @@ public class FacilityChanger {
 					emailBuilder.setToAddresses("billing@picsauditing.com");
 
 					EmailQueue emailQueue = emailBuilder.build();
-					emailQueue.setPriority(60);
+					emailQueue.setHighPriority();
 					emailSender.send(emailQueue);
 				}
 
