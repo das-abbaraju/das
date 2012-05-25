@@ -3,17 +3,17 @@ package com.picsauditing.actions.audits;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.doNothing;
 import org.mockito.MockitoAnnotations;
 
 import com.picsauditing.EntityFactory;
@@ -36,7 +36,6 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.AnswerMap;
 
 public class AuditDataSaveTest extends PicsTest {
-
 	AuditDataSave auditDataSave;
 	User user;
 
@@ -63,6 +62,7 @@ public class AuditDataSaveTest extends PicsTest {
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() throws Exception {
+		super.setUp();
 		MockitoAnnotations.initMocks(this);
 
 		auditDataSave = new AuditDataSave();
@@ -177,9 +177,12 @@ public class AuditDataSaveTest extends PicsTest {
 	}
 
 	@Test
-	public void testExecute_NumberAnswer() throws Exception {
+	public void testExecute_BadNumberAnswer() throws Exception {
 		auditData.getQuestion().setQuestionType("Number");
-		auditData.setAnswer("12345");
+		auditData.setAnswer("12-345"); // the '-' in the middle will cause a BigDecimal exception
+
+		when(i18nCache.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[])null)).thenReturn("Unit Test String");
 		assertEquals("success", auditDataSave.execute());
+		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
 	}
 }
