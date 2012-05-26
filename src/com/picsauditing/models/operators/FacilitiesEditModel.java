@@ -15,7 +15,7 @@ public class FacilitiesEditModel {
 	private FacilitiesDAO facilitiesDAO;
 	public static final int PICS_US = 5;
 	public static final int PICS_CANADA = 6;
-	public static final int PICS_UAE = 8;
+	public static final int PICS_UAE = 7;
 	public static final int PICS_UK = 9;
 	public static final int PICS_FRANCE = 10;
 	public static final int PICS_GERMANY = 11;
