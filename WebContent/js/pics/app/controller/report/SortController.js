@@ -20,6 +20,19 @@ Ext.define('PICS.controller.report.SortController', {
             },
             'sortbuttons button[action=remove-sort]': {
                 click: this.removeSort
+            },
+            'reportsorttoolbar button[name=downloadexcel]': {
+                click: function (component) {
+                    var params = PICS.app.getController('report.ReportSaveController').getReportParameters();
+
+                    var reports = this.getReportReportsStore().first();
+
+                    var reportId = reports.getId();
+
+                    var url = 'ReportDynamic!download.action?' + params;
+
+                    document.location.href = url;
+                }
             }
         });
 

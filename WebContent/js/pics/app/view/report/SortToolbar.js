@@ -31,7 +31,7 @@ Ext.define('PICS.view.report.SortToolbar', {
         xtype: 'tbspacer'
     }, {
         xtype: 'button',
-        href: '#',
+        name: 'downloadexcel',
         icon: 'js/pics/resources/images/tools/icon_link_excel.png',
         target:'_self',
         scale: 'medium',
