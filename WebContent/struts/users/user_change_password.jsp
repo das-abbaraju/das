@@ -17,7 +17,7 @@
 				<li>
 					<div id="username_status"/>
 				</li>
-				<s:if test="permissions.admin && user.id != u.id" >
+				<s:if test="(permissions.admin && user.id != u.id)||(permissions.forcePasswordReset)" >
 					<s:hidden id="u" name="u" value="%{u.id}" />
 					<s:hidden name="user" value="%{user.id}" />
 				</s:if>

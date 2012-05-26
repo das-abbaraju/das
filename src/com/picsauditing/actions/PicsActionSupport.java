@@ -66,7 +66,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected BasicDAO dao;
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
-
+	@Autowired
+	protected UserDAO userDAO;
+	
 	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;
@@ -144,12 +146,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isAlpha;
 	}
-	
+
 	public boolean isBetaEnvironment() throws UnknownHostException {
-	    Boolean isBeta = getRequestHost().contains("beta");
-	    String server = InetAddress.getLocalHost().getHostName();
-	    
-	    return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		Boolean isBeta = getRequestHost().contains("beta");
+		String server = InetAddress.getLocalHost().getHostName();
+
+		return isBeta || server.equals("organizer1") || server.equals("organizer2");
 	}
 
 	public boolean isConfigurationEnvironment() {
@@ -167,7 +169,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isLocalhost;
 	}
-	
+
 	public boolean isI18nReady() {
 		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
 	}
@@ -199,9 +201,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected void loadPermissions(boolean autoLogin) {
-		if (permissions != null)
+		if (permissions != null) {
 			// Already set
 			return;
+		}
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
@@ -235,9 +238,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected boolean forceLogin() {
 
 		loadPermissions();
-		try {
+		
+	try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
+				// redirect("ProfileEdit.action?url=" +
+				// ServletActionContext.getRequest().getRequestURL());
+				redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
+						+ ServletActionContext.getRequest().getRequestURL());
 				return true;
 			}
 
@@ -256,7 +263,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		loadPermissions();
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				redirect("ProfileEdit.action?url=" + alternateReturnURL);
+				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
+				redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
+						+ alternateReturnURL);
 				return true;
 			}
 
@@ -461,12 +470,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 		return auditorList;
 	}
+
 	public Set<User> getSafetyList() {
-		if (safetyList == null) {			
+		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
 			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
-			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));					
-		}		
+			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
+		}
 		return safetyList;
 	}
 
@@ -635,9 +645,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public synchronized Collection<String> getAlertMessages() {
 		return alertMessages;
 	}
-	public synchronized void clearMessage(){
+
+	public synchronized void clearMessage() {
 		alertMessages = null;
 	}
+
 	/**
 	 * @return the i18n text to use for this page's title
 	 */
@@ -663,16 +675,16 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return helpUrl;
 	}
-	
+
 	public String getActionName() {
-        return ServletActionContext.getActionMapping().getName();
-    }
+		return ServletActionContext.getActionMapping().getName();
+	}
 
 	public String getMethodName() {
-	    return ServletActionContext.getActionMapping().getMethod();
+		return ServletActionContext.getActionMapping().getMethod();
 	}
-	
+
 	public String getProtocol() {
-        return URLUtils.getProtocol(ServletActionContext.getRequest());
-    }
+		return URLUtils.getProtocol(ServletActionContext.getRequest());
+	}
 }
