@@ -6,6 +6,58 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-5416 update insurance policies to be day after answer of expiration date, bump contractors
+-- update auto 
+update contractor_audit ca 
+join contractor_info ci on ci.id=ca.conID 
+join pqfdata pd on pd.auditID = ca.id 
+set ca.expiresDate=DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY), 
+ci.needsRecalculation=ci.needsRecalculation + 1, 
+ci.lastRecalculation=NULL 
+where ca.auditTypeID = 15 
+and ca.expiresDate > NOW() 
+and pd.questionID=2111 
+and STR_TO_DATE(pd.answer, '%m/%d/%Y') != '0000-00-00' 
+AND Date_Format(ca.expiresDate, '%Y-%m-%d')>DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY); 
+
+-- update general 
+update contractor_audit ca 
+join contractor_info ci on ci.id=ca.conID 
+join pqfdata pd on pd.auditID = ca.id 
+set ca.expiresDate=DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY), 
+ci.needsRecalculation=ci.needsRecalculation + 1, 
+ci.lastRecalculation=NULL 
+where ca.auditTypeID= 13 
+and ca.expiresDate > NOW() 
+and pd.questionID=2082 
+and STR_TO_DATE(pd.answer, '%m/%d/%Y') != '0000-00-00' 
+AND Date_Format(ca.expiresDate, '%Y-%m-%d')>DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY); 
+
+-- update excess 
+update contractor_audit ca 
+join contractor_info ci on ci.id=ca.conID 
+join pqfdata pd on pd.auditID = ca.id 
+set ca.expiresDate=DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY), 
+ci.needsRecalculation=ci.needsRecalculation + 1, 
+ci.lastRecalculation=NULL 
+where ca.auditTypeID = 16 
+and ca.expiresDate > NOW() 
+and pd.questionID=2117 
+and STR_TO_DATE(pd.answer, '%m/%d/%Y') != '0000-00-00' 
+AND Date_Format(ca.expiresDate, '%Y-%m-%d')>DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY); 
+
+-- update workers comp 
+update contractor_audit ca 
+join contractor_info ci on ci.id=ca.conID 
+join pqfdata pd on pd.auditID = ca.id 
+set ca.expiresDate=DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY), 
+ci.needsRecalculation=ci.needsRecalculation + 1, 
+ci.lastRecalculation=NULL 
+where ca.auditTypeID = 14 
+and ca.expiresDate > NOW() 
+and pd.questionID=2105 
+and STR_TO_DATE(pd.answer, '%m/%d/%Y') != '0000-00-00' 
+AND Date_Format(ca.expiresDate, '%Y-%m-%d')>DATE_ADD(STR_TO_DATE(pd.answer, '%m/%d/%Y'), INTERVAL 1 DAY);
 -- PICS-4647 Operator Flag Changes email template update for new totals
 update email_template t set t.body = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
