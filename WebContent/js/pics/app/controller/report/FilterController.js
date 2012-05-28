@@ -68,7 +68,7 @@ Ext.define('PICS.controller.report.FilterController', {
                 parenCount += 1;
                 expression += '{';
             } else if (token === ')') {
-                parentCount -= 1;
+                parenCount -= 1;
                 expression += '}';
             } else if (token.toUpperCase() === 'AND') {
                 expression += ' AND ';
