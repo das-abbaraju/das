@@ -53,7 +53,6 @@ public class ReportDynamic extends PicsActionSupport {
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
-	private static final boolean DOWNLOAD = true;
 
 	private Report report;
 	private int page = 1;
@@ -168,7 +167,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			buildSQL(!DOWNLOAD);
+			buildSQL();
 
 			if (builder.getDefinition().getColumns().size() > 0) {
 				QueryData data = queryData();
@@ -190,7 +189,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// This is in the wrong class, should be in SqlBuilder
-	private void buildSQL(boolean download) throws Exception {
+	private void buildSQL() throws Exception {
 		ensureValidReport();
 
 		addDefinition();
@@ -198,9 +197,7 @@ public class ReportDynamic extends PicsActionSupport {
 		builder.setReport(report);
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
-		
-		if (!download)
-			builder.addPaging(page);
+		builder.addPaging(page);
 
 		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
 			translateFilterValueNames(builder.getDefinition().getFilters());
@@ -231,7 +228,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String download() throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
 
-		buildSQL(DOWNLOAD);
+		buildSQL();
 
 		if (builder.getDefinition().getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
@@ -310,7 +307,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getReportParameters() throws Exception {
-		buildSQL(!DOWNLOAD);
+		buildSQL();
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
 		return JSON;
