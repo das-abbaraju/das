@@ -67,8 +67,9 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				permissions.tryPermission(OpPerms.ManageAudits, OpType.Edit);
 				if (save()) {
 					addActionMessage("Successfully saved"); // default message
-					this.redirect(getRedirectURL());
-					return BLANK;
+//					this.redirect(getRedirectURL());
+//					return SUCCESS;
+					return Redirect.SAVE;
 				}
 			}
 			if (button.equalsIgnoreCase("delete")) {
@@ -76,20 +77,23 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 				if (delete()) {
 					addActionMessage("Successfully removed"); // default message
 
-					this.redirect(getDeletedRedirectURL());
-
-					return BLANK;
+//					this.redirect(getDeletedRedirectURL());
+//
+//					return BLANK;
+					return Redirect.DELETE;
 				}
 			}
 			if (button.equalsIgnoreCase("updateAllAudits")) {
 				auditTypeDAO.updateAllAudits(id);
-				this.redirect(getRedirectURL());
-				return BLANK;
+//				this.redirect(getRedirectURL());
+//				return BLANK;
+				return Redirect.SAVE;
 			}
 			if (button.equalsIgnoreCase("updateAllAuditsCategories")) {
 				auditTypeDAO.updateAllCategories(auditType.getId(), id);
-				this.redirect(getRedirectURL());
-				return BLANK;
+//				this.redirect(getRedirectURL());
+//				return BLANK;
+				return Redirect.SAVE;
 			}
 
 			// Move and Copy only available for questions
@@ -98,7 +102,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 				if (move()) {
 					addActionMessage("Successfully moved.");
-					return redirect(getCopyMoveURL());
+//					return redirect(getCopyMoveURL());
+					return Redirect.MOVE;
 				}
 			}
 			if (button.equalsIgnoreCase("Copy")) {
@@ -106,7 +111,8 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 
 				if (copy()) {
 					addActionMessage("Successfully copied.");
-					return redirect(getCopyMoveURL());
+//					return redirect(getCopyMoveURL());
+					return Redirect.MOVE;
 				}
 			}
 		}
@@ -452,7 +458,7 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 		if (steps == null) {
 			steps = wfDAO.getWorkFlowSteps(workFlowID);
 		}
-
+		
 		return steps;
 	}
 
@@ -464,4 +470,11 @@ public class ManageAuditType extends RequiredLanguagesSupport implements Prepara
 			}
 		}
 	}
+
+	private static class Redirect {
+		static final String DELETE = "delete";
+		static final String SAVE = "save";
+		static final String MOVE = "move";
+	}
+
 }
