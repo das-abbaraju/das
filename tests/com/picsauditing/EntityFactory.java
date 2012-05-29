@@ -160,6 +160,7 @@ public class EntityFactory {
 		auditType.setId(auditTypeID);
 		auditType.setName(makeTranslatableString("Unit Test " + auditTypeID));
 		auditType.setClassType(AuditTypeClass.Audit);
+		auditType.setMonthsToExpire(12);
 		return auditType;
 	}
 
