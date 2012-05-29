@@ -457,6 +457,14 @@
 											cssClass="checkbox"
 											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
 										/><s:text name="ContractorAccount.transportationServices" />
+                                        <pics:fieldhelp title="Contractor Type">
+	                                        <s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
+	                                            <h5><s:property value="#conType.type" /></h5>
+	                                            
+	                                            <s:property value="#conType.description" escape="false" />
+	                                            <br />
+	                                        </s:iterator>
+                                        </pics:fieldhelp>										
 									</li>
 									<li>
 										<s:if test="hasImportPQFAudit">
