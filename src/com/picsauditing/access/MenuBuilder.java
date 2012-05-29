@@ -72,7 +72,7 @@ public class MenuBuilder {
 		addUserMenu(menu, permissions);
 	}
 
-	private static void buildNotLoggedInMenubar(MenuComponent menu) {
+	public static void buildNotLoggedInMenubar(MenuComponent menu) {
 		if (menu == null)
 			return;
 
