@@ -6,6 +6,14 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-4756 Remove orphaned questions
+-- NOTE: This should be done before the config upgrade
+-- Step 1 of 3
+DELETE pd from pqfdata pd
+join audit_question aq on aq.id=pd.questionID
+Left join  audit_category ac on aq.categoryID=ac.id
+where ac.id is null;
+
 -- PICS-5416 update insurance policies to be day after answer of expiration date, bump contractors
 -- update auto 
 update contractor_audit ca 
