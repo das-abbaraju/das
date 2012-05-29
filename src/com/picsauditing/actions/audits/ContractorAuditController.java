@@ -219,14 +219,8 @@ public class ContractorAuditController extends AuditActionSupport {
 		}
 
 		if (conAudit != null) {
-			isAddUpdatePaymentMethodMessage = false;
-			
 			getValidSteps();
 			
-			if (isAddUpdatePaymentMethodMessage) {
-				addActionMessage(getText("Audit.message.UpdatePayment"));
-			}
-
 			if (conAudit.getAuditType().getClassType().isPolicy() && conAudit.hasCaoStatus(AuditStatus.Incomplete)) {
 				for (ContractorAuditOperatorWorkflow caow : caowDAO.findbyAuditStatus(conAudit.getId(),
 						AuditStatus.Incomplete)) {
