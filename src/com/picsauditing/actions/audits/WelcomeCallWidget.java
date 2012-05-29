@@ -32,6 +32,7 @@ public class WelcomeCallWidget extends PicsActionSupport {
 		sql.addWhere("cao.status = 'Pending'");
 		sql.addWhere("c.welcomeAuditor_id = " + permissions.getShadowedUserID());
 		sql.addWhere("a.status = 'Active'");
+		sql.addWhere("ca.expiresDate > NOW() || ca.expiresDate is NULL");
 
 		try {
 			Database db = new Database();

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
 
+import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
@@ -42,17 +43,18 @@ public class ChangePassword extends PicsActionSupport {
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
 
+	@Anonymous
 	public String execute() throws Exception {
 		super.execute();
-
+		loadPermissions();
 		if (u == null)
 			u = dao.find(permissions.getUserId());
-		
+
 		if (u.getId() == user.getId())
 			user = u;
-		else		
+		else
 			user = userDAO.find(user.getId());
-		
+
 		return SUCCESS;
 	}
 
@@ -92,6 +94,7 @@ public class ChangePassword extends PicsActionSupport {
 		}
 	}
 
+	@Anonymous
 	public String changePassword() throws Exception {
 		/*
 		 * Some browsers (i.e. Chrome) store the user's password in the first
@@ -101,9 +104,10 @@ public class ChangePassword extends PicsActionSupport {
 		boolean changePassword = false;
 		// if the user is admin and user id and user's password need to be
 		// changed doesnt match
+		loadPermissions();
 
-		if (permissions.isAdmin() && user.getId() != u.getId()) {		
-			changePassword = true;			
+		if ((permissions.isAdmin() && user.getId() != u.getId()) || permissions.isForcePasswordReset()) {
+			changePassword = true;
 		} else {
 			if (u.isEncryptedPasswordEqual(passwordc)) {
 				changePassword = true;
@@ -112,10 +116,11 @@ public class ChangePassword extends PicsActionSupport {
 				return SUCCESS;
 			}
 		}
-		
+
 		if (changePassword) {
 			if (!Strings.isEmpty(password2)) {
 				boolean forcedReset = u.isForcePasswordReset();
+
 				if (!password1.equals(password2)) {
 					addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
 				}
@@ -150,7 +155,8 @@ public class ChangePassword extends PicsActionSupport {
 				 */
 				if (!Strings.isEmpty(url) && forcedReset) {
 					user = dao.save(user);
-					return redirect(url);
+					redirect(url);
+					return SUCCESS;
 				}
 			} else {
 				if (Strings.isEmpty(password1))
@@ -164,16 +170,17 @@ public class ChangePassword extends PicsActionSupport {
 		user = dao.save(user);
 		if (source.equalsIgnoreCase("manage"))
 			url = "UsersManage.action?account=" + user.getAccount() + "&user=" + user.getId() + "&isActive="
-					+ user.getIsActive() + "&isGroup=" + user.getIsGroup()+"&msg="+getText("global.Password.saved");
+					+ user.getIsActive() + "&isGroup=" + user.getIsGroup() + "&msg=" + getText("global.Password.saved");
 		else
-			url = "ProfileEdit.action?msg="+getText("global.Password.saved");
+			url = "ProfileEdit.action?msg=" + getText("global.Password.saved");
 		this.redirect(url);
 		return SUCCESS;
 	}
+
 	public boolean isHasProfileEdit() {
 		if (user.getAccount().isContractor())
 			return true;
-		
+
 		for (UserAccess userAccess : user.getPermissions()) {
 			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
 				return true;
@@ -187,6 +194,14 @@ public class ChangePassword extends PicsActionSupport {
 		this.u = u;
 	}
 
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -198,12 +213,15 @@ public class ChangePassword extends PicsActionSupport {
 	public User getU() {
 		return u;
 	}
-	public void setSource(String source){
+
+	public void setSource(String source) {
 		this.source = source;
 	}
-	public String getSource(){
+
+	public String getSource() {
 		return source;
 	}
+
 	public void setPasswordc(String passwordc) {
 		this.passwordc = passwordc;
 	}

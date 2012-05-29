@@ -126,8 +126,9 @@ public class AuditDataSave extends AuditActionSupport {
 				// insert mode
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
 				auditData.setAudit(audit);
-				if (!checkAnswerFormat(auditData, null))
+				if (!checkAnswerFormat(auditData, null)) {
 					return SUCCESS;
+				}
 			} else {
 				// update mode
 				if (!checkAnswerFormat(auditData, newCopy)) {
@@ -669,8 +670,13 @@ public class AuditDataSave extends AuditActionSupport {
 				format = new DecimalFormat("#,##0");
 			}
 
-			BigDecimal value = new BigDecimal(answer);
-			auditData.setAnswer(format.format(value));
+			try {
+				BigDecimal value = new BigDecimal(answer);
+				auditData.setAnswer(format.format(value));
+			} catch (Exception ignore) {
+				addActionError(getText("Audit.message.InvalidFormat"));
+				return false;
+			}
 		}
 
 		if ("Date".equals(questionType)) {
