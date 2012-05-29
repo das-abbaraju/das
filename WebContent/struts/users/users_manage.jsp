@@ -226,7 +226,13 @@
 							<s:text name="button.password" />
 						</a>
 					</li>
-						 
+					<li>
+						<s:if test="hasProfileEdit">
+							<a class="btn" href="UsersManage!emailPassword.action?user=<s:property value="user.id"/>">
+								<s:text name="UsersManage.SendResetPasswordEmail" />
+							</a>
+						</s:if>
+					</li>
 					 <pics:permission perm="SwitchUser">
 						<li>
 							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">

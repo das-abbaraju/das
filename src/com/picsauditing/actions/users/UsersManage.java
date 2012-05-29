@@ -1025,6 +1025,30 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public String emailPassword() throws Exception {
+
+		// Seeding the time in the reset hash so that each one will be
+		// guaranteed unique
+		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+		userDAO.save(user);
+
+		addActionMessage(sendRecoveryEmail(user));
+		return SUCCESS;
+	}
+
+	public boolean isHasProfileEdit() {
+		if (user.getAccount().isContractor())
+			return true;
+
+		for (UserAccess userAccess : user.getPermissions()) {
+			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
 	// TODO: Move this to Event Subscription Builder
 	public String sendRecoveryEmail(User user) {
 		try {
