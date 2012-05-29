@@ -59,6 +59,12 @@ public class MenuWriter {
             }
         } else {
             json.put("xtype", menu.getXtype());
+
+            // TODO get rid of this kludge
+        	if ("searchTerm".equals(menu.getName())) {
+        		json.put("name", menu.getName());
+        		json.put("emptyText", "enter search term");
+        	}
         }
 
         return json;

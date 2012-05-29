@@ -52,10 +52,11 @@ public class MenuBuilder {
 
 	// For Operators, Corporate users, and PICS employees
 	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<Report> reports) {
-		// New menus for Dynamic Reports
+		addPicsLogo(menu);
+
 		addDashboardSubmenu(menu);
 
-		addMyReportsSubmenu(menu, reports);
+		addReportsSubmenu(menu, reports);
 
 		//addContractorSubmenu(menu, permissions);
 
@@ -66,6 +67,8 @@ public class MenuBuilder {
 		addDevelopmentSubmenu(menu, permissions);
 
 		addHelpSubmenu(menu);
+
+		addFill(menu);
 
 		addSearchBox(menu);
 
@@ -132,8 +135,9 @@ public class MenuBuilder {
 		menu.addChild(getText("global.Resources"), "ContractorForms.action");
 
 		MenuComponent helpMenu = addHelpSubmenu(menu);
-		// TODO this looks fishy
-		addChildAction(helpMenu, "ProfileEdit");
+
+		if (permissions.hasPermission(OpPerms.EditProfile))
+			addChildAction(helpMenu, "ProfileEdit");
 	}
 
 	private static void buildAssessmentMenubar(MenuComponent menu) {
@@ -157,6 +161,13 @@ public class MenuBuilder {
 
 	private static void buildOperatorCorporateMenu(MenuComponent menu, Permissions permissions) {
 		if (menu == null || permissions == null)
+			return;
+
+		// TODO Flesh this out
+	}
+
+	private static void addPicsLogo(MenuComponent menu) {
+		if (menu == null)
 			return;
 
 		// TODO Flesh this out
@@ -258,7 +269,7 @@ public class MenuBuilder {
 			return;
 
 		if (permissions.isDeveloperEnvironment()) {
-			MenuComponent devMenu = menu.addChild("Dev");
+			MenuComponent devMenu = menu.addChild("Development");
 			devMenu.addChild("System Logging", "LoggerConfig.action");
 			devMenu.addChild("Page Logging", "PageLogger.action");
 			devMenu.addChild("Clear Cache", "ClearCache.action");
@@ -346,23 +357,52 @@ public class MenuBuilder {
 		}
 	}
 
-	private static void addMyReportsSubmenu(MenuComponent menu, List<Report> reports) {
+	private static void addReportsSubmenu(MenuComponent menu, List<Report> reports) {
 		if (menu == null || reports == null)
 			return;
 
-		MenuComponent myReportsMenu = menu.addChild("My Reports");
-		for (Report report : reports) {
-			myReportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
-		}
+		MenuComponent reportsMenu = menu.addChild("Reports");
 
-		myReportsMenu.addChild("Manage Reports", "ManageReports.action");
+		reportsMenu.addChild("Manage Reports", "ManageReports.action");
+
+		for (Report report : reports) {
+			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
+		}
 	}
 
 	private static void addUserMenu(MenuComponent menu, Permissions permissions) {
 		MenuComponent userMenu = menu.addChild(permissions.getName());
 		userMenu.addChild("Edit Profile", "ProfileEdit.action");
-		userMenu.addChild("My Schedule", "MySchedule.action");
+		userMenu.addChild("Schedule", "MySchedule.action");
 		userMenu.addChild("Logout", "Login.action?button=logout");
+	}
+
+	private static void addFill(MenuComponent menu) {
+		if (menu == null)
+			return;
+
+		MenuComponent fill = menu.addChild("fill");
+		fill.setXtype("tbfill");
+	}
+
+	private static void addSearchBox(MenuComponent menu) {
+		if (menu == null)
+			return;
+
+		MenuComponent searchBox = menu.addChild("searchTerm");
+		searchBox.setXtype("textfield");
+	}
+
+	private static void addChildAction(MenuComponent menu, String actionName) {
+		menu.addChild(getTitle(actionName), actionName + ".action");
+	}
+
+	private static void handleSingleChildMenu(MenuComponent menu) {
+		if (menu == null)
+			return;
+
+		if (menu.getChildren().size() == 1)
+			menu = menu.getChildren().get(0);
 	}
 
 	public static String getHomePage(MenuComponent menu, Permissions permissions) {
@@ -389,22 +429,6 @@ public class MenuBuilder {
 		}
 
 		return url;
-	}
-
-	private static void addSearchBox(MenuComponent menu) {
-		menu.addChild("SearchBox");
-	}
-
-	private static void addChildAction(MenuComponent menu, String actionName) {
-		menu.addChild(getTitle(actionName), actionName + ".action");
-	}
-
-	private static void handleSingleChildMenu(MenuComponent menu) {
-		if (menu == null)
-			return;
-
-		if (menu.getChildren().size() == 1)
-			menu = menu.getChildren().get(0);
 	}
 
 	private static String getText(String key) {
