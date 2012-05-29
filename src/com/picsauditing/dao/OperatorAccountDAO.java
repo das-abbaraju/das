@@ -230,17 +230,12 @@ public class OperatorAccountDAO extends PicsDAO {
 		if (Integer.parseInt(query.getSingleResult().toString()) > 0)
 			return false;
 
-		query = em.createQuery("DELETE FROM AuditCatOperator ao WHERE ao.operatorAccount.id = " + opID);
-		query.executeUpdate();
-		query = em.createQuery("DELETE FROM AuditQuestionOperatorAccount aq WHERE aq.operatorAccount.id = " + opID);
-		query.executeUpdate();
-		query = em.createQuery("DELETE FROM Facility f WHERE f.operator.id = " + opID);
-
 		OperatorFormDAO operatorFormDAO = (OperatorFormDAO) SpringUtils.getBean("OperatorFormDAO");
 		if (!operatorFormDAO.deleteOperatorForms(opID, ftpDir))
 			return false;
 
-		remove(operatorAccount);
+		operatorAccount.setStatus(AccountStatus.Deleted);
+		save(operatorAccount);
 		return true;
 	}
 
