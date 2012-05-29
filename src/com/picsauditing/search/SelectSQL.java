@@ -248,9 +248,6 @@ public class SelectSQL {
 			if (StringUtils.contains(subField, "\"")) {
 				alias = subField.substring(subField.lastIndexOf("\"",subField.lastIndexOf("\"")-1)+1, subField.lastIndexOf("\""));
 			}
-			else if (StringUtils.contains(subField, "`")) {
-				alias = subField.substring(subField.lastIndexOf("`",subField.lastIndexOf("`")-1)+1, subField.lastIndexOf("`"));
-			}
 			else if (StringUtils.contains(subField, "'")) {
 				alias = subField.substring(subField.lastIndexOf("'",subField.lastIndexOf("'")-1)+1, subField.lastIndexOf("'"));
 			}
