@@ -10,6 +10,7 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUserReport;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -30,7 +31,7 @@ public class MenuBuilder {
 		return buildMenubar(permissions, null);
 	}
 
-	public static MenuComponent buildMenubar(Permissions permissions, List<Report> reports) {
+	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUserReport> reports) {
 		MenuComponent menu = new MenuComponent();
 
 		if (!permissions.isLoggedIn()) {
@@ -51,7 +52,7 @@ public class MenuBuilder {
 	}
 
 	// For Operators, Corporate users, and PICS employees
-	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<Report> reports) {
+	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<ReportUserReport> reports) {
 		addPicsLogo(menu);
 
 		addDashboardSubmenu(menu);
@@ -357,7 +358,7 @@ public class MenuBuilder {
 		}
 	}
 
-	private static void addReportsSubmenu(MenuComponent menu, List<Report> reports) {
+	private static void addReportsSubmenu(MenuComponent menu, List<ReportUserReport> reports) {
 		if (menu == null || reports == null)
 			return;
 
@@ -365,7 +366,8 @@ public class MenuBuilder {
 
 		reportsMenu.addChild("Manage Reports", "ManageReports.action");
 
-		for (Report report : reports) {
+		for (ReportUserReport userReport : reports) {
+			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}
 	}

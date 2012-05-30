@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
@@ -15,7 +16,8 @@ public class ReportUserReport extends BaseTable {
 	private boolean canEdit;
 	private boolean favorite;
 
-	@Column(name = "userID", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "userID", nullable = false)
 	public User getUser() {
 		return user;
 	}
@@ -24,7 +26,8 @@ public class ReportUserReport extends BaseTable {
 		this.user = user;
 	}
 
-	@Column(name = "reportID", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "reportID", nullable = false)
 	public Report getReport() {
 		return report;
 	}

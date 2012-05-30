@@ -1,11 +1,10 @@
 package com.picsauditing.access;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUserReport;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
@@ -16,8 +15,8 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		// TODO Change this to use the reports_user_reports table
-		List<Report> reports = (List<Report>) dao.findWhere(Report.class, "id > 10");
+		// TODO Only add favorites to the menu
+		List<ReportUserReport> reports = dao.findWhere(ReportUserReport.class, "userID = " + permissions.getUserId());
 
 		MenuComponent menu = MenuBuilder.buildMenubar(permissions, reports);
 
