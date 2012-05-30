@@ -1,31 +1,58 @@
+#ContractorBadge-page
+{
+	padding-bottom: 40px;
+}
+
+#ContractorBadge-page a {
+    font-size: 12px;
+}
+
+#ContractorBadge-page #badgeInformation
+{
+	float: left;
+	width: 70%;
+}
+
+#ContractorBadge-page #badgeSteps
+{
+    background-color: #ACACAC;
+	float: left;
+	margin: 30px 0px 0px 10px;
+	overflow: hidden;
+	padding: 20px;
+	width: 15%;
+}
+
+#ContractorBadge-page #badgeSteps h3
+{
+	color: #FFF;
+	text-align: center;
+}
+
 #ContractorBadge-page .badges
 {
 	list-style-type: none;
-	margin: 40px 0px 0px 20px;
+	overflow: hidden;
+	margin: 40px 0px 20px 20px;
 }
 
 #ContractorBadge-page .badges li
 {
-	clear: both;
-	margin-bottom: 20px;
-	overflow: hidden;
-}
-
-#ContractorBadge-page .badge
-{
-	float: left;
-	margin-right: 20px;
-	width: 200px;
+    float: left;
+    overflow: hidden;
+    text-align: center;
+    width: 33%;
 }
 
 #ContractorBadge-page .code
 {
-	float: left;
+	/*float: left;*/
 }
 
 #ContractorBadge-page .code a
 {
 	font-size: 12px;
+	text-align: center;
 }
 
 #ContractorBadge-page .badges .pics_badge_container
@@ -35,12 +62,36 @@
 
 #ContractorBadge-page .badges textarea
 {
-	height: 120px; width: 550px;
+	display: none;
+    height: 120px;
+	width: 50%;
 }
 
 #ContractorBadge-page .badges .clip_container
 {
-	position: relative;	
+	text-align: center;	
+}
+
+#ContractorBadge-page .badges #pics_badge_container_80
+{
+    margin-top: 70px;
+}
+
+#ContractorBadge-page .badges #pics_badge_container_100
+{
+	margin-top: 50px;
+}
+
+#ContractorBadge-page #badgeControls
+{
+	margin-top: 10px;
+	text-align: center;
+}
+
+#ContractorBadge-page #badgeControls .picsbutton {
+	font-size: 14px;
+    margin-bottom: 20px;
+	padding: 10px;
 }
 
 #ContractorBadge-page .badges .clip_container embed

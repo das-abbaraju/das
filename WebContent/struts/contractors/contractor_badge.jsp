@@ -36,18 +36,18 @@
 	<s:include value="conHeader.jsp"/>
     
     <div id="${actionName}-page">
-        <s:text name="ContractorBadge.Information" />
-
-		<s:if test="!taskCompleted">        
-	        <s:url var="con_badge" action="ContractorBadge" method="save">
-	        	<s:param name="contractor" value="%{contractor.id}" />
-	        </s:url>
-	        
-	        <a href="${con_badge}">
-	        	<s:text name="ContractorBadge.Confirm" />
-	        </a>
-        </s:if>
+        <div id="badgeInformation">
+            <s:text name="ContractorBadge.Information" />
+        </div>
         
+        <div id="badgeSteps">
+            <s:text name="ContractorBadge.Steps" />
+        </div>
+        
+        <div class="clear">
+            <a id="footnote-1" href="http://captology.stanford.edu/resources/what-makes-a-website-credible.html">1. http://captology.stanford.edu/resources/what-makes-a-website-credible.html</a>
+        </div>            
+
         <ul class="badges">
             <li>
                 <div class="badge">
@@ -55,13 +55,16 @@
                 </div>
                 
                 <div class="code">
-                    <textarea>${badge_80}</textarea>
-                    
                     <div id="clip_container_80" class="clip_container">
                         <a href="javascript:;" id="clip_button_80">
-                            <s:text name="global.CopyToClipboard" />
+                            <s:text name="ContractorBadge.CopyCodeToClipboard" />
+                        </a>
+                        <br>
+                        <a class="toggleCode" href="javascript:;">
+                            <s:text name="global.ViewCode" />
                         </a>
                     </div>
+                    <textarea>${badge_80}</textarea>
                 </div>
             </li>
             <li>
@@ -70,31 +73,63 @@
                 </div>
                 
                 <div class="code">
-                    <textarea>${badge_100}</textarea>
-                    
                     <div id="clip_container_100" class="clip_container">
                         <a href="javascript:;" id="clip_button_100">
-                            <s:text name="global.CopyToClipboard" />
+                            <s:text name="ContractorBadge.CopyCodeToClipboard" />
                         </a>
+                        <br>
+                        <a class="toggleCode" href="javascript:;">
+                            <s:text name="global.ViewCode" />
+                        </a>                        
                     </div>
+                    <textarea>${badge_100}</textarea>
                 </div>
             </li>
             <li>
                 <div class="badge">
-                    ${badge_150}
+                    <div class="badgeSub">
+                        ${badge_150}
+                    </div>
                 </div>
                 
                 <div class="code">
-                    <textarea>${badge_150}</textarea>
-                    
                     <div id="clip_container_150" class="clip_container">
                         <a href="javascript:;" id="clip_button_150">
-                            <s:text name="global.CopyToClipboard" />
+                            <s:text name="ContractorBadge.CopyCodeToClipboard" />
+                        </a>
+                        <br>
+                        <a class="toggleCode" href="javascript:;">
+                            <s:text name="global.ViewCode" />
                         </a>
                     </div>
+                    <textarea>${badge_150}</textarea>                    
                 </div>
             </li>
         </ul>
         
+        <div id="badgeControls" class="clear">
+            <a href="${con_badge}" class="picsbutton positive">The Badge has been added.</a>
+
+            
+	        <s:if test="!taskCompleted">
+                <div id="removeNotification">
+		            <s:url var="con_badge" action="ContractorBadge" method="save">
+		                <s:param name="contractor" value="%{contractor.id}" />
+		            </s:url>
+		            
+		            <a href="${con_badge}">
+		                <s:text name="ContractorBadge.RemoveWithoutAdding" />
+		            </a>
+	            </div>
+	        </s:if>
+        </div>
+        <script language="javascript">
+            $(function() {
+                    $('#ContractorBadge-page a.toggleCode').click(function (event) {
+                        var textarea = $(this).parent().parent('.code').find('textarea');
+                        textarea.toggle();
+                    });
+            });
+        </script>
     </div>
 </body>
