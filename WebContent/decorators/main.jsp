@@ -70,6 +70,12 @@
 		
 		<meta http-equiv="Cache-Control" content="no-cache" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+
+        <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-touch-icon-144x144.png" />
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" href="css/print.css?v=${version}" />
