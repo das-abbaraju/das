@@ -9,13 +9,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "report_user_report")
 public class ReportUserReport extends BaseTable {
+
 	private User user;
 	private Report report;
 	private boolean canEdit;
 	private boolean favorite;
 
-	@Column(nullable = false)
-	@JoinColumn(name = "userID")
+	@Column(name = "userID", nullable = false)
 	public User getUser() {
 		return user;
 	}
@@ -24,8 +24,7 @@ public class ReportUserReport extends BaseTable {
 		this.user = user;
 	}
 
-	@Column(nullable = false)
-	@JoinColumn(name = "reportID")
+	@Column(name = "reportID", nullable = false)
 	public Report getReport() {
 		return report;
 	}
