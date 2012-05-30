@@ -340,7 +340,7 @@ public class SqlBuilder {
 			individualValue = "'"+individualValue+"'";
 			quotedList.add(individualValue);
 		}
-		value = StringUtils.join(quotedList.toArray());
+		value = StringUtils.join(quotedList.toArray(),",");
 		return value;
 	}
 
