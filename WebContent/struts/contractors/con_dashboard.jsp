@@ -447,7 +447,7 @@
     				<td width="15px"></td>
     				<td style="vertical-align:top; width: 48%">
     					<%-- Open Tasks --%>
-    					<s:if test="permissions.admin || permissions.contractor">
+    					<s:if test="permissions.admin || permissions.contractor || permissions.operator">
     						<div class="panel_placeholder">
     							<div class="panel">
     								<div class="panel_header">
