@@ -53,6 +53,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private static final String CREATE = "create";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
+	private static final boolean DOWNLOAD = true;
 
 	private Report report;
 	private int page = 1;
@@ -100,6 +101,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String create() {
+		System.out.println("REPORT: " + report.toJSON(true));
 		if (userHasPermission(CREATE)) {
 			Report newReport = new Report();
 			newReport.setModelType(report.getModelType());
@@ -107,9 +109,10 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setDescription(report.getDescription());
 			newReport.setParameters(report.getParameters());
 			newReport.setSharedWith(report.getSharedWith());
-
+			System.out.println("NEW REPORT: " + newReport.toJSON(true));
 			report = newReport;
-			save(report);
+
+			save(newReport);
 		} else {
 			json.put("success", false);
 			json.put("error", "Invalid User, does not have permission.");
@@ -157,6 +160,7 @@ public class ReportDynamic extends PicsActionSupport {
 			ensureValidReport();
 
 			report.setAuditColumns(permissions);
+			System.out.println("SAVED REPORT: " + report.toJSON(true));
 			dao.save(report);
 			json.put("success", true);
 			json.put("reportID", report.getId());
@@ -167,7 +171,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			buildSQL();
+			buildSQL(!DOWNLOAD);
 
 			if (builder.getDefinition().getColumns().size() > 0) {
 				QueryData data = queryData();
@@ -189,7 +193,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	// This is in the wrong class, should be in SqlBuilder
-	private void buildSQL() throws Exception {
+	private void buildSQL(boolean download) throws Exception {
 		ensureValidReport();
 
 		addDefinition();
@@ -197,7 +201,9 @@ public class ReportDynamic extends PicsActionSupport {
 		builder.setReport(report);
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
-		builder.addPaging(page);
+		
+		if (!download)
+			builder.addPaging(page);
 
 		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
 			translateFilterValueNames(builder.getDefinition().getFilters());
@@ -228,7 +234,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String download() throws Exception {
 		ExcelSheet excelSheet = new ExcelSheet();
 
-		buildSQL();
+		buildSQL(DOWNLOAD);
 
 		if (builder.getDefinition().getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
@@ -307,7 +313,7 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getReportParameters() throws Exception {
-		buildSQL();
+		buildSQL(!DOWNLOAD);
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
 		return JSON;
