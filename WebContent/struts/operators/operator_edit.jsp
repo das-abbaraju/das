@@ -575,7 +575,7 @@
 											</thead>
 											<tbody>
 												<s:iterator value="operator.accountUsers" status="role">
-													<s:hidden value="%{role}" name="accountRole" />
+													<%-- <s:hidden value="%{role}" name="accountRole" /> --%>
 													
 													<s:if test="role.description == 'Sales Representative' && current">
 														<tr>

@@ -772,4 +772,17 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			contractorOperatorDAO.remove(gcContractor);
 		}
 	}
+
+	public List<OperatorAccount> getNotChildOperatorList() throws Exception {
+		notChildOperatorList = getOperatorsNotMyChildren();
+		return notChildOperatorList;
+	}
+
+	
+	public List<OperatorAccount> getChildOperatorList() {
+		childOperatorList = operator.getChildOperators();
+		return childOperatorList;
+	}
+
+	
 }
