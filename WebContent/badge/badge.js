@@ -341,3 +341,10 @@
     
     badge.init();
 })();
+
+$(function() {
+        $('#ContractorBadge-page a.toggleCode').click(function (event) {
+            var textarea = $(this).parent().parent('.code').find('textarea');
+            textarea.toggle();
+        });
+});

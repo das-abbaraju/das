@@ -123,13 +123,5 @@
 	            </div>
 	        </s:if>
         </div>
-        <script language="javascript">
-            $(function() {
-                    $('#ContractorBadge-page a.toggleCode').click(function (event) {
-                        var textarea = $(this).parent().parent('.code').find('textarea');
-                        textarea.toggle();
-                    });
-            });
-        </script>
     </div>
 </body>
