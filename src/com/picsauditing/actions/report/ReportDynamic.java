@@ -27,6 +27,7 @@ import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUserReport;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.report.Definition;
@@ -50,7 +51,7 @@ public class ReportDynamic extends PicsActionSupport {
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
-	private static final String CREATE = "create";
+	private static final String COPY = "copy";
 	private static final String EDIT = "edit";
 	private static final String DELETE = "delete";
 	private static final boolean DOWNLOAD = true;
@@ -74,6 +75,50 @@ public class ReportDynamic extends PicsActionSupport {
 			jsonException(e);
 		}
 		return JSON;
+	}
+
+	public String create() {
+		System.out.println("current report name is " + report.getName());
+		if (userHasPermission(COPY)) {
+			Report newReport = new Report();
+			newReport.setModelType(report.getModelType());
+			newReport.setName(report.getName());
+			newReport.setDescription(report.getDescription());
+			newReport.setParameters(report.getParameters());
+			newReport.setSharedWith(report.getSharedWith());
+
+			report = newReport;
+			save(report);
+
+			ReportUserReport userReport = new ReportUserReport();
+			userReport.setAuditColumns(permissions);
+			userReport.setReport(report);
+			userReport.setUser(new User(permissions.getUserId()));
+			userReport.setFavorite(false);
+			userReport.setCanEdit(true);
+			dao.save(userReport);
+		} else {
+			json.put("success", false);
+			json.put("error", "Invalid User, does not have permission.");
+		}
+
+		return JSON;
+	}
+
+	private void save(Report report) {
+		try {
+			ensureValidReport();
+
+			report.setAuditColumns(permissions);
+			dao.save(report);
+
+			json.put("success", true);
+			json.put("reportID", report.getId());
+		} catch (Exception e) {
+			System.out.println("There was an exception");
+			e.printStackTrace();
+			jsonException(e);
+		}
 	}
 
 	public String delete() throws Exception {
@@ -100,42 +145,22 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	public String create() {
-		System.out.println("REPORT: " + report.toJSON(true));
-		if (userHasPermission(CREATE)) {
-			Report newReport = new Report();
-			newReport.setModelType(report.getModelType());
-			newReport.setName(report.getName());
-			newReport.setDescription(report.getDescription());
-			newReport.setParameters(report.getParameters());
-			newReport.setSharedWith(report.getSharedWith());
-			System.out.println("NEW REPORT: " + newReport.toJSON(true));
-			report = newReport;
-
-			save(newReport);
-		} else {
-			json.put("success", false);
-			json.put("error", "Invalid User, does not have permission.");
-		}
-
-		return JSON;
-	}
-
 	public String getUserStatus() {
 		json.put("is_developer", permissions.isDeveloperEnvironment());
 		json.put("is_owner", isReportOwner());
 		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
 		json.put("user_can_edit", userHasPermission(EDIT));
-		json.put("user_can_create", userHasPermission(CREATE));
+		json.put("user_can_create", userHasPermission(COPY));
 		json.put("user_can_delete", userHasPermission(DELETE));
 
 		return JSON;
 	}
 
 	private boolean userHasPermission(String action) {
-		if (hasNoOwner() || isReportOwner() || permissions.isDeveloperEnvironment()) {
+		if (hasNoOwner() || isReportOwner() || permissions.isDeveloperEnvironment())
 			return true;
-		} else if (action.equals(CREATE)) {
+
+		if (COPY.equals(action)) {
 			if (isBaseReport() || permissions.hasPermission(OpPerms.Report, OpType.Edit))
 				return true;
 		}
@@ -153,20 +178,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private boolean isReportOwner() {
 		return permissions.getUserId() == report.getCreatedBy().getId();
-	}
-
-	private void save(Report report) {
-		try {
-			ensureValidReport();
-
-			report.setAuditColumns(permissions);
-			System.out.println("SAVED REPORT: " + report.toJSON(true));
-			dao.save(report);
-			json.put("success", true);
-			json.put("reportID", report.getId());
-		} catch (Exception e) {
-			jsonException(e);
-		}
 	}
 
 	public String data() {
