@@ -122,7 +122,10 @@ public class ManageCategory extends ManageAuditType implements Preparable {
 
 	@Override
 	protected String getRedirectURL() {
-		return "ManageCategory.action?id=" + category.getId() + "&operationMode=RETRIEVE";
+		if (category.getParent() == null)
+			return "ManageAuditType.action?id=" + category.getAuditType().getId();
+		else
+			return "ManageCategory.action?id=" + category.getParent().getId();
 	}
 
 	@Override
