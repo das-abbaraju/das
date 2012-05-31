@@ -51,7 +51,7 @@ public class Column implements JSONable {
 	}
 
 	public String getFieldName() {
-		return fieldName;
+		return Strings.escapeQuotes(fieldName);
 	}
 
 	public void setFieldName(String fieldName) {

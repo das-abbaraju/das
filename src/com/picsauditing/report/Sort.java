@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 import com.picsauditing.jpa.entities.JSONable;
 import com.picsauditing.report.fields.Field;
+import com.picsauditing.util.Strings;
 
 public class Sort implements JSONable {
 
@@ -52,7 +53,7 @@ public class Sort implements JSONable {
 	}
 
 	public String getFieldName() {
-		return fieldName;
+		return Strings.escapeQuotes(fieldName);
 	}
 
 	public void setFieldName(String fieldName) {

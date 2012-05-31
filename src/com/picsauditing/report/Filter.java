@@ -116,7 +116,7 @@ public class Filter implements JSONable {
 	}
 
 	public String getValue() {
-		return value;
+		return Strings.escapeQuotes(value);
 	}
 
 	public void setValue(String value) {
