@@ -32,6 +32,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.SecurityAware;
+import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.BasicDAO;
@@ -68,7 +69,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected AppPropertyDAO propertyDAO;
 	@Autowired
 	protected UserDAO userDAO;
-	
+
 	protected Collection<String> alertMessages;
 
 	protected String requestURL = null;
@@ -238,13 +239,17 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected boolean forceLogin() {
 
 		loadPermissions();
-		
-	try {
+
+		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				// redirect("ProfileEdit.action?url=" +
 				// ServletActionContext.getRequest().getRequestURL());
-				redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
-						+ ServletActionContext.getRequest().getRequestURL());
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + ServletActionContext.getRequest().getRequestURL());
+				ChangePassword cp = new ChangePassword();
+				cp.resetPasswordLink(permissions.getUserId(), ServletActionContext.getRequest().getRequestURL()
+						.toString());
 				return true;
 			}
 
@@ -264,8 +269,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
-				redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
-						+ alternateReturnURL);
+				//redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
+				//		+ alternateReturnURL);
+				ChangePassword cp = new ChangePassword();
+				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
+
 				return true;
 			}
 

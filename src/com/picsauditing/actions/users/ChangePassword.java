@@ -1,9 +1,11 @@
 package com.picsauditing.actions.users;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
@@ -46,6 +48,10 @@ public class ChangePassword extends PicsActionSupport {
 			user = userDAO.find(user.getId());
 
 		return SUCCESS;
+	}
+
+	public void resetPasswordLink(int user, String url) throws IOException{
+		redirect("ChangePassword.action?source=profile&user=" + user + "&url="+ url);
 	}
 
 	@Anonymous
