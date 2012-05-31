@@ -40,7 +40,10 @@
 		        //Cancel the link behavior
 		        e.preventDefault();
 		        //Get the A tag
-		        var id = $(this).attr('href');
+
+		        console.log($(this))
+
+		        var popupWindow = $(this).next("#boxes").children(".ReportDialog")
 
 		        //Get the screen height and width
 		        var maskHeight = $(document).height();
@@ -58,11 +61,11 @@
 		        var winW = $(window).width();
 
 		        //Set the popup window to center
-		        $(id).css('top',  winH/2-$(id).height()/2);
-		        $(id).css('left', winW/2-$(id).width()/2);
+		        popupWindow.css('top',  winH/2-popupWindow.height()/2);
+		        popupWindow.css('left', winW/2-popupWindow.width()/2);
 
 		        //transition effect
-		        $(id).fadeIn(2000);
+		        popupWindow.fadeIn(2000);
 
 		    });
 
@@ -120,6 +123,7 @@
 				<Th>Report Name</Th>
 				<th>remove</th>
 				<th>change</th>
+				<th>copy</th>
 			</tr>
 		    <s:iterator value="reportsByUser">
 			    <tr>
@@ -139,16 +143,16 @@
 						<a href="ManageReports!deleteReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">this</a>
 					</td>
 					<td>
-						<a href="#dialog" name="modal">name</a>
+						<a href="javascript:" name="modal">name</a>
 						<div id="boxes">
 						    <!-- #customize your modal window here -->
-						    <div id="dialog" class="window">
+						    <div class="ReportDialog window">
 						        <s:form cssClass="form" id="userSaveReportName">
 						    		<s:hidden name="id" />
 									<fieldset>
 									Change Name
 										<li>
-											<s:textfield name="report.name" />
+											<s:textfield name="name" value="%{report.name}" />
 											<pics:fieldhelp title="Change Name">
 												<p>
 													Change Name
@@ -167,6 +171,9 @@
 						    <!-- Do not remove div#mask, because you'll need it to fill the whole screen --> 
 						    <div id="mask"></div>
 						</div>
+					</td>
+					<td>
+						<a href="ManageReports!createReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">this</a>
 					</td>
 				</tr>
 			</s:iterator>

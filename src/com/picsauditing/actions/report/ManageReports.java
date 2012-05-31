@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUserReport;
 
 @SuppressWarnings("serial")
@@ -18,7 +19,7 @@ public class ManageReports extends PicsActionSupport {
 
 	public String execute() throws Exception {
 		super.execute();
-		//loadPermissions();
+		loadPermissions();
 		getCustomReport(reportType);
 		return SUCCESS;
 	}
@@ -39,7 +40,6 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() throws Exception {
 		setReport(dao.find(ReportUserReport.class, id));
-		//ensureValidReport();
 		dao.remove(report);
 		getCustomReport(reportType);
 		return SUCCESS;
@@ -47,7 +47,6 @@ public class ManageReports extends PicsActionSupport {
 
 	public String changeReportName() throws Exception {
 		setReport(dao.find(ReportUserReport.class, id));
-		//ensureValidReport();
 		report.getReport().setName(name);
 		dao.save(report);
 		getCustomReport(reportType);
@@ -56,9 +55,19 @@ public class ManageReports extends PicsActionSupport {
 
 	public String changeFavorite() throws Exception{
 		setReport(dao.find(ReportUserReport.class, id));
-		//ensureValidReport();
 		report.setFavorite(favorite);
 		dao.save(report);
+		getCustomReport(reportType);
+		return SUCCESS;
+	}
+
+	public String createReport(){
+		setReport(dao.find(ReportUserReport.class, id));
+
+		ReportDynamic dr = new ReportDynamic();
+		dr.setReport((Report)report.getReport());
+		dr.create();
+
 		getCustomReport(reportType);
 		return SUCCESS;
 	}
