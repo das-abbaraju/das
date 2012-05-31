@@ -211,9 +211,15 @@ public class TranslationActionSupport extends ActionSupport {
 	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
 		Map<String, String> newTranslationMap = new HashMap<String, String>();
-
+		
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
-			newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
+			if("en_UK".equalsIgnoreCase(entry.getKey())) {
+				newTranslationMap.put("English - United Kingdom", entry.getValue());
+			}
+			else {
+				newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
+			}
+			
 		}
 
 		if (!includeLocaleStatic) {
