@@ -159,6 +159,15 @@
 												</p>
 											</pics:fieldhelp>
 										</li>
+										Change Description
+										<li>
+											<s:textfield name="description" value="%{report.description}" />
+											<pics:fieldhelp title="Change Description">
+												<p>
+													Change Description
+												</p>
+											</pics:fieldhelp>
+										</li>
 									</fieldset>
 									<fieldset class="form submit">
 										<li>

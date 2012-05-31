@@ -13,6 +13,7 @@ public class ManageReports extends PicsActionSupport {
 	private List<ReportUserReport> reportsByUser = new ArrayList<ReportUserReport>();
 
 	private String name = "";
+	private String description = "";
 	private String reportType = "";
 	private int id;
 	private boolean favorite;
@@ -48,6 +49,7 @@ public class ManageReports extends PicsActionSupport {
 	public String changeReportName() throws Exception {
 		setReport(dao.find(ReportUserReport.class, id));
 		report.getReport().setName(name);
+		report.getReport().setDescription(description);
 		dao.save(report);
 		getCustomReport(reportType);
 		return SUCCESS;
@@ -96,6 +98,13 @@ public class ManageReports extends PicsActionSupport {
 		return name;
 	}
 
+	public void setDescription(String description){
+		this.description = description;
+	}
+
+	public String getDescription(){
+		return description;
+	}
 	public String getReportType() {
 		return reportType;
 	}
