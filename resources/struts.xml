@@ -409,7 +409,7 @@
 			<result>struts/reports/report_dynamic.jsp</result>
 		</action>
 		<action name="ManageReports" class="com.picsauditing.actions.report.ManageReports">
-			<result>struts/reports/report_manage.jsp</result>
+			<result>struts/reports/manage_reports.jsp</result>
 		</action>
 		<action name="Dashboard" class="com.picsauditing.actions.DashboardHome">
 			<result>struts/dashboard.jsp</result>

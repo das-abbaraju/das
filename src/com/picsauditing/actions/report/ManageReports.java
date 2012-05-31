@@ -1,70 +1,113 @@
 package com.picsauditing.actions.report;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.access.UserAccess;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.ReportUserReport;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
-	private User user;
-	private List<Report> reportsByUser = new ArrayList<Report>();
-	private int reportID;
+	private ReportUserReport report;
+	private List<ReportUserReport> reportsByUser = new ArrayList<ReportUserReport>();
 
-	@Autowired
-	protected UserDAO userDAO;
+	private String name = "";
+	private String reportType = "";
+	private int id;
+	private boolean favorite;
 
 	public String execute() throws Exception {
 		super.execute();
-		setUser(permissions.getUserId());
-		
+		//loadPermissions();
+		getCustomReport(reportType);
 		return SUCCESS;
 	}
-	
-	public String deleteReport() throws NoRightsException {
-		
-		setUser(permissions.getUserId());
-		reportsByUser = user.getReports();
-		for (int i = 0; i < reportsByUser.size(); i++) {
-			if (reportsByUser.get(i).getId() == reportID) {
-				// remove from the DB
-				dao.remove(reportsByUser.get(i));
-				// remove from the list
-				reportsByUser.remove(i);
-			}
+
+	private void getCustomReport(String reportType) {
+		if (reportType.equals("template")) {
+			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId(), 2));
+		} else if (reportType.equals("favorite")) {
+			setReportsByUser(dao.findWhere(ReportUserReport.class,
+					"favorite=1 and createdBy=" + permissions.getUserId()));
+		} else if (reportType.equals("saved")) {
+			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId()));
+		} else {
+			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId()));
 		}
+
+	}
+
+	public String deleteReport() throws Exception {
+		setReport(dao.find(ReportUserReport.class, id));
+		//ensureValidReport();
+		dao.remove(report);
+		getCustomReport(reportType);
 		return SUCCESS;
 	}
 
-	private void setUser(int userId) {
-		this.user = userDAO.find(userId);
+	public String changeReportName() throws Exception {
+		setReport(dao.find(ReportUserReport.class, id));
+		//ensureValidReport();
+		report.getReport().setName(name);
+		dao.save(report);
+		getCustomReport(reportType);
+		return SUCCESS;
 	}
 
-	public User getUser() {
-		return user;
+	public String changeFavorite() throws Exception{
+		setReport(dao.find(ReportUserReport.class, id));
+		//ensureValidReport();
+		report.setFavorite(favorite);
+		dao.save(report);
+		getCustomReport(reportType);
+		return SUCCESS;
 	}
 
-	public List<Report> getReportsByUser() {
-		return user.getReports();
+	public ReportUserReport getReport() {
+		return report;
 	}
 
-	public int getReportID() {
-		return reportID;
+	public void setReport(ReportUserReport report) {
+		this.report = report;
 	}
 
-	public void setReportID(int reportID) {
-		this.reportID = reportID;
+	public void setReportsByUser(List<ReportUserReport> reportsByUser) {
+		this.reportsByUser = reportsByUser;
 	}
 
+	public List<ReportUserReport> getReportsByUser() {
+		return reportsByUser;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(String reportType) {
+		this.reportType = reportType;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public boolean isFavorite(){
+		return favorite;
+	}
+
+	public void setFavorite(boolean favorite){
+		this.favorite = favorite;
+	}
 }
