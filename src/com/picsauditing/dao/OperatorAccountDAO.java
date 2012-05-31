@@ -212,7 +212,6 @@ public class OperatorAccountDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
-	@Transactional(propagation = Propagation.NESTED)
 	public boolean removeAllByOpID(OperatorAccount operatorAccount, String ftpDir) {
 		int opID = operatorAccount.getId();
 
