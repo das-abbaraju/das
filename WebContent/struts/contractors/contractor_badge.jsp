@@ -38,15 +38,14 @@
     <div id="${actionName}-page">
         <div id="badgeInformation">
             <s:text name="ContractorBadge.Information" />
+            <a id="footnote-1" href="http://captology.stanford.edu/resources/what-makes-a-website-credible.html">1. http://captology.stanford.edu/resources/what-makes-a-website-credible.html</a>
         </div>
         
         <div id="badgeSteps">
             <s:text name="ContractorBadge.Steps" />
         </div>
         
-        <div class="clear">
-            <a id="footnote-1" href="http://captology.stanford.edu/resources/what-makes-a-website-credible.html">1. http://captology.stanford.edu/resources/what-makes-a-website-credible.html</a>
-        </div>            
+        <div class="clear"></div>            
 
         <ul class="badges">
             <li>
