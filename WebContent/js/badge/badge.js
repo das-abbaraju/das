@@ -4,9 +4,23 @@
             init: function () {
                 if ($('#ContractorBadge-page').length) {
                     this.initializeCopyToClipboard();
+
                     $('#ContractorBadge-page a.toggleCode').click(function (event) {
-                        var textarea = $(this).closest('.code').find('textarea');
+                        var textarea = $(this).closest('.badgeIcon ').find('textarea');
                         textarea.toggle();
+                    });
+
+                    $("#badgeSize").change(function (event) {
+                        var badges = $(".badgeIcon");
+
+                        badges.hide();
+
+                        switch (event.currentTarget.value) {
+                            case "small": $("#badge_80").show(); break;
+                            case "medium": $("#badge_100").show();break;
+                            case "large": $("#badge_150").show();break;
+                            default: break;
+                        }
                     });
                 }
             },
