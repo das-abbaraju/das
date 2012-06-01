@@ -28,6 +28,7 @@ import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserSwitchDAO;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -388,11 +389,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			throw new NoPermissionException("Delete Account");
 		}
 
-		boolean removed = operatorDao.removeAllByOpID(operator, getFtpDir());
-		if (!removed) {
-			addActionError(getText("FacilitiesEdit.error.UnableToDeleteAccount", new Object[] { operator.getName() }));
-			return SUCCESS;
-		}
+		operator.setStatus(AccountStatus.Deleted);
+		save();
+		clearMessages();
 
 		redirect("ReportAccountList.action");
 		return SUCCESS;
