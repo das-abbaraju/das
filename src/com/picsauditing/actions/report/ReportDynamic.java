@@ -26,7 +26,7 @@ import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUserReport;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
@@ -87,7 +87,7 @@ public class ReportDynamic extends PicsActionSupport {
 			report = newReport;
 			save(report);
 
-			ReportUserReport userReport = new ReportUserReport();
+			ReportUser userReport = new ReportUser();
 			userReport.setAuditColumns(permissions);
 			userReport.setReport(report);
 			userReport.setUser(report.getCreatedBy());
@@ -140,9 +140,9 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private boolean userHasPermission(String action) {
-		List<ReportUserReport> reportUserReportList = dao.findWhere(ReportUserReport.class, "t.user.id = "
+		List<ReportUser> reportUserReportList = dao.findWhere(ReportUser.class, "t.user.id = "
 				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
-		ReportUserReport reportUserReport = null;
+		ReportUser reportUserReport = null;
 
 		if (reportUserReportList.size() == 1) {
 			reportUserReport = reportUserReportList.get(0);
@@ -157,11 +157,11 @@ public class ReportDynamic extends PicsActionSupport {
 		return false;
 	}
 
-	private boolean canRead(ReportUserReport reportUserReport) {
+	private boolean canRead(ReportUser reportUserReport) {
 		return (reportUserReport != null);
 	}
 
-	private boolean canEdit(ReportUserReport reportUserReport) {
+	private boolean canEdit(ReportUser reportUserReport) {
 		return (reportUserReport != null && reportUserReport.isCanEdit());
 	}
 
