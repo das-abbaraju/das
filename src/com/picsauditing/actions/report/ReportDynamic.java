@@ -28,9 +28,11 @@ import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
+import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.Filter;
 import com.picsauditing.report.QueryData;
+import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
@@ -296,9 +298,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 		for (Field field : builder.getAvailableFields().values()) {
 			if (isCanSeeQueryField(field)) {
+				field.setText(translateLabel(field));
 				JSONObject obj = field.toJSONObject();
 				obj.put("category", translateCategory(field.getCategory().toString()));
-				obj.put("text", translateLabel(field));
 				String help = getText("Report." + field.getName() + ".help");
 				if (help != null)
 					obj.put("help", help);
@@ -314,9 +316,28 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String getReportParameters() throws Exception {
 		buildSQL(!DOWNLOAD);
+		addTranslatedLabelsToReportParameters(report.getDefinition());
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
 		return JSON;
+	}
+	
+	private void addTranslatedLabelsToReportParameters(Definition definition) {
+		if (definition.getColumns().size() > 0) {
+			for (Column column : definition.getColumns()) {
+				column.getField().setText(translateLabel(column.getField()));
+			}
+		}
+		if (definition.getFilters().size() > 0) {
+			for (Filter filter : definition.getFilters()) {
+				filter.getField().setText(translateLabel(filter.getField()));
+			}
+		}
+		if (definition.getSorts().size() > 0) {
+			for (Sort sort : definition.getSorts()) {
+				sort.getField().setText(translateLabel(sort.getField()));
+			}
+		}
 	}
 
 	public String fillTranslations() {

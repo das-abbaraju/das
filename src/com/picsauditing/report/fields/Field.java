@@ -21,6 +21,7 @@ import com.picsauditing.util.Strings;
 public class Field implements JSONAware {
 	private Class<?> fieldClass;
 	private String name;
+	private String text;
 	private String databaseColumnName;
 	private FilterType filterType = FilterType.String;
 	private AutocompleteType autocompleteType = AutocompleteType.None;
@@ -72,7 +73,7 @@ public class Field implements JSONAware {
 		// TODO Move this to SimpleColumn.js toGridColumn
 		JSONObject json = new JSONObject();
 		json.put("name", name);
-		json.put("text", name);
+		json.put("text", text);
 
 		if (width > 0)
 			json.put("width", width);
@@ -106,21 +107,6 @@ public class Field implements JSONAware {
 		return toJSONObject().toJSONString();
 	}
 
-//	public void fromJSONObject(JSONObject json) {
-//		this.name = (String) json.get("name");
-//		this.name = (String) json.get("text");
-//		this.width = Integer.parseInt((String)json.get("width"));
-//		this.visible = Boolean.parseBoolean((String)json.get("visible"));
-//		this.filterable = Boolean.parseBoolean((String)json.get("filterable"));
-//		this.sortable = Boolean.parseBoolean((String)json.get("sortable"));
-//		this.hidden = Boolean.parseBoolean((String)json.get("hidden"));
-//		this.flex = Integer.parseInt((String)json.get("flex"));
-//		this.url = (String) json.get("url");
-//		this.renderer = (Renderer) json.get("renderer");
-//		this.filterType = (FilterType) json.get("filterType");
-//		this.type = (ExtFieldType) json.get("type");
-//	}
-//
 	public Field translate(String prefix, String suffix) {
 		this.preTranslation = prefix;
 		this.postTranslation = suffix;
@@ -152,6 +138,15 @@ public class Field implements JSONAware {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public String getDatabaseColumnName() {
 		return databaseColumnName;
 	}
