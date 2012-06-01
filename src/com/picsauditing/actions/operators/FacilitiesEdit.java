@@ -23,7 +23,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.RecordNotFoundException;
 import com.picsauditing.actions.users.UserAccountRole;
 import com.picsauditing.dao.AccountUserDAO;
-import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.FacilitiesDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.dao.UserDAO;
@@ -32,16 +31,13 @@ import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.AccountUser;
 import com.picsauditing.jpa.entities.ApprovalStatus;
 import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorOperatorRelationshipType;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.Naics;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OperatorForm;
 import com.picsauditing.jpa.entities.State;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.jpa.entities.WaitingOn;
 import com.picsauditing.models.operators.FacilitiesEditModel;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -51,8 +47,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	@Autowired
 	private AccountUserDAO accountUserDAO;
-	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private FacilitiesDAO facilitiesDAO;
 	@Autowired
@@ -66,6 +60,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	private String createType;
 	private List<Integer> facilities;
+	private List<Integer> clients = new ArrayList<Integer>();
 	private Set<OperatorAccount> relatedFacilities = null;
 	private int nameId;
 	private String name;
@@ -77,12 +72,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private Country country;
 	private State state;
 	private int contactID;
-	private boolean generalContractor;
-	private ContractorOperator linkedAccount;
 	private boolean autoApproveRelationships;
 
 	public List<OperatorAccount> notChildOperatorList;
 	public List<OperatorAccount> childOperatorList;
+
+	private List<OperatorAccount> notSelectedClients;
+	private List<OperatorAccount> selectedClients;
 
 	public String execute() throws Exception {
 		findOperator();
@@ -104,8 +100,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		notChildOperatorList = getOperatorsNotMyChildren();
 		childOperatorList = operator.getChildOperators();
 
-		generalContractor = operator.isGeneralContractor();
-		linkedAccount = operator.getGcContractor();
+		loadSelectedClients();
 
 		return SUCCESS;
 	}
@@ -217,6 +212,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (operator.getId() == 0) {
 			operator.setType(getCreateType());
 		}
+
 		if (facilities == null) {
 			facilities = new ArrayList<Integer>();
 			for (Facility fac : operator.getOperatorFacilities()) {
@@ -229,7 +225,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		if (state != null && !"".equals(state.getIsoCode()) && !state.equals(operator.getState()))
 			operator.setState(state);
 
-		saveGeneralContractorRelationship();
 		if (hasActionErrors()) {
 			return SUCCESS;
 		}
@@ -305,25 +300,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				}
 			}
 
-			if (operator.getGcContractor() != null
-					&& operator.getGcContractor().getContractorAccount().getStatus().isActive()) {
-				List<ContractorOperator> existingContractorOperator = contractorOperatorDAO
-						.findWhere("operatorAccount.id = " + operator.getId() + " AND contractorAccount.id = "
-								+ operator.getGcContractor().getContractorAccount().getId());
-
-				if (existingContractorOperator.size() > 0) {
-					for (ContractorOperator existing : existingContractorOperator) {
-						operator.getContractorOperators().remove(existing);
-						contractorOperatorDAO.remove(existing);
-					}
-				}
-
-				operator.getGcContractor().setOperatorAccount(operator);
-				operator.getGcContractor().setAuditColumns(permissions);
-				operator.getGcContractor().setFlagColor(FlagColor.Clear);
-				operator.getGcContractor().setType(ContractorOperatorRelationshipType.GeneralContractor);
-				contractorOperatorDAO.save(operator.getGcContractor());
-			}
+			saveLinkedClientsForGeneralContractor();
 
 			operator.setAuditColumns(permissions);
 			operator.setNameIndex();
@@ -420,6 +397,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
 	public void setFacilities(List<Integer> facilities) {
 		this.facilities = facilities;
+	}
+
+	public List<Integer> getClients() {
+		return clients;
+	}
+
+	public void setClients(List<Integer> clients) {
+		this.clients = clients;
 	}
 
 	public String getCreateType() {
@@ -561,22 +546,6 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		this.contactID = contactID;
 	}
 
-	public boolean isGeneralContractor() {
-		return generalContractor;
-	}
-
-	public void setGeneralContractor(boolean generalContractor) {
-		this.generalContractor = generalContractor;
-	}
-
-	public ContractorOperator getLinkedAccount() {
-		return linkedAccount;
-	}
-
-	public void setLinkedAccount(ContractorOperator linkedAccount) {
-		this.linkedAccount = linkedAccount;
-	}
-
 	/**
 	 * @param autoApproveRelationships
 	 *            the autoApproveRelationships to set
@@ -662,6 +631,22 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return permissions.hasPermission(OpPerms.ManageOperators, OpType.Delete);
 	}
 
+	public List<OperatorAccount> getNotSelectedClients() {
+		return notSelectedClients;
+	}
+
+	public void setNotSelectedClients(List<OperatorAccount> notSelectedClients) {
+		this.notSelectedClients = notSelectedClients;
+	}
+
+	public List<OperatorAccount> getSelectedClients() {
+		return selectedClients;
+	}
+
+	public void setSelectedClients(List<OperatorAccount> selectedClients) {
+		this.selectedClients = selectedClients;
+	}
+
 	public int getPendingAndNotApprovedRelationshipCount() throws RecordNotFoundException, Exception {
 		if (operator == null)
 			findOperator();
@@ -669,6 +654,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		int pendingAndNotApprovedCount = dao.getCount(ContractorOperator.class,
 				"operatorAccount.id = " + operator.getId() + " AND (workStatus = 'P' OR workStatus = 'N')");
 		return pendingAndNotApprovedCount;
+	}
+
+	private void loadSelectedClients() {
+		notSelectedClients = operatorDao.findWhere(false, "a.status IN ('Active'"
+				+ (operator.getStatus().isDemo() ? ", 'Demo'" : "") + ")");
+		selectedClients = operator.getLinkedClientSites();
+
+		notSelectedClients.removeAll(selectedClients);
 	}
 
 	// TODO: This should be converted to Struts2 Validation
@@ -726,49 +719,47 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		}
 	}
 
-	private void saveGeneralContractorRelationship() {
-		ContractorOperator gcContractor = operator.getGcContractor();
-		if (generalContractor) {
-			if (linkedAccount == null || linkedAccount.getContractorAccount() == null) {
-				addActionError(getText("FacilitiesEdit.PleaseSelectContractorForGC"));
-			} else {
-				updateExistingGCRelationshipToNormal(gcContractor);
-				findExistingContractorOperator();
+	private void saveLinkedClientsForGeneralContractor() {
+		if (operator.isGeneralContractor()) {
+			// get list of existing linked clients
+			// get list of selected clients
+			// remove all existing linked clients that aren't in selected
+			// clients
+			Iterator<Facility> linkedClientIterator = operator.getLinkedClients().iterator();
+			while (linkedClientIterator.hasNext()) {
+				Facility linkedClientFacility = linkedClientIterator.next();
+				OperatorAccount linkedClient = linkedClientFacility.getCorporate();
+				if (!clients.contains(linkedClient.getId())) {
+					linkedClientIterator.remove();
+					facilitiesDAO.remove(linkedClientFacility);
+				}
+			}
+			// remove all selected clients that are already existing
+			// TODO make sure this isn't removing based on the index
+			for (OperatorAccount existingLinkedClient : operator.getLinkedClientSites()) {
+				if (clients.contains(existingLinkedClient.getId())) {
+					clients.remove((Integer) existingLinkedClient.getId());
+				}
+			}
+			// add all remaining selected clients
+			for (Integer clientToAdd : clients) {
+				OperatorAccount linkedClient = new OperatorAccount();
+				linkedClient.setId(clientToAdd);
 
-				linkedAccount.setOperatorAccount(operator);
-				linkedAccount.setAuditColumns(permissions);
-				linkedAccount.setFlagColor(FlagColor.Clear);
-				linkedAccount.setWaitingOn(WaitingOn.None);
-				linkedAccount.setType(ContractorOperatorRelationshipType.GeneralContractor);
-				linkedAccount.setWorkStatus(ApprovalStatus.Y);
-				contractorOperatorDAO.save(linkedAccount);
+				Facility linkedClientFacility = new Facility();
+				linkedClientFacility.setCorporate(linkedClient);
+				linkedClientFacility.setOperator(operator);
+				linkedClientFacility.setType("GeneralContractor");
+				linkedClientFacility.setAuditColumns(permissions);
+
+				facilitiesDAO.save(linkedClientFacility);
 			}
 		} else {
-			removeGCRelationship(gcContractor);
-		}
-	}
-
-	private void updateExistingGCRelationshipToNormal(ContractorOperator gcContractor) {
-		if (gcContractor != null) {
-			gcContractor.setType(ContractorOperatorRelationshipType.ContractorOperator);
-			gcContractor.setAuditColumns(permissions);
-			contractorOperatorDAO.save(gcContractor);
-		}
-	}
-
-	private void findExistingContractorOperator() {
-		for (ContractorOperator linkedContractor : operator.getContractorOperators()) {
-			if (linkedContractor.getContractorAccount().equals(linkedAccount.getContractorAccount())) {
-				linkedAccount = linkedContractor;
+			for (Facility facility : operator.getLinkedClients()) {
+				facilitiesDAO.remove(facility);
 			}
-		}
-	}
 
-	private void removeGCRelationship(ContractorOperator gcContractor) {
-		if (gcContractor != null) {
-			operator.getGcContractors().remove(gcContractor);
-			operator.getContractorOperators().remove(gcContractor);
-			contractorOperatorDAO.remove(gcContractor);
+			operator.getLinkedClients().clear();
 		}
 	}
 

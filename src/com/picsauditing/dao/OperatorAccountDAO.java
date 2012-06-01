@@ -91,10 +91,8 @@ public class OperatorAccountDAO extends PicsDAO {
 		where += ") ";
 
 		if (permissions.isGeneralContractor()) {
-			where += "AND a IN (SELECT co1.operatorAccount FROM ContractorOperator co1 "
-					+ "WHERE co1.contractorAccount IN (SELECT co2.contractorAccount FROM ContractorOperator co2 "
-					+ "WHERE co2.operatorAccount.id = " + permissions.getAccountId()
-					+ " AND co2.type = 'GeneralContractor') AND co1.operatorAccount.type = 'Operator')";
+			where += " AND a.id IN (" + permissions.getAccountId() + ","
+					+ Strings.implode(permissions.getLinkedClients()) + ")";
 		} else {
 			if (permissions.isCorporate()) {
 				// Show corporate users operators in their facility

@@ -375,20 +375,6 @@
 			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
 		
-		<!-- Subcontractor List -->
-		<action name="ReportSubcontractors" class="com.picsauditing.actions.report.ReportSubcontractors">
-			<param name="filter.ajax">true</param>
-			<param name="filter.destinationAction">ReportSubcontractors</param>
-			<result>struts/reports/report_subcontractors.jsp</result>
-		</action>
-		<action name="ReportSubcontractorsCSV" class="com.picsauditing.actions.report.ReportSubcontractors">
-			<param name="download">true</param>
-			<result>/struts/blank.jsp</result>
-		</action>
-		<action name="ReportSubcontractorsAjax" class="com.picsauditing.actions.report.ReportSubcontractors">
-			<result>struts/reports/report_subcontractors_data.jsp</result>
-		</action>
-		
 		<action name="BiddingContractorSearch"
 			class="com.picsauditing.actions.report.ReportBiddingContractors">
 			<result>struts/reports/report_biddingcontractors.jsp</result>

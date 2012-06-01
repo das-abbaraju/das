@@ -39,13 +39,13 @@ public class Permissions implements Serializable {
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 	private Set<Integer> groups = new HashSet<Integer>();
-	private Set<Integer> inheritedGroups = new HashSet<Integer>();
 	private Set<UserAccess> permissions = new HashSet<UserAccess>();
 	private boolean canSeeInsurance = false;
 	private Set<Integer> corporateParent = new HashSet<Integer>();
 	private Set<Integer> operatorChildren = new HashSet<Integer>();
 	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
 	private Map<String, String> toggles = new HashMap<String, String>();
+	private Set<Integer> linkedClients = new HashSet<Integer>();
 
 	private String username;
 	private String name;
@@ -65,8 +65,7 @@ public class Permissions implements Serializable {
 	private boolean requiresOQ = false;
 	private boolean requiresCompetencyReview = false;
 	private boolean active = false;
-	private boolean gcContractor = false;
-	private boolean gcOperator = false;
+	private boolean generalContractor = false;
 	private boolean gcFree = false;
 	private AccountStatus accountStatus = AccountStatus.Pending;
 
@@ -94,8 +93,7 @@ public class Permissions implements Serializable {
 		requiresCompetencyReview = false;
 		canSeeInsurance = false;
 
-		gcContractor = false;
-		gcOperator = false;
+		generalContractor = false;
 		gcFree = false;
 
 		adminID = 0;
@@ -106,10 +104,10 @@ public class Permissions implements Serializable {
 
 		permissions.clear();
 		groups.clear();
-		inheritedGroups.clear();
 		visibleAuditTypes.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
+		linkedClients.clear();
 	}
 
 	public void login(User user) throws Exception {
@@ -161,6 +159,7 @@ public class Permissions implements Serializable {
 			accountStatus = user.getAccount().getStatus();
 			requiresOQ = user.getAccount().isRequiresOQ();
 			requiresCompetencyReview = user.getAccount().isRequiresCompetencyReview();
+			generalContractor = user.getAccount().isGeneralContractor();
 
 			if (isOperatorCorporate()) {
 				OperatorAccount operator = (OperatorAccount) user.getAccount();
@@ -181,6 +180,17 @@ public class Permissions implements Serializable {
 
 					if (operator.getCanSeeInsurance().isTrue())
 						canSeeInsurance = true;
+
+					if (generalContractor && "No".equals(operator.getDoContractorsPay())) {
+						gcFree = true;
+					}
+
+					if (generalContractor || gcFree) {
+						for (OperatorAccount linkedClient : ((OperatorAccount) user.getAccount())
+								.getLinkedClientSites()) {
+							linkedClients.add(linkedClient.getId());
+						}
+					}
 				}
 				if (isCorporate()) {
 					// Supporting Hub Accounts to See other Connected Corporate
@@ -195,11 +205,6 @@ public class Permissions implements Serializable {
 							canSeeInsurance = true;
 					}
 				}
-
-				if (operator.isGeneralContractor())
-					gcOperator = true;
-				if (operator.isGCFree())
-					gcFree = true;
 			}
 
 			for (com.picsauditing.jpa.entities.UserAccess ua : user.getPermissions()) {
@@ -217,11 +222,6 @@ public class Permissions implements Serializable {
 				if (u.getGroup().isGroup())
 					groups.add(u.getGroup().getId());
 			}
-
-			for (UserGroup u : user.getGroups()) {
-				addInheritedUserGroup(inheritedGroups, u);
-			}
-
 		} catch (Exception ex) {
 			// All or nothing, if something went wrong, then clear it all
 			clear();
@@ -255,10 +255,6 @@ public class Permissions implements Serializable {
 
 	public Set<Integer> getGroups() {
 		return groups;
-	}
-
-	public Set<Integer> getInheritedGroups() {
-		return inheritedGroups;
 	}
 
 	public String getUsername() {
@@ -402,10 +398,6 @@ public class Permissions implements Serializable {
 		return groups.contains(group);
 	}
 
-	public boolean hasInheritedGroup(Integer group) {
-		return inheritedGroups.contains(group);
-	}
-
 	public boolean isContractor() {
 		return "Contractor".equals(this.accountType);
 	}
@@ -507,12 +499,20 @@ public class Permissions implements Serializable {
 	public Set<Integer> getVisibleAccounts() {
 		Set<Integer> visibleAccounts = new HashSet<Integer>();
 		visibleAccounts.add(accountID);
-		if (isCorporate())
+
+		if (isCorporate()) {
 			visibleAccounts.addAll(operatorChildren);
+		}
+
 		if (isOperator()) {
 			visibleAccounts.add(topAccountID);
 			visibleAccounts.addAll(corporateParent);
 		}
+
+		if (isGeneralContractor()) {
+			visibleAccounts.addAll(linkedClients);
+		}
+
 		return visibleAccounts;
 	}
 
@@ -549,16 +549,8 @@ public class Permissions implements Serializable {
 		return canSeeInsurance;
 	}
 
-	public boolean isGcContractor() {
-		return gcContractor;
-	}
-
-	public boolean isGcOperator() {
-		return gcOperator;
-	}
-
 	public boolean isGeneralContractor() {
-		return gcContractor || gcOperator;
+		return generalContractor || gcFree;
 	}
 
 	public boolean isGeneralContractorFree() {
@@ -584,6 +576,10 @@ public class Permissions implements Serializable {
 	 */
 	public Set<Integer> getVisibleAuditTypes() {
 		return visibleAuditTypes;
+	}
+
+	public Set<Integer> getLinkedClients() {
+		return linkedClients;
 	}
 
 	public boolean isCanAddRuleForOperator(OperatorAccount operator) {
@@ -621,18 +617,5 @@ public class Permissions implements Serializable {
 		ua.setDeleteFlag(true);
 
 		this.permissions.add(ua);
-	}
-
-	private void addInheritedUserGroup(Set<Integer> inheritedGroups, UserGroup userGroup) {
-		if (userGroup.getGroup() != null && userGroup.getGroup().getGroups() != null) {
-			for (UserGroup group : userGroup.getGroup().getGroups()) {
-				if (group.getGroup().isGroup()) {
-					inheritedGroups.add(group.getGroup().getId());
-					addInheritedUserGroup(inheritedGroups, group);
-				}
-			}
-		}
-
-		return;
 	}
 }

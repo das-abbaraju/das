@@ -75,7 +75,7 @@
 			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>
 		</action>
 		
-				<action name="OperatorFlagMatrix" class="com.picsauditing.actions.report.OperatorFlagMatrix">
+		<action name="OperatorFlagMatrix" class="com.picsauditing.actions.report.OperatorFlagMatrix">
 			<result>struts/reports/flag_matrix.jsp</result>
 		</action>
 
@@ -86,6 +86,19 @@
 
 		<action name="ReportCriteriaOperatorsAjax" class="com.picsauditing.actions.report.ReportCriteriaOperators">
 			<result>struts/reports/criteria_operators.jsp</result>
+		</action>
+		
+		<action name="SubcontractorFlagMatrix" class="com.picsauditing.actions.operators.gc.SubcontractorFlagMatrix">
+			<result>/struts/widgets/subcontractors_flag_matrix.jsp</result>
+		</action>
+		
+		<action name="SubcontractorFlagMatrixCSV" class="com.picsauditing.actions.operators.gc.SubcontractorFlagMatrix"
+			method="download">
+			<result>/struts/blank.jsp</result>
+		</action>
+		
+		<action name="SubcontractorFacilities" class="com.picsauditing.actions.operators.gc.SubcontractorFacilities">
+			<result>/struts/gc/subcontractor_facilities.jsp</result>
 		</action>
 	</package>
 </struts>

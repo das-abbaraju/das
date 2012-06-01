@@ -53,6 +53,7 @@ public class SmartFacilitySuggest {
 			sql.addWhere("c.zip LIKE '" + contractor.getZip().substring(0, zipLength) + "%'");
 
 		sql.addField("o.id opID");
+		sql.addField("o.generalContractor");
 		sql.addGroupBy("opID");
 		sql.addField("COUNT(*) total");
 		sql.addOrderBy("total DESC");

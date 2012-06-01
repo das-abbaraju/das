@@ -134,7 +134,8 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	 * Do not override this method!<br>
 	 * <br>
 	 * 
-	 * 1) This method checks the user is logged in and has the appropriate permissions.<br>
+	 * 1) This method checks the user is logged in and has the appropriate
+	 * permissions.<br>
 	 * 2) Next it determines if the report should run by default.<br>
 	 * 3) It builds the Query and runs the report<br>
 	 * 4) Finally, it returns the results
@@ -209,316 +210,55 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 	}
 
 	protected void addFilterToSQL() {
-		ReportFilterContractor f = getFilter();
+		addAccountFilters();
+		addContractorSpecificFilters();
+	}
 
+	protected void addAccountFilters() {
 		/** **** Filters for Accounts ********** */
-		if (filterOn(f.getStartsWith()))
-			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", f.getStartsWith()));
+		filterOnStartsWith();
+		filterOnAccountName();
+		filterOnStatus();
+		filterOnCity();
+		filterOnLocation();
+		filterOnZip();
 
-		if (filterOn(f.getAccountName(), ReportFilterAccount.getDefaultName())) {
-			String accountName = f.getAccountName().trim();
-			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
-					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
-					+ "%' OR a.id = '" + Strings.escapeQuotes(accountName) + "'", accountName));
-			sql.addField("a.dbaName");
-		}
+		filterShowPrimaryContactInformation();
+		filterShowTradeInformation();
+	}
 
-		String statusList = Strings.implodeForDB(f.getStatus(), ",");
-		if (filterOn(statusList)) {
-			sql.addWhere("a.status IN (" + statusList + ")");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getCity(), ReportFilterAccount.getDefaultCity()))
-			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", f.getCity()));
-
-		if (filterOn(f.getLocation())) {
-			List<String> states = new ArrayList<String>();
-			List<String> countries = new ArrayList<String>();
-
-			for (String location : f.getLocation()) {
-				if (location.length() > 2) {
-					countries.add(location.replace("_C", ""));
-				} else {
-					states.add(location);
-				}
-			}
-
-			StringBuilder sb = new StringBuilder();
-
-			if (!countries.isEmpty()) {
-				String countryList = Strings.implodeForDB(countries, ",");
-				sb.append("a.country IN (").append(countryList).append(")");
-				sql.addOrderBy("CASE WHEN a.country IN (" + countryList + ") THEN 1 ELSE 2 END");
-			}
-
-			if (!states.isEmpty()) {
-				if (!countries.isEmpty())
-					sb.append(" OR ");
-
-				String stateList = Strings.implodeForDB(states, ",");
-				sb.append("a.state IN (").append(stateList).append(") OR ")
-						.append("EXISTS (SELECT 'x' FROM pqfdata d ")
-						.append("JOIN audit_question aq ON aq.id = d.questionID ")
-						.append("WHERE ca1.id = d.auditID ")
-						.append("AND aq.uniqueCode IN (").append(stateList)
-						.append(") LIMIT 1) ");
-				sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
-			}
-
-			sql.addOrderBy("a.country");
-			sql.addOrderBy("a.state");
-			sql.addWhere(sb.toString());
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getZip(), ReportFilterAccount.getDefaultZip()))
-			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", f.getZip()));
-
-		if (f.isPrimaryInformation()) {
-			sql.addField("contact.name AS contactname");
-			sql.addField("contact.phone AS contactphone");
-			sql.addField("contact.email AS contactemail");
-			sql.addField("a.address");
-			sql.addField("a.city");
-			sql.addField("a.state");
-			sql.addField("a.zip");
-			sql.addField("a.web_URL");
-		}
-
-		if (f.isTradeInformation()) {
-			sql.addField("c.main_trade");
-			sql.addField("c.tradesSelf");
-			sql.addField("c.tradesSub");
-		}
-
+	protected void addContractorSpecificFilters() {
 		/** **** Filters for Contractors ********** */
 
-		if (filterOn(f.getTrade())) {
-			for (int tradeID : f.getTrade()) {
-				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
-				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
-				tradeSQL
-						.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
-				tradeSQL.addWhere("a.id = ct.conID");
-				// TODO allow users to search for Manufacture and Activity Percent
-				tradeSQL.addWhere("ct.activityPercent > 1");
-
-				if (f.getShowSelfPerformedTrade() == 1)
-					tradeSQL.addWhere("ct.selfPerformed = 1");
-				else if (f.getShowSelfPerformedTrade() == 0)
-					tradeSQL.addWhere("ct.selfPerformed = 0");
-
-				tradeSQL.addWhere("related.id IN (" + tradeID + ")");
-				sql.addWhere("EXISTS ( " + tradeSQL.toString() + ")");
-			}
-		}
-
-		if (filterOn(f.getContractor())) {
-			sql.addWhere(" a.id IN (" + Strings.implode(f.getContractor()) + ")");
-
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getOperator())) {
-			if (f.isShowAnyOperator()) {
-				sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN ("
-						+ Strings.implode(f.getOperator()) + "))");
-			} else {
-				for (int opID : f.getOperator()) {
-					sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID = " + opID
-							+ ")");
-				}
-			}
-
-			setFiltered(true);
-		}
-
-		if (f.getOperatorSingle() > 0) {
-			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID = " + f.getOperatorSingle() + ")");
-		}
-
-		if (filterOn(f.getTaxID(), ReportFilterContractor.getDefaultTaxID()))
-			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", f.getTaxID()));
-
-		if (filterOn(f.getFlagStatus())) {
-			String list = Strings.implodeForDB(f.getFlagStatus(), ",");
-			sql.addWhere("gc.flag IN (" + list + ")");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getWaitingOn()))
-			report.addFilter(new SelectFilter("waitingOn", "gc.waitingOn = '?'", f.getWaitingOn()));
-
-		if (filterOn(f.getConAuditorId())) {
-			String list = Strings.implode(f.getConAuditorId(), ",");
-
-			if (f.isNonContactUser())
-				sql.addWhere("u.id IN (" + list + ")");
-			else
-				sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getPolicyChangedDate1())) {
-			report.addFilter(new SelectFilterDate("policyChangedDate1", "caow.creationDate > '?'", DateBean.format(f
-					.getPolicyChangedDate1(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getPolicyChangedDate2())) {
-			report.addFilter(new SelectFilterDate("policyChangedDate2", "caow.creationDate < '?'", DateBean.format(f
-					.getPolicyChangedDate2(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getAccountLevel())) {
-			sql.addWhere("c.accountLevel IN (" + Strings.implodeForDB(f.getAccountLevel(), ",") + ")");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getRiskLevel())) {
-			String list = Strings.implode(f.getRiskLevel(), ",");
-			sql.addWhere("c.safetyRisk IN (" + list + ")");
-			setFiltered(true);
-		}
-		if (filterOn(f.getProductRiskLevel())) {
-			String list = Strings.implode(f.getProductRiskLevel(), ",");
-			sql.addWhere("c.productRisk IN (" + list + ")");
-			setFiltered(true);
-		}
-		if (filterOn(f.getService())) {
-			List<String> clauses = new ArrayList<String>();
-			for (String service : f.getService()) {
-				if ("Onsite".equals(service))
-					clauses.add("a.onsiteServices = 1");
-				else if ("Offsite".equals(service))
-					clauses.add("a.offsiteServices = 1");
-				else if ("Transportation".equals(service))
-					clauses.add("a.transportationServices = 1");
-				else if ("Material Supplier".equals(service))
-					clauses.add("a.materialSupplier = 1");
-			}
-			if (clauses.size() > 0) {
-				sql.addWhere(Strings.implode(clauses, " OR "));
-				setFiltered(true);
-			}
-		}
-
-		if (f.getEmailTemplate() > 0) {
-			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
-					+ f.getEmailTemplate();
-			if (filterOn(f.getEmailSentDate())) {
-				emailQueueJoin += " AND eq.sentDate >= '" + DateBean.format(f.getEmailSentDate(), "yyyy-M-d") + "'";
-			}
-			sql.addJoin(emailQueueJoin);
-			sql.addWhere("eq.emailID IS NULL");
-			setFiltered(true);
-		}
-
-		if (filterOn(f.getRegistrationDate1())) {
-			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(f
-					.getRegistrationDate1(), "M/d/yy")));
-		}
-
-		if (filterOn(f.getRegistrationDate2())) {
-			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(f
-					.getRegistrationDate2(), "M/d/yy")));
-		}
-
-		if (f.isPendingPqfAnnualUpdate()) {
-			String caopFilter = "";
-			if (permissions.isOperatorCorporate()) {
-				String opIDs = permissions.getAccountIdString();
-				if (permissions.isCorporate())
-					opIDs = Strings.implode(permissions.getOperatorChildren());
-
-				caopFilter = " AND cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
-						+ opIDs + "))";
-			}
-
-			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
-					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Pending','Incomplete','Resubmit') AND cao.visible = 1 AND ca.auditTypeID IN (1,11) AND ca.expiresDate > NOW()"
-					+ caopFilter + ")";
-			sql.addWhere(query);
-		}
-
-		if (filterOn(f.getOperatorTagName(), 0)) {
-			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " + "WHERE ct.tagID = "
-					+ f.getOperatorTagName() + ")";
-			sql.addWhere(query);
-		}
-
-		if (f.getCcOnFile() < 2)
-			sql.addWhere("c.ccOnFile = " + f.getCcOnFile());
-
-		if (filterOn(f.getDeactivationReason()))
-			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", f.getDeactivationReason()));
-
-		if (filterOn(f.getCustomAPI()) && permissions.isAdmin())
-			sql.addWhere(f.getCustomAPI());
-
-		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
-			int[] questions = getFilter().getMinorityQuestion();
-			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
-			for (int question : questions) {
-				sql.addJoin("LEFT JOIN pqfdata pdsd" + question + " on casd.id = pdsd" + question + ".auditID AND pdsd"
-						+ question + ".questionID = " + question);
-			}
-			StringBuilder where = new StringBuilder();
-			for (int i = 0; i < questions.length; i++) {
-				int question = questions[i];
-				if (i != 0)
-					where.append("OR ");
-
-				where.append("pdsd").append(question);
-				if ((question == 3543) || (question == 66) || (question == 77))
-					where.append(".answer = 'X' ");
-				else
-					where.append(".answer = 'Yes' ");
-			}
-			sql.addWhere(where.toString());
-		}
-
-		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
-			sql.addWhere("gc.workStatus = '" + getFilter().getWorkStatus() + "'");
-		}
-
-		if (getFilter().isShowInsuranceLimits()) {
-			if (filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
-				sql.addAuditQuestion(2074, 13, true);
-				sql.addWhere("REPLACE(q2074.answer,',','') >= " + getFilter().getGlEachOccurrence());
-			}
-			if (filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.getDefaultAmount())) {
-				sql.addAuditQuestion(2079, 13, true);
-				sql.addWhere("REPLACE(q2079.answer,',','') >= " + getFilter().getGlGeneralAggregate());
-			}
-			if (filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.getDefaultAmount())) {
-				sql.addAuditQuestion(2155, 15, true);
-				sql.addWhere("REPLACE(q2155.answer,',','') >= " + getFilter().getAlCombinedSingle());
-			}
-			if (filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.getDefaultAmount())) {
-				sql.addAuditQuestion(2149, 14, true);
-				sql.addWhere("REPLACE(q2149.answer,',','') >= " + getFilter().getWcEachAccident());
-			}
-			if (filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
-				sql.addAuditQuestion(2161, 16, true);
-				sql.addWhere("REPLACE(q2161.answer,',','') >= " + getFilter().getExEachOccurrence());
-			}
-
-			sql.addGroupBy("a.id");
-		}
-
-		if (getFilter().isOq())
-			sql.addWhere("a.requiresOQ = 1");
-
-		if (getFilter().isHse())
-			sql.addWhere("a.requiresCompetencyReview = 1");
-		if (getFilter().isSoleProprietership())
-			sql.addWhere("c.soleProprietor = 1");
+		filterOnTrades();
+		filterOnContractorIds();
+		filterOnOperators();
+		filterOnOperatorSingle();
+		filterOnTaxId();
+		filterOnFlagStatus();
+		filterOnWaitingOn();
+		filterOnAuditor();
+		filterOnPolicyChangedDates();
+		filterOnAccountLevels();
+		filterOnRiskLevels();
+		filterOnServiceType();
+		filterOnEmailTemplate();
+		filterOnRegistrationDates();
+		filterOnPendingPQFAnnualUpdate();
+		filterOnOperatorTagName();
+		filterOnCreditCardOnFile();
+		filterOnDeactivationReason();
+		filterOnCustomAPI();
+		filterOnMinorityQuestions();
+		filterOnWorkStatus();
+		filterOnInsuranceInformation();
+		filterOnAccountProperties();
 	}
 
 	/**
-	 * Return the number of active contractors visible to an Operator or a Corporate account This method shouldn't be
-	 * use be Admins, auditors, and contractors
+	 * Return the number of active contractors visible to an Operator or a
+	 * Corporate account This method shouldn't be use be Admins, auditors, and
+	 * contractors
 	 * 
 	 * @return
 	 */
@@ -601,5 +341,383 @@ public class ReportAccount extends ReportActionSupport implements Preparable {
 
 	public void setReportAddresses(String reportAddresses) {
 		this.reportAddresses = reportAddresses;
+	}
+
+	protected void filterOnStartsWith() {
+		if (filterOn(getFilter().getStartsWith())) {
+			report.addFilter(new SelectFilter("startsWith", "a.nameIndex LIKE '?%'", getFilter().getStartsWith()));
+		}
+	}
+
+	protected void filterOnAccountName() {
+		if (filterOn(getFilter().getAccountName(), ReportFilterAccount.getDefaultName())) {
+			String accountName = getFilter().getAccountName().trim();
+			report.addFilter(new SelectFilter("accountName", "a.nameIndex LIKE '%" + Strings.indexName(accountName)
+					+ "%' OR a.name LIKE '%?%' OR a.dbaName LIKE '%" + Strings.escapeQuotes(accountName)
+					+ "%' OR a.id = '" + Strings.escapeQuotes(accountName) + "'", accountName));
+			sql.addField("a.dbaName");
+		}
+	}
+
+	protected void filterOnStatus() {
+		String statusList = Strings.implodeForDB(getFilter().getStatus(), ",");
+		if (filterOn(statusList)) {
+			sql.addWhere("a.status IN (" + statusList + ")");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnCity() {
+		if (filterOn(getFilter().getCity(), ReportFilterAccount.getDefaultCity())) {
+			report.addFilter(new SelectFilter("city", "a.city LIKE '%?%'", getFilter().getCity()));
+		}
+	}
+
+	protected void filterOnLocation() {
+		if (filterOn(getFilter().getLocation())) {
+			List<String> states = new ArrayList<String>();
+			List<String> countries = new ArrayList<String>();
+
+			for (String location : getFilter().getLocation()) {
+				if (location.length() > 2) {
+					countries.add(location.replace("_C", ""));
+				} else {
+					states.add(location);
+				}
+			}
+
+			StringBuilder sb = new StringBuilder();
+
+			filterOnCountries(countries, sb);
+			filterOnStates(states, countries, sb);
+
+			sql.addOrderBy("a.country");
+			sql.addOrderBy("a.state");
+			sql.addWhere(sb.toString());
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnCountries(List<String> countries, StringBuilder sb) {
+		if (!countries.isEmpty()) {
+			String countryList = Strings.implodeForDB(countries, ",");
+			sb.append("a.country IN (").append(countryList).append(")");
+			sql.addOrderBy("CASE WHEN a.country IN (" + countryList + ") THEN 1 ELSE 2 END");
+		}
+	}
+
+	protected void filterOnStates(List<String> states, List<String> countries, StringBuilder sb) {
+		if (!states.isEmpty()) {
+			if (!countries.isEmpty())
+				sb.append(" OR ");
+
+			String stateList = Strings.implodeForDB(states, ",");
+			sb.append("a.state IN (").append(stateList).append(") OR ").append("EXISTS (SELECT 'x' FROM pqfdata d ")
+					.append("JOIN audit_question aq ON aq.id = d.questionID ").append("WHERE ca1.id = d.auditID ")
+					.append("AND aq.uniqueCode IN (").append(stateList).append(") LIMIT 1) ");
+			sql.addOrderBy("CASE WHEN a.state IN (" + stateList + ") THEN 1 ELSE 2 END");
+		}
+	}
+
+	protected void filterOnZip() {
+		if (filterOn(getFilter().getZip(), ReportFilterAccount.getDefaultZip())) {
+			report.addFilter(new SelectFilter("zip", "a.zip LIKE '%?%'", getFilter().getZip()));
+		}
+	}
+
+	protected void filterShowPrimaryContactInformation() {
+		if (getFilter().isPrimaryInformation()) {
+			sql.addField("contact.name AS contactname");
+			sql.addField("contact.phone AS contactphone");
+			sql.addField("contact.email AS contactemail");
+			sql.addField("a.address");
+			sql.addField("a.city");
+			sql.addField("a.state");
+			sql.addField("a.zip");
+			sql.addField("a.web_URL");
+		}
+	}
+
+	protected void filterShowTradeInformation() {
+		if (getFilter().isTradeInformation()) {
+			sql.addField("c.main_trade");
+			sql.addField("c.tradesSelf");
+			sql.addField("c.tradesSub");
+		}
+	}
+
+	protected void filterOnTrades() {
+		if (filterOn(getFilter().getTrade())) {
+			for (int tradeID : getFilter().getTrade()) {
+				SelectSQL tradeSQL = new SelectSQL("contractor_trade ct");
+				tradeSQL.addJoin("JOIN ref_trade base ON ct.tradeID = base.id");
+				tradeSQL.addJoin("JOIN ref_trade related ON base.indexStart <= related.indexStart and base.indexEnd >= related.indexEnd");
+				tradeSQL.addWhere("a.id = ct.conID");
+				// TODO allow users to search for Manufacture and Activity
+				// Percent
+				tradeSQL.addWhere("ct.activityPercent > 1");
+
+				if (getFilter().getShowSelfPerformedTrade() == 1)
+					tradeSQL.addWhere("ct.selfPerformed = 1");
+				else if (getFilter().getShowSelfPerformedTrade() == 0)
+					tradeSQL.addWhere("ct.selfPerformed = 0");
+
+				tradeSQL.addWhere("related.id IN (" + tradeID + ")");
+				sql.addWhere("EXISTS ( " + tradeSQL.toString() + ")");
+			}
+		}
+	}
+
+	protected void filterOnContractorIds() {
+		if (filterOn(getFilter().getContractor())) {
+			sql.addWhere(" a.id IN (" + Strings.implode(getFilter().getContractor()) + ")");
+
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnOperators() {
+		if (filterOn(getFilter().getOperator())) {
+			if (getFilter().isShowAnyOperator()) {
+				sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID IN ("
+						+ Strings.implode(getFilter().getOperator()) + "))");
+			} else {
+				for (int opID : getFilter().getOperator()) {
+					sql.addWhere(" EXISTS (SELECT * FROM generalcontractors WHERE a.id = subID AND genID = " + opID
+							+ ")");
+				}
+			}
+
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnOperatorSingle() {
+		if (getFilter().getOperatorSingle() > 0) {
+			sql.addWhere("a.id IN (SELECT subID FROM generalcontractors WHERE genID = "
+					+ getFilter().getOperatorSingle() + ")");
+		}
+	}
+
+	protected void filterOnTaxId() {
+		if (filterOn(getFilter().getTaxID(), ReportFilterContractor.getDefaultTaxID())) {
+			report.addFilter(new SelectFilter("taxID", "c.taxID = '?'", getFilter().getTaxID()));
+		}
+	}
+
+	protected void filterOnFlagStatus() {
+		if (filterOn(getFilter().getFlagStatus())) {
+			String list = Strings.implodeForDB(getFilter().getFlagStatus(), ",");
+			sql.addWhere("gc.flag IN (" + list + ")");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnWaitingOn() {
+		if (filterOn(getFilter().getWaitingOn())) {
+			report.addFilter(new SelectFilter("waitingOn", "gc.waitingOn = '?'", getFilter().getWaitingOn()));
+		}
+	}
+
+	protected void filterOnAuditor() {
+		if (filterOn(getFilter().getConAuditorId())) {
+			String list = Strings.implode(getFilter().getConAuditorId(), ",");
+
+			if (getFilter().isNonContactUser())
+				sql.addWhere("u.id IN (" + list + ")");
+			else
+				sql.addWhere("c.welcomeAuditor_id IN (" + list + ")");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnPolicyChangedDates() {
+		if (filterOn(getFilter().getPolicyChangedDate1())) {
+			report.addFilter(new SelectFilterDate("policyChangedDate1", "caow.creationDate > '?'", DateBean.format(
+					getFilter().getPolicyChangedDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(getFilter().getPolicyChangedDate2())) {
+			report.addFilter(new SelectFilterDate("policyChangedDate2", "caow.creationDate < '?'", DateBean.format(
+					getFilter().getPolicyChangedDate2(), "M/d/yy")));
+		}
+	}
+
+	protected void filterOnAccountLevels() {
+		if (filterOn(getFilter().getAccountLevel())) {
+			sql.addWhere("c.accountLevel IN (" + Strings.implodeForDB(getFilter().getAccountLevel(), ",") + ")");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnRiskLevels() {
+		if (filterOn(getFilter().getRiskLevel())) {
+			String list = Strings.implode(getFilter().getRiskLevel(), ",");
+			sql.addWhere("c.safetyRisk IN (" + list + ")");
+			setFiltered(true);
+		}
+		if (filterOn(getFilter().getProductRiskLevel())) {
+			String list = Strings.implode(getFilter().getProductRiskLevel(), ",");
+			sql.addWhere("c.productRisk IN (" + list + ")");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnServiceType() {
+		if (filterOn(getFilter().getService())) {
+			List<String> clauses = new ArrayList<String>();
+			for (String service : getFilter().getService()) {
+				if ("Onsite".equals(service))
+					clauses.add("a.onsiteServices = 1");
+				else if ("Offsite".equals(service))
+					clauses.add("a.offsiteServices = 1");
+				else if ("Transportation".equals(service))
+					clauses.add("a.transportationServices = 1");
+				else if ("Material Supplier".equals(service))
+					clauses.add("a.materialSupplier = 1");
+			}
+			if (clauses.size() > 0) {
+				sql.addWhere(Strings.implode(clauses, " OR "));
+				setFiltered(true);
+			}
+		}
+	}
+
+	protected void filterOnEmailTemplate() {
+		if (getFilter().getEmailTemplate() > 0) {
+			String emailQueueJoin = "LEFT JOIN email_queue eq on eq.conid = a.id AND eq.templateID = "
+					+ getFilter().getEmailTemplate();
+			if (filterOn(getFilter().getEmailSentDate())) {
+				emailQueueJoin += " AND eq.sentDate >= '" + DateBean.format(getFilter().getEmailSentDate(), "yyyy-M-d")
+						+ "'";
+			}
+			sql.addJoin(emailQueueJoin);
+			sql.addWhere("eq.emailID IS NULL");
+			setFiltered(true);
+		}
+	}
+
+	protected void filterOnRegistrationDates() {
+		if (filterOn(getFilter().getRegistrationDate1())) {
+			report.addFilter(new SelectFilterDate("registrationDate1", "a.creationDate >= '?'", DateBean.format(
+					getFilter().getRegistrationDate1(), "M/d/yy")));
+		}
+
+		if (filterOn(getFilter().getRegistrationDate2())) {
+			report.addFilter(new SelectFilterDate("registrationDate2", "a.creationDate < '?'", DateBean.format(
+					getFilter().getRegistrationDate2(), "M/d/yy")));
+		}
+	}
+
+	protected void filterOnPendingPQFAnnualUpdate() {
+		if (getFilter().isPendingPqfAnnualUpdate()) {
+			String caopFilter = "";
+			if (permissions.isOperatorCorporate()) {
+				String opIDs = permissions.getAccountIdString();
+				if (permissions.isCorporate())
+					opIDs = Strings.implode(permissions.getOperatorChildren());
+
+				caopFilter = " AND cao.id IN (SELECT caoID FROM contractor_audit_operator_permission WHERE opID IN ("
+						+ opIDs + "))";
+			}
+
+			String query = "a.id IN (SELECT ca.conID FROM contractor_audit ca "
+					+ "JOIN contractor_audit_operator cao ON cao.auditID = ca.id WHERE cao.status IN ('Pending','Incomplete','Resubmit') AND cao.visible = 1 AND ca.auditTypeID IN (1,11) AND ca.expiresDate > NOW()"
+					+ caopFilter + ")";
+			sql.addWhere(query);
+		}
+	}
+
+	protected void filterOnOperatorTagName() {
+		if (filterOn(getFilter().getOperatorTagName(), 0)) {
+			String query = "a.id IN (SELECT ct.conID from contractor_tag ct " + "WHERE ct.tagID = "
+					+ getFilter().getOperatorTagName() + ")";
+			sql.addWhere(query);
+		}
+	}
+
+	protected void filterOnCreditCardOnFile() {
+		if (getFilter().getCcOnFile() < 2) {
+			sql.addWhere("c.ccOnFile = " + getFilter().getCcOnFile());
+		}
+	}
+
+	protected void filterOnDeactivationReason() {
+		if (filterOn(getFilter().getDeactivationReason())) {
+			report.addFilter(new SelectFilter("deactivationReason", "a.reason = '?'", getFilter()
+					.getDeactivationReason()));
+		}
+	}
+
+	protected void filterOnCustomAPI() {
+		if (filterOn(getFilter().getCustomAPI()) && permissions.isAdmin()) {
+			sql.addWhere(getFilter().getCustomAPI());
+		}
+	}
+
+	protected void filterOnMinorityQuestions() {
+		if (filterOn(getFilter().getMinorityQuestion(), 0)) {
+			int[] questions = getFilter().getMinorityQuestion();
+			sql.addJoin("JOIN contractor_audit casd ON casd.conID = a.id AND casd.auditTypeID = 1 ");
+			for (int question : questions) {
+				sql.addJoin("LEFT JOIN pqfdata pdsd" + question + " on casd.id = pdsd" + question + ".auditID AND pdsd"
+						+ question + ".questionID = " + question);
+			}
+			StringBuilder where = new StringBuilder();
+			for (int i = 0; i < questions.length; i++) {
+				int question = questions[i];
+				if (i != 0)
+					where.append("OR ");
+
+				where.append("pdsd").append(question);
+				if ((question == 3543) || (question == 66) || (question == 77))
+					where.append(".answer = 'X' ");
+				else
+					where.append(".answer = 'Yes' ");
+			}
+			sql.addWhere(where.toString());
+		}
+	}
+
+	protected void filterOnWorkStatus() {
+		if (filterOn(getFilter().getWorkStatus()) && permissions.isOperator()) {
+			sql.addWhere("gc.workStatus = '" + getFilter().getWorkStatus() + "'");
+		}
+	}
+
+	protected void filterOnInsuranceInformation() {
+		if (getFilter().isShowInsuranceLimits()) {
+			if (filterOn(getFilter().getGlEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
+				sql.addAuditQuestion(2074, 13, true);
+				sql.addWhere("REPLACE(q2074.answer,',','') >= " + getFilter().getGlEachOccurrence());
+			}
+			if (filterOn(getFilter().getGlGeneralAggregate(), ReportFilterContractor.getDefaultAmount())) {
+				sql.addAuditQuestion(2079, 13, true);
+				sql.addWhere("REPLACE(q2079.answer,',','') >= " + getFilter().getGlGeneralAggregate());
+			}
+			if (filterOn(getFilter().getAlCombinedSingle(), ReportFilterContractor.getDefaultAmount())) {
+				sql.addAuditQuestion(2155, 15, true);
+				sql.addWhere("REPLACE(q2155.answer,',','') >= " + getFilter().getAlCombinedSingle());
+			}
+			if (filterOn(getFilter().getWcEachAccident(), ReportFilterContractor.getDefaultAmount())) {
+				sql.addAuditQuestion(2149, 14, true);
+				sql.addWhere("REPLACE(q2149.answer,',','') >= " + getFilter().getWcEachAccident());
+			}
+			if (filterOn(getFilter().getExEachOccurrence(), ReportFilterContractor.getDefaultAmount())) {
+				sql.addAuditQuestion(2161, 16, true);
+				sql.addWhere("REPLACE(q2161.answer,',','') >= " + getFilter().getExEachOccurrence());
+			}
+
+			sql.addGroupBy("a.id");
+		}
+	}
+
+	protected void filterOnAccountProperties() {
+		if (getFilter().isOq())
+			sql.addWhere("a.requiresOQ = 1");
+		if (getFilter().isHse())
+			sql.addWhere("a.requiresCompetencyReview = 1");
+		if (getFilter().isSoleProprietership())
+			sql.addWhere("c.soleProprietor = 1");
 	}
 }

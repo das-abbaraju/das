@@ -55,6 +55,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	public static int GROUP_MANAGER = 981;
 	public static int GROUP_MARKETING = 10801;
 	public static int GROUP_DEVELOPER = 33885;
+	public static int GROUP_GC_FREE = 61460;
+	public static int GROUP_GC_FULL = 61461;
 	public static int GROUP_STAKEHOLDER = 64680;
 	public static int GROUP_BETATESTER = 64681;
 	public static int GROUP_SAFETY = 65744;
@@ -567,9 +569,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	/**
 	 * 
 	 * @param permissions
-	 *            The new set of permission for this user (transient version of user.permissions)
+	 *            The new set of permission for this user (transient version of
+	 *            user.permissions)
 	 * @param perm
-	 *            The actual UserAccess object owned by either the current user or one of its parent groups.
+	 *            The actual UserAccess object owned by either the current user
+	 *            or one of its parent groups.
 	 * @param overrideBoth
 	 *            True if perm is from "this", false if perm is from a parent
 	 */
@@ -757,7 +761,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * In UsersManage, another user (non-group) is inserted into this user's groups for shadowing
+	 * In UsersManage, another user (non-group) is inserted into this user's
+	 * groups for shadowing
 	 * 
 	 * @return shadowed user or null
 	 */
@@ -783,7 +788,8 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
 	/**
-	 * Enables subscription if disabled or creates subscription if it does not exist.
+	 * Enables subscription if disabled or creates subscription if it does not
+	 * exist.
 	 * 
 	 * @param subscription
 	 * @return
@@ -802,7 +808,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 		return subscription.createEmailSubscription(this);
 	}
-	
+
 	@Transient
 	public boolean hasPermission(OpPerms opPerm, OpType oType) {
 		for (UserAccess perm : getPermissions()) {

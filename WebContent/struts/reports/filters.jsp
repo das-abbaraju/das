@@ -351,7 +351,7 @@
 				</a>
 				=
 				<s:select
-					list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ContractorOperator.WorkStatusContractor')}"
+					list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ApprovalStatus.C'),'D':getTextNullSafe('ApprovalStatus.D')}"
 					headerKey=""
 					headerValue="Any"
 					cssClass="forms"

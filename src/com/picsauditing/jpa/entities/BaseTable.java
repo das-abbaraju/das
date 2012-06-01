@@ -198,11 +198,11 @@ public abstract class BaseTable extends BaseTranslatable implements JSONable, Se
 		}
 		return obj;
 	}
-	
+
 	public String toJSONString() {
 		return toJSON(true).toJSONString();
 	}
-	
+
 	public void fromJSON(JSONObject obj) {
 		// TODO write this!!
 

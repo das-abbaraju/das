@@ -2,13 +2,17 @@
     PICS.define('subcontractor.Report', {
         methods : {
             init : function() {
-                $('#ReportSubcontractors-page table.report input[type=checkbox].selectAll').live('click', this.toggleAllSelectable);
-                $('#ReportSubcontractors-page form .save').live('click', this.submitForm);
+                var page = $('.ReportSubcontractors-page');
+                
+                if (page.length) {
+                    page.find('table.report input[type=checkbox].selectAll').live('click', this.toggleAllSelectable);
+                    page.find('form .save').live('click', this.submitForm);
+                }
             },
 
             toggleAllSelectable : function(event) {
                 var isChecked = $(this).is(':checked');
-                $('#ReportSubcontractors-page table.report input[type=checkbox].selectable').attr('checked', isChecked);
+                $('.ReportSubcontractors-page table.report input[type=checkbox].selectable').attr('checked', isChecked);
             },
 
             submitForm : function(event) {
