@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
@@ -42,12 +43,9 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelSheet;
 
-/**
- * execute() from superclass
- *
- */
 @SuppressWarnings( { "unchecked", "serial" })
 public class ReportDynamic extends PicsActionSupport {
+
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
