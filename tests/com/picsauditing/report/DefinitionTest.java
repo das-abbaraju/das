@@ -31,7 +31,7 @@ public class DefinitionTest {
 		assertEquals(2, definition.getColumns().size());
 		assertEquals("AccountID", definition.getColumns().get(0).getFieldName());
 
-		String expected = "{\"rowsPerPage\":10,\"columns\":[{\"name\":\"AccountID\"},{\"name\":\"AccountName\"}]}";
+		String expected = "{\"columns\":[{\"name\":\"AccountID\"},{\"name\":\"AccountName\"}]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
 	}
 
@@ -51,7 +51,7 @@ public class DefinitionTest {
 		assertEquals(1, definition.getFilters().size());
 		assertEquals("AccountID", definition.getFilters().get(0).getFieldName());
 
-		String expected = "{\"rowsPerPage\":10,\"filters\":[" + notTestingNow + "]}";
+		String expected = "{\"filters\":[" + notTestingNow + "]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
 	}
 
@@ -67,7 +67,7 @@ public class DefinitionTest {
 
 		String notTestingNow = sortJson.toJSONString();
 
-		String expected = "{\"rowsPerPage\":10,\"sorts\":[" + notTestingNow + "]}";
+		String expected = "{\"sorts\":[" + notTestingNow + "]}";
 		assertEquals(expected, definition.toJSON(true).toJSONString());
 	}
 }

@@ -4,7 +4,7 @@ import com.picsauditing.report.tables.CountryTable;
 
 /**
  * Sample URL: 
- * ReportDynamic!data.action?report.modelType=Country&report.parameters={"rowsPerPage":1000,"columns":[{"name":"countryCode"},{"name":"countryName"}]}
+ * ReportDynamic!data.action?report.modelType=Country&report.parameters={"columns":[{"name":"countryCode"},{"name":"countryName"}]}
  */
 public class CountryModel extends BaseModel {
 	public CountryModel() {

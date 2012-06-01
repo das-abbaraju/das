@@ -140,29 +140,29 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	private boolean userHasPermission(String action) {
-		List<ReportUser> reportUserReportList = dao.findWhere(ReportUser.class, "t.user.id = "
+		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
 				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
-		ReportUser reportUserReport = null;
+		ReportUser reportUser = null;
 
-		if (reportUserReportList.size() == 1) {
-			reportUserReport = reportUserReportList.get(0);
+		if (reportUserList.size() == 1) {
+			reportUser = reportUserList.get(0);
 		}
 
-		if (action.equals(COPY) && canRead(reportUserReport))
+		if (action.equals(COPY) && canRead(reportUser))
 			return true;
-		if (action.equals(EDIT) && canEdit(reportUserReport))
+		if (action.equals(EDIT) && canEdit(reportUser))
 			return true;
 		if (action.equals(DELETE) && isReportOwner())
 			return true;
 		return false;
 	}
 
-	private boolean canRead(ReportUser reportUserReport) {
-		return (reportUserReport != null);
+	private boolean canRead(ReportUser reportUser) {
+		return (reportUser != null);
 	}
 
-	private boolean canEdit(ReportUser reportUserReport) {
-		return (reportUserReport != null && reportUserReport.isCanEdit());
+	private boolean canEdit(ReportUser reportUser) {
+		return (reportUser != null && reportUser.isCanEdit());
 	}
 
 	private boolean isReportOwner() {
@@ -202,8 +202,9 @@ public class ReportDynamic extends PicsActionSupport {
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 
+		// TODO: Change 100 to rowsPerPage
 		if (!download)
-			builder.addPaging(page);
+			builder.addPaging(page, 100);
 
 		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
 			translateFilterValueNames(builder.getDefinition().getFilters());

@@ -10,11 +10,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "report_user")
 public class ReportUser extends BaseTable {
-
 	private User user;
 	private Report report;
 	private boolean canEdit;
 	private boolean favorite;
+	private int rowsPerPage = 100;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false)
@@ -53,4 +53,14 @@ public class ReportUser extends BaseTable {
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;
 	}
+
+	@Column(nullable = false)
+	public int getRowsPerPage() {
+		return rowsPerPage;
+	}
+
+	public void setRowsPerPage(int rowsPerPage) {
+		this.rowsPerPage = rowsPerPage;
+	}
+
 }

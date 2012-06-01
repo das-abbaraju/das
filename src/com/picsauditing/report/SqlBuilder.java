@@ -376,11 +376,11 @@ public class SqlBuilder {
 		sql.addWhere(where);
 	}
 
-	public void addPaging(int page) {
+	public void addPaging(int page, int rowsPerPage) {
 		if (page > 1)
-			sql.setStartRow((page - 1) * definition.getRowsPerPage());
+			sql.setStartRow((page - 1) * rowsPerPage);
 
-		sql.setLimit(definition.getRowsPerPage());
+		sql.setLimit(rowsPerPage);
 		sql.setSQL_CALC_FOUND_ROWS(true);
 	}
 

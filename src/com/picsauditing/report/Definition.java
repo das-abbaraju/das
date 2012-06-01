@@ -17,11 +17,7 @@ public class Definition implements JSONable {
 	private List<Filter> filters = new ArrayList<Filter>();
 	private List<Sort> sorts = new ArrayList<Sort>();
 
-	/**
-	 * ({0} OR {1}) AND {2} AND ({3} OR {4})
-	 */
 	private String filterExpression;
-	private int rowsPerPage = 100;
 
 	public Definition() {
 	}
@@ -68,23 +64,9 @@ public class Definition implements JSONable {
 		this.filterExpression = filterExpression;
 	}
 
-	public int getRowsPerPage() {
-		return rowsPerPage;
-	}
-
-	public void setRowsPerPage(int rowsPerPage) {
-		if (rowsPerPage <= 0)
-			// TODO Set to 10 while we're testing...before release, bump it to 100
-			this.rowsPerPage = 10;
-		else
-			this.rowsPerPage = rowsPerPage;
-	}
-
 	@SuppressWarnings("unchecked")
 	public JSONObject toJSON(boolean full) {
 		JSONObject json = new JSONObject();
-		if (rowsPerPage > 0)
-			json.put("rowsPerPage", rowsPerPage);
 		if (filterExpression != null)
 			json.put("filterExpression", filterExpression);
 		if (columns.size() > 0)
@@ -100,8 +82,6 @@ public class Definition implements JSONable {
 	public void fromJSON(JSONObject json) {
 		if (json == null)
 			return;
-		setRowsPerPage(JSONUtilities.convertToInteger(json, "rowsPerPage"));
-
 		this.filterExpression = (String) json.get("filterExpression");
 
 		this.filters = parseQueryFilterList(json.get("filters"));
