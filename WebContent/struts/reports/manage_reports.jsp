@@ -120,10 +120,11 @@
 		<table>
 			<tr>
 				<th></th>
-				<Th>Report Name</Th>
-				<th>remove</th>
-				<th>change</th>
-				<th>copy</th>
+				<Th>Report</Th>				
+				<th></th>
+				<th></th>
+				<th></th>
+				<th></th>
 			</tr>
 		    <s:iterator value="reportsByUser">
 			    <tr>
@@ -139,11 +140,9 @@
 			    		<a href="ReportDynamic.action?report=<s:property value="report" />"><s:property value="report.name" /></a> 
 			    		created by <s:property value="user.name" />
 		    		</td>
+					
 					<td>
-						<a href="ManageReports!deleteReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">this</a>
-					</td>
-					<td>
-						<a href="javascript:" name="modal">name</a>
+						<a href="javascript:" name="modal">Change</a>
 						<div id="boxes">
 						    <!-- #customize your modal window here -->
 						    <div class="ReportDialog window">
@@ -182,7 +181,13 @@
 						</div>
 					</td>
 					<td>
-						<a href="ManageReports!createReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">this</a>
+						<a href="ManageReports!createReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">Copy</a>
+					</td>
+					<td>
+						<a href="ManageReports!deleteReport.action?deleteType=remove&reportType=<s:property value="reportType" />&id=<s:property value="id" />">Remove</a>
+						<s:if test="ifYouOwnTheReport">
+							<a href="ManageReports!deleteReport.action?deleteType=delete&reportType=<s:property value="reportType" />&id=<s:property value="id" />">Delete</a> (sharedCount)
+						</s:if>
 					</td>
 				</tr>
 			</s:iterator>

@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.ReportUser;
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 	private ReportUser report;
+	private Report actualReport;
 	private List<ReportUser> reportsByUser = new ArrayList<ReportUser>();
 
 	private String name = "";
@@ -17,6 +18,8 @@ public class ManageReports extends PicsActionSupport {
 	private String reportType = "";
 	private int id;
 	private boolean favorite;
+	private String deleteType;
+	private int reportUsedBy;
 
 	public String execute() throws Exception {
 		super.execute();
@@ -41,9 +44,29 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() throws Exception {
 		setReport(dao.find(ReportUser.class, id));
-		dao.remove(report);
-		getCustomReport(reportType);
-		return SUCCESS;
+		if (deleteType.equalsIgnoreCase("delete")) {
+			if (permissions.getUserId() == report.getReport().getCreatedBy().getId()){
+				actualReport = report.getReport();
+				//remove from report_user table
+				dao.remove(report);
+				//remove from report table
+				dao.remove(actualReport);
+				
+				getCustomReport(reportType);
+				return SUCCESS;			
+			} else {
+				//addActionMessage(getText("Login.ConfirmedEmailAddress"));
+				addActionMessage("you are not the owner of the report");
+				return SUCCESS;
+			}
+			
+		} else {
+			dao.remove(report);
+			getCustomReport(reportType);
+			return SUCCESS;
+		}
+		
+		
 	}
 
 	public String changeReportName() throws Exception {
@@ -127,5 +150,23 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setFavorite(boolean favorite){
 		this.favorite = favorite;
+	}
+
+	public String getDeleteType() {
+		return deleteType;
+	}
+
+	public void setDeleteType(String deleteType) {
+		this.deleteType = deleteType;
+	}
+	
+	public int getReportUsedBy(){
+		return reportUsedBy;
+	}
+	
+	public void setReportUsedBy(int reportID){
+		//find the count of user that uses this report.
+		dao.find(ReportUser.class, reportID);
+		this.reportUsedBy = reportID;
 	}
 }
