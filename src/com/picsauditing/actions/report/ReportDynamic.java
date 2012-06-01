@@ -85,7 +85,19 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setSharedWith(report.getSharedWith());
 
 			report = newReport;
-			save(report);
+			//save(report);
+			try {
+				ensureValidReport();
+
+				report.setAuditColumns(permissions);
+				dao.save(report);
+				json.put("success", true);
+				json.put("reportID", report.getId());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				jsonException(e);
+			}
 
 			ReportUser userReport = new ReportUser();
 			userReport.setAuditColumns(permissions);
@@ -101,9 +113,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	public void save(Report report) {
-		if (userHasPermission(EDIT))
-		{
+	public String edit() {
+		if (userHasPermission(EDIT)) {
+			//save(report);
 			try {
 				ensureValidReport();
 
@@ -116,59 +128,12 @@ public class ReportDynamic extends PicsActionSupport {
 				e.printStackTrace();
 				jsonException(e);
 			}
-		}
-	}
-
-	public String edit() {
-		if (userHasPermission(EDIT)) {
-			save(report);
 		} else {
 			json.put("success", false);
 			json.put("error", "Invalid User, cannot edit reports that are not your own.");
 		}
 
 		return JSON;
-	}
-
-	public String getUserStatus() {
-		json.put("is_developer", permissions.isDeveloperEnvironment());
-		json.put("is_owner", isReportOwner());
-		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
-		json.put("user_can_edit", userHasPermission(EDIT));
-		json.put("user_can_create", userHasPermission(COPY));
-		json.put("user_can_delete", userHasPermission(DELETE));
-
-		return JSON;
-	}
-
-	private boolean userHasPermission(String action) {
-		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
-				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
-		ReportUser reportUser = null;
-
-		if (reportUserList.size() == 1) {
-			reportUser = reportUserList.get(0);
-		}
-
-		if (action.equals(COPY) && canRead(reportUser))
-			return true;
-		if (action.equals(EDIT) && canEdit(reportUser))
-			return true;
-		if (action.equals(DELETE) && isReportOwner())
-			return true;
-		return false;
-	}
-
-	private boolean canRead(ReportUser reportUser) {
-		return (reportUser != null);
-	}
-
-	private boolean canEdit(ReportUser reportUser) {
-		return (reportUser != null && reportUser.isCanEdit());
-	}
-
-	private boolean isReportOwner() {
-		return permissions.getUserId() == report.getCreatedBy().getId();
 	}
 
 	public String data() {
@@ -192,6 +157,112 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		return JSON;
+	}
+
+	public String list() {
+		try {
+			if (Strings.isEmpty(fieldName))
+				throw new Exception("Please pass a fieldName when calling list");
+
+			ensureValidReport();
+			builder.setReport(report);
+			builder.getSql();
+
+			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
+			validate(field);
+
+			if (field.getFilterType().isEnum()) {
+				json = renderEnumFieldAsJson(field);
+			} else if (field.getFilterType().isAutocomplete()) {
+				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
+						searchQuery, permissions);
+			} else {
+				throw new Exception(field.getFilterType() + " not supported by list function.");
+			}
+
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+		return JSON;
+	}
+
+	public String getUserStatus() {
+		json.put("is_developer", permissions.isDeveloperEnvironment());
+		json.put("is_owner", isReportOwner());
+		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
+		json.put("user_can_edit", userHasPermission(EDIT));
+		json.put("user_can_create", userHasPermission(COPY));
+		json.put("user_can_delete", userHasPermission(DELETE));
+
+		return JSON;
+	}
+
+	public String availableFields() {
+		try {
+			ensureValidReport();
+			builder.setReport(report);
+			builder.getSql();
+
+			json.put("modelType", report.getModelType().toString());
+			json.put("fields", getAvailableFields());
+			json.put("success", true);
+		} catch (Exception e) {
+			jsonException(e);
+		}
+
+		return JSON;
+	}
+
+	@Anonymous
+	public String availableBases() {
+		JSONArray rows = new JSONArray();
+		for (ModelType type : ModelType.values()) {
+			rows.add(type.toString());
+		}
+		json.put("bases", rows);
+
+		return JSON;
+	}
+
+	public String getReportParameters() throws Exception {
+		buildSQL(!DOWNLOAD);
+		addTranslatedLabelsToReportParameters(report.getDefinition());
+		json.put("report", report.toJSON(true));
+		json.put("success", true);
+
+		return JSON;
+	}
+
+	private boolean userHasPermission(String action) {
+		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
+				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
+		ReportUser reportUser = null;
+
+		if (reportUserList.size() == 1) {
+			reportUser = reportUserList.get(0);
+		}
+
+		if (action.equals(COPY) && canRead(reportUser))
+			return true;
+		if (action.equals(EDIT) && canEdit(reportUser))
+			return true;
+		if (action.equals(DELETE) && isReportOwner())
+			return true;
+
+		return false;
+	}
+
+	private boolean canRead(ReportUser reportUser) {
+		return (reportUser != null);
+	}
+
+	private boolean canEdit(ReportUser reportUser) {
+		return (reportUser != null && reportUser.isCanEdit());
+	}
+
+	private boolean isReportOwner() {
+		return permissions.getUserId() == report.getCreatedBy().getId();
 	}
 
 	// This is in the wrong class, should be in SqlBuilder
@@ -219,17 +290,20 @@ public class ReportDynamic extends PicsActionSupport {
 		QueryData queryData = new QueryData(rawData);
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-		System.out.println("Report: " + report.toJSON(true));
-		System.out.println("Query: " + sql.toString());
-		System.out.println("Time to query: " + queryTime + " ms");
+		if (queryTime > 1000) {
+			System.out.println("Report: " + report.toJSON(true));
+			System.out.println("Query: " + sql.toString());
+			System.out.println("Time to query: " + queryTime + " ms");
+		}
 
 		return queryData;
 	}
-	
+
 	private List<BasicDynaBean> runSQL() throws SQLException {
 		Database db = new Database();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
 		json.put("total", db.getAllRows());
+
 		return rows;
 	}
 
@@ -263,32 +337,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public String availableFields() {
-		try {
-			ensureValidReport();
-			builder.setReport(report);
-			builder.getSql();
-
-			json.put("modelType", report.getModelType().toString());
-			json.put("fields", getAvailableFields());
-			json.put("success", true);
-		} catch (Exception e) {
-			jsonException(e);
-		}
-
-		return JSON;
-	}
-
-	@Anonymous
-	public String availableBases() {
-		JSONArray rows = new JSONArray();
-		for (ModelType type : ModelType.values()) {
-			rows.add(type.toString());
-		}
-		json.put("bases", rows);
-		return JSON;
-	}
-
 	/**
 	 * Return a set of fields which can be used client side for defining the
 	 * report (columns, sorting, grouping and filtering)
@@ -314,14 +362,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return dao.findWhere(Report.class, "id > 0", 100);
 	}
 
-	public String getReportParameters() throws Exception {
-		buildSQL(!DOWNLOAD);
-		addTranslatedLabelsToReportParameters(report.getDefinition());
-		json.put("report", report.toJSON(true));
-		json.put("success", true);
-		return JSON;
-	}
-	
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
 		if (definition.getColumns().size() > 0) {
 			for (Column column : definition.getColumns()) {
@@ -343,13 +383,17 @@ public class ReportDynamic extends PicsActionSupport {
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao
 				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
+
 		Map<String, AppTranslation> existing = new HashMap<String, AppTranslation>();
+
 		for (AppTranslation translation : existingList) {
 			existing.put(translation.getKey(), translation);
 		}
+
 		for (FieldCategory category : FieldCategory.values()) {
 			saveTranslation(existing, "Report.Category." + category);
 		}
+
 		for (ModelType type : ModelType.values()) {
 			System.out.println("-- filling fields for " + type);
 			Report fakeReport = new Report();
@@ -363,11 +407,13 @@ public class ReportDynamic extends PicsActionSupport {
 				saveTranslation(existing, key + ".help");
 			}
 		}
+
 		return BLANK;
 	}
 
 	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
 		AppTranslation translation = existing.get(key);
+
 		if (translation == null) {
 			translation = new AppTranslation();
 			translation.setKey(key);
@@ -386,6 +432,7 @@ public class ReportDynamic extends PicsActionSupport {
 			}
 			System.out.println("Updating " + key);
 		}
+
 		translation.setLastUsed(new Date());
 		translation.setApplicable(true);
 		translation.setContentDriven(true);
@@ -398,15 +445,19 @@ public class ReportDynamic extends PicsActionSupport {
 			translatedText = "?" + field.getName();
 			System.out.println("Report." + field.getName());
 		}
+
 		return translatedText;
 	}
 
 	private String translateCategory(String category) {
 		String translatedText = getText("Report.Category." + category);
+
 		if (translatedText == null)
 			translatedText = getText("Report.Category.General");
+
 		if (translatedText == null)
 			translatedText = "?Report.Category.General";
+
 		return translatedText;
 	}
 
@@ -415,6 +466,7 @@ public class ReportDynamic extends PicsActionSupport {
 		json.put("error", e.getCause() + " " + e.getMessage());
 	}
 
+	// TODO refactor this mess
 	private void convertToJson(QueryData data) {
 		JSONArray rows = new JSONArray();
 		for (Map<String, Object> row : data.getData()) {
@@ -491,34 +543,6 @@ public class ReportDynamic extends PicsActionSupport {
 		showSQL = true;
 	}
 
-	public String list() {
-		try {
-			if (Strings.isEmpty(fieldName))
-				throw new Exception("Please pass a fieldName when calling list");
-
-			ensureValidReport();
-			builder.setReport(report);
-			builder.getSql();
-
-			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
-			validate(field);
-
-			if (field.getFilterType().isEnum()) {
-				json = renderEnumFieldAsJson(field);
-			} else if (field.getFilterType().isAutocomplete()) {
-				json = reportFilterAutocompleter.getFilterAutocompleteResultsJSON(field.getAutocompleteType(),
-						searchQuery, permissions);
-			} else {
-				throw new Exception(field.getFilterType() + " not supported by list function.");
-			}
-
-			json.put("success", true);
-		} catch (Exception e) {
-			jsonException(e);
-		}
-		return JSON;
-	}
-
 	private JSONObject renderEnumFieldAsJson(Field field) {
 		JSONObject enumResults = new JSONObject();
 		JSONArray jsonResult = new JSONArray();
@@ -541,36 +565,37 @@ public class ReportDynamic extends PicsActionSupport {
 
 	private void translateFilterValueNames(List<Filter> filters) {
 		for (Filter filter : filters) {
-			if (filter.isHasTranslations()) {
-				if (Strings.isEmpty(filter.getValue()))
-					return;
+			if (!filter.isHasTranslations())
+				continue;
 
-				String[] values = filter.getValue().split(",");
-				String[] translationValueNameArray = new String[values.length];
-				for (int i = 0; i < values.length; i++) {
-					String translationKey = values[i];
-					translationKey = buildTranslationKey(filter.getField(), translationKey);
-					translationValueNameArray[i] = getText(translationKey);
-				}
+			if (Strings.isEmpty(filter.getValue()))
+				return;
 
-				String translatedValueNames = StringUtils.join(translationValueNameArray, ",");
-				filter.setValueNames(translatedValueNames);
+			String[] values = filter.getValue().split(",");
+			String[] translationValueNameArray = new String[values.length];
+			for (int i = 0; i < values.length; i++) {
+				String translationKey = values[i];
+				translationKey = buildTranslationKey(filter.getField(), translationKey);
+				translationValueNameArray[i] = getText(translationKey);
 			}
+
+			String translatedValueNames = StringUtils.join(translationValueNameArray, ",");
+			filter.setValueNames(translatedValueNames);
 		}
 	}
 
 	private String buildTranslationKey(Field field, String initialTranslationKey) {
 		String keyPrefix = field.getPreTranslation();
 		String keySuffix = field.getPostTranslation();
-		
+
 		if(!Strings.isEmpty(keyPrefix)) {
 			initialTranslationKey = keyPrefix + "." + initialTranslationKey;
 		}
-		
+
 		if(!Strings.isEmpty(keySuffix)){
 			initialTranslationKey = initialTranslationKey + "." + keySuffix;
 		}
-		
+
 		return initialTranslationKey;
 	}
 
