@@ -193,7 +193,13 @@ public class LoginController extends PicsActionSupport {
 		else
 			ActionContext.getContext().getSession().clear();
 		logAttempt();
-		postLogin();
+
+		if (permissions.getGroups().size()>0){
+			postLogin();
+		} else{
+			redirect("Login.action?button=logout&msg="+getText("Login.NoGroupOrPermission"));
+			return SUCCESS;
+		}
 
 		return SUCCESS;
 	}
