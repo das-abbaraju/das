@@ -78,6 +78,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	protected AuditDecisionTableDAO auditRuleDAO;
+	private Map<Integer, List<Integer>> certIdToOp;
 
 	public String execute() throws Exception {
 		findContractor();
@@ -572,24 +573,27 @@ public class ContractorActionSupport extends AccountActionSupport {
 	 */
 	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
-		if (certificates == null)
+		if (certificates == null) {
 			certificates = certificateDAO.findByConId(contractor.getId(), permissions, true);
+			List<Integer> certIds = new ArrayList<Integer>();
+			for (Certificate cert : certificates)
+				certIds.add(cert.getId());
 
+			certIdToOp = certificateDAO.findOpsMapByCert(certIds);
+		}
+			
+
+		
 		if (permissions.isOperatorCorporate()) {
 			int topID = permissions.getTopAccountID();
 			OperatorAccount opAcc = operatorDAO.find(topID);
 
 			List<Integer> allowedList = new ArrayList<Integer>();
-			List<Integer> certIds = new ArrayList<Integer>();
 			allowedList = opAcc.getOperatorHeirarchy();
 
 			for (OperatorAccount tmpOp : opAcc.getOperatorChildren())
 				allowedList.add(tmpOp.getId());
 
-			for (Certificate cert : certificates)
-				certIds.add(cert.getId());
-
-			Map<Integer, List<Integer>> certIdToOp = certificateDAO.findOpsMapByCert(certIds);
 			Iterator<Certificate> itr = certificates.iterator();
 
 			while (itr.hasNext()) {
@@ -611,6 +615,24 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 		return certificates;
+	}
+	
+	public List<OperatorAccount> getOperatorsUsingCertificate(int certId) {
+		List<OperatorAccount> operatorsUsingCert = new ArrayList<OperatorAccount>();
+
+		getCertificates();
+
+		List<Integer> opIds = certIdToOp.get(certId);
+		if (opIds != null) {
+			for (int opId : opIds) {
+				for (ContractorOperator conOp : operators) {
+					if (conOp.getOperatorAccount().getId() == opId)
+						operatorsUsingCert.add(conOp.getOperatorAccount());
+				}
+			}
+		}
+
+		return operatorsUsingCert;
 	}
 
 	/**

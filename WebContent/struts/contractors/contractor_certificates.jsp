@@ -7,14 +7,15 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th>Certificate</th>
+				<th><s:text name="Audit.certificates.Certificate" /></th>
+				<th><s:text name="Audit.certificates.UsedBy" /></th>
 			</tr>
 		</thead>
 		<tbody>
 			<s:iterator value="certificates">
 				<tr>
 					<td>
-						<a href="#" class="add saveCertificate" rel="<s:property value="id"/>">Attach</a>
+						<a href="#" class="add saveCertificate" rel="<s:property value="id"/>"><s:text name="Audit.certificates.Attach" /></a>
 					</td>
 					<td>
 						<a href="#" class="insurance viewCertificate" rel="<s:property value="id"/>"><s:date name="creationDate" format="%{getText('date.short')}" /> - <s:property value="description" /></a>
@@ -31,11 +32,16 @@
 							</s:iterator>
 						</table>
 					</td>
+					<td>
+						<s:iterator value="getOperatorsUsingCertificate(id)" var="certOp" status="stat" >
+							<s:if test="!#stat.first">, </s:if><s:property value="#certOp.name" />
+						</s:iterator>
+					</td>
 				</tr>
 			</s:iterator>
 		</tbody>
 	</table>
 </s:if>
 <s:else>
-	There are no certificates
+	<s:text name="Audit.certificates.NoCerts" />
 </s:else>
