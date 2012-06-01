@@ -193,11 +193,15 @@
 									/>
 										
 									<s:if test="permissions.admin">
-										<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
+										<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+											<s:text name="UsersManage.addUser" />
+										</a>
 									</s:if>
 									<s:else>
 										<pics:permission perm="ContractorAdmin">
-											<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
+											<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+												<s:text name="UsersManage.addUser" />
+											</a>
 										</pics:permission>
 									</s:else>
 								</li>
@@ -494,10 +498,20 @@
 									
 									<ol>
 										<li>
-											<s:submit cssClass="picsbutton positive" method="sendDeactivationEmail" value="%{getText(scope + '.button.SendDeactivationEmail')}" />
+											<s:submit
+												cssClass="picsbutton positive"
+												method="sendDeactivationEmail"
+												value="%{getText(scope + '.button.SendDeactivationEmail')}" />
 										</li>
 										<li>
-											<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
+											<s:select
+												cssStyle="font-size: 12px;"
+												list="operatorList"
+												name="operatorIds"
+												listKey="id"
+												listValue="name"
+												multiple="true"
+												size="10" />
 										</li>
 									</ol>
 								</fieldset>
