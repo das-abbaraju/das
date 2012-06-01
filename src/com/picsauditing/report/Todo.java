@@ -287,22 +287,6 @@ public class Todo {
 	// // leftJoinToUser("auditOperatorWorkflowCreatedBy", "caow.createdBy");
 	// }
 	//
-	// private void buildContractorAuditDataBase() {
-	// // buildContractorAuditOperatorBase();
-	//
-	// sql.addJoin("JOIN pqfdata pd on pd.auditID = ca.id");
-	//
-	// addQueryField("auditDataAnswer", "pd.answer", FilterType.String, true);
-	// addQueryField("auditDataDateVerified", "pd.dateVerified",
-	// FilterType.Date);
-	// addQueryField("auditDataQuestionID", "pd.questionID",
-	// FilterType.Integer);
-	// Field auditDataQuestion = addQueryField("auditDataQuestion",
-	// "pd.questionID", FilterType.String, true);
-	// auditDataQuestion.translate("AuditQuestion", "name");
-	// addQueryField("auditDataUpdateDate", "pd.updateDate", FilterType.Date);
-	// }
-	//
 	// private void joinToFacilities(String joinAlias, String tableKey, String
 	// foreignKey) {
 	// joins.put(joinAlias, "LEFT JOIN facilities " + joinAlias + " ON " +
@@ -417,5 +401,4 @@ public class Todo {
 	// addQueryField(joinAlias + "Answer", joinAlias + ".answer",
 	// FilterType.String, joinAlias);
 	// }
-
 }

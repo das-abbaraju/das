@@ -26,6 +26,8 @@ import org.json.simple.JSONValue;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
+import com.picsauditing.report.annotations.ReportField;
+import com.picsauditing.report.fields.FilterType;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -63,6 +65,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.question = question;
 	}
 
+	@ReportField(filterType = FilterType.String)
 	public String getAnswer() {
 		return answer;
 	}
@@ -81,6 +84,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		this.auditor = auditor;
 	}
 
+	@ReportField(filterType = FilterType.String)
 	public String getComment() {
 		return comment;
 	}
@@ -104,6 +108,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 
 	@Temporal(TemporalType.DATE)
+	@ReportField(filterType = FilterType.Date)
 	public Date getDateVerified() {
 		return dateVerified;
 	}
@@ -190,23 +195,6 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 			return true;
 		return false;
 	}
-
-	/*
-	 * @Transient public boolean isRequired() { String isRequired = question.getIsRequired(); if
-	 * (isRequired.equals("Yes")) return true;
-	 * 
-	 * if (isRequired.equals("Depends")) { if (question.getr == null) return false; String dependsOnAnswer =
-	 * question.getDependsOnAnswer(); if (dependsOnAnswer == null) return false;
-	 * 
-	 * // TODO BEFORE RELEASE! figure out some way to get the answer of a // dependent question //
-	 * dependsOnQuestion.getAnswer(); AuditData contractorAnswer = null;
-	 * 
-	 * if (contractorAnswer == null) // The contractor hasn't answered this question yet return false; // Such as "Yes"
-	 * and "Yes with Office" answers. if (dependsOnAnswer.equals("Yes*")) return
-	 * contractorAnswer.getAnswer().startsWith("Yes");
-	 * 
-	 * if (dependsOnAnswer.equals(contractorAnswer.getAnswer())) return true; } return false; }
-	 */
 
 	/**
 	 * Get a unique ID for this answer regardless if it has been saved or not
@@ -312,6 +300,5 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 		Date date = DateBean.parseDate(answer);
 		String dateStr = displayFormat.format(date);
 		return dateStr;
-	}
-	
+	}	
 }

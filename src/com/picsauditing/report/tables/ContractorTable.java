@@ -37,5 +37,8 @@ public class ContractorTable extends BaseTable {
 		addLeftJoin(new UserTable(prefix + "CustomerService", alias + ".welcomeAuditor_id"));
 		addLeftJoin(new AccountTable(prefix + "RequestedByOperator", alias + ".requestedByID"));
 		addLeftJoin(new ContractorAuditTable(prefix + "PQF", prefix + "PQF", "conID", alias + ".id AND " + prefix + "PQF.auditTypeID = 1"));
+		
+		// TODO: Add flag_criteria_contractor table
+		// addLeftJoin(new FlagCriteriaContractorTable(prefix + "FlagCriteria", prefix + "FlagCriteria", ...
 	}
 }

@@ -39,5 +39,7 @@ public class ContractorAuditTable extends BaseTable {
 
 		addLeftJoin(new UserTable(prefix + "Auditor", alias + ".auditorID"));
 		addLeftJoin(new UserTable(prefix + "ClosingAuditor", alias + ".closingAuditorID"));
+		
+		// TODO: Add auditDataTable
 	}
 }
