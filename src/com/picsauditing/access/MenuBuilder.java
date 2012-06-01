@@ -8,7 +8,6 @@ import java.util.List;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUserReport;
 import com.picsauditing.jpa.entities.User;
@@ -28,10 +27,10 @@ public class MenuBuilder {
 	}
 
 	public static MenuComponent buildMenubar(Permissions permissions) {
-		return buildMenubar(permissions, null);
+		return buildMenubar(permissions, null, null);
 	}
 
-	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUserReport> reports) {
+	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUserReport> userReports, List<Report> baseReports) {
 		MenuComponent menu = new MenuComponent();
 
 		if (!permissions.isLoggedIn()) {
@@ -43,7 +42,7 @@ public class MenuBuilder {
 		} else if (permissions.isOperatorCorporate()) {
 			buildOperatorCorporateMenu(menu, permissions);
 		} else {
-			buildGeneralMenubar(menu, permissions, reports);
+			buildGeneralMenubar(menu, permissions, userReports, baseReports);
 		}
 
 		handleSingleChildMenu(menu);
@@ -52,12 +51,12 @@ public class MenuBuilder {
 	}
 
 	// For Operators, Corporate users, and PICS employees
-	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<ReportUserReport> reports) {
+	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<ReportUserReport> userReports, List<Report> baseReports) {
 		addPicsLogo(menu);
 
 		addDashboardSubmenu(menu);
 
-		addReportsSubmenu(menu, reports);
+		addReportsSubmenu(menu, userReports, baseReports);
 
 		//addContractorSubmenu(menu, permissions);
 
@@ -358,15 +357,20 @@ public class MenuBuilder {
 		}
 	}
 
-	private static void addReportsSubmenu(MenuComponent menu, List<ReportUserReport> reports) {
-		if (menu == null || reports == null)
+	private static void addReportsSubmenu(MenuComponent menu, List<ReportUserReport> userReports, List<Report> baseReports) {
+		if (menu == null || userReports == null)
 			return;
 
 		MenuComponent reportsMenu = menu.addChild("Reports");
 
 		reportsMenu.addChild("Manage Reports", "ManageReports.action");
 
-		for (ReportUserReport userReport : reports) {
+		MenuComponent base = reportsMenu.addChild("Base Reports", "ManageReports.action");
+		for (Report report : baseReports) {
+			base.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
+		}
+
+		for (ReportUserReport userReport : userReports) {
 			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}

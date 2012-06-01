@@ -102,17 +102,20 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public void save(Report report) {
-		try {
-			ensureValidReport();
+		if (userHasPermission(EDIT))
+		{
+			try {
+				ensureValidReport();
 
-			report.setAuditColumns(permissions);
-			dao.save(report);
-			json.put("success", true);
-			json.put("reportID", report.getId());
+				report.setAuditColumns(permissions);
+				dao.save(report);
+				json.put("success", true);
+				json.put("reportID", report.getId());
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			jsonException(e);
+			} catch (Exception e) {
+				e.printStackTrace();
+				jsonException(e);
+			}
 		}
 	}
 
@@ -220,7 +223,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return new QueryData(rawData);
 	}
-
+	
 	private List<BasicDynaBean> runSQL() throws SQLException {
 		Database db = new Database();
 		List<BasicDynaBean> rows = db.select(sql.toString(), true);
@@ -368,10 +371,12 @@ public class ReportDynamic extends PicsActionSupport {
 		dao.save(translation);
 	}
 
-	private String translateLabel(Field field) {
+	public String translateLabel(Field field) {
 		String translatedText = getText("Report." + field.getName());
-		if (translatedText == null)
+		if (translatedText == null) {
 			translatedText = "?" + field.getName();
+			System.out.println("Report." + field.getName());
+		}
 		return translatedText;
 	}
 
