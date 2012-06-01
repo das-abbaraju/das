@@ -213,15 +213,14 @@ public class ReportDynamic extends PicsActionSupport {
 	private QueryData queryData() throws SQLException {
 		long queryTime = Calendar.getInstance().getTimeInMillis();
 		List<BasicDynaBean> rawData = runSQL();
+		QueryData queryData = new QueryData(rawData);
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
-		if (queryTime > 1000) {
-			showSQL = true;
-			System.out.println("Slow Query: " + sql.toString());
-			System.out.println("Time to query: " + queryTime + " ms");
-		}
+		System.out.println("Report: " + report.toJSON(true));
+		System.out.println("Query: " + sql.toString());
+		System.out.println("Time to query: " + queryTime + " ms");
 
-		return new QueryData(rawData);
+		return queryData;
 	}
 	
 	private List<BasicDynaBean> runSQL() throws SQLException {
