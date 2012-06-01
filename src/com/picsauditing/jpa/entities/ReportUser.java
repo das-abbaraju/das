@@ -8,8 +8,8 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "report_user_report")
-public class ReportUserReport extends BaseTable {
+@Table(name = "report_user")
+public class ReportUser extends BaseTable {
 
 	private User user;
 	private Report report;

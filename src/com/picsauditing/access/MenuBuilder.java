@@ -9,7 +9,7 @@ import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUserReport;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -30,7 +30,7 @@ public class MenuBuilder {
 		return buildMenubar(permissions, null, null);
 	}
 
-	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUserReport> userReports, List<Report> baseReports) {
+	public static MenuComponent buildMenubar(Permissions permissions, List<ReportUser> userReports, List<Report> baseReports) {
 		MenuComponent menu = new MenuComponent();
 
 		if (!permissions.isLoggedIn()) {
@@ -51,7 +51,7 @@ public class MenuBuilder {
 	}
 
 	// For Operators, Corporate users, and PICS employees
-	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<ReportUserReport> userReports, List<Report> baseReports) {
+	private static void buildGeneralMenubar(MenuComponent menu, Permissions permissions, List<ReportUser> userReports, List<Report> baseReports) {
 		addPicsLogo(menu);
 
 		addDashboardSubmenu(menu);
@@ -357,7 +357,7 @@ public class MenuBuilder {
 		}
 	}
 
-	private static void addReportsSubmenu(MenuComponent menu, List<ReportUserReport> userReports, List<Report> baseReports) {
+	private static void addReportsSubmenu(MenuComponent menu, List<ReportUser> userReports, List<Report> baseReports) {
 		if (menu == null || userReports == null)
 			return;
 
@@ -370,7 +370,7 @@ public class MenuBuilder {
 			base.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}
 
-		for (ReportUserReport userReport : userReports) {
+		for (ReportUser userReport : userReports) {
 			Report report = userReport.getReport();
 			reportsMenu.addChild(report.getName(), "ReportDynamic.action?report=" + report.getId());
 		}

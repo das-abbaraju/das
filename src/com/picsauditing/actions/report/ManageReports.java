@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUserReport;
+import com.picsauditing.jpa.entities.ReportUser;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
-	private ReportUserReport report;
-	private List<ReportUserReport> reportsByUser = new ArrayList<ReportUserReport>();
+	private ReportUser report;
+	private List<ReportUser> reportsByUser = new ArrayList<ReportUser>();
 
 	private String name = "";
 	private String description = "";
@@ -27,27 +27,27 @@ public class ManageReports extends PicsActionSupport {
 
 	private void getCustomReport(String reportType) {
 		if (reportType.equals("template")) {
-			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId(), 2));
+			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId(), 2));
 		} else if (reportType.equals("favorite")) {
-			setReportsByUser(dao.findWhere(ReportUserReport.class,
+			setReportsByUser(dao.findWhere(ReportUser.class,
 					"favorite=1 and createdBy=" + permissions.getUserId()));
 		} else if (reportType.equals("saved")) {
-			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId()));
+			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId()));
 		} else {
-			setReportsByUser(dao.findWhere(ReportUserReport.class, "createdBy=" + permissions.getUserId()));
+			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId()));
 		}
 
 	}
 
 	public String deleteReport() throws Exception {
-		setReport(dao.find(ReportUserReport.class, id));
+		setReport(dao.find(ReportUser.class, id));
 		dao.remove(report);
 		getCustomReport(reportType);
 		return SUCCESS;
 	}
 
 	public String changeReportName() throws Exception {
-		setReport(dao.find(ReportUserReport.class, id));
+		setReport(dao.find(ReportUser.class, id));
 		report.getReport().setName(name);
 		report.getReport().setDescription(description);
 		dao.save(report);
@@ -56,7 +56,7 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String changeFavorite() throws Exception{
-		setReport(dao.find(ReportUserReport.class, id));
+		setReport(dao.find(ReportUser.class, id));
 		report.setFavorite(favorite);
 		dao.save(report);
 		getCustomReport(reportType);
@@ -64,7 +64,7 @@ public class ManageReports extends PicsActionSupport {
 	}
 
 	public String createReport(){
-		setReport(dao.find(ReportUserReport.class, id));
+		setReport(dao.find(ReportUser.class, id));
 
 		ReportDynamic dr = new ReportDynamic();
 		dr.setReport((Report)report.getReport());
@@ -74,19 +74,19 @@ public class ManageReports extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public ReportUserReport getReport() {
+	public ReportUser getReport() {
 		return report;
 	}
 
-	public void setReport(ReportUserReport report) {
+	public void setReport(ReportUser report) {
 		this.report = report;
 	}
 
-	public void setReportsByUser(List<ReportUserReport> reportsByUser) {
+	public void setReportsByUser(List<ReportUser> reportsByUser) {
 		this.reportsByUser = reportsByUser;
 	}
 
-	public List<ReportUserReport> getReportsByUser() {
+	public List<ReportUser> getReportsByUser() {
 		return reportsByUser;
 	}
 
