@@ -26,33 +26,47 @@
 </s:set>
 
 <head>
-	<title>${contractor.name}</title>
-    
+	<title>${contractor.name} PICS Membership Tag</title>
+
     <link rel="stylesheet" type="text/css" media="screen" href="css/badge/badge.css?v=${version}" />
     <script type="text/javascript" src="js/badge/badge.js?v=${version}"></script>
     <script type="text/javascript" src="js/zeroclipboard/ZeroClipboard.js?v=${version}"></script>
 </head>
 <body>
 	<s:include value="conHeader.jsp"/>
-    
+
     <div id="${actionName}-page">
         <div id="badgeInformation">
             <s:text name="ContractorBadge.Information" />
-            <a id="footnote-1" href="http://captology.stanford.edu/resources/what-makes-a-website-credible.html">1. http://captology.stanford.edu/resources/what-makes-a-website-credible.html</a>
         </div>
-        
+
         <div id="badgeSteps">
             <s:text name="ContractorBadge.Steps" />
         </div>
-        
-        <div class="clear"></div>            
+
+        <div class="clear"></div>
 
         <ul class="badges">
             <li>
                 <div class="badge">
                     ${badge_80}
                 </div>
-                
+            </li>
+            <li>
+                <div class="badge">
+                    ${badge_100}
+                </div>
+            </li>
+            <li>
+                <div class="badge">
+                    <div class="badgeSub">
+                        ${badge_150}
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="badgeActions">
+            <li>
                 <div class="code">
                     <div id="clip_container_80" class="clip_container">
                         <a href="javascript:;" id="clip_button_80">
@@ -67,10 +81,6 @@
                 </div>
             </li>
             <li>
-                <div class="badge">
-                    ${badge_100}
-                </div>
-                
                 <div class="code">
                     <div id="clip_container_100" class="clip_container">
                         <a href="javascript:;" id="clip_button_100">
@@ -79,18 +89,12 @@
                         <br>
                         <a class="toggleCode" href="javascript:;">
                             <s:text name="global.ViewCode" />
-                        </a>                        
+                        </a>
                     </div>
                     <textarea>${badge_100}</textarea>
                 </div>
             </li>
             <li>
-                <div class="badge">
-                    <div class="badgeSub">
-                        ${badge_150}
-                    </div>
-                </div>
-                
                 <div class="code">
                     <div id="clip_container_150" class="clip_container">
                         <a href="javascript:;" id="clip_button_150">
@@ -101,21 +105,20 @@
                             <s:text name="global.ViewCode" />
                         </a>
                     </div>
-                    <textarea>${badge_150}</textarea>                    
+                    <textarea>${badge_150}</textarea>
                 </div>
             </li>
         </ul>
-        
         <div id="badgeControls" class="clear">
             <a href="${con_badge}" class="picsbutton positive">The Badge has been added.</a>
 
-            
+
 	        <s:if test="!taskCompleted">
                 <div id="removeNotification">
 		            <s:url var="con_badge" action="ContractorBadge" method="save">
 		                <s:param name="contractor" value="%{contractor.id}" />
 		            </s:url>
-		            
+
 		            <a href="${con_badge}">
 		                <s:text name="ContractorBadge.RemoveWithoutAdding" />
 		            </a>
