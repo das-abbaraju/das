@@ -28,6 +28,8 @@ public class Filter implements JSONable {
 			json.put("operator", operator.toString());
 		if (value != null)
 			json.put("value", value);
+		if (valueNames != null)
+			json.put("valueNames", valueNames);
 		if (field != null)
 			json.put("field", field.toJSONObject());
 

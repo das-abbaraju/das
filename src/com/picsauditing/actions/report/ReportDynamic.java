@@ -526,8 +526,8 @@ public class ReportDynamic extends PicsActionSupport {
 				String[] values = filter.getValue().split(",");
 				String[] translationValueNameArray = new String[values.length];
 				for (int i = 0; i < values.length; i++) {
-					String translationKey = filter.getField().getPreTranslation() + values[i]
-							+ filter.getField().getPostTranslation();
+					String translationKey = values[i];
+					translationKey = buildTranslationKey(filter.getField(), translationKey);
 					translationValueNameArray[i] = getText(translationKey);
 				}
 
@@ -535,6 +535,21 @@ public class ReportDynamic extends PicsActionSupport {
 				filter.setValueNames(translatedValueNames);
 			}
 		}
+	}
+
+	private String buildTranslationKey(Field field, String initialTranslationKey) {
+		String keyPrefix = field.getPreTranslation();
+		String keySuffix = field.getPostTranslation();
+		
+		if(!Strings.isEmpty(keyPrefix)) {
+			initialTranslationKey = keyPrefix + "." + initialTranslationKey;
+		}
+		
+		if(!Strings.isEmpty(keySuffix)){
+			initialTranslationKey = initialTranslationKey + "." + keySuffix;
+		}
+		
+		return initialTranslationKey;
 	}
 
 	public Report getReport() {

@@ -196,7 +196,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "country")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 3)
-	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country)
+	@ReportField(i18nKeyPrefix = "Country", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.Country)
 	public Country getCountry() {
 		return country;
 	}
@@ -208,7 +208,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	@ManyToOne
 	@JoinColumn(name = "state")
 	@IndexableField(type = IndexValueType.ISOTYPE, weight = 4)
-	@ReportField(category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.State)
+	@ReportField(i18nKeyPrefix = "State", category = FieldCategory.Contact, filterType = FilterType.Autocomplete, autocomplete = AutocompleteType.State)
 	public State getState() {
 		return this.state;
 	}

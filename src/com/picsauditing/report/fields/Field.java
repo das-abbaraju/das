@@ -42,7 +42,11 @@ public class Field implements JSONAware {
 	public Field(ReportField annotation) {
 		this.filterType = annotation.filterType();
 		this.autocompleteType = annotation.autocomplete();
-		// TODO other options
+		this.preTranslation = annotation.i18nKeyPrefix();
+		this.postTranslation = annotation.i18nKeySuffix();
+		this.visible = annotation.visible();
+		this.filterable = annotation.filterable();
+		this.sortable = annotation.sortable();
 	}
 
 	public Field(String name, String databaseColumnName, FilterType filterType) {
