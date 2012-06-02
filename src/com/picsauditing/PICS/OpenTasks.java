@@ -245,8 +245,14 @@ public class OpenTasks extends TranslationActionSupport {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()
 						&& !conAudit.getAuditType().isCorIecWaState()) {
 					Integer conAuditID = conAudit.getId();
-					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(),
+					String text = "";
+					if (conAudit.getAuditType().getClassType().isEmployee()){
+						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(),
 							conAuditID, auditName, showAuditFor, auditFor);
+					} else {
+						text = getTextParameterized("ContractorWidget.message.OpenRequirements",
+								conAuditID, auditName, showAuditFor, auditFor);
+					}
 
 					if (!openReq) {
 						text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
@@ -295,8 +301,15 @@ public class OpenTasks extends TranslationActionSupport {
 			} else if (conAudit.hasCaoStatus(AuditStatus.Resubmitted) && conAudit.getAuditType().isCorIecWaState()) {
 				if (permissions.hasPermission(OpPerms.ContractorSafety) || user.getAccount().isAdmin()) {
 					Integer conAuditID = conAudit.getId();
-					String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(), conAuditID,
-							auditName, showAuditFor, auditFor);
+					String text = "";
+
+					if (conAudit.getAuditType().getClassType().isEmployee()){
+						text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID,
+								auditName, showAuditFor, auditFor);
+					} else {
+						text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID,
+								auditName, showAuditFor, auditFor);
+					}
 					if (conAudit.getAuditType().getId() == AuditType.COR) {
 						text = getTextParameterized("ContractorWidget.message.OpenRequirementsCOR", conAudit.getId(),
 								auditName, showAuditFor, auditFor);
@@ -336,8 +349,14 @@ public class OpenTasks extends TranslationActionSupport {
 		} else if ((conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY || conAudit.getAuditType().getId() == AuditType.HSE_COMPETENCY_REVIEW)
 				&& conAudit.hasCaoStatus(AuditStatus.Resubmit)) {
 			Integer conAuditID = conAudit.getId();
-			String text = getTextParameterized("ContractorWidget.message.OpenRequirements", contractor.getId(), conAuditID, auditName,
-					showAuditFor, auditFor);
+			String text="";
+			if (conAudit.getAuditType().getClassType().isEmployee()){
+				text = getTextParameterized("ContractorWidget.message.OpenRequirementsEmployeeGuard", contractor.getId(), conAuditID, auditName,
+						showAuditFor, auditFor);
+			} else {
+				text = getTextParameterized("ContractorWidget.message.OpenRequirements", conAuditID, auditName,
+						showAuditFor, auditFor);
+			}
 			if (!openReq) {
 				text += "<br/>" + getText("ContractorWidget.message.OpenRequirementsNote");
 				openReq = true;
