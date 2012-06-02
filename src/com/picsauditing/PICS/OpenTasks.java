@@ -115,12 +115,14 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void gatherTasksAboutUploadingPqf() {
 		for (ContractorAudit audit : contractor.getAudits()) {
-			if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
-				if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
-					openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
+			if(audit.isVisibleTo(permissions)) {
+				if (audit.getAuditType().getId() == AuditType.IMPORT_PQF && !audit.isExpired()) {
+					if (audit.hasCaoStatusBefore(AuditStatus.Submitted))
+						openTasks.add(getTextParameterized("ContractorWidget.message.ImportAndSubmitPQF", audit.getId()));
 
-				hasImportPQF = true;
-				importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
+					hasImportPQF = true;
+					importPQFComplete = audit.hasCaoStatus(AuditStatus.Complete);
+				}
 			}
 		}
 	}
@@ -154,9 +156,11 @@ public class OpenTasks extends TranslationActionSupport {
 
 	private void gatherTasksAboutAudits() {
 		for (ContractorAudit conAudit : contractor.getAudits()) {
-			if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
-				if (isOpenTaskNeeded(conAudit, user, permissions)) {
-					addAuditOpenTasks(conAudit);
+			if(conAudit.isVisibleTo(permissions)) {
+				if (conAudit.getAuditType().isCanContractorView() && !conAudit.isExpired()) {
+					if (isOpenTaskNeeded(conAudit, user, permissions)) {
+						addAuditOpenTasks(conAudit);
+					}
 				}
 			}
 		}
@@ -408,14 +412,16 @@ public class OpenTasks extends TranslationActionSupport {
 	private boolean hasPQFMembershipSealAnswer(ContractorAccount contractor) {
 		boolean hasMembershipSealAnswer = false;
 		for (ContractorAudit pqf : contractor.getAudits()) {
-			if (pqf.getAuditType().isPqf()) {
-				for (AuditData data : pqf.getData()) {
-					if (data.getQuestion().getId() == ContractorBadge.MEMBERSHIP_TAG_QUESTION) {
-						hasMembershipSealAnswer = true;
+			if(pqf.isVisibleTo(permissions)) {
+				if (pqf.getAuditType().isPqf()) {
+					for (AuditData data : pqf.getData()) {
+						if (data.getQuestion().getId() == ContractorBadge.MEMBERSHIP_TAG_QUESTION) {
+							hasMembershipSealAnswer = true;
+						}
 					}
-				}
 
-				break;
+					break;
+				}
 			}
 		}
 

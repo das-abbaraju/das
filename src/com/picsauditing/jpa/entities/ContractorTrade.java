@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,7 +20,7 @@ public class ContractorTrade extends BaseTable implements Comparable<ContractorT
 	private boolean manufacture = true;
 	private int activityPercent = 5;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
 		return contractor;
