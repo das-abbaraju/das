@@ -237,8 +237,8 @@ public class ReportDynamic extends PicsActionSupport {
 	private boolean userHasPermission(String action) {
 		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
 				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
-		ReportUser reportUser = null;
 
+		ReportUser reportUser = null;
 		if (reportUserList.size() == 1) {
 			reportUser = reportUserList.get(0);
 		}
@@ -355,6 +355,7 @@ public class ReportDynamic extends PicsActionSupport {
 				fields.add(obj);
 			}
 		}
+
 		return fields;
 	}
 
