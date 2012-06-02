@@ -95,6 +95,8 @@ public class OshaDisplay {
 	private List<OshaDisplayRow> getData(OshaType oshaType) {
 		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
+			if (!isShowRow(rateType))
+				continue;
 			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
 
 			rateRow.setOshaRateType(rateType);
@@ -128,6 +130,17 @@ public class OshaDisplay {
 		return rows;
 	}
 
+	private boolean isShowRow(OshaRateType rateType) {
+		if (!rateType.equals(OshaRateType.SeverityRate))
+			return true;
+		for (ContractorOperator conOp:contractorOperators) {
+			if (conOp.getOperatorAccount().isOrIsDescendantOf(1436)) // Tesoro
+				return true;
+		}
+		
+		return false;
+	}
+	
 	private String getIndustryAverage(Naics naics, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
 			return String.valueOf(naics.getLwcr());

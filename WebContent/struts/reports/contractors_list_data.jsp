@@ -209,7 +209,7 @@
 								<s:if test='get("forceEnd") != null || get("dataForceEnd") != null'>*</s:if></a>
 							</pics:permission>
 						</td>
-						<s:if test="permissions.operator">
+						<s:if test="permissions.operator && !permissions.generalContractorFree">
 							<td>
 								<pics:permission perm="ContractorDetails">
 									<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" >

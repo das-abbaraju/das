@@ -55,10 +55,6 @@
 			<result>/struts/widgets/flag_changes_summary.jsp</result>
 		</action>
 		
-		<action name="SubcontractorsFlagMatrix" class="com.picsauditing.actions.operators.SubcontractorsFlagMatrixWidget">
-			<result>/struts/widgets/subcontractors_flag_matrix.jsp</result>
-		</action>
-		
 		<action name="ContractorPendingApprovalAjax" class="com.picsauditing.actions.contractors.ConPendingApprovalWidget">
 			<result>struts/widgets/con_pendingapproval.jsp</result>
 		</action>

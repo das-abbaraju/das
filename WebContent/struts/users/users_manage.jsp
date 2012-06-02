@@ -220,7 +220,7 @@
 					</a>
 				</li>
 				
-				<s:if test="!user.group">
+				<s:if test="!user.group  && user.id>0">
 					<li>
 						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
 							<s:text name="button.password" />
@@ -238,7 +238,7 @@
 							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
-						</li>						
+						</li>
 						
 						<s:if test="isBetaEnvironment()">
 							<li>
@@ -255,7 +255,6 @@
 								</a>
 							</pics:toggle>
 						</s:if>
-						
 					</pics:permission>
 				</s:if>
 			</ul>

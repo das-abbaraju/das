@@ -130,10 +130,9 @@ public class ContractorAccountDAO extends PicsDAO {
 			where = "";
 
 		if (permissions.isGeneralContractor()) {
-			// Get gc Contractor's operators
-			where += " AND operatorAccount IN (SELECT co1.operatorAccount FROM ContractorOperator co1 WHERE co1.contractorAccount = "
-					+ "(SELECT co2.contractorAccount FROM ContractorOperator co2 WHERE co2.operatorAccount.id = "
-					+ permissions.getAccountId() + " AND co2.type = 'GeneralContractor') AND co1.operatorAccount.type = 'Operator')";
+			where += " AND (operatorAccount.id = " + permissions.getAccountId()
+					+ " OR operatorAccount IN (SELECT corporate FROM Facility "
+					+ "WHERE type = 'GeneralContractor' AND operator.id = " + permissions.getAccountId() + "))";
 		} else {
 			if (permissions.isCorporate())
 				// Show corporate users operators in their facility
@@ -228,8 +227,9 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	/**
-	 * Find ids for all active contractors who either need recalculation but haven't been calculated in the past 15
-	 * minutes or haven't been calculated in the past week
+	 * Find ids for all active contractors who either need recalculation but
+	 * haven't been calculated in the past 15 minutes or haven't been calculated
+	 * in the past week
 	 * 
 	 * @return
 	 */
@@ -295,7 +295,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		else
 			return 0;
 
-		String sql = "SELECT count(*) total FROM contractor_info " + "WHERE needsRecalculation = 1 AND id IN ("
+		String sql = "SELECT count(*) total FROM contractor_info " + "WHERE needsRecalculation >= 1 AND id IN ("
 				+ subSelect + ")";
 
 		Query query = em.createNativeQuery(sql);
@@ -398,9 +398,12 @@ public class ContractorAccountDAO extends PicsDAO {
 	}
 
 	public List<OperatorAccount> findPicsCountryCorporates(int conID) {
-		// finds all PICS country based corporates (excludes PICS Global and PICS PSM)
+		// finds all PICS country based corporates (excludes PICS Global and
+		// PICS PSM)
 		String sql = "select a.*, o.* from generalcontractors gc join accounts a on a.id = gc.genID join operators o ON o.id = a.id "
-				+ "where gc.subID = " + conID + " and a.name like 'PICS%' and a.type = 'Corporate' "
+				+ "where gc.subID = "
+				+ conID
+				+ " and a.name like 'PICS%' and a.type = 'Corporate' "
 				+ "and a.id not in (4,8);";
 		Query q = em.createNativeQuery(sql, OperatorAccount.class);
 		return q.getResultList();

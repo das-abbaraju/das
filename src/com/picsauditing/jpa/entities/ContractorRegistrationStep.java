@@ -1,12 +1,11 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public enum ContractorRegistrationStep {
-	Register, 
-	Clients, 
-	Risk, // a.k.a. Service Evaluation 
-	Payment, // a.k.a. Join 
+	Register, Clients, Risk, // a.k.a. Service Evaluation
+	Payment, // a.k.a. Join
 	Done;
 
 	static public ContractorRegistrationStep getStep(ContractorAccount contractor) {
@@ -15,6 +14,8 @@ public enum ContractorRegistrationStep {
 
 		if (contractor.getStatus().isDemo() || contractor.getStatus().isActive())
 			return Done;
+		if (!containsAtLeastOneClientSiteForGCFree(contractor))
+			return Clients;
 		if (!containsOperator(contractor.getOperators()))
 			return Clients;
 		if (contractor.getSafetyRisk().equals(LowMedHigh.None) && !contractor.isMaterialSupplierOnly())
@@ -37,6 +38,20 @@ public enum ContractorRegistrationStep {
 		}
 
 		return false;
+	}
+
+	static public boolean containsAtLeastOneClientSiteForGCFree(ContractorAccount contractor) {
+		for (OperatorAccount generalContractor : contractor.getGeneralContractorOperatorAccounts()) {
+			List<OperatorAccount> intersection = new ArrayList<OperatorAccount>(
+					generalContractor.getLinkedClientSites());
+			intersection.retainAll(contractor.getOperatorAccounts());
+
+			if (intersection.isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public String getUrl() {

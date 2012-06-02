@@ -472,6 +472,12 @@
     							<div class="panel">
     								<div class="panel_header">
     									<s:text name="ContractorView.PendingGeneralContractors" />
+	    								<span style="float: right;">
+	    									<a href="#" class="cluetip help" rel="#cluetip_gc" title="<s:text name="ContractorView.PendingGeneralContractors" />"></a>
+	    								</span>
+	    								<div id="cluetip_gc">
+	    									<s:text name="ContractorView.PendingGeneralContractors.help" />
+	    								</div>
     								</div>
     								<div class="panel_content" id="con_pending_gcs">
     									<s:include value="con_dashboard_pending_gc_operators.jsp" />
@@ -533,16 +539,21 @@
     								</p>
     								
     								<s:if test="(permissions.admin || permissions.operatorCorporate) && contractor.generalContractorOperatorAccounts.size > 0">
-    									<p>
-    										<s:text name="ContractorView.SubcontractingUnder" />:
-    										<s:iterator value="contractor.generalContractorOperatorAccounts" status="gc_index">
-    											<strong>
-    												<s:if test="id != permissions.accountId">
-    													<s:property value="name" /><s:if test="!#gc_index.last">, </s:if>
-    												</s:if>
-    											</strong>
-    										</s:iterator>
-    									</p>
+    									<s:set name="gc_accounts" value="''" />
+    									<s:iterator value="contractor.generalContractorOperatorAccounts" var="gc_op" status="gc_index">
+	    									<s:set name="gc_accounts" value="#gc_accounts + #gc_op.name" />
+	    									<s:if test="!#gc_index.last">
+		    									<s:set name="gc_accounts" value="#gc_accounts + ', '" />
+	    									</s:if>
+    									</s:iterator>
+    									<s:if test="!isStringEmpty(#gc_accounts)">
+	    									<p>
+	    										<s:text name="ContractorView.SubcontractingUnder" />:
+	    										<strong>
+	    											<s:property value="#gc_accounts" />
+	    										</strong>
+	    									</p>
+    									</s:if>
     								</s:if>
     								
     								<s:if test="hasOperatorTags">

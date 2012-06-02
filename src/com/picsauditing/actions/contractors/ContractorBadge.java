@@ -21,6 +21,7 @@ public class ContractorBadge extends ContractorActionSupport {
 
 		id = contractor.getId();
 		account = contractor;
+		setSubHeading("PICS Membership Tag");
 
 		return SUCCESS;
 	}
