@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.OshaOrganizer;
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -114,8 +115,10 @@ public class OshaDisplay {
 			}
 
 			if (rateType.isHasIndustryAverage()) {
-				String industryAverage = getIndustryAverage(naicsDao
-						.find(contractor.getNaics().getCode()), rateType);
+				String industryAverage = String.valueOf(Utilities
+						.getIndustryAverage(
+								rateType == OshaRateType.LwcrAbsolute,
+								contractor.getNaics()));
 				rateRow.addCell(industryAverage);
 			} else {
 				rateRow.addCell(EMPTY_CELL);
