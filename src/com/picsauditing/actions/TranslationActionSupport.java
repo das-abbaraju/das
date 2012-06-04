@@ -212,18 +212,23 @@ public class TranslationActionSupport extends ActionSupport {
 		Map<String, String> translationMap = i18nCache.getText(key);
 		Map<String, String> newTranslationMap = new HashMap<String, String>();
 		
+		Locale locale = null;
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
-			if("en_UK".equalsIgnoreCase(entry.getKey())) {
-				newTranslationMap.put("English - United Kingdom", entry.getValue());
+			String keyStr = entry.getKey();
+			String [] lanCountry = keyStr.split("_");
+			
+			//e.g en_GB
+			if(lanCountry.length > 1) {
+				locale = new Locale(lanCountry[0],lanCountry[1]);
 			}
 			else {
-				newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
+				locale = new Locale(keyStr);
 			}
-			
+			newTranslationMap.put(locale.getDisplayName(), entry.getValue());
 		}
 
 		if (!includeLocaleStatic) {
-			newTranslationMap.remove(getLocaleStatic().getDisplayLanguage());
+			newTranslationMap.remove(getLocaleStatic().getDisplayName());
 		}
 
 		Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);
