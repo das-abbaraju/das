@@ -115,10 +115,11 @@ public class OshaDisplay {
 			}
 
 			if (rateType.isHasIndustryAverage()) {
-				String industryAverage = String.valueOf(Utilities
-						.getIndustryAverage(
-								rateType == OshaRateType.LwcrAbsolute,
-								contractor.getNaics()));
+				String industryAverage = getIndustryAverage(rateType);
+//				String.valueOf(Utilities
+//						.getIndustryAverage(
+//								rateType == OshaRateType.LwcrAbsolute,
+//								contractor.getNaics()));
 				rateRow.addCell(industryAverage);
 			} else {
 				rateRow.addCell(EMPTY_CELL);
@@ -144,16 +145,18 @@ public class OshaDisplay {
 		return false;
 	}
 	
-	private String getIndustryAverage(Naics naics, OshaRateType rateType) {
+	private String getIndustryAverage(OshaRateType rateType) {
+		String value = null;
+		
 		if (rateType == OshaRateType.LwcrAbsolute) {
-			return String.valueOf(naics.getLwcr());
+			return String.valueOf(Utilities.getIndustryAverage(true, contractor.getNaics()));
 		}
 		else if (rateType == OshaRateType.TrirAbsolute) {
-			if (contractor.hasWiaCriteria()) { 
-				return String.valueOf(contractor.getWeightedIndustryAverage()) + "*";
+			if (contractor.hasWiaCriteria()) {
+				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			}
 			else {
-				return String.valueOf(naics.getTrir());
+				return String.valueOf(Utilities.getIndustryAverage(false, contractor.getNaics()));
 			}
 		}
 		return null;
