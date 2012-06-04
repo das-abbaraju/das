@@ -55,9 +55,12 @@ public class OpenTasks extends TranslationActionSupport {
 		gatherTasksAboutUploadingPqf(); // sets hasImportPQF, importPQFComplete
 		gatherTasksAboutBillingAndPayments();
 		gatherTasksAboutAudits(); // uses hasImportPQF, importPQFComplete
-		gatherTasksAboutWebCamShipments();
-		gatherTasksAboutOperatorQualification();
-		gatherTasksAboutMembershipSeal(contractor);
+		
+		if(!permissions.isOperatorCorporate()) {
+			gatherTasksAboutWebCamShipments();
+			gatherTasksAboutOperatorQualification();
+			gatherTasksAboutMembershipSeal(contractor);
+		}
 
 		return openTasks;
 	}
