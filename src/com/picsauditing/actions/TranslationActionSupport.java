@@ -217,7 +217,7 @@ public class TranslationActionSupport extends ActionSupport {
 			String keyStr = entry.getKey();
 			String [] lanCountry = keyStr.split("_");
 			
-			//e.g en_GB
+			//e.g. en_GB
 			if(lanCountry.length > 1) {
 				locale = new Locale(lanCountry[0],lanCountry[1]);
 			}
