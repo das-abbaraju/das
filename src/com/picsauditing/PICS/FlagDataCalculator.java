@@ -446,6 +446,10 @@ public class FlagDataCalculator {
 										} else {
 											waitingOnPics = true;
 										}
+									} else {
+										if (conAudit.getAuditType().isImplementation() &&  cao.getPercentVerified() != 100) {
+											return WaitingOn.Contractor;
+										}
 									}
 								}
 							}
