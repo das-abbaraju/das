@@ -39,9 +39,9 @@
         <s:text name="ContractorBadge.Title" />    
         <div class="badges">
             <select id="badgeSize">
-                <option value="small">Small Badge</option>
-                <option value="medium" selected>Medium Badge</option>
-                <option value="large">Large Badge</option>
+                <option value="small"><s:text name="ContractorBadge.SmallTag" /></option>
+                <option value="medium" selected><s:text name="ContractorBadge.MediumTag" /></option>
+                <option value="large"><s:text name="ContractorBadge.LargeTag" /></option>
             </select>
             <div id="badge_80" class="badgeIcon">
                 ${badge_80}
@@ -84,7 +84,7 @@
             </div>
 
 	        <div id="badgeControls">
-	            <a href="${con_badge}" class="picsbutton positive">The Badge has been added.</a>
+	            <a href="${con_badge}" class="picsbutton positive"><s:text name="ContractorBadge.AddedTag" /></a>
                 <br>
 	            <s:if test="!taskCompleted">
 	                <s:url var="con_badge" action="ContractorBadge" method="save">
