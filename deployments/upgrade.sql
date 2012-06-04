@@ -6,6 +6,11 @@
 -- SEE upgradeConfig.sql FOR CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
+-- PICS-5971 fix flag data override
+update flag_data_override
+set year='2011'
+where id=5587;
+
 -- PICS-4756 Remove orphaned questions
 -- NOTE: This should be done before the config upgrade
 -- Step 1 of 3
