@@ -6,61 +6,33 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="com.picsauditing.access.MenuComponent" %>
 <%@ page import="com.picsauditing.access.OpPerms" %>
 <%@ page import="com.picsauditing.access.PicsMenu" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
-<%@ page import="com.picsauditing.dao.AppPropertyDAO" %>
-<%@ page import="com.picsauditing.jpa.entities.AppProperty" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
+<%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
-<%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
 <%@ page import="com.picsauditing.util.URLUtils" %>
 <%@ page import="com.picsauditing.search.Database" %>
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
-
-	String version = PicsOrganizerVersion.getVersion();
-	Permissions permissions = (Permissions)session.getAttribute("permissions");
-	if (permissions == null) {
-		permissions = new Permissions();
-	}
-
 	Locale locale = TranslationActionSupport.getLocaleStatic();
+	String version = PicsOrganizerVersion.getVersion();
+	MainPage mainPage = new MainPage(request, session);
 
-	boolean pageIsSecure = false;
-	if (request.isSecure())
-		pageIsSecure = true;
-	else if (request.getLocalPort() == 443)
-		pageIsSecure = true;
-	else if (request.getLocalPort() == 81)
-		pageIsSecure = true;
-	String protocol = pageIsSecure ? "https" : "http";
+	String protocol = mainPage.isPageSecure() ? "https" : "http";
+	Map<Locale, String> systemMessages = mainPage.getSystemMessages();
+
+	Permissions permissions = mainPage.getPermissions();
 	MenuComponent menu = PicsMenu.getMenu(permissions);
-	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
-	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
-	String systemMessage = null;
-	if (!locale.getLanguage().equals("en")) {
-		systemMessage = i18nCache.getText("global.BetaTranslations", locale);
-	} else if (appProperty != null) {
-		systemMessage = appProperty.getValue();
-	}
-	
-	boolean debugMode = false;
-	if (request != null && request.getCookies() != null) {
-		for (Cookie cookie: request.getCookies()) {
-			if ("debugging".equals(cookie.getName())) {
-				debugMode = Boolean.valueOf(cookie.getValue());
-				break;
-			}
-		}
-	}
-	
-	AppProperty liveChatState = appPropertyDAO.find("PICS.liveChat");
-	boolean liveChatEnabled = liveChatState != null && "1".equals(liveChatState.getValue());
+
+	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
+	boolean debugMode = mainPage.isDebugMode();
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -178,9 +150,13 @@
         <jsp:include page="/struts/layout/environment.jsp" />
         
 		<div id="bodywrap">
-			<% if (!Strings.isEmpty(systemMessage)) { %>
+			<% if (!systemMessages.isEmpty()) { %>
 				<div id="systemMessage">
-					<%= systemMessage %>
+					<% for (Locale system_message_locale : systemMessages.keySet()) { %>
+						<div class="system-message-<%=system_message_locale.getLanguage()%>">
+							<%=systemMessages.get(system_message_locale)%>
+						</div>
+					<% } %>
 					<div class="clear"></div>
 				</div>
 			<% } %>
