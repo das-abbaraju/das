@@ -62,7 +62,7 @@ public class Report extends BaseTable {
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
 	}
-	
+
 	@ManyToOne
 	@JoinColumn(name = "sharedWith")
 	public Account getSharedWith() {
@@ -81,12 +81,12 @@ public class Report extends BaseTable {
 
 		if (full) {
 			obj.put("description", description);
-			
+
 			Definition defaultDefinition = this.definition;
 			if (defaultDefinition == null) {
 				defaultDefinition = new Definition(parameters);
 			}
-			
+
 			if (defaultDefinition.getColumns().size() > 0)
 				obj.put("columns", JSONUtilities.convertFromList(defaultDefinition.getColumns()));
 			if (defaultDefinition.getFilters().size() > 0)

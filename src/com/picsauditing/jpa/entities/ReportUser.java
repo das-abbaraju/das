@@ -10,11 +10,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "report_user")
 public class ReportUser extends BaseTable {
+
 	private User user;
 	private Report report;
-	private boolean canEdit;
-	private boolean favorite;
-	private int rowsPerPage = 100;
+	private boolean isEditable;
+	private boolean isFavorite;
 
 	@ManyToOne
 	@JoinColumn(name = "userID", nullable = false)
@@ -36,31 +36,21 @@ public class ReportUser extends BaseTable {
 		this.report = report;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "is_editable", nullable = false)
 	public boolean isCanEdit() {
-		return canEdit;
+		return isEditable;
 	}
 
 	public void setCanEdit(boolean canEdit) {
-		this.canEdit = canEdit;
+		this.isEditable = canEdit;
 	}
 
-	@Column(nullable = false)
+	@Column(name = "is_favorite", nullable = false)
 	public boolean isFavorite() {
-		return favorite;
+		return isFavorite;
 	}
 
 	public void setFavorite(boolean favorite) {
-		this.favorite = favorite;
+		this.isFavorite = favorite;
 	}
-
-	@Column(nullable = false)
-	public int getRowsPerPage() {
-		return rowsPerPage;
-	}
-
-	public void setRowsPerPage(int rowsPerPage) {
-		this.rowsPerPage = rowsPerPage;
-	}
-
 }
