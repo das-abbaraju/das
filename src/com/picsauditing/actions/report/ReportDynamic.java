@@ -85,6 +85,7 @@ public class ReportDynamic extends PicsActionSupport {
 		//reportController.copy();
 
 		if (userHasPermission(COPY)) {
+			// TODO bind the data coming in to a different object other than report
 			Report newReport = new Report();
 			newReport.setModelType(report.getModelType());
 			newReport.setName(report.getName());
@@ -92,7 +93,7 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setParameters(report.getParameters());
 			newReport.setSharedWith(report.getSharedWith());
 
-			//report = newReport;
+			dao.refresh(report);
 			//save(report);
 			try {
 				//ensureValidReport();
