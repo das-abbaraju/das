@@ -337,10 +337,10 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
-		if (operator.isCorporate()) {
-			operatorIDs.add(operator.getId());
-		} else
-			operatorIDs.addAll(operator.getOperatorHeirarchy());
+		//if (operator.isCorporate()) {
+		//	operatorIDs.add(operator.getId());
+		//} else
+		operatorIDs.addAll(operator.getOperatorHeirarchy());
 
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
