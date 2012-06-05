@@ -22,7 +22,6 @@ Ext.define('PICS.model.report.Report', {
         name: 'filterExpression',
         type: 'string'
     }, {
-        defaultValue: 100,
         name: 'rowsPerPage',
         type: 'int'
     }],
