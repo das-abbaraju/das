@@ -1906,6 +1906,15 @@
 			</div>
 		</s:if>
 
+		<s:if test="filter.showRequiredTags">
+			<div class="filterOption">
+				<label>
+					<s:checkbox name="filter.requiredTags" />
+					<s:text name="ReportUntaggedContractors.filter.RequiredTag" />
+				</label>
+			</div>
+		</s:if>
+
 		<br clear="all" />
 		<div class="alphapaging">
 			<s:property value="report.startsWithLinksWithDynamicForm" escape="false" />
