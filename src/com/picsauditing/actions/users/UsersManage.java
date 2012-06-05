@@ -504,8 +504,8 @@ public class UsersManage extends PicsActionSupport {
 		return jSessionID;
 	}
 
-	private void removeBetaMaxCookie() {
-		Cookie cookie = new Cookie("USER_BETA", "");
+	public void removeBetaMaxCookie() {
+		Cookie cookie = new Cookie("USE_BETA", "");
 		cookie.setMaxAge(0);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}

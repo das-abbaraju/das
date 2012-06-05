@@ -89,6 +89,7 @@ public class LoginController extends PicsActionSupport {
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
+				permissions.getToggles().putAll(getApplicationToggles());
 				LocaleController.setLocaleOfNearestSupported(permissions);
 				if (isLiveEnvironment()) {
 					if (ActionContext.getContext().getSession().get("redirect") != null) {
@@ -213,6 +214,7 @@ public class LoginController extends PicsActionSupport {
 			boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
 			user = userDAO.find(userID);
 			permissions.login(user);
+			permissions.getToggles().putAll(getApplicationToggles());
 			LocaleController.setLocaleOfNearestSupported(permissions);
 			permissions.setAdminID(adminID);
 			if (translator)
