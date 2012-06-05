@@ -28,9 +28,10 @@ Ext.application({
             ['Equals', 'equals'],
             ['NotEquals', 'does not equal'],
             ['Empty', 'blank']
-        ],
-        userStatus: null
+        ]
     },
+
+    configuration: null,
 
     controllers: [
         'report.ReportController',
@@ -38,7 +39,7 @@ Ext.application({
         'report.FilterController',
         'report.SortController',
         'report.ColumnSelectorController',
-        'report.ReportSaveController'
+        'report.ReportHeaderController'
     ],
 
     models: [
@@ -55,7 +56,10 @@ Ext.application({
 
     launch: function () {
         PICS.app = this; //save reference to application
+        this.getUserPermissions();
+    },
 
+    getUserPermissions: function () {
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
@@ -63,7 +67,7 @@ Ext.application({
            success: function (result) {
                var result = Ext.decode(result.responseText);
 
-               PICS.app.constants.userStatus = (function config() {
+               PICS.app.configuration = (function config() {
                    return {
                        get_is_developer: function () {
                            return result.is_developer;
@@ -76,6 +80,7 @@ Ext.application({
                        }
                    }
                })();
+
                Ext.create('PICS.view.report.Viewport');
            }
         });

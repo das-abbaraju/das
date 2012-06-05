@@ -19,44 +19,6 @@ Ext.define('PICS.store.report.DataSets', {
     },
 
     /**
-     * Get Report JSON
-     *
-     * Builds a jsonified version of the report to be sent to the server
-     */
-    getReportJSON: function () {
-        var report_store = Ext.StoreManager.get('report.Reports');
-        var report = report_store && report_store.first();
-        var report_data;
-
-        if (!report) {
-            throw 'Data.getReportJSON missing report';
-        }
-
-        function convertStoreToDataObject(store) {
-            var data = [];
-
-            store.each(function (record) {
-                var item = {};
-
-                record.fields.each(function (field) {
-                    item[field.name] = record.get(field.name);
-                });
-
-                data.push(item);
-            });
-
-            return data;
-        }
-
-        report_data = report.data;
-        report_data.columns = convertStoreToDataObject(report.columns());
-        report_data.filters = convertStoreToDataObject(report.filters());
-        report_data.sorts = convertStoreToDataObject(report.sorts());
-
-        return Ext.encode(report_data);
-    },
-
-    /**
      * Configure Proxy Url
      *
      * Build the remote proxy url so the store data can be properly fetched by the server
@@ -64,25 +26,11 @@ Ext.define('PICS.store.report.DataSets', {
      * @param report
      */
     configureProxyUrl: function () {
-        var report_store = Ext.StoreManager.get('report.Reports');
-        var report = report_store && report_store.first();
-
-        if (!report) {
-            throw 'Data.getReportJSON missing report';
-        }
-
-        var report_json = this.getReportJSON();
-        var url = 'ReportDynamic!data.action?';
-        var parameters = {};
-
-        if (report && report.getId() > 0) {
-            parameters['report'] = report.getId();
-        } else {
-            parameters['report.base'] = report.get('base');
-        }
-
-        parameters['report.parameters'] = report_json;
-
+        var url = 'ReportDynamic!data.action?',
+            reports = Ext.StoreManager.get('report.Reports');
+        
+        var parameters = reports.getReportParameters();
+        
         this.proxy.url = url + Ext.Object.toQueryString(parameters);
     },
 

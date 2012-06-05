@@ -1,6 +1,6 @@
-Ext.define('PICS.view.report.ReportSave', {
+Ext.define('PICS.view.report.ReportSettings', {
     extend: 'Ext.window.Window',
-    alias: ['widget.reportsave'],
+    alias: ['widget.reportsettings'],
 
     bodyStyle: 'background: #FFF',
     height: 300,
@@ -29,5 +29,14 @@ Ext.define('PICS.view.report.ReportSave', {
         align: 'middle'
     },
     modal: true,
-    width: 500
+    width: 500,
+    
+    constructor: function () {
+        this.callParent(arguments);
+
+        var report = Ext.StoreManager.get('report.Reports').first();        
+        
+        this.child('panel textfield[name=reportName]').setValue(report.get('name'));
+        this.child('panel textfield[name=reportDescription]').setValue(report.get('description'));        
+    }
 });

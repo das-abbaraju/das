@@ -21,7 +21,7 @@ Ext.define('PICS.controller.report.ReportSaveController', {
             },
             'reportsave button[action=create]':  {
                 click: function () {
-                    var userStatus = PICS.app.constants.userStatus;
+                    var userStatus = PICS.app.configuration;
 
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
                         this.createNewReport();
@@ -30,7 +30,7 @@ Ext.define('PICS.controller.report.ReportSaveController', {
             },
             'reportsave button[action=copy]':  {
                 click: function () {
-                    var userStatus = PICS.app.constants.userStatus;
+                    var userStatus = PICS.app.configuration;
 
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
                         this.createNewReport();
@@ -39,7 +39,7 @@ Ext.define('PICS.controller.report.ReportSaveController', {
             },
             'reportsave button[action=save]':  {
                 click: function () {
-                    var userStatus = PICS.app.constants.userStatus;
+                    var userStatus = PICS.app.configuration;
 
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
                         this.saveReport();
@@ -123,6 +123,8 @@ Ext.define('PICS.controller.report.ReportSaveController', {
         parameters['report.name'] = report.get('name');
 
         parameters['report.description'] = report.get('description');
+        
+        parameters['report.rowsPerPage'] = report.get('rowsPerPage');
 
         return Ext.Object.toQueryString(parameters);
     },

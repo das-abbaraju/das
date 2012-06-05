@@ -24,35 +24,29 @@ Ext.define('PICS.view.report.Header', {
 
         //create report buttons
         var panel = Ext.create('Ext.panel.Panel', {border:false}),
-            userStatus = PICS.app.constants.userStatus;
+            userStatus = PICS.app.configuration;
+
+
+        //edit button
+        var edit = Ext.create('Ext.button.Button', {
+            action: 'edit',
+            margin: '0 5 0 0',
+            text: 'Edit'
+        });
+        panel.add(edit);
 
         if (userStatus.get_is_owner() || userStatus.get_is_developer()) {
             var save = Ext.create('Ext.button.Button', {
                 action: 'save',
-                text: 'Save Report'
+                text: 'Save'
             });
             var copy = Ext.create('Ext.button.Button', {
                 action: 'copy',
                 margin: '0 0 0 5',
-                text: 'Copy Report'
+                text: 'Copy'
             });
             panel.add(save, copy);
 
-            //only to test create button actions
-            var create = Ext.create('Ext.button.Button', {
-                action: 'create',
-                margin: '0 0 0 5',
-                text: 'Create Report'
-            });
-            panel.add(create);
-
-        } else {
-            var create = Ext.create('Ext.button.Button', {
-                action: 'create',
-                margin: '0 0 0 5',
-                text: 'Create Report'
-            });
-            panel.add(create);
         }
         this.add(panel);
     }
