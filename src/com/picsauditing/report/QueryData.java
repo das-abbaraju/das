@@ -10,6 +10,7 @@ import org.apache.commons.beanutils.DynaProperty;
 
 public class QueryData {
 
+	// TODO find out if the map is actually supposed to be an availableFields
 	private List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
 
 	public QueryData(List<BasicDynaBean> rows) {

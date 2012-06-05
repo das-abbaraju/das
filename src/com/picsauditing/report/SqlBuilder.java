@@ -27,6 +27,7 @@ import com.picsauditing.util.excel.ExcelColumn;
 import com.picsauditing.util.excel.ExcelSheet;
 
 public class SqlBuilder {
+
 	private BaseModel baseModel;
 	private Map<String, Field> availableFields = new TreeMap<String, Field>();
 	private Definition definition = new Definition();

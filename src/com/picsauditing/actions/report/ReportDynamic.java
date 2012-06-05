@@ -35,6 +35,7 @@ import com.picsauditing.report.Filter;
 import com.picsauditing.report.QueryData;
 import com.picsauditing.report.Sort;
 import com.picsauditing.report.SqlBuilder;
+import com.picsauditing.report.business.ReportController;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.models.ModelType;
 import com.picsauditing.report.tables.FieldCategory;
@@ -64,6 +65,10 @@ public class ReportDynamic extends PicsActionSupport {
 	private String fieldName = "";
 	private String searchQuery = "";
 
+	@Autowired
+	ReportController reportController;
+
+	@Deprecated
 	public String find() {
 		try {
 			ensureValidReport();
@@ -76,6 +81,9 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String create() {
+		// TODO call this method
+		//reportController.copy();
+
 		if (userHasPermission(COPY)) {
 			Report newReport = new Report();
 			newReport.setModelType(report.getModelType());
@@ -84,15 +92,15 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setParameters(report.getParameters());
 			newReport.setSharedWith(report.getSharedWith());
 
-			report = newReport;
+			//report = newReport;
 			//save(report);
 			try {
-				ensureValidReport();
+				//ensureValidReport();
 
-				report.setAuditColumns(permissions);
-				dao.save(report);
+				newReport.setAuditColumns(permissions);
+				dao.save(newReport);
 				json.put("success", true);
-				json.put("reportID", report.getId());
+				json.put("reportID", newReport.getId());
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -101,8 +109,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 			ReportUser userReport = new ReportUser();
 			userReport.setAuditColumns(permissions);
-			userReport.setReport(report);
-			userReport.setUser(report.getCreatedBy());
+			userReport.setReport(newReport);
+			userReport.setUser(newReport.getCreatedBy());
 			userReport.setCanEdit(true);
 			dao.save(userReport);
 		} else {
@@ -159,6 +167,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	@Deprecated
 	public String list() {
 		try {
 			if (Strings.isEmpty(fieldName))
@@ -198,6 +207,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
+	@Deprecated
 	public String availableFields() {
 		try {
 			ensureValidReport();
@@ -275,7 +285,7 @@ public class ReportDynamic extends PicsActionSupport {
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 
-		// TODO: Change 100 to rowsPerPage
+		// TODO: Change to use default value from one of the other Report classes
 		if (!download)
 			builder.addPaging(page, 100);
 
@@ -284,6 +294,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 	}
 
+	// TODO: Rewrite this to PROPERLY log the timing (without System.out)
 	private QueryData queryData() throws SQLException {
 		long queryTime = Calendar.getInstance().getTimeInMillis();
 		List<BasicDynaBean> rawData = runSQL();
@@ -326,6 +337,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 			filename += fileType;
 
+			// TODO: Change this to use an output stream handler - Alex to pair with Mike on this
 			ServletActionContext.getResponse().setContentType("application/vnd.ms-excel");
 			ServletActionContext.getResponse().setHeader("Content-Disposition", "attachment; filename=" + filename);
 			ServletOutputStream outstream = ServletActionContext.getResponse().getOutputStream();
@@ -341,6 +353,8 @@ public class ReportDynamic extends PicsActionSupport {
 	 * Return a set of fields which can be used client side for defining the
 	 * report (columns, sorting, grouping and filtering)
 	 */
+	@Deprecated
+	// TODO possibly move to new ReportController.java class (?)
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
 
@@ -359,6 +373,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return fields;
 	}
 
+	// TODO WTF?
 	public List<? extends BaseTable> getAvailableReports() {
 		return dao.findWhere(Report.class, "id > 0", 100);
 	}
@@ -381,6 +396,9 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 	}
 
+	// TODO: Remove this once we figure out what to do with this and why it is doing the same
+	// this as the i18n cache
+	@Deprecated
 	public String fillTranslations() {
 		List<AppTranslation> existingList = dao
 				.findWhere(AppTranslation.class, "locale = 'en' AND key LIKE 'Report.%'");
@@ -396,7 +414,7 @@ public class ReportDynamic extends PicsActionSupport {
 		}
 
 		for (ModelType type : ModelType.values()) {
-			System.out.println("-- filling fields for " + type);
+			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
 			builder = new SqlBuilder();
@@ -412,6 +430,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return BLANK;
 	}
 
+	@Deprecated
 	private void saveTranslation(Map<String, AppTranslation> existing, String key) {
 		AppTranslation translation = existing.get(key);
 
@@ -444,7 +463,6 @@ public class ReportDynamic extends PicsActionSupport {
 		String translatedText = getText("Report." + field.getName());
 		if (translatedText == null) {
 			translatedText = "?" + field.getName();
-			System.out.println("Report." + field.getName());
 		}
 
 		return translatedText;
@@ -462,6 +480,7 @@ public class ReportDynamic extends PicsActionSupport {
 		return translatedText;
 	}
 
+	// TODO: Change the name of this
 	private void jsonException(Exception e) {
 		json.put("success", false);
 		json.put("error", e.getCause() + " " + e.getMessage());
@@ -533,6 +552,7 @@ public class ReportDynamic extends PicsActionSupport {
 		builder.setDefinition(definition);
 	}
 
+	// TODO: Refactor, because it seems just like the jsonException method. WTF?
 	private void logError(Exception e) {
 		json.put("success", false);
 		String message = e.getMessage();
@@ -544,6 +564,7 @@ public class ReportDynamic extends PicsActionSupport {
 		showSQL = true;
 	}
 
+	// TODO: Should the Field object return this?
 	private JSONObject renderEnumFieldAsJson(Field field) {
 		JSONObject enumResults = new JSONObject();
 		JSONArray jsonResult = new JSONArray();
@@ -559,11 +580,13 @@ public class ReportDynamic extends PicsActionSupport {
 		return enumResults;
 	}
 
+	@Deprecated
 	private void validate(Field field) throws Exception {
 		if (field == null)
 			throw new Exception("Available field undefined");
 	}
 
+	// TODO: Find out how this is being used (purpose in the big picture, possibly used for reverse translations)
 	private void translateFilterValueNames(List<Filter> filters) {
 		for (Filter filter : filters) {
 			if (!filter.isHasTranslations())
