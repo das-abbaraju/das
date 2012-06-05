@@ -49,8 +49,8 @@ public class ChangePassword extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-	public void resetPasswordLink(int user, String url) throws IOException{
-		redirect("ChangePassword.action?source=profile&user=" + user + "&url="+ url);
+	public void resetPasswordLink(int user, String url) throws IOException {
+		redirect("ChangePassword.action?source=profile&user=" + user + "&url=" + url);
 	}
 
 	@Anonymous
@@ -127,11 +127,16 @@ public class ChangePassword extends PicsActionSupport {
 		}
 
 		user = dao.save(user);
-		if (source.equalsIgnoreCase("manage"))
+		if (source.equalsIgnoreCase("manage")) {
 			url = "UsersManage.action?account=" + user.getAccount() + "&user=" + user.getId() + "&isActive="
-					+ user.getIsActive() + "&isGroup=" + user.getIsGroup() + "&msg=" + getText("global.Password.saved");
-		else
-			url = "ProfileEdit.action?msg=" + getText("global.Password.saved");
+					+ user.getIsActive() + "&isGroup=" + user.getIsGroup();
+			addActionMessage(getText("global.Password.saved"));
+		} else {
+			url = "ProfileEdit.action";
+
+			addActionMessage(getText("global.Password.saved"));
+		}
+
 		this.redirect(url);
 		return SUCCESS;
 	}

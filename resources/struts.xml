@@ -27,6 +27,7 @@
 			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
 			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
 			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
+			<interceptor name="redirectMessage" class="com.picsauditing.interceptors.RedirectMessageInterceptor" />
 			<interceptor name="validation" 
 				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
 			<interceptor name="jsonValidation" 
@@ -61,6 +62,7 @@
 				<interceptor-ref name="workflow">
 					<param name="excludeMethods">input,back,cancel,browse</param>
 				</interceptor-ref>
+				<interceptor-ref name="redirectMessage" />
 				<interceptor-ref name="annotationWorkflow" />
 			</interceptor-stack>
 

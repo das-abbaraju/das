@@ -631,7 +631,7 @@
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
 																		<s:param name="operator" value="%{operator.id}" />
 																		<s:param name="accountUser" value="%{id}" />
 																	</s:url>
@@ -743,7 +743,7 @@
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
 																		<s:param name="operator" value="%{operator.id}" />
 																		<s:param name="accountUser" value="%{id}" />
 																	</s:url>

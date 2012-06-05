@@ -77,7 +77,9 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
-				redirect("Login.action?msg=" + getText("Login.CookiesAreDisabled"));
+				addActionMessage(getText("Login.CookiesAreDisabled"));
+
+				redirect("Login.action");
 			}
 
 			int adminID = permissions.getAdminID();
@@ -198,7 +200,9 @@ public class LoginController extends PicsActionSupport {
 		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
 			postLogin();
 		} else {
-			redirect("Login.action?button=logout&msg=" + getText("Login.NoGroupOrPermission"));
+			addActionMessage(getText("Login.NoGroupOrPermission"));
+
+			redirect("Login.action?button=logout");
 			return SUCCESS;
 		}
 

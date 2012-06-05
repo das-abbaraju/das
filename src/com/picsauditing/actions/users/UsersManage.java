@@ -367,16 +367,19 @@ public class UsersManage extends PicsActionSupport {
 		user.setLockUntil(null);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-				+ "&msg=User Account has been unlocked");
+		addActionMessage(getText("UsersManage.Unlocked"));
+
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	public String move() throws Exception {
 		startup();
 
-		if (user.getAccount().getUsers().size() == 1)
-			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-					+ "&msg=You Cannot Move This User As They Are The Only User On This Account");
+		if (user.getAccount().getUsers().size() == 1) {
+			addActionMessage(getText("UsersManage.CannotMoveUser"));
+
+			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		}
 
 		// accounts are different so we are moving to a new account
 		// user.setOwnedPermissions(null);
@@ -405,8 +408,10 @@ public class UsersManage extends PicsActionSupport {
 		// user.setNeedsIndexing(true);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
+		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
+				.getName()));
+
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)

@@ -269,8 +269,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
 				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
-				//redirect("ChangePassword.action?source=profile&user=" + permissions.getUserId() + "&url="
-				//		+ alternateReturnURL);
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + alternateReturnURL);
 				ChangePassword cp = new ChangePassword();
 				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
 
@@ -606,12 +607,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String redirect(String url) throws IOException {
 		ServletActionContext.getResponse().sendRedirect(url);
 		return BLANK;
-	}
-
-	public void setMsg(String message) {
-		if (!Strings.isEmpty(message)) {
-			addActionMessage(message);
-		}
 	}
 
 	public String getFormattedDollarAmount(String answer) {

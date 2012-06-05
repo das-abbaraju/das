@@ -239,10 +239,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
 					facilities.add(facility.getOperator().getId());
 				}
 			}
-			
+
 			for (String error : errors)
 				addActionError(error);
-			
+
 			return SUCCESS;
 		}
 
@@ -324,7 +324,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		facilitiesEditModel.addPicsGlobal(operator, permissions);
 
 		facilitiesEditModel.addPicsCountry(operator, permissions);
-		
+
 		if (contactID > 0
 				&& (operator.getPrimaryContact() == null || contactID != operator.getPrimaryContact().getId())) {
 			operator.setPrimaryContact(userDAO.find(contactID));
@@ -768,11 +768,9 @@ public class FacilitiesEdit extends OperatorActionSupport {
 		return notChildOperatorList;
 	}
 
-	
 	public List<OperatorAccount> getChildOperatorList() {
 		childOperatorList = operator.getChildOperators();
 		return childOperatorList;
 	}
 
-	
 }
