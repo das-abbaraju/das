@@ -564,7 +564,8 @@ public class UsersManage extends PicsActionSupport {
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
-		// user = new User(temp, true);
+		if (isSaveAction)
+			user = new User(temp, true);
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
