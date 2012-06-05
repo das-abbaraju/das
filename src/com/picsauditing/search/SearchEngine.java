@@ -224,12 +224,12 @@ public class SearchEngine {
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.username not like "
-									+ userName + " and u.isActive = "+userStatuses+" JOIN\n"
+							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n"
 									+ "((select f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
-							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
+							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id")
+							.append(" where u.username not like " + userName + " and u.isActive = "+userStatuses + ")");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
