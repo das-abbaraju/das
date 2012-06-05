@@ -3,14 +3,26 @@
 $include-default: false;
 
 // Insert your custom variables here.
-$base-color: #4586BF;
-$button-toolbar-color: #FFF;
-$menu-item-active-background-color: #7EB0F1;
-$menu-item-active-border-color: #648bbc;
-$menu-item-indent: 17px;
-$menu-link-padding: 4px 2px 2px 22px;
-$menu-text-over-color: #FFF;
-$toolbar-separator-color: #285276;
+// $base-color: #aa0000;
+
+@import 'compass';
+
+// site menu
+
+#site_menu
+{
+	@include background-image(linear-gradient(#ffffff, #eaeaea));
+}
+
+#site_menu .x-btn-default-toolbar-large
+{
+	top: 0px !important;
+}
+
+#site_menu .x-btn-default-toolbar-large-over
+{
+	@include border-radius(0px);
+}
 
 @import 'ext4/default/all';
 
@@ -20,28 +32,28 @@ $toolbar-separator-color: #285276;
 @include extjs-button;
 @include extjs-btn-group;
 @include extjs-datepicker;
-@include extjs-colorpicker;
+//@include extjs-colorpicker;
 @include extjs-menu;
 @include extjs-grid;
 @include extjs-form;
-@include extjs-form-field;
-@include extjs-form-fieldset;
-@include extjs-form-file;
-@include extjs-form-checkboxfield;
-@include extjs-form-checkboxgroup;
-@include extjs-form-triggerfield;
-@include extjs-form-htmleditor;
+    @include extjs-form-field;
+    @include extjs-form-fieldset;
+    @include extjs-form-file;
+    @include extjs-form-checkboxfield;
+    @include extjs-form-checkboxgroup;
+    @include extjs-form-triggerfield;
+    @include extjs-form-htmleditor;
 @include extjs-panel;
 @include extjs-qtip;
-@include extjs-slider;
-@include extjs-progress;
+//@include extjs-slider;
+//@include extjs-progress;
 @include extjs-toolbar;
 @include extjs-window;
 @include extjs-messagebox;
-@include extjs-tabbar;
-@include extjs-tab;
-@include extjs-tree;
-@include extjs-drawcomponent;
+//@include extjs-tabbar;
+//@include extjs-tab;
+//@include extjs-tree;
+//@include extjs-drawcomponent;
 @include extjs-viewport;
 
 // This line changes the location of your images when creating UIs to be relative instead of within the ExtJS directory.

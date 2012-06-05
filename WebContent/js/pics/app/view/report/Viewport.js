@@ -9,6 +9,7 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.report.FilterOptions',
         'PICS.view.report.Header'
     ],
+
     layout: 'border',
     listeners: {
         render: function () {
@@ -17,14 +18,15 @@ Ext.define('PICS.view.report.Viewport', {
     },    
     items: [{
         region: 'north',
-        id: 'layoutNorth',
+
+        border: 0,
+        id: 'header',
         items: [{
-            xtype: 'layoutheader'
-        }, {
             xtype: 'layoutmenu'
         }]
     }, {
         region: 'center',
+
         id: 'layoutCenter',
         items: [{
             region: 'north',
