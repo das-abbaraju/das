@@ -195,10 +195,10 @@ public class LoginController extends PicsActionSupport {
 			ActionContext.getContext().getSession().clear();
 		logAttempt();
 
-		if (permissions.getGroups().size()>0){
+		if (permissions.getGroups().size() > 0) {
 			postLogin();
-		} else{
-			redirect("Login.action?button=logout&msg="+getText("Login.NoGroupOrPermission"));
+		} else {
+			redirect("Login.action?button=logout&msg=" + getText("Login.NoGroupOrPermission"));
 			return SUCCESS;
 		}
 
@@ -439,9 +439,10 @@ public class LoginController extends PicsActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-
 		String serverName = getRequest().getLocalName();
-
+		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
+		loginLog.setBrowser(uap.getBrowserName()+" "+uap.getBrowserVersion());
+		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
 		if (isLiveEnvironment() || isBetaEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();
