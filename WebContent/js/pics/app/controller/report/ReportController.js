@@ -5,11 +5,10 @@
  */
 Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
-    alias: ['widget.reportdatacontroller'],
 
     refs: [{
-        ref: 'reportheader',
-        selector: 'reportheader'
+        ref: 'rowsPerPage',
+        selector: 'pagingtoolbar combo[name=visibleRows]'
     }],
     
     stores: [
@@ -19,14 +18,6 @@ Ext.define('PICS.controller.report.ReportController', {
     ],
 
     init: function () {
-        this.control({
-            'reportheader button': {
-                click: function (component, options) {
-                    this.application.fireEvent('showsavewindow', component.action);
-                }
-            }
-        });
-
         this.application.on({
             refreshreport: this.refreshReport,
             scope: this
@@ -45,22 +36,33 @@ Ext.define('PICS.controller.report.ReportController', {
             }
         });
     },
-    generateReportDescription: function () {
-        var report = Ext.StoreManager.get('report.Reports').first();
-
-        this.getReportheader().child("#reportTitle").update('<h1>' + report.get('name') + '</h1><p>' + report.get('description') + '</p>');
-    },
     
     refreshFilters: function () {
         this.application.fireEvent('refreshfilters');
     },
 
+    // TODO: fishy
     refreshReport: function () {
+        this.getController('report.ReportHeaderController').updateReportSettings();
+        this.setRowsPerPage();
         this.getReportDataSetsStore().buildDataSetGrid();
-        this.generateReportDescription();
     },
 
     refreshSorts: function () {
         this.application.fireEvent('refreshsorts');
+    },
+    
+    // TODO: fishy!!
+    setRowsPerPage: function () {
+        var report = this.getReportReportsStore().first();
+        var rows_per_page = report.get('rowsPerPage');
+
+        if (!rows_per_page) {
+            rows_per_page = 50;
+        }
+        
+        this.getRowsPerPage().setValue(rows_per_page);
+        this.getReportDataSetsStore().pageSize = rows_per_page;        
+        report.set('rowsPerPage', rows_per_page);
     }
 });

@@ -1,8 +1,17 @@
 Ext.define('PICS.controller.report.DataSetController', {
     extend: 'Ext.app.Controller',
 
+    refs: [{
+        ref: 'paging',
+        selector: 'reportdatasetgrid pagingtoolbar'
+    }, {
+        ref: 'rowsperpage',
+        selector: 'pagingtoolbar combo[name=visibleRows]'
+    }],
+
     stores: [
-        'report.Reports'
+        'report.Reports',
+        'report.DataSets'
     ],
 
     init: function () {
@@ -41,6 +50,11 @@ Ext.define('PICS.controller.report.DataSetController', {
                 click: function () {
                     PICS.app.fireEvent('refreshreport');
                 }
+            },
+            'reportdatasetgrid pagingtoolbar combo[name=visibleRows]': {
+                select: function (combo, records, options) {
+                    this.updatePaging(records[0].get('field1'));
+                }
             }
         });
     },
@@ -73,9 +87,9 @@ Ext.define('PICS.controller.report.DataSetController', {
                         xtype: 'menu',
                         items: [{
                             text: 'Temp Option 1'
-                        },{
+                        }, {
                             text: 'Temp Option 2'
-                        },{
+                        }, {
                             text: 'Temp Option 3'
                         }]
                     },
@@ -96,5 +110,30 @@ Ext.define('PICS.controller.report.DataSetController', {
 
         column_store.removeAt(colIndex);
         this.application.fireEvent('refreshreport');
+    },
+
+    // TODO: fishy!!
+    setRowsPerPage: function () {
+        var report = this.getReportReportsStore().first();
+        var rows_per_page = report.get('rowsPerPage');
+
+        if (!rows_per_page) {
+            rows_per_page = 50;
+        }
+        
+        this.getRowsPerPage().setValue(rows_per_page);
+        this.getReportDataSetsStore().pageSize = rows_per_page;        
+        report.set('rowsPerPage', rows_per_page);
+    },    
+    
+    
+    // TODO: fishy!! double load rainbow
+    updatePaging: function (value) {
+        var report = this.getReportReportsStore().first();
+        report.set('rowsPerPage', value);
+
+        this.application.fireEvent('refreshreport');
+        
+        this.getPaging().moveFirst();
     }
 });

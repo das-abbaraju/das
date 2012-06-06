@@ -25,7 +25,7 @@ Ext.define('PICS.view.report.DataSetGrid', {
         }, {
             xtype: 'combo',
             editable: false,
-            name: 'itemsperpage',
+            name: 'visibleRows',
             store: [
                 ['10', '10'],
                 ['25', '25'],
@@ -35,32 +35,6 @@ Ext.define('PICS.view.report.DataSetGrid', {
                 ['200', '200'],
                 ['250', '250'],
             ],
-            value: '10',
-            width: 50
-        }],
-        padding: '0 20 0 0'
-    }, {
-        xtype: 'pagingtoolbar',
-        store: 'report.DataSets',
-        
-        displayInfo: true,
-        dock: 'bottom',
-        items: [{
-            xtype: 'tbseparator'
-        }, {
-            xtype: 'combo',
-            editable: false,
-            name: 'itemsperpage',
-            store: [
-                ['10', '10'],
-                ['25', '25'],
-                ['50', '50'],
-                ['100', '100'],
-                ['150', '150'],
-                ['200', '200'],
-                ['250', '250'],
-            ],
-            value: '10',
             width: 50
         }],
         padding: '0 20 0 0'
