@@ -91,7 +91,6 @@ public class ReportDynamic extends PicsActionSupport {
 			newReport.setName(report.getName());
 			newReport.setDescription(report.getDescription());
 			newReport.setParameters(report.getParameters());
-			newReport.setSharedWith(report.getSharedWith());
 
 			dao.refresh(report);
 			//save(report);
@@ -288,7 +287,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 		// TODO: rowsPerPage can be added later
 		if (!download)
-			builder.addPaging(page, 50);
+			builder.setPaging(page, report.getRowsPerPage());
 
 		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
 			translateFilterValueNames(builder.getDefinition().getFilters());

@@ -39,7 +39,6 @@ public class ReportController {
 		newReport.setName(sourceReport.getName());
 		newReport.setDescription(sourceReport.getDescription());
 		newReport.setParameters(sourceReport.getParameters());
-		newReport.setSharedWith(sourceReport.getSharedWith());
 
 		return newReport;
 	}

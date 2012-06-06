@@ -377,7 +377,7 @@ public class SqlBuilder {
 		sql.addWhere(where);
 	}
 
-	public void addPaging(int page, int rowsPerPage) {
+	public void setPaging(int page, int rowsPerPage) {
 		if (page > 1)
 			sql.setStartRow((page - 1) * rowsPerPage);
 

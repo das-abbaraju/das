@@ -27,7 +27,7 @@ public class Report extends BaseTable {
 	private Account sharedWith;
 
 	private Definition definition;
-	private int rowsPerPage;
+	private int rowsPerPage = 50;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -62,16 +62,6 @@ public class Report extends BaseTable {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "sharedWith")
-	public Account getSharedWith() {
-		return sharedWith;
-	}
-
-	public void setSharedWith(Account sharedWith) {
-		this.sharedWith = sharedWith;
 	}
 
 	@SuppressWarnings("unchecked")
