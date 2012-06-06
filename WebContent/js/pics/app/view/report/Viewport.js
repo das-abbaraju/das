@@ -10,6 +10,11 @@ Ext.define('PICS.view.report.Viewport', {
         'PICS.view.report.Header'
     ],
     layout: 'border',
+    listeners: {
+        render: function () {
+             Ext.get('loadingPage').dom.hidden = true;
+        }
+    },    
     items: [{
         region: 'north',
         id: 'layoutNorth',

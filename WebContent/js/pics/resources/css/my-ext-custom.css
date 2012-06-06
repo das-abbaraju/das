@@ -1,3 +1,25 @@
+/* loading */
+
+#loadingPage {
+	height: 140px;
+    left: 50%;
+    margin: -70px 0 0 -90px;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 180px;
+}
+#loadingPage #logo {
+    background: url(../images/custom/loading.gif) 0px 0px no-repeat;
+    position: absolute;
+    display: block;
+    top: 25px;
+    left: 22px;
+    width: 120px;
+    height: 120px;
+}
+
+
 /* general */
 .ext-icon {
     cursor: pointer;
@@ -14,6 +36,9 @@
 }
 .x-action-col-cell .x-grid-cell-inner {
     text-align: right !important;
+}
+.tooltipIcon {
+    background: none;
 }
 
 /* header */
@@ -51,6 +76,13 @@
     font-size: 25px;
 }
 
+#reportHeader .reportEdit {
+	background: url(../images/button/gear.png) 0px 0px no-repeat;
+	border: 0px;
+    height: 56px;
+    width: 59px;
+}
+
 /* body */
 .x-body,
 .x-border-layout-ct {
@@ -83,7 +115,8 @@
 #dataGrid .x-toolbar-docked-bottom {
     border-bottom: 0px;	
 }
-/* footer */
+
+/* Footer */
 #footer {
     background: none;
 }

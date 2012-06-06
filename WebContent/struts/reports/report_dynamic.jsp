@@ -8,5 +8,9 @@
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css?v=${version}">
 </head>
 <body>
+    <div id="loadingPage">
+        <h1>Loading...</h1>
+        <div id="logo"></div>
+    </div>
     <script type="text/javascript" src="js/pics/app.js"></script>
 </body>
