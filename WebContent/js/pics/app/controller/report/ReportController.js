@@ -44,25 +44,10 @@ Ext.define('PICS.controller.report.ReportController', {
     // TODO: fishy
     refreshReport: function () {
         this.getController('report.ReportHeaderController').updateReportSettings();
-        this.setRowsPerPage();
         this.getReportDataSetsStore().buildDataSetGrid();
     },
 
     refreshSorts: function () {
         this.application.fireEvent('refreshsorts');
-    },
-    
-    // TODO: fishy!!
-    setRowsPerPage: function () {
-        var report = this.getReportReportsStore().first();
-        var rows_per_page = report.get('rowsPerPage');
-
-        if (!rows_per_page) {
-            rows_per_page = 50;
-        }
-        
-        this.getRowsPerPage().setValue(rows_per_page);
-        this.getReportDataSetsStore().pageSize = rows_per_page;        
-        report.set('rowsPerPage', rows_per_page);
     }
 });

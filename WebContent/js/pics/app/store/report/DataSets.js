@@ -9,6 +9,7 @@ Ext.define('PICS.store.report.DataSets', {
     // there is no preset Model - we must place empty fields [] as a default
     // we dynamically create / attach Model which has the actual fields
     fields: [],
+    pageSize: 50,
     proxy: {
         reader: {
             messageProperty: 'message',
@@ -18,6 +19,21 @@ Ext.define('PICS.store.report.DataSets', {
         type: 'ajax'
     },
 
+    buildDataSetGrid: function () {
+        this.initReportPaging();
+        this.configureProxyUrl();
+
+        this.reloadStoreData({
+            callback: function(records, operation, success) {
+                if (success) {
+                    this.reloadReportDataSet();
+                } else {
+                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
+                }
+            }
+        });
+    },    
+    
     /**
      * Configure Proxy Url
      *
@@ -28,11 +44,20 @@ Ext.define('PICS.store.report.DataSets', {
     configureProxyUrl: function () {
         var url = 'ReportDynamic!data.action?',
             reports = Ext.StoreManager.get('report.Reports');
-        
+
         var parameters = reports.getReportParameters();
-        
+
         this.proxy.url = url + Ext.Object.toQueryString(parameters);
     },
+    
+    initReportPaging: function () {
+        var report = Ext.StoreManager.get('report.Reports').first(),
+            paging_combo = Ext.ComponentQuery.query('pagingtoolbar combo[name=visibleRows]')[0];
+
+        paging_combo.setValue(this.pageSize);
+        
+        report.set('rowsPerPage', this.pageSize);
+    },    
 
     /**
      * Reload Report Data Set
@@ -112,17 +137,16 @@ Ext.define('PICS.store.report.DataSets', {
         this.load(callback);
     },
 
-    buildDataSetGrid: function () {
-        this.configureProxyUrl();
+    updateReportPaging: function (value) {
+        var report = Ext.StoreManager.get('report.Reports').first(),
+            paging_toolbar = Ext.ComponentQuery.query('reportdatasetgrid pagingtoolbar')[0];
 
-        this.reloadStoreData({
-            callback: function(records, operation, success) {
-                if (success) {
-                    this.reloadReportDataSet();
-                } else {
-                    Ext.Msg.alert('Failed to read data from Server', 'Reason: ' + operation.error);
-                }
-            }
-        });
+        report.set('rowsPerPage', value);
+
+        this.pageSize = value;
+
+        this.configureProxyUrl();
+        
+        paging_toolbar.moveFirst();
     }
 });
