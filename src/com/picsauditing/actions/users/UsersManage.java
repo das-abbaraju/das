@@ -128,7 +128,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.equals(user.getAccount().getPrimaryContact())) {
 			addActionMessage(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
 		}
-		if (!user.isActiveB()){
+		if (!user.isActiveB()) {
 			addAlertMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
 		}
 		return SUCCESS;
@@ -417,6 +417,51 @@ public class UsersManage extends PicsActionSupport {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
 				addActionError(getTextParameterized("UsersManage.CannotInactivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+		// is a contractor
+		if (user.getAccount().isContractor()) {
+			Set<OpPerms> userPerms = new HashSet<OpPerms>();
+			userPerms = new HashSet<OpPerms>();
+			for (UserAccess ua : user.getOwnedPermissions()) {
+				userPerms.add(ua.getOpPerm());
+			}
+
+			if (userPerms.contains(OpPerms.ContractorAdmin)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorAdmin.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorBilling)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorBilling.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorSafety)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorSafety.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorInsurance)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorInsurance.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
+				addActionError(getText("UsersManage.AddPermissionToUser"));
 				return SUCCESS;
 			}
 		}
