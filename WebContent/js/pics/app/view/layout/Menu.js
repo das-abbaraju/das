@@ -12,11 +12,7 @@ Ext.define('PICS.view.layout.Menu', {
             Ext.each(menu_items, function (value, index) {
                 if (menu_items[index].xtype == undefined) {
                     menu_items[index].height = 70;
-                    menu_items[index].margin = 0;
-                    menu_items[index].padding = '0px 10px';
                     menu_items[index].scale = 'large';
-                } else if (menu_items[index].xtype == 'tbseparator') {
-                    delete menu_items[index];
                 }
             });
 
@@ -28,6 +24,15 @@ Ext.define('PICS.view.layout.Menu', {
                 margin: '18px 20px',
                 width: 30
             });
+
+            menu_items.splice(8, 0, {
+                xtype: 'tbseparator',
+                border: 1,
+                height: 70,
+                margin: '0px 0px 0px 20px'
+            });
+
+            menu_items[menu_items.length - 1].padding = '0px 20px';
 
             toolbar.add(menu_items);
         }

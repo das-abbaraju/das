@@ -21,13 +21,6 @@ public class MenuWriter {
             MenuComponent menuItem = menuItems.get(i);
 
             jsonArray.add(convertMenuComponentToExtJS(menuItem));
-
-            if (i < menuSize - 1 && menuItem.getLevel() == 1) {
-                MenuComponent separator = new MenuComponent();
-                separator.setXtype("tbseparator");
-
-                jsonArray.add(convertMenuComponentToExtJS(separator));
-            }
         }
 
         return jsonArray;
