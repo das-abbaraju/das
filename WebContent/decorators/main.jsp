@@ -6,7 +6,6 @@
 <%@ page import="java.sql.SQLException" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Locale" %>
-<%@ page import="java.util.Map" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="com.picsauditing.access.MenuComponent" %>
 <%@ page import="com.picsauditing.access.OpPerms" %>
@@ -26,8 +25,6 @@
 	MainPage mainPage = new MainPage(request, session);
 
 	String protocol = mainPage.isPageSecure() ? "https" : "http";
-	Map<Locale, String> systemMessages = mainPage.getSystemMessages();
-
 	Permissions permissions = mainPage.getPermissions();
 	MenuComponent menu = PicsMenu.getMenu(permissions);
 
@@ -61,6 +58,7 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
+		<link rel="stylesheet" type="text/css" media="screen" href="css/main_system_message.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
 		
 		<jsp:include page="/struts/layout/include_javascript.jsp" />
@@ -150,16 +148,7 @@
         <jsp:include page="/struts/layout/environment.jsp" />
         
 		<div id="bodywrap">
-			<% if (!systemMessages.isEmpty()) { %>
-				<div id="systemMessage">
-					<% for (Locale system_message_locale : systemMessages.keySet()) { %>
-						<div class="system-message-<%=system_message_locale.getLanguage()%>">
-							<%=systemMessages.get(system_message_locale)%>
-						</div>
-					<% } %>
-					<div class="clear"></div>
-				</div>
-			<% } %>
+			<jsp:include page="/struts/misc/main_system_message.jsp" />
 			<table id="header">
 				<!-- !begin header -->
 				<tr>

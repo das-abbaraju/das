@@ -1,9 +1,10 @@
 package com.picsauditing.PICS;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.search.Database;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -24,6 +26,8 @@ public class MainPage {
 	private Database database = new Database();
 	private HttpServletRequest request;
 	private HttpSession session;
+
+	private final int LOCALE_INDEX = 2;
 
 	public MainPage(HttpServletRequest request, HttpSession session) {
 		this.request = request;
@@ -55,14 +59,13 @@ public class MainPage {
 	}
 
 	public Map<Locale, String> getSystemMessages() {
-		Map<Locale, String> systemMessages = new HashMap<Locale, String>();
+		Map<Locale, String> systemMessages = new TreeMap<Locale, String>(new LocaleComparator());
 		try {
-			List<BasicDynaBean> results = database.select("SELECT msgKey, msgValue FROM app_translation "
-					+ "WHERE msgKey LIKE 'SYSTEM.message.%'", false);
+			List<BasicDynaBean> results = database.select(createSelectSQLStatement(), false);
 
 			processResults(systemMessages, results);
 		} catch (Exception e) {
-			PicsLogger.log("MainPage: Unable to find system messages in app_translations");
+			PicsLogger.log("Unable to find system messages in app_translations");
 		}
 
 		if (systemMessages.isEmpty()) {
@@ -91,6 +94,20 @@ public class MainPage {
 		return false;
 	}
 
+	private String createSelectSQLStatement() {
+		SelectSQL sql = new SelectSQL("app_translation a");
+		sql.addField("a.msgKey");
+		sql.addField("a.msgValue");
+
+		sql.addWhere("a.msgKey LIKE 'SYSTEM.message.%.text'");
+		sql.addWhere("LENGTH(a.msgValue) > 0");
+
+		sql.addOrderBy("a.msgKey");
+
+		String sqlString = sql.toString();
+		return sqlString;
+	}
+
 	/**
 	 * We're assuming that the system keys are in this format:
 	 * "SYSTEM.message[.x.y.z].&lt;locale&gt;", where x, y, z (and others) are
@@ -108,13 +125,10 @@ public class MainPage {
 				String msgValue = result.get("msgValue").toString();
 
 				String[] msgKeyParts = msgKey.split("\\.");
-				int lastIndex = msgKeyParts.length - 1;
 
-				if (lastIndex < 0) {
-					lastIndex = 0;
+				if (LOCALE_INDEX < msgKeyParts.length) {
+					systemMessages.put(new Locale(msgKeyParts[LOCALE_INDEX]), msgValue);
 				}
-
-				systemMessages.put(new Locale(msgKeyParts[lastIndex]), msgValue);
 			}
 		}
 	}
@@ -129,6 +143,13 @@ public class MainPage {
 			systemMessages.put(locale, I18nCache.getInstance().getText("global.BetaTranslations", locale));
 		} else if (appProperty != null && !Strings.isEmpty(appProperty.getValue())) {
 			systemMessages.put(new Locale("en"), appProperty.getValue());
+		}
+	}
+
+	public class LocaleComparator implements Comparator<Locale> {
+		@Override
+		public int compare(Locale o1, Locale o2) {
+			return o1.getLanguage().compareTo(o2.getLanguage());
 		}
 	}
 }

@@ -1,0 +1,9 @@
+#systemMessage .system-message-container
+{
+	display: inline;
+}
+
+#systemMessage .system-message-value
+{
+	display: none;
+}

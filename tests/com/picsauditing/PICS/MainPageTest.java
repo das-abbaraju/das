@@ -315,4 +315,9 @@ public class MainPageTest {
 
 		return results;
 	}
+
+	@Test
+	public void testMainPage() throws Exception {
+
+	}
 }
