@@ -1,10 +1,9 @@
 package com.picsauditing.PICS;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -23,25 +22,19 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
 
 public class MainPage {
+	private AppPropertyDAO appPropertyDAO;
+
 	private Database database = new Database();
 	private HttpServletRequest request;
 	private HttpSession session;
+
+	private List<SystemMessage> systemMessages;
 
 	private final int LOCALE_INDEX = 2;
 
 	public MainPage(HttpServletRequest request, HttpSession session) {
 		this.request = request;
 		this.session = session;
-	}
-
-	public Permissions getPermissions() {
-		Permissions permissions = new Permissions();
-
-		if (session != null && session.getAttribute("permissions") != null) {
-			permissions = (Permissions) session.getAttribute("permissions");
-		}
-
-		return permissions;
 	}
 
 	public boolean isPageSecure() {
@@ -58,27 +51,8 @@ public class MainPage {
 		return false;
 	}
 
-	public Map<Locale, String> getSystemMessages() {
-		Map<Locale, String> systemMessages = new TreeMap<Locale, String>(new LocaleComparator());
-		try {
-			List<BasicDynaBean> results = database.select(createSelectSQLStatement(), false);
-
-			processResults(systemMessages, results);
-		} catch (Exception e) {
-			PicsLogger.log("Unable to find system messages in app_translations");
-		}
-
-		if (systemMessages.isEmpty()) {
-			getSystemMessageFromAppProperties(systemMessages);
-		}
-
-		return systemMessages;
-	}
-
 	public boolean isLiveChatEnabled() {
-		AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
-
-		AppProperty liveChatState = appPropertyDAO.find("PICS.liveChat");
+		AppProperty liveChatState = getAppPropertyDAO().find("PICS.liveChat");
 		return liveChatState != null && "1".equals(liveChatState.getValue());
 	}
 
@@ -92,6 +66,51 @@ public class MainPage {
 		}
 
 		return false;
+	}
+
+	public boolean isDisplaySystemMessage() {
+		AppProperty displaySystemMessage = getAppPropertyDAO().find("PICS.showInternationalSystemMessages");
+		return displaySystemMessage != null && "1".equals(displaySystemMessage.getValue());
+	}
+
+	public Permissions getPermissions() {
+		Permissions permissions = new Permissions();
+
+		if (session != null && session.getAttribute("permissions") != null) {
+			permissions = (Permissions) session.getAttribute("permissions");
+		}
+
+		return permissions;
+	}
+
+	public List<SystemMessage> getSystemMessages() {
+		if (systemMessages == null) {
+			systemMessages = new ArrayList<SystemMessage>();
+
+			if (isDisplaySystemMessage()) {
+				try {
+					List<BasicDynaBean> results = database.select(createSelectSQLStatement(), false);
+
+					processResults(systemMessages, results);
+				} catch (Exception e) {
+					PicsLogger.log("Unable to find system messages in app_translations");
+				}
+			}
+
+			if (systemMessages.isEmpty()) {
+				getSystemMessageFromAppProperties(systemMessages);
+			}
+		}
+
+		return systemMessages;
+	}
+
+	private AppPropertyDAO getAppPropertyDAO() {
+		if (appPropertyDAO == null) {
+			appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+		}
+
+		return appPropertyDAO;
 	}
 
 	private String createSelectSQLStatement() {
@@ -118,38 +137,87 @@ public class MainPage {
 	 * @param systemMessages
 	 * @param results
 	 */
-	private void processResults(Map<Locale, String> systemMessages, List<BasicDynaBean> results) {
+	private void processResults(List<SystemMessage> systemMessages, List<BasicDynaBean> results) {
 		for (BasicDynaBean result : results) {
 			if (result.get("msgKey") != null && result.get("msgValue") != null) {
-				String msgKey = result.get("msgKey").toString();
 				String msgValue = result.get("msgValue").toString();
 
-				String[] msgKeyParts = msgKey.split("\\.");
+				String[] msgKeyParts = result.get("msgKey").toString().split("\\.");
 
 				if (LOCALE_INDEX < msgKeyParts.length) {
-					systemMessages.put(new Locale(msgKeyParts[LOCALE_INDEX]), msgValue);
+					String localeString = msgKeyParts[LOCALE_INDEX];
+
+					Locale locale = new Locale(localeString);
+					String link = getTranslation("SYSTEM.message." + localeString);
+					systemMessages.add(new SystemMessage(locale, link, msgValue));
 				}
 			}
 		}
 	}
 
-	private void getSystemMessageFromAppProperties(Map<Locale, String> systemMessages) {
-		AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
-		AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
-
+	private void getSystemMessageFromAppProperties(List<SystemMessage> systemMessages) {
 		Locale locale = TranslationActionSupport.getLocaleStatic();
 
 		if (!locale.getLanguage().equals("en")) {
-			systemMessages.put(locale, I18nCache.getInstance().getText("global.BetaTranslations", locale));
-		} else if (appProperty != null && !Strings.isEmpty(appProperty.getValue())) {
-			systemMessages.put(new Locale("en"), appProperty.getValue());
+			systemMessages.add(new SystemMessage(locale, null, getTranslation("global.BetaTranslations")));
+		} else {
+			AppProperty appProperty = getAppPropertyDAO().find("SYSTEM.MESSAGE");
+
+			if (appProperty != null && !Strings.isEmpty(appProperty.getValue())) {
+				systemMessages.add(new SystemMessage(Locale.ENGLISH, null, appProperty.getValue()));
+			}
 		}
+	}
+
+	private String getTranslation(String key) {
+		return I18nCache.getInstance().getText(key, TranslationActionSupport.getLocaleStatic());
 	}
 
 	public class LocaleComparator implements Comparator<Locale> {
 		@Override
 		public int compare(Locale o1, Locale o2) {
 			return o1.getLanguage().compareTo(o2.getLanguage());
+		}
+	}
+
+	public class SystemMessage implements Comparable<SystemMessage> {
+		private Locale locale = Locale.ENGLISH;
+		private String link;
+		private String value;
+
+		public SystemMessage(Locale locale, String link, String value) {
+			this.locale = locale;
+			this.link = link;
+			this.value = value;
+		}
+
+		public Locale getLocale() {
+			return locale;
+		}
+
+		public void setLocale(Locale locale) {
+			this.locale = locale;
+		}
+
+		public String getLink() {
+			return link;
+		}
+
+		public void setLink(String link) {
+			this.link = link;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		@Override
+		public int compareTo(SystemMessage arg0) {
+			return locale.getLanguage().compareTo(arg0.getLocale().getLanguage());
 		}
 	}
 }

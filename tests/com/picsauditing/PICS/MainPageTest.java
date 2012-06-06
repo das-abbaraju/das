@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,15 +23,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.PICS.MainPage.SystemMessage;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.search.Database;
-import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ MainPage.class, I18nCache.class, SpringUtils.class, TranslationActionSupport.class })
+@PrepareForTest({ MainPage.class, I18nCache.class, TranslationActionSupport.class })
 public class MainPageTest {
 	private MainPage mainPage;
 
@@ -57,11 +56,11 @@ public class MainPageTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		PowerMockito.mockStatic(I18nCache.class);
-		PowerMockito.mockStatic(SpringUtils.class);
 		PowerMockito.mockStatic(TranslationActionSupport.class);
 
 		mainPage = new MainPage(request, session);
 
+		PicsTestUtil.forceSetPrivateField(mainPage, "appPropertyDAO", appPropertyDAO);
 		PicsTestUtil.forceSetPrivateField(mainPage, "database", database);
 	}
 
@@ -138,11 +137,20 @@ public class MainPageTest {
 	public void testSystemMessagesFromDatabaseNotEmpty() throws SQLException {
 		List<BasicDynaBean> basicDynaBeans = createDatabaseResults();
 
+		AppProperty showMessages = new AppProperty();
+		showMessages.setProperty("show messages");
+		showMessages.setValue("1");
+
+		PowerMockito.when(I18nCache.getInstance()).thenReturn(i18nCache);
+		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.ENGLISH);
+
 		Mockito.when(database.select(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(basicDynaBeans);
 		Mockito.when(basicDynaBean.get("msgKey")).thenReturn(SYSTEM_MESSAGE_KEY);
 		Mockito.when(basicDynaBean.get("msgValue")).thenReturn(SYSTEM_MESSAGE_VALUE);
+		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(Locale.ENGLISH))).thenReturn(SYSTEM_MESSAGE_KEY);
 
-		Map<Locale, String> systemMessages = mainPage.getSystemMessages();
+		List<SystemMessage> systemMessages = mainPage.getSystemMessages();
 
 		Assert.assertNotNull(systemMessages);
 		Assert.assertFalse(systemMessages.isEmpty());
@@ -152,14 +160,24 @@ public class MainPageTest {
 	public void testSystemMessagesFromDatabaseExpectedLocale() throws SQLException {
 		List<BasicDynaBean> basicDynaBeans = createDatabaseResults();
 
+		AppProperty showMessages = new AppProperty();
+		showMessages.setProperty("show messages");
+		showMessages.setValue("1");
+
+		PowerMockito.when(I18nCache.getInstance()).thenReturn(i18nCache);
+		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.ENGLISH);
+
 		Mockito.when(database.select(Mockito.anyString(), Mockito.anyBoolean())).thenReturn(basicDynaBeans);
 		Mockito.when(basicDynaBean.get("msgKey")).thenReturn(SYSTEM_MESSAGE_KEY);
 		Mockito.when(basicDynaBean.get("msgValue")).thenReturn(SYSTEM_MESSAGE_VALUE);
+		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
 
-		Map<Locale, String> systemMessages = mainPage.getSystemMessages();
+		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(Locale.ENGLISH))).thenReturn(SYSTEM_MESSAGE_KEY);
 
-		for (Locale locale : systemMessages.keySet()) {
-			Assert.assertEquals(new Locale("en"), locale);
+		List<SystemMessage> systemMessages = mainPage.getSystemMessages();
+
+		for (SystemMessage systemMessage : systemMessages) {
+			Assert.assertEquals(Locale.ENGLISH, systemMessage.getLocale());
 		}
 	}
 
@@ -169,18 +187,15 @@ public class MainPageTest {
 		appProperty.setProperty(SYSTEM_MESSAGE_KEY);
 		appProperty.setValue(SYSTEM_MESSAGE_VALUE);
 
-		Locale localeEnglish = new Locale("en");
-
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
 
-		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(localeEnglish);
+		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.ENGLISH);
 
-		Map<Locale, String> systemMessages = mainPage.getSystemMessages();
+		List<SystemMessage> systemMessages = mainPage.getSystemMessages();
 
-		for (Locale locale : systemMessages.keySet()) {
-			Assert.assertEquals(localeEnglish, locale);
-			Assert.assertEquals(SYSTEM_MESSAGE_VALUE, systemMessages.get(locale));
+		for (SystemMessage systemMessage : systemMessages) {
+			Assert.assertEquals(Locale.ENGLISH, systemMessage.getLocale());
+			Assert.assertEquals(SYSTEM_MESSAGE_VALUE, systemMessage.getValue());
 		}
 	}
 
@@ -190,21 +205,18 @@ public class MainPageTest {
 		appProperty.setProperty(SYSTEM_MESSAGE_KEY);
 		appProperty.setValue(SYSTEM_MESSAGE_VALUE);
 
-		Locale localeFrench = new Locale("fr");
-
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
 
-		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(localeFrench);
+		PowerMockito.when(TranslationActionSupport.getLocaleStatic()).thenReturn(Locale.FRENCH);
 		PowerMockito.when(I18nCache.getInstance()).thenReturn(i18nCache);
-		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(localeFrench))).thenReturn(
+		Mockito.when(i18nCache.getText(Mockito.anyString(), Mockito.eq(Locale.FRENCH))).thenReturn(
 				INTERNATIONAL_MESSAGE_VALUE);
 
-		Map<Locale, String> systemMessages = mainPage.getSystemMessages();
+		List<SystemMessage> systemMessages = mainPage.getSystemMessages();
 
-		for (Locale locale : systemMessages.keySet()) {
-			Assert.assertEquals(localeFrench, locale);
-			Assert.assertEquals(INTERNATIONAL_MESSAGE_VALUE, systemMessages.get(locale));
+		for (SystemMessage systemMessage : systemMessages) {
+			Assert.assertEquals(Locale.FRENCH, systemMessage.getLocale());
+			Assert.assertEquals(INTERNATIONAL_MESSAGE_VALUE, systemMessage.getValue());
 		}
 	}
 
@@ -213,7 +225,6 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("1");
 
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
 
 		Assert.assertTrue(mainPage.isLiveChatEnabled());
@@ -224,7 +235,6 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("0");
 
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
@@ -235,7 +245,6 @@ public class MainPageTest {
 		AppProperty appProperty = new AppProperty();
 		appProperty.setValue("Hello World");
 
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(appProperty);
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
@@ -243,7 +252,6 @@ public class MainPageTest {
 
 	@Test
 	public void testLiveChatNull() throws Exception {
-		PowerMockito.when(SpringUtils.getBean(Mockito.anyString())).thenReturn(appPropertyDAO);
 		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(null);
 
 		Assert.assertFalse(mainPage.isLiveChatEnabled());
@@ -308,16 +316,38 @@ public class MainPageTest {
 		Assert.assertFalse(mainPage.isDebugMode());
 	}
 
+	@Test
+	public void testShowSystemMessagesAppPropertySet1() {
+		AppProperty showMessages = new AppProperty();
+		showMessages.setProperty("show messages");
+		showMessages.setValue("1");
+
+		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+
+		Assert.assertTrue(mainPage.isDisplaySystemMessage());
+	}
+
+	@Test
+	public void testShowSystemMessagesAppPropertySetOther() {
+		AppProperty showMessages = new AppProperty();
+		showMessages.setProperty("show messages");
+		showMessages.setValue("Hello World");
+		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(showMessages);
+
+		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+
+		showMessages.setValue("0");
+		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+
+		Mockito.when(appPropertyDAO.find(Mockito.anyString())).thenReturn(null);
+		Assert.assertFalse(mainPage.isDisplaySystemMessage());
+	}
+
 	private List<BasicDynaBean> createDatabaseResults() {
 		List<BasicDynaBean> results = new ArrayList<BasicDynaBean>();
 
 		results.add(basicDynaBean);
 
 		return results;
-	}
-
-	@Test
-	public void testMainPage() throws Exception {
-
 	}
 }
