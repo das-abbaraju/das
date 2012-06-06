@@ -68,6 +68,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                 click: function (component, options) {
                     var userStatus = PICS.app.configuration;
                     
+                    this.setReportName();
                     this.getReportsettings().close();
 
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {

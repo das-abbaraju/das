@@ -10,7 +10,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import com.picsauditing.report.Definition;
 import com.picsauditing.report.models.ModelType;
@@ -26,7 +25,9 @@ public class Report extends BaseTable {
 	private String description;
 	private String parameters;
 	private Account sharedWith;
+
 	private Definition definition;
+	private int rowsPerPage;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -104,5 +105,14 @@ public class Report extends BaseTable {
 
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
+	}
+
+	@Transient
+	public int getRowsPerPage() {
+		return rowsPerPage;
+	}
+
+	public void setRowsPerPage(int rowsPerPage) {
+		this.rowsPerPage = rowsPerPage;
 	}
 }
