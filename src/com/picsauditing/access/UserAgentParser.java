@@ -171,7 +171,15 @@ public class UserAgentParser {
 	 * @return the version of the browser
 	 */
 	public String getBrowserVersion() {
-		return browserVersion;
+		String version;
+
+		if (browserVersion.contains(".")){
+			String[] versionSplit = browserVersion.split("\\.");
+			version = versionSplit[0];
+		} else
+			version = browserVersion;
+
+		return version;
 	}
 
 	/**
