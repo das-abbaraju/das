@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
@@ -646,37 +647,27 @@ public class AuditDataSave extends AuditActionSupport {
 		if (Strings.isEmpty(answer))
 			return true;
 
+		// get the truth value based on user locale and then convert and store it as US representation
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
-			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
-
-			boolean hasBadChar = false;
-			for (int i = 0; i < answer.length(); i++) {
-				char c = answer.charAt(i);
-				if (!Character.isDigit(c) && (c != '.') && (c != '-'))
-					hasBadChar = true;
+			NumberFormat userFormat; 
+			NumberFormat usFormat;
+			if("Number".equals(questionType)) {
+				userFormat = NumberFormat.getIntegerInstance(permissions.getLocale());
+				usFormat = NumberFormat.getIntegerInstance(Locale.US);
 			}
-
-			if (hasBadChar) {
-				addActionError(getText("AuditData.error.MustBeNumber"));
-				return false;
+			else {
+				userFormat = NumberFormat.getInstance(permissions.getLocale());
+				usFormat = NumberFormat.getInstance(Locale.US);
 			}
-
-			NumberFormat format;
-			if ("Decimal Number".equals(questionType)) {
-				format = new DecimalFormat("#,##0.000");
-			} else if ("Number".equals(questionType)) {
-				format = new DecimalFormat("###0");
-			} else {
-				format = new DecimalFormat("#,##0");
-			}
-
 			try {
-				BigDecimal value = new BigDecimal(answer);
-				auditData.setAnswer(format.format(value));
-			} catch (Exception ignore) {
+				Number truthValue = userFormat.parse(answer);
+				String storedAnswer = usFormat.format(truthValue);
+				auditData.setAnswer(storedAnswer);
+			} catch (ParseException e) {
 				addActionError(getText("Audit.message.InvalidFormat"));
 				return false;
 			}
+			
 		}
 
 		if ("Date".equals(questionType)) {
