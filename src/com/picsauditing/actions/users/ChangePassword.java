@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
@@ -66,7 +65,7 @@ public class ChangePassword extends PicsActionSupport {
 		// changed doesnt match
 		loadPermissions();
 
-		if ((permissions.isAdmin() && user.getId() != u.getId()) || permissions.isForcePasswordReset()) {
+		if ((user.getId() != u.getId()) || permissions.isForcePasswordReset()) {
 			changePassword = true;
 		} else {
 			if (u.isEncryptedPasswordEqual(passwordc)) {
