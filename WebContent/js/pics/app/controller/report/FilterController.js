@@ -38,6 +38,7 @@ Ext.define('PICS.controller.report.FilterController', {
                 click: this.removeFilter
             }
         });
+        
         this.application.on({
             refreshfilters: this.refreshFilters,
             scope: this
@@ -46,7 +47,6 @@ Ext.define('PICS.controller.report.FilterController', {
 
     applyFilterExpression: function () {
         var report = this.getReportReportsStore().first();
-
         var expression = this.getFilterExpression().value;
 
         // TODO write a real grammar and parser for our filter expression DSL
@@ -54,6 +54,7 @@ Ext.define('PICS.controller.report.FilterController', {
         // Split into tokens
         var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
         expression = expression.replace(validTokenRegex, ' $& ');
+        
         var tokens = expression.trim().split(/ +/);
         expression = '';
 
@@ -61,8 +62,10 @@ Ext.define('PICS.controller.report.FilterController', {
         var parenCount = 0;
         for (var i = 0; i < tokens.length; i += 1) {
             var token = tokens[i];
-            if (token.search(validTokenRegex) === -1)
+            
+            if (token.search(validTokenRegex) === -1) {
                 return false;
+            }
 
             if (token === '(') {
                 parenCount += 1;
@@ -75,8 +78,9 @@ Ext.define('PICS.controller.report.FilterController', {
             } else if (token.toUpperCase() === 'OR') {
                 expression += ' OR ';
             } else if (token.search(/[0-9]+/) !== -1) {
-                if (token === '0')
+                if (token === '0') {
                     return false;
+                }
 
                 // Convert from counting number to index
                 var indexNum = new Number(token) - 1;
@@ -85,13 +89,18 @@ Ext.define('PICS.controller.report.FilterController', {
                 return false;
             }
 
-            if (parenCount < 0)
+            // ALWAYS USE BRACES NOOB AND NEWLINES TOO
+            if (parenCount < 0) {
                 return false;
+            }
         }
-        if (parenCount !== 0)
+        
+        if (parenCount !== 0) {
             return false;
+        }
 
         report.set('filterExpression', expression);
+        
         PICS.app.fireEvent('refreshreport');
     },
 
@@ -111,6 +120,7 @@ Ext.define('PICS.controller.report.FilterController', {
                 filterContainer.add(filterPanel);
             }
         });
+        
         return filterContainer;
     },
 
@@ -129,6 +139,7 @@ Ext.define('PICS.controller.report.FilterController', {
         store = this.getReportReportsStore().first().filters();
 
         store.remove(record);
+        
         PICS.app.fireEvent('refreshfilters');
         PICS.app.fireEvent('refreshreport');
     },
@@ -148,6 +159,7 @@ Ext.define('PICS.controller.report.FilterController', {
             case 'Autocomplete': panelClass = 'PICS.view.report.filter.AutocompleteFilter'; break;
             default: panelClass = null; break;
         }
+        
         //if (type !== 'Float') {panelClass = null;}  Override to show only a specific filterType
         return panelClass;
     },

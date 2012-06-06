@@ -87,6 +87,7 @@ Ext.define('PICS.controller.report.SortController', {
             iconAlign: 'right',
             record: record
         };
+        
         if (record.get('direction') === 'DESC') {
             sort.icon = '../js/pics/resources/themes/images/default/grid/sort_desc.gif';
         }
@@ -131,6 +132,7 @@ Ext.define('PICS.controller.report.SortController', {
             component.setIcon('../js/pics/resources/themes/images/default/grid/sort_asc.gif');
             component.record.set('direction', 'ASC')
         }
+        
         PICS.app.fireEvent('refreshreport');
     },
 

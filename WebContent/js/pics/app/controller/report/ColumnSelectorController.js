@@ -1,5 +1,6 @@
 Ext.define('PICS.controller.report.ColumnSelectorController', {
     extend: 'Ext.app.Controller',
+    
     refs: [{
         ref: 'columnSelector',
         selector: 'reportcolumnselector'
@@ -114,13 +115,13 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             search_field = this.getSearchField();
 
         available_field_store.filter(Ext.create('Ext.ux.util.FilterMultipleColumn', {
+            anyMatch: true,
             property: [
                 'category',
                 'text'
             ],
-            value: search_field.getValue(),
-            anyMatch: true,
-            root: 'data'
+            root: 'data',
+            value: search_field.getValue()
         }));
     },
     
@@ -133,7 +134,9 @@ Ext.define('PICS.controller.report.ColumnSelectorController', {
             
             store.clearFilter();
 
-            window = Ext.create('PICS.view.report.ColumnSelector', { columnSelectorType: component.columnSelectorType});
+            window = Ext.create('PICS.view.report.ColumnSelector', {
+                columnSelectorType: component.columnSelectorType
+            });
             
             window.show();
         }

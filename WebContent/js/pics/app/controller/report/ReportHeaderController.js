@@ -1,16 +1,17 @@
 Ext.define('PICS.controller.report.ReportHeaderController', {
     extend: 'Ext.app.Controller',
+    
     refs: [{
-        ref: 'reportsettings',
+        ref: 'reportSettings',
         selector: 'reportsettings'
     }, {
-        ref: 'reporttitle',
+        ref: 'reportTitle',
         selector: 'reportheader #reportTitle'
     }, {
-        ref: 'reportname',
+        ref: 'reportName',
         selector: 'reportsettings panel textfield[name=reportName]'
     }, {
-        ref: 'reportdescription',
+        ref: 'reportDescription',
         selector: 'reportsettings panel textfield[name=reportDescription]'
     }],
 
@@ -30,17 +31,17 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
             },
             'reportheader button[action=edit]': {
                 click: function (component, options) {
-                    this.showReportSettings('Edit', 'edit');
+                    this.showReportSettingsWindow('Edit', 'edit');
                 }
             },
             'reportheader button[action=copy]': {
                 click: function (component, options) {
-                    this.showReportSettings('Copy', 'copy');
+                    this.showReportSettingsWindow('Copy', 'copy');
                 }
             },
             'reportsettings button[action=cancel]':  {
                 click: function () {
-                    this.getReportsettings().close();
+                    this.getReportSettings().close();
                 }
             },
             'reportsettings button[action=save]':  {
@@ -56,11 +57,10 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                 click: function (component, options) {
                     var userStatus = PICS.app.configuration;
 
-                    this.setReportName();
-                    this.getReportsettings().close();
+                    this.getReportSettings().close();
                     
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
-                        this.saveReport();
+                        this.saveReport(component.action);
                     }
                 }
             },
@@ -69,7 +69,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     var userStatus = PICS.app.configuration;
                     
                     this.setReportName();
-                    this.getReportsettings().close();
+                    this.getReportSettings().close();
 
                     if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
                         this.createNewReport();
@@ -86,8 +86,13 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
         Ext.Ajax.request({
            url: proxy_url,
            success: function (result) {
-                   var result = Ext.decode(result.responseText);
-                   document.location = 'ReportDynamic.action?report=' + result.reportID;
+               var result = Ext.decode(result.responseText);
+               if (result.error) {
+                   Ext.Msg.alert('Status', result.error);        
+               } else {
+                   document.location = 'ReportDynamic.action?report=' + result.reportID;    
+               }
+               
            }
         });        
     },
@@ -96,16 +101,24 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
         var reports = this.getReportReportsStore(),
             proxy_url = 'ReportDynamic!edit.action?' + reports.getReportQueryString(),
             me = this;
-
+        
         Ext.Ajax.request({
            url: proxy_url,
            success: function (result) {
-               me.application.fireEvent('refreshreport');
+               var result = Ext.decode(result.responseText);
+               
+               if (result.error) {
+                   Ext.Msg.alert('Status', result.error);        
+               } else {
+                   Ext.Msg.alert('Status', 'Report Saved Successfully');
+                   this.setReportName();
+                   me.application.fireEvent('refreshreport');
+               }
            }
         });
     },
 
-    showReportSettings: function (name, action) {
+    showReportSettingsWindow: function (name, action) {
         var window = Ext.create('PICS.view.report.ReportSettings', {
             title: name + " Report",
             buttons: [{
@@ -121,16 +134,18 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
          window.show();
     },
 
-    updateReportSettings: function (local) {
+    // TODO: fishy
+    updateReportSettings: function () {
         var report = this.getReportReportsStore().first();
 
-        this.getReporttitle().update('<h1>' + report.get('name') + '</h1><p>' + report.get('description') + '</p>');    
+        this.getReportTitle().update('<h1>' + report.get('name') + '</h1><p>' + report.get('description') + '</p>');    
     },
 
+    // save report setting form to report object
     setReportName: function () {
         var report = this.getReportReportsStore().first(),
-            name = this.getReportname().getValue(),
-            description = this.getReportdescription().getValue();
+            name = this.getReportName().getValue(),
+            description = this.getReportDescription().getValue();
 
         report.set('name', name);
         report.set('description', description);

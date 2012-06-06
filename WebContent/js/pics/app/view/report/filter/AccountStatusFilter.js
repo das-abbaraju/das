@@ -6,7 +6,7 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
         xtype: 'panel',
         bodyStyle: 'background:transparent;',
         name: 'title'
-    },{
+    }, {
         xtype: 'combo',
         editable: false,
         name: 'not',
@@ -15,7 +15,7 @@ Ext.define('PICS.view.report.filter.AccountStatusFilter', {
             ['true', 'not']
         ],
         width: 50
-    },{
+    }, {
         xtype: 'combo',
         name: 'accountstatus',
         store: [

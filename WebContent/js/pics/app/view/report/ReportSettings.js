@@ -10,17 +10,17 @@ Ext.define('PICS.view.report.ReportSettings', {
         border: false,
         items: [{
             xtype: 'textfield',
-                flex: 2,
-                fieldLabel: 'Name',
-                name: 'reportName',
-                value: null
+            flex: 2,
+            fieldLabel: 'Name',
+            name: 'reportName',
+            value: null
         }, {
-                xtype: 'textarea',
-                cols: 25,
-                flex: 2,
-                fieldLabel: 'Description',
-                name: 'reportDescription',
-                value: null
+            xtype: 'textarea',
+            cols: 25,
+            flex: 2,
+            fieldLabel: 'Description',
+            name: 'reportDescription',
+            value: null
         }]
     }],
     layout: {

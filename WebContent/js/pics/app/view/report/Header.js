@@ -26,27 +26,24 @@ Ext.define('PICS.view.report.Header', {
         var panel = Ext.create('Ext.panel.Panel', {border:false}),
             userStatus = PICS.app.configuration;
 
-
-        //edit button
-        var edit = Ext.create('Ext.button.Button', {
-            action: 'edit',
-            margin: '0 5 0 0',
-            text: 'Edit'
-        });
-        panel.add(edit);
-
         if (userStatus.get_is_owner() || userStatus.get_is_developer()) {
+            var edit = Ext.create('Ext.button.Button', {
+                action: 'edit',
+                margin: '0 5 0 0',
+                text: 'Edit'
+            });
             var save = Ext.create('Ext.button.Button', {
                 action: 'save',
                 text: 'Save'
             });
+            panel.add(edit, save);
+            
             var copy = Ext.create('Ext.button.Button', {
                 action: 'copy',
                 margin: '0 0 0 5',
                 text: 'Copy'
-            });
-            panel.add(save, copy);
-
+            });        
+            panel.add(copy);
         }
         this.add(panel);
     }

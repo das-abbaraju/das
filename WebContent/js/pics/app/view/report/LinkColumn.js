@@ -13,14 +13,18 @@ Ext.define('PICS.view.report.LinkColumn', {
         	params = this.urlParams;
         
         params = defaultURL.match(/{(\w+)}/);
+        
         this.renderer = function(value, metaData, record) {
         	var url = defaultURL;
+        	
             Ext.Array.forEach(params, function(fieldName) {
             	var field = record.raw[fieldName];
+            	
             	if (field) {
             		url = url.replace("{" + fieldName + "}", field);
             	}
             });
+            
             return "<a href='" + url + "'>" + value + "</a>";
         };
     }
