@@ -17,12 +17,17 @@ public class Menu extends PicsActionSupport {
 	public String execute() throws Exception {
 		loadPermissions();
 
-		// TODO Only add favorites to the menu
-		List<ReportUser> userReports = dao.findWhere(ReportUser.class, "userID = " + permissions.getUserId());
+		String userQuery = "userID = " + permissions.getUserId();
+		List<ReportUser> savedReports = dao.findWhere(ReportUser.class, userQuery);
+
+		String userFavoritesQuery =  userQuery + " and is_favorite = true";
+		List<ReportUser> favoriteReports = dao.findWhere(ReportUser.class, userFavoritesQuery);
+
 		List<Report> baseReports = dao.findWhere(Report.class, "t.createdBy = " + User.SYSTEM);
 
-		MenuComponent menu = MenuBuilder.buildMenubar(permissions, userReports, baseReports);
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports, savedReports, baseReports);
 
+		// TODO make this return plain JSON, not ext-js specific stuff
 		jsonArray = MenuWriter.exportMenuToExtJS(menu);
 
 		return JSON_ARRAY;
