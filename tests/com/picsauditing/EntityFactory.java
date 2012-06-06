@@ -185,7 +185,18 @@ public class EntityFactory {
 		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
 		question.setDependentRequired(new ArrayList<AuditQuestion> ());
 		question.setDependentVisible(new ArrayList<AuditQuestion> ());
+		question.setCategory(makeAuditCategory());
 		return question;
+	}
+
+	public static AuditCategory makeAuditCategory() {
+		return makeAuditCategory(counter++);
+	}
+	
+	public static AuditCategory makeAuditCategory(int categoryId) {
+		AuditCategory auditCategory = new AuditCategory();
+		auditCategory.setId(categoryId);
+		return auditCategory;
 	}
 
 	static public AuditData makeAuditData(String answer) {

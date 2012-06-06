@@ -124,6 +124,7 @@
 	
 	<!-- Beans for service layers -->
 	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>
+	<bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
 
 	<bean id="JpaEntityConverter" class="com.picsauditing.actions.converters.JpaEntityConverter"/>
 
