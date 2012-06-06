@@ -286,9 +286,9 @@ public class ReportDynamic extends PicsActionSupport {
 		sql = builder.getSql();
 		builder.addPermissions(permissions);
 
-		// TODO: Change to use default value from one of the other Report classes
+		// TODO: rowsPerPage can be added later
 		if (!download)
-			builder.addPaging(page, 100);
+			builder.addPaging(page, 50);
 
 		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
 			translateFilterValueNames(builder.getDefinition().getFilters());
@@ -303,9 +303,11 @@ public class ReportDynamic extends PicsActionSupport {
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
+			/*
 			System.out.println("Report: " + report.toJSON(true));
 			System.out.println("Query: " + sql.toString());
 			System.out.println("Time to query: " + queryTime + " ms");
+			*/
 		}
 
 		return queryData;
@@ -494,28 +496,26 @@ public class ReportDynamic extends PicsActionSupport {
 			JSONObject jsonRow = new JSONObject();
 			for (String column : row.keySet()) {
 				Object value = row.get(column);
-				if (value == null) {
+				if (value == null)
+					continue;
 
-				} else {
-
-					Field field = builder.getAvailableFields().get(column.toUpperCase());
-					if (field == null) {
-						// TODO we get nulls if the column name is custom such
-						// as contractorNameCount. Convert this to
-						// contractorName
+				Field field = builder.getAvailableFields().get(column.toUpperCase());
+				if (field == null) {
+					// TODO we get nulls if the column name is custom such
+					// as contractorNameCount. Convert this to
+					// contractorName
+					jsonRow.put(column, value);
+				} else if (isCanSeeQueryField(field)) {
+					if (field.isTranslated()) {
+						jsonRow.put(column, getText(field.getI18nKey(column)));
+					} else if (value.getClass().equals(java.sql.Date.class)) {
+						java.sql.Date value2 = (java.sql.Date) value;
+						jsonRow.put(column, value2.getTime());
+					} else if (value.getClass().equals(java.sql.Timestamp.class)) {
+						Timestamp value2 = (Timestamp) value;
+						jsonRow.put(column, value2.getTime());
+					} else {
 						jsonRow.put(column, value);
-
-					} else if (isCanSeeQueryField(field)) {
-						if (field.isTranslated()) {
-							jsonRow.put(column, getText(field.getI18nKey(value.toString())));
-						} else if (value.getClass().equals(java.sql.Date.class)) {
-							java.sql.Date value2 = (java.sql.Date) value;
-							jsonRow.put(column, value2.getTime());
-						} else if (value.getClass().equals(java.sql.Timestamp.class)) {
-							Timestamp value2 = (Timestamp) value;
-							jsonRow.put(column, value2.getTime());
-						} else
-							jsonRow.put(column, value);
 					}
 				}
 			}

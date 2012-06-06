@@ -263,8 +263,10 @@ public class TranslationActionSupport extends ActionSupport {
 			throw new RuntimeException("i18n key cannot be empty");
 		if (key.contains("'") || key.contains("\""))
 			throw new RuntimeException("i18n key cannot contain quotes");
-		if (key.contains(" "))
+		if (key.contains(" ")) {
+			System.out.println("key is " + key);
 			throw new RuntimeException("i18n key cannot contain spaces");
+		}
 
 		try {
 			Map<String, Object> session = ActionContext.getContext().getSession();
