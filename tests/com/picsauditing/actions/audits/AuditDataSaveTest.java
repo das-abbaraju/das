@@ -180,14 +180,10 @@ public class AuditDataSaveTest extends PicsTest {
 	@Test
 	public void testExecute_BadNumberAnswer() throws Exception {
 		auditData.getQuestion().setQuestionType("Number");
-		/* not anymore, with Hai's change:
-		 * 	Number truthValue = userFormat.parse(answer);
-		 * parses to 12 
-		 */
 		auditData.setAnswer("12-345"); // the '-' in the middle will cause a BigDecimal exception
 
 		when(i18nCache.getText("Audit.message.InvalidFormat", Locale.ENGLISH, (Object[])null)).thenReturn("Unit Test String");
 		assertEquals("success", auditDataSave.execute());
-		//assertEquals(true, auditDataSave.getActionErrors().size() > 0);
+		assertEquals(true, auditDataSave.getActionErrors().size() > 0);
 	}
 }

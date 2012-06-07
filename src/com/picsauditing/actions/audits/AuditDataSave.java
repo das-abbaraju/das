@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -651,22 +652,23 @@ public class AuditDataSave extends AuditActionSupport {
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
 			NumberFormat userFormat; 
 			NumberFormat usFormat;
+			ParsePosition pp = new ParsePosition(0);
 			if("Number".equals(questionType)) {
 				userFormat = NumberFormat.getIntegerInstance(permissions.getLocale());
 				usFormat = NumberFormat.getIntegerInstance(Locale.US);
 			}
 			else {
-				userFormat = NumberFormat.getInstance(permissions.getLocale());
-				usFormat = NumberFormat.getInstance(Locale.US);
+				userFormat = NumberFormat.getNumberInstance(permissions.getLocale());
+				usFormat = NumberFormat.getNumberInstance(Locale.US);
 			}
-			try {
-				Number truthValue = userFormat.parse(answer);
-				String storedAnswer = usFormat.format(truthValue);
-				auditData.setAnswer(storedAnswer);
-			} catch (ParseException e) {
+			Number truthValue = userFormat.parse(answer, pp);
+			// check for invalid number
+			if(answer.length() != pp.getIndex() || truthValue == null) {
 				addActionError(getText("Audit.message.InvalidFormat"));
 				return false;
 			}
+			String storedAnswer = usFormat.format(truthValue);
+			auditData.setAnswer(storedAnswer);
 			
 		}
 

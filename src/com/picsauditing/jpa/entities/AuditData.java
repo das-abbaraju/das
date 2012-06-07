@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -318,18 +319,23 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 	
 	@Transient
-	public synchronized String getNumberFormatAnswer(Locale locale) throws ParseException {
+	public synchronized String getNumberFormatAnswer(Locale locale) {
 		NumberFormat displayFormat; 
 		NumberFormat dbFormat;
+		ParsePosition pp = new ParsePosition(0);
 		if("Number".equals(question.getQuestionType())) {
 			displayFormat = NumberFormat.getIntegerInstance(locale);
 			dbFormat = NumberFormat.getIntegerInstance(Locale.US);
 		}
 		else {
-			displayFormat = NumberFormat.getInstance(locale);
-			dbFormat = NumberFormat.getInstance(Locale.US);
+			displayFormat = NumberFormat.getNumberInstance(locale);
+			dbFormat = NumberFormat.getNumberInstance(Locale.US);
 		}
-		Number truthValue = dbFormat.parse(answer);
+		Number truthValue = dbFormat.parse(answer, pp);
+		// check for invalid number
+		if(answer.length() != pp.getIndex() || truthValue == null) {
+			return answer;
+		}
 		String displayValue = displayFormat.format(truthValue);
 		return displayValue;
 	}
