@@ -1,36 +1,45 @@
 package com.picsauditing.report.business;
 
-import java.util.List;
-
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.business.DynamicReportUtil;
 
 public class ReportController {
 
 	@Autowired
 	private BasicDAO basicDao;
 
-	private static final String COPY = "copy";
-	private static final String EDIT = "edit";
-	private static final String DELETE = "delete";
-
 	// was create() in ReportDynamic
 	public Report copy(Report sourceReport, Permissions permissions) throws Exception {
-		if (!userHasPermission(permissions.getUserId(), COPY, sourceReport))
-			return null;
+		if (!DynamicReportUtil.userCanCopy(permissions.getUserId(), sourceReport))
+			throw new NoRightsException("Invalid User, does not have permission.");
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);
-		saveReport(newReport, permissions);
-		connectReportToUser(sourceReport, new User(permissions.getUserId()), true);
 
-		return sourceReport;
+		// TODO we're passing new report data in the current report, change sourceReport to it's old state, FIX THIS
+		basicDao.refresh(sourceReport);
+
+		saveReport(newReport, permissions);
+		connectReportToUser(newReport, new User(permissions.getUserId()), true);
+
+		return newReport;
+	}
+
+	public void edit(Report report, Permissions permissions) throws Exception {
+		if (!DynamicReportUtil.userCanEdit(permissions.getUserId(), report))
+			throw new NoRightsException("Invalid User, cannot edit reports that are not your own.");
+
+		validate(report);
+
+		report.setAuditColumns(permissions);
+		basicDao.save(report);
 	}
 
 	private Report copyReportWithoutPermissions(Report sourceReport) {
@@ -57,26 +66,6 @@ public class ReportController {
 		basicDao.save(userReport);
 	}
 
-	private boolean userHasPermission(int userId, String action, Report report) {
-		// TODO remove bare SQL string
-		List<ReportUser> reportUserList = basicDao.findWhere(ReportUser.class, "t.user.id = "
-				+ userId + " AND t.report.id = " + report.getId());
-
-		ReportUser reportUser = null;
-		if (reportUserList.size() == 1) {
-			reportUser = reportUserList.get(0);
-		}
-
-		if (action.equals(COPY) && canRead(reportUser))
-			return true;
-		if (action.equals(EDIT) && canEdit(reportUser))
-			return true;
-		if (action.equals(DELETE) && userOwnsReport(userId, report))
-			return true;
-
-		return false;
-	}
-
 	// This was ensureValidReport in ReportDynamic
 	private void validate(Report report) throws Exception {
 		if (report == null) {
@@ -99,17 +88,4 @@ public class ReportController {
 		report.setAuditColumns(permissions);
 		basicDao.save(report);
 	}
-
-	private boolean userOwnsReport(int userId, Report report) {
-		return userId == report.getCreatedBy().getId();
-	}
-
-	private boolean canRead(ReportUser reportUser) {
-		return (reportUser != null);
-	}
-
-	private boolean canEdit(ReportUser reportUser) {
-		return (reportUser != null && reportUser.isCanEdit());
-	}
-
 }

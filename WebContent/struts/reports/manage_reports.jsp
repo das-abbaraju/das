@@ -93,23 +93,18 @@
 			<s:if test="user != null">
 				<ul class="manage-users-actions">
 					<li>
-						<a class="btn" href="ManageReports.action?reportType=favorite">
+						<a class="btn" href="ManageReports.action?filterType=favorite">
 							Favorites
 						</a>
 					</li>
 					<li>
-						<a class="btn" href="ManageReports.action?reportType=saved">
+						<a class="btn" href="ManageReports.action?filterType=saved">
 							Saved
 						</a>
 					</li>
 					<li>
-						<a class="btn" href="ManageReports.action?reportType=template">
-							Templates
-						</a>
-					</li>
-					<li>
-						<a class="btn" href="">
-							Search
+						<a class="btn" href="ManageReports.action?filterType=template">
+							Base Reports
 						</a>
 					</li>
 				</ul>
@@ -130,10 +125,10 @@
 			    <tr>
 			    	<td>
 			    		<s:if test="favorite">
-			    			<a href="ManageReports!changeFavorite.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />&favorite=false">like</a>
+			    			<a href="ManageReports!changeFavorite.action?reportId=<s:property value="report.id" />&favorite=false">Favorite</a>&nbsp;
 			    		</s:if>
 			    		<s:else>
-			    			<a href="ManageReports!changeFavorite.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />&favorite=true">hate</a>
+			    			<a href="ManageReports!changeFavorite.action?reportId=<s:property value="report.id" />&favorite=true">Normal</a>&nbsp;
 			    		</s:else>
 		    		</td>
 			    	<td>
@@ -142,12 +137,12 @@
 		    		</td>
 					
 					<td>
-						<a href="javascript:" name="modal">Change</a>
+						<a href="javascript:" name="modal">Edit</a>&nbsp;
 						<div id="boxes">
 						    <!-- #customize your modal window here -->
 						    <div class="ReportDialog window">
 						        <s:form cssClass="form" id="userSaveReportName">
-						    		<s:hidden name="id" />
+						    		<s:hidden name="report.id" />
 									<fieldset>
 									Change Name
 										<li>
@@ -181,12 +176,12 @@
 						</div>
 					</td>
 					<td>
-						<a href="ManageReports!createReport.action?reportType=<s:property value="reportType" />&id=<s:property value="id" />">Copy</a>
+						<a href="ManageReports!createReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp;
 					</td>
 					<td>
-						<a href="ManageReports!deleteReport.action?deleteType=remove&reportType=<s:property value="reportType" />&id=<s:property value="id" />">Remove</a>
+						<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">Remove</a>
 						<s:if test="ifYouOwnTheReport">
-							<a href="ManageReports!deleteReport.action?deleteType=delete&reportType=<s:property value="reportType" />&id=<s:property value="id" />">Delete</a> (sharedCount)
+							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">Delete</a> (sharedCount)
 						</s:if>
 					</td>
 				</tr>

@@ -75,9 +75,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * String that is used for simple messages.
-	 * 
+	 *
 	 * This is also used for plain-text type results.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.PlainTextResult
 	 */
 	protected String output = null;
@@ -91,21 +91,21 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	/**
 	 * JSONObject used to return JSON strings.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONResult
 	 */
 	protected JSONObject json = new JSONObject();
 
 	/**
 	 * Callback used for jsonp requests
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONPResult
 	 */
 	protected String callback;
 
 	/**
 	 * JSONArray used to return JSON array.
-	 * 
+	 *
 	 * @see com.picsauditing.strutsutil.JSONArrayResult
 	 */
 	protected JSONArray jsonArray = new JSONArray();
@@ -144,11 +144,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isAlpha;
 	}
-	
+
 	public boolean isBetaEnvironment() throws UnknownHostException {
 	    Boolean isBeta = getRequestHost().contains("beta");
 	    String server = InetAddress.getLocalHost().getHostName();
-	    
+
 	    return isBeta || server.equals("organizer1") || server.equals("organizer2");
 	}
 
@@ -167,7 +167,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return isLocalhost;
 	}
-	
+
 	public boolean isI18nReady() {
 		return "1".equals(propertyDAO.getProperty("PICS.i18nReady"));
 	}
@@ -179,7 +179,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * This method is used to set the clear_cache flag in the AppProperty table
 	 * to allow the contractor daemon to reset caches on all 3 servers.
-	 * 
+	 *
 	 */
 	protected void flagClearCache() {
 		propertyDAO.setProperty(ClearCacheAction.CLEAR_CACHE_PROPERTY, "1");
@@ -463,11 +463,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return auditorList;
 	}
 	public Set<User> getSafetyList() {
-		if (safetyList == null) {			
+		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
 			UserDAO dao = SpringUtils.getBean("UserDAO");
-			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));					
-		}		
+			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));
+		}
 		return safetyList;
 	}
 
@@ -484,7 +484,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Get the directory to store file uploads Use the System property or the
 	 * Init parameter or C:/temp/ To set the System property add
 	 * -Dpics.ftpDir=folder_location to your startup command
-	 * 
+	 *
 	 * @return
 	 */
 	static protected String getFtpDir() {
@@ -551,7 +551,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	/**
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
-	 * 
+	 *
 	 * @param name
 	 *            Name of the parameter you want to check in the map
 	 */
@@ -664,7 +664,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		return helpUrl;
 	}
-	
+
 	public String getActionName() {
         return ServletActionContext.getActionMapping().getName();
     }
@@ -672,7 +672,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public String getMethodName() {
 	    return ServletActionContext.getActionMapping().getMethod();
 	}
-	
+
 	public String getProtocol() {
         return URLUtils.getProtocol(ServletActionContext.getRequest());
     }

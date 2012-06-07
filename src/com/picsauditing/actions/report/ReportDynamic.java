@@ -20,6 +20,7 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
@@ -42,6 +43,7 @@ import com.picsauditing.report.tables.FieldCategory;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.business.DynamicReportUtil;
 import com.picsauditing.util.excel.ExcelSheet;
 
 @SuppressWarnings( { "unchecked", "serial" })
@@ -77,68 +79,39 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			jsonException(e);
 		}
+
 		return JSON;
 	}
 
 	public String create() {
-		// TODO call this method
-		//reportController.copy();
-
-		if (userHasPermission(COPY)) {
-			// TODO bind the data coming in to a different object other than report
-			Report newReport = new Report();
-			newReport.setModelType(report.getModelType());
-			newReport.setName(report.getName());
-			newReport.setDescription(report.getDescription());
-			newReport.setParameters(report.getParameters());
-
-			dao.refresh(report);
-			//save(report);
-			try {
-				//ensureValidReport();
-
-				newReport.setAuditColumns(permissions);
-				dao.save(newReport);
-				json.put("success", true);
-				json.put("reportID", newReport.getId());
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				jsonException(e);
-			}
-
-			ReportUser userReport = new ReportUser();
-			userReport.setAuditColumns(permissions);
-			userReport.setReport(newReport);
-			userReport.setUser(newReport.getCreatedBy());
-			userReport.setCanEdit(true);
-			dao.save(userReport);
-		} else {
+		try {
+			Report newReport = reportController.copy(report, permissions);
+			json.put("success", true);
+			json.put("reportID", newReport.getId());
+		} catch (NoRightsException nre) {
 			json.put("success", false);
-			json.put("error", "Invalid User, does not have permission.");
+			json.put("error", nre.getMessage());
+		} catch (Exception e) {
+			// TODO add logging
+			e.printStackTrace();
+			jsonException(e);
 		}
 
 		return JSON;
 	}
 
 	public String edit() {
-		if (userHasPermission(EDIT)) {
-			//save(report);
-			try {
-				ensureValidReport();
-
-				report.setAuditColumns(permissions);
-				dao.save(report);
-				json.put("success", true);
-				json.put("reportID", report.getId());
-
-			} catch (Exception e) {
-				e.printStackTrace();
-				jsonException(e);
-			}
-		} else {
+		try {
+			reportController.edit(report, permissions);
+			json.put("success", true);
+			json.put("reportID", report.getId());
+		} catch (NoRightsException nre) {
 			json.put("success", false);
-			json.put("error", "Invalid User, cannot edit reports that are not your own.");
+			json.put("error", nre.getMessage());
+		} catch (Exception e) {
+			// TODO add logging
+			e.printStackTrace();
+			jsonException(e);
 		}
 
 		return JSON;
@@ -167,7 +140,6 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	@Deprecated
 	public String list() {
 		try {
 			if (Strings.isEmpty(fieldName))
@@ -178,7 +150,8 @@ public class ReportDynamic extends PicsActionSupport {
 			builder.getSql();
 
 			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
-			validate(field);
+			if (field == null)
+				throw new Exception("Available field undefined");
 
 			if (field.getFilterType().isEnum()) {
 				json = renderEnumFieldAsJson(field);
@@ -193,16 +166,13 @@ public class ReportDynamic extends PicsActionSupport {
 		} catch (Exception e) {
 			jsonException(e);
 		}
+
 		return JSON;
 	}
 
 	public String getUserStatus() {
 		json.put("is_developer", permissions.isDeveloperEnvironment());
 		json.put("is_owner", isReportOwner());
-		json.put("has_permission", permissions.hasPermission(OpPerms.Report, OpType.Edit));
-		json.put("user_can_edit", userHasPermission(EDIT));
-		json.put("user_can_create", userHasPermission(COPY));
-		json.put("user_can_delete", userHasPermission(DELETE));
 
 		return JSON;
 	}
@@ -289,8 +259,9 @@ public class ReportDynamic extends PicsActionSupport {
 		if (!download)
 			builder.setPaging(page, report.getRowsPerPage());
 
-		if (builder.getDefinition().getFilters() != null && !builder.getDefinition().getFilters().isEmpty()) {
-			translateFilterValueNames(builder.getDefinition().getFilters());
+		List<Filter> filters = builder.getDefinition().getFilters();
+		if (filters != null && !filters.isEmpty()) {
+			translateFilterValueNames(filters);
 		}
 	}
 
@@ -375,10 +346,9 @@ public class ReportDynamic extends PicsActionSupport {
 		return fields;
 	}
 
-	// TODO WTF?
-	public List<? extends BaseTable> getAvailableReports() {
-		return dao.findWhere(Report.class, "id > 0", 100);
-	}
+//	public List<? extends BaseTable> getAvailableReports() {
+//		return dao.findWhere(Report.class, "id > 0", 100);
+//	}
 
 	private void addTranslatedLabelsToReportParameters(Definition definition) {
 		if (definition.getColumns().size() > 0) {
@@ -578,12 +548,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 		enumResults.put("result", jsonResult);
 		return enumResults;
-	}
-
-	@Deprecated
-	private void validate(Field field) throws Exception {
-		if (field == null)
-			throw new Exception("Available field undefined");
 	}
 
 	// TODO: Find out how this is being used (purpose in the big picture, possibly used for reverse translations)

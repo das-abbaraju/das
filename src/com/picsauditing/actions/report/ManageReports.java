@@ -10,99 +10,115 @@ import com.picsauditing.jpa.entities.ReportUser;
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
 
-	private ReportUser report;
-	private Report actualReport;
+	private static final String DELETE_REPORT = "delete";
+	private static final String REMOVE_ASSOCIATION = "remove";
+	private static final String SAVED = "saved";
+	private static final String FAVORITE2 = "favorite";
+	private static final String TEMPLATE = "template";
+
+	private ReportUser reportUser;
+	private Report report;
 	private List<ReportUser> reportsByUser = new ArrayList<ReportUser>();
 
-	private String name = "";
-	private String description = "";
-	private String reportType = "";
-	private int id;
+//	private String name = "";
+//	private String description = "";
+	private String filterType;
+	private int reportId;
 	private boolean favorite;
 	private String deleteType;
-	private int reportUsedBy;
+//	private int reportUsedBy;
 
 	public String execute() throws Exception {
 		loadPermissions();
-		getCustomReport(reportType);
+		getCustomReport(filterType);
 
 		return SUCCESS;
 	}
 
-	private void getCustomReport(String reportType) {
-		if (reportType.equals("template")) {
-			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId(), 2));
-		} else if (reportType.equals("favorite")) {
-			setReportsByUser(dao.findWhere(ReportUser.class,
-					"favorite=1 and createdBy=" + permissions.getUserId()));
-		} else if (reportType.equals("saved")) {
-			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId()));
+	private void getCustomReport(String filterType) {
+		String filterQuery = "createdBy=" + permissions.getUserId();
+
+		// TODO: do we even need to have a template filter?
+		if (TEMPLATE.equals(filterType)) {
+			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery, 2));
+		} else if (FAVORITE2.equals(filterType)) {
+			setReportsByUser(dao.findWhere(ReportUser.class,"favorite=1 and " + filterQuery));
+		} else if (SAVED.equals(filterType)) {
+			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
 		} else {
-			setReportsByUser(dao.findWhere(ReportUser.class, "createdBy=" + permissions.getUserId()));
+			setReportsByUser(dao.findWhere(ReportUser.class, filterQuery));
 		}
 	}
 
 	public String deleteReport() throws Exception {
-		setReport(dao.find(ReportUser.class, id));
-		if (deleteType.equalsIgnoreCase("delete")) {
-			if (permissions.getUserId() == report.getReport().getCreatedBy().getId()) {
-				actualReport = report.getReport();
-				//remove from report_user table
-				dao.remove(report);
-				//remove from report table
-				dao.remove(actualReport);
+		if (DELETE_REPORT.equalsIgnoreCase(deleteType)) {
+			if (permissions.getUserId() == reportUser.getReport().getCreatedBy().getId()) {
 
-				getCustomReport(reportType);
+				report = reportUser.getReport();
+				dao.remove(reportUser);
+				dao.remove(report);
+
+				getCustomReport(filterType);
 				return SUCCESS;
 			} else {
-				//addActionMessage(getText("Login.ConfirmedEmailAddress"));
 				addActionMessage("you are not the owner of the report");
 				return SUCCESS;
 			}
 		}
 
-		dao.remove(report);
-		getCustomReport(reportType);
+		if (REMOVE_ASSOCIATION.equals(deleteType)) {
+			dao.remove(reportUser);
+		}
+
+		getCustomReport(filterType);
 
 		return SUCCESS;
 	}
 
 	public String changeReportName() throws Exception {
-		setReport(dao.find(ReportUser.class, id));
-		report.getReport().setName(name);
-		report.getReport().setDescription(description);
-		dao.save(report);
-		getCustomReport(reportType);
+		Report reportToUpdate = dao.find(Report.class, reportId);
+		reportToUpdate.setName(report.getName());
+		reportToUpdate.setDescription(report.getDescription());
+		dao.save(reportToUpdate);
+
+		getCustomReport(filterType);
 
 		return SUCCESS;
 	}
 
-	public String changeFavorite() throws Exception{
-		setReport(dao.find(ReportUser.class, id));
-		report.setFavorite(favorite);
-		dao.save(report);
-		getCustomReport(reportType);
+	public String changeFavorite() throws Exception {
+		String userReportQuery = "t.user.id = " + permissions.getUserId() + " AND t.report.id = " + reportId;
+		reportUser = dao.findOne(ReportUser.class, userReportQuery);
+		reportUser.setFavorite(favorite);
+		dao.save(reportUser);
+		getCustomReport(filterType);
 
 		return SUCCESS;
 	}
 
 	public String createReport() {
-		setReport(dao.find(ReportUser.class, id));
-
 		ReportDynamic dr = new ReportDynamic();
-		dr.setReport((Report)report.getReport());
+		dr.setReport((Report)reportUser.getReport());
 		dr.create();
 
-		getCustomReport(reportType);
+		getCustomReport(filterType);
 
 		return SUCCESS;
 	}
 
-	public ReportUser getReport() {
+	public ReportUser getReportUser() {
+		return reportUser;
+	}
+
+	public void setReportUser(ReportUser reportUser) {
+		this.reportUser = reportUser;
+	}
+
+	public Report getReport() {
 		return report;
 	}
 
-	public void setReport(ReportUser report) {
+	public void setReport(Report report) {
 		this.report = report;
 	}
 
@@ -114,35 +130,36 @@ public class ManageReports extends PicsActionSupport {
 		return reportsByUser;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+//	public void setName(String name) {
+//		this.name = name;
+//	}
+//
+//	public String getName() {
+//		return name;
+//	}
+//
+//	public void setDescription(String description) {
+//		this.description = description;
+//	}
+
+//	public String getDescription() {
+//		return description;
+//	}
+
+	public String getFilterType() {
+		return filterType;
 	}
 
-	public String getName() {
-		return name;
+	public void setFilterType(String reportType) {
+		this.filterType = reportType;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public int getReportId() {
+		return reportId;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-	public String getReportType() {
-		return reportType;
-	}
-
-	public void setReportType(String reportType) {
-		this.reportType = reportType;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setReportId(int reportId) {
+		this.reportId = reportId;
 	}
 
 	public boolean isFavorite() {
@@ -159,15 +176,5 @@ public class ManageReports extends PicsActionSupport {
 
 	public void setDeleteType(String deleteType) {
 		this.deleteType = deleteType;
-	}
-
-	public int getReportUsedBy() {
-		return reportUsedBy;
-	}
-
-	public void setReportUsedBy(int reportID) {
-		//find the count of user that uses this report.
-		dao.find(ReportUser.class, reportID);
-		this.reportUsedBy = reportID;
 	}
 }
