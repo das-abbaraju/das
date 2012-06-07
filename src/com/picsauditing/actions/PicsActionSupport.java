@@ -221,7 +221,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				try {
 					System.out.println("Autologging In user " + autoLoginID
 							+ ". Remove pics.autoLogin from startup to remove this feature.");
-					UserDAO userDAO = (UserDAO) SpringUtils.getBean("UserDAO");
+					UserDAO userDAO = SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
@@ -289,7 +289,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public User getUser(int userId) {
-		UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+		UserDAO dao = SpringUtils.getBean("UserDAO");
 		try {
 			User user = dao.find(userId);
 			return user;
@@ -302,7 +302,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Account getAccount() {
 		if (account == null) {
 			loadPermissions();
-			AccountDAO dao = (AccountDAO) SpringUtils.getBean("AccountDAO");
+			AccountDAO dao = SpringUtils.getBean("AccountDAO");
 			account = dao.find(permissions.getAccountId(), permissions.getAccountType());
 		}
 		return account;
@@ -456,7 +456,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getAuditorList() {
 		if (auditorList == null) {
 			auditorList = new TreeSet<User>();
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			UserDAO dao = SpringUtils.getBean("UserDAO");
 			auditorList.addAll(dao.findByGroup(User.GROUP_AUDITOR));
 			auditorList.addAll(dao.findByGroup(User.GROUP_CSR));
 		}
@@ -465,7 +465,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {			
 			safetyList = new TreeSet<User>();
-			UserDAO dao = (UserDAO) SpringUtils.getBean("UserDAO");
+			UserDAO dao = SpringUtils.getBean("UserDAO");
 			safetyList.addAll(dao.findByGroup(User.GROUP_SAFETY));					
 		}		
 		return safetyList;
