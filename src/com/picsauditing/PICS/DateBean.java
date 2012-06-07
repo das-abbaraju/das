@@ -13,6 +13,9 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.util.Strings;
 
 public class DateBean {
@@ -28,6 +31,8 @@ public class DateBean {
 			"September", "October", "November", "December" };
 
 	protected static Map<Integer, String> times = new TreeMap<Integer, String>();
+    
+	private static final Logger logger = LoggerFactory.getLogger(DateBean.class); 
 
 	static {
 		times.put(0, "06:00 AM");
@@ -103,12 +108,9 @@ public class DateBean {
 			java.util.Date tempDate = DBFormat.parse(dateString);
 			temp = showFormat.format(tempDate);
 		} catch (Exception e) {
-			System.out.println("Invalid DB Date format in DateBean.toShowFormat(): failed converting " + dateString
-					+ " to " + temp);
+			logger.error("Invalid DB Date format in DateBean.toShowFormat(): failed converting {} to {}", dateString, temp);
 			temp = "";
 		}// catch
-		// System.out.println("Valid DB Date format in DateBean.toShowFormat():
-		// "+dateString+" to "+temp);
 		return temp;
 	}// toDBFormat
 
@@ -355,22 +357,16 @@ public class DateBean {
 			try {
 				df.applyPattern(pattern);
 				d = df.parse(dateString);
-				// System.out.println("parseDate (SUCCESS): from " + dateString
-				// + " into " + DateBean.format(d,
-				// "yyyy-MM-dd"));
 				break;
 			} catch (ParseException e) {
-				// System.out.println(e.getMessage() + " using pattern: " +
-				// pattern);
 			}
 		}
 		if (d == null)
-			System.out.println("parseDate (FAILED): " + dateString);
+			logger.warn("parseDate (FAILED): {}", dateString);
 		return d;
 	}
 
 	public static Date parseDateTime(String dateString) {
-		// System.out.println("Attempting to parse " + dateString);
 		SimpleDateFormat df = new SimpleDateFormat();
 		df.setLenient(false);
 
@@ -393,18 +389,14 @@ public class DateBean {
 				try {
 					df.applyPattern(pattern + " " + timePattern);
 					d = df.parse(dateString);
-					// System.out.println("parseDate (SUCCESS): from " +
-					// dateString + " into " + DateBean.format(d,
-					// "yyyy-MM-dd"));
 					break outerLoop;
 				} catch (ParseException e) {
-					// System.out.println(e.getMessage() + " using pattern: " +
-					// pattern);
+					logger.error("Using pattern: {}", pattern, e.getCause());
 				}
 			}
 		}
 		if (d == null)
-			System.out.println("parseDate (FAILED): " + dateString);
+			logger.error("parseDate (FAILED): {}", dateString);
 		return d;
 	}
 
@@ -562,7 +554,7 @@ public class DateBean {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(parseDateTime("3/10/08 6:56 AM PDT"));
+		logger.info("{}", parseDateTime("3/10/08 6:56 AM PDT"));
 	}
 
 	public static boolean isBeforeAWeek(Date startDate) {

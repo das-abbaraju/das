@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jboss.util.id.GUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -26,6 +28,8 @@ public class QBWebConnectorSvcSkeleton {
 	protected QBSession currentSession = null;
 
 	private static Map<String, QBSession> sessions = new HashMap<String, QBSession>();
+	
+	private final Logger LOG = LoggerFactory.getLogger(QBWebConnectorSvcSkeleton.class);
 
 	public AuthenticateResponse authenticate(Authenticate authenticate) {
 
@@ -273,14 +277,14 @@ public class QBWebConnectorSvcSkeleton {
 					emailSender.send(email);
 
 				} catch (Exception notMuchWeCanDoButLogIt) {
-					System.out.println("**********************************");
-					System.out.println("Error Running QBWebConnector AND unable to send email");
+					LOG.error("**********************************");
+					LOG.error("Error Running QBWebConnector AND unable to send email");
 
-					System.out.println(body.toString());
+					LOG.error(body.toString());
 
-					System.out.println("**********************************");
+					LOG.error("**********************************");
 
-					System.out.println(notMuchWeCanDoButLogIt);
+					LOG.error(notMuchWeCanDoButLogIt.toString());
 					notMuchWeCanDoButLogIt.printStackTrace();
 				}
 			}

@@ -1,11 +1,14 @@
 package com.picsauditing.PICS.flags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.FlagCriteria;
 
 public class FlagAnswerParser {
-	
+	private final static Logger logger = LoggerFactory.getLogger(FlagAnswerParser.class);
 	public static String parseAnswer(FlagCriteria flagCriteria, AuditData auditData) {
 		String qType = auditData.getQuestion().getQuestionType();
 		String cType = flagCriteria.getDataType();
@@ -38,7 +41,7 @@ public class FlagAnswerParser {
 			return parseForNumber(answer);
 		}
 		
-		System.out.println("Failed to parse type " + cType + " " + qType
+		logger.warn("Failed to parse type " + cType + " " + qType
 				+ " for flagCriteria #" + flagCriteria.getId()
 				+ ", and question#" + auditData.getQuestion().getId());
 		
@@ -51,7 +54,7 @@ public class FlagAnswerParser {
 			Float parsedAnswer = Float.parseFloat(answer);
 			return parsedAnswer.toString();
 		} catch (Exception doNothingRightHere) {
-			System.out.println("Failed to parse date [" + answer + "]");
+			logger.error("Failed to parse date [{}]", answer );
 		}
 		
 		return "";
@@ -60,12 +63,12 @@ public class FlagAnswerParser {
 	private static String parseForDate(FlagCriteria flagCriteria, String cType,
 			String answer) {
 		if (!"date".equals(cType))
-			System.out.println("WARNING!! " + flagCriteria + " should be set to date but isn't");
+			logger.warn("WARNING!! {} should be set to date but isn't", flagCriteria);
 		try {
 			DateBean.parseDate(answer);
 			return answer;
 		} catch (Exception doNothingRightHere) {
-			System.out.println("Failed to parse date [" + answer + "]");
+			logger.error("Failed to parse date [{}]", answer);
 			return "";
 		}
 	}
@@ -73,14 +76,14 @@ public class FlagAnswerParser {
 	private static String parseForManual(FlagCriteria flagCriteria,
 			String cType, String answer) {
 		if (!"string".equals(cType))
-			System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
+			logger.warn("WARNING!! {} should be set to boolean but isn't", flagCriteria);
 		return answer;
 	}
 
 	private static String parseForCheckBox(FlagCriteria flagCriteria,
 			String cType, String answer) {
 		if (!"boolean".equals(cType))
-			System.out.println("WARNING!! " + flagCriteria + " should be set to boolean but isn't");
+			logger.warn("WARNING!! {} should be set to boolean but isn't", flagCriteria);
 		if ("X".equals(answer))
 			return "true";
 		else

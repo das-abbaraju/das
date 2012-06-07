@@ -194,4 +194,18 @@
         <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
     </mime-mapping>
     
+    <servlet>
+     <servlet-name>perf4j</servlet-name>
+     <servlet-class>org.perf4j.logback.servlet.GraphingServlet </servlet-class>
+     <init-param>
+        <param-name>graphNames</param-name>
+        <param-value>graphExecutionTimes,graphExecutionTPS</param-value>
+     </init-param>
+   </servlet>
+
+   <servlet-mapping>
+     <servlet-name>perf4j</servlet-name>
+     <url-pattern>/perf4j</url-pattern>
+   </servlet-mapping>
+    
 </web-app>

@@ -6,6 +6,8 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
@@ -89,16 +91,18 @@ public class ExceptionService {
 		try {
 			emailSender.send(mail);
 		} catch (Exception e) {
-			System.out.println("PICS Exception Handler ... sending email via SendGrid");
+			Logger logger = LoggerFactory.getLogger(ExceptionService.class);
+			logger.error("PICS Exception Handler ... sending email via SendGrid");
 			GridSender sendMail = new GridSender();
 			mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 			try {
 				sendMail.sendMail(mail);
 			} catch (MessagingException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				logger.error(e.getMessage());
+				
 			}
-			System.out.println(mail.getBody());
+			logger.info(mail.getBody());
 		}
 	}
 

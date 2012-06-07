@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -57,6 +59,8 @@ public class LoginController extends PicsActionSupport {
 	private String key;
 	private int switchToUser;
 	private int switchServerToUser;
+	
+	private final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Anonymous
 	@Override
@@ -431,7 +435,7 @@ public class LoginController extends PicsActionSupport {
 		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
 			for (int i = 0; i < cookiesA.length; i++) {
-				System.out.println("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
+				LOG.error("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
 			}
 		}
 	}

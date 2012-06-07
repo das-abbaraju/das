@@ -234,7 +234,6 @@ public class AuditPercentCalculator {
 			}
 		}
 
-//		if (catData.getCategory().getId() == 428)System.out.println("");
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);

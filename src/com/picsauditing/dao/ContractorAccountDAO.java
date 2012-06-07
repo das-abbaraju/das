@@ -13,6 +13,8 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,8 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class ContractorAccountDAO extends PicsDAO {
+	private final Logger logger = LoggerFactory.getLogger(ContractorAccountDAO.class);
+	
 	public void remove(ContractorAccount row, String ftpDir) {
 		FileUtils.deleteFile(ftpDir + "/logos/" + row.getLogoFile());
 		String filename = "brochure_" + row.getId() + "." + row.getBrochureFile();
@@ -49,8 +53,7 @@ public class ContractorAccountDAO extends PicsDAO {
 		Query query = em.createQuery("SELECT id ContractorAccount WHERE status IN ('Active','Demo')");
 		List<Integer> list = query.getResultList();
 		long elapsed = new Date().getTime() - start;
-		System.out.println("ContractorAccountDAO.findAll() found " + list.size() + " contractors ids in " + elapsed
-				+ "ms");
+		logger.debug("ContractorAccountDAO.findAll() found {} contractors ids in {} ms", list.size(), elapsed);
 		return list;
 	}
 

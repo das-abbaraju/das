@@ -6,12 +6,14 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.struts2.util.StrutsTypeConverter;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("rawtypes")
 public class JsonObjectConverter extends StrutsTypeConverter {
-
+	private final Logger logger = LoggerFactory.getLogger(JsonArrayConverter.class);
 	@Override
 	public Object convertFromString(Map context, String[] values, Class toClass) {
 		if (ArrayUtils.isNotEmpty(values) && !Strings.isEmpty(values[0])) {
@@ -19,7 +21,7 @@ public class JsonObjectConverter extends StrutsTypeConverter {
 				JSONParser parser = new JSONParser();
 				return parser.parse(values[0]);
 			} catch (Exception e) {
-				System.out.println("Error converting to request parameter 'json' to  JSONObject.");
+				logger.error("Error converting to request parameter 'json' to  JSONObject.");
 			}
 		}
 						

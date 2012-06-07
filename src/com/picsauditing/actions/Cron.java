@@ -25,6 +25,8 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
@@ -148,6 +150,7 @@ public class Cron extends PicsActionSupport {
 	private int regReqOperatorEmailTemplate = 218;
 	private int possibleDuplciateEmailTemplate = 234;
 
+	private final Logger logger = LoggerFactory.getLogger(Cron.class);
 	@Anonymous
 	public String execute() throws Exception {
 		HttpServletRequest request = ServletActionContext.getRequest();
@@ -168,7 +171,7 @@ public class Cron extends PicsActionSupport {
 					auditBuilder.buildAudits(contractor);
 					contractorAuditDAO.save(contractor);
 				} catch (Exception e) {
-					System.out.println("ERROR!! AuditBuiler.addAuditRenewals() " + e.getMessage());
+					logger.error("ERROR!! AuditBuiler.addAuditRenewals() {}", e.getMessage());
 				}
 			}
 			endTask();
@@ -400,12 +403,10 @@ public class Cron extends PicsActionSupport {
 		try {
 			emailSender.send(toAddress, "Cron job report", report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
-			System.out.println("**********************************");
-			System.out.println("Error Sending email from cron job");
-			System.out.println("**********************************");
-
-			System.out.println(notMuchWeCanDoButLogIt);
-			notMuchWeCanDoButLogIt.printStackTrace();
+			logger.error("**********************************");
+			logger.error("Error Sending email from cron job");
+			logger.error("**********************************");
+			logger.error(notMuchWeCanDoButLogIt.getMessage());
 		}
 
 	}

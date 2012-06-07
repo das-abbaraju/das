@@ -11,6 +11,8 @@ import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -44,6 +46,8 @@ public class ReportActionSupport extends PicsActionSupport {
 	private Boolean filtered = null;
 	protected boolean filteredDefault = false;
 
+	private final Logger logger = LoggerFactory.getLogger(ReportActionSupport.class);
+	
 	public void run(SelectSQL sql) throws SQLException, IOException {
 		run(sql, new ArrayList<SelectSQL>());
 	}
@@ -239,7 +243,7 @@ public class ReportActionSupport extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e.getMessage());
 		}
 	}
 

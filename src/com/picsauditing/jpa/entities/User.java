@@ -626,8 +626,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
 	@Override
 	public int compareTo(User o) {
-		// System.out.println("Compare " + this.toString() + " to " +
-		// o.toString());
 		if (!this.isActive.equals(o.getIsActive())) {
 			// Sort Active before Inactive
 			if (this.isActiveB())

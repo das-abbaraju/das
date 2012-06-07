@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
@@ -38,6 +40,7 @@ public class I18nCache implements Serializable {
 	private transient Table<String, String, String> cache;
 	private transient Map<String, Date> cacheUsage;
 
+	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 	private I18nCache() {
 	}
 
@@ -146,11 +149,11 @@ public class I18nCache implements Serializable {
 					cacheUsage.put(key, lastUsed);
 				}
 				long endTime = System.currentTimeMillis();
-				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
+				logger.info("Built i18n Cache in {} ms", (endTime - startTime));
 				
 				LAST_CLEARED = new Date();
 			} catch (SQLException e) {
-				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 

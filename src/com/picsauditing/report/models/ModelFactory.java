@@ -1,8 +1,13 @@
 package com.picsauditing.report.models;
 
-public class ModelFactory {
-	static public com.picsauditing.report.models.ModelBase getBase(ModelType type) {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class ModelFactory {
+	private static final Logger logger = LoggerFactory.getLogger(ModelFactory.class);
+	
+	static public com.picsauditing.report.models.ModelBase getBase(ModelType type) {
+       
 		// We might want to reconsider the naming convention between ModelType and classes that extend ModelBase
 		// We could make them the same and use reflection
 
@@ -19,7 +24,7 @@ public class ModelFactory {
 		if (type.equals(ModelType.Operators))
 			return new QueryAccountOperator();
 
-		System.out.println("WARNING: ModelFactory failed to define Model for type = " + type);
+		logger.warn("WARNING: ModelFactory failed to define Model for type = {}", type);
 		return null;
 	}
 }

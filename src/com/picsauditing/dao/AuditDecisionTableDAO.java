@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,8 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AuditDecisionTableDAO extends PicsDAO {
 
+	private final Logger logger = LoggerFactory.getLogger(AuditDecisionTableDAO.class);
+	
 	public <T extends BaseDecisionTreeRule> List<T> findAllRules(Class<T> clazz) {
 		Query query = em.createQuery("FROM " + clazz.getName()
 				+ " WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
@@ -369,7 +373,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em.createQuery(sql);
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (Object row : query.getResultList()) {
-			System.out.println(row);
+			logger.debug("{}", row);
 			int auditTypeID = row.hashCode();
 			int opID = row.hashCode();
 			if (!map.containsKey(auditTypeID))
