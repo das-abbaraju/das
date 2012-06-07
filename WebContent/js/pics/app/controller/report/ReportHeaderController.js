@@ -5,8 +5,8 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
         ref: 'reportSettings',
         selector: 'reportsettings'
     }, {
-        ref: 'reportTitle',
-        selector: 'reportheader #reportTitle'
+        ref: 'reportSummary',
+        selector: 'reportheader #report_summary'
     }, {
         ref: 'reportName',
         selector: 'reportsettings panel textfield[name=reportName]'
@@ -137,7 +137,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
     updateReportSettings: function () {
         var report = this.getReportReportsStore().first();
 
-        this.getReportTitle().update('<h1>' + report.get('name') + '</h1><p>' + report.get('description') + '</p>');
+        this.getReportSummary().update('<h1>' + report.get('name') + '</h1><p>' + report.get('description') + '</p>');
     },
 
     // save report setting form to report object

@@ -38,7 +38,7 @@ Ext.define('PICS.controller.report.ReportController', {
 
     // TODO: fishy
     refreshReport: function () {
-        this.getController('report.ReportHeaderController').updateReportSettings();
+        //this.getController('report.ReportHeaderController').updateReportSettings();
         this.getReportDataSetsStore().buildDataSetGrid();
     },
 
