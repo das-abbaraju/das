@@ -192,8 +192,9 @@
                                             </s:set>
                                         </s:else>
                                         
-										<div class="${button_class} button <s:property value="#step.newStatus.color"/>">
-											<s:text name="%{#step.newStatus.getI18nKey('button')}" />
+										<div class="${button_class} button <s:property value="#step.newStatus.color"/>" 
+											title="<s:property value="#step.buttonHelpText" />">
+											<s:property value="#step.name" />
 											<s:hidden cssClass="bCaoID" name="%{id}_%{#step.id}" value="%{#currentCao.id}"/>
 											<s:hidden cssClass="bStepID" name="%{id}_%{#buttonActions.key}_stepID" value="%{#step.id}" />
 											<s:hidden cssClass="bStatus" value="%{#step.newStatus}" name="%{id}_%{#step.newStatus}_action" />

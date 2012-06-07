@@ -27,6 +27,7 @@ public class ManageWorkFlow extends PicsActionSupport {
 
 	protected AuditStatus status;
 	protected String label;
+	protected String helpText;
 	protected AuditStatus oldStatus;
 	protected AuditStatus newStatus;
 	protected boolean noteRequired;
@@ -93,6 +94,19 @@ public class ManageWorkFlow extends PicsActionSupport {
 				else
 					ws.setEmailTemplate(null);
 				ws.setNoteRequired(noteRequired);
+				
+				if (Strings.isEmpty(label))
+					label = newStatus.name();
+				TranslatableString buttonLabel = new TranslatableString();
+				buttonLabel.putTranslation("en", label, true);
+				ws.setName(buttonLabel);
+				
+				if (!Strings.isEmpty(helpText)) {
+					TranslatableString text = new TranslatableString();
+					text.putTranslation("en", helpText, true);
+					ws.setHelpText(text);
+				}
+
 				workFlowDAO.save(ws);
 				return "steps";
 			}
@@ -295,6 +309,14 @@ public class ManageWorkFlow extends PicsActionSupport {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getHelpText() {
+		return helpText;
+	}
+
+	public void setHelpText(String helpText) {
+		this.helpText = helpText;
 	}
 	
 	
