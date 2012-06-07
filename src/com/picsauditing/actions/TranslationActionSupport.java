@@ -29,7 +29,7 @@ public class TranslationActionSupport extends ActionSupport {
 	static final protected String i18nTracing = "i18nTracing";
 
 	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
-			Locale.GERMAN };
+			Locale.GERMAN, new Locale("sv"), new Locale("fi") };
 
 	public static Locale[] getSupportedLocales() {
 		return supportedLocales;
