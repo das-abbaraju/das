@@ -382,25 +382,45 @@
     													</li>
     												</s:if>
     											</pics:permission>
-    											
-    											<s:iterator value="value">
-    												<li>
-    													<a href="Audit.action?auditID=<s:property value="id"/>">
-    														<s:property value="auditType.name"/>
-    														<s:if test="employee != null">
-    															<s:property value="employee.name" />
-    														</s:if>
-    														<s:if test="auditFor != null">
-    															<s:property value="auditFor"/>	    													
-    														</s:if>
-    														<s:else>
-    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
-    														</s:else>
-    													</a>
-    												</li>
-    											</s:iterator>
-    										</ul>
-    										
+    											<s:if test="#widget.key == 'global.EmployeeGUARD'">
+	    											<select name="" multipleselect=false size=3>
+    													<s:iterator value="value">
+	    													<option onclick="location.href='Audit.action?auditID=<s:property value="id"/>'">
+		    													<a href="Audit.action?auditID=<s:property value="id"/>">
+		    														<s:property value="auditType.name"/>
+		    														<s:if test="employee != null">
+		    															<s:property value="employee.name" />
+		    														</s:if>
+		    														<s:if test="auditFor != null">
+		    															<s:property value="auditFor"/>
+		    														</s:if>
+		    														<s:else>
+		    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+		    														</s:else>
+		    													</a>
+	    													</option>
+	    												</s:iterator>
+	    											</select>
+    											</s:if>
+    											<s:else>
+													<s:iterator value="value">
+    													<li>
+	    													<a href="Audit.action?auditID=<s:property value="id"/>">
+	    														<s:property value="auditType.name"/>
+	    														<s:if test="employee != null">
+	    															<s:property value="employee.name" />
+	    														</s:if>
+	    														<s:if test="auditFor != null">
+	    															<s:property value="auditFor"/>
+	    														</s:if>
+	    														<s:else>
+	    															<s:date name="effectiveDate" format="%{getText('date.MonthAndYear')}" />
+	    														</s:else>
+	    													</a>
+    													</li>
+    												</s:iterator>
+   												</s:else>
+   											</ul>
     										<div class="clear"></div>
     									</div>
     								</div>
