@@ -10,7 +10,7 @@
     width: 180px;
 }
 #loadingPage #logo {
-    background: url(../images/custom/loading.gif) 0px 0px no-repeat;
+    background: url(../../app/resources/images/loading.gif) 0px 0px no-repeat;
     position: absolute;
     display: block;
     top: 25px;
@@ -19,8 +19,8 @@
     height: 120px;
 }
 
-
-/* general */
+/* 
+general
 .ext-icon {
     cursor: pointer;
     cursor: hand;
@@ -41,7 +41,7 @@
     background: none;
 }
 
-/* header */
+header
 #layoutNorth-body {
 	border: 0px;
 }
@@ -83,13 +83,13 @@
     width: 59px;
 }
 
-/* body */
+body
 .x-body,
 .x-border-layout-ct {
     background: #FFF;
 }
 
-/* filters */
+filters
 #filteroptions .x-panel-header-text {
     font-size: 18px;
 }
@@ -111,12 +111,12 @@
 	border-bottom: 0px;
 }
 
-/*Data Grid*/
+Data Grid
 #dataGrid .x-toolbar-docked-bottom {
     border-bottom: 0px;	
 }
 
-/* Footer */
+Footer
 #footer {
     background: none;
-}
+} */

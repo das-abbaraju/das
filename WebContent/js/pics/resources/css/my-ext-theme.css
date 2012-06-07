@@ -1,19 +1,27 @@
-/* line 28, ../sass/my-ext-theme.scss */
+/* line 18, ../sass/my-ext-theme.scss */
+#header {
+  padding: 0px; }
+
+/* line 23, ../sass/my-ext-theme.scss */
 #site_menu {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
   background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
   background-image: -moz-linear-gradient(#ffffff, #eaeaea);
   background-image: -o-linear-gradient(#ffffff, #eaeaea);
   background-image: -ms-linear-gradient(#ffffff, #eaeaea);
-  background-image: linear-gradient(#ffffff, #eaeaea); }
+  background-image: linear-gradient(#ffffff, #eaeaea);
+  -webkit-box-shadow: #cccccc 0px 2px 2px 0px;
+  -moz-box-shadow: #cccccc 0px 2px 2px 0px;
+  box-shadow: #cccccc 0px 2px 2px 0px; }
 
-/* line 33, ../sass/my-ext-theme.scss */
+/* line 29, ../sass/my-ext-theme.scss */
 #site_menu .x-btn-default-toolbar-large {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 41, ../sass/my-ext-theme.scss */
+/* line 38, ../sass/my-ext-theme.scss */
+#site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #bbbbbb), color-stop(100%, #eaeaea));
@@ -22,36 +30,95 @@
   background-image: -o-linear-gradient(#bbbbbb, #eaeaea);
   background-image: -ms-linear-gradient(#bbbbbb, #eaeaea);
   background-image: linear-gradient(#bbbbbb, #eaeaea);
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   border: 1px solid #bbbbbb;
   border-top: 2px solid #bbbbbb;
   border-bottom: 0px; }
 
-/* line 50, ../sass/my-ext-theme.scss */
+/* line 47, ../sass/my-ext-theme.scss */
 #site_menu .x-btn-default-toolbar-large .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 56, ../sass/my-ext-theme.scss */
+/* line 53, ../sass/my-ext-theme.scss */
 #site_menu .x-form-text {
-  -moz-border-radius: 12px;
   -webkit-border-radius: 12px;
-  -o-border-radius: 12px;
+  -moz-border-radius: 12px;
   -ms-border-radius: 12px;
-  -khtml-border-radius: 12px;
+  -o-border-radius: 12px;
   border-radius: 12px;
   height: 22px;
   padding: 12px 5px; }
 
-/* line 63, ../sass/my-ext-theme.scss */
+/* line 60, ../sass/my-ext-theme.scss */
 #site_menu .x-toolbar-separator-horizontal {
   border-left-color: #e7e7e7;
   border-right-color: #fcfcfc; }
+
+/* line 66, ../sass/my-ext-theme.scss */
+#report_summary .name {
+  color: #73bbe8;
+  font-size: 30px;
+  font-weight: normal;
+  margin: 18px 20px 0px; }
+
+/* line 74, ../sass/my-ext-theme.scss */
+#report_summary .description {
+  color: #808285;
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0px 20px 20px; }
+
+/* line 82, ../sass/my-ext-theme.scss */
+#report_actions {
+  text-align: right; }
+
+/* line 88, ../sass/my-ext-theme.scss */
+#report_actions .edit,
+#report_actions .save {
+  margin-top: 25px; }
+
+/* line 93, ../sass/my-ext-theme.scss */
+#report_actions .edit {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: linear-gradient(#f1f1f1, #dcdcdc);
+  margin-right: 10px; }
+
+/* line 99, ../sass/my-ext-theme.scss */
+#report_actions .save {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
+  background-image: -webkit-linear-gradient(#33c033, #229322);
+  background-image: -moz-linear-gradient(#33c033, #229322);
+  background-image: -o-linear-gradient(#33c033, #229322);
+  background-image: -ms-linear-gradient(#33c033, #229322);
+  background-image: linear-gradient(#33c033, #229322);
+  border-color: #229322;
+  margin-right: 20px; }
+
+/* line 106, ../sass/my-ext-theme.scss */
+#report_actions .edit button span {
+  font-size: 16px;
+  line-height: 34px !important;
+  padding: 0px !important; }
+
+/* line 113, ../sass/my-ext-theme.scss */
+#report_header .edit .icon-cog {
+  color: #666666; }
+
+/* line 118, ../sass/my-ext-theme.scss */
+#report_actions .save button span {
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: bold;
+  text-transform: uppercase; }
 
 /**
  * @var {string} $prefix 
@@ -330,11 +397,10 @@ input, textarea, select {
 /* line 91, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_core.scss */
 .x-css-shadow {
   position: absolute;
-  -moz-border-radius: 5px 5px;
   -webkit-border-radius: 5px 5px;
-  -o-border-radius: 5px 5px;
+  -moz-border-radius: 5px 5px;
   -ms-border-radius: 5px 5px;
-  -khtml-border-radius: 5px 5px;
+  -o-border-radius: 5px 5px;
   border-radius: 5px 5px; }
 
 /* line 97, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/core/_core.scss */
@@ -1067,9 +1133,8 @@ tr.x-container:before {
 /* line 108, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
 .x-accordion-hd {
   background: #d9e7f8 !important;
-  -moz-box-shadow: inset 0 0 0 0 #d9e7f8;
   -webkit-box-shadow: inset 0 0 0 0 #d9e7f8;
-  -o-box-shadow: inset 0 0 0 0 #d9e7f8;
+  -moz-box-shadow: inset 0 0 0 0 #d9e7f8;
   box-shadow: inset 0 0 0 0 #d9e7f8; }
   /* line 112, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
   .x-accordion-hd .x-tool-collapse-top,
@@ -1109,9 +1174,8 @@ tr.x-container:before {
 /* line 155, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
 .x-accordion-hd-sibling-expanded {
   border-top-color: #99bce8 !important;
-  -moz-box-shadow: inset 0 1px 0 0 #f3f7fb;
   -webkit-box-shadow: inset 0 1px 0 0 #f3f7fb;
-  -o-box-shadow: inset 0 1px 0 0 #f3f7fb;
+  -moz-box-shadow: inset 0 1px 0 0 #f3f7fb;
   box-shadow: inset 0 1px 0 0 #f3f7fb; }
 
 /* line 160, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
@@ -2042,11 +2106,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-small {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -2069,11 +2132,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-small {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -2379,11 +2441,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -2406,11 +2467,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -2713,11 +2773,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -2740,11 +2799,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -3047,11 +3105,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-small {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -3066,11 +3123,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-small {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -3352,11 +3408,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -3371,11 +3426,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -3657,11 +3711,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -3676,11 +3729,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -3984,11 +4036,10 @@ tr.x-container:before {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-group-default-framed {
-  -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
-  -o-border-radius: 2px;
+  -moz-border-radius: 2px;
   -ms-border-radius: 2px;
-  -khtml-border-radius: 2px;
+  -o-border-radius: 2px;
   border-radius: 2px;
   padding: 1px 1px 1px 1px;
   border-width: 1px;
@@ -4003,11 +4054,10 @@ tr.x-container:before {
 .x-nbr .x-btn-group-default-framed {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000202px 1000202px; }
@@ -4042,9 +4092,8 @@ tr.x-container:before {
 /* line 56, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-default-framed {
   border-color: #b7c8d7;
-  -moz-box-shadow: #e3ebf5 0 1px 0px 0 inset, #e3ebf5 0 -1px 0px 0 inset, #e3ebf5 -1px 0 0px 0 inset, #e3ebf5 1px 0 0px 0 inset;
   -webkit-box-shadow: #e3ebf5 0 1px 0px 0 inset, #e3ebf5 0 -1px 0px 0 inset, #e3ebf5 -1px 0 0px 0 inset, #e3ebf5 1px 0 0px 0 inset;
-  -o-box-shadow: #e3ebf5 0 1px 0px 0 inset, #e3ebf5 0 -1px 0px 0 inset, #e3ebf5 -1px 0 0px 0 inset, #e3ebf5 1px 0 0px 0 inset;
+  -moz-box-shadow: #e3ebf5 0 1px 0px 0 inset, #e3ebf5 0 -1px 0px 0 inset, #e3ebf5 -1px 0 0px 0 inset, #e3ebf5 1px 0 0px 0 inset;
   box-shadow: #e3ebf5 0 1px 0px 0 inset, #e3ebf5 0 -1px 0px 0 inset, #e3ebf5 -1px 0 0px 0 inset, #e3ebf5 1px 0 0px 0 inset; }
 
 /* line 64, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
@@ -4057,15 +4106,13 @@ tr.x-container:before {
   background: #c2d8f0;
   -moz-border-radius-topleft: 2px;
   -webkit-border-top-left-radius: 2px;
-  -o-border-top-left-radius: 2px;
   -ms-border-top-left-radius: 2px;
-  -khtml-border-top-left-radius: 2px;
+  -o-border-top-left-radius: 2px;
   border-top-left-radius: 2px;
   -moz-border-radius-topright: 2px;
   -webkit-border-top-right-radius: 2px;
-  -o-border-top-right-radius: 2px;
   -ms-border-top-right-radius: 2px;
-  -khtml-border-top-right-radius: 2px;
+  -o-border-top-right-radius: 2px;
   border-top-right-radius: 2px; }
 
 /* line 76, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
@@ -4548,11 +4595,10 @@ table.x-datepicker-inner {
     margin: 0px;
     border: 1px solid #a9cbf5;
     cursor: pointer;
-    -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
-    -o-border-radius: 3px;
+    -moz-border-radius: 3px;
     -ms-border-radius: 3px;
-    -khtml-border-radius: 3px;
+    -o-border-radius: 3px;
     border-radius: 3px; }
 
 /* line 141, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_menu.scss */
@@ -5882,36 +5928,31 @@ textarea.x-form-invalid-field {
 .x-pickerfield-open .x-form-field {
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
   -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
   -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0; }
 
 /* line 76, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-pickerfield-open-above .x-form-field {
   -moz-border-radius-bottomleft: 3px;
   -webkit-border-bottom-left-radius: 3px;
-  -o-border-bottom-left-radius: 3px;
   -ms-border-bottom-left-radius: 3px;
-  -khtml-border-bottom-left-radius: 3px;
+  -o-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
   -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
   -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
   border-top-right-radius: 0; }
 
 /* line 83, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
@@ -6253,9 +6294,8 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: -ms-linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset; }
 
 /* line 277, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
@@ -6323,85 +6363,73 @@ textarea.x-form-invalid-field {
 .x-panel-collapsed .x-panel-header-default-top {
   -moz-border-radius-bottomleft: null;
   -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
   -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
   border-bottom-left-radius: null;
   -moz-border-radius-bottomright: null;
   -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
   -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
   border-bottom-right-radius: null; }
 /* line 420, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-collapsed .x-panel-header-default-right {
   -moz-border-radius-topleft: null;
   -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
   -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
   border-top-left-radius: null;
   -moz-border-radius-bottomleft: null;
   -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
   -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
+  -o-border-bottom-left-radius: null;
   border-bottom-left-radius: null; }
 /* line 424, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-collapsed .x-panel-header-default-bottom {
   -moz-border-radius-topleft: null;
   -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
   -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
+  -o-border-top-left-radius: null;
   border-top-left-radius: null;
   -moz-border-radius-topright: null;
   -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
   -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
   border-top-right-radius: null; }
 /* line 428, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-collapsed .x-panel-header-default-left {
   -moz-border-radius-topright: null;
   -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
   -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
+  -o-border-top-right-radius: null;
   border-top-right-radius: null;
   -moz-border-radius-bottomright: null;
   -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
   -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
+  -o-border-bottom-right-radius: null;
   border-bottom-right-radius: null; }
 
 /* line 434, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-top {
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset; }
 
 /* line 438, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-right {
-  -moz-box-shadow: #f4f8fd -1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd -1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd -1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd -1px 0 0px 0 inset;
   box-shadow: #f4f8fd -1px 0 0px 0 inset; }
 
 /* line 442, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-bottom {
-  -moz-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 -1px 0px 0 inset;
   box-shadow: #f4f8fd 0 -1px 0px 0 inset; }
 
 /* line 446, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-left {
-  -moz-box-shadow: #f4f8fd 1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd 1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 1px 0 0px 0 inset;
   box-shadow: #f4f8fd 1px 0 0px 0 inset; }
 
 /* line 481, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
@@ -6434,9 +6462,8 @@ textarea.x-form-invalid-field {
   background-image: -o-linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: -ms-linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
   background-image: linear-gradient(top, #dae7f6, #cddef3 45%, #abc7ec 46%, #abc7ec 50%, #b8cfee 51%, #cbddf3);
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset; }
 
 /* line 277, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
@@ -6527,11 +6554,10 @@ textarea.x-form-invalid-field {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-panel-default-framed {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -6546,11 +6572,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-default-framed {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px; }
@@ -6586,27 +6611,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-top {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
   -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
   -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 3px 5px 4px 5px;
   border-width: 1px 1px 0 1px;
@@ -6629,11 +6650,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000000px; }
@@ -6668,27 +6688,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-right {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
   -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
   -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px 4px 5px 4px;
   border-width: 1px 1px 1px 0;
@@ -6711,11 +6727,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000004px 1100400px; }
@@ -6751,27 +6766,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-bottom {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
   -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
   -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 0 1px 1px 1px;
@@ -6794,11 +6805,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000000px 1000404px; }
@@ -6833,27 +6843,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-left {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
   -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
   -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px 0 1px 1px;
@@ -6876,11 +6882,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000400px 1100004px; }
@@ -6914,30 +6919,26 @@ textarea.x-form-invalid-field {
 
 /* line 399, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-top {
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset; }
 
 /* line 403, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-right {
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset; }
 
 /* line 407, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-bottom {
-  -moz-box-shadow: #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   box-shadow: #f4f8fd 0 -1px 0px 0 inset, #f4f8fd -1px 0 0px 0 inset, #f4f8fd 1px 0 0px 0 inset; }
 
 /* line 411, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-left {
-  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   -webkit-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
-  -o-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
+  -moz-box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd 1px 0 0px 0 inset;
   box-shadow: #f4f8fd 0 1px 0px 0 inset, #f4f8fd 0 -1px 0px 0 inset, #f4f8fd 1px 0 0px 0 inset; }
 
 /* line 452, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
@@ -6958,38 +6959,33 @@ textarea.x-form-invalid-field {
 
 /* line 468, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-collapsed {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px; }
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-panel-header-default-framed-collapsed-top {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 1px;
@@ -7012,11 +7008,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px; }
@@ -7051,27 +7046,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-right {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -7094,11 +7085,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1100404px; }
@@ -7134,27 +7124,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-bottom {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 1px;
@@ -7177,11 +7163,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px; }
@@ -7216,27 +7201,23 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-left {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
   -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
+  -o-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
   -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
+  -o-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
   -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
+  -o-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
   -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
+  -o-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -7259,11 +7240,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1100404px; }
@@ -7328,11 +7308,10 @@ textarea.x-form-invalid-field {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-tip {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -7347,11 +7326,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-tip {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px; }
@@ -7478,9 +7456,8 @@ textarea.x-form-invalid-field {
 /* line 133, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_qtip.scss */
 .x-form-invalid-tip {
   border-color: #a1311f;
-  -moz-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
   -webkit-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
-  -o-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
+  -moz-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
   box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset; }
 
 /* line 142, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_qtip.scss */
@@ -7497,11 +7474,10 @@ textarea.x-form-invalid-field {
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-form-invalid-tip-default {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -7516,11 +7492,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-form-invalid-tip-default {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100505px 1000505px; }
@@ -7710,19 +7685,17 @@ textarea.x-form-invalid-field {
 
 /* line 54, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-collapsed .x-window-header-vertical {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px; }
 /* line 57, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-collapsed .x-window-header-horizontal {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px; }
 /* line 62, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-collapsed .x-window-header-left {
@@ -7770,42 +7743,36 @@ textarea.x-form-invalid-field {
 /* line 155, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-default {
   border-color: #a2b1c5;
-  -moz-border-radius: 5px 5px;
   -webkit-border-radius: 5px 5px;
-  -o-border-radius: 5px 5px;
+  -moz-border-radius: 5px 5px;
   -ms-border-radius: 5px 5px;
-  -khtml-border-radius: 5px 5px;
+  -o-border-radius: 5px 5px;
   border-radius: 5px 5px;
-  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   -webkit-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
-  -o-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
+  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset; }
 
 /* line 69, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-window-default {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -7820,11 +7787,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-default {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px; }
@@ -7881,27 +7847,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-top {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
   -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
   -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 4px 5px 0 5px;
   border-width: 1px 1px 0 1px;
@@ -7916,11 +7878,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000000px; }
@@ -7956,27 +7917,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-right {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
   -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
   -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
+  -o-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px 4px 5px 0;
   border-width: 1px 1px 1px 0;
@@ -7991,11 +7948,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000005px 1000500px; }
@@ -8031,27 +7987,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-bottom {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
   -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
+  -o-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
   -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 0 5px 4px 5px;
   border-width: 0 1px 1px 1px;
@@ -8066,11 +8018,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000000px 1000505px; }
@@ -8106,27 +8057,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-left {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
   -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
+  -o-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
   -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
+  -o-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 0px 5px 4px;
   border-width: 1px 0 1px 1px;
@@ -8141,11 +8088,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000500px 1000005px; }
@@ -8181,27 +8127,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-top {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 5px 4px 5px;
   border-width: 1px;
@@ -8216,11 +8158,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px; }
@@ -8256,27 +8197,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-right {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -8291,11 +8228,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px; }
@@ -8331,27 +8267,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-bottom {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 5px 4px 5px;
   border-width: 1px;
@@ -8366,11 +8298,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px; }
@@ -8406,27 +8337,23 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-left {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
   -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
+  -o-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
   -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
+  -o-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
   -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
+  -o-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
   -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
+  -o-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -8441,11 +8368,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px; }
@@ -8479,30 +8405,26 @@ textarea.x-form-invalid-field {
 
 /* line 213, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-top {
-  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   -webkit-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
-  -o-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
+  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset; }
 
 /* line 217, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-right {
-  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset;
   -webkit-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset;
-  -o-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset;
+  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset;
   box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset; }
 
 /* line 221, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-bottom {
-  -moz-box-shadow: #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   -webkit-box-shadow: #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
-  -o-box-shadow: #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
+  -moz-box-shadow: #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   box-shadow: #ecf2fb 0 -1px 0px 0 inset, #ecf2fb -1px 0 0px 0 inset, #ecf2fb 1px 0 0px 0 inset; }
 
 /* line 225, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-left {
-  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   -webkit-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
-  -o-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
+  -moz-box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb 1px 0 0px 0 inset;
   box-shadow: #ecf2fb 0 1px 0px 0 inset, #ecf2fb 0 -1px 0px 0 inset, #ecf2fb 1px 0 0px 0 inset; }
 
 /* line 126, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/_window.scss */

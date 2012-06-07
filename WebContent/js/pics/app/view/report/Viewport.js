@@ -4,7 +4,6 @@ Ext.define('PICS.view.report.Viewport', {
     requires: [
         'PICS.view.layout.Footer',
         'PICS.view.layout.Header',
-        'PICS.view.layout.Menu',
         'PICS.view.report.DataSetGrid',
         'PICS.view.report.FilterOptions',
         'PICS.view.report.Header'
@@ -15,19 +14,15 @@ Ext.define('PICS.view.report.Viewport', {
         render: function () {
              Ext.get('loadingPage').dom.hidden = true;
         }
-    },    
+    },
     items: [{
         region: 'north',
-
-        border: 0,
-        id: 'header',
-        items: [{
-            xtype: 'layoutmenu'
-        }]
+        xtype: 'layoutheader'
     }, {
         region: 'center',
 
-        id: 'layoutCenter',
+        border: 0,
+        id: 'content',
         items: [{
             region: 'north',
             xtype: 'reportheader'
@@ -41,6 +36,8 @@ Ext.define('PICS.view.report.Viewport', {
         layout: 'border'
     }, {
         region: 'south',
-        xtype: 'layoutfooter'
+        xtype: 'layoutfooter',
+
+        id: 'footer'
     }]
 });

@@ -11,7 +11,8 @@
     <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/ext-all.css"> -->
     
     <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-theme.css">
-    <!-- <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css"> -->
+    <link rel="stylesheet" type="text/css" href="js/pics/resources/css/my-ext-custom.css">
+    <link rel="stylesheet" type="text/css" href="js/pics/resources/css/font-awesome.css">
 </head>
 <body>
     <div id="loadingPage">

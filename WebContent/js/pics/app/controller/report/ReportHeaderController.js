@@ -34,7 +34,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     this.showReportSettingsWindow('Edit', 'edit');
                 }
             },
-            'reportheader button[action=copy]': {
+            'reportheader menuitem[name=copy]': {
                 click: function (component, options) {
                     this.showReportSettingsWindow('Copy', 'copy');
                 }
@@ -93,7 +93,6 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                } else {
                    document.location = 'ReportDynamic.action?report=' + result.reportID;
                }
-
            }
         });
     },

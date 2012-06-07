@@ -6,11 +6,6 @@
 Ext.define('PICS.controller.report.ReportController', {
     extend: 'Ext.app.Controller',
 
-    refs: [{
-        ref: 'rowsPerPage',
-        selector: 'pagingtoolbar combo[name=visibleRows]'
-    }],
-    
     stores: [
         'report.AvailableFields',
         'report.DataSets',
@@ -36,7 +31,7 @@ Ext.define('PICS.controller.report.ReportController', {
             }
         });
     },
-    
+
     refreshFilters: function () {
         this.application.fireEvent('refreshfilters');
     },

@@ -59,6 +59,7 @@ Ext.define('PICS.controller.report.DataSetController', {
         });
     },
 
+    // SHOULD NOT BE HERE
     configureColumnMenu: function (grid) {
         var me = this;
 

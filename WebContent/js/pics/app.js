@@ -56,10 +56,11 @@ Ext.application({
 
     launch: function () {
         PICS.app = this; //save reference to application
-        this.getUserPermissions();
+
+        this.getConfiguration();
     },
 
-    getUserPermissions: function () {
+    getConfiguration: function () {
         var url = Ext.Object.fromQueryString(document.location.search);
 
         Ext.Ajax.request({
@@ -69,13 +70,10 @@ Ext.application({
 
                PICS.app.configuration = (function config() {
                    return {
-                       get_is_developer: function () {
+                       isDeveloper: function () {
                            return result.is_developer;
                        },
-                       get_has_permssion: function () {
-                           return result.has_permission;
-                       },
-                       get_is_owner: function () {
+                       isOwner: function () {
                            return result.is_owner
                        }
                    }
