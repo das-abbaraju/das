@@ -276,7 +276,7 @@ public class ReportContractorRiskAssessment extends ReportAccount {
 		sql2.addWhere("c.accountLevel = 'Full'");
 		sql2.addWhere("a.status = 'Active'");
 		sql2.addWhere(String.format("c.%1$sRiskVerified IS NULL "
-				+ "OR DATE_ADD(c.%1$sRiskVerified, INTERVAL 3 YEAR) < NOW()", type.toLowerCase()));
+				+ "OR (DATE_ADD(c.%1$sRiskVerified, INTERVAL 3 YEAR) < NOW() AND c.%1$sRisk < 3)", type.toLowerCase()));
 		sql2.addWhere(where);
 
 		return sql2.toString();
