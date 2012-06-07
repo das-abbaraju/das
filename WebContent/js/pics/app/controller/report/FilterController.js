@@ -89,7 +89,6 @@ Ext.define('PICS.controller.report.FilterController', {
                 return false;
             }
 
-            // ALWAYS USE BRACES NOOB AND NEWLINES TOO
             if (parenCount < 0) {
                 return false;
             }

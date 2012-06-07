@@ -1,5 +1,7 @@
 package com.picsauditing.util.business;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -13,7 +15,13 @@ public class DynamicReportUtil {
 
 	private static final BasicDAO basicDao = SpringUtils.getBean("BasicDAO");
 
-	public static boolean userCanCopy(int userId, Report report) {
+	public static final List<Integer> baseReports =
+			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+
+	public static boolean userCanViewAndCopy(int userId, Report report) {
+		if (baseReports.contains(report.getId()))
+			return true;
+
 		List<ReportUser> reportUserList = basicDao.findWhere(ReportUser.class, "t.user.id = "
 				+ userId + " AND t.report.id = " + report.getId());
 

@@ -18,7 +18,7 @@ public class ReportController {
 
 	// was create() in ReportDynamic
 	public Report copy(Report sourceReport, Permissions permissions) throws Exception {
-		if (!DynamicReportUtil.userCanCopy(permissions.getUserId(), sourceReport))
+		if (!DynamicReportUtil.userCanViewAndCopy(permissions.getUserId(), sourceReport))
 			throw new NoRightsException("Invalid User, does not have permission.");
 
 		Report newReport = copyReportWithoutPermissions(sourceReport);

@@ -23,9 +23,7 @@ public class Menu extends PicsActionSupport {
 		String userFavoritesQuery =  userQuery + " and is_favorite = true";
 		List<ReportUser> favoriteReports = dao.findWhere(ReportUser.class, userFavoritesQuery);
 
-		List<Report> baseReports = dao.findWhere(Report.class, "t.createdBy = " + User.SYSTEM);
-
-		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports, savedReports, baseReports);
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports, savedReports);
 
 		// TODO make this return plain JSON, not ext-js specific stuff
 		jsonArray = MenuWriter.exportMenuToExtJS(menu);
