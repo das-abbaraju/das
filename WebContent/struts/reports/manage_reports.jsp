@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
 <%@ taglib prefix="pics" uri="pics-taglib" %>
+<%@ page import="com.picsauditing.util.business.DynamicReportUtil" %>
 
 <head>
     <title><s:property value="report.summary"/></title>
@@ -148,18 +149,14 @@
 										<li>
 											<s:textfield name="name" value="%{report.name}" />
 											<pics:fieldhelp title="Change Name">
-												<p>
-													Change Name
-												</p>
+												<p> Change Name </p>
 											</pics:fieldhelp>
 										</li>
 										Change Description
 										<li>
 											<s:textfield name="description" value="%{report.description}" />
 											<pics:fieldhelp title="Change Description">
-												<p>
-													Change Description
-												</p>
+												<p> Change Description </p>
 											</pics:fieldhelp>
 										</li>
 									</fieldset>
@@ -179,9 +176,9 @@
 						<a href="ManageReports!createReport.action?reportId=<s:property value="report.id" />">Copy</a>&nbsp;
 					</td>
 					<td>
-						<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">Remove</a>
-						<s:if test="ifYouOwnTheReport">
-							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">Delete</a> (sharedCount)
+						<a href="ManageReports!deleteReport.action?deleteType=remove&reportId=<s:property value="report.id" />">Remove</a>&nbsp;
+						<s:if test="%{@com.picsauditing.util.business.DynamicReportUtil@userCanDelete(permissions.userId, report)}">
+							<a href="ManageReports!deleteReport.action?deleteType=delete&reportId=<s:property value="report.id" />">Delete</a>
 						</s:if>
 					</td>
 				</tr>

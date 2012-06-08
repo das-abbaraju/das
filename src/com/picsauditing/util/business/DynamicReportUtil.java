@@ -16,7 +16,7 @@ public class DynamicReportUtil {
 	private static final BasicDAO basicDao = SpringUtils.getBean("BasicDAO");
 
 	public static final List<Integer> baseReports =
-			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+			Collections.unmodifiableList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12));
 
 	public static boolean userCanViewAndCopy(int userId, Report report) {
 		if (baseReports.contains(report.getId()))

@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.util.business.DynamicReportUtil;
 
 @SuppressWarnings("serial")
 public class ManageReports extends PicsActionSupport {
@@ -20,13 +21,10 @@ public class ManageReports extends PicsActionSupport {
 	private Report report;
 	private List<ReportUser> reportsByUser = new ArrayList<ReportUser>();
 
-//	private String name = "";
-//	private String description = "";
 	private String filterType;
 	private int reportId;
 	private boolean favorite;
 	private String deleteType;
-//	private int reportUsedBy;
 
 	public String execute() throws Exception {
 		loadPermissions();
@@ -52,21 +50,27 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() throws Exception {
 		if (DELETE_REPORT.equalsIgnoreCase(deleteType)) {
-			if (permissions.getUserId() == reportUser.getReport().getCreatedBy().getId()) {
+			String query = "t.report.id = " + reportId;
+			Report report = dao.findOne(Report.class, query);
 
-				report = reportUser.getReport();
-				dao.remove(reportUser);
+			if (DynamicReportUtil.userCanDelete(permissions.getUserId(), report)) {
 				dao.remove(report);
+
+				query += " AND t.user.id = " + permissions.getUserId();
+				ReportUser reportUser = dao.findOne(ReportUser.class, query);
+				dao.remove(reportUser);				
 
 				getCustomReport(filterType);
 				return SUCCESS;
 			} else {
-				addActionMessage("you are not the owner of the report");
+				addActionMessage("You do not have the necessary permissions to delete this report.");
 				return SUCCESS;
 			}
 		}
 
 		if (REMOVE_ASSOCIATION.equals(deleteType)) {
+			String query = "t.report.id = " + reportId + " AND t.user.id = " + permissions.getUserId();
+			ReportUser reportUser = dao.findOne(ReportUser.class, query);
 			dao.remove(reportUser);
 		}
 
@@ -129,22 +133,6 @@ public class ManageReports extends PicsActionSupport {
 	public List<ReportUser> getReportsByUser() {
 		return reportsByUser;
 	}
-
-//	public void setName(String name) {
-//		this.name = name;
-//	}
-//
-//	public String getName() {
-//		return name;
-//	}
-//
-//	public void setDescription(String description) {
-//		this.description = description;
-//	}
-
-//	public String getDescription() {
-//		return description;
-//	}
 
 	public String getFilterType() {
 		return filterType;

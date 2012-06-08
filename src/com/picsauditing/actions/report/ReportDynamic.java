@@ -52,9 +52,6 @@ public class ReportDynamic extends PicsActionSupport {
 	@Autowired
 	private ReportFilterAutocompleter reportFilterAutocompleter;
 
-	private static final String COPY = "copy";
-	private static final String EDIT = "edit";
-	private static final String DELETE = "delete";
 	private static final boolean DOWNLOAD = true;
 
 	private Report report;
@@ -171,8 +168,12 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getUserStatus() {
+		int userId = permissions.getUserId();
+
 		json.put("is_developer", permissions.isDeveloperEnvironment());
-		json.put("is_owner", isReportOwner());
+		json.put("is_viewable", DynamicReportUtil.userCanViewAndCopy(userId, report));
+		json.put("is_editable", DynamicReportUtil.userCanEdit(userId, report));
+		json.put("is_owner", DynamicReportUtil.userCanDelete(userId, report));
 
 		return JSON;
 	}
@@ -214,40 +215,40 @@ public class ReportDynamic extends PicsActionSupport {
 		return JSON;
 	}
 
-	private boolean userHasPermission(String action) {
-		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
-				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
+//	private boolean userHasPermission(String action) {
+//		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
+//				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
+//
+//		ReportUser reportUser = null;
+//		if (reportUserList.size() == 1) {
+//			reportUser = reportUserList.get(0);
+//		}
+//
+//		if (action.equals(COPY) && canRead(reportUser))
+//			return true;
+//		if (action.equals(EDIT) && canEdit(reportUser))
+//			return true;
+//		if (action.equals(DELETE) && isReportOwner())
+//			return true;
+//
+//		return false;
+//	}
 
-		ReportUser reportUser = null;
-		if (reportUserList.size() == 1) {
-			reportUser = reportUserList.get(0);
-		}
+//	private boolean canRead(ReportUser reportUser) {
+//		return (reportUser != null);
+//	}
 
-		if (action.equals(COPY) && canRead(reportUser))
-			return true;
-		if (action.equals(EDIT) && canEdit(reportUser))
-			return true;
-		if (action.equals(DELETE) && isReportOwner())
-			return true;
+//	private boolean canEdit(ReportUser reportUser) {
+//		return (reportUser != null && reportUser.isCanEdit());
+//	}
 
-		return false;
-	}
-
-	private boolean canRead(ReportUser reportUser) {
-		return (reportUser != null);
-	}
-
-	private boolean canEdit(ReportUser reportUser) {
-		return (reportUser != null && reportUser.isCanEdit());
-	}
-
-	private boolean isReportOwner() {
-		return permissions.getUserId() == report.getCreatedBy().getId();
-	}
+//	private boolean isReportOwner() {
+//		return permissions.getUserId() == report.getCreatedBy().getId();
+//	}
 
 	// This is in the wrong class, should be in SqlBuilder
 	private void buildSQL(boolean download) throws Exception {
-		ensureValidReport();
+		reportController.validate(report);
 
 		addDefinition();
 

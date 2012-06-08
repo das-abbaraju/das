@@ -4,9 +4,7 @@ import java.util.List;
 
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Report;
 import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
@@ -22,6 +20,8 @@ public class Menu extends PicsActionSupport {
 
 		String userFavoritesQuery =  userQuery + " and is_favorite = true";
 		List<ReportUser> favoriteReports = dao.findWhere(ReportUser.class, userFavoritesQuery);
+
+		// TODO remove all favorite reports from saved reports
 
 		MenuComponent menu = MenuBuilder.buildMenubar(permissions, favoriteReports, savedReports);
 

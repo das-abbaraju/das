@@ -24,7 +24,6 @@ public class Report extends BaseTable {
 	private String name;
 	private String description;
 	private String parameters;
-	private Account sharedWith;
 
 	private Definition definition;
 	private int rowsPerPage = 50;

@@ -67,7 +67,7 @@ public class ReportController {
 	}
 
 	// This was ensureValidReport in ReportDynamic
-	private void validate(Report report) throws Exception {
+	public void validate(Report report) throws Exception {
 		if (report == null) {
 			// TODO Add i18n to this
 			throw new RuntimeException("Please provide a saved or ad hoc report to run");
