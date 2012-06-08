@@ -85,7 +85,7 @@
 						<label>
 							<s:text name="ContractorNotes.ViewableBy" />:
 						</label>
-						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" />
+						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" value="3" />
 						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" 
 							headerKey="0" headerValue="- %{getText('global.Corporate')} -" />
 					</li>
