@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +72,14 @@ public class VerifyAudit extends AuditActionSupport {
 	public List<AuditData> getPqfQuestions() {
 		if (pqfQuestions == null) {
 			pqfQuestions = auditDataDao.findCustomPQFVerifications(conAudit.getId());
+			
+			Iterator<AuditData> value = pqfQuestions.iterator();
+			while (value.hasNext()) {
+				AuditData auditData = value.next();
+				if (!auditData.getQuestion().isVisibleInAudit(conAudit)) {
+					value.remove();
+				}
+			}
 		}
 
 		return pqfQuestions;
