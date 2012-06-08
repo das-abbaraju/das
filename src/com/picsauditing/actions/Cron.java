@@ -156,15 +156,15 @@ public class Cron extends PicsActionSupport {
 		HttpServletRequest request = ServletActionContext.getRequest();
 
 		report = new StringBuffer();
-		report.append("Running Cron Job on Server: " + request.getLocalName() + "\n");
-		report.append("Address: " + request.getLocalAddr() + "\n");
-		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n");
+		report.append("Running Cron Job on Server: " + request.getLocalName() + "\n\n");
+		report.append("Address: " + request.getLocalAddr() + "\n\n");
+		report.append("Cron Job initiated by: " + request.getRemoteAddr() + "\n\n");
 		report.append("Starting Cron Job at: " + new Date().toString());
-		report.append("\n\n");
+		report.append("\n\n\n");
 
 		if (!flagsOnly) {
 
-			startTask("\nRunning auditBuilder.addAuditRenewals...");
+			startTask("Running auditBuilder.addAuditRenewals...");
 			List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
 			for (ContractorAccount contractor : contractors) {
 				try {
@@ -189,7 +189,7 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nRunning Huntsman EBIX Support...");
+				startTask("Running Huntsman EBIX Support...");
 				processEbixData();
 				endTask();
 			} catch (Throwable t) {
@@ -197,7 +197,7 @@ public class Cron extends PicsActionSupport {
 			}
 
 			try {
-				startTask("\nResetting Renewable Audits and cao and stamping notes...");
+				startTask("Resetting Renewable Audits and cao and stamping notes...");
 				contractorAuditOperatorDAO.resetRenewableAudits();
 				endTask();
 			} catch (Throwable t) {
@@ -207,7 +207,7 @@ public class Cron extends PicsActionSupport {
 			try {
 				// TODO we shouldn't recacluate audits, but only categories.
 				// This shouldn't be needed at all anymore
-				startTask("\nRecalculating all the categories for Audits...");
+				startTask("Recalculating all the categories for Audits...");
 				List<ContractorAudit> conList = contractorAuditDAO.findAuditsNeedingRecalculation();
 				for (ContractorAudit cAudit : conList) {
 					auditPercentCalculator.percentCalculateComplete(cAudit, true);
@@ -220,7 +220,7 @@ public class Cron extends PicsActionSupport {
 				handleException(t);
 			}
 			try {
-				startTask("\nStarting Indexer");
+				startTask("Starting Indexer...");
 				runIndexer();
 				endTask();
 			} catch (Throwable t) {
@@ -229,7 +229,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending emails to contractors pending...");
+			startTask("Sending emails to contractors pending...");
 
 			getEmailExclusions();
 
@@ -243,7 +243,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending emails to registration requests...");
+			startTask("Sending emails to registration requests...");
 
 			getEmailExclusions();
 
@@ -257,7 +257,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending email about upcoming implementation audits...");
+			startTask("Sending email about upcoming implementation audits...");
 
 			sendUpcomingImplementationAuditEmail();
 
@@ -267,7 +267,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nAdding Late Fee to Delinquent Contractor Invoices ...");
+			startTask("Adding Late Fee to Delinquent Contractor Invoices ...");
 			addLateFeeToDelinquentInvoices();
 			endTask();
 		} catch (Throwable t) {
@@ -275,7 +275,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nInactivating Accounts via Billing Status...");
+			startTask("Inactivating Accounts via Billing Status...");
 			String where = "a.status = 'Active' AND a.renew = 0 AND paymentExpires < NOW()";
 			List<ContractorAccount> conAcctList = contractorAccountDAO.findWhere(where);
 			for (ContractorAccount contractor : conAcctList) {
@@ -300,7 +300,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending Email to Delinquent Contractors ...");
+			startTask("Sending Email to Delinquent Contractors ...");
 			sendDelinquentContractorsEmail();
 			endTask();
 		} catch (Throwable t) {
@@ -308,14 +308,14 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nSending No Action Email to Bid Only Accounts ...");
+			startTask("Sending No Action Email to Bid Only Accounts ...");
 			sendNoActionEmailToTrialAccounts();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
 		try {
-			startTask("\nStamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
+			startTask("Stamping Notes and Expiring overall Forced Flags and Individual Data Overrides...");
 			clearForceFlags();
 			endTask();
 		} catch (Throwable t) {
@@ -323,7 +323,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nExpiring Flag Changes");
+			startTask("Expiring Flag Changes...");
 			expireFlagChanges();
 			endTask();
 		} catch (Throwable t) {
@@ -331,7 +331,7 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nEmailing Flag Change Reports...");
+			startTask("Emailing Flag Change Reports...");
 			sendFlagChangesEmails();
 			endTask();
 		} catch (Throwable t) {
@@ -339,14 +339,14 @@ public class Cron extends PicsActionSupport {
 		}
 
 		try {
-			startTask("\nChecking System Status");
+			startTask("Checking System Status...");
 			checkSystemStatus();
 			endTask();
 		} catch (Throwable t) {
 			handleException(t);
 		}
 		try {
-			startTask("\nChecking Registration Requests Hold Dates");
+			startTask("Checking Registration Requests Hold Dates...");
 			checkRegistrationRequestsHoldDates();
 			endTask();
 		} catch (Throwable t) {
@@ -372,15 +372,17 @@ public class Cron extends PicsActionSupport {
 	private void handleException(Throwable t) {
 		StringWriter sw = new StringWriter();
 		t.printStackTrace(new PrintWriter(sw));
+		report.append("\n\n\n");
 		report.append(t.getMessage());
 		report.append(sw.toString());
 		report.append("\n\n\n");
 	}
 
 	protected void endTask() {
-		report.append("SUCCESS..(");
+		report.append("SUCCESS...(");
 		report.append(new Long(System.currentTimeMillis() - startTime).toString());
 		report.append(" millis )");
+		report.append("\n\n");
 	}
 
 	protected void startTask(String taskName) {
@@ -402,6 +404,7 @@ public class Cron extends PicsActionSupport {
 
 		try {
 			emailSender.send(toAddress, "Cron job report", report.toString());
+			System.out.println(report.toString());
 		} catch (Exception notMuchWeCanDoButLogIt) {
 			logger.error("**********************************");
 			logger.error("Error Sending email from cron job");

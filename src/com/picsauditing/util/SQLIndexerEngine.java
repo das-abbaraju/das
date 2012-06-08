@@ -22,9 +22,9 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 
 	private static final String[] STATS_QUERY_BUILDER = {
 			"TRUNCATE TABLE app_index_stats;",
-			"INSERT INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;",
-			"INSERT INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;",
-			"INSERT INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;",
+			"REPLACE INTO app_index_stats SELECT indexType, NULL, count(distinct foreignKey) FROM app_index GROUP BY indexType;",
+			"REPLACE INTO app_index_stats SELECT NULL, value, count(*) FROM app_index GROUP BY value;",
+			"REPLACE INTO app_index_stats SELECT indexType, value, count(*) FROM app_index GROUP BY indexType, value;",
 			"ANALYZE TABLE app_index, app_index_stats;" };
 
 	private static final String QUERY_INDEX = "INSERT IGNORE INTO app_index VALUES(?,?,?,?)";
@@ -148,13 +148,12 @@ public final class SQLIndexerEngine extends AbstractIndexerEngine {
 	}
 
 	private final void updateStats() {
-		try {
-			for (String stats : STATS_QUERY_BUILDER) {
-				db.executeInsert(stats);
+		for (String stats : STATS_QUERY_BUILDER) {
+			try {
+					db.executeInsert(stats);
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
