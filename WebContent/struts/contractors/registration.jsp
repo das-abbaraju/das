@@ -127,30 +127,21 @@
 						<s:textfield name="contractor.name" />
 					</li>
                     <li class="contractor-name-duplicate">
-                        <div class="alert-message warning">
-                            <p style="width: auto;">
-                                <span class="icon warn"></span>
-                                
-                                <s:text name="ContractorRegistration.error.DuplicateContractorName" />
-                            </p>
-                            
-                            <ul>
-                                <li>
-                                    <s:a action="Login"><s:text name="Registration.error.DuplicateContractorLoginP1" /></s:a>
-                                    <s:text name="Registration.error.DuplicateContractorLoginP2" />
-                                </li>
-                                <li>
-                                    <s:text name="Registration.error.Call" />
-                                </li>
-                                <li>
-                                    <s:text name="Registration.error.DuplicateContractorLoginP3" />
-                                    <a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
-                                        <s:text name="Registration.error.DuplicateContractorLoginP4" />
-                                    </a>
-                                    <s:text name="Registration.error.DuplicateContractorLoginP5" />
-                                </li>
-                            </ul>
-                        </div>
+                    	<div class="alert-message warning">
+                    		<p>
+                    			<s:text name="Registration.Error.AlreadyStarted" /><br/>
+                    			<s:text name="Registration.Error.PickUp" />
+                    		</p>
+                    		<p>
+                    			<span class="icon warn"></span><s:text name="Registration.Error.PersonalizedHelp" />
+                    			<ul>
+                    				<li><s:text name="Registration.Error.CallUs" /></li>
+                    				<li>
+                    					<a class="live-chat" href="javascript:;" target="chat90511184" onClick="lpButtonCTTUrl = '${chat_url}' + escape(document.location); lpButtonCTTUrl = (typeof(lpAppendVisitorCookies) != 'undefined' ? lpAppendVisitorCookies(lpButtonCTTUrl) : lpButtonCTTUrl); window.open(lpButtonCTTUrl,'chat90511184','width=475,height=400,resizable=yes');return false;">
+                    					<s:text name="Registration.Error.LiveChat" /></a> <s:text name="Registration.Error.PicsRep" /></li>
+                    			</ul>
+                    		</p>
+                    	</div>
                     </li>
 					<li class="country">
 						<s:select 
