@@ -42,7 +42,7 @@ public class ProfileEdit extends PicsActionSupport {
 	protected UserDAO userDAO;
 
 	protected User u;
-	
+
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
 
@@ -118,7 +118,6 @@ public class ProfileEdit extends PicsActionSupport {
 		return SUCCESS;
 	}
 
-
 	public String department() {
 		return "department";
 	}
@@ -149,7 +148,9 @@ public class ProfileEdit extends PicsActionSupport {
 		// If the user is not logged in, they should be redirected to the login
 		// page.
 		if (!permissions.isLoggedIn()) {
-			redirect("Login.action?button=logout&msg=" + getText("ProfileEdit.error.SessionTimeout"));
+			addActionMessage(getText("ProfileEdit.error.SessionTimeout"));
+			redirect("Login.action?button=logout");
+
 			return LOGIN;
 		}
 
@@ -174,7 +175,6 @@ public class ProfileEdit extends PicsActionSupport {
 	public void setU(User u) {
 		this.u = u;
 	}
-
 
 	public List<UserSwitch> getSwitchTos() {
 		return userSwitchDao.findByUserId(u.getId());

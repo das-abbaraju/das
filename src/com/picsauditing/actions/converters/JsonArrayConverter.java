@@ -7,10 +7,12 @@ import org.apache.struts2.util.StrutsTypeConverter;
 import org.jboss.util.Strings;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
 public class JsonArrayConverter extends StrutsTypeConverter {
-
+	private final Logger LOG = LoggerFactory.getLogger(JsonArrayConverter.class);
 	@Override
 	public Object convertFromString(Map context, String[] values, Class toClass) {
 		if (ArrayUtils.isNotEmpty(values) && !Strings.isEmpty(values[0])) {
@@ -18,7 +20,7 @@ public class JsonArrayConverter extends StrutsTypeConverter {
 				JSONParser parser = new JSONParser();
 				return parser.parse(values[0]);
 			} catch (Exception e) {
-				System.out.println("Error converting to request parameter 'jsonArray' to  JSONArray.");
+				LOG.error("Error converting to request parameter 'jsonArray' to  JSONArray.");
 			}
 		}
 		

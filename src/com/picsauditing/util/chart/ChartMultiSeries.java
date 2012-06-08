@@ -8,7 +8,7 @@ public class ChartMultiSeries extends Chart {
 	protected Map<String, Category> categories = new TreeMap<String, Category>();
 	protected Map<String, DataSet> dataSets = new TreeMap<String, DataSet>();
 
-	protected void addData() {
+	protected void addData(StringBuilder xml) {
 		xml.append("<categories>");
 		for (String key : categories.keySet())
 			xml.append(categories.get(key).toString());

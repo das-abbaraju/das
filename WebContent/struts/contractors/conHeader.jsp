@@ -298,8 +298,16 @@ function loadStatus(caoID, addUserNote){
 		
 			<s:if test="!permissions.operator && !permissions.insuranceOnlyContractorUser">
 				<li>
-					<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.contains('contractor_facilities')">class="current"</s:if>>
+					<a href="ContractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('contractor_facilities')">class="current"</s:if>>
 						<s:text name="global.Facilities" />
+					</a>
+				</li>
+			</s:if>
+			
+			<s:if test="permissions.generalContractor || permissions.admin">
+				<li>
+					<a href="SubcontractorFacilities.action?id=<s:property value="id" />" <s:if test="requestURI.startsWith('subcontractor_facilities')">class="current"</s:if>>
+						<s:text name="SubcontractorFacilities.title" />
 					</a>
 				</li>
 			</s:if>

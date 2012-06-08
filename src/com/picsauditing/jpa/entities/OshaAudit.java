@@ -29,6 +29,29 @@ public class OshaAudit implements OshaVisitable {
 	public static final int[] SAFETY_STATISTICS_CATEGORY_IDS = new int[] { CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL,
 			CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_FRANCE_NRIS };
 
+	public static boolean isSafetyStatisticsCategory(int categoryId) {
+		for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
+			if (categoryId == safetyStatisticsCategory)
+				return true;
+		}
+
+		return false;
+	}
+	
+	public static OshaType convertCategoryToOshaType(int catId) {
+		if (catId == CAT_ID_OSHA) {
+			return OshaType.OSHA;
+		}
+		if (catId == CAT_ID_COHS) {
+			return OshaType.COHS;
+		}
+		if (catId == CAT_ID_UK_HSE) {
+			return OshaType.UK_HSE;
+		}
+		
+		return null;
+	}
+
 	protected ContractorAudit contractorAudit;
 
 	Map<OshaType, SafetyStatistics> safetyStatisticsMap;
@@ -174,20 +197,6 @@ public class OshaAudit implements OshaVisitable {
 		}
 	}
 
-	private OshaType convertCategoryToOshaType(int catId) {
-		if (catId == CAT_ID_OSHA) {
-			return OshaType.OSHA;
-		}
-		if (catId == CAT_ID_COHS) {
-			return OshaType.COHS;
-		}
-		if (catId == CAT_ID_UK_HSE) {
-			return OshaType.UK_HSE;
-		}
-		return null;
-
-	}
-
 	// If one cao status is complete, it is safe to assume it's verified.
 	public boolean isVerified() {
 		for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
@@ -223,14 +232,5 @@ public class OshaAudit implements OshaVisitable {
 		}
 
 		return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getAuditor();
-	}
-
-	public static boolean isSafetyStatisticsCategory(int categoryId) {
-		for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
-			if (categoryId == safetyStatisticsCategory)
-				return true;
-		}
-
-		return false;
 	}
 }

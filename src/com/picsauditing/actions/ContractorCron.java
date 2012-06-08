@@ -18,6 +18,8 @@ import java.util.Set;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,7 +110,7 @@ public class ContractorCron extends PicsActionSupport {
 	final private Date startTime = new Date();
 	private List<Integer> queue;
 	private String redirectUrl;
-
+	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
 	@Anonymous
 	public String execute() throws Exception {
 		if (steps == null)
@@ -278,9 +280,8 @@ public class ContractorCron extends PicsActionSupport {
 			contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 			contractorDAO.save(contractor);
 		} catch (Exception notMuchWeCanDoButLogIt) {
-			System.out.println("Error sending email");
-			System.out.println(notMuchWeCanDoButLogIt);
-			notMuchWeCanDoButLogIt.printStackTrace();
+			logger.error("Error sending email");
+			logger.error(notMuchWeCanDoButLogIt.getMessage());
 		}
 	}
 

@@ -1,27 +1,21 @@
 package com.picsauditing.actions.contractors;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import javax.naming.NoPermissionException;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.PICS.SmartFacilitySuggest;
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.dao.ContractorOperatorDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.State;
 import com.picsauditing.search.SearchEngine;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
@@ -36,8 +30,10 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	private FacilityChanger facilityChanger;
 
 	private List<OperatorAccount> searchResults;
+	private List<OperatorAccount> generalContractorClientSites = new ArrayList<OperatorAccount>();
 	private String searchValue;
 	private OperatorAccount operator;
+	private OperatorAccount generalContractor;
 
 	public RegistrationAddClientSite() {
 		this.noteCategory = NoteCategory.OperatorChanges;
@@ -47,12 +43,21 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	@Override
 	public String execute() throws Exception {
 		if (permissions.isOperator())
-			throw new NoPermissionException(getText("ContractorFacilities.error.OperatorCannotView"));
+			throw new NoRightsException(getText("ContractorFacilities.error.OperatorCannotView"));
 		findContractor();
 
 		subHeading = getText("RegistrationAddClientSite.title");
 
 		return SUCCESS;
+	}
+
+	@SkipValidation
+	public String clientList() throws Exception {
+		if (generalContractor != null) {
+			generalContractorClientSites.addAll(generalContractor.getClientSitesOrGeneralContractors());
+		}
+
+		return "GeneralContractorSiteList";
 	}
 
 	@Override
@@ -65,7 +70,20 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 
 	@Override
 	public String nextStep() throws Exception {
-		redirect(getNextRegistrationStep().getUrl());
+		if (ContractorRegistrationStep.containsAtLeastOneClientSiteForGCFree(contractor)) {
+			redirect(getNextRegistrationStep().getUrl());
+		} else {
+			List<OperatorAccount> missingGCFreeClientSites = getMissingGCFreeClientSites();
+			String missingOperatorNames = missingGCFreeClientSites.get(0).getName();
+
+			for (int index = 1; index < missingGCFreeClientSites.size(); index++) {
+				missingOperatorNames += ", " + missingGCFreeClientSites.get(index).getName();
+			}
+
+			addActionError(getTextParameterized("RegistrationAddClientSite.MissingRequiredOperators",
+					missingOperatorNames));
+		}
+
 		return SUCCESS;
 	}
 
@@ -79,6 +97,11 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 		facilityChanger.setPermissions(permissions);
 		facilityChanger.setOperator(operator.getId());
 		facilityChanger.add();
+
+		if (generalContractor != null) {
+			facilityChanger.setOperator(generalContractor);
+			facilityChanger.add();
+		}
 	}
 
 	public void ajaxRemove() throws Exception {
@@ -109,22 +132,9 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 	}
 
 	public String search() throws Exception {
-		// FInd contractor
-		// CHeck search value
-		// if search value empty run default search
-		// else if search value is *
-		// find all the operators
-		// else create search engine
-		// use engine to build list of terms
-		// use engine to build query
-		// find using query
-		// from results remove all operators contractor is already associated
-		// with
-		// return ajax page or normal page
 		findContractor();
 
 		if (Strings.isEmpty(searchValue)) {
-			// if empty perform default
 			searchResults = loadSearchResults();
 		} else {
 			// * == search for all
@@ -142,90 +152,16 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 				// nonselectable somehow.
 			}
 		}
-		searchResults.removeAll(contractor.getOperatorAccounts());
+
+		for (OperatorAccount existingOperator : contractor.getOperatorAccounts()) {
+			searchResults.remove(existingOperator);
+		}
 
 		if (AjaxUtils.isAjax(ServletActionContext.getRequest())) {
 			return "ClientSiteList";
 		} else {
 			return SUCCESS;
 		}
-	}
-
-	private List<OperatorAccount> loadSearchResults() throws Exception {
-		List<OperatorAccount> results = new ArrayList<OperatorAccount>();
-
-		if (contractor.getNonCorporateOperators().size() == 0) {
-			if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
-
-				List<BasicDynaBean> data = SmartFacilitySuggest.getFirstFacility(contractor, permissions);
-
-				for (BasicDynaBean d : data) {
-					OperatorAccount o = new OperatorAccount();
-
-					o.setId(Integer.parseInt(d.get("opID").toString()));
-					o.setName(d.get("name").toString());
-					if (d.get("dbaName") != null)
-						o.setDbaName(d.get("dbaName").toString());
-					if (d.get("city") != null)
-						o.setCity(d.get("city").toString());
-					if (d.get("state") != null)
-						o.setState(new State(d.get("state").toString()));
-					if (d.get("country") != null)
-						o.setCountry(new Country(d.get("country").toString()));
-					o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-					o.setOnsiteServices(1 == (Integer) d.get("onsiteServices"));
-					o.setOffsiteServices(1 == (Integer) d.get("offsiteServices"));
-					o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
-
-					results.add(o);
-				}
-			} else {
-				// Search for a list of operators in the contractor's
-				// country?
-				String status = "'Active'";
-
-				if (contractor.getStatus().isDemo())
-					status += ",'Demo', 'Pending'";
-
-				results = operatorDao.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode()
-						+ "' AND a.status IN (" + status + ")", 10);
-			}
-		} else {
-			if (!permissions.isCorporate()) {
-				int limit = 10;
-				List<BasicDynaBean> data = SmartFacilitySuggest.getSimilarOperators(contractor, limit);
-				for (BasicDynaBean d : data) {
-					OperatorAccount o = new OperatorAccount();
-
-					o.setId(Integer.parseInt(d.get("opID").toString()));
-					o.setName(d.get("name").toString());
-					if (d.get("dbaName") != null)
-						o.setDbaName(d.get("dbaName").toString());
-					if (d.get("city") != null)
-						o.setCity(d.get("city").toString());
-					if (d.get("state") != null)
-						o.setState(new State(d.get("state").toString()));
-					if (d.get("country") != null)
-						o.setCountry(new Country(d.get("country").toString()));
-					o.setStatus(AccountStatus.valueOf(d.get("status").toString()));
-					o.setOnsiteServices(1 == (Integer) d.get("onsiteServices"));
-					o.setOffsiteServices(1 == (Integer) d.get("offsiteServices"));
-					o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
-
-					results.add(o);
-				}
-			} else {
-				// Corporate users should only see the operators under
-				// their umbrella
-				OperatorAccount op = operatorDao.find(permissions.getAccountId());
-				for (Facility f : op.getOperatorFacilities()) {
-					if (!contractor.getOperatorAccounts().contains(f.getOperator()))
-						results.add(f.getOperator());
-				}
-			}
-		}
-
-		return results;
 	}
 
 	public String getSearchValue() {
@@ -242,18 +178,15 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 			searchResults = loadSearchResults();
 		}
 
-		Collections.sort(searchResults, new Comparator<OperatorAccount>() {
-			@Override
-			public int compare(OperatorAccount o1, OperatorAccount o2) {
-				return o1.getName().compareTo(o2.getName());
-			}
-		});
-
 		return searchResults;
 	}
 
-	public void setSearchResults(List<OperatorAccount> searchResults) {
-		this.searchResults = searchResults;
+	public List<OperatorAccount> getGeneralContractorClientSites() {
+		return generalContractorClientSites;
+	}
+
+	public void setGeneralContractorClientSites(List<OperatorAccount> generalContractorClientSites) {
+		this.generalContractorClientSites = generalContractorClientSites;
 	}
 
 	public OperatorAccount getOperator() {
@@ -262,5 +195,73 @@ public class RegistrationAddClientSite extends ContractorActionSupport {
 
 	public void setOperator(OperatorAccount operator) {
 		this.operator = operator;
+	}
+
+	public OperatorAccount getGeneralContractor() {
+		return generalContractor;
+	}
+
+	public void setGeneralContractor(OperatorAccount generalContractor) {
+		this.generalContractor = generalContractor;
+	}
+
+	public boolean isWorksForOperator(OperatorAccount operatorAccount) throws Exception {
+		findContractor();
+
+		for (OperatorAccount operator : contractor.getOperatorAccounts()) {
+			if (operator.getId() == operatorAccount.getId())
+				return true;
+		}
+
+		return false;
+	}
+
+	private List<OperatorAccount> getMissingGCFreeClientSites() {
+		List<OperatorAccount> missingOperators = new ArrayList<OperatorAccount>();
+		for (OperatorAccount operator : contractor.getGeneralContractorOperatorAccounts()) {
+			if ("No".equals(operator.getDoContractorsPay())) {
+
+				List<OperatorAccount> linkedClientSites = new ArrayList<OperatorAccount>(
+						operator.getLinkedClientSites());
+				linkedClientSites.removeAll(contractor.getOperatorAccounts());
+
+				missingOperators.addAll(linkedClientSites);
+			}
+		}
+
+		return missingOperators;
+	}
+
+	private List<OperatorAccount> loadSearchResults() throws Exception {
+		List<OperatorAccount> results = new ArrayList<OperatorAccount>();
+		List<BasicDynaBean> data = new ArrayList<BasicDynaBean>();
+
+		if (contractor.getCountry().getIsoCode().equals("US") || contractor.getCountry().getIsoCode().equals("CA")) {
+			if (contractor.getNonCorporateOperators().size() == 0) {
+				data = SmartFacilitySuggest.getFirstFacility(contractor, permissions);
+			} else {
+				data = SmartFacilitySuggest.getSimilarOperators(contractor, 10);
+			}
+
+			List<Integer> operatorIDs = new ArrayList<Integer>();
+
+			for (BasicDynaBean d : data) {
+				operatorIDs.add(Integer.parseInt(d.get("opID").toString()));
+			}
+
+			results = operatorDao.findWhere(false, "a.id IN (" + Strings.implode(operatorIDs) + ")");
+		} else {
+			// Search for a list of operators in the contractor's
+			// country?
+			String status = "'Active'";
+
+			if (contractor.getStatus().isDemo())
+				status += ",'Demo', 'Pending'";
+
+			results = operatorDao.findWhere(false, "a.country = '" + contractor.getCountry().getIsoCode()
+					+ "' AND a.status IN (" + status + ")", 10);
+		}
+
+		return results;
 	}
 }

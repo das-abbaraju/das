@@ -14,16 +14,18 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GoogleTranslate {
 
 	private static String apikey = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
 	private static boolean useV1 = false;
-
+	private static final Logger logger = LoggerFactory.getLogger(GoogleTranslate.apikey);
 	public static void main(String[] args) {
-		System.out.println("start");
+		logger.info("start");
 		String es = translate("This is a test of translation.", "en", "es");
-		System.out.println(es);
+		logger.info(es);
 	}
 
 	public static String translate(String text, String from, String to) {

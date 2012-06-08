@@ -13,8 +13,7 @@ public class SelectAccount extends SelectSQL {
 	private Type type = null;
 
 	public static enum Type {
-		Operator,
-		Contractor
+		Operator, Contractor
 	}
 
 	private String startsWith = "";
@@ -86,8 +85,7 @@ public class SelectAccount extends SelectSQL {
 	public void addAuditQuestion(int questionID, int auditTypeID, boolean require) {
 		String name = "ca" + questionID;
 		this.addJoin("LEFT JOIN contractor_audit " + name + " ON " + name + ".conID = a.id AND " + name
-				+ ".auditTypeID = " + auditTypeID + " AND (" + name
-				+ ".expiresDate IS NULL OR " + name
+				+ ".auditTypeID = " + auditTypeID + " AND (" + name + ".expiresDate IS NULL OR " + name
 				+ ".expiresDate > NOW())");
 
 		String join = "";
@@ -113,10 +111,11 @@ public class SelectAccount extends SelectSQL {
 	}
 
 	public void addAudit(int auditTypeID) {
-		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id " +
-				"AND ca" + auditTypeID + ".auditTypeID = "+ auditTypeID;
-		join += " LEFT JOIN contractor_audit_operator cao" + auditTypeID + " ON cao" + auditTypeID + ".auditID = ca"+auditTypeID+".id " +
-				"AND cao"+auditTypeID + ".visible = 1 AND cao"+auditTypeID+".status IN ('Complete')";
+		String join = "LEFT JOIN contractor_audit ca" + auditTypeID + " on ca" + auditTypeID + ".conID = a.id "
+				+ "AND ca" + auditTypeID + ".auditTypeID = " + auditTypeID;
+		join += " LEFT JOIN contractor_audit_operator cao" + auditTypeID + " ON cao" + auditTypeID + ".auditID = ca"
+				+ auditTypeID + ".id " + "AND cao" + auditTypeID + ".visible = 1 AND cao" + auditTypeID
+				+ ".status IN ('Complete')";
 		this.addJoin(join);
 		this.addField("ca" + auditTypeID + ".id AS ca" + auditTypeID + "_auditID");
 	}
@@ -147,23 +146,37 @@ public class SelectAccount extends SelectSQL {
 		if (permissions.isOperatorCorporate()) {
 			// Anytime we query contractor accounts as an operator,
 			// get the flag color/status at the same time
-			if (!this.hasJoin("generalcontractors gc"))
-				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND gc.genID = "
-						+ permissions.getAccountId());
+			String operatorVisibility = permissions.getAccountIdString();
+
+			if (permissions.isGeneralContractor()) {
+				operatorVisibility += "," + Strings.implode(permissions.getLinkedClients());
+			}
+
+			if (!this.hasJoin("generalcontractors gc")) {
+				String operatorRelationship = "gc.genID IN (" + operatorVisibility + ")";
+
+				this.addJoin("JOIN generalcontractors gc ON gc.subID = a.id AND " + operatorRelationship);
+				this.addJoin("JOIN operators gco ON gco.id = gc.genID");
+
+				this.addWhere("gc.subID IN (SELECT subID FROM generalcontractors WHERE genID = "
+						+ permissions.getAccountId() + ")");
+			}
+
 			this.addField("gc.workStatus");
-			this.addField("gc.flag");
-			this.addField("lower(gc.flag) AS lflag");
+
+			String flag = "CASE gco.doContractorsPay WHEN 'Yes' THEN %s ELSE '' END %s";
+
+			this.addField(String.format(flag, "gc.flag", "flag"));
+			this.addField(String.format(flag, "lower(gc.flag)", "lflag"));
 			this.addField("gc.forceEnd");
 
-			this.addWhere("gc.genID = " + permissions.getAccountId());
-			
-			this.addJoin("LEFT JOIN flag_data_override fdo on fdo.conID=a.id and fdo.forceEnd > NOW() and fdo.opID="
-					+ permissions.getAccountId());
+			this.addJoin("LEFT JOIN flag_data_override fdo on fdo.conID=a.id "
+					+ "AND fdo.forceEnd > NOW() and fdo.opID IN (" + operatorVisibility + ")");
 			this.addField("fdo.forceEnd as 'dataForceEnd'");
 		}
+
 		PermissionQueryBuilder permQuery = new PermissionQueryBuilder(permissions);
 
 		this.addWhere("1 " + permQuery.toString());
 	}
-
 }

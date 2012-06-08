@@ -10,6 +10,8 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.jboss.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
@@ -33,6 +35,7 @@ public class ExceptionAction extends PicsActionSupport {
 	private String user = "info@picsauditing.com";
 	private String password = "e3r4t5";
 
+	private final Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
 	@Override
 	@Anonymous
 	public String execute() {
@@ -81,16 +84,15 @@ public class ExceptionAction extends PicsActionSupport {
 				try {
 					emailSender.send(mail);
 				} catch (Exception e) {
-					System.out.println("PICS Exception Handler ... sending email via SendGrid");
+					logger.error("PICS Exception Handler ... sending email via SendGrid");
 					GridSender sendMail = new GridSender(user, password);
 					mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 					try {
 						sendMail.sendMail(mail);
 					} catch (MessagingException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.error("{}", e1.getStackTrace());
 					}
-					System.out.println(mail.getBody());
+					logger.error(mail.getBody());
 				}
 			}
 		} catch (Exception e) {
@@ -194,11 +196,12 @@ public class ExceptionAction extends PicsActionSupport {
 			try {
 				emailSender.send(mail);
 			} catch (Exception e) {
-				System.out.println("PICS Exception Handler ... sending email via SendGrid");
+				Logger logger = LoggerFactory.getLogger(ExceptionAction.class);
+				logger.error("PICS Exception Handler ... sending email via SendGrid");
 				GridSender sendMail = new GridSender(user, password);
 				mail.setFromAddress("\"PICS Exception Handler\"<errors@picsauditing.com>");
 				sendMail.sendMail(mail);
-				System.out.println(mail.getBody());
+				logger.error(mail.getBody());
 			}
 		} catch (Exception e) {
 			return "Exception";

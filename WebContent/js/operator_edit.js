@@ -97,7 +97,7 @@
             },
             
             toggleLinkedAccountField: function(event) {
-                $('#FacilitiesEdit-page #linked_contractor').toggle();
+                $('#FacilitiesEdit-page #linked_clients').toggle();
             }
         }
     });

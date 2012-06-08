@@ -43,11 +43,18 @@ public class ReportUntaggedContractors extends ReportAccount {
 		int counter = 0;
 		for (String tagSet : operator.getRequiredTags().split("\\|")) {
 			if (!Strings.isEmpty(tagSet)) {
+				String requiredTags = "";
+
 				if (counter > 0)
 					whereClause += " OR ";
 				counter++;
-				sql.addJoin("LEFT JOIN contractor_tag t" + counter + " ON t" + counter + ".conID = a.id AND t"
-						+ counter + ".tagID IN (" + tagSet + ")");
+
+				if (getFilter().isRequiredTags()) {
+					requiredTags = " AND t" + counter + ".tagID IN (" + tagSet + ")";
+				}
+
+				sql.addJoin("LEFT JOIN contractor_tag t" + counter + " ON t" + counter + ".conID = a.id "
+						+ requiredTags);
 				whereClause += "t" + counter + ".id IS NULL";
 
 				for (String tag : tagSet.split(",")) {
@@ -57,6 +64,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 		}
 		sql.addWhere(whereClause);
 		getFilter().setShowOpertorTagName(false);
+		getFilter().setShowRequiredTags(true);
 	}
 
 	@Override
@@ -73,7 +81,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 			addActionMessage(getText("ReportUntaggedContractors.error.NoRequiredTagsDefined"));
 			return BLANK;
 		}
-		
+
 		if (button == null) {
 			return super.execute();
 		}
@@ -108,7 +116,7 @@ public class ReportUntaggedContractors extends ReportAccount {
 			if (contractors == null)
 				addActionError(getText("ReportUntaggedContractors.error.NoContractorsSelected"));
 		}
-		
+
 		return super.execute();
 	}
 

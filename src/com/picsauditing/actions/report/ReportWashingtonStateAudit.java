@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
@@ -56,6 +58,8 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 	private Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
 	private Map<Integer, ContractorAudit> previouslyRequested = new HashMap<Integer, ContractorAudit>();
 
+	private final Logger logger = LoggerFactory.getLogger(ReportWashingtonStateAudit.class);
+	
 	public ReportWashingtonStateAudit() {
 		this.orderByDefault = "a.name";
 	}
@@ -94,7 +98,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 
 			// TODO clean up email language?
 			EmailQueue email = new EmailQueue();
-			email.setPriority(50);
+			email.setMediumPriority();
 			email.setBody(permissions.getName() + " from " + permissions.getAccountName()
 					+ " has requested a field audit for " + con.getName());
 			email.setSubject(op.getName() + " requests a field audit");
@@ -153,8 +157,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 		try {
 			data2 = db.select(sql.toString(), false);
 		} catch (SQLException e) {
-			System.out.println("Error in SQL query: ");
-			e.printStackTrace();
+			logger.error(e.getMessage(),e.getCause());
 		}
 
 		for (BasicDynaBean d : data2) {

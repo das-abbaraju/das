@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PICS.I18nCache;
@@ -155,7 +157,8 @@ public class TranslatableString implements Comparable<TranslatableString>, Seria
 		try {
 			locale = ActionContext.getContext().getLocale();
 		} catch (Exception e) {
-			System.out.println("Warning: Failed to get Locale from ActionContext");
+			Logger logger = LoggerFactory.getLogger(TranslatableString.class);
+			logger.warn("Warning: Failed to get Locale from ActionContext");
 			return null;
 		}
 

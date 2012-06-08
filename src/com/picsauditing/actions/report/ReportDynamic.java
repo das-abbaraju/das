@@ -17,18 +17,17 @@ import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.autocomplete.ReportFilterAutocompleter;
 import com.picsauditing.jpa.entities.AppTranslation;
-import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.report.Column;
 import com.picsauditing.report.Definition;
@@ -66,6 +65,8 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
 	ReportController reportController;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
 	@Deprecated
 	public String find() {
@@ -274,11 +275,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 		queryTime = Calendar.getInstance().getTimeInMillis() - queryTime;
 		if (queryTime > 1000) {
-			/*
-			System.out.println("Report: " + report.toJSON(true));
-			System.out.println("Query: " + sql.toString());
-			System.out.println("Time to query: " + queryTime + " ms");
-			*/
+			showSQL = true;
+			logger.info("Slow Query: {}", sql.toString());
+			logger.info("Time to query: {} ms", queryTime);
 		}
 
 		return queryData;

@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
@@ -126,8 +128,9 @@ public class AuditDataSave extends AuditActionSupport {
 				// insert mode
 				ContractorAudit audit = auditDao.find(auditData.getAudit().getId());
 				auditData.setAudit(audit);
-				if (!checkAnswerFormat(auditData, null))
+				if (!checkAnswerFormat(auditData, null)) {
 					return SUCCESS;
+				}
 			} else {
 				// update mode
 				if (!checkAnswerFormat(auditData, newCopy)) {
@@ -645,32 +648,28 @@ public class AuditDataSave extends AuditActionSupport {
 		if (Strings.isEmpty(answer))
 			return true;
 
+		// get the truth value based on user locale and then convert and store it as US representation
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)) {
-			answer = trimWhitespaceLeadingZerosAndAllCommas(answer);
-
-			boolean hasBadChar = false;
-			for (int i = 0; i < answer.length(); i++) {
-				char c = answer.charAt(i);
-				if (!Character.isDigit(c) && (c != '.') && (c != '-'))
-					hasBadChar = true;
+			NumberFormat userFormat; 
+			NumberFormat usFormat;
+			ParsePosition pp = new ParsePosition(0);
+			if("Number".equals(questionType)) {
+				userFormat = NumberFormat.getIntegerInstance(permissions.getLocale());
+				usFormat = NumberFormat.getIntegerInstance(Locale.US);
 			}
-
-			if (hasBadChar) {
-				addActionError(getText("AuditData.error.MustBeNumber"));
+			else {
+				userFormat = NumberFormat.getNumberInstance(permissions.getLocale());
+				usFormat = NumberFormat.getNumberInstance(Locale.US);
+			}
+			Number truthValue = userFormat.parse(answer, pp);
+			// check for invalid number
+			if(answer.length() != pp.getIndex() || truthValue == null) {
+				addActionError(getText("Audit.message.InvalidFormat"));
 				return false;
 			}
-
-			NumberFormat format;
-			if ("Decimal Number".equals(questionType)) {
-				format = new DecimalFormat("#,##0.000");
-			} else if ("Number".equals(questionType)) {
-				format = new DecimalFormat("###0");
-			} else {
-				format = new DecimalFormat("#,##0");
-			}
-
-			BigDecimal value = new BigDecimal(answer);
-			auditData.setAnswer(format.format(value));
+			String storedAnswer = usFormat.format(truthValue);
+			auditData.setAnswer(storedAnswer);
+			
 		}
 
 		if ("Date".equals(questionType)) {

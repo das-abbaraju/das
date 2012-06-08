@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class NoteDAO extends PicsDAO {
+	private final Logger logger = LoggerFactory.getLogger(NoteDAO.class);
 	@Transactional(propagation = Propagation.NESTED)
 	public Note save(Note o) {
 		if (o.getId() == 0) {
@@ -70,7 +73,7 @@ public class NoteDAO extends PicsDAO {
 			List<Note> list = query.getResultList();
 			return list;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return new ArrayList<Note>();
 	}

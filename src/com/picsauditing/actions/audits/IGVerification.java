@@ -103,7 +103,7 @@ public class IGVerification extends ContractorActionSupport {
 	public String sendEmail() throws Exception {
 		previewEmail.setBody(body);
 		previewEmail.setSubject(subject);
-		previewEmail.setPriority(50);
+		previewEmail.setMediumPriority();
 
 		try {
 			emailSender.send(previewEmail);

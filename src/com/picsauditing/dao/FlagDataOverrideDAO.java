@@ -57,6 +57,18 @@ public class FlagDataOverrideDAO extends PicsDAO {
 		}
 	}
 
+	public List<FlagDataOverride> findByOpAndCrit(int opID, int cID) {
+		try {
+			Query query = em.createQuery("FROM FlagDataOverride fdo WHERE operator.id = ? AND "
+					+ "criteria.id = ?");
+			query.setParameter(1, opID);
+			query.setParameter(2, cID);
+
+			return query.getResultList();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
 	public List<FlagDataOverride> findExpiredForceFlags() {
 		try {
 			Query query = em.createQuery("FROM FlagDataOverride fdo WHERE "

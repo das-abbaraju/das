@@ -16,6 +16,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.velocity.tools.generic.DateTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.actions.TranslationActionSupport;
@@ -23,6 +25,7 @@ import com.picsauditing.jpa.entities.BaseTable;
 
 public class Strings {
 
+	private static final Logger logger = LoggerFactory.getLogger(Strings.class);
 	public static boolean isEmpty(String value) {
 		if (value == null)
 			return true;
@@ -325,7 +328,6 @@ public class Strings {
 		name = name.replaceAll(" +", "");
 		name = name.trim();
 
-		// System.out.println(name);
 
 		return name;
 	}
@@ -413,7 +415,7 @@ public class Strings {
 			else
 				return "0";
 		} catch (Exception e) {
-			System.out.println("Could not parse number: " + decimalNumber);
+			logger.error("Could not parse number: {}", decimalNumber);
 		}
 
 		return decimalNumber;
@@ -429,7 +431,7 @@ public class Strings {
 			n2 = n2.replace(".", "");
 			number = n1 + n2;
 		} catch (Exception e) {
-			System.out.println("Error parsing: " + number);
+			logger.error("Error parsing: {}", number);
 		}
 
 		return number;

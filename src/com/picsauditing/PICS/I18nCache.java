@@ -13,13 +13,15 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.TranslatableString;
-import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.jpa.entities.TranslatableString.Translation;
+import com.picsauditing.jpa.entities.TranslationQualityRating;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 
@@ -38,6 +40,7 @@ public class I18nCache implements Serializable {
 	private transient Table<String, String, String> cache;
 	private transient Map<String, Date> cacheUsage;
 
+	private static final Logger logger = LoggerFactory.getLogger(I18nCache.class);
 	private I18nCache() {
 	}
 
@@ -146,11 +149,11 @@ public class I18nCache implements Serializable {
 					cacheUsage.put(key, lastUsed);
 				}
 				long endTime = System.currentTimeMillis();
-				System.out.println("Built i18n Cache in " + (endTime - startTime) + "ms");
+				logger.info("Built i18n Cache in {} ms", (endTime - startTime));
 				
 				LAST_CLEARED = new Date();
 			} catch (SQLException e) {
-				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
 			}
 		}
 
@@ -248,6 +251,7 @@ public class I18nCache implements Serializable {
 				if (insert != null) {
 					db.executeInsert(insert);
 				}
+				//basicDao.save(newTranslation);
 			}
 
 			updateCacheAndRemoveTranslationFlagsIfNeeded(translationFromCache, newTranslation);
@@ -285,10 +289,10 @@ public class I18nCache implements Serializable {
 				+ " VALUES ('%s', '%s', '%s', %d, %s, 1, 1, NOW(), NOW(), NOW(), %d, %d)";
 
 		return String.format(format, translationToinsert.getKey(), translationToinsert.getLocale(),
-				translationToinsert.getValue(), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
+				Strings.escapeQuotes(translationToinsert.getValue()), translationToinsert.getQualityRating().ordinal(), sourceLanguage,
 				translationToinsert.isContentDriven() ? 1 : 0, translationToinsert.isApplicable() ? 1 : 0);
 	}
-
+	
 	private String buildUpdateStatement(AppTranslation translationToUpdate) {
 		String setClause = "SET msgValue = '%s', updateDate = NOW()";
 

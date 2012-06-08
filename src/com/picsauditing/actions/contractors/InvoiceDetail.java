@@ -236,8 +236,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							payment.setCcNumber(creditCard.getCardNumber());
 
 							// Only if the transaction succeeds
-							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(), payment
-									.getTotalAmount());
+							PaymentProcessor.ApplyPaymentToInvoice(payment, invoice, getUser(),
+									payment.getTotalAmount());
 							payment.setQbSync(true);
 
 							paymentDAO.save(payment);
@@ -267,7 +267,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 							EmailQueue emailQueue;
 							try {
 								emailQueue = emailBuilder.build();
-								emailQueue.setPriority(90);
+								emailQueue.setVeryHighPriority();
 								emailQueue.setViewableById(Account.PicsID);
 								emailSender.send(emailQueue);
 							} catch (Exception e) {
@@ -304,8 +304,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 			}
 
 			invoiceDAO.save(invoice);
-			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit
-					+ (message == null ? "" : "&msg=" + message));
+
+			if (!Strings.isEmpty(message)) {
+				addActionMessage(message);
+			}
+
+			this.redirect("InvoiceDetail.action?invoice.id=" + invoice.getId() + "&edit=" + edit);
 
 			return BLANK;
 		}
@@ -419,8 +423,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		for (InvoiceItem item : this.getInvoice().getItems()) {
 			for (FeeClass feeClass : contractor.getFees().keySet()) {
 				if (item.getInvoiceFee().isMembership()
-						&& item.getInvoiceFee().getFeeClass().equals(
-								contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
+						&& item.getInvoiceFee().getFeeClass()
+								.equals(contractor.getFees().get(feeClass).getNewLevel().getFeeClass())
 						&& !item.getInvoiceFee().equals(contractor.getFees().get(feeClass).getNewLevel()))
 					return true;
 			}

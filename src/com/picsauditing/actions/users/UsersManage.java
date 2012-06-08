@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -92,6 +94,8 @@ public class UsersManage extends PicsActionSupport {
 
 	private Set<UserAccess> accessToBeRemoved = new HashSet<UserAccess>();
 
+	private final Logger logger = LoggerFactory.getLogger(UsersManage.class);
+	
 	public String execute() throws Exception {
 		startup();
 		if ("department".equalsIgnoreCase(button))
@@ -129,7 +133,7 @@ public class UsersManage extends PicsActionSupport {
 		if (user.equals(user.getAccount().getPrimaryContact())) {
 			addActionMessage(getTextParameterized("UsersManage.DeactivatePrimary", user.getAccount().getName()));
 		}
-		if (!user.isActiveB()){
+		if (!user.isActiveB()) {
 			addAlertMessage(getTextParameterized("UsersManage.InactiveUser", user.getAccount().getName()));
 		}
 		return SUCCESS;
@@ -368,16 +372,19 @@ public class UsersManage extends PicsActionSupport {
 		user.setLockUntil(null);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-				+ "&msg=User Account has been unlocked");
+		addActionMessage(getText("UsersManage.Unlocked"));
+
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	public String move() throws Exception {
 		startup();
 
-		if (user.getAccount().getUsers().size() == 1)
-			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-					+ "&msg=You Cannot Move This User As They Are The Only User On This Account");
+		if (user.getAccount().getUsers().size() == 1) {
+			addActionMessage(getText("UsersManage.CannotMoveUser"));
+
+			return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
+		}
 
 		// accounts are different so we are moving to a new account
 		// user.setOwnedPermissions(null);
@@ -406,8 +413,10 @@ public class UsersManage extends PicsActionSupport {
 		// user.setNeedsIndexing(true);
 		userDAO.save(user);
 
-		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId()
-				+ "&msg=You have sucessfully moved " + user.getName() + " to " + user.getAccount().getName());
+		addActionMessage(getTextParameterized("UsersManage.SuccessfullyMoved", user.getName(), user.getAccount()
+				.getName()));
+
+		return redirect("UsersManage.action?account=" + user.getAccount().getId() + "&user=" + user.getId());
 	}
 
 	@RequiredPermission(value = OpPerms.EditUsers, type = OpType.Edit)
@@ -418,6 +427,51 @@ public class UsersManage extends PicsActionSupport {
 			// This user is a user (not a group)
 			if (user.equals(user.getAccount().getPrimaryContact())) {
 				addActionError(getTextParameterized("UsersManage.CannotInactivate", user.getAccount().getName()));
+				return SUCCESS;
+			}
+		}
+		// is a contractor
+		if (user.getAccount().isContractor()) {
+			Set<OpPerms> userPerms = new HashSet<OpPerms>();
+			userPerms = new HashSet<OpPerms>();
+			for (UserAccess ua : user.getOwnedPermissions()) {
+				userPerms.add(ua.getOpPerm());
+			}
+
+			if (userPerms.contains(OpPerms.ContractorAdmin)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorAdmin).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorAdmin.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorBilling)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorBilling).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorBilling.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorSafety)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorSafety).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorSafety.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (userPerms.contains(OpPerms.ContractorInsurance)) {
+				if (((ContractorAccount) account).getUsersByRole(OpPerms.ContractorInsurance).size() < 2) {
+					addActionError(getTextParameterized("UsersManage.MustHaveOneUserWithPermission",
+							OpPerms.ContractorInsurance.getDescription()));
+					return SUCCESS;
+				}
+			}
+
+			if (user.getOwnedPermissions().size() == 0 && user.isActiveB()) {
+				addActionError(getText("UsersManage.AddPermissionToUser"));
 				return SUCCESS;
 			}
 		}
@@ -505,8 +559,8 @@ public class UsersManage extends PicsActionSupport {
 		return jSessionID;
 	}
 
-	private void removeBetaMaxCookie() {
-		Cookie cookie = new Cookie("USER_BETA", "");
+	public void removeBetaMaxCookie() {
+		Cookie cookie = new Cookie("USE_BETA", "");
 		cookie.setMaxAge(0);
 		ServletActionContext.getResponse().addCookie(cookie);
 	}
@@ -565,7 +619,8 @@ public class UsersManage extends PicsActionSupport {
 		if (hasduplicate)
 			addActionError(getText("UsersManage.UsernameNotAvailable"));
 
-		// user = new User(temp, true);
+		if (isSaveAction)
+			user = new User(temp, true);
 
 		// TODO: Move this into User-validation.xml and use struts 2 for this
 		// validation
@@ -859,8 +914,7 @@ public class UsersManage extends PicsActionSupport {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("test " + e);
+			logger.error(e.getMessage());
 
 		}
 
@@ -870,9 +924,7 @@ public class UsersManage extends PicsActionSupport {
 				list.remove(userGroup.getGroup());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("test 2" + e);
-
+			logger.error("test 2 {}", e.getMessage());
 		}
 		list.remove(user);
 		return list;
@@ -1034,6 +1086,30 @@ public class UsersManage extends PicsActionSupport {
 		}
 	}
 
+	public String emailPassword() throws Exception {
+
+		// Seeding the time in the reset hash so that each one will be
+		// guaranteed unique
+		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+		userDAO.save(user);
+
+		addActionMessage(sendRecoveryEmail(user));
+		return SUCCESS;
+	}
+
+	public boolean isHasProfileEdit() {
+		if (user.getAccount().isContractor())
+			return true;
+
+		for (UserAccess userAccess : user.getPermissions()) {
+			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+				return true;
+			}
+
+		}
+		return false;
+	}
+
 	// TODO: Move this to Event Subscription Builder
 	public String sendRecoveryEmail(User user) {
 		try {
@@ -1050,7 +1126,7 @@ public class UsersManage extends PicsActionSupport {
 
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
@@ -1076,7 +1152,7 @@ public class UsersManage extends PicsActionSupport {
 
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
