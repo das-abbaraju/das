@@ -643,7 +643,7 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress("\"Mina Mina\"<mmina@picsauditing.com>");
 			EmailQueue email = emailBuilder.build();
-			email.setCcAddresses(null);
+			email.setCcAddresses("sjones@picsauditing.com");
 			email.setViewableById(Account.PicsID);
 			emailSender.send(email);
 		}
