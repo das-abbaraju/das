@@ -451,6 +451,8 @@ public class MenuBuilder {
 		return getText(key + ".title");
 	}
 
+	/* I'm leaving this here to more easily see what menus existed before
+
 	private static void oldAuditGuardSubmenu(MenuComponent menu, Permissions permissions) {
 		if (menu == null || permissions == null)
 			return;
@@ -529,7 +531,7 @@ public class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.ContractorApproval)) {
 			//managementMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
-			if (permissions.isGcOperator()) {
+			if (permissions.isGeneralContractor()) {
 				//managementMenu.addChild(getTitle("ReportSubcontractors"), "ReportSubcontractors.action", "ReportSubcontractors");
 			}
 		}
@@ -843,4 +845,5 @@ public class MenuBuilder {
 			//importPqfMenu.addChild(getTitle("ReportImportPQFs"), "ReportImportPQFs.action");
 		}
 	}
+	*/
 }
