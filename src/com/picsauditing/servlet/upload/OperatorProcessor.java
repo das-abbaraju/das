@@ -31,6 +31,7 @@ public class OperatorProcessor extends AbstractUploadProcessor {
 				dir =  "/files/userManuals/userManual_";
 			}//if
 			//Process a file upload
+			System.out.println("fileName"+fileName);
 			if ("".equals(fileName))
 				request.setAttribute("error_userManual", NO_FILE_SELECTED);
 			if (writeToFile) {

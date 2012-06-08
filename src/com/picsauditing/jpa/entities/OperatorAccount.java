@@ -22,7 +22,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
@@ -76,8 +75,9 @@ public class OperatorAccount extends Account {
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
 	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Set<Integer> visibleAuditTypes = null;
-	private List<Facility> linkedClients = new ArrayList<Facility>();
-	private List<Facility> linkedGeneralContractors = new ArrayList<Facility>();
+
+	private List<ContractorOperator> generalContractorContractors = new ArrayList<ContractorOperator>();
+	private List<OperatorAccount> gcContractorOperatorAccounts;
 
 	public OperatorAccount() {
 		this.type = "Operator";
@@ -290,6 +290,46 @@ public class OperatorAccount extends Account {
 			return inheritFlagCriteria.getFlagCriteria();
 	}
 
+	@OneToMany(mappedBy = "operatorAccount")
+	@Where(clause = "type='GeneralContractor'")
+	public List<ContractorOperator> getGcContractors() {
+		return generalContractorContractors;
+	}
+
+	public void setGcContractors(List<ContractorOperator> gcContractors) {
+		this.generalContractorContractors = gcContractors;
+	}
+
+	@Transient
+	public ContractorOperator getGcContractor() {
+		if (!getGcContractors().isEmpty())
+			return getGcContractors().get(0);
+
+		return null;
+	}
+
+	@Transient
+	public boolean isGeneralContractor() {
+		return getGcContractors().size() > 0;
+	}
+
+	@Transient
+	public boolean isGCFree() {
+		return isGeneralContractor() && doContractorsPay.equals("No");
+	}
+
+	@Transient
+	public List<OperatorAccount> getGcContractorOperatorAccounts() {
+		if (gcContractorOperatorAccounts == null) {
+			ContractorAccount gcContractor = getGcContractor().getContractorAccount();
+
+			gcContractorOperatorAccounts = new ArrayList<OperatorAccount>(
+					gcContractor.getNonGeneralContractorOperators());
+		}
+
+		return gcContractorOperatorAccounts;
+	}
+
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
 		List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
@@ -359,8 +399,6 @@ public class OperatorAccount extends Account {
 	}
 
 	@OneToMany(mappedBy = "operator")
-	@Cascade({org.hibernate.annotations.CascadeType.ALL,
-		org.hibernate.annotations.CascadeType.DELETE_ORPHAN})
 	public List<Facility> getCorporateFacilities() {
 		return corporateFacilities;
 	}
@@ -472,60 +510,6 @@ public class OperatorAccount extends Account {
 
 	public void setCompetencies(List<OperatorCompetency> competencies) {
 		this.competencies = competencies;
-	}
-
-	@OneToMany(mappedBy = "operator")
-	@Where(clause = "type = 'GeneralContractor'")
-	public List<Facility> getLinkedClients() {
-		return linkedClients;
-	}
-
-	public void setLinkedClients(List<Facility> linkedClients) {
-		this.linkedClients = linkedClients;
-	}
-
-	@Transient
-	public List<OperatorAccount> getLinkedClientSites() {
-		List<OperatorAccount> linkedClientSites = new ArrayList<OperatorAccount>();
-		for (Facility facility : getLinkedClients()) {
-			linkedClientSites.add(facility.getCorporate());
-		}
-
-		return linkedClientSites;
-	}
-
-	@OneToMany(mappedBy = "corporate")
-	@Where(clause = "type = 'GeneralContractor'")
-	public List<Facility> getLinkedGeneralContractors() {
-		return linkedGeneralContractors;
-	}
-
-	public void setLinkedGeneralContractors(List<Facility> linkedGeneralContractors) {
-		this.linkedGeneralContractors = linkedGeneralContractors;
-	}
-
-	@Transient
-	public List<OperatorAccount> getLinkedGeneralContractorOperatorAccounts() {
-		List<OperatorAccount> linkedGeneralContractorOperatorAccounts = new ArrayList<OperatorAccount>();
-		for (Facility facility : getLinkedGeneralContractors()) {
-			linkedGeneralContractorOperatorAccounts.add(facility.getOperator());
-		}
-
-		return linkedGeneralContractorOperatorAccounts;
-	}
-
-	@Transient
-	public boolean isRequiresClientSiteOrGeneralContractorSelection() {
-		return !getLinkedClients().isEmpty() || !getLinkedGeneralContractors().isEmpty();
-	}
-
-	@Transient
-	public List<OperatorAccount> getClientSitesOrGeneralContractors() {
-		if (isGeneralContractor()) {
-			return getLinkedClientSites();
-		} else {
-			return getLinkedGeneralContractorOperatorAccounts();
-		}
 	}
 
 	@ManyToMany(targetEntity = OperatorAccount.class, cascade = { CascadeType.ALL })

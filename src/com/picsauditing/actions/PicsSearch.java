@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
@@ -39,7 +37,6 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 	public static final String NUM_NO_1_0_BEGIN = "[^(^1|0)](\\d+)";
 	public static final String NUM_1_0_BEGIN = "^(1|0)(\\d+)";
 
-	private final static Logger logger = LoggerFactory.getLogger(PicsSearch.class);
 	@Override
 	public void prepare() throws Exception {
 		searchTerm = (String)((String[])ActionContext.getContext().getParameters().get("q"))[0];		
@@ -51,7 +48,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		if(!forceLogin())
 			return LOGIN;
 		
-		logger.debug(searchTerm);
+		System.out.println(searchTerm);
 		DetermineFields(searchTerm);
 		DetermineTables();
 		BuildQueries();
@@ -66,8 +63,9 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 //		p.BuildQueries();	
 		String s = "http://www.moowww.com";
 		s=s.replaceAll("^(http://)(w{3})|^(w{3}.)|\\W", "");
-		logger.debug(s);
+		System.out.println(s);
 		//p.GetPreResults();
+		//System.out.println(d.select(p.results.get(SearchTables.Accounts), true));
 	}
 	
 	private void GetPreResults() throws SQLException {
@@ -117,7 +115,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 			fullList.addAll(accountsList.subList(0, useA));
 			int useU = Math.round(10*((float)usNum/sum));
 			fullList.addAll(usersList.subList(0, useU));
-			logger.debug("Total: {} | Size: {}", sum, fullList.size());
+			System.out.println("Total: "+sum+" | Size: "+fullList.size());
 			seeAllText = "10 of "+sum+" results. Click to show All";
 			
 		} else{
@@ -192,7 +190,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 			
 			String str1 = "ORDER BY "+sTable.tblAlias+"."+sFields.get(0).fieldName; // use first field as order by
 			String query = sql.toString() + perm + str1;
-			logger.debug(query);
+			System.out.println(query);
 			results.put(sTable, query);
 		}
 	}
@@ -231,24 +229,29 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		String q = Strings.escapeQuotes(check);
 		
 		if(check.matches("[a-zA-Z\\s*]+")){
+			System.out.println("Account, Name");
 			possibleFields.put(SearchFields.AccountName, "'"+q+"%'");
 			possibleFields.put(SearchFields.Name, "'"+q+"%'");
 			possibleFields.put(SearchFields.LastName, "'"+q+"%'");
 			possibleFields.put(SearchFields.NameIndex, "'"+q+"%'"); // nameIndex logic here
 			if(check.matches("\\s*")){
+				System.out.println("Is Email");
 				possibleFields.put(SearchFields.Email, "'"+q+"%'");
 			}
 			
 		} else{
 			if(check.contains("@")){
+				System.out.println("Is Email");
 				possibleFields.put(SearchFields.Email, "'"+q+"%'");
 				return;
 			}
 			if(check.matches("[^\\s]+")){ // has no spaces
+				System.out.println("Is Email");
 				possibleFields.put(SearchFields.Email, "'"+q+"%'");
 			}
 			if(check.isEmpty())
 				return;
+			System.out.println("Account name");
 			possibleFields.put(SearchFields.AccountName, "'"+q+"%'");
 			possibleFields.put(SearchFields.NameIndex, "'"+q+"%'"); // nameIndex logic here				
 		}
@@ -272,11 +275,11 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		if(check.matches(ALL_NUMS)){
 			// If less than 10, it's an id, else phone and id
 			if(check.length()<=10){
-				logger.info("Id");
+				System.out.println("Id");
 				possibleFields.put(SearchFields.Id, check);
 				return;
 			} else {
-				logger.info("ID or Phone");
+				System.out.println("ID or Phone");
 				possibleFields.put(SearchFields.Id, check);
 				possibleFields.put(SearchFields.Phone, check.substring(0, 10)); // phone logic
 				return;
@@ -285,7 +288,7 @@ public class PicsSearch extends PicsActionSupport implements Preparable{
 		// Still could be a phone number
 		check = check.replaceAll("\\D", "");
 		if(check.length()>=10){
-			logger.info("Phone");
+			System.out.println("Phone");
 			possibleFields.put(SearchFields.Phone, check.substring(0, 10)); // phone logic
 		} 
 	}

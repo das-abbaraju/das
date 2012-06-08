@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -96,8 +95,6 @@ public class OshaDisplay {
 	private List<OshaDisplayRow> getData(OshaType oshaType) {
 		List<OshaDisplayRow> rows = new ArrayList<OshaDisplayRow>();
 		for (OshaRateType rateType : oshaType.rates) {
-			if (!isShowRow(rateType))
-				continue;
 			StatisticsDisplayRow rateRow = new StatisticsDisplayRow();
 
 			rateRow.setOshaRateType(rateType);
@@ -115,11 +112,8 @@ public class OshaDisplay {
 			}
 
 			if (rateType.isHasIndustryAverage()) {
-				String industryAverage = getIndustryAverage(rateType);
-//				String.valueOf(Utilities
-//						.getIndustryAverage(
-//								rateType == OshaRateType.LwcrAbsolute,
-//								contractor.getNaics()));
+				String industryAverage = getIndustryAverage(naicsDao
+						.find(contractor.getNaics().getCode()), rateType);
 				rateRow.addCell(industryAverage);
 			} else {
 				rateRow.addCell(EMPTY_CELL);
@@ -134,29 +128,16 @@ public class OshaDisplay {
 		return rows;
 	}
 
-	private boolean isShowRow(OshaRateType rateType) {
-		if (!rateType.equals(OshaRateType.SeverityRate))
-			return true;
-		for (ContractorOperator conOp:contractorOperators) {
-			if (conOp.getOperatorAccount().isOrIsDescendantOf(1436)) // Tesoro
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private String getIndustryAverage(OshaRateType rateType) {
-		String value = null;
-		
+	private String getIndustryAverage(Naics naics, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
-			return String.valueOf(Utilities.getIndustryAverage(true, contractor.getNaics()));
+			return String.valueOf(naics.getLwcr());
 		}
 		else if (rateType == OshaRateType.TrirAbsolute) {
-			if (contractor.hasWiaCriteria()) {
-				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
+			if (contractor.hasWiaCriteria()) { 
+				return String.valueOf(contractor.getWeightedIndustryAverage()) + "*";
 			}
 			else {
-				return String.valueOf(Utilities.getIndustryAverage(false, contractor.getNaics()));
+				return String.valueOf(naics.getTrir());
 			}
 		}
 		return null;

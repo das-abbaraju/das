@@ -219,7 +219,7 @@
                         <div class="content view-mode">
                             <div class="view">
                                 <div class="text">
-                                	<s:if test="value.toLowerCase().contains('html>') || value.matches('.*[0-9][<>].*')">
+                                	<s:if test="value.toLowerCase().contains('html>') || value.toLowerCase().contains('<s')">
 	                                    <s:property value="value" />
                                     </s:if>
                                     <s:else>

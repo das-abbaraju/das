@@ -28,15 +28,19 @@
 		</result-types>
 
 		<interceptors>
-			<interceptor name="http2https" class="com.picsauditing.interceptors.PicsInterceptor" />
-			<interceptor name="i18n" class="com.picsauditing.interceptors.I18nInterceptor" />
-			<interceptor name="security" class="com.picsauditing.interceptors.SecurityInterceptor" />
-			<interceptor name="checkbox" class="com.picsauditing.strutsutil.CheckboxInterceptor" />
-			<interceptor name="cachecontrol" class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
-			<interceptor name="redirectMessage" class="com.picsauditing.interceptors.RedirectMessageInterceptor" />
-			<interceptor name="validation" 
-				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor"/>
-			<interceptor name="jsonValidation" 
+			<interceptor name="http2https"
+				class="com.picsauditing.interceptors.PicsInterceptor" />
+			<interceptor name="i18n"
+				class="com.picsauditing.interceptors.I18nInterceptor" />
+			<interceptor name="security"
+				class="com.picsauditing.interceptors.SecurityInterceptor" />
+			<interceptor name="checkbox"
+				class="com.picsauditing.strutsutil.CheckboxInterceptor" />
+			<interceptor name="cachecontrol"
+				class="com.picsauditing.interceptors.CacheHeadersInterceptor" />
+			<interceptor name="validation"
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+			<interceptor name="jsonValidation"
 				class="org.apache.struts2.interceptor.validation.JSONValidationInterceptor" />
 
 			<interceptor-stack name="picsStack">
@@ -68,7 +72,6 @@
 				<interceptor-ref name="workflow">
 					<param name="excludeMethods">input,back,cancel,browse</param>
 				</interceptor-ref>
-				<interceptor-ref name="redirectMessage" />
 				<interceptor-ref name="annotationWorkflow" />
 			</interceptor-stack>
 
@@ -173,8 +176,8 @@
 
 		<action name="Menu" class="com.picsauditing.access.Menu">
 		</action>
-		
-		<action name="Contact" class="com.picsauditing.access.Contact">
+
+		<action name="Contact" class="com.picsauditing.access.ContactUs">
 			<result>struts/contact_pics.jsp</result>
 		</action>
 
@@ -428,7 +431,24 @@
 			class="com.picsauditing.actions.report.ReportAccountAudits">
 			<result>struts/reports/contractors_list_data.jsp</result>
 		</action>
-		
+
+		<!-- Subcontractor List -->
+		<action name="ReportSubcontractors"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
+			<param name="filter.ajax">true</param>
+			<param name="filter.destinationAction">ReportSubcontractors</param>
+			<result>struts/reports/report_subcontractors.jsp</result>
+		</action>
+		<action name="ReportSubcontractorsCSV"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
+			<param name="download">true</param>
+			<result>/struts/blank.jsp</result>
+		</action>
+		<action name="ReportSubcontractorsAjax"
+			class="com.picsauditing.actions.report.ReportSubcontractors">
+			<result>struts/reports/report_subcontractors_data.jsp</result>
+		</action>
+
 		<action name="BiddingContractorSearch"
 			class="com.picsauditing.actions.report.ReportBiddingContractors">
 			<result>struts/reports/report_biddingcontractors.jsp</result>
@@ -1403,10 +1423,6 @@
 
 		<action name="OperatorFlagHistoryAjax"
 			class="com.picsauditing.actions.chart.OperatorFlagHistory">
-		</action>
-
-		<action name="OperatorFlagYearHistoryAjax"
-			class="com.picsauditing.actions.chart.OperatorFlagYearHistory">
 		</action>
 
 		<action name="ChartXMLFlagCategoryCount"

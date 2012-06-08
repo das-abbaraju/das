@@ -12,7 +12,7 @@
 		<div class="right">
 			<a 
 				class="excel" <s:if test="report.allRows > 500">onclick="return confirm('<s:text name="JS.ConfirmDownloadAllRows"><s:param value="%{report.allRows}" /></s:text>');"</s:if> 
-				href="javascript: download('ContractorList');" 
+				href="javascript: download('ReportSubcontractors');" 
 				title="<s:text name="javascript.DownloadAllRows"><s:param value="%{report.allRows}" /></s:text>"
 			><s:text name="global.Download" /></a>
 		</div>
@@ -41,8 +41,21 @@
 	<table class="report">
 		<thead>
 			<tr>
+				<td>
+					<input type="checkbox" class="selectAll" title="Select All" />
+				</td>
+				
 				<td colspan="2">
-					<a href="?orderBy=${name_filtered}"><s:text name="global.ContractorName" /></a>
+					<a href="?orderBy=${name_filtered}">
+						<s:if test="get('id') == gcOperator.gcContractor.id">
+							<strong>
+								<s:text name="global.ContractorName" />
+							</strong>
+						</s:if>
+						<s:else>
+							<s:text name="global.ContractorName" />
+						</s:else>
+					</a>
 				</td>
 				
 				<pics:permission perm="AllContractors">
@@ -50,36 +63,36 @@
 				</pics:permission>
 				
 				<pics:permission perm="ContractorDetails">
-					<s:if test="!permissions.generalContractorFree">
-						<td></td>
-						
-						<s:if test="pqfVisible">
-							<td>
-								<s:text name="AuditType.1.name" />
-							</td>
-						</s:if>
+					<td></td>
+					
+					<s:if test="pqfVisible">
+						<td>
+							<s:text name="AuditType.1.name" />
+						</td>
 					</s:if>
 				</pics:permission>
 				
-				<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
+				<td>
+					<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
+				</td>
+				
+				<s:if test="permissions.operator">
 					<td>
-						<a href="?orderBy=${flag_filtered}"><s:text name="global.Flag" /></a>
+						<s:text name="WaitingOn" />
 					</td>
-					
-					<s:if test="permissions.operator">
-						<td>
-							<s:text name="WaitingOn" />
-						</td>
-					</s:if>
-					
-					<s:if test="operatorAccount.approvesRelationships.isTrue()">
-						<pics:permission perm="ViewUnApproved">
-							<td>
-								<s:text name="AuditStatus.Approved" />
-							</td>
-						</pics:permission>
-					</s:if>
 				</s:if>
+				
+				<s:if test="operatorAccount.approvesRelationships.isTrue()">
+					<pics:permission perm="ViewUnApproved">
+						<td>
+							<s:text name="AuditStatus.Approved" />
+						</td>
+					</pics:permission>
+				</s:if>
+				
+				<td>
+					<s:text name="ReportSubcontractors.WorkingClientSites" />
+				</td>
 				
 				<pics:permission perm="PicsScore">
 					<td>
@@ -130,6 +143,10 @@
 		<tbody>
 			<s:iterator value="data" status="stat">
 				<tr>
+					<td>
+						<input type="checkbox" name="subContractorIDs" value="<s:property value="get('id')" />" class="selectable" />
+					</td>
+						
 					<td class="right">
 						<s:property value="#stat.index + report.firstRowNumber" />
 					</td>
@@ -151,13 +168,6 @@
 								<s:property value="get('dbaName')"/>
 							</div>
 						</s:if>
-						
-						<s:if test="permissions.generalContractor && get('nonGCOpsInCommon') == 0">
-							<div class="right">
-								<a href="javascript:;" class="help" title="<s:text name="ContractorList.PleaseAddOperatorsToSub" />"></a>
-							</div>
-						</s:if>
-						
 					</td>
 					
 					<pics:permission perm="AllContractors">
@@ -167,70 +177,64 @@
 					</pics:permission>
 					
 					<pics:permission perm="ContractorDetails">
-						<s:if test="!permissions.generalContractorFree">
-							<td>
-								<a href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ContractorList.label.Audits" /></a>
+						<td>
+							<a href="ContractorDocuments.action?id=<s:property value="get('id')"/>"><s:text name="ContractorList.label.Audits" /></a>
+						</td>
+							
+						<s:if test="pqfVisible">
+							<td class="icon center">
+								<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon">
+									<img src="images/icon_PQF.gif" width="20" height="20" border="0">
+								</a>
 							</td>
-								
-							<s:if test="pqfVisible">
-								<td class="icon center">
-									<a href="Audit.action?auditID=<s:property value="get('ca1_auditID')"/>" style="icon">
-										<img src="images/icon_PQF.gif" width="20" height="20" border="0">
-									</a>
-								</td>
-							</s:if>
 						</s:if>
 					</pics:permission>
 					
-					<s:if test="permissions.operatorCorporate && !permissions.generalContractorFree">
-						<td class="center">
+					<td class="center">
+						<pics:permission perm="ContractorDetails">
+							<a 
+								href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
+								title="<s:property value="get('flag')"/> - Click to view details">
+						</pics:permission>
+						
+						<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0">
+						
+						<pics:permission perm="ContractorDetails">
+							</a>
+						</pics:permission>
+					</td>
+					<s:if test="permissions.operator">
+						<td>
 							<pics:permission perm="ContractorDetails">
-								<s:if test='get("forceEnd") != null'>
-								<a 
-									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('forceEnd')" format="%{getText('date.short')}" /> - Click to view details">
-								</s:if>
-								<s:elseif test='get("dataForceEnd") != null'>
-								<a 
-									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/>: Forced until <s:date name="get('dataForceEnd')" format="%{getText('date.short')}" /> - Click to view details">
-								</s:elseif>
-								<s:else>
-								<a 
-									href="ContractorFlag.action?id=<s:property value="get('id')"/>" 
-									title="<s:property value="get('flag')"/> - Click to view details" >
-								</s:else>
+								<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" >
 							</pics:permission>
 							
-							<img src="images/icon_<s:property value="get('lflag')"/>Flag.gif" width="12" height="15" border="0">
-							
+							<s:text name="%{@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn')).i18nKey}" />
 							
 							<pics:permission perm="ContractorDetails">
-								<s:if test='get("forceEnd") != null || get("dataForceEnd") != null'>*</s:if></a>
+								</a>
 							</pics:permission>
 						</td>
-						<s:if test="permissions.operator">
-							<td>
-								<pics:permission perm="ContractorDetails">
-									<a href="ContractorFlag.action?id=<s:property value="get('id')"/>" >
-								</pics:permission>
-								
-								<s:text name="%{@com.picsauditing.jpa.entities.WaitingOn@fromOrdinal(get('waitingOn')).i18nKey}" />
-								
-								<pics:permission perm="ContractorDetails">
-									</a>
-								</pics:permission>
-							</td>
-						</s:if>
-						
-						<s:if test="operatorAccount.approvesRelationships.isTrue()">
-							<pics:permission perm="ViewUnApproved">
-								<td class="center">
-									<s:property value="get('workStatus')" />
-								</td>
-							</pics:permission>
-						</s:if>
 					</s:if>
+					
+					<s:if test="operatorAccount.approvesRelationships.isTrue()">
+						<pics:permission perm="ViewUnApproved">
+							<td class="center">
+								<s:property value="get('workStatus')" />
+							</td>
+						</pics:permission>
+					</s:if>
+					
+					<td>
+						<s:iterator value="explodeOperatorLink(get('sharedOperatorNames'))" var="operator_token" status="operator_stat">
+							<s:url var="contractor_flag_link" action="ContractorFlag">
+								<s:param name="id" value="%{get('id')}" />
+								<s:param name="opID" value="%{#operator_token.id}" />
+							</s:url>
+							<s:set name="flag_title" value="%{getText(#operator_token.flag.i18nKey)}" />
+							<a href="${contractor_flag_link}" title="${flag_title}"><s:property value="#operator_token.name" /></a><s:if test="!#operator_stat.last">, </s:if>
+						</s:iterator>
+					</td>
 					
 					<pics:permission perm="PicsScore">
 						<td>

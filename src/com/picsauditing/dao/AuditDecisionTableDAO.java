@@ -9,8 +9,6 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +26,6 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("unchecked")
 public class AuditDecisionTableDAO extends PicsDAO {
 
-	private final Logger logger = LoggerFactory.getLogger(AuditDecisionTableDAO.class);
-	
 	public <T extends BaseDecisionTreeRule> List<T> findAllRules(Class<T> clazz) {
 		Query query = em.createQuery("FROM " + clazz.getName()
 				+ " WHERE effectiveDate <= NOW() AND expirationDate > NOW() ORDER BY priority DESC");
@@ -341,10 +337,10 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
 
 		Set<Integer> operatorIDs = new HashSet<Integer>();
-		//if (operator.isCorporate()) {
-		//	operatorIDs.add(operator.getId());
-		//} else
-		operatorIDs.addAll(operator.getOperatorHeirarchy());
+		if (operator.isCorporate()) {
+			operatorIDs.add(operator.getId());
+		} else
+			operatorIDs.addAll(operator.getOperatorHeirarchy());
 
 		where += " AND (opID IS NULL";
 		if (operatorIDs.size() > 0)
@@ -373,7 +369,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		Query query = em.createQuery(sql);
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 		for (Object row : query.getResultList()) {
-			logger.debug("{}", row);
+			System.out.println(row);
 			int auditTypeID = row.hashCode();
 			int opID = row.hashCode();
 			if (!map.containsKey(auditTypeID))

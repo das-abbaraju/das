@@ -11,7 +11,7 @@
 	<decorator name="registration" page="registration.jsp">
 		<pattern>/ContractorRegistration.action</pattern>
 		<pattern>/Registration.action</pattern>
-		<pattern>/RegistrationAddClientSite*.action</pattern>
+		<pattern>/RegistrationAddClientSite.action</pattern>
 		<pattern>/RegistrationServiceEvaluation.action</pattern>
 		<pattern>/RegistrationMakePayment.action</pattern>
 	</decorator>

@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
@@ -30,9 +28,8 @@ public class TranslationActionSupport extends ActionSupport {
 	private I18nCache i18nCache = I18nCache.getInstance();
 	static final protected String i18nTracing = "i18nTracing";
 
-	private final Logger logger = LoggerFactory.getLogger(TranslationActionSupport.class);
 	private static final Locale[] supportedLocales = new Locale[] { Locale.ENGLISH, Locale.FRENCH, new Locale("es"),
-			Locale.GERMAN, new Locale("sv"), new Locale("fi") };
+			Locale.GERMAN };
 
 	public static Locale[] getSupportedLocales() {
 		return supportedLocales;
@@ -62,7 +59,7 @@ public class TranslationActionSupport extends ActionSupport {
 		} while (iter.hasNext() && isTranslatable(type));
 
 		if (type == null) {
-			logger.warn("The field [{}] is not translatable. Please add a label for this field.", property);
+			System.out.println("The field [" + property + "] is not translatable. Please add a label for this field.");
 		} else {
 			StringBuilder result = new StringBuilder(type.getSimpleName());
 			for (Entry<String, Class<?>> entry : nonTranslatables) {
@@ -214,24 +211,13 @@ public class TranslationActionSupport extends ActionSupport {
 	public Map<String, String> findAllTranslations(String key, Boolean includeLocaleStatic) {
 		Map<String, String> translationMap = i18nCache.getText(key);
 		Map<String, String> newTranslationMap = new HashMap<String, String>();
-		
-		Locale locale = null;
+
 		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
-			String keyStr = entry.getKey();
-			String [] lanCountry = keyStr.split("_");
-			
-			//e.g. en_GB
-			if(lanCountry.length > 1) {
-				locale = new Locale(lanCountry[0],lanCountry[1]);
-			}
-			else {
-				locale = new Locale(keyStr);
-			}
-			newTranslationMap.put(locale.getDisplayName(), entry.getValue());
+			newTranslationMap.put(new Locale(entry.getKey()).getDisplayLanguage(), entry.getValue());
 		}
 
 		if (!includeLocaleStatic) {
-			newTranslationMap.remove(getLocaleStatic().getDisplayName());
+			newTranslationMap.remove(getLocaleStatic().getDisplayLanguage());
 		}
 
 		Map<String, String> sortedTranslationMap = new TreeMap<String, String>(newTranslationMap);

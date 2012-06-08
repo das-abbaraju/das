@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 
@@ -36,11 +35,6 @@ public class FlagCriteriaOperatorDAO extends PicsDAO {
 									"WHERE fco.criteria.id=? " +
 									"ORDER BY fco.operator.status, fco.operator.name");
 		query.setParameter(1, criteriaID);
-		return query.getResultList();
-	}
-	
-	public List<FlagCriteria> findWhere(String where) {
-		Query query = em.createQuery("From FlagCriteriaOperator WHERE " + where);
 		return query.getResultList();
 	}
 }

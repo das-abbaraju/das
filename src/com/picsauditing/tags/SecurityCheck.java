@@ -5,9 +5,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
@@ -24,12 +21,13 @@ public class SecurityCheck implements Tag {
 	
 	protected OpPerms opPerms = null;
 	protected OpType opType = null;
-	private final Logger logger = LoggerFactory.getLogger(SecurityCheck.class);
+
 	public int doStartTag() throws JspException {
 		HttpSession session = pageContext.getSession();
 
 		if (session == null) {
-			logger.debug("<pics:permissions> is returning doesNotHavePermission() because there was no http session");
+			System.out
+					.println("<pics:permissions> is returning doesNotHavePermission() because there was no http session");
 
 			return doesNotHavePermission();
 		}
@@ -41,7 +39,8 @@ public class SecurityCheck implements Tag {
 		// our resource
 		if (permissions == null) {
 			if (debug) {
-				logger.debug("<pics:permissions> is returning doesNotHavePermission() because the permissions object was not in the session");
+				System.out
+						.println("<pics:permissions> is returning doesNotHavePermission() because the permissions object was not in the session");
 			}
 
 			return doesNotHavePermission();
@@ -60,22 +59,22 @@ public class SecurityCheck implements Tag {
 		}
 
 		if (debug) {
-			logger.debug("<pics:permission> tag debug information: ");
-			logger.debug("\tisNegativeCheck = {}", negativeCheck);
-			logger.debug("\tOpPerms = {}", opPerms.name());
-			logger.debug("\tOpType = {}", opType.name());
+			System.out.println("<pics:permission> tag debug information: ");
+			System.out.println("\tisNegativeCheck = " + negativeCheck);
+			System.out.println("\tOpPerms = " + opPerms.name());
+			System.out.println("\tOpType = " + opType.name());
 		}
 
 		// run the check
 		if (permissions.hasPermission(opPerms, opType)) {
 			if (debug) {
-				logger.debug("\t\t\t\tUser has Permission");
+				System.out.println("\t\t\t\tUser has Permission");
 			}
 
 			return hasPermission();
 		} else {
 			if (debug) {
-				logger.debug("\t\t\t\tUser does not have Permission");
+				System.out.println("\t\t\t\tUser does not have Permission");
 			}
 			return doesNotHavePermission();
 		}

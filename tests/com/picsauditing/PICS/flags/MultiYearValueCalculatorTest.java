@@ -128,8 +128,8 @@ public class MultiYearValueCalculatorTest {
 		question.setId(11);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		Integer result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
-		assertEquals(1, result.intValue());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
+		assertEquals(1, result);
 	}
 	
 	@Test
@@ -139,8 +139,8 @@ public class MultiYearValueCalculatorTest {
 		question.setId(8);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		Integer result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
-		assertEquals(0, result.intValue());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
+		assertEquals(0, result);
 	}
 	
 	@Test
@@ -150,8 +150,8 @@ public class MultiYearValueCalculatorTest {
 		question.setId(10);
 		question.setQuestionType("Check Box");
 		criteria.setQuestion(question);
-		Integer result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
-		assertEquals(0, result.intValue());
+		int result = Whitebox.invokeMethod(MultiYearValueCalculator.class, "totalCheckBoxSelectedForQuestion", criteria, setupAuditDataList());
+		assertEquals(0, result);
 	}
 
 	@Test

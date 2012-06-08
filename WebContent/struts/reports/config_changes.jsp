@@ -68,50 +68,6 @@ function showRules() {
 </table>
 </s:if>
 
-<s:if test="flagCriteriaOperatorList.size() > 0">
-<h4>Flag Criteria Operator</h4>
-<table id="flagCriteriaOperatorList" class="report">
-	<thead>
-		<tr>
-			<th>Criteria</th>
-			<th>Operator</th>
-			<th>Tag</th>
-			<th>Flag Color</th>
-			<th>Updated</th>
-			<th>On</th>
-		</tr>
-	</thead>
-	<s:iterator value="flagCriteriaOperatorList">
-		<tr>
-			<td>
-				<a href="ManageFlagCriteria!edit.action?criteria=<s:property value="criteria.id"/>">
-					<s:if test="!isStringEmpty(criteria.description)">
-						<s:property value="criteria.description" />
-					</s:if>
-					<s:else>Description is missing...</s:else>
-				</a>
-			</td>
-			<td>
-				<a href="/ManageFlagCriteriaOperator.action?id=<s:property value="operator.id" />">
-					<s:property value="operator.name" />
-				</a>
-			</td>
-			<td>
-				<s:if test="tag != null"><s:property value="tag.tag" /></s:if>
-				<s:else>
-					*
-				</s:else>
-			</td>
-			<td><s:property value="flag" /></td>
-			<td><s:property value="updatedBy.name" /></td>
-			<td><s:date name="updateDate" format="%{getText('date.short')}"/></td>
-		</tr>
-	</s:iterator>
-</table>
-</s:if>
-
-
-
 <s:if test="auditTypes.size() > 0">
 <h4>Audit Types</h4>
 <table class="report">

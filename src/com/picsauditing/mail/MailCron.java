@@ -2,8 +2,6 @@ package com.picsauditing.mail;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -42,8 +40,6 @@ public class MailCron extends PicsActionSupport {
 
 	private int subscriptionID = 0;
 
-	private final Logger logger = LoggerFactory.getLogger(MailCron.class);
-	
 	@Anonymous
 	public String execute() throws Exception {
 		/**
@@ -101,8 +97,9 @@ public class MailCron extends PicsActionSupport {
 			emailSubscription.setLastSent(DateBean.addDays(emailSubscription.getLastSent(), 1));
 			subscriptionDAO.save(emailSubscription);
 		} catch (Exception notMuchWeCanDoButLogIt) {
-			logger.error("Error processing subscription {}", emailSubscription.getId());
-			logger.error(notMuchWeCanDoButLogIt.getMessage());
+			System.out.println("Error processing subscription " + emailSubscription.getId());
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
 		}
 	}
 
@@ -115,8 +112,9 @@ public class MailCron extends PicsActionSupport {
 				emailSenderSpring.send(email);
 			}
 		} catch (Exception notMuchWeCanDoButLogIt) {
-			logger.error("Error sending email");
-			logger.error(notMuchWeCanDoButLogIt.getMessage());
+			System.out.println("Error sending email");
+			System.out.println(notMuchWeCanDoButLogIt);
+			notMuchWeCanDoButLogIt.printStackTrace();
 		}
 	}
 

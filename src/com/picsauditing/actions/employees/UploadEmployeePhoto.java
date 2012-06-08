@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.interceptor.annotations.Before;
@@ -37,8 +35,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 	private int x1, y1, width, height;
 	private final int XSIZE = 150, YSIZE = 150;
 	private final int XRESIZE = 800, YRESIZE = 800;
-    
-	private final Logger logger = LoggerFactory.getLogger(UploadEmployeePhoto.class);
+
 	@Before
 	public void startup() {
 		if (employee == null)
@@ -102,7 +99,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 						getFileName(employee.getId()), "jpg", true);
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.error(getText("EmployeePhotoUpload.message.ErrorMoving", new Object[] { imgFile }));
+				System.out.println(getText("EmployeePhotoUpload.message.ErrorMoving", new Object[] { imgFile }));
 			}
 
 			if (bImg.getWidth() <= XSIZE && bImg.getHeight() <= YSIZE) {
@@ -144,8 +141,7 @@ public class UploadEmployeePhoto extends AccountActionSupport {
 				employee.setPhoto(FileUtils.getExtension(f.getName()));
 				employeeDAO.save(employee);
 			} catch (IOException e) {
-				Logger logger = LoggerFactory.getLogger(UploadEmployeePhoto.class);
-				logger.error("Could not crop image");
+				System.out.println("Could not crop image");
 				addActionError("Error with cropping image");
 			} finally {
 				bImg.flush();

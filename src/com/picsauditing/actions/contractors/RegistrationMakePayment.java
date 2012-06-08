@@ -130,13 +130,11 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 		String url = "";
 		if ((LowMedHigh.None.equals(contractor.getSafetyRisk()) && !contractor.isMaterialSupplierOnly())
 				|| (LowMedHigh.None.equals(contractor.getProductRisk()) && contractor.isMaterialSupplier())) {
-			url = "ContractorRegistrationServices.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.SelectService"));
+			url = "ContractorRegistrationServices.action?id=" + contractor.getId() + "&msg="
+					+ getText("ContractorRegistrationFinish.message.SelectService");
 		} else if (contractor.getNonCorporateOperators().size() == 0) {
-			url = "AddClientSite.action?id=" + contractor.getId();
-
-			addActionMessage(getText("ContractorRegistrationFinish.message.AddFacility"));
+			url = "AddClientSite.action?id=" + contractor.getId() + "&msg="
+					+ getText("ContractorRegistrationFinish.message.AddFacility");
 		}
 
 		if (!url.isEmpty()) {
@@ -196,7 +194,7 @@ public class RegistrationMakePayment extends ContractorActionSupport {
 						EmailQueue emailQueue;
 						try {
 							emailQueue = emailBuilder.build();
-							emailQueue.setVeryHighPriority();
+							emailQueue.setPriority(90);
 							emailQueue.setViewableById(Account.PicsID);
 
 							emailSender.send(emailQueue);

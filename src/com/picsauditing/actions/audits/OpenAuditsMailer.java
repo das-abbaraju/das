@@ -2,9 +2,6 @@ package com.picsauditing.actions.audits;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -23,9 +20,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 
 	private ContractorAuditDAO contractorAuditDAO;
 	private EmailQueueDAO emailQueueDAO;
-    
-	private final Logger LOG = LoggerFactory.getLogger(OpenAuditsMailer.class);
-	
+
 	public OpenAuditsMailer(ContractorAuditDAO contractorAuditDAO, EmailQueueDAO emailQueueDAO) {
 		this.contractorAuditDAO = contractorAuditDAO;
 		this.emailQueueDAO = emailQueueDAO;
@@ -61,7 +56,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				emailBuilder.setPermissions(permissions);
 				emailBuilder.setConAudit(conAudit);
 				EmailQueue email = emailBuilder.build();
-				email.setVeryLowPriority();
+				email.setPriority(10);
 				email.setFromAddress("audits@picsauditing.com");
 				email.setViewableById(Account.EVERYONE);
 				emailQueueDAO.save(email);
@@ -75,7 +70,7 @@ public class OpenAuditsMailer extends PicsActionSupport {
 				noteDAO.save(note);
 
 			} catch (Exception e) {
-				LOG.error("Error sending openRequirements email: {}", e.getMessage());
+				System.out.println("Error sending openRequirements email: " + e.getMessage());
 			}
 		}
 		return nextID;

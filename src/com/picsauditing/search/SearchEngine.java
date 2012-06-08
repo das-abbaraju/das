@@ -200,7 +200,6 @@ public class SearchEngine {
 			String accountStatuses = "'Active','Pending'";
 			String employeeStatuses = "'Active', 'Inactive'";
 			String userName = "'DELETE-%'";
-			String userStatuses = "'yes'";
 			if (currPerm.isPicsEmployee() || currPerm.getAccountStatus().isDemo())
 				accountStatuses += ",'Demo'";
 
@@ -224,12 +223,12 @@ public class SearchEngine {
 				}
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
-							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u JOIN\n"
+							"UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.username not like "
+									+ userName + " JOIN\n"
 									+ "((select f.opID id FROM facilities f WHERE f.corporateID =")
 							.append(currPerm.getAccountId())
 							.append(")\nUNION\n(SELECT o.id id FROM operators o WHERE o.parentID =")
-							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id")
-							.append(" where u.username not like " + userName + " and u.isActive = "+userStatuses + ")");
+							.append(currPerm.getAccountId()).append(")\n) AS t ON u.accountID = t.id)");
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
@@ -252,7 +251,7 @@ public class SearchEngine {
 				if (currPerm.hasPermission(OpPerms.EditUsers)) {
 					sql.append(
 							"\nUNION\n(SELECT u.name rName, u.id id, if(u.isGroup='Yes','G','U') rType FROM users u WHERE u.username not like "
-									+ userName + " and u.isActive = "+userStatuses+" and u.accountID =").append(currPerm.getAccountId()).append(')');
+									+ userName + " and u.accountID =").append(currPerm.getAccountId()).append(')');
 				}
 				if (currPerm.hasPermission(OpPerms.ManageEmployees)) {
 					sql.append(
@@ -271,7 +270,7 @@ public class SearchEngine {
 						.append("UNION\n(SELECT a.name rName, a.id, acc.rType FROM accounts a JOIN\n")
 						.append("(SELECT gc.subID id, 'C' rType FROM generalcontractors gc\n")
 						.append("JOIN facilities f ON f.opID = gc.genID GROUP BY id) AS acc on a.id = acc.id WHERE a.status IN (" + accountStatuses + "))\n")
-						.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.isActive = "+userStatuses+" and u.username not like " + userName + " )")
+						.append("UNION\n(SELECT u.name rName, u.id, IF(u.isGroup='Yes','G','U') rType FROM users u where u.username not like " + userName + " )")
 						.append("\nUNION\n(\nSELECT CONCAT(e.firstName, ' ', e.lastName) rName, e.id, 'E' rType FROM employee e where e.status in (" + employeeStatuses + "))")
 						.append(") AS r1\nON foreignKey = r1.id AND indexType = r1.rType");
 			}

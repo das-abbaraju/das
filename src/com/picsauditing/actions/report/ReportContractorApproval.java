@@ -149,16 +149,19 @@ public class ReportContractorApproval extends ReportAccount {
 	}
 
 	public String getWorkStatusDesc(ApprovalStatus workStatus) {
-		return getText(workStatus.getI18nKey());
+		if (workStatus.isContractor())
+			return "Contractor Approves";
+		if (workStatus.isPending())
+			return "Pending";
+		if (workStatus.isYes())
+			return "Yes";
+		else
+			return "No";
 	}
-
-	public boolean isOperatorCanChangeWorkStatus(ApprovalStatus workStatus) {
-		return workStatus != ApprovalStatus.C && workStatus != ApprovalStatus.D;
-	}
-
+	
 	protected void addExcelColumns() {
 		super.addExcelColumns();
-
+		
 		if (permissions.isOperator()) {
 			excelSheet.addColumn(new ExcelColumn("creationDate", "Date Added", ExcelCellType.Date), 400);
 			excelSheet.addColumn(new ExcelColumn("workStatus", "Work Status", ExcelCellType.Enum));

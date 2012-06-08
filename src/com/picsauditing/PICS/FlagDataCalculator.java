@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
@@ -43,7 +40,6 @@ public class FlagDataCalculator {
 
 	// Assume this is true for the contractor in question
 	private boolean worksForOperator = true;
-	private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
 
 	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
 		setContractorCriteria(contractorCriteria);
@@ -341,7 +337,7 @@ public class FlagDataCalculator {
 				}
 				return false;
 			} catch (Exception e) {
-				logger.error("Datatype is {} but values were not {} s", dataType, dataType);
+				System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
 				return true;
 			}
 		}
@@ -449,10 +445,6 @@ public class FlagDataCalculator {
 											return WaitingOn.Contractor;
 										} else {
 											waitingOnPics = true;
-										}
-									} else {
-										if (conAudit.getAuditType().isImplementation() &&  cao.getPercentVerified() != 100) {
-											return WaitingOn.Contractor;
 										}
 									}
 								}
@@ -630,7 +622,7 @@ public class FlagDataCalculator {
 		}
 
 		if (caos.size() > 1)
-			logger.warn("WARNING: Found " + caos.size() + " matching caos for " + operator.toString()
+			System.out.println("WARNING: Found " + caos.size() + " matching caos for " + operator.toString()
 					+ " on auditID = " + conAudit.getId());
 
 		return caos;

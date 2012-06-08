@@ -3,15 +3,8 @@
 
 <ul class="client-site-list">
 	<s:iterator value="#client_site_list" var="result" status="status">
-		<s:if test="#generalContractorID == null && #result.generalContractor">
-			<s:set name="generalContractorID" value="%{#result.id}" />
-		</s:if>
 		<li>
-			<a href="javascript:;"
-				data-id="${result.id}"
-				data-requires-general-contractor-modal="<s:if test="#result.requiresClientSiteOrGeneralContractorSelection">Yes</s:if>"
-				data-general-contractor-id="${generalContractorID}"
-				data-requires-site-selection="<s:if test="#result.doContractorsPay == 'No'">Yes</s:if>">
+			<a href="javascript:;" data-id="${result.id}">
 				<span class="name">${result.name}</span>
 				<span class="location">
 					<s:if test="#result.city != ''">
@@ -28,11 +21,6 @@
 				<s:if test="#client_site_list_position == 'left'">
 					<span id="${result.id}" class="add btn success">+ <s:text name="JS.RegistrationAddClientSite.AddSite"/></span>
 				</s:if>
-				<s:elseif test="#client_site_list_position == 'middle'">
-					<s:if test="!isWorksForOperator(#result)">
-						<span class="add btn success">+ <s:text name="JS.RegistrationAddClientSite.AddSite"/></span>
-					</s:if>
-				</s:elseif>
 				<s:else>
 					<span class="remove btn error">- <s:text name="JS.RegistrationAddClientSite.RemoveSite"/></span>
 				</s:else>

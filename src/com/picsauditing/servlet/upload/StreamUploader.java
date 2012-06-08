@@ -10,8 +10,6 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Servlet implementation class for Servlet: Uploader
@@ -23,8 +21,6 @@ import org.slf4j.LoggerFactory;
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	private static final Logger logger = LoggerFactory.getLogger(StreamUploader.class);
 
 	/* (non-Java-doc)
 	 * @see javax.servlet.http.HttpServlet#HttpServlet()
@@ -86,13 +82,13 @@ import org.slf4j.LoggerFactory;
 			    	   writeToFile=false;
 			       
 			    } else {
-			    	logger.debug("StreamUploader.writeToFile: {}", writeToFile);
+			    	System.out.println("StreamUploader.writeToFile:"+ writeToFile);
 			    	uploadable.uploadFile(stream, writeToFile, async);			    	
 			    }
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-	    	logger.error("Error in StreamUploader: {}", e.getMessage());
+	    	System.out.println("Error in StreamUploader:"+ e.getMessage());
 			throw new ServletException(e);
 		} finally {
 			uploadable.postProcess();

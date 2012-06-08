@@ -1,19 +1,27 @@
 package com.picsauditing.actions.users;
 
-import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.PasswordValidator;
-import com.picsauditing.access.Anonymous;
+
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
 import com.picsauditing.dao.UserDAO;
+
+import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailSubscription;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.UserAccess;
+import com.picsauditing.mail.EmailBuilder;
+import com.picsauditing.mail.EmailSenderSpring;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -34,26 +42,56 @@ public class ChangePassword extends PicsActionSupport {
 	protected List<EmailSubscription> eList = new ArrayList<EmailSubscription>();
 	protected String url;
 
-	@Anonymous
 	public String execute() throws Exception {
 		super.execute();
-		loadPermissions();
+
 		if (u == null)
 			u = dao.find(permissions.getUserId());
-
+		
 		if (u.getId() == user.getId())
 			user = u;
-		else
+		else		
 			user = userDAO.find(user.getId());
-
+		
 		return SUCCESS;
 	}
 
-	public void resetPasswordLink(int user, String url) throws IOException {
-		redirect("ChangePassword.action?source=profile&user=" + user + "&url=" + url);
+	public String emailPassword() throws Exception {
+
+		// Seeding the time in the reset hash so that each one will be
+		// guaranteed unique
+		user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+		userDAO.save(user);
+
+		addActionMessage(sendRecoveryEmail(user));
+		return SUCCESS;
 	}
 
-	@Anonymous
+	public String sendRecoveryEmail(User user) {
+		try {
+			EmailBuilder emailBuilder = new EmailBuilder();
+			emailBuilder.setTemplate(85);
+			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
+			emailBuilder.addToken("user", user);
+
+			user.setResetHash(Strings.hashUrlSafe("user" + user.getId() + String.valueOf(new Date().getTime())));
+			String confirmLink = "http://www.picsorganizer.com/Login.action?username="
+					+ URLEncoder.encode(user.getUsername(), "UTF-8") + "&key=" + user.getResetHash() + "&button=reset";
+			emailBuilder.addToken("confirmLink", confirmLink);
+			emailBuilder.setToAddresses(user.getEmail());
+
+			EmailQueue emailQueue;
+			emailQueue = emailBuilder.build();
+			emailQueue.setPriority(100);
+
+			EmailSenderSpring emailSenderStatic = SpringUtils.getBean("EmailSenderSpring");
+			emailSenderStatic.send(emailQueue);
+			return getTextParameterized("AccountRecovery.EmailSent", user.getEmail());
+		} catch (Exception e) {
+			return getText("AccountRecovery.error.ResetEmailError");
+		}
+	}
+
 	public String changePassword() throws Exception {
 		/*
 		 * Some browsers (i.e. Chrome) store the user's password in the first
@@ -63,10 +101,9 @@ public class ChangePassword extends PicsActionSupport {
 		boolean changePassword = false;
 		// if the user is admin and user id and user's password need to be
 		// changed doesnt match
-		loadPermissions();
 
-		if ((user.getId() != u.getId()) || permissions.isForcePasswordReset()) {
-			changePassword = true;
+		if (permissions.isAdmin() && user.getId() != u.getId()) {		
+			changePassword = true;			
 		} else {
 			if (u.isEncryptedPasswordEqual(passwordc)) {
 				changePassword = true;
@@ -75,11 +112,10 @@ public class ChangePassword extends PicsActionSupport {
 				return SUCCESS;
 			}
 		}
-
+		
 		if (changePassword) {
 			if (!Strings.isEmpty(password2)) {
 				boolean forcedReset = u.isForcePasswordReset();
-
 				if (!password1.equals(password2)) {
 					addActionError(getText("ProfileEdit.error.PasswordsDoNotMatch"));
 				}
@@ -114,8 +150,7 @@ public class ChangePassword extends PicsActionSupport {
 				 */
 				if (!Strings.isEmpty(url) && forcedReset) {
 					user = dao.save(user);
-					redirect(url);
-					return SUCCESS;
+					return redirect(url);
 				}
 			} else {
 				if (Strings.isEmpty(password1))
@@ -127,30 +162,29 @@ public class ChangePassword extends PicsActionSupport {
 		}
 
 		user = dao.save(user);
-		if (source.equalsIgnoreCase("manage")) {
+		if (source.equalsIgnoreCase("manage"))
 			url = "UsersManage.action?account=" + user.getAccount() + "&user=" + user.getId() + "&isActive="
-					+ user.getIsActive() + "&isGroup=" + user.getIsGroup();
-			addActionMessage(getText("global.Password.saved"));
-		} else {
-			url = "ProfileEdit.action";
-
-			addActionMessage(getText("global.Password.saved"));
-		}
-
+					+ user.getIsActive() + "&isGroup=" + user.getIsGroup()+"&msg="+getText("global.Password.saved");
+		else
+			url = "ProfileEdit.action?msg="+getText("global.Password.saved");
 		this.redirect(url);
 		return SUCCESS;
+	}
+	public boolean isHasProfileEdit() {
+		if (user.getAccount().isContractor())
+			return true;
+		
+		for (UserAccess userAccess : user.getPermissions()) {
+			if (userAccess.getOpPerm().equals(OpPerms.EditProfile)) {
+				return true;
+			}
+
+		}
+		return false;
 	}
 
 	public void setU(User u) {
 		this.u = u;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getUrl() {
-		return url;
 	}
 
 	public void setUser(User user) {
@@ -164,15 +198,12 @@ public class ChangePassword extends PicsActionSupport {
 	public User getU() {
 		return u;
 	}
-
-	public void setSource(String source) {
+	public void setSource(String source){
 		this.source = source;
 	}
-
-	public String getSource() {
+	public String getSource(){
 		return source;
 	}
-
 	public void setPasswordc(String passwordc) {
 		this.passwordc = passwordc;
 	}

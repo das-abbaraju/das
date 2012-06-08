@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
@@ -37,7 +38,6 @@ import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailException;
 import com.picsauditing.mail.EmailSenderSpring;
 import com.picsauditing.mail.EventSubscriptionBuilder;
-import com.picsauditing.models.audits.CaoSaveModel;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
@@ -48,8 +48,6 @@ public class CaoSave extends AuditActionSupport {
 	private EmailSenderSpring emailSender;
 	@Autowired
 	private AuditBuilder auditBuilder;
-	@Autowired
-	private CaoSaveModel caoSaveModel;
 
 	protected int caoID = 0;
 	private int noteID = 0;
@@ -191,13 +189,11 @@ public class CaoSave extends AuditActionSupport {
 						new Object[] { getText(status.getI18nKey()) });
 
 			if (status.isIncomplete() && Strings.isEmpty(note) && conAudit != null) {
-				if (note == null)
-					note = "";
 				if (conAudit.getAuditType().isPqf()) {
 					List<AuditData> temp = auditDataDao.findCustomPQFVerifications(conAudit.getId());
-					note += caoSaveModel.generateNote(temp);
+					generateNote(temp);
 				} else if (conAudit.getAuditType().isAnnualAddendum()) {
-					note += caoSaveModel.generateNote(conAudit.getData());
+					generateNote(conAudit.getData());
 				}
 			}
 		} else
@@ -206,6 +202,22 @@ public class CaoSave extends AuditActionSupport {
 		return "caoNoteSave";
 	}
 	
+	private void generateNote(List<AuditData> auditDataList) {
+		if (CollectionUtils.isEmpty(auditDataList)) {
+			return;
+		}
+		
+		for (AuditData auditData : auditDataList) {
+			if (!auditData.isVerified() && !Strings.isEmpty(auditData.getComment())) {
+				if (note == null) {
+					note = "";
+				}
+			
+				note += "Comment : " + auditData.getComment() + "\n";
+			}
+		}
+	}
+
 	public String refresh() throws RecordNotFoundException, NoRightsException {
 		findConAudit();
 		auditBuilder.recalculateCategories(conAudit);

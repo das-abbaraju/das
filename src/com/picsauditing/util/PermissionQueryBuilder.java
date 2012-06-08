@@ -40,32 +40,20 @@ public class PermissionQueryBuilder {
 		}
 
 		// For Operators, Corporate, Audits (hard ones)
-		String subquery = "";
-		// sorry, String was easier to read than a StringBuffer
+		String subquery = ""; // sorry, String was easier to read than a
+								// StringBuffer
 
 		if (permissions.isOperator()) {
-			String operatorIDs = permissions.getAccountIdString();
-
-			if (permissions.isGeneralContractor()) {
-				operatorIDs += "," + Strings.implode(permissions.getLinkedClients());
-			}
-
-			String contractors = "gc.subID";
-			String contractorOperatorTable = "generalcontractors gc";
-			String whereOperator = "gc.genID IN (" + operatorIDs + ")";
-
-			if (queryLanguage == HQL) {
-				contractors = "t.contractorAccount";
-				contractorOperatorTable = "ContractorOperator t";
-				whereOperator = "t.operatorAccount.id IN (" + operatorIDs + ")";
-			}
-
-			subquery = "SELECT " + contractors + " FROM " + contractorOperatorTable + " WHERE " + whereOperator;
+			if (queryLanguage == HQL)
+				subquery = "SELECT t.contractorAccount FROM ContractorOperator t " + "WHERE t.operatorAccount.id = "
+						+ permissions.getAccountId();
+			else
+				subquery = "SELECT gc.subID FROM generalcontractors gc WHERE gc.genID = " + permissions.getAccountId();
 
 			if (workingFacilities) {
 				if ((permissions.isApprovesRelationships() && !permissions.hasPermission(OpPerms.ViewUnApproved))
-						|| permissions.isGeneralContractor()) {
-					subquery += " AND " + (queryLanguage == HQL ? "t." : "gc.") + "workStatus = 'Y'";
+						|| permissions.isGcOperator()) {
+					subquery += " AND workStatus = 'Y'";
 				}
 			}
 		}

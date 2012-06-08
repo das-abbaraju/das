@@ -8,8 +8,6 @@ import java.util.Properties;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.DateTool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class VelocityAdaptor {
 	private VelocityEngine velocityEngine;
@@ -21,8 +19,7 @@ public class VelocityAdaptor {
 		try {
 			velocityEngine = new VelocityEngine(props);
 		} catch (Exception e) {
-			Logger logger = LoggerFactory.getLogger(VelocityAdaptor.class);
-			logger.error("failed to create VelocityAdaptor");
+			System.out.println("failed to create VelocityAdaptor");
 		}
 	}
 

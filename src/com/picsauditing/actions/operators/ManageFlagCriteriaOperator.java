@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +17,15 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AmBest;
 import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteria;
 import com.picsauditing.jpa.entities.FlagCriteriaContractor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
 import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.NoteCategory;
 import com.picsauditing.jpa.entities.OperatorTag;
@@ -36,8 +37,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 	@Autowired
 	private FlagCriteriaDAO flagCriteriaDAO;
-	@Autowired
-	private FlagDataOverrideDAO flagDataOverrideDAO;
 
 	private FlagCriteria flagCriteria;
 	private FlagCriteriaOperator flagCriteriaOperator;
@@ -126,11 +125,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 			String newNote = "Flag Criteria has been removed: " + fc.getCategory() + ", " + fc.getDescription() + ", "
 					+ flagCriteriaOperator.getFlag().toString() + " flagged";
 			addNote(getAccount(), newNote, noteCategory, LowMedHigh.Low, true, Account.EVERYONE, getUser());
-			
-			List<FlagDataOverride> flagDataOverrides = flagDataOverrideDAO.findByOpAndCrit(operator.getId(), fc.getId());
-			for (FlagDataOverride override:flagDataOverrides) {
-				flagDataOverrideDAO.remove(override);
-			}
 		}
 
 		return "list";

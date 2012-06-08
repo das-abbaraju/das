@@ -1,106 +1,49 @@
-#ContractorBadge-page
-{
-	padding-bottom: 40px;
-}
-
-#ContractorBadge-page h3
-{
-	margin-bottom: 40px;
-}
-
-#ContractorBadge-page h4
-{
-    margin-bottom: 20px;	
-}
-
-#ContractorBadge-page #badge_80,
-#ContractorBadge-page #badge_150
-{
-	display: none;
-}
-
 #ContractorBadge-page .badges
 {
+	list-style-type: none;
+	margin: 40px 0px 0px 20px;
+}
+
+#ContractorBadge-page .badges li
+{
+	clear: both;
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+
+#ContractorBadge-page .badge
+{
 	float: left;
-    list-style-type: none;
-    overflow: hidden;
-    text-align: center;
-    width: 30%; 
+	margin-right: 20px;
+	width: 200px;
 }
 
-#ContractorBadge-page select#badgeSize
+#ContractorBadge-page .code
 {
-	margin-bottom: 40px;
+	float: left;
 }
 
-#ContractorBadge-page .badges textarea
+#ContractorBadge-page .code a
 {
-	display: none;
-	width: 75%;
-	height: 150px;
-}
-
-#ContractorBadge-page .badges .clip_container
-{
-	margin-top: 30px;
-    text-align: center;
+	font-size: 12px;
 }
 
 #ContractorBadge-page .badges .pics_badge_container
 {
-    margin: 0px auto;
+	margin: 0px auto;
 }
 
-#ContractorBadge-page a,
-#ContractorBadge-page .pics_badge_container a 
+#ContractorBadge-page .badges textarea
 {
-    font-size: 12px;
+	height: 120px; width: 550px;
+}
+
+#ContractorBadge-page .badges .clip_container
+{
+	position: relative;	
 }
 
 #ContractorBadge-page .badges .clip_container embed
 {
-    float: left;
-}
-
-#ContractorBadge-page #badgeControls
-{
-    margin-top: 20px;
-}
-
-#ContractorBadge-page #badgeControls .picsbutton {
-    font-size: 14px;
-    margin-bottom: 20px;
-    padding: 10px;
-}
-
-#ContractorBadge-page #badgeSteps
-{
-    width: 60%;	
-}
-
-#ContractorBadge-page #badgeSteps h2
-{
-    color: #4686BF;
-    margin-bottom: 15px;
-}
-
-#ContractorBadge-page #badgeSteps li
-{
-    font-size: 18px;
-    padding-bottom: 10px;
-}
-
-
-#ContractorBadge-page #badgeInformation
-{
-    float: left;
-    margin-top: 20px;
-    width: 60%;
-}
-
-#ContractorBadge-page #badgeInformation sup
-{
-    vertical-align: super;
-    line-height: 1em;
-    font-size: smaller;
+	float: left;
 }

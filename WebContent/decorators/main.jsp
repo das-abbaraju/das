@@ -12,10 +12,11 @@
 <%@ page import="com.picsauditing.access.OpPerms" %>
 <%@ page import="com.picsauditing.access.PicsMenu" %>
 <%@ page import="com.picsauditing.access.Permissions" %>
+<%@ page import="com.picsauditing.dao.AppPropertyDAO" %>
 <%@ page import="com.picsauditing.dao.UserDAO" %>
+<%@ page import="com.picsauditing.jpa.entities.AppProperty" %>
 <%@ page import="com.picsauditing.jpa.entities.User" %>
 <%@ page import="com.picsauditing.PICS.I18nCache" %>
-<%@ page import="com.picsauditing.PICS.MainPage" %>
 <%@ page import="com.picsauditing.util.PicsOrganizerVersion"%>
 <%@ page import="com.picsauditing.util.SpringUtils" %>
 <%@ page import="com.picsauditing.util.Strings" %>
@@ -24,15 +25,23 @@
 <%@ page import="com.picsauditing.actions.TranslationActionSupport" %>
 <%
 	I18nCache i18nCache = I18nCache.getInstance();
-	Locale locale = TranslationActionSupport.getLocaleStatic();
+
 	String version = PicsOrganizerVersion.getVersion();
-	MainPage mainPage = new MainPage(request, session);
+	Permissions permissions = (Permissions)session.getAttribute("permissions");
+	if (permissions == null) {
+		permissions = new Permissions();
+	}
 
-	String protocol = mainPage.isPageSecure() ? "https" : "http";
-	Permissions permissions = mainPage.getPermissions();
+	Locale locale = TranslationActionSupport.getLocaleStatic();
 
-	boolean liveChatEnabled = mainPage.isLiveChatEnabled();
-	boolean debugMode = mainPage.isDebugMode();
+	boolean pageIsSecure = false;
+	if (request.isSecure())
+		pageIsSecure = true;
+	else if (request.getLocalPort() == 443)
+		pageIsSecure = true;
+	else if (request.getLocalPort() == 81)
+		pageIsSecure = true;
+	String protocol = pageIsSecure ? "https" : "http";
 
 	UserDAO userDao = SpringUtils.getBean("UserDAO");
 	User user = userDao.find(permissions.getUserId());
@@ -49,6 +58,28 @@
 		menu = PicsMenu.getMenu(permissions);
 		homePageUrl = PicsMenu.getHomePage(menu, permissions);
 	}
+
+	AppPropertyDAO appPropertyDAO = (AppPropertyDAO) SpringUtils.getBean("AppPropertyDAO");
+	AppProperty appProperty = appPropertyDAO.find("SYSTEM.MESSAGE");
+	String systemMessage = null;
+	if (!locale.getLanguage().equals("en")) {
+		systemMessage = i18nCache.getText("global.BetaTranslations", locale);
+	} else if (appProperty != null) {
+		systemMessage = appProperty.getValue();
+	}
+
+	boolean debugMode = false;
+	if (request != null && request.getCookies() != null) {
+		for (Cookie cookie: request.getCookies()) {
+			if ("debugging".equals(cookie.getName())) {
+				debugMode = Boolean.valueOf(cookie.getValue());
+				break;
+			}
+		}
+	}
+
+	AppProperty liveChatState = appPropertyDAO.find("PICS.liveChat");
+	boolean liveChatEnabled = liveChatState != null && "1".equals(liveChatState.getValue());
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -58,12 +89,6 @@
 
 		<meta http-equiv="Cache-Control" content="no-cache" />
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-
-        <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-touch-icon-144x144.png" />
 
 		<link rel="stylesheet" type="text/css" media="screen" href="css/reset.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" href="css/print.css?v=${version}" />
@@ -77,7 +102,6 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="css/form.css?v=${version}" />
         <link rel="stylesheet" type="text/css" href="css/insureguard/insureguard.css?v=${version}" />
 		<link rel="stylesheet" type="text/css" media="screen" href="css/environment.css?v=${version}" />
-		<link rel="stylesheet" type="text/css" media="screen" href="css/main_system_message.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/jquery/tagit/jquery.tagit.css?v=${version}" />
         <link rel="stylesheet" type="text/css" media="screen" href="js/pics/resources/css/ext-all.css" />
 
@@ -173,7 +197,12 @@
         <jsp:include page="/struts/layout/environment.jsp" />
 
 		<div id="bodywrap">
-			<jsp:include page="/struts/misc/main_system_message.jsp" />
+			<% if (!Strings.isEmpty(systemMessage)) { %>
+				<div id="systemMessage">
+					<%= systemMessage %>
+					<div class="clear"></div>
+				</div>
+			<% } %>
 			<table id="header">
 				<!-- !begin header -->
 				<tr>

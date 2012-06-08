@@ -17,8 +17,7 @@
 				<li>
 					<div id="username_status"/>
 				</li>
-
-				<s:if test="user.id != u.id || permissions.forcePasswordReset" >
+				<s:if test="permissions.admin && user.id != u.id" >
 					<s:hidden id="u" name="u" value="%{u.id}" />
 					<s:hidden name="user" value="%{user.id}" />
 				</s:if>
@@ -50,6 +49,12 @@
 		</fieldset>
 		<fieldset class="form submit">
 			<s:submit value="%{getText('button.Save')}" cssClass="picsbutton positive" method="changePassword" />		
+	
+			<s:if test="source=='manage' && user.id != u.id">
+				<s:if test="hasProfileEdit">
+					<s:submit value="%{getText('UsersManage.SendResetPasswordEmail')}" cssClass="btn" method="emailPassword" />
+				</s:if>						
+			</s:if> 
 			<s:if test="source=='manage'">
 				<a class="cancel-password" href="UsersManage.action?account=<s:property value="account.id"/>&user=<s:property value="user.id"/>&isActive=<s:property value="[1].isActive"/>&isGroup=<s:property value="[1].isGroup"/>">
 					<s:text name="JS.button.Cancel" />

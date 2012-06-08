@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.FileDAO;
@@ -18,8 +15,7 @@ import com.picsauditing.util.FileUtils;
 public class FileIndexingEngine extends PicsActionSupport {
 
 	private FileDAO dao;
-    
-	private final Logger logger = LoggerFactory.getLogger(FileIndexingEngine.class);
+
 	public FileIndexingEngine(FileDAO dao) {
 		this.dao = dao;
 	}
@@ -40,7 +36,7 @@ public class FileIndexingEngine extends PicsActionSupport {
 			if (file.isDirectory()) {
 				process(file);
 			} else {
-				logger.info(new Date() + file.getAbsolutePath());
+				System.out.println(new Date() + file.getAbsolutePath());
 				try {
 					String[] fileName = file.getName().split("[/_/.]");
 					if (fileName.length != 3)

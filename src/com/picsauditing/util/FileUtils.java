@@ -13,11 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class FileUtils {
-	private static final Logger logger = LoggerFactory.getLogger(FileUtils.class);
+
 	/**
 	 * Move an existing File object to another location. This is NFS safe because it actually copies the new file over and deletes the old one.
 	 * 
@@ -85,7 +82,7 @@ public class FileUtils {
 			throw new FileNotFoundException("Can't copy file: directory (" + parentFolderString + ") can't be created");
 
 		File theNewFile = new File(parentFolderString + "/" + fileName + "." + extension);
-		logger.debug("Attempting to create/replace {}", theNewFile.getAbsolutePath());
+		System.out.println("Attempting to create/replace " + theNewFile.getAbsolutePath());
 
 		if (deleteDuplicates) {
 			// Delete all files with same name but different extensions
@@ -150,7 +147,7 @@ public class FileUtils {
 
 	static public boolean checkFileExtension(String extension) {
 		String[] validExtensions = { "pdf", "doc", "txt", "xls", "jpg", "gif", "png", "docx", "xlsx", "zip", "tif",
-				"tiff", "ppt", "pptx" };
+				"tiff" };
 		return checkFileExtension(extension, validExtensions);
 	}
 

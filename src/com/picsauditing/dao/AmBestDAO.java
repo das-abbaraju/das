@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +13,6 @@ import com.picsauditing.util.Strings;
 
 @SuppressWarnings("unchecked")
 public class AmBestDAO extends PicsDAO {
-	private final static Logger logger = LoggerFactory.getLogger(AmBestDAO.class);
-	
 	@Transactional(propagation = Propagation.NESTED)
 	public AmBest save(AmBest o) {
 		if (o.getAmBestId() == 0) {
@@ -81,7 +77,7 @@ public class AmBestDAO extends PicsDAO {
 			amb = amBestDAO.findByNaic(naic);
 			return amb;
 		} catch (Exception e) {
-			logger.error("Failed to query AmBest for {} error = {}", naic, e.getMessage());
+			System.out.println("Failed to query AmBest for " + naic + " error=" + e.getMessage());
 			return null;
 		}
 	}

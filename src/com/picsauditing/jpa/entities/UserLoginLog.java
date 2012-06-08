@@ -21,8 +21,6 @@ public class UserLoginLog {
 	private String remoteAddress;
 	private String serverAddress;
 	private User admin;
-	private String browser;
-	private String fullUserAgent;
 
 	public UserLoginLog() {
 	}
@@ -113,23 +111,5 @@ public class UserLoginLog {
 		if (id != other.id)
 			return false;
 		return true;
-	}
-
-	@Column(name = "browser", length = 50)
-	public String getBrowser() {
-		return browser;
-	}
-
-	public void setBrowser(String browser) {
-		this.browser = browser;
-	}
-
-	@Column(name = "fullUserAgent")
-	public String getUserAgent() {
-		return fullUserAgent;
-	}
-
-	public void setUserAgent(String userAgent) {
-		this.fullUserAgent = userAgent;
 	}
 }

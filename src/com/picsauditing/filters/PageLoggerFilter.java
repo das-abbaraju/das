@@ -13,17 +13,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.search.Database;
 
 public final class PageLoggerFilter implements Filter {
 	private FilterConfig filterConfig = null;
 
-	private final Logger logger = LoggerFactory.getLogger(PageLoggerFilter.class);
-	
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 	}
@@ -57,7 +52,7 @@ public final class PageLoggerFilter implements Filter {
 						+ ((httpRequest.getQueryString() != null) ? "?" + httpRequest.getQueryString() : "") + "')");
 				request.setAttribute("pics_page_logger_id", id);
 			} catch (SQLException e) {
-				logger.error("Failed to insert logging into DB {}", e.getMessage());
+				System.out.println("Failed to insert logging into DB" + e.getMessage());
 			}
 
 		}

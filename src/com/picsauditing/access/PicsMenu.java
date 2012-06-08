@@ -142,10 +142,6 @@ public class PicsMenu {
 			subMenu.addChild(getTitle("ContractorList"), "ContractorList.action", "ContractorList");
 		}
 
-		if (permissions.isGeneralContractor()) {
-			subMenu.addChild(getTitle("SubcontractorFlagMatrix"), "SubcontractorFlagMatrix.action");
-		}
-
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			final String url = "NewContractorSearch.action?filter.performedBy=Self Performed&filter.primaryInformation=true&filter.tradeInformation=true";
 			subMenu.addChild(getTitle("NewContractorSearch"), url, "NewContractorSearch");
@@ -269,7 +265,9 @@ public class PicsMenu {
 			subMenu.addChild("Manage Accounts",
 					"ReportAccountList.action?filter.status=Active&filter.status=Demo&filter.status=Pending", "ManageAccounts");
 		if (permissions.hasPermission(OpPerms.ContractorApproval))
-			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P");
+			subMenu.addChild(getTitle("ContractorApproval"), "ContractorApproval.action?filter.workStatus=P", "ContractorApproval");
+		if (permissions.isGcOperator() && permissions.hasPermission(OpPerms.ContractorApproval))
+			subMenu.addChild(getTitle("ReportSubcontractors"), "ReportSubcontractors.action", "ReportSubcontractors");
 		if (permissions.hasPermission(OpPerms.ContractorTags) && permissions.isOperatorCorporate())
 			addChildAction(subMenu, "OperatorTags");
 		if (permissions.hasPermission(OpPerms.ContractorAdmin)) {

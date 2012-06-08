@@ -23,7 +23,7 @@
 		}
 	};
 	
-/*	// ajax request to update add client sites filter
+	// ajax request to update add client sites filter
 	REGISTRATION.client_site_filter = {
 		init: function () {
 			if ($('#RegistrationAddClientSite-page').length) {
@@ -331,7 +331,7 @@
 				});
 			}
 		}
-	};*/
+	};
 	
 	// contractor create account country / state toggle
 	REGISTRATION.contractor_country = {

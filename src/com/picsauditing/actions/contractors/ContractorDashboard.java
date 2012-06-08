@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.struts2.ServletActionContext;
@@ -126,15 +125,14 @@ public class ContractorDashboard extends ContractorActionSupport {
 			throw new NoRightsException("PICS Administrator");
 
 		if (permissions.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
-			OperatorAccount gc = new OperatorAccount();
-			gc.setId(permissions.getAccountId());
-
-			ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(gc);
-			if (contractorOperator != null
-					&& contractorOperator.getOperatorAccount().getId() == permissions.getAccountId()
-					&& contractorOperator.getWorkStatus() != ApprovalStatus.Y) {
-				throw new GeneralContractorNotApprovedException(getTextParameterized(
-						"ContractorView.ContractorHasNotApprovedGC", contractor.getName()));
+			// find GC entry
+			for (OperatorAccount operator : contractor.getGeneralContractorOperatorAccounts()) {
+				ContractorOperator contractorOperator = contractor.getContractorOperatorForOperator(operator);
+				if (contractorOperator.getOperatorAccount().getId() == permissions.getAccountId()
+						&& contractorOperator.getWorkStatus() != ApprovalStatus.Y) {
+					throw new GeneralContractorNotApprovedException(getTextParameterized(
+							"ContractorView.ContractorHasNotApprovedGC", contractor.getName()));
+				}
 			}
 		}
 
@@ -193,7 +191,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setHighPriority();
+			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
 			if (permissions.isOperator())
 				emailQueue.setViewableById(permissions.getTopAccountID());
@@ -459,15 +457,13 @@ public class ContractorDashboard extends ContractorActionSupport {
 
 	public List<ContractorOperator> getGCOperators() {
 		if (permissions.isGeneralContractor()) {
-			// Intersection between contractor's operators and gc's operators
-
-			Set<Integer> gcOps = permissions.getLinkedClients();
-
-			List<ContractorOperator> ccOps = new ArrayList<ContractorOperator>(contractor.getOperators());
+			List<OperatorAccount> gcOps = dao.find(OperatorAccount.class, permissions.getAccountId())
+					.getGcContractorOperatorAccounts();
+			List<ContractorOperator> ccOps = contractor.getOperators();
 
 			Iterator<ContractorOperator> coItr = ccOps.iterator();
 			while (coItr.hasNext()) {
-				if (!gcOps.contains(coItr.next().getOperatorAccount().getId()))
+				if (!gcOps.contains(coItr.next().getOperatorAccount()))
 					coItr.remove();
 			}
 
@@ -545,7 +541,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 		return earliestIndividualFlagOverride;
 	}
 
-	public void setEarliestIndividualFlagOverride(Date earliestIndividualFlagOverride) {
+	public void setEarliestIndividualFlagOverride(
+			Date earliestIndividualFlagOverride) {
 		this.earliestIndividualFlagOverride = earliestIndividualFlagOverride;
 	}
 
@@ -700,9 +697,8 @@ public class ContractorDashboard extends ContractorActionSupport {
 	}
 
 	public boolean isViewableByGC() {
-		if (permissions.isGeneralContractorFree()) {
-			if (getActiveOperators().size() == 1
-					&& getActiveOperators().get(0).getOperatorAccount().getId() == permissions.getAccountId()) {
+		if (permissions.isGeneralContractor()) {
+			if (getActiveOperators().size() == 1 && getActiveOperators().get(0).getOperatorAccount().getId() == permissions.getAccountId()) {
 				return false;
 			}
 		}

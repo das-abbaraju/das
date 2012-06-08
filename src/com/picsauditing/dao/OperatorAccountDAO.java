@@ -91,8 +91,10 @@ public class OperatorAccountDAO extends PicsDAO {
 		where += ") ";
 
 		if (permissions.isGeneralContractor()) {
-			where += " AND a.id IN (" + permissions.getAccountId() + ","
-					+ Strings.implode(permissions.getLinkedClients()) + ")";
+			where += "AND a IN (SELECT co1.operatorAccount FROM ContractorOperator co1 "
+					+ "WHERE co1.contractorAccount IN (SELECT co2.contractorAccount FROM ContractorOperator co2 "
+					+ "WHERE co2.operatorAccount.id = " + permissions.getAccountId()
+					+ " AND co2.type = 'GeneralContractor') AND co1.operatorAccount.type = 'Operator')";
 		} else {
 			if (permissions.isCorporate()) {
 				// Show corporate users operators in their facility
@@ -210,6 +212,7 @@ public class OperatorAccountDAO extends PicsDAO {
 		return Integer.parseInt(query.getSingleResult().toString());
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public boolean removeAllByOpID(OperatorAccount operatorAccount, String ftpDir) {
 		int opID = operatorAccount.getId();
 
@@ -227,12 +230,17 @@ public class OperatorAccountDAO extends PicsDAO {
 		if (Integer.parseInt(query.getSingleResult().toString()) > 0)
 			return false;
 
+		query = em.createQuery("DELETE FROM AuditCatOperator ao WHERE ao.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM AuditQuestionOperatorAccount aq WHERE aq.operatorAccount.id = " + opID);
+		query.executeUpdate();
+		query = em.createQuery("DELETE FROM Facility f WHERE f.operator.id = " + opID);
+
 		OperatorFormDAO operatorFormDAO = (OperatorFormDAO) SpringUtils.getBean("OperatorFormDAO");
 		if (!operatorFormDAO.deleteOperatorForms(opID, ftpDir))
 			return false;
 
-		operatorAccount.setStatus(AccountStatus.Deleted);
-		save(operatorAccount);
+		remove(operatorAccount);
 		return true;
 	}
 

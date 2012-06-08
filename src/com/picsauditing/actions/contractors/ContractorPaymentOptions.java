@@ -75,16 +75,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					msg = getText("ContractorPaymentOptions.PleaseSelectFacilities");
 				else
 					msg = getText("ContractorPaymentOptions.SelectRequestedByOperator");
-
-				addActionMessage(msg);
-
-				this.redirect("ContractorFacilities.action?id=" + contractor.getId());
+				this.redirect("ContractorFacilities.action?id=" + contractor.getId() + "&msg=" + msg);
 				return BLANK;
 			}
 		}
 		if (newRegistration) {
-			addActionMessage(getText("ContractorPaymentOptions.ImportPQFCreated",
-					new Object[] { getText("PicsTollFreePhone") }));
+			addActionMessage(getText(
+					"ContractorPaymentOptions.ImportPQFCreated",
+					new Object[] {getText("PicsTollFreePhone")}));
 		}
 
 		if ("copyBillingEmail".equals(button)) {
@@ -140,7 +138,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				} catch (Exception justUseThePlainResponseText) {
 				}
 				// TODO: test
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+				addActionError(getText(
+						"ContractorPaymentOptions.GatewayCommunicationError",
 						new Object[] { getText("PicsTollFreePhone") }));
 			} else {
 				contractor.setCcOnFile(true);
@@ -159,7 +158,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 				contractor.setCcOnFile(false);
 			} catch (Exception x) {
 				// TODO: Test
-				addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+				addActionError(getText(
+						"ContractorPaymentOptions.GatewayCommunicationError",
 						new Object[] { getText("PicsTollFreePhone") }));
 				braintreeCommunicationError = true;
 				return;
@@ -188,7 +188,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		// not show cc data
 		if (retries >= quit) {
 			// TODO: Test
-			addActionError(getText("ContractorPaymentOptions.GatewayCommunicationError",
+			addActionError(getText(
+					"ContractorPaymentOptions.GatewayCommunicationError",
 					new Object[] { getText("PicsTollFreePhone") }));
 			braintreeCommunicationError = true;
 			return;
@@ -270,7 +271,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 		if (!permissions.isAdmin()
 				&& (permissions.hasPermission(OpPerms.ContractorAdmin)
 						|| permissions.hasPermission(OpPerms.ContractorBilling) || permissions
-							.hasPermission(OpPerms.ContractorSafety))) {
+						.hasPermission(OpPerms.ContractorSafety))) {
 			contractor.setAgreementDate(new Date());
 			contractor.setAgreedBy(getUser());
 			contractorAccountDao.save(contractor);
@@ -442,8 +443,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport {
 					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
 							activationFee));
 				} else {
-					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
-							contractor.getPayingFacilities());
+					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation, contractor
+							.getPayingFacilities());
 					activationFee.setAmount(FeeClass.Activation.getAdjustedFeeAmountIfNecessary(contractor,
 							activationFee));
 				}

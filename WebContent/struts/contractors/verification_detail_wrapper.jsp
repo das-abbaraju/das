@@ -169,6 +169,7 @@
 		}
 		
 		 function openOsha(oshaId, questionId) {
+			//alert(oshaId);alert(questionId);
 			url = 'DownloadAuditData.action?auditID=' + oshaId + '&auditData.question.id=' + questionId;
 			title = 'Osha300Logs';
 			pars = 'scrollbars=yes,resizable=yes,width=700,height=450';

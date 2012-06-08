@@ -179,7 +179,7 @@ public class Registration extends ContractorActionSupport {
 		emailBuilder.addToken("userName", user.getUsername());
 
 		EmailQueue emailQueue = emailBuilder.build();
-		emailQueue.setVeryHighPriority();
+		emailQueue.setPriority(90);
 		emailQueue.setViewableById(Account.EVERYONE);
 		emailSender.send(emailQueue);
 	}

@@ -81,7 +81,7 @@ public class OpenTasksTest {
 		when(permissions.hasPermission(any(OpPerms.class)))
 				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
 	
-		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 		assertTrue(result);
 	}
 
@@ -141,7 +141,7 @@ public class OpenTasksTest {
 		when(permissions.hasPermission(any(OpPerms.class)))
 				.then(buildAnswerForSpecificPermission(OpPerms.ContractorInsurance));
 	
-		Boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
+		boolean result = Whitebox.invokeMethod(openTasks, "isOpenTaskNeeded", audit, user, permissions);
 		assertFalse(result);
 	}
 

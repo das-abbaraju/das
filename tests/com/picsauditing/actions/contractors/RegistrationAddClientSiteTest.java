@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
@@ -124,18 +122,17 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 	@Test
 	public void testReturnAjax() throws Exception {
 		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(true);
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
+
 		assertEquals("ClientSiteList", registrationAddClientSite.search());
 	}
 
 	@Test
 	public void testReturnSuccess() throws Exception {
 		PowerMockito.when(AjaxUtils.isAjax(request)).thenReturn(false);
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
+
 		assertEquals(ActionSupport.SUCCESS, registrationAddClientSite.search());
 	}
 
-	@Ignore
 	@Test
 	public void testRemoveExistingOperatorsFromSearch() throws Exception {
 		List<OperatorAccount> searchResults = results.subList(0, 1);
@@ -150,8 +147,7 @@ public class RegistrationAddClientSiteTest extends PicsTest {
 		registrationAddClientSite.setSearchValue("Hello World");
 		registrationAddClientSite.search();
 
-		PowerMockito.doReturn(Collections.emptyList()).when(registrationAddClientSite, "loadSearchResults");
-		assertEquals(new ArrayList<OperatorAccount>(), registrationAddClientSite.getSearchResults());
 		PowerMockito.verifyPrivate(registrationAddClientSite, never()).invoke("loadSearchResults");
+		assertEquals(new ArrayList<OperatorAccount>(), registrationAddClientSite.getSearchResults());
 	}
 }

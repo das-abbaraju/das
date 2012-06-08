@@ -45,11 +45,6 @@ p {
 	z-index: 1000;
 }
 
-#systemMessage .system-message-container
-{
-	display: inline;
-}
-
 /********************  Header Styles  ************************/
 #header {
 	width: 100%;

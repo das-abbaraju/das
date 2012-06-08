@@ -17,9 +17,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.access.Permissions;
@@ -217,6 +214,7 @@ public class Note extends BaseTable implements java.io.Serializable {
 	public boolean convertNote() {
 		// ([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)?
 		// [\(]*(.*?)[\)]*: (.*)
+		// System.out.println(oldNote);
 
 		String expression = "^([0-9]{1,4}/[0-9]{1,2}/[0-9]{1,4})( [0-9]{1,2}:[0-9]{2} [AP]M .{3}?)? [\\(]*(.*?)[\\)]*: (.*)";
 		Pattern pattern = Pattern.compile(expression, Pattern.DOTALL);
@@ -312,15 +310,15 @@ public class Note extends BaseTable implements java.io.Serializable {
 
 		Matcher matcher = pattern.matcher("5/19/04 3:00 PM PDT: sent welcome email");
 		if (matcher.find()) {
-			Logger logger = LoggerFactory.getLogger(Note.class);
+
 			String date = matcher.group(1);
 			String time = matcher.group(2);
 			String who = matcher.group(3);
 			String what = matcher.group(4);
-			logger.debug("who: {}", who);
-			logger.debug("what: {}", what);
-			logger.debug("date: {}", date);
-			logger.debug("time: {}" + time);
+			System.out.println("who: " + who);
+			System.out.println("what: " + what);
+			System.out.println("date: " + date);
+			System.out.println("time: " + time);
 
 		}
 

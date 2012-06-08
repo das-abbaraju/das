@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.pdf.PdfReader;
@@ -54,6 +52,7 @@ public abstract class ImportPqf {
 			// dumpQuestions(questions);
 		}
 		transformPqf(conAudit);
+		// System.out.println(log);
 	}
 
 	/**
@@ -489,18 +488,18 @@ public abstract class ImportPqf {
 	}
 
 	protected void dumpQuestions(List<AuditQuestion> questions) {
-		Logger logger = LoggerFactory.getLogger(ImportPqf.class);
-		logger.info("Dump of Questions/Answers");
+		System.out.println("Dump of Questions/Answers");
 		for (AuditQuestion auditQuestion : questions) {
 			AuditExtractOption option = auditQuestion.getExtractOption();
 
 			if (option == null) {
-				logger.info("* {} >-No ETL-<", auditQuestion.getName().toString());
+				System.out.println("* " + auditQuestion.getName().toString() + ">-No ETL-<");
 			} else {
 				if (option.isAnswerFound()) {
-					logger.info("* {} > {} <", auditQuestion.getName().toString(), option.getAnswer());
+					System.out.println("* " + auditQuestion.getName().toString() + ">" + option.getAnswer() + "<");
 				} else {
-					logger.info("*** {} >-No Answer ({})-<", auditQuestion.getName().toString(), auditQuestion.getId());
+					System.out.println("*** " + auditQuestion.getName().toString() + ">-No Answer ("
+							+ auditQuestion.getId() + ")-<");
 				}
 			}
 		}

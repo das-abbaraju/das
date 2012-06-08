@@ -6,8 +6,6 @@ import java.util.Date;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.I18nCache;
@@ -28,15 +26,14 @@ public class ClearCacheAction extends PicsActionSupport {
 	private AppPropertyDAO appPropertyDAO;
 
 	private SimpleDateFormat databaseFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
-	private final Logger logger = LoggerFactory.getLogger(ClearCacheAction.class);
+
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
 		String[] cacheNames = CacheManager.getInstance().getCacheNames();
 
 		for (String cacheName : cacheNames) {
-			logger.info(cacheName);
+			System.out.println(cacheName);
 			addActionMessage("Cleared cache named " + cacheName);
 
 			Cache cache = CacheManager.getInstance().getCache(cacheName);

@@ -156,6 +156,8 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 			dataTotals.lastMonthCredited += calcPercentage(bean.get("regisLastMonth"), bean.get("ownerPercent"));
 			dataTotals.lastMonthTotal += parse(bean.get("regisLastMonth"));
 			dataTotals.toDate += parse(bean.get("totalCons"));
+//			System.out.println("thisMonthCredited = " + dataTotals.thisMonthCredited + " ------ " + bean.get("accountName"));
+//			System.out.println("lastMonthCredited = " + dataTotals.lastMonthCredited + " ------ " + bean.get("accountName"));
 		}
 		
 		dataTotals.thisMonthCredited = roundMe(dataTotals.thisMonthCredited);
@@ -389,6 +391,7 @@ public class ReportSalesRepresentatives extends PicsActionSupport {
 
 	public double calcPercentage(Object total, Object percent) {
 		double out = parse(total) * parse(percent) / 100;
+		// System.out.println("calcPercentage: " + parse(total) + " * " + parse(percent) + " / 100 = " + out);
 		return out;
 	}
 	

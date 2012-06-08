@@ -97,7 +97,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	private Locale locale = Locale.ENGLISH;
 	protected TimeZone timezone;
 	protected boolean autoApproveRelationships = true;
-	protected boolean generalContractor = false;
 
 	// Other tables
 	// protected List<ContractorOperator> contractors;
@@ -333,15 +332,6 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	public void setAutoApproveRelationships(boolean autoApproveRelationships) {
 		this.autoApproveRelationships = autoApproveRelationships;
-	}
-
-	@Column(nullable = false)
-	public boolean isGeneralContractor() {
-		return generalContractor;
-	}
-
-	public void setGeneralContractor(boolean generalContractor) {
-		this.generalContractor = generalContractor;
 	}
 
 	/**

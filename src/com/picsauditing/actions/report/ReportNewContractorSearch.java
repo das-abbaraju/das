@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -71,8 +69,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private ContractorAccount contractor;
 	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
 
-	private final Logger logger = LoggerFactory.getLogger(ReportNewContractorSearch.class);
-			
 	public ReportNewContractorSearch() {
 		this.skipPermissions = true;
 		this.filteredDefault = true;
@@ -169,7 +165,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 				sql.addWhere("a.id IN (" + conIDs + ")");
 
 			} catch (Exception e) {
-				logger.error("Error in SQL: {}", e.getMessage());
+				System.out.println("Error in SQL");
 			}
 		}
 	}
@@ -264,7 +260,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 			emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 			emailBuilder.addToken("permissions", permissions);
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setHighPriority();
+			emailQueue.setPriority(60);
 			emailQueue.setFromAddress("billing@picsauditing.com");
 			emailQueue.setViewableById(Account.PicsID);
 			emailSender.send(emailQueue);

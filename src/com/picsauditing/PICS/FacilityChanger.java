@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -88,13 +87,8 @@ public class FacilityChanger {
 			co.setWorkStatus(ApprovalStatus.Y);
 		}
 
-		if (operator.isGeneralContractor()) {
-			if (contractor.isAutoApproveRelationships()) {
-				co.setWorkStatus(ApprovalStatus.Y);
-			} else {
-				co.setWorkStatus(ApprovalStatus.C);
-				sendGCApprovalEmailToContractor();
-			}
+		if (operator.isGeneralContractor() && !contractor.isAutoApproveRelationships()) {
+			co.setWorkStatus(ApprovalStatus.C);
 		}
 
 		co.setAuditColumns(permissions);
@@ -114,7 +108,7 @@ public class FacilityChanger {
 			emailBuilder.addToken("operator", operator);
 			emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setHighPriority();
+			emailQueue.setPriority(60);
 			emailQueue.setViewableBy(operator.getTopAccount());
 			emailSender.send(emailQueue);
 		}
@@ -147,19 +141,6 @@ public class FacilityChanger {
 
 		billingService.calculateAnnualFees(contractor);
 		contractorAccountDAO.save(contractor);
-	}
-
-	private void sendGCApprovalEmailToContractor() throws Exception {
-		EmailBuilder emailBuilder = new EmailBuilder();
-		emailBuilder.setTemplate(238); // Contractor needs to Approve GC
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
-		emailBuilder.addToken("operator", operator);
-		emailBuilder.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
-		EmailQueue emailQueue = emailBuilder.build();
-		emailQueue.setPriority(60);
-		emailQueue.setViewableBy(operator.getTopAccount());
-		emailSender.send(emailQueue);
 	}
 
 	public boolean remove() throws Exception {
@@ -195,7 +176,7 @@ public class FacilityChanger {
 					emailBuilder.setToAddresses("billing@picsauditing.com");
 
 					EmailQueue emailQueue = emailBuilder.build();
-					emailQueue.setHighPriority();
+					emailQueue.setPriority(60);
 					emailSender.send(emailQueue);
 				}
 
@@ -321,24 +302,5 @@ public class FacilityChanger {
 			return true;
 
 		return false;
-	}
-
-	public boolean requiresPopUp() {
-		if (operator.isGeneralContractor() && operator.getLinkedClientSites().size() > 0) {
-			return true;
-		}
-		if (!operator.isGeneralContractor() && operator.getLinkedGeneralContractorOperatorAccounts().size() > 0) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public List<OperatorAccount> getPopUpContent() {
-		if (operator.isGeneralContractor()) {
-			return operator.getLinkedClientSites();
-		} else {
-			return operator.getLinkedGeneralContractorOperatorAccounts();
-		}
 	}
 }

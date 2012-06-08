@@ -6,6 +6,7 @@ import java.util.List;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.search.SelectFilterDate;
+import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.excel.ExcelCellType;
 import com.picsauditing.util.excel.ExcelColumn;
@@ -26,6 +27,7 @@ public class ReportAccountAudits extends ReportAccount {
 		}
 
 		getFilter().setShowInsuranceLimits(true);
+		
 
 		if (permissions.isPicsEmployee())
 			getFilter().setShowAddress(true);
@@ -81,16 +83,38 @@ public class ReportAccountAudits extends ReportAccount {
 				List<Integer> accountIds = new ArrayList<Integer>(permissions.getCorporateParent());
 				accountIds.add(permissions.getAccountId());
 				sql.addJoin("LEFT JOIN contractor_tag cg ON cg.conID = a.id");
-				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID IN ("
-						+ Strings.implode(accountIds) + ") ");
+				sql.addJoin("LEFT JOIN operator_tag ot ON ot.id = cg.tagID AND ot.opID IN (" + Strings.implode(accountIds) + ") ");
 				sql.addField("GROUP_CONCAT(DISTINCT ot.tag ORDER BY ot.tag SEPARATOR ', ') AS tag");
 			}
 		}
-
 		sql.addField("c.score");
 		sql.addField("a.dbaName");
+		
+		if (permissions.isGeneralContractor()) {
+			SelectSQL innerjoin = new SelectSQL("generalcontractors gccOps");
+			innerjoin.addJoin("JOIN accounts a ON gccOps.genID = a.id");
+			innerjoin.addJoin("JOIN generalcontractors otherCons ON gccOps.genID = otherCons.genID");
+			innerjoin.addWhere("gccOps.subID = (SELECT subID FROM generalcontractors WHERE genID = " + permissions.getAccountId() + " and type = 'GeneralContractor') and a.type = 'Operator'");
+			innerjoin.addGroupBy("otherCons.subID");
+			innerjoin.addField("otherCons.subID");
+			innerjoin.addField("COUNT(*) cnt");
+			
+			sql.addJoin("LEFT JOIN (" + innerjoin.toString() + ") tmp ON tmp.subID = a.id");
+			sql.addField("tmp.cnt - 1 AS nonGCOpsInCommon");
+		}
 
 		filteredDefault = true;
+
+		// Getting the certificate info per contractor is too difficult!
+		/*
+		 * String certTable =
+		 * "SELECT contractor_id, count(*) certificateCount FROM certificates WHERE status = 'Approved'" ; if
+		 * (permissions.isOperator()) certTable += " AND operator_id = " + permissions.getAccountId(); if
+		 * (permissions.isCorporate()) certTable +=
+		 * " AND operator_id IN (SELECT facilityID FROM facilities WHERE corporateID = " + permissions.getAccountId() +
+		 * ")"; certTable += " GROUP BY contractor_id"; sql.addJoin("LEFT JOIN (" + certTable +
+		 * ") certs ON certs.contractor_id = a.id"); sql.addField("certs.certificateCount");
+		 */
 	}
 
 	public boolean isPqfVisible() {

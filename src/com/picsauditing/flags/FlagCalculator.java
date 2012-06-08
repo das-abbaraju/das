@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -50,7 +48,7 @@ public class FlagCalculator {
 	private ContractorOperator co;
 	private ContractorAccount contractor;
 	private Map<Integer, ContractorAuditOperator> annualUpdates;
-    
+
 	/**
 	 * Getting Rules
 	 * 
@@ -369,8 +367,7 @@ public class FlagCalculator {
 			}
 			return false;
 		} catch (Exception e) {
-			Logger logger = LoggerFactory.getLogger(FlagCalculator.class);
-			logger.error("Datatype is {} but values were not {} s", dataType, dataType);
+			System.out.println("Datatype is " + dataType + " but values were not " + dataType + "s");
 			return true;
 		}
 	}

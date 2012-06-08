@@ -44,8 +44,6 @@ public class AuditPercentCalculator {
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
-	
-	protected float subScorePossible;
 
 	/**
 	 * Calculate the percent complete for all questions in this category
@@ -234,6 +232,7 @@ public class AuditPercentCalculator {
 			}
 		}
 
+//		if (catData.getCategory().getId() == 428)System.out.println("");
 		catData.setNumAnswered(answeredCount);
 		catData.setNumRequired(requiredCount);
 		catData.setRequiredCompleted(requiredAnsweredCount);
@@ -415,7 +414,7 @@ public class AuditPercentCalculator {
 	}
 
 	private void calculateWeightedScore(ContractorAudit ca) {
-		float cumulativeScore = 0f;
+		float subScore = 0f;
 
 		/*
 		 * Gather the category data to use in the recursive calculation.
@@ -429,15 +428,10 @@ public class AuditPercentCalculator {
 		 * Iterate over the top level categories and calculate the score based on their weights
 		 */
 		for (AuditCategory category : ca.getAuditType().getTopCategories()) {
-			subScorePossible = 0f;
-			float score = calculateWeightedScore(category, catDatas);
-			if (subScorePossible > 0)
-				cumulativeScore += category.getScoreWeight() * score;
-			else
-				cumulativeScore += category.getScoreWeight();
+			subScore += category.getScoreWeight() * calculateWeightedScore(category, catDatas);
 		}
 
-		ca.setScore(Math.min(Math.round(cumulativeScore), 100));
+		ca.setScore(Math.min(Math.round(subScore), 100));
 	}
 
 	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
@@ -467,12 +461,8 @@ public class AuditPercentCalculator {
 		} else {
 			if (catDatas.get(category).getScorePossible() > 0)
 				subScore += catDatas.get(category).getScore() / catDatas.get(category).getScorePossible();
-			scorePossible = catDatas.get(category).getScorePossible();
 		}
 
-		if (category.getParent() == null) {
-			subScorePossible = scorePossible;
-		}
 		return subScore;
 	}
 

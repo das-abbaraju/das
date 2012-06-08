@@ -28,35 +28,35 @@ public class ContractorAuditTest {
 		contractorAudit.setExpiresDate(new Date());
 		assertTrue(contractorAudit.isExpiringSoon());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringSoon_ExpirationIsTomorrow() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addDays(new Date(), 1));
 		assertTrue(contractorAudit.isExpiringSoon());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringSoon_ExpirationIsYesterday() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addDays(new Date(), -1));
 		assertTrue(contractorAudit.isExpiringSoon());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringSoon_ExpirationIsOneMonthFromNow() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addMonths(new Date(), 1));
 		assertFalse(contractorAudit.isExpiringSoon());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringSoon_ExpirationIsOneMonthAgo() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addMonths(new Date(), -1));
 		assertFalse(contractorAudit.isExpiringSoon());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringRenewableAudit_ExpiresYesterday() {
 		ContractorAudit contractorAudit = new ContractorAudit();
@@ -66,7 +66,7 @@ public class ContractorAuditTest {
 		contractorAudit.setAuditType(auditType);
 		assertTrue(contractorAudit.isExpiringRenewableAudit());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testIsExpiringRenewableAudit_NotRenewable() {
 		ContractorAudit contractorAudit = new ContractorAudit();
@@ -76,112 +76,112 @@ public class ContractorAuditTest {
 		contractorAudit.setAuditType(auditType);
 		assertFalse(contractorAudit.isExpiringRenewableAudit());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testWillExpireWithinTwoWeeks_NullExpirationDate() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(null);
 		assertFalse(contractorAudit.willExpireWithinTwoWeeks());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testWillExpireWithinTwoWeeks_ExpirationDateIsToday() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(new Date());
 		assertFalse(contractorAudit.willExpireWithinTwoWeeks());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testWillExpireWithinTwoWeeks_ExpirationDateIsTomorrow() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(new Date(), Calendar.DATE, 1));
 		assertTrue(contractorAudit.willExpireWithinTwoWeeks());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testWillExpireWithinTwoWeeks_ExpirationDateIsInTwoWeeks() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(new Date(), Calendar.WEEK_OF_YEAR, 2));
 		assertFalse(contractorAudit.willExpireWithinTwoWeeks());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testWillExpireWithinTwoWeeks_ExpirationDateIsOneDayBeforeTwoWeeksAgo() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(DateBean.addField(new Date(), Calendar.WEEK_OF_YEAR, 2), Calendar.DATE, -1));
 		assertTrue(contractorAudit.willExpireWithinTwoWeeks());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testExpiredUpToAWeekAgo_NullExpirationDate() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(null);
 		assertFalse(contractorAudit.expiredUpToAWeekAgo());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testExpiredUpToAWeekAgo_ExpirationDateIsToday() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(new Date());
 		assertFalse(contractorAudit.expiredUpToAWeekAgo());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testExpiredUpToAWeekAgo_ExpirationDateIsTomorrow() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(new Date(), Calendar.DATE, 1));
 		assertFalse(contractorAudit.expiredUpToAWeekAgo());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testExpiredUpToAWeekAgo_ExpirationDateIsOneWeekAgo() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(new Date(), Calendar.WEEK_OF_YEAR, -1));
 		assertFalse(contractorAudit.expiredUpToAWeekAgo());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testExpiredUpToAWeekAgo_ExpirationDateIsLessThanOneWeekAgo() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setExpiresDate(DateBean.addField(DateBean.addField(new Date(), Calendar.WEEK_OF_YEAR, -1), Calendar.DATE, 1));
 		assertTrue(contractorAudit.expiredUpToAWeekAgo());
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusAfterFalse() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmitted)));
 		assertFalse(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusAfterTrue() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Complete)));
 		assertTrue(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusBeforeFalse() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmitted)));
 		assertFalse(contractorAudit.hasCaoStatusBefore(AuditStatus.Resubmitted));
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusBeforeTrue() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Resubmit)));
 		assertTrue(contractorAudit.hasCaoStatusBefore(AuditStatus.Resubmitted));
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusFalse() {
 		ContractorAudit contractorAudit = new ContractorAudit();
 		contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit, AuditStatus.Pending)));
 		assertFalse(contractorAudit.hasCaoStatus(AuditStatus.Resubmitted));
 	}
-	@Ignore("Not ready to run yet.")
+	
 	@Test
 	public void testHasCaoStatusTrue() {
 		ContractorAudit contractorAudit = new ContractorAudit();

@@ -156,7 +156,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						EmailQueue emailQueue;
 						try {
 							emailQueue = emailBuilder.build();
-							emailQueue.setVeryHighPriority();
+							emailQueue.setPriority(90);
 							emailQueue.setViewableById(Account.PicsID);
 							emailSender.send(emailQueue);
 						} catch (Exception e) {
@@ -190,10 +190,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 					return SUCCESS;
 				}
 				paymentDAO.remove(payment);
-
-				addActionMessage("Successfully Deleted Payment");
-
-				redirect("BillingDetail.action?id=" + contractor.getId());
+				redirect("BillingDetail.action?id=" + contractor.getId() + "&msg=" + "Successfully Deleted Payment");
 				return BLANK;
 			}
 
@@ -208,11 +205,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 
 					paymentDAO.remove(payment); // per Aaron's request
 
-					if (message != null) {
-						addActionMessage(message);
-					}
-
-					redirect("BillingDetail.action?id=" + contractor.getId());
+					String url = "BillingDetail.action?id=" + contractor.getId();
+					if (message != null)
+						url += "&msg=" + message;
+					redirect(url);
 					return BLANK;
 				} catch (Exception e) {
 					addActionError("Failed to cancel credit card transaction: " + e.getMessage());
@@ -298,8 +294,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						if (amountApplyMap.get(txnID).compareTo(BigDecimal.ZERO) > 0) {
 							for (Invoice txn : contractor.getInvoices()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
+									PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 
 									// Email Receipt to Contractor
 									try {
@@ -321,8 +317,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 							}
 							for (Refund txn : contractor.getRefunds()) {
 								if (txn.getId() == txnID) {
-									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(),
-											amountApplyMap.get(txnID));
+									PaymentProcessor.ApplyPaymentToRefund(payment, txn, getUser(), amountApplyMap
+											.get(txnID));
 								}
 							}
 						}
@@ -334,11 +330,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 			payment.setQbSync(true);
 			paymentDAO.save(payment);
 
-			if (message != null) {
-				addActionMessage(message);
-			}
-
-			redirect("PaymentDetail.action?payment.id=" + payment.getId());
+			String url = "PaymentDetail.action?payment.id=" + payment.getId();
+			if (message != null)
+				url += "&msg=" + message;
+			redirect(url);
 			return BLANK;
 		}
 

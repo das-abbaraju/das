@@ -32,7 +32,6 @@
 			<result>struts/contractors/registrationAddClientSite.jsp</result>
 			<result name="input">struts/contractors/registrationAddClientSite.jsp</result>
 			<result name="ClientSiteList">struts/contractors/registrationAddClientSiteListAjax.jsp</result>
-			<result name="GeneralContractorSiteList">struts/contractors/_registrationAddClientSiteModal.jsp</result>
 		</action>
 		
 		<action name="RegistrationServiceEvaluation"

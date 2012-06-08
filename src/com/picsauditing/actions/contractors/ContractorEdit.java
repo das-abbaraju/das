@@ -313,7 +313,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 				EmailQueue email = emailBuilder.build();
 				email.setViewableById(Account.PicsID);
-				email.setMediumPriority();
+				email.setPriority(50);
 				emailQueueDAO.save(email);
 
 				Note note = new Note();

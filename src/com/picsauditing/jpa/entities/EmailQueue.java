@@ -293,34 +293,4 @@ public class EmailQueue implements java.io.Serializable {
 		this.html = html;
 	}
 
-	public void setCriticalPriority()
-	{
-		priority = 100;
-	}
-	
-	public void setVeryHighPriority()
-	{
-		priority = 90;
-	}
-	
-	public void setHighPriority()
-	{
-		priority = 70;
-	}
-	
-	public void setMediumPriority()
-	{
-		priority = 50;
-	}
-	
-	public void setLowPriority()
-	{
-		priority = 30;
-	}
-	
-	public void setVeryLowPriority()
-	{
-		priority = 10;
-	}
-	
 }

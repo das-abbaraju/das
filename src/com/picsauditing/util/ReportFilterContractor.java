@@ -65,7 +65,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showAccountLevel = false;
 	protected boolean showLocation = false;
 	protected boolean showFlagOverrideHistory = false;
-	protected boolean showRequiredTags = false;
 
 	// /////// Parameter Values /////////////////
 	protected String performedBy;
@@ -114,7 +113,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected String[] accountLevel;
 	protected String riskType;
 	protected boolean flagOverrideHistory = false;
-	protected boolean requiredTags = false;
 
 	// // setting the filter
 	public boolean isShowContractor() {
@@ -928,21 +926,5 @@ public class ReportFilterContractor extends ReportFilterAccount {
 
 	public void setRiskType(String riskType) {
 		this.riskType = riskType;
-	}
-
-	public boolean isShowRequiredTags() {
-		return showRequiredTags;
-	}
-
-	public void setShowRequiredTags(boolean showRequiredTags) {
-		this.showRequiredTags = showRequiredTags;
-	}
-
-	public boolean isRequiredTags() {
-		return requiredTags;
-	}
-
-	public void setRequiredTags(boolean requiredTags) {
-		this.requiredTags = requiredTags;
 	}
 }

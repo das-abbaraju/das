@@ -19,8 +19,7 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 	@Override
 	protected Collection<OperatorAccount> getItems() {
 		// HSE specific -- We want operators to search for sibling operators
-		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview()
-				&& !permissions.isGeneralContractor()) {
+		if (!permissions.isAdmin() && !permissions.isCorporate() && !permissions.isRequiresCompetencyReview() && !permissions.isGeneralContractor()) {
 			// TODO Non admin/corporate queries not supported yet
 			return Collections.emptyList();
 		}
@@ -29,23 +28,22 @@ public final class OperatorAutocomplete extends AutocompleteActionSupport<Operat
 		if (permissions.isCorporate()) {
 			corpPerms = String.format(" AND a.id IN (SELECT f.operator.id FROM Facility f "
 					+ "WHERE f.corporate.id = %d)", permissions.getAccountId());
+		} else if (permissions.isGeneralContractor()) {
+			corpPerms = " AND a.id != " + permissions.getAccountId();
 		}
-
+		
 		boolean showCorporates = !permissions.isGeneralContractor();
 
 		if (itemKeys == null) {
 			if (!Strings.isEmpty(q)) {
 				if (isSearchDigit())
-					return dao.findWhere(showCorporates, "a.id LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms,
-							permissions);
+					return dao.findWhere(showCorporates, "a.id LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms, permissions);
 				else
-					return dao.findWhere(showCorporates, "a.name LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms,
-							permissions);
+					return dao.findWhere(showCorporates, "a.name LIKE '%" + Strings.escapeQuotes(q) + "%'" + corpPerms, permissions);
 			}
 		} else if (itemKeys.length > 0) {
-			return dao.findWhere(true, "a.id IN (" + Strings.implodeForDB(itemKeys, ",") + ")" + corpPerms, limit);
+			return dao.findWhere(true, "a.id IN (" + Strings.implodeForDB(itemKeys,",") + ")" + corpPerms, limit);
 		}
-
 		return Collections.emptyList();
 	}
 }

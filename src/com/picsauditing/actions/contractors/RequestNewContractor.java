@@ -17,8 +17,6 @@ import java.util.StringTokenizer;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.AccountActionSupport;
@@ -102,8 +100,6 @@ public class RequestNewContractor extends AccountActionSupport {
 	public static final String DRAFT_EMAIL = "Email";
 	public static final String PHONE = "Phone";
 
-	private final Logger LOG = LoggerFactory.getLogger(RequestNewContractor.class);
-			
 	public String execute() {
 		if (newContractor == null || newContractor.getId() == 0) {
 			newContractor = new ContractorRegistrationRequest();
@@ -348,8 +344,8 @@ public class RequestNewContractor extends AccountActionSupport {
 			try {
 				results = db.select(query, false);
 			} catch (SQLException e) {
-				LOG.error("Error running query in RequestNewCon");
-				LOG.error("{}", e.getStackTrace());
+				System.out.println("Error running query in RequestNewCon");
+				e.printStackTrace();
 				return null;
 			}
 			if (!searchEngine.getNullTerms().isEmpty() && unusedTerms.isEmpty()) {
@@ -666,7 +662,7 @@ public class RequestNewContractor extends AccountActionSupport {
 			attachment.setEmailQueue(emailQueue);
 			attachmentDAO.save(attachment);
 		} catch (Exception e) {
-			LOG.error("Unable to open file: /files/{}", filename);
+			System.out.println("Unable to open file: /files/" + filename);
 		}
 	}
 }

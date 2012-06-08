@@ -16,8 +16,6 @@ import net.sf.cglib.core.Local;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.picsauditing.PICS.I18nCache;
@@ -102,8 +100,7 @@ public class ContractorAuditOperatorWorkflow extends BaseTable {
 		try {
 			jsonObject = (JSONObject) jsonParser.parse(notes);
 		} catch (Exception nothingWeCanDoExceptLogIt) {
-			Logger logger = LoggerFactory.getLogger(ContractorAuditOperatorWorkflow.class);
-			logger.error("CAOW Note JSON Parser Error when parsing {}", notes);
+			System.out.println("CAOW Note JSON Parser Error when parsing " + notes);
 		}
 		
 		return jsonObject;

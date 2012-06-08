@@ -6,8 +6,6 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +14,6 @@ import com.picsauditing.jpa.entities.User;
 
 @SuppressWarnings("unchecked")
 public class UserDAO extends PicsDAO {
-	private final Logger logger = LoggerFactory.getLogger(UserDAO.class);
 	@Transactional(propagation = Propagation.NESTED)
 	public User save(User o) {
 		if (o.getId() == 0) {
@@ -81,7 +78,7 @@ public class UserDAO extends PicsDAO {
 					return true;
 			}
 		} catch (Exception e) {
-			logger.error("Exception in checkUserName: {}", e.getMessage());
+			System.out.println("Exception in checkUserName: " + e.getMessage());
 		}
 		return false;
 	}

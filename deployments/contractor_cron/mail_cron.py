@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, urllib2, time, sys, logging, logging.config
+import urllib2, time, sys, logging, logging.config
 from datetime import datetime
 from threading import Thread, enumerate, Lock
 from daemon import Daemon
@@ -9,10 +9,7 @@ from locked_iterator import LockedIterator
 logging.config.fileConfig("logging-mail.conf")
 
 SERVER = "http://%s/"
-SERVERS = ['localhost:8080']
-APPLICATION_SERVER_LOAD_THRESHOLD = '3.0'
-CRON_SERVER_LOAD_THRESHOLD = 2.0
-MAX_WORKERS = 15
+SERVERS = ['organizer1']
 con_running = set()
 running_lock = Lock()
 con_q = Queue()
@@ -30,12 +27,15 @@ class qcron(Daemon):
 			monitor.start()
 			
 			logging.info('starting publisher thread')
-			publisher = CronPublisher(con_q, server_g)
+			publisher = CronPublisher(con_q,server_g)
 			publisher.start()
 			
-			logging.info("starting worker manager thread")
-			workerManager = CronWorkerManager(con_q, server_g)
-			workerManager.start()
+			workers = []
+			for i in range(len(SERVERS)):
+				logging.info('starting worker thread %d' % i)
+				worker = CronWorker(i, con_q, server_g)
+				worker.start()
+				workers.append(worker)
 			
 			theadlog = logging.getLogger('thread')
 			while True:
@@ -75,7 +75,7 @@ class CronMonitor(CronThread):
 		super(CronMonitor, self).__init__()
 		# initially mark all servers off
 		self.active_servers = active_servers
-		self.url = SERVER+'keepalive.jsp?load_factor=' + APPLICATION_SERVER_LOAD_THRESHOLD
+		self.url = SERVER+'keepalive.jsp?load_factor=2.0'
 		self.sleeptime = 5
 		self.logger = logging.getLogger('monitor')
 	def run(self):
@@ -100,7 +100,7 @@ class CronMonitor(CronThread):
 
 class CronPublisher(CronThread):
 	"""This thread is responsible for downloading the list of Subscriptions and populating the queue object"""
-	def __init__(self, con_q, server_g):
+	def __init__(self, con_q,server_g):
 		super(CronPublisher, self).__init__()
 		self.con_q = con_q
 		self.server_g = server_g
@@ -120,7 +120,6 @@ class CronPublisher(CronThread):
 						try:
 							for contractor in result.split(","):
 								if contractor not in con_running:
-									self.logger.info('putting contractor %s in the queue' % contractor)
 									self.con_q.put(contractor)
 						finally:
 							running_lock.release() # release lock, no matter what
@@ -132,82 +131,50 @@ class CronPublisher(CronThread):
 				self.logger.info('too many Subscriptions on the dance floor, sleeping for now.')	
 			time.sleep(self.sleeptime)
 
-class CronWorkerManager(CronThread):
-	"""This thread is responsible for managing the number of CronWorkers according to local system load"""
-	def __init__ (self, con_q, server_g):
-		super(CronWorkerManager, self).__init__()
-		self.con_q = con_q
-		self.server_g = server_g
-		self.none_in_queue_sleeptime = 6
-		self.pause_between_workers_sleeptime = 3
-		self.exceeded_load_sleeptime = 15
-		# this value needs to be tuned accordingly
-		self.logger = logging.getLogger('worker_manager')
-	def run(self):
-		while self.running:		
-			workers = []
-			load = os.getloadavg()[0]
-			while load < CRON_SERVER_LOAD_THRESHOLD:
-				self.logger.info('Local load ok: %5.3f  Attempting to start mail queue' % load) 
-				try:
-					id = self.con_q.get(False)
-				except Exception, e:	
-					self.logger.info('no mail in queue... waiting to try again')
-					time.sleep(self.none_in_queue_sleeptime)
-				else:
-					self.logger.info('starting worker thread for mail cron')
-					worker = CronWorker(id, self.server_g)
-					worker.start()
-					workers.append(worker)		
-					load = os.getloadavg()[0]
-					time.sleep(self.pause_between_workers_sleeptime)	
-			self.logger.info('exceeded local system load: %5.3f Waiting for load to come down...' % load)
-			time.sleep(self.exceeded_load_sleeptime)
-
 class CronWorker(CronThread):
 	"""This thread is responsible for calling the MailCronAjax.action against the proper server/conID"""
-	def __init__ (self, id, server_g):
+	def __init__ (self, i, con_q, server_g):
 		super(CronWorker, self).__init__()
-		self.id = id
+		self.thread_id = i
+		self.con_q = con_q
 		self.server_g = server_g
 		self.url = SERVER+"MailCron.action?subscriptionID=%s"
 		self.sleeptime = 6
 		self.logger = logging.getLogger('worker')
 	def run(self):
-			print "Worker Created!"
-			running_lock.acquire()
-			try:
-				con_running.add(id)
-			finally:
-				running_lock.release() # release lock, no matter what
-			start = time.time()
-			starttime = datetime.now()
-			success = False
-			try:
-				self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
-				cronurl = self.url % (self.server_g.next(), id)
-				self.logger.debug('using url: %s' % cronurl)
-				result = urllib2.urlopen(cronurl).read()
-				self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
-				success = True
-				if success:
-					self.logger.info('Subscription %s finished successfully.' % id)
+		while self.running:
+			if not self.con_q.empty():
+				id = self.con_q.get()
+				running_lock.acquire()
+				try:
+					con_running.add(id)
+				finally:
+					running_lock.release() # release lock, no matter what
+				start = time.time()
+				starttime = datetime.now()
+				success = False
+				try:
+					self.logger.debug('thread #%d starting subscription %s' % (self.thread_id,id))
+					cronurl = self.url % (self.server_g.next(), id)
+					self.logger.debug('using url: %s' % cronurl)
+					result = urllib2.urlopen(cronurl).read()
+					self.logger.debug('Result from MailCron.action for subscription %s = %s' % (id,result))
+					success = True
+					if success:
+						self.logger.info('Subscription %s finished successfully.' % id)
+					else:
+						self.logger.warning('Error with Subscription %s' % id)
+				except Exception, e:
+					self.logger.error(e)
 				else:
-					self.logger.warning('Error with Subscription %s' % id)
-			except Exception, e:
-				self.logger.error(e)
-			else:
-				time.sleep(self.sleeptime)
+					time.sleep(self.sleeptime)
+				totaltime = time.time() - start
 				
-			running_lock.acquire()
-			try:
-				self.logger.info('removing %s from cron_running' % self.id)
-				con_running.discard(self.id)
-			finally:
-				running_lock.release() # release lock, no matter what
-				
-			totaltime = time.time() - start
-			stats_q.put((self.id, starttime, totaltime, success, cronurl))
+				running_lock.acquire()
+				try:
+					con_running.discard(id)
+				finally:
+					running_lock.release() # release lock, no matter what
 
 def main():
 	daemon = qcron("/tmp/mail_cron.pid")

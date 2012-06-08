@@ -83,6 +83,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ArrayListMultimap<AuditStatus, Integer> actionStatus = ArrayListMultimap.create();
 
 	private List<CategoryNode> categoryNodes;
+	protected boolean isAddUpdatePaymentMethodMessage;
 
 	public String execute() throws Exception {
 		this.findConAudit();
@@ -277,6 +278,11 @@ public class AuditActionSupport extends ContractorActionSupport {
 		// contractor can perform only submits and complete for pqf specific's
 		// if they can edit that audit
 		if (permissions.isContractor() && type.isCanContractorEdit()) {
+			if (!conAudit.getContractorAccount().isPaymentMethodStatusValid()
+					&& conAudit.getContractorAccount().isMustPayB() && !conAudit.getContractorAccount().isDemo()) {
+				isAddUpdatePaymentMethodMessage = true;
+				return false;
+			}
 			if (newStatus.isSubmitted())
 				return true;
 			// contractor can always move to resubmitted

@@ -1,6 +1,7 @@
 package com.picsauditing.util.chart;
 
 abstract public class Chart extends AbstractElement {
+	protected StringBuilder xml = new StringBuilder();
 
 	// Chart Titles and Axis Names
 	protected String caption;
@@ -32,7 +33,6 @@ abstract public class Chart extends AbstractElement {
 	protected boolean empty = true;
 
 	public String toString() {
-		StringBuilder xml = new StringBuilder();
 		xml.append("<chart");
 
 		append(xml, "showLegend", showLegend);
@@ -59,13 +59,13 @@ abstract public class Chart extends AbstractElement {
 
 		xml.append(">");
 
-		addData(xml);
+		addData();
 
 		xml.append("</chart>");
 		return xml.toString();
 	}
 
-	abstract protected void addData(StringBuilder xml);
+	abstract protected void addData();
 
 	abstract public boolean hasData();
 

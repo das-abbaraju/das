@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.WidgetUser;
 
 @SuppressWarnings("unchecked")
@@ -56,18 +55,11 @@ public class WidgetUserDAO extends PicsDAO {
 			query.setParameter(1, 646); // shellcorporate
 		if (permissions.isContractor())
 			query.setParameter(1, 1); // contractor
-
-		return query.getResultList();
-	}
-
-	public List<WidgetUser> findForGeneralContractor(Permissions permissions) {
-		Query query = em.createQuery("SELECT wu FROM WidgetUser wu WHERE wu.user.id = ? ORDER BY wu.sortOrder");
-
-		if (permissions.isGeneralContractorFree()) {
-			query.setParameter(1, User.GROUP_GC_FREE);
-		} else {
-			query.setParameter(1, User.GROUP_GC_FULL);
-		}
+		// TODO: update with real id
+		if (permissions.hasInheritedGroup(61460))
+			query.setParameter(1, 61460); // GC Free
+		if (permissions.hasInheritedGroup(61461))
+			query.setParameter(1, 61461); // GC Full
 
 		return query.getResultList();
 	}

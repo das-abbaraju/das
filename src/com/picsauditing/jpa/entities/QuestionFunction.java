@@ -224,14 +224,14 @@ public enum QuestionFunction {
 	},
 	/**
 	 * UK Annual Update Incidence Frequency Rate
-	 * IFR = ((fatalities + major injuries + non injuries) / total number of hours worked) X 1,000,000
+	 * IFR = ((fatalities + major injuries + non injuries) / number of employees) X 100,000
 	 */
 	IFR {
 		@Override
 		public Object calculate(FunctionInput input) {
 			Map<String, String> params = getParameterMap(input);
 
-			if (Strings.isEmpty(params.get("totalHours"))
+			if (Strings.isEmpty(params.get("employees"))
 					|| Strings.isEmpty(params.get("nonMajorInjuries"))
 					|| MISSING_PARAMETER.equals((params.get("nonMajorInjuries")))
 					|| Strings.isEmpty(params.get("majorInjuries"))
@@ -239,7 +239,7 @@ public enum QuestionFunction {
 					|| Strings.isEmpty(params.get("fatalities")))
 				return MISSING_PARAMETER;
 			
-			BigDecimal totalHours = new BigDecimal(params.get("totalHours")).setScale(7);
+			BigDecimal employees = new BigDecimal(params.get("employees")).setScale(7);
 			BigDecimal fatalities = new BigDecimal(params.get("fatalities")).setScale(7);
 			BigDecimal majorInjuries = new BigDecimal(params.get("majorInjuries")).setScale(7);
 			BigDecimal nonMajorInjuries = new BigDecimal(params.get("nonMajorInjuries")).setScale(7);
@@ -248,33 +248,7 @@ public enum QuestionFunction {
 			
 			BigDecimal result;
 			try {
-				result = totalIncidents.divide(totalHours, 7, RoundingMode.HALF_UP).multiply(UK_FREQUENCY_RATE_NORMALIZER).setScale(2);
-			} catch (java.lang.ArithmeticException e) {
-				return MISSING_PARAMETER;
-			}
-			
-			return result;
-		}
-	},
-	/**
-	 * UK Total Lost Time Injuries
-	 * LTIFR = ((Total Lost Time Injuries X 1,000,000) / Total Hours Worked)
-	 */
-	LTIFR {
-		@Override
-		public Object calculate(FunctionInput input) {
-			Map<String, String> params = getParameterMap(input);
-
-			if (Strings.isEmpty(params.get("lostTimeInjuries"))
-					|| Strings.isEmpty(params.get("totalHours")))
-				return MISSING_PARAMETER;
-			
-			BigDecimal injuries = new BigDecimal(params.get("lostTimeInjuries")).setScale(7);
-			BigDecimal hours = new BigDecimal(params.get("totalHours")).setScale(7);
-			
-			BigDecimal result = null;
-			try {
-				result = injuries.divide(hours, 7, RoundingMode.HALF_UP).multiply(UK_FREQUENCY_RATE_NORMALIZER).setScale(2);
+				result = totalIncidents.divide(employees, 7, RoundingMode.HALF_UP).multiply(UK_NORMALIZER).setScale(2);
 			} catch (java.lang.ArithmeticException e) {
 				return MISSING_PARAMETER;
 			}
@@ -456,7 +430,6 @@ public enum QuestionFunction {
 	
 	// UK HSE standard normalizer.
 	private static final BigDecimal UK_NORMALIZER = new BigDecimal(100000);
-	private static final BigDecimal UK_FREQUENCY_RATE_NORMALIZER = new BigDecimal(1000000);
 	
 	// France NRIS standard normalizer.
 	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000);

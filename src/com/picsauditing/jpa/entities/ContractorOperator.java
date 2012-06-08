@@ -147,10 +147,9 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		if (CollectionUtils.isEmpty(idList)) {
 			return false;
 		}
-
-		String ids = Strings.implode(idList, ",");
-		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'"
-				+ " AND genid IN (" + ids + ")";
+		
+		String ids = Strings.implode(idList, ",");		
+		String where = "subid = " + getContractorAccount().getId() + " AND workStatus = '" + parentStatus + "'" + " AND genid IN (" + ids + ")";
 
 		SelectSQL sql = new SelectSQL("generalcontractors", where);
 		sql.setLimit(1);
@@ -162,7 +161,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
+		
 		return false;
 	}
 
@@ -170,12 +169,11 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	private Set<Integer> getFacilityOperatorIds() {
 		Set<Integer> idList = new HashSet<Integer>();
 		for (Facility facility : getOperatorAccount().getOperatorFacilities()) {
-			if (facility.getOperator().getStatus().isActiveDemo()
-					&& !facility.getOperator().isAutoApproveRelationships()) {
+			if (facility.getOperator().getStatus().isActiveDemo() && !facility.getOperator().isAutoApproveRelationships()) {
 				idList.add(facility.getOperator().getId());
 			}
 		}
-
+		
 		return idList;
 	}
 
@@ -342,7 +340,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	// added mappedBy="flag" to show which side is the owning side in the
 	// relationship
 	@OneToMany(cascade = { CascadeType.ALL }, mappedBy = "flag")
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
@@ -353,7 +351,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	}
 
 	@OneToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }, mappedBy = "forceflag")
-	@JoinColumns({ @JoinColumn(name = "opID", referencedColumnName = "genID"),
+	@JoinColumns( { @JoinColumn(name = "opID", referencedColumnName = "genID"),
 			@JoinColumn(name = "conID", referencedColumnName = "subID") })
 	public Set<FlagDataOverride> getOverrides() {
 		return overrides;

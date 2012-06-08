@@ -4,9 +4,6 @@ package com.picsauditing.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Similar to the SelectSQL utility class that lets us create UPDATE statements for MySQL
  * 
@@ -67,10 +64,8 @@ public class SQLUpdate {
 			sql.append("\nLIMIT ");
 			sql.append(this.limit);
 		}
-		if (log) {
-			Logger logger = LoggerFactory.getLogger(SQLUpdate.class);
-			logger.info(sql.toString());
-		}
+		if (log)
+			System.out.println(sql.toString());
 		
 		return sql.toString();
 	}

@@ -98,7 +98,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 				emailBuilder.addToken("permissions", permissions);
 				EmailQueue emailQueue = emailBuilder.build();
-				emailQueue.setHighPriority();
+				emailQueue.setPriority(60);
 				emailQueue.setFromAddress("billing@picsauditing.com");
 				emailQueue.setViewableById(Account.PicsID);
 				emailSender.send(emailQueue);

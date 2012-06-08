@@ -251,7 +251,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public List<MenuComponent> getAuditMenu() {
 		final int MAX_MENU_ITEM = 10;
 		boolean addMoreMenu = false;
-
+		
 		// PicsLogger.addRuntimeRule("ContractorActionSupport.getAuditMenu");
 		PicsLogger.start("ContractorActionSupport.getAuditMenu");
 
@@ -316,10 +316,12 @@ public class ContractorActionSupport extends AccountActionSupport {
 					if (!permissions.isContractor() || audit.getCurrentOperators().size() > 0
 							|| audit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 						if (subMenu.getChildren().size() < MAX_MENU_ITEM || audit.getAuditType().isPqf()) {
-							MenuComponent childMenu = createMenuItem(subMenu, audit);
-							childMenu.setUrl("Audit.action?auditID=" + audit.getId());
+							MenuComponent childMenu = createMenuItem(subMenu,
+									audit);
+							childMenu.setUrl("Audit.action?auditID="
+									+ audit.getId());
 						}
-
+						
 						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
 
 						// Put Trades menu after 'PQF' menu entry
@@ -335,7 +337,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-
+			
 			if (addMoreMenu) {
 				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id);
 			}
@@ -393,11 +395,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 			}
 		}
 
-		if (isContractorHasEmployeeGuard()
-				&& (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
+		if (isContractorHasEmployeeGuard() && (!permissions.isContractor() || permissions.hasPermission(OpPerms.ContractorSafety))) {
 			// Add EmployeeGUARD
-			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id="
-					+ id);
+			MenuComponent subMenu = new MenuComponent(getText("global.EmployeeGUARD"), "EmployeeDashboard.action?id=" + id);
 			Iterator<ContractorAudit> iter = auditList.iterator();
 			boolean addMenu = false;
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
@@ -412,7 +412,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 					if (employeeGuardAudits == null)
 						employeeGuardAudits = new ArrayList<ContractorAudit>();
 					employeeGuardAudits.add(audit);
-
+					
 					if (!audit.getAuditType().isEmployeeSpecificAudit()) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
@@ -424,11 +424,11 @@ public class ContractorActionSupport extends AccountActionSupport {
 					iter.remove();
 				}
 			}
-
+			
 			if (isManuallyAddAudit()) {
 				subMenu.addChild(getText("EmployeeGUARD.CreateNewAudit"), "AuditOverride.action?id=" + id);
 			}
-
+			
 			addSubMenu(menu, subMenu);
 		}
 
@@ -440,8 +440,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 			addMoreMenu = false;
 			for (ContractorAudit audit : auditList) {
 				if (audit.getAuditType().getClassType().equals(AuditTypeClass.Audit)) {
-					if (subMenu.getChildren().size() < MAX_MENU_ITEM
-							&& (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
+					if (subMenu.getChildren().size() < MAX_MENU_ITEM && (!permissions.isContractor() || audit.getCurrentOperators().size() > 0)) {
 						MenuComponent childMenu = createMenuItem(subMenu, audit);
 
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
@@ -449,15 +448,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 						if (!Strings.isEmpty(audit.getAuditFor()))
 							linkText = audit.getAuditFor() + " " + linkText;
 						childMenu.setName(linkText);
-
+						
 						addMoreMenu = (subMenu.getChildren().size() >= MAX_MENU_ITEM);
 					}
 				}
 			}
 
 			if (addMoreMenu) {
-				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id=" + id + "#"
-						+ ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
+				subMenu.addChild(getText("global.More"), "ContractorDocuments.action?id="
+						+ id + "#" + ContractorDocuments.getSafeName(getText("global.AuditGUARD")));
 			}
 
 			addSubMenu(menu, subMenu);
@@ -466,13 +465,13 @@ public class ContractorActionSupport extends AccountActionSupport {
 		resetActiveAudits();
 		return menu;
 	}
-
+	
 	private boolean isContractorHasEmployeeGuard() {
 		for (ContractorTag tag : contractor.getOperatorTags()) {
 			if (tag.getTag().getTag().equals("HSE Competency")
-					|| tag.getTag().getTag().equals("Implementation Audit Plus")
-					|| tag.getTag().getTag().equals("Integrity Management")
-					|| tag.getTag().getTag().equals("Operator Qualification (OQ)"))
+					|| tag.getTag().getTag()
+							.equals("Implementation Audit Plus")
+					|| tag.getTag().getTag().equals("Integrity Management"))
 				return true;
 		}
 		return false;
@@ -498,9 +497,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * TODO: Find out if this comment is useful. Is the method it is for
-	 * missing. Only show the COR/SECOR link for contractors who have answered
-	 * Yes to that question and linked to an operator that subscribes to COR
+	 * TODO: Find out if this comment is useful. Is the method it is for missing. Only show the COR/SECOR link for
+	 * contractors who have answered Yes to that question and linked to an operator that subscribes to COR
 	 */
 
 	public boolean isShowHeader() {
@@ -547,8 +545,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	public List<ContractorOperator> getOperators() {
 		if (operators == null)
-			operators = contractorAccountDao.findOperators(contractor, permissions,
-					" AND operatorAccount.type IN ('Operator')");
+			operators = contractorAccountDao.findOperators(contractor, permissions, " AND operatorAccount.type IN ('Operator')");
 		return operators;
 	}
 
@@ -566,9 +563,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	/**
 	 * 
-	 * @return a list of the certificates, if the user is an operator/corporate
-	 *         then this does the appropriate checking to remove the certs that
-	 *         they shouldn't be able to see
+	 * @return a list of the certificates, if the user is an operator/corporate then this does the appropriate checking
+	 *         to remove the certs that they shouldn't be able to see
 	 */
 	@SuppressWarnings("deprecation")
 	public List<Certificate> getCertificates() {
@@ -614,9 +610,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * Get a list of Audits that the current user can see Operators can't see
-	 * each other's audits Contractors can't see the Welcome Call This is a bit
-	 * complicated but needs to look at permissions
+	 * Get a list of Audits that the current user can see Operators can't see each other's audits Contractors can't see
+	 * the Welcome Call This is a bit complicated but needs to look at permissions
 	 * 
 	 * @return
 	 */
@@ -666,11 +661,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * We're assuming that the ording in the enum is the standard order of
-	 * contractor registration.
+	 * We're assuming that the ording in the enum is the standard order of contractor registration.
 	 * 
-	 * @return Previous ContractorRegistrationStep, according to the
-	 *         ContractorRegistrationStep enum order
+	 * @return Previous ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getPreviousRegistrationStep() {
 		if (currentStep != null && currentStep.isHasPrevious())
@@ -680,8 +673,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	/**
-	 * @return Next ContractorRegistrationStep, according to the
-	 *         ContractorRegistrationStep enum order
+	 * @return Next ContractorRegistrationStep, according to the ContractorRegistrationStep enum order
 	 */
 	public ContractorRegistrationStep getNextRegistrationStep() {
 		if (currentStep != null && currentStep.isHasNext())
@@ -706,9 +698,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public Map<ContractorTrade, String> getTradeCssMap() {
 		if (tradeCssMap == null) {
 			/**
-			 * the power to raise the activityPercent. Larger numbers mean that
-			 * 9s (most of the time) are less prone to dilution when other
-			 * trades are added
+			 * the power to raise the activityPercent. Larger numbers mean that 9s (most of the time) are less prone to
+			 * dilution when other trades are added
 			 */
 			final float factor = 1.8f;
 
@@ -804,36 +795,36 @@ public class ContractorActionSupport extends AccountActionSupport {
 			manuallyAddAudits = new HashSet<AuditType>();
 			auditTypeRuleCache.initialize(auditRuleDAO);
 			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
-
+	
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
 				if (isValidManualAuditType(auditTypeRule)) {
 					manuallyAddAudits.add(auditTypeRule.getAuditType());
 				}
 			}
 		}
-
+	
 		return manuallyAddAudits;
 	}
 
 	public boolean isValidManualAuditType(int auditTypeId) {
 		if (manuallyAddAudits == null)
 			getManuallyAddAudits();
-
+		
 		AuditType auditType = new AuditType(auditTypeId);
-
+		
 		return manuallyAddAudits.contains(auditType);
 	}
-
+	
 	public boolean isValidManualAuditType(AuditTypeRule auditTypeRule) {
 		if (!auditTypeRule.isInclude() || auditTypeRule.getAuditType() == null
 				|| auditTypeRule.getAuditType().isAnnualAddendum() || auditTypeRule.getAuditType().isExtractable()) {
 			return false;
 		}
-
+		
 		if (!auditTypeRule.getAuditType().isHasMultiple() && !auditTypeRule.isManuallyAdded()) {
 			return false;
 		}
-
+		
 		if (!auditTypeRule.getAuditType().isHasMultiple()) {
 			for (ContractorAudit audit : contractor.getAudits()) {
 				if (audit.getAuditType().getId() == auditTypeRule.getAuditType().getId() && !audit.isExpired()) {
@@ -841,14 +832,15 @@ public class ContractorActionSupport extends AccountActionSupport {
 				}
 			}
 		}
-
+		
 		if (auditTypeRule.getAuditType().isHasMultiple() || auditTypeRule.isManuallyAdded()) {
 			if (permissions.isAdmin())
 				return true;
 			else if (permissions.isOperator()) {
 				if (auditTypeRule.getOperatorAccount() != null
-						&& (permissions.getCorporateParent().contains(auditTypeRule.getOperatorAccount().getId()) || permissions
-								.getAccountId() == auditTypeRule.getOperatorAccount().getId())) {
+						&& (permissions.getCorporateParent().contains(
+								auditTypeRule.getOperatorAccount().getId()) || permissions.getAccountId() == auditTypeRule
+								.getOperatorAccount().getId())) {
 					return true;
 				}
 			} else if (permissions.isCorporate()) {
@@ -858,8 +850,9 @@ public class ContractorActionSupport extends AccountActionSupport {
 				}
 			}
 		}
-
+		
 		return false;
 	}
+	
 
 }

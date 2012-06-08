@@ -351,7 +351,7 @@
 				</a>
 				=
 				<s:select
-					list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ApprovalStatus.C'),'D':getTextNullSafe('ApprovalStatus.D')}"
+					list="#{'Y':getTextNullSafe('YesNo.Yes'),'N':getTextNullSafe('YesNo.No'),'P':getTextNullSafe('Filters.status.Pending'),'C':getTextNullSafe('ContractorOperator.WorkStatusContractor')}"
 					headerKey=""
 					headerValue="Any"
 					cssClass="forms"
@@ -1903,15 +1903,6 @@
 					name="filter.auditorType"
 					theme="pics"
 					cssClass="inline" />
-			</div>
-		</s:if>
-
-		<s:if test="filter.showRequiredTags">
-			<div class="filterOption">
-				<label>
-					<s:checkbox name="filter.requiredTags" />
-					<s:text name="ReportUntaggedContractors.filter.RequiredTag" />
-				</label>
 			</div>
 		</s:if>
 

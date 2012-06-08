@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
 import com.picsauditing.jpa.entities.BaseDecisionTreeRule;
@@ -30,8 +27,6 @@ public class FlagRuleCache {
 
 	private SafetyRisks data;
 
-	private final Logger logger = LoggerFactory.getLogger(FlagRuleCache.class);
-	
 	public List<FlagCriteriaRule> getRules(ContractorOperator co) {
 		List<FlagCriteriaRule> rules = new ArrayList<FlagCriteriaRule>();
 		if (getData() == null)
@@ -40,27 +35,36 @@ public class FlagRuleCache {
 		Sample sample = new Sample(co);
 
 		for (LowMedHigh safetyRisk : sample.safetyRisks) {
+			// System.out.println("safetyRisk = " + safetyRisk);
 			ProductRisks data2 = getData().getData(safetyRisk);
 			if (data2 != null) {
 				for (LowMedHigh productRisk : sample.productRisks) {
+					// System.out.println("  productRisk = " + safetyRisk);
 					AccountLevels data3 = data2.getData(productRisk);
 					if (data3 != null) {
 						for (AccountLevel accountLevel : sample.accountLevels) {
+							// System.out.println("    accountLevel = " + accountLevel);
 							ContractorTypes data7 = data3.getData(accountLevel);
 							if (data7 != null) {
 								for (ContractorType conType : sample.contractorType) {
+									// System.out.println("      conType = " + conType);
 									SoleProprietors dataX = data7.getData(conType);
 									if (dataX != null) {
 										for (Boolean soleProprietor : sample.soleProprietors) {
+											// System.out.println("        soleProprietor = " + soleProprietor);
 											Trades dataY = dataX.getData(soleProprietor);
 											if (dataY != null) {
 												for (Trade trade : sample.trades) {
+													// System.out.println("          trade = " + trade);
 													Operators data4 = dataY.getData(trade);
 													if (data4 != null) {
 														for (OperatorAccount operator : sample.operators) {
+															// System.out.println("            operator = " + operator);
 															Set<FlagCriteriaRule> data6 = data4.getData(operator);
 															if (data6 != null) {
 																for (FlagCriteriaRule rule : data6) {
+																	// System.out.println("              rule = " +
+																	// rule);
 																	rules.add((FlagCriteriaRule) rule);
 																}
 															}
@@ -96,7 +100,7 @@ public class FlagRuleCache {
 			long startTime = System.currentTimeMillis();
 			initialize(dao.findAllRules(FlagCriteriaRule.class));
 			long endTime = System.currentTimeMillis();
-			logger.info("Filled FlagRuleCache in {} ms", (endTime - startTime));
+			System.out.println("Filled FlagRuleCache in " + (endTime - startTime) + "ms");
 		}
 	}
 
@@ -217,7 +221,7 @@ public class FlagRuleCache {
 			Operators operator = new Operators();
 			for (Trade trade : data.keySet()) {
 				if (value != null && trade != null && (value.childOf(trade) || trade.childOf(value))) {
-					logger.debug("         related to {}", trade);
+					System.out.println("         related to " + trade);
 					operator.add(data.get(trade));
 				}
 			}

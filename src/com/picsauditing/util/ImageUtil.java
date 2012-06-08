@@ -15,13 +15,10 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ImageUtil {
 	
 	public final static String[] supportedExtensions = {"jpg", "jpeg", "gif", "png"};
-	private static final Logger logger = LoggerFactory.getLogger(ImageUtil.class);
+	
 	/**
 	 * Resizes an image
 	 * 
@@ -102,7 +99,7 @@ public class ImageUtil {
 				throw new Exception();
 		} catch (Exception e) {
 			// File found or other exception
-			logger.error("Could not create BufferedImage {}", file.getName());
+			System.out.println("Could not create BufferedImage "+file.getName());
 		}
 		return image;		
 	}
@@ -140,11 +137,11 @@ public class ImageUtil {
 	 */
 	public static File writeImageWithQuality(BufferedImage image, String type, float quality){
 		if(!FileUtils.checkFileExtension(type, supportedExtensions)){
-			logger.info("Not a supported file type");
+			System.out.println("Not a supported file type");
 			return null;
 		}
 		if(quality < 0 || quality > 1){
-			logger.info("Quality must be in the range (0,1)");
+			System.out.println("Quality must be in the range (0,1)");
 			return null;
 		}
 		Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(type);
@@ -155,7 +152,7 @@ public class ImageUtil {
 			writer = iter.next();
 		}		
 		if(writer==null){
-			logger.info("Could not find valid image writer for type "+type);
+			System.out.println("Could not find valid image writer for type "+type);
 			return null;
 		}
 		
@@ -171,7 +168,7 @@ public class ImageUtil {
 			outStream.flush();
 			outStream.close();
 		} catch (Exception e) {
-			logger.error("Could not write image {}", e.getMessage());
+			System.out.println("Could not write image");
 		} finally{
 			image.flush();
 			writer.dispose();

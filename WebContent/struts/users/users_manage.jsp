@@ -220,25 +220,19 @@
 					</a>
 				</li>
 				
-				<s:if test="!user.group  && user.id>0">
+				<s:if test="!user.group">
 					<li>
 						<a class="btn" href="ChangePassword.action?source=manage&user=<s:property value="user.id"/>">
 							<s:text name="button.password" />
 						</a>
 					</li>
-					<li>
-						<s:if test="hasProfileEdit">
-							<a class="btn" href="UsersManage!emailPassword.action?user=<s:property value="user.id"/>">
-								<s:text name="UsersManage.SendResetPasswordEmail" />
-							</a>
-						</s:if>
-					</li>
+						 
 					 <pics:permission perm="SwitchUser">
 						<li>
 							<a class="btn" href="Login.action?button=login&switchToUser=<s:property value="user.id"/>">
 								<s:text name="UsersManage.SwitchToThisUser" />
 							</a>
-						</li>
+						</li>						
 						
 						<s:if test="isBetaEnvironment()">
 							<li>
@@ -255,6 +249,7 @@
 								</a>
 							</pics:toggle>
 						</s:if>
+						
 					</pics:permission>
 				</s:if>
 			</ul>
@@ -510,7 +505,6 @@
 								<s:if test="permissions.isDeveloperEnvironment()">
 									<th><s:text name="Login.Server" /></th>
 								</s:if>
-								<th><s:text name="global.Browser" /></th>
 								<th><s:text name="global.Notes" /></th>
 							</tr>
 						</thead>
@@ -522,14 +516,9 @@
 										href="http://www.hostip.info/?spip=<s:property value="remoteAddress" />">
 											<s:property value="remoteAddress" />
 									</a></td>
-									<td>
-										<s:if test="permissions.isDeveloperEnvironment()">
-											<s:property value="serverAddress" />
-										</s:if>
-									</td>
-									<td>
-										<s:property value="browser" />
-									</td>
+									<s:if test="permissions.isDeveloperEnvironment()">
+										<td><s:property value="serverAddress" /></td>
+									</s:if>
 									<td><s:if test="admin.id > 0">
 											<s:text name="Login.LoginBy">
 												<s:param value="%{admin.name}" />

@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.jboss.util.id.GUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.intuit.developer.adaptors.QBXmlAdaptor;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -28,8 +26,6 @@ public class QBWebConnectorSvcSkeleton {
 	protected QBSession currentSession = null;
 
 	private static Map<String, QBSession> sessions = new HashMap<String, QBSession>();
-	
-	private final Logger LOG = LoggerFactory.getLogger(QBWebConnectorSvcSkeleton.class);
 
 	public AuthenticateResponse authenticate(Authenticate authenticate) {
 
@@ -268,7 +264,7 @@ public class QBWebConnectorSvcSkeleton {
 				try {
 					EmailQueue email = new EmailQueue();
 					email.setToAddresses("errors@picsauditing.com");
-					email.setMediumPriority();
+					email.setPriority(40);
 					email.setSubject("QBWebConnector Errors");
 					email.setBody(body.toString());
 					email.setCreationDate(new Date());
@@ -277,14 +273,14 @@ public class QBWebConnectorSvcSkeleton {
 					emailSender.send(email);
 
 				} catch (Exception notMuchWeCanDoButLogIt) {
-					LOG.error("**********************************");
-					LOG.error("Error Running QBWebConnector AND unable to send email");
+					System.out.println("**********************************");
+					System.out.println("Error Running QBWebConnector AND unable to send email");
 
-					LOG.error(body.toString());
+					System.out.println(body.toString());
 
-					LOG.error("**********************************");
+					System.out.println("**********************************");
 
-					LOG.error(notMuchWeCanDoButLogIt.toString());
+					System.out.println(notMuchWeCanDoButLogIt);
 					notMuchWeCanDoButLogIt.printStackTrace();
 				}
 			}
