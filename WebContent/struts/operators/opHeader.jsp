@@ -36,11 +36,13 @@
 			</li>
 			
 			<pics:permission perm="ManageEmployees">
-				<li>
-					<a href="ManageEmployees.action?id=<s:property value="operator.id"/>">
-						<s:text name="global.Employees" />
-					</a>
-				</li>
+				<s:if test="!operator.id > 0">
+					<li>
+						<a href="ManageEmployees.action?id=<s:property value="operator.id"/>">
+							<s:text name="global.Employees" />
+						</a>
+					</li>
+				</s:if>
 			</pics:permission>
 			
 			<s:if test="!permissions.generalContractorFree">
