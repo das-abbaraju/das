@@ -311,7 +311,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 	
 	@Transient
-	public synchronized String getAnswerInDate(String format) throws ParseException {
+	public String getAnswerInDate(String format) throws ParseException {
 		SimpleDateFormat displayFormat = new SimpleDateFormat(format);
 		Date date = DateBean.parseDate(answer);
 		String dateStr = displayFormat.format(date);
@@ -319,7 +319,7 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 	
 	@Transient
-	public synchronized String getNumberFormatAnswer(Locale locale) {
+	public String getNumberFormatAnswer(Locale locale) {
 		NumberFormat displayFormat; 
 		NumberFormat dbFormat;
 		ParsePosition pp = new ParsePosition(0);
