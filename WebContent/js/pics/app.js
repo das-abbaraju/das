@@ -70,13 +70,10 @@ Ext.application({
 
                PICS.app.configuration = (function config() {
                    return {
-                       isDeveloper: function () {
-                           return result.is_developer;
-                       },
-                       isOwner: function () {
-                           return result.is_owner
+                       isEditable: function () {
+                           return result.is_editable;
                        }
-                   }
+                   };
                })();
 
                Ext.create('PICS.view.report.Viewport');

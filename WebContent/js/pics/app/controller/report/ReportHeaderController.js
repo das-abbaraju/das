@@ -48,7 +48,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                 click: function (component, options) {
                     var userStatus = PICS.app.configuration;
 
-                    if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
+                    if (userStatus.isEditable()) {
                         this.saveReport(component.action);
                     }
                 }
@@ -60,7 +60,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     this.setReportNameAndDescription();
                     this.getReportSettings().close();
 
-                    if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
+                    if (userStatus.isEditable()) {
                         this.saveReport(component.action);
                     }
                 }
@@ -72,7 +72,7 @@ Ext.define('PICS.controller.report.ReportHeaderController', {
                     this.setReportNameAndDescription();
                     this.getReportSettings().close();
 
-                    if (userStatus.get_has_permssion() || userStatus.get_is_developer()) {
+                    if (userStatus.isEditable()) {
                         this.createNewReport();
                     }
                 }

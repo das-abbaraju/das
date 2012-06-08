@@ -57,7 +57,7 @@ Ext.define('PICS.view.report.Header', {
             width: 150
         });
 
-        if (configuration.isDeveloper() || configuration.isOwner()) {
+        if (configuration.isEditable()) {
             var edit = Ext.create('Ext.button.Button', {
                 action: 'edit',
                 cls: 'edit',

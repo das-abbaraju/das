@@ -170,10 +170,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public String getUserStatus() {
 		int userId = permissions.getUserId();
 
-		json.put("is_developer", permissions.isDeveloperEnvironment());
-		json.put("is_viewable", DynamicReportUtil.userCanViewAndCopy(userId, report));
 		json.put("is_editable", DynamicReportUtil.userCanEdit(userId, report));
-		json.put("is_owner", DynamicReportUtil.userCanDelete(userId, report));
 
 		return JSON;
 	}
