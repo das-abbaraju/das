@@ -14,6 +14,8 @@ $button-large-font-size: 13px;
 $panel-body-font-size: 13px;
 $toolbar-font-size: 13px;
 
+$form-field-height: 25px !default;
+
 #header
 {
 	padding: 0px;
@@ -116,13 +118,140 @@ $toolbar-font-size: 13px;
 
 #report_actions .save button span
 {
-	color: #FFFFFF;
+	color: #ffffff;
 	font-size: 15px;
 	font-weight: bold;
 	text-transform: uppercase;
 }
 
+#report_filter_options
+{
+	background: #454545;
+}
 
+#report_filter_options .x-panel-body-default
+{
+	background: transparent;
+}
+
+#report_filter_options-body
+{
+	border: 1px solid #cccccc;
+	border-top: 0px;
+}
+
+#report_filter_options_header
+{
+	background: #73bbe8;
+	border: 1px solid #808285 !important;
+	@include box-shadow(none);
+	height: 50px;
+	padding: 10px 0px 10px 10px;
+}
+
+#report_filter_options_header span
+{
+	color: #ffffff;
+	font-size: 18px;
+}
+
+#report_filter_actions
+{
+	background: #f1f1f1;
+	border: 1px solid #cccccc !important;
+	padding: 0px;
+}
+
+#report_filter_actions .add-filter
+{
+	@include background-image(linear-gradient(#f1f1f1, #dcdcdc));
+	border: 1px solid #bcbcbc;
+	margin-left: 10px;
+}
+
+#report_filter_actions .add-filter em
+{
+	background-image: url('../images/button/s-arrow.gif');
+}
+
+#report_filter_actions .add-filter button span
+{
+	color: #333333;
+	font-size: 11px;
+	line-height: 20px !important;
+}
+
+#report_filter_actions .add-filter .icon-plus
+{
+	color: #2caf2c;
+	margin-right: 5px;
+}
+
+#report_filter_actions .search
+{
+	@include background-image(linear-gradient(#33c033, #229322));
+	border-color: #229322;
+	margin-right: 10px;
+}
+
+#report_filter_actions .search button span
+{
+	color: #ffffff;
+	font-size: 11px;
+	line-height: 20px !important;
+}
+
+#report_filters
+{
+	border-bottom: 1px solid #999999;
+}
+
+#report_filters-body,
+#report_filters .filter-container-body,
+#report_filters .filter-body,
+#report_filters .x-box-inner
+{
+	width: 100% !important;
+}
+
+#report_filters .x-box-inner div:first-child
+{
+	width: auto !important;
+}
+
+#report_filters .filter
+{
+	background: #f1f1f1;
+	border-top: 1px solid #999999;
+}
+
+#report_filters .filter-number label
+{
+	color: #999999;
+	font-size: 18px;
+	font-weight: bold;
+	margin: 0px !important;
+	text-align: center;
+}
+
+#report_filters .filter-name div
+{
+	color: #333333;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+#report_filters .remove-filter
+{
+	background: transparent;
+	border: 0px;
+	padding: 0px;
+}
+
+#report_filters .remove-filter span
+{
+	padding: 0px;
+}
 
 @import 'ext4/default/all';
 

@@ -7,8 +7,9 @@ Ext.define('PICS.view.report.filter.IntegerFilter', {
 
         this.callParent(arguments);
 
-        var integerFilter = {
+        var integer_filter = {
             xtype: 'panel',
+            border: 0,
             items: [{
                 xtype: 'combo',
                 editable: false,
@@ -35,17 +36,23 @@ Ext.define('PICS.view.report.filter.IntegerFilter', {
                     }
                 },
                 mouseWheelEnabled: false,
-                name: 'filterValue',
+                name: 'filter_value',
                 value: null
             }],
             layout: 'hbox'
         };
-        
-        this.add(integerFilter);
 
-        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('name'));
+        // add filter
+        this.child('panel [name=filter_input]').add(integer_filter);
+
+        // set filter number
+        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
+
+        // set filter name
+        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('name'));
+
+        // set filter inputs
         this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
-        this.child('panel numberfield[name=filterValue]').setValue(this.record.get('value'));
+        this.child('panel numberfield[name=filter_value]').setValue(this.record.get('value'));
     }
 });

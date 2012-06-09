@@ -4,13 +4,10 @@ Ext.define('PICS.view.report.FilterOptions', {
 
     autoScroll: true,
     collapsible: true,
-    defaults: {
-        border: false
-    },
-    dockedItems: [{
+    dockedItems: [/*{
         xtype: 'form',
         defaults: {
-            border: false
+            border: 0
         },
         dock: 'bottom',
         items: [{
@@ -38,35 +35,45 @@ Ext.define('PICS.view.report.FilterOptions', {
             layout: 'hbox',
             padding: '0 10 10 10'
         }]
+    },*/ {
+        xtype: 'toolbar',
+        dock: 'top',
+        height: 50,
+        id: 'report_filter_actions',
+        items: [{
+            xtype: 'splitbutton',
+            action: 'add-filter',
+            cls: 'add-filter',
+            height: 26,
+            menu: new Ext.menu.Menu({
+                items: [{
+                    action: 'toggle-advanced-filtering',
+                    cls: 'toggle-advanced-filtering',
+                    text: 'Advanced Filtering'
+                }]
+            }),
+            text: '<i class="icon-plus icon-large"></i>Add Filter',
+            width: 100
+        }, {
+            xtype: 'tbfill'
+        }, {
+            xtype: 'button',
+            action: 'search',
+            cls: 'search',
+            height: 26,
+            text: 'Update Results'
+        }]
     }],
     floatable: false,
-    id: 'filteroptions',
+    header: {
+        height: 50
+    },
+    id: 'report_filter_options',
     items: [{
-        buttonAlign: 'right',
-        buttons: [{
-            action: 'search',
-            text: 'Search'
-        }],
-        width: 300
-    }, {
-        xtype: 'panel',
-        id: 'filterDetails'
-    }, {
-        buttonAlign: 'right',
-        buttons: [{
-            action: 'search',
-            text: 'Search'
-        }],
-        width: 300
+        border: 0,
+        id: 'report_filters'
     }],
-    tbar: [{
-        xtype: 'tbfill'
-    }, {
-        xtype: 'button',
-        action: 'add-filter',
-        icon: 'js/pics/resources/images/dd/drop-add.gif',
-        text: 'Add Filter'
-    }],
-    title: 'Filter Options',
+    margin: '0px 0px 20px',
+    title: 'Filter',
     width: 320
 });

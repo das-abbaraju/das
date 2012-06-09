@@ -1,8 +1,8 @@
-/* line 18, ../sass/my-ext-theme.scss */
+/* line 20, ../sass/my-ext-theme.scss */
 #header {
   padding: 0px; }
 
-/* line 23, ../sass/my-ext-theme.scss */
+/* line 25, ../sass/my-ext-theme.scss */
 #site_menu {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ffffff), color-stop(100%, #eaeaea));
   background-image: -webkit-linear-gradient(#ffffff, #eaeaea);
@@ -14,13 +14,13 @@
   -moz-box-shadow: #cccccc 0px 2px 2px 0px;
   box-shadow: #cccccc 0px 2px 2px 0px; }
 
-/* line 29, ../sass/my-ext-theme.scss */
+/* line 31, ../sass/my-ext-theme.scss */
 #site_menu .x-btn-default-toolbar-large {
   margin: 0px;
   padding: 0px 10px;
   top: 0px !important; }
 
-/* line 38, ../sass/my-ext-theme.scss */
+/* line 40, ../sass/my-ext-theme.scss */
 #site_menu .x-btn-default-toolbar-large-menu-active,
 #site_menu .x-btn-default-toolbar-large-over,
 #site_menu .x-btn-default-toolbar-large-pressed {
@@ -39,12 +39,12 @@
   border-top: 2px solid #bbbbbb;
   border-bottom: 0px; }
 
-/* line 47, ../sass/my-ext-theme.scss */
+/* line 49, ../sass/my-ext-theme.scss */
 #site_menu .x-btn-default-toolbar-large .x-btn-inner {
   color: #002441;
   font-weight: bold; }
 
-/* line 53, ../sass/my-ext-theme.scss */
+/* line 55, ../sass/my-ext-theme.scss */
 #site_menu .x-form-text {
   -webkit-border-radius: 12px;
   -moz-border-radius: 12px;
@@ -54,35 +54,35 @@
   height: 22px;
   padding: 12px 5px; }
 
-/* line 60, ../sass/my-ext-theme.scss */
+/* line 62, ../sass/my-ext-theme.scss */
 #site_menu .x-toolbar-separator-horizontal {
   border-left-color: #e7e7e7;
   border-right-color: #fcfcfc; }
 
-/* line 66, ../sass/my-ext-theme.scss */
+/* line 68, ../sass/my-ext-theme.scss */
 #report_summary .name {
   color: #73bbe8;
   font-size: 30px;
   font-weight: normal;
   margin: 18px 20px 0px; }
 
-/* line 74, ../sass/my-ext-theme.scss */
+/* line 76, ../sass/my-ext-theme.scss */
 #report_summary .description {
   color: #808285;
   font-size: 14px;
   font-weight: normal;
   margin: 0px 20px 20px; }
 
-/* line 82, ../sass/my-ext-theme.scss */
+/* line 84, ../sass/my-ext-theme.scss */
 #report_actions {
   text-align: right; }
 
-/* line 88, ../sass/my-ext-theme.scss */
+/* line 90, ../sass/my-ext-theme.scss */
 #report_actions .edit,
 #report_actions .save {
   margin-top: 25px; }
 
-/* line 93, ../sass/my-ext-theme.scss */
+/* line 95, ../sass/my-ext-theme.scss */
 #report_actions .edit {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
   background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
@@ -92,7 +92,7 @@
   background-image: linear-gradient(#f1f1f1, #dcdcdc);
   margin-right: 10px; }
 
-/* line 99, ../sass/my-ext-theme.scss */
+/* line 101, ../sass/my-ext-theme.scss */
 #report_actions .save {
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
   background-image: -webkit-linear-gradient(#33c033, #229322);
@@ -103,22 +103,143 @@
   border-color: #229322;
   margin-right: 20px; }
 
-/* line 106, ../sass/my-ext-theme.scss */
+/* line 108, ../sass/my-ext-theme.scss */
 #report_actions .edit button span {
   font-size: 16px;
   line-height: 34px !important;
   padding: 0px !important; }
 
-/* line 113, ../sass/my-ext-theme.scss */
+/* line 115, ../sass/my-ext-theme.scss */
 #report_header .edit .icon-cog {
   color: #666666; }
 
-/* line 118, ../sass/my-ext-theme.scss */
+/* line 120, ../sass/my-ext-theme.scss */
 #report_actions .save button span {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 15px;
   font-weight: bold;
   text-transform: uppercase; }
+
+/* line 128, ../sass/my-ext-theme.scss */
+#report_filter_options {
+  background: #454545; }
+
+/* line 133, ../sass/my-ext-theme.scss */
+#report_filter_options .x-panel-body-default {
+  background: transparent; }
+
+/* line 138, ../sass/my-ext-theme.scss */
+#report_filter_options-body {
+  border: 1px solid #cccccc;
+  border-top: 0px; }
+
+/* line 144, ../sass/my-ext-theme.scss */
+#report_filter_options_header {
+  background: #73bbe8;
+  border: 1px solid #808285 !important;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  height: 50px;
+  padding: 10px 0px 10px 10px; }
+
+/* line 153, ../sass/my-ext-theme.scss */
+#report_filter_options_header span {
+  color: #ffffff;
+  font-size: 18px; }
+
+/* line 159, ../sass/my-ext-theme.scss */
+#report_filter_actions {
+  background: #f1f1f1;
+  border: 1px solid #cccccc !important;
+  padding: 0px; }
+
+/* line 166, ../sass/my-ext-theme.scss */
+#report_filter_actions .add-filter {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f1f1f1), color-stop(100%, #dcdcdc));
+  background-image: -webkit-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -moz-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -o-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: -ms-linear-gradient(#f1f1f1, #dcdcdc);
+  background-image: linear-gradient(#f1f1f1, #dcdcdc);
+  border: 1px solid #bcbcbc;
+  margin-left: 10px; }
+
+/* line 173, ../sass/my-ext-theme.scss */
+#report_filter_actions .add-filter em {
+  background-image: url("../images/button/s-arrow.gif"); }
+
+/* line 178, ../sass/my-ext-theme.scss */
+#report_filter_actions .add-filter button span {
+  color: #333333;
+  font-size: 11px;
+  line-height: 20px !important; }
+
+/* line 185, ../sass/my-ext-theme.scss */
+#report_filter_actions .add-filter .icon-plus {
+  color: #2caf2c;
+  margin-right: 5px; }
+
+/* line 191, ../sass/my-ext-theme.scss */
+#report_filter_actions .search {
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #33c033), color-stop(100%, #229322));
+  background-image: -webkit-linear-gradient(#33c033, #229322);
+  background-image: -moz-linear-gradient(#33c033, #229322);
+  background-image: -o-linear-gradient(#33c033, #229322);
+  background-image: -ms-linear-gradient(#33c033, #229322);
+  background-image: linear-gradient(#33c033, #229322);
+  border-color: #229322;
+  margin-right: 10px; }
+
+/* line 198, ../sass/my-ext-theme.scss */
+#report_filter_actions .search button span {
+  color: #ffffff;
+  font-size: 11px;
+  line-height: 20px !important; }
+
+/* line 205, ../sass/my-ext-theme.scss */
+#report_filters {
+  border-bottom: 1px solid #999999; }
+
+/* line 213, ../sass/my-ext-theme.scss */
+#report_filters-body,
+#report_filters .filter-container-body,
+#report_filters .filter-body,
+#report_filters .x-box-inner {
+  width: 100% !important; }
+
+/* line 218, ../sass/my-ext-theme.scss */
+#report_filters .x-box-inner div:first-child {
+  width: auto !important; }
+
+/* line 223, ../sass/my-ext-theme.scss */
+#report_filters .filter {
+  background: #f1f1f1;
+  border-top: 1px solid #999999; }
+
+/* line 229, ../sass/my-ext-theme.scss */
+#report_filters .filter-number label {
+  color: #999999;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0px !important;
+  text-align: center; }
+
+/* line 238, ../sass/my-ext-theme.scss */
+#report_filters .filter-name div {
+  color: #333333;
+  font-size: 14px;
+  font-weight: bold; }
+
+/* line 245, ../sass/my-ext-theme.scss */
+#report_filters .remove-filter {
+  background: transparent;
+  border: 0px;
+  padding: 0px; }
+
+/* line 252, ../sass/my-ext-theme.scss */
+#report_filters .remove-filter span {
+  padding: 0px; }
 
 /**
  * @var {string} $prefix 
@@ -5508,7 +5629,7 @@ browsers will do whacky things with it.
 .x-external-error-icon {
   position: absolute;
   right: 10px;
-  height: 22px; }
+  height: 25px; }
 
 /* line 101, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_all.scss */
 .x-quirks .x-ie .x-external-error-icon {
@@ -5548,17 +5669,17 @@ textarea.x-form-field {
 
 /* line 27, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-text {
-  height: 18px;
-  line-height: 18px;
+  height: 21px;
+  line-height: 21px;
   vertical-align: top; }
 
 /* line 34, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie8m .x-form-text {
-  line-height: 15px; }
+  line-height: 18px; }
 
 /* line 39, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-border-box .x-form-text {
-  height: 22px; }
+  height: 25px; }
 
 /* line 43, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 textarea.x-form-field {
@@ -5627,7 +5748,7 @@ textarea.x-form-invalid-field {
 
 /* line 117, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-ie .x-form-file {
-  height: 23px;
+  height: 26px;
   line-height: 18px;
   vertical-align: middle; }
 
@@ -5777,7 +5898,7 @@ textarea.x-form-invalid-field {
   position: absolute;
   top: -4px;
   right: -2px;
-  height: 30px;
+  height: 33px;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
   opacity: 0;
   /* Yes, there's actually a good reason for this...
@@ -5879,7 +6000,7 @@ textarea.x-form-invalid-field {
   background-image: url('../images/form/trigger.gif');
   background-position: 0 0;
   width: 17px;
-  height: 21px;
+  height: 24px;
   border-bottom: 1px solid #b5b8c8;
   cursor: pointer;
   cursor: hand;
@@ -5887,7 +6008,7 @@ textarea.x-form-invalid-field {
 
 /* line 20, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-border-box .x-form-trigger {
-  height: 22px; }
+  height: 25px; }
 
 /* line 24, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger {
@@ -5968,29 +6089,29 @@ textarea.x-form-invalid-field {
 .x-form-trigger-wrap .x-form-spinner-down {
   background-image: url('../images/form/spinner.gif');
   width: 17px !important;
-  height: 11px !important;
+  height: 12.5px !important;
   font-size: 0;
   /*for IE*/
   border-bottom: 0; }
 /* line 105, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down {
-  background-position: 0 -11px; }
+  background-position: 0 -12.5px; }
 
 /* line 109, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down {
-  background-position: -51px -11px; }
+  background-position: -51px -12.5px; }
 
 /* line 112, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-over {
-  background-position: -17px -11px; }
+  background-position: -17px -12.5px; }
 
 /* line 115, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-spinner-down-over {
-  background-position: -68px -11px; }
+  background-position: -68px -12.5px; }
 
 /* line 118, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap .x-form-spinner-down-click {
-  background-position: -34px -11px; }
+  background-position: -34px -12.5px; }
 
 /* line 127, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-field-default-toolbar .x-form-trigger-wrap .x-form-spinner-up,
@@ -6032,7 +6153,7 @@ textarea.x-form-invalid-field {
 
 /* line 173, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-form-trigger-input-cell {
-  height: 22px; }
+  height: 25px; }
 /* line 176, C:/Users/CHinoki.PICS/git/PICSORG/WebContent/js/pics/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-quirks .prefixie6 .x-field-default-toolbar .x-form-trigger-input-cell {
   height: 20px; }

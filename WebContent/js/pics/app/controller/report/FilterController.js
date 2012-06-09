@@ -5,8 +5,8 @@ Ext.define('PICS.controller.report.FilterController', {
         ref: 'reportColumnSelector',
         selector: 'reportcolumnselector'
     }, {
-        ref: 'filterOptions',
-        selector: 'filteroptions #filterDetails'
+        ref: 'filters',
+        selector: 'filteroptions #report_filters'
     }, {
         ref: 'filterExpression',
         selector: 'filteroptions textfield[name=filterexpression]'
@@ -38,7 +38,7 @@ Ext.define('PICS.controller.report.FilterController', {
                 click: this.removeFilter
             }
         });
-        
+
         this.application.on({
             refreshfilters: this.refreshFilters,
             scope: this
@@ -54,7 +54,7 @@ Ext.define('PICS.controller.report.FilterController', {
         // Split into tokens
         var validTokenRegex = /[0-9]+|\(|\)|and|or/gi;
         expression = expression.replace(validTokenRegex, ' $& ');
-        
+
         var tokens = expression.trim().split(/ +/);
         expression = '';
 
@@ -62,7 +62,7 @@ Ext.define('PICS.controller.report.FilterController', {
         var parenCount = 0;
         for (var i = 0; i < tokens.length; i += 1) {
             var token = tokens[i];
-            
+
             if (token.search(validTokenRegex) === -1) {
                 return false;
             }
@@ -93,44 +93,54 @@ Ext.define('PICS.controller.report.FilterController', {
                 return false;
             }
         }
-        
+
         if (parenCount !== 0) {
             return false;
         }
 
         report.set('filterExpression', expression);
-        
+
         PICS.app.fireEvent('refreshreport');
     },
 
     generateFilterPanels: function () {
-        var filterContainer = Ext.create('Ext.panel.Panel', {border: false}),
-            count = 0,
+        var filter_container = Ext.create('Ext.panel.Panel', {
+            bodyCls: 'filter-container-body',
+            border: 0,
+            cls: 'filter-container'
+        });
+
+        var count = 0,
             me = this,
             store = this.getReportReportsStore().first().filters();
 
         store.each(function (record) {
+            // TODO: change to 'Field'
             var type = record.getAvailableField().get('filterType') || record.get('filterType'),
-                panelClass = me.setFilterPanelClass(type),
-                filterPanel = null;
+                panel_class = me.setFilterPanelClass(type),
+                filter_panel = null;
 
-            if (panelClass !== null) {
-                filterPanel = Ext.create(panelClass, {record: record, panelNumber: ++count});
-                filterContainer.add(filterPanel);
+            if (panel_class !== null) {
+                filter_panel = Ext.create(panel_class, {
+                    record: record,
+                    panelNumber: ++count
+                });
+
+                filter_container.add(filter_panel);
             }
         });
-        
-        return filterContainer;
+
+        return filter_container;
     },
 
     refreshFilters: function () {
         var filterContainer = null;
 
-        this.getFilterOptions().removeAll();
+        this.getFilters().removeAll();
 
         filterContainer = this.generateFilterPanels();
 
-        this.getFilterOptions().add(filterContainer);
+        this.getFilters().add(filterContainer);
     },
 
     removeFilter: function (component, e, options) {
@@ -138,7 +148,7 @@ Ext.define('PICS.controller.report.FilterController', {
         store = this.getReportReportsStore().first().filters();
 
         store.remove(record);
-        
+
         PICS.app.fireEvent('refreshfilters');
         PICS.app.fireEvent('refreshreport');
     },
@@ -158,7 +168,7 @@ Ext.define('PICS.controller.report.FilterController', {
             case 'Autocomplete': panelClass = 'PICS.view.report.filter.AutocompleteFilter'; break;
             default: panelClass = null; break;
         }
-        
+
         //if (type !== 'Float') {panelClass = null;}  Override to show only a specific filterType
         return panelClass;
     },

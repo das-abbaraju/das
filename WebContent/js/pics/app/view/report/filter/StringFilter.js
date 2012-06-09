@@ -3,14 +3,15 @@ Ext.define('PICS.view.report.filter.StringFilter', {
     alias: ['widget.stringfilter'],
 
     record: null,
-    
+
     constructor: function (data) {
         this.record = data.record;
 
         this.callParent(arguments);
-        
-        var stringFilter = {
+
+        var string_filter = {
             xtype: 'panel',
+            border: 0,
             items: [{
                 xtype: 'combo',
                 editable: false,
@@ -27,7 +28,7 @@ Ext.define('PICS.view.report.filter.StringFilter', {
             }, {
                 xtype: 'textfield',
                 flex: 2,
-                name: 'filterValue',
+                name: 'filter_value',
                 listeners: {
                     blur: function () {
                         this.up('stringfilter').record.set('value', this.value);
@@ -37,11 +38,18 @@ Ext.define('PICS.view.report.filter.StringFilter', {
             }],
             layout: 'hbox'
         };
-        this.add(stringFilter);
-       
-        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('name'));
+
+        // add filter
+        this.child('panel [name=filter_input]').add(string_filter);
+
+        // set filter number
+        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
+
+        // set filter name
+        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('name'));
+
+        // set filter inputs
         this.child('panel combo[name=operator]').setValue(this.record.get('operator'));
-        this.child('panel textfield[name=filterValue]').setValue(this.record.get('value'));        
+        this.child('panel textfield[name=filter_value]').setValue(this.record.get('value'));
     }
 });

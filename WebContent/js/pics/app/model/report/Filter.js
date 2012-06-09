@@ -1,6 +1,7 @@
 Ext.define('PICS.model.report.Filter', {
     extend: 'Ext.data.Model',
 
+    // TODO: change to 'Field'
     associations: [{
         type: 'hasOne',
         model: 'PICS.model.report.AvailableField',

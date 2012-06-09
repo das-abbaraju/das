@@ -13,8 +13,11 @@ Ext.define('PICS.view.report.filter.AutocompleteFilter', {
 
         this.record.set('operator', 'In');
 
-        this.child('panel displayfield[name=filterName]').fieldLabel = this.panelNumber;
-        this.child('panel displayfield[name=filterName]').setValue(this.record.get('name'));
+        // set filter number
+        this.child('displayfield[name=filter_number]').fieldLabel = this.panelNumber;
+
+        // set filter name
+        this.child('panel displayfield[name=filter_name]').setValue(this.record.get('name'));
 
         this.createFilterCombo();
     },
@@ -43,15 +46,18 @@ Ext.define('PICS.view.report.filter.AutocompleteFilter', {
             },
             margin: '0 5 0 0',
             multiSelect: true,
-            name: 'listValue',
+            name: 'list_value',
             minChars: 1,
             mode: 'remote',
             queryParam: 'searchQuery',
             store: {
-                fields: [
-                    {name: 'id', type: 'string'},
-                    {name: 'name',  type: 'string'}
-                ],
+                fields: [{
+                    name: 'id',
+                    type: 'string'
+                }, {
+                    name: 'name',
+                    type: 'string'
+                }],
                 proxy: {
                     type: 'ajax',
                     url: 'ReportDynamic!list.action?report=' + url.report + '&fieldName=' + this.record.get('name'),
@@ -69,9 +75,11 @@ Ext.define('PICS.view.report.filter.AutocompleteFilter', {
             },
             typeAhead: false,
             valueField: 'searchQuery',
-            value: this.record.get('value')
+            value: this.record.get('value'),
+            width: 258
         });
 
-        this.add(list_filter);
-    }
+       // add filter
+       this.child('panel [name=filter_input]').add(list_filter);
+   }
 });
