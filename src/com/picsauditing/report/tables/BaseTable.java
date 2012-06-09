@@ -91,7 +91,7 @@ public abstract class BaseTable {
 		this.whereClause = whereClause;
 	}
 
-	public Map<String, Field> getAvailableFieldsMap() {
+	public Map<String, Field> getAvailableFields() {
 		return availableFields;
 	}
 
@@ -164,7 +164,7 @@ public abstract class BaseTable {
 		if (definition == null)
 			return false;
 
-		for (Field field : getAvailableFieldsMap().values()) {
+		for (Field field : getAvailableFields().values()) {
 			for (Column column : definition.getColumns()) {
 				if (column.getFieldNameWithoutFunction().equals(field.getName()))
 					return true;

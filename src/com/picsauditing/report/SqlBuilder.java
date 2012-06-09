@@ -19,7 +19,6 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.QueryDateParameter;
 import com.picsauditing.report.fields.QueryFilterOperator;
 import com.picsauditing.report.models.BaseModel;
-import com.picsauditing.report.models.ModelFactory;
 import com.picsauditing.report.tables.BaseTable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
@@ -33,7 +32,6 @@ public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
-	// Pulled from ReportDynamic
 	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) throws Exception {
 		return buildSql(report, permissions, pageNumber, false);
 	}
@@ -57,11 +55,13 @@ public class SqlBuilder {
 		return sql;
 	}
 
+	// TODO change this to pass in a report
 	public SelectSQL initializeSql(BaseModel baseModel) {
 		sql = new SelectSQL();
-		availableFields.clear();
 
 		setFrom(baseModel);
+
+		availableFields.clear();
 		addAvailableFields(baseModel.getPrimaryTable());
 
 		addFieldsAndGroupBy();
@@ -94,7 +94,7 @@ public class SqlBuilder {
 
 	private void addAvailableFields(BaseTable table) {
 		// We may be able to use the ModelBase.getAvailableFields...
-		availableFields.putAll(table.getAvailableFieldsMap());
+		availableFields.putAll(table.getAvailableFields());
 		for (BaseTable joinTable : table.getJoins()) {
 			addAvailableFields(joinTable);
 		}
