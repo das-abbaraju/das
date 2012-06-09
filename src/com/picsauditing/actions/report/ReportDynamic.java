@@ -65,7 +65,7 @@ public class ReportDynamic extends PicsActionSupport {
 
 	@Autowired
 	ReportController reportController;
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ReportDynamic.class);
 
 	@Deprecated
@@ -212,37 +212,6 @@ public class ReportDynamic extends PicsActionSupport {
 
 		return JSON;
 	}
-
-//	private boolean userHasPermission(String action) {
-//		List<ReportUser> reportUserList = dao.findWhere(ReportUser.class, "t.user.id = "
-//				+ permissions.getUserId() + " AND t.report.id = " + report.getId());
-//
-//		ReportUser reportUser = null;
-//		if (reportUserList.size() == 1) {
-//			reportUser = reportUserList.get(0);
-//		}
-//
-//		if (action.equals(COPY) && canRead(reportUser))
-//			return true;
-//		if (action.equals(EDIT) && canEdit(reportUser))
-//			return true;
-//		if (action.equals(DELETE) && isReportOwner())
-//			return true;
-//
-//		return false;
-//	}
-
-//	private boolean canRead(ReportUser reportUser) {
-//		return (reportUser != null);
-//	}
-
-//	private boolean canEdit(ReportUser reportUser) {
-//		return (reportUser != null && reportUser.isCanEdit());
-//	}
-
-//	private boolean isReportOwner() {
-//		return permissions.getUserId() == report.getCreatedBy().getId();
-//	}
 
 	// This is in the wrong class, should be in SqlBuilder
 	private void buildSQL(boolean download) throws Exception {
