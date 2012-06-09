@@ -122,30 +122,7 @@
 				<s:if test="operator.id > 0 && permissions.picsEmployee">
 					<fieldset class="form">
 						<h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts" /></h2>
-						
 						<ol>
-							<li>
-								<label for="general_contractor_checkbox">
-									<s:text name="FacilitiesEdit.IsGeneralContractor" />:
-								</label>
-								<s:checkbox 
-	                                name="generalContractor"
-	                                label="FacilitiesEdit.IsGeneralContractor" 
-	                                id="general_contractor_checkbox"
-	                            />
-							</li>
-							
-							<s:set var="display_linked_contractor" value="%{'display: inline;'}" />
-							<s:if test="!generalContractor">
-								<s:set var="display_linked_contractor" value="%{'display: none;'}" />
-							</s:if>
-
-							<li id="linked_contractor" style="${display_linked_contractor}">
-	                            <label>
-	                            	<s:text name="FacilitiesEdit.LinkedContractorAccount" />:
-	                            </label>
-								<pics:autocomplete action="ContractorAutocomplete" name="linkedAccount.contractorAccount" />
-							</li>
 							<s:if test="operator.corporate">
 								<li>
 									<s:checkbox name="operator.primaryCorporate" theme="formhelp" />
@@ -272,6 +249,57 @@
 					</fieldset>
 				</s:if>
 				
+				<s:if test="operator.id > 0 && permissions.picsEmployee">
+					<fieldset class="form">
+						<h2 class="formLegend"><s:text name="FacilitiesEdit.GeneralContractor" /></h2>
+						<ol>
+							<li>
+								<label for="general_contractor_checkbox">
+									<s:text name="FacilitiesEdit.IsGeneralContractor" />:
+								</label>
+								<s:checkbox 
+	                                name="operator.generalContractor"
+	                                label="FacilitiesEdit.IsGeneralContractor" 
+	                                id="general_contractor_checkbox"
+	                            />
+							</li>
+							
+							<s:set var="display_linked_client" value="%{'display: inline;'}" />
+							<s:if test="!operator.generalContractor">
+								<s:set var="display_linked_client" value="%{'display: none;'}" />
+							</s:if>
+
+							<li id="linked_clients" style="${display_linked_client}">
+	                            <label>
+	                            	<s:text name="FacilitiesEdit.LinkedClientAccount" />:
+	                            </label>
+	                            <s:optiontransferselect
+									label="Selected Clients"
+									name="selectedClientsLeft"
+									list="notSelectedClients"
+									listKey="id"
+									listValue="name"
+									doubleName="clients"
+									doubleList="selectedClients"
+									doubleListKey="id"
+									doubleListValue="name"
+									leftTitle="%{getText('FacilitiesEdit.OperatorsList')}"
+									rightTitle="%{getText('FacilitiesEdit.SelectedClients')}"
+									addToLeftLabel="%{getText('FacilitiesEdit.Remove')}"
+									addToRightLabel="%{getText('FacilitiesEdit.Assign')}"
+									allowAddAllToLeft="false"
+									allowAddAllToRight="false"
+									allowSelectAll="false"
+									allowUpDownOnLeft="false"
+									allowUpDownOnRight="false"
+									buttonCssClass="arrow"
+									theme="pics"
+		 						/>
+							</li>
+						</ol>
+					</fieldset>
+				</s:if>
+
 				<fieldset class="form">
 					<h2 class="formLegend"><s:text name="global.PrimaryAddress" /></h2>
 					
@@ -575,7 +603,7 @@
 											</thead>
 											<tbody>
 												<s:iterator value="operator.accountUsers" status="role">
-													<s:hidden value="%{role}" name="accountRole" />
+													<%-- <s:hidden value="%{role}" name="accountRole" /> --%>
 													
 													<s:if test="role.description == 'Sales Representative' && current">
 														<tr>
@@ -603,7 +631,7 @@
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
 																		<s:param name="operator" value="%{operator.id}" />
 																		<s:param name="accountUser" value="%{id}" />
 																	</s:url>
@@ -715,7 +743,7 @@
 															
 															<s:if test="operator.corporate">
 																<td>
-																	<s:url var="facilities_edit_copy" action="FacilitiesEditCopyRepresentative">
+																	<s:url var="facilities_edit_copy" action="FacilitiesEdit" method="copyToChildAccounts">
 																		<s:param name="operator" value="%{operator.id}" />
 																		<s:param name="accountUser" value="%{id}" />
 																	</s:url>

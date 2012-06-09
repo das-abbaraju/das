@@ -6,16 +6,22 @@
 -- SEE upgrade.sql FOR NON-CONFIG CHANGES
 -- -----------------------------------------------------------------------------------------------
 
--- PICS-5137
-insert into app_translation (msgKey, msgValue, locale, qualityRating, applicable, sourceLanguage, createdBy, creationDate, updatedBy, updateDate, contentDriven) 
-select CONCAT('AuditQuestion.', aq.id, '.columnHeader'), aq.columnHeader, 'en', 2, 1, 'en', 941, NOW(), 941, NOW(), 1 
-from audit_question aq 
-where 1 
-and aq.columnHeader is not NULL 
-and aq.columnHeader !='';
+-- PICS-4756 Remove orphaned questions
+-- NOTE: step 1 is data and therefore needs to be run on live before step 3, removing the orphaned questions
+-- Step 1 of 3
+-- DELETE pd from pqfdata pd
+-- join audit_question aq on aq.id=pd.questionID
+-- Left join  audit_category ac on aq.categoryID=ac.id
+-- where ac.id is null;
 
--- PICS-5810
--- Clear out tag for Shell OGP
-update flag_criteria_operator fcc
-set fcc.tagID = NULL, updatedBy=37745, updateDate=NOW()
-where fcc.tagID=465;
+-- Step 2 of 3
+DELETE tran from audit_question aq
+join app_translation tran on tran.msgKey = concat('AuditQuestion.', aq.id, ".name")
+left join audit_category ac on aq.categoryID=ac.id
+where ac.id is null;
+
+-- Step 3 of 3: Perrform last
+DELETE aq from audit_question aq
+Left join  audit_category ac on aq.categoryID=ac.id
+where ac.id is null;
+

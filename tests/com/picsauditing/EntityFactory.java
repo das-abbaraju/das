@@ -1,5 +1,6 @@
 package com.picsauditing;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import com.picsauditing.access.Permissions;
@@ -22,7 +23,6 @@ import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
 import com.picsauditing.jpa.entities.TranslatableString;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.YesNo;
@@ -160,6 +160,7 @@ public class EntityFactory {
 		auditType.setId(auditTypeID);
 		auditType.setName(makeTranslatableString("Unit Test " + auditTypeID));
 		auditType.setClassType(AuditTypeClass.Audit);
+		auditType.setMonthsToExpire(12);
 		return auditType;
 	}
 
@@ -182,7 +183,20 @@ public class EntityFactory {
 		AuditQuestion question = new AuditQuestion();
 		question.setId(counter++);
 		question.setName(makeTranslatableString("jUnit Question " + question.getId()));
+		question.setDependentRequired(new ArrayList<AuditQuestion> ());
+		question.setDependentVisible(new ArrayList<AuditQuestion> ());
+		question.setCategory(makeAuditCategory());
 		return question;
+	}
+
+	public static AuditCategory makeAuditCategory() {
+		return makeAuditCategory(counter++);
+	}
+	
+	public static AuditCategory makeAuditCategory(int categoryId) {
+		AuditCategory auditCategory = new AuditCategory();
+		auditCategory.setId(categoryId);
+		return auditCategory;
 	}
 
 	static public AuditData makeAuditData(String answer) {
@@ -193,6 +207,7 @@ public class EntityFactory {
 		AuditData data = new AuditData();
 		data.setQuestion(question);
 		data.setAnswer(answer);
+		data.setId(counter++);
 		return data;
 	}
 

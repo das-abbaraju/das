@@ -1,11 +1,15 @@
 package com.picsauditing.jpa.entities;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -295,10 +299,33 @@ public class AuditData extends BaseTable implements java.io.Serializable, Compar
 	}
 	
 	@Transient
-	public String getAnswerInDate(String format) throws ParseException {
+	public synchronized String getAnswerInDate(String format) throws ParseException {
 		SimpleDateFormat displayFormat = new SimpleDateFormat(format);
 		Date date = DateBean.parseDate(answer);
 		String dateStr = displayFormat.format(date);
 		return dateStr;
-	}	
+	}
+	
+	@Transient
+	public synchronized String getNumberFormatAnswer(Locale locale) {
+		NumberFormat displayFormat; 
+		NumberFormat dbFormat;
+		ParsePosition pp = new ParsePosition(0);
+		if("Number".equals(question.getQuestionType())) {
+			displayFormat = NumberFormat.getIntegerInstance(locale);
+			dbFormat = NumberFormat.getIntegerInstance(Locale.US);
+		}
+		else {
+			displayFormat = NumberFormat.getNumberInstance(locale);
+			dbFormat = NumberFormat.getNumberInstance(Locale.US);
+		}
+		Number truthValue = dbFormat.parse(answer, pp);
+		// check for invalid number
+		if(answer.length() != pp.getIndex() || truthValue == null) {
+			return answer;
+		}
+		String displayValue = displayFormat.format(truthValue);
+		return displayValue;
+	}
+	
 }

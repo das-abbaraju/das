@@ -1,5 +1,8 @@
 package com.picsauditing.actions.chart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.util.chart.Chart;
 import com.picsauditing.util.chart.ChartSingleSeries;
@@ -8,7 +11,9 @@ import com.picsauditing.util.chart.Set;
 @SuppressWarnings("serial")
 public class ChartAction extends PicsActionSupport {
 	protected String FCTime;
-
+    
+	private final Logger LOG = LoggerFactory.getLogger(ChartAction.class);
+			
 	public String getFCTime() {
 		return FCTime;
 	}
@@ -27,7 +32,7 @@ public class ChartAction extends PicsActionSupport {
 		try {
 			chart = buildChart();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			LOG.error(e.getMessage());
 			error("Error Getting Data");
 			return CHART_XML;
 		}

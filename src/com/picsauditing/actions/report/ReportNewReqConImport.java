@@ -14,6 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.DateBean;
@@ -52,6 +54,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 	private String fileFileName = null;
 	private String fileName = null;
 
+	private final Logger logger = LoggerFactory.getLogger(ReportNewReqConImport.class);
+	
 	public String save() throws Exception {
 		String extension = null;
 		if (file != null && file.length() > 0) {
@@ -247,8 +251,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			try {
 				results = db.select(query, false);
 			} catch (SQLException e) {
-				System.out.println("Error running query in RequestNewCon");
-				e.printStackTrace();
+				logger.error("Error running query in RequestNewCon");
+				logger.error("{}", e.getCause());
 				return 0;
 			}
 
@@ -283,8 +287,8 @@ public class ReportNewReqConImport extends PicsActionSupport {
 			if (cell == 13 && !Strings.isEmpty(value.toString()))
 				value = row.getCell(cell).getDateCellValue();
 
-			if (isDebugging() && value != null && !value.toString().equals("")) 
-				System.out.println(cell + ": " + value.toString());
+			if (isDebugging()) 
+				logger.debug("{}:{}", cell, value);
 
 			if (value != null && value.toString() == "")
 				value = null;

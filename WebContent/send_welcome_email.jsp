@@ -22,7 +22,7 @@ emailBuilder.setTemplate(2); // Welcome Email
 emailBuilder.setPermissions(permissions);
 emailBuilder.setContractor(contractor, OpPerms.ContractorAdmin);
 EmailQueue emailQueue = emailBuilder.build();
-emailQueue.setPriority(90);
+emailQueue.setVeryHighPriority();
 emailQueue.setFromAddress("\"PICS Customer Service\"<info@picsauditing.com>");
 EmailSender.send(emailQueue);
 

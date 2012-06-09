@@ -121,6 +121,10 @@
 	<bean id="OQChangesSubscription" class="com.picsauditing.mail.subscription.OQChangesSubscription" scope="prototype"/>
 	<bean id="TrialContractorAccountsSubscription" class="com.picsauditing.mail.subscription.TrialContractorAccountsSubscription" scope="prototype"/>
 	<bean id="SubscriptionBuilderFactory" class="com.picsauditing.mail.subscription.SubscriptionBuilderFactory" scope="prototype"/>
+	
+	<!-- Beans for service layers -->
+	<bean id="FacilitiesEditModel" class="com.picsauditing.models.operators.FacilitiesEditModel"/>
+	<bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
 
 	<bean id="ReportFilterAutocompleter" class=" com.picsauditing.actions.autocomplete.ReportFilterAutocompleter" />
 	<bean id="AuditCategoryAutocompleteService" class=" com.picsauditing.actions.autocomplete.AuditCategoryAutocompleteService" />

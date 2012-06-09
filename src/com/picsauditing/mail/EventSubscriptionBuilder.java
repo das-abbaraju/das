@@ -90,7 +90,7 @@ public class EventSubscriptionBuilder {
 		emailBuilder.setFromAddress("\"PICS Billing\"<billing@picsauditing.com>");
 
 		EmailQueue email = emailBuilder.build();
-		email.setPriority(60);
+		email.setHighPriority();
 		email.setHtml(true);
 		email.setViewableById(Account.PicsID);
 		emailSender.send(email);
@@ -172,7 +172,7 @@ public class EventSubscriptionBuilder {
 			emailBuilder.setFromAddressAsCSRFor((ContractorAccount) account);
 
 		EmailQueue email = emailBuilder.build();
-		email.setPriority(30);
+		email.setLowPriority();
 		email.setViewableById(Account.EVERYONE);
 		emailSender.send(email);
 

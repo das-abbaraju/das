@@ -119,9 +119,6 @@ public class ContractorAccount extends Account implements JSONable {
 	private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 	private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 	private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
-	private List<ContractorOperator> generalContractorOperators = new ArrayList<ContractorOperator>();
-	private List<OperatorAccount> generalContractorOperatorAccounts;
-	private List<OperatorAccount> nonGeneralContractorOperators;
 
 	// Transient helper methods
 	private OshaOrganizer oshaOrganizer = null;
@@ -586,11 +583,6 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Transient
-	public boolean isNeedsRecalculation() {
-		return needsRecalculation > 0;
-	}
-
-	@Transient
 	public void incrementRecalculation() {
 		incrementRecalculation(1);
 	}
@@ -640,6 +632,18 @@ public class ContractorAccount extends Account implements JSONable {
 
 	public void setContractorOperatorNumbers(List<ContractorOperatorNumber> contractorOperatorNumbers) {
 		this.contractorOperatorNumbers = contractorOperatorNumbers;
+	}
+
+	@Transient
+	public List<OperatorAccount> getGeneralContractorOperatorAccounts() {
+		List<OperatorAccount> gcOperators = new ArrayList<OperatorAccount>();
+		for (ContractorOperator co : operators) {
+			if (co.getOperatorAccount().isGeneralContractor()) {
+				gcOperators.add(co.getOperatorAccount());
+			}
+		}
+
+		return gcOperators;
 	}
 
 	@Transient
@@ -1570,66 +1574,18 @@ public class ContractorAccount extends Account implements JSONable {
 		return null;
 	}
 
-	@OneToMany(mappedBy = "contractorAccount")
-	@Where(clause = "type='GeneralContractor'")
-	public List<ContractorOperator> getGeneralContractorOperators() {
-		return generalContractorOperators;
-	}
-
-	public void setGeneralContractorOperators(List<ContractorOperator> generalContractorOperators) {
-		this.generalContractorOperators = generalContractorOperators;
-	}
-
-	/**
-	 * This grabs a list of all General Contractor operators that this
-	 * contractor works for, regardless of the ContractorOperator type
-	 * relationship.
-	 */
 	@Transient
-	public List<OperatorAccount> getGeneralContractorOperatorAccounts() {
-		if (generalContractorOperatorAccounts == null) {
-			generalContractorOperatorAccounts = new ArrayList<OperatorAccount>();
-
-			for (OperatorAccount gcOperator : getOperatorAccounts()) {
-				if (gcOperator.isGeneralContractor()) {
-					generalContractorOperatorAccounts.add(gcOperator);
-				}
-			}
-
-			Collections.sort(generalContractorOperatorAccounts);
+	public boolean isWorksForOperator(int operator) {
+		for (OperatorAccount operatorAccount : getOperatorAccounts()) {
+			if (operatorAccount.getId() == operator)
+				return true;
 		}
 
-		return generalContractorOperatorAccounts;
-	}
-
-	@Transient
-	public List<OperatorAccount> getNonGeneralContractorOperators() {
-		if (nonGeneralContractorOperators == null) {
-			nonGeneralContractorOperators = new ArrayList<OperatorAccount>(getOperatorAccounts());
-			nonGeneralContractorOperators.removeAll(getGeneralContractorOperatorAccounts());
-
-			Collections.sort(nonGeneralContractorOperators);
-		}
-
-		return nonGeneralContractorOperators;
+		return false;
 	}
 
 	@Testable
 	void setOshaAudits(List<OshaAudit> oshaAudits) {
 		this.oshaAudits = oshaAudits;
-	}
-
-	@Transient
-	public boolean hasAtLeastOneNonGCOperator(OperatorAccount gco) {
-		List<OperatorAccount> gcOperators = gco.getGcContractor().getContractorAccount()
-				.getNonGeneralContractorOperators();
-		List<OperatorAccount> conOperators = getOperatorAccounts();
-
-		for (OperatorAccount gcOp : gcOperators) {
-			if (conOperators.contains(gcOp))
-				return true;
-		}
-
-		return false;
 	}
 }

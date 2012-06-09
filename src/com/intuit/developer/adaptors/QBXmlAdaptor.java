@@ -6,6 +6,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
@@ -32,15 +35,16 @@ public class QBXmlAdaptor {
 	private InvoiceDAO invoiceDao;
 	private InvoiceItemDAO invoiceItemDao;
 	private AppPropertyDAO appPropertyDao;
-
+	
+	private final static Logger logger = LoggerFactory.getLogger(QBXmlAdaptor.class);
 	static {
 		try {
-			System.out.println("setting up jaxb context");
+			logger.info("setting up jaxb context");
 			jc = JAXBContext.newInstance("com.picsauditing.quickbooks.qbxml");
-			System.out.println("finished setting up jaxb context");
+			logger.info("finished setting up jaxb context");
 
 		} catch (Exception e) {
-			System.out.println("ERROR SETTING UP JAXBContext.  Quickbooks integration will not work");
+			logger.error("ERROR SETTING UP JAXBContext.  Quickbooks integration will not work");
 		}
 	}
 

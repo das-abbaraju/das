@@ -1,6 +1,8 @@
 package com.picsauditing.actions;
 
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.picsauditing.interceptors.PicsInterceptor;
 
@@ -8,7 +10,7 @@ import com.picsauditing.interceptors.PicsInterceptor;
 public class InterceptorConfig extends PicsActionSupport {
 
 	private String uri = null;
-
+	private final Logger logger = LoggerFactory.getLogger(InterceptorConfig.class);
 	@Override
 	public String execute() throws Exception {
 		if (!ServletActionContext.getRequest().getRemoteAddr()
@@ -20,16 +22,12 @@ public class InterceptorConfig extends PicsActionSupport {
 		output = "";
 		if (button == null || "list".equalsIgnoreCase(button)) {
 
-			System.out.println("===");
-			System.out.println("Interceptor status: "
-					+ System.getProperty("interceptor.enabled"));
-			System.out.println("===");
+			logger.info("Interceptor status: {}", System.getProperty("interceptor.enabled"));
 
-			System.out.println("Pages which require SSL");
+			logger.info("Pages which require SSL");
 			for (String s : PicsInterceptor.securePages) {
-				System.out.println(s);
+				logger.info(s);
 			}
-			System.out.println("===");
 
 		} else if ("addSecure".equals(button)) {
 			if (uri != null && uri.length() != 0) {

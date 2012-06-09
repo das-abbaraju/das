@@ -150,7 +150,6 @@ public class AuditRuleCache<R extends AuditRule> {
 			Operators operator = new Operators();
 			for (Trade trade : data.keySet()) {
 				if (value != null && trade != null && (value.childOf(trade))) {
-//					System.out.println(value + " related to " + trade);
 					operator.add(data.get(trade));
 				}
 			}

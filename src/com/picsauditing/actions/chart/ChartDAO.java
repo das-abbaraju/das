@@ -18,8 +18,8 @@ public class ChartDAO {
 	 * @throws SQLException
 	 */
 	public List<DataRow> select(String sql) throws SQLException {
-		Connection Conn = DBBean.getDBConnection();
-		Statement stmt = Conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		Connection conn = DBBean.getDBConnection();
+		Statement stmt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		try {
 			ResultSet rs = stmt.executeQuery(sql);
 			ArrayList<DataRow> data = new ArrayList<DataRow>();
@@ -27,12 +27,21 @@ public class ChartDAO {
 				DataRow row = new DataRow();
 				row.setLabel(rs.getString("label"));
 				row.setValue(rs.getFloat("value"));
-				try {row.setIndex(rs.getString("sortBy"));
-				} catch (SQLException e) { }
-				try {row.setSeries(rs.getString("series"));
-				} catch (SQLException e) { }
-				try {row.setLink(rs.getString("link"));
-				} catch (SQLException e) { }
+				try {
+					row.setIndex(rs.getString("sortBy"));
+				} catch (SQLException e) {
+					// do nothing
+				}
+				try {
+					row.setSeries(rs.getString("series"));
+				} catch (SQLException e) { 
+					// do nothing
+				}
+				try {
+					row.setLink(rs.getString("link"));
+				} catch (SQLException e) { 
+					// do nothing
+				}
 				data.add(row);
 			}
 			rs.close();
@@ -40,7 +49,7 @@ public class ChartDAO {
 			return data;
 		} finally {
 			stmt.close();
-			Conn.close();
+			conn.close();
 		}
 	}
 }

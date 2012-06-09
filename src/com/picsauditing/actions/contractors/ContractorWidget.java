@@ -74,7 +74,10 @@ public class ContractorWidget extends ContractorActionSupport {
 	}
 
 	public boolean isReminderTask() {
-
+        // don't add the reminder if this view is being seen by operator
+		if(permissions.isOperatorCorporate()) {
+			return false;
+		}
 		if (Calendar.getInstance().get(Calendar.MONTH) == 0)
 			if (contractor.getViewedFacilities() == null) {
 				return true;

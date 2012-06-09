@@ -47,8 +47,8 @@ public class ReportActivityWatch extends ReportAccount {
 	public String execute() throws Exception {
 		checkPermissions();
 
-		if (!login && !notesAndEmail && !audits && !flagColorChange && !flagCriteria ) {
-			addActionError(getText("ReportActivityWatch.message.SelectWatchCriteria","Please select a watch criteria"));
+		if (!login && !notesAndEmail && !audits && !flagColorChange && !flagCriteria) {
+			addActionError(getText("ReportActivityWatch.message.SelectWatchCriteria", "Please select a watch criteria"));
 			return SUCCESS;
 		}
 
@@ -70,7 +70,7 @@ public class ReportActivityWatch extends ReportAccount {
 
 		if (getActionErrors().size() > 0)
 			return SUCCESS;
-		
+
 		return super.execute();
 	}
 
@@ -82,13 +82,14 @@ public class ReportActivityWatch extends ReportAccount {
 		}
 		getContractorWatchlistHelper().removeContractorFromWatchList(contractorWatch);
 		return redirect("ReportActivityWatch.action"
-				+ (contractor != null && contractor.getId() != getContractorWatchlistHelper().getRemovedContractorId() ? "?contractor=" + contractor.getId() : ""));
+				+ (contractor != null && contractor.getId() != getContractorWatchlistHelper().getRemovedContractorId() ? "?contractor="
+						+ contractor.getId()
+						: ""));
 	}
 
 	@Override
 	protected void buildQuery() {
 		super.buildQuery();
-
 
 		String activity = "JOIN (";
 		List<String> watchOptions = new ArrayList<String>();
@@ -179,8 +180,14 @@ public class ReportActivityWatch extends ReportAccount {
 			joins.clear();
 
 			if (contractor != null) {
+				String accountIds = permissions.getAccountIdString();
+
+				if (permissions.isGeneralContractor()) {
+					accountIds += "," + Strings.implode(permissions.getLinkedClients());
+				}
+
 				joins.add("JOIN (SELECT DISTINCT criteriaID, conID FROM flag_data WHERE conID = " + contractor.getId()
-						+ (permissions.isOperatorCorporate() ? " AND opID = " + permissions.getAccountId() : "") + ")"
+						+ (permissions.isOperatorCorporate() ? " AND opID IN (" + accountIds + ")" : "") + ")"
 						+ " fd ON fc.id = fd.criteriaID");
 				sql2 = buildWatch("FlagCriteria", "flag_criteria fc", "fd.conID", "fc.updateDate",
 						"CAST(CONCAT('FlagCriteria.', fc.id, '.label') AS CHAR)", "''", "''", "''", "''", joins);

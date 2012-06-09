@@ -10,6 +10,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
@@ -117,8 +120,9 @@ public class EmailBuilder {
 		email.setBody(body);
 
 		if (debug) {
-			System.out.println(email.getSubject());
-			System.out.println(email.getBody());
+			Logger logger = LoggerFactory.getLogger(EmailBuilder.class);
+			logger.debug(email.getSubject());
+			logger.debug(email.getBody());
 		}
 		return email;
 	}

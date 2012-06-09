@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -337,7 +339,8 @@ class SearchItem {
 			else
 				return false;
 		} catch (Exception e) {
-			System.out.println("Error in equals for SearchItem");
+			Logger logger = LoggerFactory.getLogger(MainSearch.class);
+			logger.error("Error in equals for SearchItem");
 			return false;
 		}
 	}

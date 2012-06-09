@@ -11,11 +11,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "facilities")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="daily")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Facility extends BaseTable {
-	
+
 	private OperatorAccount operator;
 	private OperatorAccount corporate;
+	private String type;
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -36,5 +37,12 @@ public class Facility extends BaseTable {
 	public void setCorporate(OperatorAccount corporate) {
 		this.corporate = corporate;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

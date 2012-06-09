@@ -16,9 +16,9 @@
 		// registration
 		REGISTRATION.autofill_username.init();
 		
-		REGISTRATION.client_site_filter.init();
+		//REGISTRATION.client_site_filter.init();
 		
-		REGISTRATION.client_site_manage.init();
+		//REGISTRATION.client_site_manage.init();
 		
 		REGISTRATION.contractor_country.init();
 		

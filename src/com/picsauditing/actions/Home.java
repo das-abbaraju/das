@@ -1,6 +1,7 @@
 package com.picsauditing.actions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,6 +22,8 @@ public class Home extends ContractorActionSupport {
 	private Map<Integer, List<Widget>> columns = new TreeMap<Integer, List<Widget>>();
 
 	public String execute() throws Exception {
+		List<WidgetUser> widgetsToShowForUser = Collections.emptyList();
+
 		if (permissions.isContractor()) {
 			findContractor();
 			if (!contractor.getStatus().isActiveDemo()) {
@@ -31,19 +34,39 @@ public class Home extends ContractorActionSupport {
 			// Redirect operators/corporate accounts without the dashboard
 			// permission to the contractor list
 			return redirect("ContractorList.action?filter.performedBy=Self%20Performed");
+		} else if (permissions.isGeneralContractor()) {
+			widgetsToShowForUser = wdao.findForGeneralContractor(permissions);
 		} else {
 			permissions.tryPermission(OpPerms.Dashboard);
+			widgetsToShowForUser = wdao.findByUser(permissions);
 		}
 
-		List<WidgetUser> widgetsToShowForUser = wdao.findByUser(permissions);
+		setUpWidgets(widgetsToShowForUser);
+
+		return SUCCESS;
+	}
+
+	public Map<Integer, List<Widget>> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(Map<Integer, List<Widget>> columns) {
+		this.columns = columns;
+	}
+
+	public int getColumnWidth() {
+		return Math.round(90 / columns.size());
+	}
+
+	private void setUpWidgets(List<WidgetUser> widgetsToShowForUser) {
 		List<Widget> usedWidgets = new ArrayList<Widget>();
 
 		for (WidgetUser widgetUser : widgetsToShowForUser) {
 			Widget widget = widgetUser.getWidget();
-			
+
 			if (usedWidgets.contains(widget))
 				continue;
-			
+
 			if (widget.getRequiredPermission() != null) {
 				if (!permissions.hasPermission(widget.getRequiredPermission()))
 					continue;
@@ -65,19 +88,5 @@ public class Home extends ContractorActionSupport {
 			column.add(widget);
 			usedWidgets.add(widget);
 		}
-
-		return SUCCESS;
-	}
-
-	public Map<Integer, List<Widget>> getColumns() {
-		return columns;
-	}
-
-	public void setColumns(Map<Integer, List<Widget>> columns) {
-		this.columns = columns;
-	}
-
-	public int getColumnWidth() {
-		return Math.round(90 / columns.size());
 	}
 }

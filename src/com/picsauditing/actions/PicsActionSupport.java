@@ -23,6 +23,8 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.RequestAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -32,6 +34,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.SecurityAware;
+import com.picsauditing.actions.users.ChangePassword;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.BasicDAO;
@@ -66,6 +69,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected BasicDAO dao;
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
+	@Autowired
+	protected UserDAO userDAO;
 
 	protected Collection<String> alertMessages;
 
@@ -123,6 +128,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private Set<User> auditorList;
 	private Set<User> safetyList;
 
+	private final Logger logger = LoggerFactory.getLogger(PicsActionSupport.class);
+	
 	@Deprecated
 	public static final String getVersion() {
 		return PicsOrganizerVersion.getVersion();
@@ -146,10 +153,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public boolean isBetaEnvironment() throws UnknownHostException {
-	    Boolean isBeta = getRequestHost().contains("beta");
-	    String server = InetAddress.getLocalHost().getHostName();
+		Boolean isBeta = getRequestHost().contains("beta");
+		String server = InetAddress.getLocalHost().getHostName();
 
-	    return isBeta || server.equals("organizer1") || server.equals("organizer2");
+		return isBeta || server.equals("organizer1") || server.equals("organizer2");
 	}
 
 	public boolean isConfigurationEnvironment() {
@@ -199,9 +206,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected void loadPermissions(boolean autoLogin) {
-		if (permissions != null)
+		if (permissions != null) {
 			// Already set
 			return;
+		}
 
 		if (ActionContext.getContext().getSession() == null) {
 			addActionError("Failed to get session");
@@ -219,15 +227,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			if (autoLoginID != null && autoLoginID.length() != 0) {
 				try {
-					System.out.println("Autologging In user " + autoLoginID
-							+ ". Remove pics.autoLogin from startup to remove this feature.");
+					logger.info("Autologging In user {} . Remove pics.autoLogin from startup to remove this feature.", autoLoginID);
 					UserDAO userDAO = SpringUtils.getBean("UserDAO");
 					User user = userDAO.find(Integer.parseInt(autoLoginID));
+
 					permissions.login(user);
 					LocaleController.setLocaleOfNearestSupported(permissions);
 					ActionContext.getContext().getSession().put("permissions", permissions);
 				} catch (Exception e) {
-					System.out.println("Problem autologging in.  Id supplied was: " + autoLoginID);
+					logger.error("Problem autologging in.  Id supplied was: {}", autoLoginID);
 				}
 			}
 		}
@@ -236,9 +244,17 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected boolean forceLogin() {
 
 		loadPermissions();
+
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				redirect("ProfileEdit.action?url=" + ServletActionContext.getRequest().getRequestURL());
+				// redirect("ProfileEdit.action?url=" +
+				// ServletActionContext.getRequest().getRequestURL());
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + ServletActionContext.getRequest().getRequestURL());
+				ChangePassword cp = new ChangePassword();
+				cp.resetPasswordLink(permissions.getUserId(), ServletActionContext.getRequest().getRequestURL()
+						.toString());
 				return true;
 			}
 
@@ -246,7 +262,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				return false;
 			}
 		} catch (Exception e) {
-			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
 
@@ -257,7 +273,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		loadPermissions();
 		try {
 			if (permissions.isLoggedIn() && permissions.getAdminID() == 0 && permissions.isForcePasswordReset()) {
-				redirect("ProfileEdit.action?url=" + alternateReturnURL);
+				// redirect("ProfileEdit.action?url=" + alternateReturnURL);
+				// redirect("ChangePassword.action?source=profile&user=" +
+				// permissions.getUserId() + "&url="
+				// + alternateReturnURL);
+				ChangePassword cp = new ChangePassword();
+				cp.resetPasswordLink(permissions.getUserId(), alternateReturnURL);
+
 				return true;
 			}
 
@@ -265,7 +287,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				return false;
 			}
 		} catch (Exception e) {
-			System.out.println("PicsActionSupport: Error occurred trying to login:" + e.getMessage());
+			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
 		return true;
@@ -294,7 +316,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			User user = dao.find(userId);
 			return user;
 		} catch (Exception e) {
-			System.out.println("Error finding user: " + e.getMessage());
+			logger.error("Error finding user: {}", e.getMessage());
 			return null;
 		}
 	}
@@ -462,6 +484,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		}
 		return auditorList;
 	}
+
 	public Set<User> getSafetyList() {
 		if (safetyList == null) {
 			safetyList = new TreeSet<User>();
@@ -563,8 +586,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 					ActionContext.getContext().getParameters().remove(name);
 					ActionContext.getContext().getParameters().put(name, null);
 				} catch (Exception e) {
-					System.out.println("Error cleaning up parameter");
-					e.printStackTrace();
+					logger.error("Error cleaning up parameter");
+					logger.error("{}", e.getStackTrace());
 				}
 			}
 		}
@@ -591,12 +614,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return BLANK;
 	}
 
-	public void setMsg(String message) {
-		if (!Strings.isEmpty(message)) {
-			addActionMessage(message);
-		}
-	}
-
 	public String getFormattedDollarAmount(String answer) {
 		String response = "$0";
 
@@ -608,7 +625,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 			response = decimalFormat.format(input);
 		} catch (Exception e) {
-			// System.out.println("unable to format as money: " + answer);
+			 logger.error("unable to format as money: {}", answer);
 		}
 		return response;
 	}
@@ -636,9 +653,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public synchronized Collection<String> getAlertMessages() {
 		return alertMessages;
 	}
-	public synchronized void clearMessage(){
+
+	public synchronized void clearMessage() {
 		alertMessages = null;
 	}
+
 	/**
 	 * @return the i18n text to use for this page's title
 	 */
@@ -666,14 +685,14 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getActionName() {
-        return ServletActionContext.getActionMapping().getName();
-    }
+		return ServletActionContext.getActionMapping().getName();
+	}
 
 	public String getMethodName() {
-	    return ServletActionContext.getActionMapping().getMethod();
+		return ServletActionContext.getActionMapping().getMethod();
 	}
 
 	public String getProtocol() {
-        return URLUtils.getProtocol(ServletActionContext.getRequest());
-    }
+		return URLUtils.getProtocol(ServletActionContext.getRequest());
+	}
 }

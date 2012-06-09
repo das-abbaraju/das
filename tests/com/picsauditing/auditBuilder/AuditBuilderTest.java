@@ -39,15 +39,15 @@ import com.picsauditing.jpa.entities.Trade;
 
 public class AuditBuilderTest extends PicsTest {
 	AuditBuilder auditBuilder = new AuditBuilder();
-	
+
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
 	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
 	AuditTypesBuilder typeBuilder;
-	
+
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
 	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
 	AuditCategoriesBuilder catBuilder;
-	
+
 	@Mock
 	AuditPercentCalculator auditPercentCalculatior = new AuditPercentCalculator();
 
@@ -86,26 +86,44 @@ public class AuditBuilderTest extends PicsTest {
 		AuditType pqfType = EntityFactory.makeAuditType(AuditType.PQF);
 		EntityFactory.addCategories(pqfType, 101, "PQF Category 1");
 		EntityFactory.addCategories(pqfType, 102, "PQF Category 2");
-		
+
 		// set up rules
 		addTypeRules((new RuleParameters()).setAuditType(pqfType));
-		for (AuditCategory category:pqfType.getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setAuditCategory(category));
+		for (AuditCategory category : pqfType.getCategories()) {
+			addCategoryRules((new RuleParameters()).setAuditType(pqfType)
+					.setAuditCategory(category));
 		}
-		
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
-		
+
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache,
+				contractor);
+		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(
+				catRuleCache, contractor);
+
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
 		assertEquals(1, auditTypes.size());
-		
-		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
+
+		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType,
+				contractor);
 		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit,
 				contractor.getOperatorAccounts());
 		assertEquals(2, categories.size());
 	}
 
-	
+	@Test
+	public void testBuildAudits_AnnualUpdates() {
+		addTypeRules((new RuleParameters())
+				.setAuditTypeId(AuditType.ANNUALADDENDUM));
+		addCategoryRules(null);
+
+		when(em.find(Matchers.argThat(equalTo(AuditType.class)), anyInt()))
+		.thenReturn(
+				EntityFactory
+						.makeAuditType(AuditType.ANNUALADDENDUM));
+
+		auditBuilder.buildAudits(contractor);
+		assertEquals(3, contractor.getAudits().size());
+	}
+
 	@Test
 	public void testBuildAudits_ReviewCompetency() {
 		addTypeRules((new RuleParameters())
@@ -145,13 +163,12 @@ public class AuditBuilderTest extends PicsTest {
 		catRules.add(rule);
 		catRuleCache.initialize(catRules);
 	}
-	
+
 	private void fillAuditRule(RuleParameters params, AuditRule rule) {
 		rule.setPriority(params.priority);
 		rule.setInclude(params.include);
 		if (params.auditTypeId != 0) {
-			rule.setAuditType(EntityFactory
-					.makeAuditType(params.auditTypeId));
+			rule.setAuditType(EntityFactory.makeAuditType(params.auditTypeId));
 		} else {
 			rule.setAuditType(params.auditType);
 		}
@@ -280,7 +297,8 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setDependentAuditStatus(AuditStatus dependentAuditStatus) {
+		public RuleParameters setDependentAuditStatus(
+				AuditStatus dependentAuditStatus) {
 			this.dependentAuditStatus = dependentAuditStatus;
 			return this;
 		}

@@ -193,11 +193,15 @@
 									/>
 										
 									<s:if test="permissions.admin">
-										<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
+										<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+											<s:text name="UsersManage.addUser" />
+										</a>
 									</s:if>
 									<s:else>
 										<pics:permission perm="ContractorAdmin">
-											<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">Add User</a>
+											<a href="UsersManage!add.action?account=<s:property value="contractor.id"/>&isActive=Yes&isGroup=&userIsGroup=No">
+												<s:text name="UsersManage.addUser" />
+											</a>
 										</pics:permission>
 									</s:else>
 								</li>
@@ -457,6 +461,14 @@
 											cssClass="checkbox"
 											disabled="contractor.isContractorTypeRequired(@com.picsauditing.jpa.entities.ContractorType@Transportation)" 
 										/><s:text name="ContractorAccount.transportationServices" />
+                                        <pics:fieldhelp title="Contractor Type">
+	                                        <s:iterator value="@com.picsauditing.jpa.entities.ContractorType@values()" id="conType">
+	                                            <h5><s:property value="#conType.type" /></h5>
+	                                            
+	                                            <s:property value="#conType.description" escape="false" />
+	                                            <br />
+	                                        </s:iterator>
+                                        </pics:fieldhelp>										
 									</li>
 									<li>
 										<s:if test="hasImportPQFAudit">
@@ -486,10 +498,20 @@
 									
 									<ol>
 										<li>
-											<s:submit cssClass="picsbutton positive" method="sendDeactivationEmail" value="%{getText(scope + '.button.SendDeactivationEmail')}" />
+											<s:submit
+												cssClass="picsbutton positive"
+												method="sendDeactivationEmail"
+												value="%{getText(scope + '.button.SendDeactivationEmail')}" />
 										</li>
 										<li>
-											<s:select cssStyle="font-size: 12px;" list="operatorList" name="operatorIds" listKey="id" listValue="name" multiple="true" size="10"/>
+											<s:select
+												cssStyle="font-size: 12px;"
+												list="operatorList"
+												name="operatorIds"
+												listKey="id"
+												listValue="name"
+												multiple="true"
+												size="10" />
 										</li>
 									</ol>
 								</fieldset>

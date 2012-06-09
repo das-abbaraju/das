@@ -10,6 +10,7 @@ import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.jpa.entities.AppTranslation;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -31,6 +32,8 @@ public class ConfigChanges extends PicsActionSupport {
 	private AuditCategoryDAO auditCategoryDAO;
 	@Autowired
 	private AuditQuestionDAO auditQuestionDAO;
+	@Autowired
+	private FlagCriteriaOperatorDAO flagCriteriaOperatorDAO;
 
 	private String lastRelease;
 
@@ -47,6 +50,10 @@ public class ConfigChanges extends PicsActionSupport {
 	public List<FlagCriteria> getCriteriaList() {
 		return flagCriteriaDAO.findWhere("updateDate > '" + lastRelease + "'");
 	}
+	
+	public List<FlagCriteria> getFlagCriteriaOperatorList() {
+		return flagCriteriaOperatorDAO.findWhere("updateDate > '" + lastRelease + "'");
+	}
 
 	public List<AuditType> getAuditTypes() {
 		return auditTypeDAO.findWhere("updateDate > '" + lastRelease + "'");
@@ -56,25 +63,21 @@ public class ConfigChanges extends PicsActionSupport {
 		return auditCategoryDAO.findWhere("updateDate > '" + lastRelease + "'");
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Workflow> getWorkFlows() {
 		return (List<Workflow>) dao.findWhere(Workflow.class, "updateDate > '"
 				+ lastRelease + "'", 0, "updateDate");
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<WorkflowStep> getWorkFlowSteps() {
 		return (List<WorkflowStep>) dao.findWhere(WorkflowStep.class,
 				"updateDate > '" + lastRelease + "'", 0, "updateDate");
-
 	}
 
 	public List<AuditQuestion> getQuestions() {
 		return auditQuestionDAO.findWhere("updateDate > '" + lastRelease + "'");
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AppTranslation> getTranslations() {
 		return (List<AppTranslation>) dao.findWhere(AppTranslation.class,
 				"updateDate > '" + lastRelease + "' AND updatedBy != 1", 0,

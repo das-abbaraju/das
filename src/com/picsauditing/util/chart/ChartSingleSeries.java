@@ -8,7 +8,7 @@ public class ChartSingleSeries extends Chart {
 	protected List<Set> sets = new ArrayList<Set>();
 	protected List<TrendLine> trendLines = new ArrayList<TrendLine>();
 
-	protected void addData() {
+	protected void addData(StringBuilder xml) {
 		for (Set set : sets)
 			xml.append(set.toString());
 		

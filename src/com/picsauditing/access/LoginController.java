@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -57,6 +59,8 @@ public class LoginController extends PicsActionSupport {
 	private String key;
 	private int switchToUser;
 	private int switchServerToUser;
+	
+	private final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
 	@Anonymous
 	@Override
@@ -77,7 +81,9 @@ public class LoginController extends PicsActionSupport {
 			// Mozilla 5 and others.
 			if (ServletActionContext.getRequest().getCookies() == null
 					&& ServletActionContext.getRequest().getParameter("msg") != null) {
-				redirect("Login.action?msg=" + getText("Login.CookiesAreDisabled"));
+				addActionMessage(getText("Login.CookiesAreDisabled"));
+
+				redirect("Login.action");
 			}
 
 			int adminID = permissions.getAdminID();
@@ -89,6 +95,7 @@ public class LoginController extends PicsActionSupport {
 				user = userDAO.find(adminID);
 
 				permissions.login(user);
+				permissions.getToggles().putAll(getApplicationToggles());
 				LocaleController.setLocaleOfNearestSupported(permissions);
 				if (isLiveEnvironment()) {
 					if (ActionContext.getContext().getSession().get("redirect") != null) {
@@ -193,7 +200,15 @@ public class LoginController extends PicsActionSupport {
 		else
 			ActionContext.getContext().getSession().clear();
 		logAttempt();
-		postLogin();
+
+		if (permissions.getGroups().size() > 0 || permissions.isContractor()) {
+			postLogin();
+		} else {
+			addActionMessage(getText("Login.NoGroupOrPermission"));
+
+			redirect("Login.action?button=logout");
+			return SUCCESS;
+		}
 
 		return SUCCESS;
 	}
@@ -207,6 +222,7 @@ public class LoginController extends PicsActionSupport {
 			boolean translator = (adminID > 0 && permissions.hasPermission(OpPerms.Translator));
 			user = userDAO.find(userID);
 			permissions.login(user);
+			permissions.getToggles().putAll(getApplicationToggles());
 			LocaleController.setLocaleOfNearestSupported(permissions);
 			permissions.setAdminID(adminID);
 			if (translator)
@@ -428,7 +444,7 @@ public class LoginController extends PicsActionSupport {
 		Cookie[] cookiesA = getRequest().getCookies();
 		if (cookiesA != null) {
 			for (int i = 0; i < cookiesA.length; i++) {
-				System.out.println("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
+				LOG.error("cookie name " + cookiesA[i].getName() + " cookie value " + cookiesA[i].getValue());
 			}
 		}
 	}
@@ -440,9 +456,10 @@ public class LoginController extends PicsActionSupport {
 		UserLoginLog loginLog = new UserLoginLog();
 		loginLog.setLoginDate(new Date());
 		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-
 		String serverName = getRequest().getLocalName();
-
+		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
+		loginLog.setBrowser(uap.getBrowserName()+" "+uap.getBrowserVersion());
+		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
 		if (isLiveEnvironment() || isBetaEnvironment()) {
 			// Need computer name instead of www
 			serverName = InetAddress.getLocalHost().getHostName();

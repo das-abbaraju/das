@@ -97,7 +97,9 @@
 		</s:if>
 		
 		<s:if test="#q.questionType == 'Money' || #q.questionType == 'Number' || #q.questionType == 'Decimal Number'">
-			<s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number text"/>
+			<%-- <s:textfield name="auditData.answer" value="%{#a.answer}" cssClass="number text"/> --%>
+			<s:textfield name="auditData.answer" value="%{#a.getNumberFormatAnswer(permissions.locale)}" cssClass="number text"/>
+			
 		</s:if>
 		
 		<s:if test="#q.questionType == 'AMBest'">

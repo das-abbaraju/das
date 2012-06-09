@@ -10,7 +10,7 @@ package com.picsauditing.jpa.entities;
  */
 public enum OshaType implements Translatable {
 
-	OSHA(2033, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart,
+	OSHA(2033, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Dart, OshaRateType.SeverityRate, 
 			OshaRateType.Fatalities, OshaRateType.Hours, OshaRateType.EMR }),
 	MSHA(2256, new OshaRateType[] { OshaRateType.TrirAbsolute, OshaRateType.LwcrAbsolute, OshaRateType.Fatalities,
 			OshaRateType.Hours }),

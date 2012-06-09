@@ -83,7 +83,7 @@ public class AccountRecovery extends PicsActionSupport {
 			emailBuilder.addToken("username", matchingUsers.get(0).getName());
 			emailBuilder.addToken("user", matchingUsers.get(0));
 			EmailQueue emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			emailSender.send(emailQueue);
 
@@ -152,7 +152,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);
@@ -178,7 +178,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 			EmailQueue emailQueue;
 			emailQueue = emailBuilder.build();
-			emailQueue.setPriority(100);
+			emailQueue.setCriticalPriority();
 
 			EmailSenderSpring emailSenderStatic = (EmailSenderSpring) SpringUtils.getBean("EmailSenderSpring");
 			emailSenderStatic.send(emailQueue);

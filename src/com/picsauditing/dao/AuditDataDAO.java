@@ -144,7 +144,6 @@ public class AuditDataDAO extends PicsDAO {
 		// in this audit
 		String sql = "SELECT d FROM AuditData d " + "WHERE d.audit.id = :auditID "
 				+ " AND (d.question.id = :safetyManual " + "	OR d.question IN (" + sqlQuestions + ")" + " )";
-		// System.out.println(sql);
 		Query query = em.createQuery(sql);
 		query.setParameter("auditID", auditID);
 		query.setParameter("safetyManual", AuditQuestion.MANUAL_PQF);
