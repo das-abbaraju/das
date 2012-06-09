@@ -50,15 +50,14 @@ public class ManageReports extends PicsActionSupport {
 
 	public String deleteReport() throws Exception {
 		if (DELETE_REPORT.equalsIgnoreCase(deleteType)) {
-			String query = "t.report.id = " + reportId;
+			String query = "t.id = " + reportId;
 			Report report = dao.findOne(Report.class, query);
 
 			if (DynamicReportUtil.userCanDelete(permissions.getUserId(), report)) {
 				dao.remove(report);
 
-				query += " AND t.user.id = " + permissions.getUserId();
-				ReportUser reportUser = dao.findOne(ReportUser.class, query);
-				dao.remove(reportUser);				
+				// Deleting the report from the report table cascades to the report_user table,
+				// so we don't have to manually delete the entry from the report_user table.
 
 				getCustomReport(filterType);
 				return SUCCESS;
