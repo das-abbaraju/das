@@ -33,6 +33,33 @@ public class SqlBuilder {
 	private Definition definition = new Definition();
 	private SelectSQL sql;
 
+	// Pulled from ReportDynamic
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber) throws Exception {
+		return buildSql(report, permissions, pageNumber, false);
+	}
+
+	public SelectSQL buildSql(Report report, Permissions permissions, int pageNumber, boolean forDownload) throws Exception {
+		// These two lines are called frequently from ReportDynamic, sometimes
+		// followed by a call to getAvailableFields()
+		setBaseModelFromReport(report);
+		sql = initializeSql();
+
+		sql.addWhere(baseModel.getWhereClause(permissions));
+
+		// TODO: rowsPerPage can be added later
+		if (!forDownload) {
+			int rowsPerPage = report.getRowsPerPage();
+
+			if (pageNumber > 1)
+				sql.setStartRow((pageNumber - 1) * rowsPerPage);
+
+			sql.setLimit(rowsPerPage);
+			sql.setSQL_CALC_FOUND_ROWS(true);
+		}
+
+		return sql;
+	}
+
 	public SelectSQL initializeSql() {
 		sql = new SelectSQL();
 		availableFields.clear();
@@ -372,18 +399,18 @@ public class SqlBuilder {
 		}
 	}
 
-	public void addPermissions(Permissions permissions) {
-		String where = this.baseModel.getWhereClause(permissions);
-		sql.addWhere(where);
-	}
+//	public void addPermissions(Permissions permissions) {
+//		String where = this.baseModel.getWhereClause(permissions);
+//		sql.addWhere(where);
+//	}
 
-	public void setPaging(int page, int rowsPerPage) {
-		if (page > 1)
-			sql.setStartRow((page - 1) * rowsPerPage);
-
-		sql.setLimit(rowsPerPage);
-		sql.setSQL_CALC_FOUND_ROWS(true);
-	}
+//	public void setPaging(int page, int rowsPerPage) {
+//		if (page > 1)
+//			sql.setStartRow((page - 1) * rowsPerPage);
+//
+//		sql.setLimit(rowsPerPage);
+//		sql.setSQL_CALC_FOUND_ROWS(true);
+//	}
 
 	private Column getColumnFromFieldName(String fieldName) {
 		for (Column column : definition.getColumns()) {
@@ -396,19 +423,20 @@ public class SqlBuilder {
 
 	// Setters
 
-	public BaseModel setBaseModelFromReport(Report report) {
+	public void setBaseModelFromReport(Report report) {
 		this.baseModel = ModelFactory.getBase(report.getModelType());
-		return this.baseModel;
 	}
 
 	public void setBase(BaseModel base) {
 		this.baseModel = base;
 	}
 
+	@Deprecated
 	public Definition getDefinition() {
 		return definition;
 	}
 
+	@Deprecated
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
 	}

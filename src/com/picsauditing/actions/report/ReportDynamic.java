@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletOutputStream;
 
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.struts2.ServletActionContext;
@@ -57,7 +58,7 @@ public class ReportDynamic extends PicsActionSupport {
 	private int pageNumber = 1;
 	private boolean showSQL;
 	private SelectSQL sql = new SelectSQL();
-	private SqlBuilder builder = new SqlBuilder();
+	private SqlBuilder sqlBuilder = new SqlBuilder();
 	private String fileType = ".xls";
 
 	private String fieldName = "";
@@ -117,9 +118,18 @@ public class ReportDynamic extends PicsActionSupport {
 
 	public String data() {
 		try {
-			buildSQL(!DOWNLOAD);
+			reportController.validate(report);
 
-			if (builder.getDefinition().getColumns().size() > 0) {
+			Definition definition = new Definition(report.getParameters());
+			report.setDefinition(definition);
+			// TODO remove definition from SqlBuilder
+			sqlBuilder.setDefinition(definition);
+
+			sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+
+			translateFilterValueNames(definition.getFilters());
+
+			if (definition.getColumns().size() > 0) {
 				QueryData data = queryData();
 				convertToJson(data);
 				json.put("success", true);
@@ -144,10 +154,12 @@ public class ReportDynamic extends PicsActionSupport {
 				throw new Exception("Please pass a fieldName when calling list");
 
 			reportController.validate(report);
-			builder.setBaseModelFromReport(report);
-			builder.initializeSql();
 
-			Field field = builder.getAvailableFields().get(fieldName.toUpperCase());
+			sqlBuilder.setBaseModelFromReport(report);
+			// I think this is just setting the available fields
+			sqlBuilder.initializeSql();
+
+			Field field = sqlBuilder.getAvailableFields().get(fieldName.toUpperCase());
 			if (field == null)
 				throw new Exception("Available field undefined");
 
@@ -188,8 +200,19 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String getReportParameters() throws Exception {
-		buildSQL(!DOWNLOAD);
+		reportController.validate(report);
+
+		Definition definition = new Definition(report.getParameters());
+		report.setDefinition(definition);
+		// TODO remove definition from SqlBuilder
+		sqlBuilder.setDefinition(definition);
+
+		sql = sqlBuilder.buildSql(report, permissions, pageNumber);
+
+		translateFilterValueNames(definition.getFilters());
+
 		addTranslatedLabelsToReportParameters(report.getDefinition());
+
 		json.put("report", report.toJSON(true));
 		json.put("success", true);
 
@@ -197,16 +220,24 @@ public class ReportDynamic extends PicsActionSupport {
 	}
 
 	public String download() throws Exception {
-		ExcelSheet excelSheet = new ExcelSheet();
+		reportController.validate(report);
 
-		buildSQL(FOR_DOWNLOAD);
+		Definition definition = new Definition(report.getParameters());
+		report.setDefinition(definition);
+		// TODO remove definition from SqlBuilder
+		sqlBuilder.setDefinition(definition);
 
-		if (builder.getDefinition().getColumns().size() > 0) {
+		sql = sqlBuilder.buildSql(report, permissions, pageNumber, FOR_DOWNLOAD);
+
+		translateFilterValueNames(definition.getFilters());
+
+		if (definition.getColumns().size() > 0) {
 			List<BasicDynaBean> rawData = runSQL();
 
+			ExcelSheet excelSheet = new ExcelSheet();
 			excelSheet.setData(rawData);
 
-			excelSheet = builder.extractColumnsToExcel(excelSheet);
+			excelSheet = sqlBuilder.extractColumnsToExcel(excelSheet);
 
 			String filename = report.getName();
 			excelSheet.setName(filename);
@@ -236,7 +267,7 @@ public class ReportDynamic extends PicsActionSupport {
 	public JSONArray getAvailableFields() {
 		JSONArray fields = new JSONArray();
 
-		for (Field field : builder.getAvailableFields().values()) {
+		for (Field field : sqlBuilder.getAvailableFields().values()) {
 			if (canSeeQueryField(field)) {
 				field.setText(translateLabel(field));
 				JSONObject obj = field.toJSONObject();
@@ -335,7 +366,7 @@ public class ReportDynamic extends PicsActionSupport {
 				if (value == null)
 					continue;
 
-				Field field = builder.getAvailableFields().get(column.toUpperCase());
+				Field field = sqlBuilder.getAvailableFields().get(column.toUpperCase());
 				if (field == null) {
 					// TODO we get nulls if the column name is custom such
 					// as contractorNameCount. Convert this to
@@ -413,6 +444,9 @@ public class ReportDynamic extends PicsActionSupport {
 
 	// TODO: Find out how this is being used (purpose in the big picture, possibly used for reverse translations)
 	private void translateFilterValueNames(List<Filter> filters) {
+		if (CollectionUtils.isEmpty(filters))
+			return;
+
 		for (Filter filter : filters) {
 			if (!filter.isHasTranslations())
 				continue;
@@ -491,26 +525,26 @@ public class ReportDynamic extends PicsActionSupport {
 	// SQL stuff at bottom of file
 
 	// This is in the wrong class, should be in SqlBuilder
-	private void buildSQL(boolean download) throws Exception {
-		reportController.validate(report);
-
-		Definition definition = new Definition(report.getParameters());
-		report.setDefinition(definition);
-		builder.setDefinition(definition);
-
-		builder.setBaseModelFromReport(report);
-		sql = builder.initializeSql();
-		builder.addPermissions(permissions);
-
-		// TODO: rowsPerPage can be added later
-		if (!download)
-			builder.setPaging(page, report.getRowsPerPage());
-
-		List<Filter> filters = builder.getDefinition().getFilters();
-		if (filters != null && !filters.isEmpty()) {
-			translateFilterValueNames(filters);
-		}
-	}
+//	private void buildSQL(boolean download) throws Exception {
+//		reportController.validate(report);
+//
+//		Definition definition = new Definition(report.getParameters());
+//		report.setDefinition(definition);
+//		builder.setDefinition(definition);
+//
+//		builder.setBaseModelFromReport(report);
+//		sql = builder.initializeSql();
+//		builder.addPermissions(permissions);
+//
+//		// TODO: rowsPerPage can be added later
+//		if (!download)
+//			builder.setPaging(page, report.getRowsPerPage());
+//
+//		List<Filter> filters = builder.getDefinition().getFilters();
+//		if (filters != null && !filters.isEmpty()) {
+//			translateFilterValueNames(filters);
+//		}
+//	}
 
 	// TODO: Rewrite this to PROPERLY log the timing (without System.out)
 	private QueryData queryData() throws SQLException {
@@ -557,10 +591,11 @@ public class ReportDynamic extends PicsActionSupport {
 			System.out.println("-- filling fields for " + type); // TODO: Remove this in favor of logging
 			Report fakeReport = new Report();
 			fakeReport.setModelType(type);
-			builder = new SqlBuilder();
-			builder.setBaseModelFromReport(fakeReport);
-			builder.initializeSql();
-			for (Field field : builder.getAvailableFields().values()) {
+
+			sqlBuilder = new SqlBuilder();
+			sqlBuilder.setBaseModelFromReport(fakeReport);
+			sqlBuilder.initializeSql();
+			for (Field field : sqlBuilder.getAvailableFields().values()) {
 				String key = "Report." + field.getName();
 				saveTranslation(existing, key);
 				saveTranslation(existing, key + ".help");
@@ -574,8 +609,8 @@ public class ReportDynamic extends PicsActionSupport {
 	public String availableFields() {
 		try {
 			reportController.validate(report);
-			builder.setBaseModelFromReport(report);
-			builder.initializeSql();
+			sqlBuilder.setBaseModelFromReport(report);
+			sqlBuilder.initializeSql();
 
 			json.put("modelType", report.getModelType().toString());
 			json.put("fields", getAvailableFields());
