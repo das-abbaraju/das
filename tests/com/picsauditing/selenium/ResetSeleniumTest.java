@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -22,6 +23,7 @@ import static com.picsauditing.actions.PicsActionSupport.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ResetSelenium.class, SeleniumDAO.class})
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class ResetSeleniumTest {
 	
 	ResetSelenium classUnderTest;

@@ -23,6 +23,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
@@ -38,6 +39,7 @@ import com.picsauditing.util.Strings;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AuditRejectionLookup.class, DBBean.class})
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class AuditRejectionLookupTest {
 	private static final String TRANSLATION_KEY_PREFIX = "Insurance.Rejection.Reason.Code.";
 	private AuditRejectionLookup auditRejectionLookup;

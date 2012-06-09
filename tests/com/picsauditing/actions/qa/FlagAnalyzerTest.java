@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -18,6 +19,7 @@ import com.picsauditing.search.SelectSQL;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(QueryRunnerFactory.class)
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class FlagAnalyzerTest {
 	private FlagAnalyzer flagAnalyzer;
 	

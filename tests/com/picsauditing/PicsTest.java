@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -25,6 +26,7 @@ import com.picsauditing.PICS.I18nCache;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(I18nCache.class)
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public abstract class PicsTest {
 	
 	@Mock protected EntityManager em;

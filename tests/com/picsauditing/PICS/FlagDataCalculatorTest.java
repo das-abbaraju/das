@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.reflect.Whitebox;
 
 import com.picsauditing.EntityFactory;
@@ -27,6 +28,7 @@ import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 
 //@RunWith(PowerMockRunner.class)
+//@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class FlagDataCalculatorTest { // extends PicsTest {
 
 	private FlagDataCalculator calculator;

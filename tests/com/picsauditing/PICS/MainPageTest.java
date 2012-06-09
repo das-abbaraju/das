@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -32,6 +33,7 @@ import com.picsauditing.search.Database;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ MainPage.class, I18nCache.class, TranslationActionSupport.class })
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class MainPageTest {
 	private MainPage mainPage;
 

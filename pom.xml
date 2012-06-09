@@ -96,6 +96,7 @@
 					<additionalClasspathElements>
 						<additionalClasspathElement>tests/</additionalClasspathElement>
 					</additionalClasspathElements>
+					<argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</argLine>
 				</configuration>
 			</plugin>
 			<plugin>

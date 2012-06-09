@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.MockPolicy;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -40,6 +41,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ RegistrationAddClientSite.class, ActionContext.class, AjaxUtils.class, SmartFacilitySuggest.class })
 @MockPolicy(SearchEngineMockPolicy.class)
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class RegistrationAddClientSiteTest extends PicsTest {
 	RegistrationAddClientSite registrationAddClientSite;
 	ContractorAccount contractor;

@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
@@ -23,7 +24,7 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
  * When we feel this test is doing its job, we should delete the old one and rename this one - GAM
  */
 @RunWith(PowerMockRunner.class)
-//@MockPolicy()
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class AuditBuilderNewTest {
 	private AuditBuilder auditBuilder;
 	final private int MOCK_CONTRACTOR_ID = 4567; // arbitrary number 

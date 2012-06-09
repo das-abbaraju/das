@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -28,6 +29,7 @@ import com.picsauditing.util.SpringUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ActionContext.class, SpringUtils.class})
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class PicsActionSupportTest {
 	PicsActionSupport picsActionSupport;
 	

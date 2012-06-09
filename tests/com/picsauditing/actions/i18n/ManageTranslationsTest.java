@@ -22,6 +22,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -37,9 +38,10 @@ import com.picsauditing.search.SelectSQL;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ServletActionContext.class, ManageTranslations.class, ActionContext.class})
+@PowerMockIgnore({"javax.xml.parsers.*", "ch.qos.logback.*", "org.slf4j.*", "org.apache.xerces.*"})
 public class ManageTranslationsTest extends PicsTest {
 	
-	ManageTranslations classUnderTest = new ManageTranslations();
+	ManageTranslations classUnderTest;
 	Map<String, Object> session;
 	
 	@Mock Permissions permissions;
@@ -47,6 +49,7 @@ public class ManageTranslationsTest extends PicsTest {
 	
 	@Before
 	public void TestSetup () throws Exception {
+		classUnderTest = new ManageTranslations();
 		
 		PowerMockito.mockStatic(ServletActionContext.class);
 		MockitoAnnotations.initMocks(this);
